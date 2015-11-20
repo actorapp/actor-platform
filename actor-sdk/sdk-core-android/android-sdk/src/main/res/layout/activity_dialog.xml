@@ -154,13 +154,13 @@
                     <Button
                         android:layout_width="@dimen/share_btn_size"
                         android:layout_height="@dimen/share_btn_size"
-                        android:id="@+id/share_location"
-                        android:background="@drawable/share_location_selector" />
+                        android:id="@+id/share_contact"
+                        android:background="@drawable/share_contact_selector" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/share_menu_location" />
+                        android:text="@string/share_menu_contact" />
                 </LinearLayout>
 
             </TableRow>
@@ -213,33 +213,23 @@
                     <Button
                         android:layout_width="@dimen/share_btn_size"
                         android:layout_height="@dimen/share_btn_size"
-                        android:id="@+id/share_contact"
-                        android:background="@drawable/share_contact_selector" />
+                        android:id="@+id/share_location"
+                        android:background="@drawable/share_location_selector" />
+
+                    <ImageButton
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_hide"
+                        android:background="@drawable/share_hide_selector"
+                        android:src="@drawable/attach_hide2" />
 
                     <TextView
+                        android:id="@+id/location_hide_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/share_menu_contact" />
+                        android:text="@string/share_menu_location" />
                 </LinearLayout>
 
-                <!--<LinearLayout-->
-                <!--android:gravity="center_horizontal"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="vertical">-->
-
-                <!--<ImageButton-->
-                <!--android:layout_width="@dimen/share_btn_size"-->
-                <!--android:layout_height="@dimen/share_btn_size"-->
-                <!--android:id="@+id/share_hide"-->
-                <!--android:background="@drawable/share_hide_selector"-->
-                <!--android:src="@drawable/attach_hide2" />-->
-
-                <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="" />-->
-                <!--</LinearLayout>-->
             </TableRow>
         </TableLayout>
 

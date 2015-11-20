@@ -329,6 +329,13 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                 fileName, reference.getSize(), duration));
     }
 
+    public void sendLoacation(@NotNull Peer peer,
+                              @NotNull Double longitude, @NotNull Double latitude,
+                              @Nullable String street, @Nullable String place) {
+        sendMessageActor.send(new SenderActor.SendLocation(peer, longitude, latitude, street, place));
+    }
+
+
     public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
                              String descriptor) {
         FileSystemReference reference = Storage.fileFromDescriptor(descriptor);
