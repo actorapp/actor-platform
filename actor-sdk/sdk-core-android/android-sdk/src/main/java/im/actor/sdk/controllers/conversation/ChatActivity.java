@@ -805,7 +805,7 @@ public class ChatActivity extends ActorEditTextActivity {
 
                 }
 
-                messenger().sendContact(peer, name, phones, emails, photo != null ? (Base64.encodeToString(photo, Base64.URL_SAFE | Base64.NO_WRAP)) : null);
+                messenger().sendContact(peer, name, phones, emails, photo != null ? (Base64.encodeToString(photo, Base64.NO_WRAP)) : null);
 
             } else if (requestCode == REQUEST_LOCATION) {
                 messenger().sendLocation(peer, data.getDoubleExtra("longitude", 0), data.getDoubleExtra("latitude", 0), data.getStringExtra("street"), data.getStringExtra("place"));
