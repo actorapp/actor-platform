@@ -10,11 +10,7 @@ $like-red: rgb(226, 38, 77);
     transform: scale(.1);
 
     opacity: 0;
-    //color: $like-red;
   }
-  //50% {
-  //  color: $like-red;
-  //}
   75% {
     opacity: 1;
     transform: scale(1.2);
@@ -330,8 +326,6 @@ $like-red: rgb(226, 38, 77);
         max-width: 100%;
         padding: 8px 10px 8px 8px;
 
-        transition: background $default-transition-duration $default-transition-timing;
-
         border-radius: 3px;
         background-color: rgba(darken($body-base-color, 0), .07);
 
@@ -389,6 +383,54 @@ $like-red: rgb(226, 38, 77);
             &:hover {
               text-decoration: underline;
             }
+          }
+        }
+      }
+    }
+    &--voice {
+      .voice {
+        width: 300px;
+        border-radius: 3px;
+        //padding: 4px 8px 4px 4px;
+        //background-color: rgba(darken($body-base-color, 0), .07);
+        &__controls {
+          .material-icons {
+            font-size: 36px;
+            cursor: pointer;
+            color: $dark-sky-blue;
+          }
+        }
+        &__body {
+          margin-left: 8px;
+          position: relative;
+        }
+        &__time {
+          font-size: 12px;
+          line-height: 24px;
+          color: rgba(0, 0, 0, .2);
+          display: inline-block;
+          &--current {
+            left: 0;
+          }
+          &--total {
+            right: 0;
+          }
+        }
+        &__rewind {
+          height: 6px;
+          overflow: hidden;
+          width: 100%;
+          position: relative;
+          border-radius: 3px;
+          cursor: pointer;
+          background-color: rgba(0, 0, 0, .1);
+          .played {
+            top: 0;
+            left: 0;
+            bottom: 0;
+            position: absolute;
+            background-color: $dark-sky-blue;
+            transition: width 100ms ease-in;
           }
         }
       }

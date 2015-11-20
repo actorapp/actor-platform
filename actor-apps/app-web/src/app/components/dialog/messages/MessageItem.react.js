@@ -22,6 +22,7 @@ import AvatarItem from 'components/common/AvatarItem.react';
 import Text from './Text.react';
 import Image from './Image.react';
 import Document from './Document.react';
+import Voice from './Voice.react';
 import State from './State.react';
 import Reactions from './Reactions.react';
 
@@ -147,8 +148,13 @@ class MessageItem extends Component {
                     className="message__content message__content--document"/>
         );
         break;
+      case MessageContentTypes.VOICE:
+        messageContent = (
+          <Voice content={message.content}
+                    className="message__content message__content--voice"/>
+        );
+        break;
       default:
-        return null;
     }
 
     return (
