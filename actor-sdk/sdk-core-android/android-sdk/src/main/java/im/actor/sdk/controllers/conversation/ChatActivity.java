@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
@@ -45,6 +47,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
@@ -277,6 +280,27 @@ public class ChatActivity extends ActorEditTextActivity {
             }
         });
 
+        try {
+            ApplicationInfo app = ChatActivity.this.getPackageManager().getApplicationInfo(ChatActivity.this.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = app.metaData;
+
+            if (bundle.containsKey("com.google.android.geo.API_KEY")) {
+                findViewById(R.id.share_location).setVisibility(View.VISIBLE);
+                findViewById(R.id.share_hide).setVisibility(View.GONE);
+                findViewById(R.id.location_hide_text).setVisibility(View.VISIBLE);
+
+            } else {
+                findViewById(R.id.share_location).setVisibility(View.GONE);
+                findViewById(R.id.share_hide).setVisibility(View.VISIBLE);
+                findViewById(R.id.location_hide_text).setVisibility(View.INVISIBLE);
+                Log.w("Actor-GoogleMaps", "please, set up google map api key in AndroidManifest metadata to enable share locations");
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
         View.OnClickListener shareMenuOCL = new View.OnClickListener() {
             @Override
             public void onClick(View item) {
@@ -314,10 +338,12 @@ public class ChatActivity extends ActorEditTextActivity {
                 } else if (item.getId() == R.id.share_file) {
                     startActivityForResult(Intents.pickFile(ChatActivity.this), REQUEST_DOC);
                 } else if (item.getId() == R.id.share_location) {
-                    //startActivityForResult(Intents.pickLocation(ChatActivity.this), REQUEST_LOCATION);
+                    startActivityForResult(Intents.pickLocation(ChatActivity.this), REQUEST_LOCATION);
                 } else if (item.getId() == R.id.share_contact) {
                     Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
                     startActivityForResult(intent, REQUEST_CONTACT);
+                } else if (item.getId() == R.id.share_hide) {
+                    //just hide
                 }
 
                 //hide it
@@ -330,7 +356,7 @@ public class ChatActivity extends ActorEditTextActivity {
         findViewById(R.id.share_camera).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_location).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_file).setOnClickListener(shareMenuOCL);
-        //findViewById(R.id.share_hide).setOnClickListener(shareMenuOCL);
+        findViewById(R.id.share_hide).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_contact).setOnClickListener(shareMenuOCL);
 
 
@@ -779,6 +805,8 @@ public class ChatActivity extends ActorEditTextActivity {
 
                 messenger().sendContact(peer, name, phones, emails, photo != null ? (Base64.encodeToString(photo, Base64.URL_SAFE | Base64.NO_WRAP)) : null);
 
+            } else if (requestCode == REQUEST_LOCATION) {
+                messenger().sendLocation(peer, data.getDoubleExtra("longitude", 0), data.getDoubleExtra("latitude", 0), data.getStringExtra("street"), data.getStringExtra("place"));
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
