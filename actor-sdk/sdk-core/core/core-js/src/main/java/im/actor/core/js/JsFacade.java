@@ -14,6 +14,7 @@ import com.google.gwt.user.client.Event;
 import im.actor.core.*;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.entity.MentionFilterResult;
+import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
@@ -740,6 +741,34 @@ public class JsFacade implements Exportable {
                     @Override
                     public void onError(Exception e) {
                         Log.d(TAG, "editMyAbout:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise findAllText(final JsPeer peer, final String query) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.findTextMessages(peer.convert(), query).start(new CommandCallback<List<MessageSearchEntity>>() {
+                    @Override
+                    public void onResult(List<MessageSearchEntity> res) {
+                        JsArray<JsMessageSearchEntity> jsRes = JsArray.createArray().cast();
+                        for (MessageSearchEntity e : res) {
+                            jsRes.push(JsMessageSearchEntity.create(e.getRid() + "",
+                                    messenger.buildPeerInfo(Peer.user(e.getSenderId())),
+                                    messenger.getFormatter().formatDate(e.getDate()),
+                                    JsContent.createContent(e.getContent(),
+                                            e.getSenderId())));
+                        }
+                        resolve(jsRes);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "findAllText:error");
                         reject(e.getMessage());
                     }
                 });
