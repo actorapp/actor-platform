@@ -58,7 +58,7 @@ public class ContactHolder extends MessageHolder {
         }
         Drawable avatar;
         if (contact.getPhoto64() != null) {
-            byte[] decodedByte = Base64.decode(contact.getPhoto64(), Base64.URL_SAFE | Base64.NO_WRAP);
+            byte[] decodedByte = Base64.decode(contact.getPhoto64(), Base64.NO_WRAP);
             Bitmap b = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
             avatar = getRoundedBitmapDrawable(itemView.getContext(), b);
         } else {
