@@ -794,6 +794,9 @@
         }
         &__switcher {
           line-height: 32px;
+          .switch {
+            margin-top: 4px;
+          }
           .switch-label {
             cursor: pointer;
           }
