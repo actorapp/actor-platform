@@ -194,6 +194,7 @@ export const MessageContentTypes = {
   PHOTO: 'photo',
   DOCUMENT: 'document',
   VOICE: 'voice',
+  CONTACT: 'contact',
   UNSUPPORTED: 'unsupported'
 };
 

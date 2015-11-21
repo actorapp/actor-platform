@@ -3,6 +3,7 @@
  */
 
 $action-icon-size: 20px;
+$contact-avatar-size: 48px;
 $like-red: rgb(226, 38, 77);
 
 @keyframes bounceheart {
@@ -406,9 +407,10 @@ $like-red: rgb(226, 38, 77);
         }
         &__time {
           font-size: 12px;
-          line-height: 24px;
+          line-height: 22px;
           color: rgba(0, 0, 0, .2);
           display: inline-block;
+          padding-top: 2px;
           &--current {
             left: 0;
           }
@@ -434,6 +436,9 @@ $like-red: rgb(226, 38, 77);
           }
         }
       }
+    }
+    &--contact {
+      max-width: 250px;
     }
   }
 
@@ -730,4 +735,51 @@ $like-red: rgb(226, 38, 77);
   padding: 24px 32px 0 43px;
 
   color: $havelock-blue;
+}
+
+.contact {
+  border-radius: 3px;
+  //background-color: rgba(darken($body-base-color, 0), .07);
+  border: 1px solid rgba($body-base-color, .1);
+  padding: 12px;
+  width: 300px;
+
+  &__body {
+    padding-left: 8px;
+  }
+
+  &__avatar {
+    overflow: hidden;
+    width: $contact-avatar-size;
+    height: $contact-avatar-size;
+    border-radius: 50%;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  &__name {
+    line-height: 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: $greyish-brown;
+  }
+  &__emails,
+  &__phones {
+    @include no-mp();
+    li {
+      @include no-mp();
+      display: inline-block;
+      list-style: none;
+    }
+    a {
+      line-height: 18px;
+      font-size: 13px;
+      text-decoration: none;
+      color: $dark-sky-blue;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
 }
