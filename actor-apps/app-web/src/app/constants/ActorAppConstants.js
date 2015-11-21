@@ -195,6 +195,7 @@ export const MessageContentTypes = {
   DOCUMENT: 'document',
   VOICE: 'voice',
   CONTACT: 'contact',
+  LOCATION: 'location',
   UNSUPPORTED: 'unsupported'
 };
 
