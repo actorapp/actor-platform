@@ -1,4 +1,8 @@
-import React from 'react';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+import React, { Component } from 'react';
 import classNames from 'classnames';
 import { ActivityTypes } from 'constants/ActorAppConstants';
 
@@ -14,7 +18,7 @@ const getStateFromStores = () => {
   };
 };
 
-class ActivitySection extends React.Component {
+class ActivitySection extends Component {
   constructor(props) {
     super(props);
 
@@ -56,9 +60,7 @@ class ActivitySection extends React.Component {
     }
   }
 
-  onChange = () => {
-    this.setState(getStateFromStores());
-  };
+  onChange = () => this.setState(getStateFromStores());
 }
 
 export default ActivitySection;

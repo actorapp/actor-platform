@@ -23,6 +23,7 @@ import Text from './Text.react';
 import Image from './Image.react';
 import Document from './Document.react';
 import Voice from './Voice.react';
+import Contact from './Contact.react';
 import State from './State.react';
 import Reactions from './Reactions.react';
 
@@ -152,6 +153,12 @@ class MessageItem extends Component {
         messageContent = (
           <Voice content={message.content}
                     className="message__content message__content--voice"/>
+        );
+        break;
+      case MessageContentTypes.CONTACT:
+        messageContent = (
+          <Contact content={message.content}
+                    className="message__content message__content--contact"/>
         );
         break;
       default:
