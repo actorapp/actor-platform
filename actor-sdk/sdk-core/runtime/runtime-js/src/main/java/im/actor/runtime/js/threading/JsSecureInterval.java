@@ -11,12 +11,42 @@ import com.google.gwt.core.client.JavaScriptObject;
  * that work in background tabs
  */
 public class JsSecureInterval extends JavaScriptObject {
+
     public static native JsSecureInterval create(Runnable runnable)/*-{
         console.warn("Create jsSecureInverval")
         try {
             if (typeof(Worker) !== "undefined") {
-                var worker = new Worker("interval.js");
+
+                var code = "var timerId;\n" +
+                "\n" +
+                "self.addEventListener('message', function(e){\n" +
+                "    switch (e.data.message) {\n" +
+                "        case 'schedule':\n" +
+                "            if (timerId) {\n" +
+                "                clearTimeout(timerId);\n" +
+                "                timerId = null;\n" +
+                "            }\n" +
+                "            timerId = setTimeout(function(){\n" +
+                "                self.postMessage('doSchedule');\n" +
+                "            }, e.data.delay);\n" +
+                "            break;\n" +
+                "        case 'cancel':\n" +
+                "            if (timerId) {\n" +
+                "                clearTimeout(timerId);\n" +
+                "                timerId = null;\n" +
+                "            }\n" +
+                "            break;\n" +
+                "    };\n" +
+                "});\n"
+
+                var codeBlob = new Blob([code]);
+                var codeBlobURL = window.URL.createObjectURL(codeBlob);
+
+                var worker = new Worker(codeBlobURL);
                 var _runnable = runnable;
+                worker.addEventListener('error', function() {
+                    console.warn("Worker error")
+                }, false);
                 worker.onmessage = function() {
                     _runnable.@java.lang.Runnable::run()();
                 };
