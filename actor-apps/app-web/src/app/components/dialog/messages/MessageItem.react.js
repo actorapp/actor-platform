@@ -24,6 +24,7 @@ import Image from './Image.react';
 import Document from './Document.react';
 import Voice from './Voice.react';
 import Contact from './Contact.react';
+import Geolocation from './Geolocation.react';
 import State from './State.react';
 import Reactions from './Reactions.react';
 
@@ -159,6 +160,12 @@ class MessageItem extends Component {
         messageContent = (
           <Contact content={message.content}
                     className="message__content message__content--contact"/>
+        );
+        break;
+      case MessageContentTypes.LOCATION:
+        messageContent = (
+          <Geolocation content={message.content}
+                       className="message__content message__content--location"/>
         );
         break;
       default:
