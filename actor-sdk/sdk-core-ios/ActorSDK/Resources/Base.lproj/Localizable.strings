@@ -172,7 +172,7 @@
 
 "GroupMemberCallNoPhones" = "No phone number available for user.";
 
-"GroupAddParticipant" = "Add Prticipant...";
+"GroupAddParticipant" = "Add Participant...";
 
 "GroupAddParticipantTitle" = "Contacts";
 
@@ -198,7 +198,7 @@
 
 "GroupIntegrationLinkTitle" = "LINK";
 
-"GroupIntegrationLinkHint" = "You can use this link to send message from any external system.";
+"GroupIntegrationLinkHint" = "You can use this link to send a message from any external system.";
 
 "GroupIntegrationDoc" = "Open Documentation";
 
@@ -296,7 +296,7 @@
 
 "ChatSend" = "Send";
 
-"ChatNoGroupAccess" = "You is not member";
+"ChatNoGroupAccess" = "You are not a member";
 
 /*
  * Find
