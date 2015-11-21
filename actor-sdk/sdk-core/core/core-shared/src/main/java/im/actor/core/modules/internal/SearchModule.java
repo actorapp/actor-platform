@@ -38,6 +38,7 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
@@ -119,7 +120,7 @@ public class SearchModule extends AbsModule {
                         updates().executeRelatedResponse(response.getUsers(), response.getGroups(), new Runnable() {
                             @Override
                             public void run() {
-                                ArrayList<MessageSearchEntity> res = new ArrayList<MessageSearchEntity>();
+                                final ArrayList<MessageSearchEntity> res = new ArrayList<MessageSearchEntity>();
                                 for (ApiMessageSearchItem r : response.getSearchResults()) {
                                     ApiMessageSearchResult itm = r.getResult();
                                     try {
@@ -131,6 +132,12 @@ public class SearchModule extends AbsModule {
                                         e.printStackTrace();
                                     }
                                 }
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onResult(res);
+                                    }
+                                });
                             }
                         });
                     }

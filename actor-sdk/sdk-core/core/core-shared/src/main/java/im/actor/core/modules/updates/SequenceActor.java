@@ -125,7 +125,7 @@ public class SequenceActor extends ModuleActor {
                 pendingRunnables.add(after);
             }
             return;
-        } else if (u instanceof PushSeq) {
+        }  else if (u instanceof PushSeq) {
             PushSeq pushSeq = (PushSeq) u;
             if (pushSeq.seq <= this.seq) {
                 Log.d(TAG, "Ignored PushSeq {seq:" + pushSeq.seq + "}");
