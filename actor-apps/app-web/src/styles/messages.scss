@@ -305,7 +305,7 @@ $like-red: rgb(226, 38, 77);
 
           opacity: .4;
           color: white;
-          border-radius: 3px;
+          border-radius: $default-border-radius;
           background-color: rgba(black, .4);
           &:hover {
             opacity: .9;
@@ -321,124 +321,24 @@ $like-red: rgb(226, 38, 77);
     }
     &--document {
       .document {
-        line-height: 18px;
-
         min-width: 240px;
-        max-width: 100%;
-        padding: 8px 10px 8px 8px;
-
-        border-radius: 3px;
-        background-color: rgba(darken($body-base-color, 0), .07);
-
-        .col-xs {
-          overflow: hidden;
-        }
-        &__icon {
-          display: block;
-
-          width: $message-document-icon-size;
-          height: $message-document-icon-size;
-          margin-right: 8px;
-
-          text-align: center;
-
-          color: $body-base-color;
-          background-color: white;
-          box-shadow: 0 1px 3px -1px rgba($body-base-color, .2);
-          i {
-            line-height: $message-document-icon-size;
-          }
-        }
-        &__filename {
-          font-size: 14px;
-          font-weight: 500;
-          line-height: 24px;
-
-          display: block;
-
-          vertical-align: middle;
-          text-decoration: none;
-
-          color: $message-text-color;
-
-          @include text-elipsis();
-        }
-        &__meta {
-          font-size: 14px;
-          line-height: 20px;
-
-          text-transform: uppercase;
-
-          color: rgba($message-text-color, .3);
-          &__ext {
-            margin-left: 6px;
-          }
-        }
-        &__actions {
-          font-size: 14px;
-          line-height: 20px;
-          a {
-            text-decoration: none;
-
-            color: $body-base-color;
-            &:hover {
-              text-decoration: underline;
-            }
-          }
-        }
       }
     }
     &--voice {
       .voice {
         width: 300px;
-        border-radius: 3px;
-        //padding: 4px 8px 4px 4px;
-        //background-color: rgba(darken($body-base-color, 0), .07);
-        &__controls {
-          .material-icons {
-            font-size: 36px;
-            cursor: pointer;
-            color: $dark-sky-blue;
-          }
-        }
-        &__body {
-          margin-left: 8px;
-          position: relative;
-        }
-        &__time {
-          font-size: 12px;
-          line-height: 22px;
-          color: rgba(0, 0, 0, .2);
-          display: inline-block;
-          padding-top: 2px;
-          &--current {
-            left: 0;
-          }
-          &--total {
-            right: 0;
-          }
-        }
-        &__rewind {
-          height: 6px;
-          overflow: hidden;
-          width: 100%;
-          position: relative;
-          border-radius: 3px;
-          cursor: pointer;
-          background-color: rgba(0, 0, 0, .1);
-          .played {
-            top: 0;
-            left: 0;
-            bottom: 0;
-            position: absolute;
-            background-color: $dark-sky-blue;
-            transition: width 100ms ease-in;
-          }
-        }
       }
     }
     &--contact {
-      max-width: 250px;
+      .contact {
+        min-width: 300px;
+      }
+
+    }
+    &--location {
+      .location {
+        max-width: 300px;
+      }
     }
   }
 
@@ -635,7 +535,7 @@ $like-red: rgb(226, 38, 77);
       .dropdown__button {
         opacity: 1 !important;
         .icon {
-          transform: rotate(0);
+          transform: rotate(0deg);
 
           color: $dark-sky-blue;
 
@@ -737,8 +637,121 @@ $like-red: rgb(226, 38, 77);
   color: $havelock-blue;
 }
 
+.document {
+  line-height: 18px;
+
+  max-width: 100%;
+  padding: 8px 10px 8px 8px;
+
+  border-radius: $default-border-radius;
+  background-color: rgba(darken($body-base-color, 0), .07);
+
+  .col-xs {
+    overflow: hidden;
+  }
+  &__icon {
+    display: block;
+
+    width: $message-document-icon-size;
+    height: $message-document-icon-size;
+    margin-right: 8px;
+
+    text-align: center;
+
+    color: $body-base-color;
+    background-color: white;
+    box-shadow: 0 1px 3px -1px rgba($body-base-color, .2);
+    i {
+      line-height: $message-document-icon-size;
+    }
+  }
+  &__filename {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+
+    display: block;
+
+    vertical-align: middle;
+    text-decoration: none;
+
+    color: $message-text-color;
+
+    @include text-elipsis();
+  }
+  &__meta {
+    font-size: 14px;
+    line-height: 20px;
+
+    text-transform: uppercase;
+
+    color: rgba($message-text-color, .3);
+    &__ext {
+      margin-left: 6px;
+    }
+  }
+  &__actions {
+    font-size: 14px;
+    line-height: 20px;
+    a {
+      text-decoration: none;
+
+      color: $body-base-color;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.voice {
+  border-radius: $default-border-radius;
+  margin-bottom: 8px;
+  &__controls {
+    .material-icons {
+      font-size: 36px;
+      cursor: pointer;
+      color: $dark-sky-blue;
+    }
+  }
+  &__body {
+    margin-left: 8px;
+    position: relative;
+  }
+  &__time {
+    font-size: 12px;
+    line-height: 22px;
+    color: rgba(0, 0, 0, .2);
+    display: inline-block;
+    padding-top: 2px;
+    &--current {
+      left: 0;
+    }
+    &--total {
+      right: 0;
+    }
+  }
+  &__rewind {
+    height: 6px;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    border-radius: $default-border-radius;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, .1);
+    .played {
+      top: 0;
+      left: 0;
+      bottom: 0;
+      position: absolute;
+      background-color: $dark-sky-blue;
+      transition: width 100ms ease-in;
+    }
+  }
+}
+
 .contact {
-  border-radius: 3px;
+  border-radius: $default-border-radius;
   //background-color: rgba(darken($body-base-color, 0), .07);
   border: 1px solid rgba($body-base-color, .1);
   padding: 12px;
@@ -769,7 +782,7 @@ $like-red: rgb(226, 38, 77);
     @include no-mp();
     li {
       @include no-mp();
-      display: inline-block;
+      display: block;
       list-style: none;
     }
     a {
@@ -781,5 +794,19 @@ $like-red: rgb(226, 38, 77);
         text-decoration: underline;
       }
     }
+  }
+}
+
+.location {
+  border-radius: $default-border-radius;
+  overflow: hidden;
+  a {
+    display: block;
+    line-height: 1px;
+  }
+  img {
+    width: 300px;
+    height: 100px;
+    line-height: 1px;
   }
 }
