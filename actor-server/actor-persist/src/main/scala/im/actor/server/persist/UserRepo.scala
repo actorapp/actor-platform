@@ -44,8 +44,8 @@ object UserRepo {
 
   def idsByEmail(email: Rep[String]) =
     for {
-      emails ← UserEmailRepo.emails.filter(_.email === email)
-      users ← users.filter(_.id === emails.userId).map(_.id)
+      emails ← UserEmailRepo.emails filter (_.email.toLowerCase === email.toLowerCase)
+      users ← users filter (_.id === emails.userId) map (_.id)
     } yield users
   val idsByEmailC = Compiled(idsByEmail _)
 
