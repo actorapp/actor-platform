@@ -364,6 +364,60 @@
         {
           "type": "rpc",
           "content": {
+            "name": "StartAnonymousAuth",
+            "header": 198,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Starting Anonymous login",
+              {
+                "type": "reference",
+                "argument": "name",
+                "category": "full",
+                "description": "Name of new user"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "name"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "StartTokenAuth",
+            "header": 203,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Starting token-based login",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "full",
+                "description": "Token for authentication"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "ValidateCode",
             "header": 189,
             "response": {
@@ -395,6 +449,44 @@
                 "type": "string",
                 "id": 2,
                 "name": "code"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ValidatePassword",
+            "header": 207,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Validation of account password",
+              {
+                "type": "reference",
+                "argument": "transactionHash",
+                "category": "full",
+                "description": "Hash of transaction"
+              },
+              {
+                "type": "reference",
+                "argument": "password",
+                "category": "full",
+                "description": "Password for account"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "transactionHash"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "password"
               }
             ]
           }

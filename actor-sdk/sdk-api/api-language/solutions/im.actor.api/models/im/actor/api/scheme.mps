@@ -466,12 +466,61 @@
           <property role="2uCiSL" value="Throws when email is invalid" />
         </node>
       </node>
+      <node concept="2m6fVq" id="64HNz1Ipfm5" role="2m5mJr">
+        <property role="TrG5h" value="StartAnonymousAuth" />
+        <node concept="2m7Kf5" id="64HNz1IpiSH" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="64HNz1IpiSL" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="64HNz1Ipfm6" role="NuuwV">
+          <property role="Nu42W" value="C6" />
+        </node>
+        <node concept="2m1Rp1" id="64HNz1IphvX" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
+        </node>
+        <node concept="NXeRC" id="64HNz1Ipich" role="1GBnQ6">
+          <property role="NXePf" value="Starting Anonymous login" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IpkhH" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Name of new user" />
+          <ref role="NX6Kv" node="64HNz1IpiSH" resolve="name" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="64HNz1Ipfc1" role="2m5mJr">
+        <property role="TrG5h" value="StartTokenAuth" />
+        <node concept="2m7Kf5" id="64HNz1IplEr" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="token" />
+          <node concept="2m5ndX" id="64HNz1IplEv" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="64HNz1Ipfc2" role="NuuwV">
+          <property role="Nu42W" value="CB" />
+        </node>
+        <node concept="2m1Rp1" id="64HNz1Ipfh3" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
+        </node>
+        <node concept="NXeRC" id="64HNz1IplEy" role="1GBnQ6">
+          <property role="NXePf" value="Starting token-based login" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IplEB" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Token for authentication" />
+          <ref role="NX6Kv" node="64HNz1IplEr" resolve="token" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="3zgy61ElQmM" role="2m5mJr">
         <property role="TrG5h" value="ValidateCode" />
         <node concept="2uC4CA" id="3zgy61ElSkB" role="2uC9gA">
           <property role="2uC4DK" value="400" />
           <property role="2uC4Qe" value="UNOCCUPIED" />
           <property role="2uCiSL" value="Signup required" />
+        </node>
+        <node concept="2uC4CA" id="64HNz1Ipq9p" role="2uC9gA">
+          <property role="2uC4DK" value="401" />
+          <property role="2uC4Qe" value="PASSWORD_REQUIRED" />
+          <property role="2uCiSL" value="Password is required" />
         </node>
         <node concept="2uC4CA" id="3zgy61ElSkC" role="2uC9gA">
           <property role="2uC4DK" value="400" />
@@ -515,6 +564,38 @@
         <node concept="NX1gA" id="3zgy61ElU9E" role="1GBnQ6">
           <property role="NX6R2" value="Activation code" />
           <ref role="NX6Kv" node="3zgy61ElTeQ" resolve="code" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="64HNz1IpqV4" role="2m5mJr">
+        <property role="TrG5h" value="ValidatePassword" />
+        <node concept="2m7Kf5" id="64HNz1Ipr0o" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="transactionHash" />
+          <node concept="2m5ndX" id="64HNz1Ipr0s" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="64HNz1Ipr0v" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="password" />
+          <node concept="2m5ndX" id="64HNz1Ipr0_" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="64HNz1IpqV5" role="NuuwV">
+          <property role="Nu42W" value="CF" />
+        </node>
+        <node concept="2m1Rp1" id="64HNz1Ipr0l" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
+        </node>
+        <node concept="NXeRC" id="64HNz1Ipr0C" role="1GBnQ6">
+          <property role="NXePf" value="Validation of account password" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Ipr0H" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of transaction" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1Ipr0o" resolve="transactionHash" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Ipr0P" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Password for account" />
+          <ref role="NX6Kv" node="64HNz1Ipr0v" resolve="password" />
         </node>
       </node>
       <node concept="2m6fVq" id="3zgy61Em9Ob" role="2m5mJr">
