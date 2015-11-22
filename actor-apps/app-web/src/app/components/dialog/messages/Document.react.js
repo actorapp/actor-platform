@@ -22,9 +22,15 @@ class Document extends React.Component {
     return (
       <div className={documentClassName}>
         <div className="document row">
-          <div className="document__icon">
-            <i className="material-icons">attach_file</i>
-          </div>
+          {
+            content.isUploading
+              ? <div className="document__icon">
+                  <i className="material-icons">attach_file</i>
+                </div>
+              : <a className="document__icon" href={content.fileUrl}>
+                  <i className="material-icons">attach_file</i>
+                </a>
+          }
           <div className="col-xs">
             <span className="document__filename">{content.fileName}</span>
             <div className="document__meta">
