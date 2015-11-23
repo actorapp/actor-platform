@@ -397,6 +397,22 @@ public class JsFacade implements Exportable {
         messenger.getSharedContactList().unsubscribe(callback);
     }
 
+    // Search
+
+    public void bindSearch(JsDisplayListCallback<JsSearchEntity> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getSharedSearchList().subscribe(callback);
+    }
+
+    public void unbindSearch(JsDisplayListCallback<JsSearchEntity> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getSharedSearchList().unsubscribe(callback);
+    }
+
     // Chats
 
     public void bindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
