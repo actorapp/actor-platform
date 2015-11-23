@@ -1,13 +1,5 @@
 .activity {
-  position: relative;
-  z-index: 2;
-
-  display: none;
-
-  width: $activity-width;
-
-  background-color: $activity-background-color;
-  box-shadow: inset 1px 0 0 0 rgba(0, 0, 0, .04);
+  @include right-sidebar();
   &--shown {
     display: block;
   }
@@ -77,4 +69,3 @@
     }
   }
 }
-
