@@ -713,11 +713,6 @@ $like-red: rgb(226, 38, 77);
         color: $like-red;
       }
     }
-    &__menu {
-      display: inline-block;
-
-      vertical-align: middle;
-    }
   }
   .dropdown {
     &__button {
@@ -787,15 +782,15 @@ $like-red: rgb(226, 38, 77);
           margin-left: -28px;
         }
       }
-      &:hover {
-        .message__info .message__timestamp {
-          opacity: 1;
-        }
-        .message__actions__like,
-        .message__actions__menu .dropdown__button {
-          opacity: .7;
-        }
-      }
+    }
+  }
+  &:hover {
+    .message__info .message__timestamp {
+      opacity: 1;
+    }
+    .message__actions__like,
+    .message__actions__menu .dropdown__button {
+      opacity: .7;
     }
   }
 }
