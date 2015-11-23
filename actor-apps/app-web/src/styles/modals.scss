@@ -1,3 +1,20 @@
+@mixin modal-main() {
+  overflow: hidden;
+
+  min-width: $modal-default-width;
+  margin-top: 140px;
+
+  border-radius: $modal-default-radius;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .25);
+}
+@mixin modal-flex() {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+  align-items: center;
+}
+
 .ReactModalPortal {
   width: auto;
   height: auto;
@@ -15,13 +32,9 @@
   position: fixed;
   z-index: 100;
 
-  display: flex;
-  flex-direction: column;
-
   opacity: 0;
 
-  flex: 1;
-  align-items: center;
+  @include modal-flex();
   justify-content: flex-start;
 
   &--after-open {
@@ -39,16 +52,11 @@
 .modal-new {
   position: relative;
 
-  overflow: hidden;
-
-  min-width: $modal-default-width;
-  margin-top: 140px;
-
   color: $modal-text-color;
-  border-radius: $modal-default-radius;
   outline: none;
   background-color: $modal-default-background;
-  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .25);
+
+  @include modal-main();
 
   &__header {
     position: relative;
@@ -165,6 +173,7 @@
     padding: 16px;
 
     background-color: white;
+
     @include clearfix();
   }
 
@@ -200,81 +209,6 @@
     .col-xs {
       padding: 0 16px 16px;
     }
-    .profile-picture {
-      padding: 16px;
-      &__controls {
-        a {
-          font-size: 13px;
-          font-weight: 500;
-
-          cursor: pointer;
-
-          color: $dark-sky-blue;
-        }
-      }
-      &__changer {
-        position: relative;
-
-        margin-bottom: 8px;
-
-        border-radius: 50%;
-        .avatar {
-          position: relative;
-          z-index: 0;
-          //transition: 200ms;
-        }
-        a {
-          font-size: 11px;
-          font-weight: 700;
-
-          position: absolute;
-          z-index: 1;
-          top: 0;
-          left: 0;
-
-          display: block;
-
-          box-sizing: border-box;
-          width: 100%;
-          height: 100%;
-          margin-bottom: 8px;
-          padding-top: 50px;
-
-          cursor: pointer;
-          //transition: 200ms;
-          text-transform: uppercase;
-
-          color: white;
-          border-radius: 50%;
-          text-shadow: 0 0 4px rgba(black, .7);
-          span {
-            display: block;
-
-            padding: 0 16px;
-
-            opacity: 0;
-            //transition: 200ms;
-            //transform: translateY(-5px);
-          }
-        }
-
-        &:hover {
-          .avatar {
-            opacity: .5;
-          }
-          a {
-            background-color: rgba(0, 0, 0, .1);
-            //box-shadow: inset 0 0 64px 8px rgba(0, 0, 0, .4);
-            span {
-              transform: translateY(0);
-
-              opacity: 1;
-            }
-          }
-        }
-      }
-    }
-
     footer {
       padding: 0 16px 16px;
     }
@@ -413,25 +347,9 @@
       padding: 18px;
 
       color: $greyish-brown;
-      .invite-url {
-        font-size: 15px;
-        line-height: 20px;
-
-        display: block;
-
-        box-sizing: border-box;
-        width: 100%;
+      .textarea {
         height: 58px;
         margin-top: 18px;
-        padding: 8px 11px;
-
-        resize: none;
-        cursor: pointer;
-        word-break: break-all;
-
-        color: $greyish-brown;
-        border: 1px solid $light-grey-blue;
-        border-radius: 3px;
       }
     }
     .modal-new__footer {
@@ -609,80 +527,6 @@
       .col-xs {
         padding: 0 16px 16px;
       }
-      .profile-picture {
-        padding: 16px;
-        &__controls {
-          a {
-            font-size: 13px;
-            font-weight: 500;
-
-            cursor: pointer;
-
-            color: $dark-sky-blue;
-          }
-        }
-        &__changer {
-          position: relative;
-
-          margin-bottom: 8px;
-
-          border-radius: 50%;
-          .avatar {
-            position: relative;
-            z-index: 0;
-            //transition: 200ms;
-          }
-          a {
-            font-size: 11px;
-            font-weight: 700;
-
-            position: absolute;
-            z-index: 1;
-            top: 0;
-            left: 0;
-
-            display: block;
-
-            box-sizing: border-box;
-            width: 100%;
-            height: 100%;
-            margin-bottom: 8px;
-            padding-top: 50px;
-
-            cursor: pointer;
-            //transition: 200ms;
-            text-transform: uppercase;
-
-            color: white;
-            border-radius: 50%;
-            text-shadow: 0 0 4px rgba(black, .7);
-            span {
-              display: block;
-
-              padding: 0 16px;
-
-              opacity: 0;
-              //transition: 200ms;
-              //transform: translateY(-5px);
-            }
-          }
-
-          &:hover {
-            .avatar {
-              opacity: .5;
-            }
-            a {
-              background-color: rgba(0, 0, 0, .1);
-              //box-shadow: inset 0 0 64px 8px rgba(0, 0, 0, .4);
-              span {
-                transform: translateY(0);
-
-                opacity: 1;
-              }
-            }
-          }
-        }
-      }
     }
     .about {
       label {
@@ -699,7 +543,7 @@
   &--profile-picture {
     max-width: 90%;
     max-height: 90%;
-    margin-top: 0;
+    margin-top: 64px;
     .modal-new__body {
       line-height: 1px;
 
@@ -716,17 +560,21 @@
       &__list {
         &__item {
           &:hover {
-            cursor: pointer;
-            background-color: $dark-sky-blue;
-            color: white;
             font-weight: 500;
+
+            cursor: pointer;
+
+            color: white;
+            background-color: $dark-sky-blue;
           }
           &--empty {
-            cursor: default !important;
-            color: $dove-gray !important;
-            background-color: white !important;
             font-weight: 400 !important;
             line-height: 32px !important;
+
+            cursor: default !important;
+
+            color: $dove-gray !important;
+            background-color: white !important;
           }
         }
       }
@@ -734,13 +582,15 @@
   }
   &--attachments {
     .modal-new__header {
-      box-shadow: none;
       height: auto;
       padding: 16px;
+
+      box-shadow: none;
       &__title {
         font-size: 20px;
-        line-height: 36px;
         font-weight: 500;
+        line-height: 36px;
+
         color: $modal-text-color;
       }
       .button {
@@ -766,21 +616,24 @@
       // }
 
       &__preview {
-        text-align: center;
-        max-height: 240px;
         min-height: 180px;
+        max-height: 240px;
+
+        text-align: center;
         img {
-          max-height: 240px;
           max-width: 100%;
+          max-height: 240px;
+
           box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .2);
         }
       }
       &__meta {
         margin-bottom: 8px;
         &__title {
-          color: $greyish;
           font-size: 14px;
           line-height: 18px;
+
+          color: $greyish;
         }
         &__content {
           line-height: 32px;
@@ -788,9 +641,10 @@
       }
       &__extra {
         &__title {
-          color: $greyish;
           font-size: 14px;
           line-height: 18px;
+
+          color: $greyish;
         }
         &__switcher {
           line-height: 32px;
@@ -805,24 +659,106 @@
     }
     .pagination {
       display: inline-block;
+
       user-select: none;
       &__control {
-        cursor: pointer;
         display: inline-block;
+
+        cursor: pointer;
+
         color: $greyish;
         &:hover {
           color: rgba(0, 0, 0, .5);
         }
         &--disabled {
-          color: rgba(0, 0, 0, .1) !important;
           cursor: default;
+
+          color: rgba(0, 0, 0, .1) !important;
         }
       }
       &__pager {
-        display: inline-block;
         line-height: 24px;
+
+        display: inline-block;
+
         padding: 0 6px;
+
         vertical-align: middle;
+      }
+    }
+  }
+
+  .profile-picture {
+    padding: 16px;
+    &__controls {
+      a {
+        font-size: 13px;
+        font-weight: 500;
+
+        cursor: pointer;
+
+        color: $dark-sky-blue;
+      }
+    }
+    &__changer {
+      position: relative;
+
+      margin-bottom: 8px;
+
+      border-radius: 50%;
+      .avatar {
+        position: relative;
+        z-index: 0;
+        //transition: 200ms;
+      }
+      a {
+        font-size: 11px;
+        font-weight: 700;
+
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 0;
+
+        display: block;
+
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        margin-bottom: 8px;
+        padding-top: 50px;
+
+        cursor: pointer;
+        //transition: 200ms;
+        text-transform: uppercase;
+
+        color: white;
+        border-radius: 50%;
+        text-shadow: 0 0 4px rgba(black, .7);
+        span {
+          display: block;
+
+          padding: 0 16px;
+
+          opacity: 0;
+          //transition: 200ms;
+          //transform: translateY(-5px);
+        }
+      }
+
+      &:hover {
+        .avatar {
+          opacity: .5;
+        }
+        a {
+          background-color: rgba(0, 0, 0, .1);
+          //box-shadow: inset 0 0 64px 8px rgba(0, 0, 0, .4);
+          span {
+            transform: translateY(0);
+
+            opacity: 1;
+          }
+        }
       }
     }
   }
@@ -887,6 +823,7 @@
       }
       &--empty {
         line-height: 32px;
+
         color: $dove-gray;
       }
     }
@@ -895,31 +832,15 @@
 
 // Confirm modal
 .modal-backdrop {
-  position: fixed;
-  z-index: 1000;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-
-  display: flex;
-  flex-direction: column;
-
   background-color: $modal-backdrop-color;
 
-  flex: 1;
-  align-items: center;
+  @include overlay();
+  @include modal-flex();
   justify-content: center;
 }
 
 .modal {
-  overflow: hidden;
-
-  min-width: $modal-default-width;
-  margin-top: 140px;
-
-  border-radius: $modal-default-radius;
-  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .25);
+  @include modal-main();
 
   &__header {
     position: relative;
@@ -1028,7 +949,6 @@
       padding: 0;
       &__item {
         line-height: 32px;
-        color: $mine-shaft;
 
         box-sizing: border-box;
         margin: 0;
@@ -1037,6 +957,8 @@
         list-style: none;
 
         cursor: pointer;
+
+        color: $mine-shaft;
         .avatar {
           margin-right: 12px;
           .avatar__placeholder {
@@ -1046,6 +968,7 @@
         .title {
           font-size: 15px;
           line-height: 32px;
+
           display: inline-block;
 
           user-select: none;
@@ -1055,8 +978,10 @@
         }
         .hint {
           font-size: 13px;
-          display: none;
           line-height: 32px;
+
+          display: none;
+
           text-align: right;
           vertical-align: middle;
         }
@@ -1067,18 +992,22 @@
           background-color: $dark-sky-blue;
           text-shadow: 0 1px 1px darken($dark-sky-blue, 10);
           .hint {
-            opacity: .7;
             display: inline-block;
+
+            opacity: .7;
           }
         }
         &--suggestion {
-          display: block;
-          cursor: default !important;
           font-weight: 400 !important;
+
+          display: block;
+
+          cursor: default !important;
+          text-align: center;
+
           color: $dove-gray !important;
           background-color: white !important;
           text-shadow: none !important;
-          text-align: center;
           & > span {
             display: block;
           }
@@ -1191,63 +1120,73 @@
 
 .modal-wrapper {
   position: fixed;
+  z-index: 1000;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  min-width: 650px;
-  min-height: 400px;
-
-  z-index: 1000;
-  background-color: white;
   //opacity: 0;
   //transform: translateY(50px);
   //transition: 0s;
   //visibility: hidden;
   //pointer-events: none;
+
   display: none;
+
+  background-color: white;
+
+  @include app-sizes();
   &__close {
     position: absolute;
     top: 32px;
     right: 32px;
-    border-radius: 50%;
-    height: 48px;
+
     width: 48px;
-    color: rgba(black, .3);
+    height: 48px;
+
     cursor: pointer;
-    text-align: center;
     transition: background 100ms;
+    text-align: center;
+
+    color: rgba(black, .3);
+    border-radius: 50%;
     .close_icon {
       font-size: 32px;
       line-height: 48px;
-      transition: transform 100ms;
+
       z-index: 1010;
+
+      transition: transform 100ms;
     }
     .text {
-      pointer-events: none;
-      position: absolute;
-      right: 58px;
-      top: 14px;
       line-height: 20px;
-      transition: 120ms;
+
+      position: absolute;
       z-index: 1050;
+      top: 14px;
+      right: 58px;
+
+      transition: 120ms;
       transform: translateX(30px);
+      pointer-events: none;
+
       opacity: 0;
     }
     &:hover {
       background-color: rgba(black, .05);
       .text {
         transform: translateX(0);
+
         opacity: 1;
       }
       .close_icon {
         transform: rotate(90deg);
+
         color: rgba(black, .5);
       }
     }
   }
   &--opened {
     display: flex;
+
     align-items: center;
     justify-content: center;
     //transition: 150ms;
@@ -1258,45 +1197,54 @@
 }
 
 .newmodal {
+  position: relative;
+
   width: 500px;
   height: 100%;
-  position: relative;
   &__header {
-    height: 150px;
     box-sizing: border-box;
+    height: 150px;
     padding-top: 100px;
     h2 {
+      font-size: 40px;
+      line-height: 50px;
+
       margin: 0;
       padding: 0;
-      line-height: 50px;
-      font-size: 40px;
+
       color: $dove-gray;
     }
   }
   &__search {
-    margin-top: 32px;
     position: relative;
+
+    margin-top: 32px;
     &__input {
-      box-sizing: border-box !important;
       font-size: 20px;
-      padding: 8px 16px;
-      border-radius: 2px;
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, .12);
       line-height: 32px;
-      border: none;
+
+      box-sizing: border-box !important;
       width: 100%;
+      padding: 8px 16px;
+
+      border: none;
+      border-radius: 2px;
       outline: none;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .12);
+
       @include placeholder($greyish);
     }
   }
   &__result {
     position: absolute;
-    width: 100%;
     top: 262px;
     bottom: 0;
-    margin: 0;
+
     overflow-x: hidden;
     overflow-y: auto;
+
+    width: 100%;
+    margin: 0;
     padding: 0 0 32px;
   }
   &__contacts {
@@ -1304,11 +1252,13 @@
       &__item {
         list-style: none;
         &:hover {
+          font-weight: 500;
+
           cursor: pointer;
+
+          color: white;
           border-radius: 2px;
           background: rgba($dark-sky-blue, 1);
-          color: white;
-          font-weight: 500;
         }
         .title {
           line-height: 44px;
@@ -1319,19 +1269,22 @@
   &__groups {
     .group__list {
       &__item {
-        list-style: none;
         padding: 8px 16px;
+
+        list-style: none;
+
         box-shadow: inset 0 1px 0 0 rgba(0, 0, 0, .075);
         &:first-child {
           box-shadow: none;
         }
         &:hover {
           cursor: pointer;
+
+          color: white;
           border-radius: 3px;
           background: rgba($dark-sky-blue, 1);
-          color: white;
-          text-shadow: 0 1px 1px rgb(34, 117, 215);
           box-shadow: none;
+          text-shadow: 0 1px 1px rgb(34, 117, 215);
           //font-weight: 500;
 
           .join-status {
@@ -1346,8 +1299,9 @@
               color: white !important;
             }
             .icon {
-              fill: white !important;
               color: white !important;
+
+              fill: white !important;
             }
           }
         }
@@ -1360,17 +1314,22 @@
         .meta {
           line-height: 44px;
           .title {
-            line-height: 24px;
-            display: inline-block;
-            color: rgba(0, 0, 0, .6);
             font-weight: 500;
+            line-height: 24px;
+
+            display: inline-block;
+
+            color: rgba(0, 0, 0, .6);
           }
           .join-status {
-            font-weight: 500;
-            margin-left: 6px;
             font-size: 11px;
-            color: rgba(0, 0, 0, .2);
+            font-weight: 500;
+
+            margin-left: 6px;
+
             text-transform: uppercase;
+
+            color: rgba(0, 0, 0, .2);
           }
           .description {
             display: none;
@@ -1381,21 +1340,27 @@
           .members {
             margin-top: 12px;
             span {
-              color: $dark-sky-blue;
-              line-height: 20px;
               font-size: 18px;
+              line-height: 20px;
+
+              display: inline-block;
               //font-weight: 500;
+
               min-width: 20px;
               margin-left: 4px;
-              display: inline-block;
+
               text-align: left;
               vertical-align: middle;
+
+              color: $dark-sky-blue;
             }
             .icon {
-              //margin-top: -2px;
-              vertical-align: middle;
               width: 20px;
               height: 20px;
+              //margin-top: -2px;
+
+              vertical-align: middle;
+
               fill: $dark-sky-blue;
             }
           }
