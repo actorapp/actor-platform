@@ -226,6 +226,12 @@
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
         <activity
+            android:name=".controllers.fragment.settings.PickWallpaperActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name="im.actor.sdk.controllers.fragment.settings.EditAboutActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
