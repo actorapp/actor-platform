@@ -110,6 +110,7 @@ public class ActorStyle {
     private int convMediaStateReadColor = Color.parseColor("#ff7ea8ef");
     private int convMediaStateErrorColor = Color.parseColor("#ffed534b");
     private int convMediaStateWarrningColor = Color.parseColor("#ffed534b");
+    private int convLikeColor = Color.parseColor("#e2264d");
 
     public int getMainColor() {
         return mainColor;
@@ -855,5 +856,13 @@ public class ActorStyle {
 
     public void setGroupOnlineColor(int groupOnlineColor) {
         this.groupOnlineColor = groupOnlineColor;
+    }
+
+    public int getConvLikeColor() {
+        return convLikeColor;
+    }
+
+    public void setConvLikeColor(int convLikeColor) {
+        this.convLikeColor = convLikeColor;
     }
 }

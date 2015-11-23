@@ -1,7 +1,11 @@
 package im.actor.sdk.controllers.conversation.messages;
 
 import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Reaction;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Strings;
@@ -43,6 +48,7 @@ public class TextHolder extends MessageHolder {
         time = (TextView) itemView.findViewById(R.id.tv_time);
         ActorSDK.sharedActor().style.getConvTimeColor();
         time.setTypeface(Fonts.regular());
+        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
         status = (TintImageView) itemView.findViewById(R.id.stateIcon);
 
         waitColor = ActorSDK.sharedActor().style.getConvStatePendingColor();
@@ -123,7 +129,30 @@ public class TextHolder extends MessageHolder {
             status.setVisibility(View.GONE);
         }
 
-        time.setText(Strings.formatTime(message.getDate()));
+        boolean hasReactions = message.getReactions() != null && message.getReactions().size() > 0;
+        Spannable timeWithReactions = null;
+        if (hasReactions) {
+
+            SpannableStringBuilder builder = new SpannableStringBuilder();
+            SpannableString s;
+            boolean hasMyReaction = false;
+            for (Reaction r : message.getReactions()) {
+                s = new SpannableString(Integer.toString(r.getUids().size()).concat(r.getCode()).concat("  "));
+                for (Integer uid : r.getUids()) {
+                    if (uid == myUid()) {
+                        hasMyReaction = true;
+                        break;
+                    }
+                }
+                s.setSpan(new ForegroundColorSpan(hasMyReaction ? ActorSDK.sharedActor().style.getConvLikeColor() : ActorSDK.sharedActor().style.getConvTimeColor()), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                builder.append(s);
+
+            }
+            timeWithReactions = builder.append(Strings.formatTime(message.getDate()));
+        }
+        time.setText(hasReactions ? timeWithReactions : Strings.formatTime(message.getDate()));
+
+
     }
 
     class CustomLinkMovementMethod extends LinkMovementMethod {
