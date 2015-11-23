@@ -22,6 +22,7 @@
 
     <string name="toast_no_sdcard">No SD Card</string>
     <string name="toast_phone_copied">Phone number copied to pastebin</string>
+    <string name="toast_email_copied">Email copied to pastebin</string>
     <string name="toast_messages_copied">Messages copied to pastebin</string>
     <string name="toast_unable_kick">Unable to remove member from group</string>
     <string name="toast_unable_add">Unable to add user to group</string>
@@ -161,6 +162,7 @@
 
     <!-- Profile controls -->
     <string name="phone_menu_call">Call {0}</string>
+    <string name="email_menu_email">Email {0}</string>
     <string name="phone_menu_sms">SMS {0}</string>
     <string name="phone_menu_share">Share {0}</string>
     <string name="phone_menu_copy">Copy</string>
