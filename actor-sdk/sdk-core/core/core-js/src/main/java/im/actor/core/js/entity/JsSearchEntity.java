@@ -17,6 +17,7 @@ public class JsSearchEntity extends JavaScriptObject {
     };
 
     public static native JsSearchEntity create(JsPeerInfo peerInfo)/*-{
+        return {peerInfo: peerInfo};
     }-*/;
 
     protected JsSearchEntity() {
