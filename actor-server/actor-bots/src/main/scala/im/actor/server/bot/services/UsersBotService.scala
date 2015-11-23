@@ -1,13 +1,13 @@
 package im.actor.server.bot.services
 
 import akka.actor.ActorSystem
-import im.actor.api.rpc.RpcError
+import cats.data.Xor
 import im.actor.bots.BotMessages.BotError
 import im.actor.concurrent.FutureResultCats
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ S3StorageExtension, FileStorageAdapter }
-import im.actor.server.user.UserUtils
+import im.actor.server.user.{ UserErrors, UserUtils }
 
 private[bot] final class UsersBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResultCats[BotError] with ApiToBotConversions {
   import im.actor.bots.BotMessages._
@@ -31,7 +31,10 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
       ifIsAdmin(botUserId) {
         (for {
           _ ← fromFuture(userExt.changeName(userId, name))
-        } yield Void).value
+        } yield Void).value recover {
+          case UserErrors.InvalidNickname ⇒ Xor.left(BotError(400, "INVALID_USERNAME"))
+          case UserErrors.NicknameTaken   ⇒ Xor.left(BotError(400, "USERNAME_TAKEN"))
+        }
       }
   }
 
