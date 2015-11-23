@@ -91,18 +91,12 @@ class ProfileServiceImpl()(
 
   def jhandleEditNickName(nickname: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
-      val action = for {
-        trimmed ← point(nickname.map(_.trim))
-        _ ← fromBoolean(ProfileErrors.NicknameInvalid)(trimmed.map(StringUtils.validNickName).getOrElse(true))
-        _ ← if (trimmed.isDefined) {
-          for {
-            checkExist ← fromOption(ProfileErrors.NicknameInvalid)(trimmed)
-            _ ← fromFutureBoolean(ProfileErrors.NicknameBusy)(db.run(persist.UserRepo.nicknameExists(checkExist).map(exist ⇒ !exist)))
-          } yield ()
-        } else point(())
-        SeqState(seq, state) ← fromFuture(userExt.changeNickname(client.userId, trimmed))
-      } yield ResponseSeq(seq, state.toByteArray)
-      action.run
+      for {
+        SeqState(seq, state) ← userExt.changeNickname(client.userId, nickname)
+      } yield Ok(ResponseSeq(seq, state.toByteArray))
+    } recover {
+      case UserErrors.NicknameTaken   ⇒ Error(ProfileErrors.NicknameBusy)
+      case UserErrors.InvalidNickname ⇒ Error(ProfileErrors.NicknameInvalid)
     }
   }
 
