@@ -293,21 +293,6 @@
 }
 
 .textarea {
-  font-size: 15px;
-  line-height: 20px;
-
-  display: block;
-
-  box-sizing: border-box;
-  width: 100%;
+  @include textarea();
   height: 56px;
-  padding: 8px;
-
-  resize: none;
-  cursor: pointer;
-  word-break: break-all;
-
-  color: #4d4d4d;
-  border: 1px solid $light-grey-blue;
-  border-radius: 3px;
 }
