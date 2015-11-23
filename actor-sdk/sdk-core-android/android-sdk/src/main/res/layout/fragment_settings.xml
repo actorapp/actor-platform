@@ -186,7 +186,7 @@
 
                             <View
                                 android:layout_width="72dp"
-                                android:layout_height="200dp"
+                                android:layout_height="90dp"
                                 android:background="@android:color/transparent" />
 
 
