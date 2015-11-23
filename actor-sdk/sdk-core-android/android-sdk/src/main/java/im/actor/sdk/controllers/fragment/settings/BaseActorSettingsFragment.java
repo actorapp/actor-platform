@@ -32,8 +32,10 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.UserEmail;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.core.viewmodel.generics.ArrayListUserEmail;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
@@ -60,6 +62,8 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
     private CoverAvatarView avatarView;
     SharedPreferences shp;
     SharedPreferences.Editor ed;
+    private boolean noPhones = false;
+    private boolean noEmails = false;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -101,8 +105,10 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             public void onChanged(final String val, Value<String> Value) {
                 final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
                 recordView.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
-                TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
-                tintImageView.setVisibility(View.INVISIBLE);
+                TintImageView nickIcon = (TintImageView) recordView.findViewById(R.id.recordIcon);
+                nickIcon.setTint(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
+                nickIcon.setResource(R.drawable.ic_star_white_36dp);
+
                 String value = (val != null && !val.isEmpty()) ? val : getString(R.string.nickname_empty);
                 String title = getString(R.string.nickname);
 
@@ -126,7 +132,9 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         });
 
         final TextView aboutTitle = (TextView) about.findViewById(R.id.value);
-        about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
+        TintImageView aboutIcon = (TintImageView) about.findViewById(R.id.recordIcon);
+        aboutIcon.setTint(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
+        aboutIcon.setResource(R.drawable.ic_editor_format_quote_36dp);
         TextView aboutValue = (TextView) about.findViewById(R.id.title);
         aboutTitle.setTextColor(style.getTextPrimaryColor());
         aboutValue.setTextColor(style.getTextSecondaryColor());
@@ -155,8 +163,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             @Override
             public void onChanged(ArrayListUserPhone val, Value<ArrayListUserPhone> Value) {
                 if (val.size() == 0) {
-                    contactsContainer.setVisibility(View.GONE);
-                    about.findViewById(R.id.divider).setVisibility(View.INVISIBLE);
+                    noPhones = true;
                 } else {
                     contactsContainer.setVisibility(View.VISIBLE);
                     for (int i = 0; i < val.size(); i++) {
@@ -172,10 +179,10 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                         }
 
                         View divider = recordView.findViewById(R.id.divider);
-                        if (i != val.size() - 1) {
-                            divider.setVisibility(View.VISIBLE);
-                        } else {
+                        if (i == val.size() - 1 && (userModel.getEmails().get() == null || userModel.getEmails().get().isEmpty())) {
                             divider.setVisibility(View.GONE);
+                        } else {
+                            divider.setVisibility(View.VISIBLE);
                         }
                         divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
@@ -250,6 +257,90 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                 }
             }
         });
+
+        bind(userModel.getEmails(), new ValueChangedListener<ArrayListUserEmail>() {
+            @Override
+            public void onChanged(ArrayListUserEmail val, Value<ArrayListUserEmail> Value) {
+                if (val.size() == 0) {
+                    noEmails = true;
+                } else {
+                    contactsContainer.setVisibility(View.VISIBLE);
+                    for (int i = 0; i < val.size(); i++) {
+                        final UserEmail record = val.get(i);
+                        View recordView = inflater.inflate(R.layout.contact_record, contactsContainer, false);
+                        TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
+                        tintImageView.setTint(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
+                        if (i == 0) {
+                            tintImageView.setResource(R.drawable.ic_email_white_36dp);
+                            tintImageView.setVisibility(View.VISIBLE);
+                        } else {
+                            tintImageView.setVisibility(View.INVISIBLE);
+                        }
+
+                        View divider = recordView.findViewById(R.id.divider);
+                        if (i != val.size() - 1) {
+                            divider.setVisibility(View.VISIBLE);
+                        } else {
+                            divider.setVisibility(View.GONE);
+                        }
+                        divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+
+                        final String email = record.getEmail();
+
+                        TextView value = (TextView) recordView.findViewById(R.id.value);
+                        value.setTextColor(style.getTextPrimaryColor());
+                        value.setText(email);
+                        TextView title = (TextView) recordView.findViewById(R.id.title);
+                        title.setTextColor(style.getTextSecondaryColor());
+                        title.setText(record.getTitle());
+                        contactsContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                Screen.dp(72)));
+
+                        recordView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                new AlertDialog.Builder(getActivity())
+                                        .setItems(new CharSequence[]{
+                                                getString(R.string.email_menu_email).replace("{0}", email),
+                                                getString(R.string.phone_menu_copy)
+                                        }, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if (which == 0) {
+                                                    startActivity(new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", record.getEmail(), null)));
+                                                } else if (which == 1) {
+                                                    ClipboardManager clipboard =
+                                                            (ClipboardManager) getActivity()
+                                                                    .getSystemService(Context.CLIPBOARD_SERVICE);
+                                                    ClipData clip = ClipData.newPlainText("Email", email);
+                                                    clipboard.setPrimaryClip(clip);
+                                                    Toast.makeText(getActivity(), R.string.toast_email_copied, Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        })
+                                        .show()
+                                        .setCanceledOnTouchOutside(true);
+                            }
+                        });
+                        recordView.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("Email", "+" + record.getEmail());
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(getActivity(), R.string.toast_email_copied, Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        if (noEmails && noPhones) {
+            contactsContainer.setVisibility(View.GONE);
+            about.findViewById(R.id.divider).setVisibility(View.INVISIBLE);
+        }
 
         view.findViewById(R.id.chatSettings).setOnClickListener(new View.OnClickListener() {
             @Override
