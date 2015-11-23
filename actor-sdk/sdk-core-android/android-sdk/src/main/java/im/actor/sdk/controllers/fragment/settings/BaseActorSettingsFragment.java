@@ -360,43 +360,44 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         bind(avatarView, users().get(myUid()).getAvatar());
 
         //Wallpaper
-        int selectedWallpaper = shp.getInt("wallpaper", 0);
         LinearLayout wallpaperContainer = (LinearLayout) view.findViewById(R.id.background_container);
         wallpaperContainer.setBackgroundColor(style.getMainBackgroundColor());
         ((TextView) view.findViewById(R.id.settings_wallpaper_title)).setTextColor(style.getSettingsCategoryTextColor());
         view.findViewById(R.id.wallpaperDivider).setBackgroundColor(style.getBackyardBackgroundColor());
-        final View[] elevated = new View[]{null};
         View.OnClickListener ocl = new View.OnClickListener() {
 
             @Override
             public void onClick(final View v) {
-                if (v != elevated[0]) {
-                    if (elevated[0] != null) {
-                        demoteView(elevated[0]);
-                    }
-                    elevated[0] = v;
-                    elevateView(v);
-                    ed.putInt("wallpaper", (Integer) v.getTag());
-                    ed.commit();
+                Intent i = new Intent(getActivity(), PickWallpaperActivity.class);
+                int j = 0;
+                Object tag = v.getTag();
+                if (tag != null && tag instanceof Integer) {
+                    j = (int) tag;
                 }
+                i.putExtra("EXTRA_ID", j);
+                startActivity(i);
             }
         };
-        for (int i = 0; i < 4; i++) {
+        int previewSize = 80;
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Screen.dp(previewSize), Screen.dp(previewSize));
+        for (int i = 0; i < 3; i++) {
             FrameLayout frame = new FrameLayout(getActivity());
             BackgroundPreviewView bckgrnd = new BackgroundPreviewView(getActivity());
-            bckgrnd.init(Screen.dp(100), Screen.dp(200));
+            bckgrnd.init(Screen.dp(previewSize), Screen.dp(previewSize));
             bckgrnd.bind(i);
-            bckgrnd.setPadding(Screen.dp(5), Screen.dp(10), Screen.dp(5), Screen.dp(20));
+            //bckgrnd.setPadding(Screen.dp(5), Screen.dp(10), Screen.dp(5), Screen.dp(20));
             frame.setTag(i);
             frame.setOnClickListener(ocl);
             frame.addView(bckgrnd);
-            wallpaperContainer.addView(frame, new LinearLayout.LayoutParams(Screen.dp(100), Screen.dp(200)));
+            wallpaperContainer.addView(frame, params);
 
-            if (i == selectedWallpaper) {
-                elevateView(frame, false);
-                elevated[0] = frame;
-            }
         }
+        TintImageView next = new TintImageView(getActivity());
+        next.setResource(R.drawable.ic_keyboard_arrow_right_white_36dp);
+        next.setTint(style.getSettingsIconColor());
+        next.setOnClickListener(ocl);
+        next.setTag(-1);
+        wallpaperContainer.addView(next, new LinearLayout.LayoutParams(Screen.dp(40), Screen.dp(previewSize)));
 
         view.findViewById(R.id.avatar).setOnClickListener(new View.OnClickListener() {
             @Override
