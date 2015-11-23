@@ -16,9 +16,11 @@ import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
+import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.js.entity.JsCounter;
 import im.actor.core.js.entity.JsDialogGroup;
+import im.actor.core.js.entity.JsSearchEntity;
 import im.actor.core.js.modules.JsFilesModule;
 import im.actor.core.js.modules.JsBindingModule;
 import im.actor.core.js.modules.JsBindedValue;
@@ -210,6 +212,10 @@ public class JsMessenger extends Messenger {
 
     public JsDisplayList<JsContact, Contact> getSharedContactList() {
         return jsBindingModule.getSharedContactList();
+    }
+
+    public JsDisplayList<JsSearchEntity, SearchEntity> getSharedSearchList() {
+        return jsBindingModule.getSharedSearchList();
     }
 
     public JsDisplayList<JsMessage, Message> getSharedChatList(Peer peer) {

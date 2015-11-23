@@ -15,6 +15,7 @@ import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
+import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.js.JsMessenger;
@@ -26,6 +27,7 @@ import im.actor.core.js.entity.JsDialogShort;
 import im.actor.core.js.entity.JsGroup;
 import im.actor.core.js.entity.JsMessage;
 import im.actor.core.js.entity.JsPeerInfo;
+import im.actor.core.js.entity.JsSearchEntity;
 import im.actor.core.js.entity.JsTyping;
 import im.actor.core.js.entity.JsUser;
 import im.actor.core.modules.AbsModule;
@@ -55,6 +57,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     private JsDisplayList<JsDialog, Dialog> dialogsList;
     private JsDisplayList<JsContact, Contact> contactsList;
+    private JsDisplayList<JsSearchEntity, SearchEntity> searchList;
     private HashMap<Peer, JsDisplayList<JsMessage, Message>> messageLists = new HashMap<Peer, JsDisplayList<JsMessage, Message>>();
 
     private JsBindedValue<JsCounter> globalCounter;
@@ -239,6 +242,13 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             }
         }
         return typing.get(peer);
+    }
+
+    public JsDisplayList<JsSearchEntity, SearchEntity> getSharedSearchList() {
+        if (searchList == null) {
+            searchList = (JsDisplayList<JsSearchEntity, SearchEntity>) context().getDisplayListsModule().buildSearchList(true);
+        }
+        return searchList;
     }
 
     public JsDisplayList<JsContact, Contact> getSharedContactList() {
