@@ -24,6 +24,7 @@ import im.actor.server.sequence.{ PushRules, SequenceErrors }
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
 import im.actor.server.{ model, persist ⇒ p }
+import im.actor.util.misc.StringUtils
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -36,9 +37,11 @@ abstract class UserError(message: String) extends RuntimeException(message) with
 
 object UserErrors {
 
-  final case class UserNotFound(id: Int) extends EntityNotFound(s"User ${id} not found")
+  final case class UserNotFound(id: Int) extends EntityNotFound(s"User $id not found")
 
   case object NicknameTaken extends UserError("Nickname taken")
+
+  case object InvalidNickname extends UserError("Invalid nickname")
 
   final case class InvalidTimeZone(tz: String) extends UserError(s"Invalid time zone: $tz")
 
@@ -185,15 +188,18 @@ private[user] trait UserCommandHandlers {
 
     onSuccess(checkNicknameExists(nicknameOpt)) { exists ⇒
       if (!exists) {
-        persistReply(TSEvent(now(), UserEvents.NicknameChanged(nicknameOpt)), user, replyTo) { _ ⇒
-          val update = UpdateUserNickChanged(userId, nicknameOpt)
+        if (nicknameOpt map StringUtils.validNickName getOrElse true) {
+          persistReply(TSEvent(now(), UserEvents.NicknameChanged(nicknameOpt)), user, replyTo) { _ ⇒
+            val update = UpdateUserNickChanged(userId, nicknameOpt)
 
-          for {
-            _ ← db.run(p.UserRepo.setNickname(userId, nicknameOpt))
-            relatedUserIds ← getRelations(userId)
-            (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relatedUserIds, update)
-          } yield seqstate
-        }
+            for {
+              _ ← db.run(p.UserRepo.setNickname(userId, nicknameOpt))
+              relatedUserIds ← getRelations(userId)
+              (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relatedUserIds, update)
+            } yield seqstate
+          }
+        } else
+          replyTo ! Status.Failure(UserErrors.InvalidNickname)
       } else {
         replyTo ! Status.Failure(UserErrors.NicknameTaken)
       }
