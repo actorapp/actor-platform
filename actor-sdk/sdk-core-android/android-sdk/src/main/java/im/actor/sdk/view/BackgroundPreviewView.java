@@ -76,4 +76,8 @@ public class BackgroundPreviewView extends SimpleDraweeView {
             return R.drawable.img_chat_background_default;
         }
     }
+
+    public static int getSize() {
+        return BACKGROUNDS.length;
+    }
 }
