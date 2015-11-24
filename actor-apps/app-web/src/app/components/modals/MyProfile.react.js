@@ -152,14 +152,30 @@ class MyProfile extends Component {
                            type="text"
                            value={nick}/>
               </div>
-              <div className="phone">
-                <TextField className="login__form__input"
-                           disabled
-                           floatingLabelText={this.getIntlMessage('modal.profile.phone')}
-                           fullWidth
-                           type="tel"
-                           value={(profile.phones[0] || {}).number}/>
-              </div>
+              {
+                profile.phones[0]
+                  ? <div className="phone">
+                      <TextField className="login__form__input"
+                                 disabled
+                                 floatingLabelText={this.getIntlMessage('modal.profile.phone')}
+                                 fullWidth
+                                 type="tel"
+                                 value={(profile.phones[0] || {}).number}/>
+                    </div>
+                  : null
+              }
+              {
+                profile.emails[0]
+                  ? <div className="phone">
+                      <TextField className="login__form__input"
+                                 disabled
+                                 floatingLabelText={this.getIntlMessage('modal.profile.email')}
+                                 fullWidth
+                                 type="email"
+                                 value={(profile.emails[0] || {}).email}/>
+                    </div>
+                  : null
+              }
               <div className="about">
                 <label htmlFor="about">{this.getIntlMessage('modal.profile.about')}</label>
                 <textarea className="textarea"
