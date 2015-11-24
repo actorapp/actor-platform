@@ -7,6 +7,7 @@
   border-radius: $modal-default-radius;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .25);
 }
+
 @mixin modal-flex() {
   display: flex;
   flex-direction: column;
@@ -273,32 +274,10 @@
       }
     }
     .modal-new__body {
-      padding: 0 16px;
+      padding: 18px;
     }
     .modal-new__footer {
-      padding-top: 0;
-    }
-    .error-message {
-      font-size: 14px;
-      line-height: 20px;
-
-      display: block;
-
-      box-sizing: border-box;
-      height: 0;
-      padding: 0 16px;
-
-      transition: opacity $default-transition-duration $default-transition-duration*.3 $default-transition-timing,
-      height $default-transition-duration $default-transition-timing;
-
-      opacity: 0;
-      color: rgba(0, 0, 0, .25);
-      background-color: white;
-      &--shown {
-        height: 40px;
-
-        opacity: 1;
-      }
+      padding: 0 18px 18px;
     }
   }
   &--update {
@@ -758,6 +737,82 @@
 
             opacity: 1;
           }
+        }
+      }
+    }
+  }
+  .add-contact {
+    &__results {
+      @include no-mp();
+      &__item {
+        @include no-mp();
+        list-style: none;
+        &--not-found,
+        &--searching,
+        &--empty {
+          text-align: center;
+          padding: 16px 0;
+          color: rgba(black, .3);
+        }
+      }
+
+      .contact {
+        .avatar {
+          margin-right: 16px;
+        }
+        .name {
+          @include no-mp();
+          cursor: default;
+          font-weight: 500;
+          font-size: 20px;
+          margin-top: 10px;
+          line-height: 24px;
+          span, small {
+            vertical-align: middle;
+          }
+
+          small {
+            @include no-select();
+            padding: 2px 4px;
+            background: rgba(0, 0, 0, .07);
+            border-radius: 2px;
+            text-transform: uppercase;
+            font-size: 10px;
+            margin-left: 6px;
+            color: rgba(0, 0, 0, .3);
+          }
+        }
+        .nick {
+          @include no-mp();
+          font-weight: 400;
+          color: rgba(black, .4);
+          font-size: 15px;
+          line-height: 20px;
+        }
+        .meta {
+          margin-top: 8px;
+          line-height: 24px;
+          font-size: 13px;
+          .title {
+            color: rgba(0, 0, 0, .3);
+            display: inline-block;
+            width: 60px;
+            margin-right: 16px;
+            text-align: right;
+          }
+          a {
+            color: $dark-sky-blue;
+            text-decoration: none;
+            cursor: pointer;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+        .controls {
+          margin-top: 16px;
+          text-align: right;
+          display: block;
         }
       }
     }
