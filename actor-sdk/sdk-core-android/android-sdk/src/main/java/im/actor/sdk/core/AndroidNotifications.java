@@ -287,7 +287,7 @@ public class AndroidNotifications implements NotificationProvider {
                 .setLargeIcon(drawableToBitmap(d))
                 .setContentIntent(PendingIntent.getActivity(context, 0,
                         Intents.openDialog(topNotification.getPeer(), false, context),
-                        PendingIntent.FLAG_UPDATE_CURRENT))
+                        PendingIntent.FLAG_CANCEL_CURRENT))
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                 .build();
     }
