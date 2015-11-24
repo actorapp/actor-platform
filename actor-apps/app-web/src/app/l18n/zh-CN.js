@@ -136,9 +136,10 @@ export default {
       },
       'addContact': {
         'title': '添加联系人',
-        'query': '手机号',
+        'query': 'Email, nickname or phone',
+        'phone': '手机号',
         'error': {
-          'notRegistered': 'T这个手机号没有在Actor中注册',
+          'notFound': 'User with such data is not found',
           'inContacts': '这个用户已经在您的联系人中'
         }
       },

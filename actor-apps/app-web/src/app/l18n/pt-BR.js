@@ -136,9 +136,10 @@ export default {
       },
       'addContact': {
         'title': 'Adicionar contato',
-        'query': 'Numero do celular',
+        'query': 'Email, nickname or phone',
+        'phone': 'Numero do celular',
         'error': {
-          'notRegistered': 'Este numero não esta registrado no Actor.',
+          'notFound': 'User with such data is not found',
           'inContacts': 'Você ja possui esta pessoa em seus contatos.'
         }
       },
