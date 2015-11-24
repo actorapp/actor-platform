@@ -136,11 +136,11 @@ export default {
       },
       'addContact': {
         'title': 'Add contact',
-        'query': 'Phone number',
-        'error': {
-          'notRegistered': 'This phone is not registered in Actor.',
-          'inContacts': 'You already have this user in contacts.'
-        }
+        'query': 'Email, nickname or phone',
+        'phone': 'Phone number',
+        'notFound': 'User with such data is not found',
+        'empty': 'Start typing to search people',
+        'searching': 'Search for "{query}"'
       },
       'createGroup': {
         'title': 'Create group',
