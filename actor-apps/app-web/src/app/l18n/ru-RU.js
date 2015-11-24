@@ -101,6 +101,7 @@ export default {
         'name': 'Ваше имя',
         'nick': 'Никнейм',
         'phone': 'Номер телефона',
+        'email': 'Email',
         'about': 'О себе',
         'avatarChange': 'Изменить аватар',
         'avatarRemove': 'Удалить'

@@ -100,6 +100,7 @@ export default {
         'name': 'Nome completo',
         'nick': 'Apelido',
         'phone': 'Numero de celular',
+        'email': 'Email',
         'about': 'Sobre',
         'avatarChange': 'Mudar foto',
         'avatarRemove': 'Remover'
