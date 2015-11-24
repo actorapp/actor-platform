@@ -52,6 +52,7 @@ export const ActionTypes = keymirror({
   ACTIVITY_SHOW: null,
   ACTIVITY_HIDE: null,
 
+  // Contact actions
   CONTACT_ADD: null,
   CONTACT_REMOVE: null,
   CONTACT_LIST_SHOW: null,
@@ -59,12 +60,9 @@ export const ActionTypes = keymirror({
   CONTACT_LIST_CHANGED: null,
   CONTACT_ADD_MODAL_SHOW: null,
   CONTACT_ADD_MODAL_HIDE: null,
-  //CONTACT_FIND: null,
-  //CONTACT_FIND_SUCCESS: null,
-  //CONTACT_FIND_ERROR: null,
-  CONTACT_ADD_MODAL_FIND_USER_OK: null,
-  CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED: null,
-  CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT: null,
+  CONTACT_FIND: null,
+  CONTACT_FIND_SUCCESS: null,
+  CONTACT_FIND_ERROR: null,
 
   // Group actions
   GROUP_CREATE_MODAL_OPEN: null,
@@ -232,11 +230,6 @@ export const Path = {
 
 export const endpoints = app.endpoints;
 
-export const AddContactMessages = {
-  PHONE_NOT_REGISTERED: 1,
-  ALREADY_HAVE: 2
-};
-
 export const BugsnagAPIKey = app.bugsnag;
 
 export default {
@@ -253,6 +246,5 @@ export default {
   endpoints,
   Support,
   Path,
-  AddContactMessages,
   BugsnagAPIKey
 };

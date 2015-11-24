@@ -4,23 +4,39 @@
 
 import { Store } from 'flux/utils';
 import Dispatcher from 'dispatcher/ActorAppDispatcher';
-import { ActionTypes, AddContactMessages } from 'constants/ActorAppConstants';
+import { ActionTypes } from 'constants/ActorAppConstants';
 
 let _isOpen = false,
-    _message = null,
-    _query = '';
+    _query = '',
+    _isSearching = false,
+    _results = [];
 
 class AddContactStore extends Store {
-  isModalOpen() {
+  isOpen() {
     return _isOpen;
   }
 
-  getMessage() {
-    return _message;
+  isSearching() {
+    return _isSearching;
   }
 
   getQuery() {
     return _query;
+  }
+
+  getResults() {
+    return _results;
+  }
+
+  setResults(results) {
+    _results = results;
+  }
+
+  resetStore() {
+    _isOpen = false;
+    _query = '';
+    _isSearching = false;
+    _results = [];
   }
 
   __onDispatch = (action) => {
@@ -30,29 +46,26 @@ class AddContactStore extends Store {
         this.__emitChange();
         break;
       case ActionTypes.CONTACT_ADD_MODAL_HIDE:
-        _isOpen = false;
-        _message = null;
-        _query = '';
+        this.resetStore();
         this.__emitChange();
         break;
 
-      //case ActionTypes.CONTACT_FIND:
-      //case ActionTypes.CONTACT_FIND_SUCCESS:
-      //case ActionTypes.CONTACT_FIND_ERROR:
-      //  this.__emitChange();
-      //  break;
-
-      case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_OK:
-        _isOpen = false;
-        _message = null;
+      case ActionTypes.CONTACT_FIND:
+        _query = action.query;
+        _isSearching = true;
         this.__emitChange();
         break;
-      case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED:
-        _message = AddContactMessages.PHONE_NOT_REGISTERED;
+      case ActionTypes.CONTACT_FIND_SUCCESS:
+        _isSearching = false;
+        if (action.query === '') {
+          this.setResults([]);
+        } else {
+          this.setResults(action.response)
+        }
         this.__emitChange();
         break;
-      case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT:
-        _message = AddContactMessages.ALREADY_HAVE;
+      case ActionTypes.CONTACT_FIND_ERROR:
+        _isSearching = false;
         this.__emitChange();
         break;
       default:

@@ -136,9 +136,10 @@ export default {
       },
       'addContact': {
         'title': 'Añadir contacto',
-        'query': 'Número de móvil',
+        'query': 'Email, nickname or phone',
+        'phone': 'Número de móvil',
         'error': {
-          'notRegistered': 'This phone is not registered in Actor.',
+          'notFound': 'User with such data is not found',
           'inContacts': 'You already have this user in contacts.'
         }
       },
