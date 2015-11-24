@@ -61,16 +61,17 @@ public class TextHolder extends MessageHolder {
     @Override
     protected void bindData(final Message message, boolean isUpdated, PreprocessedData preprocessedData) {
         PreprocessedTextData textData = (PreprocessedTextData) preprocessedData;
+        Spannable reactions = preprocessedData.getReactionsSpannable();
         CharSequence text;
         if (textData.getSpannableString() != null) {
             text = textData.getSpannableString();
         } else {
             text = textData.getText();
         }
-        bindRawText(text, message, false);
+        bindRawText(text, reactions, message, false);
     }
 
-    public void bindRawText(CharSequence rawText, Message message, boolean isItalic) {
+    public void bindRawText(CharSequence rawText, Spannable reactions, Message message, boolean isItalic) {
         if (message.getSenderId() == myUid()) {
             messageBubble.setBackgroundResource(R.drawable.bubble_text_out);
         } else {
@@ -129,28 +130,12 @@ public class TextHolder extends MessageHolder {
             status.setVisibility(View.GONE);
         }
 
-        boolean hasReactions = message.getReactions() != null && message.getReactions().size() > 0;
         Spannable timeWithReactions = null;
-        if (hasReactions) {
-
-            SpannableStringBuilder builder = new SpannableStringBuilder();
-            SpannableString s;
-            boolean hasMyReaction = false;
-            for (Reaction r : message.getReactions()) {
-                s = new SpannableString(Integer.toString(r.getUids().size()).concat(r.getCode()).concat("  "));
-                for (Integer uid : r.getUids()) {
-                    if (uid == myUid()) {
-                        hasMyReaction = true;
-                        break;
-                    }
-                }
-                s.setSpan(new ForegroundColorSpan(hasMyReaction ? ActorSDK.sharedActor().style.getConvLikeColor() : ActorSDK.sharedActor().style.getConvTimeColor()), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                builder.append(s);
-
-            }
+        if (reactions != null) {
+            SpannableStringBuilder builder = new SpannableStringBuilder(reactions);
             timeWithReactions = builder.append(Strings.formatTime(message.getDate()));
         }
-        time.setText(hasReactions ? timeWithReactions : Strings.formatTime(message.getDate()));
+        time.setText(timeWithReactions != null ? timeWithReactions : Strings.formatTime(message.getDate()));
 
 
     }
