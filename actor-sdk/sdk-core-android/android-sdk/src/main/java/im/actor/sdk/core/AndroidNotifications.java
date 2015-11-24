@@ -165,9 +165,7 @@ public class AndroidNotifications implements NotificationProvider {
             builder.setContentText(messagesCount + " messages");
             visiblePeer = topNotification.getPeer();
 
-            builder.setContentIntent(PendingIntent.getActivity(context, 0,
-                    Intents.openDialog(topNotification.getPeer(), false, context),
-                    PendingIntent.FLAG_UPDATE_CURRENT));
+
 
             final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             for (Notification n : topNotifications) {
@@ -197,7 +195,7 @@ public class AndroidNotifications implements NotificationProvider {
 
             Drawable avatarDrawable = new AvatarPlaceholderDrawable(avatarTitle, id, 18, context);
 
-            result = buildSingleConversationNotification(builder, inboxStyle, avatarDrawable);
+            result = buildSingleConversationNotification(builder, inboxStyle, avatarDrawable, topNotification);
             final NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
 
@@ -215,7 +213,7 @@ public class AndroidNotifications implements NotificationProvider {
                     @Override
                     public void onDownloaded(FileSystemReference reference) {
                         RoundedBitmapDrawable d = getRoundedBitmapDrawable(reference);
-                        android.app.Notification result = buildSingleConversationNotification(builder, inboxStyle, d);
+                        android.app.Notification result = buildSingleConversationNotification(builder, inboxStyle, d, topNotification);
                         manager.notify(NOTIFICATION_ID, result);
                     }
                 });
@@ -272,10 +270,13 @@ public class AndroidNotifications implements NotificationProvider {
         return d;
     }
 
-    private android.app.Notification buildSingleConversationNotification(NotificationCompat.Builder builder, NotificationCompat.InboxStyle inboxStyle, Drawable avatarDrawable) {
+    private android.app.Notification buildSingleConversationNotification(NotificationCompat.Builder builder, NotificationCompat.InboxStyle inboxStyle, Drawable avatarDrawable, Notification topNotification) {
 
         return builder
                 .setLargeIcon(drawableToBitmap(avatarDrawable))
+                .setContentIntent(PendingIntent.getActivity(context, 0,
+                        Intents.openDialog(topNotification.getPeer(), false, context),
+                        PendingIntent.FLAG_UPDATE_CURRENT))
                 .setStyle(inboxStyle)
                 .build();
     }
