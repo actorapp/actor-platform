@@ -21,6 +21,6 @@ public class UnsupportedHolder extends TextHolder {
 
     @Override
     protected void bindData(Message message, boolean isUpdated, PreprocessedData preprocessedData) {
-        bindRawText(text, message, true);
+        bindRawText(text, null, message, true);
     }
 }
