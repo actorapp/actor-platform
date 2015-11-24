@@ -57,14 +57,14 @@ public class AndroidFileSystemProvider implements FileSystemRuntime {
         dest.mkdirs();
 
         String baseFileName = fileName;
-        if (fileName.contains("")) {
+        if (fileName.contains(".")) {
             String prefix = baseFileName.substring(baseFileName.lastIndexOf('.'));
             String ext = baseFileName.substring(prefix.length() + 1);
 
-            File res = new File(dest, prefix + "_" + fileId + "" + ext);
+            File res = new File(dest, prefix + "_" + fileId + "." + ext);
             int index = 0;
             while (res.exists()) {
-                res = new File(dest, prefix + "_" + fileId + "_" + index + "" + ext);
+                res = new File(dest, prefix + "_" + fileId + "_" + index + "." + ext);
                 index++;
             }
             return res.getAbsolutePath();
