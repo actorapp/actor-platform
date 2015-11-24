@@ -105,6 +105,9 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             } else {
                 online.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
             }
+            if (user.isBot()) {
+                s = "";
+            }
             online.setText(s);
 
             if (data.isAdministrator()) {

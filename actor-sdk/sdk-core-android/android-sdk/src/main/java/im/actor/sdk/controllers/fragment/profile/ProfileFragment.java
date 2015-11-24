@@ -339,17 +339,14 @@ public class ProfileFragment extends BaseFragment {
         FloatingActionButton fab = (FloatingActionButton) res.findViewById(R.id.profileAction);
         fab.setColorNormal(ActorSDK.sharedActor().style.getFabColor());
         fab.setColorPressed(ActorSDK.sharedActor().style.getFabPressedColor());
-        if (user.isBot()) {
-            fab.setVisibility(View.GONE);
-        } else {
-            fab.setVisibility(View.VISIBLE);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(Intents.openPrivateDialog(uid, true, getActivity()));
-                }
-            });
-        }
+
+        fab.setVisibility(View.VISIBLE);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(Intents.openPrivateDialog(uid, true, getActivity()));
+            }
+        });
 
         avatarView = (CoverAvatarView) res.findViewById(R.id.avatar);
         ImageView avatarBkgrnd = (ImageView) res.findViewById(R.id.avatar_bgrnd);
