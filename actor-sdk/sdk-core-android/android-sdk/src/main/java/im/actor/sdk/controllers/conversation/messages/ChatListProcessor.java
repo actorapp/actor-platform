@@ -29,6 +29,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.view.MentionSpan;
 import im.actor.sdk.util.Strings;
+import im.actor.sdk.view.BaseUrlSpan;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.markdown.AndroidMarkdown;
 import im.actor.runtime.generic.mvvm.ListProcessor;
@@ -251,7 +252,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
                 return false;
             }
 
-            URLSpan span = (isMention && isGroup && found) ? new MentionSpan(nick, userId, false) : new URLSpan(m.group());
+            URLSpan span = (isMention && isGroup && found) ? new MentionSpan(nick, userId, false) : new BaseUrlSpan(m.group(), false);
 
 
             spannable.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
