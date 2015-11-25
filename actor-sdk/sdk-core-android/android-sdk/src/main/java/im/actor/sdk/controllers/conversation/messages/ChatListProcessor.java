@@ -114,7 +114,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
                             break;
                         }
                     }
-                    s.setSpan(new ForegroundColorSpan(hasMyReaction && r.getCode().equals("\u2764") ? ActorSDK.sharedActor().style.getConvLikeColor() : ActorSDK.sharedActor().style.getConvTimeColor()), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    s.setSpan(new ReactionSpan(r.getCode(), hasMyReaction, fragment.getPeer(), msg.getRid()), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     reactions = builder.append(s);
 
                 }
