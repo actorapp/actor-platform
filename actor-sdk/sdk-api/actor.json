@@ -3378,6 +3378,66 @@
         {
           "type": "struct",
           "content": {
+            "name": "ServiceExChangedTopic",
+            "doc": [
+              "Service message on group topic change",
+              {
+                "type": "reference",
+                "argument": "topic",
+                "category": "full",
+                "description": "  New group topic"
+              }
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 18
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "topic"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExChangedAbout",
+            "doc": [
+              "Service message on group about change",
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  New group about"
+              }
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 19
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "about"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "ServiceExChangedAvatar",
             "doc": [
               "Service message about avatar change",
@@ -7700,8 +7760,8 @@
                 "type": {
                   "type": "list",
                   "childType": {
-                    "type": "struct",
-                    "childType": "SearchOrCondition"
+                    "type": "trait",
+                    "childType": "SearchCondition"
                   }
                 },
                 "id": 2,
