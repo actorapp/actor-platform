@@ -362,5 +362,15 @@ export default {
 
   removeLike(peer, rid) {
     return window.messenger.removeLike(peer, rid);
+  },
+
+  // Search
+
+  bindSearch(callback) {
+    window.messenger.bindSearch(callback);
+  },
+
+  unbindSearch(callback) {
+    window.messenger.bindSearch(callback);
   }
 }
