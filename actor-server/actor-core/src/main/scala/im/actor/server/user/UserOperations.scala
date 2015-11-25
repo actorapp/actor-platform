@@ -127,13 +127,15 @@ private[user] sealed trait Commands extends AuthCommands {
 
     val originPeer = seqUpdExt.getOriginPeer(update)
 
-    broadcastUserUpdate(userId, header, serializedData, pushText, originPeer, isFat, deliveryId)
+    broadcastUserUpdate(userId, header, serializedData, update._relatedUserIds, update._relatedGroupIds, pushText, originPeer, isFat, deliveryId)
   }
 
   def broadcastUserUpdate(
     userId:         Int,
     header:         Int,
     serializedData: Array[Byte],
+    userIds:        Seq[Int],
+    groupIds:       Seq[Int],
     pushText:       Option[String],
     originPeer:     Option[Peer],
     isFat:          Boolean,
@@ -141,7 +143,7 @@ private[user] sealed trait Commands extends AuthCommands {
   ): Future[SeqState] =
     seqUpdExt.deliverUpdate(
       userId = userId,
-      mapping = UpdateMapping(default = Some(SerializedUpdate(header, ByteString.copyFrom(serializedData)))),
+      mapping = UpdateMapping(default = Some(SerializedUpdate(header, ByteString.copyFrom(serializedData), userIds = userIds, groupIds = groupIds))),
       pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse(""))),
       deliveryId = deliveryId.getOrElse("")
     )
