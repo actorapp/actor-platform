@@ -136,8 +136,7 @@ public class TextHolder extends MessageHolder {
             timeWithReactions = builder.append(Strings.formatTime(message.getDate()));
         }
         time.setText(timeWithReactions != null ? timeWithReactions : Strings.formatTime(message.getDate()));
-
-
+        time.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     class CustomLinkMovementMethod extends LinkMovementMethod {
