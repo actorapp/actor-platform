@@ -3213,6 +3213,54 @@
           <property role="Nu42W" value="05" />
         </node>
       </node>
+      <node concept="2m5naR" id="6nbRE0KfgG8" role="2m5mJr">
+        <property role="TrG5h" value="ServiceExChangedTopic" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceEx" />
+        <node concept="NXeRC" id="6nbRE0KftNw" role="NXodf">
+          <property role="NXePf" value="Service message on group topic change" />
+        </node>
+        <node concept="NX1gA" id="6nbRE0Kfuwn" role="NXodf">
+          <property role="NX6R2" value="New group topic" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6nbRE0KfgPG" resolve="topic" />
+        </node>
+        <node concept="2m7Kf5" id="6nbRE0KfgPG" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="topic" />
+          <node concept="2m5nlT" id="6cUOFUo0qtc" role="2m7DVh">
+            <node concept="2m5ndX" id="6cUOFUo0ra2" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6nbRE0Kfi5A" role="3BtCOu">
+          <property role="Nu42W" value="12" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="6nbRE0KfuE4" role="2m5mJr">
+        <property role="TrG5h" value="ServiceExChangedAbout" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceEx" />
+        <node concept="2m7Kf5" id="6nbRE0Kfvwp" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="about" />
+          <node concept="2m5nlT" id="6cUOFUo0ra5" role="2m7DVh">
+            <node concept="2m5ndX" id="6cUOFUo0rab" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6nbRE0Kfvww" role="3BtCOu">
+          <property role="Nu42W" value="13" />
+        </node>
+        <node concept="NXeRC" id="6nbRE0Kfvwy" role="NXodf">
+          <property role="NXePf" value="Service message on group about change" />
+        </node>
+        <node concept="NX1gA" id="6nbRE0KfvwB" role="NXodf">
+          <property role="NX6R2" value="New group about" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6nbRE0Kfvwp" resolve="about" />
+        </node>
+      </node>
       <node concept="2m5naR" id="GBscvBBldq" role="2m5mJr">
         <property role="TrG5h" value="ServiceExChangedAvatar" />
         <property role="w4tQU" value="true" />
@@ -6797,8 +6845,8 @@
           <property role="2m7DUN" value="2" />
           <property role="TrG5h" value="orQuery" />
           <node concept="2m5nlk" id="5qm50Y0f0Un" role="2m7DVh">
-            <node concept="2m5mGg" id="5qm50Y0f0Ut" role="3GJlyp">
-              <ref role="2m5mJy" node="5qm50Y0f0T1" resolve="SearchOrCondition" />
+            <node concept="3BlaRf" id="6nbRE0KfzHc" role="3GJlyp">
+              <ref role="3BrLez" node="4NJj1GT1Sc1" resolve="SearchCondition" />
             </node>
           </node>
         </node>
