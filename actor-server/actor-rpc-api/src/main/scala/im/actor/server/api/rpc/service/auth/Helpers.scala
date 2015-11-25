@@ -16,7 +16,7 @@ private[auth] trait Helpers extends PublicKeyHelpers {
     if (EmailValidator.getInstance().isValid(s)) s.right else "Should be valid email address".wrapNel.left
 
   def validEmail(email: String): \/[NonEmptyList[String], String] =
-    StringUtils.nonEmptyString(email).flatMap(matchesEmail)
+    StringUtils.nonEmptyString(email).flatMap(e ⇒ matchesEmail(e.toLowerCase))
 
   def validPublicKey(k: Array[Byte]): \/[NonEmptyList[String], Array[Byte]] =
     if (k.isEmpty) "Should be nonempty".wrapNel.left else k.right

@@ -23,6 +23,7 @@ import slick.dbio._
 
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.util.Try
 import scalaz.{ -\/, \/, \/- }
 
 trait AuthHelpers extends Helpers {
@@ -173,7 +174,7 @@ trait AuthHelpers extends Helpers {
     if (isTestEmail(email)) genTestCode(email) else genCode()
 
   protected def genSmsCode(phone: Long): String = phone.toString match {
-    case strNumber if isTestPhone(phone) ⇒ strNumber(4).toString * 4
+    case strNumber if isTestPhone(phone) ⇒ Try(strNumber(4).toString * 4).getOrElse(phone.toString)
     case _                               ⇒ genCode()
   }
 
