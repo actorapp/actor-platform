@@ -138,6 +138,18 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
             } yield FatSeqUpdate(seqUpd.seq, state.toByteArray, upd.header, upd.body.toByteArray, users.toVector, groups.toVector)
           } else Future.successful(SeqUpdate(seqUpd.seq, state.toByteArray, upd.header, upd.body.toByteArray))
 
+        val msgBase = "Pushing SeqUpdate, seq: {}, header: {}"
+
+        // TODO: unify for all UpdateBoxes
+        boxFuture foreach {
+          case FatSeqUpdate(seq, _, _, _, users, groups) =>
+            log.debug(s"$msgBase, users: {}, groups: {}", seqUpd.seq, upd.header, users, groups)
+          case SeqUpdate(seq, _, _, _) =>
+            log.debug(msgBase, seqUpd.seq, upd)
+          case _ => // should never happen
+            log.error("Improper seq update box")
+        }
+
         boxFuture foreach (sendUpdateBox(_, None))
       }
     case WeakUpdatesManager.UpdateReceived(updateBox, reduceKey) ⇒
@@ -183,11 +195,8 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
     this.lastDateTime
   }
 
-  private def sendUpdateBox(updateBox: ProtoUpdateBox, reduceKey: Option[String]): Unit = {
-    log.debug("Publishing {} for userId: {}", updateBox, userId)
-
+  private def sendUpdateBox(updateBox: ProtoUpdateBox, reduceKey: Option[String]): Unit =
     subscriber ! NewUpdate(UpdateBox(UpdateBoxCodec.encode(updateBox).require), reduceKey)
-  }
 
   private def getFatData(
     userId:      Int,
