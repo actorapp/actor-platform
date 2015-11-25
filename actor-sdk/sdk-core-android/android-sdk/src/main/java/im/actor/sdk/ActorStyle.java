@@ -6,6 +6,9 @@ import android.graphics.Color;
  * Actor Styling class
  */
 public class ActorStyle {
+
+    private int[] defaultBackgrouds = new int[]{R.drawable.img_chat_background_default, R.drawable.bg_8, R.drawable.bg_2, R.drawable.bg_1};
+
     private int toolBarColor = 0;
     private int fabColor = 0;
     private int fabPressedColor = 0;
@@ -864,5 +867,13 @@ public class ActorStyle {
 
     public void setConvLikeColor(int convLikeColor) {
         this.convLikeColor = convLikeColor;
+    }
+
+    public int[] getDefaultBackgrouds() {
+        return defaultBackgrouds;
+    }
+
+    public void setDefaultBackgrouds(int[] defaultBackgrouds) {
+        this.defaultBackgrouds = defaultBackgrouds;
     }
 }
