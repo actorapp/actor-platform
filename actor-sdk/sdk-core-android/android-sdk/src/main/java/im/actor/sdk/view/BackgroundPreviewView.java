@@ -14,13 +14,14 @@ import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 
 public class BackgroundPreviewView extends SimpleDraweeView {
 
     private int width;
     private int height;
-    private static final int[] BACKGROUNDS = new int[]{R.drawable.img_chat_background_default, R.drawable.bg_8, R.drawable.bg_2, R.drawable.bg_1};
+    private static final int[] BACKGROUNDS = ActorSDK.sharedActor().style.getDefaultBackgrouds();
 
     public BackgroundPreviewView(Context context, GenericDraweeHierarchy hierarchy) {
         super(context, hierarchy);
@@ -73,7 +74,7 @@ public class BackgroundPreviewView extends SimpleDraweeView {
         if (i >= 0 && BACKGROUNDS.length > i) {
             return BACKGROUNDS[i];
         } else {
-            return R.drawable.img_chat_background_default;
+            return BACKGROUNDS[0];
         }
     }
 
