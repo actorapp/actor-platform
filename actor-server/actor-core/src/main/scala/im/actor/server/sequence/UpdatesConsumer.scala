@@ -183,8 +183,11 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
     this.lastDateTime
   }
 
-  private def sendUpdateBox(updateBox: ProtoUpdateBox, reduceKey: Option[String]): Unit =
+  private def sendUpdateBox(updateBox: ProtoUpdateBox, reduceKey: Option[String]): Unit = {
+    log.debug("Publishing {} for userId: {}", updateBox, userId)
+
     subscriber ! NewUpdate(UpdateBox(UpdateBoxCodec.encode(updateBox).require), reduceKey)
+  }
 
   private def getFatData(
     userId:      Int,
