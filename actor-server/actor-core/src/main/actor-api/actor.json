@@ -364,6 +364,60 @@
         {
           "type": "rpc",
           "content": {
+            "name": "StartAnonymousAuth",
+            "header": 198,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Starting Anonymous login",
+              {
+                "type": "reference",
+                "argument": "name",
+                "category": "full",
+                "description": "Name of new user"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "name"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "StartTokenAuth",
+            "header": 203,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Starting token-based login",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "full",
+                "description": "Token for authentication"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "ValidateCode",
             "header": 189,
             "response": {
@@ -395,6 +449,44 @@
                 "type": "string",
                 "id": 2,
                 "name": "code"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ValidatePassword",
+            "header": 207,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Validation of account password",
+              {
+                "type": "reference",
+                "argument": "transactionHash",
+                "category": "full",
+                "description": "Hash of transaction"
+              },
+              {
+                "type": "reference",
+                "argument": "password",
+                "category": "full",
+                "description": "Password for account"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "transactionHash"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "password"
               }
             ]
           }
@@ -2830,6 +2922,278 @@
         {
           "type": "struct",
           "content": {
+            "name": "TextModernMessage",
+            "doc": [
+              "Modern text message",
+              {
+                "type": "reference",
+                "argument": "text",
+                "category": "full",
+                "description": "  Text of message"
+              },
+              {
+                "type": "reference",
+                "argument": "senderNameOverride",
+                "category": "full",
+                "description": "  Overriding of sender"
+              }
+            ],
+            "trait": {
+              "name": "TextMessageEx",
+              "key": 2
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "text"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "senderNameOverride"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 3,
+                "name": "senderPhotoOverride"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ParagraphStyle"
+                  }
+                },
+                "id": 4,
+                "name": "style"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ParagraphStyle",
+            "doc": [
+              "Paragraph style",
+              {
+                "type": "reference",
+                "argument": "showParagraph",
+                "category": "full",
+                "description": "  Show quote-like paragraph?"
+              },
+              {
+                "type": "reference",
+                "argument": "paragraphColor",
+                "category": "full",
+                "description": "  Override paragraph color"
+              },
+              {
+                "type": "reference",
+                "argument": "bgColor",
+                "category": "full",
+                "description": "  Override background color"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 1,
+                "name": "showParagraph"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "Color"
+                  }
+                },
+                "id": 2,
+                "name": "paragraphColor"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "Color"
+                  }
+                },
+                "id": 3,
+                "name": "bgColor"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "TextModernAttach",
+            "doc": [
+              "Attaches to message",
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Attach of message"
+              },
+              {
+                "type": "reference",
+                "argument": "titleUrl",
+                "category": "full",
+                "description": "  Attach title url"
+              },
+              {
+                "type": "reference",
+                "argument": "titleIcon",
+                "category": "full",
+                "description": "  Attach title icon"
+              },
+              {
+                "type": "reference",
+                "argument": "text",
+                "category": "full",
+                "description": "  Attach text"
+              },
+              {
+                "type": "reference",
+                "argument": "style",
+                "category": "full",
+                "description": "  Attach style"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "titleUrl"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ImageLocation"
+                  }
+                },
+                "id": 3,
+                "name": "titleIcon"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "text"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ParagraphStyle"
+                  }
+                },
+                "id": 5,
+                "name": "style"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "TextModernField"
+                  }
+                },
+                "id": 6,
+                "name": "fields"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "TextModernField",
+            "doc": [
+              "Modern message fields",
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Field title"
+              },
+              {
+                "type": "reference",
+                "argument": "value",
+                "category": "full",
+                "description": "  Field value"
+              },
+              {
+                "type": "reference",
+                "argument": "isShort",
+                "category": "full",
+                "description": "  Is field can be shown in compact way"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "title"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "value"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 3,
+                "name": "isShort"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "ServiceMessage",
             "doc": [
               "Service message",
@@ -3007,6 +3371,66 @@
                 "type": "string",
                 "id": 1,
                 "name": "title"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExChangedTopic",
+            "doc": [
+              "Service message on group topic change",
+              {
+                "type": "reference",
+                "argument": "topic",
+                "category": "full",
+                "description": "  New group topic"
+              }
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 18
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "topic"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExChangedAbout",
+            "doc": [
+              "Service message on group about change",
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  New group about"
+              }
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 19
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "about"
               }
             ]
           }
@@ -7336,8 +7760,8 @@
                 "type": {
                   "type": "list",
                   "childType": {
-                    "type": "struct",
-                    "childType": "SearchOrCondition"
+                    "type": "trait",
+                    "childType": "SearchCondition"
                   }
                 },
                 "id": 2,
@@ -8498,6 +8922,65 @@
         {
           "type": "struct",
           "content": {
+            "name": "ImageLocation",
+            "doc": [
+              "Image location",
+              {
+                "type": "reference",
+                "argument": "fileLocation",
+                "category": "full",
+                "description": "  Location of file"
+              },
+              {
+                "type": "reference",
+                "argument": "width",
+                "category": "full",
+                "description": "  Width of avatar image"
+              },
+              {
+                "type": "reference",
+                "argument": "height",
+                "category": "full",
+                "description": "  Height of avatar image"
+              },
+              {
+                "type": "reference",
+                "argument": "fileSize",
+                "category": "full",
+                "description": "  Size of file"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "FileLocation"
+                },
+                "id": 1,
+                "name": "fileLocation"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "width"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "height"
+              },
+              {
+                "type": "int32",
+                "id": 4,
+                "name": "fileSize"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "AvatarImage",
             "doc": [
               "Avatar Image",
@@ -8658,6 +9141,81 @@
                 "type": "bytes",
                 "id": 3,
                 "name": "thumb"
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "Colors",
+            "values": [
+              {
+                "name": "red",
+                "id": 1
+              },
+              {
+                "name": "yellow",
+                "id": 2
+              },
+              {
+                "name": "green",
+                "id": 3
+              }
+            ]
+          }
+        },
+        {
+          "type": "trait",
+          "content": {
+            "isContainer": "true",
+            "name": "Color",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "RgbColor",
+            "doc": [
+              "RGB Color",
+              {
+                "type": "reference",
+                "argument": "rgb",
+                "category": "full",
+                "description": "  RGB color value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "rgb"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "PredefinedColor",
+            "doc": [
+              "Predefined color",
+              {
+                "type": "reference",
+                "argument": "color",
+                "category": "hidden",
+                "description": "  Predefined color value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "Colors"
+                },
+                "id": 1,
+                "name": "color"
               }
             ]
           }
