@@ -32,6 +32,7 @@ class SessionSpec extends BaseSessionSpec {
   it should "subscribe to sequence updates" in sessions().seq
   it should "subscribe to weak updates" in sessions().weak
   it should "subscribe to presences" in sessions().pres
+  it should "receive fat updates" in sessions().fatSeq
   it should "react to SessionHello" in sessions().hello
 
   case class sessions() {
@@ -184,6 +185,33 @@ class SessionSpec extends BaseSessionSpec {
       Await.result(UserExtension(system).broadcastClientUpdate(update, None, isFat = false), 5.seconds)
 
       expectSeqUpdate(authId, sessionId).update should ===(update.toByteArray)
+    }
+
+    def fatSeq() = {
+      val (user, authId, authSid, _) = createUser()
+      val sessionId = Random.nextLong
+
+      implicit val clientData = AuthorizedClientData(authId, sessionId, user.id, authSid)
+
+      val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState)).require
+
+      val thirdMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, RpcRequestBox(encodedGetSeqRequest))
+
+      ignoreNewSession(authId, sessionId)
+      expectMessageAck(authId, sessionId, thirdMessageId)
+      expectRpcResult() should matchPattern {
+        case RpcOk(ResponseSeq(_, _)) ⇒
+      }
+
+      val update = UpdateContactRegistered(user.id, true, 1L, 2L)
+      whenReady(UserExtension(system).broadcastUserUpdate(user.id, update, pushText = Some("text"), isFat = true, deliveryId = None))(identity)
+
+      val fat = expectFatSeqUpdate(authId, sessionId)
+
+      fat.users.head.id should ===(user.id)
+      fat.update should ===(update.toByteArray)
+
     }
 
     def weak() = {
