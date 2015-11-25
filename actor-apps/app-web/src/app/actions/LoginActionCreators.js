@@ -11,6 +11,7 @@ import RouterContainer from 'utils/RouterContainer';
 import MyProfileActionCreators from 'actions/MyProfileActionCreators';
 import DialogActionCreators from 'actions/DialogActionCreators';
 import ContactActionCreators from 'actions/ContactActionCreators';
+import QuickSearchActionCreators from 'actions/QuickSearchActionCreators';
 
 const LoginActionCreators = {
   changeLogin(login) {
@@ -91,6 +92,7 @@ const LoginActionCreators = {
     ActorClient.bindDialogs(DialogActionCreators.setDialogs);
 
     ActorClient.bindContacts(ContactActionCreators.setContacts);
+    ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList);
   },
   setLoggedOut: () => {
     dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
@@ -99,6 +101,7 @@ const LoginActionCreators = {
     ActorClient.unbindDialogs(DialogActionCreators.setDialogs);
 
     ActorClient.unbindContacts(ContactActionCreators.setContacts);
+    ActorClient.unbindSearch(QuickSearchActionCreators.setQuickSearchList);
   },
 
   restartAuth: () => dispatch(ActionTypes.AUTH_RESTART)
