@@ -30,7 +30,6 @@ class Group extends Component {
   render() {
     const { group } = this.props;
 
-    console.debug(group);
     return (
       <li className="group__list__item row" onClick={this.handleClick}>
         <div>
