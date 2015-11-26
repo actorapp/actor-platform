@@ -4924,6 +4924,54 @@
           <property role="NXePf" value="Show Dialog in grouped list" />
         </node>
       </node>
+      <node concept="2m6fVq" id="4GqCdBPOcJQ" role="2m5mJr">
+        <property role="TrG5h" value="FavouriteDialog" />
+        <node concept="2m7Kf5" id="4GqCdBPOcTv" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="4GqCdBPOcTz" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="4GqCdBPOcJR" role="NuuwV">
+          <property role="Nu42W" value="E0" />
+        </node>
+        <node concept="2m1Rp1" id="4GqCdBPOcTA" role="2m6efq">
+          <ref role="2m1o9l" node="5qm50Y0eGZ2" resolve="DialogsOrder" />
+        </node>
+        <node concept="NXeRC" id="4GqCdBPOcTD" role="1GBnQ6">
+          <property role="NXePf" value="Marking dialog as favourite" />
+        </node>
+        <node concept="NX1gA" id="4GqCdBPOcTI" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Peer for favouriting" />
+          <ref role="NX6Kv" node="4GqCdBPOcTv" resolve="peer" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="4GqCdBPOesM" role="2m5mJr">
+        <property role="TrG5h" value="UnfavouriteDialog" />
+        <node concept="2m7Kf5" id="4GqCdBPOeAI" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="4GqCdBPOeAM" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="4GqCdBPOesN" role="NuuwV">
+          <property role="Nu42W" value="E3" />
+        </node>
+        <node concept="2m1Rp1" id="4GqCdBPOeAy" role="2m6efq">
+          <ref role="2m1o9l" node="5qm50Y0eGZ2" resolve="DialogsOrder" />
+        </node>
+        <node concept="NXeRC" id="4GqCdBPOeA_" role="1GBnQ6">
+          <property role="NXePf" value="Making dialog as unfavourite" />
+        </node>
+        <node concept="NX1gA" id="4GqCdBPOfjF" role="1GBnQ6">
+          <property role="NX6R2" value="Peer for favouriting" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4GqCdBPOeAI" resolve="peer" />
+        </node>
+      </node>
     </node>
     <node concept="2m5mJO" id="GBscvBB6mJ" role="2m5lHt">
       <property role="TrG5h" value="Groups" />
