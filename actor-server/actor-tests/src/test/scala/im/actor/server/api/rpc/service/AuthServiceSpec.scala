@@ -9,6 +9,7 @@ import im.actor.api.rpc.auth._
 import im.actor.api.rpc.contacts.{ ApiPhoneToImport, ResponseGetContacts, UpdateContactRegistered }
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.users.{ ApiContactRecord, ApiContactType, ApiSex }
+import im.actor.concurrent.FutureExt
 import im.actor.server._
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
 import im.actor.server.api.rpc.RpcApiService
@@ -79,9 +80,9 @@ final class AuthServiceSpec
 
   it should "respond with error to malformed email address" in s.malformedEmail
 
-  it should "respond with same transactionHash when called multiple times" in pendingUntilFixed(s.e15)
+  it should "respond with same transactionHash when called multiple times" in s.e15
 
-  it should "associate authorizations from two different devices with different auth transactions" in pendingUntilFixed(s.e155)
+  it should "associate authorizations from two different devices with different auth transactions" in s.e155
 
   "GetOAuth2Params handler" should "respond with error when malformed url is passed" in pendingUntilFixed(s.e16)
 
@@ -617,28 +618,31 @@ final class AuthServiceSpec
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       val deviceHash = Random.nextLong().toBinaryString.getBytes
-      def q() = service.handleStartEmailAuth(
-        email = email,
-        appId = 42,
-        apiKey = "apiKey",
-        deviceHash = deviceHash,
-        deviceTitle = "Specs virtual device",
-        timeZone = None,
-        preferredLanguages = Vector.empty
-      )
+      def q() = {
+        Thread.sleep(100)
+        service.handleStartEmailAuth(
+          email = email,
+          appId = 42,
+          apiKey = "apiKey",
+          deviceHash = deviceHash,
+          deviceTitle = "Specs virtual device",
+          timeZone = None,
+          preferredLanguages = Vector.empty
+        )
+      }
 
       val transactionHash =
         whenReady(q()) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.CODE)) ⇒ }
           resp.toOption.get.transactionHash
         }
 
-      val seq = Future.sequence(List(q(), q(), q(), q(), q(), q()))
+      val seq = FutureExt.ftraverse(List(q(), q(), q(), q(), q(), q()))(identity)
 
       whenReady(seq) { resps ⇒
         resps foreach {
           inside(_) {
-            case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒
+            case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.CODE)) ⇒
               hash shouldEqual transactionHash
           }
         }
