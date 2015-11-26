@@ -8,10 +8,11 @@ import { ActionTypes } from 'constants/ActorAppConstants';
 import ActorClient from 'utils/ActorClient';
 import RouterContainer from 'utils/RouterContainer';
 
-import MyProfileActionCreators from 'actions/MyProfileActionCreators';
-import DialogActionCreators from 'actions/DialogActionCreators';
-import ContactActionCreators from 'actions/ContactActionCreators';
-import QuickSearchActionCreators from 'actions/QuickSearchActionCreators';
+import MyProfileActionCreators from './MyProfileActionCreators';
+import DialogActionCreators from './DialogActionCreators';
+import ContactActionCreators from './ContactActionCreators';
+import QuickSearchActionCreators from './QuickSearchActionCreators';
+import FaviconActionCreators from './FaviconActionCreators';
 
 const LoginActionCreators = {
   changeLogin(login) {
@@ -93,6 +94,7 @@ const LoginActionCreators = {
 
     ActorClient.bindContacts(ContactActionCreators.setContacts);
     ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList);
+    ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon);
   },
   setLoggedOut: () => {
     dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
@@ -102,6 +104,7 @@ const LoginActionCreators = {
 
     ActorClient.unbindContacts(ContactActionCreators.setContacts);
     ActorClient.unbindSearch(QuickSearchActionCreators.setQuickSearchList);
+    ActorClient.unbindTempGlobalCounter(FaviconActionCreators.setFavicon);
   },
 
   restartAuth: () => dispatch(ActionTypes.AUTH_RESTART)
