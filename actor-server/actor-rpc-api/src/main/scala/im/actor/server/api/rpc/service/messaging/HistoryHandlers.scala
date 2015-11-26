@@ -279,6 +279,8 @@ trait HistoryHandlers {
       case ApiServiceExContactRegistered(userId)                  ⇒ Set(userId)
       case ApiServiceExChangedAvatar(_)                           ⇒ Set.empty
       case ApiServiceExChangedTitle(_)                            ⇒ Set.empty
+      case ApiServiceExChangedTopic(_)                            ⇒ Set.empty
+      case ApiServiceExChangedAbout(_)                            ⇒ Set.empty
       case ApiServiceExGroupCreated | _: ApiServiceExGroupCreated ⇒ Set.empty
       case ApiServiceExPhoneCall(_)                               ⇒ Set.empty
       case ApiServiceExPhoneMissed | _: ApiServiceExPhoneMissed   ⇒ Set.empty
