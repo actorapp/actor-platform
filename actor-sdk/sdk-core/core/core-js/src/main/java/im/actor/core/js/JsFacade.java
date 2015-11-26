@@ -1343,28 +1343,19 @@ public class JsFacade implements Exportable {
     }
 
     public void handleLinkClick(Event event) {
-        Log.d(TAG, "handleLinkClick " + event);
         Element target = Element.as(event.getEventTarget());
         String href = target.getAttribute("href");
-        Log.d(TAG, "handleLinkClick | " + href);
-        if (JsElectronApp.isElectron()) {
-            Log.d(TAG, "handleLinkClick | Open In Electron");
-            JsElectronApp.openUrlExternal(href);
-            event.preventDefault();
+        if (href.startsWith("send:")) {
+            String msg = href.substring("send:".length());
+            msg = URL.decode(msg);
+            if (lastVisiblePeer != null) {
+                messenger.sendMessage(lastVisiblePeer, msg);
+                event.preventDefault();
+            }
         } else {
-            if (href.startsWith("send:")) {
-                String msg = href.substring("send:".length());
-                msg = URL.decode(msg);
-                Log.d(TAG, "handleLinkClick | Sending message " + msg);
-                if (lastVisiblePeer != null) {
-                    Log.d(TAG, "handleLinkClick | To peer " + lastVisiblePeer);
-                    messenger.sendMessage(lastVisiblePeer, msg);
-                    event.preventDefault();
-                } else {
-                    Log.d(TAG, "handleLinkClick | No peer visible");
-                }
-            } else {
-                Log.d(TAG, "handleLinkClick | No send prefix");
+            if (JsElectronApp.isElectron()) {
+                JsElectronApp.openUrlExternal(href);
+                event.preventDefault();
             }
         }
     }
