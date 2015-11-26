@@ -1,7 +1,11 @@
 package im.actor.sdk.controllers.conversation.messages;
 
 import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Reaction;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Strings;
@@ -43,6 +48,7 @@ public class TextHolder extends MessageHolder {
         time = (TextView) itemView.findViewById(R.id.tv_time);
         ActorSDK.sharedActor().style.getConvTimeColor();
         time.setTypeface(Fonts.regular());
+        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
         status = (TintImageView) itemView.findViewById(R.id.stateIcon);
 
         waitColor = ActorSDK.sharedActor().style.getConvStatePendingColor();
@@ -55,16 +61,17 @@ public class TextHolder extends MessageHolder {
     @Override
     protected void bindData(final Message message, boolean isUpdated, PreprocessedData preprocessedData) {
         PreprocessedTextData textData = (PreprocessedTextData) preprocessedData;
+        Spannable reactions = preprocessedData.getReactionsSpannable();
         CharSequence text;
         if (textData.getSpannableString() != null) {
             text = textData.getSpannableString();
         } else {
             text = textData.getText();
         }
-        bindRawText(text, message, false);
+        bindRawText(text, reactions, message, false);
     }
 
-    public void bindRawText(CharSequence rawText, Message message, boolean isItalic) {
+    public void bindRawText(CharSequence rawText, Spannable reactions, Message message, boolean isItalic) {
         if (message.getSenderId() == myUid()) {
             messageBubble.setBackgroundResource(R.drawable.bubble_text_out);
         } else {
@@ -123,7 +130,13 @@ public class TextHolder extends MessageHolder {
             status.setVisibility(View.GONE);
         }
 
-        time.setText(Strings.formatTime(message.getDate()));
+        Spannable timeWithReactions = null;
+        if (reactions != null) {
+            SpannableStringBuilder builder = new SpannableStringBuilder(reactions);
+            timeWithReactions = builder.append(Strings.formatTime(message.getDate()));
+        }
+        time.setText(timeWithReactions != null ? timeWithReactions : Strings.formatTime(message.getDate()));
+        time.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     class CustomLinkMovementMethod extends LinkMovementMethod {

@@ -37,7 +37,7 @@ class HeaderSection extends Component {
     return {
       profile: MyProfileStore.getProfile(),
       isMyProfileOpen: MyProfileStore.isModalOpen(),
-      isAddContactsOpen: AddContactStore.isModalOpen(),
+      isAddContactsOpen: AddContactStore.isOpen(),
       isCreateGroupOpen: CreateGroupStore.isModalOpen(),
       isPreferencesOpen: PreferencesStore.isOpen()
     }

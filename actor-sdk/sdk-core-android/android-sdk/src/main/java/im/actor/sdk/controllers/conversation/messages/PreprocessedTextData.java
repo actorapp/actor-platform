@@ -7,10 +7,12 @@ public class PreprocessedTextData extends PreprocessedData {
     private final String text;
     private final Spannable spannableString;
 
-    public PreprocessedTextData(String text, Spannable spannableString) {
+    public PreprocessedTextData(Spannable reactions, String text, Spannable spannableString) {
+        super(reactions);
         this.text = text;
         this.spannableString = spannableString;
     }
+
 
     public String getText() {
         return text;

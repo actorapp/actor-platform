@@ -32,6 +32,10 @@ import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
 
+import im.actor.core.viewmodel.UserEmail;
+import im.actor.core.viewmodel.generics.ArrayListUserEmail;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
@@ -55,6 +59,8 @@ public class ProfileFragment extends BaseFragment {
     private static final String EXTRA_UID = "uid";
     private int baseColor;
     private CoverAvatarView avatarView;
+    private boolean noEmails = false;
+    private boolean noPhones = false;
 
     public ProfileFragment() {
     }
@@ -96,10 +102,11 @@ public class ProfileFragment extends BaseFragment {
         aboutTitle.setEllipsize(TextUtils.TruncateAt.END);
         TextView aboutValue = (TextView) about.findViewById(R.id.value);
         aboutValue.setTextColor(style.getTextPrimaryColor());
-        ((TintImageView) about.findViewById(R.id.recordIcon)).setTint(ActorSDK.sharedActor().style.getProfilleIconColor());
+        TintImageView tintImageView = (TintImageView) about.findViewById(R.id.recordIcon);
+        tintImageView.setTint(style.getRecordIconTintColor());
+        tintImageView.setResource(R.drawable.ic_editor_format_quote_36dp);
         if (aboutText != null && !aboutText.isEmpty()) {
             aboutVivisbe = true;
-            about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
             ((TextView) about.findViewById(R.id.value)).setText(getString(R.string.about_user));
             about.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -125,8 +132,9 @@ public class ProfileFragment extends BaseFragment {
             nickValue.setTextColor(style.getTextPrimaryColor());
             TextView nickTitle = (TextView) recordView.findViewById(R.id.title);
             nickTitle.setTextColor(style.getTextSecondaryColor());
-            TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
-            tintImageView.setVisibility(View.INVISIBLE);
+            TintImageView nickIcon = (TintImageView) recordView.findViewById(R.id.recordIcon);
+            nickIcon.setTint(style.getRecordIconTintColor());
+            nickIcon.setResource(R.drawable.ic_star_white_36dp);
             String value = "@".concat(nick);
             String title = getString(R.string.nickname);
             recordView.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
@@ -138,33 +146,29 @@ public class ProfileFragment extends BaseFragment {
         }
 
         LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.phoneContainer);
-        View abovephonesDivider = null;
+        View aboveContactsDivider = null;
         if (aboutVivisbe) {
-            abovephonesDivider = about.findViewById(R.id.divider);
+            aboveContactsDivider = about.findViewById(R.id.divider);
         } else if (nickVisible) {
-            abovephonesDivider = nickContainer.findViewById(R.id.divider);
+            aboveContactsDivider = nickContainer.findViewById(R.id.divider);
 
         }
+
         if (user.getPhones().get().size() == 0) {
-            contactsContainer.setVisibility(View.GONE);
-            if (abovephonesDivider != null) {
-                abovephonesDivider.setVisibility(View.GONE);
-            } else {
-                res.findViewById(R.id.phoneDivider).setVisibility(View.GONE);
-            }
+            noPhones = true;
         } else {
             contactsContainer.setVisibility(View.VISIBLE);
             ArrayList<UserPhone> phones = user.getPhones().get();
             for (int i = 0; i < phones.size(); i++) {
                 final UserPhone record = phones.get(i);
                 View recordView = inflater.inflate(R.layout.contact_record, contactsContainer, false);
-                TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
-                tintImageView.setTint(style.getRecordIconTintColor());
+                TintImageView phoneIcon = (TintImageView) recordView.findViewById(R.id.recordIcon);
+                phoneIcon.setTint(style.getRecordIconTintColor());
                 if (i == 0) {
-                    tintImageView.setResource(R.drawable.ic_call_white_36dp);
-                    tintImageView.setVisibility(View.VISIBLE);
+                    phoneIcon.setResource(R.drawable.ic_call_white_36dp);
+                    phoneIcon.setVisibility(View.VISIBLE);
                 } else {
-                    tintImageView.setVisibility(View.INVISIBLE);
+                    phoneIcon.setVisibility(View.INVISIBLE);
                 }
                 View divider = recordView.findViewById(R.id.divider);
                 divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
@@ -246,21 +250,103 @@ public class ProfileFragment extends BaseFragment {
             }
         }
 
+        if (user.getEmails().get().size() == 0) {
+            noEmails = true;
+        } else {
+            ArrayList<UserEmail> emails = user.getEmails().get();
+
+            contactsContainer.setVisibility(View.VISIBLE);
+            for (int i = 0; i < emails.size(); i++) {
+                final UserEmail record = emails.get(i);
+                View recordView = inflater.inflate(R.layout.contact_record, contactsContainer, false);
+                TintImageView emailIcon = (TintImageView) recordView.findViewById(R.id.recordIcon);
+                emailIcon.setTint(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
+                if (i == 0) {
+                    emailIcon.setResource(R.drawable.ic_email_white_36dp);
+                    emailIcon.setVisibility(View.VISIBLE);
+                } else {
+                    emailIcon.setVisibility(View.INVISIBLE);
+                }
+
+                View divider = recordView.findViewById(R.id.divider);
+                if (i != emails.size() - 1) {
+                    divider.setVisibility(View.VISIBLE);
+                } else {
+                    divider.setVisibility(View.GONE);
+                }
+                divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+
+                final String email = record.getEmail();
+
+                TextView value = (TextView) recordView.findViewById(R.id.value);
+                value.setTextColor(style.getTextPrimaryColor());
+                value.setText(email);
+                TextView title = (TextView) recordView.findViewById(R.id.title);
+                title.setTextColor(style.getTextSecondaryColor());
+                title.setText(record.getTitle());
+                contactsContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        Screen.dp(72)));
+
+                recordView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new AlertDialog.Builder(getActivity())
+                                .setItems(new CharSequence[]{
+                                        getString(R.string.email_menu_email).replace("{0}", email),
+                                        getString(R.string.phone_menu_copy)
+                                }, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (which == 0) {
+                                            startActivity(new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", record.getEmail(), null)));
+                                        } else if (which == 1) {
+                                            ClipboardManager clipboard =
+                                                    (ClipboardManager) getActivity()
+                                                            .getSystemService(Context.CLIPBOARD_SERVICE);
+                                            ClipData clip = ClipData.newPlainText("Email", email);
+                                            clipboard.setPrimaryClip(clip);
+                                            Toast.makeText(getActivity(), R.string.toast_email_copied, Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                })
+                                .show()
+                                .setCanceledOnTouchOutside(true);
+                    }
+                });
+                recordView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("Email", "+" + record.getEmail());
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(getActivity(), R.string.toast_email_copied, Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+            }
+        }
+
+        if (noEmails && noPhones) {
+            contactsContainer.setVisibility(View.GONE);
+            if (aboveContactsDivider != null) {
+                aboveContactsDivider.setVisibility(View.GONE);
+            } else {
+                res.findViewById(R.id.phoneDivider).setVisibility(View.GONE);
+            }
+        }
+
 
         FloatingActionButton fab = (FloatingActionButton) res.findViewById(R.id.profileAction);
         fab.setColorNormal(ActorSDK.sharedActor().style.getFabColor());
         fab.setColorPressed(ActorSDK.sharedActor().style.getFabPressedColor());
-        if (user.isBot()) {
-            fab.setVisibility(View.GONE);
-        } else {
-            fab.setVisibility(View.VISIBLE);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(Intents.openPrivateDialog(uid, true, getActivity()));
-                }
-            });
-        }
+
+        fab.setVisibility(View.VISIBLE);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(Intents.openPrivateDialog(uid, true, getActivity()));
+            }
+        });
 
         avatarView = (CoverAvatarView) res.findViewById(R.id.avatar);
         ImageView avatarBkgrnd = (ImageView) res.findViewById(R.id.avatar_bgrnd);

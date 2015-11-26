@@ -100,6 +100,7 @@ export default {
         'name': 'Full name',
         'nick': 'Nickname',
         'phone': 'Phone number',
+        'email': 'Email',
         'about': 'About',
         'avatarChange': 'Change avatar',
         'avatarRemove': 'Remove'
@@ -135,11 +136,11 @@ export default {
       },
       'addContact': {
         'title': '添加联系人',
-        'query': '手机号',
-        'error': {
-          'notRegistered': 'T这个手机号没有在Actor中注册',
-          'inContacts': '这个用户已经在您的联系人中'
-        }
+        'query': 'Email, nickname or phone',
+        'phone': '手机号',
+        'notFound': 'User with such data is not found',
+        'empty': 'Start typing to search people',
+        'searching': 'Search for "{query}"'
       },
       'createGroup': {
         'title': '创建群',
