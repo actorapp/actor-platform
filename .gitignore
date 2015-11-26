@@ -139,3 +139,4 @@ actor-deps/dist
 gradle.properties
 actor-sdk/sdk-core/core/core-js/war
 actor-sdk/sdk-core/runtime/runtime-js/war
+node_modules
