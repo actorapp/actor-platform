@@ -138,10 +138,9 @@ export default {
         'title': '添加联系人',
         'query': 'Email, nickname or phone',
         'phone': '手机号',
-        'error': {
-          'notFound': 'User with such data is not found',
-          'inContacts': '这个用户已经在您的联系人中'
-        }
+        'notFound': 'User with such data is not found',
+        'empty': 'Start typing to search people',
+        'searching': 'Search for "{query}"'
       },
       'createGroup': {
         'title': '创建群',
