@@ -1,23 +1,13 @@
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
-import { ActionTypes } from 'constants/ActorAppConstants';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+import { dispatch } from '../dispatcher/ActorAppDispatcher';
+import { ActionTypes } from '../constants/ActorAppConstants';
 
 const FaviconActionCreators = {
-  setDefaultFavicon() {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.FAVICON_SET_DEFAULT
-    });
-  },
-
-  setNotificationIcon() {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.FAVICON_SET_NOTIFICATION
-    });
-  }
-};
-
-window.setNotificationFavicon = () => {
-  if (document.hidden) {
-    FaviconActionCreators.setNotificationIcon();
+  setFavicon(counter) {
+    dispatch(ActionTypes.FAVICON_SET, { counter: counter ? counter.counter : 0 });
   }
 };
 

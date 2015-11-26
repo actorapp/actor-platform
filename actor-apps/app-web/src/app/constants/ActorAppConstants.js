@@ -117,8 +117,7 @@ export const ActionTypes = keymirror({
   APP_UPDATE_MODAL_HIDE: null,
   APP_UPDATE_CONFIRM: null,
 
-  FAVICON_SET_DEFAULT: null,
-  FAVICON_SET_NOTIFICATION: null,
+  FAVICON_SET: null,
 
   INVITE_USER_MODAL_SHOW: null,
   INVITE_USER_MODAL_HIDE: null,
