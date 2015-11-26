@@ -1,7 +1,14 @@
 package im.actor.sdk.controllers.conversation.messages;
 
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
@@ -24,8 +31,10 @@ public abstract class MessageHolder extends BindedViewHolder
     private boolean isFullSize;
     protected Message currentMessage;
     protected ActorBinder.Binding onlineBinding;
+    private Spannable reactions;
+    private boolean hasMyReaction;
 
-    public MessageHolder(MessagesAdapter adapter, View itemView, boolean isFullSize) {
+    public MessageHolder(MessagesAdapter adapter, final View itemView, boolean isFullSize) {
         super(itemView);
         this.adapter = adapter;
         this.container = (BubbleContainer) itemView;
@@ -104,7 +113,17 @@ public abstract class MessageHolder extends BindedViewHolder
         }, user.getPresence());
         setOnline(user.getPresence().get().getState().equals(UserPresence.State.ONLINE), user.isBot());
 
-
+        hasMyReaction = false;
+        if (preprocessedData != null) {
+            reactions = preprocessedData.getReactionsSpannable();
+            if (reactions != null) {
+                for (ReactionSpan r : reactions.getSpans(0, reactions.length(), ReactionSpan.class)) {
+                    if (r.hasMyReaction()) {
+                        hasMyReaction = true;
+                    }
+                }
+            }
+        }
         // Bind content
         bindData(message, isUpdated, preprocessedData);
         ActorSDK.sharedActor().getMessenger().onUserVisible(message.getSenderId());
@@ -138,12 +157,23 @@ public abstract class MessageHolder extends BindedViewHolder
     @Override
     public boolean onLongClick(View v) {
         if (currentMessage != null) {
-            return adapter.getMessagesFragment().onLongClick(currentMessage);
+            return adapter.getMessagesFragment().onLongClick(currentMessage, hasMyReaction);
         }
         return false;
     }
 
+
     public void unbind() {
         currentMessage = null;
+    }
+
+    protected void setTimeAndReactions(TextView time) {
+        Spannable timeWithReactions = null;
+        if (reactions != null) {
+            SpannableStringBuilder builder = new SpannableStringBuilder(reactions);
+            timeWithReactions = builder.append(Strings.formatTime(currentMessage.getDate()));
+        }
+        time.setText(timeWithReactions != null ? timeWithReactions : Strings.formatTime(currentMessage.getDate()));
+        time.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }
