@@ -138,10 +138,9 @@ export default {
         'title': 'Adicionar contato',
         'query': 'Email, nickname or phone',
         'phone': 'Numero do celular',
-        'error': {
-          'notFound': 'User with such data is not found',
-          'inContacts': 'Você ja possui esta pessoa em seus contatos.'
-        }
+        'notFound': 'User with such data is not found',
+        'empty': 'Start typing to search people',
+        'searching': 'Search for "{query}"'
       },
       'createGroup': {
         'title': 'Criar grupo',
