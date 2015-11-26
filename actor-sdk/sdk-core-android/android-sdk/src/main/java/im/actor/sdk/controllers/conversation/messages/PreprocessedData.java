@@ -2,7 +2,7 @@ package im.actor.sdk.controllers.conversation.messages;
 
 import android.text.Spannable;
 
-public abstract class PreprocessedData {
+public class PreprocessedData {
     private final Spannable reactionsSpannable;
 
     protected PreprocessedData(Spannable reactionsSpannable) {
