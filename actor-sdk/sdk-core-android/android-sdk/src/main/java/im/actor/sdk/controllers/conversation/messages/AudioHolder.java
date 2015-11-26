@@ -259,7 +259,7 @@ public class AudioHolder extends MessageHolder {
         }
 
         // Update time
-        time.setText(Strings.formatTime(message.getDate()));
+        setTimeAndReactions(time);
         currentDuration = ((VoiceContent) message.getContent()).getDuration();
         duration.setText(ActorSDK.sharedActor().getMessenger().getFormatter().formatDuration((int) (currentDuration / 1000)));
 

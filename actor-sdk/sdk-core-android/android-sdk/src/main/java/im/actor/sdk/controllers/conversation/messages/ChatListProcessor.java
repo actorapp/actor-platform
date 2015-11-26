@@ -1,5 +1,6 @@
 package im.actor.sdk.controllers.conversation.messages;
 
+import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -22,7 +23,10 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.ContactContent;
+import im.actor.core.entity.content.LocationContent;
+import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.TextContent;
+import im.actor.core.entity.content.VideoContent;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
@@ -100,6 +104,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
             messenger().getUser(msg.getSenderId());
 
             // Process reactions
+            boolean isImage = msg.getContent() instanceof PhotoContent || msg.getContent() instanceof VideoContent || msg.getContent() instanceof LocationContent;
             boolean hasReactions = msg.getReactions() != null && msg.getReactions().size() > 0;
             Spannable reactions = null;
             if (hasReactions) {
@@ -115,7 +120,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
                             break;
                         }
                     }
-                    s.setSpan(new ReactionSpan(r.getCode(), hasMyReaction, fragment.getPeer(), msg.getRid()), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    s.setSpan(new ReactionSpan(r.getCode(), hasMyReaction, fragment.getPeer(), msg.getRid(), isImage ? Color.WHITE : ActorSDK.sharedActor().style.getConvTimeColor()), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     reactions = builder.append(s);
 
                 }
@@ -218,7 +223,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
                 preprocessedDatas.add(preprocessedTexts.get(msg.getRid()));
             } else {
                 // Nothing to do yet
-                preprocessedDatas.add(null);
+                preprocessedDatas.add(new PreprocessedData(reactions));
             }
         }
 
