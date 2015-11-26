@@ -58,15 +58,25 @@ class EditGroup extends Component {
         disabledTextColor: 'rgba(0,0,0,.4)'
       }
     });
+    this.setListeners();
+  }
+
+  componentWillUnmount() {
+    this.removeListeners();
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (nextState.isOpen && !this.state.isOpen) {
-      document.addEventListener('keydown', this.onKeyDown, false);
-    } else if (!nextState.isOpen && this.state.isOpen) {
-      document.removeEventListener('keydown', this.onKeyDown, false);
+    if (nextState.isOpen) {
+      if (nextState.isCropModalOpen) {
+        this.removeListeners();
+      } else {
+        this.setListeners();
+      }
     }
   }
+
+  setListeners = () => document.addEventListener('keydown', this.onKeyDown, false);
+  removeListeners = () => document.removeEventListener('keydown', this.onKeyDown, false);
 
   onClose = () => EditGroupActionCreators.hide();
   onTitleChange = event => this.setState({title: event.target.value});
