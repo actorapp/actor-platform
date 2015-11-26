@@ -4,7 +4,7 @@ import akka.actor._
 import akka.testkit.TestProbe
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.codecs._
-import im.actor.api.rpc.sequence.{ SeqUpdate, WeakUpdate }
+import im.actor.api.rpc.sequence.{ FatSeqUpdate, SeqUpdate, WeakUpdate }
 import im.actor.api.rpc.{ Request, RpcRequest, RpcResult }
 import im.actor.server
 import im.actor.server._
@@ -24,6 +24,7 @@ import slick.driver.PostgresDriver
 
 import scala.concurrent.duration._
 import scala.concurrent.{ Await, Future, blocking }
+import scala.reflect.ClassTag
 import scala.util.Random
 
 abstract class BaseSessionSpec(_system: ActorSystem = {
@@ -70,10 +71,19 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
     authId
   }
 
-  protected def expectSeqUpdate(authId: Long, sessionId: Long, sendAckAt: Option[Duration] = Some(0.seconds))(implicit probe: TestProbe): SeqUpdate = {
+  protected def expectSeqUpdate(authId: Long, sessionId: Long, sendAckAt: Option[Duration] = Some(0.seconds))(implicit probe: TestProbe): SeqUpdate =
+    expectUpdateBox(classOf[SeqUpdate], authId, sessionId, sendAckAt)
+
+  protected def expectFatSeqUpdate(authId: Long, sessionId: Long, sendAckAt: Option[Duration] = Some(0.seconds))(implicit probe: TestProbe): FatSeqUpdate =
+    expectUpdateBox(classOf[FatSeqUpdate], authId, sessionId, sendAckAt)
+
+  protected def expectWeakUpdate(authId: Long, sessionId: Long)(implicit probe: TestProbe): WeakUpdate =
+    expectUpdateBox(classOf[WeakUpdate], authId, sessionId, None)
+
+  protected def expectUpdateBox[T <: im.actor.api.rpc.UpdateBox](clazz: Class[T], authId: Long, sessionId: Long, sendAckAt: Option[Duration])(implicit probe: TestProbe, m: Manifest[T]): T = {
     val mb = expectMessageBox(authId, sessionId)
 
-    val update = UpdateBoxCodec.decode(mb.body.asInstanceOf[UpdateBox].bodyBytes).require.value.asInstanceOf[SeqUpdate]
+    val update = UpdateBoxCodec.decode(mb.body.asInstanceOf[UpdateBox].bodyBytes).require.value
 
     sendAckAt map { delay ⇒
       Future {
@@ -84,11 +94,9 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
       }
     }
 
-    update
-  }
+    update shouldBe a[T]
 
-  protected def expectWeakUpdate(authId: Long, sessionId: Long)(implicit probe: TestProbe): WeakUpdate = {
-    UpdateBoxCodec.decode(expectMessageBox(authId, sessionId).body.asInstanceOf[UpdateBox].bodyBytes).require.value.asInstanceOf[WeakUpdate]
+    update.asInstanceOf[T]
   }
 
   protected def expectRpcResult(sendAckAt: Option[Duration] = Some(0.seconds), expectAckFor: Set[Long] = Set.empty)(implicit probe: TestProbe, sessionRegion: SessionRegion): RpcResult = {
