@@ -104,7 +104,7 @@ public class SearchModule extends AbsModule {
     }
 
     private Command<List<MessageSearchEntity>> findAllContent(Peer peer, ApiSearchContentType contentType) {
-        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
+        ArrayList<ApiSearchCondition> conditions = new ArrayList<ApiSearchCondition>();
         conditions.add(new ApiSearchPeerCondition(buildApiOutPeer(peer)));
         conditions.add(new ApiSearchPeerContentType(contentType));
         return findMessages(new ApiSearchAndCondition(conditions));
