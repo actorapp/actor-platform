@@ -17,7 +17,7 @@ const ThemeManager = new Styles.ThemeManager();
 
 const getStateFromStores = () => {
   return {
-    isAddContactModalOpen: AddContactStore.isModalOpen(),
+    isAddContactModalOpen: AddContactStore.isOpen(),
     contacts: ContactStore.getContacts()
   };
 };

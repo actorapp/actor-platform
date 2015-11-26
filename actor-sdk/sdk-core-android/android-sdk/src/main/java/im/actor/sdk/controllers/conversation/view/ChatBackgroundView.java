@@ -37,11 +37,14 @@ public class ChatBackgroundView extends View {
     public void bind() {
         if (background == null) {
             shp = getContext().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
-            background = getResources().getDrawable(BackgroundPreviewView.getBackground(shp.getInt("wallpaper", R.drawable.img_chat_background_default)));
+            background = getResources().getDrawable(BackgroundPreviewView.getBackground(shp.getInt("wallpaper", 0)));
         }
-
     }
 
+    public void bind(int i) {
+        background = getResources().getDrawable(BackgroundPreviewView.getBackground(i));
+        invalidate();
+    }
     @Override
     protected void onDraw(Canvas canvas) {
         if (background != null) {

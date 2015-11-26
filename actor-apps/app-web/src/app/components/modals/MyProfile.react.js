@@ -25,7 +25,6 @@ import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
 
-@ReactMixin.decorate(IntlMixin)
 class MyProfile extends Component {
   static childContextTypes = {
     muiTheme: React.PropTypes.object
@@ -61,15 +60,25 @@ class MyProfile extends Component {
         disabledTextColor: 'rgba(0,0,0,.4)'
       }
     });
+    this.setListeners();
+  }
+
+  componentWillUnmount() {
+    this.removeListeners();
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if ((nextState.isOpen && !this.state.isOpen) || (this.state.isOpen && !nextState.isCropModalOpen)) {
-      document.addEventListener('keydown', this.onKeyDown, false);
-    } else if ((!nextState.isOpen && this.state.isOpen) || (this.state.isOpen && nextState.isCropModalOpen)) {
-      document.removeEventListener('keydown', this.onKeyDown, false);
+    if (nextState.isOpen) {
+      if (nextState.isCropModalOpen) {
+        this.removeListeners();
+      } else {
+        this.setListeners();
+      }
     }
   }
+
+  setListeners = () => document.addEventListener('keydown', this.onKeyDown, false);
+  removeListeners = () => document.removeEventListener('keydown', this.onKeyDown, false);
 
   onClose = () => MyProfileActions.hide();
 
@@ -152,14 +161,30 @@ class MyProfile extends Component {
                            type="text"
                            value={nick}/>
               </div>
-              <div className="phone">
-                <TextField className="login__form__input"
-                           disabled
-                           floatingLabelText={this.getIntlMessage('modal.profile.phone')}
-                           fullWidth
-                           type="tel"
-                           value={(profile.phones[0] || {}).number}/>
-              </div>
+              {
+                profile.phones[0]
+                  ? <div className="phone">
+                      <TextField className="login__form__input"
+                                 disabled
+                                 floatingLabelText={this.getIntlMessage('modal.profile.phone')}
+                                 fullWidth
+                                 type="tel"
+                                 value={(profile.phones[0] || {}).number}/>
+                    </div>
+                  : null
+              }
+              {
+                profile.emails[0]
+                  ? <div className="phone">
+                      <TextField className="login__form__input"
+                                 disabled
+                                 floatingLabelText={this.getIntlMessage('modal.profile.email')}
+                                 fullWidth
+                                 type="email"
+                                 value={(profile.emails[0] || {}).email}/>
+                    </div>
+                  : null
+              }
               <div className="about">
                 <label htmlFor="about">{this.getIntlMessage('modal.profile.about')}</label>
                 <textarea className="textarea"
@@ -197,5 +222,7 @@ class MyProfile extends Component {
     }
   }
 }
+
+ReactMixin.onClass(MyProfile, IntlMixin);
 
 export default Container.create(MyProfile, {pure: false});

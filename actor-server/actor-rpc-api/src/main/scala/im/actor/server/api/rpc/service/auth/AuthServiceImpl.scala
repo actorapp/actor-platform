@@ -240,8 +240,10 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
     clientData:         ClientData
   ): Future[HandlerResult[ResponseStartEmailAuth]] = {
     val action = for {
-      validEmail ← fromEither(validEmail(email).leftMap(validationFailed("EMAIL_INVALID", _))) //it actually does not change input email
-      activationType = if (OAuth2ProvidersDomains.supportsOAuth2(email)) OAUTH2 else CODE
+      validEmail ← fromEither(validEmail(email).leftMap(validationFailed("EMAIL_INVALID", _)))
+      //    OAUTH activation is temporary disabled
+      //    activationType = if (OAuth2ProvidersDomains.supportsOAuth2(validEmail)) OAUTH2 else CODE
+      activationType = CODE
       isRegistered ← fromDBIO(persist.UserEmailRepo.exists(validEmail))
       optTransaction ← fromDBIO(persist.auth.AuthEmailTransactionRepo.findByEmailAndDeviceHash(validEmail, deviceHash))
       transactionHash ← optTransaction match {
@@ -250,7 +252,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
           activationType match {
             case CODE ⇒
               for {
-                _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendEmailCode(email, genEmailCode(email), hash))
+                _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendEmailCode(validEmail, genEmailCode(validEmail), hash))
               } yield hash
             case OAUTH2 ⇒
               point(hash)
@@ -273,7 +275,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
             case CODE ⇒
               for {
                 _ ← fromDBIO(persist.auth.AuthEmailTransactionRepo.create(emailAuthTransaction))
-                _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendEmailCode(email, genEmailCode(email), transactionHash))
+                _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendEmailCode(validEmail, genEmailCode(validEmail), transactionHash))
               } yield transactionHash
             case OAUTH2 ⇒
               for {

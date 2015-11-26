@@ -12,28 +12,19 @@ export default {
   open: () => dispatch(ActionTypes.CONTACT_ADD_MODAL_SHOW),
   close: () => dispatch(ActionTypes.CONTACT_ADD_MODAL_HIDE),
 
-  findUsers: (query) => {
-    // TODO: Use dispatchAsync method
-    ActorClient.findUsers(query)
-      .then(users => {
-        if (users.length > 0) {
-          const user = users[0];
-          const uid = user.id;
-          const userPeer = ActorClient.getUserPeer(uid);
+  findUsers(query) {
+    dispatchAsync(ActorClient.findUsers(query), {
+      request: ActionTypes.CONTACT_FIND,
+      success: ActionTypes.CONTACT_FIND_SUCCESS,
+      failure: ActionTypes.CONTACT_FIND_ERROR
+    }, { query })
+  },
 
-          if (user.isContact) {
-            DialogActionCreators.selectDialogPeer(userPeer);
-            dispatch(ActionTypes.CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT);
-          } else {
-            ContactActionCreators.addContact(uid);
-            DialogActionCreators.selectDialogPeer(userPeer);
-            dispatch(ActionTypes.CONTACT_ADD_MODAL_FIND_USER_OK);
-          }
-        } else {
-          dispatch(ActionTypes.CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED);
-        }
-      }).catch(error => {
-      throw new Error(error);
-    });
+  addToContacts(uid, isContact) {
+    const peer = ActorClient.getUserPeer(uid);
+    if (!isContact) {
+      ContactActionCreators.addContact(uid);
+    }
+    DialogActionCreators.selectDialogPeer(peer);
   }
 };

@@ -12,6 +12,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
+import android.widget.Toast;
 
 import im.actor.sdk.controllers.fragment.preview.CodePreviewActivity;
 import im.actor.runtime.android.AndroidContext;
@@ -92,10 +93,16 @@ public class AndroidMarkdown {
                 builder.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(View view) {
-                        AndroidContext.getContext().startActivity(
-                                new Intent(Intent.ACTION_VIEW)
-                                        .setData(Uri.parse(url.getUrl()))
-                                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                        Intent intent = new Intent(Intent.ACTION_VIEW)
+                                .setData(Uri.parse(url.getUrl()))
+                                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        if (intent.resolveActivity(view.getContext().getPackageManager()) != null) {
+                            AndroidContext.getContext().startActivity(
+                                    intent);
+                        } else {
+                            Toast.makeText(view.getContext(), "Unknown URL type", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 }, start, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else {
