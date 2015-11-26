@@ -100,6 +100,7 @@ export default {
         'name': 'Nombre completo',
         'nick': 'Nick usuario',
         'phone': 'Número de móvil',
+        'email': 'Email',
         'about': 'Estado',
         'avatarChange': 'Cambiar avatar',
         'avatarRemove': 'Eliminar'
@@ -135,11 +136,11 @@ export default {
       },
       'addContact': {
         'title': 'Añadir contacto',
-        'query': 'Número de móvil',
-        'error': {
-          'notRegistered': 'This phone is not registered in Actor.',
-          'inContacts': 'You already have this user in contacts.'
-        }
+        'query': 'Email, nickname or phone',
+        'phone': 'Número de móvil',
+        'notFound': 'User with such data is not found',
+        'empty': 'Start typing to search people',
+        'searching': 'Search for "{query}"'
       },
       'createGroup': {
         'title': 'Crear grupo',

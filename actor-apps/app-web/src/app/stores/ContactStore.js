@@ -61,16 +61,10 @@ ContactStore.dispatchToken = register(function(action) {
       break;
 
     case ActionTypes.CONTACT_ADD:
-      ActorClient.addContact(action.uid);
-      ContactStore.emitChange();
-      break;
-
     case ActionTypes.CONTACT_REMOVE:
-      ActorClient.removeContact(action.uid);
       ContactStore.emitChange();
       break;
     default:
-      return;
   }
 });
 

@@ -2,6 +2,18 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+@mixin side-profile() {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  overflow-y: auto;
+
+  padding: 0;
+}
+
 .profile {
   &__list {
     margin: 0;
@@ -54,15 +66,7 @@
 }
 
 .user_profile {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-
-  overflow-y: auto;
-
-  padding: 0;
+  @include side-profile();
   &__meta {
     padding-right: 16px;
     header {
@@ -96,6 +100,7 @@
       line-height: 22px;
 
       color: rgba(0, 0, 0, .3);
+
       @include text-elipsis();
     }
     &__about {
@@ -151,9 +156,10 @@
         }
         .title {
           a {
-            color: $greyish-brown;
-            text-decoration: none;
             cursor: pointer;
+            text-decoration: none;
+
+            color: $greyish-brown;
             &:hover {
               color: $dark-sky-blue;
             }
@@ -166,11 +172,11 @@
             line-height: 24px;
           }
           &.description {
-            text-transform: lowercase;
             font-size: 13px;
             line-height: 16px;
 
             user-select: none;
+            text-transform: lowercase;
 
             color: rgba(black, .4);
           }
@@ -184,16 +190,7 @@
 }
 
 .group_profile {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-
-  overflow-y: auto;
-
-  padding: 0;
-
+  @include side-profile();
   &__meta {
     padding-right: 16px;
     header {
@@ -312,26 +309,10 @@
       padding-right: 16px;
       padding-left: 46px;
     }
-    .token {
-      font-size: 15px;
-      line-height: 20px;
-
-      display: block;
-
-      box-sizing: border-box;
-      width: 100%;
+    .textarea {
       height: 98px;
       margin-top: 18px;
       margin-left: -9px;
-      padding: 8px;
-
-      resize: none;
-      cursor: pointer;
-      word-break: break-all;
-
-      color: $greyish-brown;
-      border: 1px solid $light-grey-blue;
-      border-radius: 3px;
     }
   }
 }

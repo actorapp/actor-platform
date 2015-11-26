@@ -81,7 +81,7 @@ class InviteByLink extends React.Component {
 
           <div className="modal-new__body">
             <FormattedMessage groupName={groupName} message={this.getIntlMessage('inviteByLinkModalDescription')}/>
-            <textarea className="invite-url" onClick={this.onInviteLinkClick} readOnly row="3" value={inviteUrl}/>
+            <textarea className="textarea" onClick={this.onInviteLinkClick} readOnly row="3" value={inviteUrl}/>
           </div>
 
           <footer className="modal-new__footer">

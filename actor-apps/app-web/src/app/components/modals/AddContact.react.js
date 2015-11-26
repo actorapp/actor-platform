@@ -2,67 +2,39 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import _ from 'lodash';
-
-import React, { Component, PropTypes } from 'react';
+import { map, debounce } from 'lodash';
+import React, { Component } from 'react';
 import { Container } from 'flux/utils';
+import classNames from 'classnames';
 import Modal from 'react-modal';
 import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
+import { IntlMixin, FormattedMessage } from 'react-intl';
+import { KeyCodes } from 'constants/ActorAppConstants';
 
-// TODO: get rid of the material-ui
-import { Styles, TextField } from 'material-ui';
-
-import AddContactStore from 'stores/AddContactStore';
 import AddContactActionCreators from 'actions/AddContactActionCreators';
 
-import classNames from 'classnames';
+import AddContactStore from 'stores/AddContactStore';
 
-import { KeyCodes, AddContactMessages } from 'constants/ActorAppConstants';
-import ActorTheme from 'constants/ActorTheme';
+import TextField from '../common/TextField.react';
+import ContactItem from './add-contact/ContactItem.react';
 
-const ThemeManager = new Styles.ThemeManager();
-
-@ReactMixin.decorate(IntlMixin)
 class AddContact extends Component {
   static getStores = () => [AddContactStore];
 
   static calculateState() {
     return {
-      isOpen: AddContactStore.isModalOpen(),
-      message: AddContactStore.getMessage(),
-      query: AddContactStore.getQuery()
-    };
-  }
-
-  static childContextTypes = {
-    muiTheme: PropTypes.object
-  };
-
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
+      isOpen: AddContactStore.isOpen(),
+      results: AddContactStore.getResults(),
+      isSearching: AddContactStore.isSearching()
     };
   }
 
   componentWillMount() {
-    ThemeManager.setTheme(ActorTheme);
-    ThemeManager.setComponentThemes({
-      textField: {
-        textColor: 'rgba(0,0,0,.87)',
-        focusColor: '#68a3e7',
-        backgroundColor: 'transparent',
-        borderColor: '#68a3e7'
-      }
-    });
-
     document.addEventListener('keydown', this.handleKeyDown, false);
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.refs.query.focus();
-    }, 10)
+    this.refs.query.focus();
   }
 
   componentWillUnmount() {
@@ -71,7 +43,15 @@ class AddContact extends Component {
 
   handleClose = () => AddContactActionCreators.close();
 
-  handleQueryChange = event => this.setState({query: event.target.value});
+  handleQueryChange = (event) => {
+    const query = event.target.value;
+    this.setState({query});
+    this.findUsers(query);
+  };
+
+  findUsers = debounce((query) => {
+    AddContactActionCreators.findUsers(query);
+  }, 300, {trailing: true});
 
   addContact = () => AddContactActionCreators.findUsers(this.state.query);
 
@@ -85,30 +65,30 @@ class AddContact extends Component {
     }
   };
 
+  handleSelect = (uid, isContact) => {
+    AddContactActionCreators.addToContacts(uid, isContact);
+    this.handleClose();
+  };
+
   render() {
-    const { isOpen, message, query } = this.state;
+    const { isOpen, isSearching, query, results } = this.state;
+    const isQueryEmpty = !query || query.length === '';
 
-    const messageClassName = classNames({
-      'error-message': true,
-      'error-message--shown': message
-    });
+    const resultContacts = map(results, (result, index) => <ContactItem key={index} {...result} onSelect={this.handleSelect}/>);
 
-    let messageText;
-    switch (message) {
-      case AddContactMessages.PHONE_NOT_REGISTERED:
-        messageText = this.getIntlMessage('modal.addContact.error.notRegistered');
-        break;
-      case AddContactMessages.ALREADY_HAVE:
-        messageText = this.getIntlMessage('modal.addContact.error.inContacts');
-        break;
-      default:
+    if (resultContacts.length === 0 && !isQueryEmpty) {
+      resultContacts.push(
+        <li className="add-contact__results__item add-contact__results__item--not-found">
+          {this.getIntlMessage('modal.addContact.notFound')}
+        </li>
+      );
     }
 
     return (
-      <Modal className="modal-new modal-new--add-contact"
+      <Modal className="modal-new modal-new--add-contact add-contact"
              closeTimeoutMS={150}
              isOpen={isOpen}
-             style={{width: 320}}>
+             style={{width: 360}}>
 
         <header className="modal-new__header">
           <h3 className="modal-new__header__title">{this.getIntlMessage('modal.addContact.title')}</h3>
@@ -117,25 +97,35 @@ class AddContact extends Component {
         </header>
 
         <div className="modal-new__body">
-          <TextField className="login__form__input"
-                     floatingLabelText={this.getIntlMessage('modal.addContact.query')}
-                     fullWidth
+
+          <TextField className="input__material--wide"
+                     floatingLabel={this.getIntlMessage('modal.addContact.query')}
                      onChange={this.handleQueryChange}
                      ref="query"
                      value={query}/>
         </div>
 
-        <span className={messageClassName}>{messageText}</span>
-
-        <footer className="modal-new__footer text-right">
-          <button className="button button--lightblue" onClick={this.addContact} type="submit">
-            {this.getIntlMessage('button.add')}
-          </button>
+        <footer className="modal-new__footer">
+          <ul className="add-contact__results">
+          {
+            isQueryEmpty
+              ? <li className="add-contact__results__item add-contact__results__item--searching">
+                  {this.getIntlMessage('modal.addContact.empty')}
+                </li>
+              : isSearching
+                ? <li className="add-contact__results__item add-contact__results__item--searching">
+                    <FormattedMessage message={this.getIntlMessage('modal.addContact.searching')} query={query}/>
+                  </li>
+                : resultContacts
+          }
+          </ul>
         </footer>
 
       </Modal>
     );
   }
 }
+
+ReactMixin.onClass(AddContact, IntlMixin);
 
 export default Container.create(AddContact);

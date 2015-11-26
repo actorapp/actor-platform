@@ -218,7 +218,7 @@ class GroupProfile extends React.Component {
             <p>{this.getIntlMessage('integrationTokenHint')}</p>
             <a href="https://actor.readme.io/docs/simple-integration" target="_blank">{this.getIntlMessage('integrationTokenHelp')}</a>
           </div>
-          <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
+          <textarea className="textarea" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
         </Fold>
       </li>
     ) : null;

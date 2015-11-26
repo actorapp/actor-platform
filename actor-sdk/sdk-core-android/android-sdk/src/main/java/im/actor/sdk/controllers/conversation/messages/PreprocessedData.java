@@ -1,4 +1,15 @@
 package im.actor.sdk.controllers.conversation.messages;
 
+import android.text.Spannable;
+
 public abstract class PreprocessedData {
+    private final Spannable reactionsSpannable;
+
+    protected PreprocessedData(Spannable reactionsSpannable) {
+        this.reactionsSpannable = reactionsSpannable;
+    }
+
+    public Spannable getReactionsSpannable() {
+        return reactionsSpannable;
+    }
 }

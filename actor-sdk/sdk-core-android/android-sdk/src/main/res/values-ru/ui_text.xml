@@ -22,6 +22,7 @@
 
     <string name="toast_no_sdcard">Нет SD-карты</string>
     <string name="toast_phone_copied">Телефон скопирован в буфер обмена</string>
+    <string name="toast_email_copied">Email скопирован в буфер обмена</string>
     <string name="toast_messages_copied">Сообщения скопированы в буфер обмена</string>
     <string name="toast_unable_kick">Невозможно исключить участника из группы</string>
     <string name="toast_unable_add">Невозможно добавить пользователя в группу</string>
@@ -157,6 +158,7 @@
 
     <!-- Profile controls -->
     <string name="phone_menu_call">Позвонить {0}</string>
+    <string name="email_menu_email">Отправить письмо {0}</string>
     <string name="phone_menu_sms">SMS {0}</string>
     <string name="phone_menu_share">Отправить {0}</string>
     <string name="phone_menu_copy">Скопировать</string>
