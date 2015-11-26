@@ -85,7 +85,7 @@ public class SearchModule extends AbsModule {
     }
 
     public Command<List<MessageSearchEntity>> findTextMessages(Peer peer, String query) {
-        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
+        ArrayList<ApiSearchCondition> conditions = new ArrayList<ApiSearchCondition>();
         conditions.add(new ApiSearchPeerCondition(buildApiOutPeer(peer)));
         conditions.add(new ApiSearchPieceText(query));
         return findMessages(new ApiSearchAndCondition(conditions));
