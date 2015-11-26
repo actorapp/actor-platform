@@ -31,7 +31,9 @@ import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
@@ -243,7 +245,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         return false;
     }
 
-    public boolean onLongClick(Message message) {
+    public boolean onLongClick(Message message, final boolean hasMyReaction) {
         if (actionMode == null) {
             messagesAdapter.clearSelection();
             messagesAdapter.setSelected(message, true);
@@ -273,6 +275,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                     menu.findItem(R.id.copy).setVisible(isAllText);
                     menu.findItem(R.id.quote).setVisible(isAllText);
                     menu.findItem(R.id.forward).setVisible(selected.length == 1 || isAllText);
+                    menu.findItem(R.id.like).setVisible(selected.length == 1);
                     return false;
                 }
 
@@ -308,6 +311,38 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                         Toast.makeText(getActivity(), R.string.toast_messages_copied, Toast.LENGTH_SHORT).show();
                         actionMode.finish();
                         return true;
+                    } else if (menuItem.getItemId() == R.id.like) {
+                        Message currentMessage = messagesAdapter.getSelected()[0];
+
+                        if (hasMyReaction) {
+                            ActorSDK.sharedActor().getMessenger().removeReaction(getPeer(), currentMessage.getRid(), "\u2764").start(new CommandCallback<Boolean>() {
+                                @Override
+                                public void onResult(Boolean res) {
+
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+
+                                }
+                            });
+                        } else {
+                            ActorSDK.sharedActor().getMessenger().addReaction(getPeer(), currentMessage.getRid(), "\u2764").start(new CommandCallback<Boolean>() {
+                                @Override
+                                public void onResult(Boolean res) {
+
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+
+                                }
+                            });
+
+                        }
+                        actionMode.finish();
+                        return true;
+
                     } else if (menuItem.getItemId() == R.id.quote) {
                         String quote = "";
                         String rawQuote = "";
