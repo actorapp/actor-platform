@@ -165,8 +165,7 @@ public class PhotoHolder extends MessageHolder {
         }
 
         // Update time
-        time.setText(Strings.formatTime(message.getDate()));
-
+        setTimeAndReactions(time);
         // Update size
         if (isNewMessage) {
             int w, h;

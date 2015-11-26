@@ -15,23 +15,25 @@ import im.actor.sdk.view.BaseUrlSpan;
 
 public class ReactionSpan extends BaseUrlSpan {
 
-    boolean hasMyReaction;
+    private boolean hasMyReaction;
     Peer peer;
     long rid;
     String code;
+    int baseColor;
 
-    public ReactionSpan(String code, boolean hasMyReaction, Peer peer, long rid) {
+    public ReactionSpan(String code, boolean hasMyReaction, Peer peer, long rid, int baseColor) {
         super(code, false);
         this.code = code;
         this.hasMyReaction = hasMyReaction;
         this.peer = peer;
         this.rid = rid;
+        this.baseColor = baseColor;
     }
 
     @Override
     public void updateDrawState(TextPaint ds) {
         super.updateDrawState(ds);
-        ds.setColor(hasMyReaction && code.equals("\u2764") ? ActorSDK.sharedActor().style.getConvLikeColor() : ActorSDK.sharedActor().style.getConvTimeColor());
+        ds.setColor(hasMyReaction && code.equals("\u2764") ? ActorSDK.sharedActor().style.getConvLikeColor() : baseColor);
         ds.setUnderlineText(false);
     }
 
@@ -62,5 +64,9 @@ public class ReactionSpan extends BaseUrlSpan {
                 }
             });
         }
+    }
+
+    public boolean hasMyReaction() {
+        return hasMyReaction;
     }
 }

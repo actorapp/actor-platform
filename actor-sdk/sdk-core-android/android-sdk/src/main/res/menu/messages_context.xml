@@ -9,7 +9,7 @@
     <item
         android:id="@+id/forward"
         android:icon="@drawable/ic_forward_white_36dp"
-        android:title="Quote" />
+        android:title="Forward" />
 
     <item
         android:id="@+id/quote"
@@ -25,6 +25,11 @@
         android:id="@+id/copy"
         android:icon="@drawable/ic_content_copy_white_36dp"
         android:title="Copy" />
+
+    <item
+        android:icon="@drawable/ic_favorite_white_36dp"
+        android:id="@+id/like"
+        android:title="Like" />
 
     <!--<item-->
     <!--android:id="@+id/forward"-->

@@ -23,11 +23,20 @@ import im.actor.core.entity.content.ContactContent;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.avatar.AvatarPlaceholderDrawable;
 
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 
 public class ContactHolder extends MessageHolder {
+
+    private int waitColor;
+    private int sentColor;
+    private int deliveredColor;
+    private int readColor;
+    private int errorColor;
+    private final TintImageView stateIcon;
+    private final TextView time;
 
     private ViewGroup mainContainer;
     private FrameLayout messageBubble;
@@ -38,6 +47,15 @@ public class ContactHolder extends MessageHolder {
 
     public ContactHolder(MessagesAdapter fragment, final View itemView) {
         super(fragment, itemView, false);
+        waitColor = ActorSDK.sharedActor().style.getConvStatePendingColor();
+        sentColor = ActorSDK.sharedActor().style.getConvStateSentColor();
+        deliveredColor = ActorSDK.sharedActor().style.getConvStateDeliveredColor();
+        readColor = ActorSDK.sharedActor().style.getConvStateReadColor();
+        errorColor = ActorSDK.sharedActor().style.getConvStateErrorColor();
+
+        stateIcon = (TintImageView) itemView.findViewById(R.id.stateIcon);
+        time = (TextView) itemView.findViewById(R.id.time);
+        time.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
 
         mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
@@ -49,8 +67,41 @@ public class ContactHolder extends MessageHolder {
 
     @Override
     protected void bindData(final Message message, boolean isUpdated, PreprocessedData preprocessedData) {
-
         ContactContent contact = (ContactContent) message.getContent();
+
+        // Update state
+        if (message.getSenderId() == myUid()) {
+            stateIcon.setVisibility(View.VISIBLE);
+            switch (message.getMessageState()) {
+                case ERROR:
+                    stateIcon.setResource(R.drawable.msg_error);
+                    stateIcon.setTint(errorColor);
+                    break;
+                default:
+                case PENDING:
+                    stateIcon.setResource(R.drawable.msg_clock);
+                    stateIcon.setTint(waitColor);
+                    break;
+                case READ:
+                    stateIcon.setResource(R.drawable.msg_check_2);
+                    stateIcon.setTint(readColor);
+                    break;
+                case RECEIVED:
+                    stateIcon.setResource(R.drawable.msg_check_2);
+                    stateIcon.setTint(deliveredColor);
+                    break;
+                case SENT:
+                    stateIcon.setResource(R.drawable.msg_check_1);
+                    stateIcon.setTint(sentColor);
+                    break;
+            }
+        } else {
+            stateIcon.setVisibility(View.GONE);
+        }
+
+        // Update time
+        setTimeAndReactions(time);
+
         if (message.getSenderId() == myUid()) {
             messageBubble.setBackgroundResource(R.drawable.conv_bubble_media_out);
         } else {

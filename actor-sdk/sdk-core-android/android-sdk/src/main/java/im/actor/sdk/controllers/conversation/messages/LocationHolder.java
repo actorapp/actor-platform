@@ -140,8 +140,7 @@ public class LocationHolder extends MessageHolder {
         }
 
         // Update time
-        time.setText(ActorSDK.sharedActor().getMessenger().getFormatter().formatTime(message.getDate()));
-
+        setTimeAndReactions(time);
 
         previewView.setTag(message.getRid());
         new DownloadImageTask(previewView, message.getRid())
