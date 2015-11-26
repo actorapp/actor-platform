@@ -366,6 +366,12 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
     db.run(toDBIOAction(authorizedAction))
   }
 
+  override def jhandleStartAnonymousAuth(name: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = throw new Exception("Not implemented")
+
+  override def jhandleStartTokenAuth(token: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = throw new Exception("Not implemented")
+
+  override def jhandleValidatePassword(transactionHash: String, password: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = throw new Exception("Not implemented")
+
   //TODO: move deprecated methods to separate trait
   @deprecated("schema api changes", "2015-06-09")
   override def jhandleSendAuthCallObsolete(
