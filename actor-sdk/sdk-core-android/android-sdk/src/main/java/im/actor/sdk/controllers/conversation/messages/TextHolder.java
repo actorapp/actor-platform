@@ -1,11 +1,7 @@
 package im.actor.sdk.controllers.conversation.messages;
 
 import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.core.entity.Message;
-import im.actor.core.entity.Reaction;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.util.Strings;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.view.TintImageView;
 
@@ -130,13 +124,7 @@ public class TextHolder extends MessageHolder {
             status.setVisibility(View.GONE);
         }
 
-        Spannable timeWithReactions = null;
-        if (reactions != null) {
-            SpannableStringBuilder builder = new SpannableStringBuilder(reactions);
-            timeWithReactions = builder.append(Strings.formatTime(message.getDate()));
-        }
-        time.setText(timeWithReactions != null ? timeWithReactions : Strings.formatTime(message.getDate()));
-        time.setMovementMethod(LinkMovementMethod.getInstance());
+        setTimeAndReactions(time);
     }
 
     class CustomLinkMovementMethod extends LinkMovementMethod {
