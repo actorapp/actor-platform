@@ -38,9 +38,9 @@ trait Releasing {
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
       inquireVersions,
-      //runClean,
+      runClean,
       setReleaseVersion,
-      //commitReleaseVersion,
+      commitReleaseVersion,
       ReleaseStep(
         action = { state =>
           val extracted = Project extract state
