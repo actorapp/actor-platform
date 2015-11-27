@@ -1,5 +1,8 @@
 import dsl._
 import Keys._
+import sbtrelease._
+import ReleaseStateTransformations._
+import com.typesafe.sbt.pgp.PgpKeys._
 
 enablePlugins(JavaServerAppPackaging)
 enablePlugins(JDebPackaging)
