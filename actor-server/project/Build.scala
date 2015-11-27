@@ -16,6 +16,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
         //version := Version,
         scalaVersion := ScalaVersion,
         crossPaths := false,
+        organization := "im.actor.server",
         organizationHomepage := Some(url("https://actor.im"))
       )
 
@@ -90,8 +91,6 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     .aggregate(
       //      actorDashboard,
       actorBots,
-      actorBotsShared,
-      actorBotkit,
       actorRuntime,
       actorTests
     )
@@ -116,7 +115,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     settings = defaultSettings ++ releaseSettings ++
       Seq(libraryDependencies ++= Dependencies.bots)
   )
-    .dependsOn(actorBotkit, actorCore, actorTestkit % "test")
+    .dependsOn(actorCore, actorTestkit % "test")
 
   lazy val actorBotsShared = Project(
     id = "actor-bots-shared",
@@ -333,13 +332,10 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     actorFrontend,
     actorHttpApi,
     actorRpcApi,
-    actorNotifications,
     actorOAuth
   ).aggregate(
     actorActivation,
-    actorBotkit,
     actorBots,
-    actorBotsShared,
     actorCli,
     actorCodecs,
     actorCore,

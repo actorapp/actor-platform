@@ -25,6 +25,7 @@ package object rpc extends {
     val UserNotFound = RpcError(404, "USER_NOT_FOUND", "", false, None)
     val UserPhoneNotFound = RpcError(404, "USER_PHONE_NOT_FOUND", "", false, None)
     val EntityNotFound = RpcError(404, "ENTITY_NOT_FOUND", "", false, None)
+    val NotSupportedInOss = RpcError(400, "NOT_SUPPORTED_IN_OSS", "Feature is not supported in the Open-Source version.", canTryAgain = false, None)
 
     def forbidden(userMessage: String) = RpcError(403, "FORBIDDEN", userMessage, false, None)
   }
