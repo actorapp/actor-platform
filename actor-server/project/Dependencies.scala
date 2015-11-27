@@ -180,7 +180,7 @@ object Dependencies {
 
   val notifications = shared ++ Seq(akkaClusterTools, slick)
 
-  val runner = Seq.empty
+  val sdk = Seq.empty
 
   val runtime = shared ++ Seq(akkaActor, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, libPhoneNumber, scalapbSer, scalazCore, akkaTestkit % "test", scalatest % "test")
 
