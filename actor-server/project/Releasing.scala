@@ -31,8 +31,10 @@ trait Releasing {
     repo.release(pkgName, vers, log)
   }
 */
+
   lazy val releaseSettings = Seq(
     //taskSetting,
+    releaseCommitMessage := s"chore(server): setting version to ${(version in ThisBuild).value}",
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
       inquireVersions,
@@ -47,12 +49,9 @@ trait Releasing {
         enableCrossBuild = true
       ),
       setNextVersion,
-      commitNextVersion
-      /*ReleaseStep{ state =>
-        val extracted = Project extract state
-        extracted.runAggregated(sonatypeReleaseAll in Global in extracted.get(thisProjectRef), state)
-      },*/
-      //pushChanges
+      commitNextVersion,
+      ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+      pushChanges
     )
   )
 
