@@ -20,7 +20,6 @@ public class ChatSettingsFragment extends BaseFragment {
         View res = inflater.inflate(R.layout.fr_settings_chat, container, false);
 
         res.findViewById(R.id.dividerTop).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
-        res.findViewById(R.id.dividerBot).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
         final CheckBox sendByEnter = (CheckBox) res.findViewById(R.id.sendByEnter);
         sendByEnter.setChecked(messenger().isSendByEnterEnabled());
