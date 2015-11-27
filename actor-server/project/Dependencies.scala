@@ -5,6 +5,7 @@ import sbt._
 object Dependencies {
   object V {
     val actorCommons = "0.0.8"
+    val actorBotkit = "1.0.46"
     val akka = "2.4.0"
     val akkaExperimental = "2.0-M1"
     val cats = "0.2.0"
@@ -17,6 +18,7 @@ object Dependencies {
 
   object Compile {
     val actorConcurrent         = "im.actor"                      %% "actor-concurrent"              % V.actorCommons
+    val actorBotkit             = "im.actor"                      %  "actor-botkit"                  % V.actorBotkit
     val shardakka               = "im.actor"                      %% "shardakka"                     % V.shardakka
     val scalapbSer              = "im.actor"                      %% "akka-scalapb-serialization"    % V.scalapbSer
 
@@ -115,7 +117,7 @@ object Dependencies {
 
   val activation = shared ++ Seq(akkaActor, sprayClient, playJson)
 
-  val bots = shared ++ Seq(upickle, shardakka)
+  val bots = shared ++ Seq(actorBotkit, upickle, shardakka)
 
   val botkit = Seq(actorConcurrent, akkaActor, akkaHttp, akkaSlf4j, javaCompat, sprayWebsocket, upickle)
 

@@ -25,15 +25,7 @@ object ActorConfig {
         |akka {
         |  actor {
         |    provider: "akka.cluster.ClusterActorRefProvider"
-        |  }
         |
-        |  extensions: ["im.actor.server.db.DbExtension", "im.actor.server.bot.BotExtension", "akka.cluster.client.ClusterClientReceptionist"] $${akka.extensions}
-        |
-        |  loggers = ["akka.event.slf4j.Slf4jLogger"]
-        |
-        |  logging-filter = "akka.event.slf4j.Slf4jLoggingFilter"
-        |
-        |  actor {
         |    serializers {
         |      actor = "im.actor.serialization.ActorSerializer"
         |    }
@@ -43,7 +35,30 @@ object ActorConfig {
         |    }
         |  }
         |
+        |  extensions: ["im.actor.server.db.DbExtension", "im.actor.server.bot.BotExtension", "akka.cluster.client.ClusterClientReceptionist"] $${akka.extensions}
+        |
+        |  loggers = ["akka.event.slf4j.Slf4jLogger"]
+        |  logging-filter = "akka.event.slf4j.Slf4jLoggingFilter"
+        |
         |  cluster.sharding.state-store-mode = "ddata"
+        |
+        |  persistence {
+        |    journal.plugin: "jdbc-journal"
+        |    snapshot-store.plugin: "jdbc-snapshot-store"
+        |  }
+        |}
+        |
+        |jdbc-journal {
+        |  class = "akka.persistence.jdbc.journal.PostgresqlSyncWriteJournal"
+        |}
+        |
+        |jdbc-snapshot-store {
+        |  class = "akka.persistence.jdbc.snapshot.PostgresqlSyncSnapshotStore"
+        |}
+        |
+        |jdbc-connection {
+        |  jndiPath: "/"
+        |  dataSourceName: "DefaultDataSource"
         |}
       """.stripMargin
     ))
