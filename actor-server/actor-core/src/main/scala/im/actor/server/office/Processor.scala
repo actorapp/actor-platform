@@ -18,7 +18,7 @@ import scala.util.control.NoStackTrace
 import scala.util.{ Failure, Success }
 
 abstract class EntityNotFound(msg: String = "") extends RuntimeException(msg) with NoStackTrace
-case object EntityNotFound extends EntityNotFound("Entity not found")
+case object EntityNotFoundError extends EntityNotFound("Entity not found")
 case object StopOffice
 
 trait ProcessorState
@@ -34,7 +34,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
 
   protected def updatedState(evt: Event, state: State): State
 
-  protected val notFoundError: EntityNotFound = EntityNotFound
+  protected val notFoundError: EntityNotFound = EntityNotFoundError
 
   protected def workWith(es: immutable.Seq[Event], state: State): State = {
     val newState = es.foldLeft(state) {
