@@ -35,6 +35,7 @@ abstract class InternalBot(userId: Int, nickname: String, name: String, isAdmin:
 
   def receive = {
     case Initialized(authId, authSid) ⇒
+      log.warning("Initialized bot {} {} {}", userId, nickname, name)
       val bp = new BotServerBlueprint(userId, authId, authSid, system)
 
       val rqSource =

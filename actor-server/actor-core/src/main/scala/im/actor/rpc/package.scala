@@ -1,7 +1,7 @@
 package im.actor.api
 
 import im.actor.server.group.GroupErrors.GroupNotFound
-import im.actor.server.office.EntityNotFound
+import im.actor.server.office.EntityNotFoundError
 import im.actor.server.user.UserErrors.UserNotFound
 import slick.dbio.{ DBIO, DBIOAction }
 import slick.driver.PostgresDriver.api._
@@ -79,9 +79,9 @@ package object rpc extends {
 
   def recover[A](f: Future[\/[RpcError, A]])(implicit ec: ExecutionContext): Future[\/[RpcError, A]] = f recover recoverPF
   def recoverPF[A]: PartialFunction[Throwable, \/[RpcError, A]] = {
-    case UserNotFound(_)  ⇒ Error(CommonErrors.UserNotFound)
-    case GroupNotFound(_) ⇒ Error(CommonErrors.GroupNotFound)
-    case EntityNotFound   ⇒ Error(CommonErrors.EntityNotFound)
+    case UserNotFound(_)     ⇒ Error(CommonErrors.UserNotFound)
+    case GroupNotFound(_)    ⇒ Error(CommonErrors.GroupNotFound)
+    case EntityNotFoundError ⇒ Error(CommonErrors.EntityNotFound)
   }
 
   def authorized[R](clientData: ClientData)(fa: AuthorizedClientData ⇒ Future[RpcError \/ R])(implicit ec: ExecutionContext): Future[RpcError \/ R] =
