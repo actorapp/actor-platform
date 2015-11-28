@@ -103,7 +103,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
    */
   def exists(userId: UserId): Future[Boolean] = {
     userExt.getApiStruct(userId, 0, 0) map (_ ⇒ true) recover {
-      case EntityNotFound ⇒ false
+      case _: EntityNotFound ⇒ false
     }
   }
 
