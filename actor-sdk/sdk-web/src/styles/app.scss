@@ -68,9 +68,12 @@ body {
   background-color: $body-base-color;
 
   @include overlay();
-  img {
-    width: 100px;
-    height: 100px;
+  .logo {
+    width: 200px;
+    height: 200px;
+    background-image: url(assets/images/logo_splash.png);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
   }
 }
 
