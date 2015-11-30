@@ -4,18 +4,18 @@ import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
 import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
-import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.Docker
 
 object Build extends sbt.Build with Versioning with Releasing with Publishing {
   val ScalaVersion = "2.11.7"
-  val Version = getVersion
+  //val Version = getVersion
 
   lazy val buildSettings =
     Defaults.coreDefaultSettings ++
       Seq(
-        version := Version,
+        //version := Version,
         scalaVersion := ScalaVersion,
         crossPaths := false,
+        organization := "im.actor.server",
         organizationHomepage := Some(url("https://actor.im"))
       )
 
@@ -86,43 +86,21 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
           )
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
-    .dependsOn(actorRunner, actorCli)
+    .dependsOn(actorServerSdk, actorCli)
     .aggregate(
       //      actorDashboard,
       actorBots,
-      actorBotsShared,
-      actorBotkit,
       actorRuntime,
       actorTests
     )
     .settings(
-    aggregate in Docker := false,
     aggregate in Revolver.reStart := false
-  )
-
-  lazy val actorRunner = Project(
-    id = "actor-runner",
-    base = file("actor-runner"),
-    settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Dependencies.runner
-    )
-  ).dependsOn(
-    actorActivation,
-    actorBots,
-    actorCli,
-    actorEnrich,
-    actorEmail,
-    actorFrontend,
-    actorHttpApi,
-    actorRpcApi,
-    actorNotifications,
-    actorOAuth
   )
 
   lazy val actorActivation = Project(
     id = "actor-activation",
     base = file("actor-activation"),
-    settings = defaultSettings ++
+    settings = defaultSettings ++ releaseSettings ++
       Seq(
         libraryDependencies ++= Dependencies.activation,
         scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
@@ -132,15 +110,15 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorBots = Project(
     id = "actor-bots",
     base = file("actor-bots"),
-    settings = defaultSettings ++
+    settings = defaultSettings ++ releaseSettings ++
       Seq(libraryDependencies ++= Dependencies.bots)
   )
-    .dependsOn(actorBotkit, actorCore, actorTestkit % "test")
+    .dependsOn(actorCore, actorTestkit % "test")
 
   lazy val actorBotsShared = Project(
     id = "actor-bots-shared",
     base = file("actor-bots-shared"),
-    settings = defaultSettings ++ publishSettings ++ Seq(
+    settings = defaultSettings ++ publishSettings ++ releaseSettings ++ Seq(
       libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-reflect" % _),
       libraryDependencies ++= Dependencies.botShared,
       addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
@@ -150,7 +128,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorBotkit = Project(
     id = "actor-botkit",
     base = file("actor-botkit"),
-    settings = defaultSettings ++ publishSettings ++ Revolver.settings ++ Seq(
+    settings = defaultSettings ++ publishSettings ++ releaseSettings ++ Revolver.settings ++ Seq(
       libraryDependencies ++= Dependencies.botkit,
       addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
     )
@@ -161,7 +139,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorCli = Project(
     id = "actor-cli",
     base = file("actor-cli"),
-    settings = defaultSettings ++ Revolver.settings ++ Seq(
+    settings = defaultSettings ++ Revolver.settings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.cli,
       mainClass in Revolver.reStart := Some("im.actor.server.cli.ActorCliApp"),
       mainClass in Compile := Some("im.actor.server.cli.ActorCliApp")
@@ -171,7 +149,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorCore = Project(
     id = "actor-core",
     base = file("actor-core"),
-    settings = defaultSettings ++ SbtActorApi.settings ++ Seq(
+    settings = defaultSettings ++ SbtActorApi.settings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.core
     )
   ).dependsOn(actorCodecs, actorModels, actorPersist, actorPresences, actorSocial, actorRuntime)
@@ -179,7 +157,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorEmail = Project(
     id = "actor-email",
     base = file("actor-email"),
-    settings = defaultSettings ++
+    settings = defaultSettings ++ releaseSettings ++
       Seq(
         libraryDependencies ++= Dependencies.email
       )
@@ -188,7 +166,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorEnrich = Project(
     id = "actor-enrich",
     base = file("actor-enrich"),
-    settings = defaultSettings ++ Seq(
+    settings = defaultSettings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.enrich
     )
   ).dependsOn(actorRpcApi, actorRuntime)
@@ -196,7 +174,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorHttpApi = Project(
     id = "actor-http-api",
     base = file("actor-http-api"),
-    settings = defaultSettings ++ Seq(
+    settings = defaultSettings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.httpApi
     )
   ).dependsOn(actorBots, actorCore, actorPersist, actorRuntime)
@@ -204,7 +182,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorOAuth = Project(
     id = "actor-oauth",
     base = file("actor-oauth"),
-    settings = defaultSettings ++
+    settings = defaultSettings ++ releaseSettings ++
       Seq(
         libraryDependencies ++= Dependencies.oauth
       )
@@ -213,7 +191,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorSession = Project(
     id = "actor-session",
     base = file("actor-session"),
-    settings = defaultSettings ++ Seq(
+    settings = defaultSettings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.session
     )
   ).dependsOn(actorPersist, actorCore, actorCodecs, actorCore, actorRpcApi)
@@ -221,19 +199,19 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorSessionMessages = Project(
     id = "actor-session-messages",
     base = file("actor-session-messages"),
-    settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.sessionMessages)
+    settings = defaultSettings ++ releaseSettings ++ Seq(libraryDependencies ++= Dependencies.sessionMessages)
   ).dependsOn(actorCore)
 
   lazy val actorPresences = Project(
     id = "actor-presences",
     base = file("actor-presences"),
-    settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.presences)
+    settings = defaultSettings ++ releaseSettings ++ Seq(libraryDependencies ++= Dependencies.presences)
   ).dependsOn(actorPersist)
 
   lazy val actorRpcApi = Project(
     id = "actor-rpc-api",
     base = file("actor-rpc-api"),
-    settings = defaultSettings ++ Seq(
+    settings = defaultSettings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.rpcApi
     )
   ).dependsOn(
@@ -251,13 +229,13 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorSms = Project(
     id = "actor-sms",
     base = file("actor-sms"),
-    settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.sms)
+    settings = defaultSettings ++ releaseSettings ++ Seq(libraryDependencies ++= Dependencies.sms)
   ).dependsOn(actorRuntime)
 
   lazy val actorSocial = Project(
     id = "actor-social",
     base = file("actor-social"),
-    settings = defaultSettings ++ Seq(
+    settings = defaultSettings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.social
     )
   ).dependsOn(actorPersist)
@@ -265,7 +243,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorFrontend = Project(
     id = "actor-frontend",
     base = file("actor-frontend"),
-    settings = defaultSettings ++ Seq(
+    settings = defaultSettings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.frontend
     )
   ).dependsOn(actorCore, actorSessionMessages, actorSession)
@@ -273,7 +251,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorCodecs = Project(
     id = "actor-codecs",
     base = file("actor-codecs"),
-    settings = defaultSettings ++ Seq(
+    settings = defaultSettings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.codecs
     )
   ).dependsOn(actorModels)
@@ -281,7 +259,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorModels = Project(
     id = "actor-models",
     base = file("actor-models"),
-    settings = defaultSettings ++ Seq(
+    settings = defaultSettings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.models
     )
   )
@@ -289,7 +267,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorPersist = Project(
     id = "actor-persist",
     base = file("actor-persist"),
-    settings = defaultSettings ++ Seq(
+    settings = defaultSettings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.persist
     )
   ).dependsOn(actorModels)
@@ -332,9 +310,47 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorRuntime = Project(
     id = "actor-runtime",
     base = file("actor-runtime"),
-    settings = defaultSettings ++ Seq(
+    settings = defaultSettings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.runtime
     )
+  )
+
+  lazy val actorServerSdk = Project(
+    id = "actor-server-sdk",
+    base = file("actor-server-sdk"),
+    settings = defaultSettings ++ releaseSettings ++ Seq(
+      libraryDependencies ++= Dependencies.sdk
+    )
+  ).dependsOn(
+    actorActivation,
+    actorBots,
+    actorCli,
+    actorEnrich,
+    actorEmail,
+    actorFrontend,
+    actorHttpApi,
+    actorRpcApi,
+    actorOAuth
+  ).aggregate(
+    actorActivation,
+    actorBots,
+    actorCli,
+    actorCodecs,
+    actorCore,
+    actorEmail,
+    actorEnrich,
+    actorFrontend,
+    actorHttpApi,
+    actorModels,
+    actorOAuth,
+    actorPersist,
+    actorPresences,
+    actorRpcApi,
+    actorRuntime,
+    actorSession,
+    actorSessionMessages,
+    actorSms,
+    actorSocial
   )
 
   lazy val actorTests = Project(
