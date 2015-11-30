@@ -1,3 +1,3 @@
 'use strict';
 
-require('./build/styles/index.css');
+import './build/styles/index.css';
