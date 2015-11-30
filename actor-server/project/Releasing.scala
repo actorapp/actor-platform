@@ -4,7 +4,6 @@ import bintray._
 import com.typesafe.sbt.pgp.PgpKeys
 import sbt._
 import Keys._
-import com.typesafe.sbt.packager.debian.DebianPlugin.autoImport.Debian
 import xerial.sbt.Sonatype.SonatypeKeys
 import xerial.sbt.Sonatype.autoImport._
 import sbtrelease._
