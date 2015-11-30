@@ -84,6 +84,15 @@ object HistoryMessageRepo {
     query.take(limit).result
   }
 
+  def findBySender(senderUserId: Int, peer: Peer, randomId: Long): FixedSqlStreamingAction[Seq[HistoryMessage], HistoryMessage, Read] =
+    notDeletedMessages.filter(m ⇒ m.senderUserId === senderUserId && m.peerType === peer.typ.value && m.peerId === peer.id && m.randomId === randomId).result
+
+  def findUserIds(peer: Peer, randomIds: Set[Long]): DBIO[Seq[Int]] =
+    notDeletedMessages
+      .filter(m ⇒ m.peerType === peer.typ.value && m.peerId === peer.id && (m.randomId inSet randomIds))
+      .map(_.userId)
+      .result
+
   def findNewest(userId: Int, peer: Peer): SqlAction[Option[HistoryMessage], NoStream, Read] =
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.value && m.peerId === peer.id)

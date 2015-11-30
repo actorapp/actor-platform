@@ -15,7 +15,7 @@ object HistoryUtils {
   import GroupUtils._
 
   // User for writing history in public groups
-  private val sharedUserId = 0
+  val SharedUserId = 0
 
   private[dialog] def writeHistoryMessage(
     fromPeer:             Peer,
@@ -60,7 +60,7 @@ object HistoryUtils {
       DBIO.from(GroupExtension(system).isHistoryShared(toPeer.id)) flatMap { isHistoryShared ⇒
         withGroupUserIds(toPeer.id) { groupUserIds ⇒
           if (isHistoryShared) {
-            val historyMessage = HistoryMessage(sharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
+            val historyMessage = HistoryMessage(SharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
 
             for {
               _ ← persist.DialogRepo.updateLastMessageDates(groupUserIds.toSet, toPeer, date)
@@ -144,7 +144,7 @@ object HistoryUtils {
         implicit val groupViewRegion = GroupExtension(system).viewRegion
         DBIO.from(GroupExtension(system).isHistoryShared(peer.id)) flatMap { isHistoryShared ⇒
           if (isHistoryShared) {
-            DBIO.successful(sharedUserId)
+            DBIO.successful(SharedUserId)
           } else {
             DBIO.successful(clientUserId)
           }
@@ -153,7 +153,7 @@ object HistoryUtils {
     }) flatMap f
   }
 
-  def isSharedUser(userId: Int): Boolean = userId == sharedUserId
+  def isSharedUser(userId: Int): Boolean = userId == SharedUserId
 
   private def requirePrivatePeer(peer: Peer) = {
     if (peer.typ != PeerType.Private)
