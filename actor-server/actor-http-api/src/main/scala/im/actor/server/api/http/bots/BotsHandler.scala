@@ -94,7 +94,8 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
       }
 
       onSuccess(flowFuture) {
-        case flow ⇒ handleWebsocketMessages(flow)
+        case flow ⇒
+          handleWebsocketMessages(flow)
       }
     }
 
@@ -154,9 +155,10 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
         log.debug(">> {}", text)
         TextMessage.Strict(text).asInstanceOf[Message]
       }
-  } recover {
-    case e ⇒
-      log.error(e, "Failure in websocket bot stream, userId: {}", botUserId)
-      throw e
+      .recover {
+        case e ⇒
+          log.error(e, "Failure in websocket bot stream, userId: {}", botUserId)
+          throw e
+      }
   }
 }
