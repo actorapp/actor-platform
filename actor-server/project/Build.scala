@@ -272,18 +272,6 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     )
   ).dependsOn(actorModels)
 
-  //  lazy val actorDashboard = Project(
-  //    id = "actor-dashboard",
-  //    base = file("actor-dashboard"),
-  //    settings = defaultSettings ++ Seq(
-  //      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import"),
-  //      javaOptions := javaOptions.value.filterNot(_.startsWith("-Dscalac.patmat.analysisBudget")),
-  //      libraryDependencies ++= Dependencies.dashboard
-  //    )
-  //  )
-  //    .enablePlugins(PlayScala)
-  //    .dependsOn(actorPersist, actorUtils)
-
   lazy val actorTestkit = Project(
     id = "actor-testkit",
     base = file("actor-testkit"),
@@ -297,15 +285,6 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       actorSession,
       actorPresences
     )
-
-  lazy val actorNotifications = Project(
-    id = "actor-notifications",
-    base = file("actor-notifications"),
-    settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Dependencies.notifications
-    )
-  )
-    .dependsOn(actorCore, actorModels, actorPersist, actorSms, actorRuntime)
 
   lazy val actorRuntime = Project(
     id = "actor-runtime",
@@ -370,7 +349,6 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       actorEnrich,
       actorFrontend,
       actorHttpApi,
-      actorNotifications,
       actorOAuth,
       actorPersist,
       actorRpcApi,
