@@ -4,7 +4,6 @@ import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
 import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
-import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.Docker
 
 object Build extends sbt.Build with Versioning with Releasing with Publishing {
   val ScalaVersion = "2.11.7"
@@ -95,7 +94,6 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       actorTests
     )
     .settings(
-    aggregate in Docker := false,
     aggregate in Revolver.reStart := false
   )
 
