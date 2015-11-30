@@ -1,6 +1,6 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
 exports.ActorSDKDelegate = exports.ActorSDK = undefined;
@@ -14,10 +14,6 @@ var _actorSdkDelegate = require('./build/sdk/actor-sdk-delegate');
 var _actorSdkDelegate2 = _interopRequireDefault(_actorSdkDelegate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
- */
 
 exports.ActorSDK = _actorSdk2.default;
 exports.ActorSDKDelegate = _actorSdkDelegate2.default;
