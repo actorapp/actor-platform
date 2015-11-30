@@ -45,8 +45,10 @@ import im.actor.server.sms.{ TelesignCallEngine, TelesignClient, TelesignSmsEngi
 import im.actor.server.social.SocialExtension
 import im.actor.server.user._
 
+final case class StartedActorServer(system: ActorSystem)
+
 final case class ActorServer(searchServiceClass: Class[_ <: SearchService] = classOf[SearchServiceImpl]) {
-  def start(): Unit = {
+  def start(): StartedActorServer = {
     SessionMessage.register()
     CommonSerialization.register()
     UserProcessor.register()
@@ -222,6 +224,8 @@ final case class ActorServer(searchServiceClass: Class[_ <: SearchService] = cla
 
       system.log.debug("Starting Http Api")
       HttpApiFrontend.start(serverConfig)
+
+      StartedActorServer(system)
     } catch {
       case e: ConfigException ⇒
         system.log.error(e, "Failed to load server configuration")
