@@ -56,7 +56,11 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int,
 
         FlowShape(rqrsp.inlet, merge.out)
       }
-    )
+    ) recover {
+        case e ⇒
+          log.error(e, "Failure in bot flow, userId: {}", botUserId)
+          throw e
+      }
   }
 
   private def handleRequest(id: Long, service: String, body: RequestBody): Future[BotResponse] = {
