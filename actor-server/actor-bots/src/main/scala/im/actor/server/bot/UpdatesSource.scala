@@ -30,6 +30,7 @@ private class UpdatesSource(userId: Int, authId: Long, authSid: Int) extends Act
   import im.actor.server.sequence.NewUpdate
 
   context.actorOf(UpdatesConsumer.props(userId, authId, authSid, self), "updatesConsumer")
+  consumer ! UpdatesConsumerMessage.SubscribeToSeq
 
   private var buf = Vector.empty[(Int, Update)]
 
