@@ -1,17 +1,17 @@
 package im.actor.server
 
-import java.net.InetAddress
+import scala.language.existentials
 
 import akka.actor._
 import akka.cluster.Cluster
 import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigException
+import im.actor.api.rpc.search.SearchService
 import im.actor.config.ActorConfig
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
-import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService }
-import im.actor.server.api.rpc.service.SearchServiceImpl
+import im.actor.server.api.rpc.RpcApiExtension
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
@@ -24,6 +24,7 @@ import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
+import im.actor.server.api.rpc.service.search.SearchServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webactions.WebactionsServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
@@ -44,11 +45,7 @@ import im.actor.server.sms.{ TelesignCallEngine, TelesignClient, TelesignSmsEngi
 import im.actor.server.social.SocialExtension
 import im.actor.server.user._
 
-object Main extends App {
-  ActorServer.start()
-}
-
-object ActorServer {
+final case class ActorServer(searchServiceClass: Class[_ <: SearchService] = classOf[SearchServiceImpl]) {
   def start(): Unit = {
     SessionMessage.register()
     CommonSerialization.register()
@@ -192,9 +189,6 @@ object ActorServer {
       system.log.debug("Starting DeviceService")
       val deviceService = new DeviceServiceImpl
 
-      system.log.debug("Starting SearchService")
-      val searchService = new SearchServiceImpl
-
       val services = Seq(
         authService,
         contactsService,
@@ -210,8 +204,7 @@ object ActorServer {
         profileService,
         integrationsService,
         webactionsService,
-        deviceService,
-        searchService
+        deviceService
       )
 
       system.log.warning("Starting ActorBot")
@@ -219,6 +212,7 @@ object ActorServer {
 
       system.log.debug("Registering services")
       RpcApiExtension(system).register(services)
+      RpcApiExtension(system).register(searchServiceClass)
 
       system.log.debug("Starting Actor CLI")
       ActorCliService.start(system)

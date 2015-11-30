@@ -1,14 +1,20 @@
 package im.actor
 
 import bintray._
+import com.typesafe.sbt.pgp.PgpKeys
 import sbt._
 import Keys._
-import com.typesafe.sbt.packager.debian.DebianPlugin.autoImport.Debian
+import xerial.sbt.Sonatype.SonatypeKeys
+import xerial.sbt.Sonatype.autoImport._
+import sbtrelease._
+import ReleaseStateTransformations._
+import ReleasePlugin.autoImport._
 
 trait Releasing {
   private val publishDeb = taskKey[Unit]("Publish to debian repository")
 
-  private val taskSetting = publishDeb := {
+  /*
+  private lazy val taskSetting = publishDeb := {
     val btyOrg = "actor"
     val repoName = "ubuntu"
     val pkgName = "actor"
@@ -23,8 +29,30 @@ trait Releasing {
     repo.upload(pkgName, vers, path, f, log)
     repo.release(pkgName, vers, log)
   }
+*/
 
-  val releaseSettings = Seq(taskSetting)
+  lazy val releaseSettings = Seq(
+    //taskSetting,
+    releaseCommitMessage := s"chore(server): setting version to ${(version in ThisBuild).value}",
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      runClean,
+      setReleaseVersion,
+      commitReleaseVersion,
+      ReleaseStep(
+        action = { state =>
+          val extracted = Project extract state
+          extracted.runAggregated(PgpKeys.publishSigned in Global in extracted.get(thisProjectRef), state)
+        },
+        enableCrossBuild = true
+      ),
+      setNextVersion,
+      commitNextVersion,
+      ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+      pushChanges
+    )
+  )
 
   private def getCreds: BintrayCredentials = {
     (for {
