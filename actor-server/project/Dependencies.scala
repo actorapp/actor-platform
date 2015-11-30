@@ -166,8 +166,6 @@ object Dependencies {
 
   val sms = shared ++ Seq(akkaActor, akkaHttp, dispatch)
 
-  val social = shared :+ akkaClusterSharding
-
   val codecs = shared ++ Seq(scalazCore, scodecBits, scodecCore)
   
   val models = shared ++ Seq(scodecBits, scodecCore, jodaTime, jodaConvert, slickPg)

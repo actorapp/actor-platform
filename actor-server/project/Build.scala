@@ -152,7 +152,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     settings = defaultSettings ++ SbtActorApi.settings ++ releaseSettings ++ Seq(
       libraryDependencies ++= Dependencies.core
     )
-  ).dependsOn(actorCodecs, actorModels, actorPersist, actorPresences, actorSocial, actorRuntime)
+  ).dependsOn(actorCodecs, actorModels, actorPersist, actorPresences, actorRuntime)
 
   lazy val actorEmail = Project(
     id = "actor-email",
@@ -223,7 +223,6 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     actorPresences,
     actorSessionMessages,
     actorSms,
-    actorSocial,
     actorRuntime)
 
   lazy val actorSms = Project(
@@ -231,14 +230,6 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     base = file("actor-sms"),
     settings = defaultSettings ++ releaseSettings ++ Seq(libraryDependencies ++= Dependencies.sms)
   ).dependsOn(actorRuntime)
-
-  lazy val actorSocial = Project(
-    id = "actor-social",
-    base = file("actor-social"),
-    settings = defaultSettings ++ releaseSettings ++ Seq(
-      libraryDependencies ++= Dependencies.social
-    )
-  ).dependsOn(actorPersist)
 
   lazy val actorFrontend = Project(
     id = "actor-frontend",
@@ -328,8 +319,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     actorRuntime,
     actorSession,
     actorSessionMessages,
-    actorSms,
-    actorSocial
+    actorSms
   )
 
   lazy val actorTests = Project(
