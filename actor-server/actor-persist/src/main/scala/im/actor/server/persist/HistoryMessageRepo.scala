@@ -6,7 +6,8 @@ import org.joda.time.DateTime
 import slick.dbio.Effect.{ Write, Read }
 import slick.driver.PostgresDriver
 import slick.driver.PostgresDriver.api._
-import slick.profile.{ SqlAction, FixedSqlStreamingAction, FixedSqlAction }
+import slick.jdbc.GetResult
+import slick.profile.{ SqlStreamingAction, SqlAction, FixedSqlStreamingAction, FixedSqlAction }
 
 class HistoryMessageTable(tag: Tag) extends Table[HistoryMessage](tag, "history_messages") {
   def userId = column[Int]("user_id", O.PrimaryKey)
@@ -115,6 +116,30 @@ object HistoryMessageRepo {
       .filter(m ⇒ m.date > lastReadAt && m.senderUserId =!= userId)
       .length
       .result
+
+  def uniqueAsc(fromTs: Long, limit: Int): SqlStreamingAction[Vector[HistoryMessage], HistoryMessage, Effect] = {
+    implicit val getMessageResult: GetResult[HistoryMessage] = GetResult(r ⇒
+      HistoryMessage(
+        userId = r.nextInt,
+        peer = Peer(PeerType.fromValue(r.nextInt), r.nextInt),
+        date = getDatetimeResult(r),
+        senderUserId = r.nextInt,
+        randomId = r.nextLong,
+        messageContentHeader = r.nextInt,
+        messageContentData = r.nextBytes,
+        deletedAt = getDatetimeOptionResult(r)
+      ))
+
+    val serviceHeader = 2
+    val date = new DateTime(fromTs)
+    sql"""select distinct on (date, random_id) user_id, peer_type, peer_id, date, sender_user_id, random_id, message_content_header, message_content_data, deleted_at from history_messages
+         where message_content_header != $serviceHeader
+         and date > $date
+         and deleted_at is null
+         order by date asc, random_id asc
+         limit $limit"""
+      .as[HistoryMessage]
+  }
 
   //возможно тут не учитываются
   private def unreadTotal(userId: Rep[Int]) =
