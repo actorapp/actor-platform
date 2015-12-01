@@ -24,8 +24,8 @@ private[bot] final class WebHooksBotService(system: ActorSystem) extends BotServ
     (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       {
         (for {
-          _ ← fromFutureBoolean(BotError(406, "HOOK_EXISTS"))(botExt.webHookExists(botUserId, name).map(!_))
-          token ← fromFuture(botExt.registerWebHook(botUserId, name))
+          optToken ← fromFuture(botExt.findToken(botUserId, name))
+          token ← optToken map point getOrElse fromFuture(botExt.registerWebHook(botUserId, name))
         } yield Container(botExt.getHookUrl(token))).toEither
       }
   }
