@@ -8054,6 +8054,9 @@
       </node>
       <node concept="2m5naR" id="64HNz1IoZDn" role="2m5mJr">
         <property role="TrG5h" value="RgbColor" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="64HNz1IoYTS" resolve="Color" />
         <node concept="NXeRC" id="64HNz1Ip0n7" role="NXodf">
           <property role="NXePf" value="RGB Color" />
         </node>
@@ -8067,9 +8070,15 @@
           <property role="TrG5h" value="rgb" />
           <node concept="2m5ndE" id="64HNz1IoZFk" role="2m7DVh" />
         </node>
+        <node concept="Nu42z" id="2EyE8f8B8Jz" role="3BtCOu">
+          <property role="Nu42W" value="01" />
+        </node>
       </node>
       <node concept="2m5naR" id="64HNz1Ip14P" role="2m5mJr">
         <property role="TrG5h" value="PredefinedColor" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="64HNz1IoYTS" resolve="Color" />
         <node concept="2m7Kf5" id="64HNz1Ip1UB" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="color" />
@@ -8083,6 +8092,9 @@
         <node concept="NX1gA" id="64HNz1Ip4Ew" role="NXodf">
           <property role="NX6R2" value="Predefined color value" />
           <ref role="NX6Kv" node="64HNz1Ip1UB" resolve="color" />
+        </node>
+        <node concept="Nu42z" id="2EyE8f8B8NV" role="3BtCOu">
+          <property role="Nu42W" value="02" />
         </node>
       </node>
       <node concept="NvyAe" id="GBscvBBiZs" role="2m5mJr" />
