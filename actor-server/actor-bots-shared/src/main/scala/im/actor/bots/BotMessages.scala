@@ -325,6 +325,7 @@ object BotMessages {
     override def readResponse(obj: Js.Obj) = readJs[ContainerList[String]](obj)
   }
 
+  //username is nickname
   @key("CreateBot")
   final case class CreateBot(
     @beanGetter username: String,
@@ -381,6 +382,17 @@ object BotMessages {
     override val service = Services.Users
 
     override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  @key("ChangeUserNickname")
+  final case class ChangeUserNickname(
+    @beanGetter userId:   Int,
+    @beanGetter nickname: Option[String]
+  ) extends RequestBody {
+    override type Response = Void
+    override val service = Services.Users
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
   }
 
   @key("ChangeUserAbout")
