@@ -85,7 +85,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
       user ← userExt.create(
         userId = userId,
         accessSalt = ACLUtils.nextAccessSalt(),
-        Some(nickname),
+        nickname = Some(nickname),
         name = name,
         countryCode = "US",
         sex = ApiSex.Unknown,
