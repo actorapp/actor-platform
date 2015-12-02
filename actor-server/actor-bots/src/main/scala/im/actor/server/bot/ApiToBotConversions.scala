@@ -1,6 +1,6 @@
 package im.actor.server.bot
 
-import im.actor.api.rpc.files.{ ApiFileLocation, ApiAvatarImage, ApiAvatar, ApiFastThumb }
+import im.actor.api.rpc.files._
 import im.actor.api.rpc.groups.{ ApiMember, ApiGroup }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ ApiPeerType, ApiOutPeer }
@@ -35,10 +35,19 @@ trait ApiToBotConversions {
   implicit def toDocumentEx(ex: Option[ApiDocumentEx]): Option[DocumentEx] =
     ex map toDocumentEx
 
+  implicit def toTextMessageEx(ex: ApiTextMessageEx): TextMessageEx =
+    ex match {
+      case ApiTextModernMessage(text, senderNameOverride, senderPhotoOverride, style) ⇒ TextModernMessage(text, senderNameOverride, senderPhotoOverride, style)
+      case ApiTextExMarkdown(text) ⇒ TextModernMessage(Some(text), None, None, None)
+    }
+
+  implicit def toTextMessageEx(ex: Option[ApiTextMessageEx]): Option[TextMessageEx] =
+    ex map toTextMessageEx
+
   implicit def toMessage(message: ApiMessage): MessageBody =
     message match {
-      case ApiTextMessage(text, _, _) ⇒ TextMessage(text)
-      case ApiJsonMessage(rawJson)    ⇒ JsonMessage(rawJson)
+      case ApiTextMessage(text, _, ext) ⇒ TextMessage(text, ext)
+      case ApiJsonMessage(rawJson)      ⇒ JsonMessage(rawJson)
       case ApiDocumentMessage(
         fileId,
         accessHash,
@@ -51,8 +60,45 @@ trait ApiToBotConversions {
       case _: ApiUnsupportedMessage   ⇒ UnsupportedMessage
     }
 
+  implicit def toTextModernAttach(ma: ApiTextModernAttach): TextModernAttach =
+    TextModernAttach(ma.title, ma.titleUrl, ma.titleIcon, ma.text, ma.style, ma.fields)
+
+  implicit def toTextModernField(mf: ApiTextModernField): TextModernField =
+    TextModernField(mf.title, mf.value, mf.isShort)
+
+  implicit def toTextModernField(mfs: IndexedSeq[ApiTextModernField]): IndexedSeq[TextModernField] =
+    mfs map toTextModernField
+
+  implicit def toParagraphStyle(ps: ApiParagraphStyle): ParagraphStyle =
+    ParagraphStyle(ps.showParagraph, ps.paragraphColor, ps.bgColor)
+
+  implicit def toParagraphStyle(ps: Option[ApiParagraphStyle]): Option[ParagraphStyle] =
+    ps map toParagraphStyle
+
   implicit def toFileLocation(fl: ApiFileLocation): FileLocation =
     FileLocation(fl.fileId, fl.accessHash)
+
+  implicit def toImageLocation(il: ApiImageLocation): ImageLocation =
+    ImageLocation(il.fileLocation, il.width, il.height, il.fileSize)
+
+  implicit def toImageLocation(il: Option[ApiImageLocation]): Option[ImageLocation] =
+    il map toImageLocation
+
+  implicit def toColors(color: ApiColors.ApiColors): Colors =
+    color match {
+      case c if c == ApiColors.red    ⇒ Red
+      case c if c == ApiColors.yellow ⇒ Yellow
+      case c if c == ApiColors.green  ⇒ Green
+    }
+
+  implicit def toColor(color: ApiColor): Color =
+    color match {
+      case ApiRgbColor(rgb)      ⇒ RgbColor(rgb)
+      case ApiPredefinedColor(c) ⇒ PredefinedColor(c)
+    }
+
+  implicit def toColor(color: Option[ApiColor]): Option[Color] =
+    color map toColor
 
   implicit def toAvatarImage(ai: ApiAvatarImage): AvatarImage =
     AvatarImage(ai.fileLocation, ai.width, ai.height, ai.fileSize)

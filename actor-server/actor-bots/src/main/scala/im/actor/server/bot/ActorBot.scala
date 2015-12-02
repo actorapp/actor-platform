@@ -30,21 +30,21 @@ final class ActorBot extends InternalBot(ActorBot.UserId, ActorBot.Username, Act
 
   override def onMessage(m: Message): Unit = {
     m.message match {
-      case TextMessage(text) ⇒
+      case TextMessage(text, ext) ⇒
         if (m.peer.isPrivate && text.startsWith(NewCmd)) {
           text.drop(NewCmd.length + 1).trim.split(" ").map(_.trim).toList match {
             case nickname :: name :: Nil ⇒
               log.warning("Creating new bot")
 
               requestCreateBot(nickname, name) onComplete {
-                case Success(token) ⇒ requestSendMessage(m.peer, nextRandomId(), TextMessage(s"Yay! Bot created, here is your token: ${token}"))
+                case Success(token) ⇒ requestSendMessage(m.peer, nextRandomId(), TextMessage(s"Yay! Bot created, here is your token: ${token}", None))
                 case Failure(BotError(_, "USERNAME_TAKEN", _, _)) ⇒
-                  requestSendMessage(m.peer, nextRandomId(), TextMessage("Username already taken"))
+                  requestSendMessage(m.peer, nextRandomId(), TextMessage("Username already taken", None))
                 case Failure(e) ⇒
                   log.error(e, "Failed to create bot")
-                  requestSendMessage(m.peer, nextRandomId(), TextMessage("There was a problem on our side. Please, try again a bit later."))
+                  requestSendMessage(m.peer, nextRandomId(), TextMessage("There was a problem on our side. Please, try again a bit later.", None))
               }
-            case _ ⇒ requestSendMessage(m.peer, nextRandomId(), TextMessage("Command format is: /bot new <nickname> <name>"))
+            case _ ⇒ requestSendMessage(m.peer, nextRandomId(), TextMessage("Command format is: /bot new <nickname> <name>", None))
           }
         }
       case _ ⇒

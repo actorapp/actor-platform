@@ -28,10 +28,10 @@ object EchoBot {
 final class EchoBot(token: String, endpoint: String) extends RemoteBot(token, endpoint) {
   override def onMessage(m: Message): Unit = {
     m.message match {
-      case TextMessage(text) ⇒
+      case TextMessage(text, ext) ⇒
         val name = getUser(m.sender.id).name
 
-        requestSendMessage(m.sender, nextRandomId(), TextMessage(s"Hey $name, here is your reply: $text"))
+        requestSendMessage(m.sender, nextRandomId(), TextMessage(s"Hey $name, here is your reply: $text", ext))
       case notAText ⇒ requestSendMessage(m.sender, nextRandomId(), notAText)
     }
   }
