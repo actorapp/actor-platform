@@ -70,7 +70,7 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
                     |  <body><center id="message"><h3>Please, return to the app.</h1></center></body>
                     |</html>
                   """.stripMargin
-                complete(OK → Status(response))
+                complete(response)
             }
           case Failure(e) ⇒
             log.error(e, "Failed to handle bot hook")
