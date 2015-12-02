@@ -4,8 +4,6 @@ import bintray._
 import com.typesafe.sbt.pgp.PgpKeys
 import sbt._
 import Keys._
-import xerial.sbt.Sonatype.SonatypeKeys
-import xerial.sbt.Sonatype.autoImport._
 import sbtrelease._
 import ReleaseStateTransformations._
 import ReleasePlugin.autoImport._
@@ -49,7 +47,11 @@ trait Releasing {
       ),
       setNextVersion,
       commitNextVersion,
-      ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+      ReleaseStep(
+        action = { state =>
+          Command.process("sonatypeReleaseAll", state)
+        }
+      ),
       pushChanges
     )
   )
