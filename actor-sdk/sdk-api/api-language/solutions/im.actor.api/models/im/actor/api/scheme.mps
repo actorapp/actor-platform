@@ -3564,6 +3564,94 @@
           <property role="NXePf" value="Explicit type for unsupported message" />
         </node>
       </node>
+      <node concept="2m5naR" id="2EyE8f8Bt00" role="2m5mJr">
+        <property role="TrG5h" value="StickerMessage" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQey3W" resolve="Message" />
+        <node concept="NXeRC" id="2EyE8f8Bvk1" role="NXodf">
+          <property role="NXePf" value="Sticker message" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8Bvk7" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional Unique ID of sticker" />
+          <ref role="NX6Kv" node="2EyE8f8BtRD" resolve="stickerId" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BvkN" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional Fast preview of sticker in webp format" />
+          <ref role="NX6Kv" node="2EyE8f8BtRK" resolve="fastPreview" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BvkX" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional 512x512 sticker image in webp format" />
+          <ref role="NX6Kv" node="2EyE8f8BtRT" resolve="image512" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8Bw32" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional 256x256 sticker image in webp format" />
+          <ref role="NX6Kv" node="2EyE8f8Bu_U" resolve="image256" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8Bw3g" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional Collection ID" />
+          <ref role="NX6Kv" node="2EyE8f8Bvkb" resolve="stickerCollectionId" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8Bw3w" role="NXodf">
+          <property role="NX6R2" value="Optional Collection Access Hash" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2EyE8f8Bvks" resolve="stickerCollectionAccessHash" />
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BtRD" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="stickerId" />
+          <node concept="2m5nlT" id="2EyE8f8BSSW" role="2m7DVh">
+            <node concept="2m5ndE" id="2EyE8f8BST2" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BtRK" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="fastPreview" />
+          <node concept="2m5nlT" id="2EyE8f8BST5" role="2m7DVh">
+            <node concept="2m61tm" id="2EyE8f8BSTb" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BtRT" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="image512" />
+          <node concept="2m5nlT" id="2EyE8f8Bu_L" role="2m7DVh">
+            <node concept="2m5mGg" id="2EyE8f8Bu_R" role="3GH5xg">
+              <ref role="2m5mJy" node="64HNz1IoSEt" resolve="ImageLocation" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8Bu_U" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="image256" />
+          <node concept="2m5nlT" id="2EyE8f8BuA5" role="2m7DVh">
+            <node concept="2m5mGg" id="2EyE8f8BuAb" role="3GH5xg">
+              <ref role="2m5mJy" node="64HNz1IoSEt" resolve="ImageLocation" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8Bvkb" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="stickerCollectionId" />
+          <node concept="2m5nlT" id="2EyE8f8BS9_" role="2m7DVh">
+            <node concept="2m5ndE" id="2EyE8f8BS9F" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8Bvks" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="stickerCollectionAccessHash" />
+          <node concept="2m5nlT" id="2EyE8f8BS9I" role="2m7DVh">
+            <node concept="2m5ndQ" id="2EyE8f8BS9O" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="2EyE8f8Bta0" role="3BtCOu">
+          <property role="Nu42W" value="06" />
+        </node>
+      </node>
       <node concept="2m5naR" id="5TxE3W6ZYRc" role="2m5mJr">
         <property role="TrG5h" value="DialogShort" />
         <node concept="2m7Kf5" id="5TxE3W6ZYX$" role="2m0hLx">
@@ -6768,6 +6856,357 @@
           <property role="2uC4Qe" value="ACCESS_DENIED" />
           <property role="2uCiSL" value="When it is unable to join group for this user" />
         </node>
+      </node>
+    </node>
+    <node concept="2m5mJO" id="2EyE8f8Bcr7" role="2m5lHt">
+      <property role="TrG5h" value="Stickers" />
+      <property role="3XOG$Z" value="stickers" />
+      <node concept="2m5naR" id="2EyE8f8BdOZ" role="2m5mJr">
+        <property role="TrG5h" value="StickerDescriptor" />
+        <property role="tsOgz" value="true" />
+        <node concept="NXeRC" id="2EyE8f8Bfg8" role="NXodf">
+          <property role="NXePf" value="Descriptor of a Sticker" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8Bfge" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Sticker unique id" />
+          <ref role="NX6Kv" node="2EyE8f8BeyG" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8Bfgm" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Emoji code for sticker" />
+          <ref role="NX6Kv" node="2EyE8f8Beyv" resolve="emoji" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8Bfgw" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Image of sticker 128x128 in WebP format" />
+          <ref role="NX6Kv" node="2EyE8f8BdPb" resolve="image128" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BfgG" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Image of sticker 512x512 in WebP format" />
+          <ref role="NX6Kv" node="2EyE8f8BdP2" resolve="image512" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BgFH" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Image of sticker 256x256 in WebP format" />
+          <ref role="NX6Kv" node="2EyE8f8BgFn" resolve="image256" />
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BeyG" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="2EyE8f8BeyQ" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8Beyv" role="2m0hLx">
+          <property role="TrG5h" value="emoji" />
+          <property role="2m7DUN" value="2" />
+          <node concept="2m5nlT" id="2EyE8f8BgG9" role="2m7DVh">
+            <node concept="2m5ndX" id="2EyE8f8BgGf" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BdPb" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="image128" />
+          <node concept="2m5mGg" id="2EyE8f8BIqr" role="2m7DVh">
+            <ref role="2m5mJy" node="64HNz1IoSEt" resolve="ImageLocation" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BdP2" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="image512" />
+          <node concept="2m5nlT" id="2EyE8f8BgFR" role="2m7DVh">
+            <node concept="2m5mGg" id="2EyE8f8BgFX" role="3GH5xg">
+              <ref role="2m5mJy" node="64HNz1IoSEt" resolve="ImageLocation" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BgFn" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="image256" />
+          <node concept="2m5nlT" id="2EyE8f8BgGi" role="2m7DVh">
+            <node concept="2m5mGg" id="2EyE8f8BgGo" role="3GH5xg">
+              <ref role="2m5mJy" node="64HNz1IoSEt" resolve="ImageLocation" />
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="2m5naR" id="2EyE8f8BjxK" role="2m5mJr">
+        <property role="TrG5h" value="StickerCollection" />
+        <property role="tsOgz" value="true" />
+        <node concept="2m7Kf5" id="2EyE8f8Bjy8" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="2EyE8f8Bjyk" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BpY3" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="2EyE8f8BpYh" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8Bjyn" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="stickers" />
+          <node concept="2m5nlk" id="2EyE8f8Bjyt" role="2m7DVh">
+            <node concept="2m5mGg" id="2EyE8f8Bjyz" role="3GJlyp">
+              <ref role="2m5mJy" node="2EyE8f8BdOZ" resolve="StickerDescriptor" />
+            </node>
+          </node>
+        </node>
+        <node concept="NXeRC" id="2EyE8f8BjyA" role="NXodf">
+          <property role="NXePf" value="Sticker collection" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BlFv" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Unique id of a collection" />
+          <ref role="NX6Kv" node="2EyE8f8Bjy8" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8Bmpa" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Access Hash of a collection" />
+          <ref role="NX6Kv" node="2EyE8f8BpY3" resolve="accessHash" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BpYw" role="NXodf">
+          <property role="1GSvIU" value="compact" />
+          <property role="NX6R2" value="Sticker list" />
+          <ref role="NX6Kv" node="2EyE8f8Bjyn" resolve="stickers" />
+        </node>
+      </node>
+      <node concept="2m62dX" id="2EyE8f8BK_Y" role="2m5mJr">
+        <property role="TrG5h" value="StickersReponse" />
+        <node concept="2m7Kf5" id="2EyE8f8BKAM" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="collections" />
+          <node concept="2m5nlk" id="2EyE8f8BKAQ" role="2m7DVh">
+            <node concept="2m5mGg" id="2EyE8f8BKAW" role="3GJlyp">
+              <ref role="2m5mJy" node="2EyE8f8BjxK" resolve="StickerCollection" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BKAZ" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="seq" />
+          <node concept="2m5ndE" id="2EyE8f8BKB6" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BKB9" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="state" />
+          <node concept="wb0Ql" id="2EyE8f8BKBi" role="2m7DVh">
+            <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="2EyE8f8BK_Z" role="NuuwV">
+          <property role="Nu42W" value="F0" />
+        </node>
+        <node concept="NXeRC" id="2EyE8f8BKBl" role="NXp4Y">
+          <property role="NXePf" value="Stickers response" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BKBq" role="NXp4Y">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Sticker collections" />
+          <ref role="NX6Kv" node="2EyE8f8BKAM" resolve="collections" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BKBy" role="NXp4Y">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Seq of update" />
+          <ref role="NX6Kv" node="2EyE8f8BKAZ" resolve="seq" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BKBG" role="NXp4Y">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="State of update" />
+          <ref role="NX6Kv" node="2EyE8f8BKB9" resolve="state" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="2EyE8f8BwNe" role="2m5mJr">
+        <property role="TrG5h" value="LoadOwnStickers" />
+        <node concept="Nu42z" id="2EyE8f8BwNf" role="NuuwV">
+          <property role="Nu42W" value="EE" />
+        </node>
+        <node concept="2m1R6W" id="2EyE8f8BwNR" role="2m6efq">
+          <node concept="2m7Kf5" id="2EyE8f8BwNW" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="ownStickers" />
+            <node concept="2m5nlk" id="2EyE8f8BwO0" role="2m7DVh">
+              <node concept="2m5mGg" id="2EyE8f8BwO6" role="3GJlyp">
+                <ref role="2m5mJy" node="2EyE8f8BjxK" resolve="StickerCollection" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="2EyE8f8BwNS" role="NuuwV">
+            <property role="Nu42W" value="EF" />
+          </node>
+          <node concept="NXeRC" id="2EyE8f8BwOb" role="1y2DgH">
+            <property role="NXePf" value="Own Stickers collections" />
+          </node>
+          <node concept="NX1gA" id="2EyE8f8BQFk" role="1y2DgH">
+            <property role="NX6R2" value="Own sticker collections" />
+            <ref role="NX6Kv" node="2EyE8f8BwNW" resolve="ownStickers" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="2EyE8f8BwO9" role="1GBnQ6">
+          <property role="NXePf" value="Loading own stickers" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="2EyE8f8Byh3" role="2m5mJr">
+        <property role="TrG5h" value="OwnStickersChanged" />
+        <node concept="NXeRC" id="2EyE8f8BJQW" role="NXp_2">
+          <property role="NXePf" value="Own Stickers changed" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BQFd" role="NXp_2">
+          <property role="1GSvIU" value="compact" />
+          <property role="NX6R2" value="New own sticker collections" />
+          <ref role="NX6Kv" node="2EyE8f8BJ8$" resolve="collections" />
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BJ8$" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="collections" />
+          <node concept="2m5nlk" id="2EyE8f8BJ8C" role="2m7DVh">
+            <node concept="2m5mGg" id="2EyE8f8BJ8I" role="3GJlyp">
+              <ref role="2m5mJy" node="2EyE8f8BjxK" resolve="StickerCollection" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="2EyE8f8Byh4" role="NuuwV">
+          <property role="Nu42W" value="A1" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="2EyE8f8BQDh" role="2m5mJr">
+        <property role="TrG5h" value="StickerCollectionsChanged" />
+        <node concept="2m7Kf5" id="2EyE8f8BQEP" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="collections" />
+          <node concept="2m5nlk" id="2EyE8f8BQF1" role="2m7DVh">
+            <node concept="2m5mGg" id="2EyE8f8BQF7" role="3GJlyp">
+              <ref role="2m5mJy" node="2EyE8f8BjxK" resolve="StickerCollection" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="2EyE8f8BQDi" role="NuuwV">
+          <property role="Nu42W" value="A4" />
+        </node>
+        <node concept="NXeRC" id="2EyE8f8BRqp" role="NXp_2">
+          <property role="NXePf" value="Sticker collection changed" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BRqu" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Updated sticker collections" />
+          <ref role="NX6Kv" node="2EyE8f8BQEP" resolve="collections" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="2EyE8f8BMNf" role="2m5mJr">
+        <property role="TrG5h" value="AddStickerCollection" />
+        <node concept="2m7Kf5" id="2EyE8f8BNyQ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="2EyE8f8BNyU" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BNyX" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="2EyE8f8BNz3" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="2EyE8f8BMOo" role="1GBnQ6">
+          <property role="NXePf" value="Adding sticker collection" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BNz9" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Collection id" />
+          <ref role="NX6Kv" node="2EyE8f8BNyQ" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BNzh" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Collection access hash" />
+          <ref role="NX6Kv" node="2EyE8f8BNyX" resolve="accessHash" />
+        </node>
+        <node concept="Nu42z" id="2EyE8f8BMNg" role="NuuwV">
+          <property role="Nu42W" value="F4" />
+        </node>
+        <node concept="2m1Rp1" id="2EyE8f8BMOj" role="2m6efq">
+          <ref role="2m1o9l" node="2EyE8f8BK_Y" resolve="StickersReponse" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="2EyE8f8BOiZ" role="2m5mJr">
+        <property role="TrG5h" value="RemoveStickerCollection" />
+        <node concept="NXeRC" id="2EyE8f8BOkz" role="1GBnQ6">
+          <property role="NXePf" value="Removing sticker collection" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BOkD" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Collection id" />
+          <ref role="NX6Kv" node="2EyE8f8BOkd" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BOkL" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Collection access hash" />
+          <ref role="NX6Kv" node="2EyE8f8BOkk" resolve="accessHash" />
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BOkd" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="2EyE8f8BOkh" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BOkk" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="2EyE8f8BOkq" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="2EyE8f8BOj0" role="NuuwV">
+          <property role="Nu42W" value="F5" />
+        </node>
+        <node concept="2m1Rp1" id="2EyE8f8BOku" role="2m6efq">
+          <ref role="2m1o9l" node="2EyE8f8BK_Y" resolve="StickersReponse" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="2EyE8f8BP4N" role="2m5mJr">
+        <property role="TrG5h" value="LoadStickerCollection" />
+        <node concept="NXeRC" id="2EyE8f8BPSq" role="1GBnQ6">
+          <property role="NXePf" value="Loading stickers" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BPSw" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Collection id" />
+          <ref role="NX6Kv" node="2EyE8f8BP6b" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="2EyE8f8BPSC" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Collection access hash" />
+          <ref role="NX6Kv" node="2EyE8f8BPPb" resolve="accessHash" />
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BP6b" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="2EyE8f8BPP8" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2EyE8f8BPPb" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="2EyE8f8BPPh" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="2EyE8f8BP4O" role="NuuwV">
+          <property role="Nu42W" value="F6" />
+        </node>
+        <node concept="2m1R6W" id="2EyE8f8BPS4" role="2m6efq">
+          <node concept="2m7Kf5" id="2EyE8f8BPS9" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="collection" />
+            <node concept="2m5mGg" id="2EyE8f8BPSl" role="2m7DVh">
+              <ref role="2m5mJy" node="2EyE8f8BjxK" resolve="StickerCollection" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="2EyE8f8BPS5" role="NuuwV">
+            <property role="Nu42W" value="F7" />
+          </node>
+          <node concept="NXeRC" id="2EyE8f8BPSH" role="1y2DgH">
+            <property role="NXePf" value="Loaded collection" />
+          </node>
+          <node concept="NX1gA" id="2EyE8f8BPSM" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Collection of stickers" />
+            <ref role="NX6Kv" node="2EyE8f8BPS9" resolve="collection" />
+          </node>
+        </node>
+      </node>
+      <node concept="1Dx9M1" id="2EyE8f8Bd7R" role="1Dx9rD">
+        <property role="1Dx9K7" value="Stickers support in Actor" />
       </node>
     </node>
     <node concept="2m5mJO" id="4NJj1GT1QnC" role="2m5lHt">
