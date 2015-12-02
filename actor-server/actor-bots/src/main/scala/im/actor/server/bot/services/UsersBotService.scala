@@ -22,6 +22,7 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
   override val handlers: Handlers = {
     case ChangeUserAvatar(userId, fileLocation) ⇒ changeUserAvatar(userId, fileLocation).toWeak
     case ChangeUserName(userId, name)           ⇒ changeUserName(userId, name).toWeak
+    case ChangeUserNickname(userId, nickname)   ⇒ changeUserNickname(userId, nickname).toWeak
     case ChangeUserAbout(userId, about)         ⇒ changeUserAbout(userId, about).toWeak
     case FindUser(query)                        ⇒ findUser(query).toWeak
   }
@@ -31,6 +32,15 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
       ifIsAdmin(botUserId) {
         (for {
           _ ← fromFuture(userExt.changeName(userId, name))
+        } yield Void).value
+      }
+  }
+
+  private def changeUserNickname(userId: Int, nickname: Option[String]) = RequestHandler[ChangeUserNickname, ChangeUserNickname#Response] {
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
+      ifIsAdmin(botUserId) {
+        (for {
+          _ ← fromFuture(userExt.changeNickname(userId, nickname))
         } yield Void).value recover {
           case UserErrors.InvalidNickname ⇒ Xor.left(BotError(400, "INVALID_USERNAME"))
           case UserErrors.NicknameTaken   ⇒ Xor.left(BotError(400, "USERNAME_TAKEN"))

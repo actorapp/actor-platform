@@ -37,6 +37,13 @@ object BotMessages {
     @beanGetter fileSize:     Int
   )
 
+  final case class ImageLocation(
+    @beanGetter fileLocation: FileLocation,
+    @beanGetter width:        Int,
+    @beanGetter height:       Int,
+    @beanGetter fileSize:     Int
+  )
+
   final case class Avatar(
     @beanGetter smallImage: Option[AvatarImage],
     @beanGetter largeImage: Option[AvatarImage],
@@ -325,6 +332,7 @@ object BotMessages {
     override def readResponse(obj: Js.Obj) = readJs[ContainerList[String]](obj)
   }
 
+  //username is nickname
   @key("CreateBot")
   final case class CreateBot(
     @beanGetter username: String,
@@ -381,6 +389,17 @@ object BotMessages {
     override val service = Services.Users
 
     override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  @key("ChangeUserNickname")
+  final case class ChangeUserNickname(
+    @beanGetter userId:   Int,
+    @beanGetter nickname: Option[String]
+  ) extends RequestBody {
+    override type Response = Void
+    override val service = Services.Users
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
   }
 
   @key("ChangeUserAbout")
@@ -451,11 +470,75 @@ object BotMessages {
 
   sealed trait MessageBody
 
+  //ext has default value for backward compatibility with old bots
   @key("Text")
-  final case class TextMessage(@beanGetter text: String) extends MessageBody
+  final case class TextMessage(@beanGetter text: String, ext: Option[TextMessageEx] = None) extends MessageBody {
+    def getExt = ext.asJava
+  }
 
   @key("Json")
   final case class JsonMessage(@beanGetter rawJson: String) extends MessageBody
+
+  sealed trait TextMessageEx
+
+  @key("TextModernMessage")
+  final case class TextModernMessage(
+    text:                Option[String],
+    senderNameOverride:  Option[String],
+    senderPhotoOverride: Option[Avatar],
+    style:               Option[ParagraphStyle]
+  ) extends TextMessageEx {
+    def getText = text.asJava
+    def getSenderNameOverride = senderNameOverride.asJava
+    def getSenderPhotoOverride = senderPhotoOverride.asJava
+    def getStyle = style.asJava
+  }
+
+  final case class TextModernAttach(
+    title:     Option[String],
+    titleUrl:  Option[String],
+    titleIcon: Option[ImageLocation],
+    text:      Option[String],
+    style:     Option[ParagraphStyle],
+    fields:    IndexedSeq[TextModernField]
+  ) {
+    def getTitle = title.asJava
+    def getTitleUrl = titleUrl.asJava
+    def getTitleIcon = titleIcon.asJava
+    def getText = text.asJava
+    def getStyle = style.asJava
+    def getFields = seqAsJavaList(fields) //fields.toSeq.seqAsJavaList doesn't work for some reason
+  }
+
+  final case class TextModernField(@beanGetter title: String, @beanGetter value: String, isShort: Option[Boolean]) {
+    def getIsShort = isShort.asJava
+  }
+
+  final case class ParagraphStyle(
+    showParagraph:  Option[Boolean],
+    paragraphColor: Option[Color],
+    bgColor:        Option[Color]
+  ) {
+    def getShowParagraph = showParagraph.asJava
+    def getParagraphColor = paragraphColor.asJava
+    def getBgColor = bgColor.asJava
+  }
+
+  sealed trait Colors
+
+  @key("Red") case object Red extends Colors
+
+  @key("Yellow") case object Yellow extends Colors
+
+  @key("Green") case object Green extends Colors
+
+  sealed trait Color
+
+  @key("PredefinedColor")
+  final case class PredefinedColor(color: Colors) extends Color
+
+  @key("RgbColor")
+  final case class RgbColor(rgb: Int) extends Color
 
   @key("Document")
   final case class DocumentMessage(
