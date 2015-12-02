@@ -470,6 +470,19 @@ object BotMessages {
 
   sealed trait MessageBody
 
+  //todo: quickfix. replace with proper implementation
+  object TextMessage {
+    implicit val tmWriter = upickle.default.Writer[TextMessage] {
+      case TextMessage(text, _) ⇒ Js.Obj("$type" → Js.Str("Text"), "text" → Js.Str(text))
+    }
+    implicit val tmReader = upickle.default.Reader[TextMessage] {
+      case tm: Js.Obj ⇒
+        tm.value match {
+          case Seq(("$type", Js.Str("Text")), ("text", Js.Str(text)), tail @ _*) ⇒ TextMessage(text, None)
+        }
+    }
+  }
+
   @key("Text")
   final case class TextMessage(@beanGetter text: String, ext: Option[TextMessageEx]) extends MessageBody {
     def getExt = ext.asJava
