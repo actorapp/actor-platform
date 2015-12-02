@@ -73,7 +73,7 @@ final class MessagingServiceImpl(
 )(
   implicit
   protected val actorSystem: ActorSystem
-) extends MessagingService with MessagingHandlers with HistoryHandlers with ReactionsHandlers {
+) extends MessagingService with MessagingHandlers with HistoryHandlers with ReactionsHandlers with FavouritesHandlers {
   protected val db: Database = DbExtension(actorSystem).db
   protected val userExt = UserExtension(actorSystem)
   protected val groupExt = GroupExtension(actorSystem)
