@@ -58,6 +58,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
 
   /**
    * Creates a bot user
+   *
    * @param nickname
    * @param name
    * @param isAdmin
@@ -71,6 +72,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
 
   /**
    * Creates a bot user
+   *
    * @param userId
    * @param nickname
    * @param name
@@ -85,7 +87,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
       user ← userExt.create(
         userId = userId,
         accessSalt = ACLUtils.nextAccessSalt(),
-        Some(nickname),
+        nickname = Some(nickname),
         name = name,
         countryCode = "US",
         sex = ApiSex.Unknown,
@@ -98,6 +100,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
 
   /**
    * Check if the bot user already exists
+   *
    * @param userId
    * @return Future containing check result
    */
@@ -109,6 +112,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
 
   /**
    * Gets userId associated with token
+   *
    * @param token
    * @return user id
    */
@@ -124,7 +128,17 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
   def findWebHook(token: String): Future[Option[BotWebHook]] = globalHooksKV.get(token)
 
   /**
+   * Gets webhook's token by name and userId
+   *
+   * @param userId
+   * @param name
+   * @return optional token
+   */
+  def findToken(userId: UserId, name: String): Future[Option[String]] = hooksKV(userId).get(name)
+
+  /**
    * Finds bot webhook
+   *
    * @param userId
    * @return
    */
@@ -133,6 +147,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
 
   /**
    * Check if webhook exists
+   *
    * @param userId
    * @param name
    * @return
@@ -142,6 +157,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
 
   /**
    * Register webhook
+   *
    * @param userId
    * @param name
    * @return
