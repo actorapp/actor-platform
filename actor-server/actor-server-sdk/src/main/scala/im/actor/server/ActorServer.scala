@@ -247,9 +247,11 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
     } catch {
       case e: ConfigException ⇒
         system.log.error(e, "Failed to load server configuration")
+        system.terminate()
         throw e
       case e: Throwable ⇒
         system.log.error(e, "Server failed to start up")
+        system.terminate()
         throw e
     }
   }
