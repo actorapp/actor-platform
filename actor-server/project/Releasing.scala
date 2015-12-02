@@ -37,7 +37,7 @@ trait Releasing {
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
       inquireVersions,
-      runClean,
+      // runClean, FIXME: uncomment after fixing stalled clean compile
       setReleaseVersion,
       commitReleaseVersion,
       ReleaseStep(
