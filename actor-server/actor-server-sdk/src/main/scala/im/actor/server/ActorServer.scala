@@ -1,12 +1,9 @@
 package im.actor.server
 
-import scala.language.existentials
-
 import akka.actor._
 import akka.cluster.Cluster
 import akka.stream.ActorMaterializer
-import com.typesafe.config.ConfigException
-import im.actor.api.rpc.search.SearchService
+import com.typesafe.config.{ Config, ConfigFactory, ConfigException }
 import im.actor.config.ActorConfig
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
@@ -24,7 +21,6 @@ import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
-import im.actor.server.api.rpc.service.search.SearchServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webactions.WebactionsServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
@@ -45,17 +41,38 @@ import im.actor.server.sms.{ TelesignCallEngine, TelesignClient, TelesignSmsEngi
 import im.actor.server.social.SocialExtension
 import im.actor.server.user._
 
-final case class StartedActorServer(system: ActorSystem)
+import scala.language.existentials
 
-final case class ActorServer(searchServiceClass: Class[_ <: SearchService] = classOf[SearchServiceImpl]) {
-  def start(): StartedActorServer = {
+final case class ActorServer(system: ActorSystem)
+
+object ActorServer {
+  /**
+   * Creates a new Actor Server builder
+   * @return
+   */
+  def newBuilder: ActorServerBuilder = ActorServerBuilder()
+}
+
+final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty()) extends ActorServerModules {
+  /**
+   *
+   * @param config
+   * @return a builder with provided default config
+   */
+  def withDefaultConfig(config: Config) = this.copy(defaultConfig = config)
+
+  /**
+   * Starts a server
+   * @return
+   */
+  def start(): ActorServer = {
     SessionMessage.register()
     CommonSerialization.register()
     UserProcessor.register()
     GroupProcessor.register()
     DialogProcessor.register()
 
-    val serverConfig = ActorConfig.load()
+    val serverConfig = ActorConfig.load(defaultConfig)
 
     implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
 
@@ -214,7 +231,8 @@ final case class ActorServer(searchServiceClass: Class[_ <: SearchService] = cla
 
       system.log.debug("Registering services")
       RpcApiExtension(system).register(services)
-      RpcApiExtension(system).register(searchServiceClass)
+
+      startModules(system)
 
       system.log.debug("Starting Actor CLI")
       ActorCliService.start(system)
@@ -225,7 +243,7 @@ final case class ActorServer(searchServiceClass: Class[_ <: SearchService] = cla
       system.log.debug("Starting Http Api")
       HttpApiFrontend.start(serverConfig)
 
-      StartedActorServer(system)
+      ActorServer(system)
     } catch {
       case e: ConfigException ⇒
         system.log.error(e, "Failed to load server configuration")
