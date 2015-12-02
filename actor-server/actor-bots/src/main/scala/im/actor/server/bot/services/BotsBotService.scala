@@ -12,11 +12,11 @@ private[bot] final class BotsBotService(system: ActorSystem) extends BotServiceB
 
   val botExt = BotExtension(system)
 
-  private def createBot(username: String, name: String) = RequestHandler[CreateBot, CreateBot#Response](
+  private def createBot(nickname: String, name: String) = RequestHandler[CreateBot, CreateBot#Response](
     (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       ifIsAdmin(botUserId) {
         (for {
-          (token, userId) ← botExt.create(username, name, isAdmin = false)
+          (token, userId) ← botExt.create(nickname, name, isAdmin = false)
         } yield Right(BotCreated(token, userId))) recover {
           case UserErrors.NicknameTaken ⇒
             Left(BotError(400, "USERNAME_TAKEN", Js.Obj(), None))
@@ -25,6 +25,6 @@ private[bot] final class BotsBotService(system: ActorSystem) extends BotServiceB
   )
 
   override def handlers: PartialFunction[RequestBody, WeakRequestHandler] = {
-    case CreateBot(username, name) ⇒ createBot(username, name).toWeak
+    case CreateBot(nickname, name) ⇒ createBot(nickname, name).toWeak
   }
 }
