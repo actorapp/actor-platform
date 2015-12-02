@@ -3806,6 +3806,112 @@
         {
           "type": "struct",
           "content": {
+            "name": "StickerMessage",
+            "doc": [
+              "Sticker message",
+              {
+                "type": "reference",
+                "argument": "stickerId",
+                "category": "full",
+                "description": "  Optional Unique ID of sticker"
+              },
+              {
+                "type": "reference",
+                "argument": "fastPreview",
+                "category": "full",
+                "description": "  Optional Fast preview of sticker in webp format"
+              },
+              {
+                "type": "reference",
+                "argument": "image512",
+                "category": "full",
+                "description": "  Optional 512x512 sticker image in webp format"
+              },
+              {
+                "type": "reference",
+                "argument": "image256",
+                "category": "full",
+                "description": "  Optional 256x256 sticker image in webp format"
+              },
+              {
+                "type": "reference",
+                "argument": "stickerCollectionId",
+                "category": "full",
+                "description": "  Optional Collection ID"
+              },
+              {
+                "type": "reference",
+                "argument": "stickerCollectionAccessHash",
+                "category": "full",
+                "description": "  Optional Collection Access Hash"
+              }
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 6
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 1,
+                "name": "stickerId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 2,
+                "name": "fastPreview"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ImageLocation"
+                  }
+                },
+                "id": 3,
+                "name": "image512"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ImageLocation"
+                  }
+                },
+                "id": 4,
+                "name": "image256"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 5,
+                "name": "stickerCollectionId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int64"
+                },
+                "id": 6,
+                "name": "stickerCollectionAccessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "DialogShort",
             "doc": [
               "Short Dialog from grouped conversation list",
@@ -7642,6 +7748,433 @@
                 "type": "string",
                 "id": 1,
                 "name": "token"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Stickers",
+      "package": "stickers",
+      "doc": [
+        "Stickers support in Actor"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "StickerDescriptor",
+            "doc": [
+              "Descriptor of a Sticker",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Sticker unique id"
+              },
+              {
+                "type": "reference",
+                "argument": "emoji",
+                "category": "full",
+                "description": "  Emoji code for sticker"
+              },
+              {
+                "type": "reference",
+                "argument": "image128",
+                "category": "full",
+                "description": "  Image of sticker 128x128 in WebP format"
+              },
+              {
+                "type": "reference",
+                "argument": "image512",
+                "category": "full",
+                "description": "  Image of sticker 512x512 in WebP format"
+              },
+              {
+                "type": "reference",
+                "argument": "image256",
+                "category": "full",
+                "description": "  Image of sticker 256x256 in WebP format"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "emoji"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "ImageLocation"
+                },
+                "id": 3,
+                "name": "image128"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ImageLocation"
+                  }
+                },
+                "id": 4,
+                "name": "image512"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ImageLocation"
+                  }
+                },
+                "id": 5,
+                "name": "image256"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "StickerCollection",
+            "doc": [
+              "Sticker collection",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Unique id of a collection"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "full",
+                "description": "  Access Hash of a collection"
+              },
+              {
+                "type": "reference",
+                "argument": "stickers",
+                "category": "compact",
+                "description": "  Sticker list"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "StickerDescriptor"
+                  }
+                },
+                "id": 3,
+                "name": "stickers"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "StickersReponse",
+            "header": 240,
+            "doc": [
+              "Stickers response",
+              {
+                "type": "reference",
+                "argument": "collections",
+                "category": "full",
+                "description": "  Sticker collections"
+              },
+              {
+                "type": "reference",
+                "argument": "seq",
+                "category": "full",
+                "description": "  Seq of update"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "category": "full",
+                "description": "  State of update"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "StickerCollection"
+                  }
+                },
+                "id": 1,
+                "name": "collections"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "seq"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
+                "id": 3,
+                "name": "state"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadOwnStickers",
+            "header": 238,
+            "response": {
+              "type": "anonymous",
+              "header": 239,
+              "doc": [
+                "Own Stickers collections",
+                {
+                  "type": "reference",
+                  "argument": "ownStickers",
+                  "category": "hidden",
+                  "description": "  Own sticker collections"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "StickerCollection"
+                    }
+                  },
+                  "id": 1,
+                  "name": "ownStickers"
+                }
+              ]
+            },
+            "doc": [
+              "Loading own stickers"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "OwnStickersChanged",
+            "header": 161,
+            "doc": [
+              "Own Stickers changed",
+              {
+                "type": "reference",
+                "argument": "collections",
+                "category": "compact",
+                "description": "  New own sticker collections"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "StickerCollection"
+                  }
+                },
+                "id": 1,
+                "name": "collections"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "StickerCollectionsChanged",
+            "header": 164,
+            "doc": [
+              "Sticker collection changed",
+              {
+                "type": "reference",
+                "argument": "collections",
+                "category": "full",
+                "description": "  Updated sticker collections"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "StickerCollection"
+                  }
+                },
+                "id": 1,
+                "name": "collections"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "AddStickerCollection",
+            "header": 244,
+            "response": {
+              "type": "reference",
+              "name": "StickersReponse"
+            },
+            "doc": [
+              "Adding sticker collection",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "Collection id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "full",
+                "description": "Collection access hash"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RemoveStickerCollection",
+            "header": 245,
+            "response": {
+              "type": "reference",
+              "name": "StickersReponse"
+            },
+            "doc": [
+              "Removing sticker collection",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "Collection id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "full",
+                "description": "Collection access hash"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadStickerCollection",
+            "header": 246,
+            "response": {
+              "type": "anonymous",
+              "header": 247,
+              "doc": [
+                "Loaded collection",
+                {
+                  "type": "reference",
+                  "argument": "collection",
+                  "category": "full",
+                  "description": "  Collection of stickers"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "StickerCollection"
+                  },
+                  "id": 1,
+                  "name": "collection"
+                }
+              ]
+            },
+            "doc": [
+              "Loading stickers",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "Collection id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "full",
+                "description": "Collection access hash"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
               }
             ]
           }
