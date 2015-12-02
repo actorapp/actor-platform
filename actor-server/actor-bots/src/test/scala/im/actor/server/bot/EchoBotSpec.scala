@@ -26,8 +26,8 @@ final class EchoBot extends InternalBot(EchoBot.UserId, "echo", "Echo Bot", isAd
 
   override def onMessage(m: Message): Unit = {
     m.message match {
-      case TextMessage(text) ⇒
-        requestSendMessage(m.peer, nextRandomId(), TextMessage(text))
+      case TextMessage(text, ext) ⇒
+        requestSendMessage(m.peer, nextRandomId(), TextMessage(text, ext))
       case _ ⇒
     }
   }
