@@ -7,7 +7,7 @@ import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
 
 object Build extends sbt.Build with Versioning with Releasing with Publishing {
   val ScalaVersion = "2.11.7"
-  //val Version = getVersion
+  val BotKitVersion = getVersion
 
   lazy val buildSettings =
     Defaults.coreDefaultSettings ++
@@ -119,6 +119,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     id = "actor-bots-shared",
     base = file("actor-bots-shared"),
     settings = defaultSettings ++ publishSettings ++ releaseSettings ++ Seq(
+      version := BotKitVersion,
       libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-reflect" % _),
       libraryDependencies ++= Dependencies.botShared,
       addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
@@ -129,6 +130,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     id = "actor-botkit",
     base = file("actor-botkit"),
     settings = defaultSettings ++ publishSettings ++ releaseSettings ++ Revolver.settings ++ Seq(
+      version := BotKitVersion,
       libraryDependencies ++= Dependencies.botkit,
       addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
     )
