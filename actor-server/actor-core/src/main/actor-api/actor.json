@@ -5515,6 +5515,66 @@
               }
             ]
           }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "FavouriteDialog",
+            "header": 224,
+            "response": {
+              "type": "reference",
+              "name": "DialogsOrder"
+            },
+            "doc": [
+              "Marking dialog as favourite",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Peer for favouriting"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UnfavouriteDialog",
+            "header": 227,
+            "response": {
+              "type": "reference",
+              "name": "DialogsOrder"
+            },
+            "doc": [
+              "Making dialog as unfavourite",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Peer for favouriting"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
         }
       ]
     },
@@ -9186,6 +9246,11 @@
                 "description": "  RGB color value"
               }
             ],
+            "trait": {
+              "name": "Color",
+              "key": 1
+            },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -9208,6 +9273,11 @@
                 "description": "  Predefined color value"
               }
             ],
+            "trait": {
+              "name": "Color",
+              "key": 2
+            },
+            "expandable": "true",
             "attributes": [
               {
                 "type": {
