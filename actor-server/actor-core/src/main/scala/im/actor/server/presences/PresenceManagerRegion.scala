@@ -1,7 +1,7 @@
 package im.actor.server.presences
 
-import akka.actor.{ActorRef, ActorSystem, Props}
-import akka.cluster.sharding.{ClusterSharding, ClusterShardingSettings, ShardRegion}
+import akka.actor.{ ActorRef, ActorSystem, Props }
+import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
 import im.actor.server.presences.PresenceManager.Envelope
 
 object PresenceManagerRegion {
