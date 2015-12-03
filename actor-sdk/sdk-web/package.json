@@ -2,10 +2,8 @@
   "name": "actor-sdk",
   "version": "1.0.15",
   "description": "Actor SDK for building messaging web apps on top of Actor platform",
-  "license": {
-    "type": "Apache-2.0",
-    "url": "http://opensource.org/licenses/apache2.0.php"
-  },
+  "homepage": "https://actor.im/",
+  "license": "Apache-2.0",
   "main": "index.js",
   "contributors": [
     "Oleg Shilov <me@olegshilov.com>",
@@ -14,8 +12,16 @@
   "engines": {
     "node": ">=4.2.2"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/actorapp/ActorSDK-Web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/actorapp/actor-platform/issues"
+  },
   "scripts": {
     "clean": "$(npm bin)/rimraf build && $(npm bin)/rimraf publish",
+    "lint": "$(npm bin)/eslint src",
 
     "assets:fonts": "$(npm bin)/copyfiles 'assets/fonts/**/*' build",
     "assets:emojis": "$(npm bin)/copyfiles -f 'node_modules/emoji-data/sheet_*_64.png' build/assets/images/emoji",
@@ -24,16 +30,17 @@
     "assets:sprite": "$(npm bin)/svg-sprite -w 24 -h 24 --symbol --symbol-sprite icons --symbol-dest images --dest build/assets assets/images/svg/*.svg",
     "assets": "npm run assets:fonts && npm run assets:emojis && npm run assets:sprite && npm run assets:sounds && npm run assets:images",
 
-    "prebuild": "npm run clean && npm run assets",
-    "build:babel": "babel src --out-dir build --plugins transform-es2015-modules-umd --plugins transform-strict-mode",
+    "prebuild": "npm run clean && npm run lint && npm run assets",
+    "build:babel": "babel src --out-dir build --source-maps",
     "build:sass": "$(npm bin)/node-sass src/styles/index.scss --include-path node_modules -o build/styles --output-style compressed",
     "build": "npm run build:babel && npm run build:sass",
 
-    "watch:babel": "babel src --out-dir build --plugins transform-es2015-modules-umd --plugins transform-strict-mode --watch",
+    "watch:babel": "babel src --out-dir build --watch --source-maps inline",
     "watch:sass": "$(npm bin)/node-sass src/styles/index.scss --include-path node_modules -o build/styles --watch",
     "watch": "npm run watch:babel & npm run watch:sass",
 
-    "prepare": "npm run build && $(npm bin)/copyfiles './*.js' '.gitignore' '.babelrc' '.eslintrc' 'package.json' './src/**/*' './assets/**/*' './example/**/*' './build/**/*' publish"
+    "prepare": "npm run build && $(npm bin)/copyfiles './*.js' '.gitignore' '.babelrc' '.eslintrc' 'package.json' './src/**/*' './assets/**/*' './example/**/*' './build/**/*' 'README' publish",
+    "start": "npm run clean && npm run watch"
   },
   "ignore": [
     "**/.*",
@@ -73,15 +80,29 @@
     "react-visibility-sensor": "2.1.0"
   },
   "devDependencies": {
-    "babel-core": "^6.2.1",
-    "babel-plugin-transform-es2015-modules-umd": "^6.1.18",
+    "autoprefixer-loader": "^3.1.0",
+    "babel-core": "^6.2.4",
+    "babel-eslint": "^5.0.0-beta4",
+    "babel-loader": "^6.2.0",
     "babel-plugin-transform-strict-mode": "^6.2.0",
-    "babel-preset-es2015": "^6.1.18",
-    "babel-preset-react": "^6.1.18",
-    "babel-preset-stage-0": "^6.1.18",
+    "babel-preset-es2015": "^6.2.4",
+    "babel-preset-react": "^6.2.4",
+    "babel-preset-stage-0": "^6.2.4",
     "copyfiles": "^0.2.1",
+    "css-loader": "^0.23.0",
+    "eslint": "^1.10.3",
+    "eslint-loader": "^1.1.1",
+    "eslint-plugin-react": "^3.11.2",
+    "file-loader": "^0.8.5",
+    "json-loader": "^0.5.4",
     "node-sass": "^3.3.3",
+    "react-hot-loader": "^1.3.0",
     "rimraf": "^2.4.4",
-    "svg-sprite": "^1.2.15"
+    "sass-loader": "^3.1.2",
+    "source-map-loader": "^0.1.5",
+    "style-loader": "^0.13.0",
+    "svg-sprite": "^1.2.16",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.9"
   }
 }
