@@ -462,6 +462,6 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     // Location picking
     
     func pickLocation() {
-    
+        self.presentViewController(AANavigationController(rootViewController: AALocationPickerController()), animated: true, completion: nil)
     }
 }
