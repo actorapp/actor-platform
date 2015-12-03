@@ -17,8 +17,8 @@ public class AAAvatarView: UIImageView {
 
     var enableAnimation: Bool = false
     
-    private let cacheSize = 10
-    private var avatarCache = Dictionary<Int, AASwiftlyLRU<Int64, UIImage>>()
+    private static let cacheSize = 10
+    private static var avatarCache = Dictionary<Int, AASwiftlyLRU<Int64, UIImage>>()
     
     private var bindedFileId: jlong! = nil
     private var bindedTitle: String! = nil
@@ -233,7 +233,7 @@ public class AAAvatarView: UIImageView {
     //
 
     private func checkCache(size: Int, id: Int64) -> UIImage? {
-        if let cache = avatarCache[size] {
+        if let cache = AAAvatarView.avatarCache[size] {
             if let img = cache[id] {
                 return img
             }
@@ -242,12 +242,12 @@ public class AAAvatarView: UIImageView {
     }
     
     private func putToCache(size: Int, id: Int64, image: UIImage) {
-        if let cache = avatarCache[size] {
+        if let cache = AAAvatarView.avatarCache[size] {
             cache[id] = image
         } else {
-            let cache = AASwiftlyLRU<jlong, UIImage>(capacity: cacheSize);
+            let cache = AASwiftlyLRU<jlong, UIImage>(capacity: AAAvatarView.cacheSize);
             cache[id] = image
-            avatarCache.updateValue(cache, forKey: size)
+            AAAvatarView.avatarCache.updateValue(cache, forKey: size)
         }
     }
 }

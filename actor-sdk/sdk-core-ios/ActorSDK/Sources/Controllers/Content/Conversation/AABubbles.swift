@@ -10,11 +10,13 @@ class AABubbles {
     static let mediaLayouter = AABubbleMediaCellLayouter()
     static let documentLayouter = AABubbleDocumentCellLayout()
     static let serviceLayouter = AABubbleServiceCellLayouter()
+    static let locationLayouter = AABubbleLocationCellLayouter()
     
     static let builtInLayouters: [AABubbleLayouter] = [
         serviceLayouter,
         mediaLayouter,
         documentLayouter,
+        locationLayouter,
         textLayouter
     ]
     
