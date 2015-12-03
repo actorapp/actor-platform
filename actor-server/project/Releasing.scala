@@ -1,6 +1,10 @@
 package im.actor
 
 import bintray._
+import com.typesafe.sbt.packager.debian.DebianPlugin
+import DebianPlugin.autoImport._
+import com.typesafe.sbt.packager.universal.UniversalPlugin
+import UniversalPlugin.autoImport._
 import com.typesafe.sbt.pgp.PgpKeys
 import sbt._
 import Keys._
@@ -11,8 +15,7 @@ import ReleasePlugin.autoImport._
 trait Releasing {
   private val publishDeb = taskKey[Unit]("Publish to debian repository")
 
-  /*
-  private lazy val taskSetting = publishDeb := {
+  private val taskSetting = publishDeb := {
     val btyOrg = "actor"
     val repoName = "ubuntu"
     val pkgName = "actor"
@@ -27,10 +30,9 @@ trait Releasing {
     repo.upload(pkgName, vers, path, f, log)
     repo.release(pkgName, vers, log)
   }
-*/
 
-  lazy val releaseSettings = Seq(
-    //taskSetting,
+  val releaseSettings = Seq(
+    taskSetting,
     releaseCommitMessage := s"chore(server): setting version to ${(version in ThisBuild).value}",
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
@@ -45,13 +47,31 @@ trait Releasing {
         },
         enableCrossBuild = true
       ),
-      setNextVersion,
-      commitNextVersion,
       ReleaseStep(
         action = { state =>
           Command.process("sonatypeReleaseAll", state)
         }
       ),
+      ReleaseStep(
+        action = { state =>
+          val extracted = Project extract state
+          extracted.runTask(publishDeb in Global in extracted.get(thisProjectRef), state)._1
+        }
+      ),
+      ReleaseStep(
+        action = { state =>
+          val extracted = Project extract state
+          extracted.runTask(packageBin in Debian in extracted.get(thisProjectRef), state)._1
+        }
+      ),
+      ReleaseStep(
+        action = { state =>
+          val extracted = Project extract state
+          extracted.runTask(dist in Universal in extracted.get(thisProjectRef), state)._1
+        }
+      ),
+      setNextVersion,
+      commitNextVersion,
       pushChanges
     )
   )
