@@ -35,12 +35,12 @@
     "build:sass": "$(npm bin)/node-sass src/styles/index.scss --include-path node_modules -o build/styles --output-style compressed",
     "build": "npm run build:babel && npm run build:sass",
 
-    "watch:babel": "babel src --out-dir build --watch --source-maps inline",
+    "watch:babel": "babel src --out-dir build --watch --source-maps",
     "watch:sass": "$(npm bin)/node-sass src/styles/index.scss --include-path node_modules -o build/styles --watch",
     "watch": "npm run watch:babel & npm run watch:sass",
 
     "prepare": "npm run build && $(npm bin)/copyfiles './*.js' '.gitignore' '.babelrc' '.eslintrc' 'package.json' './src/**/*' './assets/**/*' './example/**/*' './build/**/*' 'README' publish",
-    "start": "npm run clean && npm run watch"
+    "start": "npm run clean && npm run build && npm run watch"
   },
   "ignore": [
     "**/.*",
