@@ -1,6 +1,5 @@
 import dsl._
 import Keys._
-import im.actor.Releasing
 
 name := "actor"
 
