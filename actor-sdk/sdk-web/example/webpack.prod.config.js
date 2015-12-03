@@ -16,15 +16,18 @@ export default {
   },
   resolve: {
     modulesDirectories: ['node_modules'],
-    root: [
-      path.join(__dirname, 'src')
-    ]
+    root: [path.join(__dirname, 'src')],
+    fallback: [path.join(__dirname, 'node_modules')]
+  },
+  resolveLoader: {
+    modulesDirectories: ['node_modules'],
+    fallback: [path.join(__dirname, 'node_modules')]
   },
   module: {
     preLoaders: [{
       test: /\.js$/,
       loaders: ['eslint'],
-      exclude: /(node_modules)/
+      include: [path.resolve(__dirname, 'src')]
     }, {
       test: /\.js$/,
       loaders: ['source-map'],

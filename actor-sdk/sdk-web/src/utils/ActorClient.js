@@ -12,6 +12,12 @@ export default {
     });
   },
 
+  requestCodeEmail(email) {
+    return new Promise((resolve, reject) => {
+      window.messenger.requestCodeEmail(email, resolve, reject);
+    });
+  },
+
   sendCode(code) {
     return new Promise((resolve, reject) => {
       window.messenger.sendCode(code, resolve, reject);
