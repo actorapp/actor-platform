@@ -172,6 +172,9 @@
 		06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE89891BD8401C005A5530 /* Reachability.swift */; };
 		06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */; };
 		06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */; };
+		06E7B2471C0F8D7A0090660C /* LocationPickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2461C0F8D7A0090660C /* LocationPickerController.swift */; };
+		06E7B24A1C0F92140090660C /* AABubbleLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */; };
+		06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B24B1C0FAB500090660C /* AAMapFastView.swift */; };
 		697B3A12994653F581459F63 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */; };
 /* End PBXBuildFile section */
 
@@ -347,6 +350,9 @@
 		06CE89891BD8401C005A5530 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorSDKAnalytics.swift; sourceTree = "<group>"; };
+		06E7B2461C0F8D7A0090660C /* LocationPickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPickerController.swift; sourceTree = "<group>"; };
+		06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleLocationCell.swift; sourceTree = "<group>"; };
+		06E7B24B1C0FAB500090660C /* AAMapFastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapFastView.swift; sourceTree = "<group>"; };
 		22BAEA363892E475F59B7E9F /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		333F91AE5263DD450666CC87 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 		9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -530,6 +536,7 @@
 				069CF4C31BCB908C00C66E12 /* CLTokenInputView */,
 				066A52321BC4EEBA000E606E /* Cells */,
 				066A52141BC4EE04000E606E /* AAAvatarView.swift */,
+				06E7B24B1C0FAB500090660C /* AAMapFastView.swift */,
 				066A52461BC4EED5000E606E /* AAProgressView.swift */,
 				066A523A1BC4EECD000E606E /* AABigPlaceholderView.swift */,
 				066A523C1BC4EECD000E606E /* AATableViewHeader.swift */,
@@ -589,6 +596,7 @@
 				066A52F91BC52FA0000E606E /* Compose */,
 				066A52601BC50E6B000E606E /* Auth */,
 				066A52C41BC521D5000E606E /* Content */,
+				06E7B2451C0F8D410090660C /* Location */,
 				066A527B1BC51EC6000E606E /* Root */,
 				066A52181BC4EE9A000E606E /* Managed Runtime */,
 			);
@@ -832,6 +840,7 @@
 				066A53281BC53406000E606E /* AABubbleBaseFileCell.swift */,
 				066A53291BC53406000E606E /* AABubbleMediaCell.swift */,
 				066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */,
+				06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -876,6 +885,14 @@
 				069CF4CB1BCB909A00C66E12 /* CLTokenView.m */,
 			);
 			name = CLTokenInputView;
+			sourceTree = "<group>";
+		};
+		06E7B2451C0F8D410090660C /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				06E7B2461C0F8D7A0090660C /* LocationPickerController.swift */,
+			);
+			path = Location;
 			sourceTree = "<group>";
 		};
 		2F428D134E194A828C3DF863 /* Frameworks */ = {
@@ -1107,6 +1124,7 @@
 				066A53171BC533DD000E606E /* AABubbles.swift in Sources */,
 				066A52081BC4E962000E606E /* Makefile in Sources */,
 				066A53231BC533F5000E606E /* Caches.swift in Sources */,
+				06E7B2471C0F8D7A0090660C /* LocationPickerController.swift in Sources */,
 				066A52691BC50E7B000E606E /* AAAuthRegisterViewController.swift in Sources */,
 				066A51501BC4BE06000E606E /* AARegex.swift in Sources */,
 				06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */,
@@ -1171,6 +1189,7 @@
 				066A52241BC4EEAC000E606E /* AAManagedRange.swift in Sources */,
 				066A50E21BC4AF9F000E606E /* ActorSDK.swift in Sources */,
 				06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */,
+				06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */,
 				066A516D1BC4C366000E606E /* ActorCoreExt.swift in Sources */,
 				066A517E1BC4C373000E606E /* FMDatabaseAdditions.m in Sources */,
 				066A519A1BC4C390000E606E /* FMDBList.swift in Sources */,
@@ -1187,6 +1206,7 @@
 				066A52231BC4EEAC000E606E /* AAManagedSection.swift in Sources */,
 				066A52D11BC52204000E606E /* AADialogCell.swift in Sources */,
 				066A51901BC4C383000E606E /* CocoaNetworkRuntime.swift in Sources */,
+				06E7B24A1C0F92140090660C /* AABubbleLocationCell.swift in Sources */,
 				066A52581BC4EF61000E606E /* Alerts.swift in Sources */,
 				066A51691BC4C366000E606E /* AATools.swift in Sources */,
 				066A53201BC533F5000E606E /* AABubbleBackgroundProcessor.swift in Sources */,
