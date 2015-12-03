@@ -185,7 +185,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       libraryDependencies ++= Dependencies.httpApi
     )
   )
-    .dependsOn(actorBots, actorCore, actorPersist, actorRuntime)
+    .dependsOn(actorBots, actorCore)
 
   lazy val actorOAuth = Project(
     id = "actor-oauth",
