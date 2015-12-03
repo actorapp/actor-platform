@@ -3,7 +3,7 @@ package im.actor.server.presences
 import akka.actor._
 import akka.cluster.sharding.ShardRegion.Passivate
 import im.actor.server.db.DbExtension
-import im.actor.server.{model, persist}
+import im.actor.server.{ model, persist }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
