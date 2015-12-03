@@ -26,7 +26,6 @@ import Login from '../components/Login.react.js';
 import Main from '../components/Main.react.js';
 import JoinGroup from '../components/JoinGroup.react.js';
 import Install from '../components/Install.react.js';
-//import AppCache from 'utils/AppCache';
 
 import { initBugsnag } from '../utils/Bugsnag';
 import { initMixpanel } from '../utils/Mixpanel';
@@ -86,11 +85,11 @@ class ActorSDK {
       window.messenger = Actor.create(this.endpoints);
     }
 
-    const AuthSection = this.delegate.authSection || Login;
+    const loginComponent = this.delegate.loginComponent || Login;
 
     const routes = (
       <Route handler={App} name="app" path="/">
-        <Route handler={AuthSection} name="login" path="/auth"/>
+        <Route handler={loginComponent} name="login" path="/auth"/>
 
         <Route handler={Main} name="main" path="/im/:id"/>
         <Route handler={JoinGroup} name="join" path="/join/:token"/>

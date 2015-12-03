@@ -3,8 +3,9 @@
  */
 
 class ActorSDKDelegate {
-  constructor() {
-    this.authSection = null;
+  constructor(components = {}) {
+    this.loginComponent = components.loginComponent || null;
+    this.sidebarComponent = components.sidebarComponent || null;
   }
 }
 

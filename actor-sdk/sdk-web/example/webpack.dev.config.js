@@ -35,49 +35,41 @@ export default {
     modulesDirectories: ['node_modules']
   },
   module: {
-    preLoaders: [
-      {
-        test: /\.js$/,
-        loaders: ['eslint', 'source-map'],
-        exclude: /node_modules/
-      }
-    ],
-    loaders: [
-      // Styles
-      {
-        test: /\.(scss|css)$/,
-        loaders: [
-          'react-hot',
-          'style',
-          'css',
-          'autoprefixer?browsers=last 3 versions',
-          'sass?outputStyle=expanded&includePaths[]=' + path.resolve(__dirname, 'node_modules')
-        ]
-      },
-      // JavaScript
-      {
-        test: /\.js$/,
-        loaders: [
-          'react-hot',
-          'babel?cacheDirectory=true'
-        ],
-        exclude: /(node_modules)/
-      },
-      {
-        test: /\.json$/,
-        loaders: ['json']
-      },
-      // Assets
-      {
-        test: /\.(png|mp3|svg)$/,
-        loaders: ['file?name=assets/[name].[ext]']
-      },
-      // Fonts
-      {
-        test: /\.(ttf|eot|svg|woff|woff2)$/,
-        loaders: ['file?name=assets/fonts/[name].[ext]']
-      }
-    ]
+    preLoaders: [{
+      test: /\.js$/,
+      loaders: ['eslint'],
+      exclude: /(node_modules)/
+    }, {
+      test: /\.js$/,
+      loaders: ['source-map'],
+      include: [path.resolve(__dirname, 'node_modules/actor-sdk')]
+    }],
+    loaders: [{
+      test: /\.(scss|css)$/,
+      loaders: [
+        'react-hot',
+        'style',
+        'css',
+        'autoprefixer?browsers=last 3 versions',
+        'sass?outputStyle=expanded&includePaths[]=' + path.resolve(__dirname, 'node_modules')
+      ]
+    }, {
+      test: /\.js$/,
+      loaders: [
+        'react-hot',
+        'babel?cacheDirectory=true'
+      ],
+      exclude: /(node_modules)/
+    }, {
+      test: /\.json$/,
+      loaders: ['json']
+    }, {
+      test: /\.(png|mp3|svg)$/,
+      loaders: ['file?name=assets/[name].[ext]']
+    }, {
+      test: /\.(ttf|eot|svg|woff|woff2)$/,
+      loaders: ['file?name=assets/fonts/[name].[ext]']
+    }]
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -90,8 +82,5 @@ export default {
     ], ['context']),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
-  ],
-  eslint: {
-    configFile: './.eslintrc'
-  }
+  ]
 };
