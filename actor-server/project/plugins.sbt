@@ -35,6 +35,6 @@ addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.4")
 
 libraryDependencies ++= Seq(
-  "com.github.os72" % "protoc-jar" % "3.0.0-a3",
+  "com.github.os72" % "protoc-jar" % "3.0.0-b1",
   "net.caoticode.buhtig" %% "buhtig" % "0.3.1"
 )
