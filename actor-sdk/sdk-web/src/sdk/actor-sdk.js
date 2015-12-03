@@ -114,10 +114,11 @@ class ActorSDK {
   };
 
   startApp() {
-    if (window.isJsAppLoaded)
+    if (window.isJsAppLoaded) {
       this._starter();
-    else
+    } else {
       window.jsAppLoaded = this._starter.bind(this);
+    }
   }
 }
 
