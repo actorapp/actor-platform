@@ -22,6 +22,9 @@ import ActorSDK
         
         ActorSDK.sharedActor().style.searchStatusBarStyle = .Default
         
+        // Enabling experimental features
+        ActorSDK.sharedActor().enableExperimentalFeatures = true
+        
         // Creating Actor
         ActorSDK.sharedActor().createActor()
     }

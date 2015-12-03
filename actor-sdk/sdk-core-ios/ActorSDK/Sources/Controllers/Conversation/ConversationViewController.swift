@@ -308,6 +308,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             self.pickDocument()
         }
         
+        if (ActorSDK.sharedActor().enableExperimentalFeatures) {
+            builder.add("Location") { () -> () in
+                self.pickLocation()
+            }
+        }
+        
         showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
     }
  
@@ -451,5 +457,11 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         picker.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    // Location picking
+    
+    func pickLocation() {
+    
     }
 }

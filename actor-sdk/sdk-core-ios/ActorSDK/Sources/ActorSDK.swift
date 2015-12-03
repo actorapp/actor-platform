@@ -82,6 +82,9 @@ public class ActorSDK {
     /// Extensions
     private var extensions = [ActorExtension]()
     
+    /// Enable experimental features
+    public var enableExperimentalFeatures: Bool = false
+    
     //
     // User Onlines
     //
@@ -91,7 +94,7 @@ public class ActorSDK {
     
     /// Disable this if you want manually handle online states
     public var automaticOnlineHandling = true
-
+    
     //
     // Internal State
     //
