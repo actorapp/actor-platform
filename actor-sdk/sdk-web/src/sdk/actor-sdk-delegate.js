@@ -3,9 +3,16 @@
  */
 
 class ActorSDKDelegate {
-  constructor(components = {}) {
-    this.loginComponent = components.loginComponent || null;
-    this.recentComponent = components.recentComponent || null;
+  constructor(components = {}, actions = {}) {
+    this.components = {
+      login: components.login || null,
+      recent: components.recent || null
+    };
+
+    this.actions = {
+      setLoggedIn: actions.setLoggedIn || null,
+      setLoggedOut: actions.setLoggedOut || null
+    };
   }
 }
 

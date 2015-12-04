@@ -5,7 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 
 import HeaderSection from './sidebar/HeaderSection.react';
-import Recent from './sidebar/RecentSection.react';
+import DefaultRecentSection from './sidebar/RecentSection.react';
 
 class SidebarSection extends Component {
   constructor(props){
@@ -13,7 +13,7 @@ class SidebarSection extends Component {
   }
 
   static contextTypes = {
-    delegate: PropTypes.func
+    delegate: PropTypes.object
   };
 
   static propTypes = {
@@ -24,7 +24,7 @@ class SidebarSection extends Component {
     const { selectedPeer } = this.props;
     const { delegate } = this.context;
 
-    const RecentSection = delegate.recentComponent || React;
+    const RecentSection = delegate.components.recent || DefaultRecentSection;
 
     return (
       <aside className="sidebar">
