@@ -5,7 +5,7 @@
 class ActorSDKDelegate {
   constructor(components = {}) {
     this.loginComponent = components.loginComponent || null;
-    this.sidebarComponent = components.sidebarComponent || null;
+    this.recentComponent = components.recentComponent || null;
   }
 }
 

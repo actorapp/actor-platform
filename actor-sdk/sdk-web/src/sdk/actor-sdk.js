@@ -9,7 +9,7 @@ import SDKDelegate from './actor-sdk-delegate';
 import { endpoints, bugsnagApiKey, mixpanelAPIKey } from '../constants/ActorAppConstants'
 import Pace from 'pace';
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Router from 'react-router';
 import ReactMixin from 'react-mixin';
 import Actor from 'actor-js';
@@ -44,6 +44,20 @@ window.jsAppLoaded = () => {
 };
 
 class App extends Component {
+  static childContextTypes =  {
+    delegate: PropTypes.func
+  };
+
+  getChildContext() {
+    return {
+      delegate: this.props.delegate
+    };
+  }
+
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return <RouteHandler/>;
   }
@@ -104,7 +118,7 @@ class ActorSDK {
 
     RouterContainer.set(router);
 
-    router.run((Root) => React.render(<Root {...intlData}/>, appRootElemet));
+    router.run((Root) => React.render(<Root {...intlData} delegate={this.delegate}/>, appRootElemet));
 
     if (window.location.hash !== '#/deactivated') {
       if (LoginStore.isLoggedIn()) {
