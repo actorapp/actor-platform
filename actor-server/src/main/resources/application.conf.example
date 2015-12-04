@@ -1,0 +1,326 @@
+# Example configuration for Actor Platform
+# This file uses HOCON syntax (https://github.com/typesafehub/config/blob/master/HOCON.md)
+# To start server you need:
+# * Configure PostgreSQL service
+# * Configure one of supported SMS gateway service (TeleSign, Clickatell, Twilio)
+#   or
+#   Configure email service
+
+# Configuration of storage engines for server
+# Comminity distribution can store all required data
+# in PostgreSQL and store files at Amazon S3.
+# In enterprise versions you can configure 
+# other storage engines
+storage { 
+  # Can be only postgresql in Community distribution
+  database: "postgresql"
+  # Can be only s3 in Community distribution
+  files: "s3"
+}
+
+# We strictly recommend to use TLS
+# Most of modern browsers are not working with websockets over
+# non-encrypted connection
+tls {
+
+  # Ceritifcate keystore in Java Keystore format
+  # with single key with alias password with password
+  # equals to keystore password
+  #
+  # Written in format:
+  # name { Unique name for certificate
+  #   path: Path to keystore
+  #   password: Password to keystore
+  # }
+  keystores {
+    <write_keystore_name_here> {
+      path: <write_keystore_path_here>
+      password: <write_keystore_password_here>
+    }
+  }
+}
+
+# Web App settings
+# {
+#   host: Listening host
+#   post: Listening port
+#   domain: Domain
+#   keystore: [Optional] Keystore
+# }
+webapp {
+  interface: "0.0.0.0"
+  port: 9090
+  host: "localhost"
+}
+  
+# Endpoints for Mobile/Web API
+# It is strictly recommended to use 443 port 
+# for all connections. There are a lot of problems
+# on any other ports.
+#
+# Array of elements in format:
+# {
+#   type: "tcp" or "websocket"
+#   host: Listening host
+#   post: Listening port
+#   keystore: [Optional] Keystore
+# }
+endpoints: [
+  {
+    type: tcp
+    interface: "0.0.0.0"
+    port: 9070
+  }, 
+  {
+    type: websocket
+    interface: "0.0.0.0"
+    port: 9080
+  }
+]
+
+# Enabled mobules for server
+# Default distribution has two modules: auth and enricher.
+# * auth: enables authentication support
+# * enricher: enables encriching of messages 
+#   for example, downloading previews of images by URL, or
+#   loading gif images from Gliphy
+modules {
+
+  # Configuration for messaging module
+  # messaging {
+     # Configure url for group invites here
+     # groups {
+     #   invite {
+     #     base-uri: <write_base_uri_here>
+     #   }
+     # }
+  # }
+
+  # Configuration for authentication.
+  # Default distribution can authenticate with one-time 
+  # code or oauth2. 
+  #
+  # If you comment this module authentication will be disabled.
+  # Useful for some security-related cases.
+  auth {
+    # You can enable or disable types of authentication by 
+    # adding or removing from types variable.
+    # Supported types:
+    # * sms: one-time password by SMS, 
+    # * email: one-time password by email
+    # * oauth2: OAuth2 authentication for some mail domains
+
+    types: [sms, email, oauth2]
+
+    # Uncomment if you want to tweak sms authentication parameters
+    # sms {
+      # Uncomment to change SMS send repeat limit on double sms request
+      # repeat-limit = 1m
+      # Uncomment to force some specific gateway for sending sms
+      # primary-gateway = telesign
+    # }
+  }
+
+  # Message enricher
+  # Comment this module if you don't want to use message 
+  # enriching feature
+  enricher { 
+
+    # Uncomment to customize max image preview size
+    # max-preview-size = 2 M
+
+    # Uncomment for disabling gliphy integration
+    # NOTE: If glyphy integration is not set this feature
+    # will be automatically disabled
+    # glyphy-enabled = false
+  }
+}
+
+# Services that are used by the server.
+# Default distribution support services:
+# * [REQUIRED] postgresql: PostgreSQL database
+# * email: Email integration
+# * aws: Amazon Web Services integration
+# * google: Accessing Google services
+# * apple: Accessing Apple services 
+# * gliphy: Giphy.com integration (for Message Enricher)
+# * telesign: Telesign SMS gateway
+# * twilio: Twilio SMS gateway
+# * clickatel: Clickatel SMS gateway
+
+services {
+
+  # PostgreSQL storage for data
+  # The only required service to start server
+  postgresql {
+
+    # Host of PostgreSQL instance
+    host: <write_psql_server_host_here>
+    # Port of PostgreSQL instance
+    port: 5432
+    # Database name
+    db: actor
+    # User name in PostgreSQL
+    user: <write_psql_user_here>
+    # Password in PostgreSQL
+    password: <write_psql_password_here>
+  }
+
+  # AWS configuration
+  # It is strictly recommended to configure s3 storage for
+  # enabling file sharing in apps
+  aws {
+
+    # S3 Storage, used for file sharing
+    s3 {
+
+      # S3 Api Key
+      access-key: "YOUR AWS KEY ID"
+      # S3 Api Secret
+      secret-key: "YOUR AWS SECRET KEY"
+
+      # File bucket
+      default-bucket: "bucket for storing files"
+    }
+  }
+
+  # Service used for sending activation codes
+  activation {
+    # Define witch activation service to use: internal/actor-activation
+    # default-service: internal
+    # Allow client to repeat code sending after this interval
+    repeat-limit: 1m
+    # Time and attempt to expire sms/email activation code
+    # code-expiration: 1 day
+    # code-attempts: 3
+  }
+
+  activation-gate {
+    uri: "https://gate.actor.im"
+    auth-token: "2173fc216dc95641g3137825g59d5gg228237"
+  }
+
+  # Email configuration
+  email {
+
+    # Sender information for outgoing emails
+    sender {
+      # Sender Email address
+      address: <write_sender_address_here>
+      # Sender Name
+      name: <write_sender_full_name_here>
+      # Mail theme prefix
+      prefix: <write_mail_theme_prefix_here>
+    }
+
+    # SMTP server configuration
+    smtp {
+
+      # SMTP server host
+      host: <write_smtp_server_host_here>
+      # SMTP server port
+      port: <write_smtp_server_port_here>
+      # SMTP server username
+      username: <write_smtp_server_username_here>
+      # SMTP server password
+      password: <write_smtp_server_password_here>
+
+      # Is TLS required
+      tls: true
+    }
+  }
+
+  # Telesign SMS gate (best gate for authentication)
+  # To get tokens ask at telesign web site: https://www.telesign.com
+  telesign {
+    customer-id: <write_your_customer_id_here>
+    api-key: <write_your_api_key_here>
+  }
+
+  # Twilio SMS gate (fast, but sometimes unstable)
+  # To get tokens signup at Twilio web site: https://www.twilio.com
+  # twilio {
+  #   account:
+  #   token:
+  # }
+
+  # Clickatell SMS (slowest gate, but more stable than Twilio)
+  # To get tokens signup at Clickatel web site: https://www.clickatell.com/
+  # clickatell {
+  #   user:
+  #   password:
+  #   app_id:
+  # }  
+
+  # Accessing Google Services
+  # Used for OAuth2 in gmail mailboxes 
+  # and sending push notifications in Android & Chrome
+  #
+  # How to get OAuth2:
+  # * Open https://console.developers.google.com/
+  # * Go To Api&Auth, then to Credentials
+  # * Press "Client Id" and create id for Web Application
+  # * In created Client Id there are values "Client Id" and "Client Secret"
+  #   for web OAuth configuration
+  # * Same steps for Android & iOS applications
+  #
+  # How to get Push keys
+  # * Open https://console.developers.google.com/
+  # * Go To Api&Auth, then to Credentials
+  # * Press "Create new key" for Android Application
+  # * Allow any IP
+  # * Get API key from created "Key for Android Application"
+  # * Project Id can be found on Overview page
+  google {
+
+    # Uncomment if you want to perform OAuth authentication
+    # for GMail accounts
+    # oauth {
+    #  auth-uri: "https://accounts.google.com/o/oauth2/auth"
+    #  token-uri: "https://accounts.google.com/o/oauth2/token"
+    #  profile-uri: "https://www.googleapis.com/oauth2/v2/userinfo"
+    #  client-id: <write_your_client_id_here>
+    #  client-secret: <write_your_client_secret_here>
+    #  scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.google.com/m8/feeds/"
+    #}
+
+    # Android & Chrome push notifications
+    # push {
+    #  # Keys for push notifications in format:
+    #  # { 
+    #  #    projectId: Key project ID (see comments above)    
+    #  #    key: Secret Key (see comments above)
+    #  # }
+    #   keys = [
+    #    { 
+    #      project-id:
+    #      key: 
+    #    }
+    #  ]
+    # }
+  }
+
+  # Accessing Apple servers for push notifications
+  apple { 
+
+    # Safari & iOS notifications
+    # push {
+    #  # Mobile push certificates in format:
+    #  # { 
+    #  #   certId: Random Int unique value for certificate
+    #  #   path: Path to certificate file    
+    #  #   password: Password to certificate
+    #  # }
+    #  mobile-certs = [ {
+    #    certId: <write_your_certificate_id_here>
+    #    path: <write_your_certificate_path_here>
+    #    password: <write_your_certificate_password_here>
+    #  }]
+    # }
+  }
+
+  # Accessing Gliphy for gif image downloading
+  # gliphy {
+  #  api-token=<write_your_api_token_here>
+  # }
+}
