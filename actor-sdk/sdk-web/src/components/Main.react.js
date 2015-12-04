@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import { PeerTypes, KeyCodes } from '../constants/ActorAppConstants';
 
@@ -23,11 +23,11 @@ import ModalsWrapper from './modals/ModalsWrapper.react';
 
 class Main extends Component {
   static contextTypes = {
-    router: React.PropTypes.func
+    router: PropTypes.func
   };
 
   static propTypes = {
-    params: React.PropTypes.object
+    params: PropTypes.object
   };
 
   constructor(props) {
