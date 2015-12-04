@@ -5,6 +5,7 @@
 import 'babel-polyfill';
 import { intlData } from '../l18n';
 import RouterContainer from '../utils/RouterContainer';
+import DelegateContainer from '../utils/DelegateContainer';
 import SDKDelegate from './actor-sdk-delegate';
 import { endpoints, bugsnagApiKey, mixpanelAPIKey } from '../constants/ActorAppConstants'
 import Pace from 'pace';
@@ -45,7 +46,7 @@ window.jsAppLoaded = () => {
 
 class App extends Component {
   static childContextTypes =  {
-    delegate: PropTypes.func
+    delegate: PropTypes.object
   };
 
   getChildContext() {
@@ -70,9 +71,11 @@ class ActorSDK {
     options = options || {};
 
     this.endpoints = (options.endpoints && options.endpoints.length > 0) ? options.endpoints : endpoints;
-    this.delegate = options.delegate ? options.delegate : new SDKDelegate();
     this.bugsnagApiKey = options.bugsnagApiKey ? options.bugsnagApiKey : bugsnagApiKey;
     this.mixpanelAPIKey = options.mixpanelAPIKey ? options.mixpanelAPIKey : mixpanelAPIKey;
+
+    this.delegate = options.delegate ? options.delegate : new SDKDelegate();
+    DelegateContainer.set(this.delegate);
 
     initBugsnag(this.bugsnagApiKey);
     initMixpanel(this.mixpanelAPIKey);
@@ -99,7 +102,7 @@ class ActorSDK {
       window.messenger = Actor.create(this.endpoints);
     }
 
-    const loginComponent = this.delegate.loginComponent || Login;
+    const loginComponent = this.delegate.components.login || Login;
 
     const routes = (
       <Route handler={App} name="app" path="/">

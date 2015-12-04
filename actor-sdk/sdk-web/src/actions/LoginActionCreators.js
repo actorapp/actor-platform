@@ -7,6 +7,7 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 
 import ActorClient from '../utils/ActorClient';
 import RouterContainer from '../utils/RouterContainer';
+import DelegateContainer from '../utils/DelegateContainer';
 
 import MyProfileActionCreators from './MyProfileActionCreators';
 import DialogActionCreators from './DialogActionCreators';
@@ -72,39 +73,44 @@ const LoginActionCreators = {
       .then(setLoggedIn)
   },
 
-  setLoggedIn: (opts) => {
-    opts = opts || {};
+  setLoggedIn: (opts = {}) => {
+    const delegate = DelegateContainer.get();
 
-    if (opts.redirect) {
-      const router = RouterContainer.get();
-      const nextPath = router.getCurrentQuery().nextPath;
+    if (delegate.actions.setLoggedIn) {
+      delegate.actions.setLoggedIn(opts);
+    } else {
+      if (opts.redirect) {
+        const router = RouterContainer.get();
+        const nextPath = router.getCurrentQuery().nextPath;
 
-      if (nextPath) {
-        router.replaceWith(nextPath);
-      } else {
-        router.replaceWith('/');
+        if (nextPath) {
+          router.replaceWith(nextPath);
+        } else {
+          router.replaceWith('/');
+        }
       }
+
+      dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
+      ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
+      ActorClient.bindDialogs(DialogActionCreators.setDialogs);
+      ActorClient.bindContacts(ContactActionCreators.setContacts);
+      ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList);
+      ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon);
     }
-
-    dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
-
-    ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
-
-    ActorClient.bindDialogs(DialogActionCreators.setDialogs);
-
-    ActorClient.bindContacts(ContactActionCreators.setContacts);
-    ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList);
-    ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon);
   },
   setLoggedOut: () => {
-    dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
-    ActorClient.unbindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
+    const delegate = DelegateContainer.get();
 
-    ActorClient.unbindDialogs(DialogActionCreators.setDialogs);
-
-    ActorClient.unbindContacts(ContactActionCreators.setContacts);
-    ActorClient.unbindSearch(QuickSearchActionCreators.setQuickSearchList);
-    ActorClient.unbindTempGlobalCounter(FaviconActionCreators.setFavicon);
+    if (delegate.actions.setLoggedOut) {
+      delegate.actions.setLoggedOut();
+    } else {
+      dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
+      ActorClient.unbindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
+      ActorClient.unbindDialogs(DialogActionCreators.setDialogs);
+      ActorClient.unbindContacts(ContactActionCreators.setContacts);
+      ActorClient.unbindSearch(QuickSearchActionCreators.setQuickSearchList);
+      ActorClient.unbindTempGlobalCounter(FaviconActionCreators.setFavicon);
+    }
   },
 
   restartAuth: () => dispatch(ActionTypes.AUTH_RESTART)
