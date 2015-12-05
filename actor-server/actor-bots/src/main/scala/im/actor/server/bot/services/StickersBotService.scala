@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import im.actor.bots.BotMessages._
 import im.actor.concurrent.FutureResultCats
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
-import im.actor.server.file.{ S3StorageExtension, S3StorageAdapter, ImageUtils }
+import im.actor.server.file.{ FileStorageAdapter, FileStorageExtension, ImageUtils }
 import im.actor.server.stickers.{ StickerErrors, StickersExtension }
 
 private[bot] object StickersBotErrors {
@@ -36,7 +36,7 @@ private[bot] final class StickersBotService(_system: ActorSystem) extends BotSer
   import system.dispatcher
 
   private val stickerExt = StickersExtension(system)
-  private implicit val fsAdapter: S3StorageAdapter = S3StorageExtension(system).s3StorageAdapter
+  private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(system).fsAdapter
 
   override def handlers: Handlers = {
     case CreateStickerPack(userId)                            ⇒ createStickerPack(userId).toWeak

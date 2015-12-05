@@ -2,6 +2,8 @@ syntax = "proto2";
 
 package im.actor.server;
 
+import "scalapb/scalapb.proto";
+
 message FileLocation {
     required int64 file_id = 1;
     required int64 access_hash = 2;
@@ -18,4 +20,9 @@ message Avatar {
     optional AvatarImage smallImage = 1;
     optional AvatarImage largeImage = 2;
     optional AvatarImage fullImage = 3;
+}
+
+message S3UploadKey {
+    option (scalapb.message).extends = "im.actor.server.file.UploadKey";
+    required string key = 1;
 }

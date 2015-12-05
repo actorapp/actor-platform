@@ -1,7 +1,7 @@
 package im.actor.server.enrich
 
 import im.actor.server.db.DbExtension
-import im.actor.server.file.{ FileUtils, FileStorageAdapter, S3StorageExtension, ImageUtils }
+import im.actor.server.file.{ FileStorageExtension, FileUtils, FileStorageAdapter, ImageUtils }
 import im.actor.util.log.AnyRefLogSource
 
 import scala.concurrent.ExecutionContextExecutor
@@ -49,7 +49,7 @@ final class RichMessageWorker(config: RichMessageConfig)(implicit materializer: 
   private val db = DbExtension(system).db
   private val mediator = DistributedPubSub(context.system).mediator
 
-  private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
+  private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(context.system).fsAdapter
 
   override val log = Logging(system, this)
 

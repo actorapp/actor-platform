@@ -6,7 +6,7 @@ import im.actor.bots.BotMessages.BotError
 import im.actor.concurrent.FutureResultCats
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
 import im.actor.server.db.DbExtension
-import im.actor.server.file.{ S3StorageExtension, FileStorageAdapter }
+import im.actor.server.file.{ FileStorageExtension, FileStorageAdapter }
 import im.actor.server.user.{ UserErrors, UserUtils }
 
 private[bot] final class UsersBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResultCats[BotError] with ApiToBotConversions {
@@ -16,7 +16,7 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
   import im.actor.concurrent.FutureExt._
 
   private val db = DbExtension(system).db
-  private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(system).s3StorageAdapter
+  private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(system).fsAdapter
   private implicit val _system = system
 
   override val handlers: Handlers = {
