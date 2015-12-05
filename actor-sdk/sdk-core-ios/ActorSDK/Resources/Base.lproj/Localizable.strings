@@ -394,6 +394,8 @@
 
 "SendDocument" = "Document";
 
+"ShareLocation" = "Location";
+
 "NavigationEdit" = "Edit";
 
 "NavigationDone" = "Done";
