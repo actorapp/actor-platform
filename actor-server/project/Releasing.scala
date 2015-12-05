@@ -47,6 +47,8 @@ trait Releasing {
         },
         enableCrossBuild = true
       ),
+      setNextVersion,
+      commitNextVersion,
       ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
       ReleaseStep(
         action = { state =>
@@ -66,8 +68,6 @@ trait Releasing {
           extracted.runTask(dist in Universal in extracted.get(thisProjectRef), state)._1
         }
       ),
-      setNextVersion,
-      commitNextVersion,
       pushChanges
     )
   )
