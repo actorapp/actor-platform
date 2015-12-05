@@ -172,9 +172,10 @@
 		06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE89891BD8401C005A5530 /* Reachability.swift */; };
 		06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */; };
 		06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */; };
-		06E7B2471C0F8D7A0090660C /* LocationPickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2461C0F8D7A0090660C /* LocationPickerController.swift */; };
+		06E7B2471C0F8D7A0090660C /* AALocationPickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2461C0F8D7A0090660C /* AALocationPickerController.swift */; };
 		06E7B24A1C0F92140090660C /* AABubbleLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */; };
 		06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B24B1C0FAB500090660C /* AAMapFastView.swift */; };
+		06E7B2521C1345E70090660C /* AAMapPinPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2511C1345E70090660C /* AAMapPinPointView.swift */; };
 		697B3A12994653F581459F63 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */; };
 /* End PBXBuildFile section */
 
@@ -350,9 +351,10 @@
 		06CE89891BD8401C005A5530 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorSDKAnalytics.swift; sourceTree = "<group>"; };
-		06E7B2461C0F8D7A0090660C /* LocationPickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPickerController.swift; sourceTree = "<group>"; };
+		06E7B2461C0F8D7A0090660C /* AALocationPickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AALocationPickerController.swift; sourceTree = "<group>"; };
 		06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleLocationCell.swift; sourceTree = "<group>"; };
 		06E7B24B1C0FAB500090660C /* AAMapFastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapFastView.swift; sourceTree = "<group>"; };
+		06E7B2511C1345E70090660C /* AAMapPinPointView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapPinPointView.swift; sourceTree = "<group>"; };
 		22BAEA363892E475F59B7E9F /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		333F91AE5263DD450666CC87 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 		9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -537,6 +539,7 @@
 				066A52321BC4EEBA000E606E /* Cells */,
 				066A52141BC4EE04000E606E /* AAAvatarView.swift */,
 				06E7B24B1C0FAB500090660C /* AAMapFastView.swift */,
+				06E7B2511C1345E70090660C /* AAMapPinPointView.swift */,
 				066A52461BC4EED5000E606E /* AAProgressView.swift */,
 				066A523A1BC4EECD000E606E /* AABigPlaceholderView.swift */,
 				066A523C1BC4EECD000E606E /* AATableViewHeader.swift */,
@@ -890,7 +893,7 @@
 		06E7B2451C0F8D410090660C /* Location */ = {
 			isa = PBXGroup;
 			children = (
-				06E7B2461C0F8D7A0090660C /* LocationPickerController.swift */,
+				06E7B2461C0F8D7A0090660C /* AALocationPickerController.swift */,
 			);
 			path = Location;
 			sourceTree = "<group>";
@@ -1124,7 +1127,7 @@
 				066A53171BC533DD000E606E /* AABubbles.swift in Sources */,
 				066A52081BC4E962000E606E /* Makefile in Sources */,
 				066A53231BC533F5000E606E /* Caches.swift in Sources */,
-				06E7B2471C0F8D7A0090660C /* LocationPickerController.swift in Sources */,
+				06E7B2471C0F8D7A0090660C /* AALocationPickerController.swift in Sources */,
 				066A52691BC50E7B000E606E /* AAAuthRegisterViewController.swift in Sources */,
 				066A51501BC4BE06000E606E /* AARegex.swift in Sources */,
 				06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */,
@@ -1171,6 +1174,7 @@
 				066A52811BC51ED0000E606E /* AANoSelectionViewController.swift in Sources */,
 				066A52281BC4EEAC000E606E /* AAManagedTableController.swift in Sources */,
 				065975541BC7DF5100B8C7DF /* CocoaAssetsRuntime.swift in Sources */,
+				06E7B2521C1345E70090660C /* AAMapPinPointView.swift in Sources */,
 				066A53121BC53317000E606E /* AAPhotoPreviewController.swift in Sources */,
 				066A52391BC4EEBA000E606E /* AAEditCell.swift in Sources */,
 				066A526D1BC50E8B000E606E /* AAAuthCountryCell.swift in Sources */,
