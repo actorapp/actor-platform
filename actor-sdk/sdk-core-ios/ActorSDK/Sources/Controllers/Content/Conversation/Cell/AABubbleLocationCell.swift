@@ -141,7 +141,7 @@ public class AABubbleLocationCell: AABubbleCell {
             statusView.frame = CGRectMake(timeLabel.frame.maxX, timeLabel.frame.minY, 23, timeHeight)
         }
         
-        pin.frame = CGRectMake((map.width - pin.image!.size.width)/2, (map.height - pin.image!.size.height)/2,
+        pin.frame = CGRectMake((map.width - pin.image!.size.width)/2, (map.height / 2 - pin.image!.size.height),
             pin.image!.size.width, pin.image!.size.height)
         
         timeBg.frame = CGRectMake(timeLabel.frame.minX - 3, timeLabel.frame.minY - 1, timeWidth + 6, timeHeight + 2)
@@ -156,7 +156,7 @@ public class AALocationCellLayout: AACellLayout {
     init(latitude: Double, longitude: Double, date: Int64) {
         self.latitude = latitude
         self.longitude = longitude
-        super.init(height: mapHeight, date: date, key: "location")
+        super.init(height: mapHeight + 2, date: date, key: "location")
     }
 }
 
