@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 import MobileCoreServices
 
-class ConversationViewController: AAConversationContentController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ConversationViewController: AAConversationContentController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AALocationPickerControllerDelegate {
     
     // Data binder
     private let binder = AABinder()
@@ -462,6 +462,17 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     // Location picking
     
     func pickLocation() {
-        self.presentViewController(AANavigationController(rootViewController: AALocationPickerController()), animated: true, completion: nil)
+        let pickerController = AALocationPickerController()
+        pickerController.delegate = self
+        self.presentViewController(AANavigationController(rootViewController:pickerController), animated: true, completion: nil)
+    }
+    
+    func locationPickerDidCancelled(controller: AALocationPickerController) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func locationPickerDidPicked(controller: AALocationPickerController, latitude: Double, longitude: Double) {
+        Actor.sendLocationWithPeer(self.peer, withLongitude: JavaLangDouble(double: longitude), withLatitude: JavaLangDouble(double: latitude), withStreet: nil, withPlace: nil)
+        controller.dismissViewControllerAnimated(true, completion: nil)
     }
 }
