@@ -4,8 +4,8 @@ import minimist from 'minimist';
 
 import webpack from 'webpack';
 import webpackDevServer from 'webpack-dev-server';
-import webpackConfigProd from './webpack.config.prod.js';
-import webpackConfigDev from './webpack.config.dev.js';
+import webpackProdConfig from './webpack.prod.config.js';
+import webpackDevConfig from './webpack.dev.config.js';
 
 import gulp from 'gulp';
 import gutil from 'gulp-util';
@@ -16,7 +16,7 @@ const argv = minimist(process.argv.slice(2));
 const isProduction = argv.release || false;
 
 gulp.task('webpack:build', (callback) => {
-  webpack(webpackConfigProd, (err, stats) => {
+  webpack(webpackProdConfig, (err, stats) => {
     if (err) {
       throw new gutil.PluginError('[webpack:build]', err);
     }
@@ -28,7 +28,7 @@ gulp.task('webpack:build', (callback) => {
 });
 
 gulp.task('webpack:dev', () => {
-  new webpackDevServer(webpack(webpackConfigDev), {
+  new webpackDevServer(webpack(webpackDevConfig), {
     publicPath: '/',
     contentBase: './dist',
     hot: true,
@@ -78,4 +78,4 @@ gulp.task('dev', ['static', 'webpack:dev']);
 
 gulp.task('build', ['static', 'webpack:build']);
 
-gulp.task('dist', ['build']);
+gulp.task('default', ['build']);
