@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -eu
+
+HOME="$(dirname "$(which "$0")")/.."
+
+eval "$HOME/bin/actor -main im.actor.server.cli.ActorCli $@"

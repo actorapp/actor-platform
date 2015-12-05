@@ -1,0 +1,18 @@
+services {
+  postgresql {
+    host: "localhost"
+    user: "postgres"
+    password: ""
+    db: "actor"
+  }
+
+  aws {
+    s3 {
+      access-key: "YOUR AWS KEY ID"
+      secret-key: "YOUR AWS SECRET KEY"
+      default-bucket: "bucket for storing files"
+    }
+  }
+}
+
+# secret: <your long secret here with special low and up case alphanumeric characters, in double quotes>

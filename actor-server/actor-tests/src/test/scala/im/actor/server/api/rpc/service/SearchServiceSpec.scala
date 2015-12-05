@@ -6,6 +6,7 @@ import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server._
+import im.actor.server.api.rpc.service.search.SearchServiceImpl
 
 final class SearchServiceSpec
   extends BaseAppSuite
