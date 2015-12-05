@@ -119,11 +119,12 @@ public class AABubbleLocationCell: AABubbleCell {
     
     public override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
         let insets = fullContentInsets
+        let contentWidth = self.contentView.frame.width
         
         layoutBubble(mapWidth, contentHeight: mapHeight)
         
         if isOut {
-            map.frame = CGRectMake(maxWidth - insets.right - mapWidth , insets.top, mapWidth, mapHeight)
+            map.frame = CGRectMake(contentWidth - insets.right - mapWidth , insets.top, mapWidth, mapHeight)
         } else {
             map.frame = CGRectMake(insets.left, insets.top, mapWidth, mapHeight)
         }

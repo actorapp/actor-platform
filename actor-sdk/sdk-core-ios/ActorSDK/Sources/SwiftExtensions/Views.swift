@@ -65,6 +65,11 @@ public extension UIView {
     public var right: CGFloat { get { return frame.maxX } }
     public var top: CGFloat { get { return frame.minY } }
     public var bottom: CGFloat { get { return frame.maxY } }
+    
+    public func centerIn(rect: CGRect) {
+        self.frame = CGRectMake((rect.width - self.bounds.width) / 2, (rect.height - self.bounds.height) / 2,
+            self.bounds.width, self.bounds.height)
+    }
 }
 
 // Text measuring
