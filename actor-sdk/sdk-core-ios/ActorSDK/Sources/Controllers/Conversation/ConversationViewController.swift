@@ -308,10 +308,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             self.pickDocument()
         }
         
-        if (ActorSDK.sharedActor().enableExperimentalFeatures) {
-            builder.add("Location") { () -> () in
-                self.pickLocation()
-            }
+        builder.add("ShareLocation") { () -> () in
+            self.pickLocation()
         }
         
         showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
