@@ -47,11 +47,7 @@ trait Releasing {
         },
         enableCrossBuild = true
       ),
-      ReleaseStep(
-        action = { state =>
-          Command.process("sonatypeReleaseAll", state)
-        }
-      ),
+      ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
       ReleaseStep(
         action = { state =>
           val extracted = Project extract state
