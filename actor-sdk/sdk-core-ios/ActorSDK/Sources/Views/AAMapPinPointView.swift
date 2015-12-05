@@ -32,10 +32,44 @@ public class AAMapPinPointView: UIView {
     }
     
     func risePin(rised: Bool, animated: Bool) {
-        if (rised) {
-            pinView.hidden = true
+
+        self.pinShadowView.layer.removeAllAnimations()
+        self.pinView.layer.removeAllAnimations()
+        
+        if animated {
+            if rised {
+                UIView.animateWithDuration(0.2, delay: 0.0, options: .BeginFromCurrentState, animations: { () -> Void in
+                    self.pinView.frame = CGRectMake(100 / 2 - 7, 7, 13.5, 36)
+                    self.pinShadowView.frame = CGRectMake(87, -33, 32, 39)
+                }, completion: nil)
+            } else {
+                UIView.animateWithDuration(0.2, delay: 0.0, options: .BeginFromCurrentState, animations: { () -> Void in
+                    self.pinView.frame = CGRectMake(100 / 2 - 7, 47, 13.5, 36)
+                    self.pinShadowView.frame = CGRectMake(43, 47, 32, 39)
+                }, completion: { finished in
+                    if !finished {
+                        return
+                    }
+                    UIView.animateWithDuration(0.1, delay: 0.0, options: .BeginFromCurrentState, animations: { () -> Void in
+                        self.pinView.frame = CGRectMake(100 / 2 - 7, 47 + 2, 13.5, 36 - 2)
+                    }, completion: { (finished) -> Void in
+                        if !finished {
+                            return
+                        }
+                        UIView.animateWithDuration(0.1, delay: 0.0, options: .BeginFromCurrentState, animations: { () -> Void in
+                            self.pinView.frame = CGRectMake(100 / 2 - 7, 47, 13.5, 36)
+                        }, completion: nil)
+                    })
+                })
+            }
         } else {
-            pinView.hidden = false
+            if rised {
+                self.pinView.frame = CGRectMake(100 / 2 - 7, 7, 13.5, 36)
+                self.pinShadowView.frame = CGRectMake(87, -33, 32, 39)
+            } else {
+                self.pinView.frame = CGRectMake(100 / 2 - 7, 47, 13.5, 36)
+                self.pinShadowView.frame = CGRectMake(43, 47, 32, 39)
+            }
         }
     }
 }
