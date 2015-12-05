@@ -11,7 +11,7 @@ import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils.accessToken
 import im.actor.server.db.DbExtension
-import im.actor.server.file.{ FileErrors, FileStorageAdapter, ImageUtils, S3StorageExtension }
+import im.actor.server.file.{ FileStorageExtension, FileErrors, FileStorageAdapter, ImageUtils }
 import im.actor.server.group._
 import im.actor.server.presences.GroupPresenceExtension
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
@@ -36,7 +36,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   private val db: Database = DbExtension(actorSystem).db
   private val groupExt = GroupExtension(actorSystem)
   private val userExt = UserExtension(actorSystem)
-  private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(actorSystem).s3StorageAdapter
+  private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(actorSystem).fsAdapter
   private val groupPresenceExt = GroupPresenceExtension(actorSystem)
 
   override def jhandleEditGroupAvatar(groupOutPeer: ApiGroupOutPeer, randomId: Long, fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = {

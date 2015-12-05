@@ -91,7 +91,7 @@ final class HttpApiFrontendSpec
     }
   }
 
-  lazy val s3BucketName = fsAdapterS3.bucketName
+  val s3BucketName = "actor-uploads-test"
 
   object t {
     val (user1, authId1, authSid1, _) = createUser()
