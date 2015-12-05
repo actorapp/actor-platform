@@ -13,16 +13,16 @@ final class FilePartTable(tag: Tag) extends Table[model.FilePart](tag, "file_par
 
   def size = column[Int]("size")
 
-  def s3UploadKey = column[String]("s3_upload_key")
+  def uploadKey = column[String]("upload_key")
 
-  def * = (fileId, number, size, s3UploadKey) <> (model.FilePart.tupled, model.FilePart.unapply)
+  def * = (fileId, number, size, uploadKey) <> (model.FilePart.tupled, model.FilePart.unapply)
 }
 
 object FilePartRepo {
   val parts = TableQuery[FilePartTable]
 
-  def createOrUpdate(fileId: Long, number: Int, size: Int, s3UploadKey: String): FixedSqlAction[Int, NoStream, Write] =
-    parts.insertOrUpdate(model.FilePart(fileId, number, size, s3UploadKey))
+  def createOrUpdate(fileId: Long, number: Int, size: Int, uploadKey: String): FixedSqlAction[Int, NoStream, Write] =
+    parts.insertOrUpdate(model.FilePart(fileId, number, size, uploadKey))
 
   def findByFileId(fileId: Long): FixedSqlStreamingAction[Seq[model.FilePart], model.FilePart, Read] =
     parts.filter(_.fileId === fileId).sortBy(_.number).result
