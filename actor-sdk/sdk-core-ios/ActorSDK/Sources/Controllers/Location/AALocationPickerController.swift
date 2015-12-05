@@ -12,9 +12,10 @@ public class AALocationPickerController: AAViewController, CLLocationManagerDele
     private let locationManager = CLLocationManager()
     private let map = MKMapView()
     private let pinPoint = AAMapPinPointView()
+    private let locationPinOffset = CGPointMake(0.0, 33.0)
     
-    override public func viewDidLoad() {
-        super.viewDidLoad()
+    override init() {
+       super.init()
         
         navigationItem.title = "Location"
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: "cancellDidTap")
@@ -26,19 +27,31 @@ public class AALocationPickerController: AAViewController, CLLocationManagerDele
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
         
+        pinPoint.risePin(true, animated: false)
+        
         map.showsUserLocation = true
         map.delegate = self
         
         self.view.addSubview(map)
         self.view.addSubview(pinPoint)
     }
+
+    public required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+//    override public func viewDidLoad() {
+//        super.viewDidLoad()
+//        
+//        
+//    }
     
     public func mapView(mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
-        pinPoint.risePin(true, animated: animated)
+        pinPoint.risePin(true, animated: true)
     }
     
     public func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        pinPoint.risePin(false, animated: animated)
+        pinPoint.risePin(false, animated: true)
     }
     
     func cancellDidTap() {
@@ -72,7 +85,6 @@ public class AALocationPickerController: AAViewController, CLLocationManagerDele
         super.viewDidLayoutSubviews()
         
         map.frame = self.view.bounds
-//        pinPoint.bounds = CGRectMake(0,0,100,100)
         pinPoint.centerIn(self.view.bounds)
     }
     
