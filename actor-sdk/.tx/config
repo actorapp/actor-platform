@@ -1,0 +1,13 @@
+[main]
+host = https://www.transifex.com
+
+[actor-core.apptextproperties]
+source_lang = en
+type = UNICODEPROPERTIES
+source_file = sdk-core/core/core-shared/src/main/resources/AppText.properties
+
+[actor-core.monthsproperties]
+source_lang = en
+type = UNICODEPROPERTIES
+source_file = sdk-core/core/core-shared/src/main/resources/Months.properties
+
