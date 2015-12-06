@@ -235,6 +235,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         if !AADevice.isiPad {
             AANavigationBadge.hideBadge()
         }
+        
+        // Closing keyboard
+        self.textView.resignFirstResponder()
     }
 
     override func viewDidDisappear(animated: Bool) {

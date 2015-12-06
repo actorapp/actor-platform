@@ -27,33 +27,7 @@ import AudioToolbox.AudioServices
     }
     
     func onNotificationWithMessenger(messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilList!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint) {
-        
-        let n = topNotifications.getWithInt(0) as! ACNotification
-        
-        messenger.getFormatter().formatNotificationText(n)
-        
-        var message = messenger.getFormatter().formatNotificationText(n)
-        if (!messenger.isShowNotificationsText()) {
-            message = AALocalized("NotificationSecretMessage")
-        }
-        let senderUser = messenger.getUserWithUid(n.sender)
-        var sender = senderUser.getNameModel().get()
-        let peer = n.peer
-        
-        if (peer.isGroup) {
-            let group = messenger.getGroupWithGid(n.peer.peerId)
-            sender = "\(sender)@\(group.getNameModel().get())"
-        }
-        
-        dispatchOnUi { () -> Void in
-            let localNotification =  UILocalNotification ()
-            localNotification.alertBody = "\(sender): \(message)"
-            if (messenger.isNotificationSoundEnabled()) {
-                localNotification.soundName = "\(self.getNotificationSound(messenger)).caf"
-            }
-            localNotification.applicationIconBadgeNumber = Actor.getAppState().globalCounter.get().integerValue
-            UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
-        }
+        // Not Supported
     }
     
     func onUpdateNotificationWithMessenger(messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilList!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint) {
@@ -71,15 +45,5 @@ import AudioToolbox.AudioServices
             // Clearing local notifications
             UIApplication.sharedApplication().cancelAllLocalNotifications()
         }
-    }
-    
-    func getNotificationSound(messenger: ACMessenger!) -> String {
-        if (messenger.getNotificationSound() != nil) {
-            let path = NSBundle.mainBundle().pathForResource(messenger.getNotificationSound(), ofType: "caf")
-            if (NSFileManager.defaultManager().fileExistsAtPath(path!)) {
-                return messenger.getNotificationSound()
-            }
-        }
-        return "iapetus"
     }
 }
