@@ -176,6 +176,7 @@
 		06E7B24A1C0F92140090660C /* AABubbleLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */; };
 		06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B24B1C0FAB500090660C /* AAMapFastView.swift */; };
 		06E7B2521C1345E70090660C /* AAMapPinPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2511C1345E70090660C /* AAMapPinPointView.swift */; };
+		06E7B2541C139B6F0090660C /* AABubbleContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */; };
 		697B3A12994653F581459F63 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */; };
 /* End PBXBuildFile section */
 
@@ -355,6 +356,7 @@
 		06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleLocationCell.swift; sourceTree = "<group>"; };
 		06E7B24B1C0FAB500090660C /* AAMapFastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapFastView.swift; sourceTree = "<group>"; };
 		06E7B2511C1345E70090660C /* AAMapPinPointView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapPinPointView.swift; sourceTree = "<group>"; };
+		06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleContactCell.swift; sourceTree = "<group>"; };
 		22BAEA363892E475F59B7E9F /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		333F91AE5263DD450666CC87 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 		9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -844,6 +846,7 @@
 				066A53291BC53406000E606E /* AABubbleMediaCell.swift */,
 				066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */,
 				06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */,
+				06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -1098,6 +1101,7 @@
 				065974A51BC621F100B8C7DF /* AAAuthNavigationController.swift in Sources */,
 				066A518E1BC4C383000E606E /* iOSNotificationProvider.swift in Sources */,
 				066A52681BC50E7B000E606E /* AAAuthCodeViewController.swift in Sources */,
+				06E7B2541C139B6F0090660C /* AABubbleContactCell.swift in Sources */,
 				066A52CC1BC521FA000E606E /* AADialogsListContentController.swift in Sources */,
 				066A52571BC4EF61000E606E /* AACollectionViewController.swift in Sources */,
 				066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */,

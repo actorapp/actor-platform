@@ -5,8 +5,11 @@
 import Foundation
 import UIKit
 import MobileCoreServices
+import AddressBook
+import AddressBookUI
 
-class ConversationViewController: AAConversationContentController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AALocationPickerControllerDelegate {
+class ConversationViewController: AAConversationContentController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AALocationPickerControllerDelegate,
+    ABPeoplePickerNavigationControllerDelegate {
     
     // Data binder
     private let binder = AABinder()
@@ -295,21 +298,25 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         let builder = AAMenuBuilder()
         
         if hasCamera {
-            builder.add("PhotoCamera") { () -> () in
+            builder.add("PhotoCamera") {
                 self.pickImage(.Camera)
             }
         }
         
-        builder.add("PhotoLibrary") { () -> () in
+        builder.add("PhotoLibrary") {
             self.pickImage(.PhotoLibrary)
         }
         
-        builder.add("SendDocument") { () -> () in
+        builder.add("SendDocument") {
             self.pickDocument()
         }
         
-        builder.add("ShareLocation") { () -> () in
+        builder.add("ShareLocation") {
             self.pickLocation()
+        }
+        
+        builder.add("ShareContact") {
+            self.pickContact()
         }
         
         showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
@@ -472,5 +479,63 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     func locationPickerDidPicked(controller: AALocationPickerController, latitude: Double, longitude: Double) {
         Actor.sendLocationWithPeer(self.peer, withLongitude: JavaLangDouble(double: longitude), withLatitude: JavaLangDouble(double: latitude), withStreet: nil, withPlace: nil)
         controller.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func pickContact() {
+        let pickerController = ABPeoplePickerNavigationController()
+        pickerController.peoplePickerDelegate = self
+        self.presentViewController(pickerController, animated: true, completion: nil)
+    }
+    
+    func peoplePickerNavigationController(peoplePicker: ABPeoplePickerNavigationController, didSelectPerson person: ABRecord) {
+        
+        // Dismissing picker
+        
+        peoplePicker.dismissViewControllerAnimated(true, completion: nil)
+        
+        // Names
+        
+        let firstname: ABMultiValueRef = ABRecordCopyValue(person, kABPersonFirstNameProperty).takeRetainedValue()
+        let lastname: ABMultiValueRef = ABRecordCopyValue(person, kABPersonLastNameProperty).takeRetainedValue()
+        let name = (firstname.description + " " + lastname.description).trim()
+
+        // Avatar
+        
+        var jAvatarImage: String? = nil
+        let hasAvatarImage = ABPersonHasImageData(person)
+        if (hasAvatarImage) {
+            let imgData = ABPersonCopyImageDataWithFormat(person, kABPersonImageFormatOriginalSize).takeRetainedValue()
+            let image = UIImage(data: imgData)?.resizeSquare(90, maxH: 90)
+            if (image != nil) {
+                let thumbData = UIImageJPEGRepresentation(image!, 0.55)
+                jAvatarImage = thumbData?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions())
+            }
+        }
+        
+        // Phones
+        
+        let jPhones = JavaUtilHashSet()
+        let phoneNumbers: ABMultiValueRef = ABRecordCopyValue(person, kABPersonPhoneProperty).takeRetainedValue()
+        let phoneCount = ABMultiValueGetCount(phoneNumbers)
+        for (var i = 0;i < phoneCount ; i++) {
+            let phone = (ABMultiValueCopyValueAtIndex(phoneNumbers, i).takeRetainedValue() as! String).trim()
+            jPhones.addWithId(phone)
+        }
+        
+        
+        // Email
+        let jEmails = JavaUtilHashSet()
+        let emails: ABMultiValueRef = ABRecordCopyValue(person, kABPersonEmailProperty).takeRetainedValue()
+        let emailsCount = ABMultiValueGetCount(emails)
+        for (var i = 0; i < emailsCount; i++) {
+            let email = (ABMultiValueCopyValueAtIndex(emails, i).takeRetainedValue() as! String).trim()
+            if (email.length > 0) {
+                jEmails.addWithId(email)
+            }
+        }
+
+        // Sending
+        
+        Actor.sendContactWithPeer(self.peer, withName: name, withPhones: jPhones, withEmails: JavaUtilHashSet(), withPhoto: jAvatarImage)
     }
 }

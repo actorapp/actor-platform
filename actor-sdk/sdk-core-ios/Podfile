@@ -28,6 +28,7 @@ target 'ActorApp' do
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
+    pod 'Neon'
 
     # Small UI
     pod 'VBFPopFlatButton'
