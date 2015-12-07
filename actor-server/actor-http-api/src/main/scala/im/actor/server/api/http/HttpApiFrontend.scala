@@ -34,7 +34,7 @@ object HttpApiFrontend {
 
   private val IdleTimeout = 15.minutes
 
-  def start(serverConfig: Config)(
+  def start(serverConfig: Config, customRoutes: Seq[Route] = Seq.empty)(
     implicit
     system:       ActorSystem,
     materializer: Materializer
@@ -42,13 +42,13 @@ object HttpApiFrontend {
     HttpApiConfig.load(serverConfig.getConfig("webapp")) match {
       case Success(apiConfig) ⇒
         val tlsContext = TlsContext.load(serverConfig.getConfig("tls.keystores")).right.toOption
-        start(apiConfig, tlsContext)
+        start(apiConfig, customRoutes, tlsContext)
       case Failure(e) ⇒
         throw e
     }
   }
 
-  def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(
+  def start(config: HttpApiConfig, customRoutes: Seq[Route], tlsContext: Option[TlsContext])(
     implicit
     system:       ActorSystem,
     materializer: Materializer
@@ -66,7 +66,7 @@ object HttpApiFrontend {
     val app = new AppFilesHandler(config.staticFiles)
 
     // format: OFF
-    def routes: Route =
+    def defaultRoutes: Route =
       app.routes ~
       pathPrefix("v1") {
         respondWithDefaultHeaders(corsHeaders) {
@@ -77,6 +77,8 @@ object HttpApiFrontend {
         }
       }
     // format: ON
+
+    def routes: Route = customRoutes.foldLeft(defaultRoutes)(_ ~ _)
 
     val defaultSettings = ServerSettings(system)
 
