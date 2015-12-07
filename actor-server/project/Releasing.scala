@@ -41,24 +41,19 @@ trait Releasing {
       ReleaseStep(
         action = { state =>
           val extracted = Project extract state
-          extracted runAggregated (PgpKeys.publishSigned in Global in extracted.get(thisProjectRef), state)
-        },
-        enableCrossBuild = true
-      ),
-      ReleaseStep(
-        action = { state =>
-          val extracted = Project extract state
 
           val (s, distZip) = extracted runTask (dist in Universal in extracted.get(thisProjectRef), state)
 
-          
+          val emptyFile = new File("/tmp/empty")
+          emptyFile.createNewFile()
 
           val newState = extracted.append(Seq(
             GithubRelease.repo := "actor-platform/actor-bootstrap",
             GithubRelease.releaseName := "actor-server",
             GithubRelease.draft := false,
             GithubRelease.tag := s"v${extracted.get(version)}",
-            GithubRelease.releaseAssets := Seq(distZip)
+            GithubRelease.releaseAssets := Seq(distZip),
+            GithubRelease.notesFile := emptyFile
           ), s)
           extracted runTask(checkGithubCredentials, newState)
           (extracted runTask(releaseOnGithub in extracted.get(thisProjectRef), newState))._1
@@ -67,8 +62,9 @@ trait Releasing {
       ReleaseStep(
         action = { state =>
           val extracted = Project extract state
-          (extracted runTask (packageBin in Debian in extracted.get(thisProjectRef), state))._1
-        }
+          extracted runAggregated (PgpKeys.publishSigned in Global in extracted.get(thisProjectRef), state)
+        },
+        enableCrossBuild = true
       ),
       ReleaseStep(
         action = { state =>
@@ -76,9 +72,9 @@ trait Releasing {
           (extracted runTask (publishDeb in Global in extracted.get(thisProjectRef), state))._1
         }
       ),
+      ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
       setNextVersion,
       commitNextVersion,
-      ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
       pushChanges
     )
   )
