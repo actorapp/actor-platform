@@ -35,7 +35,7 @@ trait Releasing {
     GithubRelease.repo := "actorapp/actor-bootstrap",
     GithubRelease.releaseName := "Actor Server",
     GithubRelease.draft := false,
-    GithubRelease.tag := s"v${(version in ThisBuild).value}",
+    GithubRelease.tag := s"server/v${(version in ThisBuild).value}",
     GithubRelease.releaseAssets := Seq(new File(s"target/universal/actor-${(version in ThisBuild).value}.zip")),
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
