@@ -21,6 +21,7 @@ import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
+import im.actor.server.api.rpc.service.stickers.StickersServiceImpl
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webactions.WebactionsServiceImpl
@@ -49,7 +50,8 @@ final case class ActorServer(system: ActorSystem)
 object ActorServer {
   /**
    * Creates a new Actor Server builder
-   * @return
+    *
+    * @return
    */
   def newBuilder: ActorServerBuilder = ActorServerBuilder()
 }
@@ -71,7 +73,8 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
 
   /**
    * Starts a server
-   * @return
+    *
+    * @return
    */
   def start(): ActorServer = {
     SessionMessage.register()
@@ -216,6 +219,9 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       system.log.debug("Starting DeviceService")
       val deviceService = new DeviceServiceImpl
 
+      system.log.debug("Starting StickersServiceImpl")
+      val stickerService = new StickersServiceImpl
+
       val services = Seq(
         authService,
         contactsService,
@@ -231,7 +237,8 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
         profileService,
         integrationsService,
         webactionsService,
-        deviceService
+        deviceService,
+        stickerService
       )
 
       system.log.warning("Starting ActorBot")

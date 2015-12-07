@@ -33,5 +33,7 @@ object FutureResultRpcCats extends FutureInstances with EitherInstances {
 
   def fromBoolean[A](failure: RpcError)(oa: Boolean): Result[Unit] = Result[Unit](Future.successful(if (oa) right(()) else left(failure)))
 
-  implicit def toScalaz[A](catsResult: RpcError Xor A): RpcError \/ A = catsResult.fold(-\/(_), \/-(_))
+  implicit class ToScalaz[A](catsResult: RpcError Xor A) {
+    def toScalaz: RpcError \/ A = catsResult.fold(-\/(_), \/-(_))
+  }
 }

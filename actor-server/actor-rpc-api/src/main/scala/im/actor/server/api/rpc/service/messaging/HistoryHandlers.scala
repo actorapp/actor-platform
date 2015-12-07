@@ -270,6 +270,7 @@ trait HistoryHandlers {
       case ApiTextMessage(_, mentions, _) ⇒ mentions.toSet
       case ApiJsonMessage(_)              ⇒ Set.empty
       case _: ApiDocumentMessage          ⇒ Set.empty
+      case _: ApiStickerMessage           ⇒ Set.empty
       case _: ApiUnsupportedMessage       ⇒ Set.empty
     }
   }
