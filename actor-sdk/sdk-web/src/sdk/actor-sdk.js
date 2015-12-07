@@ -49,6 +49,10 @@ class App extends Component {
     delegate: PropTypes.object
   };
 
+  static propTypes =  {
+    delegate: PropTypes.object
+  };
+
   getChildContext() {
     return {
       delegate: this.props.delegate

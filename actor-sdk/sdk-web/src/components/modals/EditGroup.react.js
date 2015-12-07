@@ -72,7 +72,6 @@ class EditGroup extends Component {
       nextState.isCropModalOpen ? this.removeListeners() : this.setListeners();
     } else {
       nextState.isCropModalOpen ? this.setListeners() : this.removeListeners();
-      }
     }
   }
 
