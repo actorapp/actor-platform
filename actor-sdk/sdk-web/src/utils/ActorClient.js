@@ -385,6 +385,22 @@ export default {
   },
 
   unbindSearch(callback) {
-    window.messenger.bindSearch(callback);
+    window.messenger.unbindSearch(callback);
+  },
+
+  findAllText(peer, query) {
+    return window.messenger.findAllText(peer, query);
+  },
+
+  findAllDocs(peer) {
+    return window.messenger.findAllDocs(peer);
+  },
+
+  findAllLinks(peer) {
+    return window.messenger.findAllLinks(peer);
+  },
+
+  findAllPhotos(peer) {
+    return window.messenger.findAllPhotos(peer);
   }
 }

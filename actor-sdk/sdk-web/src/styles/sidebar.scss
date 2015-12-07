@@ -317,15 +317,16 @@
 
       overflow: auto;
     }
-    footer {
-      position: absolute;
-      bottom: 0;
+  }
 
-      box-sizing: border-box;
-      width: 100%;
-      height: 50px;
-    }
-    &__quick-search {
+  &__quick-search {
+    position: absolute;
+    bottom: 0;
+
+    box-sizing: border-box;
+    width: 100%;
+    height: 50px;
+    a {
       display: block;
       width: 100%;
       height: 50px;
@@ -337,25 +338,25 @@
       color: rgba(white, .4);
       font-size: 14px;
       background-color: rgba(black, .1);
-      .icon-holder {
-        vertical-align: middle;
-        display: inline-block;
-        position: relative;
-        height: 100%;
-      }
-      span {
-        vertical-align: middle;
-        display: inline-block;
-      }
-      .material-icons {
-        position: absolute;
-        top: 13px;
-        right: 2px;
-      }
       &:hover {
         color: white;
         background-color: rgba(black, .15);
       }
+    }
+    .icon-holder {
+      vertical-align: middle;
+      display: inline-block;
+      position: relative;
+      height: 100%;
+    }
+    span {
+      vertical-align: middle;
+      display: inline-block;
+    }
+    .material-icons {
+      position: absolute;
+      top: 13px;
+      right: 2px;
     }
   }
 }
