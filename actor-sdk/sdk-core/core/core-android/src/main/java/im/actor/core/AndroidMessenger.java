@@ -302,7 +302,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                         } else {
                             picturePath = uri.getPath();
                             fileName = new File(uri.getPath()).getName();
-                            int index = fileName.lastIndexOf("");
+                            int index = fileName.lastIndexOf(".");
                             if (index > 0) {
                                 mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileName.substring(index + 1));
                             } else {
