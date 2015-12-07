@@ -40,6 +40,15 @@ trait Releasing {
       commitReleaseVersion,
       ReleaseStep(
         action = { state =>
+          if (sys.env.isDefinedAt("TEAMCITY_VERSION")) {
+            val extracted = Project extract state
+            println(s"##teamcity[buildNumber '${extracted.get(version)}']")
+          }
+          state
+        }
+      ),
+      ReleaseStep(
+        action = { state =>
           val extracted = Project extract state
 
           val (s, distZip) = extracted runTask (dist in Universal in extracted.get(thisProjectRef), state)
