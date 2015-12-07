@@ -1,17 +1,13 @@
 package im.actor
 
 import bintray._
-import com.typesafe.sbt.packager.debian.DebianPlugin
 import com.typesafe.sbt.packager.debian.DebianPlugin.autoImport._
-import com.typesafe.sbt.packager.universal.UniversalPlugin
 import com.typesafe.sbt.packager.universal.UniversalPlugin.autoImport._
 import com.typesafe.sbt.pgp.PgpKeys
 import sbt.Keys._
 import sbt._
 import sbtrelease.ReleasePlugin.autoImport._
 import sbtrelease.ReleaseStateTransformations._
-import sbtrelease._
-import xerial.sbt.Sonatype.SonatypeKeys._
 
 trait Releasing {
   private val publishDeb = taskKey[Unit]("Publish to debian repository")
@@ -34,7 +30,6 @@ trait Releasing {
 
   val releaseSettings = Seq(
     taskSetting,
-    sonatypeProfileName := "im.actor.server",
     releaseCommitMessage := s"chore(server): setting version to ${(version in ThisBuild).value}",
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
