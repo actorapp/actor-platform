@@ -3,6 +3,7 @@ resolvers ++= Seq(
   "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases/",
   "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
   "Flyway" at "http://flywaydb.org/repo",
+  "Era7 maven releases" at "https://s3-eu-west-1.amazonaws.com/releases.era7.com",
   Classpaths.sbtPluginReleases
 )
 
@@ -34,7 +35,8 @@ addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.4")
 
+addSbtPlugin("ohnosequences" % "sbt-github-release" % "0.3.0")
+
 libraryDependencies ++= Seq(
-  "com.github.os72" % "protoc-jar" % "3.0.0-b1",
-  "net.caoticode.buhtig" %% "buhtig" % "0.3.1"
+  "com.github.os72" % "protoc-jar" % "3.0.0-b1"
 )
