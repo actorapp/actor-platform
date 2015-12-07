@@ -57,6 +57,7 @@ trait ApiToBotConversions {
         thumb,
         ext) ⇒ DocumentMessage(fileId, accessHash, fileSize.toLong, name, mimeType, thumb, ext)
       case ApiServiceMessage(text, _) ⇒ ServiceMessage(text)
+      case _: ApiStickerMessage       ⇒ UnsupportedMessage
       case _: ApiUnsupportedMessage   ⇒ UnsupportedMessage
     }
 
