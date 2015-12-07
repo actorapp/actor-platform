@@ -51,6 +51,8 @@ trait Releasing {
 
           val (s, distZip) = extracted runTask (dist in Universal in extracted.get(thisProjectRef), state)
 
+          
+
           val newState = extracted.append(Seq(
             GithubRelease.repo := "actor-platform/actor-bootstrap",
             GithubRelease.releaseName := "actor-server",
