@@ -54,7 +54,7 @@ object ActorServer {
   def newBuilder: ActorServerBuilder = ActorServerBuilder()
 }
 
-final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(), httpRoutes: Seq[Route] = Seq.empty) extends ActorServerModules {
+final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(), httpRoutes: (ActorSystem) ⇒ Seq[Route] = _ ⇒ Seq.empty) extends ActorServerModules {
   /**
    *
    * @param config
@@ -67,7 +67,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
    * @param routes
    * @return
    */
-  def withHttpRoutes(routes: Seq[Route]) = this.copy(httpRoutes = httpRoutes)
+  def withHttpRoutes(routes: ActorSystem ⇒ Seq[Route]) = this.copy(httpRoutes = routes)
 
   /**
    * Starts a server
@@ -249,7 +249,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       Frontend.start(serverConfig)
 
       system.log.debug("Starting Http Api")
-      HttpApiFrontend.start(serverConfig, httpRoutes)
+      HttpApiFrontend.start(serverConfig, httpRoutes(system))
 
       ActorServer(system)
     } catch {
