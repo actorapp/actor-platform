@@ -2,6 +2,7 @@ package im.actor.server
 
 import akka.actor._
 import akka.cluster.Cluster
+import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import com.typesafe.config.{ Config, ConfigFactory, ConfigException }
 import im.actor.config.ActorConfig
@@ -53,13 +54,20 @@ object ActorServer {
   def newBuilder: ActorServerBuilder = ActorServerBuilder()
 }
 
-final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty()) extends ActorServerModules {
+final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(), httpRoutes: Seq[Route] = Seq.empty) extends ActorServerModules {
   /**
    *
    * @param config
    * @return a builder with provided default config
    */
   def withDefaultConfig(config: Config) = this.copy(defaultConfig = config)
+
+  /**
+   *
+   * @param routes
+   * @return
+   */
+  def withHttpRoutes(routes: Seq[Route]) = this.copy(httpRoutes = httpRoutes)
 
   /**
    * Starts a server
@@ -241,7 +249,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       Frontend.start(serverConfig)
 
       system.log.debug("Starting Http Api")
-      HttpApiFrontend.start(serverConfig)
+      HttpApiFrontend.start(serverConfig, httpRoutes)
 
       ActorServer(system)
     } catch {
