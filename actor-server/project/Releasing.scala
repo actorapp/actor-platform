@@ -4,6 +4,7 @@ import bintray._
 import com.typesafe.sbt.packager.debian.DebianPlugin.autoImport._
 import com.typesafe.sbt.packager.universal.UniversalPlugin.autoImport._
 import com.typesafe.sbt.pgp.PgpKeys
+import ohnosequences.sbt.SbtGithubReleasePlugin.autoImport._
 import sbt.Keys._
 import sbt._
 import sbtrelease.ReleasePlugin.autoImport._
@@ -40,26 +41,37 @@ trait Releasing {
       ReleaseStep(
         action = { state =>
           val extracted = Project extract state
-          extracted.runAggregated(PgpKeys.publishSigned in Global in extracted.get(thisProjectRef), state)
+          extracted runAggregated (PgpKeys.publishSigned in Global in extracted.get(thisProjectRef), state)
         },
         enableCrossBuild = true
       ),
       ReleaseStep(
         action = { state =>
           val extracted = Project extract state
-          extracted.runTask(dist in Universal in extracted.get(thisProjectRef), state)._1
+
+          val (s, distZip) = extracted runTask (dist in Universal in extracted.get(thisProjectRef), state)
+
+          val newState = extracted.append(Seq(
+            GithubRelease.repo := "actor-platform/actor-bootstrap",
+            GithubRelease.releaseName := "actor-server",
+            GithubRelease.draft := false,
+            GithubRelease.tag := s"v${extracted.get(version)}",
+            GithubRelease.releaseAssets := Seq(distZip)
+          ), s)
+          extracted runTask(checkGithubCredentials, newState)
+          (extracted runTask(releaseOnGithub in extracted.get(thisProjectRef), newState))._1
         }
       ),
       ReleaseStep(
         action = { state =>
           val extracted = Project extract state
-          extracted.runTask(packageBin in Debian in extracted.get(thisProjectRef), state)._1
+          (extracted runTask (packageBin in Debian in extracted.get(thisProjectRef), state))._1
         }
       ),
       ReleaseStep(
         action = { state =>
           val extracted = Project extract state
-          extracted.runTask(publishDeb in Global in extracted.get(thisProjectRef), state)._1
+          (extracted runTask (publishDeb in Global in extracted.get(thisProjectRef), state))._1
         }
       ),
       setNextVersion,
