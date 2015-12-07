@@ -43,6 +43,12 @@ object ACLUtils {
   def fileAccessHash(fileId: Long, accessSalt: String)(implicit s: ActorSystem): Long =
     hash(s"$fileId:$accessSalt:${secretKey()}")
 
+  def stickerPackAccessHash(id: Int, ownerUserId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
+    hash(s"$id:$ownerUserId:$accessSalt:${secretKey()}")
+
+  def stickerPackAccessHash(pack: model.StickerPack)(implicit s: ActorSystem): Long =
+    stickerPackAccessHash(pack.id, pack.ownerUserId, pack.accessSalt)
+
   def authTransactionHash(accessSalt: String)(implicit s: ActorSystem): String =
     DigestUtils.sha1Hex(s"$accessSalt:${secretKey()}")
 
