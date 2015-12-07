@@ -4,7 +4,6 @@
 
 class ActorSDKDelegate {
   constructor(components = {}, actions = {}, l18n = {}) {
-    console.debug('ActorSDKDelegate constructor:', components, actions, l18n);
     this.components = {
       login: components.login || null,
       recent: components.recent || null,
