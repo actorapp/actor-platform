@@ -1,0 +1,1 @@
+* UserExtension#findUserIds searches by phone too
