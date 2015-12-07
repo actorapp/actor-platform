@@ -3,3 +3,4 @@
  */
 
 import 'actor-sdk/styles';
+import './styles/index.scss';

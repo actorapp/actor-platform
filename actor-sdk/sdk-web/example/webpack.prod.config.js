@@ -31,7 +31,8 @@ export default {
     }, {
       test: /\.js$/,
       loaders: ['source-map'],
-      include: [path.resolve(__dirname, 'node_modules/actor-sdk')]
+      include: [path.resolve(__dirname, 'node_modules/actor-sdk')],
+      exclude: /(node_modules)/
     }],
     loaders: [{
       test: /\.(scss|css)$/,

@@ -3,17 +3,21 @@
  */
 
 import { ActorSDK, ActorSDKDelegate } from 'actor-sdk';
-import config from './app.json';
 
-import Login from './components/Login.react';
+import ToolbarSection from './components/ToolbarSection.react';
 
-const endpoints = config.endpoints;
-const bugsnagApiKey = config.bugsnag;
-const mixpanelAPIKey = config.mixpanel;
+const endpoints = [
+  'wss://front1-ws-mtproto-api-rev2.actor.im',
+  'wss://front2-ws-mtproto-api-rev2.actor.im'
+];
+const mixpanelAPIKey = '9591b090b987c2b701db5a8ef3e5055c';
+const bugsnagApiKey = 'cd24ee53326e06669a36c637b29660c3';
 
-const delegate = new ActorSDKDelegate({
-  loginComponent: Login,
-  sidebarComponent: null
-});
+const components = {
+  toolbar: ToolbarSection
+};
 
-new ActorSDK({endpoints, delegate, bugsnagApiKey, mixpanelAPIKey}).startApp();
+const delegate = new ActorSDKDelegate(components);
+
+const app = new ActorSDK({endpoints, delegate, bugsnagApiKey, mixpanelAPIKey});
+app.startApp();
