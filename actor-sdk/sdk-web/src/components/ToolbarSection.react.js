@@ -3,8 +3,6 @@
  */
 
 import React, { Component } from 'react';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 import classnames from 'classnames';
 import { escapeWithEmoji } from '../utils/EmojiUtils';
 
@@ -55,8 +53,6 @@ class ToolbarSection extends Component {
       'active': isActivityOpen
     });
 
-
-
     if (dialogInfo !== null) {
       return (
         <header className="toolbar row">
@@ -66,10 +62,6 @@ class ToolbarSection extends Component {
           </div>
 
           <div className="toolbar__controls">
-            <div className="toolbar__controls__search pull-left hide">
-              <i className="material-icons">search</i>
-              <input className="input input--search" placeholder={this.getIntlMessage('search')} type="search"/>
-            </div>
             <div className="toolbar__controls__buttons pull-right">
               <button className={infoButtonClassName} onClick={this.onClick}>
                 <i className="material-icons">info</i>
@@ -88,7 +80,5 @@ class ToolbarSection extends Component {
     }
   }
 }
-
-ReactMixin.onClass(ToolbarSection, IntlMixin);
 
 export default ToolbarSection;

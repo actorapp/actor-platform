@@ -3,7 +3,6 @@
  */
 
 import 'babel-polyfill';
-import { intlData } from '../l18n';
 import RouterContainer from '../utils/RouterContainer';
 import DelegateContainer from '../utils/DelegateContainer';
 import SDKDelegate from './actor-sdk-delegate';
@@ -30,6 +29,7 @@ import Install from '../components/Install.react.js';
 
 import { initBugsnag } from '../utils/Bugsnag';
 import { initMixpanel } from '../utils/Mixpanel';
+import { extendL18n, getIntlData } from '../l18n';
 
 const { DefaultRoute, Route, RouteHandler } = Router;
 
@@ -79,6 +79,10 @@ class ActorSDK {
 
     initBugsnag(this.bugsnagApiKey);
     initMixpanel(this.mixpanelAPIKey);
+
+    if (this.delegate.l18n) {
+      extendL18n();
+    }
   }
 
   _starter() {
@@ -103,6 +107,7 @@ class ActorSDK {
     }
 
     const loginComponent = this.delegate.components.login || Login;
+    const intlData = getIntlData();
 
     const routes = (
       <Route handler={App} name="app" path="/">
@@ -125,7 +130,7 @@ class ActorSDK {
 
     if (window.location.hash !== '#/deactivated') {
       if (LoginStore.isLoggedIn()) {
-        LoginActionCreators.setLoggedIn(router, {redirect: false});
+        LoginActionCreators.setLoggedIn({redirect: false});
       }
     }
   };

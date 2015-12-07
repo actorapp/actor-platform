@@ -2,7 +2,8 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import { debounce, forEach } from 'lodash';
 
 import { PeerTypes } from '../constants/ActorAppConstants';
 
@@ -11,7 +12,7 @@ import PeerUtils from '../utils/PeerUtils';
 import MessagesSection from './dialog/MessagesSection.react';
 import TypingSection from './dialog/TypingSection.react';
 import ComposeSection from './dialog/ComposeSection.react';
-import ToolbarSection from './ToolbarSection.react';
+import DefaultToolbarSection from './ToolbarSection.react';
 import ActivitySection from './ActivitySection.react';
 import ConnectionState from './common/ConnectionState.react';
 
@@ -50,13 +51,17 @@ const getStateFromStores = () => {
   };
 };
 
-class DialogSection extends React.Component {
+class DialogSection extends Component {
+  static contextTypes = {
+    delegate: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
 
     this.state = getStateFromStores();
 
-    ActivityStore.addChangeListener(this.fixScrollTimeout.bind(this));
+    ActivityStore.addChangeListener(this.fixScrollTimeout);
     DialogStore.addSelectListener(this.onSelectedDialogChange);
     MessageStore.addChangeListener(this.onMessagesChange);
   }
@@ -84,8 +89,16 @@ class DialogSection extends React.Component {
 
   render() {
     const { peer } = this.state;
+    const { delegate } = this.context;
+    const ToolbarSection = delegate.components.toolbar || DefaultToolbarSection;
 
-    let mainContent;
+    let mainContent,
+        activity = [];
+
+    if (delegate.components.activity) {
+      forEach(delegate.components.activity, (Activity) => activity.push(<Activity/>));
+    }
+    activity.push(<ActivitySection/>);
 
     if (peer) {
       let isMember = true,
@@ -147,7 +160,7 @@ class DialogSection extends React.Component {
 
         <div className="flexrow">
           {mainContent}
-          <ActivitySection/>
+          {activity}
         </div>
       </section>
     );
@@ -168,6 +181,7 @@ class DialogSection extends React.Component {
     lastScrolledFromBottom = 0;
     renderMessagesCount = initialRenderMessagesCount;
 
+    // TODO: Move this to actions
     if (lastPeer != null) {
       DialogActionCreators.onConversationClosed(lastPeer);
     }
@@ -176,11 +190,11 @@ class DialogSection extends React.Component {
     DialogActionCreators.onConversationOpen(lastPeer);
   };
 
-  onMessagesChange = _.debounce(() => {
+  onMessagesChange = debounce(() => {
     this.setState(getStateFromStores());
   }, 10, {maxWait: 50, leading: true});
 
-  loadMessagesByScroll = _.debounce(() => {
+  loadMessagesByScroll = debounce(() => {
     if (this.state.peer) {
       let node = React.findDOMNode(this.refs.MessagesSection);
       let scrollTop = node.scrollTop;
