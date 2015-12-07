@@ -59,15 +59,15 @@ trait Releasing {
           extracted.runTask(packageBin in Debian in extracted.get(thisProjectRef), state)._1
         }
       ),
-      setNextVersion,
-      commitNextVersion,
-      ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
       ReleaseStep(
         action = { state =>
           val extracted = Project extract state
           extracted.runTask(publishDeb in Global in extracted.get(thisProjectRef), state)._1
         }
       ),
+      setNextVersion,
+      commitNextVersion,
+      ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
       pushChanges
     )
   )
