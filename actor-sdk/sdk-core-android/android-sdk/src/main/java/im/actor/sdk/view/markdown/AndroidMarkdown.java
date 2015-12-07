@@ -100,7 +100,15 @@ public class AndroidMarkdown {
                             AndroidContext.getContext().startActivity(
                                     intent);
                         } else {
-                            Toast.makeText(view.getContext(), "Unknown URL type", Toast.LENGTH_SHORT).show();
+                            Intent WithSchema = new Intent(Intent.ACTION_VIEW)
+                                    .setData(Uri.parse("http://".concat(url.getUrl())))
+                                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            if (WithSchema.resolveActivity(view.getContext().getPackageManager()) != null) {
+                                AndroidContext.getContext().startActivity(
+                                        WithSchema);
+                            } else {
+                                Toast.makeText(view.getContext(), "Unknown URL type", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                     }
