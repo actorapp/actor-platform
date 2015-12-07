@@ -6,6 +6,7 @@ import React, { Component, PropTypes } from 'react';
 
 import HeaderSection from './sidebar/HeaderSection.react';
 import DefaultRecentSection from './sidebar/RecentSection.react';
+import QuickSearchButton from './sidebar/QuickSearchButton.react';
 
 class SidebarSection extends Component {
   constructor(props){
@@ -30,6 +31,7 @@ class SidebarSection extends Component {
       <aside className="sidebar">
         <HeaderSection/>
         <RecentSection selectedPeer={selectedPeer}/>
+        <QuickSearchButton/>
       </aside>
     );
   }
