@@ -67,7 +67,7 @@
     "lodash": "3.10.1",
     "material-ui": "github:olegshilov/material-ui.git#develop",
     "memoizee": "0.3.9",
-    "mixpanel-browser": "github:mixpanel/mixpanel-js",
+    "mixpanel-browser": "2.7.2",
     "normalize.css": "3.0.3",
     "object-assign": "4.0.1",
     "pace": "github:hubspot/pace",
