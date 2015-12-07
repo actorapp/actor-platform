@@ -44,6 +44,8 @@ trait Releasing {
 
           val (s, distZip) = extracted runTask (dist in Universal in extracted.get(thisProjectRef), state)
 
+          val notesDir = new File("/tmp/notes")
+
           val emptyFile = new File("/tmp/empty")
           emptyFile.createNewFile()
 
