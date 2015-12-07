@@ -18,7 +18,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
         crossPaths := false,
         organization := "im.actor.server",
         organizationHomepage := Some(url("https://actor.im"))
-      )
+      ) ++ Sonatype.sonatypeSettings
 
   lazy val compilerWarnings = Seq(
     "-Ywarn-dead-code",
