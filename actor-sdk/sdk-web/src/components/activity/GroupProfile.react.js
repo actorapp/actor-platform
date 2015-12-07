@@ -3,7 +3,7 @@
  */
 
 import { assign } from 'lodash';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
@@ -41,9 +41,9 @@ const getStateFromStores = (groupId) => {
 
 let _prevGroupId;
 
-class GroupProfile extends React.Component {
+class GroupProfile extends Component {
   static propTypes = {
-    group: React.PropTypes.object.isRequired
+    group: PropTypes.object.isRequired
   };
 
   constructor(props) {
