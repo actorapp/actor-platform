@@ -61,7 +61,6 @@ class EditGroup extends Component {
         disabledTextColor: 'rgba(0,0,0,.4)'
       }
     });
-    this.setListeners();
   }
 
   componentWillUnmount() {
@@ -70,10 +69,9 @@ class EditGroup extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     if (nextState.isOpen) {
-      if (nextState.isCropModalOpen) {
-        this.removeListeners();
-      } else {
-        this.setListeners();
+      nextState.isCropModalOpen ? this.removeListeners() : this.setListeners();
+    } else {
+      nextState.isCropModalOpen ? this.setListeners() : this.removeListeners();
       }
     }
   }
