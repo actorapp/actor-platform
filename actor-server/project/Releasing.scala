@@ -32,6 +32,11 @@ trait Releasing {
   val releaseSettings = Seq(
     taskSetting,
     releaseCommitMessage := s"chore(server): setting version to ${(version in ThisBuild).value}",
+    GithubRelease.repo := "actor-platform/actor-bootstrap",
+    GithubRelease.releaseName := "actor-server",
+    GithubRelease.draft := false,
+    GithubRelease.tag := s"v${(version in ThisBuild).value}",
+    GithubRelease.releaseAssets := Seq(new File(s"target/universal/actor-${(version in ThisBuild).value}.zip")),
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
       inquireVersions,
@@ -51,23 +56,10 @@ trait Releasing {
         action = { state =>
           val extracted = Project extract state
 
-          val (s, distZip) = extracted runTask (dist in Universal in extracted.get(thisProjectRef), state)
+          val s = (extracted runTask (dist in Universal in extracted.get(thisProjectRef), state))._1
 
-          val notesDir = new File("/tmp/notes")
-
-          val emptyFile = new File("/tmp/empty")
-          emptyFile.createNewFile()
-
-          val newState = extracted.append(Seq(
-            GithubRelease.repo := "actor-platform/actor-bootstrap",
-            GithubRelease.releaseName := "actor-server",
-            GithubRelease.draft := false,
-            GithubRelease.tag := s"v${extracted.get(version)}",
-            GithubRelease.releaseAssets := Seq(distZip),
-            GithubRelease.notesFile := emptyFile
-          ), s)
-          extracted runTask(checkGithubCredentials, newState)
-          (extracted runTask(releaseOnGithub in extracted.get(thisProjectRef), newState))._1
+          extracted runTask(checkGithubCredentials, s)
+          (extracted runTask(releaseOnGithub in extracted.get(thisProjectRef), s))._1
         }
       ),
       ReleaseStep(
