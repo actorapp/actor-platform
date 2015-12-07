@@ -39,8 +39,17 @@ object UserRepo {
 
   def byNickname(nickname: Rep[String]) = users filter (_.nickname.toLowerCase === nickname.toLowerCase)
   def idsByNickname(nickname: Rep[String]) = byNickname(nickname).map(_.id)
+
   val byNicknameC = Compiled(byNickname _)
   val idsByNicknameC = Compiled(idsByNickname _)
+
+  def byPhone(phone: Rep[Long]) = (for {
+    phones ← UserPhoneRepo.phones.filter(_.number === phone)
+    users ← users if users.id === phones.userId
+  } yield users).take(1)
+  def idByPhone(phone: Rep[Long]) = byPhone(phone) map (_.id)
+
+  val idByPhoneC = Compiled(idByPhone _)
 
   def idsByEmail(email: Rep[String]) =
     for {
@@ -94,7 +103,8 @@ object UserRepo {
     for {
       e ← idsByEmailC(query).result
       n ← idsByNicknameC(query).result
-    } yield e ++ n
+      p ← idByPhoneC(query.toLong).result
+    } yield e ++ n ++ p
 
   def setNickname(userId: Int, nickname: Option[String]) =
     byId(userId).map(_.nickname).update(nickname)
