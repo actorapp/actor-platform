@@ -454,7 +454,7 @@ object BotMessages {
 
   @key("CreateStickerPack")
   sealed trait CreateStickerPack extends RequestBody {
-    override type Response = Container[String]
+    override type Response = Container[Int]
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
     override val service: String = Services.Stickers
   }
