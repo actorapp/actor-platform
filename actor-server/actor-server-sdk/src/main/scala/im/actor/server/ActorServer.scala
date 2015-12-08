@@ -50,8 +50,8 @@ final case class ActorServer(system: ActorSystem)
 object ActorServer {
   /**
    * Creates a new Actor Server builder
-    *
-    * @return
+   *
+   * @return
    */
   def newBuilder: ActorServerBuilder = ActorServerBuilder()
 }
@@ -73,8 +73,8 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
 
   /**
    * Starts a server
-    *
-    * @return
+   *
+   * @return
    */
   def start(): ActorServer = {
     SessionMessage.register()

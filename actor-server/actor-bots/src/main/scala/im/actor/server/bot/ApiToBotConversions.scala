@@ -57,8 +57,9 @@ trait ApiToBotConversions {
         thumb,
         ext) ⇒ DocumentMessage(fileId, accessHash, fileSize.toLong, name, mimeType, thumb, ext)
       case ApiServiceMessage(text, _) ⇒ ServiceMessage(text)
-      case _: ApiStickerMessage       ⇒ UnsupportedMessage
-      case _: ApiUnsupportedMessage   ⇒ UnsupportedMessage
+      case ApiStickerMessage(stickerId, fastPreview, image512, image256, stickerCollectionId, stickerCollectionAccessHash) ⇒
+        StickerMessage(stickerId, fastPreview, image512, image256, stickerCollectionId, stickerCollectionAccessHash)
+      case _: ApiUnsupportedMessage ⇒ UnsupportedMessage
     }
 
   implicit def toTextModernAttach(ma: ApiTextModernAttach): TextModernAttach =
