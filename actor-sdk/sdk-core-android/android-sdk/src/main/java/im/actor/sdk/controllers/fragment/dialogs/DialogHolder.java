@@ -72,8 +72,10 @@ public class DialogHolder extends BindedViewHolder {
         errorColor = style.getDialogsStateErrorColor();
 
         fl.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(73)));
-        fl.setBackgroundResource(R.drawable.selector_fill);
-
+        fl.setBackgroundColor(style.getMainBackgroundColor());
+        FrameLayout background = new FrameLayout(context);
+        background.setBackgroundResource(R.drawable.selector_fill);
+        fl.addView(background, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         avatar = new AvatarView(context);
         avatar.init(Screen.dp(52), 24);
         {
