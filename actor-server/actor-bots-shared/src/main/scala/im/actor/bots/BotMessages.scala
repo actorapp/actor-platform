@@ -23,6 +23,7 @@ object BotMessages {
     val WebHooks = "webhooks"
     val Users = "users"
     val Groups = "groups"
+    val Stickers = "stickers"
   }
 
   final case class FileLocation(
@@ -451,6 +452,29 @@ object BotMessages {
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
   }
 
+  @key("CreateStickerPack")
+  sealed trait CreateStickerPack extends RequestBody {
+    override type Response = Container[String]
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Stickers
+  }
+
+  @key("CreateStickerPack")
+  case object CreateStickerPack extends CreateStickerPack
+
+  @key("AddSticker")
+  case class AddSticker(
+    @beanGetter packId:       Int,
+    emoji:                    Option[String],
+    @beanGetter fileLocation: FileLocation
+  ) extends RequestBody {
+    override type Response = Void
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Stickers
+
+    def getEmoji = emoji.asJava
+  }
+
   @key("Message")
   final case class Message(
     @beanGetter peer:     OutPeer,
@@ -478,6 +502,23 @@ object BotMessages {
 
   @key("Json")
   final case class JsonMessage(@beanGetter rawJson: String) extends MessageBody
+
+  @key("Sticker")
+  final case class StickerMessage(
+    stickerId:                   Option[Int],
+    fastPreview:                 Option[Array[Byte]],
+    image512:                    Option[ImageLocation],
+    image256:                    Option[ImageLocation],
+    stickerCollectionId:         Option[Int],
+    stickerCollectionAccessHash: Option[Long]
+  ) extends MessageBody {
+    def getStickerId = stickerId.asJava
+    def getFastPreview = fastPreview.asJava
+    def getImage512 = image512.asJava
+    def getImage256 = image256.asJava
+    def getStickerCollectionId = stickerCollectionId.asJava
+    def getStickerCollectionAccessHash = stickerCollectionAccessHash.asJava
+  }
 
   sealed trait TextMessageEx
 
