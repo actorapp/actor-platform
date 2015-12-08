@@ -453,7 +453,7 @@ object BotMessages {
   }
 
   @key("CreateStickerPack")
-  final case class CreateStickerPack(@beanGetter ownerUserId: Int) extends RequestBody {
+  final case class CreateStickerPack(@beanGetter creatorUserId: Int) extends RequestBody {
     override type Response = Container[String]
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
     override val service: String = Services.Stickers
@@ -461,9 +461,13 @@ object BotMessages {
 
   @key("ShowStickerPacks")
   final case class ShowStickerPacks(@beanGetter ownerUserId: Int) extends RequestBody {
-    override type Response = ContainerList[String]
+    override type Response = StickerPackIds
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
     override val service: String = Services.Stickers
+  }
+
+  final case class StickerPackIds(ids: Seq[Int]) extends ResponseBody {
+    def getIds = seqAsJavaList(ids)
   }
 
   @key("ShowStickers")
@@ -471,14 +475,18 @@ object BotMessages {
     @beanGetter ownerUserId: Int,
     @beanGetter packId:      Int
   ) extends RequestBody {
-    override type Response = ContainerList[String]
+    override type Response = StickerIds
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
     override val service: String = Services.Stickers
   }
 
+  final case class StickerIds(ids: Seq[Int]) extends ResponseBody {
+    def getIds = seqAsJavaList(ids)
+  }
+
   @key("AddSticker")
   final case class AddSticker(
-    @beanGetter userId:       Int,
+    @beanGetter ownerUserId:  Int,
     @beanGetter packId:       Int,
     emoji:                    Option[String],
     @beanGetter fileLocation: FileLocation
@@ -503,6 +511,16 @@ object BotMessages {
 
   @key("MakeStickerPackDefault")
   final case class MakeStickerPackDefault(
+    @beanGetter userId: Int,
+    @beanGetter packId: Int
+  ) extends RequestBody {
+    override type Response = Void
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Stickers
+  }
+
+  @key("UnmakeStickerPackDefault")
+  final case class UnmakeStickerPackDefault(
     @beanGetter userId: Int,
     @beanGetter packId: Int
   ) extends RequestBody {
