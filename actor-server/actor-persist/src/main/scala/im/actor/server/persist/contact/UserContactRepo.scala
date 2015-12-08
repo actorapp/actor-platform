@@ -39,8 +39,13 @@ object UserContactRepo {
   def byPKDeleted(ownerUserId: Int, contactUserId: Int) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === true)
 
-  def fetchAll =
-    active.result
+  def existsC = Compiled { (ownerUserId: Rep[Int], contactUserId: Rep[Int]) ⇒
+    byPKNotDeleted(ownerUserId, contactUserId).exists
+  }
+
+  def fetchAll = active.result
+
+  def exists(ownerUserId: Int, contactUserId: Int) = existsC((ownerUserId, contactUserId)).result
 
   //TODO: check usages - make sure they dont need phone number
   def find(ownerUserId: Int, contactUserId: Int) =

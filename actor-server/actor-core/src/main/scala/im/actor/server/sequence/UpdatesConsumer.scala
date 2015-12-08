@@ -1,6 +1,7 @@
 package im.actor.server.sequence
 
 import akka.actor._
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import akka.util.Timeout
 import im.actor.api.rpc.codecs.UpdateBoxCodec
@@ -9,11 +10,16 @@ import im.actor.api.rpc.sequence.{ SeqUpdate, FatSeqUpdate, WeakUpdate }
 import im.actor.api.rpc.users.ApiUser
 import im.actor.api.rpc.weak.{ UpdateGroupOnline, UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
+import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
+import im.actor.server.model.configs.Parameter
 import im.actor.server.mtproto.protocol.UpdateBox
+import im.actor.server.persist.configs.ParameterRepo
+import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.presences._
 import im.actor.server.user.UserExtension
 import org.joda.time.DateTime
+import slick.dbio.DBIO
 
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -60,6 +66,7 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
   private val presenceExt = PresenceExtension(system)
   private val groupRresenceExt = GroupPresenceExtension(system)
   private val weakUpdatesExt = WeakUpdatesExtension(system)
+  private val db = DbExtension(system).db
 
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(context.system)
   private var lastDateTime = new DateTime
@@ -158,25 +165,27 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
       }
     case WeakUpdatesManager.UpdateReceived(updateBox, reduceKey) ⇒
       sendUpdateBox(updateBox, reduceKey)
-    case PresenceState(userId, presence, lastSeenAt) ⇒
-      val update: Update =
+    case p @ PresenceState(_, presence, lastSeenAt) ⇒
+      val updateFuture: Future[Update] =
         presence match {
           case Online ⇒
-            UpdateUserOnline(userId)
+            FastFuture.successful(UpdateUserOnline(p.userId))
           case Offline ⇒
             lastSeenAt match {
               case Some(date) ⇒
-                UpdateUserLastSeen(userId, date.getMillis / 1000)
+                lastSeenOrOffline(p.userId, date.getMillis / 1000)
               case None ⇒
-                UpdateUserOffline(userId)
+                FastFuture.successful(UpdateUserOffline(p.userId))
             }
         }
 
-      log.debug("Pushing presence {}", update)
+      updateFuture foreach { update ⇒
+        log.debug("Pushing presence {}", update)
 
-      val updateBox = WeakUpdate(nextDateTime().getMillis, update.header, update.toByteArray)
-      val reduceKey = weakUpdatesExt.reduceKeyUser(update.header, userId)
-      sendUpdateBox(updateBox, Some(reduceKey))
+        val updateBox = WeakUpdate(nextDateTime().getMillis, update.header, update.toByteArray)
+        val reduceKey = weakUpdatesExt.reduceKeyUser(update.header, p.userId)
+        sendUpdateBox(updateBox, Some(reduceKey))
+      }
     case GroupPresenceState(groupId, onlineCount) ⇒
       val update = UpdateGroupOnline(groupId, onlineCount)
 
@@ -185,6 +194,29 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
       val updateBox = WeakUpdate(nextDateTime().getMillis, update.header, update.toByteArray)
       val reduceKey = weakUpdatesExt.reduceKeyGroup(update.header, groupId)
       sendUpdateBox(updateBox, Some(reduceKey))
+  }
+
+  private def lastSeenOrOffline(presenceUserId: Int, tsSeconds: Long): Future[Update] = {
+    db.run {
+      for {
+        selfCanLastSeen ← ParameterRepo.findValue(userId, Parameter.Keys.Privacy.LastSeen, Parameter.Values.Privacy.LastSeen.Always.value)
+        userCanLastSeen ← ParameterRepo.findValue(presenceUserId, Parameter.Keys.Privacy.LastSeen, Parameter.Values.Privacy.LastSeen.Always.value)
+        update ← if (selfCanLastSeen == Parameter.Values.Privacy.LastSeen.None.value ||
+          userCanLastSeen == Parameter.Values.Privacy.LastSeen.None.value) {
+          DBIO.successful(UpdateUserOffline(presenceUserId))
+        } else if (selfCanLastSeen == Parameter.Values.Privacy.LastSeen.Contacts.value ||
+          userCanLastSeen == Parameter.Values.Privacy.LastSeen.Contacts.value) {
+          for {
+            isInContacts ← UserContactRepo.exists(presenceUserId, userId)
+          } yield {
+            if (isInContacts)
+              UpdateUserLastSeen(presenceUserId, tsSeconds)
+            else
+              UpdateUserOffline(presenceUserId)
+          }
+        } else DBIO.successful(UpdateUserLastSeen(presenceUserId, tsSeconds))
+      } yield update
+    }
   }
 
   private def nextDateTime(): DateTime = {
