@@ -398,6 +398,8 @@
 
 "SendDocument" = "Документ";
 
+"ShareContact" = "Контакт";
+
 "NavigationEdit" = "Изменить";
 
 "NavigationDone" = "Готово";
@@ -457,3 +459,5 @@
 "ErrorAlreadyJoined" = "Вы уже участник группы";
 
 "ErrorUnableToJoin" = "Невозможно вступить в группу";
+
+"ErrorUnableToCall" = "Невозможно позвонить на этот номер";
