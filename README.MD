@@ -13,13 +13,9 @@ This repository contains all of the source code you need to start your own serve
 * [iPhone/iPad 7.0+](https://actor.im/ios)
 * [Web](https://app.actor.im/)
 
-It is very easy to [implement your own](http://actor.readme.io/docs/apps).
-
 # Installation
 
-Building a mobile messaging application is quite a complex procedure that requires a lot of preparation, e.g.: have developer accounts with Google and Apple, have SSL certificates for your servers, integrate the server with various services like SMS gate, push systems, etc.
-
-For more info, you can read the [server installation manual](docs/SERVER.md). After installing the server, you can [start building the apps](docs/APPS.md).
+To build your own server with apps, visit [Actor Bootstrap repository](https://github.com/actorapp/actor-bootstrap).
 
 # Live demo
 
