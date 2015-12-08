@@ -25,9 +25,16 @@ class SidebarSection extends Component {
     const { selectedPeer } = this.props;
     const { delegate } = this.context;
 
-    const HeaderSection = delegate.components.sidebar.header || DefaultHeaderSection;
-    const RecentSection = delegate.components.sidebar.recent || DefaultRecentSection;
-    const FooterSection = delegate.components.sidebar.footer || QuickSearchButton;
+    let HeaderSection, RecentSection, FooterSection;
+    if (delegate.components.sidebar !== null && typeof delegate.components.sidebar !== 'function') {
+      HeaderSection = delegate.components.sidebar.header || DefaultHeaderSection;
+      RecentSection = delegate.components.sidebar.recent || DefaultRecentSection;
+      FooterSection = delegate.components.sidebar.footer || QuickSearchButton;
+    } else {
+      HeaderSection = DefaultHeaderSection;
+      RecentSection = DefaultRecentSection;
+      FooterSection = QuickSearchButton;
+    }
 
     return (
       <aside className="sidebar">

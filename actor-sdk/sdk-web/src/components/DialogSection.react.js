@@ -92,15 +92,20 @@ class DialogSection extends Component {
     const { delegate } = this.context;
 
     let mainContent,
-        activity = [];
+        activity = [],
+        ToolbarSection, TypingSection, ComposeSection;
 
-    const ToolbarSection = delegate.components.dialog.toolbar || DefaultToolbarSection;
-    const TypingSection = delegate.components.dialog.typing || DefaultTypingSection;
-    const ComposeSection = delegate.components.dialog.compose || DefaultComposeSection;
-
-    if (delegate.components.dialog.activity) {
-      forEach(delegate.components.dialog.activity, (Activity) => activity.push(<Activity/>));
+    if (delegate.components.dialog !== null && typeof delegate.components.dialog !== 'function') {
+      ToolbarSection = delegate.components.dialog.toolbar || DefaultToolbarSection;
+      TypingSection = delegate.components.dialog.typing || DefaultTypingSection;
+      ComposeSection = delegate.components.dialog.compose || DefaultComposeSection;
+      if (delegate.components.dialog.activity) {
+        forEach(delegate.components.dialog.activity, (Activity) => activity.push(<Activity/>));
+      }
     } else {
+      ToolbarSection = DefaultToolbarSection;
+      TypingSection = DefaultTypingSection;
+      ComposeSection = DefaultComposeSection;
       activity.push(<DefaultActivitySection/>);
     }
 
