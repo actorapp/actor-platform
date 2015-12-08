@@ -449,3 +449,7 @@
 "ErrorPhoneIncorrect" = "Número de telefone inválido. Por favor tente de novo.";
 
 "ErrorCodeExpired" = "Código expirou. Por favor reinicie a autenticação.";
+
+"ErrorUnableToJoin" = "Unable to join to group";
+
+"ErrorUnableToCall" = "Unable to call this number";
