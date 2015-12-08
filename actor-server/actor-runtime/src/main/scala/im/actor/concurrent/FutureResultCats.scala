@@ -40,6 +40,9 @@ trait FutureResultCats[ErrorCase] {
   def fromFutureEither[A](errorHandle: Throwable ⇒ ErrorCase)(fea: Future[Either[Throwable, A]])(implicit ec: ExecutionContext): Result[A] =
     XorT[Future, ErrorCase, A](fea map (either ⇒ Xor.fromEither(either.left.map(errorHandle))))
 
+  def fromFutureXor[A](errorHandle: Throwable ⇒ ErrorCase)(fea: Future[Throwable Xor A])(implicit ec: ExecutionContext): Result[A] =
+    XorT[Future, ErrorCase, A](fea map (either ⇒ either.leftMap(errorHandle)))
+
   def fromFutureBoolean(failure: ErrorCase)(fa: Future[Boolean])(implicit ec: ExecutionContext): Result[Unit] =
     XorT[Future, ErrorCase, Unit](fa map (_.toXor(failure)))
 
