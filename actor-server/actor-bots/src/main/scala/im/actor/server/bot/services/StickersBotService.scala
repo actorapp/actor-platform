@@ -34,7 +34,7 @@ private[bot] final class StickersBotService(_system: ActorSystem) extends BotSer
       ifIsAdmin(botUserId) {
         (for {
           packId ← fromFuture(stickerExt.createPack(botUserId, isDefault = false))
-        } yield Container(packId)).value
+        } yield Container(packId.toString)).value
       }
   }
 
