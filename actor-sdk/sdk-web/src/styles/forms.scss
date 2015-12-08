@@ -229,15 +229,20 @@
 ////////////////////////////////////////
 .input {
   &__material {
+    @mixin focused-label() {
+      transform: translateY(0) scale(.85) !important;
+      cursor: default;
+      color: $dark-sky-blue;
+    }
+
     font-size: 15px;
     line-height: 18px;
-    //padding: 24px 0 4px;
     label {
       display: block;
       text-align: left;
       transform: translateY(22px) translateZ(0);
-      //transform-origin: 0% 50%;
-      transition: 125ms;
+      transform-origin: 0% 50%;
+      transition: all 250ms cubic-bezier(.23, 1, .32, 1) 0ms;
       cursor: text;
       color: rgba(black, .3);
     }
@@ -248,15 +253,12 @@
       outline: none;
       padding: 4px 0;
       margin: 0;
-      //transition: box-shadow 100ms;
+      transition: box-shadow 250ms cubic-bezier(.23, 1, .32, 1) 0ms;
     }
 
     &--focus {
       label {
-        transform: translateY(0) !important;
-        font-size: 12px;
-        cursor: default;
-        color: $dark-sky-blue;
+        @include focused-label();
       }
       input {
         box-shadow: 0 2px 0 0 $dark-sky-blue !important;
@@ -264,10 +266,7 @@
     }
     &--filled {
       label {
-        transform: translateY(0) !important;
-        font-size: 12px;
-        cursor: default;
-        color: $dark-sky-blue;
+        @include focused-label();
       }
       input {
         box-shadow: 0 1px 0 0 $dark-sky-blue;
