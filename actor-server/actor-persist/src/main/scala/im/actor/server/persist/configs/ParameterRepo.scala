@@ -14,7 +14,7 @@ final class ParameterTable(tag: Tag) extends Table[model.configs.Parameter](tag,
 
   def value = column[Option[String]]("value")
 
-  def * = (userId, key, value) <> (model.configs.Parameter.tupled, model.configs.Parameter.unapply)
+  def * = (userId, key, value) <> ((model.configs.Parameter.apply _).tupled, model.configs.Parameter.unapply)
 }
 
 object ParameterRepo {
@@ -40,6 +40,9 @@ object ParameterRepo {
 
   def findValue(userId: Int, key: String)(implicit ec: ExecutionContext) =
     firstByUserIdAndKeyC((userId, key)).result.headOption map (_.flatten)
+
+  def findValue(userId: Int, key: String, default: String)(implicit ec: ExecutionContext) =
+    firstByUserIdAndKeyC((userId, key)).result.headOption map (_.flatten.getOrElse(default))
 
   def findBooleanValue(userId: Int, key: String, default: Boolean)(implicit ec: ExecutionContext) =
     findValue(userId, key) map {
