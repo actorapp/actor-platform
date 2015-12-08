@@ -74,6 +74,12 @@ trait BotToApiConversions {
   implicit def toColor(color: Option[Color]): Option[ApiColor] =
     color map toColor
 
+  implicit def toImageLocation(il: ImageLocation): ApiImageLocation =
+    ApiImageLocation(il.fileLocation, il.width, il.height, il.fileSize)
+
+  implicit def toImageLocation(il: Option[ImageLocation]): Option[ApiImageLocation] =
+    il map toImageLocation
+
   implicit def toMessage(message: MessageBody): ApiMessage =
     message match {
       case TextMessage(text, ext) ⇒ ApiTextMessage(text, Vector.empty, ext)
@@ -86,6 +92,8 @@ trait BotToApiConversions {
         mimeType,
         thumb,
         ext) ⇒ ApiDocumentMessage(fileId, accessHash, fileSize.toInt, name, mimeType, thumb, ext)
+      case StickerMessage(stickerId, fastPreview, image512, image256, stickerCollectionId, stickerCollectionAccessHash) ⇒
+        ApiStickerMessage(stickerId, fastPreview, image512, image256, stickerCollectionId, stickerCollectionAccessHash)
       case ServiceMessage(_)  ⇒ throw new RuntimeException("Service messages are not supported")
       case UnsupportedMessage ⇒ ApiUnsupportedMessage
     }

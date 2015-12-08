@@ -2,6 +2,8 @@ package im.actor.server.persist
 
 import im.actor.server.model.StickerData
 import im.actor.server.db.ActorPostgresDriver.api._
+import slick.dbio.Effect.Write
+import slick.profile.FixedSqlAction
 
 class StickerDataTable(tag: Tag) extends Table[StickerData](tag, "sticker_data") {
   def id = column[Int]("id", O.PrimaryKey)
@@ -35,10 +37,12 @@ class StickerDataTable(tag: Tag) extends Table[StickerData](tag, "sticker_data")
 
 object StickerDataRepo {
 
-  val stickerDatas = TableQuery[StickerDataTable]
+  val stickerData = TableQuery[StickerDataTable]
 
-  def find(id: Int) = stickerDatas.filter(_.id === id).result
+  def create(data: StickerData): DBIO[Int] = stickerData += data
 
-  def findByPack(packId: Int) = stickerDatas.filter(_.packId === packId).result
+  def find(id: Int) = stickerData.filter(_.id === id).result
+
+  def findByPack(packId: Int) = stickerData.filter(_.packId === packId).result
 
 }

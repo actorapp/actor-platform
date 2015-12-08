@@ -25,6 +25,7 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int,
   private val webhooksService = new WebHooksBotService(system)
   private val usersService = new UsersBotService(system)
   private val groupsService = new GroupsBotService(system)
+  private val stickersService = new StickersBotService(system)
 
   private val log = Logging(system, getClass)
 
@@ -85,5 +86,6 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int,
     case Services.WebHooks  ⇒ webhooksService
     case Services.Users     ⇒ usersService
     case Services.Groups    ⇒ groupsService
+    case Services.Stickers  ⇒ stickersService
   }
 }

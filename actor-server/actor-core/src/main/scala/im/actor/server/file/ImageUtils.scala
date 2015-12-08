@@ -49,12 +49,16 @@ object ImageUtils {
     aimg.scale(scaleFactor)
   }
 
-  def resizeToSmall(aimg: AsyncImage)(implicit ec: ExecutionContext): Future[AsyncImage] = resizeTo(aimg, SmallSize)
-
-  def resizeToLarge(aimg: AsyncImage)(implicit ec: ExecutionContext): Future[AsyncImage] = resizeTo(aimg, LargeSize)
-
   def dimensions(aimg: AsyncImage)(implicit ec: ExecutionContext): (Int, Int) =
     (aimg.width, aimg.height)
+
+  def scaleStickerF(fullFileId: Long)(
+    implicit
+    fsAdapter: FileStorageAdapter,
+    ec:        ExecutionContext,
+    system:    ActorSystem
+  ): Future[Either[Throwable, Avatar]] =
+    DbExtension(system).db.run(scaleAvatar(fullFileId, ThreadLocalRandom.current(), smallSize = 128, largeSize = 256))
 
   def scaleAvatarF(fullFileId: Long)(
     implicit
@@ -74,7 +78,20 @@ object ImageUtils {
 
   def scaleAvatar(
     fullFileId: Long,
-    rnd:        ThreadLocalRandom
+    rng:        ThreadLocalRandom
+  )(
+    implicit
+    fsAdapter: FileStorageAdapter,
+    ec:        ExecutionContext,
+    system:    ActorSystem
+  ): DBIO[Either[Throwable, Avatar]] =
+    scaleAvatar(fullFileId, rng, SmallSize, LargeSize)
+
+  def scaleAvatar(
+    fullFileId: Long,
+    rng:        ThreadLocalRandom,
+    smallSize:  Int,
+    largeSize:  Int
   )(
     implicit
     fsAdapter: FileStorageAdapter,
@@ -92,8 +109,8 @@ object ImageUtils {
               fullAimg ← DBIO.from(AsyncImage(fullFile))
               (fiw, fih) = dimensions(fullAimg)
 
-              smallAimg ← DBIO.from(resizeToSmall(fullAimg))
-              largeAimg ← DBIO.from(resizeToLarge(fullAimg))
+              smallAimg ← DBIO.from(resizeTo(fullAimg, smallSize))
+              largeAimg ← DBIO.from(resizeTo(fullAimg, largeSize))
 
               smallFile = fullFile.getParentFile.toPath.resolve(smallFileName).toFile
               largeFile = fullFile.getParentFile.toPath.resolve(largeFileName).toFile
