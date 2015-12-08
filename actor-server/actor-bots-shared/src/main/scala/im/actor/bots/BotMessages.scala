@@ -566,12 +566,12 @@ object BotMessages {
     stickerCollectionId:         Option[Int],
     stickerCollectionAccessHash: Option[Long]
   ) extends MessageBody {
-    def getStickerId = stickerId.asJava
+    def getStickerId = stickerId.asPrimitive
     def getFastPreview = fastPreview.asJava
     def getImage512 = image512.asJava
     def getImage256 = image256.asJava
-    def getStickerCollectionId = stickerCollectionId.asJava
-    def getStickerCollectionAccessHash = stickerCollectionAccessHash.asJava
+    def getStickerCollectionId = stickerCollectionId.asPrimitive
+    def getStickerCollectionAccessHash = stickerCollectionAccessHash.asPrimitive
   }
 
   sealed trait TextMessageEx
