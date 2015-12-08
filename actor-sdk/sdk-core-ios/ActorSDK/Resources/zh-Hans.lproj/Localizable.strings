@@ -396,6 +396,8 @@
 
 "ShareLocation" = "Location";
 
+"ShareContact" = "Contact";
+
 "NavigationEdit" = "编辑";
 
 "NavigationDone" = "完成";
@@ -455,3 +457,5 @@
 "ErrorAlreadyJoined" = "You are already member of group";
 
 "ErrorUnableToJoin" = "Unable to join to group";
+
+"ErrorUnableToCall" = "Unable to call this number";

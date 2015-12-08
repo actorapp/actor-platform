@@ -539,6 +539,6 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
 
         // Sending
         
-        Actor.sendContactWithPeer(self.peer, withName: name, withPhones: jPhones, withEmails: JavaUtilHashSet(), withPhoto: jAvatarImage)
+        Actor.sendContactWithPeer(self.peer, withName: name, withPhones: jPhones, withEmails: jEmails, withPhoto: jAvatarImage)
     }
 }
