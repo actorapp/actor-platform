@@ -1,11 +1,8 @@
 package im.actor.server.persist
 
-import im.actor.server.db.ActorPostgresDriver
-import slick.dbio.Effect.Read
 import slick.lifted.Tag
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.model.StickerPack
-import slick.profile.FixedSqlAction
 
 class StickerPackTable(tag: Tag) extends Table[StickerPack](tag, "sticker_packs") {
   def id = column[Int]("id", O.PrimaryKey)
@@ -22,11 +19,17 @@ object StickerPackRepo {
   def create(pack: StickerPack) =
     stickerPacks += pack
 
-  //  def findDefaultPacks = stickerPacks.filter(_.isDefault).result
+  def setDefault(packId: Int, isDefault: Boolean): DBIO[Int] =
+    stickerPacks.filter(_.id === packId).map(_.isDefault).update(isDefault)
 
-  //  def findOwnPacks(userId: Int) = stickerPacks.filter(p ⇒ p.isDefault || p.ownerUserId === userId).result
+  def findByOwner(userId: Int): DBIO[Seq[StickerPack]] =
+    stickerPacks.filter(_.ownerUserId === userId).result
 
-  def exists(userId: Int, packId: Int): DBIO[Boolean] = stickerPacks.filter(p ⇒ (p.id === packId) && (p.ownerUserId === userId)).exists.result
+  def exists(userId: Int, packId: Int): DBIO[Boolean] =
+    stickerPacks.filter(p ⇒ (p.id === packId) && (p.ownerUserId === userId)).exists.result
+
+  def exists(packId: Int): DBIO[Boolean] =
+    stickerPacks.filter(_.id === packId).exists.result
 
   def find(id: Int) = stickerPacks.filter(_.id === id).result.headOption
 

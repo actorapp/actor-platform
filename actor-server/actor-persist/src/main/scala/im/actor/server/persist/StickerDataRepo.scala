@@ -45,4 +45,7 @@ object StickerDataRepo {
 
   def findByPack(packId: Int) = stickerData.filter(_.packId === packId).result
 
+  def delete(packId: Int, stickerId: Int) =
+    stickerData.filter(s ⇒ s.packId === packId && s.id == stickerId).delete
+
 }
