@@ -15,26 +15,6 @@ if (language === 'zh-cn') {
   language = 'zh'
 }
 
-// Intl polyfill
-if (!global.Intl) {
-  require('intl');
-
-  const request = new XMLHttpRequest();
-  const url = window.location.href;
-  const arr = url.split('/');
-  const query = language.split('-')[0] + '-' + language.split('-')[1].toUpperCase();
-  const localeDataPath = arr[0] + '//' + arr[2] + '/assets/locale-data/' + query + '.json';
-
-  function addLocaleData() {
-    const localeData = JSON.parse(this.response);
-    IntlPolyfill.__addLocaleData(localeData);
-  }
-
-  request.addEventListener('load', addLocaleData);
-  request.open('GET', localeDataPath);
-  request.send();
-}
-
 // Set language data
 const languageData = {
   'ru': russian,

@@ -3,6 +3,8 @@
  */
 
 import 'babel-polyfill';
+import '../utils/intl-polyfill';
+
 import RouterContainer from '../utils/RouterContainer';
 import DelegateContainer from '../utils/DelegateContainer';
 import SDKDelegate from './actor-sdk-delegate';
@@ -71,8 +73,12 @@ class App extends Component {
 ReactMixin.onClass(App, IntlMixin);
 
 class ActorSDK {
-  constructor(options) {
-    options = options || {};
+  /**
+   * @constructor
+   * @param {object} options - Object contains custom components, actions and localisation strings.
+   *
+   */
+  constructor(options = {}) {
 
     this.endpoints = (options.endpoints && options.endpoints.length > 0) ? options.endpoints : endpoints;
     this.bugsnagApiKey = options.bugsnagApiKey ? options.bugsnagApiKey : bugsnagApiKey;
@@ -139,6 +145,9 @@ class ActorSDK {
     }
   };
 
+  /**
+   * Start application
+   */
   startApp() {
     if (window.isJsAppLoaded) {
       this._starter();
