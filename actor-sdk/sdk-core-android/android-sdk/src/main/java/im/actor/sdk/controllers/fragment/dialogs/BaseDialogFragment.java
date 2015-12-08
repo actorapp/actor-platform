@@ -46,7 +46,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
 
         View res = inflate(inflater, container, R.layout.fragment_dialogs,
                 messenger().getDialogsDisplayList());
-        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
         // setAnimationsEnabled(true);
 
         // Footer
