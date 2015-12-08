@@ -1,0 +1,1 @@
+* Put releases to actorapp/actor-platform repository
