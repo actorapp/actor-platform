@@ -16,6 +16,10 @@ object GateConfig {
     } yield GateConfig(uri, authToken)
 
   def load: Try[GateConfig] = {
-    load(ActorConfig.load().getConfig("services.activation-gate"))
+    for {
+      config ← Try(ActorConfig.load().getConfig("services.actor-activation"))
+        .orElse(Try(ActorConfig.load().getConfig("services.activation-gate")))
+      gateConfig ← load(config)
+    } yield gateConfig
   }
 }
