@@ -21,6 +21,7 @@
   "dependencies": {
     "actor-js": "latest",
     "actor-sdk": "../",
+    "assign-deep": "0.4.2",
     "babel-polyfill": "^6.2.0",
     "bugsnag-js": "^2.4.8",
     "classnames": "2.2.1",
