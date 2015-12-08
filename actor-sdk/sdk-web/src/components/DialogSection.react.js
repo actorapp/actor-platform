@@ -10,10 +10,10 @@ import { PeerTypes } from '../constants/ActorAppConstants';
 import PeerUtils from '../utils/PeerUtils';
 
 import MessagesSection from './dialog/MessagesSection.react';
-import TypingSection from './dialog/TypingSection.react';
-import ComposeSection from './dialog/ComposeSection.react';
+import DefaultTypingSection from './dialog/TypingSection.react';
+import DefaultComposeSection from './dialog/ComposeSection.react';
 import DefaultToolbarSection from './ToolbarSection.react';
-import ActivitySection from './ActivitySection.react';
+import DefaultActivitySection from './ActivitySection.react';
 import ConnectionState from './common/ConnectionState.react';
 
 import ActivityStore from '../stores/ActivityStore';
@@ -90,15 +90,19 @@ class DialogSection extends Component {
   render() {
     const { peer } = this.state;
     const { delegate } = this.context;
-    const ToolbarSection = delegate.components.toolbar || DefaultToolbarSection;
 
     let mainContent,
         activity = [];
 
-    if (delegate.components.activity) {
-      forEach(delegate.components.activity, (Activity) => activity.push(<Activity/>));
+    const ToolbarSection = delegate.components.dialog.toolbar || DefaultToolbarSection;
+    const TypingSection = delegate.components.dialog.typing || DefaultTypingSection;
+    const ComposeSection = delegate.components.dialog.compose || DefaultComposeSection;
+
+    if (delegate.components.dialog.activity) {
+      forEach(delegate.components.dialog.activity, (Activity) => activity.push(<Activity/>));
+    } else {
+      activity.push(<DefaultActivitySection/>);
     }
-    activity.push(<ActivitySection/>);
 
     if (peer) {
       let isMember = true,

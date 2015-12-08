@@ -10,7 +10,7 @@ import ContactActionCreators from '../../actions/ContactActionCreators';
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
 
 import ContactsSectionItem from './ContactsSectionItem.react';
-import AddContactModal from '../modals/AddContact.react.js';
+import AddContactModal from '../modals/AddContact.react';
 
 const ThemeManager = new Styles.ThemeManager();
 
