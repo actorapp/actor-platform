@@ -93,7 +93,8 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
                 }
             }
         });
-        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+
         return res;
     }
 
