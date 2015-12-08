@@ -16,14 +16,15 @@ import DialogActionCreators from '../actions/DialogActionCreators';
 import VisibilityActionCreators from '../actions/VisibilityActionCreators';
 import QuickSearchActionCreators from '../actions/QuickSearchActionCreators';
 
-import SidebarSection from './SidebarSection.react';
-import DialogSection from './DialogSection.react';
+import DefaultSidebarSection from './SidebarSection.react';
+import DefaultDialogSection from './DialogSection.react';
 import Favicon from './common/Favicon.react';
 import ModalsWrapper from './modals/ModalsWrapper.react';
 
 class Main extends Component {
   static contextTypes = {
-    router: PropTypes.func
+    router: PropTypes.func,
+    delegate: PropTypes.object
   };
 
   static propTypes = {
@@ -82,11 +83,16 @@ class Main extends Component {
 
   render() {
     const { params } = this.props;
+    const { delegate } = this.context;
     const peer = PeerUtils.stringToPeer(params.id);
+
+    const SidebarSection = (typeof delegate.components.sidebar == 'function') ? delegate.components.sidebar : DefaultSidebarSection;
+    const DialogSection = (typeof delegate.components.dialog == 'function') ? delegate.components.dialog : DefaultDialogSection;
 
     return (
       <div className="app">
         <Favicon/>
+
         <SidebarSection selectedPeer={peer}/>
         <DialogSection peer={peer}/>
 

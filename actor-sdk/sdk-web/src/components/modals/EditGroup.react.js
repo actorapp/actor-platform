@@ -19,7 +19,7 @@ import EditGroupActionCreators from '../../actions/EditGroupActionCreators';
 import CropAvatarActionCreators from '../../actions/CropAvatarActionCreators';
 
 import AvatarItem from '../common/AvatarItem.react';
-import CropAvatarModal from './CropAvatar.react.js';
+import CropAvatarModal from './CropAvatar.react';
 
 const ThemeManager = new Styles.ThemeManager();
 
