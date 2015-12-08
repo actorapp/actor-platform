@@ -453,17 +453,32 @@ object BotMessages {
   }
 
   @key("CreateStickerPack")
-  sealed trait CreateStickerPack extends RequestBody {
+  final case class CreateStickerPack(@beanGetter ownerUserId: Int) extends RequestBody {
     override type Response = Container[String]
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
     override val service: String = Services.Stickers
   }
 
-  @key("CreateStickerPack")
-  case object CreateStickerPack extends CreateStickerPack
+  @key("ShowStickerPacks")
+  final case class ShowStickerPacks(@beanGetter ownerUserId: Int) extends RequestBody {
+    override type Response = ContainerList[String]
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Stickers
+  }
+
+  @key("ShowStickers")
+  final case class ShowStickers(
+    @beanGetter ownerUserId: Int,
+    @beanGetter packId:      Int
+  ) extends RequestBody {
+    override type Response = ContainerList[String]
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Stickers
+  }
 
   @key("AddSticker")
-  case class AddSticker(
+  final case class AddSticker(
+    @beanGetter userId:       Int,
     @beanGetter packId:       Int,
     emoji:                    Option[String],
     @beanGetter fileLocation: FileLocation
@@ -473,6 +488,27 @@ object BotMessages {
     override val service: String = Services.Stickers
 
     def getEmoji = emoji.asJava
+  }
+
+  @key("DeleteSticker")
+  final case class DeleteSticker(
+    @beanGetter ownerUserId: Int,
+    @beanGetter packId:      Int,
+    @beanGetter stickerId:   Int
+  ) extends RequestBody {
+    override type Response = Void
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Stickers
+  }
+
+  @key("MakeStickerPackDefault")
+  final case class MakeStickerPackDefault(
+    @beanGetter userId: Int,
+    @beanGetter packId: Int
+  ) extends RequestBody {
+    override type Response = Void
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Stickers
   }
 
   @key("Message")
