@@ -33,6 +33,8 @@ object PhoneNumberUtils {
     }
   }
 
+  def isTestPhone(number: Long): Boolean = number.toString.startsWith("7555")
+
   def isValid(number: String, defaultCountry: String = ""): Boolean = normalizeStr(number, defaultCountry).nonEmpty
 
   def normalizeLong(number: Long, defaultCountry: String = ""): Seq[Long] = normalizeStr(s"$number", defaultCountry)

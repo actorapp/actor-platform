@@ -1,12 +1,10 @@
 import dsl._
 import Keys._
 
+name := "actor"
+
 enablePlugins(JavaServerAppPackaging)
 enablePlugins(JDebPackaging)
-enablePlugins(RpmPlugin)
-
-JavaAppPackaging.projectSettings
-JavaServerAppPackaging.debianSettings
 
 name := "actor"
 
@@ -21,7 +19,7 @@ rpmVendor := "actor"
 daemonUser in Linux := "actor"
 daemonGroup in Linux := (daemonUser in Linux).value
 
-bashScriptExtraDefines += """addJava "-Dconfig.file=${app_home}/../conf/server.conf""""
+bashScriptExtraDefines += """addJava "-Dactor.home=${app_home}/..""""
 bashScriptExtraDefines += """addJava "-Dlogback.configurationFile=${app_home}/../conf/logback.xml""""
 
 dockerExposedPorts := Seq(9070, 9080, 9090)

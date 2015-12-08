@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -eu
+
+git diff-index --quiet --cached HEAD
+
+if [ $? -eq 0 ]
+then
+    git push origin server/master
+    git checkout master
+    git pull --rebase origin master
+    git merge --ff-only server/master
+    git push origin master
+else
+    echo "Branch is dirty"
+fi

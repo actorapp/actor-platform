@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<im.actor.sdk.controllers.conversation.view.BubbleContainer xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true">
+
+    <FrameLayout
+        android:id="@+id/fl_bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:duplicateParentState="true">
+
+
+        <ImageView
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:scaleType="centerInside"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/contact_avatar"
+            android:background="@drawable/msg_audio_play_selector"
+            android:layout_gravity="center_vertical"
+            android:layout_width="38dp"
+            android:layout_height="38dp" />
+
+        <com.droidkit.progress.CircularView
+
+            android:layout_gravity="center_vertical"
+            android:id="@+id/progressView"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+        <SeekBar
+            android:layout_marginLeft="38dp"
+            android:progressDrawable="@drawable/msg_audio_seek_bg"
+            android:thumb="@drawable/msg_audio_seek_thumb"
+            android:paddingTop="5dp"
+            android:id="@+id/audioSlide"
+            android:layout_marginRight="-10dp"
+            android:layout_width="160dp"
+            android:max="100"
+            android:layout_height="wrap_content" />
+
+        <FrameLayout
+            android:layout_marginLeft="48dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="30dp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/duration"
+                android:text="00:00"
+                android:layout_gravity="left|bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:baselineAligned="false"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:textSize="13sp" />
+
+                <im.actor.sdk.view.TintImageView
+                    android:id="@+id/stateIcon"
+                    android:layout_width="16dp"
+                    android:layout_height="9dp"
+                    android:layout_marginLeft="2dp" />
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </FrameLayout>
+</im.actor.sdk.controllers.conversation.view.BubbleContainer>

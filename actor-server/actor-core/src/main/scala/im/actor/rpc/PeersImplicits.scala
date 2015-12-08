@@ -1,21 +1,21 @@
 package im.actor.api.rpc
 
 import im.actor.api.rpc.peers._
-import im.actor.server.models
+import im.actor.server.model.{ PeerType, Peer }
 
 trait PeersImplicits {
 
   implicit class ExtPeer(peer: ApiPeer) {
-    lazy val asModel: models.Peer =
-      models.Peer(models.PeerType.fromInt(peer.`type`.id), peer.id)
+    lazy val asModel: Peer =
+      Peer(PeerType.fromValue(peer.`type`.id), peer.id)
   }
 
   implicit class ExtOutPeer(outPeer: ApiOutPeer) {
     lazy val asPeer: ApiPeer =
       ApiPeer(outPeer.`type`, outPeer.id)
 
-    lazy val asModel: models.Peer =
-      models.Peer(models.PeerType.fromInt(outPeer.`type`.id), outPeer.id)
+    lazy val asModel: Peer =
+      Peer(PeerType.fromValue(outPeer.`type`.id), outPeer.id)
   }
 
   implicit class ExtGroupOutPeer(groupOutPeer: ApiGroupOutPeer) {
@@ -26,8 +26,14 @@ trait PeersImplicits {
       ApiPeer(ApiPeerType.Group, groupOutPeer.groupId)
   }
 
-  implicit class ExtPeerModel(model: models.Peer) {
+  implicit class ExtPeerModel(model: Peer) {
     lazy val asStruct: ApiPeer =
-      ApiPeer(ApiPeerType(model.typ.toInt), model.id)
+      ApiPeer(ApiPeerType(model.typ.value), model.id)
   }
+
+  implicit class ExtPeerCompanion(companion: com.trueaccord.scalapb.GeneratedMessageCompanion[Peer]) {
+    def privat(userId: Int) = Peer(PeerType.Private, userId)
+    def group(groupId: Int) = Peer(PeerType.Group, groupId)
+  }
+
 }

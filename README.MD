@@ -1,7 +1,5 @@
 # Actor Messaging platform
 
-[![Group On Actor](actor-resources/group_on_actor.png)](https://quit.email/join/0d43e6a90d108ad9608514b5c17b76d5b2721d5e2ea51058d6ca43a66befe7f4)
-
 Actor is a platform for instant messaging. Actor provides features like large group chats; unlimited history storage; send/receive documents, photo, and video; authentication with one time password for phone number/email or OAuth2; easy integrations with external services.
 
 Actor has one of the best IM apps for Android, iOS, and Web that is built to handle poor connectivity on bad networks, support full offline message and file storage in applications, automatically build contact lists, and more!
@@ -21,7 +19,7 @@ It is very easy to [implement your own](http://actor.readme.io/docs/apps).
 
 Building a mobile messaging application is quite a complex procedure that requires a lot of preparation, e.g.: have developer accounts with Google and Apple, have SSL certificates for your servers, integrate the server with various services like SMS gate, push systems, etc.
 
-For more info, you can read the [server installation manual](SERVER.md). After installing the server, you can [start building the apps](APPS.md).
+For more info, you can read the [server installation manual](docs/SERVER.md). After installing the server, you can [start building the apps](docs/APPS.md).
 
 # Live demo
 
@@ -37,9 +35,6 @@ It is very hard to find any open source messaging servers that have awesome mobi
 * Twitter: [@actorapp](https://twitter.com/actorapp)
 * Email: [speed@actor.im](mailto:speed@actor.im)
 
-# Screenshots
-![](actor-resources/screenshots/Android1_Small.jpg) ![](actor-resources/screenshots/Android2_Small.jpg) ![](actor-resources/screenshots/Android8_Small.jpg)
-
 # License
 
-Actor Platform released under [MIT License](LICENSE).
+Actor Platform released under [Apache 2.0 License](LICENSE).

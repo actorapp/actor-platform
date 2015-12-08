@@ -1,18 +1,26 @@
 package im.actor.server.sequence
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
-import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding, ShardRegion }
+import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
 
-case class SeqUpdatesManagerRegion(ref: ActorRef)
+final case class SeqUpdatesManagerRegion(ref: ActorRef)
 
 object SeqUpdatesManagerRegion {
 
-  private val extractEntityId: ShardRegion.ExtractEntityId = {
-    case msg: SeqUpdatesManagerMessage ⇒ (msg.authId.toString, msg)
+  import UserSequenceCommands._
+
+  private def extractEntityId(system: ActorSystem): ShardRegion.ExtractEntityId = {
+    case e @ Envelope(userId, payload) ⇒ (userId.toString, e.getField(Envelope.descriptor.findFieldByNumber(payload.number)) match {
+      case Some(any) ⇒ any
+      case None ⇒
+        val error = new RuntimeException(s"Payload not found for $e")
+        system.log.error(error, error.getMessage)
+        throw error
+    })
   }
 
-  private val extractShardId: ShardRegion.ExtractShardId = msg ⇒ msg match {
-    case msg: SeqUpdatesManagerMessage ⇒ (msg.authId % 32).toString // TODO: configurable
+  private val extractShardId: ShardRegion.ExtractShardId = {
+    case Envelope(userId, _) ⇒ (userId % 10).toString // TODO: configurable
   }
 
   private val typeName = "SeqUpdatesManager"
@@ -22,7 +30,7 @@ object SeqUpdatesManagerRegion {
       typeName = typeName,
       entityProps = props,
       settings = ClusterShardingSettings(system),
-      extractEntityId = extractEntityId,
+      extractEntityId = extractEntityId(system),
       extractShardId = extractShardId
     ))
 
@@ -32,13 +40,13 @@ object SeqUpdatesManagerRegion {
     googlePushManager: GooglePushManager,
     applePushManager:  ApplePushManager
   ): SeqUpdatesManagerRegion =
-    start(SeqUpdatesManagerActor.props)
+    start(UserSequence.props(googlePushManager, applePushManager))
 
   def startProxy()(implicit system: ActorSystem): SeqUpdatesManagerRegion =
     SeqUpdatesManagerRegion(ClusterSharding(system).startProxy(
       typeName = typeName,
       role = None,
-      extractEntityId = extractEntityId,
+      extractEntityId = extractEntityId(system),
       extractShardId = extractShardId
     ))
 }

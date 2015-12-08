@@ -11,16 +11,17 @@ import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.group.GroupExtension
+import im.actor.server.model.PeerType
 
 import scala.concurrent.Future
 import scala.util.Random
 
-class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
+final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   with ImplicitFileStorageAdapter
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService
   with ImplicitSequenceService
-  with SequenceMatchers {
+  with SeqUpdateMatchers {
   behavior of "MessagingServiceHistoryService"
 
   "Private messaging" should "load history" in s.privat
@@ -41,26 +42,26 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
   private val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  implicit private val service = messaging.MessagingServiceImpl()
-  implicit private val groupsService = new GroupsServiceImpl(groupInviteConfig)
+  implicit private lazy val service = messaging.MessagingServiceImpl()
+  implicit private lazy val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
   private object s {
-    val (user1, authId1, _) = createUser()
-    val sessionId1 = createSessionId()
+    lazy val (user1, authId1, authSid1, _) = createUser()
+    lazy val sessionId1 = createSessionId()
 
-    val (user2, authId2, _) = createUser()
-    val sessionId2 = createSessionId()
+    lazy val (user2, authId2, authSid2, _) = createUser()
+    lazy val sessionId2 = createSessionId()
 
-    val clientData1 = ClientData(authId1, sessionId1, Some(user1.id))
-    val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
+    lazy val clientData1 = ClientData(authId1, sessionId1, Some(AuthData(user1.id, authSid1)))
+    lazy val clientData2 = ClientData(authId2, sessionId2, Some(AuthData(user2.id, authSid2)))
 
-    val user1Model = getUserModel(user1.id)
-    val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, user1Model.accessSalt)
-    val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
+    lazy val user1Model = getUserModel(user1.id)
+    lazy val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, user1Model.accessSalt)
+    lazy val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
 
-    val user2Model = getUserModel(user2.id)
-    val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
-    val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
+    lazy val user2Model = getUserModel(user2.id)
+    lazy val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
+    lazy val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
     def privat() = {
       val step = 100L
@@ -159,8 +160,8 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
     def public() = {
       val groupId = Random.nextInt
-      val (pubUser, pubAuthId, _) = createUser()
-      val accessHash = whenReady(GroupExtension(system).create(groupId, pubUser.id, pubAuthId, "Public group", Random.nextLong, Set.empty))(_.accessHash)
+      val (pubUser, _, _, _) = createUser()
+      val accessHash = whenReady(GroupExtension(system).create(groupId, pubUser.id, "Public group", Random.nextLong, Set.empty))(_.accessHash)
       whenReady(GroupExtension(system).makePublic(groupId, "Public group description"))(identity)
 
       val groupOutPeer = ApiGroupOutPeer(groupId, accessHash)
@@ -191,13 +192,14 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
     }
 
     object historyPrivate {
-      val (user1, authId1, _) = createUser()
+      val (user1, authId1, authSid1, _) = createUser()
+
       def markReceived() = {
-        val (user2, authId2, _) = createUser()
+        val (user2, authId2, authSid2, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId1, Some(user1.id))
-        val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
+        val clientData1 = ClientData(authId1, sessionId1, Some(AuthData(user1.id, authSid1)))
+        val clientData2 = ClientData(authId2, sessionId2, Some(AuthData(user2.id, authSid2)))
 
         val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, getUserModel(user1.id).accessSalt)
         val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
@@ -232,7 +234,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)))) { dialogOpt ⇒
+          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer(PeerType.Private, user2.id)))) { dialogOpt ⇒
             dialogOpt.get.lastReceivedAt.getMillis should be < startDate + 3000
             dialogOpt.get.lastReceivedAt.getMillis should be > startDate + 1000
           }
@@ -240,26 +242,27 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         {
           implicit val clientData = clientData1
-          expectUpdatesOrdered(failUnmatched)(0, Array.empty, List(
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageReceived.header
-          )) {
-            case (UpdateMessageSent.header, update)     ⇒ parseUpdate[UpdateMessageSent](update)
-            case (UpdateMessageReceived.header, update) ⇒ parseUpdate[UpdateMessageReceived](update)
-          }
+          expectUpdates(
+            classOf[UpdateChatGroupsChanged],
+            classOf[UpdateMessageSent],
+            classOf[UpdateMessageSent],
+            classOf[UpdateMessageSent],
+            classOf[UpdateMessageReceived]
+          )(emptyCheck)
         }
       }
 
       def markRead() = {
-        val (user1, authId1, _) = createUser()
-        val (user2, authId21, _) = createUser()
+        val (user1, authId1, authSid1, _) = createUser()
+        val (user2, authId21, authSid21, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-        val clientData21 = ClientData(authId21, sessionId, Some(user2.id))
-        val clientData22 = ClientData(createAuthId(user2.id), sessionId, Some(user2.id))
+        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+        val clientData21 = ClientData(authId21, sessionId, Some(AuthData(user2.id, authSid21)))
+
+        val (authId22, authSid22) = createAuthId(user2.id)
+
+        val clientData22 = ClientData(authId22, sessionId, Some(AuthData(user2.id, authSid22)))
 
         val user1AccessHash = ACLUtils.userAccessHash(authId21, user1.id, getUserModel(user1.id).accessSalt)
         val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
@@ -294,7 +297,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)))) { optDialog ⇒
+          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer(PeerType.Private, user2.id)))) { optDialog ⇒
             val dialog = optDialog.get
             dialog.lastReadAt.getMillis should be < startDate + 3000
             dialog.lastReadAt.getMillis should be > startDate + 1000
@@ -309,59 +312,54 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         {
           implicit val clientData = clientData1
-          expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageRead.header
-          )) {
-            case (UpdateMessageRead.header, update) ⇒ parseUpdate[UpdateMessageRead](update)
-          }
+          expectUpdates(
+            classOf[UpdateChatGroupsChanged],
+            classOf[UpdateMessageSent],
+            classOf[UpdateMessageSent],
+            classOf[UpdateMessageSent],
+            classOf[UpdateMessageRead]
+          )(emptyCheck)
         }
 
         {
           implicit val clientData = clientData21
-          expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
-            UpdateMessage.header,
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
-            UpdateCountersChanged.header,
-            //here we got read on other device. so we don't get ReadByMe update
-            UpdateCountersChanged.header
-          )) {
-            case _ ⇒
-          }
+          expectUpdates(
+            classOf[UpdateChatGroupsChanged],
+            classOf[UpdateMessage],
+            classOf[UpdateCountersChanged],
+            classOf[UpdateMessage],
+            classOf[UpdateCountersChanged],
+            classOf[UpdateMessage],
+            classOf[UpdateCountersChanged],
+            classOf[UpdateMessageReadByMe],
+            classOf[UpdateCountersChanged]
+          )(emptyCheck)
         }
 
         {
           //UpdateMessageReadByMe sent to user2 second device
           implicit val clientData = clientData22
-          expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
-            UpdateMessage.header,
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
-            UpdateCountersChanged.header,
-
-            //why this order
-            UpdateCountersChanged.header,
-            UpdateMessageReadByMe.header
-          )) {
-            case _ ⇒
-          }
+          expectUpdates(
+            classOf[UpdateChatGroupsChanged],
+            classOf[UpdateMessage],
+            classOf[UpdateCountersChanged],
+            classOf[UpdateMessage],
+            classOf[UpdateCountersChanged],
+            classOf[UpdateMessage],
+            classOf[UpdateCountersChanged],
+            classOf[UpdateMessageReadByMe],
+            classOf[UpdateCountersChanged]
+          )(emptyCheck)
         }
       }
 
       def counterAfterRead() = {
-        val (user1, authId1, _) = createUser()
-        val (user2, authId21, _) = createUser()
+        val (user1, authId1, authSid1, _) = createUser()
+        val (user2, authId21, authSid21, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-        val clientData21 = ClientData(authId21, sessionId, Some(user2.id))
+        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+        val clientData21 = ClientData(authId21, sessionId, Some(AuthData(user2.id, authSid21)))
 
         val user1AccessHash = ACLUtils.userAccessHash(authId21, user1.id, getUserModel(user1.id).accessSalt)
         val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
@@ -395,7 +393,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
             }
           }
 
-          expectUpdate[UpdateCountersChanged](seq, state, UpdateCountersChanged.header, Some(1)) { upd ⇒
+          expectUpdate(seq, classOf[UpdateCountersChanged]) { upd ⇒
             val globalCounter = upd.counters.globalCounter
             globalCounter shouldEqual Some(0)
           }
@@ -405,12 +403,12 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
     object historyGroup {
       def markReceived() = {
-        val (user1, authId1, _) = createUser()
-        val (user2, authId2, _) = createUser()
+        val (user1, authId1, authSid1, _) = createUser()
+        val (user2, authId2, authSid2, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-        val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+        val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
 
         val groupOutPeer = {
           implicit val clientData = clientData1
@@ -442,7 +440,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { dialogOpt ⇒
+          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { dialogOpt ⇒
             dialogOpt.get.lastReceivedAt.getMillis should be < startDate + 3000
             dialogOpt.get.lastReceivedAt.getMillis should be > startDate + 1000
           }
@@ -450,26 +448,23 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         {
           implicit val clientData = clientData1
-          expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
-            UpdateGroupUserInvited.header,
-            UpdateGroupInvite.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageReceived.header
-          )) {
-            case _ ⇒
-          }
+          expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+          expectUpdate(classOf[UpdateGroupUserInvited])(identity)
+          expectUpdate(classOf[UpdateGroupInvite])(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
+          expectUpdate(classOf[UpdateMessageReceived])(identity)
         }
       }
 
       def markRead() = {
-        val (user1, authId1, _) = createUser()
-        val (user2, authId2, _) = createUser()
+        val (user1, authId1, authSid1, _) = createUser()
+        val (user2, authId2, authSid2, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-        val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+        val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
 
         val groupOutPeer = {
           implicit val clientData = clientData1
@@ -503,7 +498,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(300)
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { dialogOpt ⇒
+          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { dialogOpt ⇒
             dialogOpt.get.lastReadAt.getMillis should be < startDate + 3000
             dialogOpt.get.lastReadAt.getMillis should be > startDate + 1000
           }
@@ -516,42 +511,35 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         {
           implicit val clientData = clientData1
-          expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
-            UpdateGroupUserInvited.header,
-            UpdateGroupInvite.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageRead.header,
-            UpdateMessage.header,
-            UpdateCountersChanged.header
-          )) {
-            case (UpdateMessageRead.header, update) ⇒ parseUpdate[UpdateMessageRead](update)
-          }
+          expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+          expectUpdate(classOf[UpdateGroupUserInvited])(identity)
+          expectUpdate(classOf[UpdateGroupInvite])(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
+          expectUpdate(classOf[UpdateMessageRead])(identity)
+          expectUpdate(classOf[UpdateMessage])(identity)
+          expectUpdate(classOf[UpdateCountersChanged])(identity)
         }
 
         {
           implicit val clientData = clientData2
-          expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
-            UpdateGroupInvite.header,
+          expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+          expectUpdate(classOf[UpdateGroupInvite])(identity)
 
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
+          expectUpdate(classOf[UpdateCountersChanged])(identity)
+          expectUpdate(classOf[UpdateMessage])(identity)
 
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
+          expectUpdate(classOf[UpdateCountersChanged])(identity)
+          expectUpdate(classOf[UpdateMessage])(identity)
 
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
+          expectUpdate(classOf[UpdateCountersChanged])(identity)
+          expectUpdate(classOf[UpdateMessage])(identity)
 
-            UpdateMessageSent.header, //sent message with GroupServiceMessages.userJoined
+          expectUpdate(classOf[UpdateMessageSent])(identity) //sent message with GroupServiceMessages.userJoined
 
-            UpdateMessageReadByMe.header,
-            UpdateCountersChanged.header
-          )) {
-            case (UpdateMessageReadByMe.header, update) ⇒ parseUpdate[UpdateMessageReadByMe](update)
-            case (UpdateMessageSent.header, update)     ⇒ parseUpdate[UpdateMessageSent](update)
-          }
+          expectUpdate(classOf[UpdateMessageReadByMe])(identity)
+          expectUpdate(classOf[UpdateCountersChanged])(identity)
         }
       }
     }

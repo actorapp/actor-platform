@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.unmarshalling.{ FromRequestUnmarshaller, Unmarshal, Unmarshaller }
 import akka.stream.Materializer
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import im.actor.api.rpc.{ ClientData, PeersImplicits }
+import im.actor.api.rpc.{ AuthData, ClientData, PeersImplicits }
 import im.actor.api.rpc.counters.UpdateCountersChanged
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeq
@@ -27,9 +27,9 @@ class WebhookHandlerSpec
   with MessageParsing
   with PeersImplicits
   with ImplicitSequenceService
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService
-  with SequenceMatchers {
+  with SeqUpdateMatchers {
 
   behavior of "WebhookHandler"
 
@@ -47,15 +47,15 @@ class WebhookHandlerSpec
   private val groupExt = GroupExtension(system)
 
   object t {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
     def createGroupAndBot() = {
       val groupOutPeer = createGroup("Bot test group", Set(user2.id)).groupPeer
 
-      whenReady(db.run(persist.GroupBot.findByGroup(groupOutPeer.groupId))) { optBot ⇒
+      whenReady(db.run(persist.GroupBotRepo.findByGroup(groupOutPeer.groupId))) { optBot ⇒
         optBot shouldBe defined
         val bot = optBot.get
         bot.groupId shouldEqual groupOutPeer.groupId
@@ -79,12 +79,10 @@ class WebhookHandlerSpec
 
       val firstMessage = Text("Alert! All tests are failed!")
       whenReady(handler.send(firstMessage, token)) { _ ⇒
-        expectUpdatesUnordered(ignoreUnmatched)(initSeq, initState, Seq(UpdateMessage.header, UpdateCountersChanged.header)) {
-          case (UpdateMessage.header, u) ⇒
-            val update = parseUpdate[UpdateMessage](u)
-            update.message shouldEqual ApiTextMessage(firstMessage.text, Vector.empty, None)
-          case (UpdateCountersChanged.header, update) ⇒ parseUpdate[UpdateCountersChanged](update)
+        expectUpdate(initSeq, classOf[UpdateMessage]) { upd ⇒
+          upd.message shouldEqual ApiTextMessage(firstMessage.text, Vector.empty, None)
         }
+        expectUpdate(initSeq, classOf[UpdateCountersChanged])(identity)
       }
 
       val (seq1, state1) = whenReady(sequenceService.handleGetState()) { resp ⇒
@@ -94,17 +92,17 @@ class WebhookHandlerSpec
 
       val secondMessage = Text("It's ok now!")
       whenReady(handler.send(secondMessage, token)) { _ ⇒
-        expectUpdatesUnordered(failUnmatched)(seq1, state1, Seq(UpdateMessage.header, UpdateCountersChanged.header)) {
-          case (UpdateMessage.header, u) ⇒
-            val update = parseUpdate[UpdateMessage](u)
-            update.message shouldEqual ApiTextMessage(secondMessage.text, Vector.empty, None)
-          case (UpdateCountersChanged.header, update) ⇒ parseUpdate[UpdateCountersChanged](update)
+        expectUpdate(seq1, classOf[UpdateMessage]) { upd ⇒
+          upd.message shouldEqual ApiTextMessage(secondMessage.text, Vector.empty, None)
         }
+        expectUpdate(seq1, classOf[UpdateCountersChanged])(identity)
       }
     }
 
     def tokenMigration() = {
-      val groups = for (i ← 1 to 300) yield createGroup(s"$i", Set(user2.id)).groupPeer
+      val groups = for (i ← 1 to 10) yield {
+        createGroup(s"$i", Set(user2.id)).groupPeer
+      }
 
       IntegrationTokenMigrator.migrate()
 
@@ -145,9 +143,9 @@ class WebhookHandlerSpec
       val sendText = List("/task jump", "/task eat", "/command sleep", "/command die")
 
       object Parser extends CommandParser
-      val commands = (sendText map Parser.parseCommand)
+      val commands = sendText map Parser.parseCommand
 
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 1L, ApiTextMessage(sendText(0), Vector.empty, None)))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 1L, ApiTextMessage(sendText.head, Vector.empty, None)))(_ ⇒ ())
       whenReady(messagingService.handleSendMessage(group.asOutPeer, 2L, GroupServiceMessages.changedTitle("xx")))(_ ⇒ ())
 
       whenReady(messagingService.handleSendMessage(group.asOutPeer, 3L, ApiTextMessage(sendText(1), Vector.empty, None)))(_ ⇒ ())
@@ -169,7 +167,7 @@ class WebhookHandlerSpec
     }
   }
 
-  class DummyHookListener(port: Int)(implicit system: ActorSystem, materializer: Materializer) extends PlayJsonSupport {
+  final class DummyHookListener(port: Int)(implicit system: ActorSystem, materializer: Materializer) extends PlayJsonSupport {
 
     import akka.http.scaladsl.Http
     import akka.http.scaladsl.server.Directives._

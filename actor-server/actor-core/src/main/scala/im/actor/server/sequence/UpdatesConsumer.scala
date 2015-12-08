@@ -1,18 +1,16 @@
 package im.actor.server.sequence
 
 import akka.actor._
+import akka.pattern.pipe
 import akka.util.Timeout
 import im.actor.api.rpc.codecs.UpdateBoxCodec
 import im.actor.api.rpc.groups.ApiGroup
-import im.actor.api.rpc.messaging.UpdateMessageSent
-import im.actor.api.rpc.sequence.{ FatSeqUpdate, WeakUpdate }
+import im.actor.api.rpc.sequence.{ SeqUpdate, FatSeqUpdate, WeakUpdate }
 import im.actor.api.rpc.users.ApiUser
 import im.actor.api.rpc.weak.{ UpdateGroupOnline, UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
-import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
 import im.actor.server.mtproto.protocol.UpdateBox
-import im.actor.server.persist
 import im.actor.server.presences._
 import im.actor.server.user.UserExtension
 import org.joda.time.DateTime
@@ -22,7 +20,7 @@ import scala.concurrent.duration._
 
 final case class NewUpdate(ub: UpdateBox, reduceKey: Option[String])
 
-trait UpdatesConsumerMessage
+sealed trait UpdatesConsumerMessage
 
 object UpdatesConsumerMessage {
 
@@ -47,11 +45,11 @@ object UpdatesConsumerMessage {
 }
 
 object UpdatesConsumer {
-  def props(authId: Long, session: ActorRef) =
-    Props(classOf[UpdatesConsumer], authId, session)
+  def props(userId: Int, authId: Long, authSid: Int, session: ActorRef) =
+    Props(classOf[UpdatesConsumer], userId, authId, authSid, session)
 }
 
-private[sequence] class UpdatesConsumer(authId: Long, subscriber: ActorRef) extends Actor with ActorLogging with Stash {
+private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int, subscriber: ActorRef) extends Actor with ActorLogging with Stash {
 
   import Presences._
   import UpdatesConsumerMessage._
@@ -65,19 +63,29 @@ private[sequence] class UpdatesConsumer(authId: Long, subscriber: ActorRef) exte
 
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(context.system)
   private var lastDateTime = new DateTime
+  private var subscribedToSeq: Boolean = false
 
   override def preStart(): Unit = {
-    self ! SubscribeToSeq
-
     self ! SubscribeToWeak
   }
 
   def receive = {
     case SubscribeToSeq ⇒
-      SeqUpdatesManager.subscribe(authId, self) onFailure {
-        case e ⇒
-          self ! SubscribeToSeq
-          log.error(e, "Failed to subscribe to sequence updates")
+      if (!subscribedToSeq) {
+        context become {
+          case () ⇒
+            this.subscribedToSeq = true
+            unstashAll()
+            context become receive
+          case Status.Failure(e) ⇒
+            log.error(e, "Failed to subscribe to seq")
+            self ! SubscribeToSeq
+            unstashAll()
+            context become receive
+          case msg ⇒ stash()
+        }
+
+        seqUpdExt.subscribe(userId, self) pipeTo self
       }
     case SubscribeToWeak ⇒
       weakUpdatesExt.subscribe(authId, self) onFailure {
@@ -117,23 +125,36 @@ private[sequence] class UpdatesConsumer(authId: Long, subscriber: ActorRef) exte
             log.error(e, "Failed to unsubscribe from group presences")
         }
       }
-    case UpdateReceived(updateBox, fatRefsOpt) ⇒
-      if (updateBox.updateHeader != UpdateMessageSent.header) {
-        (fatRefsOpt match {
-          case None ⇒ Future.successful(updateBox)
-          case Some(UpdateRefs(userIds, groupIds)) ⇒
-            // FIXME: #perf cache userId
-            DbExtension(context.system).db.run(persist.AuthId.findUserId(authId)) flatMap {
-              case Some(userId) ⇒
-                for {
-                  (users, groups) ← getFatData(userId, userIds, groupIds)
-                } yield {
-                  FatSeqUpdate(updateBox.seq, updateBox.state, updateBox.updateHeader, updateBox.update, users.toVector, groups.toVector)
-                }
-              case None ⇒
-                throw new Exception(s"Cannot find userId for authId ${authId}")
-            }
-        }) foreach (sendUpdateBox(_, None))
+    case UserSequenceEvents.NewUpdate(Some(seqUpd), pushRulesOpt, state) ⇒
+      val pushRules = pushRulesOpt.getOrElse(PushRules())
+
+      if (!pushRules.excludeAuthSids.contains(authSid)) {
+        val upd = seqUpd.getMapping.custom.getOrElse(authSid, seqUpd.getMapping.getDefault)
+
+        val boxFuture =
+          if (pushRules.isFat) {
+            for {
+              (users, groups) ← getFatData(userId, upd.userIds, upd.groupIds)
+            } yield FatSeqUpdate(seqUpd.seq, state.toByteArray, upd.header, upd.body.toByteArray, users.toVector, groups.toVector)
+          } else Future.successful(SeqUpdate(seqUpd.seq, state.toByteArray, upd.header, upd.body.toByteArray))
+
+        val msgBase = "Pushing SeqUpdate, seq: {}, header: {}"
+
+        // TODO: unify for all UpdateBoxes
+        boxFuture foreach {
+          case FatSeqUpdate(seq, _, _, _, users, groups) ⇒
+            log.debug(s"$msgBase, users: {}, groups: {}", seqUpd.seq, upd.header, users, groups)
+          case SeqUpdate(seq, _, _, _) ⇒
+            log.debug(msgBase, seqUpd.seq, upd)
+          case _ ⇒ // should never happen
+            log.error("Improper seq update box")
+        }
+
+        boxFuture foreach (sendUpdateBox(_, None))
+
+        boxFuture onFailure {
+          case e: Throwable ⇒ log.error(e, "Failed to push update")
+        }
       }
     case WeakUpdatesManager.UpdateReceived(updateBox, reduceKey) ⇒
       sendUpdateBox(updateBox, reduceKey)

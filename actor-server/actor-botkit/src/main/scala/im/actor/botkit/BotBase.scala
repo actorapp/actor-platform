@@ -23,6 +23,11 @@ abstract class BotBase extends BotBaseBase {
   private var requests = Map.empty[Long, (ActorRef, RequestBody)]
   private val users = TrieMap.empty[Int, User]
   private val groups = TrieMap.empty[Int, Group]
+  private var rqSource = context.system.deadLetters
+
+  protected def setRqSource(ref: ActorRef): Unit = {
+    this.rqSource = ref
+  }
 
   override final def request[T <: RequestBody](body: T): Future[body.Response] = {
     (self ? body) map (_.asInstanceOf[body.Response])
@@ -30,7 +35,7 @@ abstract class BotBase extends BotBaseBase {
 
   protected def onStreamFailure(cause: Throwable): Unit
 
-  protected final def workingBehavior(rqSource: ActorRef): Receive = {
+  protected final def workingBehavior: Receive = {
     case Status.Failure(cause) ⇒
       onStreamFailure(cause)
     case rq: RequestBody ⇒
@@ -39,7 +44,7 @@ abstract class BotBase extends BotBaseBase {
       requests += (requestCounter → (sender() → rq))
       rqSource ! request
     case upd: BotUpdate ⇒
-      log.debug("Update {}", upd)
+      log.info("Update: {}", upd)
 
       upd match {
         case BotFatSeqUpdate(_, _, users, groups) ⇒
@@ -82,7 +87,7 @@ abstract class BotBase extends BotBaseBase {
 
   protected def nextRandomId() = ThreadLocalRandom.current().nextLong()
 
-  protected def getUser(id: Int) = this.users.get(id).getOrElse(throw new RuntimeException(s"User $id not found"))
+  protected def getUser(id: Int) = this.users.getOrElse(id, throw new RuntimeException(s"User $id not found"))
 
-  protected def getGroup(id: Int) = this.groups.get(id).getOrElse(throw new RuntimeException(s"Group $id not found"))
+  protected def getGroup(id: Int) = this.groups.getOrElse(id, throw new RuntimeException(s"Group $id not found"))
 }

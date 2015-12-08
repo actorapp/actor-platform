@@ -1,9 +1,14 @@
 package im.actor
 
 import bintray._
+import com.typesafe.sbt.packager.debian.DebianPlugin.autoImport._
+import com.typesafe.sbt.packager.universal.UniversalPlugin.autoImport._
+import com.typesafe.sbt.pgp.PgpKeys
+import ohnosequences.sbt.SbtGithubReleasePlugin.autoImport._
+import sbt.Keys._
 import sbt._
-import Keys._
-import com.typesafe.sbt.packager.debian.DebianPlugin.autoImport.Debian
+import sbtrelease.ReleasePlugin.autoImport._
+import sbtrelease.ReleaseStateTransformations._
 
 trait Releasing {
   private val publishDeb = taskKey[Unit]("Publish to debian repository")
@@ -24,7 +29,58 @@ trait Releasing {
     repo.release(pkgName, vers, log)
   }
 
-  val releaseSettings = Seq(taskSetting)
+  val releaseSettings = Seq(
+    taskSetting,
+    releaseCommitMessage := s"chore(server): setting version to ${(version in ThisBuild).value}",
+    GithubRelease.repo := "actorapp/actor-bootstrap",
+    GithubRelease.releaseName := "Actor Server",
+    GithubRelease.draft := false,
+    GithubRelease.tag := s"server/v${(version in ThisBuild).value}",
+    GithubRelease.releaseAssets := Seq(new File(s"target/universal/actor-${(version in ThisBuild).value}.zip")),
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      runClean,
+      setReleaseVersion,
+      commitReleaseVersion,
+      ReleaseStep(
+        action = { state =>
+          if (sys.env.isDefinedAt("TEAMCITY_VERSION")) {
+            val extracted = Project extract state
+            println(s"##teamcity[buildNumber '${extracted.get(version)}']")
+          }
+          state
+        }
+      ),
+      ReleaseStep(
+        action = { state =>
+          val extracted = Project extract state
+
+          val s = (extracted runTask (dist in Universal in extracted.get(thisProjectRef), state))._1
+
+          extracted runTask(checkGithubCredentials, s)
+          (extracted runTask(releaseOnGithub in extracted.get(thisProjectRef), s))._1
+        }
+      ),
+      ReleaseStep(
+        action = { state =>
+          val extracted = Project extract state
+          extracted runAggregated (PgpKeys.publishSigned in Global in extracted.get(thisProjectRef), state)
+        },
+        enableCrossBuild = true
+      ),
+      ReleaseStep(
+        action = { state =>
+          val extracted = Project extract state
+          (extracted runTask (publishDeb in Global in extracted.get(thisProjectRef), state))._1
+        }
+      ),
+      ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
+    )
+  )
 
   private def getCreds: BintrayCredentials = {
     (for {

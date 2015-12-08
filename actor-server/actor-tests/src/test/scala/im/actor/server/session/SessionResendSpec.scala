@@ -6,10 +6,12 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.contacts.UpdateContactRegistered
+import im.actor.api.rpc.misc.ResponseSeq
+import im.actor.api.rpc.sequence.RequestGetState
 import im.actor.api.rpc.weak.{ UpdateUserOffline, UpdateUserOnline }
 import im.actor.server.ActorSpecification
 import im.actor.server.mtproto.protocol._
-import im.actor.server.sequence.{ SeqUpdatesManager, WeakUpdatesExtension }
+import im.actor.server.sequence.{ SeqUpdatesExtension, WeakUpdatesExtension }
 
 import scala.concurrent.duration._
 import scala.util.Random
@@ -27,16 +29,17 @@ class SessionResendSpec extends BaseSessionSpec(
 ) {
   behavior of "Session's ReSender"
 
-  it should "resend messages if no ack received within ack-timeout" in Sessions().e1
-  it should "resend messages to new client" in Sessions().e2
-  it should "not resend messages if ack received within ack-timeout" in Sessions().e3
-  it should "resend updates if no ack received within ack-timeout" in Sessions().e4
+  it should "resend messages if no ack received within ack-timeout" in Sessions().resendNoAck
+  it should "resend messages to new client" in Sessions().newClient
+  it should "not resend messages if ack received within ack-timeout" in Sessions().noResendOnAck
+  it should "resend updates if no ack received within ack-timeout" in Sessions().resendUpdates
   it should "not resend messages when another came with the same reduceKey" in Sessions().reduceKey
 
   case class Sessions() {
     val weakUpdatesExt = WeakUpdatesExtension(system)
+    val seqUpdExt = SeqUpdatesExtension(system)
 
-    def e1() = {
+    def resendNoAck() = {
       implicit val probe = TestProbe()
 
       val authId = createAuthId()
@@ -77,7 +80,7 @@ class SessionResendSpec extends BaseSessionSpec(
       probe.expectNoMsg(5.seconds)
     }
 
-    def e2() = {
+    def newClient() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
@@ -116,7 +119,7 @@ class SessionResendSpec extends BaseSessionSpec(
       }
     }
 
-    def e3() = {
+    def noResendOnAck() = {
       implicit val probe = TestProbe()
 
       val authId = createAuthId()
@@ -150,10 +153,10 @@ class SessionResendSpec extends BaseSessionSpec(
       }
     }
 
-    def e4() = {
+    def resendUpdates() = {
       implicit val probe = TestProbe()
 
-      val authId = createAuthId()
+      val (user, authId, _, _) = createUser()
       val sessionId = Random.nextLong()
 
       val helloMessageId = Random.nextLong()
@@ -161,8 +164,17 @@ class SessionResendSpec extends BaseSessionSpec(
       expectNewSession(authId, sessionId, helloMessageId)
       expectMessageAck(authId, sessionId, helloMessageId)
 
+      val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState)).require
+
+      val getSeqMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, getSeqMessageId, RpcRequestBox(encodedGetSeqRequest))
+      expectMessageAck(authId, sessionId, getSeqMessageId)
+      expectRpcResult() should matchPattern {
+        case RpcOk(ResponseSeq(_, _)) ⇒
+      }
+
       val update = UpdateContactRegistered(1, false, 1L, 2L)
-      SeqUpdatesManager.persistAndPushUpdate(authId, update, None, isFat = false)
+      seqUpdExt.deliverSingleUpdate(user.id, update)
       expectSeqUpdate(authId, sessionId, None)
 
       // Still no ack
@@ -176,7 +188,7 @@ class SessionResendSpec extends BaseSessionSpec(
     def reduceKey() = {
       implicit val probe = TestProbe()
 
-      val authId = createAuthId()
+      val (_, authId, _, _) = createUser()
       val sessionId = Random.nextLong()
 
       val helloMessageId = Random.nextLong()

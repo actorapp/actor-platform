@@ -11,11 +11,11 @@ import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import org.scalatest.Inside._
 
-class PubgroupsServiceSpec
+final class PubgroupsServiceSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with MessageParsing
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService {
   behavior of "PubgroupsService"
 
@@ -37,17 +37,17 @@ class PubgroupsServiceSpec
   val contactService = new ContactsServiceImpl()
 
   object t {
-    val (user1, authId1, _) = createUser()
-    val (user2, _, _) = createUser()
-    val (user3, _, _) = createUser()
-    val (user4, _, _) = createUser()
-    val (user5, _, _) = createUser()
-    val (user6, _, _) = createUser()
-    val (user7, _, _) = createUser()
-    val (user8, authId8, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, _, _, _) = createUser()
+    val (user3, _, _, _) = createUser()
+    val (user4, _, _, _) = createUser()
+    val (user5, _, _, _) = createUser()
+    val (user6, _, _, _) = createUser()
+    val (user7, _, _, _) = createUser()
+    val (user8, authId8, authSid8, _) = createUser()
 
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
     val descriptions = List("Marvelous group for android developers group", "Group for iOS users", "You know it")
 
@@ -107,7 +107,7 @@ class PubgroupsServiceSpec
     }
 
     def e4() = {
-      implicit val clientData = ClientData(authId8, sessionId, Some(user8.id))
+      implicit val clientData = ClientData(authId8, sessionId, Some(AuthData(user8.id, authSid8)))
       whenReady(contactService.handleAddContact(user2.id, userAccessHash(clientData.authId, user2.id, getUserModel(user2.id).accessSalt)))(_ ⇒ ())
       whenReady(contactService.handleAddContact(user3.id, userAccessHash(clientData.authId, user3.id, getUserModel(user3.id).accessSalt)))(_ ⇒ ())
       whenReady(contactService.handleAddContact(user4.id, userAccessHash(clientData.authId, user4.id, getUserModel(user4.id).accessSalt)))(_ ⇒ ())

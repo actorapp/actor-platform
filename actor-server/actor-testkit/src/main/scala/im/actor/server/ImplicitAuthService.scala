@@ -14,8 +14,7 @@ trait ImplicitAuthService {
   protected implicit val sessionRegion: SessionRegion
 
   private val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  private implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
+  private implicit lazy val oauth2Service = new GoogleProvider(oauthGoogleConfig)
 
-  implicit val authService = new AuthServiceImpl(new DummyCodeActivation)
-
+  implicit lazy val authService = new AuthServiceImpl(new DummyCodeActivation)
 }

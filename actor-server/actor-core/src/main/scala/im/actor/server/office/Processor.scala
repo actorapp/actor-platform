@@ -7,6 +7,7 @@ import akka.cluster.sharding.ShardRegion.Passivate
 import akka.pattern.pipe
 import akka.persistence.PersistentActor
 import im.actor.concurrent.ActorFutures
+import im.actor.server.event.TSEvent
 import org.joda.time.DateTime
 
 import scala.collection.immutable
@@ -16,7 +17,8 @@ import scala.language.postfixOps
 import scala.util.control.NoStackTrace
 import scala.util.{ Failure, Success }
 
-case object EntityNotFound extends RuntimeException with NoStackTrace
+abstract class EntityNotFound(msg: String = "") extends RuntimeException(msg) with NoStackTrace
+case object EntityNotFoundError extends EntityNotFound("Entity not found")
 case object StopOffice
 
 trait ProcessorState
@@ -31,6 +33,8 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
   private implicit val ec = context.dispatcher
 
   protected def updatedState(evt: Event, state: State): State
+
+  protected val notFoundError: EntityNotFound = EntityNotFoundError
 
   protected def workWith(es: immutable.Seq[Event], state: State): State = {
     val newState = es.foldLeft(state) {
@@ -65,7 +69,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
   protected final def initializing: Receive = handleInitCommand orElse unstashing orElse {
     case msg ⇒
       log.debug("Entity not found while processing {}", msg)
-      sender() ! Status.Failure(EntityNotFound)
+      sender() ! Status.Failure(notFoundError)
   }
 
   protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state) orElse {
@@ -101,6 +105,8 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
     log.debug("[persistReply] {}", e)
 
     persist(e) { evt ⇒
+      val newState = updatedState(e, state)
+
       f(evt) pipeTo replyTo onComplete {
         case Success(_) ⇒
 
@@ -108,7 +114,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
           log.error(f, "Failure while processing event {}", evt)
       }
 
-      workWith(e, state)
+      context become working(newState)
     }
   }
 

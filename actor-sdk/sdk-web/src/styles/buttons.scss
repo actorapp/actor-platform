@@ -1,0 +1,127 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+/*
+ * Buttons
+ */
+.button {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+
+  position: relative;
+
+  display: inline-block;
+
+  box-sizing: border-box;
+  //min-width: 100px;
+  height: 36px;
+  padding: 8px 16px;
+
+  cursor: pointer;
+  transition: box-shadow 200ms, background 200ms;
+  text-align: center;
+  vertical-align: middle;
+  //letter-spacing: .5px;
+  text-transform: uppercase;
+
+  color: rgba(0, 0, 0, .5);
+  border: none;
+  border-radius: 2px;
+  outline: none;
+  background-color: transparent;
+
+  apperance: none;
+  i {
+    line-height: 20px;
+
+    margin-right: 6px;
+
+    vertical-align: bottom;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: rgba(0, 0, 0, .05);
+  }
+  &:active {
+    background-color: lighten(rgba(0, 0, 0, .1), 10);
+  }
+
+  &--lightblue {
+    color: $dark-sky-blue;
+
+    &:hover,
+    &:focus {
+      background-color: rgba($dark-sky-blue, .15);
+    }
+    &:active {
+      background-color: lighten(rgba($dark-sky-blue, .15), 15);
+    }
+    &[disabled] {
+      background-color: transparent !important;
+      color: $dark-sky-blue !important;
+    }
+  }
+  &--rised {
+    color: white;
+    background-color: $dark-sky-blue;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, .1), 0 2px 8px 0 rgba(0, 0, 0, .15);
+    &:hover,
+    &:focus {
+      background-color: lighten($dark-sky-blue, 5);
+    }
+    &:active {
+      background-color: lighten($dark-sky-blue, 7);
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, .2), 0 4px 10px 0 rgba(0, 0, 0, .1);
+    }
+    &[disabled] {
+      color: white !important;
+      background-color: $dark-sky-blue !important;
+    }
+  }
+  &--flat {
+    color: $dark-sky-blue;
+    background-color: rgba($dark-sky-blue, .15);
+    &:hover,
+    &:focus {
+      background-color: lighten(rgba($dark-sky-blue, .15), 5);
+      box-shadow: 0 1px 1px 0 rgba($dark-sky-blue, .35);
+    }
+    &:active {
+      background-color: lighten(rgba($dark-sky-blue, .15), 15);
+      box-shadow: 0 2px 2px 0 rgba($dark-sky-blue, .35);
+    }
+    &[disabled] {
+      color: $dark-sky-blue !important;
+      background-color: rgba($dark-sky-blue, .15) !important;
+    }
+  }
+  &--icon {
+    line-height: 1px;
+
+    min-width: 0;
+    padding: 6px;
+
+    color: rgba(0, 0, 0, .25);
+    border-radius: 50%;
+    i {
+      font-size: 24px;
+      line-height: 24px;
+
+      width: 24px;
+      height: 24px;
+      margin: 0;
+    }
+  }
+
+  &--wide {
+    width: 100%;
+  }
+
+  &[disabled] {
+    opacity: .55;
+    cursor: not-allowed;
+  }
+}

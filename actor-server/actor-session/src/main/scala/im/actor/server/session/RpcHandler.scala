@@ -1,23 +1,22 @@
 package im.actor.server.session
 
-import scala.annotation.tailrec
-import scala.collection.immutable
-import scala.concurrent.{ Promise, Future }
-import scala.concurrent.duration._
-import scala.language.postfixOps
-import scala.util.control.NoStackTrace
-import scala.util.{ Try, Failure, Success }
-
 import akka.actor._
 import akka.pattern.pipe
 import akka.stream.actor._
-import scodec.bits._
-
 import im.actor.api.rpc.RpcInternalError
-import im.actor.server.api.rpc.{ RpcResultCodec, RpcApiService }
 import im.actor.server.api.rpc.RpcApiService.RpcResponse
+import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService, RpcResultCodec }
 import im.actor.server.mtproto.protocol.{ ProtoMessage, RpcResponseBox }
 import im.actor.util.cache.CacheHelpers._
+import scodec.bits._
+
+import scala.annotation.tailrec
+import scala.collection.immutable
+import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
+import scala.language.postfixOps
+import scala.util.control.NoStackTrace
+import scala.util.{ Failure, Success, Try }
 
 private[session] object RpcHandler {
   private[session] val MaxCacheSize = 100L
@@ -26,16 +25,17 @@ private[session] object RpcHandler {
   def props = Props(classOf[RpcHandler])
 
   private case class CachedResponse(rsp: RpcApiService.RpcResponse)
+
 }
 
 private[session] object RequestHandler {
-  private[session] def props(promise: Promise[RpcApiService.RpcResponse], service: ActorSelection, request: RpcApiService.HandleRpcRequest) =
+  private[session] def props(promise: Promise[RpcApiService.RpcResponse], service: ActorRef, request: RpcApiService.HandleRpcRequest) =
     Props(classOf[RequestHandler], promise, service, request)
 }
 
 private[session] class RequestHandler(
   promise: Promise[RpcApiService.RpcResponse],
-  service: ActorSelection,
+  service: ActorRef,
   request: RpcApiService.HandleRpcRequest
 )
   extends Actor with ActorLogging {
@@ -68,14 +68,12 @@ private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[Pr
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
-
-  import SessionStreamMessage._
-
   import RpcHandler._
+  import SessionStreamMessage._
 
   private implicit val ec = context.dispatcher
 
-  private[this] val rpcApiService: ActorSelection = context.actorSelection("/user/rpcApiService")
+  private[this] val rpcApiService = RpcApiExtension(context.system).serviceRef
 
   def receive = subscriber.orElse(publisher).orElse {
     case unmatched ⇒
@@ -94,7 +92,7 @@ private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[Pr
       Option(responseCache.getIfPresent(messageId)) match {
         case Some(rspFuture) ⇒
           log.debug("Publishing cached RpcResponse for messageId: {}", messageId)
-          rspFuture map (CachedResponse(_)) pipeTo self
+          rspFuture map CachedResponse pipeTo self
         case None ⇒
           requestQueue += (messageId → requestBytes)
           assert(requestQueue.size <= MaxRequestQueueSize, s"queued too many: ${requestQueue.size}")
@@ -108,7 +106,7 @@ private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[Pr
               rpcApiService,
               RpcApiService.HandleRpcRequest(messageId, requestBytes, clientData)
             ),
-            s"handler-${messageId}"
+            s"handler-$messageId"
           )
 
           responseCache.put(messageId, responsePromise.future)

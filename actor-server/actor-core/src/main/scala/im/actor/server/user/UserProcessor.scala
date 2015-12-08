@@ -4,8 +4,10 @@ import akka.actor._
 import akka.cluster.sharding.ShardRegion
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
+import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
+import im.actor.server.dialog.{ DialogCommand, DialogExtension }
 import im.actor.server.event.TSEvent
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
@@ -45,7 +47,10 @@ private[user] object UserBuilder {
       createdAt = ts.getMillis,
       internalExtensions = e.extensions,
       external = e.external,
-      isAdmin = e.isAdmin
+      isAdmin = e.isAdmin,
+      socialContacts = Seq.empty[SocialContact],
+      preferredLanguages = Seq.empty[String],
+      timeZone = None
     )
 }
 
@@ -54,8 +59,6 @@ object UserProcessor {
     ActorSerializer.register(
       10001 → classOf[UserCommands.NewAuth],
       10002 → classOf[UserCommands.NewAuthAck],
-      10005 → classOf[UserCommands.BroadcastUpdate],
-      10006 → classOf[UserCommands.BroadcastUpdateResponse],
       10007 → classOf[UserCommands.RemoveAuth],
       10008 → classOf[UserCommands.Create],
       10010 → classOf[UserCommands.Delete],
@@ -73,6 +76,15 @@ object UserProcessor {
       10025 → classOf[UserCommands.ChangeAbout],
       10026 → classOf[UserCommands.UpdateAvatar],
       10027 → classOf[UserCommands.UpdateAvatarAck],
+      10028 → classOf[UserCommands.AddContacts],
+      10029 → classOf[UserCommands.AddSocialContact],
+      10030 → classOf[UserCommands.AddSocialContactAck],
+      10031 → classOf[UserCommands.UpdateIsAdmin],
+      10032 → classOf[UserCommands.UpdateIsAdminAck],
+      10033 → classOf[UserCommands.NotifyDialogsChanged],
+      10035 → classOf[UserCommands.ChangePreferredLanguages],
+      10036 → classOf[UserCommands.ChangeTimeZone],
+      10037 → classOf[UserCommands.EditLocalName],
 
       11001 → classOf[UserQueries.GetAuthIds],
       11002 → classOf[UserQueries.GetAuthIdsResponse],
@@ -84,6 +96,13 @@ object UserProcessor {
       11008 → classOf[UserQueries.GetApiStructResponse],
       11009 → classOf[UserQueries.GetAccessHash],
       11010 → classOf[UserQueries.GetAccessHashResponse],
+      11011 → classOf[UserQueries.GetUser],
+      11012 → classOf[UserQueries.IsAdmin],
+      11013 → classOf[UserQueries.IsAdminResponse],
+      11014 → classOf[UserQueries.GetLocalName],
+      11015 → classOf[UserQueries.GetLocalNameResponse],
+      11016 → classOf[UserQueries.GetName],
+      11017 → classOf[UserQueries.GetNameResponse],
 
       12001 → classOf[UserEvents.AuthAdded],
       12002 → classOf[UserEvents.AuthRemoved],
@@ -96,8 +115,14 @@ object UserProcessor {
       12011 → classOf[UserEvents.NicknameChanged],
       12012 → classOf[UserEvents.AboutChanged],
       12013 → classOf[UserEvents.AvatarUpdated],
+      12014 → classOf[UserEvents.SocialContactAdded],
+      12016 → classOf[UserEvents.IsAdminUpdated],
+      12017 → classOf[UserEvents.PreferredLanguagesChanged],
+      12018 → classOf[UserEvents.TimeZoneChanged],
+      12019 → classOf[UserEvents.LocalNameChanged],
 
-      13000 → classOf[User]
+      13000 → classOf[User],
+      13001 → classOf[SocialContact]
     )
 
   def props: Props =
@@ -118,14 +143,18 @@ private[user] final class UserProcessor
 
   protected val db: Database = DbExtension(system).db
   protected val userExt = UserExtension(system)
+  protected lazy val dialogExt = DialogExtension(system)
   protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(system).region
 
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 
   protected val userId = self.path.name.toInt
+  override protected val notFoundError = UserErrors.UserNotFound(userId)
 
   override def persistenceId = UserOffice.persistenceIdFor(userId)
+
+  protected val contacts = new UserContacts(userId)
 
   context.setReceiveTimeout(1.hour)
 
@@ -144,6 +173,8 @@ private[user] final class UserProcessor
         state.copy(phones = state.phones :+ phone)
       case TSEvent(_, UserEvents.EmailAdded(email)) ⇒
         state.copy(emails = state.emails :+ email)
+      case TSEvent(_, UserEvents.SocialContactAdded(contact)) ⇒
+        state.copy(socialContacts = state.socialContacts :+ contact)
       case TSEvent(_, UserEvents.Deleted()) ⇒
         state.copy(isDeleted = true)
       case TSEvent(_, UserEvents.NicknameChanged(nickname)) ⇒
@@ -152,28 +183,43 @@ private[user] final class UserProcessor
         state.copy(about = about)
       case TSEvent(_, UserEvents.AvatarUpdated(avatar)) ⇒
         state.copy(avatar = avatar)
+      case TSEvent(_, UserEvents.IsAdminUpdated(isAdmin)) ⇒
+        state.copy(isAdmin = isAdmin)
+      case TSEvent(_, UserEvents.TimeZoneChanged(timeZone)) ⇒
+        state.copy(timeZone = timeZone)
+      case TSEvent(_, UserEvents.PreferredLanguagesChanged(preferredLanguages)) ⇒
+        state.copy(preferredLanguages = preferredLanguages)
       case TSEvent(_, _: UserEvents.Created) ⇒ state
     }
   }
 
   override protected def handleInitCommand: Receive = {
-    case Create(_, accessSalt, nickName, name, countryCode, sex, isBot, extensions, external) ⇒
-      create(accessSalt, nickName, name, countryCode, sex, isBot, extensions, external)
+    case Create(_, accessSalt, nickName, name, countryCode, sex, isBot, isAdmin, extensions, external) ⇒
+      create(accessSalt, nickName, name, countryCode, sex, isBot, isAdmin.getOrElse(false), extensions, external)
   }
 
   override protected def handleCommand(state: User): Receive = {
-    case NewAuth(_, authId)                        ⇒ addAuth(state, authId)
-    case RemoveAuth(_, authId)                     ⇒ removeAuth(state, authId)
-    case ChangeCountryCode(_, countryCode)         ⇒ changeCountryCode(state, countryCode)
-    case ChangeName(_, name, clientAuthId)         ⇒ changeName(state, name, clientAuthId)
-    case Delete(_)                                 ⇒ delete(state)
-    case AddPhone(_, phone)                        ⇒ addPhone(state, phone)
-    case AddEmail(_, email)                        ⇒ addEmail(state, email)
-    case ChangeNickname(_, clientAuthId, nickname) ⇒ changeNickname(state, clientAuthId, nickname)
-    case ChangeAbout(_, clientAuthId, about)       ⇒ changeAbout(state, clientAuthId, about)
-    case UpdateAvatar(_, clientAuthId, avatarOpt)  ⇒ updateAvatar(state, clientAuthId, avatarOpt)
-    case StopOffice                                ⇒ context stop self
-    case ReceiveTimeout                            ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case NewAuth(_, authId)                 ⇒ addAuth(state, authId)
+    case RemoveAuth(_, authId)              ⇒ removeAuth(state, authId)
+    case ChangeCountryCode(_, countryCode)  ⇒ changeCountryCode(state, countryCode)
+    case ChangeName(_, name)                ⇒ changeName(state, name)
+    case Delete(_)                          ⇒ delete(state)
+    case AddPhone(_, phone)                 ⇒ addPhone(state, phone)
+    case AddEmail(_, email)                 ⇒ addEmail(state, email)
+    case AddSocialContact(_, contact)       ⇒ addSocialContact(state, contact)
+    case ChangeNickname(_, nickname)        ⇒ changeNickname(state, nickname)
+    case ChangeAbout(_, about)              ⇒ changeAbout(state, about)
+    case UpdateAvatar(_, avatarOpt)         ⇒ updateAvatar(state, avatarOpt)
+    case AddContacts(_, contactsToAdd)      ⇒ addContacts(state, contactsToAdd)
+    case UpdateIsAdmin(_, isAdmin)          ⇒ updateIsAdmin(state, isAdmin)
+    case NotifyDialogsChanged(_)            ⇒ notifyDialogsChanged(state)
+    case ChangeTimeZone(_, timeZone)        ⇒ changeTimeZone(state, timeZone)
+    case ChangePreferredLanguages(_, langs) ⇒ changePreferredLanguages(state, langs)
+    case cmd: EditLocalName                 ⇒ contacts.ref forward cmd
+    case query: GetLocalName                ⇒ contacts.ref forward query
+    case StopOffice                         ⇒ context stop self
+    case ReceiveTimeout                     ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case dc: DialogCommand                  ⇒ userPeer(state.internalExtensions) forward dc
   }
 
   override protected def handleQuery(state: User): Receive = {
@@ -183,6 +229,13 @@ private[user] final class UserProcessor
     case CheckAccessHash(_, senderAuthId, accessHash) ⇒ checkAccessHash(state, senderAuthId, accessHash)
     case GetAccessHash(_, clientAuthId)               ⇒ getAccessHash(state, clientAuthId)
     case GetUser(_)                                   ⇒ getUser(state)
+    case IsAdmin(_)                                   ⇒ isAdmin(state)
+    case GetName(_)                                   ⇒ getName(state)
+  }
+
+  private def userPeer(extensions: Seq[ApiExtension]): ActorRef = {
+    val userPeer = "UserPeer"
+    context.child(userPeer).getOrElse(context.actorOf(UserPeer.props(userId, extensions), userPeer))
   }
 
   protected[this] var userStateMaybe: Option[User] = None

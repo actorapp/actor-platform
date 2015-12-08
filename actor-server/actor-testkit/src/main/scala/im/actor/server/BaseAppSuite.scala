@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
-import org.scalatest.{ FlatSpecLike, Matchers }
+import org.scalatest.{ Inside, FlatSpecLike, Matchers }
 import slick.driver.PostgresDriver
 
 import scala.concurrent.ExecutionContext
@@ -18,6 +18,7 @@ abstract class BaseAppSuite(_system: ActorSystem = {
   with FlatSpecLike
   with ScalaFutures
   with Matchers
+  with Inside
   with ServiceSpecMatchers
   with ServiceSpecHelpers
   with ActorSerializerPrepare {
@@ -25,12 +26,13 @@ abstract class BaseAppSuite(_system: ActorSystem = {
   protected implicit val materializer: ActorMaterializer = ActorMaterializer()
   protected implicit lazy val ec: ExecutionContext = _system.dispatcher
 
-  protected implicit lazy val db: PostgresDriver.api.Database = DbExtension(_system).db
-
-  DbExtension(_system).clean()
-  DbExtension(_system).migrate()
+  protected implicit lazy val db: PostgresDriver.api.Database = {
+    DbExtension(_system).clean()
+    DbExtension(_system).migrate()
+    DbExtension(_system).db
+  }
 
   override implicit def patienceConfig: PatienceConfig =
-    new PatienceConfig(timeout = Span(30, Seconds))
+    new PatienceConfig(timeout = Span(15, Seconds))
 
 }

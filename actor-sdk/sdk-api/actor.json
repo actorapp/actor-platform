@@ -22,6 +22,14 @@
     {
       "type": "int32",
       "alias": "sec"
+    },
+    {
+      "type": "int32",
+      "alias": "userId"
+    },
+    {
+      "type": "int32",
+      "alias": "groupId"
     }
   ],
   "sections": [
@@ -127,6 +135,18 @@
                 "argument": "deviceTitle",
                 "category": "full",
                 "description": "Device Title"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "TimeZone of device"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "Preferred languages of device"
               }
             ],
             "attributes": [
@@ -154,6 +174,22 @@
                 "type": "string",
                 "id": 5,
                 "name": "deviceTitle"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 6,
+                "name": "timeZone"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 7,
+                "name": "preferredLanguages"
               }
             ]
           }
@@ -258,14 +294,26 @@
               {
                 "type": "reference",
                 "argument": "deviceHash",
-                "category": "hidden",
+                "category": "full",
                 "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
               },
               {
                 "type": "reference",
                 "argument": "deviceTitle",
-                "category": "hidden",
+                "category": "full",
                 "description": "Device Title"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "TimeZone of device"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "Preferred languages"
               }
             ],
             "attributes": [
@@ -293,6 +341,76 @@
                 "type": "string",
                 "id": 5,
                 "name": "deviceTitle"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 6,
+                "name": "timeZone"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 7,
+                "name": "preferredLanguages"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "StartAnonymousAuth",
+            "header": 198,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Starting Anonymous login",
+              {
+                "type": "reference",
+                "argument": "name",
+                "category": "full",
+                "description": "Name of new user"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "name"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "StartTokenAuth",
+            "header": 203,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Starting token-based login",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "full",
+                "description": "Token for authentication"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "token"
               }
             ]
           }
@@ -331,6 +449,44 @@
                 "type": "string",
                 "id": 2,
                 "name": "code"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ValidatePassword",
+            "header": 207,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Validation of account password",
+              {
+                "type": "reference",
+                "argument": "transactionHash",
+                "category": "full",
+                "description": "Hash of transaction"
+              },
+              {
+                "type": "reference",
+                "argument": "password",
+                "category": "full",
+                "description": "Password for account"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "transactionHash"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "password"
               }
             ]
           }
@@ -1326,12 +1482,27 @@
                 "argument": "external",
                 "category": "full",
                 "description": "  If not null, is user come from outer network"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "  Preferred user languages"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "  Time Zone of user in TZ format"
               }
             ],
             "expandable": "true",
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "id"
               },
@@ -1426,6 +1597,22 @@
                 },
                 "id": 15,
                 "name": "external"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 16,
+                "name": "preferredLanguages"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 17,
+                "name": "timeZone"
               }
             ]
           }
@@ -1462,7 +1649,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1501,7 +1691,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1541,7 +1734,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1575,7 +1771,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1612,7 +1811,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1652,7 +1854,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1689,7 +1894,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1700,6 +1908,86 @@
                 },
                 "id": 2,
                 "name": "about"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserPreferredLanguagesChanged",
+            "header": 212,
+            "doc": [
+              "Update about user's preferred languages",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's uid"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "  User's preferred languages. Can be empty."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "preferredLanguages"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserTimeZoneChanged",
+            "header": 216,
+            "doc": [
+              "User TimeZone changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's uid"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "  User's new time zone in TZ format"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "timeZone"
               }
             ]
           }
@@ -1911,6 +2199,63 @@
               "Removing account's avatar"
             ],
             "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditMyTimeZone",
+            "header": 144,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Updating user's time zone",
+              {
+                "type": "reference",
+                "argument": "tz",
+                "category": "full",
+                "description": "New Time Zone"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "tz"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditMyPreferredLanguages",
+            "header": 145,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Changing preffered languages",
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "Preffered Languages"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "preferredLanguages"
+              }
+            ]
           }
         }
       ]
@@ -2196,7 +2541,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -2234,7 +2582,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -2326,7 +2677,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -2372,7 +2726,10 @@
               {
                 "type": {
                   "type": "list",
-                  "childType": "int32"
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
                 },
                 "id": 1,
                 "name": "uids"
@@ -2398,7 +2755,10 @@
               {
                 "type": {
                   "type": "list",
-                  "childType": "int32"
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
                 },
                 "id": 1,
                 "name": "uids"
@@ -2502,7 +2862,10 @@
               {
                 "type": {
                   "type": "list",
-                  "childType": "int32"
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
                 },
                 "id": 2,
                 "name": "mentions"
@@ -2552,6 +2915,278 @@
                 "type": "string",
                 "id": 2,
                 "name": "markdown"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "TextModernMessage",
+            "doc": [
+              "Modern text message",
+              {
+                "type": "reference",
+                "argument": "text",
+                "category": "full",
+                "description": "  Text of message"
+              },
+              {
+                "type": "reference",
+                "argument": "senderNameOverride",
+                "category": "full",
+                "description": "  Overriding of sender"
+              }
+            ],
+            "trait": {
+              "name": "TextMessageEx",
+              "key": 2
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "text"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "senderNameOverride"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 3,
+                "name": "senderPhotoOverride"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ParagraphStyle"
+                  }
+                },
+                "id": 4,
+                "name": "style"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ParagraphStyle",
+            "doc": [
+              "Paragraph style",
+              {
+                "type": "reference",
+                "argument": "showParagraph",
+                "category": "full",
+                "description": "  Show quote-like paragraph?"
+              },
+              {
+                "type": "reference",
+                "argument": "paragraphColor",
+                "category": "full",
+                "description": "  Override paragraph color"
+              },
+              {
+                "type": "reference",
+                "argument": "bgColor",
+                "category": "full",
+                "description": "  Override background color"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 1,
+                "name": "showParagraph"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "Color"
+                  }
+                },
+                "id": 2,
+                "name": "paragraphColor"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "Color"
+                  }
+                },
+                "id": 3,
+                "name": "bgColor"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "TextModernAttach",
+            "doc": [
+              "Attaches to message",
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Attach of message"
+              },
+              {
+                "type": "reference",
+                "argument": "titleUrl",
+                "category": "full",
+                "description": "  Attach title url"
+              },
+              {
+                "type": "reference",
+                "argument": "titleIcon",
+                "category": "full",
+                "description": "  Attach title icon"
+              },
+              {
+                "type": "reference",
+                "argument": "text",
+                "category": "full",
+                "description": "  Attach text"
+              },
+              {
+                "type": "reference",
+                "argument": "style",
+                "category": "full",
+                "description": "  Attach style"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "titleUrl"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ImageLocation"
+                  }
+                },
+                "id": 3,
+                "name": "titleIcon"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "text"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ParagraphStyle"
+                  }
+                },
+                "id": 5,
+                "name": "style"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "TextModernField"
+                  }
+                },
+                "id": 6,
+                "name": "fields"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "TextModernField",
+            "doc": [
+              "Modern message fields",
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Field title"
+              },
+              {
+                "type": "reference",
+                "argument": "value",
+                "category": "full",
+                "description": "  Field value"
+              },
+              {
+                "type": "reference",
+                "argument": "isShort",
+                "category": "full",
+                "description": "  Is field can be shown in compact way"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "title"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "value"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 3,
+                "name": "isShort"
               }
             ]
           }
@@ -2628,7 +3263,10 @@
             "expandable": "true",
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "invitedUid"
               }
@@ -2670,7 +3308,10 @@
             "expandable": "true",
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "kickedUid"
               }
@@ -2737,6 +3378,66 @@
         {
           "type": "struct",
           "content": {
+            "name": "ServiceExChangedTopic",
+            "doc": [
+              "Service message on group topic change",
+              {
+                "type": "reference",
+                "argument": "topic",
+                "category": "full",
+                "description": "  New group topic"
+              }
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 18
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "topic"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExChangedAbout",
+            "doc": [
+              "Service message on group about change",
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  New group about"
+              }
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 19
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "about"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "ServiceExChangedAvatar",
             "doc": [
               "Service message about avatar change",
@@ -2787,7 +3488,10 @@
             "expandable": "true",
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               }
@@ -3102,6 +3806,112 @@
         {
           "type": "struct",
           "content": {
+            "name": "StickerMessage",
+            "doc": [
+              "Sticker message",
+              {
+                "type": "reference",
+                "argument": "stickerId",
+                "category": "full",
+                "description": "  Optional Unique ID of sticker"
+              },
+              {
+                "type": "reference",
+                "argument": "fastPreview",
+                "category": "full",
+                "description": "  Optional Fast preview of sticker in webp format"
+              },
+              {
+                "type": "reference",
+                "argument": "image512",
+                "category": "full",
+                "description": "  Optional 512x512 sticker image in webp format"
+              },
+              {
+                "type": "reference",
+                "argument": "image256",
+                "category": "full",
+                "description": "  Optional 256x256 sticker image in webp format"
+              },
+              {
+                "type": "reference",
+                "argument": "stickerCollectionId",
+                "category": "full",
+                "description": "  Optional Collection ID"
+              },
+              {
+                "type": "reference",
+                "argument": "stickerCollectionAccessHash",
+                "category": "full",
+                "description": "  Optional Collection Access Hash"
+              }
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 6
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 1,
+                "name": "stickerId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 2,
+                "name": "fastPreview"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ImageLocation"
+                  }
+                },
+                "id": 3,
+                "name": "image512"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ImageLocation"
+                  }
+                },
+                "id": 4,
+                "name": "image256"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 5,
+                "name": "stickerCollectionId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int64"
+                },
+                "id": 6,
+                "name": "stickerCollectionAccessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "DialogShort",
             "doc": [
               "Short Dialog from grouped conversation list",
@@ -3195,6 +4005,45 @@
                 },
                 "id": 3,
                 "name": "dialogs"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "MessageReaction",
+            "doc": [
+              "Reaction to message",
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "full",
+                "description": "  User's reaction"
+              },
+              {
+                "type": "reference",
+                "argument": "code",
+                "category": "full",
+                "description": "  Reaction EMOJI code"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
+                },
+                "id": 1,
+                "name": "users"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "code"
               }
             ]
           }
@@ -3453,6 +4302,152 @@
           }
         },
         {
+          "type": "rpc",
+          "content": {
+            "name": "MessageSetReaction",
+            "header": 210,
+            "response": {
+              "type": "reference",
+              "name": "ReactionsResponse"
+            },
+            "doc": [
+              "Setting Message reaction",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Message random id"
+              },
+              {
+                "type": "reference",
+                "argument": "code",
+                "category": "full",
+                "description": "Reaction code"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "code"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "MessageRemoveReaction",
+            "header": 220,
+            "response": {
+              "type": "reference",
+              "name": "ReactionsResponse"
+            },
+            "doc": [
+              "Removing Message reaction",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Message random id"
+              },
+              {
+                "type": "reference",
+                "argument": "code",
+                "category": "full",
+                "description": "Reaction code"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "code"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "ReactionsResponse",
+            "header": 219,
+            "doc": [
+              "Response for reactions change"
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "seq"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
+                "id": 2,
+                "name": "state"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageReaction"
+                  }
+                },
+                "id": 3,
+                "name": "reactions"
+              }
+            ]
+          }
+        },
+        {
           "type": "update",
           "content": {
             "name": "Message",
@@ -3500,7 +4495,10 @@
                 "name": "peer"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "senderUid"
               },
@@ -3939,58 +4937,6 @@
         {
           "type": "update",
           "content": {
-            "name": "ChatArchived",
-            "header": 65,
-            "doc": [
-              "Update about chat archive",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Destination peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "ChatRestored",
-            "header": 66,
-            "doc": [
-              "Update about chat restore",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Destination peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
             "name": "ChatGroupsChanged",
             "header": 1,
             "doc": [
@@ -4013,6 +4959,63 @@
                 },
                 "id": 1,
                 "name": "dialogs"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "ReactionsUpdate",
+            "header": 222,
+            "doc": [
+              "Update about reactions change",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Message random id"
+              },
+              {
+                "type": "reference",
+                "argument": "reactions",
+                "category": "full",
+                "description": "  New Reactions"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageReaction"
+                  }
+                },
+                "id": 3,
+                "name": "reactions"
               }
             ]
           }
@@ -4066,11 +5069,20 @@
                 "argument": "message",
                 "category": "full",
                 "description": "  Content of message"
+              },
+              {
+                "type": "reference",
+                "argument": "reactions",
+                "category": "full",
+                "description": "  Message reactions"
               }
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "senderUid"
               },
@@ -4108,6 +5120,17 @@
                 },
                 "id": 6,
                 "name": "state"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageReaction"
+                  }
+                },
+                "id": 7,
+                "name": "reactions"
               }
             ]
           }
@@ -4278,7 +5301,10 @@
                 "name": "sortDate"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 5,
                 "name": "senderUid"
               },
@@ -4489,21 +5515,159 @@
           }
         },
         {
+          "type": "response",
+          "content": {
+            "name": "DialogsOrder",
+            "header": 235,
+            "doc": [
+              "Dialogs order response",
+              {
+                "type": "reference",
+                "argument": "seq",
+                "category": "full",
+                "description": "  update seq"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "category": "full",
+                "description": "  update state"
+              },
+              {
+                "type": "reference",
+                "argument": "groups",
+                "category": "full",
+                "description": "  Update groups"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "seq"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
+                "id": 2,
+                "name": "state"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "DialogGroup"
+                  }
+                },
+                "id": 3,
+                "name": "groups"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
-            "name": "ArchiveDialog",
-            "header": 227,
+            "name": "HideDialog",
+            "header": 231,
             "response": {
               "type": "reference",
-              "name": "Seq"
+              "name": "DialogsOrder"
             },
             "doc": [
-              "Archive dialog",
+              "Hide Dialog from grouped list",
               {
                 "type": "reference",
                 "argument": "peer",
                 "category": "full",
-                "description": "dialog peer"
+                "description": "Dialog peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ShowDialog",
+            "header": 232,
+            "response": {
+              "type": "reference",
+              "name": "DialogsOrder"
+            },
+            "doc": [
+              "Show Dialog in grouped list"
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "FavouriteDialog",
+            "header": 224,
+            "response": {
+              "type": "reference",
+              "name": "DialogsOrder"
+            },
+            "doc": [
+              "Marking dialog as favourite",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Peer for favouriting"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UnfavouriteDialog",
+            "header": 227,
+            "response": {
+              "type": "reference",
+              "name": "DialogsOrder"
+            },
+            "doc": [
+              "Making dialog as unfavourite",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Peer for favouriting"
               }
             ],
             "attributes": [
@@ -4570,7 +5734,7 @@
                 "type": "reference",
                 "argument": "isMember",
                 "category": "full",
-                "description": "  is member of group"
+                "description": "  is member of group (deprecated)"
               },
               {
                 "type": "reference",
@@ -4592,33 +5756,36 @@
               },
               {
                 "type": "reference",
-                "argument": "disableEdit",
-                "category": "full",
-                "description": "  Disabling changing name and avatar of group"
+                "argument": "ext",
+                "category": "hidden",
+                "description": "  Group extension Data"
               },
               {
                 "type": "reference",
-                "argument": "disableInviteView",
-                "category": "full",
-                "description": "  Disabling allowing invite to group to non-admins"
+                "argument": "isAdmin",
+                "category": "hidden",
+                "description": "  Is current user admin (deprecated)"
               },
               {
                 "type": "reference",
-                "argument": "disableIntegrationView",
+                "argument": "isHidden",
                 "category": "full",
-                "description": "  Disabling allowing to get integration token to non-admins"
+                "description": "  Is group hidden"
               },
               {
                 "type": "reference",
-                "argument": "extensions",
+                "argument": "groupType",
                 "category": "full",
-                "description": "  Group extensions"
+                "description": "  Group type"
               }
             ],
             "expandable": "true",
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "id"
               },
@@ -4646,10 +5813,14 @@
               {
                 "type": "bool",
                 "id": 6,
-                "name": "isMember"
+                "name": "isMember",
+                "deprecated": "true"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 8,
                 "name": "creatorUid"
               },
@@ -4677,48 +5848,9 @@
                   "type": "opt",
                   "childType": "bool"
                 },
-                "id": 11,
-                "name": "disableEdit"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 12,
-                "name": "disableInviteView"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 13,
-                "name": "disableInviteRevoke"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 14,
-                "name": "disableIntegrationView"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 15,
-                "name": "disableIntegrationsRevoke"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
                 "id": 16,
-                "name": "isAdmin"
+                "name": "isAdmin",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -4746,14 +5878,22 @@
               },
               {
                 "type": {
-                  "type": "list",
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 23,
+                "name": "groupType"
+              },
+              {
+                "type": {
+                  "type": "opt",
                   "childType": {
                     "type": "struct",
-                    "childType": "Extension"
+                    "childType": "MapValue"
                   }
                 },
-                "id": 21,
-                "name": "extensions"
+                "id": 22,
+                "name": "ext"
               }
             ]
           }
@@ -4792,12 +5932,18 @@
             "expandable": "true",
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "inviterUid"
               },
@@ -4820,7 +5966,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "CreateGroup",
+            "name": "CreateGroupObsolete",
             "header": 65,
             "response": {
               "type": "anonymous",
@@ -4899,7 +6045,7 @@
               ]
             },
             "doc": [
-              "Creating group chat",
+              "Creating group chat (obsolete)",
               {
                 "type": "reference",
                 "argument": "rid",
@@ -4910,24 +6056,12 @@
                 "type": "reference",
                 "argument": "title",
                 "category": "full",
-                "description": "Group title"
-              },
-              {
-                "type": "reference",
-                "argument": "users",
-                "category": "compact",
-                "description": "Members of group"
-              },
-              {
-                "type": "reference",
-                "argument": "title",
-                "category": "full",
                 "description": "Title of new group"
               },
               {
                 "type": "reference",
                 "argument": "users",
-                "category": "full",
+                "category": "compact",
                 "description": "Members of new group"
               }
             ],
@@ -4962,11 +6096,200 @@
         {
           "type": "rpc",
           "content": {
+            "name": "CreateGroup",
+            "header": 230,
+            "response": {
+              "type": "anonymous",
+              "header": 216,
+              "doc": [
+                "Created group",
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Update Seq"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "compact",
+                  "description": "  Update state"
+                },
+                {
+                  "type": "reference",
+                  "argument": "group",
+                  "category": "full",
+                  "description": "  Created group"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "full",
+                  "description": "  Referenced users"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "int32",
+                  "id": 1,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 2,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Group"
+                  },
+                  "id": 3,
+                  "name": "group"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 4,
+                  "name": "users"
+                }
+              ]
+            },
+            "doc": [
+              "Creating group chat",
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id for avoiding double create"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "Group Title"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "hidden",
+                "description": "Members of group"
+              },
+              {
+                "type": "reference",
+                "argument": "groupType",
+                "category": "hidden",
+                "description": "Group Type. 'public' for public groups"
+              },
+              {
+                "type": "reference",
+                "argument": "userData",
+                "category": "hidden",
+                "description": "Group external data"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "rid"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 3,
+                "name": "users"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 5,
+                "name": "groupType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 4,
+                "name": "userData"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "EnterGroup",
             "header": 199,
             "response": {
               "type": "anonymous",
               "header": 200,
+              "doc": [
+                "Joined group",
+                {
+                  "type": "reference",
+                  "argument": "group",
+                  "category": "full",
+                  "description": "  Joined group"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "full",
+                  "description": "  Referenced users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "rid",
+                  "category": "full",
+                  "description": "  Rid of join message"
+                },
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Seq of Update"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "full",
+                  "description": "  State of Update"
+                },
+                {
+                  "type": "reference",
+                  "argument": "date",
+                  "category": "full",
+                  "description": "  Date of update"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -5019,11 +6342,11 @@
               ]
             },
             "doc": [
-              "Join Public group",
+              "Join random group by peer id",
               {
                 "type": "reference",
                 "argument": "peer",
-                "category": "hidden",
+                "category": "full",
                 "description": "Public group peer"
               }
             ],
@@ -5642,7 +6965,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -5655,7 +6981,10 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 5,
                 "name": "inviteUid"
               },
@@ -5710,7 +7039,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -5723,12 +7055,18 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 3,
                 "name": "inviterUid"
               },
@@ -5777,7 +7115,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -5790,7 +7131,10 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
@@ -5845,7 +7189,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -5858,12 +7205,18 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 3,
                 "name": "kickerUid"
               },
@@ -5900,7 +7253,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -5958,7 +7314,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -5971,7 +7330,10 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
@@ -6031,7 +7393,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -6044,7 +7409,10 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 3,
                 "name": "uid"
               },
@@ -6089,7 +7457,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -6144,7 +7515,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -6157,7 +7531,10 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
@@ -6371,6 +7748,1096 @@
                 "type": "string",
                 "id": 1,
                 "name": "token"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Stickers",
+      "package": "stickers",
+      "doc": [
+        "Stickers support in Actor"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "StickerDescriptor",
+            "doc": [
+              "Descriptor of a Sticker",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Sticker unique id"
+              },
+              {
+                "type": "reference",
+                "argument": "emoji",
+                "category": "full",
+                "description": "  Emoji code for sticker"
+              },
+              {
+                "type": "reference",
+                "argument": "image128",
+                "category": "full",
+                "description": "  Image of sticker 128x128 in WebP format"
+              },
+              {
+                "type": "reference",
+                "argument": "image512",
+                "category": "full",
+                "description": "  Image of sticker 512x512 in WebP format"
+              },
+              {
+                "type": "reference",
+                "argument": "image256",
+                "category": "full",
+                "description": "  Image of sticker 256x256 in WebP format"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "emoji"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "ImageLocation"
+                },
+                "id": 3,
+                "name": "image128"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ImageLocation"
+                  }
+                },
+                "id": 4,
+                "name": "image512"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ImageLocation"
+                  }
+                },
+                "id": 5,
+                "name": "image256"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "StickerCollection",
+            "doc": [
+              "Sticker collection",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Unique id of a collection"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "full",
+                "description": "  Access Hash of a collection"
+              },
+              {
+                "type": "reference",
+                "argument": "stickers",
+                "category": "compact",
+                "description": "  Sticker list"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "StickerDescriptor"
+                  }
+                },
+                "id": 3,
+                "name": "stickers"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "StickersReponse",
+            "header": 240,
+            "doc": [
+              "Stickers response",
+              {
+                "type": "reference",
+                "argument": "collections",
+                "category": "full",
+                "description": "  Sticker collections"
+              },
+              {
+                "type": "reference",
+                "argument": "seq",
+                "category": "full",
+                "description": "  Seq of update"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "category": "full",
+                "description": "  State of update"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "StickerCollection"
+                  }
+                },
+                "id": 1,
+                "name": "collections"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "seq"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
+                "id": 3,
+                "name": "state"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadOwnStickers",
+            "header": 238,
+            "response": {
+              "type": "anonymous",
+              "header": 239,
+              "doc": [
+                "Own Stickers collections",
+                {
+                  "type": "reference",
+                  "argument": "ownStickers",
+                  "category": "hidden",
+                  "description": "  Own sticker collections"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "StickerCollection"
+                    }
+                  },
+                  "id": 1,
+                  "name": "ownStickers"
+                }
+              ]
+            },
+            "doc": [
+              "Loading own stickers"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "OwnStickersChanged",
+            "header": 161,
+            "doc": [
+              "Own Stickers changed",
+              {
+                "type": "reference",
+                "argument": "collections",
+                "category": "compact",
+                "description": "  New own sticker collections"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "StickerCollection"
+                  }
+                },
+                "id": 1,
+                "name": "collections"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "StickerCollectionsChanged",
+            "header": 164,
+            "doc": [
+              "Sticker collection changed",
+              {
+                "type": "reference",
+                "argument": "collections",
+                "category": "full",
+                "description": "  Updated sticker collections"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "StickerCollection"
+                  }
+                },
+                "id": 1,
+                "name": "collections"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "AddStickerCollection",
+            "header": 244,
+            "response": {
+              "type": "reference",
+              "name": "StickersReponse"
+            },
+            "doc": [
+              "Adding sticker collection",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "Collection id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "full",
+                "description": "Collection access hash"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RemoveStickerCollection",
+            "header": 245,
+            "response": {
+              "type": "reference",
+              "name": "StickersReponse"
+            },
+            "doc": [
+              "Removing sticker collection",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "Collection id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "full",
+                "description": "Collection access hash"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadStickerCollection",
+            "header": 246,
+            "response": {
+              "type": "anonymous",
+              "header": 247,
+              "doc": [
+                "Loaded collection",
+                {
+                  "type": "reference",
+                  "argument": "collection",
+                  "category": "full",
+                  "description": "  Collection of stickers"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "StickerCollection"
+                  },
+                  "id": 1,
+                  "name": "collection"
+                }
+              ]
+            },
+            "doc": [
+              "Loading stickers",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "Collection id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "full",
+                "description": "Collection access hash"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search",
+      "package": "search",
+      "doc": [
+        "Searching API"
+      ],
+      "items": [
+        {
+          "type": "enum",
+          "content": {
+            "name": "SearchPeerType",
+            "values": [
+              {
+                "name": "Groups",
+                "id": 1
+              },
+              {
+                "name": "Contacts",
+                "id": 2
+              },
+              {
+                "name": "Public",
+                "id": 3
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "SearchContentType",
+            "values": [
+              {
+                "name": "Any",
+                "id": 1
+              },
+              {
+                "name": "Text",
+                "id": 2
+              },
+              {
+                "name": "Links",
+                "id": 3
+              },
+              {
+                "name": "Documents",
+                "id": 4
+              },
+              {
+                "name": "Photos",
+                "id": 5
+              }
+            ]
+          }
+        },
+        {
+          "type": "trait",
+          "content": {
+            "isContainer": "true",
+            "name": "SearchCondition",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchPeerTypeCondition",
+            "doc": [
+              "Search peer type condition",
+              {
+                "type": "reference",
+                "argument": "peerType",
+                "category": "full",
+                "description": "  Peer type for searching"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 1
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "SearchPeerType"
+                },
+                "id": 1,
+                "name": "peerType"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchPieceText",
+            "doc": [
+              "Search peer name condition",
+              {
+                "type": "reference",
+                "argument": "query",
+                "category": "full",
+                "description": "  Search query"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 2
+            },
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "query"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchAndCondition",
+            "doc": [
+              "Search AND condion",
+              {
+                "type": "reference",
+                "argument": "andQuery",
+                "category": "full",
+                "description": "  And Query"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 3
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "SearchCondition"
+                  }
+                },
+                "id": 1,
+                "name": "andQuery"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchOrCondition",
+            "doc": [
+              "Search OR condition",
+              {
+                "type": "reference",
+                "argument": "orQuery",
+                "category": "full",
+                "description": "  Or Query"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 4
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "SearchCondition"
+                  }
+                },
+                "id": 2,
+                "name": "orQuery"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchPeerCondition",
+            "doc": [
+              "Serch Peer condition",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Peer condition"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 5
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchPeerContentType",
+            "doc": [
+              "Search content type condition",
+              {
+                "type": "reference",
+                "argument": "contentType",
+                "category": "full",
+                "description": "  Content Type"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 6
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "SearchContentType"
+                },
+                "id": 1,
+                "name": "contentType"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchSenderIdConfition",
+            "doc": [
+              "Searching sender uid condition",
+              {
+                "type": "reference",
+                "argument": "senderId",
+                "category": "full",
+                "description": "  sender UID"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 7
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "senderId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "PeerSearchResult",
+            "doc": [
+              "Peer search result",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Peer information"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Peer title"
+              },
+              {
+                "type": "reference",
+                "argument": "description",
+                "category": "full",
+                "description": "  Description"
+              },
+              {
+                "type": "reference",
+                "argument": "membersCount",
+                "category": "full",
+                "description": "  Members count"
+              },
+              {
+                "type": "reference",
+                "argument": "dateCreated",
+                "category": "full",
+                "description": "  Group Creation Date"
+              },
+              {
+                "type": "reference",
+                "argument": "creator",
+                "category": "full",
+                "description": "  Group Creator uid"
+              },
+              {
+                "type": "reference",
+                "argument": "isPublic",
+                "category": "full",
+                "description": "  Is group public"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "description"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 4,
+                "name": "membersCount"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "date"
+                  }
+                },
+                "id": 5,
+                "name": "dateCreated"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 6,
+                "name": "creator"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 7,
+                "name": "isPublic"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 8,
+                "name": "isJoined"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "PeerSearch",
+            "header": 233,
+            "response": {
+              "type": "anonymous",
+              "header": 234,
+              "doc": [
+                "Found peers",
+                {
+                  "type": "reference",
+                  "argument": "searchResults",
+                  "category": "full",
+                  "description": "  Search Results"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "full",
+                  "description": "  Related users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "full",
+                  "description": "  Related groups"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "PeerSearchResult"
+                    }
+                  },
+                  "id": 1,
+                  "name": "searchResults"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 3,
+                  "name": "groups"
+                }
+              ]
+            },
+            "doc": [
+              "Performing peer search",
+              {
+                "type": "reference",
+                "argument": "query",
+                "category": "full",
+                "description": "Search query. Warring not all combinations can be processed by server. (acts as OR)"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "SearchCondition"
+                  }
+                },
+                "id": 1,
+                "name": "query"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "MessageSearchResult",
+            "doc": [
+              "Message container",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Message Peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Message Random Id"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Message Date"
+              },
+              {
+                "type": "reference",
+                "argument": "senderId",
+                "category": "full",
+                "description": "  Message sender UID"
+              },
+              {
+                "type": "reference",
+                "argument": "content",
+                "category": "full",
+                "description": "  Message content"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 3,
+                "name": "date"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 4,
+                "name": "senderId"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
+                "id": 5,
+                "name": "content"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "MessageSearchItem",
+            "doc": [
+              "Message Search result container"
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "MessageSearchResult"
+                },
+                "id": 1,
+                "name": "result"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "MessageSearch",
+            "header": 217,
+            "response": {
+              "type": "anonymous",
+              "header": 218,
+              "doc": [
+                "Search Result",
+                {
+                  "type": "reference",
+                  "argument": "searchResults",
+                  "category": "full",
+                  "description": "  Search results"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "full",
+                  "description": "  Search users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "full",
+                  "description": "  Search groups"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "MessageSearchItem"
+                    }
+                  },
+                  "id": 1,
+                  "name": "searchResults"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 3,
+                  "name": "groups"
+                }
+              ]
+            },
+            "doc": [
+              "Performing message search",
+              {
+                "type": "reference",
+                "argument": "query",
+                "category": "full",
+                "description": "Search query"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "SearchCondition"
+                },
+                "id": 1,
+                "name": "query"
               }
             ]
           }
@@ -6683,6 +9150,50 @@
         {
           "type": "rpc",
           "content": {
+            "name": "StopTyping",
+            "header": 30,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Stop typing",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "typingType",
+                "category": "full",
+                "description": "typing type"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "TypingType"
+                },
+                "id": 2,
+                "name": "typingType"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "SetOnline",
             "header": 29,
             "response": {
@@ -6760,7 +9271,64 @@
                 "name": "peer"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "TypingType"
+                },
+                "id": 3,
+                "name": "typingType"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "TypingStop",
+            "header": 81,
+            "doc": [
+              "Update about user's typing stop",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Conversation peer"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "typingType",
+                "category": "hidden",
+                "description": "  Type of typing"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
@@ -6791,7 +9359,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               }
@@ -6814,7 +9385,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               }
@@ -6843,7 +9417,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -6880,7 +9457,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -6928,6 +9508,65 @@
                 "type": "int64",
                 "id": 2,
                 "name": "accessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ImageLocation",
+            "doc": [
+              "Image location",
+              {
+                "type": "reference",
+                "argument": "fileLocation",
+                "category": "full",
+                "description": "  Location of file"
+              },
+              {
+                "type": "reference",
+                "argument": "width",
+                "category": "full",
+                "description": "  Width of avatar image"
+              },
+              {
+                "type": "reference",
+                "argument": "height",
+                "category": "full",
+                "description": "  Height of avatar image"
+              },
+              {
+                "type": "reference",
+                "argument": "fileSize",
+                "category": "full",
+                "description": "  Size of file"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "FileLocation"
+                },
+                "id": 1,
+                "name": "fileLocation"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "width"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "height"
+              },
+              {
+                "type": "int32",
+                "id": 4,
+                "name": "fileSize"
               }
             ]
           }
@@ -7095,6 +9734,91 @@
                 "type": "bytes",
                 "id": 3,
                 "name": "thumb"
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "Colors",
+            "values": [
+              {
+                "name": "red",
+                "id": 1
+              },
+              {
+                "name": "yellow",
+                "id": 2
+              },
+              {
+                "name": "green",
+                "id": 3
+              }
+            ]
+          }
+        },
+        {
+          "type": "trait",
+          "content": {
+            "isContainer": "true",
+            "name": "Color",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "RgbColor",
+            "doc": [
+              "RGB Color",
+              {
+                "type": "reference",
+                "argument": "rgb",
+                "category": "full",
+                "description": "  RGB color value"
+              }
+            ],
+            "trait": {
+              "name": "Color",
+              "key": 1
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "rgb"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "PredefinedColor",
+            "doc": [
+              "Predefined color",
+              {
+                "type": "reference",
+                "argument": "color",
+                "category": "hidden",
+                "description": "  Predefined color value"
+              }
+            ],
+            "trait": {
+              "name": "Color",
+              "key": 2
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "Colors"
+                },
+                "id": 1,
+                "name": "color"
               }
             ]
           }
@@ -8054,7 +10778,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -8087,7 +10814,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -8505,6 +11235,43 @@
           }
         },
         {
+          "type": "update",
+          "content": {
+            "name": "RawUpdate",
+            "header": 80,
+            "doc": [
+              "Custom Raw Update",
+              {
+                "type": "reference",
+                "argument": "type",
+                "category": "full",
+                "description": "  Type of content"
+              },
+              {
+                "type": "reference",
+                "argument": "bytes",
+                "category": "full",
+                "description": "  Raw data"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "type"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "bytes"
+              }
+            ]
+          }
+        },
+        {
           "type": "empty"
         },
         {
@@ -8696,112 +11463,6 @@
                 },
                 "id": 1,
                 "name": "counters"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "title": "Binary Diffs",
-      "package": "binary",
-      "doc": [
-        "Package contains structs for low-level protobuf differences."
-      ],
-      "items": [
-        {
-          "type": "struct",
-          "content": {
-            "name": "ObjectPatch",
-            "doc": [
-              "Main object patch description",
-              {
-                "type": "reference",
-                "argument": "rules",
-                "category": "full",
-                "description": "  Rules of patch"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "Rule"
-                  }
-                },
-                "id": 1,
-                "name": "rules"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "Rule",
-            "doc": [
-              "Rule for changing protobuf objects",
-              {
-                "type": "reference",
-                "argument": "action",
-                "category": "full",
-                "description": "  Action of Rule"
-              },
-              {
-                "type": "reference",
-                "argument": "longValues",
-                "category": "compact",
-                "description": "  Long values for protobuf field"
-              },
-              {
-                "type": "reference",
-                "argument": "rawValues",
-                "category": "compact",
-                "description": "  Bytes values for protobuf field"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "enum",
-                  "childType": "Action"
-                },
-                "id": 1,
-                "name": "action"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": "int64"
-                },
-                "id": 2,
-                "name": "longValues"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": "bytes"
-                },
-                "id": 3,
-                "name": "rawValues"
-              }
-            ]
-          }
-        },
-        {
-          "type": "enum",
-          "content": {
-            "name": "Action",
-            "values": [
-              {
-                "name": "Remove",
-                "id": 1
-              },
-              {
-                "name": "AddOrReplace",
-                "id": 2
               }
             ]
           }
@@ -9011,6 +11672,60 @@
                 },
                 "id": 1,
                 "name": "config"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Device Info",
+      "package": "device",
+      "doc": [
+        "Submiting various information about device for providing better experience.",
+        "For example, getting timezone or preffered languages"
+      ],
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "NotifyAboutDeviceInfo",
+            "header": 229,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Notifying about device information",
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "Preferred languages"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "Device Time Zone"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "preferredLanguages"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "timeZone"
               }
             ]
           }

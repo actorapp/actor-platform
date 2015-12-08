@@ -4,9 +4,9 @@ import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.models
+import im.actor.server.model
 
-class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
+final class FullGroupTable(tag: Tag) extends Table[model.FullGroup](tag, "groups") {
   def id = column[Int]("id", O.PrimaryKey)
 
   def creatorUserId = column[Int]("creator_user_id")
@@ -54,12 +54,12 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
       avatarChangedAt,
       avatarChangeRandomId,
       isHidden
-    ) <> (models.FullGroup.tupled, models.FullGroup.unapply)
+    ) <> (model.FullGroup.tupled, model.FullGroup.unapply)
 
-  def asGroup = (id, creatorUserId, accessHash, title, isPublic, createdAt, about, topic) <> ((models.Group.apply _).tupled, models.Group.unapply)
+  def asGroup = (id, creatorUserId, accessHash, title, isPublic, createdAt, about, topic) <> ((model.Group.apply _).tupled, model.Group.unapply)
 }
 
-object Group {
+object GroupRepo {
   val groups = TableQuery[FullGroupTable]
   val groupsC = Compiled(groups)
 
@@ -73,8 +73,8 @@ object Group {
 
   val allIds = groups.map(_.id)
 
-  def create(group: models.Group, randomId: Long, isHidden: Boolean) = {
-    groups += models.FullGroup(
+  def create(group: model.Group, randomId: Long, isHidden: Boolean) = {
+    groups += model.FullGroup(
       id = group.id,
       creatorUserId = group.creatorUserId,
       accessHash = group.accessHash,

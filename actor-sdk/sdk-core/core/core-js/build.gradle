@@ -1,0 +1,73 @@
+buildscript {
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+    }
+}
+
+apply plugin: 'war'
+apply plugin: 'gwt'
+
+gwt {
+    gwtVersion = '2.7.0'
+    modules 'im.actor.ActorCore'
+    devModules 'im.actor.ActorCoreDev'
+
+    compiler {
+        strict = true
+        style = "PRETTY" //"OBF"
+        enableClosureCompiler = false
+        disableClassMetadata = false
+        disableCastChecking = true
+    }
+
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', '../core-shared/src/main/java', '../core-shared/src/ext/java', '../../runtime/runtime-shared/src/main/java', '../../runtime/runtime-js/src/main/java']
+        }
+        resources {
+            srcDirs = ['../core-shared/src/main/resources']
+        }
+    }
+}
+
+dependencies {
+    gwt 'org.timepedia.exporter:gwtexporter:2.4.0'
+
+    // Hack for IntelliJ IDEA
+    providedCompile 'com.google.gwt:gwt-user:2.7.0'
+    providedCompile 'org.timepedia.exporter:gwtexporter:2.4.0'
+}
+
+task buildPackage(dependsOn: ['war']) {
+    doFirst {
+        delete "$buildDir/package"
+        delete "$buildDir/library "
+
+        copy {
+            into "$buildDir/library"
+            with war
+            exclude "actor/actor.devmode.js"
+            include "actor/**"
+        }
+
+        copy {
+            into "$buildDir/package"
+            from "$buildDir/library/actor"
+        }
+
+        copy {
+            into "$buildDir/package"
+            from "$projectDir/src/main/javascript"
+        }
+
+        copy {
+            into "$buildDir/package"
+            from "$projectDir/../../runtime/runtime-js/src/main/javascript"
+        }
+    }
+}

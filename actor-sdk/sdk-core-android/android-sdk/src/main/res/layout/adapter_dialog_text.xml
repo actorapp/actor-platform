@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<im.actor.sdk.controllers.conversation.view.BubbleContainer xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true">
+
+    <im.actor.sdk.controllers.conversation.view.BubbleTextContainer
+        android:id="@+id/fl_bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:duplicateParentState="true">
+
+        <TextView
+            android:id="@+id/tv_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:includeFontPadding="false"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="-4dp"
+            android:layout_marginRight="-4dp"
+            android:baselineAligned="false"
+            android:gravity="center_vertical"
+            android:paddingLeft="4dp">
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:includeFontPadding="false"
+                android:textSize="13sp" />
+
+            <im.actor.sdk.view.TintImageView
+                android:id="@+id/stateIcon"
+                android:layout_width="16dp"
+                android:layout_height="9dp"
+                android:layout_marginLeft="2dp" />
+        </LinearLayout>
+
+    </im.actor.sdk.controllers.conversation.view.BubbleTextContainer>
+</im.actor.sdk.controllers.conversation.view.BubbleContainer>

@@ -1,6 +1,7 @@
 package im.actor.server.api.http
 
 import akka.actor.ActorSystem
+import akka.http.ServerSettings
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.headers._
@@ -20,6 +21,7 @@ import im.actor.tls.TlsContext
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
 
 object HttpApiFrontend {
@@ -30,7 +32,9 @@ object HttpApiFrontend {
     `Access-Control-Allow-Credentials`(true)
   )
 
-  def start(serverConfig: Config)(
+  private val IdleTimeout = 15.minutes
+
+  def start(serverConfig: Config, customRoutes: Seq[Route] = Seq.empty)(
     implicit
     system:       ActorSystem,
     materializer: Materializer
@@ -38,13 +42,13 @@ object HttpApiFrontend {
     HttpApiConfig.load(serverConfig.getConfig("webapp")) match {
       case Success(apiConfig) ⇒
         val tlsContext = TlsContext.load(serverConfig.getConfig("tls.keystores")).right.toOption
-        start(apiConfig, tlsContext)
+        start(apiConfig, customRoutes, tlsContext)
       case Failure(e) ⇒
         throw e
     }
   }
 
-  def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(
+  def start(config: HttpApiConfig, customRoutes: Seq[Route], tlsContext: Option[TlsContext])(
     implicit
     system:       ActorSystem,
     materializer: Materializer
@@ -62,7 +66,7 @@ object HttpApiFrontend {
     val app = new AppFilesHandler(config.staticFiles)
 
     // format: OFF
-    def routes: Route =
+    def defaultRoutes: Route =
       app.routes ~
       pathPrefix("v1") {
         respondWithDefaultHeaders(corsHeaders) {
@@ -74,9 +78,19 @@ object HttpApiFrontend {
       }
     // format: ON
 
-    Http().bind(config.interface, config.port, httpsContext = tlsContext map (_.asHttpsContext)).runForeach { connection ⇒
-      connection handleWith Route.handlerFlow(routes)
-    }
+    def routes: Route = customRoutes.foldLeft(defaultRoutes)(_ ~ _)
+
+    val defaultSettings = ServerSettings(system)
+
+    Http().bind(
+      config.interface,
+      config.port,
+      httpsContext = tlsContext map (_.asHttpsContext),
+      settings = defaultSettings.copy(timeouts = defaultSettings.timeouts.copy(idleTimeout = IdleTimeout))
+    )
+      .runForeach { connection ⇒
+        connection handleWith Route.handlerFlow(routes)
+      }
   }
 
 }

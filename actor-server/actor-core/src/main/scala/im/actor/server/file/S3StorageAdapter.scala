@@ -11,11 +11,10 @@ import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
 import com.github.kxbmap.configs._
 import com.typesafe.config.{ Config, ConfigFactory }
-import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.serialization.ActorSerializer
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
@@ -69,14 +68,14 @@ class S3StorageAdapter(config: S3StorageAdapterConfig, _system: ActorSystem) ext
   val s3Client = new AmazonS3ScalaClient(awsCredentials)
   val transferManager = new TransferManager(awsCredentials)
 
-  override def uploadFile(name: String, file: File): DBIO[ApiFileLocation] =
+  override def uploadFile(name: String, file: File): DBIO[FileLocation] =
     uploadFile(bucketName, name, file)
 
-  override def uploadFileF(name: String, file: File): Future[ApiFileLocation] =
+  override def uploadFileF(name: String, file: File): Future[FileLocation] =
     db.run(uploadFile(name, file))
 
   override def downloadFile(id: Long): DBIO[Option[File]] = {
-    persist.File.find(id) flatMap {
+    persist.FileRepo.find(id) flatMap {
       case Some(file) ⇒
         downloadFile(bucketName, file.id, file.name) map (Some(_))
       case None ⇒ DBIO.successful(None)
@@ -86,7 +85,7 @@ class S3StorageAdapter(config: S3StorageAdapterConfig, _system: ActorSystem) ext
   override def downloadFileF(id: Long): Future[Option[File]] =
     db.run(downloadFile(id))
 
-  override def getFileUrl(file: models.File, accessHash: Long): Future[Option[String]] = {
+  override def getFileUrl(file: model.File, accessHash: Long): Future[Option[String]] = {
     val timeout = 1.day
 
     if (ACLUtils.fileAccessHash(file.id, file.accessSalt) == accessHash) {
@@ -109,17 +108,17 @@ class S3StorageAdapter(config: S3StorageAdapterConfig, _system: ActorSystem) ext
     } yield file
   }
 
-  private def uploadFile(bucketName: String, name: String, file: File): DBIO[ApiFileLocation] = {
+  private def uploadFile(bucketName: String, name: String, file: File): DBIO[FileLocation] = {
     val rnd = ThreadLocalRandom.current()
     val id = rnd.nextLong()
     val accessSalt = ACLUtils.nextAccessSalt(rnd)
     val sizeF = FileUtils.getFileLength(file)
 
     for {
-      _ ← persist.File.create(id, accessSalt, FileUtils.s3Key(id, name))
+      _ ← persist.FileRepo.create(id, accessSalt, FileUtils.s3Key(id, name))
       _ ← DBIO.from(s3Upload(bucketName, id, name, file))
-      _ ← DBIO.from(sizeF) flatMap (s ⇒ persist.File.setUploaded(id, s, name))
-    } yield ApiFileLocation(id, ACLUtils.fileAccessHash(id, accessSalt))
+      _ ← DBIO.from(sizeF) flatMap (s ⇒ persist.FileRepo.setUploaded(id, s, name))
+    } yield FileLocation(id, ACLUtils.fileAccessHash(id, accessSalt))
   }
 
   private def s3Upload(bucketName: String, id: Long, name: String, file: File): Future[UploadResult] = {

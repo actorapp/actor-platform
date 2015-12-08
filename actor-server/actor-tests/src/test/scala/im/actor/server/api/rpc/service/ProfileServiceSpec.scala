@@ -17,12 +17,11 @@ import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.server._
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.profile.{ ProfileErrors, ProfileServiceImpl }
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 
-class ProfileServiceSpec
+final class ProfileServiceSpec
   extends BaseAppSuite
   with ImplicitFileStorageAdapter
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService {
   behavior of "Profile Service"
 
@@ -33,6 +32,14 @@ class ProfileServiceSpec
   "Nickname check and edit" should "work correct with different nicknames" in profile.e4
 
   "EditAbout" should "set valid about value to user" in profile.e5
+
+  "ChangeMyTimeZone" should "change time zone" in profile.timeZone
+  it should "respond with error on invalid time zone" in profile.invalidTimeZone
+  it should "respond with error on same time zone" in profile.sameTimeZone
+
+  "ChangeMyPreferredLanguages" should "change preferred languages" in profile.preferredLanguages
+  it should "respond with error on invalid locale" in profile.invalidPreferredLanguages
+  it should "respond with error on same preferred languages" in profile.samePreferredLanguages
 
   implicit lazy val service = new ProfileServiceImpl
   implicit lazy val filesService = new FilesServiceImpl
@@ -56,12 +63,10 @@ class ProfileServiceSpec
   private val validLargeDimensions = (200, 200)
 
   object profile {
-    val (user, _, _) = createUser()
-
-    val authId = createAuthId()
+    val (user, authId, authSid, _) = createUser()
     val sessionId = createSessionId()
 
-    implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+    implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
     def e1() = {
       val validOrigFileModel = Await.result(db.run(fsAdapter.uploadFile("avatar.jpg", validOrigFile)), 5.seconds)
@@ -118,12 +123,12 @@ class ProfileServiceSpec
     }
 
     def e4() = {
-      val (user1, authId1, _) = createUser()
-      val (user2, authId2, _) = createUser()
+      val (user1, authId1, authSid1, _) = createUser()
+      val (user2, authId2, authSid2, _) = createUser()
       val sessionId = createSessionId()
 
-      val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-      val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+      val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+      val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
 
       whenReady(service.jhandleCheckNickName("rockjam", clientData1)) { resp ⇒
         resp shouldEqual Ok(ResponseBool(true))
@@ -175,10 +180,10 @@ class ProfileServiceSpec
     }
 
     def e5() = {
-      val (user1, authId1, _) = createUser()
+      val (user1, authId1, authSid1, _) = createUser()
       val sessionId = createSessionId()
 
-      val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
+      val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
       val about = Some("is' me")
       whenReady(service.jhandleEditAbout(about, clientData1)) { resp ⇒
@@ -187,7 +192,7 @@ class ProfileServiceSpec
         }
       }
 
-      whenReady(db.run(persist.User.find(user1.id).headOption)) { optUser ⇒
+      whenReady(db.run(persist.UserRepo.find(user1.id).headOption)) { optUser ⇒
         optUser shouldBe defined
         optUser.get.about shouldEqual about
       }
@@ -205,13 +210,95 @@ class ProfileServiceSpec
         }
       }
 
-      whenReady(db.run(persist.User.find(user1.id).headOption)) { optUser ⇒
+      whenReady(db.run(persist.UserRepo.find(user1.id).headOption)) { optUser ⇒
         optUser shouldBe defined
         optUser.get.about shouldEqual None
       }
 
     }
 
-  }
+    def timeZone() = {
+      val (user, authId, authSid, _) = createUser()
 
+      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+      whenReady(service.handleEditMyTimeZone("Africa/Addis_Ababa")) { resp ⇒
+        resp should matchPattern {
+          case Ok(_: ResponseSeq) ⇒
+        }
+      }
+    }
+
+    def invalidTimeZone() = {
+      val (user, authId, authSid, _) = createUser()
+
+      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+      whenReady(service.handleEditMyTimeZone("Africa/Addis_AbEba")) { resp ⇒
+        inside(resp) {
+          case Error(RpcError(400, "INVALID_TIME_ZONE", _, false, _)) ⇒
+        }
+      }
+    }
+
+    def sameTimeZone() = {
+      val (user, authId, authSid, _) = createUser()
+
+      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+      val tz = "Africa/Addis_Ababa"
+
+      whenReady(service.handleEditMyTimeZone(tz)) { resp ⇒
+        resp should matchPattern {
+          case Ok(_: ResponseSeq) ⇒
+        }
+      }
+      whenReady(service.handleEditMyTimeZone(tz)) { resp ⇒
+        inside(resp) {
+          case Error(RpcError(400, "UPDATE_ALREADY_APPLIED", _, false, _)) ⇒
+        }
+      }
+    }
+
+    def preferredLanguages() = {
+      val (user, authId, authSid, _) = createUser()
+
+      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+      whenReady(service.handleEditMyPreferredLanguages(Vector("pt-BR", "en-US", "ru"))) { resp ⇒
+        resp should matchPattern {
+          case Ok(_: ResponseSeq) ⇒
+        }
+      }
+    }
+
+    def invalidPreferredLanguages() = {
+      val (user, authId, authSid, _) = createUser()
+
+      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+      whenReady(service.handleEditMyPreferredLanguages(Vector("pt-br"))) { resp ⇒
+        inside(resp) {
+          case Error(RpcError(400, "INVALID_LOCALE", _, false, _)) ⇒
+        }
+      }
+
+      whenReady(service.handleEditMyPreferredLanguages(Vector.empty)) { resp ⇒
+        inside(resp) {
+          case Error(RpcError(400, "EMPTY_LOCALES_LIST", _, false, _)) ⇒
+        }
+      }
+    }
+
+    def samePreferredLanguages() = {
+      implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
+      val langs = Vector("pt-BR", "en-US", "ru")
+
+      whenReady(service.handleEditMyPreferredLanguages(langs)) { resp ⇒
+        resp should matchPattern {
+          case Ok(_: ResponseSeq) ⇒
+        }
+      }
+      whenReady(service.handleEditMyPreferredLanguages(langs)) { resp ⇒
+        inside(resp) {
+          case Error(RpcError(400, "UPDATE_ALREADY_APPLIED", _, false, _)) ⇒
+        }
+      }
+    }
+  }
 }

@@ -1,7 +1,7 @@
 package im.actor.botkit
 
 import akka.actor.{ ActorSystem, Props }
-import im.actor.bots.BotMessages.TextMessage
+import im.actor.bots.BotMessages.{ RawUpdate, Message, TextMessage }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -9,7 +9,7 @@ import scala.concurrent.duration._
 object EchoBotApp extends App {
   implicit val system = ActorSystem()
 
-  val token = "d201a56591397a03b61a5f7a803cf5020d6661c7"
+  val token = "f31922d943395309b61def3dfb7fd43b9158717c"
 
   system.actorOf(
     //EchoBot.props(token, RemoteBot.DefaultEndpoint),
@@ -26,9 +26,15 @@ object EchoBot {
 }
 
 final class EchoBot(token: String, endpoint: String) extends RemoteBot(token, endpoint) {
-  override def onTextMessage(tm: TextMessage): Unit = {
-    val name = getUser(tm.sender.id).name
+  override def onMessage(m: Message): Unit = {
+    m.message match {
+      case TextMessage(text, ext) ⇒
+        val name = getUser(m.sender.id).name
 
-    requestSendTextMessage(tm.sender.asOutPeer, nextRandomId(), s"Hey $name, here is your reply: ${tm.text}")
+        requestSendMessage(m.sender, nextRandomId(), TextMessage(s"Hey $name, here is your reply: $text", ext))
+      case notAText ⇒ requestSendMessage(m.sender, nextRandomId(), notAText)
+    }
   }
+
+  override def onRawUpdate(u: RawUpdate): Unit = {}
 }

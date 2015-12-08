@@ -7,13 +7,14 @@ import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.ApiUserOutPeer
-import im.actor.api.rpc.sequence.RequestSubscribeToOnline
+import im.actor.api.rpc.sequence.{ RequestSubscribeToOnline, RequestGetState }
+import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.weak.UpdateUserOffline
 import im.actor.api.rpc.{ AuthorizedClientData, Request, RpcOk }
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
-import im.actor.server.sequence.{ SeqUpdatesManager, WeakUpdatesExtension }
-import im.actor.server.session.SessionEnvelope.Payload
+import im.actor.server.persist.AuthSessionRepo
+import im.actor.server.sequence.{ SeqUpdatesExtension, WeakUpdatesExtension }
 import im.actor.server.user.UserExtension
 import scodec.bits._
 
@@ -24,35 +25,37 @@ import scala.util.Random
 class SessionSpec extends BaseSessionSpec {
   behavior of "Session actor"
 
-  it should "send Drop on message on wrong message box" in sessions().e1
-  it should "send NewSession on first HandleMessageBox" in sessions().e2
-  it should "reply to RpcRequestBox" in sessions().e3
-  it should "handle user authorization" in sessions().e4
-  it should "subscribe to sequence updates" in sessions().e5
-  it should "subscribe to weak updates" in sessions().e6
-  it should "subscribe to presences" in sessions().e7
-  it should "react to SessionHello" in sessions().e8
+  it should "send Drop on message on wrong message box" in sessions().wrongMessageBox
+  it should "send NewSession on first HandleMessageBox" in sessions().newSession
+  it should "reply to RpcRequestBox" in sessions().rpc
+  it should "handle user authorization" in sessions().auth
+  it should "subscribe to sequence updates" in sessions().seq
+  it should "subscribe to weak updates" in sessions().weak
+  it should "subscribe to presences" in sessions().pres
+  it should "receive fat updates" in sessions().fatSeq
+  it should "react to SessionHello" in sessions().hello
 
   case class sessions() {
 
     implicit val probe = TestProbe()
 
     val weakUpdatesExt = WeakUpdatesExtension(system)
+    val seqUpdExt = SeqUpdatesExtension(system)
 
-    def e1() = {
+    def wrongMessageBox() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
-      val session = system.actorOf(Session.props)
+      val session = system.actorOf(Session.props, s"${authId}_$sessionId")
 
-      sendEnvelope(authId, sessionId, session, Payload.HandleMessageBox(HandleMessageBox(ByteString.copyFrom(BitVector.empty.toByteBuffer))))
+      probe.send(session, HandleMessageBox(ByteString.copyFrom(BitVector.empty.toByteBuffer)))
 
       probe watch session
 
-      probe.expectMsg(Drop(0, 0, "Cannot parse MessageBox"))
+      probe.expectMsg(Drop(0, 0, "Failed to parse MessageBox"))
       probe.expectTerminated(session)
     }
 
-    def e2() = {
+    def newSession() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
@@ -66,7 +69,7 @@ class SessionSpec extends BaseSessionSpec {
       probe.expectNoMsg()
     }
 
-    def e3() = {
+    def rpc() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
@@ -82,7 +85,7 @@ class SessionSpec extends BaseSessionSpec {
       }
     }
 
-    def e4() = {
+    def auth() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
 
@@ -128,7 +131,7 @@ class SessionSpec extends BaseSessionSpec {
       }
     }
 
-    def e5() = {
+    def seq() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
 
@@ -165,15 +168,53 @@ class SessionSpec extends BaseSessionSpec {
         case RpcOk(ResponseAuth(_, _)) ⇒
       }
 
-      implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
+      val authSession = Await.result(db.run(AuthSessionRepo.findByAuthId(authId)), 5.seconds).get
+      implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id, authSession.id)
+
+      val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState)).require
+
+      val thirdMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, RpcRequestBox(encodedGetSeqRequest))
+
+      expectMessageAck(authId, sessionId, thirdMessageId)
+      expectRpcResult() should matchPattern {
+        case RpcOk(ResponseSeq(_, _)) ⇒
+      }
 
       val update = UpdateContactRegistered(1, true, 1L, 2L)
-      Await.result(UserExtension(system).broadcastClientUpdate(update, None, isFat = false), 1.second)
+      Await.result(UserExtension(system).broadcastClientUpdate(update, None, isFat = false), 5.seconds)
 
       expectSeqUpdate(authId, sessionId).update should ===(update.toByteArray)
     }
 
-    def e6() = {
+    def fatSeq() = {
+      val (user, authId, authSid, _) = createUser()
+      val sessionId = Random.nextLong
+
+      implicit val clientData = AuthorizedClientData(authId, sessionId, user.id, authSid)
+
+      val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState)).require
+
+      val thirdMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, RpcRequestBox(encodedGetSeqRequest))
+
+      ignoreNewSession(authId, sessionId)
+      expectMessageAck(authId, sessionId, thirdMessageId)
+      expectRpcResult() should matchPattern {
+        case RpcOk(ResponseSeq(_, _)) ⇒
+      }
+
+      val update = UpdateContactRegistered(user.id, true, 1L, 2L)
+      whenReady(UserExtension(system).broadcastUserUpdate(user.id, update, pushText = Some("text"), isFat = true, deliveryId = None))(identity)
+
+      val fat = expectFatSeqUpdate(authId, sessionId)
+
+      fat.users.head.id should ===(user.id)
+      fat.update should ===(update.toByteArray)
+
+    }
+
+    def weak() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
 
@@ -210,15 +251,15 @@ class SessionSpec extends BaseSessionSpec {
         case RpcOk(ResponseAuth(_, _)) ⇒
       }
 
-      implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
+      implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id, Await.result(db.run(AuthSessionRepo.findByAuthId(authId)), 5.seconds).get.id)
 
-      val update = UpdateContactRegistered(1, true, 1L, 5L)
-      Await.result(db.run(weakUpdatesExt.broadcastUserWeakUpdate(clientData.userId, update, reduceKey = None)), 1.second)
+      val update = UpdateContactRegistered(1, isSilent = true, 1L, 5L)
+      Await.result(weakUpdatesExt.broadcastUserWeakUpdate(clientData.userId, update, reduceKey = None), 1.second)
 
       expectWeakUpdate(authId, sessionId).update should ===(update.toByteArray)
     }
 
-    def e7() = {
+    def pres() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
 
@@ -279,18 +320,14 @@ class SessionSpec extends BaseSessionSpec {
       ub.updateHeader should ===(UpdateUserOffline.header)
     }
 
-    def e8() = {
-      val authId = createAuthId()
+    def hello() = {
+      val (user, authId, _, _) = createUser()
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, SessionHello)
       expectNewSession(authId, sessionId, messageId)
       expectMessageAck(authId, sessionId, messageId)
-
-      SeqUpdatesManager.persistAndPushUpdate(authId, UpdateContactRegistered(1, false, 1L, 2L), None, isFat = false)
-
-      expectSeqUpdate(authId, sessionId)
       probe.expectNoMsg()
     }
   }

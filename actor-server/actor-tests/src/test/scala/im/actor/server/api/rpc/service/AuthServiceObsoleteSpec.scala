@@ -10,12 +10,9 @@ import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.session.Session
-import im.actor.server.social.SocialManager
-import im.actor.server.user.{ UserProcessorRegion, UserOffice }
 import im.actor.server._
 
-class AuthServiceObsoleteSpec extends BaseAppSuite {
+final class AuthServiceObsoleteSpec extends BaseAppSuite with SeqUpdateMatchers {
   behavior of "Obsolete methods in AuthService"
 
   "SendAuthCode handler" should "respond ok to a request valid number" in s.sendAuthCode.e1
@@ -35,7 +32,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
   object s {
     implicit val ec = system.dispatcher
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-    implicit val sessionRegion = Session.startRegionProxy()
+    implicit val sessionRegion = buildSessionRegion()
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     implicit val service = new auth.AuthServiceImpl(new DummyCodeActivation)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
@@ -85,16 +82,17 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
       }
 
       def e2() = {
-        val (user, authId, _) = createUser()
+        val (user, authId, authSid, _) = createUser()
 
         val unregPhoneNumber = buildPhone()
 
         {
+
           val authId = createAuthId()
           val sessionId = createSessionId()
           val smsHash = getSmsHash(authId, unregPhoneNumber)
 
-          Await.result(db.run(persist.contact.UnregisteredPhoneContact.createIfNotExists(unregPhoneNumber, user.id, Some("Local name"))), 5.seconds)
+          Await.result(db.run(persist.contact.UnregisteredPhoneContactRepo.createIfNotExists(unregPhoneNumber, user.id, Some("Local name"))), 5.seconds)
 
           implicit val clientData = ClientData(authId, sessionId, None)
 
@@ -117,13 +115,13 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
           }
         }
 
+        implicit val clientData = ClientData(authId, 1L, Some(AuthData(user.id, authSid)))
+
+        expectUpdate(classOf[UpdateContactRegistered])(_ ⇒ ())
+
         Thread.sleep(1000)
 
-        whenReady(db.run(persist.sequence.SeqUpdate.find(authId).head)) { update ⇒
-          update.header should ===(UpdateContactRegistered.header)
-        }
-
-        whenReady(db.run(persist.contact.UnregisteredPhoneContact.find(unregPhoneNumber))) { unregContacts ⇒
+        whenReady(db.run(persist.contact.UnregisteredPhoneContactRepo.find(unregPhoneNumber))) { unregContacts ⇒
           unregContacts shouldBe empty
         }
       }
@@ -184,12 +182,12 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
           resp.toOption.get
         }
 
-        Await.result(db.run(persist.AuthId.find(authId)), 5.seconds) should ===(Some(models.AuthId(authId, Some(rsp.user.id), None)))
+        Await.result(db.run(persist.AuthIdRepo.find(authId)), 5.seconds) should ===(Some(model.AuthId(authId, Some(rsp.user.id), None)))
       }
 
       def sameDeviceHash() = {
         val phoneNumber = buildPhone()
-        val user = createUser(phoneNumber)
+        val (user, _) = createUser(phoneNumber)
 
         val deviceHash = Array[Byte](4, 5, 6)
 
@@ -239,13 +237,13 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
           }
         }
 
-        whenReady(db.run(persist.AuthId.findByUserId(user.id))) { authIds ⇒
+        whenReady(db.run(persist.AuthIdRepo.findByUserId(user.id))) { authIds ⇒
           val ids = authIds.map(_.id)
           ids should contain(authId2)
           ids shouldNot contain(authId1)
         }
 
-        whenReady(db.run(persist.AuthSession.findByUserId(user.id))) { sessions ⇒
+        whenReady(db.run(persist.AuthSessionRepo.findByUserId(user.id))) { sessions ⇒
           val ids = sessions.map(_.authId)
           ids should contain(authId2)
           ids shouldNot contain(authId1)

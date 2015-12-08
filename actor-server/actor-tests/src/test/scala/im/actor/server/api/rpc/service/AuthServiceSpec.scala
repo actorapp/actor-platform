@@ -9,18 +9,19 @@ import im.actor.api.rpc.auth._
 import im.actor.api.rpc.contacts.{ ApiPhoneToImport, ResponseGetContacts, UpdateContactRegistered }
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.users.{ ApiContactRecord, ApiContactType, ApiSex }
+import im.actor.concurrent.FutureExt
 import im.actor.server._
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
-import im.actor.server.models.contact.UserContact
+import im.actor.server.model.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.persist.auth.AuthTransaction
-import im.actor.server.sequence.SeqUpdatesManager
+import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.session.{ HandleMessageBox, Session, SessionConfig, SessionEnvelope }
+import im.actor.server.email.DummyEmailSender
 import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
 import im.actor.server.user.ContactsUtils
 import org.scalatest.Inside._
@@ -33,8 +34,8 @@ import scalaz.\/
 final class AuthServiceSpec
   extends BaseAppSuite
   with ImplicitSequenceService
-  with ImplicitSessionRegionProxy
-  with SequenceMatchers {
+  with ImplicitSessionRegion
+  with SeqUpdateMatchers {
   behavior of "AuthService"
 
   //phone part
@@ -64,9 +65,9 @@ final class AuthServiceSpec
 
   it should "complete sign up process for unregistered user" in s.e9
 
-  it should "register unregistered contacts and send updates" in s.e90
+  it should "register unregistered contacts and send updates" in s.contactRegistered
 
-  it should "register unregistered contacts with local name" in s.e91
+  it should "register unregistered contacts with local name" in s.unregContactLocalName
 
   "AuthTransaction and AuthSmsCode" should "be invalidated after sign in process successfully completed" in s.e10
 
@@ -77,31 +78,31 @@ final class AuthServiceSpec
 
   //  it should "respond with ok to email of registered user" in s.e13
 
-  it should "respond with error to malformed email address" in s.e14
+  it should "respond with error to malformed email address" in s.malformedEmail
 
   it should "respond with same transactionHash when called multiple times" in s.e15
 
   it should "associate authorizations from two different devices with different auth transactions" in s.e155
 
-  "GetOAuth2Params handler" should "respond with error when malformed url is passed" in s.e16
+  "GetOAuth2Params handler" should "respond with error when malformed url is passed" in pendingUntilFixed(s.e16)
 
-  it should "respond with error when wrong transactionHash is passed" in s.e17
+  it should "respond with error when wrong transactionHash is passed" in pendingUntilFixed(s.e17)
 
-  it should "respond with correct authUrl on correct request" in s.e18
+  it should "respond with correct authUrl on correct request" in pendingUntilFixed(s.e18)
 
-  "CompleteOAuth2 handler" should "respond with error when wrong transactionHash is passed" in s.e19
+  "CompleteOAuth2 handler" should "respond with error when wrong transactionHash is passed" in pendingUntilFixed(s.e19)
 
-  it should "respond with EmailUnoccupied error when new user oauth token retreived" in s.e20
+  it should "respond with EmailUnoccupied error when new user oauth token retreived" in pendingUntilFixed(s.e20)
 
-  it should "respond with error when unable to get oauth2 token" in s.e200
+  it should "respond with error when unable to get oauth2 token" in pendingUntilFixed(s.e200)
 
   //  it should "complete sign in process for registered user" in s.e21
 
-  "SignUp handler" should "respond with error if it was called before completeOAuth2" in s.e22
+  "SignUp handler" should "respond with error if it was called before completeOAuth2" in pendingUntilFixed(s.e22)
 
-  it should "complete sign up process for unregistered user via email oauth" in s.e23
+  it should "complete sign up process for unregistered user via email oauth" in pendingUntilFixed(s.e23)
 
-  it should "register unregistered contacts and send updates for email auth" in s.e24
+  it should "register unregistered contacts and send updates for email auth" in pendingUntilFixed(s.e24)
 
   "Logout" should "remove authId and vendor credentials" in s.e25
 
@@ -115,7 +116,7 @@ final class AuthServiceSpec
     val oauthGoogleConfig = DummyOAuth2Server.config
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     val activationConfig = ActivationConfig.load.get
-    val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, new DummyCallEngine, null)
+    val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, new DummyCallEngine, new DummyEmailSender)
     implicit val service = new auth.AuthServiceImpl(activationContext)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     implicit val contactService = new ContactsServiceImpl
@@ -138,8 +139,8 @@ final class AuthServiceSpec
     }
 
     def e2() = {
-      val (user, authId, phoneNumber) = createUser()
-      implicit val clientData = ClientData(authId, createSessionId(), Some(user.id))
+      val (user, authId, authSid, phoneNumber) = createUser()
+      implicit val clientData = ClientData(authId, createSessionId(), Some(AuthData(user.id, authSid)))
 
       whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
         inside(resp) {
@@ -169,7 +170,9 @@ final class AuthServiceSpec
         appId = 42,
         apiKey = "apiKey",
         deviceHash = deviceHash,
-        deviceTitle = "Specs virtual device"
+        deviceTitle = "Specs virtual device",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )
 
       val transactionHash =
@@ -199,7 +202,9 @@ final class AuthServiceSpec
         appId = 42,
         apiKey = "apiKey",
         deviceHash = Random.nextLong().toBinaryString.getBytes,
-        deviceTitle = "Specs virtual device"
+        deviceTitle = "Specs virtual device",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )) { resp ⇒
         resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
         resp.toOption.get.transactionHash
@@ -210,7 +215,9 @@ final class AuthServiceSpec
         appId = 3,
         apiKey = "someKey",
         deviceHash = Random.nextLong().toBinaryString.getBytes,
-        deviceTitle = "Web browser"
+        deviceTitle = "Web browser",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )) { resp ⇒
         resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
         resp.toOption.get.transactionHash
@@ -264,7 +271,7 @@ final class AuthServiceSpec
         }
 
       val dateUpdate =
-        persist.AuthCode.codes
+        persist.AuthCodeRepo.codes
           .filter(_.transactionHash === transactionHash)
           .map(_.createdAt)
           .update(LocalDateTime.now(ZoneOffset.UTC).minusHours(25))
@@ -276,10 +283,10 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(AuthTransaction.find(transactionHash))) {
+      whenReady(db.run(AuthTransactionRepo.find(transactionHash))) {
         _ shouldBe empty
       }
-      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) {
+      whenReady(db.run(persist.AuthCodeRepo.findByTransactionHash(transactionHash))) {
         _ shouldBe empty
       }
     }
@@ -300,16 +307,16 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { optCache ⇒
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) { optCache ⇒
         optCache should not be empty
         optCache.get.isChecked shouldEqual true
       }
     }
 
     def e7() = {
-      val (user, authId, phoneNumber) = createUser()
+      val (user, authId, authSid, phoneNumber) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
       sendSessionHello(authId, sessionId)
 
@@ -360,10 +367,10 @@ final class AuthServiceSpec
           case Error(AuthErrors.PhoneCodeExpired) ⇒
         }
       }
-      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) { code ⇒
+      whenReady(db.run(persist.AuthCodeRepo.findByTransactionHash(transactionHash))) { code ⇒
         code shouldBe empty
       }
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { transaction ⇒
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) { transaction ⇒
         transaction shouldBe empty
       }
     }
@@ -388,7 +395,7 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { optCache ⇒
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) { optCache ⇒
         optCache should not be empty
         optCache.get.isChecked shouldEqual false
       }
@@ -430,7 +437,7 @@ final class AuthServiceSpec
       }
     }
 
-    def e90() = {
+    def contactRegistered() = {
       val phoneNumber = buildPhone()
       val userName = "Rock Jam"
       val userSex = Some(ApiSex.Male)
@@ -439,9 +446,9 @@ final class AuthServiceSpec
       val unregClientData = ClientData(authId, sessionId, None)
 
       //make unregistered contact
-      val (regUser, regAuthId, _) = createUser()
-      whenReady(db.run(persist.contact.UnregisteredPhoneContact.createIfNotExists(phoneNumber, regUser.id, Some("Local name"))))(_ ⇒ ())
-      val regClientData = ClientData(regAuthId, sessionId, Some(regUser.id))
+      val (regUser, regAuthId, regAuthSid, _) = createUser()
+      whenReady(db.run(persist.contact.UnregisteredPhoneContactRepo.createIfNotExists(phoneNumber, regUser.id, Some("Local name"))))(_ ⇒ ())
+      val regClientData = ClientData(regAuthId, sessionId, Some(AuthData(regUser.id, regAuthSid)))
 
       sendSessionHello(authId, sessionId)
 
@@ -458,21 +465,22 @@ final class AuthServiceSpec
 
       {
         implicit val clientData = regClientData
-        expectUpdate[UpdateContactRegistered](0, Array.empty, UpdateContactRegistered.header)(identity)
+        expectUpdate(classOf[UpdateContactRegistered])(identity)
       }
 
-      whenReady(db.run(persist.contact.UnregisteredPhoneContact.find(phoneNumber))) {
+      whenReady(db.run(persist.contact.UnregisteredPhoneContactRepo.find(phoneNumber))) {
         _ shouldBe empty
       }
-      whenReady(db.run(persist.contact.UserContact.find(regUser.id, user.id))) { optContact ⇒
+      whenReady(db.run(persist.contact.UserContactRepo.find(regUser.id, user.id))) { optContact ⇒
         optContact should not be empty
         optContact.get should matchPattern {
-          case UserContact(_, _, Some(_), _, false) ⇒
+          case UserContact(_, _, Some(_), false) ⇒
         }
       }
+      whenReady(db.run(persist.contact.UserContactRepo.findNotDeletedIds(user.id)))(_ shouldBe empty)
     }
 
-    def e91() = {
+    def unregContactLocalName() = {
       val phoneNumber = buildPhone()
       val userName = "Rock Jam"
       val userSex = Some(ApiSex.Male)
@@ -480,9 +488,9 @@ final class AuthServiceSpec
       val sessionId = createSessionId()
       val unregClientData = ClientData(authId, sessionId, None)
 
-      val (regUser, regAuthId, _) = createUser()
+      val (regUser, regAuthId, regAuthSid, _) = createUser()
       val localName = Some("Bloody wild goat")
-      val regClientData = ClientData(regAuthId, sessionId, Some(regUser.id))
+      val regClientData = ClientData(regAuthId, sessionId, Some(AuthData(regUser.id, regAuthSid)))
 
       {
         implicit val clientData = regClientData
@@ -492,7 +500,7 @@ final class AuthServiceSpec
 
       sendSessionHello(authId, sessionId)
 
-      val createdUser = {
+      {
         implicit val clientData = unregClientData
         val transactionHash =
           whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
@@ -505,16 +513,10 @@ final class AuthServiceSpec
 
       {
         implicit val clientData = regClientData
-        expectUpdate[UpdateContactRegistered](0, Array.empty, UpdateContactRegistered.header)(identity)
+        expectUpdate(classOf[UpdateContactRegistered])(identity)
 
-        whenReady(db.run(persist.contact.UnregisteredPhoneContact.find(phoneNumber))) {
+        whenReady(db.run(persist.contact.UnregisteredPhoneContactRepo.find(phoneNumber))) {
           _ shouldBe empty
-        }
-
-        val kv = ShardakkaExtension(system).simpleKeyValue(KeyValueMappings.LocalNames)
-        whenReady(kv.get(ContactsUtils.localNameKey(regUser.id, createdUser.id))) { optLocalName ⇒
-          optLocalName shouldBe defined
-          optLocalName shouldEqual localName
         }
 
         whenReady(contactService.handleGetContacts("wrongHash")) { resp ⇒
@@ -531,9 +533,9 @@ final class AuthServiceSpec
     }
 
     def e10() = {
-      val (user, authId, phoneNumber) = createUser()
+      val (user, authId, authSid, phoneNumber) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
       sendSessionHello(authId, sessionId)
 
@@ -546,10 +548,10 @@ final class AuthServiceSpec
         inside(resp) { case Ok(ResponseAuth(respUser, _)) ⇒ }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) {
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) {
         _ shouldBe empty
       }
-      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) {
+      whenReady(db.run(persist.AuthCodeRepo.findByTransactionHash(transactionHash))) {
         _ shouldBe empty
       }
     }
@@ -578,10 +580,10 @@ final class AuthServiceSpec
         inside(resp) { case Ok(ResponseAuth(user, _)) ⇒ }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) {
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) {
         _ shouldBe empty
       }
-      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) {
+      whenReady(db.run(persist.AuthCodeRepo.findByTransactionHash(transactionHash))) {
         _ shouldBe empty
       }
     }
@@ -592,7 +594,7 @@ final class AuthServiceSpec
 
       whenReady(startEmailAuth(email)) { resp ⇒
         inside(resp) {
-          case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒
+          case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.CODE)) ⇒
             hash should not be empty
         }
       }
@@ -600,8 +602,8 @@ final class AuthServiceSpec
 
     def e13() = {}
 
-    def e14() = {
-      val malformedEmail = "foo@bar"
+    def malformedEmail() = {
+      val malformedEmail = "http://sh____"
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       whenReady(startEmailAuth(malformedEmail)) { resp ⇒
@@ -616,26 +618,31 @@ final class AuthServiceSpec
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       val deviceHash = Random.nextLong().toBinaryString.getBytes
-      def q() = service.handleStartEmailAuth(
-        email = email,
-        appId = 42,
-        apiKey = "apiKey",
-        deviceHash = deviceHash,
-        deviceTitle = "Specs virtual device"
-      )
+      def q() = {
+        Thread.sleep(100)
+        service.handleStartEmailAuth(
+          email = email,
+          appId = 42,
+          apiKey = "apiKey",
+          deviceHash = deviceHash,
+          deviceTitle = "Specs virtual device",
+          timeZone = None,
+          preferredLanguages = Vector.empty
+        )
+      }
 
       val transactionHash =
         whenReady(q()) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.CODE)) ⇒ }
           resp.toOption.get.transactionHash
         }
 
-      val seq = Future.sequence(List(q(), q(), q(), q(), q(), q()))
+      val seq = FutureExt.ftraverse(List(q(), q(), q(), q(), q(), q()))(identity)
 
       whenReady(seq) { resps ⇒
         resps foreach {
           inside(_) {
-            case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒
+            case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.CODE)) ⇒
               hash shouldEqual transactionHash
           }
         }
@@ -651,7 +658,9 @@ final class AuthServiceSpec
         appId = 42,
         apiKey = "apiKey",
         deviceHash = Random.nextLong().toBinaryString.getBytes,
-        deviceTitle = "Specs virtual device"
+        deviceTitle = "Specs virtual device",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )) { resp ⇒
         resp should matchPattern { case Ok(ResponseStartEmailAuth(_, false, _)) ⇒ }
         resp.toOption.get.transactionHash
@@ -662,7 +671,9 @@ final class AuthServiceSpec
         appId = 3,
         apiKey = "someKey",
         deviceHash = Random.nextLong().toBinaryString.getBytes,
-        deviceTitle = "Web browser"
+        deviceTitle = "Web browser",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )) { resp ⇒
         resp should matchPattern { case Ok(ResponseStartEmailAuth(_, false, _)) ⇒ }
         resp.toOption.get.transactionHash
@@ -718,7 +729,7 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(persist.auth.AuthEmailTransaction.find(transactionHash))) { optCache ⇒
+      whenReady(db.run(persist.auth.AuthEmailTransactionRepo.find(transactionHash))) { optCache ⇒
         optCache should not be empty
         val cache = optCache.get
         cache.redirectUri shouldEqual Some(correctUri)
@@ -763,12 +774,12 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { optCache ⇒
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) { optCache ⇒
         optCache should not be empty
         optCache.get.isChecked shouldEqual true
       }
 
-      whenReady(db.run(persist.OAuth2Token.findByUserId(email))) { optToken ⇒
+      whenReady(db.run(persist.OAuth2TokenRepo.findByUserId(email))) { optToken ⇒
         optToken should not be empty
         val token = optToken.get
         token.accessToken should not be empty
@@ -795,7 +806,7 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { optCache ⇒
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) { optCache ⇒
         optCache should not be empty
         optCache.get.isChecked shouldEqual false
       }
@@ -820,7 +831,7 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { optCache ⇒
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) { optCache ⇒
         optCache should not be empty
         optCache.get.isChecked shouldEqual false
       }
@@ -864,12 +875,12 @@ final class AuthServiceSpec
           }
           resp.toOption.get.user
         }
-      whenReady(db.run(persist.UserEmail.find(email))) { optEmail ⇒
+      whenReady(db.run(persist.UserEmailRepo.find(email))) { optEmail ⇒
         optEmail should not be empty
         optEmail.get.userId shouldEqual user.id
       }
 
-      whenReady(db.run(persist.OAuth2Token.findByUserId(email))) { optToken ⇒
+      whenReady(db.run(persist.OAuth2TokenRepo.findByUserId(email))) { optToken ⇒
         optToken should not be empty
         val token = optToken.get
         token.accessToken should not be empty
@@ -888,9 +899,9 @@ final class AuthServiceSpec
       val unregClientData = ClientData(authId, sessionId, None)
 
       //make unregistered contact
-      val (regUser, regAuthId, _) = createUser()
-      whenReady(db.run(persist.contact.UnregisteredEmailContact.createIfNotExists(email, regUser.id, Some("Local name"))))(_ ⇒ ())
-      val regClientData = ClientData(regAuthId, sessionId, Some(regUser.id))
+      val (regUser, regAuthId, regAuthSid, _) = createUser()
+      whenReady(db.run(persist.contact.UnregisteredEmailContactRepo.createIfNotExists(email, regUser.id, Some("Local name"))))(_ ⇒ ())
+      val regClientData = ClientData(regAuthId, sessionId, Some(AuthData(regUser.id, regAuthSid)))
 
       sendSessionHello(authId, sessionId)
 
@@ -909,37 +920,37 @@ final class AuthServiceSpec
 
       {
         implicit val clientData = regClientData
-        expectUpdate[UpdateContactRegistered](0, Array.empty, UpdateContactRegistered.header)(identity)
+        expectUpdate(classOf[UpdateContactRegistered])(identity)
       }
 
-      whenReady(db.run(persist.contact.UnregisteredEmailContact.find(email))) {
+      whenReady(db.run(persist.contact.UnregisteredEmailContactRepo.find(email))) {
         _ shouldBe empty
       }
-      whenReady(db.run(persist.contact.UserContact.find(regUser.id, user.id))) { optContact ⇒
+      whenReady(db.run(persist.contact.UserContactRepo.find(regUser.id, user.id))) { optContact ⇒
         optContact should not be empty
         optContact.get should matchPattern {
-          case UserContact(_, _, _, _, false) ⇒
+          case UserContact(_, _, _, false) ⇒
         }
       }
     }
 
     def e25() = {
-      val (user, authId, _) = createUser()
+      val (user, authId, authSid, _) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
-      SeqUpdatesManager.setPushCredentials(authId, models.push.GooglePushCredentials(authId, 22L, "hello"))
-      SeqUpdatesManager.setPushCredentials(authId, models.push.ApplePushCredentials(authId, 22, "hello".getBytes()))
+      seqUpdExt.registerGooglePushCredentials(model.push.GooglePushCredentials(authId, 22L, "hello"))
+      seqUpdExt.registerApplePushCredentials(model.push.ApplePushCredentials(authId, 22, ByteString.copyFrom("hello".getBytes)))
 
       //let seqUpdateManager register credentials
-      Thread.sleep(1000L)
-      whenReady(db.run(persist.AuthId.find(authId))) { optAuthId ⇒
+      Thread.sleep(5000L)
+      whenReady(db.run(persist.AuthIdRepo.find(authId))) { optAuthId ⇒
         optAuthId shouldBe defined
       }
-      whenReady(db.run(persist.push.GooglePushCredentials.find(authId))) { optGoogleCreds ⇒
+      whenReady(db.run(persist.push.GooglePushCredentialsRepo.find(authId))) { optGoogleCreds ⇒
         optGoogleCreds shouldBe defined
       }
-      whenReady(db.run(persist.push.ApplePushCredentials.find(authId))) { appleCreds ⇒
+      whenReady(db.run(persist.push.ApplePushCredentialsRepo.find(authId))) { appleCreds ⇒
         appleCreds shouldBe defined
       }
 
@@ -950,14 +961,15 @@ final class AuthServiceSpec
 
       }
       //let seqUpdateManager register credentials
-      Thread.sleep(1000L)
-      whenReady(db.run(persist.AuthId.find(authId))) { optAuthId ⇒
+      Thread.sleep(5000L)
+
+      whenReady(db.run(persist.AuthIdRepo.find(authId))) { optAuthId ⇒
         optAuthId should not be defined
       }
-      whenReady(db.run(persist.push.GooglePushCredentials.find(authId))) { optGoogleCreds ⇒
+      whenReady(db.run(persist.push.GooglePushCredentialsRepo.find(authId))) { optGoogleCreds ⇒
         optGoogleCreds should not be defined
       }
-      whenReady(db.run(persist.push.ApplePushCredentials.find(authId))) { appleCreds ⇒
+      whenReady(db.run(persist.push.ApplePushCredentialsRepo.find(authId))) { appleCreds ⇒
         appleCreds should not be defined
       }
     }
@@ -968,7 +980,9 @@ final class AuthServiceSpec
         appId = 42,
         apiKey = "apiKey",
         deviceHash = Random.nextLong().toBinaryString.getBytes,
-        deviceTitle = "Specs virtual device"
+        deviceTitle = "Specs virtual device",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )
     }
 
@@ -978,7 +992,9 @@ final class AuthServiceSpec
         appId = 42,
         apiKey = "apiKey",
         deviceHash = Random.nextLong().toBinaryString.getBytes,
-        deviceTitle = "Specs virtual device"
+        deviceTitle = "Specs virtual device",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )
     }
 
@@ -1062,10 +1078,11 @@ object DummyOAuth2Server {
   }
 }
 
-class DummySmsEngine extends AuthSmsEngine {
+final class DummySmsEngine extends AuthSmsEngine {
   override def sendCode(phoneNumber: Long, code: String): Future[Unit] = Future.successful(())
 }
 
-class DummyCallEngine extends AuthCallEngine {
+final class DummyCallEngine extends AuthCallEngine {
   override def sendCode(phoneNumber: Long, code: String, language: String): Future[Unit] = Future.successful(())
 }
+

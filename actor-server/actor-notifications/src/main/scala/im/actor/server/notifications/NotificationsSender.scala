@@ -44,7 +44,7 @@ object NotificationsSender {
     Props(classOf[NotificationsSender], config, engine)
 }
 
-class NotificationsSender(implicit config: NotificationsConfig, engine: SmsEngine) extends Actor with ActorLogging {
+private class NotificationsSender(implicit config: NotificationsConfig, engine: SmsEngine) extends Actor with ActorLogging {
 
   import AnyRefLogSource._
   import NotificationsSender._

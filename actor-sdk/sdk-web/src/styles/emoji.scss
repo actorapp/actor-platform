@@ -1,0 +1,163 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+$emoji-dropdown-width: 328px;
+
+.emoji-outer {
+  line-height: $message-line-height;
+
+  display: inline-block;
+
+  width: $message-line-height;
+  height: $message-line-height;
+
+  vertical-align: middle;
+}
+.emoji-inner {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  vertical-align: inherit;
+  text-indent: -9999px;
+}
+.emoji-sizer {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 1px;
+
+  background-size: 100%;
+}
+
+.emoji-dropdown {
+  position: relative;
+
+  display: none;
+
+  color: rgba($greyish-brown, .6);
+
+  &__wrapper {
+    position: absolute;
+    z-index: 1500;
+    right: 1px;
+    bottom: 0;
+
+    overflow: hidden;
+    //max-width: 500px;
+
+    border-radius: 2px;
+    background-color: rgba(white, .975);
+    box-shadow: 0 0 0 1px $cloudy-blue, 0 0 6px 0 rgba(black, .13);
+  }
+  &__header {
+    font-size: 12px;
+    line-height: 20px;
+
+    padding: 0;
+
+    background-color: white;
+    //border-bottom: 1px solid #ebebeb;
+    box-shadow: inset 0 -1px 0 0 #ebebeb;
+
+    @include clearfix();
+    &__title {
+      display: inline-block;
+
+      margin: 5px 0 5px 6px;
+    }
+    &__tabs {
+      line-height: 1px;
+
+      margin: 0;
+      padding: 0;
+
+      list-style: none;
+      &__tab {
+        line-height: 24px;
+
+        display: inline-block;
+
+        margin: 0;
+        padding: 4px;
+
+        cursor: pointer;
+        text-align: center;
+        .emoji-outer {
+          line-height: 1px;
+
+          width: 22px;
+          height: 22px;
+
+          opacity: .4;
+
+          filter: grayscale(1);
+        }
+        &:hover {
+          box-shadow: inset 0 -3px 0 0 #ebebeb;
+        }
+
+        &--active {
+          box-shadow: inset 0 -3px 0 0 $dark-sky-blue !important;
+          .emoji-outer {
+            opacity: .9 !important;
+
+            filter: none !important;
+          }
+        }
+      }
+    }
+  }
+  &__body {
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    box-sizing: border-box;
+    width: $emoji-dropdown-width;
+    height: 200px;
+
+    @include clearfix();
+    div {
+      padding: 4px;
+
+      border-bottom: 1px solid #ebebeb;
+
+      @include clearfix();
+      &:last-child {
+        border-bottom: 0;
+      }
+      p {
+        font-size: 12px;
+
+        display: block;
+
+        margin: 0;
+        padding: 6px 2px 10px;
+      }
+      a {
+        line-height: 1px;
+
+        display: block;
+        float: left;
+
+        padding: 2px;
+
+        cursor: pointer;
+
+        border-radius: 2px;
+        &:hover {
+          transform: scale(1.5);
+        }
+      }
+    }
+
+    .emoji-outer {
+      width: 28px;
+      height: 28px;
+    }
+  }
+  &--opened {
+    display: block;
+  }
+}

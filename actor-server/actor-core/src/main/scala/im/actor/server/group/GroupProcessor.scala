@@ -5,10 +5,12 @@ import akka.cluster.sharding.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
+import im.actor.api.rpc.collections.{ ApiMapValueItem, ApiMapValue }
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
 import im.actor.server.KeyValueMappings
 import im.actor.server.db.DbExtension
+import im.actor.server.dialog.{ DirectDialogCommand, DialogExtension }
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension, Avatar }
 import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
@@ -48,7 +50,7 @@ private[group] case class Group(
   topic:           Option[String],
   isHidden:        Boolean,
   isHistoryShared: Boolean,
-  extensions:      Seq[ApiExtension]
+  extensions:      Seq[ApiMapValue]
 ) extends ProcessorState
 
 trait GroupCommand {
@@ -135,11 +137,14 @@ private[group] final class GroupProcessor
 
   protected val db: Database = DbExtension(system).db
   protected val userExt = UserExtension(system)
+  protected lazy val dialogExt = DialogExtension(system)
   protected implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
+  protected val seqUpdExt = SeqUpdatesExtension(system)
 
   protected val integrationTokensKv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
 
   protected val groupId = self.path.name.toInt
+  override protected val notFoundError = GroupErrors.GroupNotFound(groupId)
 
   override def persistenceId = GroupOffice.persistenceIdFor(groupId)
 
@@ -192,21 +197,21 @@ private[group] final class GroupProcessor
   }
 
   override def handleInitCommand: Receive = {
-    case Create(_, typ, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
-      create(groupId, typ, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
+    case Create(_, typ, creatorUserId, title, randomId, userIds) ⇒
+      create(groupId, typ, creatorUserId, title, randomId, userIds.toSet)
     case CreateInternal(_, typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions) ⇒
       createInternal(typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions)
   }
 
   override def handleCommand(state: Group): Receive = {
-    case Invite(_, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒
+    case Invite(_, inviteeUserId, inviterUserId, randomId) ⇒
       if (!hasMember(state, inviteeUserId)) {
         persist(TSEvent(now(), GroupEvents.UserInvited(inviteeUserId, inviterUserId))) { evt ⇒
           context become working(updatedState(evt, state))
 
           val replyTo = sender()
 
-          invite(state, inviteeUserId, inviterUserId, inviterAuthId, randomId, evt.ts) pipeTo replyTo
+          invite(state, inviteeUserId, inviterUserId, randomId, evt.ts) pipeTo replyTo
         }
       } else {
         sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
@@ -220,22 +225,23 @@ private[group] final class GroupProcessor
       kick(state, kickedUserId, kickerUserId, kickerAuthId, randomId)
     case Leave(_, userId, authId, randomId) ⇒
       leave(state, userId, authId, randomId)
-    case UpdateAvatar(_, clientUserId, clientAuthId, avatarOpt, randomId) ⇒
-      updateAvatar(state, clientUserId, clientAuthId, avatarOpt, randomId)
-    case UpdateTitle(_, clientUserId, clientAuthId, title, randomId) ⇒
-      updateTitle(state, clientUserId, clientAuthId, title, randomId)
+    case UpdateAvatar(_, clientUserId, avatarOpt, randomId) ⇒
+      updateAvatar(state, clientUserId, avatarOpt, randomId)
+    case UpdateTitle(_, clientUserId, title, randomId) ⇒
+      updateTitle(state, clientUserId, title, randomId)
     case MakePublic(_, description) ⇒
       makePublic(state, description.getOrElse(""))
-    case ChangeTopic(_, clientUserId, clientAuthId, topic, randomId) ⇒
-      updateTopic(state, clientUserId, clientAuthId, topic, randomId)
-    case ChangeAbout(_, clientUserId, clientAuthId, about, randomId) ⇒
-      updateAbout(state, clientUserId, clientAuthId, about, randomId)
-    case MakeUserAdmin(_, clientUserId, clientAuthId, candidateId) ⇒
-      makeUserAdmin(state, clientUserId, clientAuthId, candidateId)
+    case ChangeTopic(_, clientUserId, topic, randomId) ⇒
+      updateTopic(state, clientUserId, topic, randomId)
+    case ChangeAbout(_, clientUserId, about, randomId) ⇒
+      updateAbout(state, clientUserId, about, randomId)
+    case MakeUserAdmin(_, clientUserId, candidateId) ⇒
+      makeUserAdmin(state, clientUserId, candidateId)
     case RevokeIntegrationToken(_, userId) ⇒
       revokeIntegrationToken(state, userId)
-    case StopOffice     ⇒ context stop self
-    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case StopOffice              ⇒ context stop self
+    case ReceiveTimeout          ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case dc: DirectDialogCommand ⇒ groupPeer forward dc
   }
 
   private[this] var groupStateMaybe: Option[Group] = None
@@ -263,15 +269,20 @@ private[group] final class GroupProcessor
       about = None,
       creatorUserId = evt.creatorUserId,
       createdAt = ts,
-      members = (evt.userIds map (userId ⇒ (userId → Member(userId, evt.creatorUserId, ts, isAdmin = (userId == evt.creatorUserId))))).toMap,
+      members = (evt.userIds map (userId ⇒ userId → Member(userId, evt.creatorUserId, ts, isAdmin = (userId == evt.creatorUserId)))).toMap,
       bot = None,
       invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
       avatar = None,
       topic = None,
       isHidden = evt.isHidden.getOrElse(false),
       isHistoryShared = evt.isHistoryShared.getOrElse(false),
-      extensions = evt.extensions
+      extensions = Vector.empty
     )
+  }
+
+  private def groupPeer: ActorRef = {
+    val groupPeer = "GroupPeer"
+    context.child(groupPeer).getOrElse(context.actorOf(GroupPeer.props(groupId), groupPeer))
   }
 
   protected def hasMember(group: Group, userId: Int): Boolean = group.members.keySet.contains(userId)

@@ -3,7 +3,7 @@ package im.actor.server.bot
 import akka.actor.{ Props, ActorSystem }
 import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
 import im.actor.bots.BotMessages
-import im.actor.server.user.UserExceptions
+import im.actor.server.user.UserErrors
 import im.actor.util.misc.IdUtils
 
 import scala.util.{ Failure, Success }
@@ -28,25 +28,28 @@ final class ActorBot extends InternalBot(ActorBot.UserId, ActorBot.Username, Act
 
   import context._
 
-  override def onTextMessage(tm: TextMessage): Unit = {
-    if (tm.peer.isPrivate && tm.text.startsWith(NewCmd)) {
-      tm.text.drop(NewCmd.length + 1).trim.split(" ").map(_.trim).toList match {
-        case nickname :: name :: Nil ⇒
-          log.warning("Creating new bot")
+  override def onMessage(m: Message): Unit = {
+    m.message match {
+      case TextMessage(text, ext) ⇒
+        if (m.peer.isPrivate && text.startsWith(NewCmd)) {
+          text.drop(NewCmd.length + 1).trim.split(" ").map(_.trim).toList match {
+            case nickname :: name :: Nil ⇒
+              log.warning("Creating new bot")
 
-          val userId = IdUtils.nextIntId()
-
-          botExt.create(userId, nickname, name, isAdmin = false) onComplete {
-            case Success(token) ⇒
-              requestSendTextMessage(tm.peer, nextRandomId(), s"Yay! Bot created, here is your token: ${token}")
-            case Failure(UserExceptions.NicknameTaken) ⇒
-              requestSendTextMessage(tm.peer, nextRandomId(), "Nickname already taken")
-            case Failure(e) ⇒
-              log.error(e, "Failed to create bot")
-              requestSendTextMessage(tm.peer, nextRandomId(), "There was a problem on our side. Please, try again a bit later.")
+              requestCreateBot(nickname, name) onComplete {
+                case Success(token) ⇒ requestSendMessage(m.peer, nextRandomId(), TextMessage(s"Yay! Bot created, here is your token: ${token}", None))
+                case Failure(BotError(_, "USERNAME_TAKEN", _, _)) ⇒
+                  requestSendMessage(m.peer, nextRandomId(), TextMessage("Username already taken", None))
+                case Failure(e) ⇒
+                  log.error(e, "Failed to create bot")
+                  requestSendMessage(m.peer, nextRandomId(), TextMessage("There was a problem on our side. Please, try again a bit later.", None))
+              }
+            case _ ⇒ requestSendMessage(m.peer, nextRandomId(), TextMessage("Command format is: /bot new <nickname> <name>", None))
           }
-        case _ ⇒ requestSendTextMessage(tm.peer, nextRandomId(), "Command format is: /bot new <nickname> <name>")
-      }
+        }
+      case _ ⇒
     }
   }
+
+  override def onRawUpdate(u: RawUpdate): Unit = {}
 }

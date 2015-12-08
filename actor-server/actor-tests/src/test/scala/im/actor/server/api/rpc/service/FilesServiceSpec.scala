@@ -12,7 +12,7 @@ import im.actor.server._
 class FilesServiceSpec
   extends BaseAppSuite
   with ImplicitFileStorageAdapter
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService {
   behavior of "FilesService"
 
@@ -28,11 +28,10 @@ class FilesServiceSpec
 
   lazy val service = new FilesServiceImpl
 
-  val (user, _, _) = createUser()
-  val authId = createAuthId()
+  val (user, authId, authSid, _) = createUser()
   val sessionId = createSessionId()
 
-  implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+  implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
   var uploadKey: Array[Byte] = Array.empty
 

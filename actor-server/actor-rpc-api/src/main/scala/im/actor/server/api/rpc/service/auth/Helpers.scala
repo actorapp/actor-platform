@@ -1,6 +1,6 @@
 package im.actor.server.api.rpc.service.auth
 
-import java.util.regex.Pattern
+import org.apache.commons.validator.routines.EmailValidator
 
 import scalaz._
 import scalaz.syntax.all._
@@ -11,13 +11,12 @@ import im.actor.api.rpc._
 import im.actor.util.misc.StringUtils
 
 private[auth] trait Helpers extends PublicKeyHelpers {
-  val emailPattern = Pattern.compile("""^[-.\w]+@(?:[a-z\d]{2,}\.)+[a-z]{2,6}$""", Pattern.UNICODE_CHARACTER_CLASS) //which regexp should we use?
 
   def matchesEmail(s: String): \/[NonEmptyList[String], String] =
-    if (emailPattern.matcher(s).matches) s.right else "Should be valid email address".wrapNel.left
+    if (EmailValidator.getInstance().isValid(s)) s.right else "Should be valid email address".wrapNel.left
 
   def validEmail(email: String): \/[NonEmptyList[String], String] =
-    StringUtils.nonEmptyString(email).flatMap(matchesEmail)
+    StringUtils.nonEmptyString(email).flatMap(e ⇒ matchesEmail(e.toLowerCase))
 
   def validPublicKey(k: Array[Byte]): \/[NonEmptyList[String], Array[Byte]] =
     if (k.isEmpty) "Should be nonempty".wrapNel.left else k.right

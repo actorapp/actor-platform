@@ -1,69 +1,162 @@
 package im.actor.server.dialog
 
+import java.time.Instant
+
 import akka.actor._
+import akka.event.Logging
 import akka.pattern.ask
 import akka.util.Timeout
-import im.actor.api.rpc.messaging.ApiMessage
+import im.actor.api.rpc.PeersImplicits
+import im.actor.api.rpc.messaging.{ ApiDialogGroup, ApiDialogShort, ApiMessage }
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.api.rpc.peers.ApiPeer
-import im.actor.api.rpc.peers.ApiPeerType._
-import im.actor.api.rpc.peers.ApiPeerType.ApiPeerType
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.extension.InternalExtensions
+import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogCommands._
-import im.actor.server.dialog.group.GroupDialogRegion
-import im.actor.server.dialog.privat.PrivateDialogRegion
-import im.actor.server.sequence.SeqStateDate
+import im.actor.server.group.GroupExtension
+import im.actor.server.model._
+import im.actor.server.persist.messaging.ReactionEventRepo
+import im.actor.server.persist.{ DialogRepo, HistoryMessageRepo }
+import im.actor.server.sequence.{ SeqState, SeqStateDate }
+import im.actor.server.user.UserExtension
+import org.joda.time.DateTime
+import slick.dbio.DBIO
 
-import scala.concurrent.{ Future, ExecutionContext }
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
+
+sealed trait DialogGroup {
+  def key: String
+  def title: String
+}
+
+object DialogGroups {
+  object Privates extends DialogGroup {
+    override def key: String = "privates"
+
+    override def title: String = "Private"
+  }
+
+  object Groups extends DialogGroup {
+    override def key: String = "groups"
+
+    override def title: String = "Groups"
+  }
+}
 
 sealed trait DialogExtension extends Extension
 
-final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
+final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension with PeersImplicits {
   DialogProcessor.register()
 
   val InternalDialogExtensions = "modules.messaging.extensions"
 
-  val privateRegion: PrivateDialogRegion = PrivateDialogRegion.start()(system)
-  val groupRegion: GroupDialogRegion = GroupDialogRegion.start()(system)
+  private val db = DbExtension(system).db
+  private lazy val userExt = UserExtension(system)
+  private lazy val groupExt = GroupExtension(system)
 
-  implicit val s: ActorSystem = system
-  implicit val ec: ExecutionContext = system.dispatcher
-  implicit val timeout: Timeout = Timeout(20.seconds) // TODO: configurable
+  private implicit val s: ActorSystem = system
+  private implicit val ec: ExecutionContext = system.dispatcher
+  private implicit val timeout: Timeout = Timeout(20.seconds) // TODO: configurable
 
-  def sendMessage(
+  private val log = Logging(system, getClass)
+
+  private def withValidPeer[A](peer: Peer, senderUserId: Int, failed: ⇒ Future[A] = Future.failed[A](DialogErrors.MessageToSelf))(f: ⇒ Future[A]): Future[A] =
+    peer match {
+      case Peer(PeerType.Private, id) if id == senderUserId ⇒
+        log.error(s"Attempt to work with yourself, userId: $senderUserId")
+        failed
+      case _ ⇒ f
+    }
+
+  def sendMessage(peer: ApiPeer, senderUserId: Int, senderAuthSid: Int, randomId: Long, message: ApiMessage, isFat: Boolean = false): Future[SeqStateDate] =
+    withValidPeer(peer.asModel, senderUserId, Future.successful(SeqStateDate())) {
+      val date = Instant.now().toEpochMilli
+      val sender = Peer.privat(senderUserId)
+      val sendMessage = SendMessage(sender, peer.asModel, senderAuthSid, date, randomId, message, isFat)
+      (userExt.processorRegion.ref ? Envelope(sender).withSendMessage(sendMessage)).mapTo[SeqStateDate]
+    }
+
+  def ackSendMessage(peer: Peer, sm: SendMessage): Future[Unit] =
+    (processorRegion(peer) ? Envelope(peer).withSendMessage(sm)).mapTo[SendMessageAck] map (_ ⇒ ())
+
+  def writeMessage(
     peer:         ApiPeer,
     senderUserId: Int,
-    senderAuthId: Long,
+    date:         DateTime,
     randomId:     Long,
-    message:      ApiMessage,
-    isFat:        Boolean
-  ): Future[SeqStateDate] =
-    sendMessage(peer.`type`, peer.id, senderUserId, senderAuthId, randomId, message, isFat)
+    message:      ApiMessage
+  ): Future[Unit] =
+    withValidPeer(peer.asModel, senderUserId, Future.successful(())) {
+      val sender = Peer.privat(senderUserId)
+      val writeMessage = WriteMessage(sender, peer.asModel, date.getMillis, randomId, message)
+      (userExt.processorRegion.ref ? Envelope(sender).withWriteMessage(writeMessage)).mapTo[WriteMessageAck] map (_ ⇒ ())
+    }
 
-  def sendMessage(peerType: ApiPeerType, peerId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, message: ApiMessage, isFat: Boolean = false): Future[SeqStateDate] = {
-    (peerType match {
-      case Private ⇒
-        privateRegion.ref ? SendMessage(privatDialogId(senderUserId, peerId), senderUserId, senderAuthId, randomId, message, isFat)
-      case Group ⇒
-        groupRegion.ref ? SendMessage(groupDialogId(peerId), senderUserId, senderAuthId, randomId, message, isFat)
-    }).mapTo[SeqStateDate]
-  }
+  def messageReceived(peer: ApiPeer, receiverUserId: Int, date: Long): Future[Unit] =
+    withValidPeer(peer.asModel, receiverUserId, Future.successful(())) {
+      val now = Instant.now().toEpochMilli
+      val receiver = Peer.privat(receiverUserId)
+      val messageReceived = MessageReceived(receiver, peer.asModel, date, now)
+      (userExt.processorRegion.ref ? Envelope(receiver).withMessageReceived(messageReceived)).mapTo[MessageReceivedAck] map (_ ⇒ ())
+    }
 
-  def messageReceived(peerType: ApiPeerType, peerId: Int, receiverUserId: Int, date: Long): Future[Unit] = {
-    (peerType match {
-      case Private ⇒ privateRegion.ref ? MessageReceived(privatDialogId(peerId, receiverUserId), receiverUserId, date)
-      case Group   ⇒ groupRegion.ref ? MessageReceived(groupDialogId(peerId), receiverUserId, date)
+  def ackMessageReceived(peer: Peer, mr: MessageReceived): Future[Unit] =
+    (processorRegion(peer) ? Envelope(peer).withMessageReceived(mr)).mapTo[MessageReceivedAck] map (_ ⇒ ())
 
-    }).mapTo[MessageReceivedAck] map (_ ⇒ ())
-  }
+  def messageRead(peer: ApiPeer, readerUserId: Int, readerAuthSid: Int, date: Long): Future[Unit] =
+    withValidPeer(peer.asModel, readerUserId, Future.successful(())) {
+      val now = Instant.now().toEpochMilli
+      val reader = Peer.privat(readerUserId)
+      val messageRead = MessageRead(reader, peer.asModel, readerAuthSid, date, now)
+      (userExt.processorRegion.ref ? Envelope(reader).withMessageRead(messageRead)).mapTo[MessageReadAck] map (_ ⇒ ())
+    }
 
-  def messageRead(peerType: ApiPeerType, peerId: Int, readerUserId: Int, readerAuthId: Long, date: Long): Future[Unit] = {
-    (peerType match {
-      case Private ⇒ privateRegion.ref ? MessageRead(privatDialogId(peerId, readerUserId), readerUserId, readerAuthId, date)
-      case Group   ⇒ groupRegion.ref ? MessageRead(groupDialogId(peerId), readerUserId, readerAuthId, date)
-    }).mapTo[MessageReadAck] map (_ ⇒ ())
-  }
+  def ackMessageRead(peer: Peer, mr: MessageRead): Future[Unit] =
+    (processorRegion(peer) ? Envelope(peer).withMessageRead(mr)).mapTo[MessageReadAck] map (_ ⇒ ())
+
+  def show(userId: Int, peer: Peer): Future[SeqState] =
+    withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withShow(Show(peer))).mapTo[SeqState]
+    }
+
+  def hide(userId: Int, peer: Peer): Future[SeqState] =
+    withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withHide(Hide(peer))).mapTo[SeqState]
+    }
+
+  def delete(userId: Int, peer: Peer): Future[SeqState] =
+    withValidPeer(peer, userId) {
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withDelete(Delete(peer))).mapTo[SeqState]
+    }
+
+  def setReaction(userId: Int, authSid: Int, peer: Peer, randomId: Long, code: String): Future[SetReactionAck] =
+    withValidPeer(peer, userId) {
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withSetReaction(SetReaction(
+        origin = Peer.privat(userId),
+        dest = peer,
+        clientAuthSid = authSid,
+        randomId = randomId,
+        code = code
+      ))).mapTo[SetReactionAck]
+    }
+
+  def removeReaction(userId: Int, authSid: Int, peer: Peer, randomId: Long, code: String): Future[RemoveReactionAck] =
+    withValidPeer(peer, userId) {
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withRemoveReaction(RemoveReaction(
+        origin = Peer.privat(userId),
+        dest = peer,
+        clientAuthSid = authSid,
+        randomId = randomId,
+        code = code
+      ))).mapTo[RemoveReactionAck]
+    }
+
+  def ackSetReaction(peer: Peer, sr: SetReaction): Future[Unit] =
+    (processorRegion(peer) ? Envelope(peer).withSetReaction(sr)) map (_ ⇒ ())
+
+  def ackRemoveReaction(peer: Peer, rr: RemoveReaction): Future[Unit] =
+    (processorRegion(peer) ? Envelope(peer).withRemoveReaction(rr)) map (_ ⇒ ())
 
   def getDeliveryExtension(extensions: Seq[ApiExtension]): DeliveryExtension = {
     extensions match {
@@ -85,9 +178,76 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
     }
   }
 
-  private def groupDialogId(gid: Int) = DialogIdContainer().withGroup(DialogId.group(gid))
+  def getUnreadCount(clientUserId: Int, historyOwner: Int, peer: Peer, ownerLastReadAt: DateTime): DBIO[Int] = {
+    if (isSharedUser(historyOwner)) {
+      for {
+        isMember ← DBIO.from(groupExt.getMemberIds(peer.id) map { case (memberIds, _, _) ⇒ memberIds contains clientUserId })
+        result ← if (isMember) HistoryMessageRepo.getUnreadCount(historyOwner, peer, ownerLastReadAt) else DBIO.successful(0)
+      } yield result
+    } else {
+      HistoryMessageRepo.getUnreadCount(historyOwner, peer, ownerLastReadAt)
+    }
+  }
 
-  private def privatDialogId(a: Int, b: Int) = DialogIdContainer().withPrivat(DialogId.privat(a, b))
+  def isSharedUser(userId: Int): Boolean = userId == 0
+
+  def getGroupedDialogs(userId: Int) = {
+    db.run(DialogRepo.findNotArchivedSortByLastMessageData(userId, None, Int.MaxValue) map (_ filterNot (dialogWithSelf(userId, _))) flatMap { Dialogs ⇒
+      val (groupModels, privateModels) = Dialogs.foldLeft((Vector.empty[Dialog], Vector.empty[Dialog])) {
+        case ((groupModels, privateModels), dialog) ⇒
+          if (dialog.peer.typ == PeerType.Group)
+            (groupModels :+ dialog, privateModels)
+          else
+            (groupModels, privateModels :+ dialog)
+      }
+
+      for {
+        groupDialogs ← DBIO.sequence(groupModels map getDialogShort)
+        privateDialogs ← DBIO.sequence(privateModels map getDialogShort)
+      } yield Vector(
+        ApiDialogGroup(DialogGroups.Groups.title, DialogGroups.Groups.key, groupDialogs),
+        ApiDialogGroup(DialogGroups.Privates.title, DialogGroups.Privates.key, privateDialogs.toVector)
+      )
+    })
+  }
+
+  def dialogWithSelf(userId: Int, dialog: Dialog): Boolean =
+    dialog.peer.typ == PeerType.Private && dialog.peer.id == userId
+
+  def fetchReactions(peer: Peer, clientUserId: Int, randomId: Long): DBIO[Seq[MessageReaction]] =
+    ReactionEventRepo.fetch(DialogId(peer, clientUserId), randomId) map reactions
+
+  def fetchReactions(peer: Peer, clientUserId: Int, randomIds: Set[Long]): DBIO[Map[Long, Seq[MessageReaction]]] =
+    for {
+      events ← ReactionEventRepo.fetch(DialogId(peer, clientUserId), randomIds)
+    } yield events.view.groupBy(_.randomId).mapValues(reactions)
+
+  private def reactions(events: Seq[ReactionEvent]): Seq[MessageReaction] = {
+    (events.view groupBy (_.code) mapValues (_ map (_.userId)) map {
+      case (code, userIds) ⇒ MessageReaction(userIds, code)
+    }).toSeq
+  }
+
+  private def getDialogShort(Dialog: Dialog)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] = {
+    HistoryUtils.withHistoryOwner(Dialog.peer, Dialog.userId) { historyOwner ⇒
+      for {
+        messageOpt ← HistoryMessageRepo.findNewest(historyOwner, Dialog.peer) map (_.map(_.ofUser(Dialog.userId)))
+        unreadCount ← getUnreadCount(Dialog.userId, historyOwner, Dialog.peer, Dialog.ownerLastReadAt)
+      } yield ApiDialogShort(
+        peer = ApiPeer(ApiPeerType(Dialog.peer.typ.value), Dialog.peer.id),
+        counter = unreadCount,
+        date = messageOpt.map(_.date.getMillis).getOrElse(0)
+      )
+    }
+  }
+
+  private def processorRegion(peer: Peer): ActorRef = peer.typ match {
+    case PeerType.Private ⇒
+      userExt.processorRegion.ref //to user peer
+    case PeerType.Group ⇒
+      groupExt.processorRegion.ref //to group peer
+    case _ ⇒ throw new RuntimeException("Unknown peer type!")
+  }
 }
 
 object DialogExtension extends ExtensionId[DialogExtensionImpl] with ExtensionIdProvider {

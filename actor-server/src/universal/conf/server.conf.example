@@ -1,12 +1,12 @@
 services {
   postgresql {
-    host: "postgres"
+    host: "localhost"
 
-    db: "postgres"
+    db: <db>
 
-    user: "postgres"
+    user: <user>
 
-    password: ""
+    password: <password>
   }
 
   activation {
@@ -15,7 +15,20 @@ services {
 
   activation-gate {
     uri: "https://activation-gw.actor.im"
-    auth-token: "FPEinjrmxsq1ZDyu1bc7"
+    auth-token: <token>
+  }
+
+  aws {
+    s3 {
+      # S3 Api Key
+      access-key: <YOUR AWS KEY ID>
+      
+      # S3 Api Secret
+      secret-key: <YOUR AWS SECRET KEY>
+
+      # File bucket
+      default-bucket: <bucket for storing files>
+    }
   }
 }
 

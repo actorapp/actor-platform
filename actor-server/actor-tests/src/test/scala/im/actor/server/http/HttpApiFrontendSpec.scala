@@ -11,7 +11,7 @@ import akka.http.scaladsl.unmarshalling._
 import akka.stream.scaladsl.Sink
 import akka.util.ByteString
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import im.actor.api.rpc.ClientData
+import im.actor.api.rpc.{ AuthData, ClientData }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.http.json.JsonFormatters._
@@ -21,16 +21,15 @@ import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging
 import im.actor.server.file.ImageUtils
-import org.scalatest.Inside._
 import play.api.libs.json._
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
-class HttpApiFrontendSpec
+final class HttpApiFrontendSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with ImplicitFileStorageAdapter
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService
   with PlayJsonSupport {
   behavior of "HttpApiFrontend"
@@ -77,8 +76,8 @@ class HttpApiFrontendSpec
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  implicit val service = messaging.MessagingServiceImpl()
-  implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
+  implicit lazy val service = messaging.MessagingServiceImpl()
+  implicit lazy val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
   implicit val reverseHookResponseUnmarshaller: FromEntityUnmarshaller[ReverseHookResponse] = Unmarshaller { implicit ec ⇒ entity ⇒
     Unmarshal(entity).to[String].map { body ⇒
@@ -92,13 +91,13 @@ class HttpApiFrontendSpec
     }
   }
 
-  val s3BucketName = fsAdapterS3.bucketName
+  lazy val s3BucketName = fsAdapterS3.bucketName
 
   object t {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
     val groupName = "Test group"
     val groupOutPeer = createGroup(groupName, Set(user2.id)).groupPeer
@@ -106,7 +105,7 @@ class HttpApiFrontendSpec
 
     val resourcesPath = Paths.get(getClass.getResource("/files").toURI).toFile.getCanonicalPath
     val config = HttpApiConfig("127.0.0.1", 9000, "http", "localhost", resourcesPath, None)
-    HttpApiFrontend.start(config, None)
+    HttpApiFrontend.start(config, Seq.empty, None)
 
     val http = Http()
 
@@ -310,8 +309,8 @@ class HttpApiFrontendSpec
 
     def groupInvitesOk() = {
       val token = ACLUtils.accessToken(ThreadLocalRandom.current())
-      val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
-      whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
+      val inviteToken = model.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
+      whenReady(db.run(persist.GroupInviteTokenRepo.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
           method = HttpMethods.GET,
           uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$token"
@@ -332,14 +331,14 @@ class HttpApiFrontendSpec
 
       whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
-        val avatar = ImageUtils.getAvatarData(models.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
-        whenReady(db.run(persist.AvatarData.createOrUpdate(avatar)))(_ ⇒ ())
+        val avatar = ImageUtils.getAvatarData(model.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
+        whenReady(db.run(persist.AvatarDataRepo.createOrUpdate(avatar)))(_ ⇒ ())
       }
 
       val token = ACLUtils.accessToken(ThreadLocalRandom.current())
-      val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
+      val inviteToken = model.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
 
-      whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
+      whenReady(db.run(persist.GroupInviteTokenRepo.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
           method = HttpMethods.GET,
           uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$token"
@@ -373,14 +372,14 @@ class HttpApiFrontendSpec
       whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
         val avatar =
-          ImageUtils.getAvatarData(models.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
+          ImageUtils.getAvatarData(model.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
             .copy(smallAvatarFileId = None, smallAvatarFileHash = None, smallAvatarFileSize = None)
-        whenReady(db.run(persist.AvatarData.createOrUpdate(avatar)))(_ ⇒ ())
+        whenReady(db.run(persist.AvatarDataRepo.createOrUpdate(avatar)))(_ ⇒ ())
       }
 
       val token = ACLUtils.accessToken(ThreadLocalRandom.current())
-      val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
-      whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
+      val inviteToken = model.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
+      whenReady(db.run(persist.GroupInviteTokenRepo.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
           method = HttpMethods.GET,
           uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$token"

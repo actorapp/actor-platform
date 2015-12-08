@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package im.actor.server;
+
+message DeviceInfo {
+    string time_zone = 1;
+    repeated string preferred_languages = 2;
+}

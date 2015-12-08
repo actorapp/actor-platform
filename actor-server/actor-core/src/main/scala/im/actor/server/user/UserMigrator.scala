@@ -9,7 +9,7 @@ import im.actor.api.rpc.users.ApiSex
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
 import im.actor.server.migrations.{ PersistentMigrator, Migration }
-import im.actor.server.{ models, persist ⇒ p }
+import im.actor.server.{ model, persist ⇒ p }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver
 import slick.driver.PostgresDriver.api._
@@ -21,13 +21,13 @@ private final case class Migrate(
   accessSalt:  String,
   name:        String,
   countryCode: String,
-  sex:         models.Sex,
+  sex:         model.Sex,
   isBot:       Boolean,
   createdAt:   DateTime,
   authIds:     Seq[Long],
-  phones:      Seq[models.UserPhone],
-  emails:      Seq[models.UserEmail],
-  avatarOpt:   Option[models.AvatarData]
+  phones:      Seq[model.UserPhone],
+  emails:      Seq[model.UserEmail],
+  avatarOpt:   Option[model.AvatarData]
 )
 
 object UserMigrator extends Migration {
@@ -37,7 +37,7 @@ object UserMigrator extends Migration {
   protected override def migrationTimeout: Duration = 1.hour
 
   protected override def startMigration()(implicit system: ActorSystem, db: PostgresDriver.api.Database, ec: ExecutionContext): Future[Unit] = {
-    db.run(p.User.allIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
+    db.run(p.UserRepo.allIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
   }
 
   private def migrateSingle(userId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
@@ -59,13 +59,13 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
   override def persistenceId = UserOffice.persistenceIdFor(userId)
 
   def migrate(): Unit = {
-    db.run(p.User.find(userId).headOption) foreach {
+    db.run(p.UserRepo.find(userId).headOption) foreach {
       case Some(user) ⇒
         db.run(for {
-          avatarOpt ← p.AvatarData.findByUserId(userId).headOption
-          authIds ← p.AuthId.findIdByUserId(userId)
-          phones ← p.UserPhone.findByUserId(userId)
-          emails ← p.UserEmail.findByUserId(userId)
+          avatarOpt ← p.AvatarDataRepo.findByUserId(userId).headOption
+          authIds ← p.AuthIdRepo.findIdByUserId(userId)
+          phones ← p.UserPhoneRepo.findByUserId(userId)
+          emails ← p.UserEmailRepo.findByUserId(userId)
         } yield Migrate(
           user.accessSalt,
           user.name,
@@ -100,7 +100,7 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
       val phoneAdded = phones map (p ⇒ TSEvent(createdAt, PhoneAdded(p.number)))
       val emailAdded = emails map (e ⇒ TSEvent(createdAt, EmailAdded(e.email)))
       val avatarUpdated = avatarOpt match {
-        case Some(models.AvatarData(_, _,
+        case Some(model.AvatarData(_, _,
           Some(smallFileId), Some(smallFileHash), Some(smallFileSize),
           Some(largeFileId), Some(largeFileHash), Some(largeFileSize),
           Some(fullFileId), Some(fullFileHash), Some(fullFileSize),

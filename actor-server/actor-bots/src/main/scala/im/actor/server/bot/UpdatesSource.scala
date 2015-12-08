@@ -7,59 +7,34 @@ import akka.stream.scaladsl.Source
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.messaging.UpdateMessage
-import im.actor.api.rpc.sequence.{ FatSeqUpdate, SeqUpdate }
-import im.actor.bots.BotMessages
+import im.actor.api.rpc.sequence.{ UpdateRawUpdate, FatSeqUpdate, SeqUpdate }
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.protocol.UpdateBox
 import im.actor.server.persist
-import im.actor.server.presences.{ GroupPresenceExtension, PresenceExtension }
-import im.actor.server.sequence.{ UpdatesConsumer, WeakUpdatesExtension }
+import im.actor.server.sequence.{ UpdatesConsumerMessage, UpdatesConsumer }
 
 import scala.annotation.tailrec
 
 private[bot] object UpdatesSource {
-  import BotMessages._
-
   private case class Initialized(userId: Int)
-  private case object AuthIdNotAuthorized
 
-  def source(authId: Long) = Source.actorPublisher[(Int, Update)](props(authId))
+  def source(userId: Int, authId: Long, authSid: Int) = Source.actorPublisher[(Int, Update)](props(userId, authId, authSid))
 
-  def props(authId: Long) = Props(classOf[UpdatesSource], authId)
+  def props(userId: Int, authId: Long, authSid: Int) = Props(classOf[UpdatesSource], userId, authId, authSid)
 }
 
-private class UpdatesSource(authId: Long) extends ActorPublisher[(Int, Update)] with ActorLogging with Stash {
+private class UpdatesSource(userId: Int, authId: Long, authSid: Int) extends ActorPublisher[(Int, Update)] with ActorLogging with Stash {
 
-  import UpdatesSource._
   import akka.stream.actor.ActorPublisherMessage._
   import context._
   import im.actor.server.sequence.NewUpdate
 
-  private val weakUpdatesExt = WeakUpdatesExtension(system) //???
-  private val presenceExt = PresenceExtension(system)
-  private val groupPresenceExt = GroupPresenceExtension(system) //???
-  private val db = DbExtension(system).db
-
-  context.actorOf(UpdatesConsumer.props(authId, self), "updatesConsumer")
+  val consumer = context.actorOf(UpdatesConsumer.props(userId, authId, authSid, self), "updates-consumer")
+  consumer ! UpdatesConsumerMessage.SubscribeToSeq
 
   private var buf = Vector.empty[(Int, Update)]
 
-  db.run(persist.AuthId.findUserId(authId)).map {
-    case Some(userId) ⇒ Initialized(userId)
-    case None         ⇒ AuthIdNotAuthorized
-  }.pipeTo(self)
-
-  def receive = {
-    case Initialized(userId) ⇒
-      context become working(userId)
-    case AuthIdNotAuthorized ⇒
-      val msg = "AuthId not authorized"
-      log.error(msg)
-      throw new RuntimeException(msg)
-    case msg ⇒ stash()
-  }
-
-  def working(userId: Int): Receive = {
+  def receive: Receive = {
     case NewUpdate(UpdateBox(bodyBytes), _) ⇒
       (UpdateBoxCodec.decode(bodyBytes).require.value match {
         case SeqUpdate(seq, _, header, body)          ⇒ Some((seq, header, body))
@@ -74,6 +49,13 @@ private class UpdatesSource(authId: Long) extends ActorPublisher[(Int, Update)] 
                   enqueue(seq, upd)
                 case Left(e) ⇒
                   log.error(e, "Failed to parse UpdateMessage")
+              }
+            case UpdateRawUpdate.header ⇒
+              UpdateRawUpdate.parseFrom(body) match {
+                case Right(upd) ⇒
+                  enqueue(seq, upd)
+                case Left(e) ⇒
+                  log.error(e, "Failed to parse UpdateRawUpdate")
               }
             case _ ⇒
               log.debug("Received SeqUpdate with header: {}, ignoring", header)

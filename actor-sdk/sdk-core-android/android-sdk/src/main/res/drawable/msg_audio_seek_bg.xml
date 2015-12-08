@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@android:id/background"
+        android:drawable="@drawable/msg_audio_progress_bg" />
+    <item android:id="@android:id/secondaryProgress">
+        <scale
+            android:drawable="@drawable/msg_audio_progress_b_bg_progress"
+            android:scaleWidth="100%" />
+    </item>
+    <item android:id="@android:id/progress">
+        <scale
+            android:drawable="@drawable/msg_audio_progress_b_bg_progress"
+            android:scaleWidth="100%" />
+    </item>
+
+</layer-list>

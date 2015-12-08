@@ -1,7 +1,8 @@
 package im.actor.server
 
-import com.google.protobuf.ByteString
 import im.actor.api.rpc.files.{ ApiAvatar, ApiAvatarImage, ApiFileLocation }
+import im.actor.api.rpc.messaging.ApiMessageReaction
+import im.actor.server.model.MessageReaction
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
 
 import scala.language.implicitConversions
@@ -33,8 +34,17 @@ object ApiConversions {
     imageOpt map avatarImageToApi
 
   implicit def avatarToApi(avatar: Avatar): ApiAvatar =
-    ApiAvatar(avatar.small, avatar.large, avatar.full)
+    ApiAvatar(avatar.smallImage, avatar.largeImage, avatar.fullImage)
 
   implicit def avatarOptToApi(avatarOpt: Option[Avatar]): Option[ApiAvatar] =
     avatarOpt map avatarToApi
+
+  implicit def reactionToApi(reaction: MessageReaction): ApiMessageReaction =
+    ApiMessageReaction(
+      reaction.userIds.toVector,
+      reaction.code
+    )
+
+  implicit def reactionsToApi(reactions: Seq[MessageReaction]): IndexedSeq[ApiMessageReaction] =
+    reactions.toVector map reactionToApi
 }

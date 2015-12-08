@@ -3,6 +3,7 @@ package im.actor.botkit
 import java.net.URLEncoder
 
 import akka.actor._
+import akka.http.scaladsl.Http
 import akka.stream.scaladsl.{ Sink, Source }
 import akka.stream.{ ActorMaterializer, OverflowStrategy }
 import akka.util.Timeout
@@ -17,45 +18,47 @@ import scala.concurrent.duration._
 object RemoteBot {
   val DefaultEndpoint = "wss://api.actor.im"
 
-  private final case class NextRequest(body: BotMessages.RequestBody, responsePromise: Promise[ResponseBody])
-
+  private object StreamComplete
 }
 
 abstract class RemoteBot(token: String, endpoint: String) extends BotBase with ActorFutures {
 
   import BotMessages._
+  import RemoteBot._
 
-  override protected implicit val timeout = Timeout(30.seconds)
+  override protected implicit val timeout: Timeout = Timeout(30.seconds)
   private implicit val mat = ActorMaterializer()
 
-  private var rqSource = initFlow()
+  initFlow()
 
   def onReceive(message: Object): Unit = {}
 
-  def receive = internalReceive orElse {
+  def receive: Receive = internalReceive orElse {
     case message ⇒
       onReceive(message.asInstanceOf[Object])
   }
 
   override protected def onStreamFailure(cause: Throwable): Unit = {
-    log.error(cause, "Bot stream failure")
-    throw cause
+    log.error(cause, "Stream failure")
+    initFlow()
   }
 
-  private final def internalReceive: Receive = workingBehavior(rqSource).orElse({
-    case ConnectionClosed ⇒
+  private final def internalReceive: Receive = workingBehavior.orElse({
+    case StreamComplete ⇒
       log.warning("Disconnected, reinitiating flow")
-      rqSource = initFlow()
+      initFlow()
   })
 
-  private def initFlow(): ActorRef = {
+  private def initFlow(): Unit = {
     val (wsSource, wsSink) = WebsocketClient.sourceAndSink(s"$endpoint/v1/bots/${URLEncoder.encode(token, "UTF-8")}")
 
-    wsSource.map(read[BotMessageOut]).to(Sink.actorRef(self, ConnectionClosed)).run()
+    wsSource.map(read[BotMessageOut]).to(Sink.actorRef(self, StreamComplete)).run()
 
-    Source.actorRef(bufferSize = 100, overflowStrategy = OverflowStrategy.fail)
+    val rqSource = Source.actorRef(bufferSize = 100, overflowStrategy = OverflowStrategy.fail)
       .map(write[BotRequest])
       .to(wsSink)
       .run()
+
+    setRqSource(rqSource)
   }
 }

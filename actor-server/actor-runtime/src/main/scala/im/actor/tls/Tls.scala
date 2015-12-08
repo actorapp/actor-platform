@@ -82,7 +82,7 @@ object Tls {
 
   private val wrapTls: Flow[ByteString, SslTlsOutbound, Unit] = Flow[ByteString].map[SslTlsOutbound](SendBytes)
 
-  private val wrapLayer: BidiFlow[ByteString, SslTlsOutbound, SslTlsInbound, ByteString, Unit] = BidiFlow.wrap(wrapTls, unwrapTls)(Keep.right)
+  private val wrapLayer: BidiFlow[ByteString, SslTlsOutbound, SslTlsInbound, ByteString, Unit] = BidiFlow.fromFlowsMat(wrapTls, unwrapTls)(Keep.right)
 
   /**
    * Generate TlsLayer
