@@ -39,7 +39,7 @@ object HttpApiFrontend {
     system:       ActorSystem,
     materializer: Materializer
   ): Unit = {
-    HttpApiConfig.load(serverConfig.getConfig("webapp")) match {
+    HttpApiConfig.load(serverConfig.getConfig("http")) match {
       case Success(apiConfig) ⇒
         val tlsContext = TlsContext.load(serverConfig.getConfig("tls.keystores")).right.toOption
         start(apiConfig, customRoutes, tlsContext)
