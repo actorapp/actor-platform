@@ -51,5 +51,4 @@ object UserHook {
   abstract class BeforeEmailContactRegisteredHook(system: ActorSystem) extends Hook2[Int, String] {
     def run(userId: Int, email: String): Future[Unit]
   }
-
 }
