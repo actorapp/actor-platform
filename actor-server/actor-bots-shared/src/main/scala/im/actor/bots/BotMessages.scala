@@ -466,7 +466,7 @@ object BotMessages {
     override val service: String = Services.Stickers
   }
 
-  final case class StickerPackIds(ids: Seq[Int]) extends ResponseBody {
+  final case class StickerPackIds(ids: Seq[String]) extends ResponseBody {
     def getIds = seqAsJavaList(ids)
   }
 
@@ -480,7 +480,7 @@ object BotMessages {
     override val service: String = Services.Stickers
   }
 
-  final case class StickerIds(ids: Seq[Int]) extends ResponseBody {
+  final case class StickerIds(ids: Seq[String]) extends ResponseBody {
     def getIds = seqAsJavaList(ids)
   }
 
