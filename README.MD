@@ -33,7 +33,7 @@ To build your own server with apps, visit [Actor Bootstrap repository](https://g
 
 # Bots
 
-Actor have built-in bots. You can find them at [Actor Bots repository)(https://github.com/actorapp/actor-bots).
+Actor have built-in bots. You can find them at [Actor Bots repository](https://github.com/actorapp/actor-bots).
 
 # Live demo
 
