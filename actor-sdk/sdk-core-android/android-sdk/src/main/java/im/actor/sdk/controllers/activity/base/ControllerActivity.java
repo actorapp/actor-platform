@@ -1,5 +1,6 @@
 package im.actor.sdk.controllers.activity.base;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
@@ -62,6 +63,12 @@ public abstract class ControllerActivity<T extends Controller> extends BaseActiv
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         controller.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        controller.onNewIntent(intent);
     }
 }
 

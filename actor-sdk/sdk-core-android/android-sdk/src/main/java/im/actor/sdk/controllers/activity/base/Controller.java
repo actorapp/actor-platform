@@ -82,4 +82,8 @@ public abstract class Controller<T extends AppCompatActivity> {
     public void onPause() {
 
     }
+
+
+    public void onNewIntent(Intent intent) {
+    }
 }
