@@ -17,13 +17,13 @@ private[bot] object StickersBotErrors {
   val AlreadyNotDefault = BotError(400, "ALREADY_NOT_DEFAULT")
 
   def catchStickerErrors: PartialFunction[Throwable, BotError] = {
-    case StickerErrors.NoPreview        ⇒ FailedToMakePreview
-    case StickerErrors.NotOwner         ⇒ NotAllowedToEdit
-    case StickerErrors.NotFound         ⇒ StickerNotFound
-    case StickerErrors.NotAdmin         ⇒ UserNotAdmin
-    case StickerErrors.AlreadyDefault   ⇒ AlreadyDefault
-    case StickerErrors.AlreayNotDefault ⇒ AlreadyNotDefault
-    case _                              ⇒ BotError(500, "INTERNAL_ERROR")
+    case StickerErrors.NoPreview         ⇒ FailedToMakePreview
+    case StickerErrors.NotOwner          ⇒ NotAllowedToEdit
+    case StickerErrors.NotFound          ⇒ StickerNotFound
+    case StickerErrors.NotAdmin          ⇒ UserNotAdmin
+    case StickerErrors.AlreadyDefault    ⇒ AlreadyDefault
+    case StickerErrors.AlreadyNotDefault ⇒ AlreadyNotDefault
+    case _                               ⇒ BotError(500, "INTERNAL_ERROR")
   }
 }
 
