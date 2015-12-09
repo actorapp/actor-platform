@@ -1,6 +1,7 @@
 package im.actor.sdk.controllers.conversation;
 
 import android.animation.ObjectAnimator;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -187,6 +188,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private boolean isTypingDisabled = false;
     // Is Activity opened from Compose
     private boolean isCompose = false;
+    private Intent intent;
 
     public static Intent build(Peer peer, boolean compose, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);
@@ -198,11 +200,12 @@ public class ChatActivity extends ActorEditTextActivity {
     @Override
     public void onCreate(Bundle saveInstance) {
         // Reading peer of chat
-        peer = Peer.fromUniqueId(getIntent().getExtras().getLong(EXTRA_CHAT_PEER));
+        intent = getIntent();
+        peer = Peer.fromUniqueId(intent.getExtras().getLong(EXTRA_CHAT_PEER));
 
         if (saveInstance == null) {
             // Set compose state for auto-showing menu
-            isCompose = getIntent().getExtras().getBoolean(EXTRA_CHAT_COMPOSE, false);
+            isCompose = intent.getExtras().getBoolean(EXTRA_CHAT_COMPOSE, false);
         } else {
             // Activity restore
             pending_fileName = saveInstance.getString(STATE_FILE_NAME, null);
@@ -360,19 +363,35 @@ public class ChatActivity extends ActorEditTextActivity {
         findViewById(R.id.share_file).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_hide).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_contact).setOnClickListener(shareMenuOCL);
+        handleIntent();
 
 
+    }
+
+    private void handleIntent() {
         // Sharing
-        sendUri = getIntent().getStringExtra("send_uri");
-        sendUriMultiple = getIntent().getStringArrayListExtra("send_uri_multiple");
-        shareUser = getIntent().getIntExtra("share_user", 0);
+        sendUri = intent.getStringExtra("send_uri");
+        sendUriMultiple = intent.getStringArrayListExtra("send_uri_multiple");
+        shareUser = intent.getIntExtra("share_user", 0);
 
         //Forwarding
-        forwardText = getIntent().getStringExtra("forward_text");
-        forwardTextRaw = getIntent().getStringExtra("forward_text_raw");
-        sendText = getIntent().getStringExtra("send_text");
-        forwardDocDescriptor = getIntent().getStringExtra("forward_doc_descriptor");
-        forwardDocIsDoc = getIntent().getBooleanExtra("forward_doc_is_doc", true);
+        forwardText = intent.getStringExtra("forward_text");
+        forwardTextRaw = intent.getStringExtra("forward_text_raw");
+        sendText = intent.getStringExtra("send_text");
+        forwardDocDescriptor = intent.getStringExtra("forward_doc_descriptor");
+        forwardDocIsDoc = intent.getBooleanExtra("forward_doc_is_doc", true);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        peer = Peer.fromUniqueId(intent.getExtras().getLong(EXTRA_CHAT_PEER));
+        setFragment(null);
+
+
+        onPerformBind();
+        this.intent = intent;
+        handleIntent();
     }
 
     private void hideShareMenu() {
