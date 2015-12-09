@@ -37,8 +37,6 @@ class Main extends Component {
     const { params } = props;
     const peer = PeerUtils.stringToPeer(params.id);
 
-    preloadEmojiSheet();
-
     document.addEventListener('visibilitychange', this.onVisibilityChange);
     document.addEventListener('keydown', this.onKeyDown, false);
 
@@ -76,6 +74,7 @@ class Main extends Component {
   };
 
   onKeyDown = (event) => {
+    // TODO: Make this hotkey work on windows
     if (event.keyCode === KeyCodes.K && event.metaKey) {
       QuickSearchActionCreators.show();
     }

@@ -36,6 +36,7 @@ export const ActionTypes = keymirror({
   SELECTED_DIALOG_INFO_CHANGED: null,
   MY_PROFILE_CHANGED: null,
   SELECT_DIALOG_PEER: null,
+  MESSAGES_CHANGED: null,
 
   COMPOSE_CLEAN: null,
   COMPOSE_TYPING: null,
