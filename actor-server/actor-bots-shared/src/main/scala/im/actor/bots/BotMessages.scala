@@ -416,6 +416,17 @@ object BotMessages {
     def getAbout = about.asJava
   }
 
+  @key("IsAdmin")
+  final case class IsAdmin(@beanGetter userId: Int) extends RequestBody {
+    override type Response = ResponseIdAdmin
+    override val service = Services.Users
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  final case class ResponseIdAdmin(isAdmin: Boolean, in: Int) extends ResponseBody {
+    def getIsAdmin: java.lang.Boolean = isAdmin.booleanValue()
+  }
+
   @key("FindUser")
   final case class FindUser(
     @beanGetter query: String
