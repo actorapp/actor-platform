@@ -7,6 +7,8 @@ import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 import PeerUtils from '../utils/PeerUtils';
 import RouterContainer from '../utils/RouterContainer';
+import MessageActionCreators from './MessageActionCreators';
+import DialogStore from '../stores/DialogStore';
 
 const DialogActionCreators = {
   setDialogs(dialogs) {
@@ -14,8 +16,20 @@ const DialogActionCreators = {
   },
 
   selectDialogPeer(peer) {
-    RouterContainer.get().transitionTo('main', {id: PeerUtils.peerToString(peer)});
+    const router = RouterContainer.get();
+    const currentPeer = DialogStore.getCurrentPeer();
+
+    if (currentPeer !== null) {
+      DialogActionCreators.onConversationClosed(currentPeer);
+      ActorClient.unbindChat(currentPeer, MessageActionCreators.setMessages);
+    }
+
     dispatch(ActionTypes.SELECT_DIALOG_PEER, { peer });
+
+    DialogActionCreators.onConversationOpen(peer);
+    ActorClient.bindChat(peer, MessageActionCreators.setMessages);
+
+    router.transitionTo('main', {id: PeerUtils.peerToString(peer)});
   },
 
   selectDialogPeerUser(userId) {

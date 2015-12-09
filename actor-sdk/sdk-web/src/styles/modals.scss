@@ -164,6 +164,10 @@
       color: rgba(black, .2);
       border: 1px solid $cloudy-blue;
       background-color: white;
+      line-height: 32px;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 2px;
       &:focus {
         color: $greyish-brown;
       }

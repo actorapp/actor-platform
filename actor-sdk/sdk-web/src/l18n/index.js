@@ -12,6 +12,7 @@ import portuguese from './pt-BR';
 import chinese from './zh-CN';
 
 let language = navigator.language.toLocaleLowerCase() || navigator.browserLanguage.toLocaleLowerCase();
+
 if (language === 'zh-cn') {
   language = 'zh'
 }
