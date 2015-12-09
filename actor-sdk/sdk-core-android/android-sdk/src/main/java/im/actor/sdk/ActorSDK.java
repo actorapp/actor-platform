@@ -50,9 +50,9 @@ public class ActorSDK {
     private static final String TAG = "ActorSDK";
 
     private static volatile ActorSDK sdk = new ActorSDK();
-    //
-    //ActorStyle
-    //
+    /**
+     * ActorStyle style can be used for configuring application appearance, for example - colors, backgrounds etc.
+     */
     public ActorStyle style = new ActorStyle();
 
 
@@ -195,6 +195,11 @@ public class ActorSDK {
         }
     }
 
+    /**
+     * Call this method for staring messaging app
+     *
+     * @param context
+     */
     public void startMessagingApp(Activity context) {
         if (messenger.isLoggedIn()) {
             startMessagingActivity(context);
@@ -359,6 +364,7 @@ public class ActorSDK {
     public void startAuthActivity(Context context) {
         startAuthActivity(context, null);
     }
+
 
     public void startAuthActivity(Context context, Bundle extras) {
         if (!startDelegateActivity(context, delegate.getAuthStartIntent(), extras)) {
