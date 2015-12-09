@@ -74,13 +74,13 @@ services {
   # For more information see https://github.com/actorapp/actor-bootstrap/blob/master/docs/server/Database.md
   postgresql {
     # Host of PostgreSQL instance
-    host: <put_psql_server_host_here>
+    host: localhost
     # Port of PostgreSQL instance
     port: 5432
     # Database name
     db: actor
     # User name in PostgreSQL
-    user: <put_psql_user_here>
+    user: actor
     # Password in PostgreSQL
     password: <put_psql_password_here>
   }

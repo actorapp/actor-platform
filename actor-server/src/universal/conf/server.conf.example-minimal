@@ -2,9 +2,9 @@ services {
   postgresql {
     host: "localhost"
 
-    db: <db>
+    db: actor
 
-    user: <user>
+    user: actor
 
     password: <password>
   }
@@ -14,7 +14,6 @@ services {
   }
 
   actor-activation {
-    uri: "https://activation-gw.actor.im"
     auth-token: <token>
   }
 
