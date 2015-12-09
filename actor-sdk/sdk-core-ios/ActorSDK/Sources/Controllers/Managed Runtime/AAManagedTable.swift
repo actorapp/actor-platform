@@ -320,7 +320,7 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
     }
     
     @objc func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return data.sections[indexPath.section].canDelete(data, indexPath: indexPath)
+        return (data.sections[indexPath.section].numberOfItems(data) > 0 ? data.sections[indexPath.section].canDelete(data, indexPath: indexPath) : false)
     }
     
     @objc func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
