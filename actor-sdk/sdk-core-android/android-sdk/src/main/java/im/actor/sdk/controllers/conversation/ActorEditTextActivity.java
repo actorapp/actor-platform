@@ -52,11 +52,7 @@ public abstract class ActorEditTextActivity extends BaseActivity {
         setContentView(R.layout.activity_dialog);
 
         // Setting fragment
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.messagesFragment, onCreateFragment())
-                    .commit();
-        }
+        setFragment(savedInstanceState);
 
         // Message Body
         messageEditText = (EditText) findViewById(R.id.et_message);
@@ -165,6 +161,14 @@ public abstract class ActorEditTextActivity extends BaseActivity {
 
         // Keyboard helper for show/hide keyboard
         keyboardUtils = new KeyboardHelper(this);
+    }
+
+    protected void setFragment(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.messagesFragment, onCreateFragment())
+                    .commit();
+        }
     }
 
     protected abstract Fragment onCreateFragment();
