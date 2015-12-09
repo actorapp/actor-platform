@@ -1,1 +1,1 @@
-* Put releases to actorapp/actor-platform repository
+* fixes in sticker extensions, new request for bots
