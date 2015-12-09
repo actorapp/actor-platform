@@ -1,3 +1,17 @@
+<h3 align="center">
+  <a href="https://github.com/actorapp/actor-platform">
+    <img src="docs/assets/Actor_Logo.png" width="150" />
+    <br />
+    Actor
+  </a>
+</h3>
+<p align="center">
+  Platform &bull; 
+  <a href="https://github.com/actorapp/actor-bootstrap">Bootstrap</a> &bull; 
+  <a href="https://github.com/actorapp/actor-bots">Bots</a>
+</p>
+-------
+
 # Actor Messaging platform
 
 Actor is a platform for instant messaging. Actor provides features like large group chats; unlimited history storage; send/receive documents, photo, and video; authentication with one time password for phone number/email or OAuth2; easy integrations with external services.
@@ -16,6 +30,10 @@ This repository contains all of the source code you need to start your own serve
 # Installation
 
 To build your own server with apps, visit [Actor Bootstrap repository](https://github.com/actorapp/actor-bootstrap).
+
+# Bots
+
+Actor have built-in bots. You can find them at [Actor Bots repository)(https://github.com/actorapp/actor-bots).
 
 # Live demo
 
