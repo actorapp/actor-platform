@@ -114,6 +114,7 @@ public class Intents {
         final Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(EXTRA_CHAT_PEER, peer.getUnuqueId());
         intent.putExtra(EXTRA_CHAT_COMPOSE, compose);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }
 
