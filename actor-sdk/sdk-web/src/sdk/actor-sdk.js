@@ -72,6 +72,7 @@ class App extends Component {
 
 ReactMixin.onClass(App, IntlMixin);
 
+/** Class represents ActorSKD itself */
 class ActorSDK {
   /**
    * @constructor
