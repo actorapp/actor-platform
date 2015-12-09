@@ -423,7 +423,7 @@ object BotMessages {
     override def readResponse(obj: Js.Obj) = readJs[Response](obj)
   }
 
-  final case class ResponseIdAdmin(isAdmin: Boolean, in: Int) extends ResponseBody {
+  final case class ResponseIdAdmin(isAdmin: Boolean) extends ResponseBody {
     def getIsAdmin: java.lang.Boolean = isAdmin.booleanValue()
   }
 
