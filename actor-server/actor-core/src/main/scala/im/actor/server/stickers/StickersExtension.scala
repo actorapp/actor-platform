@@ -23,10 +23,10 @@ object StickerErrors {
   case object NotFound extends StickerError("Sticker pack not found")
   case object NotAdmin extends StickerError("Only admin can perform this action")
   case object AlreadyDefault extends StickerError("Sticker pack is already default")
-  case object AlreayNotDefault extends StickerError("Sticker pack is not default already")
+  case object AlreadyNotDefault extends StickerError("Sticker pack is not default already")
 
   def isDefaultError(isDefault: Boolean): StickerError =
-    if (isDefault) AlreadyDefault else AlreayNotDefault
+    if (isDefault) AlreadyDefault else AlreadyNotDefault
 }
 
 sealed trait StickersExtension extends Extension
@@ -55,7 +55,7 @@ final class StickersExtensionImpl(_system: ActorSystem) extends StickersExtensio
 
   def addSticker(ownerUserId: Int, packId: Int, emoji: Option[String], resizedSticker: Avatar): Future[StickerError Xor Unit] =
     (for {
-      _ ← fromFutureBoolean(NotOwner)(db.run(StickerPackRepo.exists(ownerUserId, packId)) map !=)
+      _ ← fromFutureBoolean(NotFound)(db.run(StickerPackRepo.exists(ownerUserId, packId)))
       image128 ← fromOption(NoPreview)(resizedSticker.smallImage)
       image256 = resizedSticker.largeImage
       image512 = resizedSticker.fullImage
@@ -77,14 +77,14 @@ final class StickersExtensionImpl(_system: ActorSystem) extends StickersExtensio
 
   def getStickers(ownerUserId: Int, packId: Int): Future[StickerError Xor Seq[StickerData]] =
     (for {
-      pack ← fromFutureOption(NotFound)(db.run(StickerPackRepo.find(ownerUserId)))
+      pack ← fromFutureOption(NotFound)(db.run(StickerPackRepo.find(packId)))
       _ ← fromBoolean(NotOwner)(pack.ownerUserId == ownerUserId)
       stickers ← fromFuture(db.run(StickerDataRepo.findByPack(packId)))
     } yield stickers).value
 
   def deleteSticker(ownerUserId: Int, packId: Int, stickerId: Int): Future[StickerError Xor Unit] =
     (for {
-      _ ← fromFutureBoolean(NotOwner)(db.run(StickerPackRepo.exists(ownerUserId, packId)) map !=)
+      _ ← fromFutureBoolean(NotFound)(db.run(StickerPackRepo.exists(ownerUserId, packId)))
       _ ← fromFuture(db.run(StickerDataRepo.delete(packId, stickerId)))
     } yield ()).value
 
@@ -96,8 +96,11 @@ final class StickersExtensionImpl(_system: ActorSystem) extends StickersExtensio
 
   private def toggleDefault(userId: Int, packId: Int, toggleTo: Boolean): Future[StickerError Xor Unit] =
     (for {
-      _ ← fromFutureBoolean(NotAdmin)(userExt.isAdmin(userId))
+      isAdmin ← fromFuture(userExt.isAdmin(userId))
+      _ = system.log.debug("user: {} is admin: {}", userId, isAdmin)
+      _ ← fromBoolean(NotAdmin)(isAdmin)
       pack ← fromFutureOption(NotFound)(db.run(StickerPackRepo.find(packId)))
+      _ = system.log.debug("sticker pack: {}", pack)
       _ ← fromBoolean(isDefaultError(toggleTo))(pack.isDefault != toggleTo)
       _ ← fromFuture(db.run(StickerPackRepo.setDefault(packId, isDefault = toggleTo)))
     } yield ()).value
