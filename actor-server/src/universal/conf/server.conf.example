@@ -112,14 +112,14 @@ services {
     # code-attempts: 3
   }
 
-  # Service used for sending auth codes
+  # Actor SMS gate
   # Write to @gatekeeper in Actor Cloud to get your token
   actor-activation {
     # uri: "https://gate.actor.im"
     auth-token: <put token here>
   }
 
-  # Telesign SMS gate (best gate for authentication)
+  # Telesign SMS gate
   # To get tokens ask at telesign web site: https://www.telesign.com
   # telesign {
   #  customer-id: <put_your_customer_id_here>
