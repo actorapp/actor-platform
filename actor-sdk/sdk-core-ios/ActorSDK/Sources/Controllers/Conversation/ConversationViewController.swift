@@ -498,10 +498,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         // Names
         
-        let firstname: ABMultiValueRef = ABRecordCopyValue(person, kABPersonFirstNameProperty).takeRetainedValue()
-        let lastname: ABMultiValueRef = ABRecordCopyValue(person, kABPersonLastNameProperty).takeRetainedValue()
-        let name = (firstname.description + " " + lastname.description).trim()
-
+        let name = ABRecordCopyCompositeName(person)?.takeRetainedValue() as String?
+        
         // Avatar
         
         var jAvatarImage: String? = nil

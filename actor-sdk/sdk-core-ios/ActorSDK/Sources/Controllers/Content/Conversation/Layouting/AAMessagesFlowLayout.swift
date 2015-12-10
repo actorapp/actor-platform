@@ -114,9 +114,9 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
         deletedIndexPaths.removeAll(keepCapacity: true)
         for update in updateItems {
             if update.updateAction == .Insert {
-                insertedIndexPaths.append(update.indexPathAfterUpdate)
+                insertedIndexPaths.append(update.indexPathAfterUpdate!)
             } else if update.updateAction == .Delete {
-                deletedIndexPaths.append(update.indexPathBeforeUpdate)
+                deletedIndexPaths.append(update.indexPathBeforeUpdate!)
             }
         }
         if ENABLE_LOGS { print("prepareForCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)") }
