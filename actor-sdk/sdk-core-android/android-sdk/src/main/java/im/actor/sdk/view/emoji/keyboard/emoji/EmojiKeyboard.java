@@ -34,6 +34,7 @@ import im.actor.sdk.view.emoji.keyboard.emoji.smiles.SmilePagerAdapter;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.MaterialInterpolator;
 import im.actor.sdk.view.PagerSlidingTabStrip;
+import im.actor.sdk.view.emoji.smiles.SmilesPack;
 
 public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
         OnBackspaceClickListener {
@@ -110,6 +111,11 @@ public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
 //                emojiPagerIndicator.setViewPager(emojiPager);
 //            }
 //        }, BINDING_DELAY);
+
+        if (SmilesPack.getRecent().size() == 0) {
+            emojiPager.setCurrentItem(1);
+        }
+
         return emojiPagerView;
     }
 

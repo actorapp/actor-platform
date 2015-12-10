@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.CheckBox;
 
+import java.util.ArrayList;
+
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
@@ -22,6 +24,11 @@ public class Application extends ActorSDKApplication {
     public void onConfigureActorSDK() {
         ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
         ActorSDK.sharedActor().setPushId(209133700967L);
+
+//        ArrayList<String> endpoints  = new ArrayList<String>();
+//        endpoints.add("foo1");
+//        endpoints.add("foo2");
+//        ActorSDK.sharedActor().setEndpoints(endpoints);
 
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setMainColor(Color.parseColor("#529a88"));
