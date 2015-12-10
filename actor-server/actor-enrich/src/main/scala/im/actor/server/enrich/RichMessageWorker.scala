@@ -14,7 +14,8 @@ import akka.event.Logging
 import akka.http.scaladsl.model.Uri
 import akka.stream.Materializer
 import akka.util.Timeout
-import com.sksamuel.scrimage.{ AsyncImage, Format }
+import com.sksamuel.scrimage.nio.JpegWriter
+import com.sksamuel.scrimage.{ Image, ParImage, Format }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -93,13 +94,13 @@ final class RichMessageWorker(config: RichMessageConfig)(implicit materializer: 
         val ext = Try(mimeType.split("/").last).getOrElse("tmp")
         s"$name.$ext"
       }
+      val image = Image(imageBytes.toArray).toPar
       db.run {
         for {
           (file, fileSize) ← DBIO.from(FileUtils.writeBytes(imageBytes))
           location ← fsAdapter.uploadFile(fullName, file.toFile)
-          image ← DBIO.from(AsyncImage(imageBytes.toArray))
           thumb ← DBIO.from(ImageUtils.scaleTo(image, 90))
-          thumbBytes ← DBIO.from(thumb.writer(Format.JPEG).write())
+          thumbBytes = thumb.toImage.forWriter(JpegWriter()).bytes
 
           _ = log.debug("uploaded file to location {}", location)
           _ = log.debug("image with width: {}, height: {}", image.width, image.height)
