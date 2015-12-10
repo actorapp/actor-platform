@@ -453,6 +453,7 @@
     <string name="media">Media</string>
     <string name="media_picture">Picture</string>
     <string name="media_pager" formatted="false">%d of %d</string>
+    <string name="emoji_no_recent">no recent emoji yet</string>
 
     <!-- Dialogs -->
     <string name="alert_leave_group_message">Are you sure want to exit group "%1$s"?</string>
