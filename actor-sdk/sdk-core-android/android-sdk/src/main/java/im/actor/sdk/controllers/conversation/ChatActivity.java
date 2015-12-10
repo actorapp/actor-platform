@@ -385,6 +385,9 @@ public class ChatActivity extends ActorEditTextActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        //Notify old chat closed
+        messenger().onConversationClosed(peer);
+
         peer = Peer.fromUniqueId(intent.getExtras().getLong(EXTRA_CHAT_PEER));
         setFragment(null);
 
