@@ -1,7 +1,7 @@
 package im.actor.server.file
 
 import akka.actor.ActorSystem
-import com.sksamuel.scrimage.nio.JpegWriter
+import com.sksamuel.scrimage.nio.{ JpegWriter, ImageWriter, PngWriter }
 import com.sksamuel.scrimage.{ Image, ParImage, Position }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
@@ -16,6 +16,8 @@ object ImageUtils {
   val AvatarSizeLimit = 1024L * 1024 // TODO: configurable
   val SmallSize = 100
   val LargeSize = 200
+
+  private case class ThumbDescriptor(name: String, side: Int, writer: ImageWriter)
 
   def avatar(ad: model.AvatarData) =
     (ad.smallOpt, ad.largeOpt, ad.fullOpt) match {
@@ -55,7 +57,14 @@ object ImageUtils {
     ec:        ExecutionContext,
     system:    ActorSystem
   ): Future[Either[Throwable, Avatar]] =
-    DbExtension(system).db.run(scaleAvatar(fullFileId, ThreadLocalRandom.current(), smallSize = 128, largeSize = 256))
+    DbExtension(system).db.run(
+      scaleAvatar(
+        fullFileId,
+        ThreadLocalRandom.current(),
+        ThumbDescriptor("small-sticker.png", 128, PngWriter()),
+        ThumbDescriptor("medium-sticker.png", 256, PngWriter())
+      )
+    )
 
   def scaleAvatarF(fullFileId: Long)(
     implicit
@@ -82,22 +91,24 @@ object ImageUtils {
     ec:        ExecutionContext,
     system:    ActorSystem
   ): DBIO[Either[Throwable, Avatar]] =
-    scaleAvatar(fullFileId, rng, SmallSize, LargeSize)
+    scaleAvatar(
+      fullFileId,
+      rng,
+      ThumbDescriptor("small-avatar.jpg", SmallSize, JpegWriter()),
+      ThumbDescriptor("large-avatar.jpg", SmallSize, JpegWriter())
+    )
 
   def scaleAvatar(
     fullFileId: Long,
     rng:        ThreadLocalRandom,
-    smallSize:  Int,
-    largeSize:  Int
+    smallDesc:  ThumbDescriptor,
+    largeDesc:  ThumbDescriptor
   )(
     implicit
     fsAdapter: FileStorageAdapter,
     ec:        ExecutionContext,
     system:    ActorSystem
   ): DBIO[Either[Throwable, Avatar]] = {
-    val smallFileName = "small-avatar.jpg"
-    val largeFileName = "large-avatar.jpg"
-
     persist.FileRepo.find(fullFileId) flatMap {
       case Some(fullFileModel) ⇒
         fsAdapter.downloadFile(fullFileId) flatMap {
@@ -106,17 +117,17 @@ object ImageUtils {
               fullAimg ← Future.fromTry(Try(Image.fromFile(fullFile).toPar))
               (fiw, fih) = dimensions(fullAimg)
 
-              smallAimg ← resizeTo(fullAimg, smallSize)
-              largeAimg ← resizeTo(fullAimg, largeSize)
+              smallAimg ← resizeTo(fullAimg, smallDesc.side)
+              largeAimg ← resizeTo(fullAimg, largeDesc.side)
 
-              smallFile = fullFile.getParentFile.toPath.resolve(smallFileName).toFile
-              largeFile = fullFile.getParentFile.toPath.resolve(largeFileName).toFile
+              smallFile = fullFile.getParentFile.toPath.resolve(smallDesc.name).toFile
+              largeFile = fullFile.getParentFile.toPath.resolve(largeDesc.name).toFile
 
-              _ ← Future.fromTry(Try(smallAimg.toImage.forWriter(JpegWriter()).write(smallFile)))
-              _ ← Future.fromTry(Try(largeAimg.toImage.forWriter(JpegWriter()).write(largeFile)))
+              _ ← Future.fromTry(Try(smallAimg.toImage.forWriter(smallDesc.writer).write(smallFile)))
+              _ ← Future.fromTry(Try(largeAimg.toImage.forWriter(largeDesc.writer).write(largeFile)))
 
-              smallFileLocation ← fsAdapter.uploadFileF(smallFileName, smallFile)
-              largeFileLocation ← fsAdapter.uploadFileF(largeFileName, largeFile)
+              smallFileLocation ← fsAdapter.uploadFileF(smallDesc.name, smallFile)
+              largeFileLocation ← fsAdapter.uploadFileF(largeDesc.name, largeFile)
             } yield {
               // TODO: #perf calculate file sizes efficiently
 
