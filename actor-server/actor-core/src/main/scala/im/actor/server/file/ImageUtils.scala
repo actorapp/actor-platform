@@ -95,7 +95,7 @@ object ImageUtils {
       fullFileId,
       rng,
       ThumbDescriptor("small-avatar.jpg", SmallSize, JpegWriter()),
-      ThumbDescriptor("large-avatar.jpg", SmallSize, JpegWriter())
+      ThumbDescriptor("large-avatar.jpg", LargeSize, JpegWriter())
     )
 
   def scaleAvatar(
