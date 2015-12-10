@@ -1,0 +1,2 @@
+* scrimage library upgrade 1.4.2 -> 2.1.0
+* enhance image utils to handle resize of stickers with transparent background
