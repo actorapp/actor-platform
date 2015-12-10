@@ -10,7 +10,7 @@ import ActorClient from '../utils/ActorClient';
 import Bugsnag from '../utils/Bugsnag';
 import mixpanel from '../utils/Mixpanel';
 
-import { intlData } from '../l18n';
+import { getIntlData } from '../l18n';
 
 let step = AuthSteps.LOGIN_WAIT,
     errors = {
@@ -27,8 +27,10 @@ let step = AuthSteps.LOGIN_WAIT,
     myUid = null;
 
 class LoginStore extends Store {
-  constructor(Dispatcher) {
-    super(Dispatcher);
+  constructor(dispatcher) {
+    super(dispatcher);
+
+    this.intl = getIntlData();
   }
 
   getStep = () => step;
@@ -84,10 +86,10 @@ class LoginStore extends Store {
       case ActionTypes.AUTH_CODE_REQUEST_FAILURE:
         switch (action.error) {
           case 'PHONE_NUMBER_INVALID':
-            errors.login = intlData.messages.login.errors.numberInvalid;
+            errors.login = this.intl.messages.login.errors.numberInvalid;
             break;
           case 'CODE_WAIT':
-            errors.login = intlData.messages.login.errors.codeWait;
+            errors.login = this.intl.messages.login.errors.codeWait;
             break;
           default:
             errors.login = action.error;
@@ -113,10 +115,10 @@ class LoginStore extends Store {
         switch (action.error) {
           case 'PHONE_CODE_INVALID':
           case 'EMAIL_CODE_INVALID':
-            errors.code = intlData.messages.login.errors.codeInvalid;
+            errors.code = this.intl.messages.login.errors.codeInvalid;
             break;
           case 'PHONE_CODE_EXPIRED':
-            errors.code = intlData.messages.login.errors.codeExpired;
+            errors.code = this.intl.messages.login.errors.codeExpired;
             break;
           default:
             errors.code = action.error;
@@ -148,7 +150,7 @@ class LoginStore extends Store {
       case ActionTypes.AUTH_SIGNUP_FAILURE:
         switch (action.error) {
           case 'NAME_INVALID':
-            errors.signup = intlData.messages.login.errors.nameInvalid;
+            errors.signup = this.intl.messages.login.errors.nameInvalid;
             break;
           default:
             errors.signup = action.error;
