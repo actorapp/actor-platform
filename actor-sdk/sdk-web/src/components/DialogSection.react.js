@@ -36,9 +36,10 @@ const getStateFromStores = () => {
   const messagesToRender = (messages.length > renderMessagesCount) ? messages.slice(messages.length - renderMessagesCount) : messages;
 
   return {
-    peer: DialogStore.getSelectedDialogPeer(),
+    peer: DialogStore.getCurrentPeer(),
     messages: messages,
-    messagesToRender: messagesToRender
+    messagesToRender: messagesToRender,
+    isMember: DialogStore.isMember()
   };
 };
 
@@ -52,18 +53,13 @@ class DialogSection extends Component {
 
     this.state = getStateFromStores();
 
-    ActivityStore.addChangeListener(this.fixScrollTimeout);
-    DialogStore.addSelectListener(this.onSelectedDialogChange);
+    ActivityStore.addListener(this.fixScrollTimeout);
     MessageStore.addListener(this.onMessagesChange);
-  }
-
-  componentWillUnmount() {
-    ActivityStore.removeChangeListener(this.fixScrollTimeout.bind(this));
-    DialogStore.removeSelectListener(this.onSelectedDialogChange);
+    DialogStore.addListener(this.onChange);
   }
 
   componentDidMount() {
-    const peer = DialogStore.getSelectedDialogPeer();
+    const peer = DialogStore.getCurrentPeer();
 
     if (peer) {
       this.fixScroll();
@@ -77,11 +73,10 @@ class DialogSection extends Component {
   }
 
   render() {
-    const { peer } = this.state;
+    const { peer, isMember } = this.state;
     const { delegate } = this.context;
 
-    let mainContent,
-        activity = [],
+    let activity = [],
         ToolbarSection,
         TypingSection,
         ComposeSection;
@@ -102,66 +97,52 @@ class DialogSection extends Component {
       activity.push(<DefaultActivitySection/>);
     }
 
-    if (peer) {
-      let isMember = true,
-          memberArea;
+    const mainScreen = (
+      <section className="dialog">
+        <ConnectionState/>
+        <div className="messages">
+          <MessagesSection messages={this.state.messagesToRender}
+                           peer={peer}
+                           ref="MessagesSection"
+                           onScroll={this.loadMessagesByScroll}/>
 
-      if (peer.type === PeerTypes.GROUP) {
-        const group = GroupStore.getGroup(peer.id);
-        isMember = DialogStore.isGroupMember(group);
-      }
+        </div>
+        {
+          isMember
+            ? <footer className="dialog__footer">
+                <TypingSection/>
+                <ComposeSection peer={peer}/>
+              </footer>
+            : <footer className="dialog__footer dialog__footer--disabled row center-xs middle-xs ">
+                <h3>You are not a member</h3>
+              </footer>
+        }
+      </section>
+    );
+    const emptyScreen = (
+      <section className="dialog dialog--empty row center-xs middle-xs">
+        <ConnectionState/>
 
-      if (isMember) {
-        memberArea = (
-          <div>
-            <TypingSection/>
-            <ComposeSection peer={peer}/>
+        <div className="advice">
+          <div className="actor-logo">
+            <svg className="icon icon--gray"
+                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#star"/>'}}/>
           </div>
-        );
-      } else {
-        memberArea = (
-          <section className="compose compose--disabled row center-xs middle-xs">
-            <h3>You are not a member</h3>
-          </section>
-        );
-      }
-
-      mainContent = (
-        <section className="dialog" onScroll={this.loadMessagesByScroll}>
-          <ConnectionState/>
-
-          <div className="messages">
-            <MessagesSection messages={this.state.messagesToRender}
-                             peer={peer}
-                             ref="MessagesSection"/>
-
-          </div>
-
-          {memberArea}
-        </section>
-      );
-    } else {
-      mainContent = (
-        <section className="dialog dialog--empty row center-xs middle-xs">
-          <ConnectionState/>
-
-          <div className="advice">
-            <div className="actor-logo">
-              <svg className="icon icon--gray"
-                   dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#star"/>'}}/>
-            </div>
-            <h2>Try to be better than yesterday!</h2>
-          </div>
-        </section>
-      );
-    }
+          <h2>Try to be better than yesterday!</h2>
+        </div>
+      </section>
+    );
 
     return (
       <section className="main">
         <ToolbarSection/>
 
         <div className="flexrow">
-          {mainContent}
+          {
+            peer
+              ? mainScreen
+              : emptyScreen
+          }
           {activity}
         </div>
       </section>
@@ -179,9 +160,10 @@ class DialogSection extends Component {
     }
   };
 
-  onSelectedDialogChange = () => {
+  onChange = () => {
     lastScrolledFromBottom = 0;
     renderMessagesCount = initialRenderMessagesCount;
+    this.setState(getStateFromStores());
   };
 
   onMessagesChange = debounce(() => {

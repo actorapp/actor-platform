@@ -3,8 +3,7 @@
  */
 
 import { assign, forEach } from 'lodash';
-
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import ReactMixin from 'react-mixin';
 import addons from 'react/addons';
@@ -42,9 +41,9 @@ let getStateFromStores = () => {
   };
 };
 
-class ComposeSection extends React.Component {
+class ComposeSection extends Component {
   static propTypes = {
-    peer: React.PropTypes.object.isRequired
+    peer: PropTypes.object.isRequired
   };
 
   constructor(props) {

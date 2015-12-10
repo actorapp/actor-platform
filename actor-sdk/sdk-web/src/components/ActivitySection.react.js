@@ -3,49 +3,46 @@
  */
 
 import React, { Component } from 'react';
+import { Container } from 'flux/utils';
 import classNames from 'classnames';
-import { ActivityTypes } from '../constants/ActorAppConstants';
+import { PeerTypes } from '../constants/ActorAppConstants';
 
 import ActivityStore from '../stores/ActivityStore';
+import DialogStore from '../stores/DialogStore';
 
 import UserProfile from './activity/UserProfile.react';
 import GroupProfile from './activity/GroupProfile.react';
 
-const getStateFromStores = () => {
-  return {
-    activity: ActivityStore.getActivity(),
-    isOpen: ActivityStore.isOpen()
-  };
-};
-
 class ActivitySection extends Component {
   constructor(props) {
     super(props);
-
-    this.state = getStateFromStores();
-
-    ActivityStore.addChangeListener(this.onChange);
   }
 
-  componentWillUnmount() {
-    ActivityStore.removeChangeListener(this.onChange);
+  static getStores = () => [DialogStore, ActivityStore];
+
+  static calculateState() {
+    return {
+      peer: DialogStore.getCurrentPeer(),
+      info: DialogStore.getInfo(),
+      isOpen: ActivityStore.isOpen()
+    };
   }
 
   render() {
-    const { activity, isOpen } = this.state;
+    const { peer, info, isOpen } = this.state;
 
-    if (activity !== null) {
+    if (peer !== null) {
       const activityClassName = classNames('activity', {
         'activity--shown': isOpen
       });
       let activityBody;
 
-      switch (activity.type) {
-        case ActivityTypes.USER_PROFILE:
-          activityBody = <UserProfile user={activity.user}/>;
+      switch (peer.type) {
+        case PeerTypes.USER:
+          activityBody = <UserProfile user={info}/>;
           break;
-        case ActivityTypes.GROUP_PROFILE:
-          activityBody = <GroupProfile group={activity.group}/>;
+        case PeerTypes.GROUP:
+          activityBody = <GroupProfile group={info}/>;
           break;
         default:
       }
@@ -59,8 +56,6 @@ class ActivitySection extends Component {
       return null;
     }
   }
-
-  onChange = () => this.setState(getStateFromStores());
 }
 
-export default ActivitySection;
+export default Container.create(ActivitySection, {pure: false});

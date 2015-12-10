@@ -58,12 +58,8 @@ class GroupProfile extends Component {
       GroupProfileActionCreators.getIntegrationToken(props.group.id);
     }
 
-    DialogStore.addNotificationsListener(this.onChange);
+    DialogStore.addListener(this.onChange);
     GroupStore.addListener(this.onChange);
-  }
-
-  componentWillUnmount() {
-    DialogStore.removeNotificationsListener(this.onChange);
   }
 
   componentWillReceiveProps(newProps) {
@@ -154,7 +150,7 @@ class GroupProfile extends Component {
 
     const myId = UserStore.getMyId();
     const admin = UserStore.getUser(group.adminId);
-    const isMember = DialogStore.isGroupMember(group);
+    const isMember = DialogStore.isMember();
 
     let adminControls;
     if (group.adminId === myId) {
