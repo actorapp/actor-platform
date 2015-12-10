@@ -40,6 +40,7 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
     public Object instantiateItem(ViewGroup container, int position) {
         View itemView = LayoutInflater.from(container.getContext()).inflate(R.layout.emoji_smiles_page, null);
         ViewGroup emojicontainer = (ViewGroup) itemView.findViewById(R.id.emojiPackContainer);
+        View noEmojiTV = itemView.findViewById(R.id.text);
 
         ArrayList<Long> emojiPack = new ArrayList<Long>();
         switch (position) {
@@ -79,6 +80,11 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
                     SmileProcessor.emoji().unregisterListener(this);
                 }
             });
+        }
+        if (emojiPack.size() == 0) {
+            noEmojiTV.setVisibility(View.VISIBLE);
+        } else {
+            noEmojiTV.setVisibility(View.GONE);
         }
         // is this necessary?
         /*if(position==0){
