@@ -152,8 +152,10 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             @Override
             public void onChanged(String val, Value<String> valueModel) {
                 if (val != null && !val.isEmpty()) {
+                    aboutTitle.setTextColor(style.getTextPrimaryColor());
                     aboutTitle.setText(val);
                 } else {
+                    aboutTitle.setTextColor(style.getTextSecondaryColor());
                     aboutTitle.setText(getString(R.string.edit_about_edittext_hint));
                 }
             }

@@ -18,6 +18,8 @@ import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.BackgroundPreviewView;
 
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+
 public class PickWallpaperFragment extends BaseFragment {
 
     private ChatBackgroundView wallpaper;
@@ -40,7 +42,7 @@ public class PickWallpaperFragment extends BaseFragment {
         ed = shp.edit();
         selectedWallpaper = getArguments().getInt("EXTRA_ID");
         if (selectedWallpaper == -1) {
-            selectedWallpaper = shp.getInt("wallpaper", 0);
+            selectedWallpaper = BackgroundPreviewView.getBackgroundIdByUri(messenger().getSelectedWallpaper(), getContext(), shp.getInt("wallpaper", 0));
         }
         View res = inflater.inflate(R.layout.fragment_pick_wallpaper, container, false);
 
@@ -61,6 +63,7 @@ public class PickWallpaperFragment extends BaseFragment {
         res.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                messenger().changeSelectedWallpaper("local:".concat(getResources().getResourceEntryName(BackgroundPreviewView.getBackground(selectedWallpaper))));
                 ed.putInt("wallpaper", selectedWallpaper);
                 ed.commit();
                 getActivity().finish();
