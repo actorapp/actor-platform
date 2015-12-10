@@ -40,10 +40,10 @@ public class FileItem extends ExplorerItem {
         String convertedSize = null;
         long size = (int) file.length();
         if (size > 1024 * 1024 * 1024) {
-            convertedSize = (size / (1024 * 1024 * 1024)) + "" + ((size % (1024 * 1024 * 1024)) / (100 * 1024 * 1024)) + " " + context.getString(R.string.picker_gbytes);
+            convertedSize = (size / (1024 * 1024 * 1024)) + "," + ((size % (1024 * 1024 * 1024)) / (100 * 1024 * 1024)) + " " + context.getString(R.string.picker_gbytes);
         }
         if (size > 1024 * 1024) {
-            convertedSize = (size / (1024 * 1024)) + "" + ((size % (1024 * 1024)) / (100 * 1024)) + " " + context.getString(R.string.picker_mbytes);
+            convertedSize = (size / (1024 * 1024)) + "," + ((size % (1024 * 1024)) / (100 * 1024)) + " " + context.getString(R.string.picker_mbytes);
         }
         if (convertedSize == null) {
             if (size / 1024 == 0) {
