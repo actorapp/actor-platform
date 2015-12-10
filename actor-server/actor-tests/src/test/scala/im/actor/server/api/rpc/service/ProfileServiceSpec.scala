@@ -8,8 +8,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scalaz.-\/
 
-import com.sksamuel.scrimage.AsyncImage
-import org.scalatest.Inside._
+import com.sksamuel.scrimage.Image
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.ApiFileLocation
@@ -50,7 +49,7 @@ final class ProfileServiceSpec
   private val validOrigBytes =
     Files.readAllBytes(Paths.get(getClass.getResource("/valid-avatar.jpg").toURI))
   private val validOrigFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
-  private val validOrigAImg = Await.result(AsyncImage(validOrigFile), 5.seconds)
+  private val validOrigAImg = Image.fromFile(validOrigFile).toPar
 
   private val validOrigDimensions = ImageUtils.dimensions(validOrigAImg)
 
