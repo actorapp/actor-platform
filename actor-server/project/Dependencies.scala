@@ -79,7 +79,7 @@ object Dependencies {
 
     val shapeless               = "com.chuusai"                   %% "shapeless"                     % "2.2.4"
 
-    val scrImageCore            = "com.sksamuel.scrimage"         %% "scrimage-core"                 % "1.4.2"
+    val scrImageCore            = "com.sksamuel.scrimage"         %% "scrimage-core"                 % "2.1.0"
 
     val tyrex                   = "tyrex"                         %  "tyrex"                         % "1.0.1"
 
