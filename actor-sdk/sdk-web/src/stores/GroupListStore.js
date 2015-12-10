@@ -2,57 +2,97 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+import { forEach } from 'lodash';
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes, AsyncActionStates } from '../constants/ActorAppConstants';
+import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 
 let _isOpen = false,
-    _groupList = [],
-    _query = '';
+    _list = [],
+    _results = [];
 
+/**
+ * Class representing a store for searchable group list.
+ */
 class GroupStore extends Store {
-  constructor(Dispatcher) {
-    super(Dispatcher);
+  constructor(dispatcher) {
+    super(dispatcher);
   }
 
-  isGroupsOpen() {
+  /**
+   * @returns {boolean}
+   */
+  isOpen() {
     return _isOpen;
   }
 
+  /**
+   * @returns {Array}
+   */
   getList() {
-    return _groupList;
+    return _list;
   }
 
-  getSearchQuery() {
-    return _query;
+  /**
+   * @returns {Array}
+   */
+  getResults() {
+    return _results;
+  }
+
+
+  handleSearchQuery(query) {
+    let results = [];
+
+    if (query === '') {
+      results = _list;
+    } else {
+      forEach(_list, (result) => {
+        const title = result.peerInfo.title.toLowerCase();
+        if (title.includes(query.toLowerCase())) {
+          results.push(result);
+        }
+      })
+    }
+
+    _results = results;
   }
 
   __onDispatch = (action) => {
     switch (action.type) {
+      case ActionTypes.GROUP_LIST_SHOW:
+        _isOpen  = true;
+        this.handleSearchQuery('');
+        this.__emitChange();
+        break;
       case ActionTypes.GROUP_LIST_HIDE:
         _isOpen  = false;
-        _query = '';
+        _results = [];
         this.__emitChange();
         break;
 
-      case ActionTypes.GROUP_LIST_LOAD:
-        _isOpen  = true;
-        this.__emitChange();
-        break;
+      //case ActionTypes.GROUP_LIST_LOAD:
+      //  _isOpen  = true;
+      //  _isSearching = true;
+      //  this.__emitChange();
+      //  break;
       case ActionTypes.GROUP_LIST_LOAD_SUCCESS:
-        _groupList = action.response;
+        _list = action.response;
+        this.handleSearchQuery('');
         this.__emitChange();
         break;
       case ActionTypes.GROUP_LIST_LOAD_ERROR:
-        console.erro(action.error);
+        console.error(action.error);
         this.__emitChange();
         break;
 
       case ActionTypes.GROUP_LIST_SEARCH:
-        _query = action.query;
+        this.handleSearchQuery(action.query);
         this.__emitChange();
         break;
+
+      default:
     }
   }
 }

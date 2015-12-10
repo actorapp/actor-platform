@@ -1336,7 +1336,7 @@
         &:first-child {
           box-shadow: none;
         }
-        &:hover {
+        &--active {
           cursor: pointer;
 
           color: white;
@@ -1364,7 +1364,7 @@
             }
           }
         }
-        &:hover + .group__list__item {
+        &--active + .group__list__item {
           box-shadow: none;
         }
         .avatar {

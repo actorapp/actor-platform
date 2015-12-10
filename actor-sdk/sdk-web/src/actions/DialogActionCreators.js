@@ -20,13 +20,13 @@ const DialogActionCreators = {
     const currentPeer = DialogStore.getCurrentPeer();
 
     if (currentPeer !== null) {
-      DialogActionCreators.onConversationClosed(currentPeer);
+      this.onConversationClosed(currentPeer);
       ActorClient.unbindChat(currentPeer, MessageActionCreators.setMessages);
     }
 
     dispatch(ActionTypes.SELECT_DIALOG_PEER, { peer });
 
-    DialogActionCreators.onConversationOpen(peer);
+    this.onConversationOpen(peer);
     ActorClient.bindChat(peer, MessageActionCreators.setMessages);
 
     router.transitionTo('main', {id: PeerUtils.peerToString(peer)});

@@ -21,7 +21,7 @@ import Groups from './GroupList'
 const getStates = () => {
   return {
     isContactsOpen: ContactsStore.isContactsOpen(),
-    isGroupsOpen: GroupListStore.isGroupsOpen()
+    isGroupsOpen: GroupListStore.isOpen()
   }
 };
 
