@@ -16,7 +16,7 @@ const LoadDialogsScrollBottom = 100;
 
 const getStateFromStore = () => {
   return {
-    dialogs: DialogStore.getAll()
+    dialogs: DialogStore.getAllDialogs()
   };
 };
 
@@ -26,11 +26,7 @@ class RecentSection extends Component {
 
     this.state = getStateFromStore();
 
-    DialogStore.addChangeListener(this.onChange);
-  }
-
-  componentWillUnmount() {
-    DialogStore.removeChangeListener(this.onChange);
+    DialogStore.addListener(this.onChange);
   }
 
   onChange = () => this.setState(getStateFromStore());

@@ -4,7 +4,7 @@
 
 import { forEach, map, debounce } from 'lodash';
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import ActorClient from '../../utils/ActorClient';
 
 import { MessageContentTypes, PeerTypes } from '../../constants/ActorAppConstants';
@@ -48,8 +48,9 @@ const isOnlyOneDay = (messages) => {
 
 class MessagesSection extends Component {
   static propTypes = {
-    messages: React.PropTypes.array.isRequired,
-    peer: React.PropTypes.object.isRequired
+    messages: PropTypes.array.isRequired,
+    peer: PropTypes.object.isRequired,
+    onScroll: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -116,15 +117,15 @@ class MessagesSection extends Component {
     }
   };
 
+  handleScroll = () => {
+    const { onScroll } = this.props;
+    onScroll && onScroll();
+  };
+
   render() {
     const { messages, peer } = this.props;
     const messagesList = map(messages, this.getMessagesListItem);
-
-    let isMember = true;
-    if (peer.type === PeerTypes.GROUP) {
-      const group = GroupStore.getGroup(peer.id);
-      isMember = DialogStore.isGroupMember(group);
-    }
+    const isMember = DialogStore.isMember();
 
     const messagesLoading = (
       <li className="message message--loading">
@@ -135,7 +136,7 @@ class MessagesSection extends Component {
     );
 
     return (
-      <ul className="messages__list">
+      <ul className="messages__list" onScroll={this.handleScroll}>
         {
           isMember && messagesList.length < 30
             ? <Welcome peer={peer}/>

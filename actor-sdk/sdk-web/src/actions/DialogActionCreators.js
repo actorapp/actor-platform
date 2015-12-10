@@ -19,15 +19,37 @@ const DialogActionCreators = {
     const router = RouterContainer.get();
     const currentPeer = DialogStore.getCurrentPeer();
 
+    // Unbind from previous peer
     if (currentPeer !== null) {
       this.onConversationClosed(currentPeer);
       ActorClient.unbindChat(currentPeer, MessageActionCreators.setMessages);
+      ActorClient.unbindTyping(currentPeer, this.setTyping);
+
+      switch (currentPeer.type) {
+        case PeerTypes.USER:
+          ActorClient.unbindUser(currentPeer.id, this.setDialogInfo);
+          break;
+        case PeerTypes.GROUP:
+          ActorClient.unbindGroup(currentPeer.id, this.setDialogInfo);
+          break;
+        default:
+      }
     }
 
     dispatch(ActionTypes.SELECT_DIALOG_PEER, { peer });
 
     this.onConversationOpen(peer);
     ActorClient.bindChat(peer, MessageActionCreators.setMessages);
+    ActorClient.bindTyping(peer, this.setTyping);
+    switch(peer.type) {
+      case PeerTypes.USER:
+        ActorClient.bindUser(peer.id, this.setDialogInfo);
+        break;
+      case PeerTypes.GROUP:
+        ActorClient.bindGroup(peer.id, this.setDialogInfo);
+        break;
+      default:
+    }
 
     router.transitionTo('main', {id: PeerUtils.peerToString(peer)});
   },
@@ -43,8 +65,12 @@ const DialogActionCreators = {
     }
   },
 
-  createSelectedDialogInfoChanged(info) {
-    dispatch(ActionTypes.SELECTED_DIALOG_INFO_CHANGED, { info });
+  setDialogInfo(info) {
+    dispatch(ActionTypes.DIALOG_INFO_CHANGED, { info });
+  },
+
+  setTyping(typing) {
+    dispatch(ActionTypes.DIALOG_TYPING_CHANGED, { typing: typing.typing });
   },
 
   onConversationOpen(peer) {
@@ -72,6 +98,7 @@ const DialogActionCreators = {
   },
 
   changeNotificationsEnabled(peer, isEnabled) {
+    ActorClient.changeNotificationsEnabled(peer, isEnabled);
     dispatch(ActionTypes.NOTIFICATION_CHANGE, { peer, isEnabled });
   },
 

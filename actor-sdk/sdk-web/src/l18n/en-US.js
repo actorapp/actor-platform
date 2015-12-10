@@ -188,7 +188,7 @@ export default {
     'notifications': 'Notifications',
     'integrationTokenCopied': 'Integration link copied.',
     'members': '{numMembers, plural,' +
-      '=0 {no Members}' +
+      '=0 {No members}' +
       '=1 {# Member}' +
       'other {# Members}' +
     '}',

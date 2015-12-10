@@ -24,6 +24,14 @@ $like-red: rgb(226, 38, 77);
 
 .dialog {
   position: relative;
+  &__footer {
+    height: 182px;
+    h3 {
+      font-weight: 500;
+
+      color: rgba(0, 0, 0, .2);
+    }
+  }
   &--empty {
     .advice {
       max-width: 480px;
