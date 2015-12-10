@@ -10,8 +10,8 @@ import ActorClient from '../utils/ActorClient';
 let _integrationToken = null;
 
 class GroupStore extends Store {
-  constructor(Dispatcher) {
-    super(Dispatcher);
+  constructor(dispatcher) {
+    super(dispatcher);
   }
 
   getGroup(gid) {

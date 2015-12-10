@@ -33,7 +33,8 @@ export const ActionTypes = keymirror({
   AUTH_SET_LOGGED_OUT: null,
 
   DIALOGS_CHANGED: null,
-  SELECTED_DIALOG_INFO_CHANGED: null,
+  DIALOG_INFO_CHANGED: null,
+  DIALOG_TYPING_CHANGED: null,
   MY_PROFILE_CHANGED: null,
   SELECT_DIALOG_PEER: null,
   MESSAGES_CHANGED: null,

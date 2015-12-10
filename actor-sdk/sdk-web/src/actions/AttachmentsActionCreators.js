@@ -21,7 +21,7 @@ export default {
   deleteAttachment: () => dispatch(ActionTypes.ATTACHMENT_DELETE),
 
   sendAttachment: () => {
-    const currentPeer = DialogStore.getSelectedDialogPeer();
+    const currentPeer = DialogStore.getCurrentPeer();
     const attachment = AttachmentStore.getAttachment();
 
     if (attachment.isImage && attachment.sendAsPicture) {
@@ -34,7 +34,7 @@ export default {
   },
 
   sendAll: (attachments) => {
-    const currentPeer = DialogStore.getSelectedDialogPeer();
+    const currentPeer = DialogStore.getCurrentPeer();
 
     forEach(attachments, (attachment) => {
       if (attachment.isImage && attachment.sendAsPicture) {

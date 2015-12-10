@@ -8,16 +8,13 @@ import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 
-import DialogStore from './DialogStore';
-import ContactStore from './ContactStore';
-
 let _isOpen = false,
     _list = [],
     _results = [];
 
 class QuickSearchStore extends Store {
-  constructor(Dispatcher) {
-    super(Dispatcher);
+  constructor(dispatcher) {
+    super(dispatcher);
   }
 
   isOpen() {

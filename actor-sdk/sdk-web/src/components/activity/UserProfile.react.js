@@ -2,8 +2,8 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import _ from 'lodash';
-import React from 'react';
+import { assign } from 'lodash';
+import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
@@ -30,24 +30,21 @@ const getStateFromStores = (userId) => {
   };
 };
 
-class UserProfile extends React.Component {
+class UserProfile extends Component {
   static propTypes = {
-    user: React.PropTypes.object.isRequired
+    user: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
 
-    this.state = _.assign({
+    this.state = assign({
       isActionsDropdownOpen: false
     }, getStateFromStores(props.user.id));
 
-    DialogStore.addNotificationsListener(this.onChange);
+    DialogStore.addListener(this.onChange);
   }
 
-  componentWillUnmount() {
-    DialogStore.removeNotificationsListener(this.onChange);
-  }
 
   componentWillReceiveProps(newProps) {
     this.setState(getStateFromStores(newProps.user.id));
