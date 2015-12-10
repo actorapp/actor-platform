@@ -4,6 +4,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
+import classnames from 'classnames';
 import { IntlMixin } from 'react-intl';
 
 import GroupListActionCreators from '../../../actions/GroupListActionCreators'
@@ -21,7 +22,9 @@ class Group extends Component {
 
   static propTypes = {
     group: PropTypes.object.isRequired,
-    onClick: PropTypes.func.isRequired
+    isSelected: PropTypes.bool.isRequired,
+    onClick: PropTypes.func.isRequired,
+    onMouseOver: PropTypes.func.isRequired
   };
 
   handleClick = () => {
@@ -29,11 +32,21 @@ class Group extends Component {
     onClick(group.peerInfo.peer);
   };
 
+  handleMouseOver= () => {
+    const { onMouseOver } = this.props;
+    onMouseOver();
+  };
+
   render() {
-    const { group } = this.props;
+    const { group, isSelected } = this.props;
+    const resultClassName = classnames('group__list__item row', {
+      'group__list__item--active': isSelected
+    });
 
     return (
-      <li className="group__list__item row" onClick={this.handleClick}>
+      <li className={resultClassName}
+          onClick={this.handleClick}
+          onMouseOver={this.handleMouseOver}>
         <div>
           <AvatarItem image={group.peerInfo.avatar}
                       placeholder={group.peerInfo.placeholder}
