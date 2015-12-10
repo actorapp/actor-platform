@@ -1,7 +1,8 @@
 package im.actor.server.file
 
 import akka.actor.ActorSystem
-import com.sksamuel.scrimage.{ AsyncImage, Format, Position }
+import com.sksamuel.scrimage.nio.JpegWriter
+import com.sksamuel.scrimage.{ Image, ParImage, Position }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.{ model, persist }
@@ -9,7 +10,7 @@ import slick.dbio.DBIO
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Failure, Success }
+import scala.util.{ Try, Failure, Success }
 
 object ImageUtils {
   val AvatarSizeLimit = 1024L * 1024 // TODO: configurable
@@ -37,19 +38,15 @@ object ImageUtils {
       case (id, hash, size, w, h) ⇒ avatarImage(Some((id, hash, size)), w, h)
     }
 
-  def resizeTo(aimg: AsyncImage, side: Int)(implicit ec: ExecutionContext): Future[AsyncImage] = {
-    for {
-      scaledImg ← scaleTo(aimg, side)
-      resizedImg ← scaledImg.resizeTo(side, side, Position.Center)
-    } yield resizedImg
-  }
+  def resizeTo(aimg: ParImage, side: Int)(implicit ec: ExecutionContext): Future[ParImage] =
+    for (scaledImg ← scaleTo(aimg, side)) yield scaledImg.resizeTo(side, side, Position.Center)
 
-  def scaleTo(aimg: AsyncImage, side: Int)(implicit ec: ExecutionContext): Future[AsyncImage] = {
+  def scaleTo(aimg: ParImage, side: Int)(implicit ec: ExecutionContext): Future[ParImage] = {
     val scaleFactor = side.toDouble / math.min(aimg.width, aimg.height)
     aimg.scale(scaleFactor)
   }
 
-  def dimensions(aimg: AsyncImage)(implicit ec: ExecutionContext): (Int, Int) =
+  def dimensions(aimg: ParImage)(implicit ec: ExecutionContext): (Int, Int) =
     (aimg.width, aimg.height)
 
   def scaleStickerF(fullFileId: Long)(
@@ -106,20 +103,20 @@ object ImageUtils {
         fsAdapter.downloadFile(fullFileId) flatMap {
           case Some(fullFile) ⇒
             val action = for {
-              fullAimg ← DBIO.from(AsyncImage(fullFile))
+              fullAimg ← Future.fromTry(Try(Image.fromFile(fullFile).toPar))
               (fiw, fih) = dimensions(fullAimg)
 
-              smallAimg ← DBIO.from(resizeTo(fullAimg, smallSize))
-              largeAimg ← DBIO.from(resizeTo(fullAimg, largeSize))
+              smallAimg ← resizeTo(fullAimg, smallSize)
+              largeAimg ← resizeTo(fullAimg, largeSize)
 
               smallFile = fullFile.getParentFile.toPath.resolve(smallFileName).toFile
               largeFile = fullFile.getParentFile.toPath.resolve(largeFileName).toFile
 
-              _ ← DBIO.from(smallAimg.writer(Format.JPEG).write(smallFile))
-              _ ← DBIO.from(largeAimg.writer(Format.JPEG).write(largeFile))
+              _ ← Future.fromTry(Try(smallAimg.toImage.forWriter(JpegWriter()).write(smallFile)))
+              _ ← Future.fromTry(Try(largeAimg.toImage.forWriter(JpegWriter()).write(largeFile)))
 
-              smallFileLocation ← fsAdapter.uploadFile(smallFileName, smallFile)
-              largeFileLocation ← fsAdapter.uploadFile(largeFileName, largeFile)
+              smallFileLocation ← fsAdapter.uploadFileF(smallFileName, smallFile)
+              largeFileLocation ← fsAdapter.uploadFileF(largeFileName, largeFile)
             } yield {
               // TODO: #perf calculate file sizes efficiently
 
@@ -147,7 +144,7 @@ object ImageUtils {
               Avatar(Some(smallImage), Some(largeImage), Some(fullImage))
             }
 
-            action.asTry map {
+            DBIO.from(action).asTry map {
               case Success(res) ⇒ Right(res)
               case Failure(e)   ⇒ Left(e)
             }
