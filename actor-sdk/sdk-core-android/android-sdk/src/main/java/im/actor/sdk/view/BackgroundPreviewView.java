@@ -78,6 +78,20 @@ public class BackgroundPreviewView extends SimpleDraweeView {
         }
     }
 
+    public static int getBackgroundIdByUri(String uri, Context context, int def) {
+        if (uri != null && uri.startsWith("local:")) {
+            String fileName = uri.replace("local:", "");
+            int fileId = context.getResources().getIdentifier(fileName, "drawable", context.getPackageName());
+            for (int i = 0; i < BACKGROUNDS.length; i++) {
+                if (BACKGROUNDS[i] == fileId) {
+                    return i;
+                }
+            }
+
+        }
+        return def;
+    }
+
     public static int getSize() {
         return BACKGROUNDS.length;
     }
