@@ -10,6 +10,8 @@ import android.view.View;
 import im.actor.sdk.R;
 import im.actor.sdk.view.BackgroundPreviewView;
 
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+
 public class ChatBackgroundView extends View {
 
     private Drawable background;
@@ -37,7 +39,7 @@ public class ChatBackgroundView extends View {
     public void bind() {
         if (background == null) {
             shp = getContext().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
-            background = getResources().getDrawable(BackgroundPreviewView.getBackground(shp.getInt("wallpaper", 0)));
+            background = getResources().getDrawable(BackgroundPreviewView.getBackground(BackgroundPreviewView.getBackgroundIdByUri(messenger().getSelectedWallpaper(), getContext(), shp.getInt("wallpaper", 0))));
         }
     }
 
