@@ -3,31 +3,23 @@
  */
 
 import React from 'react';
+import { Container } from 'flux/utils';
 import classnames from 'classnames';
-import ConnectionStateStore from '../../stores/ConnectionStateStore';
 
-const getStateFromStore = () => {
-  return {
-    connectionState: ConnectionStateStore.getState()
-  };
-};
+import ConnectionStateStore from '../../stores/ConnectionStateStore';
 
 class ConnectionState extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = getStateFromStore();
-
-    ConnectionStateStore.addChangeListener(this.onStateChange);
   }
 
-  componentWillUnmount() {
-    ConnectionStateStore.removeChangeListener(this.onStateChange);
-  }
+  static getStores = () => [ConnectionStateStore];
 
-  onStateChange = () => {
-    this.setState(getStateFromStore);
-  };
+  static calculateState() {
+    return {
+      connectionState: ConnectionStateStore.getState()
+    };
+  }
 
   render() {
     const { connectionState } = this.state;
@@ -54,4 +46,4 @@ class ConnectionState extends React.Component {
   }
 }
 
-export default ConnectionState;
+export default Container.create(ConnectionState, {pure: false});
