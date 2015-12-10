@@ -1,3 +1,17 @@
+<h3 align="center">
+  <a href="https://github.com/actorapp/actor-platform">
+    <img src="docs/assets/Actor_Logo.png" width="150" />
+    <br />
+    Actor
+  </a>
+</h3>
+<p align="center">
+  Platform &bull; 
+  <a href="https://github.com/actorapp/actor-bootstrap">Bootstrap</a> &bull; 
+  <a href="https://github.com/actorapp/actor-bots">Bots</a>
+</p>
+-------
+
 # Actor Messaging platform
 
 Actor is a platform for instant messaging. Actor provides features like large group chats; unlimited history storage; send/receive documents, photo, and video; authentication with one time password for phone number/email or OAuth2; easy integrations with external services.
@@ -13,13 +27,13 @@ This repository contains all of the source code you need to start your own serve
 * [iPhone/iPad 7.0+](https://actor.im/ios)
 * [Web](https://app.actor.im/)
 
-It is very easy to [implement your own](http://actor.readme.io/docs/apps).
-
 # Installation
 
-Building a mobile messaging application is quite a complex procedure that requires a lot of preparation, e.g.: have developer accounts with Google and Apple, have SSL certificates for your servers, integrate the server with various services like SMS gate, push systems, etc.
+To build your own server with apps, visit [Actor Bootstrap repository](https://github.com/actorapp/actor-bootstrap).
 
-For more info, you can read the [server installation manual](docs/SERVER.md). After installing the server, you can [start building the apps](docs/APPS.md).
+# Bots
+
+Actor have built-in bots. You can find them at [Actor Bots repository](https://github.com/actorapp/actor-bots).
 
 # Live demo
 

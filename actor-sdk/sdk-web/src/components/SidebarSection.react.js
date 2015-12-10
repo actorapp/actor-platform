@@ -4,7 +4,7 @@
 
 import React, { Component, PropTypes } from 'react';
 
-import HeaderSection from './sidebar/HeaderSection.react';
+import DefaultHeaderSection from './sidebar/HeaderSection.react';
 import DefaultRecentSection from './sidebar/RecentSection.react';
 import QuickSearchButton from './sidebar/QuickSearchButton.react';
 
@@ -25,13 +25,22 @@ class SidebarSection extends Component {
     const { selectedPeer } = this.props;
     const { delegate } = this.context;
 
-    const RecentSection = delegate.components.recent || DefaultRecentSection;
+    let HeaderSection, RecentSection, FooterSection;
+    if (delegate.components.sidebar !== null && typeof delegate.components.sidebar !== 'function') {
+      HeaderSection = delegate.components.sidebar.header || DefaultHeaderSection;
+      RecentSection = delegate.components.sidebar.recent || DefaultRecentSection;
+      FooterSection = delegate.components.sidebar.footer || QuickSearchButton;
+    } else {
+      HeaderSection = DefaultHeaderSection;
+      RecentSection = DefaultRecentSection;
+      FooterSection = QuickSearchButton;
+    }
 
     return (
       <aside className="sidebar">
         <HeaderSection/>
         <RecentSection selectedPeer={selectedPeer}/>
-        <QuickSearchButton/>
+        <FooterSection/>
       </aside>
     );
   }

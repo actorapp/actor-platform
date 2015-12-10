@@ -23,11 +23,11 @@ import LoginActionCreators from '../actions/LoginActionCreators';
 
 import LoginStore from '../stores/LoginStore';
 
-import Deactivated from '../components/Deactivated.react.js';
-import Login from '../components/Login.react.js';
-import Main from '../components/Main.react.js';
-import JoinGroup from '../components/JoinGroup.react.js';
-import Install from '../components/Install.react.js';
+import DefaultDeactivated from '../components/Deactivated.react';
+import DefaultLogin from '../components/Login.react';
+import Main from '../components/Main.react';
+import DefaultJoinGroup from '../components/JoinGroup.react';
+import DefaultInstall from '../components/Install.react';
 
 import { initBugsnag } from '../utils/Bugsnag';
 import { initMixpanel } from '../utils/Mixpanel';
@@ -110,18 +110,22 @@ class ActorSDK {
     const appRootElemet = document.getElementById('actor-web-app');
 
     if (window.location.hash !== '#/deactivated') {
-      if (crosstab.supported)
+      if (crosstab.supported) {
         crosstab.broadcast(ActorInitEvent, {});
+      }
 
       window.messenger = Actor.create(this.endpoints);
     }
 
-    const loginComponent = this.delegate.components.login || Login;
+    const Login = this.delegate.components.login || DefaultLogin;
+    const Deactivated = this.delegate.components.deactivated || DefaultDeactivated;
+    const Install = this.delegate.components.install || DefaultInstall;
+    const JoinGroup = this.delegate.components.joinGroup || DefaultJoinGroup;
     const intlData = getIntlData();
 
     const routes = (
       <Route handler={App} name="app" path="/">
-        <Route handler={loginComponent} name="login" path="/auth"/>
+        <Route handler={Login} name="login" path="/auth"/>
 
         <Route handler={Main} name="main" path="/im/:id"/>
         <Route handler={JoinGroup} name="join" path="/join/:token"/>

@@ -1,0 +1,1 @@
+* fixes in sticker extensions, new request for bots

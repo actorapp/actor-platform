@@ -46,6 +46,7 @@ public class AndroidNotifications implements NotificationProvider {
     private Peer visiblePeer;
 
     private Context context;
+    private Intent intent;
 
     public AndroidNotifications(Context context) {
         this.context = context;
@@ -228,8 +229,10 @@ public class AndroidNotifications implements NotificationProvider {
             builder.setContentText(messagesCount + " messages in " + conversationsCount + " chats");
             visiblePeer = null;
 
+            intent = new Intent(context, ActorMainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             builder.setContentIntent(PendingIntent.getActivity(context, 0,
-                    new Intent(context, ActorMainActivity.class),
+                    intent,
                     PendingIntent.FLAG_UPDATE_CURRENT));
 
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();

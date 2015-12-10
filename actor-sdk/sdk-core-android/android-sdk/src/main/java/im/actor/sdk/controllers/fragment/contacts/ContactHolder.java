@@ -49,7 +49,11 @@ public class ContactHolder extends BindedViewHolder {
         fl.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(64)));
 
         cont = new FrameLayout(context);
-        cont.setBackgroundResource(R.drawable.selector_fill);
+        cont.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        FrameLayout background = new FrameLayout(context);
+        background.setBackgroundResource(R.drawable.selector_fill);
+        cont.addView(background, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);

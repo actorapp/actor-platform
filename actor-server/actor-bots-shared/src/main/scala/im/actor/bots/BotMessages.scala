@@ -416,6 +416,17 @@ object BotMessages {
     def getAbout = about.asJava
   }
 
+  @key("IsAdmin")
+  final case class IsAdmin(@beanGetter userId: Int) extends RequestBody {
+    override type Response = ResponseIsAdmin
+    override val service = Services.Users
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  final case class ResponseIsAdmin(isAdmin: Boolean) extends ResponseBody {
+    def getIsAdmin: java.lang.Boolean = isAdmin.booleanValue()
+  }
+
   @key("FindUser")
   final case class FindUser(
     @beanGetter query: String
@@ -453,17 +464,40 @@ object BotMessages {
   }
 
   @key("CreateStickerPack")
-  sealed trait CreateStickerPack extends RequestBody {
+  final case class CreateStickerPack(@beanGetter creatorUserId: Int) extends RequestBody {
     override type Response = Container[String]
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
     override val service: String = Services.Stickers
   }
 
-  @key("CreateStickerPack")
-  case object CreateStickerPack extends CreateStickerPack
+  @key("ShowStickerPacks")
+  final case class ShowStickerPacks(@beanGetter ownerUserId: Int) extends RequestBody {
+    override type Response = StickerPackIds
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Stickers
+  }
+
+  final case class StickerPackIds(ids: Seq[String]) extends ResponseBody {
+    def getIds = seqAsJavaList(ids)
+  }
+
+  @key("ShowStickers")
+  final case class ShowStickers(
+    @beanGetter ownerUserId: Int,
+    @beanGetter packId:      Int
+  ) extends RequestBody {
+    override type Response = StickerIds
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Stickers
+  }
+
+  final case class StickerIds(ids: Seq[String]) extends ResponseBody {
+    def getIds = seqAsJavaList(ids)
+  }
 
   @key("AddSticker")
-  case class AddSticker(
+  final case class AddSticker(
+    @beanGetter ownerUserId:  Int,
     @beanGetter packId:       Int,
     emoji:                    Option[String],
     @beanGetter fileLocation: FileLocation
@@ -473,6 +507,37 @@ object BotMessages {
     override val service: String = Services.Stickers
 
     def getEmoji = emoji.asJava
+  }
+
+  @key("DeleteSticker")
+  final case class DeleteSticker(
+    @beanGetter ownerUserId: Int,
+    @beanGetter packId:      Int,
+    @beanGetter stickerId:   Int
+  ) extends RequestBody {
+    override type Response = Void
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Stickers
+  }
+
+  @key("MakeStickerPackDefault")
+  final case class MakeStickerPackDefault(
+    @beanGetter userId: Int,
+    @beanGetter packId: Int
+  ) extends RequestBody {
+    override type Response = Void
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Stickers
+  }
+
+  @key("UnmakeStickerPackDefault")
+  final case class UnmakeStickerPackDefault(
+    @beanGetter userId: Int,
+    @beanGetter packId: Int
+  ) extends RequestBody {
+    override type Response = Void
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Stickers
   }
 
   @key("Message")
@@ -512,12 +577,12 @@ object BotMessages {
     stickerCollectionId:         Option[Int],
     stickerCollectionAccessHash: Option[Long]
   ) extends MessageBody {
-    def getStickerId = stickerId.asJava
+    def getStickerId = stickerId.asPrimitive
     def getFastPreview = fastPreview.asJava
     def getImage512 = image512.asJava
     def getImage256 = image256.asJava
-    def getStickerCollectionId = stickerCollectionId.asJava
-    def getStickerCollectionAccessHash = stickerCollectionAccessHash.asJava
+    def getStickerCollectionId = stickerCollectionId.asPrimitive
+    def getStickerCollectionAccessHash = stickerCollectionAccessHash.asPrimitive
   }
 
   sealed trait TextMessageEx

@@ -51,7 +51,7 @@ class TextField extends Component {
       <div className={inputClassName}>
         {
           floatingLabel
-            ? <label htmlFor={inputId}>{floatingLabel}</label>
+            ? <label htmlFor={inputId} onMouseDown={this.focus}>{floatingLabel}</label>
             : null
         }
         <input {...inputProps}/>

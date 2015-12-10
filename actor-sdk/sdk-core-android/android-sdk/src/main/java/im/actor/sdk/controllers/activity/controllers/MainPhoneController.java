@@ -125,39 +125,8 @@ public class MainPhoneController extends MainBaseController {
     public void onCreate(Bundle savedInstance) {
 
         Intent intent = getIntent();
-        if (intent != null) {
-            if (intent.getAction() != null) {
-                if (intent.getAction().equals(Intent.ACTION_VIEW) && intent.getData() != null) {
-                    joinGroupUrl = getIntent().getData().toString();
-                } else if (intent.getAction().equals(Intent.ACTION_SEND)) {
-                    if ("text/plain".equals(getIntent().getType())) {
-                        sendText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                    } else {
-                        sendUriString = intent.getParcelableExtra(Intent.EXTRA_STREAM).toString();
-                    }
-                } else if (intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
-                    ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-                    if (imageUris != null) {
-                        for (Uri u : imageUris) {
-                            sendUriMultiple.add(u.toString());
-                        }
-                    }
-                }
-            }
 
-            if (intent.getExtras() != null) {
-                Bundle extras = getIntent().getExtras();
-                if (extras.containsKey("share_user")) {
-                    shareUser = extras.getInt("share_user");
-                } else if (extras.containsKey("forward_text")) {
-                    forwardText = extras.getString("forward_text");
-                    forwardTextRaw = extras.getString("forward_text_raw");
-                } else if (extras.containsKey("forward_doc_descriptor")) {
-                    forwardDocDescriptor = extras.getString("forward_doc_descriptor");
-                    forwardDocIsDoc = extras.getBoolean("forward_doc_is_doc");
-                }
-            }
-        }
+        handleIntent(intent);
 
         setContentView(R.layout.actor_activity_main);
         ActorStyle style = ActorSDK.sharedActor().style;
@@ -319,6 +288,47 @@ public class MainPhoneController extends MainBaseController {
                 startActivity(sendIntent);
             }
         });
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (intent != null) {
+            if (intent.getAction() != null) {
+                if (intent.getAction().equals(Intent.ACTION_VIEW) && intent.getData() != null) {
+                    joinGroupUrl = getIntent().getData().toString();
+                } else if (intent.getAction().equals(Intent.ACTION_SEND)) {
+                    if ("text/plain".equals(getIntent().getType())) {
+                        sendText = intent.getStringExtra(Intent.EXTRA_TEXT);
+                    } else {
+                        sendUriString = intent.getParcelableExtra(Intent.EXTRA_STREAM).toString();
+                    }
+                } else if (intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
+                    ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                    if (imageUris != null) {
+                        for (Uri u : imageUris) {
+                            sendUriMultiple.add(u.toString());
+                        }
+                    }
+                }
+            }
+
+            if (intent.getExtras() != null) {
+                Bundle extras = intent.getExtras();
+                if (extras.containsKey("share_user")) {
+                    shareUser = extras.getInt("share_user");
+                } else if (extras.containsKey("forward_text")) {
+                    forwardText = extras.getString("forward_text");
+                    forwardTextRaw = extras.getString("forward_text_raw");
+                } else if (extras.containsKey("forward_doc_descriptor")) {
+                    forwardDocDescriptor = extras.getString("forward_doc_descriptor");
+                    forwardDocIsDoc = extras.getBoolean("forward_doc_is_doc");
+                }
+            }
+        }
     }
 
     @Override
