@@ -399,7 +399,7 @@
   </node>
   <node concept="Az7Fb" id="44kR2PMr9Lk">
     <property role="TrG5h" value="hexByte" />
-    <property role="FLfZY" value="[0-9a-fA-F][0-9a-fA-F]" />
+    <property role="FLfZY" value="([0-9a-fA-F])?([0-9a-fA-F])?[0-9a-fA-F][0-9a-fA-F]" />
   </node>
   <node concept="1TIwiD" id="44kR2PMr9Me">
     <property role="TrG5h" value="HeaderKey" />
