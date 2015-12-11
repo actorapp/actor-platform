@@ -1,0 +1,2 @@
+* Fixed zero authSessionId in auth data for client session after fresh auth (possibly fixes doubling push notifications and other push-related problems)
+* Fixed empty dialogs which appear on other side if user reads Contact Registered service message
