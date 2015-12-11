@@ -18,7 +18,7 @@ class GroupStore extends Store {
     return ActorClient.getGroup(gid);
   }
 
-  getIntegrationToken() {
+  getToken() {
     return _integrationToken;
   }
 

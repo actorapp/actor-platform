@@ -8,6 +8,7 @@ import ActorClient from '../utils/ActorClient';
 import PeerUtils from '../utils/PeerUtils';
 import RouterContainer from '../utils/RouterContainer';
 import MessageActionCreators from './MessageActionCreators';
+import GroupProfileActionCreators from './GroupProfileActionCreators';
 import DialogStore from '../stores/DialogStore';
 
 const DialogActionCreators = {
@@ -47,6 +48,7 @@ const DialogActionCreators = {
         break;
       case PeerTypes.GROUP:
         ActorClient.bindGroup(peer.id, this.setDialogInfo);
+        GroupProfileActionCreators.getIntegrationToken(peer.id);
         break;
       default:
     }
