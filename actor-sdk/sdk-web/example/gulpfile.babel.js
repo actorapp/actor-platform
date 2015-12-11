@@ -44,7 +44,7 @@ gulp.task('webpack:dev', () => {
   });
 });
 
-gulp.task('assets', ['sounds', 'images', 'locale-data']);
+gulp.task('assets', ['sounds', 'images']);
 
 gulp.task('sounds', () => {
   gulp.src(['node_modules/actor-sdk/build/assets/sound/**/*'])
@@ -62,17 +62,7 @@ gulp.task('html', () => {
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('locale-data', () => {
-  gulp.src(['node_modules/intl/locale-data/json/**/*'])
-    .pipe(gulp.dest('./dist/assets/locale-data'));
-});
-
-gulp.task('lib', () => {
-  gulp.src(['node_modules/actor-js/interval.js'])
-    .pipe(gulp.dest('./dist/'));
-});
-
-gulp.task('static', ['html', 'assets', 'lib']);
+gulp.task('static', ['html', 'assets']);
 
 gulp.task('dev', ['static', 'webpack:dev']);
 
