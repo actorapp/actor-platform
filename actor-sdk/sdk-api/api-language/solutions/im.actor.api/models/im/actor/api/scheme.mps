@@ -7668,6 +7668,68 @@
           <property role="NXePf" value="Message Search result container" />
         </node>
       </node>
+      <node concept="2m62dX" id="64LjbWR$H_z" role="2m5mJr">
+        <property role="TrG5h" value="MessageSearchResponse" />
+        <node concept="NXeRC" id="64LjbWR$IoF" role="NXp4Y">
+          <property role="NXePf" value="Search Result" />
+        </node>
+        <node concept="NX1gA" id="64LjbWR$IoL" role="NXp4Y">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Search results" />
+          <ref role="NX6Kv" node="64LjbWR$HC6" resolve="searchResults" />
+        </node>
+        <node concept="NX1gA" id="64LjbWR$IoT" role="NXp4Y">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Search users" />
+          <ref role="NX6Kv" node="64LjbWR$HCj" resolve="users" />
+        </node>
+        <node concept="NX1gA" id="64LjbWR$Ip3" role="NXp4Y">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Search groups" />
+          <ref role="NX6Kv" node="64LjbWR$HCz" resolve="groups" />
+        </node>
+        <node concept="NX1gA" id="64LjbWR$Ipf" role="NXp4Y">
+          <property role="NX6R2" value="State for loading more results" />
+          <ref role="NX6Kv" node="64LjbWR$HCQ" resolve="loadMoreState" />
+        </node>
+        <node concept="2m7Kf5" id="64LjbWR$HC6" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="searchResults" />
+          <node concept="2m5nlk" id="64LjbWR$HCa" role="2m7DVh">
+            <node concept="2m5mGg" id="64LjbWR$HCg" role="3GJlyp">
+              <ref role="2m5mJy" node="MlriG8HkKF" resolve="MessageSearchItem" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64LjbWR$HCj" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="users" />
+          <node concept="2m5nlk" id="64LjbWR$HCq" role="2m7DVh">
+            <node concept="2m5mGg" id="64LjbWR$HCw" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64LjbWR$HCz" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="groups" />
+          <node concept="2m5nlk" id="64LjbWR$HCH" role="2m7DVh">
+            <node concept="2m5mGg" id="64LjbWR$HCN" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64LjbWR$HCQ" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="loadMoreState" />
+          <node concept="2m5nlT" id="64LjbWR$HD3" role="2m7DVh">
+            <node concept="2m61tm" id="64LjbWR$HD9" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="64LjbWR$H_$" role="NuuwV">
+          <property role="Nu42W" value="DA" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="MlriG8Ho3u" role="2m5mJr">
         <property role="TrG5h" value="MessageSearch" />
         <node concept="2m7Kf5" id="MlriG8HpsG" role="2m0hLx">
@@ -7680,56 +7742,6 @@
         <node concept="Nu42z" id="MlriG8Ho3v" role="NuuwV">
           <property role="Nu42W" value="D9" />
         </node>
-        <node concept="2m1R6W" id="MlriG8Ho9L" role="2m6efq">
-          <node concept="2m7Kf5" id="MlriG8Hrpz" role="2m0hLx">
-            <property role="2m7DUN" value="1" />
-            <property role="TrG5h" value="searchResults" />
-            <node concept="2m5nlk" id="MlriG8HrpB" role="2m7DVh">
-              <node concept="2m5mGg" id="MlriG8HrpH" role="3GJlyp">
-                <ref role="2m5mJy" node="MlriG8HkKF" resolve="MessageSearchItem" />
-              </node>
-            </node>
-          </node>
-          <node concept="2m7Kf5" id="MlriG8HrpK" role="2m0hLx">
-            <property role="2m7DUN" value="2" />
-            <property role="TrG5h" value="users" />
-            <node concept="2m5nlk" id="MlriG8HrpR" role="2m7DVh">
-              <node concept="2m5mGg" id="MlriG8HrpX" role="3GJlyp">
-                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
-              </node>
-            </node>
-          </node>
-          <node concept="2m7Kf5" id="MlriG8Hrq0" role="2m0hLx">
-            <property role="2m7DUN" value="3" />
-            <property role="TrG5h" value="groups" />
-            <node concept="2m5nlk" id="MlriG8Hrqa" role="2m7DVh">
-              <node concept="2m5mGg" id="MlriG8Hrqg" role="3GJlyp">
-                <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
-              </node>
-            </node>
-          </node>
-          <node concept="Nu42z" id="MlriG8Ho9M" role="NuuwV">
-            <property role="Nu42W" value="DA" />
-          </node>
-          <node concept="NXeRC" id="MlriG8HqK3" role="1y2DgH">
-            <property role="NXePf" value="Search Result" />
-          </node>
-          <node concept="NX1gA" id="MlriG8Hs3X" role="1y2DgH">
-            <property role="NX6R2" value="Search results" />
-            <property role="1GSvIU" value="full" />
-            <ref role="NX6Kv" node="MlriG8Hrpz" resolve="searchResults" />
-          </node>
-          <node concept="NX1gA" id="MlriG8Hs45" role="1y2DgH">
-            <property role="NX6R2" value="Search users" />
-            <property role="1GSvIU" value="full" />
-            <ref role="NX6Kv" node="MlriG8HrpK" resolve="users" />
-          </node>
-          <node concept="NX1gA" id="MlriG8Hs4f" role="1y2DgH">
-            <property role="1GSvIU" value="full" />
-            <property role="NX6R2" value="Search groups" />
-            <ref role="NX6Kv" node="MlriG8Hrq0" resolve="groups" />
-          </node>
-        </node>
         <node concept="NXeRC" id="MlriG8Ho9Q" role="1GBnQ6">
           <property role="NXePf" value="Performing message search" />
         </node>
@@ -7737,6 +7749,30 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Search query" />
           <ref role="NX6Kv" node="MlriG8HpsG" resolve="query" />
+        </node>
+        <node concept="2m1Rp1" id="64LjbWR$Ipo" role="2m6efq">
+          <ref role="2m1o9l" node="64LjbWR$H_z" resolve="MessageSearchResponse" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="64LjbWR$Hwr" role="2m5mJr">
+        <property role="TrG5h" value="MessageSearchMore" />
+        <node concept="2m7Kf5" id="64LjbWR$HyW" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="loadMoreState" />
+          <node concept="2m61tm" id="64LjbWR$Hz0" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="64LjbWR$Hws" role="NuuwV">
+          <property role="Nu42W" value="DE" />
+        </node>
+        <node concept="2m1Rp1" id="64LjbWR$Wgh" role="2m6efq">
+          <ref role="2m1o9l" node="64LjbWR$H_z" resolve="MessageSearchResponse" />
+        </node>
+        <node concept="NXeRC" id="64LjbWR$VwP" role="1GBnQ6">
+          <property role="NXePf" value="Performing message search paging" />
+        </node>
+        <node concept="NX1gA" id="64LjbWR$VwU" role="1GBnQ6">
+          <property role="NX6R2" value="State for loading more results" />
+          <ref role="NX6Kv" node="64LjbWR$HyW" resolve="loadMoreState" />
         </node>
       </node>
       <node concept="1Dx9M1" id="4NJj1GT1R$P" role="1Dx9rD">
@@ -7863,7 +7899,7 @@
     </node>
     <node concept="2m5mJO" id="1$yIuJFB7ca" role="2m5lHt">
       <property role="TrG5h" value="Integrations" />
-      <property role="3XOG$Z" value="integrtions" />
+      <property role="3XOG$Z" value="integrations" />
       <node concept="2m62dX" id="1$yIuJFB8wz" role="2m5mJr">
         <property role="TrG5h" value="IntegrationToken" />
         <node concept="NXeRC" id="1$yIuJFB9pb" role="NXp4Y">
