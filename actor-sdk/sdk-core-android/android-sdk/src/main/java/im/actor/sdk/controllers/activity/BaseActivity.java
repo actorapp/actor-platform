@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
@@ -71,6 +72,10 @@ public class BaseActivity extends AppCompatActivity {
         BINDER.bind(textView, titleContainer, value);
     }
 
+    public void bindGlobalCounter(ValueChangedListener<Integer> callback) {
+        BINDER.bindGlobalCounter(callback);
+    }
+
     public void bindGroupTyping(final TextView textView, final View container, final View titleContainer, final Value<int[]> typing) {
         BINDER.bindGroupTyping(textView, container, titleContainer, typing);
     }
@@ -131,12 +136,17 @@ public class BaseActivity extends AppCompatActivity {
     protected void setToolbar(View view, ActionBar.LayoutParams params, boolean enableBack) {
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if (enableBack) {
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayUseLogoEnabled(false);
         getSupportActionBar().setCustomView(view, params);
+        if (enableBack) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        } else {
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            Toolbar parent = (Toolbar) view.getParent();
+            parent.setContentInsetsAbsolute(0, 0);
+        }
     }
 
     protected void setToolbar(View view, ActionBar.LayoutParams params) {
