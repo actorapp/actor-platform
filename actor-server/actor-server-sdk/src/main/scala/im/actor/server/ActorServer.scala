@@ -151,7 +151,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
 
       system.log.debug("Starting ActivationContext")
       val activationContext = serverConfig.getString("services.activation.default-service") match {
-        case "internal" ⇒
+        case "internal" | "telesign" ⇒
           val telesignClient = new TelesignClient(serverConfig.getConfig("services.telesign"))
           InternalCodeActivation.newContext(
             activationConfig,
