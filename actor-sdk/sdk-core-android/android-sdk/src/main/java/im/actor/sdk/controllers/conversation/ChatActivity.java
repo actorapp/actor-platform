@@ -10,6 +10,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -27,6 +28,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
@@ -55,6 +58,7 @@ import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
@@ -74,6 +78,7 @@ import im.actor.runtime.mvvm.ValueChangedListener;
 import static im.actor.sdk.util.ViewUtils.expand;
 import static im.actor.sdk.util.ViewUtils.expandMentions;
 import static im.actor.sdk.util.ViewUtils.goneView;
+import static im.actor.sdk.util.ViewUtils.hideView;
 import static im.actor.sdk.util.ViewUtils.showView;
 import static im.actor.sdk.util.ViewUtils.zoomInView;
 import static im.actor.sdk.util.ViewUtils.zoomOutView;
@@ -113,6 +118,8 @@ public class ChatActivity extends ActorEditTextActivity {
     //////////////////////////////////
     // Toolbar views
     //////////////////////////////////
+    // Toolbar unread counter
+    private TextView counter;
     // Toolbar Avatar view
     private AvatarView barAvatar;
     // Toolbar title view
@@ -414,10 +421,22 @@ public class ChatActivity extends ActorEditTextActivity {
     protected void onCreateToolbar() {
         // Loading Toolbar header views
         // Binding to real data is performed in onResume method
+        ActorStyle style = ActorSDK.sharedActor().style;
         barView = LayoutInflater.from(this).inflate(R.layout.bar_conversation, null);
         ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
-        setToolbar(barView, layout);
+        setToolbar(barView, layout, false);
+        findViewById(R.id.home).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
+        counter = (TextView) barView.findViewById(R.id.counter);
+
+        counter.setTextColor(style.getDialogsCounterTextColor());
+        counter.setBackgroundResource(R.drawable.ic_counter_circle);
+        counter.getBackground().setColorFilter(style.getDialogsCounterBackgroundColor(), PorterDuff.Mode.MULTIPLY);
         barTitle = (TextView) barView.findViewById(R.id.title);
         barSubtitleContainer = barView.findViewById(R.id.subtitleContainer);
         barTypingIcon = (ImageView) barView.findViewById(R.id.typingImage);
@@ -615,6 +634,18 @@ public class ChatActivity extends ActorEditTextActivity {
                 }
             });
         }
+
+        bindGlobalCounter(new ValueChangedListener<Integer>() {
+            @Override
+            public void onChanged(Integer val, Value<Integer> valueModel) {
+                if (val > 0) {
+                    counter.setText(Integer.toString(val));
+                    showView(counter);
+                } else {
+                    hideView(counter);
+                }
+            }
+        });
     }
 
     @Override
