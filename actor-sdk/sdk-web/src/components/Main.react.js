@@ -76,6 +76,8 @@ class Main extends Component {
   onKeyDown = (event) => {
     // TODO: Make this hotkey work on windows
     if (event.keyCode === KeyCodes.K && event.metaKey) {
+      event.stopPropagation();
+      event.preventDefault();
       QuickSearchActionCreators.show();
     }
   };
