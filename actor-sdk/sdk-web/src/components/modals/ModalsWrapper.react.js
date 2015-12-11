@@ -45,9 +45,26 @@ class ModalsWrapper extends Component {
   handleChange = () => this.setState(getStates());
 
   handleKeyDown = (event) => {
-    if (event.keyCode === KeyCodes.ESC) {
-      event.preventDefault();
-      this.handleClose();
+    switch (event.keyCode) {
+      case KeyCodes.ESC:
+        event.preventDefault();
+        this.handleClose();
+        break;
+      case KeyCodes.G:
+        if (event.ctrlKey) {
+          event.preventDefault();
+          this.handleClose();
+          GroupListActionCreators.open();
+        }
+        break;
+      case KeyCodes.P:
+        if (event.ctrlKey) {
+          event.preventDefault();
+          this.handleClose();
+          ContactActionCreators.open();
+        }
+        break;
+      default:
     }
   };
 

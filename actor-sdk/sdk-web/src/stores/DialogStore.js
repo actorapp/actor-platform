@@ -52,6 +52,11 @@ class DialogStore extends Store {
       case ActionTypes.SELECT_DIALOG_PEER:
         _lastPeer = _currentPeer;
         _currentPeer = action.peer;
+        if (_currentPeer.type === PeerTypes.GROUP) {
+          _info = ActorClient.getGroup(_currentPeer.id);
+        } else if (_currentPeer.type === PeerTypes.USER) {
+          _info = ActorClient.getUser(_currentPeer.id);
+        }
         this.__emitChange();
         break;
       case ActionTypes.DIALOG_INFO_CHANGED:
