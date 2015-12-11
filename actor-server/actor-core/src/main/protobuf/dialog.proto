@@ -25,6 +25,7 @@ message DialogCommands {
             Delete delete = 8;
             SetReaction set_reaction = 9;
             RemoveReaction remove_reaction = 10;
+            WriteMessageSelf write_message_self = 11;
         }
     }
 
@@ -39,6 +40,18 @@ message DialogCommands {
     }
 
     message WriteMessageAck {}
+
+    message WriteMessageSelf {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+
+        required Peer dest = 1;
+        required int32 senderUserId = 6;
+        required int64 date = 3;
+        required int64 random_id = 4;
+        required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.ApiMessage"];
+    }
+
+    message WriteMessageSelfAck {}
 
     message SendMessage {
         option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";

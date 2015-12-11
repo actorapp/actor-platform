@@ -3,7 +3,7 @@ package im.actor.server.dialog
 import akka.actor.ActorSystem
 import im.actor.server.group.{ GroupExtension, GroupUtils }
 import im.actor.server.model.{ HistoryMessage, PeerType, Peer }
-import im.actor.server.{ persist }
+import im.actor.server.persist.{ GroupUserRepo, DialogRepo, HistoryMessageRepo }
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 
@@ -52,9 +52,9 @@ object HistoryUtils {
         }
 
       for {
-        _ ← persist.HistoryMessageRepo.create(messages)
-        _ ← persist.DialogRepo.updateLastMessageDate(fromPeer.id, toPeer, date)
-        _ ← persist.DialogRepo.updateLastMessageDate(toPeer.id, fromPeer, date)
+        _ ← HistoryMessageRepo.create(messages)
+        _ ← DialogRepo.updateLastMessageDate(fromPeer.id, toPeer, date)
+        _ ← DialogRepo.updateLastMessageDate(toPeer.id, fromPeer, date)
       } yield ()
     } else if (toPeer.typ == PeerType.Group) {
       DBIO.from(GroupExtension(system).isHistoryShared(toPeer.id)) flatMap { isHistoryShared ⇒
@@ -63,22 +63,46 @@ object HistoryUtils {
             val historyMessage = HistoryMessage(SharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
 
             for {
-              _ ← persist.DialogRepo.updateLastMessageDates(groupUserIds.toSet, toPeer, date)
-              _ ← persist.HistoryMessageRepo.create(historyMessage)
+              _ ← DialogRepo.updateLastMessageDates(groupUserIds.toSet, toPeer, date)
+              _ ← HistoryMessageRepo.create(historyMessage)
             } yield ()
           } else {
             val historyMessages = groupUserIds.map { groupUserId ⇒
               HistoryMessage(groupUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
             }
-            val dialogAction = persist.DialogRepo.updateLastMessageDates(groupUserIds.toSet, toPeer, date)
+            val dialogAction = DialogRepo.updateLastMessageDates(groupUserIds.toSet, toPeer, date)
 
-            DBIO.sequence(Seq(dialogAction, persist.HistoryMessageRepo.create(historyMessages) map (_.getOrElse(0)))) map (_ ⇒ ())
+            DBIO.sequence(Seq(dialogAction, HistoryMessageRepo.create(historyMessages) map (_.getOrElse(0)))) map (_ ⇒ ())
           }
         }
       }
     } else {
       DBIO.failed(new Exception("PeerType is not supported") with NoStackTrace)
     }
+  }
+
+  private[dialog] def writeHistoryMessageSelf(
+    userId:               Int,
+    toPeer:               Peer,
+    senderUserId:         Int,
+    date:                 DateTime,
+    randomId:             Long,
+    messageContentHeader: Int,
+    messageContentData:   Array[Byte]
+  )(implicit ec: ExecutionContext): DBIO[Unit] = {
+    for {
+      _ ← HistoryMessageRepo.create(HistoryMessage(
+        userId = userId,
+        peer = toPeer,
+        date = date,
+        senderUserId = senderUserId,
+        randomId = randomId,
+        messageContentHeader = messageContentHeader,
+        messageContentData = messageContentData,
+        deletedAt = None
+      ))
+      _ ← DialogRepo.updateLastMessageDate(userId, toPeer, date)
+    } yield ()
   }
 
   private[dialog] def markMessagesReceived(byPeer: Peer, peer: Peer, date: DateTime)(implicit system: ActorSystem, ec: ExecutionContext): DBIO[Unit] = {
@@ -89,17 +113,17 @@ object HistoryUtils {
       case PeerType.Private ⇒
         // TODO: #perf do in single query
         DBIO.sequence(Seq(
-          persist.DialogRepo.updateLastReceivedAt(peer.id, Peer(PeerType.Private, byPeer.id), date),
-          persist.DialogRepo.updateOwnerLastReceivedAt(byPeer.id, peer, date)
+          DialogRepo.updateLastReceivedAt(peer.id, Peer(PeerType.Private, byPeer.id), date),
+          DialogRepo.updateOwnerLastReceivedAt(byPeer.id, peer, date)
         )) map (_ ⇒ ())
       case PeerType.Group ⇒
         withGroup(peer.id) { _ ⇒
-          persist.GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
+          GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
             // TODO: #perf update dialogs in one query
 
-            val selfAction = persist.DialogRepo.updateOwnerLastReceivedAt(byPeer.id, Peer(PeerType.Group, peer.id), date)
+            val selfAction = DialogRepo.updateOwnerLastReceivedAt(byPeer.id, Peer(PeerType.Group, peer.id), date)
             val otherGroupUserIds = groupUserIds.view.filterNot(_ == byPeer.id).toSet
-            val otherAction = persist.DialogRepo.updateLastReceivedAt(otherGroupUserIds, Peer(PeerType.Group, peer.id), date)
+            val otherAction = DialogRepo.updateLastReceivedAt(otherGroupUserIds, Peer(PeerType.Group, peer.id), date)
 
             selfAction andThen otherAction map (_ ⇒ ())
           }
@@ -116,18 +140,18 @@ object HistoryUtils {
       case PeerType.Private ⇒
         // TODO: #perf do in single query
         DBIO.sequence(Seq(
-          persist.DialogRepo.updateLastReadAt(peer.id, Peer(PeerType.Private, byPeer.id), date),
-          persist.DialogRepo.updateOwnerLastReadAt(byPeer.id, peer, date)
+          DialogRepo.updateLastReadAt(peer.id, Peer(PeerType.Private, byPeer.id), date),
+          DialogRepo.updateOwnerLastReadAt(byPeer.id, peer, date)
         )) map (_ ⇒ ())
       case PeerType.Group ⇒
         withGroup(peer.id) { _ ⇒
-          persist.GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
+          GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
             // TODO: #perf update dialogs in one query
 
-            val selfAction = persist.DialogRepo.updateOwnerLastReadAt(byPeer.id, Peer(PeerType.Group, peer.id), date)
+            val selfAction = DialogRepo.updateOwnerLastReadAt(byPeer.id, Peer(PeerType.Group, peer.id), date)
 
             val otherGroupUserIds = groupUserIds.view.filterNot(_ == byPeer.id).toSet
-            val otherAction = persist.DialogRepo.updateLastReadAt(otherGroupUserIds, Peer(PeerType.Group, peer.id), date)
+            val otherAction = DialogRepo.updateLastReadAt(otherGroupUserIds, Peer(PeerType.Group, peer.id), date)
 
             selfAction andThen otherAction map (_ ⇒ ())
           }

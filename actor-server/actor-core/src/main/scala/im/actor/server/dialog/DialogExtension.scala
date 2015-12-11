@@ -93,6 +93,25 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       (userExt.processorRegion.ref ? Envelope(sender).withWriteMessage(writeMessage)).mapTo[WriteMessageAck] map (_ ⇒ ())
     }
 
+  def writeMessageSelf(
+    userId:       Int,
+    peer:         ApiPeer,
+    senderUserId: Int,
+    date:         DateTime,
+    randomId:     Long,
+    message:      ApiMessage
+  ): Future[Unit] =
+    withValidPeer(Peer.privat(userId), peer.id, Future.successful(())) {
+      (userExt.processorRegion.ref ?
+        Envelope(Peer.privat(userId)).withWriteMessageSelf(WriteMessageSelf(
+          dest = peer.asModel,
+          senderUserId,
+          date.getMillis,
+          randomId,
+          message
+        ))) map (_ ⇒ ())
+    }
+
   def messageReceived(peer: ApiPeer, receiverUserId: Int, date: Long): Future[Unit] =
     withValidPeer(peer.asModel, receiverUserId, Future.successful(())) {
       val now = Instant.now().toEpochMilli
