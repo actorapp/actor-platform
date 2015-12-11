@@ -64,32 +64,33 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     message:    ApiMessage
   ): Unit = {
     val date = new DateTime(dateMillis)
-    val fut =
-      message match {
-        case ApiServiceMessage(_, Some(ApiServiceExContactRegistered(_))) ⇒
-          db.run(HistoryMessageRepo.create(
-            HistoryMessage(
-              userId = peer.id, //figure out what should be there
-              peer = selfPeer,
-              date = date,
-              senderUserId = userId,
-              randomId = randomId,
-              messageContentHeader = message.header,
-              messageContentData = message.toByteArray,
-              deletedAt = None
-            )
-          ))
-        case _ ⇒
-          db.run(writeHistoryMessage(
-            selfPeer,
-            peer,
-            date,
-            randomId,
-            message.header,
-            message.toByteArray
-          ))
+
+    db.run(writeHistoryMessage(
+      selfPeer,
+      peer,
+      date,
+      randomId,
+      message.header,
+      message.toByteArray
+    )) map (_ ⇒ WriteMessageAck()) pipeTo sender()
+  }
+
+  protected def writeMessageSelf(
+    senderUserId: Int,
+    dateMillis:   Long,
+    randomId:     Long,
+    message:      ApiMessage
+  ): Unit = {
+    val date = new DateTime(dateMillis)
+
+    val result =
+      if (peer.`type` == PeerType.Private && peer.id != senderUserId && userId != senderUserId) {
+        Future.failed(new RuntimeException(s"writeMessageSelf with senderUserId ${senderUserId} in dialog of user ${userId} with user ${peer.id}"))
+      } else {
+        db.run(writeHistoryMessageSelf(userId, peer, senderUserId, date, randomId, message.header, message.toByteArray))
       }
-    fut map (_ ⇒ WriteMessageAck()) pipeTo sender()
+
+    result map (_ ⇒ WriteMessageSelfAck()) pipeTo sender()
   }
 
   protected def messageReceived(state: DialogState, mr: MessageReceived): Unit = {

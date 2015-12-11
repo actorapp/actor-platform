@@ -15,7 +15,9 @@ private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) e
   private val selfPeer = Peer.privat(userId)
 
   def receive: Receive = {
+    // Forward to a group or a corresponding user dialog
     case dc: DirectDialogCommand ⇒ dialogRef(dc) forward dc
+    // Forward to a dest user dialog
     case dc: DialogCommand       ⇒ dialogRef(dc.dest) forward dc
     case other                   ⇒ context.system.log.debug("Unmatched message: {}", other)
   }

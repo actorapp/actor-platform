@@ -1,0 +1,78 @@
+package im.actor.server.user
+
+import im.actor.api.rpc.contacts.UpdateContactRegistered
+import im.actor.api.rpc.messaging._
+import im.actor.api.rpc._
+import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
+import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
+import im.actor.server.persist.contact.UnregisteredEmailContactRepo
+import im.actor.server._
+
+final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService with ImplicitSessionRegion with MessagingSpecHelpers with SeqUpdateMatchers {
+  it should "notify ContactRegistered" in notifyContactRegistered()
+  it should "not create dialog with contacts which receive ContactRegistered" in notCreateDialog()
+
+  private lazy val msgService = MessagingServiceImpl()
+
+  def notifyContactRegistered() = {
+    val (alice, bob) = createUserRegisterContact()
+    implicit val clientData = alice
+
+    expectUpdate(classOf[UpdateContactRegistered])(_ ⇒ ())
+
+    Thread.sleep(300)
+
+    whenReady(msgService.handleLoadDialogs(0, 100)) { resp ⇒
+      inside(resp) {
+        case Ok(ResponseLoadDialogs(_, _, Vector(dialog))) ⇒
+          dialog.peer should ===(ApiPeer(ApiPeerType.Private, bob.authData.get.userId))
+
+          inside(dialog.message) {
+            case ApiServiceMessage(_, Some(ApiServiceExContactRegistered(userId))) ⇒
+              userId should ===(bob.authData.get.userId)
+          }
+      }
+    }
+
+    whenReady(msgService.handleLoadHistory(getOutPeer(bob.authData.get.userId, clientData.authId), 0, 100)) { resp ⇒
+      inside(resp) {
+        case Ok(ResponseLoadHistory(Vector(hm), _)) ⇒
+          inside(hm.message) {
+            case ApiServiceMessage(_, Some(ApiServiceExContactRegistered(userId))) ⇒
+              userId should ===(bob.authData.get.userId)
+          }
+      }
+    }
+  }
+
+  def notCreateDialog() = {
+    val (alice, bob) = createUserRegisterContact()
+    implicit val clientData = bob
+
+    whenReady(msgService.handleLoadDialogs(0, 100)) { resp ⇒
+      inside(resp) {
+        case Ok(ResponseLoadDialogs(_, _, Vector())) ⇒
+      }
+    }
+
+    whenReady(msgService.handleLoadHistory(getOutPeer(alice.authData.get.userId, bob.authId), 0, 100)) { resp ⇒
+      inside(resp) {
+        case Ok(ResponseLoadHistory(Vector(), Vector())) ⇒
+      }
+    }
+  }
+
+  private def createUserRegisterContact(): (ClientData, ClientData) = {
+    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+    val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+
+    whenReady(db.run(UnregisteredEmailContactRepo.create("test@acme.com", alice.id, None)))(identity)
+
+    val (bob, bobAuthId, bobAuthSid, _) = createUser()
+    val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+
+    whenReady(UserExtension(system).addEmail(bob.id, "test@acme.com"))(identity)
+
+    (aliceClientData, bobClientData)
+  }
+}
