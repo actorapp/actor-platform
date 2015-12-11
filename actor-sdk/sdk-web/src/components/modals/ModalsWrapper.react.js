@@ -11,16 +11,15 @@ import { IntlMixin } from 'react-intl';
 import ContactActionCreators from '../../actions/ContactActionCreators';
 import GroupListActionCreators from '../../actions/GroupListActionCreators';
 
-import ContactsStore from '../../stores/ContactStore';
-import ContactStore from '../../stores/ContactStore';
+import ContactStore from '../../stores/PeopleStore';
 import GroupListStore from '../../stores/GroupListStore';
 
-import Contacts from './NewContacts.react'
-import Groups from './GroupList'
+import PeopleList from './PeopleList'
+import GroupList from './GroupList'
 
 const getStates = () => {
   return {
-    isContactsOpen: ContactsStore.isContactsOpen(),
+    isPeoplesOpen: ContactStore.isOpen(),
     isGroupsOpen: GroupListStore.isOpen()
   }
 };
@@ -35,14 +34,12 @@ class ModalsWrapper extends Component {
   componentWillMount() {
     document.addEventListener('keydown', this.handleKeyDown, false);
 
-    ContactsStore.addChangeListener(this.handleChange);
+    ContactStore.addListener(this.handleChange);
     GroupListStore.addListener(this.handleChange);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown, false);
-
-    ContactsStore.removeChangeListener(this.handleChange);
   }
 
   handleChange = () => this.setState(getStates());
@@ -55,9 +52,9 @@ class ModalsWrapper extends Component {
   };
 
   handleClose = () => {
-    const { isContactsOpen, isGroupsOpen } = this.state;
+    const { isPeoplesOpen, isGroupsOpen } = this.state;
 
-    if (isContactsOpen) {
+    if (isPeoplesOpen) {
       ContactActionCreators.close();
     }
     if (isGroupsOpen) {
@@ -66,10 +63,10 @@ class ModalsWrapper extends Component {
   };
 
   render() {
-    const { isContactsOpen, isGroupsOpen } = this.state;
+    const { isPeoplesOpen, isGroupsOpen } = this.state;
 
     const wrapperClassName = classnames('modal-wrapper', {
-      'modal-wrapper--opened': isContactsOpen || isGroupsOpen
+      'modal-wrapper--opened': isPeoplesOpen || isGroupsOpen
     });
 
     return (
@@ -79,8 +76,8 @@ class ModalsWrapper extends Component {
           <div className="text">{this.getIntlMessage('button.close')}</div>
         </div>
 
-        {isContactsOpen ? <Contacts/> : null}
-        {isGroupsOpen ? <Groups/> : null}
+        {isPeoplesOpen ? <PeopleList/> : null}
+        {isGroupsOpen ? <GroupList/> : null}
       </div>
     );
   }

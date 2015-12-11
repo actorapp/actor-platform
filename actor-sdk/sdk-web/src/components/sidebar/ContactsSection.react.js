@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Styles, RaisedButton } from 'material-ui';
 import ActorTheme from '../../constants/ActorTheme';
 
-import ContactStore from '../../stores/ContactStore';
+import ContactStore from '../../stores/PeopleStore';
 import AddContactStore from '../../stores/AddContactStore';
 
 import ContactActionCreators from '../../actions/ContactActionCreators';
@@ -17,7 +17,7 @@ const ThemeManager = new Styles.ThemeManager();
 const getStateFromStores = () => {
   return {
     isAddContactModalOpen: AddContactStore.isOpen(),
-    contacts: ContactStore.getContacts()
+    contacts: ContactStore.getList()
   };
 };
 

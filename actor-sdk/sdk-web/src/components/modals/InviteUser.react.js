@@ -15,7 +15,7 @@ import { KeyCodes } from '../../constants/ActorAppConstants';
 import InviteUserActions from '../../actions/InviteUserActions';
 import InviteUserByLinkActions from '../../actions/InviteUserByLinkActions';
 
-import ContactStore from '../../stores/ContactStore';
+import ContactStore from '../../stores/PeopleStore';
 import InviteUserStore from '../../stores/InviteUserStore';
 
 import ContactItem from './invite-user/ContactItem.react';
@@ -23,7 +23,7 @@ import ContactItem from './invite-user/ContactItem.react';
 const getStateFromStores = () => {
   return ({
     isOpen: InviteUserStore.isModalOpen(),
-    contacts: ContactStore.getContacts(),
+    contacts: ContactStore.getList(),
     group: InviteUserStore.getGroup()
   });
 };
@@ -40,12 +40,11 @@ class InviteUser extends React.Component {
     }, getStateFromStores());
 
     InviteUserStore.addChangeListener(this.onChange);
-    ContactStore.addChangeListener(this.onChange);
+    ContactStore.addListener(this.onChange);
   }
 
   componentWillUnmount() {
     InviteUserStore.removeChangeListener(this.onChange);
-    ContactStore.removeChangeListener(this.onChange);
   }
 
   componentWillUpdate(nextProps, nextState) {

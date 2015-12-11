@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { forEach } from 'lodash';
+import { forEach, filter } from 'lodash';
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
@@ -13,9 +13,9 @@ let _isOpen = false,
     _results = [];
 
 /**
- * Class representing a store for searchable group list.
+ * Class representing a store for searchable people list.
  */
-class GroupStore extends Store {
+class PeopleStore extends Store {
   constructor(dispatcher) {
     super(dispatcher);
   }
@@ -49,8 +49,8 @@ class GroupStore extends Store {
       results = _list;
     } else {
       forEach(_list, (result) => {
-        const title = result.peerInfo.title.toLowerCase();
-        if (title.includes(query.toLowerCase())) {
+        const name = contact.name.toLowerCase();
+        if (name.includes(query.toLowerCase())) {
           results.push(result);
         }
       })
@@ -61,35 +61,39 @@ class GroupStore extends Store {
 
   __onDispatch(action) {
     switch (action.type) {
-      case ActionTypes.GROUP_LIST_SHOW:
+      case ActionTypes.CONTACT_LIST_SHOW:
         _isOpen  = true;
         this.handleSearchQuery('');
         this.__emitChange();
         break;
-      case ActionTypes.GROUP_LIST_HIDE:
+      case ActionTypes.CONTACT_LIST_HIDE:
         _isOpen  = false;
         _results = [];
         this.__emitChange();
         break;
 
-      case ActionTypes.GROUP_LIST_LOAD_SUCCESS:
-        _list = action.response;
-        this.handleSearchQuery('');
-        this.__emitChange();
-        break;
-      case ActionTypes.GROUP_LIST_LOAD_ERROR:
-        console.error(action.error);
+      case ActionTypes.CONTACT_LIST_CHANGED:
+        // Remove current user from contacts list
+        _list = filter(action.contacts, (contact) => {
+          if (contact.uid != ActorClient.getUid()) {
+            return contact;
+          }
+        });
         this.__emitChange();
         break;
 
-      case ActionTypes.GROUP_LIST_SEARCH:
+      case ActionTypes.CONTACT_LIST_SEARCH:
         this.handleSearchQuery(action.query);
         this.__emitChange();
         break;
 
+      case ActionTypes.CONTACT_ADD:
+      case ActionTypes.CONTACT_REMOVE:
+        this.__emitChange();
+        break;
       default:
     }
   }
 }
 
-export default new GroupStore(Dispatcher);
+export default new PeopleStore(Dispatcher);
