@@ -60,6 +60,6 @@ public class AndroidThreadingProvider extends GenericThreadingProvider {
 
     @Override
     public long getSyncedCurrentTime() {
-        return System.currentTimeMillis() - syncDelta;
+        return System.currentTimeMillis() + syncDelta;
     }
 }
