@@ -346,8 +346,9 @@ private[user] trait UserCommandHandlers {
           _ ← userExt.addContact(contact.ownerUserId, user.id, localName, Some(phoneNumber), None)
           _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None)
           _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, deliveryId = None)
-          _ ← dialogExt.writeMessage(
-            ApiPeer(ApiPeerType.Private, contact.ownerUserId),
+          _ ← dialogExt.writeMessageSelf(
+            contact.ownerUserId,
+            ApiPeer(ApiPeerType.Private, user.id),
             user.id,
             date,
             randomId,
@@ -377,8 +378,9 @@ private[user] trait UserCommandHandlers {
           _ ← userExt.addContact(contact.ownerUserId, user.id, localName, None, Some(email))
           _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(serviceMessage.text), isFat = true, deliveryId = None)
           _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, deliveryId = None)
-          _ ← dialogExt.writeMessage(
-            ApiPeer(ApiPeerType.Private, contact.ownerUserId),
+          _ ← dialogExt.writeMessageSelf(
+            contact.ownerUserId,
+            ApiPeer(ApiPeerType.Private, user.id),
             user.id,
             date,
             randomId,
