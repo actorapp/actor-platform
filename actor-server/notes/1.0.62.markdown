@@ -1,0 +1,1 @@
+* Fixed empty dialogs on contact registering 
