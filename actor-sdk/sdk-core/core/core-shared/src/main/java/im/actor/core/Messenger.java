@@ -601,7 +601,7 @@ public class Messenger {
      */
     @ObjectiveCName("sendMessageWithPeer:withText:")
     public void sendMessage(@NotNull Peer peer, @NotNull String text) {
-        sendMessage(peer, text, null, null, false);
+        sendMessage(peer, text, null, null, true);
     }
 
     /**
