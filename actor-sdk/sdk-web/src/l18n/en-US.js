@@ -116,7 +116,8 @@ export default {
       'contacts': {
         'title': 'People',
         'search': 'Search contacts',
-        'notFound': 'Sorry, no users found.'
+        'notFound': 'Sorry, no users found.',
+        'loading': 'Loading'
       },
       'groups': {
         'title': 'Groups',
