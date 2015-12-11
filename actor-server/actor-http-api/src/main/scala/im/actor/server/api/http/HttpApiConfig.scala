@@ -22,5 +22,5 @@ object HttpApiConfig {
       interface, port, scheme, host, staticFiles, keystore
     )
 
-  def load: Try[HttpApiConfig] = load(ActorConfig.load().getConfig("webapp"))
+  def load: Try[HttpApiConfig] = load(ActorConfig.load().getConfig("http"))
 }
