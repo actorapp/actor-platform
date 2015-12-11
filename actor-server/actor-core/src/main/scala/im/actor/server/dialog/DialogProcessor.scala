@@ -11,8 +11,8 @@ import im.actor.concurrent.{ ActorFutures, ActorStashing }
 import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs.ProcessorState
 import im.actor.server.db.DbExtension
-import im.actor.server.model.{ Dialog ⇒ DialogModel, Peer }
-import im.actor.server.persist.DialogRepo
+import im.actor.server.model.{ Dialog ⇒ DialogModel, PeerType, Peer }
+import im.actor.server.persist.{ HistoryMessageRepo, DialogRepo }
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqStateDate }
 import im.actor.server.social.SocialExtension
 import im.actor.server.user.UserExtension
@@ -29,7 +29,7 @@ object DialogEvents {
 
   private[dialog] sealed trait DialogEvent
 
-  private[dialog] final case class Initialized(isHidden: Boolean) extends DialogEvent
+  private[dialog] final case class Initialized(isHidden: Boolean, isOpen: Boolean) extends DialogEvent
 
   private[dialog] final case class LastMessageDate(date: Long) extends DialogEvent
 
@@ -40,17 +40,22 @@ object DialogEvents {
   private[dialog] case object Shown extends DialogEvent
   private[dialog] case object Hidden extends DialogEvent
 
+  // Event  which means there was a message sent to all dialog participant
+  // Closed dialog means dialog with only ServiceMessage like ContactRegistered
+  private[dialog] case object Open extends DialogEvent
+
 }
 
 private[dialog] object DialogState {
-  def init(isHidden: Boolean) = DialogState(0, 0, 0, isHidden)
+  def init(isHidden: Boolean, isOpen: Boolean) = DialogState(0, 0, 0, isHidden, isOpen)
 }
 
 private[dialog] final case class DialogState(
   lastMessageDate: Long,
   lastReceiveDate: Long,
   lastReadDate:    Long,
-  isHidden:        Boolean
+  isHidden:        Boolean,
+  isOpen:          Boolean
 ) extends ProcessorState[DialogState] {
   import DialogEvents._
   override def updated(e: AnyRef, ts: Instant): DialogState = e match {
@@ -59,6 +64,7 @@ private[dialog] final case class DialogState(
     case LastReadDate(date) if date > this.lastReadDate ⇒ this.copy(lastReadDate = date)
     case Shown ⇒ this.copy(isHidden = false)
     case Hidden ⇒ this.copy(isHidden = true)
+    case Open ⇒ this.copy(isOpen = true)
     case unm ⇒ this
   }
 }
@@ -117,8 +123,8 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   override def receive: Receive = initializing
 
   def initializing: Receive = receiveStashing(replyTo ⇒ {
-    case Initialized(isHidden) ⇒
-      context become initialized(DialogState.init(isHidden))
+    case Initialized(isHidden, isOpen) ⇒
+      context become initialized(DialogState.init(isHidden, isOpen))
       unstashAll()
     case Status.Failure(e) ⇒
       log.error(e, "Failed to init dialog")
@@ -150,6 +156,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
    * destination is u2(peer) and origin is u1(self)
    * group example: SendMessage(u1, g1) in Dialog(selfPeer = u1, peer = g1)
    * destination is g1(peer) and origin is u1(self)
+   *
    * @param dc command
    * @return does dialog owner invokes this command
    */
@@ -162,12 +169,13 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
    * destination is u2(selfPeer)
    * group example: SendMessage(u1, g1) in Dialog(selfPeer = u2, peer = g1), where g1 is Group(members = [u1, u2])
    * destination is not u2(selfPeer), but  destination is g1(peer) and origin is not u2(selfPeer)
+   *
    * @param dc command
    * @return does dialog owner accepts this command
    */
   def accepts(dc: DirectDialogCommand) = (dc.dest == selfPeer) || ((dc.dest == peer) && (dc.origin != selfPeer))
 
-  private[this] def init(): Unit =
+  private def init(): Unit =
     db.run(for {
       optDialog ← DialogRepo.find(userId, peer)
       dialog ← optDialog match {
@@ -180,6 +188,13 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
             _ ← DBIO.from(userExt.notifyDialogsChanged(userId))
           } yield dialog
       }
-    } yield Initialized(dialog.shownAt.isEmpty)) pipeTo self
+      isOpen ← restoreIsOpen()
+    } yield Initialized(dialog.shownAt.isEmpty, isOpen)) pipeTo self
 
+  private def restoreIsOpen(): DBIO[Boolean] =
+    peer.typ match {
+      case PeerType.Private ⇒
+        HistoryMessageRepo.findNewest(peer.id, Peer.privat(userId)) map (_.isDefined)
+      case _ ⇒ DBIO.successful(true)
+    }
 }

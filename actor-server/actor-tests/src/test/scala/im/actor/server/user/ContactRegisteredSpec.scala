@@ -8,6 +8,8 @@ import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.persist.contact.UnregisteredEmailContactRepo
 import im.actor.server._
 
+import scala.util.Random
+
 final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService with ImplicitSessionRegion with MessagingSpecHelpers with SeqUpdateMatchers {
   it should "notify ContactRegistered" in notifyContactRegistered()
   it should "not create dialog with contacts which receive ContactRegistered" in notCreateDialog()
@@ -47,17 +49,26 @@ final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService 
 
   def notCreateDialog() = {
     val (alice, bob) = createUserRegisterContact()
-    implicit val clientData = bob
 
-    whenReady(msgService.handleLoadDialogs(0, 100)) { resp ⇒
-      inside(resp) {
-        case Ok(ResponseLoadDialogs(_, _, Vector())) ⇒
-      }
+    {
+      implicit val clientData = alice
+
+      whenReady(msgService.handleMessageRead(getOutPeer(bob.optUserId.get, alice.authId), Random.nextLong))(identity)
     }
 
-    whenReady(msgService.handleLoadHistory(getOutPeer(alice.authData.get.userId, bob.authId), 0, 100)) { resp ⇒
-      inside(resp) {
-        case Ok(ResponseLoadHistory(Vector(), Vector())) ⇒
+    {
+      implicit val clientData = bob
+
+      whenReady(msgService.handleLoadDialogs(0, 100)) { resp ⇒
+        inside(resp) {
+          case Ok(ResponseLoadDialogs(_, _, Vector())) ⇒
+        }
+      }
+
+      whenReady(msgService.handleLoadHistory(getOutPeer(alice.authData.get.userId, bob.authId), 0, 100)) { resp ⇒
+        inside(resp) {
+          case Ok(ResponseLoadHistory(Vector(), Vector())) ⇒
+        }
       }
     }
   }
