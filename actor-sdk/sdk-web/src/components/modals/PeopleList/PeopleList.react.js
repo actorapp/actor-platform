@@ -7,28 +7,28 @@ import { map, debounce } from 'lodash';
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedHTMLMessage } from 'react-intl';
+import { IntlMixin } from 'react-intl';
 
 import { KeyCodes } from '../../../constants/ActorAppConstants';
 
-import GroupListActionCreators from '../../../actions/GroupListActionCreators'
-import DialogActionCreators from '../../../actions/DialogActionCreators'
+import ContactActionCreators from '../../../actions/ContactActionCreators';
+import DialogActionCreators from '../../../actions/DialogActionCreators';
 
-import GroupListStore from '../../../stores/GroupListStore';
+import PeopleStore from '../../../stores/PeopleStore';
 
-import Group from './Group.react';
+import People from './PeopleItem.react';
 
-class GroupList extends Component {
+class PeopleList extends Component {
   constructor(props) {
     super(props);
   }
 
-  static getStores = () => [GroupListStore];
+  static getStores = () => [PeopleStore];
 
   static calculateState() {
     return {
-      list: GroupListStore.getList(),
-      results: GroupListStore.getResults(),
+      list: PeopleStore.getList(),
+      results: PeopleStore.getResults(),
       selectedIndex: 0
     };
   }
@@ -42,59 +42,20 @@ class GroupList extends Component {
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  render() {
-    const { query, results, selectedIndex, list } = this.state;
-
-    let groupList = map(results, (result, index) => <Group group={result} key={index}
-                                                           isSelected={selectedIndex === index}
-                                                           ref={selectedIndex === index ? 'selected' : null}
-                                                           onClick={this.handleGroupSelect}
-                                                           onMouseOver={() => this.setState({selectedIndex: index})}/>);
-
-    return (
-      <div className="newmodal newmodal__groups">
-        <header className="newmodal__header">
-          <h2>{this.getIntlMessage('modal.groups.title')}</h2>
-        </header>
-
-        <section className="newmodal__search">
-          <input className="newmodal__search__input"
-                 onChange={this.handleSearchChange}
-                 placeholder={this.getIntlMessage('modal.groups.search')}
-                 type="search"
-                 ref="search"
-                 value={query}/>
-        </section>
-
-        <ul className="newmodal__result group__list" ref="results">
-          {
-            list.length === 0
-              ? <div>{this.getIntlMessage('modal.groups.loading')}</div>
-              : results.length === 0
-                ? <li className="group__list__item group__list__item--empty text-center">
-                    <FormattedHTMLMessage message={this.getIntlMessage('modal.groups.notFound')}
-                                          query={query} />
-                  </li>
-                : groupList
-          }
-        </ul>
-      </div>
-    )
-  }
-
   setFocus = () => React.findDOMNode(this.refs.search).focus();
-  handleClose = () => GroupListActionCreators.close();
+
+  handleClose = () => ContactActionCreators.close();
 
   handleSearchChange = (event) => {
     const query = event.target.value;
     this.setState({query});
-    this.searchGroups(query)
+    this.searchPeople(query)
   };
 
-  searchGroups = debounce((query) => GroupListActionCreators.search(query), 300, {trailing: true});
+  searchPeople = debounce((query) => ContactActionCreators.search(query), 300, {trailing: true});
 
-  handleGroupSelect = (peer) => {
-    DialogActionCreators.selectDialogPeer(peer);
+  handleContactSelect = (contact) => {
+    DialogActionCreators.selectDialogPeerUser(contact.uid);
     this.handleClose()
   };
 
@@ -139,7 +100,7 @@ class GroupList extends Component {
       if (scrollContainerNodeRect.top > selectedNodeRect.top) {
         this.handleScroll(scrollContainerNode.scrollTop + selectedNodeRect.top - scrollContainerNodeRect.top);
       } else if (selectedNodeRect.top > (scrollContainerNodeRect.top + scrollContainerNodeRect.height)) {
-       this.handleScroll(scrollContainerNode.scrollHeight);
+        this.handleScroll(scrollContainerNode.scrollHeight);
       }
     };
 
@@ -147,7 +108,7 @@ class GroupList extends Component {
       case KeyCodes.ENTER:
         event.stopPropagation();
         event.preventDefault();
-        this.handleGroupSelect(results[selectedIndex].peerInfo.peer);
+        this.handleContactSelect(results[selectedIndex]);
         break;
 
       case KeyCodes.ARROW_UP:
@@ -177,8 +138,48 @@ class GroupList extends Component {
     const resultsNode = React.findDOMNode(this.refs.results);
     resultsNode.scrollTop = top;
   };
+
+  render() {
+    const { query, results, selectedIndex, list } = this.state;
+
+    const peopleList = map(results, (result, index) => <People contact={result} key={index}
+                                                               onClick={this.handleContactSelect}
+                                                               isSelected={selectedIndex === index}
+                                                               ref={selectedIndex === index ? 'selected' : null}
+                                                               onMouseOver={() => this.setState({selectedIndex: index})}/>);
+
+    return (
+      <div className="newmodal newmodal__contacts">
+        <header className="newmodal__header">
+          <h2>{this.getIntlMessage('modal.contacts.title')}</h2>
+        </header>
+
+        <section className="newmodal__search">
+          <input className="newmodal__search__input"
+                 onChange={this.handleSearchChange}
+                 placeholder={this.getIntlMessage('modal.contacts.search')}
+                 type="search"
+                 ref="search"
+                 value={query}/>
+        </section>
+
+        <ul className="newmodal__result contacts__list" ref="results">
+          {
+            list.length === 0
+              ? <div>{this.getIntlMessage('modal.contacts.loading')}</div>
+              : results.length === 0
+              ? <li className="contacts__list__item contacts__list__item--empty text-center">
+                  {this.getIntlMessage('modal.contacts.notFound')}
+                </li>
+              : peopleList
+          }
+        </ul>
+      </div>
+    )
+  }
 }
 
-ReactMixin.onClass(GroupList, IntlMixin);
+ReactMixin.onClass(PeopleList, IntlMixin);
 
-export default Container.create(GroupList, {pure: false});
+export default Container.create(PeopleList, {pure: false});
+

@@ -65,6 +65,7 @@ export const ActionTypes = keymirror({
   CONTACT_FIND: null,
   CONTACT_FIND_SUCCESS: null,
   CONTACT_FIND_ERROR: null,
+  CONTACT_LIST_SEARCH: null,
 
   // Group actions
   GROUP_CREATE_MODAL_OPEN: null,

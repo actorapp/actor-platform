@@ -27,5 +27,9 @@ export default {
   removeContact(uid) {
     ActorClient.removeContact(uid);
     dispatch(ActionTypes.CONTACT_REMOVE, { uid });
+  },
+
+  search(query) {
+    dispatch(ActionTypes.CONTACT_LIST_SEARCH, { query })
   }
 };
