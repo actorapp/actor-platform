@@ -42,7 +42,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
         if (state.isHidden)
           self.tell(Show(peer), ActorRef.noSender)
     }
-    updateMessageDate(state, sm.date)
+    updateMessageDate(state, sm.date, checkOpen = true)
   }
 
   protected def ackSendMessage(state: DialogState, sm: SendMessage): Unit = {
@@ -100,7 +100,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     val mustReceive = mustMakeReceive(state, mr)
     (if (mustReceive) {
       for {
-        _ ← dialogExt.ackMessageReceived(peer, mr)
+        _ ← if (state.isOpen) dialogExt.ackMessageReceived(peer, mr) else Future.successful(())
         _ ← db.run(markMessagesReceived(selfPeer, peer, new DateTime(mr.date)))
       } yield MessageReceivedAck()
     } else {
@@ -121,7 +121,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   }
 
   protected def messageRead(state: DialogState, mr: MessageRead): Unit = {
-    val mustRead = mustMakeRead(state, mr)
+    val mustRead = mustMakeRead(state, mr) && state.isOpen
 
     val readerUpd = for {
       _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
@@ -261,8 +261,16 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       (mr.date <= mr.now) && // and read date is not in future
       (state.lastMessageDate == 0L || mr.date > state.lastMessageDate) //and read date if after date of last message sent by this user
 
-  protected def updateMessageDate(state: DialogState, date: Long): Unit =
-    context become initialized(state.updated(LastMessageDate(date)))
+  // if checkOpen is true, open dialog if it's not open already
+  protected def updateMessageDate(state: DialogState, date: Long, checkOpen: Boolean): Unit = {
+    val newState =
+      (if (checkOpen && !state.isOpen)
+        state.updated(Open)
+      else
+        state).updated(LastMessageDate(date))
+
+    context become initialized(newState)
+  }
 
   private def updateReceiveDate(state: DialogState, date: Long): Unit =
     context become initialized(state.updated(LastReceiveDate(date)))
@@ -275,5 +283,4 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   private def updateHidden(state: DialogState): Unit =
     context become initialized(state.updated(Hidden))
-
 }
