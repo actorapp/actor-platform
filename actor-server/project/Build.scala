@@ -92,6 +92,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     .aggregate(
       //      actorDashboard,
       actorServerSdk,
+      actorTestkit,
       actorTests
     )
     .settings(
