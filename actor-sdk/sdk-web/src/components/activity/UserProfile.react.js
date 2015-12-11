@@ -45,14 +45,7 @@ class UserProfile extends Component {
     DialogStore.addListener(this.onChange);
   }
 
-
-  componentWillReceiveProps(newProps) {
-    this.setState(getStateFromStores(newProps.user.id));
-  }
-
-  addToContacts = () => {
-    ContactActionCreators.addContact(this.props.user.id);
-  };
+  addToContacts = () => ContactActionCreators.addContact(this.props.user.id);
 
   removeFromContacts = () => {
     const { user } = this.props;
