@@ -11,17 +11,16 @@ import { IntlMixin } from 'react-intl';
 import ContactActionCreators from '../../actions/ContactActionCreators';
 import GroupListActionCreators from '../../actions/GroupListActionCreators';
 
-import ContactsStore from '../../stores/ContactStore';
-import ContactStore from '../../stores/ContactStore';
+import ContactStore from '../../stores/PeopleStore';
 import GroupListStore from '../../stores/GroupListStore';
 
-import Contacts from './NewContacts.react'
-import Groups from './GroupList'
+import PeopleList from './PeopleList'
+import GroupList from './GroupList'
 
 const getStates = () => {
   return {
-    isContactsOpen: ContactsStore.isContactsOpen(),
-    isGroupsOpen: GroupListStore.isGroupsOpen()
+    isPeoplesOpen: ContactStore.isOpen(),
+    isGroupsOpen: GroupListStore.isOpen()
   }
 };
 
@@ -35,29 +34,44 @@ class ModalsWrapper extends Component {
   componentWillMount() {
     document.addEventListener('keydown', this.handleKeyDown, false);
 
-    ContactsStore.addChangeListener(this.handleChange);
+    ContactStore.addListener(this.handleChange);
     GroupListStore.addListener(this.handleChange);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown, false);
-
-    ContactsStore.removeChangeListener(this.handleChange);
   }
 
   handleChange = () => this.setState(getStates());
 
   handleKeyDown = (event) => {
-    if (event.keyCode === KeyCodes.ESC) {
-      event.preventDefault();
-      this.handleClose();
+    switch (event.keyCode) {
+      case KeyCodes.ESC:
+        event.preventDefault();
+        this.handleClose();
+        break;
+      case KeyCodes.G:
+        if (event.ctrlKey) {
+          event.preventDefault();
+          this.handleClose();
+          GroupListActionCreators.open();
+        }
+        break;
+      case KeyCodes.P:
+        if (event.ctrlKey) {
+          event.preventDefault();
+          this.handleClose();
+          ContactActionCreators.open();
+        }
+        break;
+      default:
     }
   };
 
   handleClose = () => {
-    const { isContactsOpen, isGroupsOpen } = this.state;
+    const { isPeoplesOpen, isGroupsOpen } = this.state;
 
-    if (isContactsOpen) {
+    if (isPeoplesOpen) {
       ContactActionCreators.close();
     }
     if (isGroupsOpen) {
@@ -66,10 +80,10 @@ class ModalsWrapper extends Component {
   };
 
   render() {
-    const { isContactsOpen, isGroupsOpen } = this.state;
+    const { isPeoplesOpen, isGroupsOpen } = this.state;
 
     const wrapperClassName = classnames('modal-wrapper', {
-      'modal-wrapper--opened': isContactsOpen || isGroupsOpen
+      'modal-wrapper--opened': isPeoplesOpen || isGroupsOpen
     });
 
     return (
@@ -79,8 +93,8 @@ class ModalsWrapper extends Component {
           <div className="text">{this.getIntlMessage('button.close')}</div>
         </div>
 
-        {isContactsOpen ? <Contacts/> : null}
-        {isGroupsOpen ? <Groups/> : null}
+        {isPeoplesOpen ? <PeopleList/> : null}
+        {isGroupsOpen ? <GroupList/> : null}
       </div>
     );
   }

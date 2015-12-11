@@ -164,6 +164,10 @@
       color: rgba(black, .2);
       border: 1px solid $cloudy-blue;
       background-color: white;
+      line-height: 32px;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 2px;
       &:focus {
         color: $greyish-brown;
       }
@@ -1306,7 +1310,7 @@
     .contacts__list {
       &__item {
         list-style: none;
-        &:hover {
+        &--active {
           font-weight: 500;
 
           cursor: pointer;
@@ -1332,7 +1336,7 @@
         &:first-child {
           box-shadow: none;
         }
-        &:hover {
+        &--active {
           cursor: pointer;
 
           color: white;
@@ -1360,7 +1364,7 @@
             }
           }
         }
-        &:hover + .group__list__item {
+        &--active + .group__list__item {
           box-shadow: none;
         }
         .avatar {

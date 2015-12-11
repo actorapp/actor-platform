@@ -33,9 +33,12 @@ export const ActionTypes = keymirror({
   AUTH_SET_LOGGED_OUT: null,
 
   DIALOGS_CHANGED: null,
-  SELECTED_DIALOG_INFO_CHANGED: null,
+  DIALOG_INFO_CHANGED: null,
+  DIALOG_TYPING_CHANGED: null,
   MY_PROFILE_CHANGED: null,
   SELECT_DIALOG_PEER: null,
+  MESSAGES_CHANGED: null,
+  CONNECTION_STATE_CHANGED: null,
 
   COMPOSE_CLEAN: null,
   COMPOSE_TYPING: null,
@@ -62,6 +65,7 @@ export const ActionTypes = keymirror({
   CONTACT_FIND: null,
   CONTACT_FIND_SUCCESS: null,
   CONTACT_FIND_ERROR: null,
+  CONTACT_LIST_SEARCH: null,
 
   // Group actions
   GROUP_CREATE_MODAL_OPEN: null,
@@ -203,7 +207,9 @@ export const KeyCodes = {
   ARROW_UP: 38,
   ARROW_DOWN: 40,
 
-  K: 75
+  K: 75,
+  G: 71,
+  P: 80
 };
 
 export const AsyncActionStates = {
@@ -228,8 +234,8 @@ export const bugsnagApiKey = 'cd24ee53326e06669a36c637b29660c3';
 export const mixpanelAPIKey = '9591b090b987c2b701db5a8ef3e5055c';
 
 export const endpoints = [
-  "wss://front1-ws-mtproto-api-rev2.actor.im",
-  "wss://front2-ws-mtproto-api-rev2.actor.im"
+  'wss://front1-ws-mtproto-api-rev2.actor.im',
+  'wss://front2-ws-mtproto-api-rev2.actor.im'
 ];
 
 export default {

@@ -24,30 +24,22 @@ import GroupStore from '../stores/GroupStore';
 import DialogActionCreators from '../actions/DialogActionCreators';
 
 // On which scrollTop value start loading older messages
-const LoadMessagesScrollTop = 100;
-
+const loadMessagesScrollTop = 100;
 const initialRenderMessagesCount = 20;
 const renderMessagesStep = 20;
 
 let renderMessagesCount = initialRenderMessagesCount;
-
-let lastPeer = null;
 let lastScrolledFromBottom = 0;
 
 const getStateFromStores = () => {
   const messages = MessageStore.getAll();
-  let messagesToRender;
-
-  if (messages.length > renderMessagesCount) {
-    messagesToRender = messages.slice(messages.length - renderMessagesCount);
-  } else {
-    messagesToRender = messages;
-  }
+  const messagesToRender = (messages.length > renderMessagesCount) ? messages.slice(messages.length - renderMessagesCount) : messages;
 
   return {
-    peer: DialogStore.getSelectedDialogPeer(),
+    peer: DialogStore.getCurrentPeer(),
     messages: messages,
-    messagesToRender: messagesToRender
+    messagesToRender: messagesToRender,
+    isMember: DialogStore.isMember()
   };
 };
 
@@ -61,22 +53,15 @@ class DialogSection extends Component {
 
     this.state = getStateFromStores();
 
-    ActivityStore.addChangeListener(this.fixScrollTimeout);
-    DialogStore.addSelectListener(this.onSelectedDialogChange);
-    MessageStore.addChangeListener(this.onMessagesChange);
-  }
-
-  componentWillUnmount() {
-    ActivityStore.removeChangeListener(this.fixScrollTimeout.bind(this));
-    DialogStore.removeSelectListener(this.onSelectedDialogChange);
-    MessageStore.removeChangeListener(this.onMessagesChange);
+    ActivityStore.addListener(this.fixScrollTimeout);
+    MessageStore.addListener(this.onMessagesChange);
+    DialogStore.addListener(this.onChange);
   }
 
   componentDidMount() {
-    const peer = DialogStore.getSelectedDialogPeer();
+    const peer = DialogStore.getCurrentPeer();
 
     if (peer) {
-      DialogActionCreators.onConversationOpen(peer);
       this.fixScroll();
       this.loadMessagesByScroll();
     }
@@ -88,12 +73,13 @@ class DialogSection extends Component {
   }
 
   render() {
-    const { peer } = this.state;
+    const { peer, isMember } = this.state;
     const { delegate } = this.context;
 
-    let mainContent,
-        activity = [],
-        ToolbarSection, TypingSection, ComposeSection;
+    let activity = [],
+        ToolbarSection,
+        TypingSection,
+        ComposeSection;
 
     if (delegate.components.dialog !== null && typeof delegate.components.dialog !== 'function') {
       ToolbarSection = delegate.components.dialog.toolbar || DefaultToolbarSection;
@@ -101,6 +87,8 @@ class DialogSection extends Component {
       ComposeSection = delegate.components.dialog.compose || DefaultComposeSection;
       if (delegate.components.dialog.activity) {
         forEach(delegate.components.dialog.activity, (Activity) => activity.push(<Activity/>));
+      } else {
+        activity.push(<DefaultActivitySection/>);
       }
     } else {
       ToolbarSection = DefaultToolbarSection;
@@ -109,66 +97,52 @@ class DialogSection extends Component {
       activity.push(<DefaultActivitySection/>);
     }
 
-    if (peer) {
-      let isMember = true,
-          memberArea;
+    const mainScreen = (
+      <section className="dialog">
+        <ConnectionState/>
+        <div className="messages">
+          <MessagesSection messages={this.state.messagesToRender}
+                           peer={peer}
+                           ref="MessagesSection"
+                           onScroll={this.loadMessagesByScroll}/>
 
-      if (peer.type === PeerTypes.GROUP) {
-        const group = GroupStore.getGroup(peer.id);
-        isMember = DialogStore.isGroupMember(group);
-      }
+        </div>
+        {
+          isMember
+            ? <footer className="dialog__footer">
+                <TypingSection/>
+                <ComposeSection peer={peer}/>
+              </footer>
+            : <footer className="dialog__footer dialog__footer--disabled row center-xs middle-xs ">
+                <h3>You are not a member</h3>
+              </footer>
+        }
+      </section>
+    );
+    const emptyScreen = (
+      <section className="dialog dialog--empty row center-xs middle-xs">
+        <ConnectionState/>
 
-      if (isMember) {
-        memberArea = (
-          <div>
-            <TypingSection/>
-            <ComposeSection peer={peer}/>
+        <div className="advice">
+          <div className="actor-logo">
+            <svg className="icon icon--gray"
+                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#star"/>'}}/>
           </div>
-        );
-      } else {
-        memberArea = (
-          <section className="compose compose--disabled row center-xs middle-xs">
-            <h3>You are not a member</h3>
-          </section>
-        );
-      }
-
-      mainContent = (
-        <section className="dialog" onScroll={this.loadMessagesByScroll}>
-          <ConnectionState/>
-
-          <div className="messages">
-            <MessagesSection messages={this.state.messagesToRender}
-                             peer={peer}
-                             ref="MessagesSection"/>
-
-          </div>
-
-          {memberArea}
-        </section>
-      );
-    } else {
-      mainContent = (
-        <section className="dialog dialog--empty row center-xs middle-xs">
-          <ConnectionState/>
-
-          <div className="advice">
-            <div className="actor-logo">
-              <svg className="icon icon--gray"
-                   dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#star"/>'}}/>
-            </div>
-            <h2>Try to be better than yesterday!</h2>
-          </div>
-        </section>
-      );
-    }
+          <h2>Try to be better than yesterday!</h2>
+        </div>
+      </section>
+    );
 
     return (
       <section className="main">
         <ToolbarSection/>
 
         <div className="flexrow">
-          {mainContent}
+          {
+            peer
+              ? mainScreen
+              : emptyScreen
+          }
           {activity}
         </div>
       </section>
@@ -186,17 +160,10 @@ class DialogSection extends Component {
     }
   };
 
-  onSelectedDialogChange = () => {
+  onChange = () => {
     lastScrolledFromBottom = 0;
     renderMessagesCount = initialRenderMessagesCount;
-
-    // TODO: Move this to actions
-    if (lastPeer != null) {
-      DialogActionCreators.onConversationClosed(lastPeer);
-    }
-
-    lastPeer = DialogStore.getSelectedDialogPeer();
-    DialogActionCreators.onConversationOpen(lastPeer);
+    this.setState(getStateFromStores());
   };
 
   onMessagesChange = debounce(() => {
@@ -204,19 +171,21 @@ class DialogSection extends Component {
   }, 10, {maxWait: 50, leading: true});
 
   loadMessagesByScroll = debounce(() => {
-    if (this.state.peer) {
+    const { peer, messages, messagesToRender } = this.state;
+
+    if (peer) {
       let node = React.findDOMNode(this.refs.MessagesSection);
       let scrollTop = node.scrollTop;
       lastScrolledFromBottom = node.scrollHeight - scrollTop - node.offsetHeight; // was node.scrollHeight - scrollTop
 
-      if (node.scrollTop < LoadMessagesScrollTop) {
-        DialogActionCreators.onChatEnd(this.state.peer);
+      if (node.scrollTop < loadMessagesScrollTop) {
+        DialogActionCreators.onChatEnd(peer);
 
-        if (this.state.messages.length > this.state.messagesToRender.length) {
+        if (messages.length > messagesToRender.length) {
           renderMessagesCount += renderMessagesStep;
 
-          if (renderMessagesCount > this.state.messages.length) {
-            renderMessagesCount = this.state.messages.length;
+          if (renderMessagesCount > messages.length) {
+            renderMessagesCount = messages.length;
           }
 
           this.setState(getStateFromStores());

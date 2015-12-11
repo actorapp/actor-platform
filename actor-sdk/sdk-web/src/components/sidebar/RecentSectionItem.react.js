@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
 import PeerUtils from '../../utils/PeerUtils';
@@ -20,14 +20,14 @@ class RecentSectionItem extends Component {
   }
 
   static propTypes = {
-    dialog: React.PropTypes.object.isRequired
+    dialog: PropTypes.object.isRequired
   };
 
   onClick = () => DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
 
   render() {
     const { dialog } = this.props;
-    const selectedPeer = DialogStore.getSelectedDialogPeer();
+    const selectedPeer = DialogStore.getCurrentPeer();
 
     const isActive = selectedPeer && PeerUtils.equals(dialog.peer.peer, selectedPeer);
 
