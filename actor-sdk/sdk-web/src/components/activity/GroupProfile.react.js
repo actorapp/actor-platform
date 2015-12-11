@@ -119,7 +119,7 @@ class GroupProfile extends Component {
 
   onEditGroupClick = (gid) => EditGroupActionCreators.show(gid);
 
-  handleAvatarClick= () => lightbox.open(this.props.group.bigAvatar);
+  handleAvatarClick = () => lightbox.open(this.props.group.bigAvatar);
 
   render() {
     const { group } = this.props;
