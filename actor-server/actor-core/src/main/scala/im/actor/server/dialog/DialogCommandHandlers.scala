@@ -46,7 +46,10 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   }
 
   protected def ackSendMessage(state: DialogState, sm: SendMessage): Unit = {
-    if (peer.typ == PeerType.Private) SocialManager.recordRelation(sm.origin.id, userId)
+    if (peer.typ == PeerType.Private) {
+      SocialManager.recordRelation(sm.origin.id, userId)
+      SocialManager.recordRelation(userId, sm.origin.id)
+    }
 
     deliveryExt
       .receiverDelivery(userId, sm.origin.id, peer, sm.randomId, sm.date, sm.message, sm.isFat)
