@@ -2,14 +2,16 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 
-class Fold extends React.Component {
-  static PropTypes = {
-    icon: React.PropTypes.string,
-    iconClassName: React.PropTypes.string,
-    title: React.PropTypes.string.isRequired
+class Fold extends Component {
+  static propTypes = {
+    children: PropTypes.element,
+    icon: PropTypes.string,
+    iconClassName: PropTypes.string,
+    iconElement: PropTypes.element,
+    title: PropTypes.string.isRequired
   };
 
   constructor(props) {
