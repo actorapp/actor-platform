@@ -207,7 +207,9 @@ export const KeyCodes = {
   ARROW_UP: 38,
   ARROW_DOWN: 40,
 
-  K: 75
+  K: 75,
+  G: 71,
+  P: 80
 };
 
 export const AsyncActionStates = {

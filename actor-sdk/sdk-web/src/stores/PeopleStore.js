@@ -49,7 +49,7 @@ class PeopleStore extends Store {
       results = _list;
     } else {
       forEach(_list, (result) => {
-        const name = contact.name.toLowerCase();
+        const name = result.name.toLowerCase();
         if (name.includes(query.toLowerCase())) {
           results.push(result);
         }

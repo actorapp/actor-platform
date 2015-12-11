@@ -56,14 +56,11 @@ const DialogActionCreators = {
     router.transitionTo('main', {id: PeerUtils.peerToString(peer)});
   },
 
-  selectDialogPeerUser(userId) {
-    if (userId === ActorClient.getUid()) {
+  selectDialogPeerUser(uid) {
+    if (uid === ActorClient.getUid()) {
       console.warn('You can\'t chat with yourself');
     } else {
-      this.selectDialogPeer({
-        type: PeerTypes.USER,
-        id: userId
-      });
+      this.selectDialogPeer(ActorClient.getUserPeer(uid));
     }
   },
 
