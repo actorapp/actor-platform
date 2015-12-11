@@ -8757,69 +8757,90 @@
           }
         },
         {
+          "type": "response",
+          "content": {
+            "name": "MessageSearchResponse",
+            "header": 218,
+            "doc": [
+              "Search Result",
+              {
+                "type": "reference",
+                "argument": "searchResults",
+                "category": "full",
+                "description": "  Search results"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "full",
+                "description": "  Search users"
+              },
+              {
+                "type": "reference",
+                "argument": "groups",
+                "category": "full",
+                "description": "  Search groups"
+              },
+              {
+                "type": "reference",
+                "argument": "loadMoreState",
+                "category": "hidden",
+                "description": "  State for loading more results"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageSearchItem"
+                  }
+                },
+                "id": 1,
+                "name": "searchResults"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "User"
+                  }
+                },
+                "id": 2,
+                "name": "users"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Group"
+                  }
+                },
+                "id": 3,
+                "name": "groups"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 4,
+                "name": "loadMoreState"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "MessageSearch",
             "header": 217,
             "response": {
-              "type": "anonymous",
-              "header": 218,
-              "doc": [
-                "Search Result",
-                {
-                  "type": "reference",
-                  "argument": "searchResults",
-                  "category": "full",
-                  "description": "  Search results"
-                },
-                {
-                  "type": "reference",
-                  "argument": "users",
-                  "category": "full",
-                  "description": "  Search users"
-                },
-                {
-                  "type": "reference",
-                  "argument": "groups",
-                  "category": "full",
-                  "description": "  Search groups"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "MessageSearchItem"
-                    }
-                  },
-                  "id": 1,
-                  "name": "searchResults"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "User"
-                    }
-                  },
-                  "id": 2,
-                  "name": "users"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "Group"
-                    }
-                  },
-                  "id": 3,
-                  "name": "groups"
-                }
-              ]
+              "type": "reference",
+              "name": "MessageSearchResponse"
             },
             "doc": [
               "Performing message search",
@@ -8838,6 +8859,33 @@
                 },
                 "id": 1,
                 "name": "query"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "MessageSearchMore",
+            "header": 222,
+            "response": {
+              "type": "reference",
+              "name": "MessageSearchResponse"
+            },
+            "doc": [
+              "Performing message search paging",
+              {
+                "type": "reference",
+                "argument": "loadMoreState",
+                "category": "hidden",
+                "description": "State for loading more results"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "bytes",
+                "id": 1,
+                "name": "loadMoreState"
               }
             ]
           }
@@ -8986,7 +9034,7 @@
     },
     {
       "title": "Integrations",
-      "package": "integrtions",
+      "package": "integrations",
       "doc": [
         "Package contains methods for providing integration"
       ],
