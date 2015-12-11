@@ -306,7 +306,13 @@ public class NotificationsActor extends ModuleActor {
             } else {
 
                 // Just show out-app notification
-                showNotification();
+                for (Peer p : notificationsDuringPause.keySet()) {
+
+                    if (isNotificationsEnabled(p, notificationsDuringPause.get(p))) {
+                        showNotification();
+                        break;
+                    }
+                }
             }
 
             // Clearing of notifications
