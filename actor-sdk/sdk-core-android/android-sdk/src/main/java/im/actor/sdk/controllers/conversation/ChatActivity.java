@@ -18,7 +18,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.view.ActionMode;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.Spannable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -190,7 +189,6 @@ public class ChatActivity extends ActorEditTextActivity {
     // Is Activity opened from Compose
     private boolean isCompose = false;
     private Intent intent;
-    private boolean ignoreTextChange = false;
 
     public static Intent build(Peer peer, boolean compose, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);
@@ -846,11 +844,6 @@ public class ChatActivity extends ActorEditTextActivity {
         }
         isMentionsVisible = true;
 
-        ignoreTextChange = true;
-        int cursor = messageEditText.getSelectionStart();
-        messageEditText.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        messageEditText.setSelection(cursor);
-        ignoreTextChange = false;
 
         GroupVM groupInfo = groups().get(peer.getPeerId());
         mentionsAdapter = new MentionsAdapter(groupInfo.getId(), this, new MentionsAdapter.MentionsUpdatedCallback() {
@@ -895,12 +888,6 @@ public class ChatActivity extends ActorEditTextActivity {
             return;
         }
         isMentionsVisible = false;
-
-        ignoreTextChange = true;
-        int cursor = messageEditText.getSelectionStart();
-        messageEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        messageEditText.setSelection(cursor);
-        ignoreTextChange = false;
 
         expandMentions(mentionsList, mentionsAdapter.getCount(), 0);
         mentionsAdapter = null;
@@ -1067,54 +1054,51 @@ public class ChatActivity extends ActorEditTextActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (!ignoreTextChange) {
-                String str = s.toString();
-                String firstPeace = str.substring(0, start + count);
+            String str = s.toString();
+            String firstPeace = str.substring(0, start + count);
 
-                int startSelection = messageEditText.getSelectionStart();
+            int startSelection = messageEditText.getSelectionStart();
 
-                String currentWord = "";
-                int length = 0;
+            String currentWord = "";
+            int length = 0;
 
-                for (String word : str.split(" ")) {
-                    length = length + word.length() + 1;
-                    if (length > startSelection) {
-                        currentWord = word;
-                        break;
-                    }
-                }
-
-                currentWord = currentWord.isEmpty() ? str : currentWord;
-
-                if (peer.getPeerType() == PeerType.GROUP) {
-                    //Open mentions
-                    if (count == 1 && s.charAt(start) == '@' && !str.endsWith(" ")) {
-                        showMentions(false);
-                        mentionSearchString = "";
-
-                    } else if (currentWord.startsWith("@") && !str.endsWith(" ")) {
-                        showMentions(true);
-                    } else {
-                        hideMentions();
-                    }
-
-                    //Set mentions query
-                    mentionStart = firstPeace.lastIndexOf("@");
-                    if (currentWord.startsWith("@") && currentWord.length() > 1) {
-                        mentionSearchString = currentWord.substring(1, currentWord.length());
-                    } else {
-                        mentionSearchString = "";
-                    }
-
-                    if (mentionSearchString.equals(" ")) {
-                        hideMentions();
-                    } else if (mentionsAdapter != null) {
-                        //mentionsDisplay.initSearch(mentionSearchString, false);
-                        mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
-                    }
+            for (String word : str.split(" ")) {
+                length = length + word.length() + 1;
+                if (length > startSelection) {
+                    currentWord = word;
+                    break;
                 }
             }
 
+            currentWord = currentWord.isEmpty() ? str : currentWord;
+
+            if (peer.getPeerType() == PeerType.GROUP) {
+                //Open mentions
+                if (count == 1 && s.charAt(start) == '@' && !str.endsWith(" ")) {
+                    showMentions(false);
+                    mentionSearchString = "";
+
+                } else if (currentWord.startsWith("@") && !str.endsWith(" ")) {
+                    showMentions(true);
+                } else {
+                    hideMentions();
+                }
+
+                //Set mentions query
+                mentionStart = firstPeace.lastIndexOf("@");
+                if (currentWord.startsWith("@") && currentWord.length() > 1) {
+                    mentionSearchString = currentWord.substring(1, currentWord.length());
+                } else {
+                    mentionSearchString = "";
+                }
+
+                if (mentionSearchString.equals(" ")) {
+                    hideMentions();
+                } else if (mentionsAdapter != null) {
+                    //mentionsDisplay.initSearch(mentionSearchString, false);
+                    mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
+                }
+            }
         }
 
         @Override
