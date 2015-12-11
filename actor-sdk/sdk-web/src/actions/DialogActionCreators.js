@@ -7,6 +7,9 @@ import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 import PeerUtils from '../utils/PeerUtils';
 import RouterContainer from '../utils/RouterContainer';
+import MessageActionCreators from './MessageActionCreators';
+import GroupProfileActionCreators from './GroupProfileActionCreators';
+import DialogStore from '../stores/DialogStore';
 
 const DialogActionCreators = {
   setDialogs(dialogs) {
@@ -14,23 +17,59 @@ const DialogActionCreators = {
   },
 
   selectDialogPeer(peer) {
-    RouterContainer.get().transitionTo('main', {id: PeerUtils.peerToString(peer)});
+    const router = RouterContainer.get();
+    const currentPeer = DialogStore.getCurrentPeer();
+
+    // Unbind from previous peer
+    if (currentPeer !== null) {
+      this.onConversationClosed(currentPeer);
+      ActorClient.unbindChat(currentPeer, MessageActionCreators.setMessages);
+      ActorClient.unbindTyping(currentPeer, this.setTyping);
+
+      switch (currentPeer.type) {
+        case PeerTypes.USER:
+          ActorClient.unbindUser(currentPeer.id, this.setDialogInfo);
+          break;
+        case PeerTypes.GROUP:
+          ActorClient.unbindGroup(currentPeer.id, this.setDialogInfo);
+          break;
+        default:
+      }
+    }
+
     dispatch(ActionTypes.SELECT_DIALOG_PEER, { peer });
+
+    this.onConversationOpen(peer);
+    ActorClient.bindChat(peer, MessageActionCreators.setMessages);
+    ActorClient.bindTyping(peer, this.setTyping);
+    switch(peer.type) {
+      case PeerTypes.USER:
+        ActorClient.bindUser(peer.id, this.setDialogInfo);
+        break;
+      case PeerTypes.GROUP:
+        ActorClient.bindGroup(peer.id, this.setDialogInfo);
+        GroupProfileActionCreators.getIntegrationToken(peer.id);
+        break;
+      default:
+    }
+
+    router.transitionTo('main', {id: PeerUtils.peerToString(peer)});
   },
 
-  selectDialogPeerUser(userId) {
-    if (userId === ActorClient.getUid()) {
+  selectDialogPeerUser(uid) {
+    if (uid === ActorClient.getUid()) {
       console.warn('You can\'t chat with yourself');
     } else {
-      this.selectDialogPeer({
-        type: PeerTypes.USER,
-        id: userId
-      });
+      this.selectDialogPeer(ActorClient.getUserPeer(uid));
     }
   },
 
-  createSelectedDialogInfoChanged(info) {
-    dispatch(ActionTypes.SELECTED_DIALOG_INFO_CHANGED, { info });
+  setDialogInfo(info) {
+    dispatch(ActionTypes.DIALOG_INFO_CHANGED, { info });
+  },
+
+  setTyping(typing) {
+    dispatch(ActionTypes.DIALOG_TYPING_CHANGED, { typing: typing.typing });
   },
 
   onConversationOpen(peer) {
@@ -58,6 +97,7 @@ const DialogActionCreators = {
   },
 
   changeNotificationsEnabled(peer, isEnabled) {
+    ActorClient.changeNotificationsEnabled(peer, isEnabled);
     dispatch(ActionTypes.NOTIFICATION_CHANGE, { peer, isEnabled });
   },
 

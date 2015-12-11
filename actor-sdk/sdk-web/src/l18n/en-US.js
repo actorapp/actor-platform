@@ -116,7 +116,8 @@ export default {
       'contacts': {
         'title': 'People',
         'search': 'Search contacts',
-        'notFound': 'Sorry, no users found.'
+        'notFound': 'Sorry, no users found.',
+        'loading': 'Loading'
       },
       'groups': {
         'title': 'Groups',
@@ -188,7 +189,7 @@ export default {
     'notifications': 'Notifications',
     'integrationTokenCopied': 'Integration link copied.',
     'members': '{numMembers, plural,' +
-      '=0 {no Members}' +
+      '=0 {No members}' +
       '=1 {# Member}' +
       'other {# Members}' +
     '}',

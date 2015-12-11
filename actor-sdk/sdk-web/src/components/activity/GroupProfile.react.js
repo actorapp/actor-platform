@@ -30,16 +30,14 @@ import GroupProfileMembers from '../activity/GroupProfileMembers.react';
 import Fold from '../common/Fold.React';
 import EditGroup from '../modals/EditGroup.react';
 
-const getStateFromStores = (groupId) => {
-  const thisPeer = PeerStore.getGroupPeer(groupId);
+const getStateFromStores = (gid) => {
+  const thisPeer = GroupStore.getGroup(gid);
   return {
-    thisPeer: thisPeer,
+    thisPeer,
     isNotificationsEnabled: DialogStore.isNotificationsEnabled(thisPeer),
-    integrationToken: GroupStore.getIntegrationToken()
+    integrationToken: GroupStore.getToken()
   };
 };
-
-let _prevGroupId;
 
 class GroupProfile extends Component {
   static propTypes = {
@@ -48,34 +46,13 @@ class GroupProfile extends Component {
 
   constructor(props) {
     super(props);
-    const myId = UserStore.getMyId();
 
     this.state = assign({
       isMoreDropdownOpen: false
     }, getStateFromStores(props.group.id));
 
-    if (props.group.members.length > 0 && myId === props.group.adminId) {
-      GroupProfileActionCreators.getIntegrationToken(props.group.id);
-    }
-
-    DialogStore.addNotificationsListener(this.onChange);
+    DialogStore.addListener(this.onChange);
     GroupStore.addListener(this.onChange);
-  }
-
-  componentWillUnmount() {
-    DialogStore.removeNotificationsListener(this.onChange);
-  }
-
-  componentWillReceiveProps(newProps) {
-    const myId = UserStore.getMyId();
-    // FIXME!!!
-    setTimeout(() => {
-      this.setState(getStateFromStores(newProps.group.id));
-      if (newProps.group.id !== _prevGroupId && newProps.group.members.length > 0 && myId === newProps.group.adminId) {
-        GroupProfileActionCreators.getIntegrationToken(newProps.group.id);
-        _prevGroupId = newProps.group.id;
-      }
-    }, 0);
   }
 
   onAddMemberClick = group => InviteUserActions.show(group);
@@ -142,7 +119,7 @@ class GroupProfile extends Component {
 
   onEditGroupClick = (gid) => EditGroupActionCreators.show(gid);
 
-  handleAvatarClick= () => lightbox.open(this.props.group.bigAvatar);
+  handleAvatarClick = () => lightbox.open(this.props.group.bigAvatar);
 
   render() {
     const { group } = this.props;
@@ -154,7 +131,7 @@ class GroupProfile extends Component {
 
     const myId = UserStore.getMyId();
     const admin = UserStore.getUser(group.adminId);
-    const isMember = DialogStore.isGroupMember(group);
+    const isMember = DialogStore.isMember();
 
     let adminControls;
     if (group.adminId === myId) {

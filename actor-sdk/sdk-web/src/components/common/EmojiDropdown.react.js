@@ -3,7 +3,7 @@
  */
 
 import { forEach } from 'lodash';
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import { Path, KeyCodes } from '../../constants/ActorAppConstants';
 import { emoji, getEmojiCategories } from '../../utils/EmojiUtils';
@@ -16,9 +16,9 @@ let emojis = [];
 
 export default class EmojiDropdown extends Component {
   static propTypes = {
-    isOpen: React.PropTypes.bool.isRequired,
-    onClose: React.PropTypes.func.isRequired,
-    onSelect: React.PropTypes.func.isRequired
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onSelect: PropTypes.func.isRequired
   };
 
   constructor(props) {

@@ -14,7 +14,7 @@ import { Styles, TextField, FlatButton } from 'material-ui';
 
 import CreateGroupActionCreators from '../../../actions/CreateGroupActionCreators';
 
-import ContactStore from '../../../stores/ContactStore';
+import ContactStore from '../../../stores/PeopleStore';
 import CreateGroupStore from '../../../stores/CreateGroupStore';
 
 import ContactItem from './ContactItem.react';
@@ -41,7 +41,7 @@ class CreateGroupForm extends Component {
       step: CreateGroupStore.getCurrentStep(),
       name: CreateGroupStore.getGroupName(),
       selectedUserIds: CreateGroupStore.getSelectedUserIds(),
-      contacts: ContactStore.getContacts()
+      contacts: ContactStore.getList()
     }
   }
 

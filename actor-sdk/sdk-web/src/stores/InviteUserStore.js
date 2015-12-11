@@ -58,7 +58,7 @@ let InviteUserStoreInstance = new InviteUserStore();
 
 InviteUserStoreInstance.dispatchToken = register(action => {
   switch(action.type) {
-    case ActionTypes.SELECTED_DIALOG_INFO_CHANGED:
+    case ActionTypes.DIALOG_INFO_CHANGED:
       _group = action.info;
       InviteUserStoreInstance.emitChange();
       break;

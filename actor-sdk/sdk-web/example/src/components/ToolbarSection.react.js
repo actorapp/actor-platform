@@ -15,7 +15,7 @@ import AvatarItem from 'actor-sdk/build/components/common/AvatarItem.react';
 
 const getStateFromStores = () => {
   return {
-    dialogInfo: DialogStore.getSelectedDialogInfo(),
+    dialogInfo: DialogStore.getInfo(),
     isActivityOpen: ActivityStore.isOpen()
   };
 };
@@ -29,13 +29,8 @@ class ToolbarSection extends Component {
       isActivityOpen: false
     };
 
-    DialogStore.addSelectedChangeListener(this.onChange);
-    ActivityStore.addChangeListener(this.onChange);
-  }
-
-  componentWillUnmount() {
-    DialogStore.removeSelectedChangeListener(this.onChange);
-    ActivityStore.removeChangeListener(this.onChange);
+    DialogStore.addListener(this.onChange);
+    ActivityStore.addListener(this.onChange);
   }
 
   onClick = () => {
