@@ -71,7 +71,13 @@ class HeaderSection extends Component {
   openHelpDialog = () => HelpActionCreators.open();
   openAddContactModal = () => AddContactActionCreators.open();
   onSettingsOpen = () => PreferencesActionCreators.show();
-  openTwitter = () => window.open('https://twitter.com/actorapp');
+  openTwitter = (event) => {
+    if (ActorClient.isElectron()) {
+      ActorClient.handleLinkClick(event);
+    } else {
+      window.open('https://twitter.com/actorapp')
+    }
+  };
   setLogout = () => {
     confirm(this.getIntlMessage('modal.confirm.logout'), {
       abortLabel: this.getIntlMessage('button.cancel'),

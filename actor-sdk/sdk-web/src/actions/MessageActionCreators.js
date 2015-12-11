@@ -56,5 +56,9 @@ export default {
 
   removeLike: (peer, rid) => {
     ActorClient.removeLike(peer, rid);
+  },
+
+  setMessages(messages) {
+    dispatch(ActionTypes.MESSAGES_CHANGED, { messages });
   }
 };

@@ -3,46 +3,33 @@
  */
 
 import React, { Component } from 'react';
-import ReactMixin from 'react-mixin';
-import addons from 'react/addons';
-const {addons: { PureRenderMixin }} = addons;
-
+import { Container } from 'flux/utils';
 import classNames from 'classnames';
 
 import DialogStore from '../../stores/DialogStore';
 
 class Typing extends Component {
+  static getStores = () => [DialogStore];
+
+  static calculateState() {
+    const typing = DialogStore.getTyping();
+    const newState = (typing === null) ? {show: false} : {typing, show: true};
+    return newState;
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
-      typing: null,
-      show: false
+      typing: null
     }
   }
-
-  componentDidMount() {
-    DialogStore.addTypingListener(this.onTypingChange);
-  }
-
-  componentWillUnmount() {
-    DialogStore.removeTypingListener(this.onTypingChange);
-  }
-
-  onTypingChange = () => {
-    const typing = DialogStore.getSelectedDialogTyping();
-    if (typing === null) {
-      this.setState({show: false});
-    } else {
-      this.setState({typing: typing, show: true});
-    }
-  };
 
   render() {
-    const typing = this.state.typing;
-    const show = this.state.show;
+    const { show, typing } = this.state;
+
     const typingClassName = classNames('typing', {
-      'typing--hidden': show === false
+      'typing--hidden': !show
     });
 
     return (
@@ -54,6 +41,4 @@ class Typing extends Component {
   }
 }
 
-ReactMixin.onClass(Typing, PureRenderMixin);
-
-export default Typing;
+export default Container.create(Typing);

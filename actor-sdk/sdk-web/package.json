@@ -6,8 +6,8 @@
   "license": "Apache-2.0",
   "main": "index.js",
   "contributors": [
-    "Oleg Shilov <me@olegshilov.com>",
-    "prettynatty <fear@loathing.in>"
+    "Oleg Shilov <oleg@actor.im>",
+    "Andrew Smith <smith@actor.im>"
   ],
   "engines": {
     "node": ">=4.2.2"

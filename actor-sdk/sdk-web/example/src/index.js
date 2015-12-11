@@ -14,10 +14,14 @@ const mixpanelAPIKey = '9591b090b987c2b701db5a8ef3e5055c';
 const bugsnagApiKey = 'cd24ee53326e06669a36c637b29660c3';
 
 const components = {
-  toolbar: ToolbarSection
+  dialog: {
+    toolbar: ToolbarSection
+  }
 };
 
-const delegate = new ActorSDKDelegate(components);
+const actions = {}
+
+const delegate = new ActorSDKDelegate(components, actions);
 
 const app = new ActorSDK({endpoints, delegate, bugsnagApiKey, mixpanelAPIKey});
 app.startApp();

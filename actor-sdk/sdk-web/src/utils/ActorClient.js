@@ -402,5 +402,13 @@ export default {
 
   findAllPhotos(peer) {
     return window.messenger.findAllPhotos(peer);
+  },
+
+  handleLinkClick(event) {
+    messenger.handleLinkClick(event)
+  },
+
+  isElectron() {
+    return window.messenger.isElectron();
   }
 }
