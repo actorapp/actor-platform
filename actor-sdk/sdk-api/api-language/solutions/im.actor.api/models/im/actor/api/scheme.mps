@@ -7897,6 +7897,392 @@
         </node>
       </node>
     </node>
+    <node concept="2m5mJO" id="64LjbWRBVJO" role="2m5lHt">
+      <property role="TrG5h" value="Invites" />
+      <property role="3XOG$Z" value="invites" />
+      <node concept="2m5naR" id="64LjbWRBWwa" role="2m5mJr">
+        <property role="TrG5h" value="InviteState" />
+        <node concept="2m7Kf5" id="64LjbWRBWwk" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="email" />
+          <node concept="2m5ndX" id="64LjbWRBWwo" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="64LjbWRC1OH" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5nlT" id="64LjbWRC1OQ" role="2m7DVh">
+            <node concept="2m5ndX" id="64LjbWRC1OW" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64LjbWRBXgx" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5nlT" id="64LjbWRBXgB" role="2m7DVh">
+            <node concept="2m5ndE" id="64LjbWRBXgH" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64LjbWRCeMh" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="tid" />
+          <node concept="2m5nlT" id="64LjbWRCeMt" role="2m7DVh">
+            <node concept="2m5ndE" id="64LjbWRCeMz" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="64LjbWRBY0L" role="NXodf">
+          <property role="NXePf" value="Invite state" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRBY0Q" role="NXodf">
+          <property role="NX6R2" value="Email of invite" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64LjbWRBWwk" resolve="email" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCdfP" role="NXodf">
+          <property role="NX6R2" value="Name of invited user" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64LjbWRC1OH" resolve="name" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRBY0Y" role="NXodf">
+          <property role="NX6R2" value="Uid of registered user" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64LjbWRBXgx" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCeMG" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Team id of invite" />
+          <ref role="NX6Kv" node="64LjbWRCeMh" resolve="tid" />
+        </node>
+      </node>
+      <node concept="2m62dX" id="64LjbWRC0iH" role="2m5mJr">
+        <property role="TrG5h" value="InviteList" />
+        <node concept="2m7Kf5" id="64LjbWRC0ja" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="invites" />
+          <node concept="2m5nlk" id="64LjbWRC0je" role="2m7DVh">
+            <node concept="2m5mGg" id="64LjbWRC0jk" role="3GJlyp">
+              <ref role="2m5mJy" node="64LjbWRBWwa" resolve="InviteState" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64LjbWRCbH1" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="relatedUsers" />
+          <node concept="2m5nlk" id="64LjbWRCbH8" role="2m7DVh">
+            <node concept="2m5mGg" id="64LjbWRCbHe" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64LjbWRCbHh" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="relatedGroups" />
+          <node concept="2m5nlk" id="64LjbWRCbHr" role="2m7DVh">
+            <node concept="2m5mGg" id="64LjbWRCbHx" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64LjbWRCbH$" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="relatedTeams" />
+          <node concept="2m5nlk" id="64LjbWRCbHL" role="2m7DVh">
+            <node concept="2m5mGg" id="64LjbWRCbHR" role="3GJlyp">
+              <ref role="2m5mJy" node="64LjbWR_0wc" resolve="Team" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="64LjbWRC0iI" role="NuuwV">
+          <property role="Nu42W" value="A04" />
+        </node>
+        <node concept="NXeRC" id="64LjbWRC8Cp" role="NXp4Y">
+          <property role="NXePf" value="Intites list" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRC8Cu" role="NXp4Y">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Intvites" />
+          <ref role="NX6Kv" node="64LjbWRC0ja" resolve="invites" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCcuB" role="NXp4Y">
+          <property role="NX6R2" value="Related users in invites" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64LjbWRCbH1" resolve="relatedUsers" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCcuL" role="NXp4Y">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Related groups in invites" />
+          <ref role="NX6Kv" node="64LjbWRCbHh" resolve="relatedGroups" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCcuX" role="NXp4Y">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Related teams in invites" />
+          <ref role="NX6Kv" node="64LjbWRCbH$" resolve="relatedTeams" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="64LjbWRBWvo" role="2m5mJr">
+        <property role="TrG5h" value="LoadOwnSentInvites" />
+        <node concept="Nu42z" id="64LjbWRBWvp" role="NuuwV">
+          <property role="Nu42W" value="A03" />
+        </node>
+        <node concept="NXeRC" id="64LjbWRBYL7" role="1GBnQ6">
+          <property role="NXePf" value="Loading current invite states" />
+        </node>
+        <node concept="2m1Rp1" id="64LjbWRC0jp" role="2m6efq">
+          <ref role="2m1o9l" node="64LjbWRC0iH" resolve="InviteList" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="64LjbWRC0hA" role="2m5mJr">
+        <property role="TrG5h" value="SendInvite" />
+        <node concept="2m7Kf5" id="64LjbWRC0hZ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="email" />
+          <node concept="2m5ndX" id="64LjbWRC0i3" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="64LjbWRC2_g" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5nlT" id="64LjbWRC2_o" role="2m7DVh">
+            <node concept="2m5ndX" id="64LjbWRC2_u" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="64LjbWRC0hB" role="NuuwV">
+          <property role="Nu42W" value="A05" />
+        </node>
+        <node concept="2m1Rp1" id="64LjbWRC4Qs" role="2m6efq">
+          <ref role="2m1o9l" node="64LjbWRC0iH" resolve="InviteList" />
+        </node>
+        <node concept="NXeRC" id="64LjbWRC1OF" role="1GBnQ6">
+          <property role="NXePf" value="Sending an email invite" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRC5AO" role="1GBnQ6">
+          <property role="NX6R2" value="Email for invite" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64LjbWRC0hZ" resolve="email" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRC6nf" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional name for invite" />
+          <ref role="NX6Kv" node="64LjbWRC2_g" resolve="name" />
+        </node>
+        <node concept="2uC4CA" id="64LjbWRC77C" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="ALREADY_REGISTERED" />
+          <property role="2uCiSL" value="If user already registered" />
+        </node>
+        <node concept="2uC4CA" id="64LjbWRC77E" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="ALREADY_SENT" />
+          <property role="2uCiSL" value="If user already invited by CURRENT user" />
+        </node>
+      </node>
+      <node concept="1Dx9M1" id="64LjbWRBWvk" role="1Dx9rD">
+        <property role="1Dx9K7" value="Invite mechanizm" />
+      </node>
+    </node>
+    <node concept="2m5mJO" id="64LjbWR$Z1O" role="2m5lHt">
+      <property role="TrG5h" value="Teams" />
+      <property role="3XOG$Z" value="teams" />
+      <node concept="1Dx9M1" id="64LjbWR$ZKP" role="1Dx9rD">
+        <property role="1Dx9K7" value="Teams support for Actor" />
+      </node>
+      <node concept="2m5naR" id="64LjbWR_0wc" role="2m5mJr">
+        <property role="TrG5h" value="Team" />
+        <node concept="2m7Kf5" id="64LjbWR_0we" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="64LjbWR_0wi" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="64LjbWR_0wl" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="64LjbWR_0wr" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="64LjbWR_1fU" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="64LjbWR_1g2" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="64LjbWR_1fS" role="NXodf">
+          <property role="NXePf" value="Team entity" />
+        </node>
+        <node concept="NX1gA" id="64LjbWR_1Z_" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Team Id" />
+          <ref role="NX6Kv" node="64LjbWR_0we" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="64LjbWR_1ZH" role="NXodf">
+          <property role="NX6R2" value="Team Access Hash" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="64LjbWR_0wl" resolve="accessHash" />
+        </node>
+        <node concept="NX1gA" id="64LjbWR_1ZR" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Team name" />
+          <ref role="NX6Kv" node="64LjbWR_1fU" resolve="name" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="64LjbWRCab2" role="2m5mJr">
+        <property role="TrG5h" value="OutTeam" />
+        <node concept="2m7Kf5" id="64LjbWRCaby" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="64LjbWRCabA" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="64LjbWRCabD" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="64LjbWRCabJ" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="64LjbWRCaWf" role="NXodf">
+          <property role="NXePf" value="Reference to a team" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCaWk" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Team Id" />
+          <ref role="NX6Kv" node="64LjbWRCaby" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCaWs" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Team access hash" />
+          <ref role="NX6Kv" node="64LjbWRCabD" resolve="accessHash" />
+        </node>
+      </node>
+      <node concept="2m62dX" id="64LjbWRBSHE" role="2m5mJr">
+        <property role="TrG5h" value="TeamsList" />
+        <node concept="2m7Kf5" id="64LjbWRBSIb" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="teams" />
+          <node concept="2m5nlk" id="64LjbWRBSIf" role="2m7DVh">
+            <node concept="2m5mGg" id="64LjbWRBSIl" role="3GJlyp">
+              <ref role="2m5mJy" node="64LjbWR_0wc" resolve="Team" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="64LjbWRBSHF" role="NuuwV">
+          <property role="Nu42W" value="A02" />
+        </node>
+        <node concept="NXeRC" id="64LjbWRBSIo" role="NXp4Y">
+          <property role="NXePf" value="Teams response" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRBUea" role="NXp4Y">
+          <property role="NX6R2" value="Teams list" />
+          <ref role="NX6Kv" node="64LjbWRBSIb" resolve="teams" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="64LjbWR_3w1" role="2m5mJr">
+        <property role="TrG5h" value="LoadOwnTeams" />
+        <node concept="Nu42z" id="64LjbWR_3w2" role="NuuwV">
+          <property role="Nu42W" value="A01" />
+        </node>
+        <node concept="NXeRC" id="64LjbWR_8Kd" role="1GBnQ6">
+          <property role="NXePf" value="Loading own teams" />
+        </node>
+        <node concept="2m1Rp1" id="64LjbWRBTuj" role="2m6efq">
+          <ref role="2m1o9l" node="64LjbWRBSHE" resolve="TeamsList" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="64LjbWR_4gt" role="2m5mJr">
+        <property role="TrG5h" value="OwnTeamsChanged" />
+        <node concept="2m7Kf5" id="64LjbWR_5Kk" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="ownTeams" />
+          <node concept="2m5nlk" id="64LjbWR_5Ko" role="2m7DVh">
+            <node concept="2m5mGg" id="64LjbWR_5Ku" role="3GJlyp">
+              <ref role="2m5mJy" node="64LjbWR_0wc" resolve="Team" />
+            </node>
+          </node>
+        </node>
+        <node concept="NXeRC" id="64LjbWR_50w" role="NXp_2">
+          <property role="NXePf" value="Update about own teams changed" />
+        </node>
+        <node concept="NX1gA" id="64LjbWR_5Kg" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Updated own teams list" />
+          <ref role="NX6Kv" node="64LjbWR_5Kk" resolve="ownTeams" />
+        </node>
+        <node concept="Nu42z" id="64LjbWR_4gu" role="NuuwV">
+          <property role="Nu42W" value="A5" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="64LjbWRCgm8" role="2m5mJr">
+        <property role="TrG5h" value="CreateTeam" />
+        <node concept="2m7Kf5" id="64LjbWRCgmP" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="64LjbWRCgmT" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="64LjbWRCgm9" role="NuuwV">
+          <property role="Nu42W" value="A06" />
+        </node>
+        <node concept="2m1R6W" id="64LjbWRCgmW" role="2m6efq">
+          <node concept="2m7Kf5" id="64LjbWRCgn1" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="createdTeam" />
+            <node concept="2m5mGg" id="64LjbWRCgn5" role="2m7DVh">
+              <ref role="2m5mJy" node="64LjbWR_0wc" resolve="Team" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="64LjbWRCgmX" role="NuuwV">
+            <property role="Nu42W" value="A07" />
+          </node>
+          <node concept="NXeRC" id="64LjbWRCh8a" role="1y2DgH">
+            <property role="NXePf" value="Created team response" />
+          </node>
+          <node concept="NX1gA" id="64LjbWRCh8f" role="1y2DgH">
+            <property role="NX6R2" value="Created Team" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="64LjbWRCgn1" resolve="createdTeam" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="64LjbWRCh81" role="1GBnQ6">
+          <property role="NXePf" value="Creation of a Team" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCh86" role="1GBnQ6">
+          <property role="NX6R2" value="Title of a team" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64LjbWRCgmP" resolve="title" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="64LjbWRCkgH" role="2m5mJr">
+        <property role="TrG5h" value="InviteToTeam" />
+        <node concept="2m7Kf5" id="64LjbWRCkhA" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="user" />
+          <node concept="2m5mGg" id="64LjbWRCnn7" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64LjbWRCkhQ" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="destTeam" />
+          <node concept="2m5mGg" id="64LjbWRCkhY" role="2m7DVh">
+            <ref role="2m5mJy" node="64LjbWRCab2" resolve="OutTeam" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="64LjbWRCkgI" role="NuuwV">
+          <property role="Nu42W" value="A08" />
+        </node>
+        <node concept="2m1Rp1" id="64LjbWRCki1" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="64LjbWRCl3a" role="1GBnQ6">
+          <property role="NXePf" value="Inviting people to team" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCnmG" role="1GBnQ6">
+          <property role="NX6R2" value="Dest user" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64LjbWRCkhA" resolve="user" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCnmY" role="1GBnQ6">
+          <property role="NX6R2" value="Dest team" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64LjbWRCkhQ" resolve="destTeam" />
+        </node>
+        <node concept="2uC4CA" id="64LjbWRClOj" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="ALREADY_MEMBER" />
+          <property role="2uCiSL" value="User is already member of a group" />
+        </node>
+      </node>
+    </node>
     <node concept="2m5mJO" id="1$yIuJFB7ca" role="2m5lHt">
       <property role="TrG5h" value="Integrations" />
       <property role="3XOG$Z" value="integrations" />
