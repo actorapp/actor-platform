@@ -9220,6 +9220,12 @@
                 "argument": "name",
                 "category": "full",
                 "description": "Optional name for invite"
+              },
+              {
+                "type": "reference",
+                "argument": "destTeam",
+                "category": "full",
+                "description": "Optional team for invite"
               }
             ],
             "attributes": [
@@ -9235,6 +9241,17 @@
                 },
                 "id": 2,
                 "name": "name"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "OutTeam"
+                  }
+                },
+                "id": 3,
+                "name": "destTeam"
               }
             ]
           }
