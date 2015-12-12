@@ -351,7 +351,7 @@ public class AASettingsViewController: AAContentTableController {
 
             // Support: App version
             let version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
-            s.hint(version.replace("{version}", dest: version))
+            s.hint(AALocalized("SettingsVersion").replace("{version}", dest: version))
             
             ActorSDK.sharedActor().delegate.actorSettingsSupportDidCreated(self, section: s)
         }
