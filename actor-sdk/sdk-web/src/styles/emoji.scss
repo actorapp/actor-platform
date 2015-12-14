@@ -3,6 +3,7 @@
  */
 
 $emoji-dropdown-width: 328px;
+$stem-size: 14px;
 
 .emoji-outer {
   line-height: $message-line-height;
@@ -33,23 +34,37 @@ $emoji-dropdown-width: 328px;
 
 .emoji-dropdown {
   position: relative;
-
-  display: none;
+  z-index: 1500;
 
   color: rgba($greyish-brown, .6);
 
   &__wrapper {
+    display: none;
+    @mixin stem() {
+      position: absolute;
+      content: '';
+      bottom: - $stem-size / 2;
+      width: $stem-size;
+      height: $stem-size;
+      background-color: white;
+      right: $stem-size;
+      transform: rotate(45deg);
+    }
     position: absolute;
-    z-index: 1500;
-    right: 1px;
-    bottom: 0;
+    bottom: 6px;
+    right: -3px;
+    box-shadow: 0 1px 3px 1px rgba(0,0,0,.1);
+    background-color: white;
+    border-radius: 3px;
 
-    overflow: hidden;
-    //max-width: 500px;
-
-    border-radius: 2px;
-    background-color: rgba(white, .975);
-    box-shadow: 0 0 0 1px $cloudy-blue, 0 0 6px 0 rgba(black, .13);
+    &:before {
+      @include stem();
+    }
+    &:after {
+      @include stem();
+      z-index: -1;
+      box-shadow: 0 1px 3px 1px rgba(0,0,0,.1);
+    }
   }
   &__header {
     font-size: 12px;
@@ -58,7 +73,6 @@ $emoji-dropdown-width: 328px;
     padding: 0;
 
     background-color: white;
-    //border-bottom: 1px solid #ebebeb;
     box-shadow: inset 0 -1px 0 0 #ebebeb;
 
     @include clearfix();
@@ -84,6 +98,9 @@ $emoji-dropdown-width: 328px;
 
         cursor: pointer;
         text-align: center;
+        & > span {
+          pointer-events: none;
+        }
         .emoji-outer {
           line-height: 1px;
 
@@ -116,6 +133,8 @@ $emoji-dropdown-width: 328px;
     box-sizing: border-box;
     width: $emoji-dropdown-width;
     height: 200px;
+    z-index: 1500;
+    position: relative;
 
     @include clearfix();
     div {
@@ -158,6 +177,27 @@ $emoji-dropdown-width: 328px;
     }
   }
   &--opened {
-    display: block;
+    .emoji-dropdown__wrapper {
+      display: block;
+    }
+  }
+
+  .emoji-opener {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+
+    cursor: pointer;
+    transition: 150ms;
+    transform: scale(.9);
+
+    opacity: .8;
+    color: $greyish;
+    &--active,
+    &:hover {
+      transform: scale(1);
+      color: $dark-sky-blue;
+      opacity: 1;
+    }
   }
 }

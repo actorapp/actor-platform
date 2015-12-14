@@ -79,25 +79,6 @@
       opacity: 1;
     }
   }
-
-  .emoji-opener {
-    position: absolute;
-    top: 6px;
-    right: 38px;
-
-    cursor: pointer;
-    transition: .2s;
-    transform: scale(.9);
-
-    opacity: .8;
-    color: $greyish;
-    &--active,
-    &:hover {
-      transform: scale(1);
-
-      opacity: 1;
-    }
-  }
 }
 
 .dropzone {
