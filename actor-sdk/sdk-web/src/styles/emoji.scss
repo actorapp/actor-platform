@@ -34,7 +34,7 @@ $stem-size: 14px;
 
 .emoji-dropdown {
   position: relative;
-  z-index: 1500;
+  z-index: 15;
 
   color: rgba($greyish-brown, .6);
 
@@ -133,7 +133,7 @@ $stem-size: 14px;
     box-sizing: border-box;
     width: $emoji-dropdown-width;
     height: 200px;
-    z-index: 1500;
+    z-index: 16;
     position: relative;
 
     @include clearfix();
