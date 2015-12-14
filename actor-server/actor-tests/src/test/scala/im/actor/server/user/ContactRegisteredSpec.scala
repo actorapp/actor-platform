@@ -53,8 +53,10 @@ final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService 
     {
       implicit val clientData = alice
 
-      whenReady(msgService.handleMessageRead(getOutPeer(bob.optUserId.get, alice.authId), Random.nextLong))(identity)
+      whenReady(msgService.handleMessageRead(getOutPeer(bob.optUserId.get, alice.authId), Int.MaxValue.toLong))(identity)
     }
+
+    Thread.sleep(1000)
 
     {
       implicit val clientData = bob
@@ -62,6 +64,14 @@ final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService 
       whenReady(msgService.handleLoadDialogs(0, 100)) { resp ⇒
         inside(resp) {
           case Ok(ResponseLoadDialogs(_, _, Vector())) ⇒
+        }
+      }
+
+      whenReady(msgService.handleLoadGroupedDialogs()) { resp ⇒
+        inside(resp) {
+          case Ok(ResponseLoadGroupedDialogs(Vector(dgp, dgg), _, _)) ⇒
+            dgp.dialogs should ===(Vector())
+            dgg.dialogs should ===(Vector())
         }
       }
 

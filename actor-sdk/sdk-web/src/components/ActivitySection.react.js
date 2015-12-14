@@ -9,6 +9,7 @@ import { PeerTypes } from '../constants/ActorAppConstants';
 
 import ActivityStore from '../stores/ActivityStore';
 import DialogStore from '../stores/DialogStore';
+import DialogInfoStore from '../stores/DialogInfoStore';
 
 import UserProfile from './activity/UserProfile.react';
 import GroupProfile from './activity/GroupProfile.react';
@@ -18,12 +19,12 @@ class ActivitySection extends Component {
     super(props);
   }
 
-  static getStores = () => [DialogStore, ActivityStore];
+  static getStores = () => [DialogStore, DialogInfoStore, ActivityStore];
 
   static calculateState() {
     return {
       peer: DialogStore.getCurrentPeer(),
-      info: DialogStore.getInfo(),
+      info: DialogInfoStore.getInfo(),
       isOpen: ActivityStore.isOpen()
     };
   }

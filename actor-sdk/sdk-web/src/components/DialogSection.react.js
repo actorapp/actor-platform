@@ -37,8 +37,8 @@ const getStateFromStores = () => {
 
   return {
     peer: DialogStore.getCurrentPeer(),
-    messages: messages,
-    messagesToRender: messagesToRender,
+    messages,
+    messagesToRender,
     isMember: DialogStore.isMember()
   };
 };
@@ -59,7 +59,7 @@ class DialogSection extends Component {
   }
 
   componentDidMount() {
-    const peer = DialogStore.getCurrentPeer();
+    const { peer } = this.state;
 
     if (peer) {
       this.fixScroll();
@@ -73,7 +73,7 @@ class DialogSection extends Component {
   }
 
   render() {
-    const { peer, isMember } = this.state;
+    const { peer, isMember, messagesToRender } = this.state;
     const { delegate } = this.context;
 
     let activity = [],
@@ -85,6 +85,7 @@ class DialogSection extends Component {
       ToolbarSection = delegate.components.dialog.toolbar || DefaultToolbarSection;
       TypingSection = delegate.components.dialog.typing || DefaultTypingSection;
       ComposeSection = delegate.components.dialog.compose || DefaultComposeSection;
+
       if (delegate.components.dialog.activity) {
         forEach(delegate.components.dialog.activity, (Activity) => activity.push(<Activity/>));
       } else {
@@ -101,7 +102,7 @@ class DialogSection extends Component {
       <section className="dialog">
         <ConnectionState/>
         <div className="messages">
-          <MessagesSection messages={this.state.messagesToRender}
+          <MessagesSection messages={messagesToRender}
                            peer={peer}
                            ref="MessagesSection"
                            onScroll={this.loadMessagesByScroll}/>

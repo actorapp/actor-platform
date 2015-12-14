@@ -923,6 +923,7 @@ $like-red: rgb(226, 38, 77);
   }
   .location {
     overflow: hidden;
+    cursor: pointer;
 
     border-radius: $default-border-radius;
     a {

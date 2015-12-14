@@ -384,7 +384,7 @@
 
 "CurrentLocale" = "Ru";
 
-"InviteText" = "Привет! Давай продолжим наше общение в Акторе {link}";
+"InviteText" = "Привет! Давай продолжим наше общение в {appname} {link}";
 
 "PhotoRemove" = "Удалить фото";
 
