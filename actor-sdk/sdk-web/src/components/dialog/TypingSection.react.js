@@ -6,13 +6,13 @@ import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import classNames from 'classnames';
 
-import DialogStore from '../../stores/DialogStore';
+import TypingStore from '../../stores/TypingStore';
 
 class Typing extends Component {
-  static getStores = () => [DialogStore];
+  static getStores = () => [TypingStore];
 
   static calculateState() {
-    const typing = DialogStore.getTyping();
+    const typing = TypingStore.getTyping();
     const newState = (typing === null) ? {show: false} : {typing, show: true};
     return newState;
   }
