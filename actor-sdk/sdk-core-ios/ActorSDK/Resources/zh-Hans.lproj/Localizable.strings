@@ -382,7 +382,7 @@
 
 "CurrentLocale" = "Cn";
 
-"InviteText" = "您好！让我们一起使用Actor安全开聊吧! {link}";
+"InviteText" = "您好！让我们一起使用{appname}安全开聊吧! {link}";
 
 "PhotoRemove" = "删除头像";
 

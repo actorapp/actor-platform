@@ -34,7 +34,7 @@ export const ActionTypes = keymirror({
 
   DIALOGS_CHANGED: null,
   DIALOG_INFO_CHANGED: null,
-  DIALOG_TYPING_CHANGED: null,
+  TYPING_CHANGED: null,
   MY_PROFILE_CHANGED: null,
   SELECT_DIALOG_PEER: null,
   MESSAGES_CHANGED: null,
@@ -44,7 +44,10 @@ export const ActionTypes = keymirror({
   COMPOSE_TYPING: null,
   COMPOSE_MENTION_INSERT: null,
   COMPOSE_MENTION_CLOSE: null,
-  COMPOSE_EMOJI_INSERT: null,
+
+  EMOJI_INSERT: null,
+  EMOJI_SHOW: null,
+  EMOJI_CLOSE: null,
 
   MESSAGE_SEND_TEXT: null,
   MESSAGE_SEND_FILE: null,

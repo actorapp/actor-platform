@@ -22,7 +22,7 @@
 
 "ContactsAddHint" = "Please, specify phone number";
 
-"ContactsActionInvite" = "Tell Friends about Actor";
+"ContactsActionInvite" = "Tell Friends about";
 
 "ContactsActionAdd" = "Add Friend";
 
@@ -382,7 +382,7 @@
 
 "CurrentLocale" = "En";
 
-"InviteText" = "Hi! Let's switch to Actor! {link}";
+"InviteText" = "Hi! Let's switch to {appname}! {link}";
 
 "PhotoRemove" = "Delete Photo";
 

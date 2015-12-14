@@ -17,9 +17,11 @@ import DialogActionCreators from '../../actions/DialogActionCreators';
 import GroupProfileActionCreators from '../../actions/GroupProfileActionCreators';
 import InviteUserActions from '../../actions/InviteUserActions';
 import EditGroupActionCreators from '../../actions/EditGroupActionCreators';
+import NotificationsActionCreators from '../../actions/NotificationsActionCreators';
 
 import PeerStore from '../../stores/PeerStore';
 import DialogStore from '../../stores/DialogStore';
+import NotificationsStore from '../../stores/NotificationsStore';
 import GroupStore from '../../stores/GroupStore';
 import UserStore from '../../stores/UserStore';
 
@@ -34,7 +36,7 @@ const getStateFromStores = (gid) => {
   const thisPeer = GroupStore.getGroup(gid);
   return {
     thisPeer,
-    isNotificationsEnabled: DialogStore.isNotificationsEnabled(thisPeer),
+    isNotificationsEnabled: NotificationsStore.isNotificationsEnabled(thisPeer),
     integrationToken: GroupStore.getToken()
   };
 };
@@ -51,7 +53,7 @@ class GroupProfile extends Component {
       isMoreDropdownOpen: false
     }, getStateFromStores(props.group.id));
 
-    DialogStore.addListener(this.onChange);
+    NotificationsStore.addListener(this.onChange);
     GroupStore.addListener(this.onChange);
   }
 
@@ -69,7 +71,7 @@ class GroupProfile extends Component {
 
   onNotificationChange = event => {
     const { thisPeer } = this.state;
-    DialogActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
+    NotificationsActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
   };
 
   onChange = () => this.setState(getStateFromStores(this.props.group.id));

@@ -19,6 +19,7 @@ import { KeyCodes } from '../../constants/ActorAppConstants';
 import MessageActionCreators from '../../actions/MessageActionCreators';
 import ComposeActionCreators from '../../actions/ComposeActionCreators';
 import AttachmentsActionCreators from '../../actions/AttachmentsActionCreators';
+import EmojiActionCreators from '../../actions/EmojiActionCreators';
 
 import GroupStore from '../../stores/GroupStore';
 import PreferencesStore from '../../stores/PreferencesStore';
@@ -50,7 +51,6 @@ class ComposeSection extends Component {
     super(props);
 
     this.state = assign({
-      isEmojiDropdownShow: false,
       isMardownHintShow: false
     }, getStateFromStores());
 
@@ -158,12 +158,10 @@ class ComposeSection extends Component {
     return selection.start;
   };
 
-  onEmojiDropdownSelect = (emoji) => {
-    ComposeActionCreators.insertEmoji(this.state.text, this.getCaretPosition(), emoji);
-    React.findDOMNode(this.refs.area).focus();
+  handleEmojiSelect = (emoji) => {
+    EmojiActionCreators.insertEmoji(this.state.text, this.getCaretPosition(), emoji);
+    React.findDOMNode(this.refs.area).focus()
   };
-  onEmojiDropdownClose = () => this.setState({isEmojiDropdownShow: false});
-  onEmojiShowClick = () => this.setState({isEmojiDropdownShow: true});
 
   setFocus = () => React.findDOMNode(this.refs.area).focus();
 
@@ -194,11 +192,8 @@ class ComposeSection extends Component {
   };
 
   render() {
-    const { text, profile, mentions, isEmojiDropdownShow, isMardownHintShow, isSendAttachmentOpen } = this.state;
+    const { text, profile, mentions, isMardownHintShow, isSendAttachmentOpen } = this.state;
 
-    const emojiOpenerClassName = classnames('emoji-opener material-icons', {
-      'emoji-opener--active': isEmojiDropdownShow
-    });
     const markdownHintClassName = classnames('compose__markdown-hint', {
       'compose__markdown-hint--active': isMardownHintShow
     });
@@ -210,12 +205,7 @@ class ComposeSection extends Component {
                          onSelect={this.onMentionSelect}
                          onClose={this.onMentionClose}/>
 
-        <EmojiDropdown isOpen={isEmojiDropdownShow}
-                       onSelect={this.onEmojiDropdownSelect}
-                       onClose={this.onEmojiDropdownClose}/>
-
-        <i className={emojiOpenerClassName}
-           onClick={this.onEmojiShowClick}>insert_emoticon</i>
+        <EmojiDropdown onSelect={this.handleEmojiSelect}/>
 
         <div className={markdownHintClassName}>
           <b>*{this.getIntlMessage('compose.markdown.bold')}*</b>
