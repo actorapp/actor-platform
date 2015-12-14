@@ -8757,69 +8757,90 @@
           }
         },
         {
+          "type": "response",
+          "content": {
+            "name": "MessageSearchResponse",
+            "header": 218,
+            "doc": [
+              "Search Result",
+              {
+                "type": "reference",
+                "argument": "searchResults",
+                "category": "full",
+                "description": "  Search results"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "full",
+                "description": "  Search users"
+              },
+              {
+                "type": "reference",
+                "argument": "groups",
+                "category": "full",
+                "description": "  Search groups"
+              },
+              {
+                "type": "reference",
+                "argument": "loadMoreState",
+                "category": "hidden",
+                "description": "  State for loading more results"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageSearchItem"
+                  }
+                },
+                "id": 1,
+                "name": "searchResults"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "User"
+                  }
+                },
+                "id": 2,
+                "name": "users"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Group"
+                  }
+                },
+                "id": 3,
+                "name": "groups"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 4,
+                "name": "loadMoreState"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "MessageSearch",
             "header": 217,
             "response": {
-              "type": "anonymous",
-              "header": 218,
-              "doc": [
-                "Search Result",
-                {
-                  "type": "reference",
-                  "argument": "searchResults",
-                  "category": "full",
-                  "description": "  Search results"
-                },
-                {
-                  "type": "reference",
-                  "argument": "users",
-                  "category": "full",
-                  "description": "  Search users"
-                },
-                {
-                  "type": "reference",
-                  "argument": "groups",
-                  "category": "full",
-                  "description": "  Search groups"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "MessageSearchItem"
-                    }
-                  },
-                  "id": 1,
-                  "name": "searchResults"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "User"
-                    }
-                  },
-                  "id": 2,
-                  "name": "users"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "Group"
-                    }
-                  },
-                  "id": 3,
-                  "name": "groups"
-                }
-              ]
+              "type": "reference",
+              "name": "MessageSearchResponse"
             },
             "doc": [
               "Performing message search",
@@ -8838,6 +8859,33 @@
                 },
                 "id": 1,
                 "name": "query"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "MessageSearchMore",
+            "header": 222,
+            "response": {
+              "type": "reference",
+              "name": "MessageSearchResponse"
+            },
+            "doc": [
+              "Performing message search paging",
+              {
+                "type": "reference",
+                "argument": "loadMoreState",
+                "category": "hidden",
+                "description": "State for loading more results"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "bytes",
+                "id": 1,
+                "name": "loadMoreState"
               }
             ]
           }
@@ -8985,8 +9033,483 @@
       ]
     },
     {
+      "title": "Invites",
+      "package": "invites",
+      "doc": [
+        "Invite mechanizm"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "InviteState",
+            "doc": [
+              "Invite state",
+              {
+                "type": "reference",
+                "argument": "email",
+                "category": "full",
+                "description": "  Email of invite"
+              },
+              {
+                "type": "reference",
+                "argument": "name",
+                "category": "full",
+                "description": "  Name of invited user"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  Uid of registered user"
+              },
+              {
+                "type": "reference",
+                "argument": "tid",
+                "category": "full",
+                "description": "  Team id of invite"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "email"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "name"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 3,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 4,
+                "name": "tid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "InviteList",
+            "header": 2564,
+            "doc": [
+              "Intites list",
+              {
+                "type": "reference",
+                "argument": "invites",
+                "category": "full",
+                "description": "  Intvites"
+              },
+              {
+                "type": "reference",
+                "argument": "relatedUsers",
+                "category": "full",
+                "description": "  Related users in invites"
+              },
+              {
+                "type": "reference",
+                "argument": "relatedGroups",
+                "category": "full",
+                "description": "  Related groups in invites"
+              },
+              {
+                "type": "reference",
+                "argument": "relatedTeams",
+                "category": "full",
+                "description": "  Related teams in invites"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "InviteState"
+                  }
+                },
+                "id": 1,
+                "name": "invites"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "User"
+                  }
+                },
+                "id": 2,
+                "name": "relatedUsers"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Group"
+                  }
+                },
+                "id": 3,
+                "name": "relatedGroups"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Team"
+                  }
+                },
+                "id": 4,
+                "name": "relatedTeams"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadOwnSentInvites",
+            "header": 2563,
+            "response": {
+              "type": "reference",
+              "name": "InviteList"
+            },
+            "doc": [
+              "Loading current invite states"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SendInvite",
+            "header": 2565,
+            "response": {
+              "type": "reference",
+              "name": "InviteList"
+            },
+            "doc": [
+              "Sending an email invite",
+              {
+                "type": "reference",
+                "argument": "email",
+                "category": "full",
+                "description": "Email for invite"
+              },
+              {
+                "type": "reference",
+                "argument": "name",
+                "category": "full",
+                "description": "Optional name for invite"
+              },
+              {
+                "type": "reference",
+                "argument": "destTeam",
+                "category": "full",
+                "description": "Optional team for invite"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "email"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "name"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "OutTeam"
+                  }
+                },
+                "id": 3,
+                "name": "destTeam"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Teams",
+      "package": "teams",
+      "doc": [
+        "Teams support for Actor"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "Team",
+            "doc": [
+              "Team entity",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Team Id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "danger",
+                "description": "  Team Access Hash"
+              },
+              {
+                "type": "reference",
+                "argument": "name",
+                "category": "full",
+                "description": "  Team name"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "name"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "OutTeam",
+            "doc": [
+              "Reference to a team",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Team Id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "full",
+                "description": "  Team access hash"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "TeamsList",
+            "header": 2562,
+            "doc": [
+              "Teams response",
+              {
+                "type": "reference",
+                "argument": "teams",
+                "category": "hidden",
+                "description": "  Teams list"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Team"
+                  }
+                },
+                "id": 1,
+                "name": "teams"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadOwnTeams",
+            "header": 2561,
+            "response": {
+              "type": "reference",
+              "name": "TeamsList"
+            },
+            "doc": [
+              "Loading own teams"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "OwnTeamsChanged",
+            "header": 165,
+            "doc": [
+              "Update about own teams changed",
+              {
+                "type": "reference",
+                "argument": "ownTeams",
+                "category": "full",
+                "description": "  Updated own teams list"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Team"
+                  }
+                },
+                "id": 1,
+                "name": "ownTeams"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "CreateTeam",
+            "header": 2566,
+            "response": {
+              "type": "anonymous",
+              "header": 2567,
+              "doc": [
+                "Created team response",
+                {
+                  "type": "reference",
+                  "argument": "createdTeam",
+                  "category": "full",
+                  "description": "  Created Team"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Team"
+                  },
+                  "id": 1,
+                  "name": "createdTeam"
+                }
+              ]
+            },
+            "doc": [
+              "Creation of a Team",
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "Title of a team"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "title"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "InviteToTeam",
+            "header": 2568,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Inviting people to team",
+              {
+                "type": "reference",
+                "argument": "user",
+                "category": "full",
+                "description": "Dest user"
+              },
+              {
+                "type": "reference",
+                "argument": "destTeam",
+                "category": "full",
+                "description": "Dest team"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "user"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutTeam"
+                },
+                "id": 3,
+                "name": "destTeam"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "Integrations",
-      "package": "integrtions",
+      "package": "integrations",
       "doc": [
         "Package contains methods for providing integration"
       ],
