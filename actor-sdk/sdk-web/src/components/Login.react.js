@@ -240,9 +240,6 @@ class Login extends Component {
                 </button>
               </footer>
             </form>
-
-            <a href="https://corp.actor.im">{this.getIntlMessage('login.enterpriseUser')}</a>
-
           </div>
         </div>
       </section>
