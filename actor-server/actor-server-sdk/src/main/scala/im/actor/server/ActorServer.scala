@@ -42,6 +42,7 @@ import im.actor.server.session.{ Session, SessionConfig, SessionMessage }
 import im.actor.server.sms.{ TelesignCallEngine, TelesignClient, TelesignSmsEngine }
 import im.actor.server.social.SocialExtension
 import im.actor.server.user._
+import kamon.Kamon
 
 import scala.language.existentials
 
@@ -77,6 +78,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
    * @return
    */
   def start(): ActorServer = {
+    Kamon.start()
     SessionMessage.register()
     CommonSerialization.register()
     UserProcessor.register()
