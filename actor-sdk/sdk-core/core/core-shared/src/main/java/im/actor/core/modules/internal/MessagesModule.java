@@ -35,6 +35,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.FastThumb;
+import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.events.PeerChatOpened;
@@ -341,6 +342,11 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         FileSystemReference reference = Storage.fileFromDescriptor(descriptor);
         sendMessageActor.send(new SenderActor.SendDocument(peer, fileName, mimeType,
                 reference.getSize(), reference.getDescriptor(), fastThumb));
+    }
+
+    public void sendSticker(@NotNull Peer peer,
+                            @NotNull Sticker sticker) {
+        sendMessageActor.send(new SenderActor.SendSticker(peer, sticker));
     }
 
     public void onMessageShown(final Peer peer, final int sender, final long sortDate) {

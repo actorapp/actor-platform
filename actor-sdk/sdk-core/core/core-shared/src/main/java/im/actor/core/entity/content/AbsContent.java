@@ -24,6 +24,7 @@ import im.actor.core.api.ApiServiceExUserJoined;
 import im.actor.core.api.ApiServiceExUserKicked;
 import im.actor.core.api.ApiServiceExUserLeft;
 import im.actor.core.api.ApiServiceMessage;
+import im.actor.core.api.ApiStickerMessage;
 import im.actor.core.api.ApiTextMessage;
 import im.actor.core.entity.content.internal.AbsContentContainer;
 import im.actor.core.entity.content.internal.AbsLocalContent;
@@ -33,6 +34,7 @@ import im.actor.core.entity.content.internal.LocalDocument;
 import im.actor.core.entity.content.internal.LocalPhoto;
 import im.actor.core.entity.content.internal.LocalVideo;
 import im.actor.core.entity.content.internal.LocalVoice;
+import im.actor.core.entity.content.internal.Sticker;
 import im.actor.runtime.bser.BserParser;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -104,6 +106,8 @@ public abstract class AbsContent {
                 return new VoiceContent(localContainer);
             } else if (content instanceof LocalDocument) {
                 return new DocumentContent(localContainer);
+            } else if (content instanceof Sticker) {
+                return new StickerContent(localContainer);
             } else {
                 throw new IOException("Unknown type");
             }
@@ -155,6 +159,8 @@ public abstract class AbsContent {
                     } else if (object.getString("dataType").equals("location")) {
                         return new LocationContent(remoteContainer);
                     }
+                } else if (content instanceof ApiStickerMessage) {
+                    return new StickerContent(remoteContainer);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

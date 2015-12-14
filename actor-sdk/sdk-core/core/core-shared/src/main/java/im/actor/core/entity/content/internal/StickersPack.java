@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.sdk.view.emoji.stickers;
+package im.actor.core.entity.content.internal;
 
 /**
  * Created by Jesus Christ. Amen.
@@ -21,7 +21,7 @@ public class StickersPack {
     }
 
     public StickersPack(Sticker[] array) {
-        this("", "", null , array);
+        this("", "", null, array);
     }
 
 
@@ -31,10 +31,6 @@ public class StickersPack {
 
     public String getId() {
         return packId;
-    }
-
-    public String getStickerId(int position) {
-        return order[position].getId();
     }
 
     public Sticker getLogoStickerId() {

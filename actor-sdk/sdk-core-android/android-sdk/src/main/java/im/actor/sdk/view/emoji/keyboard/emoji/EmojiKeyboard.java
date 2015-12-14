@@ -16,14 +16,18 @@
 
 package im.actor.sdk.view.emoji.keyboard.emoji;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.content.internal.Sticker;
 import im.actor.sdk.R;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.emoji.keyboard.BaseKeyboard;
@@ -36,12 +40,18 @@ import im.actor.sdk.view.MaterialInterpolator;
 import im.actor.sdk.view.PagerSlidingTabStrip;
 import im.actor.sdk.view.emoji.smiles.SmilesPack;
 
-public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+
+public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener, OnStickerClickListener,
         OnBackspaceClickListener {
 
     private static final String TAG = "EmojiKeyboard";
 
     private static final long BINDING_DELAY = 150;
+    private Peer peer;
+    private View stickerIndicatorContainer;
+    private View stickerSwitchContainer;
+
 
     public EmojiKeyboard(Activity activity) {
         super(activity);
@@ -73,12 +83,16 @@ public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
 
     @Override
     protected View createView() {
-        View emojiPagerView = LayoutInflater.from(activity).inflate(R.layout.emoji_smiles_pager, null);
+        final View emojiPagerView = LayoutInflater.from(activity).inflate(R.layout.emoji_smiles_pager, null);
 
         final ViewPager emojiPager = (ViewPager) emojiPagerView.findViewById(R.id.emoji_pager);
 
         final PagerSlidingTabStrip emojiPagerIndicator = (PagerSlidingTabStrip) emojiPagerView.findViewById(R.id.emoji_pager_indicator);
         View backspace = emojiPagerView.findViewById(R.id.backspace);
+        final View backToSmiles = emojiPagerView.findViewById(R.id.back_to_smiles);
+        final View indicatorContainer = emojiPagerView.findViewById(R.id.indicator_container);
+        stickerIndicatorContainer = emojiPagerView.findViewById(R.id.sticker_indicator_container);
+        stickerSwitchContainer = emojiPagerView.findViewById(R.id.sticker_switch_container);
 
         emojiPagerIndicator.setTabBackground(R.drawable.clickable_background);
         emojiPagerIndicator.setIndicatorColorResource(R.color.primary);
@@ -98,6 +112,59 @@ public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
 
         emojiPager.setAdapter(mEmojisAdapter);
         emojiPagerIndicator.setViewPager(emojiPager);
+
+        backToSmiles.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emojiPager.setCurrentItem(3, false);
+
+                ObjectAnimator oa = ObjectAnimator.ofFloat(indicatorContainer, "translationX", 0, 0);
+                oa.setDuration(0);
+                oa.start();
+                if (stickerIndicatorContainer.getVisibility() == View.INVISIBLE) {
+                    stickerIndicatorContainer.setVisibility(View.VISIBLE);
+                }
+                ObjectAnimator oas = ObjectAnimator.ofFloat(stickerIndicatorContainer, "translationX", Screen.getWidth(), Screen.getWidth());
+                oas.setDuration(0);
+                oas.start();
+
+                emojiPager.setCurrentItem(1, true);
+
+
+            }
+        });
+
+
+        final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) stickerIndicatorContainer.getLayoutParams();
+
+        emojiPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (position == 4) {
+
+                    ObjectAnimator oa = ObjectAnimator.ofFloat(indicatorContainer, "translationX", indicatorContainer.getX(), -positionOffsetPixels);
+                    oa.setDuration(0);
+                    oa.start();
+                    if (stickerIndicatorContainer.getVisibility() == View.INVISIBLE) {
+                        stickerIndicatorContainer.setVisibility(View.VISIBLE);
+                    }
+                    ObjectAnimator oas = ObjectAnimator.ofFloat(stickerIndicatorContainer, "translationX", stickerIndicatorContainer.getX() + Screen.getWidth(), -positionOffsetPixels + Screen.getWidth());
+                    oas.setDuration(0);
+                    oas.start();
+
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         //emojiPagerIndicator.setLayoutParams(new RelativeLayout.LayoutParams(Screen.dp(58 * mEmojisAdapter.getCount()), Screen.dp(48)));
 //        emojiPager.postDelayed(new Runnable() {
@@ -130,5 +197,18 @@ public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
                 .alpha(150)
                 .setDuration(300)
                 .start();
+    }
+
+    public void setPeer(Peer peer) {
+        this.peer = peer;
+    }
+
+    @Override
+    public void onStickerClicked(Sticker sticker) {
+        messenger().sendSticker(peer, sticker);
+    }
+
+    public LinearLayout getStickerIndicatorContainer() {
+        return (LinearLayout) stickerSwitchContainer;
     }
 }

@@ -4,15 +4,26 @@
 
 package im.actor.core.modules.internal;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import im.actor.core.api.ApiStickerCollection;
+import im.actor.core.api.rpc.RequestLoadOwnStickers;
+import im.actor.core.api.rpc.ResponseLoadOwnStickers;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.settings.SettingsSyncActor;
+import im.actor.core.network.RpcCallback;
+import im.actor.core.network.RpcException;
+import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.bser.Bser;
 
 public class SettingsModule extends AbsModule {
 
@@ -39,6 +50,9 @@ public class SettingsModule extends AbsModule {
     private final String KEY_RENAME_HINT_SHOWN;
 
     private final String KEY_WALLPAPPER;
+
+    private final String KEY_STICKERS_PAKS_COUNT;
+    private final String KEY_STICKERS;
 
     private ActorRef settingsSync;
 
@@ -103,6 +117,10 @@ public class SettingsModule extends AbsModule {
         KEY_RENAME_HINT_SHOWN = "hint.contact.rename";
 
         KEY_WALLPAPPER = "wallpaper.uri";
+
+        KEY_STICKERS = "own_stickers.key";
+        KEY_STICKERS_PAKS_COUNT = "own_stickers_count";
+
     }
 
     public void run() {
@@ -267,6 +285,34 @@ public class SettingsModule extends AbsModule {
         changeValue(KEY_WALLPAPPER, uri);
     }
 
+    //Stickers
+    public ArrayList<ApiStickerCollection> getStickers() {
+        ArrayList<ApiStickerCollection> apiStickerCollections = new ArrayList<>();
+        for (int key = 0; key < getInt(KEY_STICKERS_PAKS_COUNT, 0); key++) {
+            byte[] wrappedStickerCollection = getBytes(KEY_STICKERS.concat(Integer.toString(key)));
+            if (wrappedStickerCollection != null) {
+                try {
+                    ApiStickerCollection stickerCollection = new ApiStickerCollection();
+                    apiStickerCollections.add(Bser.parse(stickerCollection, wrappedStickerCollection));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return apiStickerCollections;
+    }
+
+    public void saveOwnStickers(ArrayList<ApiStickerCollection> collections) {
+        int key = 0;
+        for (ApiStickerCollection stickerCollection : collections) {
+            setBytes(KEY_STICKERS.concat(Integer.toString(key)), stickerCollection.toByteArray());
+            key++;
+        }
+        setInt(KEY_STICKERS_PAKS_COUNT, key);
+    }
+
+
     // Common
 
     public boolean getBooleanValue(String key, boolean defaultVal) {
@@ -298,6 +344,32 @@ public class SettingsModule extends AbsModule {
         }
         return sValue;
     }
+
+    private void setInt(String key, int val) {
+        changeValue(key, Integer.toString(val));
+    }
+
+    private int getInt(String key, int defaultVal) {
+        String sValue = readValue(key);
+        int res = defaultVal;
+        if (sValue != null) {
+            try {
+                res = Integer.parseInt(sValue);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return res;
+    }
+
+    private byte[] getBytes(String key) {
+        return preferences().getBytes(STORAGE_PREFIX + key);
+    }
+
+    private void setBytes(String key, byte[] val) {
+        preferences().putBytes(STORAGE_PREFIX + key, val);
+    }
+
 
     public String getStringValue(String key) {
         return getStringValue(key, null);
@@ -332,6 +404,31 @@ public class SettingsModule extends AbsModule {
         }
     }
 
+    public Command<ResponseLoadOwnStickers> loadStickers() {
+        return new Command<ResponseLoadOwnStickers>() {
+
+            @Override
+            public void start(final CommandCallback<ResponseLoadOwnStickers> callback) {
+                request(new RequestLoadOwnStickers(), new RpcCallback<ResponseLoadOwnStickers>() {
+                    @Override
+                    public void onResult(final ResponseLoadOwnStickers response) {
+                        saveOwnStickers((ArrayList<ApiStickerCollection>) response.getOwnStickers());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onResult(response);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+
+                    }
+                });
+            }
+        };
+    }
 
     public void resetModule() {
         // TODO: Implement

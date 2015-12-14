@@ -5,55 +5,62 @@ package im.actor.core.api.rpc;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
+
 import static im.actor.runtime.bser.Utils.*;
+
 import im.actor.core.network.parser.*;
+
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
+
 import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+
 import im.actor.core.api.*;
 
-public class RequestArchiveDialog extends Request<ResponseSeq> {
+public class RequestStartTokenAuth extends Request<ResponseAuth> {
 
-    public static final int HEADER = 0xe3;
-    public static RequestArchiveDialog fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestArchiveDialog(), data);
+    public static final int HEADER = 0xcb;
+
+    public static RequestStartTokenAuth fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestStartTokenAuth(), data);
     }
 
-    private ApiOutPeer peer;
+    private String token;
 
-    public RequestArchiveDialog(@NotNull ApiOutPeer peer) {
-        this.peer = peer;
+    public RequestStartTokenAuth(@NotNull String token) {
+        this.token = token;
     }
 
-    public RequestArchiveDialog() {
+    public RequestStartTokenAuth() {
 
     }
 
     @NotNull
-    public ApiOutPeer getPeer() {
-        return this.peer;
+    public String getToken() {
+        return this.token;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new ApiOutPeer());
+        this.token = values.getString(1);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.peer == null) {
+        if (this.token == null) {
             throw new IOException();
         }
-        writer.writeObject(1, this.peer);
+        writer.writeString(1, this.token);
     }
 
     @Override
     public String toString() {
-        String res = "rpc ArchiveDialog{";
-        res += "peer=" + this.peer;
+        String res = "rpc StartTokenAuth{";
+        res += "token=" + this.token;
         res += "}";
         return res;
     }
