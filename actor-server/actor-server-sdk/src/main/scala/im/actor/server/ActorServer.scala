@@ -78,7 +78,6 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
    * @return
    */
   def start(): ActorServer = {
-    Kamon.start()
     SessionMessage.register()
     CommonSerialization.register()
     UserProcessor.register()
@@ -88,6 +87,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
     val serverConfig = ActorConfig.load(defaultConfig)
 
     implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
+    Kamon.start()
 
     try {
 
