@@ -5,20 +5,25 @@ package im.actor.core.api;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
+
 import static im.actor.runtime.bser.Utils.*;
+
 import im.actor.core.network.parser.*;
+
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
+
 import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
 public class ApiSearchOrCondition extends ApiSearchCondition {
 
-    private List<ApiSearchOrCondition> orQuery;
+    private List<ApiSearchCondition> orQuery;
 
-    public ApiSearchOrCondition(@NotNull List<ApiSearchOrCondition> orQuery) {
+    public ApiSearchOrCondition(@NotNull List<ApiSearchCondition> orQuery) {
         this.orQuery = orQuery;
     }
 
@@ -31,22 +36,23 @@ public class ApiSearchOrCondition extends ApiSearchCondition {
     }
 
     @NotNull
-    public List<ApiSearchOrCondition> getOrQuery() {
+    public List<ApiSearchCondition> getOrQuery() {
         return this.orQuery;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<ApiSearchOrCondition> _orQuery = new ArrayList<ApiSearchOrCondition>();
-        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
-            _orQuery.add(new ApiSearchOrCondition());
+        this.orQuery = new ArrayList<ApiSearchCondition>();
+        for (byte[] b : values.getRepeatedBytes(2)) {
+            orQuery.add(ApiSearchCondition.fromBytes(b));
         }
-        this.orQuery = values.getRepeatedObj(2, _orQuery);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeRepeatedObj(2, this.orQuery);
+        for (ApiSearchCondition i : this.orQuery) {
+            writer.writeBytes(2, i.buildContainer());
+        }
     }
 
     @Override
