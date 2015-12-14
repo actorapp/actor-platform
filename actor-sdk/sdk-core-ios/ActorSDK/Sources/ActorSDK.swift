@@ -58,6 +58,9 @@ public class ActorSDK {
     /// Invitation URL for apps
     public var inviteUrl: String = "https://actor.im/dl"
     
+    /// Invitation URL for apps
+    public var inviteAppName: String = "Actor"
+    
     /// Support email
     public var supportEmail: String? = nil
     
