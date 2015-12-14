@@ -8,27 +8,25 @@ import DraftActionCreators from './DraftActionCreators';
 import ActorClient from '../utils/ActorClient';
 
 export default {
-  cleanText: () => {
+  cleanText() {
     DraftActionCreators.saveDraft('', true);
     dispatch(ActionTypes.COMPOSE_CLEAN);
   },
 
-  insertMention: (peer, text, caretPosition, mention) => {
-    dispatch(ActionTypes.COMPOSE_MENTION_INSERT, {
-      peer, text, caretPosition, mention
-    });
+  insertMention(peer, text, caretPosition, mention) {
+    dispatch(ActionTypes.COMPOSE_MENTION_INSERT, { peer, text, caretPosition, mention });
   },
 
-  closeMention: () => {
+  closeMention() {
     dispatch(ActionTypes.COMPOSE_MENTION_CLOSE);
   },
 
-  onTyping: function(peer, text, caretPosition) {
-    if (text !== '') ActorClient.onTyping(peer);
+  onTyping(peer, text, caretPosition) {
+    if (text !== '') {
+      ActorClient.onTyping(peer);
+    }
 
     DraftActionCreators.saveDraft(text);
-    dispatch(ActionTypes.COMPOSE_TYPING, {
-      peer, text, caretPosition
-    });
+    dispatch(ActionTypes.COMPOSE_TYPING, { peer, text, caretPosition });
   }
 };
