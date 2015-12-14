@@ -15,9 +15,11 @@ import { escapeWithEmoji } from '../../utils/EmojiUtils';
 
 import ContactActionCreators from '../../actions/ContactActionCreators';
 import DialogActionCreators from '../../actions/DialogActionCreators';
+import NotificationsActionCreators from '../../actions/NotificationsActionCreators';
 
 import PeerStore from '../../stores/PeerStore';
 import DialogStore from '../../stores/DialogStore';
+import NotificationsStore from '../../stores/NotificationsStore';
 
 import AvatarItem from '../common/AvatarItem.react';
 import Fold from '../common/Fold.React';
@@ -26,7 +28,7 @@ const getStateFromStores = (userId) => {
   const thisPeer = PeerStore.getUserPeer(userId);
   return {
     thisPeer: thisPeer,
-    isNotificationsEnabled: DialogStore.isNotificationsEnabled(thisPeer)
+    isNotificationsEnabled: NotificationsStore.isNotificationsEnabled(thisPeer)
   };
 };
 
@@ -64,7 +66,7 @@ class UserProfile extends Component {
 
   onNotificationChange = (event) => {
     const { thisPeer } = this.state;
-    DialogActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
+    NotificationsActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
   };
 
   onChange = () => {
