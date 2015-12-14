@@ -13,6 +13,7 @@
     <logger name="im.actor.server.session.SessionMessagePublisher" level="WARN"/>
     <logger name="im.actor.server.peermanagers.GroupPeerManager" level="INFO"/>
     <logger name="akka.cluster.sharding.ShardRegion" level="INFO"/>
+    <logger name="scalikejdbc.StatementExecutor" level="INFO"/>
 
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/server.log</file>
