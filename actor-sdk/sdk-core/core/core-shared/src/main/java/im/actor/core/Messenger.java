@@ -17,6 +17,8 @@ import im.actor.core.api.ApiSearchContentType;
 import im.actor.core.api.ApiSearchPieceText;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
+import im.actor.core.api.ApiStickerCollection;
+import im.actor.core.api.rpc.ResponseLoadOwnStickers;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.MentionFilterResult;
@@ -29,6 +31,7 @@ import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.entity.WebActionDescriptor;
 import im.actor.core.entity.content.FastThumb;
+import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Modules;
@@ -737,6 +740,17 @@ public class Messenger {
     @ObjectiveCName("deleteChatCommandWithPeer:")
     public Command<Boolean> deleteChat(Peer peer) {
         return modules.getMessagesModule().deleteChat(peer);
+    }
+
+    /**
+     * Send document without preview
+     *
+     * @param peer    destination peer
+     * @param sticker sticker to send
+     */
+    @ObjectiveCName("sendStickerWithPeer:withSticker:")
+    public void sendSticker(Peer peer, Sticker sticker) {
+        modules.getMessagesModule().sendSticker(peer, sticker);
     }
 
     /**
@@ -1679,6 +1693,26 @@ public class Messenger {
     @ObjectiveCName("changeSelectedWallpaper:")
     public void changeSelectedWallpaper(String uri) {
         modules.getSettingsModule().changeSelectedWallpapper(uri);
+    }
+
+    /**
+     *  Getting saved stickers
+     *
+     * @return list of saved ApiStickerCollection
+     */
+    @ObjectiveCName("getOwnStickers")
+    public ArrayList<ApiStickerCollection> getOwnStickers() {
+        return modules.getSettingsModule().getStickers();
+    }
+
+    /**
+     * Loading sticker packs for current user
+     *
+     * @return Command for execution
+     */
+    @ObjectiveCName("loadStickers")
+    public Command<ResponseLoadOwnStickers> loadStickers() {
+        return modules.getSettingsModule().loadStickers();
     }
 
     //////////////////////////////////////

@@ -2,9 +2,13 @@ package im.actor.sdk.view.emoji.keyboard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -28,6 +32,7 @@ public class BaseKeyboard implements
     private InputMethodManager inputMethodManager;
     private View emojiKeyboardView;
     protected EditText messageBody;
+    public static final int OVERLAY_PERMISSION_REQ_CODE = 735;
 
     Boolean pendingOpen = false;
 
@@ -78,6 +83,22 @@ public class BaseKeyboard implements
     }
 
     private void showInternal() {
+        //Check
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(activity)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + activity.getPackageName()));
+                activity.startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+            } else {
+                showChecked();
+            }
+        } else {
+            showChecked();
+        }
+
+    }
+
+    public void showChecked() {
         if (showing == (emojiKeyboardView != null)) {
             return;
         }

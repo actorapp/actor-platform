@@ -23,11 +23,15 @@ public enum ApiColors {
     }
 
     public static ApiColors parse(int value) throws IOException {
-        switch(value) {
-            case 1: return ApiColors.RED;
-            case 2: return ApiColors.YELLOW;
-            case 3: return ApiColors.GREEN;
-            default: return ApiColors.UNSUPPORTED_VALUE;
+        switch (value) {
+            case 1:
+                return ApiColors.RED;
+            case 2:
+                return ApiColors.YELLOW;
+            case 3:
+                return ApiColors.GREEN;
+            default:
+                return ApiColors.UNSUPPORTED_VALUE;
         }
     }
 }

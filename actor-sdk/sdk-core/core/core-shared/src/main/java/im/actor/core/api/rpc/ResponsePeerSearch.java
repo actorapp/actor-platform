@@ -5,19 +5,26 @@ package im.actor.core.api.rpc;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
+
 import static im.actor.runtime.bser.Utils.*;
+
 import im.actor.core.network.parser.*;
+
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
+
 import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+
 import im.actor.core.api.*;
 
 public class ResponsePeerSearch extends Response {
 
     public static final int HEADER = 0xea;
+
     public static ResponsePeerSearch fromBytes(byte[] data) throws IOException {
         return Bser.parse(new ResponsePeerSearch(), data);
     }
@@ -54,17 +61,17 @@ public class ResponsePeerSearch extends Response {
     @Override
     public void parse(BserValues values) throws IOException {
         List<ApiPeerSearchResult> _searchResults = new ArrayList<ApiPeerSearchResult>();
-        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+        for (int i = 0; i < values.getRepeatedCount(1); i++) {
             _searchResults.add(new ApiPeerSearchResult());
         }
         this.searchResults = values.getRepeatedObj(1, _searchResults);
         List<ApiUser> _users = new ArrayList<ApiUser>();
-        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+        for (int i = 0; i < values.getRepeatedCount(2); i++) {
             _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(2, _users);
         List<ApiGroup> _groups = new ArrayList<ApiGroup>();
-        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
+        for (int i = 0; i < values.getRepeatedCount(3); i++) {
             _groups.add(new ApiGroup());
         }
         this.groups = values.getRepeatedObj(3, _groups);
