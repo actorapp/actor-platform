@@ -1,0 +1,1 @@
+* start kamon after starting actor system
