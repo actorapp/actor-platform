@@ -142,7 +142,7 @@ ComposeStoreInstance.dispatchToken = register(action => {
     case ActionTypes.SELECT_DIALOG_PEER:
       onSelectDialogPeer();
       break;
-    case ActionTypes.COMPOSE_EMOJI_INSERT:
+    case ActionTypes.EMOJI_INSERT:
       onEmojiInsert(action);
       break;
     default:
