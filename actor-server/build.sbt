@@ -21,6 +21,7 @@ daemonGroup in Linux := (daemonUser in Linux).value
 
 bashScriptExtraDefines += """addJava "-Dactor.home=${app_home}/..""""
 bashScriptExtraDefines += """addJava "-Dlogback.configurationFile=${app_home}/../conf/logback.xml""""
+bashScriptExtraDefines += """addJava -javaagent:${app_home}/../lib/aspectj-weaver.jar"""
 
 dockerExposedPorts := Seq(9070, 9080, 9090)
 packageName in Docker := "server"
