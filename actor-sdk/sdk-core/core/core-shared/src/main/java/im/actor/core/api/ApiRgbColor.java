@@ -5,16 +5,21 @@ package im.actor.core.api;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
+
 import static im.actor.runtime.bser.Utils.*;
+
 import im.actor.core.network.parser.*;
+
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
+
 import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiRgbColor extends BserObject {
+public class ApiRgbColor extends ApiColor {
 
     private int rgb;
 
@@ -26,6 +31,10 @@ public class ApiRgbColor extends BserObject {
 
     }
 
+    public int getHeader() {
+        return 1;
+    }
+
     public int getRgb() {
         return this.rgb;
     }
@@ -33,11 +42,21 @@ public class ApiRgbColor extends BserObject {
     @Override
     public void parse(BserValues values) throws IOException {
         this.rgb = values.getInt(1);
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.rgb);
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
+        }
     }
 
     @Override

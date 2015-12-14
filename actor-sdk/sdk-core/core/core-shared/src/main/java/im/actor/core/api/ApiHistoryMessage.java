@@ -74,7 +74,7 @@ public class ApiHistoryMessage extends BserObject {
             this.state = ApiMessageState.parse(val_state);
         }
         List<ApiMessageReaction> _reactions = new ArrayList<ApiMessageReaction>();
-        for (int i = 0; i < values.getRepeatedCount(7); i ++) {
+        for (int i = 0; i < values.getRepeatedCount(7); i++) {
             _reactions.add(new ApiMessageReaction());
         }
         this.reactions = values.getRepeatedObj(7, _reactions);

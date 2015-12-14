@@ -25,13 +25,19 @@ public enum ApiSearchContentType {
     }
 
     public static ApiSearchContentType parse(int value) throws IOException {
-        switch(value) {
-            case 1: return ApiSearchContentType.ANY;
-            case 2: return ApiSearchContentType.TEXT;
-            case 3: return ApiSearchContentType.LINKS;
-            case 4: return ApiSearchContentType.DOCUMENTS;
-            case 5: return ApiSearchContentType.PHOTOS;
-            default: return ApiSearchContentType.UNSUPPORTED_VALUE;
+        switch (value) {
+            case 1:
+                return ApiSearchContentType.ANY;
+            case 2:
+                return ApiSearchContentType.TEXT;
+            case 3:
+                return ApiSearchContentType.LINKS;
+            case 4:
+                return ApiSearchContentType.DOCUMENTS;
+            case 5:
+                return ApiSearchContentType.PHOTOS;
+            default:
+                return ApiSearchContentType.UNSUPPORTED_VALUE;
         }
     }
 }
