@@ -91,7 +91,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
 
       // FIXME: get rid of unsafe get's
       val activationConfig = ActivationConfig.load.get
-      val emailConfig = EmailConfig.fromConfig(serverConfig.getConfig("services.email")).toOption.get
+      val emailConfig = EmailConfig.load.get
       val gateConfig = GateConfig.load.get
       val groupInviteConfig = GroupInviteConfig.load(serverConfig.getConfig("modules.messaging.groups.invite"))
       val webappConfig = HttpApiConfig.load(serverConfig.getConfig("http")).toOption.get

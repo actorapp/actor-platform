@@ -13,6 +13,11 @@ case class Content(html: Option[String], text: Option[String]) {
   require(html.isDefined || text.isDefined)
 }
 
+object Content {
+  def text(text: String): Content = Content(None, Some(text))
+  def html(html: String): Content = Content(Some(html), None)
+}
+
 case class Message(to: String, subject: String, content: Content)
 
 trait EmailSender {
