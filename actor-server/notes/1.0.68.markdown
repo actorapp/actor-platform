@@ -1,0 +1,2 @@
+* start Kamon on server startup
+* reduce scalikejdbc debug logging
