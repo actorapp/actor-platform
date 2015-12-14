@@ -63,10 +63,6 @@ class DialogStore extends Store {
         _info = action.info;
         this.__emitChange();
         break;
-      case ActionTypes.DIALOG_TYPING_CHANGED:
-        _typing = action.typing;
-        this.__emitChange();
-        break;
       case ActionTypes.DIALOGS_CHANGED:
         _dialogs = action.dialogs;
         this.__emitChange();
