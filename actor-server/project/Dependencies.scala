@@ -9,6 +9,7 @@ object Dependencies {
     val akka = "2.4.0"
     val akkaExperimental = "2.0-M1"
     val cats = "0.2.0"
+    val kamon = "0.5.2"
     val scalaz = "7.1.1"
     val slick = "3.0.3"
     val scalatest = "2.2.4"
@@ -32,8 +33,10 @@ object Dependencies {
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
     val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "1.2.0"
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
-    val sprayClient             = "io.spray"                      %% "spray-client"                  % "1.3.3"
 
+    val aspectj                 = "org.aspectj"                   %  "aspectjweaver"                 % "1.8.7"
+
+    val sprayClient             = "io.spray"                      %% "spray-client"                  % "1.3.3"
     val sprayWebsocket          = "com.wandoulabs.akka"           %% "spray-websocket"               % "0.1.4"
 
     val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.2.1"
@@ -64,6 +67,9 @@ object Dependencies {
     val awsWrap                 = "com.github.dwhjames"           %% "aws-wrap"                      % "0.7.2"
 
     val bcprov                  = "org.bouncycastle"              %  "bcprov-jdk15on"                % "1.50"
+
+    val kamon                   = "io.kamon"                      %% "kamon-core"                    % V.kamon
+    val kamonDatadog            = "io.kamon"                      %% "kamon-datadog"                 % V.kamon
 
     val libPhoneNumber          = "com.googlecode.libphonenumber" % "libphonenumber"                 % "7.0.+"
 
@@ -109,10 +115,10 @@ object Dependencies {
   import Compile._
   import Testing._
 
-  val shared = Seq(configs, javaCompat, logbackClassic, scalaLogging, tyrex)
+  val shared = Seq(configs, javaCompat, logbackClassic, scalaLogging, tyrex, kamon, kamonDatadog)
 
   val root = shared ++ Seq(
-    akkaSlf4j, akkaActor, akkaStream
+    akkaSlf4j, akkaActor, akkaStream, aspectj
   )
 
   val activation = shared ++ Seq(akkaActor, sprayClient, playJson)
