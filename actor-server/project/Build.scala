@@ -168,6 +168,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
         libraryDependencies ++= Dependencies.email
       )
   )
+    .dependsOn(actorRuntime)
 
   lazy val actorEnrich = Project(
     id = "actor-enrich",
