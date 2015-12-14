@@ -3,32 +3,27 @@
  */
 
 import React, { Component } from 'react';
+import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import { escapeWithEmoji } from '../utils/EmojiUtils';
 
 import ActivityActionCreators from '../actions/ActivityActionCreators';
 
-import DialogStore from '../stores/DialogStore';
+import DialogInfoStore from '../stores/DialogInfoStore';
 import ActivityStore from '../stores/ActivityStore';
-
-const getStateFromStores = () => {
-  return {
-    dialogInfo: DialogStore.getInfo(),
-    isActivityOpen: ActivityStore.isOpen()
-  };
-};
 
 class ToolbarSection extends Component {
   constructor(props) {
     super(props);
+  }
 
-    this.state = {
-      dialogInfo: null,
-      isActivityOpen: false
+  static getStores = () => [DialogInfoStore, ActivityStore];
+
+  static calculateState() {
+    return {
+      dialogInfo: DialogInfoStore.getInfo(),
+      isActivityOpen: ActivityStore.isOpen()
     };
-
-    DialogStore.addListener(this.onChange);
-    ActivityStore.addListener(this.onChange);
   }
 
   onClick = () => {
@@ -38,8 +33,6 @@ class ToolbarSection extends Component {
       ActivityActionCreators.hide();
     }
   };
-
-  onChange = () => this.setState(getStateFromStores());
 
   render() {
     const { dialogInfo, isActivityOpen } = this.state;
@@ -76,4 +69,4 @@ class ToolbarSection extends Component {
   }
 }
 
-export default ToolbarSection;
+export default Container.create(ToolbarSection, {pure: false});

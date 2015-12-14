@@ -7,8 +7,12 @@ import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 import PeerUtils from '../utils/PeerUtils';
 import RouterContainer from '../utils/RouterContainer';
+
 import MessageActionCreators from './MessageActionCreators';
 import GroupProfileActionCreators from './GroupProfileActionCreators';
+import TypingActionCreators from './TypingActionCreators';
+import DialogInfoActionCreators from './DialogInfoActionCreators';
+
 import DialogStore from '../stores/DialogStore';
 
 const DialogActionCreators = {
@@ -24,14 +28,14 @@ const DialogActionCreators = {
     if (currentPeer !== null) {
       this.onConversationClosed(currentPeer);
       ActorClient.unbindChat(currentPeer, MessageActionCreators.setMessages);
-      ActorClient.unbindTyping(currentPeer, this.setTyping);
+      ActorClient.unbindTyping(currentPeer, TypingActionCreators.setTyping);
 
       switch (currentPeer.type) {
         case PeerTypes.USER:
-          ActorClient.unbindUser(currentPeer.id, this.setDialogInfo);
+          ActorClient.unbindUser(currentPeer.id, DialogInfoActionCreators.setDialogInfo);
           break;
         case PeerTypes.GROUP:
-          ActorClient.unbindGroup(currentPeer.id, this.setDialogInfo);
+          ActorClient.unbindGroup(currentPeer.id, DialogInfoActionCreators.setDialogInfo);
           break;
         default:
       }
@@ -41,13 +45,13 @@ const DialogActionCreators = {
 
     this.onConversationOpen(peer);
     ActorClient.bindChat(peer, MessageActionCreators.setMessages);
-    ActorClient.bindTyping(peer, this.setTyping);
+    ActorClient.bindTyping(peer, TypingActionCreators.setTyping);
     switch(peer.type) {
       case PeerTypes.USER:
-        ActorClient.bindUser(peer.id, this.setDialogInfo);
+        ActorClient.bindUser(peer.id, DialogInfoActionCreators.setDialogInfo);
         break;
       case PeerTypes.GROUP:
-        ActorClient.bindGroup(peer.id, this.setDialogInfo);
+        ActorClient.bindGroup(peer.id, DialogInfoActionCreators.setDialogInfo);
         GroupProfileActionCreators.getIntegrationToken(peer.id);
         break;
       default:
@@ -62,14 +66,6 @@ const DialogActionCreators = {
     } else {
       this.selectDialogPeer(ActorClient.getUserPeer(uid));
     }
-  },
-
-  setDialogInfo(info) {
-    dispatch(ActionTypes.DIALOG_INFO_CHANGED, { info });
-  },
-
-  setTyping(typing) {
-    dispatch(ActionTypes.DIALOG_TYPING_CHANGED, { typing: typing.typing });
   },
 
   onConversationOpen(peer) {
@@ -94,11 +90,6 @@ const DialogActionCreators = {
       success: ActionTypes.GROUP_LEAVE_SUCCESS,
       failure: ActionTypes.GROUP_LEAVE_ERROR
     }, { gid });
-  },
-
-  changeNotificationsEnabled(peer, isEnabled) {
-    ActorClient.changeNotificationsEnabled(peer, isEnabled);
-    dispatch(ActionTypes.NOTIFICATION_CHANGE, { peer, isEnabled });
   },
 
   deleteChat(peer) {

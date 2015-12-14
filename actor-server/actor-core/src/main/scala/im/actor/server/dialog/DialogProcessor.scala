@@ -29,7 +29,13 @@ object DialogEvents {
 
   private[dialog] sealed trait DialogEvent
 
-  private[dialog] final case class Initialized(isHidden: Boolean, isOpen: Boolean) extends DialogEvent
+  private[dialog] final case class Initialized(
+    lastMessageDate: Long,
+    lastReceiveDate: Long,
+    lastReadDate:    Long,
+    isHidden:        Boolean,
+    isOpen:          Boolean
+  ) extends DialogEvent
 
   private[dialog] final case class LastMessageDate(date: Long) extends DialogEvent
 
@@ -47,7 +53,13 @@ object DialogEvents {
 }
 
 private[dialog] object DialogState {
-  def init(isHidden: Boolean, isOpen: Boolean) = DialogState(0, 0, 0, isHidden, isOpen)
+  def init(
+    lastMessageDate: Long,
+    lastReceiveDate: Long,
+    lastReadDate:    Long,
+    isHidden:        Boolean,
+    isOpen:          Boolean
+  ) = DialogState(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isOpen)
 }
 
 private[dialog] final case class DialogState(
@@ -123,8 +135,8 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   override def receive: Receive = initializing
 
   def initializing: Receive = receiveStashing(replyTo ⇒ {
-    case Initialized(isHidden, isOpen) ⇒
-      context become initialized(DialogState.init(isHidden, isOpen))
+    case Initialized(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isOpen) ⇒
+      context become initialized(DialogState.init(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isOpen))
       unstashAll()
     case Status.Failure(e) ⇒
       log.error(e, "Failed to init dialog")
@@ -189,7 +201,13 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
           } yield dialog
       }
       isOpen ← restoreIsOpen()
-    } yield Initialized(dialog.shownAt.isEmpty, isOpen)) pipeTo self
+    } yield Initialized(
+      dialog.lastMessageDate.getMillis,
+      dialog.ownerLastReceivedAt.getMillis,
+      dialog.ownerLastReadAt.getMillis,
+      dialog.shownAt.isEmpty,
+      isOpen
+    )) pipeTo self
 
   private def restoreIsOpen(): DBIO[Boolean] =
     peer.typ match {
