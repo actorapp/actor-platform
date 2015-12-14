@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
 
-import DialogStore from '../../stores/DialogStore';
+import AllDialogsStore from '../../stores/AllDialogsStore';
 
 import RecentSectionItem from './RecentSectionItem.react';
 
@@ -16,7 +16,7 @@ const LoadDialogsScrollBottom = 100;
 
 const getStateFromStore = () => {
   return {
-    dialogs: DialogStore.getAllDialogs()
+    dialogs: AllDialogsStore.getAllDialogs()
   };
 };
 
@@ -26,7 +26,7 @@ class RecentSection extends Component {
 
     this.state = getStateFromStore();
 
-    DialogStore.addListener(this.onChange);
+    AllDialogsStore.addListener(this.onChange);
   }
 
   onChange = () => this.setState(getStateFromStore());
