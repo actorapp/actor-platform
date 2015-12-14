@@ -38,7 +38,10 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
     }
   }
 
-  override def jhandleMessageSearch(query: ApiSearchCondition, clientData: ClientData): Future[HandlerResult[ResponseMessageSearch]] =
+  override def jhandleMessageSearch(query: ApiSearchCondition, clientData: ClientData): Future[HandlerResult[ResponseMessageSearchResponse]] =
+    Future.successful(Error(CommonErrors.NotSupportedInOss))
+
+  override def jhandleMessageSearchMore(loadMoreState: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseMessageSearchResponse]] =
     Future.successful(Error(CommonErrors.NotSupportedInOss))
 
   private def searchResult(pts: IndexedSeq[ApiSearchPeerType.Value], text: Option[String])(implicit client: AuthorizedClientData): Future[HandlerResult[ResponsePeerSearch]] = {
