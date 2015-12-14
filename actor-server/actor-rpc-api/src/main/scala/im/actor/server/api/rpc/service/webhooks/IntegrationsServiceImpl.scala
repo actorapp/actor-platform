@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.util.Timeout
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
-import im.actor.api.rpc.integrtions.{ IntegrtionsService, ResponseIntegrationToken }
+import im.actor.api.rpc.integrations.{ ResponseIntegrationToken, IntegrationsService }
 import im.actor.api.rpc.peers.ApiOutPeer
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers._
 import im.actor.server.db.DbExtension
@@ -15,7 +15,7 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
-class IntegrationsServiceImpl(baseUrl: String)(implicit actorSystem: ActorSystem) extends IntegrtionsService with PeersImplicits {
+class IntegrationsServiceImpl(baseUrl: String)(implicit actorSystem: ActorSystem) extends IntegrationsService with PeersImplicits {
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout = Timeout(10.seconds)
