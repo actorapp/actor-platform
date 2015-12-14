@@ -1,3 +1,2 @@
 * api schema update
 * added publishing of testkit with server sdk
-* integrated kamon.io
