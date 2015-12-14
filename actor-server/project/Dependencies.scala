@@ -68,7 +68,11 @@ object Dependencies {
 
     val bcprov                  = "org.bouncycastle"              %  "bcprov-jdk15on"                % "1.50"
 
-    val kamon                   = "io.kamon"                      %% "kamon-core"                    % V.kamon
+    val kamonCore               = "io.kamon"                      %% "kamon-core"                    % V.kamon
+    val kamonScala              = "io.kamon"                      %% "kamon-scala"                   % V.kamon
+    val kamonAkka               = "io.kamon"                      %% "kamon-akka"                    % V.kamon
+    val kamonAkkaRemote         = "io.kamon"                      %% "kamon-akka-remote"             % V.kamon
+    val kamonSystemMetrics      = "io.kamon"                      %% "kamon-system-metrics"          % V.kamon
     val kamonDatadog            = "io.kamon"                      %% "kamon-datadog"                 % V.kamon
 
     val libPhoneNumber          = "com.googlecode.libphonenumber" % "libphonenumber"                 % "7.0.+"
@@ -115,7 +119,19 @@ object Dependencies {
   import Compile._
   import Testing._
 
-  val shared = Seq(configs, javaCompat, logbackClassic, scalaLogging, tyrex, kamon, kamonDatadog)
+  val shared = Seq(
+    configs,
+    javaCompat,
+    logbackClassic,
+    scalaLogging,
+    tyrex,
+    kamonCore,
+    kamonScala,
+    kamonAkka,
+    kamonAkkaRemote,
+    kamonSystemMetrics,
+    kamonDatadog
+  )
 
   val root = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaStream
