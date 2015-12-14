@@ -17,6 +17,7 @@ abstract class BaseAppSuite(_system: ActorSystem = {
   extends ActorSuite(_system)
   with FlatSpecLike
   with ScalaFutures
+  with MessagingSpecHelpers
   with Matchers
   with Inside
   with ServiceSpecMatchers

@@ -380,7 +380,7 @@
 
 "CurrentLocale" = "Pt";
 
-"InviteText" = "Olá! Vamos mudar para o Actor! {link}";
+"InviteText" = "Olá! Vamos mudar para o {appname}! {link}";
 
 "PhotoRemove" = "Remover Foto";
 
