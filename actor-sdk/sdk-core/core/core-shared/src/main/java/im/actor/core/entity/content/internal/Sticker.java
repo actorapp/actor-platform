@@ -4,7 +4,6 @@
 
 package im.actor.core.entity.content.internal;
 
-import android.net.Uri;
 
 import java.io.IOException;
 
