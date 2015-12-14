@@ -118,7 +118,7 @@ object Dependencies {
   val shared = Seq(configs, javaCompat, logbackClassic, scalaLogging, tyrex, kamon, kamonDatadog)
 
   val root = shared ++ Seq(
-    akkaSlf4j, akkaActor, akkaStream, aspectj
+    akkaSlf4j, akkaActor, akkaStream
   )
 
   val activation = shared ++ Seq(akkaActor, sprayClient, playJson)
@@ -186,7 +186,7 @@ object Dependencies {
 
   val notifications = shared ++ Seq(akkaClusterTools, slick)
 
-  val sdk = Seq.empty
+  val sdk = Seq(aspectj)
 
   val runtime = shared ++ Seq(akkaActor, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, libPhoneNumber, scalapbSer, scalazCore, akkaTestkit % "test", scalatest % "test")
 
