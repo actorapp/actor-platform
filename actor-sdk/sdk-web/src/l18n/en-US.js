@@ -9,7 +9,6 @@ export default {
       'email': 'Email address',
       'authCode': 'Auth code',
       'yourName': 'Your name',
-      'enterpriseUser': 'Enterprise user?',
       'errors': {
         'numberInvalid': 'Invalid number',
         'nameInvalid': 'Invalid name',
