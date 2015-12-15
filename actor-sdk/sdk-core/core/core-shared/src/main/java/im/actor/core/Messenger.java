@@ -32,6 +32,7 @@ import im.actor.core.entity.User;
 import im.actor.core.entity.WebActionDescriptor;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.entity.content.internal.StickersPack;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Modules;
@@ -57,6 +58,7 @@ import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.GroupAvatarVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.OwnAvatarVM;
+import im.actor.core.viewmodel.StickerPackVM;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
@@ -311,6 +313,7 @@ public class Messenger {
         }
         return modules.getGroupsModule().getGroupsCollection();
     }
+
 
     /**
      * Get Group Value Model by GID
@@ -1696,23 +1699,21 @@ public class Messenger {
     }
 
     /**
-     *  Getting saved stickers
+     *  Getting saved sticker packs
      *
-     * @return list of saved ApiStickerCollection
+     * @return list of saved sticker packs Value Models
      */
-    @ObjectiveCName("getOwnStickers")
-    public ArrayList<ApiStickerCollection> getOwnStickers() {
-        return modules.getSettingsModule().getStickers();
+    @ObjectiveCName("getOwnStickerPacksIdsVM")
+    public ValueModel<ArrayList<StickerPackVM>> getOwnStickerPacks() {
+        return modules.getStickersModule().getStickerPacks();
     }
 
     /**
      * Loading sticker packs for current user
-     *
-     * @return Command for execution
      */
     @ObjectiveCName("loadStickers")
-    public Command<ResponseLoadOwnStickers> loadStickers() {
-        return modules.getSettingsModule().loadStickers();
+    public void loadStickers() {
+        modules.getStickersModule().loadStickers();
     }
 
     //////////////////////////////////////

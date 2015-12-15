@@ -51,9 +51,6 @@ public class SettingsModule extends AbsModule {
 
     private final String KEY_WALLPAPPER;
 
-    private final String KEY_STICKERS_PAKS_COUNT;
-    private final String KEY_STICKERS;
-
     private ActorRef settingsSync;
 
     public SettingsModule(ModuleContext context) {
@@ -117,9 +114,6 @@ public class SettingsModule extends AbsModule {
         KEY_RENAME_HINT_SHOWN = "hint.contact.rename";
 
         KEY_WALLPAPPER = "wallpaper.uri";
-
-        KEY_STICKERS = "own_stickers.key";
-        KEY_STICKERS_PAKS_COUNT = "own_stickers_count";
 
     }
 
@@ -285,34 +279,6 @@ public class SettingsModule extends AbsModule {
         changeValue(KEY_WALLPAPPER, uri);
     }
 
-    //Stickers
-    public ArrayList<ApiStickerCollection> getStickers() {
-        ArrayList<ApiStickerCollection> apiStickerCollections = new ArrayList<ApiStickerCollection>();
-        for (int key = 0; key < getInt(KEY_STICKERS_PAKS_COUNT, 0); key++) {
-            byte[] wrappedStickerCollection = getBytes(KEY_STICKERS.concat(Integer.toString(key)));
-            if (wrappedStickerCollection != null) {
-                try {
-                    ApiStickerCollection stickerCollection = new ApiStickerCollection();
-                    apiStickerCollections.add(Bser.parse(stickerCollection, wrappedStickerCollection));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return apiStickerCollections;
-    }
-
-    public void saveOwnStickers(ArrayList<ApiStickerCollection> collections) {
-        int key = 0;
-        for (ApiStickerCollection stickerCollection : collections) {
-            setBytes(KEY_STICKERS.concat(Integer.toString(key)), stickerCollection.toByteArray());
-            key++;
-        }
-        setInt(KEY_STICKERS_PAKS_COUNT, key);
-    }
-
-
     // Common
 
     public boolean getBooleanValue(String key, boolean defaultVal) {
@@ -402,32 +368,6 @@ public class SettingsModule extends AbsModule {
         } else {
             throw new RuntimeException("Unsupported peer");
         }
-    }
-
-    public Command<ResponseLoadOwnStickers> loadStickers() {
-        return new Command<ResponseLoadOwnStickers>() {
-
-            @Override
-            public void start(final CommandCallback<ResponseLoadOwnStickers> callback) {
-                request(new RequestLoadOwnStickers(), new RpcCallback<ResponseLoadOwnStickers>() {
-                    @Override
-                    public void onResult(final ResponseLoadOwnStickers response) {
-                        saveOwnStickers((ArrayList<ApiStickerCollection>) response.getOwnStickers());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(response);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-
-                    }
-                });
-            }
-        };
     }
 
     public void resetModule() {

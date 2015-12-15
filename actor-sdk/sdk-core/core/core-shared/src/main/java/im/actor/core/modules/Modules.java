@@ -24,6 +24,7 @@ import im.actor.core.modules.internal.PushesModule;
 import im.actor.core.modules.internal.SearchModule;
 import im.actor.core.modules.internal.SecurityModule;
 import im.actor.core.modules.internal.SettingsModule;
+import im.actor.core.modules.internal.StickersModule;
 import im.actor.core.modules.internal.TypingModule;
 import im.actor.core.modules.internal.UsersModule;
 import im.actor.core.network.ActorApi;
@@ -56,6 +57,7 @@ public class Modules implements ModuleContext {
     private volatile Updates updates;
     private volatile UsersModule users;
     private volatile GroupsModule groups;
+    private volatile StickersModule stickers;
     private volatile MessagesModule messages;
     private volatile PushesModule pushes;
     private volatile PresenceModule presence;
@@ -119,6 +121,8 @@ public class Modules implements ModuleContext {
         users = new UsersModule(this);
         timing.section("Groups");
         groups = new GroupsModule(this);
+        timing.section("Stickers");
+        stickers = new StickersModule(this);
         timing.section("Search");
         search = new SearchModule(this);
         timing.section("Security");
@@ -206,6 +210,10 @@ public class Modules implements ModuleContext {
 
     public GroupsModule getGroupsModule() {
         return groups;
+    }
+
+    public StickersModule getStickersModule() {
+        return stickers;
     }
 
     public MessagesModule getMessagesModule() {
