@@ -44,6 +44,7 @@ export const ActionTypes = keymirror({
   COMPOSE_TYPING: null,
   COMPOSE_MENTION_INSERT: null,
   COMPOSE_MENTION_CLOSE: null,
+  COMPOSE_PASTE: null,
 
   EMOJI_INSERT: null,
   EMOJI_SHOW: null,

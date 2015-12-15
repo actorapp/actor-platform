@@ -73,7 +73,10 @@ class ComposeSection extends Component {
     this.setState({isMardownHintShow: false})
   }
 
-  onChange = () => this.setState(getStateFromStores());
+  onChange = () => {
+    this.setState(getStateFromStores());
+    this.setFocus();
+  };
 
   onMessageChange = event => {
     const text = event.target.value;

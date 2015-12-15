@@ -125,6 +125,11 @@ const onEmojiInsert = (action) => {
   ComposeStoreInstance.emitChange();
 };
 
+const onComposePaste = (newText) => {
+  text = newText;
+  ComposeStoreInstance.emitChange();
+};
+
 ComposeStoreInstance.dispatchToken = register(action => {
   switch (action.type) {
     case ActionTypes.COMPOSE_TYPING:
@@ -144,6 +149,9 @@ ComposeStoreInstance.dispatchToken = register(action => {
       break;
     case ActionTypes.EMOJI_INSERT:
       onEmojiInsert(action);
+      break;
+    case ActionTypes.COMPOSE_PASTE:
+      onComposePaste(action.text);
       break;
     default:
   }
