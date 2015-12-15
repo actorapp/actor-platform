@@ -1,0 +1,2 @@
+* sbt-actor-api plugin update
+* minor fixes and improvements
