@@ -57,13 +57,13 @@ public class AAEditFieldController: AAContentTableController {
         section { (s) -> () in
             
             if self.config.hint != nil {
-                s.footerText = AALocalized(self.config.hint)
+                s.footerText = AALocalized(self.config.hint).replace("{appname}", dest: ActorSDK.sharedActor().appNameInLocStrings)
             }
             
             self.fieldCell = s.edit { (r) -> () in
                 
                 if self.config.fieldHint != nil {
-                    r.placeholder = AALocalized(self.config.fieldHint)
+                    r.placeholder = AALocalized(self.config.fieldHint).replace("{appname}", dest: ActorSDK.sharedActor().appNameInLocStrings)
                 }
                 r.autocapitalizationType = self.config.fieldAutocapitalizationType
                 r.autocorrectionType = self.config.fieldAutocorrectionType

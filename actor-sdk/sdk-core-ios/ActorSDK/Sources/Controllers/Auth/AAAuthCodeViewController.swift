@@ -191,7 +191,7 @@ public class AAAuthCodeViewController: AAAuthViewController, UIAlertViewDelegate
             let secFormatted = sec.format("02")
             let time = "\(minFormatted):\(secFormatted)"
             callHintLabel.text = AALocalized("AuthCallHint")
-                .replace("{time}", dest: time)
+                .replace("{time}", dest: time).replace("{appname}", dest: ActorSDK.sharedActor().appNameInLocStrings)
             callActionLabel.hidden = true
         }
     }

@@ -21,6 +21,7 @@ target 'ActorApp' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
+    pod 'libopus'
 
     # Main UI
     pod 'SlackTextViewController'
@@ -54,6 +55,7 @@ target 'ActorSDK' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
+    pod 'libopus'
 
     # Main UI
     pod 'SlackTextViewController'
