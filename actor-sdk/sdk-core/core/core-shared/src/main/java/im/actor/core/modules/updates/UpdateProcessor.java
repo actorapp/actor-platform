@@ -317,7 +317,7 @@ public class UpdateProcessor extends AbsModule {
         } else if (update instanceof UpdateOwnStickersChanged) {
             stickersProcessor.onOwnStickerCollectionsChanged(((UpdateOwnStickersChanged) update).getCollections());
         } else if (update instanceof UpdateStickerCollectionsChanged) {
-//            stickersProcessor.onStickerCollectionsChanged(((UpdateStickerCollectionsChanged) update).getCollections());
+            stickersProcessor.onStickerCollectionsChanged(((UpdateStickerCollectionsChanged) update).getCollections());
         }
     }
 

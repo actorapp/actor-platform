@@ -76,8 +76,6 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
             }
         });
 
-        buildStickerLines(scrollTo);
-
 
     }
 
@@ -88,14 +86,15 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
 
         //Add pack switch buttons
         int packCount = 0;
+        totalLines = 0;
         for (final StickerPackVM pack : packs.get()) {
             ((BaseActivity) context).bind(pack.getStickers(), new ValueChangedListener<ArrayList<Sticker>>() {
                 @Override
                 public void onChanged(ArrayList<Sticker> val, Value<ArrayList<Sticker>> valueModel) {
-//                    buildStickerLines(scrollTo);
-//                    notifyDataSetChanged();
+                    buildStickerLines(scrollTo);
+                    notifyDataSetChanged();
                 }
-            });
+            }, false);
             if (pack.getStickers().get().size() < 1) {
                 continue;
             }
