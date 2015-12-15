@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.integrtions.ResponseIntegrationToken
+import im.actor.api.rpc.integrations.ResponseIntegrationToken
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
