@@ -287,7 +287,7 @@ public class SettingsModule extends AbsModule {
 
     //Stickers
     public ArrayList<ApiStickerCollection> getStickers() {
-        ArrayList<ApiStickerCollection> apiStickerCollections = new ArrayList<>();
+        ArrayList<ApiStickerCollection> apiStickerCollections = new ArrayList<ApiStickerCollection>();
         for (int key = 0; key < getInt(KEY_STICKERS_PAKS_COUNT, 0); key++) {
             byte[] wrappedStickerCollection = getBytes(KEY_STICKERS.concat(Integer.toString(key)));
             if (wrappedStickerCollection != null) {
