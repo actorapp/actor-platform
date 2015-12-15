@@ -36,8 +36,10 @@ import im.actor.core.api.updates.UpdateMessageRead;
 import im.actor.core.api.updates.UpdateMessageReadByMe;
 import im.actor.core.api.updates.UpdateMessageReceived;
 import im.actor.core.api.updates.UpdateMessageSent;
+import im.actor.core.api.updates.UpdateOwnStickersChanged;
 import im.actor.core.api.updates.UpdateParameterChanged;
 import im.actor.core.api.updates.UpdateReactionsUpdate;
+import im.actor.core.api.updates.UpdateStickerCollectionsChanged;
 import im.actor.core.api.updates.UpdateTyping;
 import im.actor.core.api.updates.UpdateTypingStop;
 import im.actor.core.api.updates.UpdateUserLastSeen;
@@ -75,6 +77,7 @@ public class UpdateProcessor extends AbsModule {
     private PresenceProcessor presenceProcessor;
     private TypingProcessor typingProcessor;
     private ContactsProcessor contactsProcessor;
+    private StickersProcessor stickersProcessor;
 
     public UpdateProcessor(ModuleContext context) {
         super(context);
@@ -85,6 +88,7 @@ public class UpdateProcessor extends AbsModule {
         this.groupsProcessor = new GroupsProcessor(context);
         this.presenceProcessor = new PresenceProcessor(context);
         this.typingProcessor = new TypingProcessor(context);
+        this.stickersProcessor = new StickersProcessor(context);
     }
 
     public void applyRelated(List<ApiUser> users,
@@ -307,6 +311,10 @@ public class UpdateProcessor extends AbsModule {
         } else if (update instanceof UpdateReactionsUpdate) {
             messagesProcessor.onReactionsChanged(((UpdateReactionsUpdate) update).getPeer(),
                     ((UpdateReactionsUpdate) update).getRid(), ((UpdateReactionsUpdate) update).getReactions());
+        } else if (update instanceof UpdateOwnStickersChanged) {
+            stickersProcessor.onOwnStickerCollectionsChanged(((UpdateOwnStickersChanged) update).getCollections());
+        } else if (update instanceof UpdateStickerCollectionsChanged) {
+            stickersProcessor.onStickerCollectionsChanged(((UpdateStickerCollectionsChanged) update).getCollections());
         }
     }
 
