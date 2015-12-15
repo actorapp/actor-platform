@@ -70,7 +70,7 @@ public class AAContactsListContentController: AAContentTableController {
         placeholder.setImage(
             UIImage.bundled("contacts_list_placeholder"),
             title:  AALocalized("Placeholder_Contacts_Title"),
-            subtitle: AALocalized("Placeholder_Contacts_Message"),
+            subtitle: AALocalized("Placeholder_Contacts_Message").replace("{appname}", dest: ActorSDK.sharedActor().appNameInLocStrings),
             actionTitle: AALocalized("Placeholder_Contacts_Action"),
             subtitle2: AALocalized("Placeholder_Contacts_Message2"),
             actionTarget: self, actionSelector: Selector("showSmsInvitation"),

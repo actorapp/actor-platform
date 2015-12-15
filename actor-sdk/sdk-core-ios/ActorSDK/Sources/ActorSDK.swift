@@ -43,6 +43,8 @@ public class ActorSDK {
         "tls://front2-mtproto-api-rev2.actor.im"
     ]
     
+    //
+    
     /// API ID
     public var apiId = 2
     
@@ -58,8 +60,8 @@ public class ActorSDK {
     /// Invitation URL for apps
     public var inviteUrl: String = "https://actor.im/dl"
     
-    /// Invitation URL for apps
-    public var inviteAppName: String = "Actor"
+    /// App name in loc. strings
+    public var appNameInLocStrings: String = "Actor"
     
     /// Support email
     public var supportEmail: String? = nil
