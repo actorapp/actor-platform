@@ -1,0 +1,374 @@
+//
+//  Copyright (C) 2014-2015 Actor LLC. <https://actor.im>
+//
+
+
+"TabMessages" = "Mensajes";
+
+"TabPeople" = "Contactos";
+
+"TabSettings" = "Ajustes";
+
+"TabDiscover" = "Descubre";
+
+"ContactsAddHeader" = "Añadir contacto";
+
+"ContactsAddHint" = "Por favor, especifica el número de teléfono";
+
+"ContactsActionInvite" = "Cuéntale a tus amigos sobre";
+
+"ContactsActionAdd" = "Añadir amigo";
+
+"DialogsHint" = "Tocar para más opciones";
+
+"SettingsEdit" = "Editar";
+
+"SettingsSetPhoto" = "Establece foto de perfil";
+
+"SettingsChangeName" = "Cambia tu nombre";
+
+"SettingsEditHeader" = "Tu nombre";
+
+"SettingsEditHint" = "Por favor, introduce tu nombre real para ayudar a la gente a entender mejor quién eres.";
+
+"SettingsEditFieldHint" = "Introduce tu nombre";
+
+"SettingsUsernameNotSet" = "Establece nombre de usuario";
+
+"SettingsUsernameTitle" = "Nombre de usuario";
+
+"SettingsUsernameHintField" = "Introduce tu nombre de usuario";
+
+"SettingsUsernameHint" = "Puedes elegir un nombre de usuario en {appname}. Si lo haces, otras personas podrán encontrarte por este nombre de usuario y te contactaran sin compartir tu número de teléfono.\n\nPuede utilizar desde a-z, 0-9 y guiones bajos. Longitud mínima es de 5 caracteres.\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
+
+"SettingsAboutNotSet" = "Modificar estado";
+
+"SettingsChangeAboutTitle" = "Estado";
+
+"SettingsChangeAboutHint" = "Modifica tu estado";
+
+"SettingsSecurity" = "Seguridad";
+
+"SettingsWallpapers" = "Fondos";
+
+"SettingsNotifications" = "Notificaciones y Sonidos";
+
+"SettingsAskQuestion" = "Preguntas";
+
+"SettingsTwitter" = "App Twitter";
+
+"SettingsAbout" = "App Homepage";
+
+"SettingsVersion" = "Version {version}";
+
+"ProfileEditHeader" = "Cambiar nombre";
+
+"ProfileSendMessage" = "Enviar mensaje";
+
+"ProfileNotifications" = "Notificaciones";
+
+"ProfileNotificationsWarring" = "¿Seguro desea desactivar las notificaciones para esta persona?";
+
+"ProfileNotificationsWarringAction" = "Desconectar";
+
+"ProfileAddToContacts" = "Añadir a contactos";
+
+"ProfileRemoveFromContacts" = "Eliminar desde contactos";
+
+"ProfileRename" = "Renombrar contacto";
+
+"ProfileRenameMessage" = "Puedes cambiar el nombre de los contactos para la organización de tu lista. Los cambios serán visibles sólo para ti.";
+
+"ProfileRenameAction" = "Renombrar";
+
+"ProfileAbout" = "Tu estado";
+
+"ProfilePhone" = "Móvil";
+
+"ProfileUsername" = "Nombre de usuario";
+
+"ProfileTitle" = "Info";
+
+"CallNumber" = "Llamar al número";
+
+"CopyNumber" = "Copiar número";
+
+"NumberCopied" = "Número copiado al portapapeles";
+
+"JoinAlertMessage" = "¿Quieres formar parte de este grupo?";
+
+"GroupEditHeader" = "Estado";
+
+"GroupEditHint" = "Introducir estado de grupo";
+
+"GroupSetPhoto" = "Establece foto de grupo";
+
+"GroupSetTitle" = "Establece nombre de grupo";
+
+"GroupEditConfirm" = "¿Seguro que quieres cambiar el nombre de grupo?";
+
+"GroupEditConfirmAction" = "Cambiar estado";
+
+"GroupNotifications" = "Notificaciones";
+
+"GroupSettings" = "AJUSTES";
+
+"GroupIntegrations" = "Integraciones";
+
+"GroupMembers" = "MIEMBROS";
+
+"GroupMemberAdmin" = "admin";
+
+"GroupMemberInfo" = "Perfil";
+
+"GroupMemberMakeAdmin" = "Hacer administrador del grupo";
+
+"GroupMemberMakeMessage" = "¿Seguro quieres hacer {name} administrador de este grupo?";
+
+"GroupMemberMakeAction" = "Si";
+
+"GroupMemberKick" = "Expulsar del Grupo";
+
+"GroupMemberKickMessage" = "¿Seguro quieres expulsar a {name} del grupo?";
+
+"GroupMemberKickAction" = "Expulsar";
+
+"GroupMemberWrite" = "Escribe mensaje";
+
+"GroupMemberCall" = "Llamada telefónica";
+
+"GroupMemberCallNoPhones" = "No phone number available for user.";
+
+"GroupAddParticipant" = "Añadir participante...";
+
+"GroupAddParticipantTitle" = "Contactos";
+
+"GroupAddParticipantUrl" = "Invitar al grupo a través de Enlace";
+
+"GroupLeave" = "Salir de grupo";
+
+"GroupLeaveConfirm" = "¿Seguro que quieres dejar de grupo?";
+
+"GroupLeaveConfirmAction" = "Salir";
+
+"GroupInviteLinkPageTitle" = "invitar por Enlace";
+
+"GroupInviteLinkTitle" = "ENLACE";
+
+"GroupInviteLinkHint" = "Puedes invitar a la gente a este grupo mediante el envío de este enlace invitación.";
+
+"GroupInviteLinkRevokeMessage" = "¿Seguro que quieres revocar este enlace? Una vez hecho, nadie será capaz de unirse al grupo.";
+
+"GroupInviteLinkRevokeAction" = "Revocar";
+
+"GroupIntegrationPageTitle" = "Integración de API";
+
+"GroupIntegrationLinkTitle" = "LINK";
+
+"GroupIntegrationLinkHint" = "Puedes usar este enlace para enviar mensajes desde cualquier sistema externo.";
+
+"GroupIntegrationDoc" = "Abrir Documentación";
+
+"GroupIntegrationLinkRevokeMessage" = "¿Seguro que quieres revocar este enlace? Una vez hecho, nadie va a ser capaz de enviar mensajes al grupo de usarlo.";
+
+"GroupIntegrationLinkRevokeAction" = "Revocar";
+
+"GroupJoinMessage" = "¿Seguro quieres unirte al grupo?";
+
+"GroupJoinAction" = "Únete";
+
+"ComposeTitle" = "Nuevo mensaje";
+
+"CreateGroup" = "Crear grupo";
+
+"CreateGroupTitle" = "Crear grupo";
+
+"CreateGroupHint" = "Please provide group subject and optional group icon";
+
+"CreateGroupNamePlaceholder" = "Group Subject";
+
+"CreateGroupMembersTitle" = "Invitar a los miembros";
+
+"CreateGroupMembersPlaceholders" = "Introduce Nombres";
+
+"NotificationsTitle" = "Notificaciones y Sonidos";
+
+"NotificationsEffectsTitle" = "Efectos";
+
+"NotificationsMobileTitle" = "Notificaciones móviles";
+
+"NotificationsInAppTitle" = "In-App notifications";
+
+"NotificationsNotificationHint" = "Puedes desactivar las notificaciones para determinados usuarios o grupos en sus páginas de información.";
+
+"NotificationsPrivacyTitle" = "Privacidad";
+
+"NotificationsSoundEffects" = "Efectos de sonido";
+
+"NotificationsEnable" = "Habilitar";
+
+"NotificationsSound" = "Sonidos";
+
+"NotificationsVibration" = "Vibraciones";
+
+"NotificationsPreview" = "Vista previa mensaje";
+
+"NotificationsPreviewHint" = "Eliminar notificaciones de los textos";
+
+"NotificationSecretMessage" = "Nuevo mensaje";
+
+"NotificationsGroups" = "Notificaciones de grupo";
+
+"NotificationsOnlyMentions" = "Sólo Menciones";
+
+"NotificationsOnlyMentionsHint" = "Puedes activar las notificaciones sólo para mensajes que contiene la mención";
+
+"SecurityTitle" = "Seguridad";
+
+"PrivacyTerminate" = "Terminar todas las demás sesiones";
+
+"PrivacyTerminateAlert" = "Terminar todas las sesiones";
+
+"PrivacyTerminateAlertSingle" = "Terminar sesión";
+
+"PrivacyTerminateHint" = "Registrar todos los dispositivos excepto para éste.";
+
+"WallpapersTitle" = "Fondos";
+
+"WallpapersPhoto" = "Csrrete de fotos";
+
+"ChatPlaceholder" = "Escribir mensaje...";
+
+"ChatSend" = "Enviar";
+
+"ChatNoGroupAccess" = "No eres miembro";
+
+"FindTitle" = "Buscar personas";
+
+"FindFieldHint" = "número de móvil, correo electrónico o apodo";
+
+"FindHint" = "Introduce el número de teléfono, correo electrónico o apodo y pulse búsqueda";
+
+"FindNotFound" = "Lo sentimos, pero no somos capaces de encontrar la persona para esta consulta de búsqueda";
+
+"Placeholder_Empty_Title" = "Invita a tus amigos";
+
+"Placeholder_Empty_Message" = "Ninguno de tus contactos usar {appname}. Utiliza el botón de abajo para invitarlos.";
+
+"Placeholder_Empty_Action" = "CONTAR A UN AMIGO";
+
+"Placeholder_Empty_Message2" = "o añadir manualmente contactos";
+
+"Placeholder_Empty_Action2" = "AÑADIR CONTACTO";
+
+"Placeholder_Loading_Title" = "Sincronización en curso";
+
+"Placeholder_Loading_Message" = "Por favor, espera un par de minutos mientras configuramos su aplicación.";
+
+"Placeholder_Contacts_Title" = "Invita a tus amigos";
+
+"Placeholder_Contacts_Message" = "Ninguno de tus contactos usan {appname}. Utiliza el botón de abajo para invitarlos.";
+
+"Placeholder_Contacts_Action" = "CONTAR A UN AMIGO";
+
+"Placeholder_Contacts_Message2" = "o añadir manualmente contacto con botón \"+\"  en esquina superior derecha";
+
+"Placeholder_Dialogs_Title" = "Comenzar a chatear";
+
+"Placeholder_Dialogs_Message" = "Elige un contacto de tu lista o presiona el botón de escritura en la esquina superior derecha para iniciar la conversación en este momento.";
+
+"Placeholder_Group_Title" = "No es miembro";
+
+"Placeholder_Group_Message" = "Desafortunadamente, no eres miembro de este grupo.";
+
+"AuthPhoneTitle" = "Registrarse";
+
+"AuthPhoneNumberHint" = "Tu número de móvil";
+
+"AuthPhoneHint" = "Por favor confirma tu código de país e ingresa tu número de móvil";
+
+"AuthPhoneTooShort" = "Número demasiado corto";
+
+"AuthCodeFieldHint" = "Código";
+
+"AuthCodeHint" = "Te hemos enviado un SMS con el código verificación.";
+
+"AuthCallHint" = "{appname} te llamará en {time}";
+
+"AuthCallDoneHint" = "{appname} marcó tu número.";
+
+"AuthNoCodeHint" = "¿No recibe el código?";
+
+"AuthProfileTitle" = "Tu información";
+
+"AuthProfileAddPhoto1" = "añadir";
+
+"AuthProfileAddPhoto2" = "Foto";
+
+"AuthProfileNameHint" = "Tu nombre";
+
+"AuthProfileHint" = "Escribe tu nombre y añade una imagen de perfil";
+
+"CurrentLocale" = "En";
+
+"InviteText" = "¡Hola! , ¡prueba {appname} mensajería! {link}";
+
+"PhotoRemove" = "Eliminar foto";
+
+"PhotoRemoveGroupMessage" = "¿Seguro que quieres eliminar la foto de grupo?";
+
+"PhotoCamera" = "Tomar foto";
+
+"PhotoLibrary" = "Carrete de fotos";
+
+"SendDocument" = "Documentos";
+
+"NavigationEdit" = "Editar";
+
+"NavigationDone" = "Hecho";
+
+"NavigationCancel" = "Cancelar";
+
+"NavigationNext" = "Siguiente";
+
+"NavigationSave" = "Guardar";
+
+"NavigationFind" = "Buscar";
+
+"AlertCancel" = "Cancelar";
+
+"AlertNext" = "Siguiente";
+
+"AlertSave" = "Guardar";
+
+"AlertSet" = "Set";
+
+"AlertOk" = "OK";
+
+"AlertYes" = "Si";
+
+"AlertNo" = "No";
+
+"AlertError" = "Error";
+
+"AlertTryAgain" = "Inténtalo de nuevo";
+
+"AlertInvite" = "Invitación";
+
+"UnsupportedContent" = "Mensaje no es compatible con esta versión. Por favor, espera actualización de la aplicación para ver el mensaje.";
+
+"ActionCopyLink" = "Copiar enlace";
+
+"ActionRevokeLink" = "Revocar enlace";
+
+"ActionShareLink" = "Compartir enlace";
+
+"AlertLinkCopied" = "Enlace copiado al portapapeles.";
+
+"ErrorPhoneIncorrect" = "Número de móvil introducido no es válido. Por favor, vuelve a intentarlo.";
+
+"ErrorCodeExpired" = "Código expirado. Por favor, inicia la autenticación de nuevo.";
+
+"ErrorAlreadyJoined" = "Ya eres miembro del grupo";
+
+"ErrorUnableToJoin" = "Unable to join to group";

@@ -57,7 +57,7 @@
 
 "SettingsUsernameHintField" = "Enter your Username";
 
-"SettingsUsernameHint" = "You can choose a username in Actor. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
+"SettingsUsernameHint" = "You can choose a username in {appname}. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
 
 
 "SettingsAboutNotSet" = "Set about me";
@@ -316,7 +316,7 @@
 
 "Placeholder_Empty_Title" = "Invite your friends";
 
-"Placeholder_Empty_Message" = "None of your contacts use Actor. Use button bellow to invite them.";
+"Placeholder_Empty_Message" = "None of your contacts use {appname}. Use button bellow to invite them.";
 
 "Placeholder_Empty_Action" = "TELL A FRIEND";
 
@@ -330,7 +330,7 @@
 
 "Placeholder_Contacts_Title" = "Invite your friends";
 
-"Placeholder_Contacts_Message" = "None of your contacts use Actor. Use button bellow to invite them.";
+"Placeholder_Contacts_Message" = "None of your contacts use {appname}. Use button bellow to invite them.";
 
 "Placeholder_Contacts_Action" = "TELL A FRIEND";
 
@@ -360,9 +360,9 @@
 
 "AuthCodeHint" = "We have sent you an SMS with the code.";
 
-"AuthCallHint" = "Actor will call you in {time}";
+"AuthCallHint" = "{appname} will call you in {time}";
 
-"AuthCallDoneHint" = "Actor dialed your number.";
+"AuthCallDoneHint" = "{appname} dialed your number.";
 
 "AuthNoCodeHint" = "Doesn't get the code?";
 

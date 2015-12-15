@@ -12,7 +12,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
     
     var inviteText: String {
         get {
-            return AALocalized("InviteText").replace("{link}", dest: ActorSDK.sharedActor().inviteUrl).replace("{appname}", dest: ActorSDK.sharedActor().inviteAppName)
+            return AALocalized("InviteText").replace("{link}", dest: ActorSDK.sharedActor().inviteUrl).replace("{appname}", dest: ActorSDK.sharedActor().appNameInLocStrings)
         }
     }
     
@@ -65,7 +65,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
             r.height = 56
             
             r.closure = { (cell: AAContactActionCell)->() in
-                cell.bind("ic_invite_user", actionTitle: "\(AALocalized("ContactsActionInvite")) \(ActorSDK.sharedActor().inviteAppName)")
+                cell.bind("ic_invite_user", actionTitle: "\(AALocalized("ContactsActionInvite")) \(ActorSDK.sharedActor().appNameInLocStrings)")
             }
             
             r.selectAction = { () -> Bool in

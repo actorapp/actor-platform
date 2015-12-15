@@ -31,3 +31,9 @@ FOUNDATION_EXPORT const unsigned char ActorSDKVersionString[];
 #import "FMDatabaseQueue.h"
 
 #import "CLTokenInputView.h"
+
+// Ogg record
+
+#import "AAAudioRecorder.h"
+#import "AAAudioPlayer.h"
+#import "AAModernConversationAudioPlayer.h"

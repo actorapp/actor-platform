@@ -259,7 +259,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     public override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
         let insets = fullContentInsets
         let contentWidth = self.contentView.frame.width
-        let contentHeight = self.contentView.frame.height
+        _ = self.contentView.frame.height
         let bubbleWidth = self.bindedLayout.screenSize.width
         let bubbleHeight = self.bindedLayout.screenSize.height
         
