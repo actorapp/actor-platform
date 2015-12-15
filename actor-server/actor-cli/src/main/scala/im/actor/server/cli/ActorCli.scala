@@ -7,6 +7,7 @@ import akka.cluster.client.{ ClusterClient, ClusterClientSettings }
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
+import kamon.Kamon
 
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
@@ -120,7 +121,10 @@ final class CliHandlers extends BotHandlers with UsersHandlers {
 
   protected val config = ConfigFactory.parseResources("cli.conf").resolve()
 
-  protected lazy val system = ActorSystem("actor-cli", config)
+  protected lazy val system = {
+    Kamon.start()
+    ActorSystem("actor-cli", config)
+  }
 
   protected lazy val remoteHost = InetAddress.getLocalHost.getHostAddress
 
