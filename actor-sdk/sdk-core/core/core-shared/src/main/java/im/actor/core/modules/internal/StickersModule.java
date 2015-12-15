@@ -13,6 +13,7 @@ import im.actor.core.api.rpc.RequestLoadOwnStickers;
 import im.actor.core.api.rpc.ResponseLoadOwnStickers;
 import im.actor.core.api.updates.UpdateOwnStickersChanged;
 import im.actor.core.api.updates.UpdateStickerCollectionsChanged;
+import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.entity.content.internal.StickersPack;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
@@ -39,11 +40,12 @@ public class StickersModule extends AbsModule {
     public StickersModule(ModuleContext context) {
         super(context);
         this.stickerPacksList = Storage.createKeyValue(STORAGE_STICKER_ALL_PACKS);
-        stickerPacks = new ValueModel<ArrayList<StickerPackVM>>("sticker_packs_vms", buildStickerPacks());
-
+        stickerPacks = new ValueModel<ArrayList<StickerPackVM>>("sticker_packs_vms", new ArrayList<StickerPackVM>());
+        stickerPacks.change(buildStickerPacks());
         context().getEvents().subscribe(new BusSubscriber() {
             @Override
             public void onBusEvent(Event event) {
+
                 stickerPacks.change(buildStickerPacks());
             }
         }, "sticker_collections_changed");
@@ -70,20 +72,34 @@ public class StickersModule extends AbsModule {
     }
 
     private ArrayList<StickerPackVM> buildStickerPacks() {
-        ArrayList<StickerPackVM> vms = new ArrayList<StickerPackVM>();
 
+        ArrayList<StickerPackVM> vms = stickerPacks.get();
+
+        ArrayList<StickerPackVM> remove = new ArrayList<StickerPackVM>(vms);
         try {
             UpdateOwnStickersChanged update = new UpdateOwnStickersChanged();
             Bser.parse(update, stickerPacksList.loadItem(0));
 
+            boolean add;
             for (ApiStickerCollection apiCollection : update.getCollections()) {
-                vms.add(new StickerPackVM(new StickersPack(apiCollection)));
+                add = true;
+                for (StickerPackVM existingVM : vms) {
+                    if (existingVM.getId() == apiCollection.getId()) {
+                        existingVM.getStickers().change((ArrayList<Sticker>) new StickersPack(apiCollection).getStickers());
+                        remove.remove(existingVM);
+                        add = false;
+                        break;
+                    }
+                }
+                if (add) {
+                    vms.add(new StickerPackVM(new StickersPack(apiCollection)));
+                }
             }
+
+            vms.removeAll(remove);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         return vms;
     }
 
