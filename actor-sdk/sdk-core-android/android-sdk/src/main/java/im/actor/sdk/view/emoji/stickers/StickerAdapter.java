@@ -92,8 +92,8 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
             ((BaseActivity) context).bind(pack.getStickers(), new ValueChangedListener<ArrayList<Sticker>>() {
                 @Override
                 public void onChanged(ArrayList<Sticker> val, Value<ArrayList<Sticker>> valueModel) {
-                    buildStickerLines(scrollTo);
-                    notifyDataSetChanged();
+//                    buildStickerLines(scrollTo);
+//                    notifyDataSetChanged();
                 }
             });
             if (pack.getStickers().get().size() < 1) {
@@ -196,35 +196,40 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
 
         @Override
         public void bind(StickerLine data, int position, Context context) {
-            ll.removeAllViews();
-            ll.setTag(TAG_KEY, data.getPackCount());
-            for (final Sticker s : data.getLine()) {
-                StickerView sv;
-                if (s != null && s.getFileReference256() != null) {
+            try {
+                ll.removeAllViews();
+                ll.setTag(TAG_KEY, data.getPackCount());
+                for (final Sticker s : data.getLine()) {
+                    StickerView sv;
+                    if (s != null && s.getFileReference256() != null) {
 
-                    sv = stickersCache.get(s.getFileReference256().getFileId());
-                    if (sv == null) {
-                        sv = new StickerView(context);
-                        sv.setPadding(STICKER_PADDING, STICKER_PADDING, STICKER_PADDING, STICKER_PADDING);
-                        sv.bind(s.getFileReference256(), STICKER_SIZE);
-                        stickersCache.put(s.getFileReference256().getFileId(), sv);
+                        sv = stickersCache.get(s.getFileReference256().getFileId());
+                        if (sv == null) {
+                            sv = new StickerView(context);
+                            sv.setPadding(STICKER_PADDING, STICKER_PADDING, STICKER_PADDING, STICKER_PADDING);
+                            sv.bind(s.getFileReference256(), STICKER_SIZE);
+                            stickersCache.put(s.getFileReference256().getFileId(), sv);
 
-                    } else if (sv.isLoaded()) {
-                        if (sv.getParent() != null) {
-                            ((LinearLayout) sv.getParent()).removeView(sv);
+                        } else if (sv.isLoaded()) {
+                            if (sv.getParent() != null) {
+                                ((LinearLayout) sv.getParent()).removeView(sv);
+                            }
+                            sv.shortenFade();
                         }
-                        sv.shortenFade();
+
+                        sv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                keyboard.onStickerClicked(s);
+                            }
+                        });
+
+                        ll.addView(sv, stikerlp);
                     }
-
-                    sv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            keyboard.onStickerClicked(s);
-                        }
-                    });
-
-                    ll.addView(sv, stikerlp);
                 }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
         }

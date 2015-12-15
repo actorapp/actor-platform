@@ -4,8 +4,11 @@
 
 package im.actor.core.modules.internal;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
+import im.actor.core.api.ApiStickerCollection;
 import im.actor.core.api.rpc.RequestLoadOwnStickers;
 import im.actor.core.api.rpc.ResponseLoadOwnStickers;
 import im.actor.core.api.updates.UpdateOwnStickersChanged;
@@ -18,25 +21,24 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.StickerPackVM;
 import im.actor.runtime.Storage;
+import im.actor.runtime.bser.Bser;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.storage.KeyValueEngine;
+import im.actor.runtime.storage.KeyValueItem;
+import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.ListEngine;
 
 public class StickersModule extends AbsModule {
-    private ListEngine<StickersPack> stickerPacksList;
-    private KeyValueEngine<StickersPack> stickerPacksKeyValue;
-    private MVVMCollection<StickersPack, StickerPackVM> collection;
+    private KeyValueStorage stickerPacksList;
     private ValueModel<ArrayList<StickerPackVM>> stickerPacks;
 
 
     public StickersModule(ModuleContext context) {
         super(context);
-        this.stickerPacksList = Storage.createList(STORAGE_STICKER_PACKS, StickersPack.CREATOR);
-        this.collection = Storage.createKeyValue(STORAGE_STICKER_PACKS, StickerPackVM.CREATOR(), StickersPack.CREATOR);
-        this.stickerPacksKeyValue = collection.getEngine();
+        this.stickerPacksList = Storage.createKeyValue(STORAGE_STICKER_ALL_PACKS);
         stickerPacks = new ValueModel<ArrayList<StickerPackVM>>("sticker_packs_vms", buildStickerPacks());
 
         context().getEvents().subscribe(new BusSubscriber() {
@@ -47,14 +49,9 @@ public class StickersModule extends AbsModule {
         }, "sticker_collections_changed");
     }
 
-    public ListEngine<StickersPack> getStickerPacksList() {
+    public KeyValueStorage getStickerPacksStorage() {
         return stickerPacksList;
     }
-
-    public KeyValueEngine<StickersPack> getStickerPacksKeyValue() {
-        return stickerPacksKeyValue;
-    }
-
 
     public void loadStickers() {
         request(new RequestLoadOwnStickers(), new RpcCallback<ResponseLoadOwnStickers>() {
@@ -74,7 +71,19 @@ public class StickersModule extends AbsModule {
 
     private ArrayList<StickerPackVM> buildStickerPacks() {
         ArrayList<StickerPackVM> vms = new ArrayList<StickerPackVM>();
-        stickerPacksList.
+
+        try {
+            UpdateOwnStickersChanged update = new UpdateOwnStickersChanged();
+            Bser.parse(update, stickerPacksList.loadItem(0));
+
+            for (ApiStickerCollection apiCollection : update.getCollections()) {
+                vms.add(new StickerPackVM(new StickersPack(apiCollection)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         return vms;
     }
 
@@ -83,6 +92,8 @@ public class StickersModule extends AbsModule {
     }
 
     public void resetModule() {
-        stickerPacksKeyValue.clear();
+        stickerPacksList.clear();
     }
+
+
 }
