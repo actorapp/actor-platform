@@ -8,10 +8,12 @@ import java.util.ArrayList;
 
 import im.actor.core.api.rpc.RequestLoadOwnStickers;
 import im.actor.core.api.rpc.ResponseLoadOwnStickers;
+import im.actor.core.api.updates.UpdateOwnStickersChanged;
 import im.actor.core.api.updates.UpdateStickerCollectionsChanged;
 import im.actor.core.entity.content.internal.StickersPack;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.updates.internal.StickersLoaded;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.StickerPackVM;
@@ -59,7 +61,7 @@ public class StickersModule extends AbsModule {
             @Override
             public void onResult(final ResponseLoadOwnStickers response) {
                 updates().onUpdateReceived(
-                        new UpdateStickerCollectionsChanged(response.getOwnStickers())
+                        new StickersLoaded(response.getOwnStickers())
                 );
             }
 
@@ -72,9 +74,7 @@ public class StickersModule extends AbsModule {
 
     private ArrayList<StickerPackVM> buildStickerPacks() {
         ArrayList<StickerPackVM> vms = new ArrayList<StickerPackVM>();
-        for (int i = 0; i < stickerPacksList.getCount(); i++) {
-            vms.add(collection.get(stickerPacksList.getValue(i).getId()));
-        }
+        stickerPacksList.
         return vms;
     }
 

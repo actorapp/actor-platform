@@ -32,6 +32,10 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
 
     public SmilePagerAdapter(EmojiKeyboard emojiKeyboard) {
         this.emojiKeyboard = emojiKeyboard;
+        if (messenger().getOwnStickerPacks().get().size() == 0) {
+            messenger().loadStickers();
+        }
+
     }
 
     @Override
