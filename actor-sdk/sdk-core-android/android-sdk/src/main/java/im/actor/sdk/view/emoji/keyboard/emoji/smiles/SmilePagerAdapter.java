@@ -19,6 +19,9 @@ import im.actor.sdk.view.emoji.smiles.SmilesPackView;
 import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.PagerSlidingTabStrip;
+import im.actor.sdk.view.emoji.stickers.StickersView;
+
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 /**
 * Created by Jesus Christ. Amen.
@@ -33,81 +36,88 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
 
     @Override
     public int getCount() {
-        return 5;
+        return messenger().getOwnStickerPacks().get().size() > 0 ? 6 : 5;
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View itemView = LayoutInflater.from(container.getContext()).inflate(R.layout.emoji_smiles_page, null);
-        ViewGroup emojicontainer = (ViewGroup) itemView.findViewById(R.id.emojiPackContainer);
-        View noEmojiTV = itemView.findViewById(R.id.text);
+        View itemView;
+        if (position <= 4) {
 
-        ArrayList<Long> emojiPack = new ArrayList<Long>();
-        switch (position) {
-            case 0:
-                emojiPack = SmilesPack.getRecent();
-                break;
-            case 1:
-                emojiPack = new ArrayList<Long>(Arrays.asList(SmilesPack.STANDART));
-                break;
-            case 2:
-                emojiPack = new ArrayList<Long>(Arrays.asList(SmilesPack.NATURE));
-                break;
-            case 3:
-                emojiPack = new ArrayList<Long>(Arrays.asList(SmilesPack.TRANSPORT));
-                break;
-            case 4:
-                emojiPack = new ArrayList<Long>(Arrays.asList(SmilesPack.UNSORTED));
-                break;
+            itemView = LayoutInflater.from(container.getContext()).inflate(R.layout.emoji_smiles_page, null);
+            ViewGroup emojicontainer = (ViewGroup) itemView.findViewById(R.id.emojiPackContainer);
+            View noEmojiTV = itemView.findViewById(R.id.text);
 
-        }
+            ArrayList<Long> emojiPack = new ArrayList<Long>();
+            switch (position) {
+                case 0:
+                    emojiPack = SmilesPack.getRecent();
+                    break;
+                case 1:
+                    emojiPack = new ArrayList<Long>(Arrays.asList(SmilesPack.STANDART));
+                    break;
+                case 2:
+                    emojiPack = new ArrayList<Long>(Arrays.asList(SmilesPack.NATURE));
+                    break;
+                case 3:
+                    emojiPack = new ArrayList<Long>(Arrays.asList(SmilesPack.TRANSPORT));
+                    break;
+                case 4:
+                    emojiPack = new ArrayList<Long>(Arrays.asList(SmilesPack.UNSORTED));
+                    break;
 
-        int emojisMaxRowCount = 8;
-        int emojiSize = Screen.dp(45);
-        int emojiPadding = emojiSize / 5;
-        if (Screen.getWidth() / emojiSize < emojisMaxRowCount) {
-            emojisMaxRowCount = Screen.getWidth() / emojiSize;
-        }
-        final SmilesPackView smilesPackView = new SmilesPackView(container.getContext(), SmileProcessor.emoji(), emojiPack, emojisMaxRowCount, emojiSize, emojiPadding);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER;
-        emojicontainer.addView(smilesPackView, params);
-        if(!SmileProcessor.emoji().isLoaded()){
-            SmileProcessor.emoji().registerListener(new SmilesListener() {
+            }
+
+            int emojisMaxRowCount = 8;
+            int emojiSize = Screen.dp(45);
+            int emojiPadding = emojiSize / 5;
+            if (Screen.getWidth() / emojiSize < emojisMaxRowCount) {
+                emojisMaxRowCount = Screen.getWidth() / emojiSize;
+            }
+            final SmilesPackView smilesPackView = new SmilesPackView(container.getContext(), SmileProcessor.emoji(), emojiPack, emojisMaxRowCount, emojiSize, emojiPadding);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.gravity = Gravity.CENTER;
+            emojicontainer.addView(smilesPackView, params);
+            if (!SmileProcessor.emoji().isLoaded()) {
+                SmileProcessor.emoji().registerListener(new SmilesListener() {
+                    @Override
+                    public void onSmilesUpdated(boolean completed) {
+                        smilesPackView.update();
+                        SmileProcessor.emoji().unregisterListener(this);
+                    }
+                });
+            }
+            if (emojiPack.size() == 0) {
+                noEmojiTV.setVisibility(View.VISIBLE);
+            } else {
+                noEmojiTV.setVisibility(View.GONE);
+            }
+            // is this necessary?
+            /*if(position==0){
+                getSmileProcessor().setRecentUpdateListener(new SmilesRecentListener() {
+                    @Override
+                    public void onSmilesUpdated() {
+                        smilesPackView.update();
+                    }
+                });
+            }*/
+            smilesPackView.setOnSmileClickListener(new OnSmileClickListener() {
                 @Override
-                public void onSmilesUpdated(boolean completed) {
-                    smilesPackView.update();
-                    SmileProcessor.emoji().unregisterListener(this);
+                public void onEmojiClicked(String smile) {
+                    emojiKeyboard.onEmojiClicked(smile);
                 }
             });
-        }
-        if (emojiPack.size() == 0) {
-            noEmojiTV.setVisibility(View.VISIBLE);
+            SmilesPack.setOnRecentChangeListener(new OnRecentChangeListener() {
+
+                @Override
+                public void onRecentChange() {
+                    smilesPackView.update();
+                }
+            });
+
         } else {
-            noEmojiTV.setVisibility(View.GONE);
+            itemView = new StickersView(container.getContext(), emojiKeyboard);
         }
-        // is this necessary?
-        /*if(position==0){
-            getSmileProcessor().setRecentUpdateListener(new SmilesRecentListener() {
-                @Override
-                public void onSmilesUpdated() {
-                    smilesPackView.update();
-                }
-            });
-        }*/
-        smilesPackView.setOnSmileClickListener(new OnSmileClickListener() {
-            @Override
-            public void onEmojiClicked(String smile) {
-                emojiKeyboard.onEmojiClicked(smile);
-            }
-        });
-        SmilesPack.setOnRecentChangeListener(new OnRecentChangeListener(){
-
-            @Override
-            public void onRecentChange() {
-                smilesPackView.update();
-            }
-        });
         container.addView(itemView, 0);
         return itemView;
     }
@@ -146,6 +156,9 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
                 break;
             case 4://5:
                 icon = R.drawable.ic_smiles_grid;
+                break;
+            case 5:
+                icon = R.drawable.ic_smiles_sticker;
                 break;
             default:
                 icon = R.drawable.ic_smiles_smile;
