@@ -68,7 +68,6 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
 
         packs = messenger().getOwnStickerPacks();
 
-
         ((BaseActivity) context).bind(packs, new ValueChangedListener<ArrayList<StickerPackVM>>() {
             @Override
             public void onChanged(ArrayList<StickerPackVM> val, Value<ArrayList<StickerPackVM>> valueModel) {
