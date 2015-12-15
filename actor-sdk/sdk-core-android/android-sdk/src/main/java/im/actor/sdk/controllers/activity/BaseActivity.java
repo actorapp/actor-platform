@@ -88,6 +88,10 @@ public class BaseActivity extends AppCompatActivity {
         BINDER.bind(value, listener);
     }
 
+    public <T> void bind(Value<T> value, ValueChangedListener<T> listener, boolean notify) {
+        BINDER.bind(value, listener, notify);
+    }
+
     public <T, V> void bind(final Value<T> value1, final Value<V> value2,
                             final ValueDoubleChangedListener<T, V> listener) {
         BINDER.bind(value1, value2, listener);
