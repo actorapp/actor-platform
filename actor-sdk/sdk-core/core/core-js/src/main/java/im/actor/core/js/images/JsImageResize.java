@@ -46,7 +46,7 @@ public class JsImageResize {
 
             var compressedImage = canvas.toDataURL("image/jpeg", 0.55);
 
-            console.log('completed...')
+            console.log('completed... ' + compressedImage)
             resizeListener.@im.actor.core.js.images.JsResizeListener::onResized(*)(compressedImage,
                   width, height, img.width, img.height);
         }
