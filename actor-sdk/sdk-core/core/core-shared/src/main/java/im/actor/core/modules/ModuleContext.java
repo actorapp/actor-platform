@@ -20,6 +20,7 @@ import im.actor.core.modules.internal.PushesModule;
 import im.actor.core.modules.internal.SearchModule;
 import im.actor.core.modules.internal.SecurityModule;
 import im.actor.core.modules.internal.SettingsModule;
+import im.actor.core.modules.internal.StickersModule;
 import im.actor.core.modules.internal.TypingModule;
 import im.actor.core.modules.internal.UsersModule;
 import im.actor.core.network.ActorApi;
@@ -48,6 +49,8 @@ public interface ModuleContext {
     UsersModule getUsersModule();
 
     GroupsModule getGroupsModule();
+
+    StickersModule getStickersModule();
 
     MessagesModule getMessagesModule();
 

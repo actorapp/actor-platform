@@ -46,39 +46,11 @@ public class StickersView extends ListView {
 
         setDivider(new ColorDrawable(Color.TRANSPARENT));
 
-        final ArrayList<StickersPack> packs = new ArrayList<StickersPack>();
-
-        ArrayList<ApiStickerCollection> apiPacks = messenger().getOwnStickers();
-        if (apiPacks.size() > 0) {
-            buildAdapter(context, packs, apiPacks);
-        } else {
-            messenger().loadStickers().start(new CommandCallback<ResponseLoadOwnStickers>() {
-                @Override
-                public void onResult(ResponseLoadOwnStickers res) {
-                    buildAdapter(context, packs, (ArrayList<ApiStickerCollection>) res.getOwnStickers());
-                }
-
-                @Override
-                public void onError(Exception e) {
-
-                }
-            });
-        }
-
+        buildAdapter(context);
     }
 
-    private void buildAdapter(Context context, ArrayList<StickersPack> packs, ArrayList<ApiStickerCollection> apiPacks) {
-        for (ApiStickerCollection apiPack : apiPacks) {
-            Sticker[] stickers = new Sticker[apiPack.getStickers().size()];
-            int i = 0;
-            for (ApiStickerDescriptor stickerDescriptor : apiPack.getStickers()) {
-                stickers[i++] = new Sticker(stickerDescriptor, apiPack.getId(), apiPack.getAccessHash());
-            }
-            StickersPack pack = new StickersPack(apiPack.getId() + "", apiPack.getId() + "", stickers.length > 0 ? stickers[0] : null, stickers);
-            packs.add(pack);
-        }
-
-        adapter = new StickerAdapter(context, packs, keyboard, new StickerAdapter.ScrollTo() {
+    private void buildAdapter(Context context) {
+        adapter = new StickerAdapter(context, keyboard, new StickerAdapter.ScrollTo() {
             @Override
             public void requestScroll(final int position) {
                 //-1dp is hack, to catch first raw properly after scroll
