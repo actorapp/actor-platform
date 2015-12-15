@@ -8,48 +8,51 @@ import im.actor.runtime.js.fs.JsBlob;
 
 public class JsImageResize {
     public static native void resize(JsBlob file, JsResizeListener resizeListener)/*-{
-        console.log('resizing...')
-        var img = document.createElement("img");
-        img.style.cssText = "image-orientation: from-image;"
-
         var reader = new FileReader();
-        reader.onload = function(e) {
+
+        reader.onload = function(event) {
             console.log('loaded...')
-            img.src = e.target.result
-            var canvas = document.createElement("canvas");
+            var img = new Image();
+            img.style.cssText = "image-orientation: from-image;";
 
-            var MAX_WIDTH = 90;
-            var MAX_HEIGHT = 90;
-            var width = img.width;
-            var height = img.height;
+            img.onload = function(event) {
+                console.log('resizing...');
+                var canvas = document.createElement("canvas");
+                var MAX_WIDTH = 90;
+                var MAX_HEIGHT = 90;
+                var width = event.target.width;
+                var height = event.target.height;
 
-            if (width > height) {
-                if (width > MAX_WIDTH) {
-                    height *= MAX_WIDTH / width;
-                    width = MAX_WIDTH;
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
                 }
-            } else {
-                if (height > MAX_HEIGHT) {
-                    width *= MAX_HEIGHT / height;
-                    height = MAX_HEIGHT;
-                }
-            }
-            canvas.width = width;
-            canvas.height = height;
+                canvas.width = width;
+                canvas.height = height;
 
-            var ctx = canvas.getContext("2d");
+                var ctx = canvas.getContext("2d");
 
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, width, height);
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, width, height);
+                ctx.drawImage(event.target, 0, 0, width, height);
 
-            ctx.drawImage(img, 0, 0, width, height);
+                var compressedImage = canvas.toDataURL("image/jpeg", 0.55);
 
-            var compressedImage = canvas.toDataURL("image/jpeg", 0.55);
+                console.log('completed...');
+                resizeListener.@im.actor.core.js.images.JsResizeListener::onResized(*)(compressedImage,
+                    width, height, event.target.width, event.target.height);
+            };
 
-            console.log('completed... ' + compressedImage)
-            resizeListener.@im.actor.core.js.images.JsResizeListener::onResized(*)(compressedImage,
-                  width, height, img.width, img.height);
-        }
+            img.src = event.target.result;
+        };
+
         reader.readAsDataURL(file);
     }-*/;
 }
