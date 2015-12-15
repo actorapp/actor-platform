@@ -2,6 +2,8 @@ package im.actor.server.frontend
 
 import java.util.concurrent.atomic.AtomicLong
 
+import kamon.Kamon
+
 import scala.collection.JavaConversions._
 
 import akka.actor.ActorSystem
@@ -93,7 +95,9 @@ object Frontend {
   }
 }
 
-trait Frontend {
+abstract class Frontend(metricTags: Map[String, String]) {
+
+  protected val connectionTime = Kamon.metrics.histogram("connection.time", metricTags)
 
   private val connCounter = new AtomicLong(0L)
 

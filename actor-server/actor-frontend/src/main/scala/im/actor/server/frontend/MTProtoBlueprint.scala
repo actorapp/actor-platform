@@ -1,6 +1,7 @@
 package im.actor.server.frontend
 
 import akka.stream.FlowShape
+import kamon.metric.instrument.Histogram
 
 import scala.util.{ Failure, Success }
 
@@ -20,7 +21,7 @@ object MTProtoBlueprint {
   val protoVersions: Set[Byte] = Set(1)
   val apiMajorVersions: Set[Byte] = Set(1)
 
-  def apply(connId: String)(implicit sessionRegion: SessionRegion, system: ActorSystem): Flow[ByteString, ByteString, Unit] = {
+  def apply(connId: String, connTimeHist: Histogram)(implicit sessionRegion: SessionRegion, system: ActorSystem): Flow[ByteString, ByteString, Unit] = {
     val authManager = system.actorOf(AuthorizationManager.props, s"authManager-$connId")
     val authSource = Source(ActorPublisher[MTProto](authManager))
 
@@ -35,6 +36,8 @@ object MTProtoBlueprint {
     val mapRespFlow: Flow[MTProto, ByteString, Unit] = Flow[MTProto]
       .transform(() ⇒ mapResponse(system))
 
+    val connStartTime = System.currentTimeMillis()
+
     val completeSink = Sink.onComplete {
       case res ⇒
         res match {
@@ -44,6 +47,7 @@ object MTProtoBlueprint {
             system.log.error(e, "Closing connection due to error")
         }
 
+        connTimeHist.record(System.currentTimeMillis() - connStartTime)
         authManager ! PoisonPill
         sessionClient ! PoisonPill
     }
