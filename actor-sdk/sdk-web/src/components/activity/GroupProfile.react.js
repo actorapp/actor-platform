@@ -135,27 +135,6 @@ class GroupProfile extends Component {
     const admin = UserStore.getUser(group.adminId);
     const isMember = DialogStore.isMember();
 
-    let adminControls;
-    if (group.adminId === myId) {
-      adminControls = [
-        <li className="dropdown__menu__item hide">
-          <i className="material-icons">photo_camera</i>
-          {this.getIntlMessage('setGroupPhoto')}
-        </li>
-      ,
-        <li className="dropdown__menu__item hide">
-          <svg className="icon icon--dropdown"
-               dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#integration"/>'}}/>
-          {this.getIntlMessage('addIntegration')}
-        </li>
-      ,
-        <li className="dropdown__menu__item" onClick={() => this.onEditGroupClick(group.id)}>
-          <i className="material-icons">mode_edit</i>
-          {this.getIntlMessage('editGroup')}
-        </li>
-      ];
-    }
-
     const members = <FormattedMessage message={this.getIntlMessage('members')} numMembers={group.members.length}/>;
 
     const dropdownClassNames = classnames('dropdown', {
@@ -224,7 +203,10 @@ class GroupProfile extends Component {
                       {this.getIntlMessage('more')}
                     </button>
                     <ul className="dropdown__menu dropdown__menu--right">
-                      {adminControls}
+                      <li className="dropdown__menu__item" onClick={() => this.onEditGroupClick(group.id)}>
+                        <i className="material-icons">mode_edit</i>
+                        {this.getIntlMessage('editGroup')}
+                      </li>
                       <li className="dropdown__menu__item"
                           onClick={() => this.onLeaveGroupClick(group.id)}>
                         {this.getIntlMessage('leaveGroup')}
