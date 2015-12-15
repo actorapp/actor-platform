@@ -52,6 +52,9 @@ object PresenceManager {
   @SerialVersionUID(1L)
   private case class Initialized(lastSeenAt: Option[DateTime])
 
+  @SerialVersionUID(1L)
+  private case object DeliverState extends Message
+
   def props = Props(classOf[PresenceManager])
 }
 
@@ -61,6 +64,8 @@ class PresenceManager extends Actor with ActorLogging with Stash {
 
   implicit val ec: ExecutionContext = context.dispatcher
   private val db: Database = DbExtension(context.system).db
+
+  private val DeliverStateInterval = context.system.settings.config.getDuration("modules.presence.deliver-state-interval").getSeconds.seconds
 
   private val receiveTimeout = 15.minutes // TODO: configurable
   context.setReceiveTimeout(receiveTimeout)
@@ -96,6 +101,7 @@ class PresenceManager extends Actor with ActorLogging with Stash {
     case Initialized(lastSeenAt: Option[DateTime]) ⇒
       unstashAll()
       this.state = this.state.copy(lastSeenAt = lastSeenAt)
+      scheduleDeliverState()
       context.become(working)
     case msg ⇒ stash()
   }
@@ -140,12 +146,13 @@ class PresenceManager extends Actor with ActorLogging with Stash {
 
       if (newPresence != oldPresence)
         deliverState()
-
-    case ReceiveTimeout ⇒
-      if (consumers.isEmpty) {
-        context.parent ! Passivate(stopMessage = PoisonPill)
-      }
+    case DeliverState ⇒
+      deliverState()
+      scheduleDeliverState()
   }
+
+  private def scheduleDeliverState(): Unit =
+    context.system.scheduler.scheduleOnce(DeliverStateInterval, self, DeliverState)
 
   private def deliverState(): Unit =
     consumers foreach deliverState
