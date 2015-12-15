@@ -111,7 +111,7 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
       enqueueProtoMessageWithResend(msg, reduceKey)
     case OnNext(OutgoingMessage(msg: ProtoMessage with OutgoingProtoMessage, _)) ⇒ enqueueProtoMessage(msg)
     case OnNext(IncomingRequestResend(messageId)) ⇒
-      resendBuffer.get(messageId) map {
+      resendBuffer.get(messageId) foreach {
         case (msg, reduceKey, scheduledResend) ⇒
           // should be already completed because RequestResend is sent by client only after receiving Unsent notification
           scheduledResend.cancel()
