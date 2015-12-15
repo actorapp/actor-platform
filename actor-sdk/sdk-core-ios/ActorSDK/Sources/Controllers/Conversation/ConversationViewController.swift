@@ -20,6 +20,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     let content: ACPage!
     var appStyle: ActorStyle { get { return ActorSDK.sharedActor().style } }
     
+    // States
+    
+    private var micOn: Bool! = true
+    
     // Views
     private let titleView: UILabel = UILabel()
     private let subtitleView: UILabel = UILabel()
@@ -51,15 +55,32 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         }
         
         view.insertSubview(backgroundView, atIndex: 0)
-
+        
+        // slk settings
+        self.bounces = true
+        
         // Text Input
         
         self.textInputbar.backgroundColor = appStyle.chatInputFieldBgColor
         self.textInputbar.autoHideRightButton = false;
+        self.textInputbar.translucent = false
+        
+        // Text view placeholder
         self.textView.placeholder = AALocalized("ChatPlaceholder")
+        
+        
+        // right button
+//        self.rightButton.tintColor = appStyle.chatSendColor
+//        self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+//        self.rightButton.setTitle("", forState: UIControlState.Normal)
+//        self.rightButton.enabled = true
+//        self.rightButton.layoutIfNeeded()
+        
         self.rightButton.setTitle(AALocalized("ChatSend"), forState: UIControlState.Normal)
         self.rightButton.setTitleColor(appStyle.chatSendColor, forState: UIControlState.Normal)
         self.rightButton.setTitleColor(appStyle.chatSendDisabledColor, forState: UIControlState.Disabled)
+        
+        //
         
         self.keyboardPanningEnabled = true
         
@@ -288,8 +309,68 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         Actor.onTypingWithPeer(peer);
     }
     
+    override func textDidUpdate(animated: Bool) {
+        super.textDidUpdate(animated)
+        
+//        let text = self.textView.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+//        self.rightButton.enabled = true
+//        
+//        //change button
+//        
+//        if !text.isEmpty {
+//            
+//            self.rightButton.setTitle(AALocalized("ChatSend"), forState: UIControlState.Normal)
+//            self.rightButton.setTitleColor(appStyle.chatSendColor, forState: UIControlState.Normal)
+//            self.rightButton.setTitleColor(appStyle.chatSendDisabledColor, forState: UIControlState.Disabled)
+//            self.rightButton.setImage(nil, forState: UIControlState.Normal)
+//            
+//            if self.micOn == true {
+//                self.micOn = false
+//            }
+//            
+//        } else {
+//            
+//            self.rightButton.tintColor = appStyle.chatSendColor
+//            self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+//            self.rightButton.setTitle("", forState: UIControlState.Normal)
+//            self.rightButton.enabled = true
+//            self.rightButton.layoutIfNeeded()
+//            
+//            self.micOn = true
+//            
+//        }
+//        
+//        self.textInputbar.layoutIfNeeded()
+//        self.rightButton.layoutIfNeeded()
+        
+    }
+    
     override func didPressRightButton(sender: AnyObject!) {
+        
+        
         Actor.sendMessageWithMentionsDetect(peer, withText: textView.text)
+        super.didPressRightButton(sender)
+        
+//        if !self.textView.text.isEmpty {
+//            
+//            Actor.sendMessageWithMentionsDetect(peer, withText: textView.text)
+//            super.didPressRightButton(sender)
+//            
+//        } else {
+//            
+//            self.textView.refreshFirstResponder()
+//            
+//            let audioRecController = AARecordAudioController()
+//            audioRecController.chatController = self
+//            
+//            self.presentViewController(audioRecController, animated: true, completion: nil)
+//
+//        }
+//        
+//        self.textInputbar.layoutIfNeeded()
+//        self.rightButton.layoutIfNeeded()
+        
+        
         super.didPressRightButton(sender)
     }
     
@@ -539,4 +620,22 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         Actor.sendContactWithPeer(self.peer, withName: name, withPhones: jPhones, withEmails: jEmails, withPhoto: jAvatarImage)
     }
+    
+    
+    // send audio document
+    
+    func sendVoiceMessage(path:String!, duration:NSTimeInterval!) {
+        
+        NSLog("onAudioRecordingFinished: %@ [%lfs]", path, duration)
+        let range = path.rangeOfString("/tmp", options: NSStringCompareOptions(), range: nil, locale: nil)
+        let descriptor = path.substringFromIndex(range!.startIndex)
+        NSLog("Audio Recording file: \(descriptor)")
+        
+        
+        Actor.sendAudioWithPeer(self.peer, withName: NSString.localizedStringWithFormat("%.0fs.ogg", duration + 0.5) as String,
+                                withDuration: jint(duration), withDescriptor: descriptor)
+        
+    }
+    
+    
 }

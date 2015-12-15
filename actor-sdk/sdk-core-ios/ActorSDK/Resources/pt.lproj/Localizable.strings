@@ -22,7 +22,7 @@
 
 "ContactsAddHint" = "Por favor, insira o número de telefone";
 
-"ContactsActionInvite" = "Avise seus amigos sobre o Actor";
+"ContactsActionInvite" = "Avise seus amigos sobre o {appname}";
 
 "ContactsActionAdd" = "Adicionar Amigo(a)";
 
@@ -67,7 +67,7 @@
 
 "SettingsUsernameHintField" = "Enter your Username";
 
-"SettingsUsernameHint" = "You can choose a username in Actor. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
+"SettingsUsernameHint" = "You can choose a username in {appname}. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
 
 
 "SettingsSecurity" = "Segurança";
@@ -314,7 +314,7 @@
 
 "Placeholder_Empty_Title" = "COnvide seus amigos";
 
-"Placeholder_Empty_Message" = "Nenhum dos seus contatos usa Actor. Use o botão abaixo para convidá-los.";
+"Placeholder_Empty_Message" = "Nenhum dos seus contatos usa {appname}. Use o botão abaixo para convidá-los.";
 
 "Placeholder_Empty_Action" = "AVISE UM(A) AMIGO(A)";
 
@@ -328,7 +328,7 @@
 
 "Placeholder_Contacts_Title" = "Convide seus amigos(as)";
 
-"Placeholder_Contacts_Message" = "Nenhum dos seus contatos usa Actor. Use o botão abaixo para convidá-los.";
+"Placeholder_Contacts_Message" = "Nenhum dos seus contatos usa {appname}. Use o botão abaixo para convidá-los.";
 
 "Placeholder_Contacts_Action" = "AVISE UM(A) AMIGO(A)";
 
@@ -358,9 +358,9 @@
 
 "AuthCodeHint" = "Nós te enviamos um SMS com o código.";
 
-"AuthCallHint" = "Actor will call you in {time}";
+"AuthCallHint" = "{appname} will call you in {time}";
 
-"AuthCallDoneHint" = "Actor dialed your number.";
+"AuthCallDoneHint" = "{appname} dialed your number.";
 
 "AuthNoCodeHint" = "Doesn't get the code?";
 

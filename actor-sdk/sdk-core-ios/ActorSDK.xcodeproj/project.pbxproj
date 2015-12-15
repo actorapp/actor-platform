@@ -177,6 +177,57 @@
 		06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B24B1C0FAB500090660C /* AAMapFastView.swift */; };
 		06E7B2521C1345E70090660C /* AAMapPinPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2511C1345E70090660C /* AAMapPinPointView.swift */; };
 		06E7B2541C139B6F0090660C /* AABubbleContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */; };
+		15D35F161C20185500E3717A /* diag_range.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F0C1C20185500E3717A /* diag_range.c */; };
+		15D35F171C20185500E3717A /* diag_range.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F0D1C20185500E3717A /* diag_range.h */; };
+		15D35F181C20185500E3717A /* opus_header.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F0E1C20185500E3717A /* opus_header.c */; };
+		15D35F191C20185500E3717A /* opus_header.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F0F1C20185500E3717A /* opus_header.h */; };
+		15D35F1A1C20185500E3717A /* opusenc.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F101C20185500E3717A /* opusenc.h */; };
+		15D35F1B1C20185500E3717A /* opusenc.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F111C20185500E3717A /* opusenc.m */; settings = {COMPILER_FLAGS = "-w"; }; };
+		15D35F1C1C20185500E3717A /* picture.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F121C20185500E3717A /* picture.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		15D35F1D1C20185500E3717A /* picture.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F131C20185500E3717A /* picture.h */; };
+		15D35F1E1C20185500E3717A /* wav_io.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F141C20185500E3717A /* wav_io.c */; };
+		15D35F1F1C20185500E3717A /* wav_io.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F151C20185500E3717A /* wav_io.h */; };
+		15D35F251C20186200E3717A /* bitwise.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F211C20186200E3717A /* bitwise.c */; };
+		15D35F261C20186200E3717A /* framing.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F221C20186200E3717A /* framing.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		15D35F271C20186200E3717A /* ogg.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F231C20186200E3717A /* ogg.h */; };
+		15D35F281C20186200E3717A /* os_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F241C20186200E3717A /* os_types.h */; };
+		15D35F301C20187200E3717A /* info.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F2A1C20187200E3717A /* info.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		15D35F311C20187200E3717A /* internal.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F2B1C20187200E3717A /* internal.c */; };
+		15D35F321C20187200E3717A /* internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F2C1C20187200E3717A /* internal.h */; };
+		15D35F331C20187200E3717A /* opusfile.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F2D1C20187200E3717A /* opusfile.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		15D35F341C20187200E3717A /* opusfile.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F2E1C20187200E3717A /* opusfile.h */; };
+		15D35F351C20187200E3717A /* stream.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F2F1C20187200E3717A /* stream.c */; };
+		15D35F511C20187E00E3717A /* ASQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F361C20187E00E3717A /* ASQueue.h */; };
+		15D35F521C20187E00E3717A /* ASQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F371C20187E00E3717A /* ASQueue.m */; };
+		15D35F531C20187E00E3717A /* AAOpusAudioRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F381C20187E00E3717A /* AAOpusAudioRecorder.h */; };
+		15D35F541C20187E00E3717A /* AAOpusAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F391C20187E00E3717A /* AAOpusAudioRecorder.m */; };
+		15D35F551C20187E00E3717A /* AAAlertView.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F3A1C20187E00E3717A /* AAAlertView.h */; };
+		15D35F561C20187E00E3717A /* AAAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F3B1C20187E00E3717A /* AAAlertView.m */; };
+		15D35F571C20187E00E3717A /* AAAudioRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F3C1C20187E00E3717A /* AAAudioRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		15D35F591C20187E00E3717A /* AATimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F3E1C20187E00E3717A /* AATimer.h */; };
+		15D35F5A1C20187E00E3717A /* AATimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F3F1C20187E00E3717A /* AATimer.m */; };
+		15D35F5B1C20187E00E3717A /* AAAudioPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F401C20187E00E3717A /* AAAudioPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		15D35F5C1C20187E00E3717A /* AAAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F411C20187E00E3717A /* AAAudioPlayer.m */; };
+		15D35F5D1C20187E00E3717A /* AANativeAudioPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F421C20187E00E3717A /* AANativeAudioPlayer.h */; };
+		15D35F5E1C20187E00E3717A /* AANativeAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F431C20187E00E3717A /* AANativeAudioPlayer.m */; };
+		15D35F5F1C20187E00E3717A /* AAOpusAudioPlayerAU.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F441C20187E00E3717A /* AAOpusAudioPlayerAU.h */; };
+		15D35F601C20187E00E3717A /* AAOpusAudioPlayerAU.mm in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F451C20187E00E3717A /* AAOpusAudioPlayerAU.mm */; };
+		15D35F611C20187E00E3717A /* AAAudioBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F461C20187E00E3717A /* AAAudioBuffer.h */; };
+		15D35F621C20187E00E3717A /* AAModernConversationAudioPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F471C20187E00E3717A /* AAModernConversationAudioPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		15D35F631C20187E00E3717A /* AAModernConversationAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F481C20187E00E3717A /* AAModernConversationAudioPlayer.m */; };
+		15D35F641C20187E00E3717A /* AAModernConversationAudioPlayerContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F491C20187E00E3717A /* AAModernConversationAudioPlayerContext.h */; };
+		15D35F651C20187E00E3717A /* AAModernConversationAudioPlayerContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F4A1C20187E00E3717A /* AAModernConversationAudioPlayerContext.m */; };
+		15D35F661C20187E00E3717A /* NSObject+TGLock.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F4B1C20187E00E3717A /* NSObject+TGLock.h */; };
+		15D35F671C20187E00E3717A /* NSObject+TGLock.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F4C1C20187E00E3717A /* NSObject+TGLock.m */; };
+		15D35F681C20187E00E3717A /* AAModernViewInlineMediaContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F4D1C20187E00E3717A /* AAModernViewInlineMediaContext.h */; };
+		15D35F691C20187E00E3717A /* AAModernViewInlineMediaContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F4E1C20187E00E3717A /* AAModernViewInlineMediaContext.m */; };
+		15D35F6A1C20187E00E3717A /* AATimerTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F4F1C20187E00E3717A /* AATimerTarget.h */; };
+		15D35F6B1C20187E00E3717A /* AATimerTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F501C20187E00E3717A /* AATimerTarget.m */; };
+		15D35F6F1C20196E00E3717A /* AARecordAudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F6E1C20196E00E3717A /* AARecordAudioController.swift */; };
+		15D35F751C201B6B00E3717A /* AACustomPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F731C201B6B00E3717A /* AACustomPresentationController.swift */; };
+		15D35F761C201B6B00E3717A /* AACustomPresentationAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F741C201B6B00E3717A /* AACustomPresentationAnimationController.swift */; };
+		15D35F781C20273D00E3717A /* AAAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F3D1C20187E00E3717A /* AAAudioRecorder.m */; };
+		15D35F7B1C2037A600E3717A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = 15D35F7A1C20378E00E3717A /* begin_record.caf */; };
 		697B3A12994653F581459F63 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */; };
 /* End PBXBuildFile section */
 
@@ -357,6 +408,58 @@
 		06E7B24B1C0FAB500090660C /* AAMapFastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapFastView.swift; sourceTree = "<group>"; };
 		06E7B2511C1345E70090660C /* AAMapPinPointView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapPinPointView.swift; sourceTree = "<group>"; };
 		06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleContactCell.swift; sourceTree = "<group>"; };
+		15D35F0C1C20185500E3717A /* diag_range.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = diag_range.c; sourceTree = "<group>"; };
+		15D35F0D1C20185500E3717A /* diag_range.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = diag_range.h; sourceTree = "<group>"; };
+		15D35F0E1C20185500E3717A /* opus_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = opus_header.c; sourceTree = "<group>"; };
+		15D35F0F1C20185500E3717A /* opus_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opus_header.h; sourceTree = "<group>"; };
+		15D35F101C20185500E3717A /* opusenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opusenc.h; sourceTree = "<group>"; };
+		15D35F111C20185500E3717A /* opusenc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = opusenc.m; sourceTree = "<group>"; };
+		15D35F121C20185500E3717A /* picture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = picture.c; sourceTree = "<group>"; };
+		15D35F131C20185500E3717A /* picture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = picture.h; sourceTree = "<group>"; };
+		15D35F141C20185500E3717A /* wav_io.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wav_io.c; sourceTree = "<group>"; };
+		15D35F151C20185500E3717A /* wav_io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wav_io.h; sourceTree = "<group>"; };
+		15D35F211C20186200E3717A /* bitwise.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bitwise.c; sourceTree = "<group>"; };
+		15D35F221C20186200E3717A /* framing.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = framing.c; sourceTree = "<group>"; };
+		15D35F231C20186200E3717A /* ogg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ogg.h; sourceTree = "<group>"; };
+		15D35F241C20186200E3717A /* os_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = os_types.h; sourceTree = "<group>"; };
+		15D35F2A1C20187200E3717A /* info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = info.c; sourceTree = "<group>"; };
+		15D35F2B1C20187200E3717A /* internal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = internal.c; sourceTree = "<group>"; };
+		15D35F2C1C20187200E3717A /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
+		15D35F2D1C20187200E3717A /* opusfile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = opusfile.c; sourceTree = "<group>"; };
+		15D35F2E1C20187200E3717A /* opusfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opusfile.h; sourceTree = "<group>"; };
+		15D35F2F1C20187200E3717A /* stream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stream.c; sourceTree = "<group>"; };
+		15D35F361C20187E00E3717A /* ASQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASQueue.h; sourceTree = "<group>"; };
+		15D35F371C20187E00E3717A /* ASQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASQueue.m; sourceTree = "<group>"; };
+		15D35F381C20187E00E3717A /* AAOpusAudioRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAOpusAudioRecorder.h; sourceTree = "<group>"; };
+		15D35F391C20187E00E3717A /* AAOpusAudioRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAOpusAudioRecorder.m; sourceTree = "<group>"; };
+		15D35F3A1C20187E00E3717A /* AAAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAAlertView.h; sourceTree = "<group>"; };
+		15D35F3B1C20187E00E3717A /* AAAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAAlertView.m; sourceTree = "<group>"; };
+		15D35F3C1C20187E00E3717A /* AAAudioRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAAudioRecorder.h; sourceTree = "<group>"; };
+		15D35F3D1C20187E00E3717A /* AAAudioRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAAudioRecorder.m; sourceTree = "<group>"; };
+		15D35F3E1C20187E00E3717A /* AATimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATimer.h; sourceTree = "<group>"; };
+		15D35F3F1C20187E00E3717A /* AATimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATimer.m; sourceTree = "<group>"; };
+		15D35F401C20187E00E3717A /* AAAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAAudioPlayer.h; sourceTree = "<group>"; };
+		15D35F411C20187E00E3717A /* AAAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAAudioPlayer.m; sourceTree = "<group>"; };
+		15D35F421C20187E00E3717A /* AANativeAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AANativeAudioPlayer.h; sourceTree = "<group>"; };
+		15D35F431C20187E00E3717A /* AANativeAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AANativeAudioPlayer.m; sourceTree = "<group>"; };
+		15D35F441C20187E00E3717A /* AAOpusAudioPlayerAU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAOpusAudioPlayerAU.h; sourceTree = "<group>"; };
+		15D35F451C20187E00E3717A /* AAOpusAudioPlayerAU.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AAOpusAudioPlayerAU.mm; sourceTree = "<group>"; };
+		15D35F461C20187E00E3717A /* AAAudioBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAAudioBuffer.h; sourceTree = "<group>"; };
+		15D35F471C20187E00E3717A /* AAModernConversationAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAModernConversationAudioPlayer.h; sourceTree = "<group>"; };
+		15D35F481C20187E00E3717A /* AAModernConversationAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAModernConversationAudioPlayer.m; sourceTree = "<group>"; };
+		15D35F491C20187E00E3717A /* AAModernConversationAudioPlayerContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAModernConversationAudioPlayerContext.h; sourceTree = "<group>"; };
+		15D35F4A1C20187E00E3717A /* AAModernConversationAudioPlayerContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAModernConversationAudioPlayerContext.m; sourceTree = "<group>"; };
+		15D35F4B1C20187E00E3717A /* NSObject+TGLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+TGLock.h"; sourceTree = "<group>"; };
+		15D35F4C1C20187E00E3717A /* NSObject+TGLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+TGLock.m"; sourceTree = "<group>"; };
+		15D35F4D1C20187E00E3717A /* AAModernViewInlineMediaContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAModernViewInlineMediaContext.h; sourceTree = "<group>"; };
+		15D35F4E1C20187E00E3717A /* AAModernViewInlineMediaContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAModernViewInlineMediaContext.m; sourceTree = "<group>"; };
+		15D35F4F1C20187E00E3717A /* AATimerTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AATimerTarget.h; sourceTree = "<group>"; };
+		15D35F501C20187E00E3717A /* AATimerTarget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AATimerTarget.m; sourceTree = "<group>"; };
+		15D35F6E1C20196E00E3717A /* AARecordAudioController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AARecordAudioController.swift; sourceTree = "<group>"; };
+		15D35F731C201B6B00E3717A /* AACustomPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AACustomPresentationController.swift; sourceTree = "<group>"; };
+		15D35F741C201B6B00E3717A /* AACustomPresentationAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AACustomPresentationAnimationController.swift; sourceTree = "<group>"; };
+		15D35F7A1C20378E00E3717A /* begin_record.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = begin_record.caf; sourceTree = "<group>"; };
+		15D35F7C1C204BB900E3717A /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		22BAEA363892E475F59B7E9F /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		333F91AE5263DD450666CC87 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 		9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -385,6 +488,7 @@
 				0659753A1BC7D22200B8C7DF /* Images.xcassets */,
 				06230F431BC95C0E00A4807B /* ABPhoneFieldCodes.txt */,
 				06230F441BC95C0E00A4807B /* PhoneFormats.dat */,
+				15D35F7A1C20378E00E3717A /* begin_record.caf */,
 				065975491BC7DBA000B8C7DF /* iapetus.caf */,
 				0659754A1BC7DBA000B8C7DF /* notification.caf */,
 			);
@@ -477,6 +581,8 @@
 		066A51571BC4C112000E606E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				15D35F721C201B5300E3717A /* Categories */,
+				15D35F0A1C20182900E3717A /* AudioRecorder */,
 				066A53311BC534F5000E606E /* AAFileTypes.swift */,
 				066A51581BC4C14A000E606E /* AASwiftlyLRU.swift */,
 				066A515A1BC4C178000E606E /* AAHashMap.swift */,
@@ -807,6 +913,7 @@
 		066A53131BC533C5000E606E /* Conversation */ = {
 			isa = PBXGroup;
 			children = (
+				15D35F6D1C20196700E3717A /* Views */,
 				066A53241BC533FD000E606E /* Cell */,
 				066A531B1BC533EB000E606E /* Layouting */,
 				066A53181BC533E0000E606E /* Suggestion */,
@@ -901,6 +1008,102 @@
 			path = Location;
 			sourceTree = "<group>";
 		};
+		15D35F0A1C20182900E3717A /* AudioRecorder */ = {
+			isa = PBXGroup;
+			children = (
+				15D35F361C20187E00E3717A /* ASQueue.h */,
+				15D35F371C20187E00E3717A /* ASQueue.m */,
+				15D35F381C20187E00E3717A /* AAOpusAudioRecorder.h */,
+				15D35F391C20187E00E3717A /* AAOpusAudioRecorder.m */,
+				15D35F3A1C20187E00E3717A /* AAAlertView.h */,
+				15D35F3B1C20187E00E3717A /* AAAlertView.m */,
+				15D35F3C1C20187E00E3717A /* AAAudioRecorder.h */,
+				15D35F3D1C20187E00E3717A /* AAAudioRecorder.m */,
+				15D35F3E1C20187E00E3717A /* AATimer.h */,
+				15D35F3F1C20187E00E3717A /* AATimer.m */,
+				15D35F401C20187E00E3717A /* AAAudioPlayer.h */,
+				15D35F411C20187E00E3717A /* AAAudioPlayer.m */,
+				15D35F421C20187E00E3717A /* AANativeAudioPlayer.h */,
+				15D35F431C20187E00E3717A /* AANativeAudioPlayer.m */,
+				15D35F441C20187E00E3717A /* AAOpusAudioPlayerAU.h */,
+				15D35F451C20187E00E3717A /* AAOpusAudioPlayerAU.mm */,
+				15D35F461C20187E00E3717A /* AAAudioBuffer.h */,
+				15D35F471C20187E00E3717A /* AAModernConversationAudioPlayer.h */,
+				15D35F481C20187E00E3717A /* AAModernConversationAudioPlayer.m */,
+				15D35F491C20187E00E3717A /* AAModernConversationAudioPlayerContext.h */,
+				15D35F4A1C20187E00E3717A /* AAModernConversationAudioPlayerContext.m */,
+				15D35F4B1C20187E00E3717A /* NSObject+TGLock.h */,
+				15D35F4C1C20187E00E3717A /* NSObject+TGLock.m */,
+				15D35F4D1C20187E00E3717A /* AAModernViewInlineMediaContext.h */,
+				15D35F4E1C20187E00E3717A /* AAModernViewInlineMediaContext.m */,
+				15D35F4F1C20187E00E3717A /* AATimerTarget.h */,
+				15D35F501C20187E00E3717A /* AATimerTarget.m */,
+				15D35F291C20186400E3717A /* opusfile */,
+				15D35F201C20185B00E3717A /* ogg */,
+				15D35F0B1C20184700E3717A /* opusenc */,
+			);
+			name = AudioRecorder;
+			sourceTree = "<group>";
+		};
+		15D35F0B1C20184700E3717A /* opusenc */ = {
+			isa = PBXGroup;
+			children = (
+				15D35F0C1C20185500E3717A /* diag_range.c */,
+				15D35F0D1C20185500E3717A /* diag_range.h */,
+				15D35F0E1C20185500E3717A /* opus_header.c */,
+				15D35F0F1C20185500E3717A /* opus_header.h */,
+				15D35F101C20185500E3717A /* opusenc.h */,
+				15D35F111C20185500E3717A /* opusenc.m */,
+				15D35F121C20185500E3717A /* picture.c */,
+				15D35F131C20185500E3717A /* picture.h */,
+				15D35F141C20185500E3717A /* wav_io.c */,
+				15D35F151C20185500E3717A /* wav_io.h */,
+			);
+			name = opusenc;
+			sourceTree = "<group>";
+		};
+		15D35F201C20185B00E3717A /* ogg */ = {
+			isa = PBXGroup;
+			children = (
+				15D35F211C20186200E3717A /* bitwise.c */,
+				15D35F221C20186200E3717A /* framing.c */,
+				15D35F231C20186200E3717A /* ogg.h */,
+				15D35F241C20186200E3717A /* os_types.h */,
+			);
+			name = ogg;
+			sourceTree = "<group>";
+		};
+		15D35F291C20186400E3717A /* opusfile */ = {
+			isa = PBXGroup;
+			children = (
+				15D35F2A1C20187200E3717A /* info.c */,
+				15D35F2B1C20187200E3717A /* internal.c */,
+				15D35F2C1C20187200E3717A /* internal.h */,
+				15D35F2D1C20187200E3717A /* opusfile.c */,
+				15D35F2E1C20187200E3717A /* opusfile.h */,
+				15D35F2F1C20187200E3717A /* stream.c */,
+			);
+			name = opusfile;
+			sourceTree = "<group>";
+		};
+		15D35F6D1C20196700E3717A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				15D35F6E1C20196E00E3717A /* AARecordAudioController.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		15D35F721C201B5300E3717A /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				15D35F731C201B6B00E3717A /* AACustomPresentationController.swift */,
+				15D35F741C201B6B00E3717A /* AACustomPresentationAnimationController.swift */,
+			);
+			name = Categories;
+			path = ..;
+			sourceTree = "<group>";
+		};
 		2F428D134E194A828C3DF863 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -936,8 +1139,31 @@
 				066A517A1BC4C373000E606E /* FMDatabase.h in Headers */,
 				069CF4CC1BCB909A00C66E12 /* CLBackspaceDetectingTextField.h in Headers */,
 				066A50D61BC4AE63000E606E /* ActorSDK.h in Headers */,
+				15D35F621C20187E00E3717A /* AAModernConversationAudioPlayer.h in Headers */,
 				066A517C1BC4C373000E606E /* FMDatabase+Private.h in Headers */,
+				15D35F5B1C20187E00E3717A /* AAAudioPlayer.h in Headers */,
 				066A52731BC5101A000E606E /* ABPhoneField.h in Headers */,
+				15D35F571C20187E00E3717A /* AAAudioRecorder.h in Headers */,
+				15D35F641C20187E00E3717A /* AAModernConversationAudioPlayerContext.h in Headers */,
+				15D35F681C20187E00E3717A /* AAModernViewInlineMediaContext.h in Headers */,
+				15D35F341C20187200E3717A /* opusfile.h in Headers */,
+				15D35F661C20187E00E3717A /* NSObject+TGLock.h in Headers */,
+				15D35F281C20186200E3717A /* os_types.h in Headers */,
+				15D35F191C20185500E3717A /* opus_header.h in Headers */,
+				15D35F1F1C20185500E3717A /* wav_io.h in Headers */,
+				15D35F171C20185500E3717A /* diag_range.h in Headers */,
+				15D35F5F1C20187E00E3717A /* AAOpusAudioPlayerAU.h in Headers */,
+				15D35F551C20187E00E3717A /* AAAlertView.h in Headers */,
+				15D35F5D1C20187E00E3717A /* AANativeAudioPlayer.h in Headers */,
+				15D35F271C20186200E3717A /* ogg.h in Headers */,
+				15D35F321C20187200E3717A /* internal.h in Headers */,
+				15D35F1A1C20185500E3717A /* opusenc.h in Headers */,
+				15D35F591C20187E00E3717A /* AATimer.h in Headers */,
+				15D35F531C20187E00E3717A /* AAOpusAudioRecorder.h in Headers */,
+				15D35F611C20187E00E3717A /* AAAudioBuffer.h in Headers */,
+				15D35F6A1C20187E00E3717A /* AATimerTarget.h in Headers */,
+				15D35F511C20187E00E3717A /* ASQueue.h in Headers */,
+				15D35F1D1C20185500E3717A /* picture.h in Headers */,
 				06230F421BC95BD200A4807B /* RMPhoneFormat.h in Headers */,
 				069CF4CE1BCB909A00C66E12 /* CLToken.h in Headers */,
 			);
@@ -979,7 +1205,7 @@
 				TargetAttributes = {
 					066A50D11BC4AE63000E606E = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = HVJR44Y5B6;
+						DevelopmentTeam = PR6635TQQ3;
 					};
 				};
 			};
@@ -992,6 +1218,7 @@
 				ru,
 				"zh-Hans",
 				Base,
+				es,
 			);
 			mainGroup = 066A50C81BC4AE63000E606E;
 			productRefGroup = 066A50D31BC4AE63000E606E /* Products */;
@@ -1020,6 +1247,7 @@
 				065975231BC7C84E00B8C7DF /* bg_2.jpg in Resources */,
 				065975521BC7DD3C00B8C7DF /* highlight.min.js in Resources */,
 				065975441BC7D34200B8C7DF /* Localizable.strings in Resources */,
+				15D35F7B1C2037A600E3717A /* begin_record.caf in Resources */,
 				0659754C1BC7DBA000B8C7DF /* notification.caf in Resources */,
 				063074191BD68E370053DEAF /* bg_3_preview.jpg in Resources */,
 			);
@@ -1079,11 +1307,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15D35F781C20273D00E3717A /* AAAudioRecorder.m in Sources */,
+				15D35F181C20185500E3717A /* opus_header.c in Sources */,
 				066A52F81BC52B13000E606E /* AAWallpapperSettingsCell.swift in Sources */,
 				066A51591BC4C14A000E606E /* AASwiftlyLRU.swift in Sources */,
+				15D35F161C20185500E3717A /* diag_range.c in Sources */,
 				066A525E1BC503BB000E606E /* ActorApplicationDelegate.swift in Sources */,
 				066A53101BC53317000E606E /* AAWallpapperPreviewController.swift in Sources */,
 				066A52F21BC52B02000E606E /* AASettingsPrivacyViewController.swift in Sources */,
+				15D35F561C20187E00E3717A /* AAAlertView.m in Sources */,
+				15D35F301C20187200E3717A /* info.c in Sources */,
 				066A532E1BC53406000E606E /* AABubbleBaseFileCell.swift in Sources */,
 				066A514A1BC4BCE0000E606E /* Dispatch.swift in Sources */,
 				066A52401BC4EECD000E606E /* AABigPlaceholderView.swift in Sources */,
@@ -1095,9 +1328,13 @@
 				066A52271BC4EEAC000E606E /* AAContentTableController.swift in Sources */,
 				066A51411BC4BB5C000E606E /* AssosiatedObject.swift in Sources */,
 				066A52E51BC52A20000E606E /* AAGroupViewController.swift in Sources */,
+				15D35F691C20187E00E3717A /* AAModernViewInlineMediaContext.m in Sources */,
 				066A52251BC4EEAC000E606E /* ManagedBindedCells.swift in Sources */,
+				15D35F601C20187E00E3717A /* AAOpusAudioPlayerAU.mm in Sources */,
+				15D35F1C1C20185500E3717A /* picture.c in Sources */,
 				066A532B1BC53406000E606E /* AABubbleCell.swift in Sources */,
 				066A52C71BC521EA000E606E /* AAEditTextController.swift in Sources */,
+				15D35F1E1C20185500E3717A /* wav_io.c in Sources */,
 				065974A51BC621F100B8C7DF /* AAAuthNavigationController.swift in Sources */,
 				066A518E1BC4C383000E606E /* iOSNotificationProvider.swift in Sources */,
 				066A52681BC50E7B000E606E /* AAAuthCodeViewController.swift in Sources */,
@@ -1105,6 +1342,7 @@
 				066A52CC1BC521FA000E606E /* AADialogsListContentController.swift in Sources */,
 				066A52571BC4EF61000E606E /* AACollectionViewController.swift in Sources */,
 				066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */,
+				15D35F631C20187E00E3717A /* AAModernConversationAudioPlayer.m in Sources */,
 				066A527F1BC51ED0000E606E /* AARootSplitViewController.swift in Sources */,
 				066A52481BC4EED5000E606E /* AAProgressView.swift in Sources */,
 				066A51921BC4C383000E606E /* CocoaFileSystemRuntime.swift in Sources */,
@@ -1118,11 +1356,13 @@
 				066A52361BC4EEBA000E606E /* AATitledCell.swift in Sources */,
 				066A52431BC4EECD000E606E /* AATableViewSeparator.swift in Sources */,
 				066A52341BC4EEBA000E606E /* AACommonCell.swift in Sources */,
+				15D35F311C20187200E3717A /* internal.c in Sources */,
 				066A52DF1BC5241F000E606E /* AAWebActionController.swift in Sources */,
 				066A51221BC4B55C000E606E /* AADevice.swift in Sources */,
 				066A532D1BC53406000E606E /* AABubbleServiceCell.swift in Sources */,
 				065974A71BC62B3600B8C7DF /* ViewExtensions.swift in Sources */,
 				066A52F11BC52B02000E606E /* AASettingsNotificationsViewController.swift in Sources */,
+				15D35F5A1C20187E00E3717A /* AATimer.m in Sources */,
 				066A52381BC4EEBA000E606E /* AAHeaderCell.swift in Sources */,
 				066A524B1BC4EF49000E606E /* AAViewController.swift in Sources */,
 				066A51521BC4BE34000E606E /* Logs.swift in Sources */,
@@ -1135,6 +1375,7 @@
 				066A52691BC50E7B000E606E /* AAAuthRegisterViewController.swift in Sources */,
 				066A51501BC4BE06000E606E /* AARegex.swift in Sources */,
 				06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */,
+				15D35F6F1C20196E00E3717A /* AARecordAudioController.swift in Sources */,
 				069CF4D31BCB909A00C66E12 /* CLTokenView.m in Sources */,
 				066A52F71BC52B13000E606E /* AAWallpapperPreviewCell.swift in Sources */,
 				066A51541BC4BE95000E606E /* Images.swift in Sources */,
@@ -1149,31 +1390,40 @@
 				066A52151BC4EE04000E606E /* AAAvatarView.swift in Sources */,
 				066A52591BC4EF61000E606E /* Executions.swift in Sources */,
 				066A519C1BC4C390000E606E /* FMDBIndex.swift in Sources */,
+				15D35F5E1C20187E00E3717A /* AANativeAudioPlayer.m in Sources */,
 				066A52DB1BC52385000E606E /* AAContactActionCell.swift in Sources */,
+				15D35F331C20187200E3717A /* opusfile.c in Sources */,
 				065975391BC7CA7B00B8C7DF /* Bundle.swift in Sources */,
+				15D35F6B1C20187E00E3717A /* AATimerTarget.m in Sources */,
 				066A53111BC53317000E606E /* AACorePreviewController.swift in Sources */,
 				066A519B1BC4C390000E606E /* FMDBKeyValue.swift in Sources */,
+				15D35F521C20187E00E3717A /* ASQueue.m in Sources */,
+				15D35F651C20187E00E3717A /* AAModernConversationAudioPlayerContext.m in Sources */,
 				066A52F31BC52B02000E606E /* AASettingsWallpapper.swift in Sources */,
 				066A53041BC53177000E606E /* AAContactsViewController.swift in Sources */,
 				066A51801BC4C373000E606E /* FMDatabasePool.m in Sources */,
 				066A518F1BC4C383000E606E /* iOSPhoneBookProvider.swift in Sources */,
 				066A530B1BC531A2000E606E /* AAUserViewController.swift in Sources */,
+				15D35F251C20186200E3717A /* bitwise.c in Sources */,
 				066A531A1BC533E7000E606E /* AAAutoCompleteCell.swift in Sources */,
 				065975051BC757A300B8C7DF /* ActorRuntime.swift in Sources */,
 				066A517B1BC4C373000E606E /* FMDatabase.m in Sources */,
 				066A52561BC4EF61000E606E /* AATableViewController.swift in Sources */,
 				066A52D61BC52378000E606E /* AAContactsListContentController.swift in Sources */,
 				065975021BC7534100B8C7DF /* FMDBBridge.swift in Sources */,
+				15D35F351C20187200E3717A /* stream.c in Sources */,
 				066A519E1BC4C390000E606E /* FMDBExtensions.swift in Sources */,
 				066A52E61BC52A20000E606E /* AAAddParticipantViewController.swift in Sources */,
 				066A52C81BC521EA000E606E /* AAEditFieldController.swift in Sources */,
 				066A532C1BC53406000E606E /* AABubbleTextCell.swift in Sources */,
 				066A52261BC4EEAC000E606E /* ManagedCells.swift in Sources */,
 				066A53221BC533F5000E606E /* AAMessagesFlowLayout.swift in Sources */,
+				15D35F541C20187E00E3717A /* AAOpusAudioRecorder.m in Sources */,
 				066A52671BC50E7B000E606E /* AAAuthPhoneViewController.swift in Sources */,
 				066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */,
 				066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */,
 				069CF4CD1BCB909A00C66E12 /* CLBackspaceDetectingTextField.m in Sources */,
+				15D35F1B1C20185500E3717A /* opusenc.m in Sources */,
 				066A515B1BC4C178000E606E /* AAHashMap.swift in Sources */,
 				066A52811BC51ED0000E606E /* AANoSelectionViewController.swift in Sources */,
 				066A52281BC4EEAC000E606E /* AAManagedTableController.swift in Sources */,
@@ -1188,14 +1438,18 @@
 				066A525A1BC4EF61000E606E /* Navigations.swift in Sources */,
 				066A51841BC4C373000E606E /* FMResultSet.m in Sources */,
 				066A514E1BC4BDE4000E606E /* Numbers.swift in Sources */,
+				15D35F671C20187E00E3717A /* NSObject+TGLock.m in Sources */,
+				15D35F5C1C20187E00E3717A /* AAAudioPlayer.m in Sources */,
 				066A51561BC4BEF5000E606E /* AALocalized.swift in Sources */,
 				069CF4CF1BCB909A00C66E12 /* CLToken.m in Sources */,
+				15D35F751C201B6B00E3717A /* AACustomPresentationController.swift in Sources */,
 				066A51441BC4BBAF000E606E /* Strings.swift in Sources */,
 				066A53331BC534F5000E606E /* AAFileTypes.swift in Sources */,
 				066A52FE1BC52FA9000E606E /* AAGroupCreateViewController.swift in Sources */,
 				066A52E71BC52A20000E606E /* AAInviteLinkViewController.swift in Sources */,
 				066A52241BC4EEAC000E606E /* AAManagedRange.swift in Sources */,
 				066A50E21BC4AF9F000E606E /* ActorSDK.swift in Sources */,
+				15D35F761C201B6B00E3717A /* AACustomPresentationAnimationController.swift in Sources */,
 				06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */,
 				06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */,
 				066A516D1BC4C366000E606E /* ActorCoreExt.swift in Sources */,
@@ -1211,6 +1465,7 @@
 				066A52551BC4EF61000E606E /* AANavigationController.swift in Sources */,
 				066A52421BC4EECD000E606E /* AATableViewHeader.swift in Sources */,
 				066A52CD1BC521FA000E606E /* AADialogsListContentControllerDelegate.swift in Sources */,
+				15D35F261C20186200E3717A /* framing.c in Sources */,
 				066A52231BC4EEAC000E606E /* AAManagedSection.swift in Sources */,
 				066A52D11BC52204000E606E /* AADialogCell.swift in Sources */,
 				066A51901BC4C383000E606E /* CocoaNetworkRuntime.swift in Sources */,
@@ -1233,6 +1488,7 @@
 				065975471BC7D34400B8C7DF /* ru */,
 				065975481BC7D34600B8C7DF /* zh-Hans */,
 				0659754D1BC7DCED00B8C7DF /* Base */,
+				15D35F7C1C204BB900E3717A /* es */,
 			);
 			name = Localizable.strings;
 			path = Resources;
@@ -1336,6 +1592,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1367,8 +1624,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorSDK;
 				PRODUCT_NAME = ActorSDK;
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -1380,6 +1639,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1409,8 +1669,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorSDK;
 				PRODUCT_NAME = ActorSDK;
+				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
