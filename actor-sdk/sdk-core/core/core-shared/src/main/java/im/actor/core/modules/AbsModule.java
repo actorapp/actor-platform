@@ -11,12 +11,14 @@ import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
+import im.actor.core.entity.content.internal.StickersPack;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.storage.KeyValueEngine;
+import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.PreferencesStorage;
 
 public abstract class AbsModule {
@@ -24,6 +26,7 @@ public abstract class AbsModule {
     public static final String STORAGE_DIALOGS = "dialogs";
     public static final String STORAGE_DIALOGS_DESC = "dialogs_desc";
     public static final String STORAGE_USERS = "users";
+    public static final String STORAGE_STICKER_PACKS = "sticker_packs";
     public static final String STORAGE_GROUPS = "groups";
     public static final String STORAGE_DOWNLOADS = "downloads";
     public static final String STORAGE_CONTACTS = "contacts";
@@ -115,6 +118,14 @@ public abstract class AbsModule {
 
     public KeyValueEngine<Group> groups() {
         return context.getGroupsModule().getGroups();
+    }
+
+    public KeyValueEngine<StickersPack> stickerPacksKeyValue() {
+        return context.getStickersModule().getStickerPacksKeyValue();
+    }
+
+    public ListEngine<StickersPack> stickerPacksList() {
+        return context.getStickersModule().getStickerPacksList();
     }
 
     public ApiPeer buildApiPeer(Peer peer) {
