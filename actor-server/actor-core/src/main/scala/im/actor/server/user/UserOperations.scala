@@ -290,7 +290,7 @@ private[user] sealed trait AuthCommands {
     (processorRegion.ref ? NewAuth(userId, authId)).mapTo[NewAuthAck]
   }
 
-  def removeAuth( userId: Int, authId: Long): Future[RemoveAuthAck] = (processorRegion.ref ? RemoveAuth(userId, authId)).mapTo[RemoveAuthAck]
+  def removeAuth(userId: Int, authId: Long): Future[RemoveAuthAck] = (processorRegion.ref ? RemoveAuth(userId, authId)).mapTo[RemoveAuthAck]
 
   def logoutByAppleToken(token: Array[Byte])(implicit db: Database): Future[Unit] = {
     db.run(p.push.ApplePushCredentialsRepo.findByToken(token)) flatMap { creds ⇒

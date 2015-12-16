@@ -1,6 +1,6 @@
 package im.actor.server.file
 
-import java.io.File
+import java.io.{ FileOutputStream, File }
 import java.nio.file.{ Files, Path }
 
 import akka.actor.ActorSystem
@@ -53,11 +53,22 @@ object FileUtils {
     } yield (file, size)
   }
 
-  def s3Key(id: Long, name: String): String = {
-    if (name.isEmpty) {
-      s"file_${id}"
-    } else {
-      s"file_${id}/${name}"
+  def concatFiles(dir: File, fileNames: Seq[String])(implicit ec: ExecutionContext): Future[File] = {
+    Future {
+      blocking {
+        val dirPath = dir.toPath
+        val concatFile = dirPath.resolve("concatenated").toFile
+
+        val outStream = new FileOutputStream(concatFile)
+
+        fileNames foreach { fileName ⇒
+          Files.copy(dirPath.resolve(fileName), outStream)
+        }
+
+        outStream.close()
+
+        concatFile
+      }
     }
   }
 }

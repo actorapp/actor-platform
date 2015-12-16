@@ -1,5 +1,7 @@
 package im.actor.server.api.http
 
+import im.actor.config.ActorConfig
+
 import scala.util.{ Success, Try }
 
 import com.github.kxbmap.configs._
@@ -19,4 +21,6 @@ object HttpApiConfig {
     } yield HttpApiConfig(
       interface, port, scheme, host, staticFiles, keystore
     )
+
+  def load: Try[HttpApiConfig] = load(ActorConfig.load().getConfig("http"))
 }
