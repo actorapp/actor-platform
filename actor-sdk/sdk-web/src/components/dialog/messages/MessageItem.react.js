@@ -10,13 +10,16 @@ import addons from 'react/addons';
 import classnames from 'classnames';
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
 import PeerUtils from '../../../utils/PeerUtils';
+import { MessageContentTypes } from '../../../constants/ActorAppConstants';
 
 import VisibilitySensor from 'react-visibility-sensor';
 
 import DialogActionCreators from '../../../actions/DialogActionCreators';
 import MessageActionCreators from '../../../actions/MessageActionCreators';
 import ActivityActionCreators from '../../../actions/ActivityActionCreators';
-import { MessageContentTypes } from '../../../constants/ActorAppConstants';
+import ComposeActionCreators from '../../../actions/ComposeActionCreators';
+
+import UserStore from '../../../stores/UserStore';
 
 import AvatarItem from '../../common/AvatarItem.react';
 import Text from './Text.react';
@@ -43,6 +46,7 @@ class MessageItem extends Component {
     super(props);
 
     this.state = {
+      isThisMyMessage: UserStore.getMyId() === props.message.sender.peer.id,
       isActionsShown: false
     };
   }
@@ -67,6 +71,18 @@ class MessageItem extends Component {
     MessageActionCreators.deleteMessage(peer, message.rid);
   };
 
+  handleReply = () => {
+    const { message } = this.props;
+    const info = UserStore.getUser(message.sender.peer.id);
+    const replyText = info.nick ? `@${info.nick}: ` : `${info.name}: `;
+    ComposeActionCreators.pasteText(replyText);
+  };
+
+  handleQuote = () => {
+    const { message } = this.props;
+    ComposeActionCreators.pasteText(`> ${message.content.text} \n`);
+  };
+
   showActions = () => {
     this.setState({isActionsShown: true});
     document.addEventListener('click', this.hideActions, false);
@@ -79,6 +95,7 @@ class MessageItem extends Component {
 
   render() {
     const { message, isSameSender, onVisibilityChange, peer } = this.props;
+    const { isThisMyMessage, isActionsShown } = this.state;
 
     let header = null,
         messageContent = null,
@@ -90,8 +107,8 @@ class MessageItem extends Component {
       'message--same-sender': isSameSender
     });
 
-    let actionsDropdownClassName = classnames('message__actions__menu dropdown dropdown--small', {
-      'dropdown--opened': this.state.isActionsShown
+    const actionsDropdownClassName = classnames('message__actions__menu dropdown dropdown--small', {
+      'dropdown--opened': isActionsShown
     });
 
     if (isSameSender) {
@@ -189,9 +206,20 @@ class MessageItem extends Component {
               <li className="dropdown__menu__item hide">
                 <i className="icon material-icons">star_rate</i> {this.getIntlMessage('message.pin')}
               </li>
-              <li className="dropdown__menu__item hide">
-                <i className="icon material-icons">reply</i> {this.getIntlMessage('message.reply')}
-              </li>
+              {
+                !isThisMyMessage
+                  ? <li className="dropdown__menu__item" onClick={this.handleReply}>
+                      <i className="icon material-icons">reply</i> {this.getIntlMessage('message.reply')}
+                    </li>
+                  : null
+              }
+              {
+                message.content.content === MessageContentTypes.TEXT
+                  ? <li className="dropdown__menu__item" onClick={this.handleQuote}>
+                      <i className="icon material-icons">format_quote</i> {this.getIntlMessage('message.quote')}
+                    </li>
+                  : null
+              }
               <li className="dropdown__menu__item hide">
                 <i className="icon material-icons">forward</i> {this.getIntlMessage('message.forward')}
               </li>

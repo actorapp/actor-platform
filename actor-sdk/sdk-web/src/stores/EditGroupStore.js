@@ -33,11 +33,17 @@ class EditGroupStore extends Store {
     return _title;
   }
 
+  isAdmin() {
+    const myID = ActorClient.getUid();
+    return _group.adminId === myID;
+  }
+
   setGroup(group) {
     _group = group;
     _title = _group.name;
     _about = _group.about;
   }
+
   __onDispatch = action => {
     switch (action.type) {
       case ActionTypes.GROUP_EDIT_MODAL_SHOW:

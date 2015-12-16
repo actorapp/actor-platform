@@ -230,6 +230,13 @@ public class ActorBinder {
         return b;
     }
 
+    public <T> Binding bind(Value<T> value, ValueChangedListener<T> listener, boolean notify) {
+        value.subscribe(listener, notify);
+        Binding b = new Binding(value, listener);
+        bindings.add(b);
+        return b;
+    }
+
     public <T> void bind(Value<T> value, boolean notify, ValueChangedListener<T> listener) {
         value.subscribe(listener, notify);
         bindings.add(new Binding(value, listener));

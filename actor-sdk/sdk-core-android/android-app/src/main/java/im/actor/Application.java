@@ -25,9 +25,8 @@ public class Application extends ActorSDKApplication {
         ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
         ActorSDK.sharedActor().setPushId(209133700967L);
 
-//        ArrayList<String> endpoints  = new ArrayList<String>();
-//        endpoints.add("foo1");
-//        endpoints.add("foo2");
+//        ArrayList<String> endpoints = new ArrayList<String>();
+//        endpoints.add("foo");
 //        ActorSDK.sharedActor().setEndpoints(endpoints);
 
         ActorStyle style = ActorSDK.sharedActor().style;
