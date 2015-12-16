@@ -96,7 +96,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       val emailConfig = EmailConfig.load.get
       val gateConfig = GateConfig.load.get
       val groupInviteConfig = GroupInviteConfig.load(serverConfig.getConfig("modules.messaging.groups.invite"))
-      val webappConfig = HttpApiConfig.load(serverConfig.getConfig("http")).toOption.get
+      val httpConfig = HttpApiConfig.load(serverConfig.getConfig("http")).toOption.get
       val oauth2GoogleConfig = OAuth2GoogleConfig.load(serverConfig.getConfig("services.google.oauth"))
       val richMessageConfig = RichMessageConfig.load(serverConfig.getConfig("modules.enricher")).get
       val sequenceConfig = SequenceServiceConfig.load().get
@@ -213,7 +213,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       val profileService = new ProfileServiceImpl
 
       system.log.debug("Starting IntegrationsService")
-      val integrationsService = new IntegrationsServiceImpl(s"${webappConfig.scheme}://${webappConfig.host}")
+      val integrationsService = new IntegrationsServiceImpl(s"${httpConfig.scheme}://${httpConfig.host}")
 
       system.log.debug("Starting WebactionsService")
       val webactionsService = new WebactionsServiceImpl
