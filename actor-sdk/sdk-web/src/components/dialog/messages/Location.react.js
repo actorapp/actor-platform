@@ -7,7 +7,10 @@ import ActorClient from '../../../utils/ActorClient';
 
 const MAP_SIZE = '300x100';
 
-export default class Geolocation extends Component {
+/**
+ * Class that represent a component for display location messages content
+ */
+class Location extends Component {
   constructor(props) {
     super(props);
   }
@@ -17,7 +20,7 @@ export default class Geolocation extends Component {
     className: PropTypes.string
   };
 
-  handleClick = (event) => {
+  handleMapClick = (event) => {
     const { content } = this.props;
     const linkToMap = `https://maps.google.com/maps?q=loc:${content.latitude},${content.longitude}`;
 
@@ -34,10 +37,12 @@ export default class Geolocation extends Component {
 
     return (
       <div className={className}>
-        <div className="location" onClick={this.handleClick}>
+        <div className="location" onClick={this.handleMapClick}>
           <img src={imageSrc} alt="Location"/>
         </div>
       </div>
     );
   }
 }
+
+export default Location;

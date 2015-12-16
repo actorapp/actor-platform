@@ -10,10 +10,10 @@ import { lightbox } from '../../../utils/ImageUtils';
 let cache = {};
 
 /**
- * Class representing photo message component
- * @todo: move info about cache to store;
+ * Class that represents a component for display photo message content
+ * @todo move info about cache to store;
  */
-class Image extends Component {
+class Photo extends Component {
   static propTypes = {
     content: PropTypes.object.isRequired,
     className: PropTypes.string,
@@ -104,4 +104,4 @@ class Image extends Component {
   }
 }
 
-export default Image;
+export default Photo;
