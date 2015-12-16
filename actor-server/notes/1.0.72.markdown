@@ -1,0 +1,1 @@
+* deliver user presence every minute to all consumers
