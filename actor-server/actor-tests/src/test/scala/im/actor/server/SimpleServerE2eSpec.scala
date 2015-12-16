@@ -2,6 +2,7 @@ package im.actor.server
 
 import java.net.InetSocketAddress
 
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc.auth._
@@ -32,7 +33,7 @@ class SimpleServerE2eSpec extends ActorSuite(
       |}
     """.stripMargin
   ))
-) with ImplicitFileStorageAdapter with ActorSerializerPrepare {
+) with ActorSerializerPrepare {
   behavior of "Server"
 
   it should "connect and Handshake" in Server.e1
@@ -58,6 +59,7 @@ class SimpleServerE2eSpec extends ActorSuite(
     Session.startRegion(Session.props)
     implicit val sessionRegion = Session.startRegionProxy()
 
+    private val awsCredentials = new EnvironmentVariableCredentialsProvider()
     implicit val transferManager = new TransferManager(awsCredentials)
     implicit val ec: ExecutionContext = system.dispatcher
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)

@@ -2,7 +2,7 @@ package im.actor.server.api.rpc.service
 
 import java.nio.file.{ Files, Paths }
 
-import im.actor.server.file.ImageUtils
+import im.actor.server.file.{ FileStorageExtension, ImageUtils }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -19,7 +19,6 @@ import im.actor.server.api.rpc.service.profile.{ ProfileErrors, ProfileServiceIm
 
 final class ProfileServiceSpec
   extends BaseAppSuite
-  with ImplicitFileStorageAdapter
   with ImplicitSessionRegion
   with ImplicitAuthService {
   behavior of "Profile Service"
@@ -42,6 +41,8 @@ final class ProfileServiceSpec
 
   implicit lazy val service = new ProfileServiceImpl
   implicit lazy val filesService = new FilesServiceImpl
+
+  private val fsAdapter = FileStorageExtension(system).fsAdapter
 
   private val invalidImageFile = Paths.get(getClass.getResource("/invalid-avatar.jpg").toURI).toFile
   private val tooLargeImageFile = Paths.get(getClass.getResource("/too-large-avatar.jpg").toURI).toFile
