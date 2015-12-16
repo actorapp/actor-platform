@@ -25,12 +25,7 @@ import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
 
 object HttpApiFrontend {
-  private val corsHeaders = List(
-    `Access-Control-Allow-Origin`.`*`,
-    `Access-Control-Allow-Methods`(GET, POST),
-    `Access-Control-Allow-Headers`("*"),
-    `Access-Control-Allow-Credentials`(true)
-  )
+  import HttpApiHelpers._
 
   private val IdleTimeout = 15.minutes
 
