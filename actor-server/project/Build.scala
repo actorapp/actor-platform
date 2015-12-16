@@ -43,7 +43,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   ) ++ compilerWarnings
 
   lazy val defaultSettings =
-    buildSettings ++ Formatting.formatSettings ++
+    buildSettings ++
       PB.protobufSettings ++ Seq(
       //PB.javaConversions in PB.protobufConfig := true,
       libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.17" % PB.protobufConfig,

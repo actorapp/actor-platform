@@ -65,7 +65,7 @@ abstract class BotBase extends BotBaseBase {
         case (replyTo, rq) ⇒
 
           val reply = rsp.body match {
-            case err: BotError   ⇒ Status.Failure(err)
+            case err: BotError ⇒ Status.Failure(err)
             case BotSuccess(obj) ⇒ rq.readResponse(obj)
           }
           replyTo ! reply
