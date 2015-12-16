@@ -23,8 +23,8 @@ class FileStorageExtensionImpl(system: ActorSystem) extends FileStorageExtension
 
   def init(): FileStorageAdapter =
     (for {
-      fqcn ← Try(ActorConfig.load().getString("modules.files.default-adapter"))
-      _ = system.log.debug("Default file adapter is: {}", fqcn)
+      fqcn ← Try(ActorConfig.load().getString("modules.files.adapter"))
+      _ = system.log.debug("File adapter is: {}", fqcn)
       clazz ← Try(Class.forName(fqcn).asSubclass(classOf[FileStorageAdapter]))
     } yield clazz.getDeclaredConstructor(classOf[ActorSystem]).newInstance(system)) match {
       case Success(adapter) ⇒ adapter
