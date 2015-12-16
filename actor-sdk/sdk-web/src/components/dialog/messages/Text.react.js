@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import memoize from 'memoizee';
 import ActorClient from '../../../utils/ActorClient';
 
@@ -29,11 +29,13 @@ const memoizedProcessText = memoize(processText, {
 
 /**
  * Class that represents a component for display text message content
+ * @param {string} text Message text
+ * @param {string} className Component class name
  */
 class Text extends Component {
   static propTypes = {
-    content: React.PropTypes.object.isRequired,
-    className: React.PropTypes.string
+    text: PropTypes.string.isRequired,
+    className: PropTypes.string
   };
 
   constructor(props) {
@@ -41,11 +43,11 @@ class Text extends Component {
   }
 
   render() {
-    const { content, className } = this.props;
+    const { text, className } = this.props;
 
     return (
-      <div className={className}
-           dangerouslySetInnerHTML={{__html: memoizedProcessText(content.text)}}>
+      <div className={className}>
+        <div className="text" dangerouslySetInnerHTML={{__html: memoizedProcessText(text)}}/>
       </div>
     );
   }

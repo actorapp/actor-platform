@@ -177,68 +177,8 @@ $maximum-image-height: 400px;
   }
   &__content {
     line-height: $message-line-height;
-    &--service {
-      font-size: 14px;
-      font-style: italic;
-
-      color: $message-service-text-color;
-    }
-    &--unsupported {
-      color: rgba(red, .3);
-    }
-    &--text {
-      font-size: 15px;
-
-      margin: 0;
-
-      color: $message-text-color;
-
-      // Styles for markdown
-      p {
-        margin: 0 0 7px;
-
-        word-wrap: break-word;
-        //word-break: keep-all;
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-      ul,
-      ol {
-        margin: 6px 0;
-        padding-left: 24px;
-      }
-      h1,
-      h2,
-      h3,
-      h4,
-      h5 {
-        margin: 6px 0;
-      }
-      blockquote {
-        margin: 8px 0 16px 12px;
-        padding-left: 16px;
-
-        border-left: 3px solid $body-base-color;
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-      a {
-        text-decoration: none;
-
-        color: $body-base-color;
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-      code,
-      kbd,
-      pre,
-      samp {
-        margin: 0 0 7px;
-      }
-    }
+    &--service {}
+    &--text {}
     &--photo {
       position: relative;
 
@@ -618,6 +558,65 @@ $maximum-image-height: 400px;
     }
   }
 
+  .service {
+    font-size: 14px;
+    font-style: italic;
+
+    color: $message-service-text-color;
+  }
+  .text {
+    font-size: 15px;
+
+    margin: 0;
+
+    color: $message-text-color;
+
+    // Styles for markdown
+    p {
+      margin: 0 0 7px;
+
+      word-wrap: break-word;
+      //word-break: keep-all;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    ul,
+    ol {
+      margin: 6px 0;
+      padding-left: 24px;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      margin: 6px 0;
+    }
+    blockquote {
+      margin: 8px 0 16px 12px;
+      padding-left: 16px;
+
+      border-left: 3px solid $body-base-color;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    a {
+      text-decoration: none;
+
+      color: $body-base-color;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    code,
+    kbd,
+    pre,
+    samp {
+      margin: 0 0 7px;
+    }
+  }
   .photo {
     line-height: 0;
     max-width: 100%;
