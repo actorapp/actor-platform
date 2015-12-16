@@ -5,11 +5,13 @@
 import React, { Component, PropTypes } from 'react';
 
 /**
- * Class that represents a component for display text message content
+ * Class that represents a component for display service message content
+ * @param {string} text Service message text
+ * @param {string} className Component class name
  */
-export default class Text extends Component {
+class Service extends Component {
   static propTypes = {
-    text: PropTypes.object.isRequired,
+    text: PropTypes.string.isRequired,
     className: PropTypes.string
   };
 
@@ -22,10 +24,10 @@ export default class Text extends Component {
 
     return (
       <div className={className}>
-        <div className="text" style={{color: 'red'}}>
-          <p>{text}</p>
-        </div>
+        <div className="service">{text}</div>
       </div>
     );
   }
 }
+
+export default Service;
