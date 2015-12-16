@@ -55,18 +55,20 @@ object FileUtils {
 
   def concatFiles(dir: File, fileNames: Seq[String])(implicit ec: ExecutionContext): Future[File] = {
     Future {
-      val dirPath = dir.toPath
-      val concatFile = dirPath.resolve("concatenated").toFile
+      blocking {
+        val dirPath = dir.toPath
+        val concatFile = dirPath.resolve("concatenated").toFile
 
-      val outStream = new FileOutputStream(concatFile)
+        val outStream = new FileOutputStream(concatFile)
 
-      fileNames foreach { fileName ⇒
-        Files.copy(dirPath.resolve(fileName), outStream)
+        fileNames foreach { fileName ⇒
+          Files.copy(dirPath.resolve(fileName), outStream)
+        }
+
+        outStream.close()
+
+        concatFile
       }
-
-      outStream.close()
-
-      concatFile
     }
   }
 }
