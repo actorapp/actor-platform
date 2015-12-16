@@ -201,12 +201,12 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
                 StickerView sv;
                 if (s != null && s.getFileReference256() != null) {
 
-                    sv = stickersCache.get(s.getFileReference256().getFileId());
+                    sv = stickersCache.get(s.getFileReference128().getFileId());
                     if (sv == null) {
                         sv = new StickerView(context);
                         sv.setPadding(STICKER_PADDING, STICKER_PADDING, STICKER_PADDING, STICKER_PADDING);
-                        sv.bind(s.getFileReference256(), STICKER_SIZE);
-                        stickersCache.put(s.getFileReference256().getFileId(), sv);
+                        sv.bind(s.getFileReference128(), STICKER_SIZE);
+                        stickersCache.put(s.getFileReference128().getFileId(), sv);
 
                     } else if (sv.isLoaded()) {
                         if (sv.getParent() != null) {
@@ -221,7 +221,6 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
                             keyboard.onStickerClicked(s);
                         }
                     });
-
                     ll.addView(sv, stikerlp);
                 }
             }
