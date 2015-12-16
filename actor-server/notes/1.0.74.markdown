@@ -1,0 +1,2 @@
+* Api schema update
+* Added attaches to TextModernMessage

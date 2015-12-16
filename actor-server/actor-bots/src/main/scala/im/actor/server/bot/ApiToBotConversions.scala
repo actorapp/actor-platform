@@ -37,9 +37,15 @@ trait ApiToBotConversions {
 
   implicit def toTextMessageEx(ex: ApiTextMessageEx): TextMessageEx =
     ex match {
-      case ApiTextModernMessage(text, senderNameOverride, senderPhotoOverride, style) ⇒ TextModernMessage(text, senderNameOverride, senderPhotoOverride, style)
-      case ApiTextExMarkdown(text) ⇒ TextModernMessage(Some(text), None, None, None)
+      case ApiTextModernMessage(text, senderNameOverride, senderPhotoOverride, style, attaches) ⇒ TextModernMessage(text, senderNameOverride, toAvatar(senderPhotoOverride), style, attaches)
+      case ApiTextExMarkdown(text) ⇒ TextModernMessage(Some(text), None, None, None, Vector.empty)
     }
+
+  implicit def toModernAttach(a: ApiTextModernAttach): TextModernAttach =
+    TextModernAttach(a.title, a.titleUrl, a.titleIcon, a.text, a.style, a.fields)
+
+  implicit def toModernAttach(as: IndexedSeq[ApiTextModernAttach]): IndexedSeq[TextModernAttach] =
+    as map toModernAttach
 
   implicit def toTextMessageEx(ex: Option[ApiTextMessageEx]): Option[TextMessageEx] =
     ex map toTextMessageEx
