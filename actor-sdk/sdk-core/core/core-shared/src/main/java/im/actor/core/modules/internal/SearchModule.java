@@ -5,7 +5,6 @@
 package im.actor.core.modules.internal;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,6 @@ import im.actor.core.api.ApiSearchPeerTypeCondition;
 import im.actor.core.api.ApiSearchPieceText;
 import im.actor.core.api.rpc.RequestMessageSearch;
 import im.actor.core.api.rpc.RequestPeerSearch;
-import im.actor.core.api.rpc.ResponseMessageSearch;
 import im.actor.core.api.rpc.ResponseMessageSearchResponse;
 import im.actor.core.api.rpc.ResponsePeerSearch;
 import im.actor.core.entity.Dialog;
@@ -39,7 +37,6 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
-import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
