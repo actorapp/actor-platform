@@ -595,6 +595,15 @@ object BotMessages {
     style:               Option[ParagraphStyle],
     attaches:            IndexedSeq[TextModernAttach]
   ) extends TextMessageEx {
+    def this(
+      text:                String,
+      senderNameOverride:  String,
+      senderPhotoOverride: Avatar,
+      style:               ParagraphStyle,
+      attaches:            java.util.List[TextModernAttach]
+    ) =
+      this(Option(text), Option(senderNameOverride), Option(style), attaches)
+
     def getText = text.asJava
     def getSenderNameOverride = senderNameOverride.asJava
     def getSenderPhotoOverride = senderPhotoOverride.asJava
