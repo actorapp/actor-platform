@@ -5,6 +5,7 @@
 $action-icon-size: 20px;
 $contact-avatar-size: 48px;
 $like-red: rgb(226, 38, 77);
+$maximum-image-height: 400px;
 
 @keyframes bounceheart {
   0% {
@@ -257,35 +258,6 @@ $like-red: rgb(226, 38, 77);
         }
         .photo--preview {
           display: none !important;
-        }
-      }
-      .photo {
-        line-height: 0;
-
-        max-width: 100%;
-        height: auto;
-        &--preview {
-          display: block;
-
-          width: 100%;
-
-          transform: scale(1.02);
-
-          filter: url(#blur-effect);
-          filter: blur(3px);
-          filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius='3');
-        }
-        &--original {
-          visibility: hidden;
-
-          width: 100%;
-          height: auto;
-
-          cursor: pointer;
-          transition: transform $default-transition-duration $default-transition-timing;
-          transform: scale(1.02);
-
-          opacity: 0;
         }
       }
       .preloader {
@@ -640,6 +612,36 @@ $like-red: rgb(226, 38, 77);
     }
   }
 
+  .photo {
+    line-height: 0;
+    max-width: 100%;
+    max-height: $maximum-image-height;
+    height: auto;
+    width: auto;
+    &--preview {
+      display: block;
+
+      width: 100%;
+
+      transform: scale(1.02);
+
+      filter: url(#blur-effect);
+      filter: blur(3px);
+      filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius='3');
+    }
+    &--original {
+      visibility: hidden;
+
+      width: auto;
+      height: auto;
+
+      cursor: pointer;
+      transition: transform $default-transition-duration $default-transition-timing;
+      transform: scale(1.02);
+
+      opacity: 0;
+    }
+  }
   .document {
     line-height: 18px;
 
