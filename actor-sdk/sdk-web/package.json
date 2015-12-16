@@ -51,7 +51,7 @@
     "publish"
   ],
   "dependencies": {
-    "actor-js": "1.0.53",
+    "actor-js": "latest",
     "assign-deep": "0.4.2",
     "babel-polyfill": "^6.2.0",
     "bugsnag-js": "^2.4.8",

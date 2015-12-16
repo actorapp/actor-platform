@@ -72,9 +72,11 @@ class MessagesSection extends Component {
 
   getMessagesListItem = (message, index) => {
     const { isOnlyOneDay } = this.state;
+    const { messages } = this.props;
     const date = message.fullDate;
 
     const isFirstMessage = index === 0;
+    const isThisLastMessage = index > (messages.length - 1) - 3;
     const isNewDay = date.getDate() !== lastMessageDate.getDate();
 
     let dateDivider = null;
@@ -90,6 +92,7 @@ class MessagesSection extends Component {
                    message={message}
                    isNewDay={isNewDay}
                    isSameSender={isSameSender}
+                   isThisLastMessage={isThisLastMessage}
                    onVisibilityChange={this.onMessageVisibilityChange}
                    peer={this.props.peer}/>
     );
