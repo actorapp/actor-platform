@@ -228,6 +228,11 @@
 		15D35F761C201B6B00E3717A /* AACustomPresentationAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F741C201B6B00E3717A /* AACustomPresentationAnimationController.swift */; };
 		15D35F781C20273D00E3717A /* AAAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F3D1C20187E00E3717A /* AAAudioRecorder.m */; };
 		15D35F7B1C2037A600E3717A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = 15D35F7A1C20378E00E3717A /* begin_record.caf */; };
+		15F89F011C211FDE00776ACD /* libopus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15F89F001C211FDE00776ACD /* libopus.a */; };
+		15F89F071C211FED00776ACD /* opus_defines.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F031C211FED00776ACD /* opus_defines.h */; };
+		15F89F081C211FED00776ACD /* opus_multistream.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F041C211FED00776ACD /* opus_multistream.h */; };
+		15F89F091C211FED00776ACD /* opus_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F051C211FED00776ACD /* opus_types.h */; };
+		15F89F0A1C211FED00776ACD /* opus.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F061C211FED00776ACD /* opus.h */; };
 		697B3A12994653F581459F63 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */; };
 /* End PBXBuildFile section */
 
@@ -460,6 +465,11 @@
 		15D35F741C201B6B00E3717A /* AACustomPresentationAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AACustomPresentationAnimationController.swift; sourceTree = "<group>"; };
 		15D35F7A1C20378E00E3717A /* begin_record.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = begin_record.caf; sourceTree = "<group>"; };
 		15D35F7C1C204BB900E3717A /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		15F89F001C211FDE00776ACD /* libopus.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libopus.a; sourceTree = "<group>"; };
+		15F89F031C211FED00776ACD /* opus_defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opus_defines.h; sourceTree = "<group>"; };
+		15F89F041C211FED00776ACD /* opus_multistream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opus_multistream.h; sourceTree = "<group>"; };
+		15F89F051C211FED00776ACD /* opus_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opus_types.h; sourceTree = "<group>"; };
+		15F89F061C211FED00776ACD /* opus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opus.h; sourceTree = "<group>"; };
 		22BAEA363892E475F59B7E9F /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		333F91AE5263DD450666CC87 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 		9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -472,6 +482,7 @@
 			files = (
 				06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */,
 				066A52001BC4E0B0000E606E /* libsqlite3.tbd in Frameworks */,
+				15F89F011C211FDE00776ACD /* libopus.a in Frameworks */,
 				697B3A12994653F581459F63 /* Pods_ActorSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1011,6 +1022,10 @@
 		15D35F0A1C20182900E3717A /* AudioRecorder */ = {
 			isa = PBXGroup;
 			children = (
+				15F89EFE1C211FCE00776ACD /* libopus */,
+				15D35F291C20186400E3717A /* opusfile */,
+				15D35F201C20185B00E3717A /* ogg */,
+				15D35F0B1C20184700E3717A /* opusenc */,
 				15D35F361C20187E00E3717A /* ASQueue.h */,
 				15D35F371C20187E00E3717A /* ASQueue.m */,
 				15D35F381C20187E00E3717A /* AAOpusAudioRecorder.h */,
@@ -1038,9 +1053,6 @@
 				15D35F4E1C20187E00E3717A /* AAModernViewInlineMediaContext.m */,
 				15D35F4F1C20187E00E3717A /* AATimerTarget.h */,
 				15D35F501C20187E00E3717A /* AATimerTarget.m */,
-				15D35F291C20186400E3717A /* opusfile */,
-				15D35F201C20185B00E3717A /* ogg */,
-				15D35F0B1C20184700E3717A /* opusenc */,
 			);
 			name = AudioRecorder;
 			sourceTree = "<group>";
@@ -1104,6 +1116,34 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		15F89EFE1C211FCE00776ACD /* libopus */ = {
+			isa = PBXGroup;
+			children = (
+				15F89F021C211FE100776ACD /* headers */,
+				15F89EFF1C211FD700776ACD /* lib */,
+			);
+			name = libopus;
+			sourceTree = "<group>";
+		};
+		15F89EFF1C211FD700776ACD /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				15F89F001C211FDE00776ACD /* libopus.a */,
+			);
+			name = lib;
+			sourceTree = "<group>";
+		};
+		15F89F021C211FE100776ACD /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				15F89F031C211FED00776ACD /* opus_defines.h */,
+				15F89F041C211FED00776ACD /* opus_multistream.h */,
+				15F89F051C211FED00776ACD /* opus_types.h */,
+				15F89F061C211FED00776ACD /* opus.h */,
+			);
+			name = headers;
+			sourceTree = "<group>";
+		};
 		2F428D134E194A828C3DF863 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1132,6 +1172,7 @@
 			files = (
 				069CF4D21BCB909A00C66E12 /* CLTokenView.h in Headers */,
 				066A51831BC4C373000E606E /* FMResultSet.h in Headers */,
+				15F89F091C211FED00776ACD /* opus_types.h in Headers */,
 				066A517D1BC4C373000E606E /* FMDatabaseAdditions.h in Headers */,
 				069CF4D01BCB909A00C66E12 /* CLTokenInputView.h in Headers */,
 				066A517F1BC4C373000E606E /* FMDatabasePool.h in Headers */,
@@ -1146,10 +1187,12 @@
 				15D35F571C20187E00E3717A /* AAAudioRecorder.h in Headers */,
 				15D35F641C20187E00E3717A /* AAModernConversationAudioPlayerContext.h in Headers */,
 				15D35F681C20187E00E3717A /* AAModernViewInlineMediaContext.h in Headers */,
+				15F89F071C211FED00776ACD /* opus_defines.h in Headers */,
 				15D35F341C20187200E3717A /* opusfile.h in Headers */,
 				15D35F661C20187E00E3717A /* NSObject+TGLock.h in Headers */,
 				15D35F281C20186200E3717A /* os_types.h in Headers */,
 				15D35F191C20185500E3717A /* opus_header.h in Headers */,
+				15F89F081C211FED00776ACD /* opus_multistream.h in Headers */,
 				15D35F1F1C20185500E3717A /* wav_io.h in Headers */,
 				15D35F171C20185500E3717A /* diag_range.h in Headers */,
 				15D35F5F1C20187E00E3717A /* AAOpusAudioPlayerAU.h in Headers */,
@@ -1162,6 +1205,7 @@
 				15D35F531C20187E00E3717A /* AAOpusAudioRecorder.h in Headers */,
 				15D35F611C20187E00E3717A /* AAAudioBuffer.h in Headers */,
 				15D35F6A1C20187E00E3717A /* AATimerTarget.h in Headers */,
+				15F89F0A1C211FED00776ACD /* opus.h in Headers */,
 				15D35F511C20187E00E3717A /* ASQueue.h in Headers */,
 				15D35F1D1C20185500E3717A /* picture.h in Headers */,
 				06230F421BC95BD200A4807B /* RMPhoneFormat.h in Headers */,
@@ -1613,7 +1657,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_NO_PIE = NO;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/",
+					"$(PROJECT_DIR)/ActorSDK/Sources/Utils",
+				);
 				MACH_O_TYPE = mh_dylib;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -1659,7 +1706,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_NO_PIE = NO;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/",
+					"$(PROJECT_DIR)/ActorSDK/Sources/Utils",
+				);
 				MACH_O_TYPE = mh_dylib;
 				OTHER_LDFLAGS = (
 					"-lactor",
