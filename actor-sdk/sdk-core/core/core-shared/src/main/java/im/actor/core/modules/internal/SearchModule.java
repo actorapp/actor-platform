@@ -23,6 +23,7 @@ import im.actor.core.api.ApiSearchPieceText;
 import im.actor.core.api.rpc.RequestMessageSearch;
 import im.actor.core.api.rpc.RequestPeerSearch;
 import im.actor.core.api.rpc.ResponseMessageSearch;
+import im.actor.core.api.rpc.ResponseMessageSearchResponse;
 import im.actor.core.api.rpc.ResponsePeerSearch;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.MessageSearchEntity;
@@ -114,9 +115,9 @@ public class SearchModule extends AbsModule {
         return new Command<List<MessageSearchEntity>>() {
             @Override
             public void start(final CommandCallback<List<MessageSearchEntity>> callback) {
-                request(new RequestMessageSearch(condition), new RpcCallback<ResponseMessageSearch>() {
+                request(new RequestMessageSearch(condition), new RpcCallback<ResponseMessageSearchResponse>() {
                     @Override
-                    public void onResult(final ResponseMessageSearch response) {
+                    public void onResult(final ResponseMessageSearchResponse response) {
                         updates().executeRelatedResponse(response.getUsers(), response.getGroups(), new Runnable() {
                             @Override
                             public void run() {
