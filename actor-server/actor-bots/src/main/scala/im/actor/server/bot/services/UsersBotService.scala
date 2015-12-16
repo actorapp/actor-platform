@@ -71,6 +71,7 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
   private def findUser(query: String) = RequestHandler[FindUser, FindUser#Response] {
     (botUserId, botAuthId, botAuthSid) ⇒
       ifIsAdmin(botUserId) {
+
         (for {
           ids ← fromFuture(userExt.findUserIds(query))
           users ← fromFuture(ftraverse(ids)(UserUtils.safeGetUser(_, botUserId, botAuthId))) map (_.flatten)

@@ -2929,13 +2929,31 @@
                 "type": "reference",
                 "argument": "text",
                 "category": "full",
-                "description": "  Text of message"
+                "description": "  optional text of message"
               },
               {
                 "type": "reference",
                 "argument": "senderNameOverride",
                 "category": "full",
-                "description": "  Overriding of sender"
+                "description": "  optional overriding of sender"
+              },
+              {
+                "type": "reference",
+                "argument": "senderPhotoOverride",
+                "category": "full",
+                "description": "  optional overriding sender's photo"
+              },
+              {
+                "type": "reference",
+                "argument": "style",
+                "category": "full",
+                "description": "  optional paragraph style"
+              },
+              {
+                "type": "reference",
+                "argument": "attaches",
+                "category": "full",
+                "description": "  optional Attaches of message"
               }
             ],
             "trait": {
@@ -2981,6 +2999,17 @@
                 },
                 "id": 4,
                 "name": "style"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "TextModernAttach"
+                  }
+                },
+                "id": 5,
+                "name": "attaches"
               }
             ]
           }
