@@ -71,7 +71,6 @@ object Dependencies {
     val kamonCore               = "io.kamon"                      %% "kamon-core"                    % V.kamon
     val kamonScala              = "io.kamon"                      %% "kamon-scala"                   % V.kamon
     val kamonAkka               = "io.kamon"                      %% "kamon-akka"                    % V.kamon
-    val kamonAkkaRemote         = "io.kamon"                      %% "kamon-akka-remote"             % V.kamon
     val kamonSystemMetrics      = "io.kamon"                      %% "kamon-system-metrics"          % V.kamon
     val kamonDatadog            = "io.kamon"                      %% "kamon-datadog"                 % V.kamon
 
@@ -128,7 +127,6 @@ object Dependencies {
     kamonCore,
     kamonScala,
     kamonAkka,
-    kamonAkkaRemote,
     kamonSystemMetrics,
     kamonDatadog
   )
