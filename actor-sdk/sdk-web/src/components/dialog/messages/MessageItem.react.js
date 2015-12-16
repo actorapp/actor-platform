@@ -33,6 +33,7 @@ import DefaultDocument from './Document.react';
 import DefaultVoice from './Voice.react';
 import DefaultContact from './Contact.react';
 import DefaultLocation from './Location.react.js';
+import DefaultModern from './Modern.react.js';
 
 const {addons: { PureRenderMixin }} = addons;
 
@@ -107,7 +108,7 @@ class MessageItem extends Component {
     const { delegate } = this.context;
 
     let Service, Text, Modern, Photo, Document, Voice, Contact, Location;
-    if (delegate.components.dialog.messages) {
+    if (delegate.components.dialog !== null && delegate.components.dialog.messages) {
       Service = delegate.components.dialog.messages.service || DefaultService;
       Text = delegate.components.dialog.messages.text || DefaultText;
       Modern = delegate.components.dialog.messages.modern || DefaultModern;
@@ -193,6 +194,8 @@ class MessageItem extends Component {
       case MessageContentTypes.LOCATION:
         messageContent = <Location content={message.content} className="message__content message__content--location"/>;
         break;
+      case MessageContentTypes.TEXT_MODERN:
+        messageContent = <Modern {...message.content} className="message__content message__content--modern"/>;
         break;
       default:
     }
