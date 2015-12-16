@@ -592,12 +592,14 @@ object BotMessages {
     text:                Option[String],
     senderNameOverride:  Option[String],
     senderPhotoOverride: Option[Avatar],
-    style:               Option[ParagraphStyle]
+    style:               Option[ParagraphStyle],
+    attaches:            IndexedSeq[TextModernAttach]
   ) extends TextMessageEx {
     def getText = text.asJava
     def getSenderNameOverride = senderNameOverride.asJava
     def getSenderPhotoOverride = senderPhotoOverride.asJava
     def getStyle = style.asJava
+    def getAttaches = seqAsJavaList(attaches)
   }
 
   final case class TextModernAttach(
