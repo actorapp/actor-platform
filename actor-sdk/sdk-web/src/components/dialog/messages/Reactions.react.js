@@ -13,15 +13,15 @@ const { CSSTransitionGroup } = addons;
 class MessageReactions extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      canAnimateHeart: true
+    };
   }
 
   static propTypes = {
     peer: PropTypes.object.isRequired,
     message: PropTypes.object.isRequired
-  };
-
-  state = {
-    canAnimateHeart: true
   };
 
   componentWillReceiveProps(nextProps) {
