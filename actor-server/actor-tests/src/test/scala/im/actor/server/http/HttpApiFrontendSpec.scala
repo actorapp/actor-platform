@@ -20,7 +20,7 @@ import im.actor.server.api.http.webhooks.OutgoingHooksErrors
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging
-import im.actor.server.file.ImageUtils
+import im.actor.server.file.{ FileStorageExtension, ImageUtils }
 import play.api.libs.json._
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -28,7 +28,6 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 final class HttpApiFrontendSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
-  with ImplicitFileStorageAdapter
   with ImplicitSessionRegion
   with ImplicitAuthService
   with PlayJsonSupport {
@@ -79,6 +78,8 @@ final class HttpApiFrontendSpec
   implicit lazy val service = messaging.MessagingServiceImpl()
   implicit lazy val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
+  private val fsAdapter = FileStorageExtension(system).fsAdapter
+
   implicit val reverseHookResponseUnmarshaller: FromEntityUnmarshaller[ReverseHookResponse] = Unmarshaller { implicit ec ⇒ entity ⇒
     Unmarshal(entity).to[String].map { body ⇒
       Json.parse(body).as[ReverseHookResponse]
@@ -91,7 +92,7 @@ final class HttpApiFrontendSpec
     }
   }
 
-  lazy val s3BucketName = fsAdapterS3.bucketName
+  val s3BucketName = "actor-uploads-test"
 
   object t {
     val (user1, authId1, authSid1, _) = createUser()

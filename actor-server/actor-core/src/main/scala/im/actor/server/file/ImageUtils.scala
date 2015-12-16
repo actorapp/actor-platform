@@ -85,12 +85,7 @@ object ImageUtils {
   def scaleAvatar(
     fullFileId: Long,
     rng:        ThreadLocalRandom
-  )(
-    implicit
-    fsAdapter: FileStorageAdapter,
-    ec:        ExecutionContext,
-    system:    ActorSystem
-  ): DBIO[Either[Throwable, Avatar]] =
+  )(implicit system: ActorSystem): DBIO[Either[Throwable, Avatar]] =
     scaleAvatar(
       fullFileId,
       rng,
@@ -103,12 +98,9 @@ object ImageUtils {
     rng:        ThreadLocalRandom,
     smallDesc:  ThumbDescriptor,
     largeDesc:  ThumbDescriptor
-  )(
-    implicit
-    fsAdapter: FileStorageAdapter,
-    ec:        ExecutionContext,
-    system:    ActorSystem
-  ): DBIO[Either[Throwable, Avatar]] = {
+  )(implicit system: ActorSystem): DBIO[Either[Throwable, Avatar]] = {
+    implicit val ec: ExecutionContext = system.dispatcher
+    val fsAdapter = FileStorageExtension(system).fsAdapter
     persist.FileRepo.find(fullFileId) flatMap {
       case Some(fullFileModel) ⇒
         fsAdapter.downloadFile(fullFileId) flatMap {

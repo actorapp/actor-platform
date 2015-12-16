@@ -17,7 +17,6 @@ import scala.concurrent.Future
 import scala.util.Random
 
 final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
-  with ImplicitFileStorageAdapter
   with ImplicitSessionRegion
   with ImplicitAuthService
   with ImplicitSequenceService

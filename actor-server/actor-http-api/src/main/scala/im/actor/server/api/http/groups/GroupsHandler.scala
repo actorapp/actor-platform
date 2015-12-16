@@ -79,7 +79,7 @@ class GroupsHandler()(
     for {
       fileOpt ← persist.FileRepo.find(location.fileId)
       url ← fileOpt.map { file ⇒
-        DBIO.from(fsAdapter.getFileUrl(file, location.accessHash))
+        DBIO.from(fsAdapter.getFileDownloadUrl(file, location.accessHash))
       }.getOrElse(DBIO.successful(None))
     } yield url
   }
