@@ -27,6 +27,9 @@ const memoizedProcessText = memoize(processText, {
   max: 10000
 });
 
+/**
+ * Class that represents a component for display text message content
+ */
 class Text extends Component {
   static propTypes = {
     content: React.PropTypes.object.isRequired,

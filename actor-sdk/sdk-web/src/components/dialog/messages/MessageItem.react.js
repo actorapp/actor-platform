@@ -22,14 +22,16 @@ import ComposeActionCreators from '../../../actions/ComposeActionCreators';
 import UserStore from '../../../stores/UserStore';
 
 import AvatarItem from '../../common/AvatarItem.react';
-import Text from './Text.react';
-import Image from './Image.react';
-import Document from './Document.react';
-import Voice from './Voice.react';
-import Contact from './Contact.react';
-import Geolocation from './Geolocation.react';
 import State from './State.react';
 import Reactions from './Reactions.react';
+
+// Message content components
+import DefaultText from './Text.react';
+import DefaultPhoto from './Photo.react.js';
+import DefaultDocument from './Document.react';
+import DefaultVoice from './Voice.react';
+import DefaultContact from './Contact.react';
+import DefaultLocation from './Location.react.js';
 
 const {addons: { PureRenderMixin }} = addons;
 
@@ -41,6 +43,10 @@ class MessageItem extends Component {
     isSameSender: PropTypes.bool,
     isThisLastMessage: PropTypes.bool,
     onVisibilityChange: PropTypes.func
+  };
+
+  static contextTypes = {
+    delegate: PropTypes.object
   };
 
   constructor(props) {
@@ -97,6 +103,15 @@ class MessageItem extends Component {
   render() {
     const { message, isSameSender, onVisibilityChange, peer, isThisLastMessage } = this.props;
     const { isThisMyMessage, isActionsShown } = this.state;
+    const { delegate } = this.context;
+
+    const Text = delegate.components.dialog.messages.text || DefaultText;
+    const Modern = delegate.components.dialog.messages.modern || DefaultModern;
+    const Photo = delegate.components.dialog.messages.photo || DefaultPhoto;
+    const Document = delegate.components.dialog.messages.document || DefaultDocument;
+    const Voice = delegate.components.dialog.messages.voice || DefaultVoice;
+    const Contact = delegate.components.dialog.messages.contact || DefaultContact;
+    const Location = delegate.components.dialog.messages.location || DefaultLocation;
 
     let header = null,
         messageContent = null,
@@ -143,47 +158,28 @@ class MessageItem extends Component {
 
     switch (message.content.content) {
       case MessageContentTypes.SERVICE:
-        messageContent = (
-          <div className="message__content message__content--service"
-               dangerouslySetInnerHTML={{__html: escapeWithEmoji(message.content.text)}}/>
-        );
+        messageContent = <div className="message__content message__content--service"
+                              dangerouslySetInnerHTML={{__html: escapeWithEmoji(message.content.text)}}/>;
         break;
       case MessageContentTypes.TEXT:
-        messageContent = (
-          <Text content={message.content}
-                className="message__content message__content--text"/>
-        );
+        messageContent = <Text content={message.content} className="message__content message__content--text"/>;
         break;
       case MessageContentTypes.PHOTO:
-        messageContent = (
-          <Image content={message.content}
-                 className="message__content message__content--photo"
-                 loadedClassName="message__content--photo--loaded"/>
-        );
+        messageContent = <Photo content={message.content} className="message__content message__content--photo"
+                                loadedClassName="message__content--photo--loaded"/>;
         break;
       case MessageContentTypes.DOCUMENT:
-        messageContent = (
-          <Document content={message.content}
-                    className="message__content message__content--document"/>
-        );
+        messageContent = <Document content={message.content} className="message__content message__content--document"/>;
         break;
       case MessageContentTypes.VOICE:
-        messageContent = (
-          <Voice content={message.content}
-                    className="message__content message__content--voice"/>
-        );
+        messageContent = <Voice content={message.content} className="message__content message__content--voice"/>;
         break;
       case MessageContentTypes.CONTACT:
-        messageContent = (
-          <Contact content={message.content}
-                    className="message__content message__content--contact"/>
-        );
+        messageContent = <Contact content={message.content} className="message__content message__content--contact"/>;
         break;
       case MessageContentTypes.LOCATION:
-        messageContent = (
-          <Geolocation content={message.content}
-                       className="message__content message__content--location"/>
-        );
+        messageContent = <Location content={message.content} className="message__content message__content--location"/>;
+        break;
         break;
       default:
     }

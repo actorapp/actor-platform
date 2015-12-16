@@ -6,6 +6,9 @@ import { map } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 
+/**
+ * Class that represents a component for display contact message content
+ */
 class Contact extends Component {
   constructor(props) {
     super(props);
@@ -32,6 +35,7 @@ class Contact extends Component {
         )
       })
     }
+    // TODO: `pones` must be renamed to `phones` in library
     if (content.pones.length > 0) {
       phones = map(content.pones, (phone) => {
         return (
