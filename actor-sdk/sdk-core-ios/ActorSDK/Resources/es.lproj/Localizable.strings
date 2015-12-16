@@ -57,9 +57,13 @@
 
 "SettingsTwitter" = "App Twitter";
 
-"SettingsAbout" = "App Homepage";
+"SettingsAbout" = "Página principal";
 
 "SettingsVersion" = "Version {version}";
+
+"ShareLocation" = "Ubicación";
+
+"ShareContact" = "Contacto";
 
 "ProfileEditHeader" = "Cambiar nombre";
 
