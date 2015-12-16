@@ -5,16 +5,11 @@ package im.actor.core.api;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
 import static im.actor.runtime.bser.Utils.*;
-
 import im.actor.core.network.parser.*;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -53,7 +48,7 @@ public class ApiStickerCollection extends BserObject {
         this.id = values.getInt(1);
         this.accessHash = values.getLong(2);
         List<ApiStickerDescriptor> _stickers = new ArrayList<ApiStickerDescriptor>();
-        for (int i = 0; i < values.getRepeatedCount(3); i++) {
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
             _stickers.add(new ApiStickerDescriptor());
         }
         this.stickers = values.getRepeatedObj(3, _stickers);

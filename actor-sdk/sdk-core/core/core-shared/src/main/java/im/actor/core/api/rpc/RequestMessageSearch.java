@@ -5,26 +5,19 @@ package im.actor.core.api.rpc;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
 import static im.actor.runtime.bser.Utils.*;
-
 import im.actor.core.network.parser.*;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-
 import im.actor.core.api.*;
 
-public class RequestMessageSearch extends Request<ResponseMessageSearch> {
+public class RequestMessageSearch extends Request<ResponseMessageSearchResponse> {
 
     public static final int HEADER = 0xd9;
-
     public static RequestMessageSearch fromBytes(byte[] data) throws IOException {
         return Bser.parse(new RequestMessageSearch(), data);
     }

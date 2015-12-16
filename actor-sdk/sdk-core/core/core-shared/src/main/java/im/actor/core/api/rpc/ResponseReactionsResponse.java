@@ -5,26 +5,19 @@ package im.actor.core.api.rpc;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
 import static im.actor.runtime.bser.Utils.*;
-
 import im.actor.core.network.parser.*;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-
 import im.actor.core.api.*;
 
 public class ResponseReactionsResponse extends Response {
 
     public static final int HEADER = 0xdb;
-
     public static ResponseReactionsResponse fromBytes(byte[] data) throws IOException {
         return Bser.parse(new ResponseReactionsResponse(), data);
     }
@@ -62,7 +55,7 @@ public class ResponseReactionsResponse extends Response {
         this.seq = values.getInt(1);
         this.state = values.getBytes(2);
         List<ApiMessageReaction> _reactions = new ArrayList<ApiMessageReaction>();
-        for (int i = 0; i < values.getRepeatedCount(3); i++) {
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
             _reactions.add(new ApiMessageReaction());
         }
         this.reactions = values.getRepeatedObj(3, _reactions);

@@ -5,16 +5,11 @@ package im.actor.core.api;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
 import static im.actor.runtime.bser.Utils.*;
-
 import im.actor.core.network.parser.*;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -25,12 +20,14 @@ public class ApiTextModernMessage extends ApiTextMessageEx {
     private String senderNameOverride;
     private ApiAvatar senderPhotoOverride;
     private ApiParagraphStyle style;
+    private List<ApiTextModernAttach> attaches;
 
-    public ApiTextModernMessage(@Nullable String text, @Nullable String senderNameOverride, @Nullable ApiAvatar senderPhotoOverride, @Nullable ApiParagraphStyle style) {
+    public ApiTextModernMessage(@Nullable String text, @Nullable String senderNameOverride, @Nullable ApiAvatar senderPhotoOverride, @Nullable ApiParagraphStyle style, @NotNull List<ApiTextModernAttach> attaches) {
         this.text = text;
         this.senderNameOverride = senderNameOverride;
         this.senderPhotoOverride = senderPhotoOverride;
         this.style = style;
+        this.attaches = attaches;
     }
 
     public ApiTextModernMessage() {
@@ -61,12 +58,22 @@ public class ApiTextModernMessage extends ApiTextMessageEx {
         return this.style;
     }
 
+    @NotNull
+    public List<ApiTextModernAttach> getAttaches() {
+        return this.attaches;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.text = values.optString(1);
         this.senderNameOverride = values.optString(2);
         this.senderPhotoOverride = values.optObj(3, new ApiAvatar());
         this.style = values.optObj(4, new ApiParagraphStyle());
+        List<ApiTextModernAttach> _attaches = new ArrayList<ApiTextModernAttach>();
+        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
+            _attaches.add(new ApiTextModernAttach());
+        }
+        this.attaches = values.getRepeatedObj(5, _attaches);
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -86,6 +93,7 @@ public class ApiTextModernMessage extends ApiTextMessageEx {
         if (this.style != null) {
             writer.writeObject(4, this.style);
         }
+        writer.writeRepeatedObj(5, this.attaches);
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -100,6 +108,9 @@ public class ApiTextModernMessage extends ApiTextMessageEx {
         String res = "struct TextModernMessage{";
         res += "text=" + this.text;
         res += ", senderNameOverride=" + this.senderNameOverride;
+        res += ", senderPhotoOverride=" + this.senderPhotoOverride;
+        res += ", style=" + this.style;
+        res += ", attaches=" + this.attaches;
         res += "}";
         return res;
     }
