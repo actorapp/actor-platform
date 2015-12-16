@@ -2,18 +2,22 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 
 import { lightbox } from '../../../utils/ImageUtils';
 
 let cache = {};
 
-class Image extends React.Component {
+/**
+ * Class representing photo message component
+ * @todo: move info about cache to store;
+ */
+class Image extends Component {
   static propTypes = {
-    content: React.PropTypes.object.isRequired,
-    className: React.PropTypes.string,
-    loadedClassName: React.PropTypes.string
+    content: PropTypes.object.isRequired,
+    className: PropTypes.string,
+    loadedClassName: PropTypes.string
   };
 
   constructor(props) {
@@ -47,16 +51,26 @@ class Image extends React.Component {
     const { content, className, loadedClassName } = this.props;
     const { isImageLoaded } = this.state;
 
-    const k = content.w / 300;
-    const styles = {
-      width: Math.round(content.w / k),
-      height: Math.round(content.h / k)
-    };
+    var MAX_WIDTH = 300;
+    var MAX_HEIGHT = 400;
+    var width = content.w;
+    var height = content.h;
+
+    if (width > height) {
+      if (width > MAX_WIDTH) {
+        height *= MAX_WIDTH / width;
+        width = MAX_WIDTH;
+      }
+    } else {
+      if (height > MAX_HEIGHT) {
+        width *= MAX_HEIGHT / height;
+        height = MAX_HEIGHT;
+      }
+    }
 
     let original = null,
         preview = null,
         preloader = null;
-
 
     if (content.fileUrl) {
       original = (
@@ -80,7 +94,7 @@ class Image extends React.Component {
     const imageClassName = isImageLoaded ? classnames(className, loadedClassName) : className;
 
     return (
-      <div className={imageClassName} style={styles}>
+      <div className={imageClassName} style={{width, height}}>
         {preview}
         {original}
         {preloader}
