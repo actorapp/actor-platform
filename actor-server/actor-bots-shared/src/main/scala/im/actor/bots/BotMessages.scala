@@ -619,6 +619,15 @@ object BotMessages {
     style:     Option[ParagraphStyle],
     fields:    IndexedSeq[TextModernField]
   ) {
+    def this(
+      title:     String,
+      titleUrl:  String,
+      titleIcon: ImageLocation,
+      text:      String,
+      style:     ParagraphStyle,
+      fields:    java.util.List[TextModernField]
+    ) = this(Option(title), Option(titleUrl), Option(titleIcon), Option(text), Option(style), fields.toIndexedSeq)
+
     def getTitle = title.asJava
     def getTitleUrl = titleUrl.asJava
     def getTitleIcon = titleIcon.asJava
