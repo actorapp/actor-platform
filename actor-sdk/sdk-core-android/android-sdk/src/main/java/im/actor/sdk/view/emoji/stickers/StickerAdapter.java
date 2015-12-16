@@ -195,41 +195,37 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
 
         @Override
         public void bind(StickerLine data, int position, Context context) {
-            try {
-                ll.removeAllViews();
-                ll.setTag(TAG_KEY, data.getPackCount());
-                for (final Sticker s : data.getLine()) {
-                    StickerView sv;
-                    if (s != null && s.getFileReference256() != null) {
+            ll.removeAllViews();
+            ll.setTag(TAG_KEY, data.getPackCount());
+            for (final Sticker s : data.getLine()) {
+                StickerView sv;
+                if (s != null && s.getFileReference256() != null) {
 
-                        sv = stickersCache.get(s.getFileReference256().getFileId());
-                        if (sv == null) {
-                            sv = new StickerView(context);
-                            sv.setPadding(STICKER_PADDING, STICKER_PADDING, STICKER_PADDING, STICKER_PADDING);
-                            sv.bind(s.getFileReference256(), STICKER_SIZE);
-                            stickersCache.put(s.getFileReference256().getFileId(), sv);
+                    sv = stickersCache.get(s.getFileReference256().getFileId());
+                    if (sv == null) {
+                        sv = new StickerView(context);
+                        sv.setPadding(STICKER_PADDING, STICKER_PADDING, STICKER_PADDING, STICKER_PADDING);
+                        sv.bind(s.getFileReference256(), STICKER_SIZE);
+                        stickersCache.put(s.getFileReference256().getFileId(), sv);
 
-                        } else if (sv.isLoaded()) {
-                            if (sv.getParent() != null) {
-                                ((LinearLayout) sv.getParent()).removeView(sv);
-                            }
-                            sv.shortenFade();
+                    } else if (sv.isLoaded()) {
+                        if (sv.getParent() != null) {
+                            ((LinearLayout) sv.getParent()).removeView(sv);
                         }
-
-                        sv.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                keyboard.onStickerClicked(s);
-                            }
-                        });
-
-                        ll.addView(sv, stikerlp);
+                        sv.shortenFade();
                     }
-                }
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                    sv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            keyboard.onStickerClicked(s);
+                        }
+                    });
+
+                    ll.addView(sv, stikerlp);
+                }
             }
+
 
         }
 
