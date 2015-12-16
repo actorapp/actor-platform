@@ -602,7 +602,7 @@ object BotMessages {
       style:               ParagraphStyle,
       attaches:            java.util.List[TextModernAttach]
     ) =
-      this(Option(text), Option(senderNameOverride), Option(style), attaches)
+      this(Option(text), Option(senderNameOverride), Option(senderPhotoOverride), Option(style), attaches.toIndexedSeq)
 
     def getText = text.asJava
     def getSenderNameOverride = senderNameOverride.asJava
