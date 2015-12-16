@@ -2885,6 +2885,15 @@
             </node>
           </node>
         </node>
+        <node concept="2m7Kf5" id="64LjbWRCrYH" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="attaches" />
+          <node concept="2m5nlk" id="64LjbWRCrYX" role="2m7DVh">
+            <node concept="2m5mGg" id="64LjbWRCrZ3" role="3GJlyp">
+              <ref role="2m5mJy" node="64HNz1IoM55" resolve="TextModernAttach" />
+            </node>
+          </node>
+        </node>
         <node concept="Nu42z" id="64HNz1Ioy3Q" role="3BtCOu">
           <property role="Nu42W" value="02" />
         </node>
@@ -2893,13 +2902,28 @@
         </node>
         <node concept="NX1gA" id="64HNz1Iozpx" role="NXodf">
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Text of message" />
+          <property role="NX6R2" value="optional text of message" />
           <ref role="NX6Kv" node="64HNz1Ioy3S" resolve="text" />
         </node>
         <node concept="NX1gA" id="64HNz1Io_Fe" role="NXodf">
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Overriding of sender" />
+          <property role="NX6R2" value="optional overriding of sender" />
           <ref role="NX6Kv" node="64HNz1Io_EV" resolve="senderNameOverride" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCsKq" role="NXodf">
+          <property role="NX6R2" value="optional overriding sender's photo" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoGNl" resolve="senderPhotoOverride" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCtxQ" role="NXodf">
+          <property role="NX6R2" value="optional paragraph style" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoJLo" resolve="style" />
+        </node>
+        <node concept="NX1gA" id="64LjbWRCujl" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="optional Attaches of message" />
+          <ref role="NX6Kv" node="64LjbWRCrYH" resolve="attaches" />
         </node>
       </node>
       <node concept="2m5naR" id="64HNz1IoIik" role="2m5mJr">
@@ -3063,7 +3087,7 @@
         </node>
         <node concept="NX1gA" id="64HNz1IpaSB" role="NXodf">
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Is field can be shown in compact way" />
+          <property role="NX6R2" value="Is field can be shown in compact way (default is TRUE)" />
           <ref role="NX6Kv" node="64HNz1IoPTt" resolve="isShort" />
         </node>
       </node>

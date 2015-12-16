@@ -63,7 +63,7 @@ public class ResponseCreateGroup extends Response {
         this.state = values.getBytes(2);
         this.group = values.getObj(3, new ApiGroup());
         List<ApiUser> _users = new ArrayList<ApiUser>();
-        for (int i = 0; i < values.getRepeatedCount(4); i++) {
+        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
             _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(4, _users);

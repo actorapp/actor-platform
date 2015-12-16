@@ -23,15 +23,11 @@ public enum ApiSearchPeerType {
     }
 
     public static ApiSearchPeerType parse(int value) throws IOException {
-        switch (value) {
-            case 1:
-                return ApiSearchPeerType.GROUPS;
-            case 2:
-                return ApiSearchPeerType.CONTACTS;
-            case 3:
-                return ApiSearchPeerType.PUBLIC;
-            default:
-                return ApiSearchPeerType.UNSUPPORTED_VALUE;
+        switch(value) {
+            case 1: return ApiSearchPeerType.GROUPS;
+            case 2: return ApiSearchPeerType.CONTACTS;
+            case 3: return ApiSearchPeerType.PUBLIC;
+            default: return ApiSearchPeerType.UNSUPPORTED_VALUE;
         }
     }
 }
