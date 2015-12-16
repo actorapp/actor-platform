@@ -25,8 +25,14 @@ trait BotToApiConversions {
   implicit def toDocumentExt(ex: Option[DocumentEx]): Option[ApiDocumentEx] = ex map toDocumentExt
 
   implicit def toTextMessageEx(ex: TextMessageEx): ApiTextMessageEx = ex match {
-    case TextModernMessage(text, senderNameOverride, senderPhotoOverride, style) ⇒ ApiTextModernMessage(text, senderNameOverride, senderPhotoOverride, style)
+    case TextModernMessage(text, senderNameOverride, senderPhotoOverride, style, attaches) ⇒ ApiTextModernMessage(text, senderNameOverride, senderPhotoOverride, style, attaches)
   }
+
+  implicit def toModernAttach(a: TextModernAttach): ApiTextModernAttach =
+    ApiTextModernAttach(a.title, a.titleUrl, a.titleIcon, a.text, a.style, a.fields)
+
+  implicit def toModernAttach(as: IndexedSeq[TextModernAttach]): IndexedSeq[ApiTextModernAttach] =
+    as map toModernAttach
 
   implicit def toTextMessageEx(ex: Option[TextMessageEx]): Option[ApiTextMessageEx] =
     ex map toTextMessageEx
