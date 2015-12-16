@@ -5,26 +5,19 @@ package im.actor.core.api.updates;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
 import static im.actor.runtime.bser.Utils.*;
-
 import im.actor.core.network.parser.*;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-
 import im.actor.core.api.*;
 
 public class UpdateChatGroupsChanged extends Update {
 
     public static final int HEADER = 0x1;
-
     public static UpdateChatGroupsChanged fromBytes(byte[] data) throws IOException {
         return Bser.parse(new UpdateChatGroupsChanged(), data);
     }
@@ -47,7 +40,7 @@ public class UpdateChatGroupsChanged extends Update {
     @Override
     public void parse(BserValues values) throws IOException {
         List<ApiDialogGroup> _dialogs = new ArrayList<ApiDialogGroup>();
-        for (int i = 0; i < values.getRepeatedCount(1); i++) {
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
             _dialogs.add(new ApiDialogGroup());
         }
         this.dialogs = values.getRepeatedObj(1, _dialogs);

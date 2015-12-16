@@ -9,6 +9,9 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 
 import im.actor.core.api.ApiTextExMarkdown;
+import im.actor.core.api.ApiTextModernAttach;
+import im.actor.core.api.ApiTextModernField;
+import im.actor.core.api.ApiTextModernMessage;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.DocumentContent;
@@ -29,15 +32,29 @@ public abstract class JsContent extends JavaScriptObject {
         JsContent content;
         if (src instanceof TextContent) {
             TextContent textContent = (TextContent) src;
-
-            String text = ((TextContent) src).getText();
-
-            String markdownText = null;
-            if (textContent.getTextMessageEx() instanceof ApiTextExMarkdown) {
-                markdownText = ((ApiTextExMarkdown) textContent.getTextMessageEx()).getMarkdown();
+            if (textContent.getTextMessageEx() instanceof ApiTextModernMessage) {
+                ApiTextModernMessage modernMessage = (ApiTextModernMessage) textContent.getTextMessageEx();
+                String text = modernMessage.getText();
+                JsParagraphStyle paragraphStyle = JsParagraphStyle.create(modernMessage.getStyle());
+                JsArray<JsAttach> attaches = JsArray.createArray().cast();
+                for (ApiTextModernAttach srcAttach : modernMessage.getAttaches()) {
+                    JsArray<JsAttachField> fields = JsArray.createArray().cast();
+                    for (ApiTextModernField f : srcAttach.getFields()) {
+                        boolean isShort = f.isShort() != null ? f.isShort() : true;
+                        fields.push(JsAttachField.create(f.getTitle(), f.getValue(),
+                                isShort));
+                    }
+                    attaches.push(JsAttach.create(
+                            srcAttach.getTitle(),
+                            srcAttach.getTitleUrl(),
+                            srcAttach.getText(),
+                            JsParagraphStyle.create(srcAttach.getStyle()),
+                            fields));
+                }
+                content = JsContentTextModern.create(text, paragraphStyle, attaches);
+            } else {
+                content = JsContentText.create(((TextContent) src).getText());
             }
-
-            content = JsContentText.create(text, markdownText);
         } else if (src instanceof ServiceContent) {
             content = JsContentService.create(messenger.getFormatter().formatFullServiceMessage(sender, (ServiceContent) src));
         } else if (src instanceof DocumentContent) {
