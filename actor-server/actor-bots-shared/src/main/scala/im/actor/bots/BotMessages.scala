@@ -27,28 +27,28 @@ object BotMessages {
   }
 
   final case class FileLocation(
-    @beanGetter fileId:     Long,
+    @beanGetter fileId: Long,
     @beanGetter accessHash: Long
   )
 
   final case class AvatarImage(
     @beanGetter fileLocation: FileLocation,
-    @beanGetter width:        Int,
-    @beanGetter height:       Int,
-    @beanGetter fileSize:     Int
+    @beanGetter width: Int,
+    @beanGetter height: Int,
+    @beanGetter fileSize: Int
   )
 
   final case class ImageLocation(
     @beanGetter fileLocation: FileLocation,
-    @beanGetter width:        Int,
-    @beanGetter height:       Int,
-    @beanGetter fileSize:     Int
+    @beanGetter width: Int,
+    @beanGetter height: Int,
+    @beanGetter fileSize: Int
   )
 
   final case class Avatar(
     @beanGetter smallImage: Option[AvatarImage],
     @beanGetter largeImage: Option[AvatarImage],
-    @beanGetter fullImage:  Option[AvatarImage]
+    @beanGetter fullImage: Option[AvatarImage]
   )
 
   final case class ContactInfo(
@@ -65,17 +65,17 @@ object BotMessages {
   final case class PhoneContactRecord(phone: Long) extends ContactRecord
 
   final case class User(
-    @beanGetter id:         Int,
-    @beanGetter accessHash: Long,
-    @beanGetter name:       String,
-    @beanGetter sex:        Option[Int],
-    about:                  Option[String],
-    avatar:                 Option[Avatar],
-    username:               Option[String],
-    isBot:                  Option[Boolean],
-    contactRecords:         Seq[ContactRecord],
-    timeZone:               Option[String],
-    preferredLanguages:     Seq[String]
+      @beanGetter id: Int,
+      @beanGetter accessHash: Long,
+      @beanGetter name: String,
+      @beanGetter sex: Option[Int],
+      about: Option[String],
+      avatar: Option[Avatar],
+      username: Option[String],
+      isBot: Option[Boolean],
+      contactRecords: Seq[ContactRecord],
+      timeZone: Option[String],
+      preferredLanguages: Seq[String]
   ) {
     def isMale = sex.contains(1)
 
@@ -109,23 +109,23 @@ object BotMessages {
   }
 
   final case class GroupMember(
-    @beanGetter userId:        Int,
-    @beanGetter inviterUserId: Int,
-    @beanGetter memberSince:   Long,
-    isAdmin:                   Option[Boolean]
+      @beanGetter userId: Int,
+      @beanGetter inviterUserId: Int,
+      @beanGetter memberSince: Long,
+      isAdmin: Option[Boolean]
   ) {
     def getIsAdmin = isAdmin.asJava
   }
 
   final case class Group(
-    @beanGetter id:            Int,
-    @beanGetter accessHash:    Long,
-    @beanGetter title:         String,
-    about:                     Option[String],
-    avatar:                    Option[Avatar],
-    @beanGetter isMember:      Boolean,
-    @beanGetter creatorUserId: Int,
-    members:                   Seq[GroupMember]
+      @beanGetter id: Int,
+      @beanGetter accessHash: Long,
+      @beanGetter title: String,
+      about: Option[String],
+      avatar: Option[Avatar],
+      @beanGetter isMember: Boolean,
+      @beanGetter creatorUserId: Int,
+      members: Seq[GroupMember]
   ) {
     def getAbout = about.asJava
 
@@ -162,8 +162,8 @@ object BotMessages {
 
   @key("Group")
   final case class GroupOutPeer(
-    @beanGetter id:         Int,
-    @beanGetter accessHash: Long
+      @beanGetter id: Int,
+      @beanGetter accessHash: Long
   ) extends OutPeer {
     override val isPrivate = false
     override val isGroup = true
@@ -171,8 +171,8 @@ object BotMessages {
 
   @key("User")
   final case class UserOutPeer(
-    @beanGetter id:         Int,
-    @beanGetter accessHash: Long
+      @beanGetter id: Int,
+      @beanGetter accessHash: Long
   ) extends OutPeer {
     override val isPrivate = true
     override val isGroup = false
@@ -189,14 +189,14 @@ object BotMessages {
 
   @key("Request")
   final case class BotRequest(
-    id:      Long,
+    id: Long,
     service: String,
-    body:    RequestBody
+    body: RequestBody
   ) extends BotMessageIn
 
   @key("Response")
   final case class BotResponse(
-    id:   Long,
+    id: Long,
     body: BotResponseBody
   ) extends BotMessageOut
 
@@ -211,15 +211,15 @@ object BotMessages {
 
   @key("SeqUpdate")
   final case class BotSeqUpdate(
-    seq:  Int,
+    seq: Int,
     body: UpdateBody
   ) extends BotUpdate
 
   @key("FatSeqUpdate")
   final case class BotFatSeqUpdate(
-    seq:    Int,
-    body:   UpdateBody,
-    users:  Map[Int, User],
+    seq: Int,
+    body: UpdateBody,
+    users: Map[Int, User],
     groups: Map[Int, Group]
   ) extends BotUpdate
 
@@ -281,9 +281,9 @@ object BotMessages {
 
   @key("SendMessage")
   final case class SendMessage(
-    @beanGetter peer:     OutPeer,
-    @beanGetter randomId: Long,
-    @beanGetter message:  MessageBody
+      @beanGetter peer: OutPeer,
+      @beanGetter randomId: Long,
+      @beanGetter message: MessageBody
   ) extends RequestBody {
     override type Response = MessageSent
     override val service = Services.Messaging
@@ -293,9 +293,9 @@ object BotMessages {
 
   @key("SetValue")
   final case class SetValue(
-    @beanGetter keyspace: String,
-    @beanGetter key:      String,
-    @beanGetter value:    String
+      @beanGetter keyspace: String,
+      @beanGetter key: String,
+      @beanGetter value: String
   ) extends RequestBody {
     override type Response = Void
     override val service = Services.KeyValue
@@ -305,8 +305,8 @@ object BotMessages {
 
   @key("GetValue")
   final case class GetValue(
-    @beanGetter keyspace: String,
-    @beanGetter key:      String
+      @beanGetter keyspace: String,
+      @beanGetter key: String
   ) extends RequestBody {
     override type Response = Container[Option[String]]
     override val service = Services.KeyValue
@@ -316,8 +316,8 @@ object BotMessages {
 
   @key("DeleteValue")
   final case class DeleteValue(
-    @beanGetter keyspace: String,
-    @beanGetter key:      String
+      @beanGetter keyspace: String,
+      @beanGetter key: String
   ) extends RequestBody {
     override type Response = Void
     override val service = Services.KeyValue
@@ -336,8 +336,8 @@ object BotMessages {
   //username is nickname
   @key("CreateBot")
   final case class CreateBot(
-    @beanGetter username: String,
-    @beanGetter name:     String
+      @beanGetter username: String,
+      @beanGetter name: String
   ) extends RequestBody {
     override type Response = BotCreated
     override val service = Services.Bots
@@ -347,7 +347,7 @@ object BotMessages {
 
   @key("BotCreated")
   final case class BotCreated(
-    @beanGetter token:  String,
+    @beanGetter token: String,
     @beanGetter userId: Int
   ) extends ResponseBody
 
@@ -372,8 +372,8 @@ object BotMessages {
 
   @key("ChangeUserAvatar")
   final case class ChangeUserAvatar(
-    @beanGetter userId:       Int,
-    @beanGetter fileLocation: FileLocation
+      @beanGetter userId: Int,
+      @beanGetter fileLocation: FileLocation
   ) extends RequestBody {
     override type Response = Void
     override val service = Services.Users
@@ -383,8 +383,8 @@ object BotMessages {
 
   @key("ChangeUserName")
   final case class ChangeUserName(
-    @beanGetter userId: Int,
-    @beanGetter name:   String
+      @beanGetter userId: Int,
+      @beanGetter name: String
   ) extends RequestBody {
     override type Response = Void
     override val service = Services.Users
@@ -394,8 +394,8 @@ object BotMessages {
 
   @key("ChangeUserNickname")
   final case class ChangeUserNickname(
-    @beanGetter userId:   Int,
-    @beanGetter nickname: Option[String]
+      @beanGetter userId: Int,
+      @beanGetter nickname: Option[String]
   ) extends RequestBody {
     override type Response = Void
     override val service = Services.Users
@@ -405,8 +405,8 @@ object BotMessages {
 
   @key("ChangeUserAbout")
   final case class ChangeUserAbout(
-    @beanGetter userId: Int,
-    about:              Option[String]
+      @beanGetter userId: Int,
+      about: Option[String]
   ) extends RequestBody {
     override type Response = Void
     override val service = Services.Users
@@ -429,7 +429,7 @@ object BotMessages {
 
   @key("FindUser")
   final case class FindUser(
-    @beanGetter query: String
+      @beanGetter query: String
   ) extends RequestBody {
     override type Response = FoundUsers
     override val service: String = Services.Users
@@ -445,7 +445,7 @@ object BotMessages {
 
   @key("CreateGroup")
   final case class CreateGroup(
-    title: String
+      title: String
   ) extends RequestBody {
     override type Response = ResponseCreateGroup
     override val service: String = Services.Groups
@@ -483,8 +483,8 @@ object BotMessages {
 
   @key("ShowStickers")
   final case class ShowStickers(
-    @beanGetter ownerUserId: Int,
-    @beanGetter packId:      Int
+      @beanGetter ownerUserId: Int,
+      @beanGetter packId: Int
   ) extends RequestBody {
     override type Response = StickerIds
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
@@ -497,10 +497,10 @@ object BotMessages {
 
   @key("AddSticker")
   final case class AddSticker(
-    @beanGetter ownerUserId:  Int,
-    @beanGetter packId:       Int,
-    emoji:                    Option[String],
-    @beanGetter fileLocation: FileLocation
+      @beanGetter ownerUserId: Int,
+      @beanGetter packId: Int,
+      emoji: Option[String],
+      @beanGetter fileLocation: FileLocation
   ) extends RequestBody {
     override type Response = Void
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
@@ -511,9 +511,9 @@ object BotMessages {
 
   @key("DeleteSticker")
   final case class DeleteSticker(
-    @beanGetter ownerUserId: Int,
-    @beanGetter packId:      Int,
-    @beanGetter stickerId:   Int
+      @beanGetter ownerUserId: Int,
+      @beanGetter packId: Int,
+      @beanGetter stickerId: Int
   ) extends RequestBody {
     override type Response = Void
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
@@ -522,8 +522,8 @@ object BotMessages {
 
   @key("MakeStickerPackDefault")
   final case class MakeStickerPackDefault(
-    @beanGetter userId: Int,
-    @beanGetter packId: Int
+      @beanGetter userId: Int,
+      @beanGetter packId: Int
   ) extends RequestBody {
     override type Response = Void
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
@@ -532,8 +532,8 @@ object BotMessages {
 
   @key("UnmakeStickerPackDefault")
   final case class UnmakeStickerPackDefault(
-    @beanGetter userId: Int,
-    @beanGetter packId: Int
+      @beanGetter userId: Int,
+      @beanGetter packId: Int
   ) extends RequestBody {
     override type Response = Void
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
@@ -542,17 +542,17 @@ object BotMessages {
 
   @key("Message")
   final case class Message(
-    @beanGetter peer:     OutPeer,
-    @beanGetter sender:   UserOutPeer,
-    @beanGetter date:     Long,
+    @beanGetter peer: OutPeer,
+    @beanGetter sender: UserOutPeer,
+    @beanGetter date: Long,
     @beanGetter randomId: Long,
-    @beanGetter message:  MessageBody
+    @beanGetter message: MessageBody
   ) extends UpdateBody
 
   @key("RawUpdate")
   final case class RawUpdate(
-    `type`:           Option[String],
-    @beanGetter data: String
+      `type`: Option[String],
+      @beanGetter data: String
   ) extends UpdateBody {
     def getType = `type`.asJava
   }
@@ -570,12 +570,12 @@ object BotMessages {
 
   @key("Sticker")
   final case class StickerMessage(
-    stickerId:                   Option[Int],
-    fastPreview:                 Option[Array[Byte]],
-    image512:                    Option[ImageLocation],
-    image256:                    Option[ImageLocation],
-    stickerCollectionId:         Option[Int],
-    stickerCollectionAccessHash: Option[Long]
+      stickerId: Option[Int],
+      fastPreview: Option[Array[Byte]],
+      image512: Option[ImageLocation],
+      image256: Option[ImageLocation],
+      stickerCollectionId: Option[Int],
+      stickerCollectionAccessHash: Option[Long]
   ) extends MessageBody {
     def getStickerId = stickerId.asPrimitive
     def getFastPreview = fastPreview.asJava
@@ -589,18 +589,18 @@ object BotMessages {
 
   @key("TextModernMessage")
   final case class TextModernMessage(
-    text:                Option[String],
-    senderNameOverride:  Option[String],
-    senderPhotoOverride: Option[Avatar],
-    style:               Option[ParagraphStyle],
-    attaches:            IndexedSeq[TextModernAttach]
+      text: Option[String],
+      senderNameOverride: Option[String],
+      senderPhotoOverride: Option[Avatar],
+      style: Option[ParagraphStyle],
+      attaches: IndexedSeq[TextModernAttach]
   ) extends TextMessageEx {
     def this(
-      text:                String,
-      senderNameOverride:  String,
+      text: String,
+      senderNameOverride: String,
       senderPhotoOverride: Avatar,
-      style:               ParagraphStyle,
-      attaches:            java.util.List[TextModernAttach]
+      style: ParagraphStyle,
+      attaches: java.util.List[TextModernAttach]
     ) =
       this(Option(text), Option(senderNameOverride), Option(senderPhotoOverride), Option(style), attaches.toIndexedSeq)
 
@@ -612,12 +612,12 @@ object BotMessages {
   }
 
   final case class TextModernAttach(
-    title:     Option[String],
-    titleUrl:  Option[String],
-    titleIcon: Option[ImageLocation],
-    text:      Option[String],
-    style:     Option[ParagraphStyle],
-    fields:    IndexedSeq[TextModernField]
+      title: Option[String],
+      titleUrl: Option[String],
+      titleIcon: Option[ImageLocation],
+      text: Option[String],
+      style: Option[ParagraphStyle],
+      fields: IndexedSeq[TextModernField]
   ) {
     def this(
       title:     String,
@@ -641,9 +641,9 @@ object BotMessages {
   }
 
   final case class ParagraphStyle(
-    showParagraph:  Option[Boolean],
-    paragraphColor: Option[Color],
-    bgColor:        Option[Color]
+      showParagraph: Option[Boolean],
+      paragraphColor: Option[Color],
+      bgColor: Option[Color]
   ) {
     def getShowParagraph = showParagraph.asJava
     def getParagraphColor = paragraphColor.asJava
@@ -668,13 +668,13 @@ object BotMessages {
 
   @key("Document")
   final case class DocumentMessage(
-    @beanGetter fileId:     Long,
-    @beanGetter accessHash: Long,
-    @beanGetter fileSize:   Long,
-    @beanGetter name:       String,
-    @beanGetter mimeType:   String,
-    thumb:                  Option[FastThumb],
-    ext:                    Option[DocumentEx]
+      @beanGetter fileId: Long,
+      @beanGetter accessHash: Long,
+      @beanGetter fileSize: Long,
+      @beanGetter name: String,
+      @beanGetter mimeType: String,
+      thumb: Option[FastThumb],
+      ext: Option[DocumentEx]
   ) extends MessageBody {
     def getThumb = thumb.asJava
 
@@ -692,23 +692,23 @@ object BotMessages {
 
   @key("FastThumb")
   final case class FastThumb(
-    @beanGetter width:  Int,
+    @beanGetter width: Int,
     @beanGetter height: Int,
-    @beanGetter thumb:  String
+    @beanGetter thumb: String
   )
 
   sealed trait DocumentEx
 
   @key("Photo")
   final case class DocumentExPhoto(
-    @beanGetter width:  Int,
+    @beanGetter width: Int,
     @beanGetter height: Int
   ) extends DocumentEx
 
   @key("Video")
   final case class DocumentExVideo(
-    @beanGetter width:    Int,
-    @beanGetter height:   Int,
+    @beanGetter width: Int,
+    @beanGetter height: Int,
     @beanGetter duration: Int
   ) extends DocumentEx
 

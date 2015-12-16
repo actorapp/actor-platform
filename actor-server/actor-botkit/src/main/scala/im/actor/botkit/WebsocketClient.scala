@@ -28,9 +28,9 @@ private[botkit] object WebsocketClient {
 }
 
 private[botkit] final class WebsocketClient(url: String)
-  extends ActorPublisher[String]
-  with ActorSubscriber
-  with ActorLogging {
+    extends ActorPublisher[String]
+    with ActorSubscriber
+    with ActorLogging {
   import context.system
 
   implicit def sslEngineProvider: ServerSSLEngineProvider = {
@@ -74,7 +74,7 @@ private[botkit] final class WebsocketClient(url: String)
   val host = uri.getHost
   val port = uri.getPort match {
     case -1 ⇒ if (ssl) 443 else 80
-    case p  ⇒ p
+    case p ⇒ p
   }
 
   val agent = "spray-websocket-client" + (if (ssl) "-ssl" else "-basic")
