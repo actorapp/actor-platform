@@ -1,1 +1,2 @@
 * record connection time in kamon
+* fixed user search exception

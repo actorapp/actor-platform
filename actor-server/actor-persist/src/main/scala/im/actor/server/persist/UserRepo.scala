@@ -5,6 +5,7 @@ import java.time.{ ZoneOffset, LocalDateTime }
 import im.actor.server.db.ActorPostgresDriver.api._
 
 import im.actor.server.model
+import im.actor.util.misc.PhoneNumberUtils
 
 import scala.concurrent.ExecutionContext
 
@@ -103,7 +104,10 @@ object UserRepo {
     for {
       e ← idsByEmailC(query).result
       n ← idsByNicknameC(query).result
-      p ← idByPhoneC(query.toLong).result
+      p ← PhoneNumberUtils.normalizeStr(query)
+        .headOption
+        .map(idByPhoneC(_).result)
+        .getOrElse(DBIO.successful(Nil))
     } yield e ++ n ++ p
 
   def setNickname(userId: Int, nickname: Option[String]) =
