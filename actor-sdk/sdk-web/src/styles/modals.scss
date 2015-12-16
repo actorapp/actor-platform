@@ -508,16 +508,17 @@
     .modal-new__body {
       padding: 16px;
       .col-xs {
-        padding: 0 16px 16px;
+        padding: 16px 16px 16px 8px;
       }
     }
     .about {
+      margin-top: 18px;
       label {
         font-size: 12px;
 
         display: inline-block;
 
-        margin-bottom: 6px;
+        margin-bottom: 8px;
 
         color: rgba(0, 0, 0, .5);
       }

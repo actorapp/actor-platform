@@ -61,6 +61,7 @@ export default {
       'forward': 'Forward',
       'download': 'Download',
       'delete': 'Delete',
+      'quote': 'Quote',
       'uploading': 'Uploading...',
       'welcome': {
         'private': '<p>This is the very beginning of your private conversation with <strong>{name}</strong>.</p><p>All messages here are private between the two of you.</p>',

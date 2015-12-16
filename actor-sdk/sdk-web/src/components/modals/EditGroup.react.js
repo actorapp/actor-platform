@@ -7,8 +7,8 @@ import { Container } from 'flux/utils';
 import Modal from 'react-modal';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
-import { Styles, TextField } from 'material-ui';
-import ActorTheme from '../../constants/ActorTheme';
+//import { Styles, TextField } from 'material-ui';
+//import ActorTheme from '../../constants/ActorTheme';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
@@ -18,25 +18,26 @@ import CropAvatarStore from '../../stores/CropAvatarStore';
 import EditGroupActionCreators from '../../actions/EditGroupActionCreators';
 import CropAvatarActionCreators from '../../actions/CropAvatarActionCreators';
 
+import TextField from '../common/TextField.react';
 import AvatarItem from '../common/AvatarItem.react';
 import CropAvatarModal from './CropAvatar.react';
 
-const ThemeManager = new Styles.ThemeManager();
+//const ThemeManager = new Styles.ThemeManager();
 
 class EditGroup extends Component {
   constructor(props) {
     super(props);
   }
 
-  static childContextTypes = {
-    muiTheme: React.PropTypes.object
-  };
-
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  }
+  //static childContextTypes = {
+  //  muiTheme: React.PropTypes.object
+  //};
+  //
+  //getChildContext() {
+  //  return {
+  //    muiTheme: ThemeManager.getCurrentTheme()
+  //  };
+  //}
 
   static getStores = () => [EditGroupStore, CropAvatarStore];
 
@@ -44,24 +45,25 @@ class EditGroup extends Component {
     return {
       isOpen: EditGroupStore.isOpen(),
       group: EditGroupStore.getGroup(),
+      isAdmin: EditGroupStore.isAdmin(),
       title: EditGroupStore.getTitle(),
       about: EditGroupStore.getAbout(),
       isCropModalOpen: CropAvatarStore.isOpen()
     }
   }
 
-  componentWillMount() {
-    ThemeManager.setTheme(ActorTheme);
-    ThemeManager.setComponentThemes({
-      textField: {
-        textColor: 'rgba(0,0,0,.87)',
-        focusColor: '#68a3e7',
-        backgroundColor: 'transparent',
-        borderColor: '#68a3e7',
-        disabledTextColor: 'rgba(0,0,0,.4)'
-      }
-    });
-  }
+  //componentWillMount() {
+  //  ThemeManager.setTheme(ActorTheme);
+  //  ThemeManager.setComponentThemes({
+  //    textField: {
+  //      textColor: 'rgba(0,0,0,.87)',
+  //      focusColor: '#68a3e7',
+  //      backgroundColor: 'transparent',
+  //      borderColor: '#68a3e7',
+  //      disabledTextColor: 'rgba(0,0,0,.4)'
+  //    }
+  //  });
+  //}
 
   componentWillUnmount() {
     this.removeListeners();
@@ -90,9 +92,11 @@ class EditGroup extends Component {
   };
 
   onSave = () => {
-    const { group, title, about } = this.state;
+    const { group, title, about, isAdmin } = this.state;
     EditGroupActionCreators.editGroupTitle(group.id, title);
-    EditGroupActionCreators.editGroupAbout(group.id, about);
+    if (isAdmin) {
+      EditGroupActionCreators.editGroupAbout(group.id, about);
+    }
     this.onClose();
   };
 
@@ -125,7 +129,7 @@ class EditGroup extends Component {
   };
 
   render() {
-    const { isOpen, group, isCropModalOpen, title, about } = this.state;
+    const { isOpen, group, isCropModalOpen, title, about, isAdmin } = this.state;
 
     const cropAvatar = isCropModalOpen ? <CropAvatarModal onCropFinish={this.changeGroupAvatar}/> : null;
 
@@ -146,17 +150,20 @@ class EditGroup extends Component {
 
           <div className="modal-new__body row">
             <div className="col-xs">
-              <TextField className="login__form__input"
-                         floatingLabelText={this.getIntlMessage('modal.group.name')}
-                         fullWidth
+              <TextField className="input__material--wide"
+                         floatingLabel={this.getIntlMessage('modal.group.name')}
                          onChange={this.onTitleChange}
-                         type="text"
+                         ref="name"
                          value={title}/>
 
-              <div className="about">
-                <label htmlFor="about">{this.getIntlMessage('modal.group.about')}</label>
-                <textarea className="textarea" value={about} onChange={this.onAboutChange} id="about"/>
-              </div>
+              {
+                isAdmin
+                  ? <div className="about">
+                      <label htmlFor="about">{this.getIntlMessage('modal.group.about')}</label>
+                      <textarea className="textarea" value={about} onChange={this.onAboutChange} id="about"/>
+                    </div>
+                  : null
+              }
             </div>
             <div className="profile-picture text-center">
               <div className="profile-picture__changer">

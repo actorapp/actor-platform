@@ -230,7 +230,7 @@
 .input {
   &__material {
     @mixin focused-label() {
-      transform: translateY(0) scale(.85) !important;
+      transform: translateY(0) scale(.8) !important;
       cursor: default;
       color: $dark-sky-blue;
     }

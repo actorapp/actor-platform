@@ -21,6 +21,12 @@ export default {
     dispatch(ActionTypes.COMPOSE_MENTION_CLOSE);
   },
 
+  pasteText(text) {
+    if (text !== '') {
+      dispatch(ActionTypes.COMPOSE_PASTE, { text });
+    }
+  },
+
   onTyping(peer, text, caretPosition) {
     if (text !== '') {
       ActorClient.onTyping(peer);

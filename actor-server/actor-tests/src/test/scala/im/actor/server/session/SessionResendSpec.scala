@@ -204,6 +204,7 @@ class SessionResendSpec extends BaseSessionSpec(
       weakUpdatesExt.pushUpdate(authId, upd1, Some("reduceKey 1 (uniq)"))
 
       weakUpdatesExt.pushUpdate(authId, upd2first, Some("reduceKey 2 (same)"))
+
       weakUpdatesExt.pushUpdate(authId, upd2second, Some("reduceKey 2 (same)"))
 
       weakUpdatesExt.pushUpdate(authId, upd3, Some("reduceKey 3 (uniq)"))
