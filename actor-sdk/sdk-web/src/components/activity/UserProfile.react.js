@@ -44,6 +44,7 @@ class UserProfile extends Component {
       isActionsDropdownOpen: false
     }, getStateFromStores(props.user.id));
 
+    NotificationsStore.addListener(this.onChange);
     DialogStore.addListener(this.onChange);
   }
 

@@ -17,6 +17,7 @@ class Voice extends Component {
     super(props);
 
     this.state = {
+      isLoaded: false,
       isPlaying: false,
       currentTime: 0,
       duration: props.content.duration / 1000
@@ -26,6 +27,7 @@ class Voice extends Component {
     this.audio.volume = 1;
     this.audio.addEventListener('timeupdate', this.handleTimeUpdate);
     this.audio.addEventListener('ended', this.handlePlayEnding);
+    this.audio.addEventListener('canplaythrough', this.handleLoading);
   }
 
   componentWillUnmount() {
@@ -65,9 +67,13 @@ class Voice extends Component {
     this.audio.currentTime = this.audio.duration * rewindPosition;
   };
 
+  handleLoading = () => {
+    this.setState({isLoaded: true});
+  };
+
   render() {
     const { className } = this.props;
-    const { isPlaying, currentTime, duration } = this.state;
+    const { isPlaying, currentTime, duration, isLoaded } = this.state;
     const voiceClassName = classnames(className, 'row');
 
     const current = this.humanTime(currentTime * 1000);
@@ -79,10 +85,11 @@ class Voice extends Component {
         <div className="voice row">
           <div className="voice__controls">
             {
-              isPlaying
-                ? <i className="material-icons" onClick={this.handlePauseClick}>pause_circle_filled</i>
-                : <i className="material-icons" onClick={this.handlePlayClick}>play_circle_filled</i>
-
+              !isLoaded
+                ? <i className="material-icons" style={{opacity: 0.3}}>play_circle_filled</i>
+                : isPlaying
+                    ? <i className="material-icons" onClick={this.handlePauseClick}>pause_circle_filled</i>
+                    : <i className="material-icons" onClick={this.handlePlayClick}>play_circle_filled</i>
             }
           </div>
           <div className="voice__body col-xs">
@@ -94,9 +101,13 @@ class Voice extends Component {
                 <time className="voice__time voice__time--total">{total}</time>
               </div>
             </div>
-            <div className="voice__rewind" onClick={this.handleRewind} ref="rewind">
-              <div className="played" style={{width: progress + '%'}}/>
-            </div>
+            {
+              isLoaded
+                ? <div className="voice__rewind" onClick={this.handleRewind} ref="rewind">
+                    <div className="played" style={{width: progress + '%'}}/>
+                  </div>
+                : <div className="voice__rewind voice__rewind--loading"/>
+            }
           </div>
         </div>
         <div className="col-xs"></div>
