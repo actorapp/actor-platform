@@ -546,7 +546,7 @@ $maximum-image-height: 400px;
       }
       &__menu {
         z-index: 100;
-        top: -4px;
+        top: 0;
         right: 22px;
 
         min-width: 130px !important;
@@ -597,6 +597,12 @@ $maximum-image-height: 400px;
         .dropdown__menu {
           transform: translateX(0);
           pointer-events: auto;
+        }
+      }
+      &--bottom {
+        .dropdown__menu {
+          top: auto;
+          bottom: 0;
         }
       }
     }

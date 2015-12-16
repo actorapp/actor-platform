@@ -39,6 +39,7 @@ class MessageItem extends Component {
     message: PropTypes.object.isRequired,
     isNewDay: PropTypes.bool,
     isSameSender: PropTypes.bool,
+    isThisLastMessage: PropTypes.bool,
     onVisibilityChange: PropTypes.func
   };
 
@@ -94,7 +95,7 @@ class MessageItem extends Component {
   };
 
   render() {
-    const { message, isSameSender, onVisibilityChange, peer } = this.props;
+    const { message, isSameSender, onVisibilityChange, peer, isThisLastMessage } = this.props;
     const { isThisMyMessage, isActionsShown } = this.state;
 
     let header = null,
@@ -108,7 +109,8 @@ class MessageItem extends Component {
     });
 
     const actionsDropdownClassName = classnames('message__actions__menu dropdown dropdown--small', {
-      'dropdown--opened': isActionsShown
+      'dropdown--opened': isActionsShown,
+      'dropdown--bottom': isThisLastMessage
     });
 
     if (isSameSender) {
