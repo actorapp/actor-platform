@@ -5,16 +5,11 @@ package im.actor.core.api;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
 import static im.actor.runtime.bser.Utils.*;
-
 import im.actor.core.network.parser.*;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -79,7 +74,7 @@ public class ApiTextModernAttach extends BserObject {
         this.text = values.optString(4);
         this.style = values.optObj(5, new ApiParagraphStyle());
         List<ApiTextModernField> _fields = new ArrayList<ApiTextModernField>();
-        for (int i = 0; i < values.getRepeatedCount(6); i++) {
+        for (int i = 0; i < values.getRepeatedCount(6); i ++) {
             _fields.add(new ApiTextModernField());
         }
         this.fields = values.getRepeatedObj(6, _fields);
