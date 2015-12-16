@@ -25,7 +25,8 @@ import AvatarItem from '../../common/AvatarItem.react';
 import State from './State.react';
 import Reactions from './Reactions.react';
 
-// Message content components
+// Default message content components
+import DefaultService from './Service.react';
 import DefaultText from './Text.react';
 import DefaultPhoto from './Photo.react.js';
 import DefaultDocument from './Document.react';
@@ -105,13 +106,26 @@ class MessageItem extends Component {
     const { isThisMyMessage, isActionsShown } = this.state;
     const { delegate } = this.context;
 
-    const Text = delegate.components.dialog.messages.text || DefaultText;
-    const Modern = delegate.components.dialog.messages.modern || DefaultModern;
-    const Photo = delegate.components.dialog.messages.photo || DefaultPhoto;
-    const Document = delegate.components.dialog.messages.document || DefaultDocument;
-    const Voice = delegate.components.dialog.messages.voice || DefaultVoice;
-    const Contact = delegate.components.dialog.messages.contact || DefaultContact;
-    const Location = delegate.components.dialog.messages.location || DefaultLocation;
+    let Service, Text, Modern, Photo, Document, Voice, Contact, Location;
+    if (delegate.components.dialog.messages) {
+      Service = delegate.components.dialog.messages.service || DefaultService;
+      Text = delegate.components.dialog.messages.text || DefaultText;
+      Modern = delegate.components.dialog.messages.modern || DefaultModern;
+      Photo = delegate.components.dialog.messages.photo || DefaultPhoto;
+      Document = delegate.components.dialog.messages.document || DefaultDocument;
+      Voice = delegate.components.dialog.messages.voice || DefaultVoice;
+      Contact = delegate.components.dialog.messages.contact || DefaultContact;
+      Location = delegate.components.dialog.messages.location || DefaultLocation;
+    } else {
+      Service = DefaultService;
+      Text = DefaultText;
+      Modern = DefaultModern;
+      Photo = DefaultPhoto;
+      Document = DefaultDocument;
+      Voice = DefaultVoice;
+      Contact = DefaultContact;
+      Location = DefaultLocation;
+    }
 
     let header = null,
         messageContent = null,
@@ -158,11 +172,10 @@ class MessageItem extends Component {
 
     switch (message.content.content) {
       case MessageContentTypes.SERVICE:
-        messageContent = <div className="message__content message__content--service"
-                              dangerouslySetInnerHTML={{__html: escapeWithEmoji(message.content.text)}}/>;
+        messageContent = <Service {...message.content} className="message__content message__content--service"/>;
         break;
       case MessageContentTypes.TEXT:
-        messageContent = <Text content={message.content} className="message__content message__content--text"/>;
+        messageContent = <Text {...message.content} className="message__content message__content--text"/>;
         break;
       case MessageContentTypes.PHOTO:
         messageContent = <Photo content={message.content} className="message__content message__content--photo"
