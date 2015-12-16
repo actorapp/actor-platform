@@ -196,6 +196,7 @@ export const CreateGroupSteps = keymirror({
 export const MessageContentTypes = {
   SERVICE: 'service',
   TEXT: 'text',
+  TEXT_MODERN: 'text_modern',
   PHOTO: 'photo',
   DOCUMENT: 'document',
   VOICE: 'voice',
