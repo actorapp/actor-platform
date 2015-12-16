@@ -269,7 +269,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       libraryDependencies ++= Dependencies.persist
     )
   )
-    .dependsOn(actorModels)
+    .dependsOn(actorModels, actorRuntime)
 
   lazy val actorTestkit = Project(
     id = "actor-testkit",
