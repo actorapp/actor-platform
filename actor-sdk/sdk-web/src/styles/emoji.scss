@@ -15,6 +15,7 @@ $stem-size: 14px;
 
   vertical-align: middle;
 }
+
 .emoji-inner {
   display: block;
 
@@ -24,6 +25,7 @@ $stem-size: 14px;
   vertical-align: inherit;
   text-indent: -9999px;
 }
+
 .emoji-sizer {
   box-sizing: border-box;
   margin: 0;
@@ -53,7 +55,7 @@ $stem-size: 14px;
     position: absolute;
     bottom: 6px;
     right: -3px;
-    box-shadow: 0 1px 3px 1px rgba(0,0,0,.1);
+    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
     background-color: white;
     border-radius: 3px;
 
@@ -63,7 +65,7 @@ $stem-size: 14px;
     &:after {
       @include stem();
       z-index: -1;
-      box-shadow: 0 1px 3px 1px rgba(0,0,0,.1);
+      box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
     }
   }
   &__header {
@@ -165,8 +167,14 @@ $stem-size: 14px;
         cursor: pointer;
 
         border-radius: 2px;
+        .emoji-outer {
+          pointer-events: none;
+          transform-origin: 50% 50%;
+        }
         &:hover {
-          transform: scale(1.5);
+          .emoji-outer {
+            transform: scale(1.4);
+          }
         }
       }
     }
