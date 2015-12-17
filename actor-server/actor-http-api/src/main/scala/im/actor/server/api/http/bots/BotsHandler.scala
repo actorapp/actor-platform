@@ -3,9 +3,8 @@ package im.actor.server.api.http.bots
 import java.util.Base64
 
 import akka.actor.ActorSystem
-import akka.event.Logging
 import akka.http.scaladsl.model.StatusCodes._
-import akka.http.scaladsl.model.ws.{ Message, TextMessage }
+import akka.http.scaladsl.model.ws.{ BinaryMessage, TextMessage, Message }
 import akka.http.scaladsl.model.{ HttpMethod, StatusCode }
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
@@ -134,13 +133,14 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
     val bp = new BotServerBlueprint(botUserId, botAuthId, botAuthSid, system)
 
     Flow[Message]
-      .collect {
-        case TextMessage.Strict(text) ⇒
-          log.debug("<< {}", text)
-          val rq = read[BotRequest](text)
+      .mapAsync(1) {
+        case tm: TextMessage ⇒ tm.textStream.runFold("")(_ ++ _) map { fullContent ⇒
+          log.debug("<< {}", fullContent)
+          val rq = read[BotRequest](fullContent)
           log.debug("Bot request: {}, userId: {}", rq, botUserId)
           rq
-        case tm: TextMessage ⇒ throw new RuntimeException("Streamed text message is not supported") with NoStackTrace
+        }
+        case bm: BinaryMessage ⇒ throw new RuntimeException("Binary message is not supported") with NoStackTrace
       }
       .via(bp.flow)
       .map {
