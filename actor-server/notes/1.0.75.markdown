@@ -1,0 +1,2 @@
+* Added sbt house rules plugin to unify settings across projects
+* Bot api update
