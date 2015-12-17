@@ -1,10 +1,13 @@
 package im.actor.sdk.core;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.SystemClock;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -68,6 +71,12 @@ public class AndroidPhoneBook implements PhoneBookProvider {
 
         // Loading records
         // TODO: Better logic for duplicate phones
+        //Check have permission for this
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("Permissions", "contacts - no permission :c");
+            return new ArrayList<PhoneBookContact>();
+        }
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 new String[]
                         {
