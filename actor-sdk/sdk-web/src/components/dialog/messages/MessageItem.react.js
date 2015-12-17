@@ -135,7 +135,8 @@ class MessageItem extends Component {
     const messageSender = escapeWithEmoji(message.sender.title);
 
     const messageClassName = classnames('message row', {
-      'message--same-sender': isSameSender
+      'message--same-sender': isSameSender,
+      'message--active': isActionsShown
     });
 
     const actionsDropdownClassName = classnames('message__actions__menu dropdown dropdown--small', {

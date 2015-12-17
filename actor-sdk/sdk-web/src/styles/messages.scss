@@ -6,6 +6,8 @@ $action-icon-size: 20px;
 $contact-avatar-size: 48px;
 $like-red: rgb(226, 38, 77);
 $maximum-image-height: 400px;
+$extend-background: 1px;
+$message-hover-background: rgba(black, .015);
 
 @keyframes bounceheart {
   0% {
@@ -100,8 +102,9 @@ $maximum-image-height: 400px;
 }
 
 .message {
+  position: relative;
   margin: 0;
-  padding: 24px 39px 0 32px;
+  padding: 6px 39px 6px 32px;
 
   &__header {
     font-weight: 500;
@@ -265,7 +268,7 @@ $maximum-image-height: 400px;
   }
 
   &--same-sender {
-    padding: 4px 39px 0 10px;
+    padding: 3px 39px 3px 10px;
     .message__info {
       box-sizing: border-box;
       width: 84px;
@@ -281,12 +284,34 @@ $maximum-image-height: 400px;
 
       opacity: 0;
     }
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: $extend-background;
+      background-color: $message-hover-background;
+      top: - $extend-background;
+      display: none;
+    }
+    &:after {
+      top: auto;
+      bottom: - $extend-background;
+    }
   }
 
   &--welcome {
     cursor: default;
 
     @include no-select();
+    &:hover {
+      background: none !important;
+    }
+    &:before,
+    &:after {
+      display: none !important;
+    }
     .message__info {
       padding-top: 54px;
       .welcome-avatar {
@@ -548,7 +573,13 @@ $maximum-image-height: 400px;
     }
   }
 
+  &--active,
   &:hover {
+    background-color: $message-hover-background;
+    &:before,
+    &:after {
+      display: block;
+    }
     .message__info .message__timestamp {
       opacity: 1;
     }
@@ -651,11 +682,6 @@ $maximum-image-height: 400px;
     line-height: 18px;
 
     max-width: 100%;
-    //padding: 8px 10px 8px 8px;
-    margin-bottom: 8px;
-
-    //border-radius: $default-border-radius;
-    //background-color: rgba(darken($body-base-color, 0), .07);
 
     .col-xs {
       overflow: hidden;
@@ -830,8 +856,6 @@ $maximum-image-height: 400px;
     }
   }
   .voice {
-    margin-bottom: 8px;
-
     border-radius: $default-border-radius;
     &__controls {
       .material-icons {
@@ -901,8 +925,6 @@ $maximum-image-height: 400px;
     }
   }
   .contact {
-    //border: 1px solid rgba($body-base-color, .1);
-    //border-radius: $default-border-radius;
 
     &__body {
       padding-left: 8px;
@@ -968,15 +990,15 @@ $maximum-image-height: 400px;
     }
   }
   .modern {
-    font-size: 15px;
+    font-size: 14px;
     &--paragraph {
+      padding: 6px;
       border-radius: 0 3px 3px 0;
       border-left: 6px solid transparent;
     }
 
     p {
       margin: 0;
-      padding: 8px;
     }
   }
 }
@@ -986,7 +1008,7 @@ $maximum-image-height: 400px;
   font-weight: 500;
   line-height: 16px;
 
-  padding: 24px 32px 0 43px;
+  padding: 12px 32px 12px 43px;
 
   color: $havelock-blue;
 }
