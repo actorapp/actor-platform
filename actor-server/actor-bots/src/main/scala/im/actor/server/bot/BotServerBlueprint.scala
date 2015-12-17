@@ -26,6 +26,7 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int,
   private val usersService = new UsersBotService(system)
   private val groupsService = new GroupsBotService(system)
   private val stickersService = new StickersBotService(system)
+  private val filesService = new FilesBotService(system)
 
   private val log = Logging(system, getClass)
 
@@ -87,5 +88,6 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int,
     case Services.Users     ⇒ usersService
     case Services.Groups    ⇒ groupsService
     case Services.Stickers  ⇒ stickersService
+    case Services.Files     ⇒ filesService
   }
 }

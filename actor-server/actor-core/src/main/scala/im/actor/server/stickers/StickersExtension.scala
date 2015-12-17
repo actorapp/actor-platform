@@ -2,14 +2,17 @@ package im.actor.server.stickers
 
 import akka.actor._
 import cats.data.Xor
+import im.actor.api.rpc.stickers.{ ApiStickerCollection, UpdateOwnStickersChanged, UpdateStickerCollectionsChanged }
 import im.actor.concurrent.FutureResultCats
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
-import im.actor.server.file.Avatar
 import im.actor.server.model.{ StickerData, StickerPack }
-import im.actor.server.persist.{ StickerDataRepo, OwnStickerPackRepo, StickerPackRepo }
+import im.actor.server.persist.{ OwnStickerPackRepo, StickerDataRepo, StickerPackRepo, UserRepo }
+import im.actor.server.sequence.SeqUpdatesExtension
+import im.actor.server.sticker.Sticker
 import im.actor.server.user.UserExtension
 import im.actor.util.misc.IdUtils
+import slick.dbio.DBIO
 
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -31,7 +34,12 @@ object StickerErrors {
 
 sealed trait StickersExtension extends Extension
 
-final class StickersExtensionImpl(_system: ActorSystem) extends StickersExtension with FutureResultCats[StickerError] {
+final class StickersExtensionImpl(_system: ActorSystem)
+  extends StickersExtension
+  with FutureResultCats[StickerError]
+  with StickersImplicitConversions {
+
+  StickerMessages.register()
 
   import StickerErrors._
 
@@ -40,6 +48,7 @@ final class StickersExtensionImpl(_system: ActorSystem) extends StickersExtensio
 
   private val db = DbExtension(system).db
   private val userExt = UserExtension(system)
+  private val seqExt = SeqUpdatesExtension(system)
 
   def createPack(creatorUserId: Int, isDefault: Boolean): Future[Int] = {
     val rng = ThreadLocalRandom.current()
@@ -48,17 +57,20 @@ final class StickersExtensionImpl(_system: ActorSystem) extends StickersExtensio
     db.run(for {
       _ ← StickerPackRepo.create(StickerPack(packId, accessSalt, creatorUserId, isDefault))
       _ ← OwnStickerPackRepo.create(creatorUserId, packId)
+      collections ← getOwnApiStickerPacks(creatorUserId)
+      _ ← DBIO.from(seqExt.deliverSingleUpdate(creatorUserId, UpdateOwnStickersChanged(collections)))
     } yield packId)
   }
 
   def isOwner(userId: Int, packId: Int): Future[Boolean] = db.run(StickerPackRepo.exists(userId, packId))
 
-  def addSticker(ownerUserId: Int, packId: Int, emoji: Option[String], resizedSticker: Avatar): Future[StickerError Xor Unit] =
+  def addSticker(ownerUserId: Int, packId: Int, emoji: Option[String], resizedSticker: Sticker): Future[StickerError Xor Unit] =
     (for {
-      _ ← fromFutureBoolean(NotFound)(db.run(StickerPackRepo.exists(ownerUserId, packId)))
-      image128 ← fromOption(NoPreview)(resizedSticker.smallImage)
-      image256 = resizedSticker.largeImage
-      image512 = resizedSticker.fullImage
+      pack ← fromFutureOption(NotFound)(db.run(StickerPackRepo.find(packId)))
+      _ ← fromBoolean(NotFound)(pack.ownerUserId == ownerUserId)
+      image128 ← fromOption(NoPreview)(resizedSticker.small)
+      image256 = resizedSticker.medium
+      image512 = resizedSticker.large
       sticker = StickerData(id = IdUtils.nextIntId(), packId, emoji,
         image128FileId = image128.fileLocation.fileId,
         image128FileHash = image128.fileLocation.accessHash,
@@ -70,6 +82,9 @@ final class StickersExtensionImpl(_system: ActorSystem) extends StickersExtensio
         image512FileHash = image512 map (_.fileLocation.accessHash),
         image512FileSize = image512 map (_.fileSize))
       _ ← fromFuture(db.run(StickerDataRepo.create(sticker)))
+      packUserIds ← fromFuture(db.run(getPackUserIds(pack)))
+      apiPack ← fromFuture(db.run(getApiStickerPack(pack)))
+      _ ← fromFuture(seqExt.broadcastSingleUpdate(packUserIds.toSet, UpdateStickerCollectionsChanged(Vector(apiPack))))
     } yield ()).value
 
   def getStickerPacks(ownerUserId: Int): Future[Seq[StickerPack]] =
@@ -84,9 +99,32 @@ final class StickersExtensionImpl(_system: ActorSystem) extends StickersExtensio
 
   def deleteSticker(ownerUserId: Int, packId: Int, stickerId: Int): Future[StickerError Xor Unit] =
     (for {
-      _ ← fromFutureBoolean(NotFound)(db.run(StickerPackRepo.exists(ownerUserId, packId)))
+      pack ← fromFutureOption(NotFound)(db.run(StickerPackRepo.find(packId)))
+      _ ← fromBoolean(NotFound)(pack.ownerUserId == ownerUserId)
       _ ← fromFuture(db.run(StickerDataRepo.delete(packId, stickerId)))
+      packUserIds ← fromFuture(db.run(getPackUserIds(pack)))
+      apiPack ← fromFuture(db.run(getApiStickerPack(pack)))
+      _ ← fromFuture(seqExt.broadcastSingleUpdate(packUserIds.toSet, UpdateStickerCollectionsChanged(Vector(apiPack))))
     } yield ()).value
+
+  def getPackUserIds(pack: StickerPack): DBIO[Seq[Int]] =
+    if (pack.isDefault)
+      UserRepo.activeUsersIds
+    else OwnStickerPackRepo.findUserIds(pack.id)
+
+  def getApiStickerPack(pack: StickerPack): DBIO[ApiStickerCollection] =
+    for {
+      stickers ← StickerDataRepo.findByPack(pack.id)
+    } yield ApiStickerCollection(pack.id, ACLUtils.stickerPackAccessHash(pack), stickers)
+
+  def getOwnApiStickerPacks(userId: Int): DBIO[Vector[ApiStickerCollection]] =
+    for {
+      packIds ← OwnStickerPackRepo.findPackIds(userId)
+      packs ← StickerPackRepo.find(packIds)
+      stickerCollections ← DBIO.sequence(packs.toVector map { pack ⇒
+        for (stickers ← StickerDataRepo.findByPack(pack.id)) yield ApiStickerCollection(pack.id, ACLUtils.stickerPackAccessHash(pack), stickers)
+      })
+    } yield stickerCollections
 
   def makeStickerPackDefault(userId: Int, packId: Int): Future[StickerError Xor Unit] =
     toggleDefault(userId, packId, toggleTo = true)
