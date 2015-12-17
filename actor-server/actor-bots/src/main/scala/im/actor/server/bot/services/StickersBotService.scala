@@ -1,11 +1,17 @@
 package im.actor.server.bot.services
 
 import akka.actor.ActorSystem
+import akka.stream.{ Materializer, ActorMaterializer }
+import akka.util.ByteString
 import im.actor.bots.BotMessages._
 import im.actor.concurrent.FutureResultCats
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
-import im.actor.server.file.{ FileStorageAdapter, FileStorageExtension, ImageUtils }
+import im.actor.server.file.{ FileStorageAdapter, FileStorageExtension, FileUtils }
+import im.actor.server.sticker.{ Sticker, StickerImage }
 import im.actor.server.stickers.{ StickerErrors, StickersExtension }
+
+import scala.concurrent.Future
+import scala.util.Try
 
 private[bot] object StickersBotErrors {
   val LocationInvalid = BotError(400, "LOCATION_INVALID")
@@ -29,25 +35,31 @@ private[bot] object StickersBotErrors {
 
 private[bot] final class StickersBotService(_system: ActorSystem) extends BotServiceBase(_system) with FutureResultCats[BotError] with ApiToBotConversions {
 
-  import ImageUtils._
   import StickersBotErrors._
 
   private implicit val system: ActorSystem = _system
   import system.dispatcher
+  private implicit val mat: Materializer = ActorMaterializer()
 
   private val stickerExt = StickersExtension(system)
-  private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(system).fsAdapter
+  private val fsAdapter: FileStorageAdapter = FileStorageExtension(system).fsAdapter
 
   override def handlers: Handlers = {
-    case CreateStickerPack(userId)                            ⇒ createStickerPack(userId).toWeak
-    case AddSticker(ownerUserId, packId, emoji, fileLocation) ⇒ addSticker(ownerUserId, packId, emoji, fileLocation).toWeak
-    case ShowStickerPacks(ownerUserId)                        ⇒ showStickerPacks(ownerUserId).toWeak
-    case ShowStickers(ownerUserId, packId)                    ⇒ showStickers(ownerUserId, packId).toWeak
-    case DeleteSticker(ownerUserId, packId, stickerId)        ⇒ deleteSticker(ownerUserId, packId, stickerId).toWeak
+    case CreateStickerPack(userId) ⇒ createStickerPack(userId).toWeak
+    case AddSticker(ownerUserId, packId, emoji,
+      small, smallW, smallH,
+      medium, mediumW, mediumH,
+      large, largeW, largeH) ⇒ addSticker(ownerUserId, packId, emoji,
+      small, smallW, smallH,
+      medium, mediumW, mediumH,
+      large, largeW, largeH).toWeak
+    case ShowStickerPacks(ownerUserId)                 ⇒ showStickerPacks(ownerUserId).toWeak
+    case ShowStickers(ownerUserId, packId)             ⇒ showStickers(ownerUserId, packId).toWeak
+    case DeleteSticker(ownerUserId, packId, stickerId) ⇒ deleteSticker(ownerUserId, packId, stickerId).toWeak
 
     //!!!requires admin rights from peer user!!!
-    case MakeStickerPackDefault(userId, packId)               ⇒ makeStickerPackDefault(userId, packId).toWeak
-    case UnmakeStickerPackDefault(userId, packId)             ⇒ unmakeStickerPackDefault(userId, packId).toWeak
+    case MakeStickerPackDefault(userId, packId)        ⇒ makeStickerPackDefault(userId, packId).toWeak
+    case UnmakeStickerPackDefault(userId, packId)      ⇒ unmakeStickerPackDefault(userId, packId).toWeak
   }
 
   private def createStickerPack(userId: Int) = RequestHandler[CreateStickerPack, CreateStickerPack#Response] {
@@ -59,16 +71,24 @@ private[bot] final class StickersBotService(_system: ActorSystem) extends BotSer
       }
   }
 
-  private def addSticker(ownerUserId: Int, packId: Int, emoji: Option[String], fileLocation: FileLocation) = RequestHandler[AddSticker, AddSticker#Response] {
-    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
-      ifIsAdmin(botUserId) {
-        (for {
-          _ ← fromFutureBoolean(NotAllowedToEdit)(stickerExt.isOwner(ownerUserId, packId))
-          sticker ← fromFutureEither(_ ⇒ LocationInvalid)(scaleStickerF(fileLocation.fileId))
-          _ ← fromFutureXor(catchStickerErrors)(stickerExt.addSticker(ownerUserId, packId, emoji, sticker))
-        } yield Void).value
-      }
-  }
+  private def addSticker(ownerUserId: Int, packId: Int, emoji: Option[String],
+                         smallBytes: Array[Byte], smallW: Int, smallH: Int,
+                         mediumBytes: Array[Byte], mediumW: Int, mediumH: Int,
+                         largeBytes: Array[Byte], largeW: Int, largeH: Int) =
+    RequestHandler[AddSticker, AddSticker#Response] {
+      (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
+        ifIsAdmin(botUserId) {
+          (for {
+            _ ← fromFutureBoolean(NotAllowedToEdit)(stickerExt.isOwner(ownerUserId, packId))
+            sticker ← fromFuture(for {
+              small ← uploadSticker("small-sticker.webp", smallBytes, smallW, smallH)
+              medium ← uploadSticker("medium-sticker.webp", mediumBytes, mediumW, mediumH)
+              large ← uploadSticker("large-sticker.webp", largeBytes, largeW, largeH)
+            } yield Sticker(small, medium, large))
+            _ ← fromFutureXor(catchStickerErrors)(stickerExt.addSticker(ownerUserId, packId, emoji, sticker))
+          } yield Void).value
+        }
+    }
 
   def showStickerPacks(ownerUserId: Int) = RequestHandler[ShowStickerPacks, ShowStickerPacks#Response] {
     (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
@@ -118,5 +138,11 @@ private[bot] final class StickersBotService(_system: ActorSystem) extends BotSer
         }
       }
   }
+
+  private def uploadSticker(name: String, bytes: Array[Byte], w: Int, h: Int): Future[Option[StickerImage]] =
+    Try(for {
+      (path, size) ← FileUtils.writeBytes(ByteString(bytes))
+      fileLocation ← fsAdapter.uploadFileF(name, path.toFile)
+    } yield Some(StickerImage(fileLocation, w, h, size))).toOption getOrElse Future.successful(None)
 
 }

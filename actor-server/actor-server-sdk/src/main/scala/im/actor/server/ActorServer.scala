@@ -41,6 +41,7 @@ import im.actor.server.sequence._
 import im.actor.server.session.{ Session, SessionConfig, SessionMessage }
 import im.actor.server.sms.{ TelesignCallEngine, TelesignClient, TelesignSmsEngine }
 import im.actor.server.social.SocialExtension
+import im.actor.server.stickers.StickerMessages
 import im.actor.server.user._
 import kamon.Kamon
 
@@ -84,6 +85,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
     UserProcessor.register()
     GroupProcessor.register()
     DialogProcessor.register()
+    StickerMessages.register()
 
     val serverConfig = ActorConfig.load(defaultConfig)
 
