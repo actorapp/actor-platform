@@ -9,7 +9,7 @@ import org.flywaydb.core.Flyway
 import slick.driver.PostgresDriver.api.Database
 import slick.jdbc.{ HikariCPJdbcDataSource, JdbcDataSource }
 
-import scala.util.Try
+import scala.util.{ Failure, Success, Try }
 
 trait DbExtension extends Extension {
   val ds: JdbcDataSource
@@ -42,8 +42,9 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
 
     val ext = new DbExtensionImpl(ds, db)
 
-    Try(ext.migrate()) recover {
-      case e ⇒
+    Try(ext.migrate()) match {
+      case Success(_) ⇒
+      case Failure(e) ⇒
         log.error(e, "Migration failed")
         throw e
     }
