@@ -116,11 +116,12 @@ class AddContact extends Component {
               ? <li className="add-contact__results__item add-contact__results__item--searching">
                   {this.getIntlMessage('modal.addContact.empty')}
                 </li>
-              : isSearching
-                ? <li className="add-contact__results__item add-contact__results__item--searching">
-                    <FormattedMessage message={this.getIntlMessage('modal.addContact.searching')} query={query}/>
-                  </li>
-                : resultContacts
+              : resultContacts
+              //: isSearching
+              //  ? <li className="add-contact__results__item add-contact__results__item--searching">
+              //      <FormattedMessage message={this.getIntlMessage('modal.addContact.searching')} query={query}/>
+              //    </li>
+              //  : resultContacts
           }
           </ul>
         </footer>
