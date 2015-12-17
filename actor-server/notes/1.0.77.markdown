@@ -1,0 +1,1 @@
+* Allow to use streaming ws messages in bot requests
