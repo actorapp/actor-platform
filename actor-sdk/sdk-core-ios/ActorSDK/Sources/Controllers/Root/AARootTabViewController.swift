@@ -137,7 +137,7 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
     }
     
     public override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return UIInterfaceOrientationMask.Portrait
+        return UIInterfaceOrientationMask.Landscape
     }
     
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {

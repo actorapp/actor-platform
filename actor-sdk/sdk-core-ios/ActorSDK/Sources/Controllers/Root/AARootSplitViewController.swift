@@ -38,4 +38,8 @@ public class AARootSplitViewController: UISplitViewController {
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return ActorSDK.sharedActor().style.vcStatusBarStyle
     }
+    
+    public override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.Landscape
+    }
 }

@@ -24,7 +24,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         tabBarItem = UITabBarItem(title: "TabPeople", img: "TabIconContacts", selImage: "TabIconContactsHighlighted")
         
         navigationItem.title = AALocalized("TabPeople")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "findContact")
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "findContact")
         
         delegate = self
     }
@@ -46,6 +46,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
     
     func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
         
+        /*
         section.custom { (r: AACustomRow<AAContactActionCell>) -> () in
             
             r.height = 56
@@ -123,6 +124,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                 return true
             }
         }
+*/
     }
  
     // Searching for contact
