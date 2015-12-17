@@ -7,6 +7,7 @@ import im.actor.server.acl.ACLUtils.stickerPackAccessHash
 import im.actor.server.db.DbExtension
 import im.actor.server.persist
 import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
+import im.actor.server.stickers.{ StickersImplicitConversions, StickersExtension }
 import slick.dbio.DBIO
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -19,7 +20,7 @@ object StickerPackErrors {
   val CantRemoveDefaultPack = RpcError(400, "CANT_REMOVE_DEFAULT_PACK", "You can't remove default pack", false, None)
 }
 
-class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersService with ImplicitConversions {
+class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersService with StickersImplicitConversions {
 
   import FutureResultRpcCats._
   import StickerPackErrors._
@@ -28,6 +29,7 @@ class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersSer
 
   private val db = DbExtension(actorSystem).db
   private val seqUpdExt = SeqUpdatesExtension(actorSystem)
+  private val stickersExt = StickersExtension(actorSystem)
 
   override def jhandleLoadStickerCollection(id: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseLoadStickerCollection]] =
     authorized(clientData) { client ⇒
@@ -46,7 +48,7 @@ class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersSer
         _ ← fromBoolean(CantRemoveDefaultPack)(!pack.isDefault)
         _ ← fromFutureBoolean(AlreadyRemoved)(db.run(persist.OwnStickerPackRepo.exists(client.userId, pack.id) map !=))
         _ ← fromFuture(db.run(persist.OwnStickerPackRepo.delete(client.userId, pack.id)))
-        stickers ← fromFuture(db.run(getOwnStickerPacks(client.userId)))
+        stickers ← fromFuture(db.run(stickersExt.getOwnApiStickerPacks(client.userId)))
         seqState ← fromFuture(seqUpdExt.deliverSingleUpdate(client.userId, UpdateOwnStickersChanged(stickers)))
         SeqState(seq, state) = seqState
       } yield ResponseStickersReponse(stickers, seq, state.toByteArray)).value map (_.toScalaz)
@@ -60,7 +62,7 @@ class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersSer
         _ ← fromBoolean(CantAddDefaultPack)(!pack.isDefault)
         _ ← fromFutureBoolean(AlreadyAdded)(db.run(persist.OwnStickerPackRepo.exists(client.userId, pack.id)))
         _ ← fromFuture(db.run(persist.OwnStickerPackRepo.create(client.userId, pack.id)))
-        stickers ← fromFuture(db.run(getOwnStickerPacks(client.userId)))
+        stickers ← fromFuture(db.run(stickersExt.getOwnApiStickerPacks(client.userId)))
         seqState ← fromFuture(seqUpdExt.deliverSingleUpdate(client.userId, UpdateOwnStickersChanged(stickers)))
         SeqState(seq, state) = seqState
       } yield ResponseStickersReponse(stickers, seq, state.toByteArray)).value map (_.toScalaz)
@@ -68,18 +70,9 @@ class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersSer
 
   override def jhandleLoadOwnStickers(clientData: ClientData): Future[HandlerResult[ResponseLoadOwnStickers]] = {
     val action = requireAuth(clientData) map { implicit client ⇒
-      getOwnStickerPacks(client.userId) map (stickers ⇒ Ok(ResponseLoadOwnStickers(stickers)))
+      stickersExt.getOwnApiStickerPacks(client.userId) map (stickers ⇒ Ok(ResponseLoadOwnStickers(stickers)))
     }
     db.run(toDBIOAction(action))
   }
-
-  private def getOwnStickerPacks(userId: Int): DBIO[Vector[ApiStickerCollection]] =
-    for {
-      packIds ← persist.OwnStickerPackRepo.findPackIds(userId)
-      packs ← persist.StickerPackRepo.find(packIds)
-      stickerCollections ← DBIO.sequence(packs.toVector map { pack ⇒
-        for (stickers ← persist.StickerDataRepo.findByPack(pack.id)) yield ApiStickerCollection(pack.id, stickerPackAccessHash(pack), stickers)
-      })
-    } yield stickerCollections
 
 }

@@ -24,6 +24,8 @@ object OwnStickerPackRepo {
 
   def findPackIds(userId: Int): DBIO[Seq[Int]] = ownStickerPacks.filter(_.userId === userId).map(_.packId).result
 
+  def findUserIds(packId: Int): DBIO[Seq[Int]] = ownStickerPacks.filter(_.packId === packId).map(_.userId).result
+
   def exists(userId: Int, packId: Int): DBIO[Boolean] =
     ownStickerPacks.filter(p ⇒ p.userId === userId && p.packId === packId).exists.result
 

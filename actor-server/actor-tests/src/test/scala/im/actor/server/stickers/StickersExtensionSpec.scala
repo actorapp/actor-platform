@@ -1,7 +1,7 @@
 package im.actor.server.stickers
 
 import cats.data.Xor
-import im.actor.server.file.{ AvatarImage, Avatar }
+import im.actor.server.sticker.{ Sticker, StickerImage }
 import im.actor.server.user.UserExtension
 import im.actor.server.{ ImplicitSessionRegion, ImplicitAuthService, BaseAppSuite }
 import im.actor.util.misc.IdUtils
@@ -193,6 +193,6 @@ class StickersExtensionSpec
   }
 
   private def addDummy(userId: Int, packId: Int) =
-    stickersExt.addSticker(userId, packId, None, Avatar(Some(AvatarImage()), None, None))
+    stickersExt.addSticker(userId, packId, None, Sticker(Some(StickerImage()), None, None))
 
 }

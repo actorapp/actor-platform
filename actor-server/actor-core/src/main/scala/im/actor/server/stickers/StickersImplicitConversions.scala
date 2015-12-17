@@ -1,4 +1,4 @@
-package im.actor.server.api.rpc.service.stickers
+package im.actor.server.stickers
 
 import im.actor.api.rpc.files.{ ApiFileLocation, ApiImageLocation }
 import im.actor.api.rpc.stickers.ApiStickerDescriptor
@@ -6,7 +6,7 @@ import im.actor.server.model.StickerData
 
 import scala.language.implicitConversions
 
-trait ImplicitConversions {
+trait StickersImplicitConversions {
 
   implicit def stickerToApi(s: StickerData): ApiStickerDescriptor = {
     ApiStickerDescriptor(
