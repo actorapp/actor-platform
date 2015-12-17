@@ -16,17 +16,9 @@ addSbtPlugin("org.flywaydb" % "flyway-sbt" % "3.1")
 
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.3")
 
-//addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "0.94.6")
-
 addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.7.4")
 
-//addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.9")
-
-addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.5.1")
-
 addSbtPlugin("com.trueaccord.scalapb" % "sbt-scalapb" % "0.5.17")
-
-addSbtPlugin("me.lessis" % "bintray-sbt" % "0.3.0")
 
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.0")
 
@@ -40,7 +32,7 @@ addSbtPlugin("ohnosequences" % "sbt-github-release" % "0.3.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-aspectj" % "0.10.0")
 
-addSbtPlugin("im.actor" % "actor-sbt-houserules" % "0.1.1")
+addSbtPlugin("im.actor" % "actor-sbt-houserules" % "0.1.9")
 
 libraryDependencies ++= Seq(
   "com.github.os72" % "protoc-jar" % "3.0.0-b1"
