@@ -23,12 +23,6 @@ object Build extends sbt.Build with Versioning with Releasing {
 
   lazy val pomExtraXml =
     <url>https://actor.im</url>
-      <licenses>
-        <license>
-          <name>MIT</name>
-          <url>http://www.opensource.org/licenses/MIT</url>
-        </license>
-      </licenses>
       <scm>
         <connection>scm:git:github.com/actorapp/actor-platform.git</connection>
         <developerConnection>scm:git:git@github.com:actorapp/actor-platform.git</developerConnection>
