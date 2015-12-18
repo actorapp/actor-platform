@@ -1,5 +1,6 @@
 package im.actor.sdk.controllers.conversation;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
@@ -15,7 +16,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.view.ActionMode;
 import android.text.Editable;
@@ -102,6 +105,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private static final int REQUEST_DOC = 3;
     private static final int REQUEST_LOCATION = 4;
     private static final int REQUEST_CONTACT = 5;
+    private static final int PERMISSIONS_REQUEST_CAMERA = 6;
     // Peer of current chat
     private Peer peer;
 
@@ -329,10 +333,15 @@ public class ChatActivity extends ActorEditTextActivity {
                     new File(externalPath + "/actor/").mkdirs();
 
                     pending_fileName = externalPath + "/actor/capture_" + Randoms.randomId() + ".jpg";
-                    startActivityForResult(
-                            new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                                    .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName))),
-                            REQUEST_PHOTO);
+                    if (ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        Log.d("Permissions", "camera - no permission :c");
+                        ActivityCompat.requestPermissions(ChatActivity.this,
+                                new String[]{Manifest.permission.CAMERA},
+                                PERMISSIONS_REQUEST_CAMERA);
+
+                    } else {
+                        startCamera();
+                    }
                 } else if (item.getId() == R.id.share_video) {
 
                     File externalFile = getExternalFilesDir(null);
@@ -373,6 +382,13 @@ public class ChatActivity extends ActorEditTextActivity {
         handleIntent();
 
 
+    }
+
+    private void startCamera() {
+        startActivityForResult(
+                new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName))),
+                REQUEST_PHOTO);
     }
 
     private void handleIntent() {
@@ -1207,5 +1223,15 @@ public class ChatActivity extends ActorEditTextActivity {
 
     public Peer getPeer() {
         return peer;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_CAMERA) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCamera();
+            }
+        }
     }
 }
