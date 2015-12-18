@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
@@ -49,7 +50,11 @@ public class SignPhoneFragment extends BaseAuthFragment {
 
         TextView buttonContinue = (TextView) v.findViewById(R.id.button_continue_text);
         StateListDrawable states = SelectorFactory.get(ActorSDK.sharedActor().style.getMainColor(), getActivity());
-        buttonContinue.setBackground(states);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            buttonContinue.setBackground(states);
+        } else {
+            buttonContinue.setBackgroundDrawable(states);
+        }
         buttonContinue.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
         buttonContinue.setTypeface(Fonts.medium());
         ((TextView) v.findViewById(R.id.button_why)).setTypeface(Fonts.medium());
