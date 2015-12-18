@@ -2,6 +2,8 @@ package im.actor.sdk.controllers.conversation.messages;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.core.entity.Message;
@@ -56,6 +58,23 @@ public class StickerHolder extends MessageHolder {
     protected void bindData(Message message, boolean isNewMessage, PreprocessedData preprocessedData) {
         StickerContent content = (StickerContent) message.getContent();
         sticker.bind(content.getSticker().getFileReference512(), Screen.dp(100));
+
+        int w = ((StickerContent) message.getContent()).getSticker().getWidth512();
+        int h = ((StickerContent) message.getContent()).getSticker().getHeight512();
+
+        int maxHeight = context.getResources().getDisplayMetrics().heightPixels - Screen.dp(96 + 32);
+        maxHeight = Math.min(Screen.dp(200), maxHeight);
+        int maxWidth = context.getResources().getDisplayMetrics().widthPixels - Screen.dp(32 + 48);
+        maxWidth = Math.min(Screen.dp(200), maxWidth);
+
+        float scale = Math.min(maxWidth / (float) w, maxHeight / (float) h);
+
+        int bubbleW = (int) (scale * w);
+        int bubbleH = (int) (scale * h);
+        ViewGroup.LayoutParams params = sticker.getLayoutParams();
+        params.height = bubbleH;
+        params.width = bubbleW;
+
 
         // Update state
         if (message.getSenderId() == myUid()) {
