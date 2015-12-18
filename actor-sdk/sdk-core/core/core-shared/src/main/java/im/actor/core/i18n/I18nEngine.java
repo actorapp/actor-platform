@@ -344,6 +344,8 @@ public class I18nEngine {
                 return locale.get("Contact");
             case LOCATION:
                 return locale.get("Location");
+            case STICKER:
+                return locale.get("Sticker");
             case SERVICE:
                 return text;// Should be service message
             case SERVICE_REGISTERED:

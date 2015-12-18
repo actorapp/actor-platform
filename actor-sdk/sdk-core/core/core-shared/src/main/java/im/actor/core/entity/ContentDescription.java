@@ -22,6 +22,7 @@ import im.actor.core.entity.content.ServiceGroupUserJoined;
 import im.actor.core.entity.content.ServiceGroupUserKicked;
 import im.actor.core.entity.content.ServiceGroupUserLeave;
 import im.actor.core.entity.content.ServiceUserRegistered;
+import im.actor.core.entity.content.StickerContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
 import im.actor.core.entity.content.VoiceContent;
@@ -53,6 +54,8 @@ public class ContentDescription extends BserObject {
             return new ContentDescription(ContentType.LOCATION);
         } else if (msg instanceof ContactContent) {
             return new ContentDescription(ContentType.CONTACT);
+        } else if (msg instanceof StickerContent) {
+            return new ContentDescription(ContentType.STICKER);
         } else if (msg instanceof ServiceUserRegistered) {
             return new ContentDescription(ContentType.SERVICE_REGISTERED);
         } else if (msg instanceof ServiceGroupAvatarChanged) {

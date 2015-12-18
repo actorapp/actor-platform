@@ -12,6 +12,7 @@ public enum ContentType {
     DOCUMENT_AUDIO(17),
     CONTACT(18),
     LOCATION(19),
+    STICKER(20),
     SERVICE(6),
     SERVICE_ADD(7),
     SERVICE_KICK(8),
@@ -73,6 +74,8 @@ public enum ContentType {
                 return CONTACT;
             case 19:
                 return LOCATION;
+            case 20:
+                return STICKER;
         }
     }
 }
