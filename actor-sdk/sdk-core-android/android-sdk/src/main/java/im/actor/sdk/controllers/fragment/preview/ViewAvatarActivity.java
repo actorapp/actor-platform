@@ -1,14 +1,20 @@
 package im.actor.sdk.controllers.fragment.preview;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +32,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.AvatarUploadState;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
+import im.actor.runtime.Log;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
@@ -50,6 +57,7 @@ public class ViewAvatarActivity extends BaseActivity {
 
     private static final int REQUEST_GALLERY = 1;
     private static final int REQUEST_PHOTO = 2;
+    private static final int PERMISSIONS_REQUEST_CAMERA = 3;
     private String externalFile;
     private String avatarPath;
     private Peer peer;
@@ -278,11 +286,15 @@ public class ViewAvatarActivity extends BaseActivity {
                                     Toast.makeText(ViewAvatarActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
                                     return;
                                 }
+                                if (ContextCompat.checkSelfPermission(ViewAvatarActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                    Log.d("Permissions", "camera - no permission :c");
+                                    ActivityCompat.requestPermissions(ViewAvatarActivity.this,
+                                            new String[]{Manifest.permission.CAMERA},
+                                            PERMISSIONS_REQUEST_CAMERA);
 
-                                startActivityForResult(
-                                        new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                                                .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(externalFile))),
-                                        REQUEST_PHOTO);
+                                } else {
+                                    startCamera();
+                                }
                             } else if (which == 1) {
                                 Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                                 i.setType("image/*");
@@ -306,6 +318,13 @@ public class ViewAvatarActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startCamera() {
+        startActivityForResult(
+                new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(externalFile))),
+                REQUEST_PHOTO);
     }
 
     @Override
@@ -353,5 +372,15 @@ public class ViewAvatarActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         unbind();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_CAMERA) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCamera();
+            }
+        }
     }
 }
