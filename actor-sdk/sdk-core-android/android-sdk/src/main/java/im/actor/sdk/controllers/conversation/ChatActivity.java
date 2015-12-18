@@ -1204,4 +1204,8 @@ public class ChatActivity extends ActorEditTextActivity {
         oa.setDuration(0);
         oa.start();
     }
+
+    public Peer getPeer() {
+        return peer;
+    }
 }
