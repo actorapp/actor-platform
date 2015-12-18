@@ -1,5 +1,6 @@
 package im.actor.sdk.view.markdown;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -14,6 +15,8 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Toast;
 
+import im.actor.sdk.ActorSDK;
+import im.actor.sdk.controllers.conversation.ChatActivity;
 import im.actor.sdk.controllers.fragment.preview.CodePreviewActivity;
 import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.markdown.MDDocument;
@@ -93,21 +96,28 @@ public class AndroidMarkdown {
                 builder.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW)
-                                .setData(Uri.parse(url.getUrl()))
-                                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        if (intent.resolveActivity(view.getContext().getPackageManager()) != null) {
-                            AndroidContext.getContext().startActivity(
-                                    intent);
+                        if (url.getUrl().startsWith("send:")) {
+                            Context ctx = view.getContext();
+                            if (ctx instanceof ChatActivity) {
+                                ActorSDK.sharedActor().getMessenger().sendMessage(((ChatActivity) ctx).getPeer(), url.getUrl().replace("send:", ""));
+                            }
                         } else {
-                            Intent WithSchema = new Intent(Intent.ACTION_VIEW)
-                                    .setData(Uri.parse("http://".concat(url.getUrl())))
+                            Intent intent = new Intent(Intent.ACTION_VIEW)
+                                    .setData(Uri.parse(url.getUrl()))
                                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            if (WithSchema.resolveActivity(view.getContext().getPackageManager()) != null) {
+                            if (intent.resolveActivity(view.getContext().getPackageManager()) != null) {
                                 AndroidContext.getContext().startActivity(
-                                        WithSchema);
+                                        intent);
                             } else {
-                                Toast.makeText(view.getContext(), "Unknown URL type", Toast.LENGTH_SHORT).show();
+                                Intent WithSchema = new Intent(Intent.ACTION_VIEW)
+                                        .setData(Uri.parse("http://".concat(url.getUrl())))
+                                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                if (WithSchema.resolveActivity(view.getContext().getPackageManager()) != null) {
+                                    AndroidContext.getContext().startActivity(
+                                            WithSchema);
+                                } else {
+                                    Toast.makeText(view.getContext(), "Unknown URL type", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
 
