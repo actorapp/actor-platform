@@ -13,9 +13,10 @@ import spray.http.{ HttpHeaders, HttpMethods, HttpRequest }
 import spray.io.ServerSSLEngineProvider
 
 import scala.annotation.tailrec
+import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-private[botkit] final case object ConnectionClosed
+private[botkit] case object ConnectionClosed
 
 private[botkit] object WebsocketClient {
   def sourceAndSink(url: String)(implicit context: ActorRefFactory) = {
@@ -49,6 +50,8 @@ private[botkit] final class WebsocketClient(url: String)
         onMessage(frame)
       case str: String ⇒
         connection ! TextFrame(str)
+      case spray.can.websocket.UpgradedToWebSocket =>
+        self ! spray.io.ConnectionTimeouts.SetIdleTimeout(1.hour)
       case event: Http.ConnectionClosed ⇒
         onClose(event)
         context.stop(self)
