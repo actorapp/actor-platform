@@ -125,7 +125,7 @@ class PresenceManager extends Actor with ActorLogging with Stash {
       scheduledTimeouts.get(authId) foreach (_.cancel())
 
       if (presence != Offline) {
-        this.state = this.state.copy(lastSeenAt = Some(new DateTime))
+        this.state = this.state.copy(lastSeenAt = Some((new DateTime).plusMillis(timeout.toInt)))
         db.run(persist.presences.UserPresenceRepo.createOrUpdate(model.presences.UserPresence(userId, this.state.lastSeenAt)))
 
         this.scheduledTimeouts = this.scheduledTimeouts +
