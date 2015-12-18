@@ -47,13 +47,13 @@ abstract class BotBase extends BotBaseBase {
       log.info("Update: {}", upd)
 
       upd match {
-        case BotFatSeqUpdate(_, _, users, groups) ⇒
-          users foreach {
-            case (id, user) ⇒ this.users.putIfAbsent(id, user)
+        case BotFatSeqUpdate(_, _, newUsers, newGroups) ⇒
+          newUsers foreach {
+            case (id, user) ⇒ this.users.put(id, user)
           }
 
-          groups foreach {
-            case (id, group) ⇒ this.groups.putIfAbsent(id, group)
+          newGroups foreach {
+            case (id, group) ⇒ this.groups.put(id, group)
           }
         case _ ⇒
       }
