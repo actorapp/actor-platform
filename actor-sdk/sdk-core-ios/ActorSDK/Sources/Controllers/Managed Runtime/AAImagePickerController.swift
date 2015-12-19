@@ -9,6 +9,10 @@ public class AAImagePickerController: UIImagePickerController {
         return ActorSDK.sharedActor().style.vcStatusBarStyle
     }
 
+    public override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.Landscape
+    }
+
 //    public override func childViewControllerForStatusBarStyle() -> UIViewController? {
 //        return nil
 //    }

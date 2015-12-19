@@ -391,17 +391,17 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             self.pickImage(.PhotoLibrary)
         }
         
-        builder.add("SendDocument") {
-            self.pickDocument()
-        }
-        
-        builder.add("ShareLocation") {
-            self.pickLocation()
-        }
-        
-        builder.add("ShareContact") {
-            self.pickContact()
-        }
+//        builder.add("SendDocument") {
+//            self.pickDocument()
+//        }
+//        
+//        builder.add("ShareLocation") {
+//            self.pickLocation()
+//        }
+//        
+//        builder.add("ShareContact") {
+//            self.pickContact()
+//        }
         
         showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
     }

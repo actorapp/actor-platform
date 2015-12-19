@@ -7,12 +7,12 @@ import MobileCoreServices
 
 public class AASettingsViewController: AAContentTableController {
     
-    private var phonesCells: AAManagedArrayRows<ACUserPhone, AATitledCell>!
-    private var emailCells: AAManagedArrayRows<ACUserEmail, AATitledCell>!
+//    private var phonesCells: AAManagedArrayRows<ACUserPhone, AATitledCell>!
+//    private var emailCells: AAManagedArrayRows<ACUserEmail, AATitledCell>!
     
     private var headerCell: AAAvatarRow!
-    private var nicknameCell: AATitledRow!
-    private var aboutCell: AATextRow!
+//    private var nicknameCell: AATitledRow!
+//    private var aboutCell: AATextRow!
     
     public init() {
         super.init(style: AAContentTableStyle.SettingsPlain)
@@ -173,6 +173,7 @@ public class AASettingsViewController: AAContentTableController {
             ActorSDK.sharedActor().delegate.actorSettingsConfigurationDidCreated(self, section: s)
         }
         
+        /*
         // Contacts
         section { [unowned self] (s) -> () in
 
@@ -355,6 +356,7 @@ public class AASettingsViewController: AAContentTableController {
             
             ActorSDK.sharedActor().delegate.actorSettingsSupportDidCreated(self, section: s)
         }
+*/
     }
 
     public override func tableWillBind(binder: AABinder) {
@@ -377,6 +379,7 @@ public class AASettingsViewController: AAContentTableController {
             self.headerCell.reload()
         }
         
+/*
         // Bind nick
         
         binder.bind(user.getNickModel()) { [unowned self] (value: String?) -> () in
@@ -402,5 +405,6 @@ public class AASettingsViewController: AAContentTableController {
             self.emailCells.data = (emails?.toSwiftArray())!
             self.emailCells.reload()
         })
+*/
     }
 }
