@@ -14,6 +14,7 @@ trait ByteStringImplicits {
 }
 
 trait ActorPostgresDriver extends ExPostgresDriver
+  with PgDateSupport
   with PgDate2Support
   with PgArraySupport
   with PgLTreeSupport {
