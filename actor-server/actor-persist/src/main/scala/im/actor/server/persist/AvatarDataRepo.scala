@@ -3,7 +3,7 @@ package im.actor.server.persist
 import im.actor.server.model
 import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
-import slick.driver.PostgresDriver.api._, Database.dynamicSession
+import slick.driver.PostgresDriver.api._
 import shapeless._, syntax.std.tuple._
 
 final class AvatarDataTable(tag: Tag) extends Table[model.AvatarData](tag, "avatar_datas") {
