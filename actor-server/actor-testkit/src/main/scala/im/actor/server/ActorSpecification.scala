@@ -5,6 +5,7 @@ import akka.stream.ActorMaterializer
 import akka.testkit._
 import com.typesafe.config._
 import im.actor.config.ActorConfig
+import kamon.Kamon
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 
@@ -45,7 +46,7 @@ object ActorSpecification {
   }
 }
 
-abstract class ActorSuite(system: ActorSystem = { ActorSpecification.createSystem() })
+abstract class ActorSuite(system: ActorSystem = { Kamon.start(); ActorSpecification.createSystem() })
   extends TestKit(system)
   with Suite
   with FlatSpecLike
