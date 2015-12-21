@@ -53,8 +53,7 @@ public class StickersView extends ListView {
         adapter = new StickerAdapter(context, keyboard, new StickerAdapter.ScrollTo() {
             @Override
             public void requestScroll(final int position) {
-                //-1dp is hack, to catch first raw properly after scroll
-//                smoothScrollToPositionFromTop(position, -Screen.dp(1), 0);
+
                 disableWhileFastScroll = true;
                 post(new Runnable() {
                     @Override
