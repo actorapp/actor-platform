@@ -3,7 +3,7 @@ package im.actor.server.stickers
 import akka.actor._
 import cats.data.Xor
 import im.actor.api.rpc.stickers.{ ApiStickerCollection, UpdateOwnStickersChanged, UpdateStickerCollectionsChanged }
-import im.actor.concurrent.FutureResultCats
+import im.actor.concurrent.{ FutureExt, FutureResultCats }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.model.{ StickerData, StickerPack }
@@ -82,9 +82,7 @@ final class StickersExtensionImpl(_system: ActorSystem)
         image512FileHash = image512 map (_.fileLocation.accessHash),
         image512FileSize = image512 map (_.fileSize))
       _ ← fromFuture(db.run(StickerDataRepo.create(sticker)))
-      packUserIds ← fromFuture(db.run(getPackUserIds(pack)))
-      apiPack ← fromFuture(db.run(getApiStickerPack(pack)))
-      _ ← fromFuture(seqExt.broadcastSingleUpdate(packUserIds.toSet, UpdateStickerCollectionsChanged(Vector(apiPack))))
+      _ = deliverStickerCollectionChanged(pack)
     } yield ()).value
 
   def getStickerPacks(ownerUserId: Int): Future[Seq[StickerPack]] =
@@ -102,9 +100,7 @@ final class StickersExtensionImpl(_system: ActorSystem)
       pack ← fromFutureOption(NotFound)(db.run(StickerPackRepo.find(packId)))
       _ ← fromBoolean(NotFound)(pack.ownerUserId == ownerUserId)
       _ ← fromFuture(db.run(StickerDataRepo.delete(packId, stickerId)))
-      packUserIds ← fromFuture(db.run(getPackUserIds(pack)))
-      apiPack ← fromFuture(db.run(getApiStickerPack(pack)))
-      _ ← fromFuture(seqExt.broadcastSingleUpdate(packUserIds.toSet, UpdateStickerCollectionsChanged(Vector(apiPack))))
+      _ = deliverStickerCollectionChanged(pack)
     } yield ()).value
 
   def getPackUserIds(pack: StickerPack): DBIO[Seq[Int]] =
@@ -141,7 +137,35 @@ final class StickersExtensionImpl(_system: ActorSystem)
       _ = system.log.debug("sticker pack: {}", pack)
       _ ← fromBoolean(isDefaultError(toggleTo))(pack.isDefault != toggleTo)
       _ ← fromFuture(db.run(StickerPackRepo.setDefault(packId, isDefault = toggleTo)))
+      _ = broadcastOwnStickersChanged()
     } yield ()).value
+
+  /**
+   * Broadcast `UpdateOwnStickersChanged` to all users.
+   * This will happen when admin makes/unmakes sticker pack default
+   */
+  private def broadcastOwnStickersChanged(): Future[Unit] = for {
+    allUsersIds ← db.run(UserRepo.activeUsersIds)
+    _ ← FutureExt.ftraverse(allUsersIds) { uid ⇒
+      db.run(getOwnApiStickerPacks(uid)) flatMap { packs ⇒
+        seqExt.deliverSingleUpdate(uid, UpdateOwnStickersChanged(packs))
+      }
+    }
+  } yield ()
+
+  /**
+   * Deliver `UpdateStickerCollectionsChanged` to those users,
+   * who have given sticker pack in their sticker collection
+   *
+   * @param pack sticker pack that changed
+   */
+  private def deliverStickerCollectionChanged(pack: StickerPack): Future[Unit] = for {
+    packUserIds ← db.run(getPackUserIds(pack))
+    apiPack ← db.run(getApiStickerPack(pack))
+    _ ← FutureExt.ftraverse(packUserIds) { uid ⇒
+      seqExt.deliverSingleUpdate(uid, UpdateStickerCollectionsChanged(Vector(apiPack)))
+    }
+  } yield ()
 
 }
 
