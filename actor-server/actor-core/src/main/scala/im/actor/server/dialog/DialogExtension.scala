@@ -31,6 +31,12 @@ sealed trait DialogGroup {
 }
 
 object DialogGroups {
+  object Favourites extends DialogGroup {
+    override def key: String = "favourites"
+
+    override def title: String = "Favourites"
+  }
+
   object Privates extends DialogGroup {
     override def key: String = "privates"
 
@@ -144,6 +150,16 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withHide(Hide(peer))).mapTo[SeqState]
     }
 
+  def favourite(userId: Int, peer: Peer): Future[SeqState] =
+    withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withFavourite(Favourite(peer))).mapTo[SeqState]
+    }
+
+  def unfavourite(userId: Int, peer: Peer): Future[SeqState] =
+    withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withUnfavourite(Unfavourite(peer))).mapTo[SeqState]
+    }
+
   def delete(userId: Int, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId) {
       (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withDelete(Delete(peer))).mapTo[SeqState]
@@ -211,23 +227,39 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   def isSharedUser(userId: Int): Boolean = userId == 0
 
   def getGroupedDialogs(userId: Int) = {
-    db.run(DialogRepo.findNotArchivedSortByLastMessageData(userId, None, Int.MaxValue) map (_ filterNot (dialogWithSelf(userId, _))) flatMap { Dialogs ⇒
-      val (groupModels, privateModels) = Dialogs.foldLeft((Vector.empty[Dialog], Vector.empty[Dialog])) {
-        case ((groupModels, privateModels), dialog) ⇒
-          if (dialog.peer.typ == PeerType.Group)
-            (groupModels :+ dialog, privateModels)
-          else
-            (groupModels, privateModels :+ dialog)
-      }
+    db.run {
+      DialogRepo
+        .findNotArchivedSortByLastMessageData(userId, None, Int.MaxValue)
+        .map(_ filterNot (dialogWithSelf(userId, _)))
+        .flatMap { Dialogs ⇒
+          val (groupModels, privateModels, favouriteModels) =
+            Dialogs.foldLeft((Vector.empty[Dialog], Vector.empty[Dialog], Vector.empty[Dialog])) {
+              case ((groupModels, privateModels, favouriteModels), dialog) ⇒
+                if (dialog.isFavourite)
+                  (groupModels, privateModels, favouriteModels :+ dialog)
+                else if (dialog.peer.typ == PeerType.Group)
+                  (groupModels :+ dialog, privateModels, favouriteModels)
+                else if (dialog.peer.typ == PeerType.Private)
+                  (groupModels, privateModels :+ dialog, favouriteModels)
+                else throw new RuntimeException("Unknown dialog type")
+            }
 
-      for {
-        groupDialogs ← DBIO.sequence(groupModels map getDialogShort)
-        privateDialogs ← DBIO.sequence(privateModels map getDialogShort)
-      } yield Vector(
-        ApiDialogGroup(DialogGroups.Groups.title, DialogGroups.Groups.key, groupDialogs),
-        ApiDialogGroup(DialogGroups.Privates.title, DialogGroups.Privates.key, privateDialogs.toVector)
-      )
-    })
+          for {
+            groupDialogs ← DBIO.sequence(groupModels map getDialogShort)
+            privateDialogs ← DBIO.sequence(privateModels map getDialogShort)
+            favouriteDialogs ← DBIO.sequence(favouriteModels map getDialogShort)
+          } yield {
+            val default = Vector(
+              ApiDialogGroup(DialogGroups.Groups.title, DialogGroups.Groups.key, groupDialogs),
+              ApiDialogGroup(DialogGroups.Privates.title, DialogGroups.Privates.key, privateDialogs.toVector)
+            )
+
+            if (favouriteDialogs.nonEmpty)
+              ApiDialogGroup(DialogGroups.Favourites.title, DialogGroups.Favourites.key, favouriteDialogs) +: default
+            else default
+          }
+        }
+    }
   }
 
   def dialogWithSelf(userId: Int, dialog: Dialog): Boolean =

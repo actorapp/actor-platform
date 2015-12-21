@@ -27,6 +27,8 @@ final class GroupedDialogsSpec
   "Hidden dialogs" should "appear on new message" in appearHidden
   it should "appear on show" in appearShown
 
+  "Favourited dialogs" should "appear on favourite" in appearFavourite
+
   import DialogGroups._
 
   private implicit lazy val groupsService = new GroupsServiceImpl(GroupInviteConfig(""))
@@ -185,6 +187,21 @@ final class GroupedDialogsSpec
       case Vector(d1, d2) ⇒
         d1.peer.id should equal(eve.id)
         d2.peer.id should equal(bob.id)
+    }
+  }
+
+  def appearFavourite() = {
+    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+    val (bob, _, _, _) = createUser()
+
+    implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    val bobPeer = getOutPeer(bob.id, aliceAuthId)
+    sendMessageToUser(bob.id, textMessage("Hi Bob!"))
+
+    prepareDialogs(bob)
+    whenReady(service.handleFavouriteDialog(bobPeer))(identity)
+    inside(getDialogGroups(Favourites)) {
+      case Vector(d) ⇒ d.peer.id should equal(bob.id)
     }
   }
 }

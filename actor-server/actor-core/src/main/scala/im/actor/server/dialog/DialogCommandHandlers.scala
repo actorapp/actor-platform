@@ -170,7 +170,6 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     if (state.isHidden)
       sender ! Status.Failure(DialogErrors.DialogAlreadyHidden(peer))
     else {
-
       val future =
         (for {
           _ ← db.run(for {
@@ -182,6 +181,38 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
       onSuccess(future) { _ ⇒
         updateHidden(state)
+      }
+    }
+  }
+
+  protected def favourite(state: DialogState): Unit = {
+    if (state.isFavourite)
+      sender ! Status.Failure(DialogErrors.DialogAlreadyFavourited(peer))
+    else {
+      val future =
+        (for {
+          _ ← db.run(DialogRepo.favourite(userId, peer))
+          seqstate ← userExt.notifyDialogsChanged(userId)
+        } yield seqstate) pipeTo sender()
+
+      onSuccess(future) { _ ⇒
+        updateFavourited(state)
+      }
+    }
+  }
+
+  protected def unfavourite(state: DialogState): Unit = {
+    if (!state.isFavourite)
+      sender ! Status.Failure(DialogErrors.DialogAlreadyUnfavourited(peer))
+    else {
+      val future =
+        (for {
+          _ ← db.run(DialogRepo.unfavourite(userId, peer))
+          seqstate ← userExt.notifyDialogsChanged(userId)
+        } yield seqstate) pipeTo sender()
+
+      onSuccess(future) { _ ⇒
+        updateUnfavourited(state)
       }
     }
   }
@@ -283,4 +314,10 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   private def updateHidden(state: DialogState): Unit =
     context become initialized(state.updated(Hidden))
+
+  private def updateFavourited(state: DialogState): Unit =
+    context become initialized(state.updated(Favourited))
+
+  private def updateUnfavourited(state: DialogState): Unit =
+    context become initialized(state.updated(Unfavourited))
 }
