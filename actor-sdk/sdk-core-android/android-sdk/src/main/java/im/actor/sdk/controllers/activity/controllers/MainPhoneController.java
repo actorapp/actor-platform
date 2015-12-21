@@ -303,7 +303,7 @@ public class MainPhoneController extends MainBaseController {
                 } else if (intent.getAction().equals(Intent.ACTION_SEND)) {
                     if ("text/plain".equals(getIntent().getType())) {
                         sendText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                    } else {
+                    } else if (intent.getParcelableExtra(Intent.EXTRA_STREAM) != null) {
                         sendUriString = intent.getParcelableExtra(Intent.EXTRA_STREAM).toString();
                     }
                 } else if (intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {

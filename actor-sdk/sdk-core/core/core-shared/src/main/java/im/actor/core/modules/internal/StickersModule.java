@@ -4,6 +4,8 @@
 
 package im.actor.core.modules.internal;
 
+import org.bouncycastle.util.Arrays;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +75,7 @@ public class StickersModule extends AbsModule {
 
     private ArrayList<StickerPackVM> buildStickerPacks() {
 
-        ArrayList<StickerPackVM> vms = stickerPacks.get();
+        ArrayList<StickerPackVM> vms = new ArrayList<StickerPackVM>(stickerPacks.get());
 
         ArrayList<StickerPackVM> remove = new ArrayList<StickerPackVM>(vms);
         try {
