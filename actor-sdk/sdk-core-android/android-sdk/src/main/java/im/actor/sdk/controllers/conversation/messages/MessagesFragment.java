@@ -33,6 +33,7 @@ import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.Log;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
@@ -115,6 +116,10 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     private boolean isLoaded = false;
 
     protected void bindDisplayListLoad() {
+        bindDisplayListLoad(true);
+    }
+
+    protected void bindDisplayListLoad(boolean notify) {
         final BindedDisplayList<Message> list = getDisplayList();
         DisplayList.AndroidChangeListener<Message> listener = new DisplayList.AndroidChangeListener<Message>() {
 
@@ -127,7 +132,9 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 
         };
         list.addAndroidListener(listener);
-        ondisplayListLoaded();
+        if (notify) {
+            ondisplayListLoaded();
+        }
     }
 
     private void ondisplayListLoaded() {
@@ -214,7 +221,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     @Override
     public void onResume() {
         super.onResume();
-        if (onPauseSize != 0 && getDisplayList().getSize() != onPauseSize) bindDisplayListLoad();
+        bindDisplayListLoad(onPauseSize != 0 && getDisplayList().getSize() != onPauseSize);
         messenger().onConversationOpen(peer);
     }
 
