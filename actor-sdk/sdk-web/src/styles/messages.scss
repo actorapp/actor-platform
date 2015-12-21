@@ -7,7 +7,9 @@ $contact-avatar-size: 48px;
 $like-red: rgb(226, 38, 77);
 $maximum-image-height: 400px;
 $extend-background: 1px;
-$message-hover-background: rgba(black, .015);
+$message-hover-background: rgba(black, .05);
+$modern-text-line-width: 2px;
+$modern-text-padding: 6px;
 
 @keyframes bounceheart {
   0% {
@@ -754,7 +756,7 @@ $message-hover-background: rgba(black, .015);
         .dropdown__button {
           opacity: 1 !important;
           .icon {
-            transform: rotate(0);
+            transform: rotate(0deg);
 
             color: $dark-sky-blue;
 
@@ -992,13 +994,44 @@ $message-hover-background: rgba(black, .015);
   .modern {
     font-size: 14px;
     &--paragraph {
-      padding: 6px;
-      border-radius: 0 3px 3px 0;
-      border-left: 6px solid transparent;
+      margin-left: - ($modern-text-padding + $modern-text-line-width);
+      padding: $modern-text-padding;
+      border-radius: 0 $default-border-radius $default-border-radius 0;
+      border-left: $modern-text-line-width solid transparent;
+      .attachment--paragraph {
+        margin-left: 0 !important;
+      }
+    }
+
+    a {
+      color: $dark-sky-blue;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
     }
 
     p {
       margin: 0;
+    }
+
+    .attachment {
+      margin-bottom: $modern-text-padding;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      &--paragraph {
+        margin-left: - ($modern-text-padding + $modern-text-line-width);
+        padding: $modern-text-padding;
+        border-radius: 0 3px 3px 0;
+        border-left: $modern-text-line-width solid transparent;
+      }
+      &__title {
+        font-weight: 500;
+        font-size: 15px;
+        display: block;
+      }
+      .field {}
     }
   }
 }
