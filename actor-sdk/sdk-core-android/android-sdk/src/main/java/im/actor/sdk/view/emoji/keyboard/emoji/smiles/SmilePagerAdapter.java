@@ -12,7 +12,11 @@ import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import im.actor.core.viewmodel.StickerPackVM;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.emoji.smiles.SmilesPack;
 import im.actor.sdk.view.emoji.smiles.SmilesPackView;
@@ -29,18 +33,35 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabStrip.TabProvider {
 
     private EmojiKeyboard emojiKeyboard;
+    private int count;
+    private PagerSlidingTabStrip tabs;
 
     public SmilePagerAdapter(EmojiKeyboard emojiKeyboard) {
         this.emojiKeyboard = emojiKeyboard;
+        count = messenger().getOwnStickerPacks().get().size();
+        if (emojiKeyboard.getActivity() instanceof BaseActivity) {
+            ((BaseActivity) emojiKeyboard.getActivity()).bind(messenger().getOwnStickerPacks(), new ValueChangedListener<ArrayList<StickerPackVM>>() {
+                @Override
+                public void onChanged(ArrayList<StickerPackVM> val, Value<ArrayList<StickerPackVM>> valueModel) {
+                    count = messenger().getOwnStickerPacks().get().size();
+                    if (tabs != null) {
+                        tabs.notifyDataSetChanged();
+                    }
+                    notifyDataSetChanged();
+                }
+            }, false);
+        }
+
         if (messenger().getOwnStickerPacks().get().size() == 0) {
             messenger().loadStickers();
         }
 
     }
 
+
     @Override
     public int getCount() {
-        return messenger().getOwnStickerPacks().get().size() > 0 ? 6 : 5;
+        return count > 0 ? 6 : 5;
     }
 
     @Override
@@ -178,4 +199,7 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
         return tabView;
     }
 
+    public void setTabs(PagerSlidingTabStrip tabs) {
+        this.tabs = tabs;
+    }
 }

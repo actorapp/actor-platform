@@ -20,6 +20,7 @@
         android:id="@+id/text"
         android:visibility="gone"
         android:text="@string/emoji_no_recent"
+        android:gravity="center"
         android:layout_centerInParent="true"
         android:layout_width="150dp"
         android:layout_height="150dp" />
