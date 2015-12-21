@@ -7,20 +7,20 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 trait Hook
 
-trait Hook0 extends Hook {
-  def run(): Future[Unit]
+trait Hook0[R] extends Hook {
+  def run(): Future[R]
 }
 
-trait Hook1[A] extends Hook {
-  def run(a: A): Future[Unit]
+trait Hook1[R, A] extends Hook {
+  def run(a: A): Future[R]
 }
 
-trait Hook2[A, B] extends Hook {
-  def run(a: A, b: B): Future[Unit]
+trait Hook2[R, A, B] extends Hook {
+  def run(a: A, b: B): Future[R]
 }
 
-trait Hook3[A, B, C] extends Hook {
-  def run(a: A, b: B, c: C): Future[Unit]
+trait Hook3[R, A, B, C] extends Hook {
+  def run(a: A, b: B, c: C): Future[R]
 }
 
 class HooksStorage[H <: Hook] {
@@ -32,20 +32,20 @@ class HooksStorage[H <: Hook] {
       throw HookException.HookAlreadyRegistered(name)
 }
 
-final class HooksStorage0[H <: Hook0](implicit ec: ExecutionContext) extends HooksStorage[H] {
-  def runAll(): Future[Unit] = FutureExt.ftraverse(hooksList)(_.run()) map (_ ⇒ ())
+final class HooksStorage0[H <: Hook0[R], R](implicit ec: ExecutionContext) extends HooksStorage[H] {
+  def runAll(): Future[Seq[R]] = FutureExt.ftraverse(hooksList)(_.run())
 }
 
-final class HooksStorage1[H <: Hook1[A], A](implicit ec: ExecutionContext) extends HooksStorage[H] {
-  def runAll(a: A): Future[Unit] = FutureExt.ftraverse(hooksList)(_.run(a)) map (_ ⇒ ())
+final class HooksStorage1[H <: Hook1[R, A], R, A](implicit ec: ExecutionContext) extends HooksStorage[H] {
+  def runAll(a: A): Future[Seq[R]] = FutureExt.ftraverse(hooksList)(_.run(a))
 }
 
-final class HooksStorage2[H <: Hook2[A, B], A, B](implicit ec: ExecutionContext) extends HooksStorage[H] {
-  def runAll(a: A, b: B): Future[Unit] = FutureExt.ftraverse(hooksList)(_.run(a, b)) map (_ ⇒ ())
+final class HooksStorage2[H <: Hook2[R, A, B], R, A, B](implicit ec: ExecutionContext) extends HooksStorage[H] {
+  def runAll(a: A, b: B): Future[Seq[R]] = FutureExt.ftraverse(hooksList)(_.run(a, b))
 }
 
-final class HooksStorage3[H <: Hook3[A, B, C], A, B, C](implicit ec: ExecutionContext) extends HooksStorage[H] {
-  def runAll(a: A, b: B, c: C): Future[Unit] = FutureExt.ftraverse(hooksList)(_.run(a, b, c)) map (_ ⇒ ())
+final class HooksStorage3[H <: Hook3[R, A, B, C], R, A, B, C](implicit ec: ExecutionContext) extends HooksStorage[H] {
+  def runAll(a: A, b: B, c: C): Future[Seq[R]] = FutureExt.ftraverse(hooksList)(_.run(a, b, c))
 }
 
 abstract class HooksControl
