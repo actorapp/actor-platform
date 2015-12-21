@@ -31,6 +31,8 @@ final class DialogTable(tag: Tag) extends Table[Dialog](tag, "dialogs") {
 
   def shownAt = column[Option[DateTime]]("shown_at")
 
+  def isFavourite = column[Boolean]("is_favourite")
+
   def isArchived = column[Boolean]("is_archived")
 
   def createdAt = column[DateTime]("created_at")
@@ -45,11 +47,12 @@ final class DialogTable(tag: Tag) extends Table[Dialog](tag, "dialogs") {
     ownerLastReceivedAt,
     ownerLastReadAt,
     shownAt,
+    isFavourite,
     isArchived,
     createdAt
   ) <> (applyDialog.tupled, unapplyDialog)
 
-  def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Option[DateTime], Boolean, DateTime) ⇒ Dialog = {
+  def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Option[DateTime], Boolean, Boolean, DateTime) ⇒ Dialog = {
     case (
       userId,
       peerType,
@@ -59,7 +62,8 @@ final class DialogTable(tag: Tag) extends Table[Dialog](tag, "dialogs") {
       lastReadAt,
       ownerLastReceivedAt,
       ownerLastReadAt,
-      isHidden,
+      shownAt,
+      isFavourite,
       isArchived,
       createdAt) ⇒
       Dialog(
@@ -70,16 +74,17 @@ final class DialogTable(tag: Tag) extends Table[Dialog](tag, "dialogs") {
         lastReadAt = lastReadAt,
         ownerLastReceivedAt = ownerLastReceivedAt,
         ownerLastReadAt = ownerLastReadAt,
-        shownAt = isHidden,
+        shownAt = shownAt,
+        isFavourite = isFavourite,
         isArchived = isArchived,
         createdAt = createdAt
       )
   }
 
-  def unapplyDialog: Dialog ⇒ Option[(Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Option[DateTime], Boolean, DateTime)] = { dialog ⇒
+  def unapplyDialog: Dialog ⇒ Option[(Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Option[DateTime], Boolean, Boolean, DateTime)] = { dialog ⇒
     Dialog.unapply(dialog).map {
-      case (userId, peer, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isHidden, isArchived, createdAt) ⇒
-        (userId, peer.typ.value, peer.id, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isHidden, isArchived, createdAt)
+      case (userId, peer, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, shownAt, isFavourite, isArchived, createdAt) ⇒
+        (userId, peer.typ.value, peer.id, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, shownAt, isFavourite, isArchived, createdAt)
     }
   }
 }
@@ -183,6 +188,12 @@ object DialogRepo {
 
   def show(userId: Int, peer: Peer) =
     byPKC.applied((userId, peer.typ.value, peer.id)).map(_.shownAt).update(Some(new DateTime))
+
+  def favourite(userId: Int, peer: Peer) =
+    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.isFavourite).update(true)
+
+  def unfavourite(userId: Int, peer: Peer) =
+    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.isFavourite).update(false)
 
   def updateLastMessageDate(userId: Int, peer: Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) =
     byPKC.applied((userId, peer.typ.value, peer.id)).map(_.lastMessageDate).update(lastMessageDate)
