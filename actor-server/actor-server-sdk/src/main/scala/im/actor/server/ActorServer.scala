@@ -8,7 +8,7 @@ import com.typesafe.config.{ Config, ConfigFactory, ConfigException }
 import im.actor.config.ActorConfig
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
-import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
+import im.actor.server.api.http.{ HttpApi, HttpApiConfig }
 import im.actor.server.api.rpc.RpcApiExtension
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
@@ -260,7 +260,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       Frontend.start(serverConfig)
 
       system.log.debug("Starting Http Api")
-      HttpApiFrontend.start(serverConfig, httpRoutes(system))
+      HttpApi(system)
 
       ActorServer(system)
     } catch {

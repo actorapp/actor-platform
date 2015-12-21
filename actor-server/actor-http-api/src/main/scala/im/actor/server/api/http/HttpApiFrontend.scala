@@ -1,13 +1,11 @@
 package im.actor.server.api.http
 
-import akka.actor.ActorSystem
+import akka.actor._
 import akka.http.ServerSettings
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.HttpMethods._
-import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import akka.stream.Materializer
+import akka.stream.{ ActorMaterializer, Materializer }
 import com.typesafe.config.Config
 import im.actor.server.api.http.app.AppFilesHandler
 import im.actor.server.api.http.bots.BotsHandler
@@ -20,16 +18,32 @@ import im.actor.server.group.{ GroupExtension, GroupViewRegion }
 import im.actor.tls.TlsContext
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ Future, ExecutionContext }
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
 
-object HttpApiFrontend {
+final class HttpApi(_system: ActorSystem) extends Extension {
+  implicit val system = _system
+  implicit val ec = system.dispatcher
+  implicit val mat = ActorMaterializer()
+
+  val hooks = new HttpApiHookControl
+
+  HttpApiFrontend.start(system.settings.config)
+}
+
+object HttpApi extends ExtensionId[HttpApi] with ExtensionIdProvider {
+  override def createExtension(system: ExtendedActorSystem): HttpApi = new HttpApi(system)
+
+  override def lookup(): ExtensionId[_ <: Extension] = HttpApi
+}
+
+private object HttpApiFrontend {
   import HttpApiHelpers._
 
   private val IdleTimeout = 15.minutes
 
-  def start(serverConfig: Config, customRoutes: Seq[Route] = Seq.empty)(
+  def start(serverConfig: Config)(
     implicit
     system:       ActorSystem,
     materializer: Materializer
@@ -37,13 +51,13 @@ object HttpApiFrontend {
     HttpApiConfig.load(serverConfig.getConfig("http")) match {
       case Success(apiConfig) ⇒
         val tlsContext = TlsContext.load(serverConfig.getConfig("tls.keystores")).right.toOption
-        start(apiConfig, customRoutes, tlsContext)
+        start(apiConfig, tlsContext)
       case Failure(e) ⇒
         throw e
     }
   }
 
-  def start(config: HttpApiConfig, customRoutes: Seq[Route], tlsContext: Option[TlsContext])(
+  def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(
     implicit
     system:       ActorSystem,
     materializer: Materializer
@@ -73,7 +87,13 @@ object HttpApiFrontend {
       }
     // format: ON
 
-    def routes: Route = customRoutes.foldLeft(defaultRoutes)(_ ~ _)
+    def routes: Future[Route] =
+      for {
+        custom ← customRoutes
+      } yield custom.foldLeft(defaultRoutes)(_ ~ _)
+
+    def customRoutes: Future[Seq[Route]] =
+      HttpApi(system).hooks.routesHook.runAll()
 
     val defaultSettings = ServerSettings(system)
 
@@ -84,8 +104,7 @@ object HttpApiFrontend {
       settings = defaultSettings.copy(timeouts = defaultSettings.timeouts.copy(idleTimeout = IdleTimeout))
     )
       .runForeach { connection ⇒
-        connection handleWith Route.handlerFlow(routes)
+        routes map (connection handleWith Route.handlerFlow(_))
       }
   }
-
 }
