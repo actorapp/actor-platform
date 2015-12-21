@@ -34,6 +34,7 @@ object DialogEvents {
     lastReceiveDate: Long,
     lastReadDate:    Long,
     isHidden:        Boolean,
+    isFavourite:     Boolean,
     isOpen:          Boolean
   ) extends DialogEvent
 
@@ -45,6 +46,9 @@ object DialogEvents {
 
   private[dialog] case object Shown extends DialogEvent
   private[dialog] case object Hidden extends DialogEvent
+
+  private[dialog] case object Favourited extends DialogEvent
+  private[dialog] case object Unfavourited extends DialogEvent
 
   // Event  which means there was a message sent to all dialog participant
   // Closed dialog means dialog with only ServiceMessage like ContactRegistered
@@ -58,8 +62,9 @@ private[dialog] object DialogState {
     lastReceiveDate: Long,
     lastReadDate:    Long,
     isHidden:        Boolean,
+    isFavourite:     Boolean,
     isOpen:          Boolean
-  ) = DialogState(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isOpen)
+  ) = DialogState(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isFavourite, isOpen)
 }
 
 private[dialog] final case class DialogState(
@@ -67,6 +72,7 @@ private[dialog] final case class DialogState(
   lastReceiveDate: Long,
   lastReadDate:    Long,
   isHidden:        Boolean,
+  isFavourite:     Boolean,
   isOpen:          Boolean
 ) extends ProcessorState[DialogState] {
   import DialogEvents._
@@ -76,6 +82,8 @@ private[dialog] final case class DialogState(
     case LastReadDate(date) if date > this.lastReadDate ⇒ this.copy(lastReadDate = date)
     case Shown ⇒ this.copy(isHidden = false)
     case Hidden ⇒ this.copy(isHidden = true)
+    case Favourited ⇒ this.copy(isFavourite = true)
+    case Unfavourited ⇒ this.copy(isFavourite = false)
     case Open ⇒ this.copy(isOpen = true)
     case unm ⇒ this
   }
@@ -135,8 +143,8 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   override def receive: Receive = initializing
 
   def initializing: Receive = receiveStashing(replyTo ⇒ {
-    case Initialized(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isOpen) ⇒
-      context become initialized(DialogState.init(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isOpen))
+    case Initialized(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isFavourite, isOpen) ⇒
+      context become initialized(DialogState.init(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isFavourite, isOpen))
       unstashAll()
     case Status.Failure(e) ⇒
       log.error(e, "Failed to init dialog")
@@ -158,6 +166,8 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
     case WriteMessageSelf(_, senderUserId, date, randomId, message) ⇒ writeMessageSelf(senderUserId, date, randomId, message)
     case Show(_) ⇒ show(state)
     case Hide(_) ⇒ hide(state)
+    case Favourite(_) ⇒ favourite(state)
+    case Unfavourite(_) ⇒ unfavourite(state)
     case Delete(_) ⇒ delete(state)
   }
 
@@ -206,6 +216,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
       dialog.ownerLastReceivedAt.getMillis,
       dialog.ownerLastReadAt.getMillis,
       dialog.shownAt.isEmpty,
+      dialog.isFavourite,
       isOpen
     )) pipeTo self
 

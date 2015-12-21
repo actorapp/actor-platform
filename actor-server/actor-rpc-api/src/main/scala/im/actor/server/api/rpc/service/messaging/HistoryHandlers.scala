@@ -88,11 +88,10 @@ trait HistoryHandlers {
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] = {
-    // TODO: #perf meh, not optimal
-    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
+  override def jhandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] =
+    authorized(clientData) { implicit client ⇒
       for {
-        dialogGroups ← DBIO.from(dialogExt.getGroupedDialogs(client.userId))
+        dialogGroups ← dialogExt.getGroupedDialogs(client.userId)
         (userIds, groupIds) = dialogGroups.view.flatMap(_.dialogs).foldLeft((Seq.empty[Int], Seq.empty[Int])) {
           case ((uids, gids), dialog) ⇒
             dialog.peer.`type` match {
@@ -100,14 +99,11 @@ trait HistoryHandlers {
               case ApiPeerType.Private ⇒ (uids :+ dialog.peer.id, gids)
             }
         }
-        (groups, users) ← DBIO.from(GroupUtils.getGroupsUsers(groupIds, userIds, client.userId, client.authId))
+        (groups, users) ← GroupUtils.getGroupsUsers(groupIds, userIds, client.userId, client.authId)
       } yield Ok(ResponseLoadGroupedDialogs(dialogGroups, users.toVector, groups.toVector))
     }
 
-    db.run(toDBIOAction(authorizedAction))
-  }
-
-  override def jhandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] = {
+  override def jhandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { implicit client ⇒
       (for {
         seqstate ← dialogExt.hide(client.userId, peer.asModel)
@@ -117,9 +113,8 @@ trait HistoryHandlers {
           Error(RpcError(406, "DIALOG_ALREADY_HIDDEN", "Dialog is already hidden.", canTryAgain = false, None))
       }
     }
-  }
 
-  override def jhandleShowDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] = {
+  override def jhandleShowDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { implicit client ⇒
       (for {
         seqstate ← dialogExt.show(client.userId, peer.asModel)
@@ -129,7 +124,6 @@ trait HistoryHandlers {
           Error(RpcError(406, "DIALOG_ALREADY_SHOWN", "Dialog is already shown.", canTryAgain = false, None))
       }
     }
-  }
 
   override def jhandleLoadHistory(peer: ApiOutPeer, endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadHistory]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒

@@ -26,6 +26,8 @@ message DialogCommands {
             SetReaction set_reaction = 9;
             RemoveReaction remove_reaction = 10;
             WriteMessageSelf write_message_self = 11;
+            Favourite favourite = 12;
+            Unfavourite unfavourite = 13;
         }
     }
 
@@ -97,6 +99,18 @@ message DialogCommands {
     }
 
     message Hide {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+
+        required Peer dest = 1;
+    }
+
+    message Favourite {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+
+        required Peer dest = 1;
+    }
+
+    message Unfavourite {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
 
         required Peer dest = 1;
