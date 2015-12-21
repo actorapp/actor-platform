@@ -171,7 +171,7 @@ public abstract class ActorEditTextActivity extends BaseActivity {
     protected void setFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.messagesFragment, onCreateFragment())
+                    .replace(R.id.messagesFragment, onCreateFragment())
                     .commit();
         }
     }
