@@ -1,1 +1,2 @@
 * favourite dialogs
+* hooks to inject own http routes in runtime 
