@@ -25,6 +25,7 @@ xcodebuild \
   -derivedDataPath build \
   -arch x86_64 \
   -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 6' \
   ONLY_ACTIVE_ARCH=NO \
   -configuration Release \
   -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 \
