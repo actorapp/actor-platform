@@ -281,6 +281,10 @@ public class BaseKeyboard implements
         }
     }
 
+    public Activity getActivity() {
+        return activity;
+    }
+
     protected void onDismiss() {
         // override it
     }
