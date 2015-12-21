@@ -23,7 +23,6 @@ xcodebuild \
   -workspace "ActorSDK.xcworkspace" \
   -scheme "ActorSDK" \
   -derivedDataPath build \
-  -arch x86_64 \
   -sdk iphonesimulator \
   -destination 'platform=iOS Simulator,name=iPhone 6' \
   ONLY_ACTIVE_ARCH=NO \
