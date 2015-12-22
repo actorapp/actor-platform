@@ -13,10 +13,10 @@ import com.google.protobuf.CodedInputStream
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.messaging.{ ApiMessage, ApiTextMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.server.office.EntityNotFound
-import im.actor.server.{ KeyValueMappings, model }
 import im.actor.server.model.PeerType.{ Group, Private }
-import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
+import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
+import im.actor.server.user.UserExtension
+import im.actor.server.{ KeyValueMappings, model }
 import im.actor.util.log.AnyRefLogSource
 import play.api.libs.json.{ Format, Json }
 import shardakka.ShardakkaExtension
@@ -28,7 +28,7 @@ import scala.util.{ Failure, Success }
 object ReverseHooksWorker {
   private[messaging] case object Resubscribe
 
-  def props(groupId: Int, token: String, mediator: ActorRef) = Props(classOf[ReverseHooksWorker], groupId, token, mediator)
+  def props(groupId: Int, token: String) = Props(classOf[ReverseHooksWorker], groupId, token)
 
   private[messaging] def interceptorGroupId(groupId: Int): String = s"group-$groupId"
 
@@ -37,7 +37,7 @@ object ReverseHooksWorker {
   implicit val format: Format[MessageToWebhook] = Json.format[MessageToWebhook]
 }
 
-private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, mediator: ActorRef)
+private[messaging] final class ReverseHooksWorker(groupId: Int, token: String)
   extends Actor
   with ActorLogging
   with AnyRefLogSource
@@ -54,6 +54,7 @@ private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, m
   private[this] val scheduledResubscribe = system.scheduler.schedule(Duration.Zero, 1.minute, self, Resubscribe)
   private[this] val reverseHooksKv = ShardakkaExtension(system).simpleKeyValue(KeyValueMappings.ReverseHooks + "_" + token)
   private[this] val http: HttpExt = Http()
+  private[this] val pubSubExt = PubSubExtension(system)
 
   override val log = Logging(system, this)
 
@@ -61,7 +62,7 @@ private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, m
 
   def init: Receive = {
     case Resubscribe ⇒
-      mediator ! Subscribe(MessagingService.messagesTopic(ApiPeer(ApiPeerType.Group, groupId)), None, self)
+      pubSubExt.subscribe(Subscribe(pubSubExt.messagesTopic(ApiPeer(ApiPeerType.Group, groupId)), None, self))
     case SubscribeAck(Subscribe(topic, _, _)) ⇒
       log.debug("Watching for group's {} reverse hooks", groupId)
       scheduledResubscribe.cancel()
@@ -69,7 +70,7 @@ private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, m
   }
 
   def working: Receive = {
-    case Events.PeerMessage(from, _, _, _, message) ⇒
+    case PeerMessage(from, _, _, _, message) ⇒
       log.debug("Got message from group {}, peer {} to forward to webhook", groupId, from)
       val parsed = ApiMessage.parseFrom(CodedInputStream.newInstance(message.toByteArray))
 

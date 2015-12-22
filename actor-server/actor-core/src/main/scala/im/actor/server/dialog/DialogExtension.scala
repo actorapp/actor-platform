@@ -17,6 +17,7 @@ import im.actor.server.group.GroupExtension
 import im.actor.server.model._
 import im.actor.server.persist.messaging.ReactionEventRepo
 import im.actor.server.persist.{ DialogRepo, HistoryMessageRepo }
+import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserExtension
 import org.joda.time.DateTime
@@ -80,6 +81,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       val date = Instant.now().toEpochMilli
       val sender = Peer.privat(senderUserId)
       val sendMessage = SendMessage(sender, peer.asModel, senderAuthSid, date, randomId, message, isFat)
+      PubSubExtension(system).publish(PeerMessage(Peer.privat(senderUserId), peer.asModel, randomId, date, message))
       (userExt.processorRegion.ref ? Envelope(sender).withSendMessage(sendMessage)).mapTo[SeqStateDate]
     }
 
