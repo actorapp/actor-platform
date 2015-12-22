@@ -71,7 +71,7 @@
 
 "SettingsLastSeenContacts"  = "Mis contactos";
 
-"SettingsLastSeenNobody"    = "Nadie";
+"SettingsLastSeenNone"    = "Nadie";
 
 "ShareLocation" = "Ubicación";
 
