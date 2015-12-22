@@ -23,7 +23,6 @@ target 'ActorApp' do
     pod 'zipzap'
 
     # Main UI
-    pod 'SlackTextViewController'
     pod 'NYTPhotoViewer'
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
@@ -56,7 +55,6 @@ target 'ActorSDK' do
     pod 'zipzap'
 
     # Main UI
-    pod 'SlackTextViewController'
     pod 'NYTPhotoViewer'
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
