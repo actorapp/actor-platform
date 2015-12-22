@@ -14,8 +14,11 @@ import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
+import java.io.File;
+
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
 
 public class BackgroundPreviewView extends SimpleDraweeView {
 
@@ -53,19 +56,38 @@ public class BackgroundPreviewView extends SimpleDraweeView {
     }
 
     public void bind(int i) {
-        int bkgrnd = getBackground(i);
-        Uri uri = new Uri.Builder()
-                .scheme(UriUtil.LOCAL_RESOURCE_SCHEME)
-                .path(String.valueOf(bkgrnd))
-                .build();
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                .setResizeOptions(new ResizeOptions(width, height))
-                .build();
-        PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
-                .setOldController(getController())
-                .setImageRequest(request)
-                .build();
-        setController(controller);
+        if (i != BACKGROUNDS.length) {
+            int bkgrnd = getBackground(i);
+            Uri uri = new Uri.Builder()
+                    .scheme(UriUtil.LOCAL_RESOURCE_SCHEME)
+                    .path(String.valueOf(bkgrnd))
+                    .build();
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                    .setResizeOptions(new ResizeOptions(width, height))
+                    .build();
+            PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+                    .setOldController(getController())
+                    .setImageRequest(request)
+                    .build();
+            setController(controller);
+        } else {
+            if (BaseActorSettingsFragment.getWallpaperFile() != null) {
+                File customWallpaper = new File(BaseActorSettingsFragment.getWallpaperFile());
+                if (!customWallpaper.exists()) {
+                    return;
+                }
+                Uri uri = Uri.fromFile(customWallpaper);
+                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                        .setResizeOptions(new ResizeOptions(width, height))
+                        .build();
+                PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+                        .setOldController(getController())
+                        .setImageRequest(request)
+                        .build();
+                setController(controller);
+            }
+        }
+
 
     }
 

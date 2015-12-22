@@ -4,6 +4,9 @@ import android.content.Context;
 import android.view.View;
 
 import im.actor.core.AuthState;
+import im.actor.runtime.android.view.BindedViewHolder;
+import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
 import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.intents.ActorIntent;
@@ -40,6 +43,19 @@ public interface ActorSDKDelegate {
      * @return Actor Intent
      */
     ActorIntent getSettingsIntent();
+
+    /**
+     * If not null returned, overrides chat activity intent
+     *
+     * @return Actor Intent
+     */
+    ActorIntent getChatIntent();
+
+    String getHelpPhone();
+
+    <T extends BindedViewHolder, J extends T> J getViewHolder(Class<T> base, Object... args);
+
+    MainPhoneController getMainPhoneController(ActorMainActivity mainActivity);
 
     @Deprecated
     AuthState getAuthStartState();
