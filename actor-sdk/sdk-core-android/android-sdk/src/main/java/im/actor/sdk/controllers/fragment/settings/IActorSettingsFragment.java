@@ -15,6 +15,8 @@ public interface IActorSettingsFragment {
 
     View getSettingsBottomView();
 
+    boolean showWallpaperCategory();
+
     ActorSettingsCategory[] getBeforeSettingsCategories();
 
     ActorSettingsCategory[] getAfterSettingsCategories();

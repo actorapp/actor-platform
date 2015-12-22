@@ -31,6 +31,8 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import java.io.File;
+
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserEmail;
 import im.actor.core.viewmodel.UserPhone;
@@ -60,8 +62,8 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
     private int baseColor;
     private CoverAvatarView avatarView;
-    SharedPreferences shp;
-    SharedPreferences.Editor ed;
+    protected SharedPreferences shp;
+    protected SharedPreferences.Editor ed;
     private boolean noPhones = false;
     private boolean noEmails = false;
 
@@ -361,7 +363,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         view.findViewById(R.id.askQuestion).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                execute(messenger().findUsers("75551234567"), R.string.progress_common, new CommandCallback<UserVM[]>() {
+                execute(messenger().findUsers(ActorSDK.sharedActor().getDelegate().getHelpPhone()), R.string.progress_common, new CommandCallback<UserVM[]>() {
                     @Override
                     public void onResult(UserVM[] res) {
                         if (res.length >= 1) {
@@ -453,44 +455,51 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         bind(avatarView, users().get(myUid()).getAvatar());
 
         //Wallpaper
-        LinearLayout wallpaperContainer = (LinearLayout) view.findViewById(R.id.background_container);
-        wallpaperContainer.setBackgroundColor(style.getMainBackgroundColor());
-        ((TextView) view.findViewById(R.id.settings_wallpaper_title)).setTextColor(style.getSettingsCategoryTextColor());
-        view.findViewById(R.id.wallpaperDivider).setBackgroundColor(style.getBackyardBackgroundColor());
-        View.OnClickListener ocl = new View.OnClickListener() {
+        if (showWallpaperCategory()) {
+            LinearLayout wallpaperContainer = (LinearLayout) view.findViewById(R.id.background_container);
+            wallpaperContainer.setBackgroundColor(style.getMainBackgroundColor());
+            ((TextView) view.findViewById(R.id.settings_wallpaper_title)).setTextColor(style.getSettingsCategoryTextColor());
+            view.findViewById(R.id.wallpaperDivider).setBackgroundColor(style.getBackyardBackgroundColor());
+            View.OnClickListener ocl = new View.OnClickListener() {
 
-            @Override
-            public void onClick(final View v) {
-                Intent i = new Intent(getActivity(), PickWallpaperActivity.class);
-                int j = 0;
-                Object tag = v.getTag();
-                if (tag != null && tag instanceof Integer) {
-                    j = (int) tag;
+                @Override
+                public void onClick(final View v) {
+                    Intent i = new Intent(getActivity(), PickWallpaperActivity.class);
+                    int j = 0;
+                    Object tag = v.getTag();
+                    if (tag != null && tag instanceof Integer) {
+                        j = (int) tag;
+                    }
+                    i.putExtra("EXTRA_ID", j);
+                    startActivity(i);
                 }
-                i.putExtra("EXTRA_ID", j);
-                startActivity(i);
-            }
-        };
-        int previewSize = 80;
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Screen.dp(previewSize), Screen.dp(previewSize));
-        for (int i = 0; i < 3; i++) {
-            FrameLayout frame = new FrameLayout(getActivity());
-            BackgroundPreviewView bckgrnd = new BackgroundPreviewView(getActivity());
-            bckgrnd.init(Screen.dp(previewSize), Screen.dp(previewSize));
-            bckgrnd.bind(i);
-            //bckgrnd.setPadding(Screen.dp(5), Screen.dp(10), Screen.dp(5), Screen.dp(20));
-            frame.setTag(i);
-            frame.setOnClickListener(ocl);
-            frame.addView(bckgrnd);
-            wallpaperContainer.addView(frame, params);
+            };
+            int previewSize = 80;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Screen.dp(previewSize), Screen.dp(previewSize));
+            for (int i = 0; i < 3; i++) {
+                FrameLayout frame = new FrameLayout(getActivity());
+                BackgroundPreviewView bckgrnd = new BackgroundPreviewView(getActivity());
+                bckgrnd.init(Screen.dp(previewSize), Screen.dp(previewSize));
+                bckgrnd.bind(i);
+                //bckgrnd.setPadding(Screen.dp(5), Screen.dp(10), Screen.dp(5), Screen.dp(20));
+                frame.setTag(i);
+                frame.setOnClickListener(ocl);
+                frame.addView(bckgrnd);
+                wallpaperContainer.addView(frame, params);
 
+            }
+            TintImageView next = new TintImageView(getActivity());
+            next.setResource(R.drawable.ic_keyboard_arrow_right_white_36dp);
+            next.setTint(style.getSettingsIconColor());
+            next.setOnClickListener(ocl);
+            next.setTag(-1);
+            wallpaperContainer.addView(next, new LinearLayout.LayoutParams(Screen.dp(40), Screen.dp(previewSize)));
+
+        } else {
+            view.findViewById(R.id.background_container).setVisibility(View.GONE);
+            view.findViewById(R.id.wallpaperDivider).setVisibility(View.GONE);
+            view.findViewById(R.id.settings_wallpaper_title).setVisibility(View.GONE);
         }
-        TintImageView next = new TintImageView(getActivity());
-        next.setResource(R.drawable.ic_keyboard_arrow_right_white_36dp);
-        next.setTint(style.getSettingsIconColor());
-        next.setOnClickListener(ocl);
-        next.setTag(-1);
-        wallpaperContainer.addView(next, new LinearLayout.LayoutParams(Screen.dp(40), Screen.dp(previewSize)));
 
         view.findViewById(R.id.avatar).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -613,6 +622,20 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                     Color.blue(fullColor)
             )));
         }
+    }
+
+    public static String getWallpaperFile() {
+        File externalFile = messenger().getContext().getExternalFilesDir(null);
+        if (externalFile == null) {
+            return null;
+        }
+        String externalPath = externalFile.getAbsolutePath();
+
+        File dest = new File(externalPath + "/actor/wallpapers/");
+        dest.mkdirs();
+
+        File outputFile = new File(dest, "customWallpaper" + ".jpg");
+        return outputFile.getAbsolutePath();
     }
 
     @Override

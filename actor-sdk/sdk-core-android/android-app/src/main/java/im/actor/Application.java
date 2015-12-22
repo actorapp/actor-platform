@@ -63,6 +63,11 @@ public class Application extends ActorSDKApplication {
                         }
 
                         @Override
+                        public boolean showWallpaperCategory() {
+                            return true;
+                        }
+
+                        @Override
                         public ActorSettingsCategory[] getBeforeSettingsCategories() {
                             return new ActorSettingsCategory[]{
                                     new ActorSettingsCategory() {

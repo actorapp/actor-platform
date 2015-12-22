@@ -107,7 +107,7 @@ public class PagerSlidingTabStrip extends FrameLayout {
 
         tabsContainer = new LinearLayout(context);
         tabsContainer.setOrientation(LinearLayout.HORIZONTAL);
-        tabsContainer.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
+        tabsContainer.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         tabsContainer.setPadding(tabsContainerPaddingLeft, tabsContainerPaddingTop, tabsContainerPaddingRight, tabsContainerPaddingBottom);
         addView(tabsContainer);
 

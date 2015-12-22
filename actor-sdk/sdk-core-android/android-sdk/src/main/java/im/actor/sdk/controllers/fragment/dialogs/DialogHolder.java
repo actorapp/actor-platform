@@ -40,7 +40,7 @@ public class DialogHolder extends BindedViewHolder {
     private TextView text;
     private TextView time;
     private TintImageView state;
-    private TextView counter;
+    protected TextView counter;
     private View separator;
     private CharSequence bindedText;
     private int bindedUid;
@@ -158,17 +158,9 @@ public class DialogHolder extends BindedViewHolder {
             fl.addView(state);
         }
 
-        counter = new TextView(context);
-        counter.setTextColor(style.getDialogsCounterTextColor());
-        counter.setBackgroundColor(style.getDialogsCounterBackgroundColor());
-        counter.setPadding(Screen.dp(4), 0, Screen.dp(4), 0);
-        counter.setTextSize(10);
-        counter.setTypeface(Fonts.regular());
-        counter.setGravity(Gravity.CENTER);
-        counter.setIncludeFontPadding(false);
-        counter.setMinWidth(Screen.dp(14));
+        onCreateCounter(context, style);
         {
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Screen.dp(14), Gravity.BOTTOM | Gravity.RIGHT);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.RIGHT);
             params.bottomMargin = Screen.dp(12);
             params.rightMargin = Screen.dp(10);
             counter.setLayoutParams(params);
@@ -192,6 +184,19 @@ public class DialogHolder extends BindedViewHolder {
                 return false;
             }
         });
+    }
+
+    protected void onCreateCounter(Context context, ActorStyle style) {
+        counter = new TextView(context);
+        counter.setTextColor(style.getDialogsCounterTextColor());
+        counter.setBackgroundColor(style.getDialogsCounterBackgroundColor());
+        counter.setPadding(Screen.dp(4), 0, Screen.dp(4), 0);
+        counter.setTextSize(10);
+        counter.setTypeface(Fonts.regular());
+        counter.setGravity(Gravity.CENTER);
+        counter.setIncludeFontPadding(false);
+        counter.setMinWidth(Screen.dp(14));
+        counter.setMinHeight(Screen.dp(14));
     }
 
     public void bind(Dialog data, boolean isLast) {
