@@ -23,57 +23,17 @@ public class AASettingsPrivacyViewController: AAContentTableController {
     public override func tableDidLoad() {
         
         section { (s) -> () in
+        
+            // Settings: All sessions
+            s.navigate("SettingsAllSessions", controller: AASettingsSessionsController.self)
             
-            s.footerText = AALocalized("PrivacyTerminateHint")
+            // Settings: Last seen
+            s.navigate("SettingsLastSeen", controller: AASettingsLastSeenController.self)
             
-            s.danger("PrivacyTerminate") { (r) -> () in
-                r.selectAction = { () -> Bool in
-                    self.confirmDangerSheetUser("PrivacyTerminateAlert", tapYes: { [unowned self] () -> () in
-                        // Terminating all sessions and reload list
-                        self.executeSafe(Actor.terminateAllSessionsCommand(), successBlock: { (val) -> Void in
-                            self.loadSessions()
-                        })
-                        }, tapNo: nil)
-                    return true
-                }
-            }
+            s.footerText = AALocalized("SettingsLastSeenHint")
+            
         }
         
-        section { (s) -> () in
-            self.sessionsCell = s.arrays() { (r: AAManagedArrayRows<ARApiAuthSession, AACommonCell>) -> () in
-                r.bindData = { (c: AACommonCell, d: ARApiAuthSession) -> () in
-                    if d.getAuthHolder().ordinal() != jint(ARApiAuthHolder.THISDEVICE.rawValue) {
-                        c.style = .Normal
-                        c.setContent(d.getDeviceTitle())
-                    } else {
-                        c.style = .Hint
-                        c.setContent("(Current) \(d.getDeviceTitle())")
-                    }
-                }
-                
-                r.selectAction = { (d) -> Bool in
-                    if d.getAuthHolder().ordinal() != jint(ARApiAuthHolder.THISDEVICE.rawValue) {
-                        self.confirmDangerSheetUser("PrivacyTerminateAlertSingle", tapYes: { [unowned self] () -> () in
-                            // Terminating session and reload list
-                            self.executeSafe(Actor.terminateSessionCommandWithId(d.getId()), successBlock: { [unowned self] (val) -> Void in
-                                self.loadSessions()
-                                })
-                        }, tapNo: nil)
-                    }
-                    return true
-                }
-            }
-        }
-        
-        // Request sessions load
-        
-        loadSessions()
     }
     
-    private func loadSessions() {
-        execute(Actor.loadSessionsCommand(), successBlock: { [unowned self] (val) -> Void in
-            self.sessionsCell!.data = (val as! JavaUtilList).toArray().toSwiftArray()
-            self.managedTable.tableView.reloadData()
-        }, failureBlock: nil)
-    }
 }
