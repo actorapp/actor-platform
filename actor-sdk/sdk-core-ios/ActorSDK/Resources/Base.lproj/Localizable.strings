@@ -82,6 +82,13 @@
 
 "SettingsVersion" = "Version {version}";
 
+"SettingsAllSessions" = "All sessions";
+
+"SettingsLastSeen" = "Last seen";
+
+"SettingsLastSeenHint" = "Change who can see your Last Seen time.";
+
+
 /*
  * Profile
  */

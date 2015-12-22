@@ -34,6 +34,8 @@ FOUNDATION_EXPORT const unsigned char ActorSDKVersionString[];
 
 // Ogg record
 
+#import "SLKTextViewController.h"
+
 #import "AAAudioRecorder.h"
 #import "AAAudioPlayer.h"
 #import "AAModernConversationAudioPlayer.h"

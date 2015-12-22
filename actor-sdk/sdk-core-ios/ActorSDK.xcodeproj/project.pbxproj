@@ -177,26 +177,28 @@
 		06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B24B1C0FAB500090660C /* AAMapFastView.swift */; };
 		06E7B2521C1345E70090660C /* AAMapPinPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2511C1345E70090660C /* AAMapPinPointView.swift */; };
 		06E7B2541C139B6F0090660C /* AABubbleContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */; };
-		152AA8A61C2989270030DEEE /* SLKInputAccessoryView.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8921C2989270030DEEE /* SLKInputAccessoryView.h */; };
+		152AA8A61C2989270030DEEE /* SLKInputAccessoryView.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8921C2989270030DEEE /* SLKInputAccessoryView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8A71C2989270030DEEE /* SLKInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8931C2989270030DEEE /* SLKInputAccessoryView.m */; };
-		152AA8A81C2989270030DEEE /* SLKTextInputbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8941C2989270030DEEE /* SLKTextInputbar.h */; };
+		152AA8A81C2989270030DEEE /* SLKTextInputbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8941C2989270030DEEE /* SLKTextInputbar.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8A91C2989270030DEEE /* SLKTextInputbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8951C2989270030DEEE /* SLKTextInputbar.m */; };
-		152AA8AA1C2989270030DEEE /* SLKTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8961C2989270030DEEE /* SLKTextView.h */; };
+		152AA8AA1C2989270030DEEE /* SLKTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8961C2989270030DEEE /* SLKTextView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8AB1C2989270030DEEE /* SLKTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8971C2989270030DEEE /* SLKTextView.m */; };
-		152AA8AC1C2989270030DEEE /* SLKTextView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8981C2989270030DEEE /* SLKTextView+SLKAdditions.h */; };
+		152AA8AC1C2989270030DEEE /* SLKTextView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8981C2989270030DEEE /* SLKTextView+SLKAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8AD1C2989270030DEEE /* SLKTextView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8991C2989270030DEEE /* SLKTextView+SLKAdditions.m */; };
-		152AA8AE1C2989270030DEEE /* SLKTextViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89A1C2989270030DEEE /* SLKTextViewController.h */; };
+		152AA8AE1C2989270030DEEE /* SLKTextViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89A1C2989270030DEEE /* SLKTextViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8AF1C2989270030DEEE /* SLKTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA89B1C2989270030DEEE /* SLKTextViewController.m */; };
-		152AA8B01C2989270030DEEE /* SLKTypingIndicatorProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89C1C2989270030DEEE /* SLKTypingIndicatorProtocol.h */; };
-		152AA8B11C2989270030DEEE /* SLKTypingIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89D1C2989270030DEEE /* SLKTypingIndicatorView.h */; };
+		152AA8B01C2989270030DEEE /* SLKTypingIndicatorProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89C1C2989270030DEEE /* SLKTypingIndicatorProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		152AA8B11C2989270030DEEE /* SLKTypingIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89D1C2989270030DEEE /* SLKTypingIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8B21C2989270030DEEE /* SLKTypingIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA89E1C2989270030DEEE /* SLKTypingIndicatorView.m */; };
-		152AA8B31C2989270030DEEE /* SLKUIConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89F1C2989270030DEEE /* SLKUIConstants.h */; };
-		152AA8B41C2989270030DEEE /* UIResponder+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8A01C2989270030DEEE /* UIResponder+SLKAdditions.h */; };
+		152AA8B31C2989270030DEEE /* SLKUIConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89F1C2989270030DEEE /* SLKUIConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		152AA8B41C2989270030DEEE /* UIResponder+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8A01C2989270030DEEE /* UIResponder+SLKAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8B51C2989270030DEEE /* UIResponder+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8A11C2989270030DEEE /* UIResponder+SLKAdditions.m */; };
-		152AA8B61C2989270030DEEE /* UIScrollView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8A21C2989270030DEEE /* UIScrollView+SLKAdditions.h */; };
+		152AA8B61C2989270030DEEE /* UIScrollView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8A21C2989270030DEEE /* UIScrollView+SLKAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8B71C2989270030DEEE /* UIScrollView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8A31C2989270030DEEE /* UIScrollView+SLKAdditions.m */; };
-		152AA8B81C2989270030DEEE /* UIView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8A41C2989270030DEEE /* UIView+SLKAdditions.h */; };
+		152AA8B81C2989270030DEEE /* UIView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8A41C2989270030DEEE /* UIView+SLKAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8B91C2989270030DEEE /* UIView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8A51C2989270030DEEE /* UIView+SLKAdditions.m */; };
+		152AA8BD1C298BF00030DEEE /* AASettingsSessionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8BC1C298BF00030DEEE /* AASettingsSessionsController.swift */; };
+		152AA8BF1C298C4B0030DEEE /* AASettingsLastSeenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8BE1C298C4B0030DEEE /* AASettingsLastSeenController.swift */; };
 		15D35F161C20185500E3717A /* diag_range.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F0C1C20185500E3717A /* diag_range.c */; };
 		15D35F171C20185500E3717A /* diag_range.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F0D1C20185500E3717A /* diag_range.h */; };
 		15D35F181C20185500E3717A /* opus_header.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F0E1C20185500E3717A /* opus_header.c */; };
@@ -453,6 +455,8 @@
 		152AA8A31C2989270030DEEE /* UIScrollView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SLKAdditions.m"; sourceTree = "<group>"; };
 		152AA8A41C2989270030DEEE /* UIView+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SLKAdditions.h"; sourceTree = "<group>"; };
 		152AA8A51C2989270030DEEE /* UIView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+SLKAdditions.m"; sourceTree = "<group>"; };
+		152AA8BC1C298BF00030DEEE /* AASettingsSessionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AASettingsSessionsController.swift; sourceTree = "<group>"; };
+		152AA8BE1C298C4B0030DEEE /* AASettingsLastSeenController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AASettingsLastSeenController.swift; sourceTree = "<group>"; };
 		15D35F0C1C20185500E3717A /* diag_range.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = diag_range.c; sourceTree = "<group>"; };
 		15D35F0D1C20185500E3717A /* diag_range.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = diag_range.h; sourceTree = "<group>"; };
 		15D35F0E1C20185500E3717A /* opus_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = opus_header.c; sourceTree = "<group>"; };
@@ -905,6 +909,8 @@
 				066A52ED1BC52B02000E606E /* AASettingsNotificationsViewController.swift */,
 				066A52EE1BC52B02000E606E /* AASettingsPrivacyViewController.swift */,
 				066A52EF1BC52B02000E606E /* AASettingsWallpapper.swift */,
+				152AA8BC1C298BF00030DEEE /* AASettingsSessionsController.swift */,
+				152AA8BE1C298C4B0030DEEE /* AASettingsLastSeenController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1262,7 +1268,15 @@
 				152AA8B11C2989270030DEEE /* SLKTypingIndicatorView.h in Headers */,
 				152AA8A81C2989270030DEEE /* SLKTextInputbar.h in Headers */,
 				066A52731BC5101A000E606E /* ABPhoneField.h in Headers */,
+				152AA8AA1C2989270030DEEE /* SLKTextView.h in Headers */,
+				152AA8B01C2989270030DEEE /* SLKTypingIndicatorProtocol.h in Headers */,
+				152AA8AC1C2989270030DEEE /* SLKTextView+SLKAdditions.h in Headers */,
 				152AA8A61C2989270030DEEE /* SLKInputAccessoryView.h in Headers */,
+				152AA8AE1C2989270030DEEE /* SLKTextViewController.h in Headers */,
+				152AA8B31C2989270030DEEE /* SLKUIConstants.h in Headers */,
+				152AA8B61C2989270030DEEE /* UIScrollView+SLKAdditions.h in Headers */,
+				152AA8B81C2989270030DEEE /* UIView+SLKAdditions.h in Headers */,
+				152AA8B41C2989270030DEEE /* UIResponder+SLKAdditions.h in Headers */,
 				15D35F571C20187E00E3717A /* AAAudioRecorder.h in Headers */,
 				15D35F641C20187E00E3717A /* AAModernConversationAudioPlayerContext.h in Headers */,
 				15D35F681C20187E00E3717A /* AAModernViewInlineMediaContext.h in Headers */,
@@ -1271,13 +1285,9 @@
 				15D35F661C20187E00E3717A /* NSObject+TGLock.h in Headers */,
 				15D35F281C20186200E3717A /* os_types.h in Headers */,
 				15D35F191C20185500E3717A /* opus_header.h in Headers */,
-				152AA8B41C2989270030DEEE /* UIResponder+SLKAdditions.h in Headers */,
 				15F89F081C211FED00776ACD /* opus_multistream.h in Headers */,
 				15D35F1F1C20185500E3717A /* wav_io.h in Headers */,
-				152AA8B31C2989270030DEEE /* SLKUIConstants.h in Headers */,
-				152AA8B61C2989270030DEEE /* UIScrollView+SLKAdditions.h in Headers */,
 				15D35F171C20185500E3717A /* diag_range.h in Headers */,
-				152AA8B81C2989270030DEEE /* UIView+SLKAdditions.h in Headers */,
 				15D35F5F1C20187E00E3717A /* AAOpusAudioPlayerAU.h in Headers */,
 				15D35F551C20187E00E3717A /* AAAlertView.h in Headers */,
 				15D35F5D1C20187E00E3717A /* AANativeAudioPlayer.h in Headers */,
@@ -1292,10 +1302,6 @@
 				15D35F511C20187E00E3717A /* ASQueue.h in Headers */,
 				15D35F1D1C20185500E3717A /* picture.h in Headers */,
 				06230F421BC95BD200A4807B /* RMPhoneFormat.h in Headers */,
-				152AA8AA1C2989270030DEEE /* SLKTextView.h in Headers */,
-				152AA8B01C2989270030DEEE /* SLKTypingIndicatorProtocol.h in Headers */,
-				152AA8AC1C2989270030DEEE /* SLKTextView+SLKAdditions.h in Headers */,
-				152AA8AE1C2989270030DEEE /* SLKTextViewController.h in Headers */,
 				069CF4CE1BCB909A00C66E12 /* CLToken.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1559,6 +1565,7 @@
 				066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */,
 				069CF4CD1BCB909A00C66E12 /* CLBackspaceDetectingTextField.m in Sources */,
 				15D35F1B1C20185500E3717A /* opusenc.m in Sources */,
+				152AA8BD1C298BF00030DEEE /* AASettingsSessionsController.swift in Sources */,
 				066A515B1BC4C178000E606E /* AAHashMap.swift in Sources */,
 				066A52811BC51ED0000E606E /* AANoSelectionViewController.swift in Sources */,
 				152AA8B21C2989270030DEEE /* SLKTypingIndicatorView.m in Sources */,
@@ -1577,6 +1584,7 @@
 				066A514E1BC4BDE4000E606E /* Numbers.swift in Sources */,
 				15D35F671C20187E00E3717A /* NSObject+TGLock.m in Sources */,
 				15D35F5C1C20187E00E3717A /* AAAudioPlayer.m in Sources */,
+				152AA8BF1C298C4B0030DEEE /* AASettingsLastSeenController.swift in Sources */,
 				066A51561BC4BEF5000E606E /* AALocalized.swift in Sources */,
 				069CF4CF1BCB909A00C66E12 /* CLToken.m in Sources */,
 				15D35F751C201B6B00E3717A /* AACustomPresentationController.swift in Sources */,
