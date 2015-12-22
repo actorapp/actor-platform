@@ -6,6 +6,7 @@ import android.widget.FrameLayout;
 
 import im.actor.core.entity.Dialog;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
 import im.actor.runtime.android.view.BindedListAdapter;
 
@@ -23,7 +24,12 @@ public class DialogsAdapter extends BindedListAdapter<Dialog, DialogHolder> {
 
     @Override
     public DialogHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        return new DialogHolder(context, new FrameLayout(context), onItemClicked);
+        return ActorSDK.sharedActor().getDelegatedViewHolder(DialogHolder.class, new ActorSDK.OnDelegateViewHolder<DialogHolder>() {
+            @Override
+            public DialogHolder onNotDelegated() {
+                return new DialogHolder(context, new FrameLayout(context), onItemClicked);
+            }
+        }, context, new FrameLayout(context), onItemClicked);
     }
 
     @Override

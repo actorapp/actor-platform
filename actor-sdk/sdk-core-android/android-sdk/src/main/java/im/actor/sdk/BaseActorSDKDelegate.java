@@ -4,6 +4,9 @@ import android.content.Context;
 import android.view.View;
 
 import im.actor.core.AuthState;
+import im.actor.runtime.android.view.BindedViewHolder;
+import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
 import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
 import im.actor.sdk.controllers.fragment.auth.SignPhoneFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
@@ -66,35 +69,61 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
         return null;
     }
 
+    @Override
+    public ActorIntent getChatIntent() {
+        return null;
+    }
+
+    @Override
+    public String getHelpPhone() {
+        return "75551234567";
+    }
+
+    @Override
+    public <T extends BindedViewHolder, J extends T> J getViewHolder(Class<T> base, Object[] args) {
+        return null;
+    }
+
+    @Override
+    public MainPhoneController getMainPhoneController(ActorMainActivity mainActivity) {
+        return null;
+    }
+
     //
     // Hacking settings activity
     //
 
+    @Deprecated
     @Override
     public View getBeforeNickSettingsView(Context context) {
         return null;
     }
 
+    @Deprecated
     @Override
     public View getAfterPhoneSettingsView(Context context) {
         return null;
     }
 
+    @Deprecated
     @Override
     public View getSettingsTopView(Context context) {
         return null;
     }
 
+    @Deprecated
     @Override
     public View getSettingsBottomView(Context context) {
         return null;
     }
 
+    @Deprecated
     @Override
     public ActorSettingsCategory[] getBeforeSettingsCategories() {
         return null;
     }
 
+    @Deprecated
     @Override
     public ActorSettingsCategory[] getAfterSettingsCategories() {
         return null;

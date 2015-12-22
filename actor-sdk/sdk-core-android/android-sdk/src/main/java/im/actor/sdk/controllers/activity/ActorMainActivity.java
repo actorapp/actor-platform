@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.controllers.activity.base.ControllerActivity;
 import im.actor.sdk.controllers.activity.controllers.MainBaseController;
 import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
@@ -15,7 +16,8 @@ public class ActorMainActivity extends ControllerActivity<MainBaseController> {
 
     @Override
     public MainBaseController onCreateController() {
-        return new MainPhoneController(this);
+        MainPhoneController mainPhoneController = ActorSDK.sharedActor().getDelegate().getMainPhoneController(this);
+        return mainPhoneController != null ? mainPhoneController : new MainPhoneController(this);
     }
 
     @Override
