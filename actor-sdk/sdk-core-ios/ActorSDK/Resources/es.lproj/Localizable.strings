@@ -61,6 +61,18 @@
 
 "SettingsVersion" = "Version {version}";
 
+"SettingsAllSessions" = "Todas las sesiones";
+
+"SettingsLastSeen" = "Ultima vez visto";
+
+"SettingsLastSeenHint" = "Change who can see your Last Seen time.";
+
+"SettingsLastSeenEverybody" = "Todos";
+
+"SettingsLastSeenContacts"  = "Mis contactos";
+
+"SettingsLastSeenNobody"    = "Nadie";
+
 "ShareLocation" = "Ubicación";
 
 "ShareContact" = "Contacto";
