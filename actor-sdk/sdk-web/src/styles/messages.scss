@@ -993,6 +993,7 @@ $modern-text-padding: 6px;
   }
   .modern {
     font-size: 14px;
+    color: $dove-gray;
     &--paragraph {
       margin-left: - ($modern-text-padding + $modern-text-line-width);
       padding: $modern-text-padding;
@@ -1031,7 +1032,16 @@ $modern-text-padding: 6px;
         font-size: 15px;
         display: block;
       }
-      .field {}
+      &__fields {}
+    }
+
+    .field {
+      margin-top: 6px;
+      &--short {}
+      &__title {
+        font-weight: 500;
+        line-height: 20px;
+      }
     }
   }
 }
