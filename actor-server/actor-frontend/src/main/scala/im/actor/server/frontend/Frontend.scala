@@ -99,7 +99,7 @@ abstract class Frontend(connIdPrefix: String) {
   private val metricTags = Map("type" → connIdPrefix)
 
   private val connectionTime = Kamon.metrics.histogram("connection.time", metricTags, kamon.metric.instrument.Time.Milliseconds)
-  private val connectionCount = Kamon.metrics.minMaxCounter("connections", metricTags)
+  private val connectionCount = Kamon.metrics.minMaxCounter("connection_count", metricTags)
 
   private val connCounter = new AtomicLong(0L)
 
