@@ -13,6 +13,7 @@ public enum AACommonCellStyle {
     case ActionCentered
     case Navigation
     case Hint
+    case Checkmark
 }
 
 public class AACommonCell: AATableViewCell {
@@ -121,6 +122,13 @@ public class AACommonCell: AATableViewCell {
             titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+            
+        case .Checkmark:
+            titleLabel.textColor = appStyle.cellTextColor
+            titleLabel.textAlignment = NSTextAlignment.Left
+            switcher?.hidden = true
+            accessoryType = UITableViewCellAccessoryType.Checkmark
+            break
         }
     }
     
