@@ -205,8 +205,8 @@ class StickersExtensionSpec
       None,
       Sticker(
         Some(
-        StickerImage(width = 128, height = 140)
-      ),
+          StickerImage(width = 128, height = 140)
+        ),
         Some(StickerImage(width = 220, height = 256)),
         Some(StickerImage(width = 512, height = 512))
       )
