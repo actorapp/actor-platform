@@ -25,6 +25,7 @@ public class JsLocaleProvider implements LocaleRuntime {
         if (locale.length() >= 2) {
             String res = locale.substring(0, 1).toUpperCase() + locale.substring(1, 2).toLowerCase();
             Log.d("JsLocaleProvider", "Found " + res);
+            return res;
         }
         Log.d("JsLocaleProvider", "Found unknown: " + locale + ". Returning En.");
         return "En";
