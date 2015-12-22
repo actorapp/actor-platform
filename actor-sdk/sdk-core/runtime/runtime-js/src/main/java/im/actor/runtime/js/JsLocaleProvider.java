@@ -13,7 +13,20 @@ public class JsLocaleProvider implements LocaleRuntime {
 
     @Override
     public String getCurrentLocale() {
-        Log.d("JsLocaleProvider", "Locale Name: " + LocaleInfo.getCurrentLocale().getLocaleName());
+        String locale = LocaleInfo.getCurrentLocale().getLocaleName();
+        if (locale == null) {
+            Log.d("JsLocaleProvider", "Found Null. Returning En");
+            return "En";
+        }
+        if ("default".equals(locale)) {
+            Log.d("JsLocaleProvider", "Found default. Returning En");
+            return "En";
+        }
+        if (locale.length() >= 2) {
+            String res = locale.substring(0, 1).toUpperCase() + locale.substring(1, 2).toLowerCase();
+            Log.d("JsLocaleProvider", "Found " + res);
+        }
+        Log.d("JsLocaleProvider", "Found unknown: " + locale + ". Returning En.");
         return "En";
     }
 
