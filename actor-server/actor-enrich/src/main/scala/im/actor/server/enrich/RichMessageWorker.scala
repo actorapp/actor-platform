@@ -1,28 +1,25 @@
 package im.actor.server.enrich
 
-import im.actor.server.db.DbExtension
-import im.actor.server.file.{ FileStorageExtension, FileUtils, FileStorageAdapter, ImageUtils }
-import im.actor.util.log.AnyRefLogSource
-
-import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.duration._
-import scala.util.{ Failure, Success, Try }
-
 import akka.actor._
-import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
+import akka.cluster.pubsub.DistributedPubSubMediator.{ Subscribe, SubscribeAck }
 import akka.event.Logging
 import akka.http.scaladsl.model.Uri
 import akka.stream.Materializer
 import akka.util.Timeout
+import com.sksamuel.scrimage.Image
 import com.sksamuel.scrimage.nio.JpegWriter
-import com.sksamuel.scrimage.{ Image, ParImage, Format }
+import im.actor.api.rpc.files.ApiFastThumb
+import im.actor.api.rpc.messaging._
+import im.actor.server.db.DbExtension
+import im.actor.server.file.{ FileStorageAdapter, FileStorageExtension, FileUtils, ImageUtils }
+import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
+import im.actor.util.log.AnyRefLogSource
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.files.ApiFastThumb
-import im.actor.api.rpc.messaging._
-import im.actor.server.api.rpc.service.messaging.Events
-import im.actor.server.api.rpc.service.messaging.MessagingService._
+import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.duration._
+import scala.util.{ Failure, Success, Try }
 
 object RichMessageWorker {
   val groupId = Some("RichMessageWorker")
@@ -31,12 +28,10 @@ object RichMessageWorker {
     implicit
     system:       ActorSystem,
     materializer: Materializer
-  ): ActorRef = system.actorOf(Props(classOf[RichMessageWorker], config, materializer))
+  ): ActorRef = system.actorOf(Props(classOf[RichMessageWorker], config, materializer), "rich-message-worker")
 }
 
 final class RichMessageWorker(config: RichMessageConfig)(implicit materializer: Materializer) extends Actor with ActorLogging {
-
-  import DistributedPubSubMediator.SubscribeAck
 
   import AnyRefLogSource._
   import PreviewMaker._
@@ -47,28 +42,29 @@ final class RichMessageWorker(config: RichMessageConfig)(implicit materializer: 
   private implicit val timeout: Timeout = Timeout(10.seconds)
 
   private val db = DbExtension(system).db
-  private val mediator = DistributedPubSub(context.system).mediator
+  private val pubSubExt = PubSubExtension(system)
 
-  private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(context.system).fsAdapter
+  private val fsAdapter: FileStorageAdapter = FileStorageExtension(context.system).fsAdapter
 
   override val log = Logging(system, this)
 
   val previewMaker = PreviewMaker(config, "previewMaker")
 
-  import DistributedPubSubMediator.Subscribe
+  private val privateSubscribe = Subscribe(pubSubExt.privateMessagesTopic, groupId, self)
+  private val publicSubscribe = Subscribe(pubSubExt.groupMessagesTopic, None, self)
 
-  mediator ! Subscribe(privateMessagesTopic, groupId, self)
-  mediator ! Subscribe(groupMessagesTopic, None, self)
+  pubSubExt.subscribe(privateSubscribe)
+  pubSubExt.subscribe(publicSubscribe)
 
   def receive: Receive = subscribing(privateAckReceived = false, groupAckReceived = false)
 
   def subscribing(privateAckReceived: Boolean, groupAckReceived: Boolean): Receive = {
-    case SubscribeAck(Subscribe(`privateMessagesTopic`, `groupId`, `self`)) ⇒
+    case SubscribeAck(`privateSubscribe`) ⇒
       if (groupAckReceived)
         context.become(ready)
       else
         context.become(subscribing(true, groupAckReceived))
-    case SubscribeAck(Subscribe(`groupMessagesTopic`, _, `self`)) ⇒
+    case SubscribeAck(`publicSubscribe`) ⇒
       if (privateAckReceived)
         context.become(ready)
       else
@@ -76,7 +72,7 @@ final class RichMessageWorker(config: RichMessageConfig)(implicit materializer: 
   }
 
   def ready: Receive = {
-    case Events.PeerMessage(fromPeer, toPeer, randomId, _, message) ⇒
+    case PeerMessage(fromPeer, toPeer, randomId, _, message) ⇒
       message match {
         case ApiTextMessage(text, _, _) ⇒
           Try(Uri(text.trim)) match {

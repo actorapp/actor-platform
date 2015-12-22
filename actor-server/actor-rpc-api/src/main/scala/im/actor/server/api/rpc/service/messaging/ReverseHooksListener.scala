@@ -41,8 +41,6 @@ private[messaging] final class ReverseHooksListener extends Actor with ActorLogg
   private implicit val system: ActorSystem = context.system
   import system.dispatcher
 
-  private val mediator = DistributedPubSub(context.system).mediator
-
   private val scheduledFetch = context.system.scheduler.schedule(Duration.Zero, 1.minute, self, RefetchGroups)
   private val db = DbExtension(system).db
 
@@ -84,7 +82,7 @@ private[messaging] final class ReverseHooksListener extends Actor with ActorLogg
     } yield {
       optToken.map { token ⇒
         context.actorOf(
-          ReverseHooksWorker.props(groupId, token, mediator),
+          ReverseHooksWorker.props(groupId, token),
           interceptorGroupId(groupId)
         )
         ()
