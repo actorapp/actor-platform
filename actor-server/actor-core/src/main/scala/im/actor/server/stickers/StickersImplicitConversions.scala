@@ -12,23 +12,25 @@ trait StickersImplicitConversions {
     ApiStickerDescriptor(
       s.id,
       s.emoji,
-      imageLocation(s.image128FileId, s.image128FileHash, 128, s.image128FileSize),
-      optImageLocation(s.image512FileId, s.image512FileHash, 512, s.image512FileSize),
-      optImageLocation(s.image256FileId, s.image256FileHash, 256, s.image256FileSize)
+      imageLocation(s.image128FileId, s.image128FileHash, s.image128Width, s.image128Height, s.image128FileSize),
+      optImageLocation(s.image512FileId, s.image512FileHash, s.image512Width, s.image512Height, s.image512FileSize),
+      optImageLocation(s.image256FileId, s.image256FileHash, s.image256Width, s.image256Height, s.image256FileSize)
     )
   }
 
   implicit def stickerToApi(stickers: Seq[StickerData]): IndexedSeq[ApiStickerDescriptor] =
     stickers.toVector map stickerToApi
 
-  private def imageLocation(fileId: Long, fileHash: Long, side: Int, fileSize: Long): ApiImageLocation =
-    ApiImageLocation(ApiFileLocation(fileId, fileHash), side, side, fileSize.toInt)
+  private def imageLocation(fileId: Long, fileHash: Long, w: Int, h: Int, fileSize: Long): ApiImageLocation =
+    ApiImageLocation(ApiFileLocation(fileId, fileHash), w, h, fileSize.toInt)
 
-  private def optImageLocation(fileId: Option[Long], fileHash: Option[Long], side: Int, fileSize: Option[Long]): Option[ApiImageLocation] =
+  private def optImageLocation(fileId: Option[Long], fileHash: Option[Long], width: Option[Int], height: Option[Int], fileSize: Option[Long]): Option[ApiImageLocation] =
     for {
       id ← fileId
       hash ← fileHash
       size ← fileSize
-    } yield imageLocation(id, hash, side, size)
+      w ← width
+      h ← height
+    } yield imageLocation(id, hash, w, h, size)
 
 }
