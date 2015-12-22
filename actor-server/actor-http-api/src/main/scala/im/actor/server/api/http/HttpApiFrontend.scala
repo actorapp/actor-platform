@@ -62,7 +62,6 @@ private object HttpApiFrontend {
     system:       ActorSystem,
     materializer: Materializer
   ): Unit = {
-    println("=== starting http api")
     implicit val ec: ExecutionContext = system.dispatcher
     implicit val db: Database = DbExtension(system).db
     implicit val groupProcessorRegion: GroupViewRegion = GroupExtension(system).viewRegion
