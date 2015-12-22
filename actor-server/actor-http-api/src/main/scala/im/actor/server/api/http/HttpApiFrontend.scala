@@ -62,7 +62,7 @@ private object HttpApiFrontend {
     system:       ActorSystem,
     materializer: Materializer
   ): Unit = {
-
+    println("=== starting http api")
     implicit val ec: ExecutionContext = system.dispatcher
     implicit val db: Database = DbExtension(system).db
     implicit val groupProcessorRegion: GroupViewRegion = GroupExtension(system).viewRegion
@@ -87,7 +87,9 @@ private object HttpApiFrontend {
       }
     // format: ON
 
-    def routes: Future[Route] =
+    // FIXME: consider more optimal Route creation
+
+    def routesFuture: Future[Route] =
       for {
         custom ← customRoutes
       } yield custom.foldLeft(defaultRoutes)(_ ~ _)
@@ -103,8 +105,12 @@ private object HttpApiFrontend {
       httpsContext = tlsContext map (_.asHttpsContext),
       settings = defaultSettings.copy(timeouts = defaultSettings.timeouts.copy(idleTimeout = IdleTimeout))
     )
-      .runForeach { connection ⇒
-        routes map (connection handleWith Route.handlerFlow(_))
+      .mapAsync(1) { conn ⇒
+        routesFuture map (conn → _)
+      }
+      .runForeach {
+        case (conn, routes) ⇒
+          conn handleWith routes
       }
   }
 }
