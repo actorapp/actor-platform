@@ -25,6 +25,8 @@ class StickersExtensionSpec
 
   it should "not allow user to view and modify alien packs" in e6
 
+  it should "store actual size of sticker" in e7
+
   private val stickersExt = StickersExtension(system)
   private val userExt = UserExtension(system)
 
@@ -189,6 +191,44 @@ class StickersExtensionSpec
       inside(resp) {
         case Xor.Left(StickerErrors.NotFound) ⇒
       }
+    }
+  }
+
+  def e7() = {
+    val (user, _, _, _) = createUser()
+
+    val packId = whenReady(stickersExt.createPack(user.id, isDefault = false))(identity)
+
+    whenReady(stickersExt.addSticker(
+      user.id,
+      packId,
+      None,
+      Sticker(
+        Some(
+        StickerImage(width = 128, height = 140)
+      ),
+        Some(StickerImage(width = 220, height = 256)),
+        Some(StickerImage(width = 512, height = 512))
+      )
+    )) { _ shouldEqual Xor.Right(()) }
+
+    whenReady(stickersExt.getStickers(user.id, packId)) { stickersResp ⇒
+      stickersResp should matchPattern {
+        case Xor.Right(_) ⇒
+      }
+      val stickers = stickersResp.toOption.get
+
+      stickers should have length 1
+
+      val sticker = stickers.head
+      sticker.image128Width shouldEqual 128
+      sticker.image128Height shouldEqual 140
+
+      sticker.image256Width shouldEqual Some(220)
+      sticker.image256Height shouldEqual Some(256)
+
+      sticker.image512Width shouldEqual Some(512)
+      sticker.image512Height shouldEqual Some(512)
     }
   }
 
