@@ -3,7 +3,6 @@ package im.actor.sdk;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
-import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.os.Bundle;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +24,10 @@ import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
 import im.actor.runtime.Log;
+import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.fragment.auth.AuthActivity;
-import im.actor.sdk.controllers.fragment.auth.BaseAuthActivity;
-import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
-import im.actor.sdk.controllers.fragment.auth.SignPhoneFragment;
+import im.actor.sdk.controllers.fragment.dialogs.DialogHolder;
 import im.actor.sdk.controllers.fragment.settings.MyProfileActivity;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
@@ -439,6 +436,20 @@ public class ActorSDK {
         } else {
             return (T) baseFragment;
         }
+
+    }
+
+    public <T extends BindedViewHolder> T getDelegatedViewHolder(Class<T> base, OnDelegateViewHolder<T> callback, Object... args) {
+        T delegated = delegate.getViewHolder(base, args);
+        if (delegated != null) {
+            return delegated;
+        } else {
+            return callback.onNotDelegated();
+        }
+    }
+
+    public interface OnDelegateViewHolder<T> {
+        T onNotDelegated();
 
     }
 

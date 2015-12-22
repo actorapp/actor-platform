@@ -28,6 +28,11 @@ public class ActorSettingsFragment extends BaseActorSettingsFragment {
     }
 
     @Override
+    public boolean showWallpaperCategory() {
+        return true;
+    }
+
+    @Override
     public ActorSettingsCategory[] getBeforeSettingsCategories() {
         return null;
     }

@@ -7,7 +7,9 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
 import im.actor.sdk.view.BackgroundPreviewView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -39,7 +41,11 @@ public class ChatBackgroundView extends View {
     public void bind() {
         if (background == null) {
             shp = getContext().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
-            background = getResources().getDrawable(BackgroundPreviewView.getBackground(BackgroundPreviewView.getBackgroundIdByUri(messenger().getSelectedWallpaper(), getContext(), shp.getInt("wallpaper", 0))));
+            if (shp.getInt("wallpaper", 0) == ActorSDK.sharedActor().style.getDefaultBackgrouds().length) {
+                background = Drawable.createFromPath(BaseActorSettingsFragment.getWallpaperFile());
+            } else {
+                background = getResources().getDrawable(BackgroundPreviewView.getBackground(BackgroundPreviewView.getBackgroundIdByUri(messenger().getSelectedWallpaper(), getContext(), shp.getInt("wallpaper", 0))));
+            }
         }
     }
 

@@ -67,7 +67,12 @@ import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
 import im.actor.sdk.controllers.conversation.messages.AudioHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
+import im.actor.sdk.controllers.fragment.settings.ActorSettingsFragment;
+import im.actor.sdk.controllers.fragment.settings.BaseActorChatActivity;
+import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
+import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
 import im.actor.sdk.core.audio.VoiceCaptureActor;
+import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.util.Randoms;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.ViewUtils;
@@ -430,7 +435,17 @@ public class ChatActivity extends ActorEditTextActivity {
 
     @Override
     protected Fragment onCreateFragment() {
-        return MessagesFragment.create(peer);
+        MessagesFragment fragment;
+        if (ActorSDK.sharedActor().getDelegate().getChatIntent() != null) {
+            ActorIntent chatIntent = ActorSDK.sharedActor().getDelegate().getChatIntent();
+            if (chatIntent instanceof BaseActorChatActivity) {
+                return ((BaseActorChatActivity) chatIntent).getChatFragment(peer);
+            } else {
+                return MessagesFragment.create(peer);
+            }
+        } else {
+            return MessagesFragment.create(peer);
+        }
     }
 
     @Override

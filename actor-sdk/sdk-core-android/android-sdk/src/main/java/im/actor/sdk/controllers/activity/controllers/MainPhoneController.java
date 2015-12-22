@@ -57,7 +57,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class MainPhoneController extends MainBaseController {
 
-    private ViewPager pager;
+    protected ViewPager pager;
 
     private HomePagerAdapter homePagerAdapter;
 
@@ -78,7 +78,7 @@ public class MainPhoneController extends MainBaseController {
     private SearchView searchView;
     private MenuItem searchMenu;
 
-    private PagerSlidingTabStrip barTabs;
+    protected PagerSlidingTabStrip barTabs;
 
     private View syncInProgressView;
     private View emptyContactsView;
@@ -343,27 +343,7 @@ public class MainPhoneController extends MainBaseController {
             ab.setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getToolBarColor()));
         }
 
-        FrameLayout tabsContainer = new FrameLayout(getActivity());
-        barTabs = new PagerSlidingTabStrip(getActivity());
-        barTabs.setTabBackground(R.drawable.selector_bar);
-        //barTabs.setIndicatorColorResource(R.color.main_tab_selected);
-        barTabs.setIndicatorHeight(Screen.dp(2));
-
-        barTabs.setDividerColorResource(android.R.color.transparent);
-        //barTabs.setTextColorResource(R.color.main_tab_text);
-        barTabs.setTextSize(Screen.dp(14));
-        barTabs.setUnderlineHeight(0);
-
-        barTabs.setViewPager(pager);
-
-        // Icons
-        // int width = Screen.dp(72 * 2);
-        int width = Screen.dp(120 * 2 + 72);
-
-        tabsContainer.addView(barTabs, new FrameLayout.LayoutParams(width, Screen.dp(56)));
-        Toolbar.LayoutParams lp = new Toolbar.LayoutParams(width, Screen.dp(56));
-        tabsContainer.setLayoutParams(lp);
-        ab.setCustomView(tabsContainer);
+        onConfigireToolbarCustomView(ab);
 
         barTabs.setVisibility(View.VISIBLE);
         emptyContactsView.setVisibility(View.GONE);
@@ -395,6 +375,30 @@ public class MainPhoneController extends MainBaseController {
                         }
                     }
                 });
+    }
+
+    protected void onConfigireToolbarCustomView(ActionBar ab) {
+        FrameLayout tabsContainer = new FrameLayout(getActivity());
+        barTabs = new PagerSlidingTabStrip(getActivity());
+        barTabs.setTabBackground(R.drawable.selector_bar);
+        //barTabs.setIndicatorColorResource(R.color.main_tab_selected);
+        barTabs.setIndicatorHeight(Screen.dp(2));
+
+        barTabs.setDividerColorResource(android.R.color.transparent);
+        //barTabs.setTextColorResource(R.color.main_tab_text);
+        barTabs.setTextSize(Screen.dp(14));
+        barTabs.setUnderlineHeight(0);
+
+        barTabs.setViewPager(pager);
+
+        // Icons
+        // int width = Screen.dp(72 * 2);
+        int width = Screen.dp(120 * 2 + 72);
+
+        tabsContainer.addView(barTabs, new FrameLayout.LayoutParams(width, Screen.dp(56)));
+        Toolbar.LayoutParams lp = new Toolbar.LayoutParams(width, Screen.dp(56));
+        tabsContainer.setLayoutParams(lp);
+        ab.setCustomView(tabsContainer);
     }
 
 
