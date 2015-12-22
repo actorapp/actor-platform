@@ -58,20 +58,13 @@ object ActorServer {
   def newBuilder: ActorServerBuilder = ActorServerBuilder()
 }
 
-final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(), httpRoutes: (ActorSystem) ⇒ Seq[Route] = _ ⇒ Seq.empty) extends ActorServerModules {
+final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty()) extends ActorServerModules {
   /**
    *
    * @param config
    * @return a builder with provided default config
    */
   def withDefaultConfig(config: Config) = this.copy(defaultConfig = config)
-
-  /**
-   *
-   * @param routes
-   * @return
-   */
-  def withHttpRoutes(routes: ActorSystem ⇒ Seq[Route]) = this.copy(httpRoutes = routes)
 
   /**
    * Starts a server
