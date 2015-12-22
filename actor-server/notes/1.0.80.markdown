@@ -1,0 +1,2 @@
+* add logging on hook addition
+* remove dead code from HttpFrontend
