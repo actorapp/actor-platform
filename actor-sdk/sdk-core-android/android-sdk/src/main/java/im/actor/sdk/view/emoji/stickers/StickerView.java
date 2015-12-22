@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import com.facebook.common.util.UriUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -56,6 +57,7 @@ public class StickerView extends SimpleDraweeView {
 
         GenericDraweeHierarchy hierarchy = builder
                 .setFadeDuration(200)
+                .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_INSIDE)
                 .build();
         setHierarchy(hierarchy);
     }
