@@ -177,6 +177,26 @@
 		06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B24B1C0FAB500090660C /* AAMapFastView.swift */; };
 		06E7B2521C1345E70090660C /* AAMapPinPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2511C1345E70090660C /* AAMapPinPointView.swift */; };
 		06E7B2541C139B6F0090660C /* AABubbleContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */; };
+		152AA8A61C2989270030DEEE /* SLKInputAccessoryView.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8921C2989270030DEEE /* SLKInputAccessoryView.h */; };
+		152AA8A71C2989270030DEEE /* SLKInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8931C2989270030DEEE /* SLKInputAccessoryView.m */; };
+		152AA8A81C2989270030DEEE /* SLKTextInputbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8941C2989270030DEEE /* SLKTextInputbar.h */; };
+		152AA8A91C2989270030DEEE /* SLKTextInputbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8951C2989270030DEEE /* SLKTextInputbar.m */; };
+		152AA8AA1C2989270030DEEE /* SLKTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8961C2989270030DEEE /* SLKTextView.h */; };
+		152AA8AB1C2989270030DEEE /* SLKTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8971C2989270030DEEE /* SLKTextView.m */; };
+		152AA8AC1C2989270030DEEE /* SLKTextView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8981C2989270030DEEE /* SLKTextView+SLKAdditions.h */; };
+		152AA8AD1C2989270030DEEE /* SLKTextView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8991C2989270030DEEE /* SLKTextView+SLKAdditions.m */; };
+		152AA8AE1C2989270030DEEE /* SLKTextViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89A1C2989270030DEEE /* SLKTextViewController.h */; };
+		152AA8AF1C2989270030DEEE /* SLKTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA89B1C2989270030DEEE /* SLKTextViewController.m */; };
+		152AA8B01C2989270030DEEE /* SLKTypingIndicatorProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89C1C2989270030DEEE /* SLKTypingIndicatorProtocol.h */; };
+		152AA8B11C2989270030DEEE /* SLKTypingIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89D1C2989270030DEEE /* SLKTypingIndicatorView.h */; };
+		152AA8B21C2989270030DEEE /* SLKTypingIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA89E1C2989270030DEEE /* SLKTypingIndicatorView.m */; };
+		152AA8B31C2989270030DEEE /* SLKUIConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89F1C2989270030DEEE /* SLKUIConstants.h */; };
+		152AA8B41C2989270030DEEE /* UIResponder+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8A01C2989270030DEEE /* UIResponder+SLKAdditions.h */; };
+		152AA8B51C2989270030DEEE /* UIResponder+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8A11C2989270030DEEE /* UIResponder+SLKAdditions.m */; };
+		152AA8B61C2989270030DEEE /* UIScrollView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8A21C2989270030DEEE /* UIScrollView+SLKAdditions.h */; };
+		152AA8B71C2989270030DEEE /* UIScrollView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8A31C2989270030DEEE /* UIScrollView+SLKAdditions.m */; };
+		152AA8B81C2989270030DEEE /* UIView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8A41C2989270030DEEE /* UIView+SLKAdditions.h */; };
+		152AA8B91C2989270030DEEE /* UIView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8A51C2989270030DEEE /* UIView+SLKAdditions.m */; };
 		15D35F161C20185500E3717A /* diag_range.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F0C1C20185500E3717A /* diag_range.c */; };
 		15D35F171C20185500E3717A /* diag_range.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F0D1C20185500E3717A /* diag_range.h */; };
 		15D35F181C20185500E3717A /* opus_header.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F0E1C20185500E3717A /* opus_header.c */; };
@@ -413,6 +433,26 @@
 		06E7B24B1C0FAB500090660C /* AAMapFastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapFastView.swift; sourceTree = "<group>"; };
 		06E7B2511C1345E70090660C /* AAMapPinPointView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapPinPointView.swift; sourceTree = "<group>"; };
 		06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleContactCell.swift; sourceTree = "<group>"; };
+		152AA8921C2989270030DEEE /* SLKInputAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKInputAccessoryView.h; sourceTree = "<group>"; };
+		152AA8931C2989270030DEEE /* SLKInputAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKInputAccessoryView.m; sourceTree = "<group>"; };
+		152AA8941C2989270030DEEE /* SLKTextInputbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextInputbar.h; sourceTree = "<group>"; };
+		152AA8951C2989270030DEEE /* SLKTextInputbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKTextInputbar.m; sourceTree = "<group>"; };
+		152AA8961C2989270030DEEE /* SLKTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextView.h; sourceTree = "<group>"; };
+		152AA8971C2989270030DEEE /* SLKTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKTextView.m; sourceTree = "<group>"; };
+		152AA8981C2989270030DEEE /* SLKTextView+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLKTextView+SLKAdditions.h"; sourceTree = "<group>"; };
+		152AA8991C2989270030DEEE /* SLKTextView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLKTextView+SLKAdditions.m"; sourceTree = "<group>"; };
+		152AA89A1C2989270030DEEE /* SLKTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextViewController.h; sourceTree = "<group>"; };
+		152AA89B1C2989270030DEEE /* SLKTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKTextViewController.m; sourceTree = "<group>"; };
+		152AA89C1C2989270030DEEE /* SLKTypingIndicatorProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTypingIndicatorProtocol.h; sourceTree = "<group>"; };
+		152AA89D1C2989270030DEEE /* SLKTypingIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTypingIndicatorView.h; sourceTree = "<group>"; };
+		152AA89E1C2989270030DEEE /* SLKTypingIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKTypingIndicatorView.m; sourceTree = "<group>"; };
+		152AA89F1C2989270030DEEE /* SLKUIConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKUIConstants.h; sourceTree = "<group>"; };
+		152AA8A01C2989270030DEEE /* UIResponder+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIResponder+SLKAdditions.h"; sourceTree = "<group>"; };
+		152AA8A11C2989270030DEEE /* UIResponder+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+SLKAdditions.m"; sourceTree = "<group>"; };
+		152AA8A21C2989270030DEEE /* UIScrollView+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SLKAdditions.h"; sourceTree = "<group>"; };
+		152AA8A31C2989270030DEEE /* UIScrollView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SLKAdditions.m"; sourceTree = "<group>"; };
+		152AA8A41C2989270030DEEE /* UIView+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SLKAdditions.h"; sourceTree = "<group>"; };
+		152AA8A51C2989270030DEEE /* UIView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+SLKAdditions.m"; sourceTree = "<group>"; };
 		15D35F0C1C20185500E3717A /* diag_range.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = diag_range.c; sourceTree = "<group>"; };
 		15D35F0D1C20185500E3717A /* diag_range.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = diag_range.h; sourceTree = "<group>"; };
 		15D35F0E1C20185500E3717A /* opus_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = opus_header.c; sourceTree = "<group>"; };
@@ -592,6 +632,7 @@
 		066A51571BC4C112000E606E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				152AA8901C29887A0030DEEE /* Extensions */,
 				15D35F721C201B5300E3717A /* Categories */,
 				15D35F0A1C20182900E3717A /* AudioRecorder */,
 				066A53311BC534F5000E606E /* AAFileTypes.swift */,
@@ -1019,6 +1060,41 @@
 			path = Location;
 			sourceTree = "<group>";
 		};
+		152AA8901C29887A0030DEEE /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				152AA8911C29891B0030DEEE /* SlackTextViewController */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
+		152AA8911C29891B0030DEEE /* SlackTextViewController */ = {
+			isa = PBXGroup;
+			children = (
+				152AA8921C2989270030DEEE /* SLKInputAccessoryView.h */,
+				152AA8931C2989270030DEEE /* SLKInputAccessoryView.m */,
+				152AA8941C2989270030DEEE /* SLKTextInputbar.h */,
+				152AA8951C2989270030DEEE /* SLKTextInputbar.m */,
+				152AA8961C2989270030DEEE /* SLKTextView.h */,
+				152AA8971C2989270030DEEE /* SLKTextView.m */,
+				152AA8981C2989270030DEEE /* SLKTextView+SLKAdditions.h */,
+				152AA8991C2989270030DEEE /* SLKTextView+SLKAdditions.m */,
+				152AA89A1C2989270030DEEE /* SLKTextViewController.h */,
+				152AA89B1C2989270030DEEE /* SLKTextViewController.m */,
+				152AA89C1C2989270030DEEE /* SLKTypingIndicatorProtocol.h */,
+				152AA89D1C2989270030DEEE /* SLKTypingIndicatorView.h */,
+				152AA89E1C2989270030DEEE /* SLKTypingIndicatorView.m */,
+				152AA89F1C2989270030DEEE /* SLKUIConstants.h */,
+				152AA8A01C2989270030DEEE /* UIResponder+SLKAdditions.h */,
+				152AA8A11C2989270030DEEE /* UIResponder+SLKAdditions.m */,
+				152AA8A21C2989270030DEEE /* UIScrollView+SLKAdditions.h */,
+				152AA8A31C2989270030DEEE /* UIScrollView+SLKAdditions.m */,
+				152AA8A41C2989270030DEEE /* UIView+SLKAdditions.h */,
+				152AA8A51C2989270030DEEE /* UIView+SLKAdditions.m */,
+			);
+			name = SlackTextViewController;
+			sourceTree = "<group>";
+		};
 		15D35F0A1C20182900E3717A /* AudioRecorder */ = {
 			isa = PBXGroup;
 			children = (
@@ -1183,7 +1259,10 @@
 				15D35F621C20187E00E3717A /* AAModernConversationAudioPlayer.h in Headers */,
 				066A517C1BC4C373000E606E /* FMDatabase+Private.h in Headers */,
 				15D35F5B1C20187E00E3717A /* AAAudioPlayer.h in Headers */,
+				152AA8B11C2989270030DEEE /* SLKTypingIndicatorView.h in Headers */,
+				152AA8A81C2989270030DEEE /* SLKTextInputbar.h in Headers */,
 				066A52731BC5101A000E606E /* ABPhoneField.h in Headers */,
+				152AA8A61C2989270030DEEE /* SLKInputAccessoryView.h in Headers */,
 				15D35F571C20187E00E3717A /* AAAudioRecorder.h in Headers */,
 				15D35F641C20187E00E3717A /* AAModernConversationAudioPlayerContext.h in Headers */,
 				15D35F681C20187E00E3717A /* AAModernViewInlineMediaContext.h in Headers */,
@@ -1192,9 +1271,13 @@
 				15D35F661C20187E00E3717A /* NSObject+TGLock.h in Headers */,
 				15D35F281C20186200E3717A /* os_types.h in Headers */,
 				15D35F191C20185500E3717A /* opus_header.h in Headers */,
+				152AA8B41C2989270030DEEE /* UIResponder+SLKAdditions.h in Headers */,
 				15F89F081C211FED00776ACD /* opus_multistream.h in Headers */,
 				15D35F1F1C20185500E3717A /* wav_io.h in Headers */,
+				152AA8B31C2989270030DEEE /* SLKUIConstants.h in Headers */,
+				152AA8B61C2989270030DEEE /* UIScrollView+SLKAdditions.h in Headers */,
 				15D35F171C20185500E3717A /* diag_range.h in Headers */,
+				152AA8B81C2989270030DEEE /* UIView+SLKAdditions.h in Headers */,
 				15D35F5F1C20187E00E3717A /* AAOpusAudioPlayerAU.h in Headers */,
 				15D35F551C20187E00E3717A /* AAAlertView.h in Headers */,
 				15D35F5D1C20187E00E3717A /* AANativeAudioPlayer.h in Headers */,
@@ -1209,6 +1292,10 @@
 				15D35F511C20187E00E3717A /* ASQueue.h in Headers */,
 				15D35F1D1C20185500E3717A /* picture.h in Headers */,
 				06230F421BC95BD200A4807B /* RMPhoneFormat.h in Headers */,
+				152AA8AA1C2989270030DEEE /* SLKTextView.h in Headers */,
+				152AA8B01C2989270030DEEE /* SLKTypingIndicatorProtocol.h in Headers */,
+				152AA8AC1C2989270030DEEE /* SLKTextView+SLKAdditions.h in Headers */,
+				152AA8AE1C2989270030DEEE /* SLKTextViewController.h in Headers */,
 				069CF4CE1BCB909A00C66E12 /* CLToken.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1358,6 +1445,7 @@
 				15D35F161C20185500E3717A /* diag_range.c in Sources */,
 				066A525E1BC503BB000E606E /* ActorApplicationDelegate.swift in Sources */,
 				066A53101BC53317000E606E /* AAWallpapperPreviewController.swift in Sources */,
+				152AA8B91C2989270030DEEE /* UIView+SLKAdditions.m in Sources */,
 				066A52F21BC52B02000E606E /* AASettingsPrivacyViewController.swift in Sources */,
 				15D35F561C20187E00E3717A /* AAAlertView.m in Sources */,
 				15D35F301C20187200E3717A /* info.c in Sources */,
@@ -1395,6 +1483,7 @@
 				066A518D1BC4C383000E606E /* CocoaStorageRuntime.swift in Sources */,
 				066A52F01BC52B02000E606E /* AASettingsViewController.swift in Sources */,
 				066A52741BC5101A000E606E /* ABPhoneField.m in Sources */,
+				152AA8A91C2989270030DEEE /* SLKTextInputbar.m in Sources */,
 				066A53071BC53183000E606E /* AARecentViewController.swift in Sources */,
 				06230F411BC95BD200A4807B /* RMPhoneFormat.m in Sources */,
 				066A52361BC4EEBA000E606E /* AATitledCell.swift in Sources */,
@@ -1423,6 +1512,7 @@
 				069CF4D31BCB909A00C66E12 /* CLTokenView.m in Sources */,
 				066A52F71BC52B13000E606E /* AAWallpapperPreviewCell.swift in Sources */,
 				066A51541BC4BE95000E606E /* Images.swift in Sources */,
+				152AA8A71C2989270030DEEE /* SLKInputAccessoryView.m in Sources */,
 				066A52801BC51ED0000E606E /* AARootTabViewController.swift in Sources */,
 				066A522A1BC4EEAC000E606E /* ManagedAlerts.swift in Sources */,
 				069CF4D11BCB909A00C66E12 /* CLTokenInputView.m in Sources */,
@@ -1453,6 +1543,7 @@
 				065975051BC757A300B8C7DF /* ActorRuntime.swift in Sources */,
 				066A517B1BC4C373000E606E /* FMDatabase.m in Sources */,
 				066A52561BC4EF61000E606E /* AATableViewController.swift in Sources */,
+				152AA8AB1C2989270030DEEE /* SLKTextView.m in Sources */,
 				066A52D61BC52378000E606E /* AAContactsListContentController.swift in Sources */,
 				065975021BC7534100B8C7DF /* FMDBBridge.swift in Sources */,
 				15D35F351C20187200E3717A /* stream.c in Sources */,
@@ -1470,12 +1561,14 @@
 				15D35F1B1C20185500E3717A /* opusenc.m in Sources */,
 				066A515B1BC4C178000E606E /* AAHashMap.swift in Sources */,
 				066A52811BC51ED0000E606E /* AANoSelectionViewController.swift in Sources */,
+				152AA8B21C2989270030DEEE /* SLKTypingIndicatorView.m in Sources */,
 				066A52281BC4EEAC000E606E /* AAManagedTableController.swift in Sources */,
 				065975541BC7DF5100B8C7DF /* CocoaAssetsRuntime.swift in Sources */,
 				06E7B2521C1345E70090660C /* AAMapPinPointView.swift in Sources */,
 				066A53121BC53317000E606E /* AAPhotoPreviewController.swift in Sources */,
 				066A52391BC4EEBA000E606E /* AAEditCell.swift in Sources */,
 				066A526D1BC50E8B000E606E /* AAAuthCountryCell.swift in Sources */,
+				152AA8AF1C2989270030DEEE /* SLKTextViewController.m in Sources */,
 				066A51911BC4C383000E606E /* CocoaHttpRuntime.swift in Sources */,
 				066A53211BC533F5000E606E /* BubbleLayouts.swift in Sources */,
 				066A51821BC4C373000E606E /* FMDatabaseQueue.m in Sources */,
@@ -1491,6 +1584,8 @@
 				066A53331BC534F5000E606E /* AAFileTypes.swift in Sources */,
 				066A52FE1BC52FA9000E606E /* AAGroupCreateViewController.swift in Sources */,
 				066A52E71BC52A20000E606E /* AAInviteLinkViewController.swift in Sources */,
+				152AA8AD1C2989270030DEEE /* SLKTextView+SLKAdditions.m in Sources */,
+				152AA8B71C2989270030DEEE /* UIScrollView+SLKAdditions.m in Sources */,
 				066A52241BC4EEAC000E606E /* AAManagedRange.swift in Sources */,
 				066A50E21BC4AF9F000E606E /* ActorSDK.swift in Sources */,
 				15D35F761C201B6B00E3717A /* AACustomPresentationAnimationController.swift in Sources */,
@@ -1500,6 +1595,7 @@
 				066A517E1BC4C373000E606E /* FMDatabaseAdditions.m in Sources */,
 				066A519A1BC4C390000E606E /* FMDBList.swift in Sources */,
 				066A52221BC4EEAC000E606E /* AAManagedTable.swift in Sources */,
+				152AA8B51C2989270030DEEE /* UIResponder+SLKAdditions.m in Sources */,
 				066A52EA1BC52A2B000E606E /* AAGroupMemberCell.swift in Sources */,
 				066A52291BC4EEAC000E606E /* ManagedTableExtensions.swift in Sources */,
 				066A514C1BC4BD05000E606E /* Collections.swift in Sources */,
