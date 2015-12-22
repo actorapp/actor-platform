@@ -1,2 +1,4 @@
 * favourite dialogs
 * hooks to inject own http routes in runtime 
+* move distributed pubsub mediator to PubSubExtension
+* fix stickers size passing
