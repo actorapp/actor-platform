@@ -3,9 +3,9 @@ package im.actor.server.session
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
+import akka.cluster.pubsub.DistributedPubSubMediator.{ SubscribeAck, Subscribe }
 import akka.cluster.sharding.ShardRegion.Passivate
 import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding, ShardRegion }
-import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import akka.pattern.pipe
 import akka.stream.{ ClosedShape, Materializer }
 import akka.stream.actor._
@@ -17,6 +17,7 @@ import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ Drop, MTPackage }
 import im.actor.server.persist.{ AuthSessionRepo, AuthIdRepo }
+import im.actor.server.pubsub.PubSubExtension
 import im.actor.server.user.{ AuthEvents, UserExtension }
 import scodec.DecodeResult
 import scodec.bits.BitVector
@@ -84,7 +85,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
   implicit val ec: ExecutionContext = context.dispatcher
 
-  private val mediator: ActorRef = DistributedPubSub(context.system).mediator
+  private val pubSubExt = PubSubExtension(context.system)
   private val db: Database = DbExtension(context.system).db
 
   private[this] var authData: Option[AuthData] = None
@@ -126,11 +127,12 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
       unstashAll()
 
-      val subscribe = DistributedPubSubMediator.Subscribe(UserExtension(context.system).authIdTopic(authId), self)
-      mediator ! subscribe
+      val subscribe = Subscribe(UserExtension(context.system).authIdTopic(authId), self)
+
+      pubSubExt.subscribe(subscribe)
 
       val waiting: Receive = {
-        case msg if msg == DistributedPubSubMediator.SubscribeAck(subscribe) ⇒
+        case SubscribeAck(`subscribe`) ⇒
           unstashAll()
           context.become(anonymous)
         case msg ⇒

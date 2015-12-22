@@ -12,7 +12,7 @@ import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.messaging.Events
+import im.actor.server.pubsub.PeerMessage
 
 import scala.concurrent.Future
 import scala.util.Random
@@ -305,8 +305,8 @@ class MessagingServiceSpec
         }
 
         whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi PubSub", Vector.empty, None))) { resp ⇒
-          probe.expectMsgClass(classOf[Events.PeerMessage])
-          probe.expectMsgClass(classOf[Events.PeerMessage])
+          probe.expectMsgClass(classOf[PeerMessage])
+          probe.expectMsgClass(classOf[PeerMessage])
         }
       }
     }

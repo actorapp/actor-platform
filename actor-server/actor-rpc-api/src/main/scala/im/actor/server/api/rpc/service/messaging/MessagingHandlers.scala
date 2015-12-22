@@ -14,14 +14,14 @@ import im.actor.server.sequence.SeqStateDate
 import scala.concurrent._
 
 private[messaging] trait MessagingHandlers {
-  self: MessagingServiceImpl ⇒
+  this: MessagingServiceImpl ⇒
 
   import im.actor.api.rpc.Implicits._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout: Timeout = ActorConfig.defaultTimeout
 
-  override def jhandleSendMessage(outPeer: ApiOutPeer, randomId: Long, message: ApiMessage, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def jhandleSendMessage(outPeer: ApiOutPeer, randomId: Long, message: ApiMessage, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
     authorized(clientData) { implicit client ⇒
       val accessHashCheck = outPeer.`type` match {
         case ApiPeerType.Private ⇒ userExt.checkAccessHash(outPeer.id, client.authId, outPeer.accessHash)
@@ -39,15 +39,10 @@ private[messaging] trait MessagingHandlers {
         ))
       } yield result
 
-      (for (SeqStateDate(seq, state, date) ← seqstateAction) yield {
-        val fromPeer = ApiPeer(ApiPeerType.Private, client.userId)
-        val toPeer = outPeer.asPeer
-        onMessage(Events.PeerMessage(fromPeer.asModel, toPeer.asModel, randomId, date, message))
-        ResponseSeqDate(seq, state.toByteArray, date)
-      }).run recover {
+      (for (SeqStateDate(seq, state, date) ← seqstateAction)
+        yield ResponseSeqDate(seq, state.toByteArray, date)).run recover {
         case GroupErrors.NotAMember     ⇒ Error(CommonErrors.forbidden("You are not a group member."))
         case DialogErrors.MessageToSelf ⇒ Error(CommonErrors.forbidden("Sending messages to self is not allowed."))
       }
     }
-  }
 }
