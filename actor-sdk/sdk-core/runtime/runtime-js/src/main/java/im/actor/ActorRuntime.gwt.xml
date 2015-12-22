@@ -19,6 +19,6 @@
     <inherits name="com.google.gwt.i18n.I18N"/>
 
     <!-- Use browser-specified locale for i18n -->
-    <set-configuration-property name="locale.useragent" value="Y"/>
+    <!--<set-configuration-property name="locale.useragent" value="Y"/>-->
 
 </module>
