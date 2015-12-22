@@ -1527,6 +1527,28 @@ public class Messenger {
     }
 
     /**
+     * Get privacy state
+     *
+     * @return privacy state
+     */
+    @NotNull
+    @ObjectiveCName("getPrivacy")
+    public String getPrivacy() {
+        return modules.getSettingsModule().getPrivacy();
+    }
+
+    /**
+     * Change privacy
+     *
+     * @param privacy privacy state (none|contacts|always)
+     */
+    @ObjectiveCName("setPrivacyWithPrivacy:")
+    public void setPrivacy(String privacy) {
+        modules.getSettingsModule().setPrivacy(privacy);
+    }
+
+
+    /**
      * Is markdown enabled.
      *
      * @return is markdown enabled
