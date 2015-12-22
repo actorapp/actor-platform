@@ -1,9 +1,10 @@
 package im.actor.server.api.http.groups
 
-import im.actor.server.file.{ FileLocation, FileStorageAdapter, ImageUtils }
+import im.actor.server.db.DbExtension
+import im.actor.server.file.{ FileStorageExtension, FileLocation, ImageUtils }
 
 import scala.concurrent.duration._
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.Future
 import scala.util.{ Failure, Success }
 
 import akka.actor.ActorSystem
@@ -20,13 +21,11 @@ import im.actor.server.api.http.json.{ AvatarUrls, Errors, Group, GroupInviteInf
 import ImageUtils.getAvatar
 import im.actor.server.{ model, persist }
 
-class GroupsHandler()(
-  implicit
-  db:        Database,
-  system:    ActorSystem,
-  ec:        ExecutionContext,
-  fsAdapter: FileStorageAdapter
-) extends RoutesHandler {
+class GroupsHandler()(implicit system: ActorSystem) extends RoutesHandler {
+
+  import system.dispatcher
+  private val db = DbExtension(system).db
+  private lazy val fsAdapter = FileStorageExtension(system).fsAdapter
 
   override def routes: Route = path("groups" / "invites" / Segment) { token ⇒
     get {
