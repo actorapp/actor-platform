@@ -95,13 +95,16 @@ object Frontend {
   }
 }
 
-abstract class Frontend(metricTags: Map[String, String]) {
+abstract class Frontend(connIdPrefix: String) {
+  private val metricTags = Map("type" → connIdPrefix)
 
-  protected val connectionTime = Kamon.metrics.histogram("connection.time", metricTags)
+  private val connectionTime = Kamon.metrics.histogram("connection.time", metricTags, kamon.metric.instrument.Time.Milliseconds)
+  private val connectionCount = Kamon.metrics.minMaxCounter("connection.count", metricTags)
 
   private val connCounter = new AtomicLong(0L)
 
-  protected val connIdPrefix: String
+  private def nextConnId(): String = s"conn-$connIdPrefix-${connCounter.incrementAndGet()}"
 
-  protected def nextConnId(): String = s"conn-${connIdPrefix}-${connCounter.incrementAndGet()}"
+  protected def mtProtoBlueprint()(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoBlueprint.MTProtoFlow =
+    MTProtoBlueprint(nextConnId(), connectionTime, connectionCount)
 }
