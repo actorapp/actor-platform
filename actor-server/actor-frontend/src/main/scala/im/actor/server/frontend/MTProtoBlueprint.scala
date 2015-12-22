@@ -1,7 +1,7 @@
 package im.actor.server.frontend
 
 import akka.stream.FlowShape
-import kamon.metric.instrument.Histogram
+import kamon.metric.instrument.{ MinMaxCounter, Histogram }
 
 import scala.util.{ Failure, Success }
 
@@ -18,10 +18,12 @@ object MTProtoBlueprint {
 
   import akka.stream.stage._
 
+  type MTProtoFlow = Flow[ByteString, ByteString, Unit]
+
   val protoVersions: Set[Byte] = Set(1)
   val apiMajorVersions: Set[Byte] = Set(1)
 
-  def apply(connId: String, connTimeHist: Histogram)(implicit sessionRegion: SessionRegion, system: ActorSystem): Flow[ByteString, ByteString, Unit] = {
+  def apply(connId: String, connTimeHist: Histogram, connCountMM: MinMaxCounter)(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoFlow = {
     val authManager = system.actorOf(AuthorizationManager.props, s"authManager-$connId")
     val authSource = Source(ActorPublisher[MTProto](authManager))
 
@@ -37,17 +39,19 @@ object MTProtoBlueprint {
       .transform(() ⇒ mapResponse(system))
 
     val connStartTime = System.currentTimeMillis()
+    connCountMM.increment()
 
-    val completeSink = Sink.onComplete {
+    val completeSink = Sink onComplete {
       case res ⇒
         res match {
           case Success(_) ⇒
             system.log.debug("Closing connection")
           case Failure(e) ⇒
-            system.log.error(e, "Closing connection due to error")
+            system.log.debug("Closing connection due to error: {}", e)
         }
 
         connTimeHist.record(System.currentTimeMillis() - connStartTime)
+        connCountMM.decrement()
         authManager ! PoisonPill
         sessionClient ! PoisonPill
     }

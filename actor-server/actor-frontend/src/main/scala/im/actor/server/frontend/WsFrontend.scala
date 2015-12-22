@@ -17,11 +17,9 @@ import im.actor.tls.TlsContext
 
 import scala.concurrent.duration._
 
-object WsFrontend extends Frontend(Map("type" → "ws")) {
+object WsFrontend extends Frontend("ws") {
 
   import Directives._
-
-  override protected val connIdPrefix = "ws"
 
   val IdleTimeout = 15.minutes
 
@@ -45,7 +43,7 @@ object WsFrontend extends Frontend(Map("type" → "ws")) {
     connections runForeach { conn ⇒
       log.debug("New HTTP Connection {}", conn.remoteAddress)
 
-      conn.handleWith(route(MTProtoBlueprint(nextConnId(), connectionTime)))
+      conn.handleWith(route(mtProtoBlueprint()))
     }
   }
 
@@ -85,11 +83,6 @@ object WsFrontend extends Frontend(Map("type" → "ws")) {
     Flow[T]
       .transform(() ⇒ new PushStage[T, T] {
         def onPush(elem: T, ctx: Context[T]): SyncDirective = ctx.push(elem)
-
-        override def postStop(): Unit = {
-          super.postStop()
-          connectionTime.record(System.currentTimeMillis() - connStartTime)
-        }
 
         override def onUpstreamFailure(cause: Throwable, ctx: Context[T]): TerminationDirective = {
           system.log.error(s"WS stream failed with $cause")

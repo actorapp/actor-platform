@@ -8,9 +8,7 @@ import akka.stream.scaladsl._
 import im.actor.server.session.SessionRegion
 import im.actor.tls.{ Tls, TlsContext }
 
-object TcpFrontend extends Frontend(Map("type" → "tcp")) {
-  override protected val connIdPrefix = "tcp"
-
+object TcpFrontend extends Frontend("tcp") {
   def start(host: String, port: Int, tlsContext: Option[TlsContext])(
     implicit
     sessionRegion: SessionRegion,
@@ -24,7 +22,7 @@ object TcpFrontend extends Frontend(Map("type" → "tcp")) {
         case (Tcp.IncomingConnection(localAddress, remoteAddress, flow)) ⇒
           log.debug("New TCP connection from {}", localAddress)
 
-          val mtProto = MTProtoBlueprint(nextConnId(), connectionTime)
+          val mtProto = mtProtoBlueprint()
           val connFlow = tlsContext map (Tls.connection(_, flow)) getOrElse flow join mtProto
           connFlow.run()
       })
