@@ -1,6 +1,7 @@
 package im.actor.server.hook
 
 import im.actor.concurrent.FutureExt
+import org.slf4j.LoggerFactory
 
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.{ ExecutionContext, Future }
@@ -27,9 +28,18 @@ class HooksStorage[H <: Hook] {
   private val hooks = TrieMap.empty[String, H]
   protected def hooksList: Seq[H] = hooks.values.toSeq
 
-  def register(name: String, hook: H): Unit =
-    if (hooks.putIfAbsent(name, hook).nonEmpty)
+  private val log = LoggerFactory.getLogger(this.getClass)
+
+  def register(name: String, hook: H): Unit = {
+    val inserted = hooks.putIfAbsent(name, hook).isEmpty
+    if (inserted) {
+      log.debug("Registered hook {}", name)
+    } else {
+      log.warn("Hook {} is already registered", name)
+
       throw HookException.HookAlreadyRegistered(name)
+    }
+  }
 }
 
 final class HooksStorage0[H <: Hook0[R], R](implicit ec: ExecutionContext) extends HooksStorage[H] {
