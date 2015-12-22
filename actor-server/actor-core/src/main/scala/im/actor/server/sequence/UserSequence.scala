@@ -1,13 +1,13 @@
 package im.actor.server.sequence
 
 import akka.actor._
-import akka.cluster.pubsub.DistributedPubSub
 import akka.pattern.pipe
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.google.protobuf.ByteString
 import im.actor.server.db.DbExtension
 import im.actor.server.model.{ SeqUpdate, UpdateMapping }
 import im.actor.server.persist.sequence.UserSequenceRepo
+import im.actor.server.pubsub.PubSubExtension
 
 import scala.concurrent.Future
 import scala.language.postfixOps
@@ -51,10 +51,9 @@ private[sequence] final class UserSequence(
 
   private val db = DbExtension(context.system).db
   private val seqUpdExt = SeqUpdatesExtension(context.system)
+  private val pubSubExt = PubSubExtension(context.system)
 
   val userId = self.path.name.toInt
-
-  private val mediator = DistributedPubSub(context.system).mediator
 
   private val deliveryCache = Caffeine.newBuilder().maximumSize(100).executor(context.dispatcher).build[String, SeqState]()
 
@@ -103,7 +102,7 @@ private[sequence] final class UserSequence(
 
       writeToDb(seqUpdate) map (_ ⇒ SeqState(seq)) andThen {
         case Success(_) ⇒
-          mediator ! Publish(topic(userId), UserSequenceEvents.NewUpdate(Some(seqUpdate), pushRules, ByteString.EMPTY))
+          pubSubExt.publish(Publish(topic(userId), UserSequenceEvents.NewUpdate(Some(seqUpdate), pushRules, ByteString.EMPTY)))
           vendorPush ! DeliverPush(seq, pushRules)
       }
     }

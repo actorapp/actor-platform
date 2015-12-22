@@ -13,6 +13,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.file.Avatar
 import im.actor.server.model.{ SerializedUpdate, UpdateMapping, Peer }
 import im.actor.server.persist.UserRepo
+import im.actor.server.pubsub.PubSubExtension
 import im.actor.server.sequence.{ PushData, PushRules, SeqUpdatesExtension, SeqState }
 import im.actor.server.{ model, persist ⇒ p }
 import im.actor.util.misc.IdUtils
@@ -307,19 +308,13 @@ private[user] sealed trait AuthCommands {
 
   def logout(session: model.AuthSession)(implicit db: Database): Future[Unit] = {
     system.log.warning(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
-
-    implicit val seqExt = SeqUpdatesExtension(system)
-    val mediator = DistributedPubSub(system).mediator
-
     for {
       _ ← removeAuth(session.userId, session.authId)
-      _ ← seqExt.deletePushCredentials(session.authId)
+      _ ← SeqUpdatesExtension(system).deletePushCredentials(session.authId)
       _ ← db.run(p.AuthSessionRepo.delete(session.userId, session.id))
-    } yield {
-      publishAuthIdInvalidated(mediator, session.authId)
-    }
+    } yield publishAuthIdInvalidated(session.authId)
   }
 
-  private def publishAuthIdInvalidated(mediator: ActorRef, authId: Long): Unit =
-    mediator ! Publish(authIdTopic(authId), AuthEvents.AuthIdInvalidated)
+  private def publishAuthIdInvalidated(authId: Long): Unit =
+    PubSubExtension(system).publish(Publish(authIdTopic(authId), AuthEvents.AuthIdInvalidated))
 }
