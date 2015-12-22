@@ -50,6 +50,7 @@ public class SettingsModule extends AbsModule {
     private final String KEY_RENAME_HINT_SHOWN;
 
     private final String KEY_WALLPAPPER;
+    private final String KEY_PRIVACY;
 
     private ActorRef settingsSync;
 
@@ -114,7 +115,7 @@ public class SettingsModule extends AbsModule {
         KEY_RENAME_HINT_SHOWN = "hint.contact.rename";
 
         KEY_WALLPAPPER = "wallpaper.uri";
-
+        KEY_PRIVACY = "privacy.last_seen";
     }
 
     public void run() {
@@ -277,6 +278,16 @@ public class SettingsModule extends AbsModule {
 
     public void changeSelectedWallpapper(String uri) {
         changeValue(KEY_WALLPAPPER, uri);
+    }
+
+    //Privacy
+    public String getPrivacy() {
+        String privacy = readValue(KEY_PRIVACY);
+        return privacy != null ? privacy : "always";
+    }
+
+    public void setPrivacy(String privacy) {
+        changeValue(KEY_PRIVACY, privacy);
     }
 
     // Common
