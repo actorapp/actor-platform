@@ -3194,7 +3194,7 @@
                 "type": "reference",
                 "argument": "isShort",
                 "category": "full",
-                "description": "  Is field can be shown in compact way"
+                "description": "  Is field can be shown in compact way (default is TRUE)"
               }
             ],
             "expandable": "true",
@@ -10944,6 +10944,89 @@
                 },
                 "id": 1,
                 "name": "events"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Raw API",
+      "package": "raw",
+      "doc": [
+        "Schema-less API that is useful for external integrations"
+      ],
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RawRequest",
+            "header": 2569,
+            "response": {
+              "type": "anonymous",
+              "header": 2570,
+              "doc": [
+                "Response of a raw request",
+                {
+                  "type": "reference",
+                  "argument": "result",
+                  "category": "full",
+                  "description": "  Result of request"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "trait",
+                    "childType": "RawValue"
+                  },
+                  "id": 1,
+                  "name": "result"
+                }
+              ]
+            },
+            "doc": [
+              "Making raw request to external service via shema-less RPC request",
+              {
+                "type": "reference",
+                "argument": "service",
+                "category": "full",
+                "description": "Service name for RPC request"
+              },
+              {
+                "type": "reference",
+                "argument": "method",
+                "category": "full",
+                "description": "Method for execution"
+              },
+              {
+                "type": "reference",
+                "argument": "params",
+                "category": "full",
+                "description": "Optional params for the method"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "service"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "method"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "RawValue"
+                  }
+                },
+                "id": 3,
+                "name": "params"
               }
             ]
           }
