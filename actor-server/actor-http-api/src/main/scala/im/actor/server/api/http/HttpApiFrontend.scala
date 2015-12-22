@@ -12,13 +12,9 @@ import im.actor.server.api.http.bots.BotsHandler
 import im.actor.server.api.http.groups.GroupsHandler
 import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
-import im.actor.server.db.DbExtension
-import im.actor.server.file.{ FileStorageExtension, FileStorageAdapter }
-import im.actor.server.group.{ GroupExtension, GroupViewRegion }
 import im.actor.tls.TlsContext
-import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.{ Future, ExecutionContext }
+import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
 
@@ -57,15 +53,8 @@ private object HttpApiFrontend {
     }
   }
 
-  def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(
-    implicit
-    system:       ActorSystem,
-    materializer: Materializer
-  ): Unit = {
-    implicit val ec: ExecutionContext = system.dispatcher
-    implicit val db: Database = DbExtension(system).db
-    implicit val groupProcessorRegion: GroupViewRegion = GroupExtension(system).viewRegion
-    implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(system).fsAdapter
+  def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(implicit system: ActorSystem, materializer: Materializer): Unit = {
+    import system.dispatcher
 
     val webhooks = new WebhooksHandler
     val groups = new GroupsHandler

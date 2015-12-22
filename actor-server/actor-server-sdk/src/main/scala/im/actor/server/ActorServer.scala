@@ -177,10 +177,10 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       system.log.debug("Staring ContactsService")
       val contactsService = new ContactsServiceImpl
 
-      system.log.debug("Starging MessagingService")
+      system.log.debug("Starting MessagingService")
       val messagingService = MessagingServiceImpl()
 
-      system.log.debug("Starging GroupsService")
+      system.log.debug("Starting GroupsService")
       val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
       system.log.debug("Starting PubgroupsService")
