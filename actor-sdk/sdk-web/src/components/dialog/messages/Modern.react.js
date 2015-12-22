@@ -34,7 +34,7 @@ function getColor(color) {
  * Class that represents component for display modern text message attachment field
  * @param {string} title Field title
  * @param {string} value Field value
- * @param {bool} isShort Field isShor flag
+ * @param {bool} isShort Display short version of field
  */
 class Field extends Component {
   static propTypes = {
@@ -49,11 +49,18 @@ class Field extends Component {
   }
 
   render() {
-    const { title } = this.props;
+    const { title, value, isShort } = this.props;
 
-    return(
-      <div className="field">
-        {title}
+    const fieldClassName = classnames('field', {
+      'field--short': isShort,
+      'col-xs-6': isShort,
+      'col-xs-12': !isShort
+    });
+
+    return (
+      <div className={fieldClassName}>
+        {title ? <div className="field__title">{title}</div> : null}
+        {value ? <div className="field__value">{value}</div> : null}
       </div>
     )
   }
@@ -90,13 +97,13 @@ class Attach extends Component {
 
     const attachmentStyles = {
       borderColor: getColor(paragraphStyle.color) || 'transparent',
-      backgroundColor: getColor(paragraphStyle.bgColor) || 'transparent',
-      color: getColor(paragraphStyle.color) || 'inherit'
+      backgroundColor: getColor(paragraphStyle.bgColor) || 'transparent'
+      //color: getColor(paragraphStyle.color) || 'inherit'
     };
 
     const visibleTitle = titleUrl ? <a href={titleUrl}>{title}</a> : {title};
 
-    const attachmentFields = map(fields, (field, index) => <Field {...field}/>);
+    const attachmentFields = map(fields, (field, index) => <Field key={index} {...field}/>);
 
     return (
       <div className={attachmentClassName} style={attachmentStyles}>
@@ -104,7 +111,7 @@ class Attach extends Component {
           {visibleTitle}
         </div>
         {text ? text : null}
-        {attachmentFields}
+        {attachmentFields ? <div className="attachment_fields row">{attachmentFields}</div> : null}
       </div>
     );
   }
@@ -138,11 +145,11 @@ class TextModern extends Component {
 
     const modernStyles = {
       borderColor: getColor(paragraphStyle.color) || 'transparent',
-      backgroundColor: getColor(paragraphStyle.bgColor) || 'transparent',
-      color: getColor(paragraphStyle.color) || 'inherit'
+      backgroundColor: getColor(paragraphStyle.bgColor) || 'transparent'
+      //color: getColor(paragraphStyle.color) || 'inherit'
     };
 
-    const modernAttachments = map(attaches, (attachment, index) => <Attach {...attachment}/>);
+    const modernAttachments = map(attaches, (attachment, index) => <Attach key={index} {...attachment}/>);
 
     return (
       <div className={className}>
