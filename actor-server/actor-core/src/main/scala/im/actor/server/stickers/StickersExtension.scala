@@ -75,12 +75,18 @@ final class StickersExtensionImpl(_system: ActorSystem)
         image128FileId = image128.fileLocation.fileId,
         image128FileHash = image128.fileLocation.accessHash,
         image128FileSize = image128.fileSize,
+        image128Width = image128.width,
+        image128Height = image128.height,
         image256FileId = image256 map (_.fileLocation.fileId),
         image256FileHash = image256 map (_.fileLocation.accessHash),
         image256FileSize = image256 map (_.fileSize),
+        image256Width = image256 map (_.width),
+        image256Height = image256 map (_.height),
         image512FileId = image512 map (_.fileLocation.fileId),
         image512FileHash = image512 map (_.fileLocation.accessHash),
-        image512FileSize = image512 map (_.fileSize))
+        image512FileSize = image512 map (_.fileSize),
+        image512Width = image512 map (_.width),
+        image512Height = image512 map (_.height))
       _ ← fromFuture(db.run(StickerDataRepo.create(sticker)))
       _ = deliverStickerCollectionChanged(pack)
     } yield ()).value
