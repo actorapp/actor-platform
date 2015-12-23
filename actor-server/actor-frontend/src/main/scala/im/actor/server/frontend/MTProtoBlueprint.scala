@@ -25,15 +25,14 @@ object MTProtoBlueprint {
 
   def apply(connId: String, connTimeHist: Histogram, connCountMM: MinMaxCounter)(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoFlow = {
     val authManager = system.actorOf(AuthorizationManager.props, s"authManager-$connId")
-    val authSource = Source(ActorPublisher[MTProto](authManager))
+    val authSource = Source.fromPublisher(ActorPublisher[MTProto](authManager))
 
     val sessionClient = system.actorOf(SessionClient.props(sessionRegion), s"sessionClient-$connId")
-    val sessionClientSource = Source(ActorPublisher[MTProto](sessionClient))
+    val sessionClientSource = Source.fromPublisher(ActorPublisher[MTProto](sessionClient))
 
-    val mtprotoFlow = Flow[ByteString]
-      .transform(() ⇒ new PackageParseStage)
+    val mtprotoFlow = Flow.fromGraph(new PackageParseStage())
       .transform(() ⇒ new PackageCheckStage)
-      .transform(() ⇒ new PackageHandleStage(protoVersions, apiMajorVersions, authManager, sessionClient))
+      .via(new PackageHandleStage(protoVersions, apiMajorVersions, authManager, sessionClient))
 
     val mapRespFlow: Flow[MTProto, ByteString, Unit] = Flow[MTProto]
       .transform(() ⇒ mapResponse(system))
@@ -56,8 +55,8 @@ object MTProtoBlueprint {
         sessionClient ! PoisonPill
     }
 
-    Flow.fromGraph(FlowGraph.create() { implicit builder ⇒
-      import FlowGraph.Implicits._
+    Flow.fromGraph(GraphDSL.create() { implicit builder ⇒
+      import GraphDSL.Implicits._
 
       val bcast = builder.add(Broadcast[ByteString](2))
       val merge = builder.add(Merge[MTProto](3))
