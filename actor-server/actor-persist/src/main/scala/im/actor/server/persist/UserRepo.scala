@@ -78,6 +78,10 @@ object UserRepo {
 
   def allIds = users.map(_.id).result
 
+  def all = users.result
+
+  def fetchPeople = activeHumanUsers.result
+
   def find(id: Int) =
     byIdC(id).result
 
