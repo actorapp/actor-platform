@@ -382,11 +382,11 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     }
 
     public void saveDraft(Peer peer, String draft) {
-        preferences().putString("draft_" + peer.getUnuqueId(), draft);
+        context().getSettingsModule().setStringValue("drafts_" + peer.getUnuqueId(), draft);
     }
 
     public String loadDraft(Peer peer) {
-        String res = preferences().getString("draft_" + peer.getUnuqueId());
+        String res = context().getSettingsModule().getStringValue("drafts_" + peer.getUnuqueId(), null);
         if (res == null) {
             return "";
         } else {
