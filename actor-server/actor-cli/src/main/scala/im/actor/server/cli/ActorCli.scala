@@ -45,6 +45,9 @@ private[cli] case object UpdateIsAdminResponse extends UpdateIsAdminResponse {
   def apply(): UpdateIsAdminResponse = this
 }
 
+private[cli] case class CreateApiToken(isAdmin: Boolean)
+private case class CreateApiTokenResponse(token: String)
+
 private object Commands {
   val Help = "help"
   val CreateBot = "create-bot"
