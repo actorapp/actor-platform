@@ -44,9 +44,9 @@ object MTProtoBlueprint {
       case res ⇒
         res match {
           case Success(_) ⇒
-            system.log.debug("Closing connection")
+            system.log.debug("Closing connection {}", connId)
           case Failure(e) ⇒
-            system.log.debug("Closing connection due to error: {}", e)
+            system.log.debug("Closing connection {} due to error: {}", connId, e)
         }
 
         connTimeHist.record(System.currentTimeMillis() - connStartTime)
