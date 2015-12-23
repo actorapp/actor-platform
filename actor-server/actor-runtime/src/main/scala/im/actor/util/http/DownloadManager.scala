@@ -2,13 +2,14 @@ package im.actor.util.http
 
 import java.nio.file.{ Files, Path }
 
+import akka.stream.scaladsl.FileIO
+
 import scala.concurrent._
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpRequest
 import akka.stream.Materializer
-import akka.stream.io.SynchronousFileSink
 
 class DownloadManager(implicit system: ActorSystem, materializer: Materializer) {
   implicit val ec: ExecutionContext = system.dispatcher
@@ -22,7 +23,7 @@ class DownloadManager(implicit system: ActorSystem, materializer: Materializer) 
     for {
       filePath ← tempFileFuture
       response ← responseFuture
-      size ← response.entity.dataBytes.runWith(SynchronousFileSink(filePath.toFile))
+      size ← response.entity.dataBytes.runWith(FileIO.toFile(filePath.toFile))
     } yield (filePath, size)
   }
 
