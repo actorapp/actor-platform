@@ -10,7 +10,6 @@ import im.actor.server.bot.services._
 import upickle.Js
 
 import scala.concurrent.Future
-import scala.util.{ Success, Failure }
 
 final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int, system: ActorSystem) {
 
@@ -46,8 +45,8 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int,
       .map(_.asInstanceOf[BotMessageOut])
 
     Flow.fromGraph(
-      FlowGraph.create() { implicit b ⇒
-        import akka.stream.scaladsl.FlowGraph.Implicits._
+      GraphDSL.create() { implicit b ⇒
+        import akka.stream.scaladsl.GraphDSL.Implicits._
 
         val upd = b.add(updSource)
         val rqrsp = b.add(rqrspFlow)
@@ -56,7 +55,7 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int,
         upd ~> merge
         rqrsp ~> merge
 
-        FlowShape(rqrsp.inlet, merge.out)
+        FlowShape(rqrsp.in, merge.out)
       }
     ) recover {
         case e ⇒

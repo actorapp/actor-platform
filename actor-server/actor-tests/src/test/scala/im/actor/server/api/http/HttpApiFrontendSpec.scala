@@ -446,17 +446,17 @@ final class HttpApiFrontendSpec
     }
 
     def filesCorrect() = {
-      val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/index.html", entity = HttpEntity.empty(ContentTypes.`text/plain`))
+      val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/index.html", entity = HttpEntity.empty(ContentTypes.`text/plain(UTF-8)`))
       whenReady(http.singleRequest(r1)) { resp ⇒
         resp.status shouldEqual OK
         resp.entity.dataBytes.runWith(Sink.ignore)
       }
-      val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/test.conf", entity = HttpEntity.empty(ContentTypes.`text/plain`))
+      val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/test.conf", entity = HttpEntity.empty(ContentTypes.`text/plain(UTF-8)`))
       whenReady(http.singleRequest(r2)) { resp ⇒
         resp.status shouldEqual OK
         resp.entity.dataBytes.runWith(Sink.ignore)
       }
-      val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/scripts/test.js", entity = HttpEntity.empty(ContentTypes.`text/plain`))
+      val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/scripts/test.js", entity = HttpEntity.empty(ContentTypes.`text/plain(UTF-8)`))
       whenReady(http.singleRequest(r3)) { resp ⇒
         resp.status shouldEqual OK
         resp.entity.dataBytes.runWith(Sink.ignore)

@@ -5,8 +5,7 @@ import java.nio.file.{ Files, Path }
 
 import akka.actor.ActorSystem
 import akka.stream.Materializer
-import akka.stream.io.SynchronousFileSink
-import akka.stream.scaladsl.Source
+import akka.stream.scaladsl.{ FileIO, Source }
 import akka.util.ByteString
 
 import scala.concurrent.{ ExecutionContext, Future, blocking }
@@ -49,7 +48,7 @@ object FileUtils {
   def writeBytes(bytes: ByteString)(implicit system: ActorSystem, materializer: Materializer, ec: ExecutionContext): Future[(Path, Long)] = {
     for {
       file ← createTempFile
-      size ← Source.single(bytes).runWith(SynchronousFileSink(file.toFile))
+      size ← Source.single(bytes).runWith(FileIO.toFile(file.toFile))
     } yield (file, size)
   }
 
