@@ -163,10 +163,10 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
       withValidMessageBox(messageBoxBytes.toByteArray) { mb ⇒
         val graph = SessionStream.graph(authId, sessionId, rpcHandler, updatesHandler, reSender)
 
-        RunnableGraph.fromGraph(FlowGraph.create() { implicit b ⇒
-          import FlowGraph.Implicits._
+        RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+          import GraphDSL.Implicits._
 
-          val source = b.add(Source(ActorPublisher[SessionStreamMessage](sessionMessagePublisher)))
+          val source = b.add(Source.fromPublisher(ActorPublisher[SessionStreamMessage](sessionMessagePublisher)))
           val sink = b.add(Sink.foreach[MTPackage](m ⇒ clients foreach (_ ! m)))
           val bcast = b.add(Broadcast[MTPackage](2))
 
