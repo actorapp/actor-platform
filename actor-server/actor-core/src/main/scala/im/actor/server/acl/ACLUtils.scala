@@ -69,6 +69,8 @@ object ACLUtils {
     nextAccessSalt(ThreadLocalRandom.current())
   }
 
+  def accessToken(): String = accessToken(ThreadLocalRandom.current())
+
   def accessToken(rng: ThreadLocalRandom): String = DigestUtils.sha256Hex(rng.nextLong().toString)
 
   def checkOutPeer(outPeer: ApiOutPeer, clientAuthId: Long)(implicit s: ActorSystem): Future[Boolean] = {
