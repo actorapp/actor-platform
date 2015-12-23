@@ -75,16 +75,13 @@ $button-text-color: rgb(144, 144, 144);
 // Sidebar
 $sidebar-width: 250px;
 $sidebar-header-height: 64px;
-$sidebar-tabs-height: 46px;
+$sidebar-footer-height: 50px;
 $sidebar-text-color: white;
-//$sidebarHeaderHoverColor: rgba(0,0,0,.1);
 $sidebar-header-hover-color: rgb(72, 97, 129);
-// Must be non transparent
 
-// Right aside block
+// Activity block
 $activity-width: 400px;
 $activity-text-color: rgba($mine-shaft, .85);
-//$activity-background-color: rgba(0,0,0,.02);
 $activity-background-color: rgb(255, 255, 255);
 
 // Messages

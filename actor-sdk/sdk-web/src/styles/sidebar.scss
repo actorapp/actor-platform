@@ -82,73 +82,6 @@
     }
   }
 
-  &__tabs {
-    position: absolute;
-    top: $toolbar-height;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    .tabs-menu {
-      height: $sidebar-tabs-height;
-      margin: 0;
-      padding: 0;
-
-      list-style: none;
-
-      background-color: $sidebar-header-hover-color;
-      .tabs-menu-item {
-        float: left;
-
-        width: 50%;
-        margin: 0;
-        padding: 0;
-        a {
-          font-size: 14px;
-          font-weight: 500;
-          line-height: $sidebar-tabs-height;
-
-          display: block;
-
-          cursor: pointer;
-          text-align: center;
-          text-decoration: none;
-          text-transform: uppercase;
-
-          color: rgba(255, 255, 255, .75);
-          &:hover {
-            color: white;
-          }
-        }
-        &.is-active {
-          box-shadow: inset 0 -2px 0 0 white;
-          a {
-            color: white;
-          }
-        }
-      }
-    }
-
-    &__tab-items {
-      & > div {
-        text-transform: uppercase;
-      }
-    }
-    &__tab-content {
-      position: absolute;
-      top: 48px;
-      bottom: 0;
-
-      width: 100%;
-      & > div {
-        position: absolute !important;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-      }
-    }
-  }
-
   &__list {
     font-weight: 500;
     line-height: 24px;
@@ -325,7 +258,7 @@
 
     box-sizing: border-box;
     width: 100%;
-    height: 50px;
+    height: $sidebar-footer-height;
     a {
       display: block;
       width: 100%;
@@ -333,7 +266,7 @@
       text-align: center;
       text-transform: uppercase;
       font-weight: 500;
-      line-height: 50px;
+      line-height: $sidebar-footer-height;
       cursor: pointer;
       color: rgba(white, .4);
       font-size: 14px;
