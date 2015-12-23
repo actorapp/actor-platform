@@ -20,5 +20,7 @@ object HttpApiTokenRepo {
 
   def find(token: String) = byToken(token).result
 
+  def fetchAll = httpApiTokens.result
+
   def create(token: String, isAdmin: Boolean) = httpApiTokens += HttpApiToken(token, isAdmin)
 }

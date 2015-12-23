@@ -5,6 +5,7 @@ import akka.http.ServerSettings
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.directives.Credentials
 import akka.stream.{ ActorMaterializer, Materializer }
 import com.typesafe.config.Config
 import im.actor.server.api.http.app.AppFilesHandler
@@ -12,6 +13,8 @@ import im.actor.server.api.http.bots.BotsHandler
 import im.actor.server.api.http.groups.GroupsHandler
 import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
+import im.actor.server.db.DbExtension
+import im.actor.server.persist.HttpApiTokenRepo
 import im.actor.tls.TlsContext
 
 import scala.concurrent.Future
@@ -26,6 +29,17 @@ final class HttpApi(_system: ActorSystem) extends Extension {
   val hooks = new HttpApiHookControl
 
   HttpApiFrontend.start(system.settings.config)
+
+  val authenticator: AsyncAuthenticator[Boolean] = {
+    case p @ Credentials.Provided(_) ⇒
+      for {
+        tokens ← DbExtension(system).db.run(HttpApiTokenRepo.fetchAll)
+      } yield tokens.find(t ⇒ p.verify(t.token)).map(_.isAdmin)
+    case Credentials.Missing ⇒ Future.successful(None)
+  }
+
+  val adminAuthenticator: AsyncAuthenticator[Unit] =
+    authenticator andThen (_ map (isAdminOpt ⇒ if (isAdminOpt.isDefined) Some(()) else None))
 }
 
 object HttpApi extends ExtensionId[HttpApi] with ExtensionIdProvider {
