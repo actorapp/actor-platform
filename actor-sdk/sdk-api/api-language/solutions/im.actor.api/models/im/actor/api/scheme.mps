@@ -159,6 +159,17 @@
     <node concept="2m5mJO" id="GBscvBB6uy" role="2m5lHt">
       <property role="TrG5h" value="Authentication" />
       <property role="3XOG$Z" value="auth" />
+      <node concept="2m488m" id="6Fl2chwBTwz" role="2m5mJr">
+        <property role="TrG5h" value="PhoneActivationType" />
+        <node concept="2m7y0F" id="6Fl2chwBTw_" role="2m7ymf">
+          <property role="TrG5h" value="CODE" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="6Fl2chwBT_Y" role="2m7ymf">
+          <property role="TrG5h" value="PASSWORD" />
+          <property role="2m7y0m" value="2" />
+        </node>
+      </node>
       <node concept="1Dx9M1" id="2uPas5ecFpL" role="1Dx9rD">
         <property role="1Dx9K7" value="&lt;p&gt;Actor now support only one way for authentication - by SMS or phone call.&lt;/p&gt;" />
       </node>
@@ -207,6 +218,10 @@
         <node concept="2m7y0F" id="3zgy61ElGhl" role="2m7ymf">
           <property role="TrG5h" value="OAUTH2" />
           <property role="2m7y0m" value="2" />
+        </node>
+        <node concept="2m7y0F" id="6Fl2chwBTr8" role="2m7ymf">
+          <property role="TrG5h" value="PASSWORD" />
+          <property role="2m7y0m" value="3" />
         </node>
       </node>
       <node concept="2m6fVq" id="3zgy61Em3ip" role="2m5mJr">
@@ -312,6 +327,15 @@
             <property role="2m7DUN" value="2" />
             <property role="TrG5h" value="isRegistered" />
             <node concept="2m5ndN" id="3zgy61Em4qq" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="6Fl2chwBUnH" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="activationType" />
+            <node concept="2m5nlT" id="6Fl2chwBUnP" role="2m7DVh">
+              <node concept="3GJkcs" id="6Fl2chwBUnV" role="3GH5xg">
+                <ref role="3GJkik" node="6Fl2chwBTwz" resolve="PhoneActivationType" />
+              </node>
+            </node>
           </node>
           <node concept="Nu42z" id="3zgy61Em3uV" role="NuuwV">
             <property role="Nu42W" value="C1" />
@@ -473,6 +497,40 @@
           <property role="TrG5h" value="name" />
           <node concept="2m5ndX" id="64HNz1IpiSL" role="2m7DVh" />
         </node>
+        <node concept="2m7Kf5" id="6Fl2chwBWSi" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="6Fl2chwBWSo" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBWSr" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="apiKey" />
+          <node concept="2m5ndX" id="6Fl2chwBWSz" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBWTg" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="deviceHash" />
+          <node concept="2m61tm" id="6Fl2chwBWTq" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBWTt" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="deviceTitle" />
+          <node concept="2m5ndX" id="6Fl2chwBWTD" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBWTG" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="timeZone" />
+          <node concept="2m5nlT" id="6Fl2chwBWTU" role="2m7DVh">
+            <node concept="2m5ndX" id="6Fl2chwBWU0" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBWU3" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="preferredLanguages" />
+          <node concept="2m5nlk" id="6Fl2chwBWUk" role="2m7DVh">
+            <node concept="2m5ndX" id="6Fl2chwBWUq" role="3GJlyp" />
+          </node>
+        </node>
         <node concept="Nu42z" id="64HNz1Ipfm6" role="NuuwV">
           <property role="Nu42W" value="C6" />
         </node>
@@ -487,13 +545,82 @@
           <property role="NX6R2" value="Name of new user" />
           <ref role="NX6Kv" node="64HNz1IpiSH" resolve="name" />
         </node>
+        <node concept="NX1gA" id="6Fl2chwBYyg" role="1GBnQ6">
+          <property role="NX6R2" value="Application Id" />
+          <property role="1GSvIU" value="hidden" />
+          <ref role="NX6Kv" node="6Fl2chwBWSi" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwBYyq" role="1GBnQ6">
+          <property role="1GSvIU" value="hidden" />
+          <property role="NX6R2" value="Application API key" />
+          <ref role="NX6Kv" node="6Fl2chwBWSr" resolve="apiKey" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwBYyA" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6Fl2chwBWTg" resolve="deviceHash" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwBYyO" role="1GBnQ6">
+          <property role="NX6R2" value="Device Title" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6Fl2chwBWTt" resolve="deviceTitle" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwBYz4" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="TimeZone of device" />
+          <ref role="NX6Kv" node="6Fl2chwBWTG" resolve="timeZone" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwBYzm" role="1GBnQ6">
+          <property role="NX6R2" value="Preferred languages" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6Fl2chwBWU3" resolve="preferredLanguages" />
+        </node>
       </node>
       <node concept="2m6fVq" id="64HNz1Ipfc1" role="2m5mJr">
         <property role="TrG5h" value="StartTokenAuth" />
+        <node concept="2uC4CA" id="6Fl2chwBSDu" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="INCOERRECT_TOKEN" />
+          <property role="2uCiSL" value="Token for authentication is incorrect" />
+        </node>
         <node concept="2m7Kf5" id="64HNz1IplEr" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="token" />
           <node concept="2m5ndX" id="64HNz1IplEv" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBXGv" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="6Fl2chwBXG_" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBXGC" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="apiKey" />
+          <node concept="2m5ndX" id="6Fl2chwBXGK" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBXGN" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="deviceHash" />
+          <node concept="2m61tm" id="6Fl2chwBXGX" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBXH0" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="deviceTitle" />
+          <node concept="2m5ndX" id="6Fl2chwBXHc" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBXHf" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="timeZone" />
+          <node concept="2m5nlT" id="6Fl2chwBXHt" role="2m7DVh">
+            <node concept="2m5ndX" id="6Fl2chwBXHz" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBXHA" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="preferredLanguages" />
+          <node concept="2m5nlk" id="6Fl2chwBXHR" role="2m7DVh">
+            <node concept="2m5ndX" id="6Fl2chwBXHX" role="3GJlyp" />
+          </node>
         </node>
         <node concept="Nu42z" id="64HNz1Ipfc2" role="NuuwV">
           <property role="Nu42W" value="CB" />
@@ -508,6 +635,147 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Token for authentication" />
           <ref role="NX6Kv" node="64HNz1IplEr" resolve="token" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC08Q" role="1GBnQ6">
+          <property role="1GSvIU" value="hidden" />
+          <property role="NX6R2" value="Application Id" />
+          <ref role="NX6Kv" node="6Fl2chwBXGv" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC090" role="1GBnQ6">
+          <property role="1GSvIU" value="hidden" />
+          <property role="NX6R2" value="Application API key" />
+          <ref role="NX6Kv" node="6Fl2chwBXGC" resolve="apiKey" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC09c" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6Fl2chwBXGN" resolve="deviceHash" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC09q" role="1GBnQ6">
+          <property role="NX6R2" value="Device Title" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6Fl2chwBXH0" resolve="deviceTitle" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC09E" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="TimeZone of device" />
+          <ref role="NX6Kv" node="6Fl2chwBXHf" resolve="timeZone" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC09W" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Preferred languages" />
+          <ref role="NX6Kv" node="6Fl2chwBXHA" resolve="preferredLanguages" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6Fl2chwBWMC" role="2m5mJr">
+        <property role="TrG5h" value="StartLoginAuth" />
+        <node concept="2m7Kf5" id="6Fl2chwBWSb" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="login" />
+          <node concept="2m5ndX" id="6Fl2chwBWSf" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBYwg" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="6Fl2chwBYwm" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBYwp" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="apiKey" />
+          <node concept="2m5ndX" id="6Fl2chwBYwx" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBYw$" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="deviceHash" />
+          <node concept="2m61tm" id="6Fl2chwBYwI" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBYwL" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="deviceTitle" />
+          <node concept="2m5ndX" id="6Fl2chwBYwX" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBYx0" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="timeZone" />
+          <node concept="2m5nlT" id="6Fl2chwBYxe" role="2m7DVh">
+            <node concept="2m5ndX" id="6Fl2chwBYxk" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwBYxn" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="preferredLanguages" />
+          <node concept="2m5nlk" id="6Fl2chwBYxC" role="2m7DVh">
+            <node concept="2m5ndX" id="6Fl2chwBYxI" role="3GJlyp" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6Fl2chwBWMD" role="NuuwV">
+          <property role="Nu42W" value="A0B" />
+        </node>
+        <node concept="2m1R6W" id="6Fl2chwBYxL" role="2m6efq">
+          <node concept="2m7Kf5" id="6Fl2chwBYxQ" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="transactionHash" />
+            <node concept="2m5ndX" id="6Fl2chwBYxU" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="6Fl2chwBYxX" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="isRegistered" />
+            <node concept="2m5ndN" id="6Fl2chwBYy3" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="6Fl2chwBYxM" role="NuuwV">
+            <property role="Nu42W" value="A0C" />
+          </node>
+          <node concept="NXeRC" id="6Fl2chwC4uf" role="1y2DgH">
+            <property role="NXePf" value="Result of login auth start. If is not registered move to signup." />
+          </node>
+          <node concept="NX1gA" id="6Fl2chwC4uk" role="1y2DgH">
+            <property role="1GSvIU" value="danger" />
+            <property role="NX6R2" value="Authentication transaction hash" />
+            <ref role="NX6Kv" node="6Fl2chwBYxQ" resolve="transactionHash" />
+          </node>
+          <node concept="NX1gA" id="6Fl2chwC4us" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="If user is registered with this login" />
+            <ref role="NX6Kv" node="6Fl2chwBYxX" resolve="isRegistered" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="6Fl2chwC1K9" role="1GBnQ6">
+          <property role="NXePf" value="Starting Login Authentication" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC1Ke" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Login for signing in" />
+          <ref role="NX6Kv" node="6Fl2chwBWSb" resolve="login" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC1Km" role="1GBnQ6">
+          <property role="1GSvIU" value="hidden" />
+          <property role="NX6R2" value="Application id" />
+          <ref role="NX6Kv" node="6Fl2chwBYwg" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC1Kw" role="1GBnQ6">
+          <property role="1GSvIU" value="hidden" />
+          <property role="NX6R2" value="Application API key" />
+          <ref role="NX6Kv" node="6Fl2chwBYwp" resolve="apiKey" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC1KG" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6Fl2chwBYw$" resolve="deviceHash" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC1KU" role="1GBnQ6">
+          <property role="NX6R2" value="Device Title" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6Fl2chwBYwL" resolve="deviceTitle" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC1La" role="1GBnQ6">
+          <property role="NX6R2" value="Time Zone of device" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6Fl2chwBYx0" resolve="timeZone" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC3Fa" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Preferred languages of device" />
+          <ref role="NX6Kv" node="6Fl2chwBYxn" resolve="preferredLanguages" />
         </node>
       </node>
       <node concept="2m6fVq" id="3zgy61ElQmM" role="2m5mJr">
@@ -708,6 +976,11 @@
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3zgy61ElYAE" resolve="sex" />
         </node>
+        <node concept="NX1gA" id="6Fl2chwC0Xf" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Password for password-based accounts" />
+          <ref role="NX6Kv" node="6Fl2chwC0WP" resolve="password" />
+        </node>
         <node concept="2m7Kf5" id="3zgy61ElZ4f" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="transactionHash" />
@@ -725,6 +998,13 @@
             <node concept="3GJkcs" id="3zgy61ElYAQ" role="3GH5xg">
               <ref role="3GJkik" node="GBscvB$$Gr" resolve="Sex" />
             </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwC0WP" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="password" />
+          <node concept="2m5nlT" id="6Fl2chwC0X0" role="2m7DVh">
+            <node concept="2m5ndX" id="6Fl2chwC0X6" role="3GH5xg" />
           </node>
         </node>
         <node concept="Nu42z" id="3zgy61ElXbl" role="NuuwV">
