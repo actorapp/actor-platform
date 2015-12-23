@@ -19,7 +19,7 @@ final class HttpCliService extends Actor {
   private val db = DbExtension(context.system).db
 
   def receive = {
-    case CreateApiToken(isAdmin) ⇒
+    case HttpApiTokenCreate(isAdmin) ⇒
       val token = ACLUtils.accessToken()
       (for {
         _ ← db.run(HttpApiTokenRepo.create(token, isAdmin = isAdmin))

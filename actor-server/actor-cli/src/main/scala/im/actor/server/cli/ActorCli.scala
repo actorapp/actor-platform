@@ -14,9 +14,10 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 private case class Config(
-  command:       String        = "help",
-  createBot:     CreateBot     = CreateBot(),
-  updateIsAdmin: UpdateIsAdmin = UpdateIsAdmin()
+  command:            String             = "help",
+  createBot:          CreateBot          = CreateBot(),
+  updateIsAdmin:      UpdateIsAdmin      = UpdateIsAdmin(),
+  httpApiTokenCreate: HttpApiTokenCreate = HttpApiTokenCreate()
 )
 
 private[cli] trait Request {
@@ -45,8 +46,8 @@ private[cli] case object UpdateIsAdminResponse extends UpdateIsAdminResponse {
   def apply(): UpdateIsAdminResponse = this
 }
 
-private[cli] case class CreateApiToken(isAdmin: Boolean)
-private case class CreateApiTokenResponse(token: String)
+private[cli] case class HttpApiTokenCreate(isAdmin: Boolean = false)
+private case class HttpApiTokenCreateResponse(token: String)
 
 private object Commands {
   val Help = "help"
@@ -54,6 +55,7 @@ private object Commands {
   val AdminGrant = "admin-grant"
   val AdminRevoke = "admin-revoke"
   val MigrateUserSequence = "migrate-user-sequence"
+  val HttpApiTokenCreate = "http-api-token-create"
 }
 
 object ActorCli extends App {
@@ -91,6 +93,13 @@ object ActorCli extends App {
     cmd(Commands.MigrateUserSequence) action { (_, c) ⇒
       c.copy(command = Commands.MigrateUserSequence)
     }
+    cmd(Commands.HttpApiTokenCreate) action { (_, c) ⇒
+      c.copy(command = Commands.HttpApiTokenCreate)
+    } children (
+      opt[Unit]("admin") abbr "a" optional () action { (x, c) ⇒
+        c.copy(httpApiTokenCreate = c.httpApiTokenCreate.copy(isAdmin = true))
+      }
+    )
   }
 
   parser.parse(args, Config()) foreach { config ⇒
