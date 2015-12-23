@@ -60,3 +60,8 @@ message MessageReaction {
     repeated int32 user_ids = 3;
     string code = 4;
 }
+
+message HttpApiToken {
+    string token = 1;
+    bool is_admin = 2;
+}
