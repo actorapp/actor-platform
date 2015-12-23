@@ -22,11 +22,6 @@
     <set-property name='gwt.logging.consoleHandler' value='ENABLED' />
     <set-property name="export" value="yes" />
 
-    <extend-property name="locale" values="en" />
-    <extend-property name="locale" values="ru" />
-    <extend-property name="locale" values="cn" />
-    <set-property-fallback name="locale" value="en" />
-
     <!-- Building single JS library -->
     <add-linker name="sso" />
     <collapse-all-properties />
