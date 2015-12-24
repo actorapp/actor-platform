@@ -668,10 +668,10 @@
         </node>
       </node>
       <node concept="2m6fVq" id="6Fl2chwBWMC" role="2m5mJr">
-        <property role="TrG5h" value="StartLoginAuth" />
+        <property role="TrG5h" value="StartUsernameAuth" />
         <node concept="2m7Kf5" id="6Fl2chwBWSb" role="2m0hLx">
           <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="login" />
+          <property role="TrG5h" value="username" />
           <node concept="2m5ndX" id="6Fl2chwBWSf" role="2m7DVh" />
         </node>
         <node concept="2m7Kf5" id="6Fl2chwBYwg" role="2m0hLx">
@@ -735,7 +735,7 @@
           </node>
           <node concept="NX1gA" id="6Fl2chwC4us" role="1y2DgH">
             <property role="1GSvIU" value="full" />
-            <property role="NX6R2" value="If user is registered with this login" />
+            <property role="NX6R2" value="If user is registered with this username" />
             <ref role="NX6Kv" node="6Fl2chwBYxX" resolve="isRegistered" />
           </node>
         </node>
@@ -744,8 +744,8 @@
         </node>
         <node concept="NX1gA" id="6Fl2chwC1Ke" role="1GBnQ6">
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Login for signing in" />
-          <ref role="NX6Kv" node="6Fl2chwBWSb" resolve="login" />
+          <property role="NX6R2" value="Username for signing in" />
+          <ref role="NX6Kv" node="6Fl2chwBWSb" resolve="username" />
         </node>
         <node concept="NX1gA" id="6Fl2chwC1Km" role="1GBnQ6">
           <property role="1GSvIU" value="hidden" />
