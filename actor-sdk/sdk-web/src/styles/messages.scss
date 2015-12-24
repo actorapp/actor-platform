@@ -8,6 +8,7 @@ $like-red: rgb(226, 38, 77);
 $maximum-image-height: 400px;
 $extend-background: 1px;
 $message-hover-background: rgba(black, .025);
+$message-selected-background: rgba($dusk, .1);
 $modern-text-line-width: 2px;
 $modern-text-padding: 6px;
 
@@ -107,6 +108,17 @@ $modern-text-padding: 6px;
   position: relative;
   margin: 0;
   padding: 6px 39px 6px 32px;
+
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: $extend-background;
+    background-color: $message-hover-background;
+    top: - $extend-background;
+    display: none;
+  }
 
   &__header {
     font-weight: 500;
@@ -286,20 +298,8 @@ $modern-text-padding: 6px;
 
       opacity: 0;
     }
-    &:before,
-    &:after {
-      content: '';
-      position: absolute;
-      left: 0;
-      width: 100%;
-      height: $extend-background;
-      background-color: $message-hover-background;
-      top: - $extend-background;
-      display: none;
-    }
-    &:after {
-      top: auto;
-      bottom: - $extend-background;
+    .message__actions__selector {
+      top: 4px;
     }
   }
 
@@ -475,9 +475,38 @@ $modern-text-padding: 6px;
         color: $like-red;
       }
     }
+    &__selector {
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      display: block;
+      text-align: center;
+      vertical-align: top;
+      text-decoration: none;
+      width: $action-icon-size - 2;
+      height: $action-icon-size - 2;
+      opacity: 0;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, .25);
+      &:hover {
+        opacity: 1 !important;
+        background-color: $dark-sky-blue !important;
+      }
+      .icon {
+        font-size: 12px;
+        color: white;
+        line-height: $action-icon-size - 2;
 
+        width: $action-icon-size - 2;
+        height: $action-icon-size - 2;
+
+        cursor: pointer;
+        transition: 150ms;
+        vertical-align: top;
+      }
+    }
     .dropdown {
-      float: right;
+      display: inline-block;
       &__button {
         line-height: 20px;
 
@@ -578,16 +607,28 @@ $modern-text-padding: 6px;
   &--active,
   &:hover {
     background-color: $message-hover-background;
-    &:before,
-    &:after {
+    &:before {
       display: block;
     }
     .message__info .message__timestamp {
       opacity: 1;
     }
     .message__actions__like,
+    .message__actions__selector,
     .message__actions__menu .dropdown__button {
       opacity: .7;
+    }
+  }
+
+  &--selected {
+    background-color: $message-selected-background !important;
+    &:before {
+      display: block;
+      background-color: $message-selected-background !important;
+    }
+    .message__actions__selector {
+      opacity: 1 !important;
+      background-color: $dark-sky-blue !important;
     }
   }
 
