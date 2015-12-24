@@ -410,5 +410,13 @@ export default {
 
   isElectron() {
     return window.messenger.isElectron();
+  },
+
+  favoriteChat(peer) {
+    return window.messenger.favoriteChat(peer);
+  },
+
+  unfavoriteChat(peer) {
+    return window.messenger.unfavoriteChat(peer);
   }
 }

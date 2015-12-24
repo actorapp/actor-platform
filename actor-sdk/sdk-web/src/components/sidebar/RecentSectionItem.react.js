@@ -35,7 +35,6 @@ class RecentSectionItem extends Component {
       'sidebar__list__item--active': isActive,
       'sidebar__list__item--unread': dialog.counter > 0
     });
-    const counter = dialog.counter > 0 ? <span className="counter">{dialog.counter}</span> : null;
 
     return (
       <li className={recentClassName} onClick={this.onClick}>
@@ -44,7 +43,11 @@ class RecentSectionItem extends Component {
                     size="tiny"
                     title={dialog.peer.title}/>
         <div className="title col-xs" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialog.peer.title)}}/>
-        {counter}
+        {
+          dialog.counter > 0
+            ? <span className="counter">{dialog.counter}</span>
+            : null
+        }
       </li>
     );
   }
