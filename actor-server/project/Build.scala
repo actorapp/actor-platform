@@ -243,6 +243,15 @@ object Build extends sbt.Build with Versioning with Releasing {
   )
     .dependsOn(actorRuntime)
 
+  lazy val actorFsAdapters = Project(
+    id = "actor-fs-adapters",
+    base = file("actor-fs-adapters"),
+    settings = defaultSettingsServer ++ Seq(
+      libraryDependencies ++= Dependencies.fsAdapters
+    )
+  )
+    .dependsOn(actorCore, actorHttpApi)
+
   lazy val actorFrontend = Project(
     id = "actor-frontend",
     base = file("actor-frontend"),
@@ -312,6 +321,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorCli,
     actorEnrich,
     actorEmail,
+    actorFsAdapters,
     actorFrontend,
     actorHttpApi,
     actorRpcApi,
@@ -324,6 +334,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorCore,
     actorEmail,
     actorEnrich,
+    actorFsAdapters,
     actorFrontend,
     actorHttpApi,
     actorModels,
@@ -351,6 +362,7 @@ object Build extends sbt.Build with Versioning with Releasing {
       actorEmail,
       actorEnrich,
       actorFrontend,
+      actorFsAdapters,
       actorHttpApi,
       actorOAuth,
       actorPersist,

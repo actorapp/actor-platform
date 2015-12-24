@@ -66,7 +66,7 @@ class GroupsHandler()(implicit system: ActorSystem) extends RoutesHandler {
   private def avatarUrls(optAvatar: Option[model.AvatarData]): DBIO[Option[AvatarUrls]] = {
     optAvatar.map(getAvatar).map { avatar ⇒
       for {
-        small ← avatar.smallImage.map(i ⇒ urlOrNone(i.fileLocation)).getOrElse(DBIO.successful(None)) //TODO: rewrite with shapeless
+        small ← avatar.smallImage.map(i ⇒ urlOrNone(i.fileLocation)).getOrElse(DBIO.successful(None))
         large ← avatar.largeImage.map(i ⇒ urlOrNone(i.fileLocation)).getOrElse(DBIO.successful(None))
         full ← avatar.fullImage.map(i ⇒ urlOrNone(i.fileLocation)).getOrElse(DBIO.successful(None))
       } yield Some(AvatarUrls(small, large, full))

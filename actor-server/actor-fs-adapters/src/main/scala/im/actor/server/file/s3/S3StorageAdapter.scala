@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
+import im.actor.serialization.ActorSerializer
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.file.FileUtils._
@@ -21,6 +22,8 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
 class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
+
+  ActorSerializer.register(80004 → classOf[S3UploadKey])
 
   private implicit val system: ActorSystem = _system
   private implicit val ec: ExecutionContext = system.dispatcher

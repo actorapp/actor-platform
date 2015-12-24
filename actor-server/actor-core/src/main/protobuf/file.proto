@@ -21,8 +21,3 @@ message Avatar {
     optional AvatarImage largeImage = 2;
     optional AvatarImage fullImage = 3;
 }
-
-message S3UploadKey {
-    option (scalapb.message).extends = "im.actor.server.file.UploadKey";
-    required string key = 1;
-}
