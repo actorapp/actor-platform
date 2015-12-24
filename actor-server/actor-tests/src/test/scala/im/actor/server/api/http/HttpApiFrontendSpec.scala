@@ -19,6 +19,7 @@ import im.actor.server.api.http.json.{ AvatarUrls, _ }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging
 import im.actor.server.file.{ FileStorageExtension, ImageUtils }
+import im.actor.server.webhooks.WebhooksExtension
 import im.actor.server.webhooks.http.routes.OutgoingHooksErrors
 import play.api.libs.json._
 
@@ -78,6 +79,8 @@ final class HttpApiFrontendSpec
   implicit lazy val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
   private val fsAdapter = FileStorageExtension(system).fsAdapter
+
+  WebhooksExtension(system) //initialize webhooks routes
 
   implicit val reverseHookResponseUnmarshaller: FromEntityUnmarshaller[ReverseHookResponse] = Unmarshaller { implicit ec ⇒ entity ⇒
     Unmarshal(entity).to[String].map { body ⇒
@@ -357,7 +360,7 @@ final class HttpApiFrontendSpec
           val avatarUrls = (response \ "group" \ "avatars").as[AvatarUrls]
           inside(avatarUrls) {
             case AvatarUrls(Some(small), Some(large), Some(full)) ⇒
-              List(small, large, full) foreach (_ should startWith(s"https://$s3BucketName.s3.amazonaws.com"))
+              List(small, large, full) foreach (_ should startWith("http://"))
           }
           (response \ "inviter" \ "avatars").as[AvatarUrls] should matchPattern {
             case AvatarUrls(None, None, None) ⇒
@@ -395,7 +398,7 @@ final class HttpApiFrontendSpec
           val avatarUrls = (response \ "group" \ "avatars").as[AvatarUrls]
           inside(avatarUrls) {
             case AvatarUrls(None, Some(large), Some(full)) ⇒
-              List(large, full) foreach (_ should startWith(s"https://$s3BucketName.s3.amazonaws.com"))
+              List(large, full) foreach (_ should startWith("http://"))
           }
           (response \ "inviter" \ "avatars").as[AvatarUrls] should matchPattern {
             case AvatarUrls(None, None, None) ⇒
