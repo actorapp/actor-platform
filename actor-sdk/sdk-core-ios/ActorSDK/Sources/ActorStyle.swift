@@ -13,8 +13,6 @@ public class ActorStyle {
     /// Is Application have dark theme. Default is false.
     public var isDarkApp = false
     
-    ///
-    public var vcStarInfoTextColor = UIColor.blackColor()
     /// Tint Color. Star button
     public var vcStarButton = UIColor(red: 75/255.0, green: 110/255.0, blue: 152/255.0, alpha: 1)
     /// Tint Color. Used for "Actions". Default is sytem blue.
@@ -676,6 +674,16 @@ public class ActorStyle {
     }
     public var _statusBarConnectingTextColor : UIColor?
 
+    // 
+    // Welcome Tour
+    //
+    
+    /// Text color 
+    public var vcStarInfoTextColor: UIColor {
+        get { return _vcStarInfoTextColor != nil ? _vcStarInfoTextColor! : vcTextColor }
+        set(v) { _vcStarInfoTextColor = v }
+    }
+    public var _vcStarInfoTextColor : UIColor?
 }
 
 
