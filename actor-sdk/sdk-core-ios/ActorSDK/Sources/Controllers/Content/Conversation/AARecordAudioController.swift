@@ -337,7 +337,7 @@ class AARecordAudioController: UIViewController,UIViewControllerTransitioningDel
     func sendRecordMessage() {
         
         self.dismissViewControllerAnimated(true, completion: nil)
-        self.chatController.sendVoiceMessage(self.filePath, duration: self.fileDuration)
+        //self.chatController.sendVoiceMessage(self.filePath, duration: self.fileDuration)
         
     }
     

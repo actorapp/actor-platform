@@ -20,6 +20,10 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     private var prevCount: Int = 0
     private var unreadMessageId: jlong = 0
     
+    ///
+    
+    public var voicePlayer : AAModernConversationAudioPlayer!
+    
     public init(peer: ACPeer) {
         self.peer = peer
         
@@ -348,4 +352,21 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             self.collectionView.performBatchUpdates(nil, completion: nil)
         })
     }
+    
+    
+    // audio play
+    
+    func playVoiceFromPath(path:String) {
+        
+        if (self.voicePlayer != nil) {
+            
+            self.voicePlayer.stop()
+            
+        }
+        
+        self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)
+        self.voicePlayer.play(0)
+        
+    }
+    
 }
