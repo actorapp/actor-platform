@@ -10696,7 +10696,10 @@
                 "name": "key"
               },
               {
-                "type": "string",
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
                 "id": 2,
                 "name": "value"
               }

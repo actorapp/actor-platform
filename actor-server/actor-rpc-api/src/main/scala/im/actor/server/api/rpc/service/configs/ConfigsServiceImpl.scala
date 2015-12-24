@@ -22,14 +22,9 @@ final class ConfigsServiceImpl(implicit actorSystem: ActorSystem) extends Config
   private implicit val timeout = Timeout(10.seconds)
   private val seqUpdExt = SeqUpdatesExtension(actorSystem)
 
-  override def jhandleEditParameter(rawKey: String, rawValue: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def jhandleEditParameter(rawKey: String, value: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       val key = rawKey.trim
-      val value =
-        rawValue match {
-          case "" ⇒ None
-          case s  ⇒ Some(s)
-        }
 
       val update = UpdateParameterChanged(key, value)
 
