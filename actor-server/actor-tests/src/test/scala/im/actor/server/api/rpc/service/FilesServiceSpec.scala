@@ -3,11 +3,12 @@ package im.actor.server.api.rpc.service
 import java.io.OutputStreamWriter
 import java.net.{ HttpURLConnection, URL }
 
-import com.amazonaws.util.IOUtils
-import im.actor.api.rpc._
 import im.actor.api.rpc.files._
+import im.actor.api.rpc.{ AuthData, ClientData, Ok }
+import im.actor.server.api.http.HttpApi
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
-import im.actor.server._
+import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegion }
+import org.apache.commons.io.IOUtils
 
 class FilesServiceSpec
   extends BaseAppSuite
@@ -26,6 +27,7 @@ class FilesServiceSpec
   it should "Generate valid upload part urls when same request comes twice" in e5
 
   lazy val service = new FilesServiceImpl
+  HttpApi(system)
 
   val (user, authId, authSid, _) = createUser()
   val sessionId = createSessionId()

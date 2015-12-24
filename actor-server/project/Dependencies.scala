@@ -43,6 +43,8 @@ object Dependencies {
     val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.2.1"
     val apacheEmail             = "org.apache.commons"            %  "commons-email"                 % "1.4"
 
+    val betterFiles             = "com.github.pathikrit"          %% "better-files"                  % "2.13.0"
+
     val concmap                 = "com.googlecode.concurrentlinkedhashmap" % "concurrentlinkedhashmap-lru" % "1.4.2"
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
 
@@ -154,8 +156,6 @@ object Dependencies {
     akkaClusterTools,
     akkaClusterSharding,
     akkaDdata,
-    amazonaws,
-    awsWrap,
     caffeine,
     gcmServer,
     pushy,
@@ -167,7 +167,7 @@ object Dependencies {
   val enrich = shared ++ Seq(akkaActor, akkaHttp)
 
   val rpcApi = shared ++ Seq(
-    akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, apacheCommonsValidator, shapeless, akkaHttpPlayJson
+    akkaSlf4j, akkaActor, bcprov, apacheCommonsIo, apacheCommonsValidator, shapeless, akkaHttpPlayJson
   )
 
   val httpApi = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, jodaTime, playJson)
@@ -192,6 +192,8 @@ object Dependencies {
   
   val models = shared ++ Seq(scodecBits, scodecCore, jodaTime, jodaConvert, slickPg)
 
+  val fsAdapters = shared ++ Seq(amazonaws, awsWrap, betterFiles)
+
   val frontend = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaStream,
     scodecBits, scodecCore,
@@ -208,5 +210,5 @@ object Dependencies {
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
-  val tests = shared ++ Seq(akkaClusterSharding, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit)
+  val tests = shared ++ Seq(akkaClusterSharding, amazonaws, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit)
 }

@@ -15,13 +15,12 @@ class FileStorageExtensionImpl(system: ActorSystem) extends FileStorageExtension
   ActorSerializer.register(
     80001 → classOf[FileLocation],
     80002 → classOf[AvatarImage],
-    80003 → classOf[Avatar],
-    80004 → classOf[S3UploadKey]
+    80003 → classOf[Avatar]
   )
 
   override val fsAdapter = init()
 
-  def init(): FileStorageAdapter =
+  private def init(): FileStorageAdapter =
     (for {
       fqcn ← Try(ActorConfig.load().getString("modules.files.adapter"))
       _ = system.log.debug("File adapter is: {}", fqcn)
