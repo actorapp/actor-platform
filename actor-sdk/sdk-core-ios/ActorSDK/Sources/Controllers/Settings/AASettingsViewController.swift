@@ -271,7 +271,7 @@ public class AASettingsViewController: AAContentTableController {
                 r.data = self.user.getPhonesModel().get().toSwiftArray()
                 
                 r.bindData = { (c: AATitledCell, d: ACUserPhone) -> () in
-                    c.setContent(d.title, content: "+\(d.phone)", isAction: false)
+                    c.setContent(AALocalized("SettingsMobilePhone"), content: "+\(d.phone)", isAction: false)
                     c.accessoryType = .None
                 }
                 
