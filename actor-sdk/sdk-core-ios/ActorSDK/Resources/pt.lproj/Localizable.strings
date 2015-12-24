@@ -84,6 +84,8 @@
 
 "SettingsVersion" = "Versão {version}";
 
+"SettingsMobilePhone"  = "Telefone Móvel";
+
 /*
  * Profile
  */
