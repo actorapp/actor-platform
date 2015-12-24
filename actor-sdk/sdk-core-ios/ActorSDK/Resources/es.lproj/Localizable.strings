@@ -65,7 +65,7 @@
 
 "SettingsLastSeen" = "Ultima vez visto";
 
-"SettingsLastSeenHint" = "Change who can see your Last Seen time.";
+"SettingsLastSeenHint" = "Cambiar quién puede ver su tiempo Visto Última Vez.";
 
 "SettingsLastSeenEverybody" = "Todos";
 
@@ -201,7 +201,7 @@
 
 "CreateGroupHint" = "Please provide group subject and optional group icon";
 
-"CreateGroupNamePlaceholder" = "Group Subject";
+"CreateGroupNamePlaceholder" = "Grupo Asunto";
 
 "CreateGroupMembersTitle" = "Invitar a los miembros";
 
@@ -357,7 +357,7 @@
 
 "AlertSave" = "Guardar";
 
-"AlertSet" = "Set";
+"AlertSet" = "Hecho";
 
 "AlertOk" = "OK";
 
