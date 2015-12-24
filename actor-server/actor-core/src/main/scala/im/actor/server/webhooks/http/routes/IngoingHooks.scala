@@ -1,4 +1,4 @@
-package im.actor.server.api.http.webhooks
+package im.actor.server.webhooks.http.routes
 
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ StatusCode, StatusCodes }
@@ -17,7 +17,7 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.{ Failure, Success }
 
 trait IngoingHooks extends ContentUnmarshaller with PlayJsonSupport {
-  self: WebhooksHandler ⇒
+  self: WebhooksHttpHandler ⇒
 
   import JsonFormatters._
 

@@ -16,10 +16,10 @@ import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.http.json.JsonFormatters._
 import im.actor.server.api.http.json.{ AvatarUrls, _ }
-import im.actor.server.api.http.webhooks.OutgoingHooksErrors
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging
 import im.actor.server.file.{ FileStorageExtension, ImageUtils }
+import im.actor.server.webhooks.http.routes.OutgoingHooksErrors
 import play.api.libs.json._
 
 import scala.concurrent.forkjoin.ThreadLocalRandom

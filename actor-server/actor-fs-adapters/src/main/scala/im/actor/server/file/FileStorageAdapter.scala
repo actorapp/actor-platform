@@ -3,7 +3,7 @@ package im.actor.server.file
 import java.io.File
 
 import im.actor.server.model
-import slick.driver.PostgresDriver.api._
+import im.actor.server.db.ActorPostgresDriver.api._
 
 import scala.concurrent._
 
