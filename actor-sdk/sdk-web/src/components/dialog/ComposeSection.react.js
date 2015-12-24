@@ -202,8 +202,7 @@ class ComposeSection extends Component {
     });
 
     return (
-      <section className="compose" onPaste={this.onPaste}>
-
+      <section className="compose">
         <MentionDropdown mentions={mentions}
                          onSelect={this.onMentionSelect}
                          onClose={this.onMentionClose}/>
@@ -226,6 +225,7 @@ class ComposeSection extends Component {
         <textarea className="compose__message"
                   onChange={this.onMessageChange}
                   onKeyDown={this.onKeyDown}
+                  onPaste={this.onPaste}
                   value={text}
                   ref="area"/>
 
