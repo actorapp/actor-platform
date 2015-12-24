@@ -10,12 +10,12 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.server._
 import im.actor.server.api.http.json.Text
-import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging
 import im.actor.server.api.rpc.service.messaging.{ CommandParser, ReverseHooksListener }
 import im.actor.server.group.{ GroupExtension, GroupServiceMessages }
 import im.actor.server.migrations.IntegrationTokenMigrator
+import im.actor.server.webhooks.http.routes.WebhooksHttpHandler
 import play.api.libs.json.Json
 import shardakka.{ IntCodec, ShardakkaExtension }
 
@@ -63,7 +63,7 @@ class WebhookHandlerSpec
     }
 
     def sendInGroup() = {
-      val handler = new WebhooksHandler()
+      val handler = new WebhooksHttpHandler()
 
       val groupResponse = createGroup("Bot test group", Set(user2.id))
       val groupOutPeer = groupResponse.groupPeer
@@ -121,7 +121,7 @@ class WebhookHandlerSpec
     }
 
     def reverseHooks() = {
-      val handler = new WebhooksHandler()
+      val handler = new WebhooksHttpHandler()
 
       val hook3000 = new DummyHookListener(3000)
       val hook4000 = new DummyHookListener(4000)

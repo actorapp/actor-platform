@@ -62,7 +62,8 @@ object Build extends sbt.Build with Versioning with Releasing {
       libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.17" % PB.protobufConfig,
       PB.includePaths in PB.protobufConfig ++= Seq(
         file("actor-models/src/main/protobuf"),
-        file("actor-core/src/main/protobuf")
+        file("actor-core/src/main/protobuf"),
+        file("actor-fs-adapters/src/main/protobuf")
       ),
       PB.runProtoc in PB.protobufConfig := (args =>
         com.github.os72.protocjar.Protoc.runProtoc("-v300" +: args.toArray))
@@ -125,7 +126,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     settings = defaultSettingsServer ++
       Seq(libraryDependencies ++= Dependencies.bots)
   )
-    .dependsOn(actorCore, actorTestkit % "test")
+    .dependsOn(actorCore, actorHttpApi, actorTestkit % "test")
 
   lazy val actorBotsShared = Project(
     id = "actor-bots-shared",
@@ -168,7 +169,7 @@ object Build extends sbt.Build with Versioning with Releasing {
       libraryDependencies ++= Dependencies.core
     )
   )
-    .dependsOn(actorCodecs, actorModels, actorPersist, actorRuntime)
+    .dependsOn(actorCodecs, actorFileAdapter, actorModels, actorPersist, actorRuntime)
 
   lazy val actorEmail = Project(
     id = "actor-email",
@@ -196,7 +197,7 @@ object Build extends sbt.Build with Versioning with Releasing {
       libraryDependencies ++= Dependencies.httpApi
     )
   )
-    .dependsOn(actorBots, actorCore)
+    .dependsOn(actorPersist, actorRuntime)//runtime deps because of ActorConfig
 
   lazy val actorOAuth = Project(
     id = "actor-oauth",
@@ -245,14 +246,14 @@ object Build extends sbt.Build with Versioning with Releasing {
   )
     .dependsOn(actorRuntime)
 
-  lazy val actorFsAdapters = Project(
+  lazy val actorFileAdapter = Project(
     id = "actor-fs-adapters",
     base = file("actor-fs-adapters"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.fsAdapters
+      libraryDependencies ++= Dependencies.fileAdapter
     )
   )
-    .dependsOn(actorCore, actorHttpApi)
+    .dependsOn(actorHttpApi, actorPersist)
 
   lazy val actorFrontend = Project(
     id = "actor-frontend",
@@ -323,7 +324,6 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorCli,
     actorEnrich,
     actorEmail,
-    actorFsAdapters,
     actorFrontend,
     actorHttpApi,
     actorRpcApi,
@@ -336,7 +336,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorCore,
     actorEmail,
     actorEnrich,
-    actorFsAdapters,
+    actorFileAdapter,
     actorFrontend,
     actorHttpApi,
     actorModels,
@@ -372,12 +372,12 @@ object Build extends sbt.Build with Versioning with Releasing {
     .dependsOn(
       actorTestkit % "test",
       actorActivation,
+      actorBots,
       actorCodecs,
       actorCore,
       actorEmail,
       actorEnrich,
       actorFrontend,
-      actorFsAdapters,
       actorHttpApi,
       actorOAuth,
       actorPersist,
