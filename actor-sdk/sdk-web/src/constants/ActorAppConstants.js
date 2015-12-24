@@ -203,7 +203,8 @@ export const MessageContentTypes = {
   VOICE: 'voice',
   CONTACT: 'contact',
   LOCATION: 'location',
-  UNSUPPORTED: 'unsupported'
+  UNSUPPORTED: 'unsupported',
+  STICKER: 'sticker'
 };
 
 export const KeyCodes = {

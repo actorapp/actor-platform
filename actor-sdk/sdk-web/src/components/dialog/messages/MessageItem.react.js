@@ -34,6 +34,7 @@ import DefaultVoice from './Voice.react';
 import DefaultContact from './Contact.react';
 import DefaultLocation from './Location.react.js';
 import DefaultModern from './Modern.react.js';
+import DefaultSticker from './Sticker.react.js';
 
 const {addons: { PureRenderMixin }} = addons;
 
@@ -114,7 +115,7 @@ class MessageItem extends Component {
     const { isThisMyMessage, isActionsShown } = this.state;
     const { delegate } = this.context;
 
-    let Service, Text, Modern, Photo, Document, Voice, Contact, Location;
+    let Service, Text, Modern, Photo, Document, Voice, Contact, Location, Sticker;
     if (delegate.components.dialog !== null && delegate.components.dialog.messages) {
       Service = delegate.components.dialog.messages.service || DefaultService;
       Text = delegate.components.dialog.messages.text || DefaultText;
@@ -124,6 +125,7 @@ class MessageItem extends Component {
       Voice = delegate.components.dialog.messages.voice || DefaultVoice;
       Contact = delegate.components.dialog.messages.contact || DefaultContact;
       Location = delegate.components.dialog.messages.location || DefaultLocation;
+      Sticker = delegate.components.dialog.messages.sticker || DefaultSticker;
     } else {
       Service = DefaultService;
       Text = DefaultText;
@@ -133,6 +135,7 @@ class MessageItem extends Component {
       Voice = DefaultVoice;
       Contact = DefaultContact;
       Location = DefaultLocation;
+      Sticker = DefaultSticker;
     }
 
     let header = null,
@@ -205,6 +208,9 @@ class MessageItem extends Component {
         break;
       case MessageContentTypes.TEXT_MODERN:
         messageContent = <Modern {...message.content} className="message__content message__content--modern"/>;
+        break;
+      case MessageContentTypes.STICKER:
+        messageContent = <Sticker {...message.content} className="message__content message__content--sticker"/>;
         break;
       default:
     }
