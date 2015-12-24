@@ -211,6 +211,7 @@
 		153F6B591C2B03E300C0B960 /* AAGarbageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B551C2B03E300C0B960 /* AAGarbageView.m */; };
 		153F6B5B1C2B109400C0B960 /* AABubbleVoiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B5A1C2B109400C0B960 /* AABubbleVoiceCell.swift */; };
 		153F6B5D1C2B3AC500C0B960 /* AABubbleStickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B5C1C2B3AC500C0B960 /* AABubbleStickerCell.swift */; };
+		153F6B611C2BF8EC00C0B960 /* AAAuthWelcomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */; };
 		15D35F161C20185500E3717A /* diag_range.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F0C1C20185500E3717A /* diag_range.c */; };
 		15D35F171C20185500E3717A /* diag_range.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F0D1C20185500E3717A /* diag_range.h */; };
 		15D35F181C20185500E3717A /* opus_header.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F0E1C20185500E3717A /* opus_header.c */; };
@@ -480,6 +481,7 @@
 		153F6B551C2B03E300C0B960 /* AAGarbageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAGarbageView.m; sourceTree = "<group>"; };
 		153F6B5A1C2B109400C0B960 /* AABubbleVoiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleVoiceCell.swift; sourceTree = "<group>"; };
 		153F6B5C1C2B3AC500C0B960 /* AABubbleStickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleStickerCell.swift; sourceTree = "<group>"; };
+		153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAuthWelcomeController.swift; path = ../AAAuthWelcomeController.swift; sourceTree = "<group>"; };
 		15D35F0C1C20185500E3717A /* diag_range.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = diag_range.c; sourceTree = "<group>"; };
 		15D35F0D1C20185500E3717A /* diag_range.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = diag_range.h; sourceTree = "<group>"; };
 		15D35F0E1C20185500E3717A /* opus_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = opus_header.c; sourceTree = "<group>"; };
@@ -795,6 +797,7 @@
 		066A52601BC50E6B000E606E /* Auth */ = {
 			isa = PBXGroup;
 			children = (
+				153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */,
 				066A526E1BC51007000E606E /* Views */,
 				066A526B1BC50E83000E606E /* Cells */,
 				066A52611BC50E7B000E606E /* AAAuthCountriesViewController.swift */,
@@ -1536,6 +1539,7 @@
 				066A518D1BC4C383000E606E /* CocoaStorageRuntime.swift in Sources */,
 				066A52F01BC52B02000E606E /* AASettingsViewController.swift in Sources */,
 				066A52741BC5101A000E606E /* ABPhoneField.m in Sources */,
+				153F6B611C2BF8EC00C0B960 /* AAAuthWelcomeController.swift in Sources */,
 				152AA8A91C2989270030DEEE /* SLKTextInputbar.m in Sources */,
 				066A53071BC53183000E606E /* AARecentViewController.swift in Sources */,
 				06230F411BC95BD200A4807B /* RMPhoneFormat.m in Sources */,
