@@ -4,6 +4,8 @@ import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
 import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
+import com.typesafe.sbt.SbtMultiJvm
+import com.typesafe.sbt.SbtMultiJvm.MultiJvmKeys.MultiJvm
 
 object Build extends sbt.Build with Versioning with Releasing {
   val ScalaVersion = "2.11.7"
@@ -351,9 +353,22 @@ object Build extends sbt.Build with Versioning with Releasing {
     id = "actor-tests",
     base = file("actor-tests"),
     settings = defaultSettingsServer ++ Testing.settings ++ Seq(
-      libraryDependencies ++= Dependencies.tests
+      libraryDependencies ++= Dependencies.tests,
+      compile in MultiJvm <<= (compile in MultiJvm) triggeredBy (compile in Test),
+      executeTests in Test <<= (executeTests in Test, executeTests in MultiJvm) map {
+        case (testResults, multiNodeResults)  =>
+          val overall =
+            if (testResults.overall.id < multiNodeResults.overall.id)
+              multiNodeResults.overall
+            else
+              testResults.overall
+          Tests.Output(overall,
+            testResults.events ++ multiNodeResults.events,
+            testResults.summaries ++ multiNodeResults.summaries)
+      }
     ))
     .configs(Configs.all: _*)
+      .configs(MultiJvm)
     .dependsOn(
       actorTestkit % "test",
       actorActivation,
