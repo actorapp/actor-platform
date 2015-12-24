@@ -8,10 +8,12 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 
+import im.actor.core.api.ApiImageLocation;
 import im.actor.core.api.ApiTextExMarkdown;
 import im.actor.core.api.ApiTextModernAttach;
 import im.actor.core.api.ApiTextModernField;
 import im.actor.core.api.ApiTextModernMessage;
+import im.actor.core.entity.FileReference;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.DocumentContent;
@@ -20,6 +22,7 @@ import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.LocationContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.ServiceContent;
+import im.actor.core.entity.content.StickerContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VoiceContent;
 import im.actor.core.js.JsMessenger;
@@ -92,6 +95,18 @@ public abstract class JsContent extends JavaScriptObject {
                         thumb, fileUrl, isUploading);
             }
 
+        } else if (src instanceof StickerContent) {
+            FileReference fileReference512 = ((StickerContent) src).getSticker().getFileReference512();
+            ApiImageLocation imageLocation512 = ((StickerContent) src).getSticker().getApiImageLocation512();
+            String fileUrl = messenger.getFileUrl(fileReference512);
+            String fileSize = messenger.getFormatter().formatFileSize(fileReference512.getFileSize());
+            String thumb = null;
+            byte[] thumbRaw = ((StickerContent) src).getSticker().getThumb();
+            if (thumbRaw != null) {
+                String thumbBase64 = Base64Utils.toBase64(thumbRaw);
+                thumb = "data:image/jpg;base64," + thumbBase64;
+            }
+            content = JsContentPhoto.create(fileReference512.getFileName(), ".webp", fileSize, imageLocation512.getWidth(), imageLocation512.getHeight(), thumb, fileUrl, false);
         } else if (src instanceof ContactContent) {
             ContactContent contactContent = (ContactContent) src;
             JsArrayString phones = JsArray.createArray().cast();
