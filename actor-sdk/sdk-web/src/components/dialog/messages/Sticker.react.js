@@ -18,7 +18,7 @@ class Sticker extends Component {
 
   constructor(props) {
     super(props);
-    console.debug(props);
+
     this.state = {
       isLoaded: false
     }
