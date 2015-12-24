@@ -1,0 +1,1 @@
+alter table config_parameters alter COLUMN value drop not null;
