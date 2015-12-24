@@ -26,7 +26,7 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webactions.WebactionsServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
-import im.actor.server.bot.{BotExtension, ActorBot}
+import im.actor.server.bot.{ BotExtension, ActorBot }
 import im.actor.server.cli.ActorCliService
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogExtension, DialogProcessor }

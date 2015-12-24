@@ -27,7 +27,7 @@ import scala.concurrent.Future
 import scala.util.control.NoStackTrace
 import scala.util.{ Failure, Success }
 
-private[bot] final class BotsHttpHandler(implicit system: ActorSystem)
+private[bot] final class BotsHttpHandler(botExt: BotExtension)(implicit system: ActorSystem)
   extends HttpHandler
   with PlayJsonSupport
   with JsValueUnmarshaller
@@ -39,8 +39,6 @@ private[bot] final class BotsHttpHandler(implicit system: ActorSystem)
 
   implicit val materializer: Materializer = ActorMaterializer()
 
-  //todo: dangerous dependency. move it somehow
-  private lazy val botExt = BotExtension(system)
   private val userExt = UserExtension(system)
 
   override def routes: Route =
