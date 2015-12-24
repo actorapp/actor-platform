@@ -1,6 +1,6 @@
 package im.actor.server.file
 
-import java.io.{ FileOutputStream, File }
+import java.io.{ File, FileOutputStream }
 import java.nio.file.{ Files, Path }
 
 import akka.actor.ActorSystem
