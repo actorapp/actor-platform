@@ -43,8 +43,10 @@ class MessageItem extends Component {
     message: PropTypes.object.isRequired,
     isNewDay: PropTypes.bool,
     isSameSender: PropTypes.bool,
+    isSelected: PropTypes.bool,
     isThisLastMessage: PropTypes.bool,
-    onVisibilityChange: PropTypes.func
+    onVisibilityChange: PropTypes.func,
+    onSelect: PropTypes.func
   };
 
   static contextTypes = {
@@ -102,8 +104,13 @@ class MessageItem extends Component {
     document.removeEventListener('click', this.hideActions, false);
   };
 
+  toggleMessageSelection = () => {
+    const { message, onSelect } = this.props;
+    onSelect && onSelect(message.rid);
+  };
+
   render() {
-    const { message, isSameSender, onVisibilityChange, peer, isThisLastMessage } = this.props;
+    const { message, isSameSender, onVisibilityChange, peer, isThisLastMessage, isSelected } = this.props;
     const { isThisMyMessage, isActionsShown } = this.state;
     const { delegate } = this.context;
 
@@ -136,7 +143,8 @@ class MessageItem extends Component {
 
     const messageClassName = classnames('message row', {
       'message--same-sender': isSameSender,
-      'message--active': isActionsShown
+      'message--active': isActionsShown,
+      'message--selected': isSelected
     });
 
     const actionsDropdownClassName = classnames('message__actions__menu dropdown dropdown--small', {
@@ -243,6 +251,11 @@ class MessageItem extends Component {
               </li>
             </ul>
           </div>
+
+          <div className="message__actions__selector" onClick={this.toggleMessageSelection}>
+            <i className="icon material-icons">check</i>
+          </div>
+
         </div>
       </li>
     );
