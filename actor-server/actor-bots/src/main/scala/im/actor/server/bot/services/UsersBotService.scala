@@ -6,13 +6,13 @@ import im.actor.bots.BotMessages.BotError
 import im.actor.concurrent.FutureResultCats
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
 import im.actor.server.db.DbExtension
-import im.actor.server.file.{ FileStorageExtension, FileStorageAdapter }
+import im.actor.server.file.{ ImageUtils, FileStorageExtension, FileStorageAdapter }
 import im.actor.server.user.{ UserErrors, UserUtils }
 
 private[bot] final class UsersBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResultCats[BotError] with ApiToBotConversions {
   import im.actor.bots.BotMessages._
   import system.dispatcher
-  import im.actor.server.file.ImageUtils._
+  import ImageUtils._
   import im.actor.concurrent.FutureExt._
 
   private val db = DbExtension(system).db

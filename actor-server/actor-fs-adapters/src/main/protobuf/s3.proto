@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+package im.actor.server.file;
+
+import "scalapb/scalapb.proto";
+
+message S3UploadKey {
+    option (scalapb.message).extends = "im.actor.server.file.UploadKey";
+    required string key = 1;
+}

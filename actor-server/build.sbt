@@ -6,8 +6,6 @@ name := "actor"
 enablePlugins(JavaServerAppPackaging)
 enablePlugins(JDebPackaging)
 
-name := "actor"
-
 maintainer := "Actor LLC <oss@actor.im>"
 packageSummary := "Messaging platform server"
 packageDescription := "Open source messaging platform for team communications"
@@ -28,3 +26,8 @@ packageName in Docker := "server"
 version in Docker := version.value
 dockerRepository := Some("actor")
 dockerUpdateLatest := true
+
+linuxPackageMappings += {
+  val initFiles = sourceDirectory.value / "linux" / "var" / "lib" / "actor"
+  packageMapping(initFiles -> "/var/lib/actor") withPerms "0644" withUser "actor" withGroup "actor" withContents()
+}
