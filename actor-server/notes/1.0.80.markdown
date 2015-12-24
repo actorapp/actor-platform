@@ -1,2 +1,3 @@
 * add logging on hook addition
 * remove dead code from HttpFrontend
+* local file storage enabled by default
