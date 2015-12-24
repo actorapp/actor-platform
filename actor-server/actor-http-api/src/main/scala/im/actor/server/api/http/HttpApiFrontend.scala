@@ -27,7 +27,6 @@ final class HttpApi(_system: ActorSystem) extends Extension {
 
   def runHooks(): Future[Seq[Route]] = hooks.routesHook.runAll()
 
-  // should we pass implicit actor system here, or the one we have in implicit scope here will work???
   def registerHook(name: String)(f: ActorSystem ⇒ Future[Route]): Unit = {
     hooks.routesHook.register(name, new HttpApiHook.RoutesHook(system) {
       override def run(): Future[Route] = f(system)
