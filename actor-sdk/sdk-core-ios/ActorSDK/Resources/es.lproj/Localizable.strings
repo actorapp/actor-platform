@@ -65,7 +65,7 @@
 
 "SettingsLastSeen" = "Ultima vez visto";
 
-"SettingsLastSeenHint" = "Cambiar quién puede ver su tiempo Visto Última Vez.";
+"SettingsLastSeenHint" = "Elige quién puede ver tu última conexión";
 
 "SettingsLastSeenEverybody" = "Todos";
 
@@ -199,7 +199,7 @@
 
 "CreateGroupTitle" = "Crear grupo";
 
-"CreateGroupHint" = "Please provide group subject and optional group icon";
+"CreateGroupHint" = "Por favor, introduce un nombre de grupo e inserta una imagen.";
 
 "CreateGroupNamePlaceholder" = "Grupo Asunto";
 
