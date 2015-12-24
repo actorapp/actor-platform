@@ -28,22 +28,20 @@ class Photo extends Component {
     };
   }
 
-  openLightBox() {
+  openLightBox = () => {
     lightbox.open(this.props.content.fileUrl, 'message');
   }
 
-  onLoad() {
+  onLoad = () => {
     this.setCached();
     if (!this.state.isImageLoaded) {
       this.setState({isImageLoaded: true});
     }
   }
 
-  isCached() {
-    return (cache[this.props.content.fileUrl] === true);
-  }
+  isCached = () => cache[this.props.content.fileUrl] === true;
 
-  setCached() {
+  setCached = () => {
     cache[this.props.content.fileUrl] = true;
   }
 
@@ -51,10 +49,10 @@ class Photo extends Component {
     const { content, className, loadedClassName } = this.props;
     const { isImageLoaded } = this.state;
 
-    var MAX_WIDTH = 300;
-    var MAX_HEIGHT = 400;
-    var width = content.w;
-    var height = content.h;
+    const MAX_WIDTH = 300;
+    const MAX_HEIGHT = 400;
+    let width = content.w;
+    let height = content.h;
 
     if (width > height) {
       if (width > MAX_WIDTH) {
@@ -76,8 +74,8 @@ class Photo extends Component {
       original = (
         <img className="photo photo--original"
              height={content.h}
-             onClick={this.openLightBox.bind(this)}
-             onLoad={this.onLoad.bind(this)}
+             onClick={this.openLightBox}
+             onLoad={this.onLoad}
              src={content.fileUrl}
              width={content.w}/>
       );
