@@ -134,8 +134,10 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
     }
     
     public func documentDidTap() {
+        
         let content = bindedMessage!.content as! ACDocumentContent
         if let fileSource = content.getSource() as? ACFileRemoteSource {
+            
             Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: AAFileCallback(
                 notDownloaded: { () -> () in
                     Actor.startDownloadingWithReference(fileSource.getFileReference())
@@ -144,8 +146,21 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
                 }, onDownloaded: { (reference) -> () in
                     let docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference)))
                     docController.delegate = self
-                    docController.presentPreviewAnimated(true)
+                    
+                    if (docController.presentPreviewAnimated(true)) {
+                        return
+                    }
+                   
+                    if (content.getName().hasSuffix(".ogg")) {
+                        
+                        print("paaaaath ==== \(CocoaFiles.pathFromDescriptor(reference))")
+                        self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(reference))
+                        
+                        return
+                    }
+                    
             }))
+            
         } else if let fileSource = content.getSource() as? ACFileLocalSource {
             let rid = bindedMessage!.rid
             Actor.requestUploadStateWithRid(rid, withCallback: AAUploadFileCallback(
@@ -156,7 +171,20 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
                 }, onUploadedClosure: { () -> () in
                     let docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor())))
                     docController.delegate = self
-                    docController.presentPreviewAnimated(true)
+                    
+                    if (docController.presentPreviewAnimated(true)) {
+                        return
+                    }
+                    
+                    
+                    if (content.getName().hasSuffix(".ogg")) {
+                        
+                        print("paaaaath2 ==== \(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))")
+                        self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
+                        
+                        return
+                    }
+                    
             }))
         }
     }
@@ -251,7 +279,9 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
 public class AABubbleDocumentCellLayout: AABubbleLayouter {
     
     public func isSuitable(message: ACMessage) -> Bool {
+        
         return message.content is ACDocumentContent
+        
     }
     
     public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {

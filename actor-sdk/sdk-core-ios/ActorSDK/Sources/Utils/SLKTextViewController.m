@@ -320,10 +320,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         
         _textInputbar.textView.delegate = self;
         
-        _verticalPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(slk_didPanTextInputBar:)];
-        _verticalPanGesture.delegate = self;
+        //_verticalPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(slk_didPanTextInputBar:)];
+        //_verticalPanGesture.delegate = self;
         
-        [_textInputbar addGestureRecognizer:self.verticalPanGesture];
+        //[_textInputbar addGestureRecognizer:self.verticalPanGesture];
     }
     return _textInputbar;
 }
