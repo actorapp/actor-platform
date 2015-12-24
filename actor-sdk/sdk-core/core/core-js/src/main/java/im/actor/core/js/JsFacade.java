@@ -502,6 +502,48 @@ public class JsFacade implements Exportable {
         });
     }
 
+    public JsPromise favoriteChat(final JsPeer peer) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.favouriteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        Log.d(TAG, "favouriteChat:result");
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "favouriteChat:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise unfavoriteChat(final JsPeer peer) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.unfavoriteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        Log.d(TAG, "unfavouriteChat:result");
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "unfavouriteChat:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
     // Peers
 
     public JsPeer getUserPeer(int uid) {
