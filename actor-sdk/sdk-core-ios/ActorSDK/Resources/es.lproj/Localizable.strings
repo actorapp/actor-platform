@@ -2,6 +2,11 @@
 //  Copyright (C) 2014-2015 Actor LLC. <https://actor.im>
 //
 
+"AuthMoreInfo" = "Mensajería gratis, segura y veloz.";
+
+"AuthStarButton" = "Empieza a chatear";
+
+///
 
 "TabMessages" = "Mensajes";
 
