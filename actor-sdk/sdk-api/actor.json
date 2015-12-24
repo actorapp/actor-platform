@@ -10694,6 +10694,53 @@
           "type": "empty"
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "FileUrlDescription",
+            "doc": [
+              "File url description",
+              {
+                "type": "reference",
+                "argument": "fileId",
+                "category": "full",
+                "description": "  File id of url"
+              },
+              {
+                "type": "reference",
+                "argument": "url",
+                "category": "full",
+                "description": "  Url for downloading"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "full",
+                "description": "  Timeout of url"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "fileId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "url"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 3,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "GetFileUrl",
@@ -10748,6 +10795,60 @@
                 },
                 "id": 1,
                 "name": "file"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetFileUrls",
+            "header": 2573,
+            "response": {
+              "type": "anonymous",
+              "header": 2574,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "fileUrls",
+                  "category": "full",
+                  "description": "  File urls"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "FileUrlDescription"
+                    }
+                  },
+                  "id": 1,
+                  "name": "fileUrls"
+                }
+              ]
+            },
+            "doc": [
+              "Requesting multiple fle URL for downloading",
+              {
+                "type": "reference",
+                "argument": "files",
+                "category": "hidden",
+                "description": "File locations to load urls"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "FileLocation"
+                  }
+                },
+                "id": 1,
+                "name": "files"
               }
             ]
           }
