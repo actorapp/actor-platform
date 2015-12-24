@@ -23,6 +23,6 @@ final class HttpCliService extends Actor {
       val token = ACLUtils.accessToken()
       (for {
         _ ← db.run(HttpApiTokenRepo.create(token, isAdmin = isAdmin))
-      } yield CreateApiTokenResponse(token)) pipeTo sender()
+      } yield HttpApiTokenCreateResponse(token)) pipeTo sender()
   }
 }
