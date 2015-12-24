@@ -17,8 +17,10 @@ public enum BubbleType {
     case MediaOut
     // Income media bubble
     case MediaIn
-    // Service bubbl
+    // Service bubble
     case Service
+    // Sticker bubble
+    case Sticker
 }
 
 /**
@@ -306,6 +308,10 @@ public class AABubbleCell: UICollectionViewCell {
             break
             case BubbleType.Service:
                 bubble.image = AABubbleCell.cachedServiceBg
+                bubbleBorder.image = nil
+            break
+            case BubbleType.Sticker:
+                bubble.image = nil;
                 bubbleBorder.image = nil
             break
         }
