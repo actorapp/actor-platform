@@ -69,7 +69,12 @@ public class JsPreferencesStorage implements PreferencesStorage {
 
     @Override
     public void putBytes(String key, byte[] v) {
-        storage.setItem(convertKey(key), toBase64(v));
+        key = convertKey(key);
+        if (v == null) {
+            storage.removeItem(key);
+        } else {
+            storage.setItem(key, toBase64(v));
+        }
     }
 
     @Override
@@ -84,7 +89,12 @@ public class JsPreferencesStorage implements PreferencesStorage {
 
     @Override
     public void putString(String key, String v) {
-        storage.setItem(convertKey(key), v);
+        key = convertKey(key);
+        if (v == null) {
+            storage.removeItem(key);
+        } else {
+            storage.setItem(convertKey(key), v);
+        }
     }
 
     @Override
