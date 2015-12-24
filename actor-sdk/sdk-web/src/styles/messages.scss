@@ -11,6 +11,7 @@ $message-hover-background: rgba(black, .025);
 $message-selected-background: rgba($dusk, .1);
 $modern-text-line-width: 2px;
 $modern-text-padding: 6px;
+$sticker-max-size: 180px;
 
 @keyframes bounceheart {
   0% {
@@ -1085,6 +1086,37 @@ $modern-text-padding: 6px;
       }
     }
   }
+  .sticker {
+    position: relative;
+    max-width: $sticker-max-size;
+    max-height: $sticker-max-size;
+    @include no-select();
+
+    .preloader {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin-left: -20px;
+      margin-top: -20px;
+    }
+    img {
+      display: none;
+      max-width: $sticker-max-size;
+      max-height: $sticker-max-size;
+      height: auto;
+      width: auto;
+    }
+
+    &--loaded {
+      .preloader {
+        display: none;
+      }
+      img {
+        display: block;
+      }
+    }
+  }
+
 }
 
 .date-divider {
