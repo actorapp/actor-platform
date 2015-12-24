@@ -36,7 +36,7 @@ class AAWelcomeController: UIViewController {
         
         if ActorSDK.sharedActor().useBackgroundOnWelcomeScreen == true {
             
-            self.backgroundImage.image = UIImage.bundled("bg_1")
+            self.backgroundImage.image = UIImage.bundled("bg_2.jpg")
             
         }
         
@@ -50,6 +50,7 @@ class AAWelcomeController: UIViewController {
         self.appNameLabel.textAlignment = .Center
         self.appNameLabel.backgroundColor = UIColor.clearColor()
         self.appNameLabel.font = UIFont(name: "HelveticaNeue-Light", size: 35)
+        self.appNameLabel.textColor = ActorSDK.sharedActor().style.vcStarInfoTextColor
         
         self.appNameLabel.frame =  CGRectMake(screenWidth/2-screenWidth/4, self.logoView.frame.maxY + 10, screenWidth/2, 40)
         
@@ -60,11 +61,12 @@ class AAWelcomeController: UIViewController {
         self.someInfoLabel.backgroundColor = UIColor.clearColor()
         self.someInfoLabel.font = UIFont(name: "HelveticaNeue-Light", size: 17)
         self.someInfoLabel.numberOfLines = 0
+        self.someInfoLabel.textColor = ActorSDK.sharedActor().style.vcStarInfoTextColor
         
         self.someInfoLabel.frame =  CGRectMake(screenWidth/2-screenWidth/4-25, self.appNameLabel.frame.maxY + 5, screenWidth/2+50, 60)
         
         ///
-        
+        //vcStarInfoTextColor
         self.doneButton.setTitle(AALocalized("AuthStarButton"), forState: UIControlState.Normal)
         self.doneButton.setTitleColor(ActorSDK.sharedActor().style.vcStarButton, forState: UIControlState.Normal)
         self.doneButton.tintColor = ActorSDK.sharedActor().style.vcStarButton

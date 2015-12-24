@@ -12,6 +12,9 @@ public class ActorStyle {
     
     /// Is Application have dark theme. Default is false.
     public var isDarkApp = false
+    
+    ///
+    public var vcStarInfoTextColor = UIColor.blackColor()
     /// Tint Color. Star button
     public var vcStarButton = UIColor(red: 75/255.0, green: 110/255.0, blue: 152/255.0, alpha: 1)
     /// Tint Color. Used for "Actions". Default is sytem blue.
