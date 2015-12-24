@@ -1,4 +1,4 @@
-package im.actor.server.api.http.webhooks
+package im.actor.server.webhooks.http.routes
 
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ StatusCode, Uri }
@@ -6,9 +6,9 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import cats.data.Xor
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
+import im.actor.concurrent.FutureResultCats
 import im.actor.server.KeyValueMappings
 import im.actor.server.api.http.json._
-import im.actor.concurrent.FutureResultCats
 import im.actor.util.misc.IdUtils
 import shardakka.ShardakkaExtension
 import shardakka.keyvalue.SimpleKeyValue
@@ -27,7 +27,7 @@ object OutgoingHooksErrors {
 }
 
 trait OutgoingHooks extends ReverseHookUnmarshaler with PlayJsonSupport {
-  self: WebhooksHandler ⇒
+  self: WebhooksHttpHandler ⇒
 
   import FutureResultHttp._
   import JsonFormatters._

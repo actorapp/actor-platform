@@ -1,4 +1,4 @@
-package im.actor.server.hook
+package im.actor.hook
 
 import im.actor.concurrent.FutureExt
 import org.slf4j.LoggerFactory
