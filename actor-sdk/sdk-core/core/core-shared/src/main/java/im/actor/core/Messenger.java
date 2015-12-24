@@ -779,6 +779,28 @@ public class Messenger {
     }
 
     /**
+     * Favouriting chat
+     *
+     * @param peer destination peer
+     * @return Command for execution
+     */
+    @ObjectiveCName("favouriteChatCommandWithPeer:")
+    public Command<Boolean> favouriteChat(Peer peer) {
+        return modules.getMessagesModule().favoriteChat(peer);
+    }
+
+    /**
+     * Unfavouriting chat
+     *
+     * @param peer destination peer
+     * @return Command for execution
+     */
+    @ObjectiveCName("unfavouriteChatCommandWithPeer:")
+    public Command<Boolean> unfavoriteChat(Peer peer) {
+        return modules.getMessagesModule().unfavoriteChat(peer);
+    }
+
+    /**
      * Adding reaction to a message
      *
      * @param peer destination peer
