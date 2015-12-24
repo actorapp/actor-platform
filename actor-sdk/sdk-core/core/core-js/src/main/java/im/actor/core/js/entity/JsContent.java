@@ -25,6 +25,7 @@ import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.StickerContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VoiceContent;
+import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.js.JsMessenger;
 import im.actor.runtime.crypto.Base64Utils;
 
@@ -96,17 +97,18 @@ public abstract class JsContent extends JavaScriptObject {
             }
 
         } else if (src instanceof StickerContent) {
-            FileReference fileReference512 = ((StickerContent) src).getSticker().getFileReference512();
-            ApiImageLocation imageLocation512 = ((StickerContent) src).getSticker().getApiImageLocation512();
+            Sticker sticker = ((StickerContent) src).getSticker();
+            FileReference fileReference512 = sticker.getFileReference512();
+            ApiImageLocation imageLocation512 = sticker.getApiImageLocation512();
             String fileUrl = messenger.getFileUrl(fileReference512);
             String fileSize = messenger.getFormatter().formatFileSize(fileReference512.getFileSize());
             String thumb = null;
-            byte[] thumbRaw = ((StickerContent) src).getSticker().getThumb();
+            byte[] thumbRaw = sticker.getThumb();
             if (thumbRaw != null) {
                 String thumbBase64 = Base64Utils.toBase64(thumbRaw);
                 thumb = "data:image/jpg;base64," + thumbBase64;
             }
-            content = JsContentPhoto.create(fileReference512.getFileName(), ".webp", fileSize, imageLocation512.getWidth(), imageLocation512.getHeight(), thumb, fileUrl, false);
+            content = JsContentSticker.create(fileReference512.getFileName(), ".webp", fileSize, imageLocation512.getWidth(), imageLocation512.getHeight(), thumb, fileUrl, false);
         } else if (src instanceof ContactContent) {
             ContactContent contactContent = (ContactContent) src;
             JsArrayString phones = JsArray.createArray().cast();
