@@ -2,6 +2,16 @@
 //  Copyright (C) 2014-2015 Actor LLC. <https://actor.im>
 //
 
+
+/*
+ * Auth Screen
+ */
+
+"AuthMoreInfo" = "Free, fast and secure messaging.";
+
+"AuthStarButton" = "Start Messaging";
+
+
 /*
  * Main Screen
  */
