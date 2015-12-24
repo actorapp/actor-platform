@@ -8,10 +8,10 @@ import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{ Directive0, Route }
-import akka.stream.Materializer
+import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
-import im.actor.server.api.http.{ HttpApiHelpers, RoutesHandler }
+import im.actor.server.api.http.HttpHandler
 import im.actor.server.db.DbExtension
 import im.actor.server.file.local.{ FileStorageOperations, LocalFileStorageConfig, RequestSigning }
 import im.actor.util.log.AnyRefLogSource
@@ -19,14 +19,14 @@ import im.actor.util.log.AnyRefLogSource
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
-class FilesHandler(storageConfig: LocalFileStorageConfig)(implicit val system: ActorSystem, materializer: Materializer)
-  extends RoutesHandler
+private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfig)(implicit val system: ActorSystem)
+  extends HttpHandler
   with RequestSigning
   with FileStorageOperations
   with AnyRefLogSource {
-  import HttpApiHelpers._
 
   private val db = DbExtension(system).db
+  private implicit val mat = ActorMaterializer()
 
   protected implicit val ec: ExecutionContext = system.dispatcher
   protected val storageLocation = storageConfig.location
@@ -36,10 +36,10 @@ class FilesHandler(storageConfig: LocalFileStorageConfig)(implicit val system: A
   // format: OFF
   def routes: Route =
     extractRequest { request =>
-//      log.debug("Got file request {}", request)
-      pathPrefix("v1" / "files" / Segment) { strFileId =>
-        val fileId = strFileId.toLong
-        respondWithDefaultHeaders(corsHeaders) {
+      //      log.debug("Got file request {}", request)
+      defaultVersion {
+        pathPrefix("files" / Segment) { strFileId =>
+          val fileId = strFileId.toLong
           options {
             log.debug("Responded OK to OPTIONS req: {}", request.uri)
             complete(HttpResponse(OK))

@@ -8,11 +8,8 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.Credentials
 import akka.stream.{ ActorMaterializer, Materializer }
 import com.typesafe.config.Config
-import im.actor.server.api.http.app.AppFilesHandler
-import im.actor.server.api.http.bots.BotsHandler
-import im.actor.server.api.http.groups.GroupsHandler
-import im.actor.server.api.http.status.StatusHandler
-import im.actor.server.api.http.webhooks.WebhooksHandler
+import im.actor.server.api.http.app.AppFilesHttpHandler
+import im.actor.server.api.http.status.StatusHttpHandler
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.HttpApiTokenRepo
 import im.actor.tls.TlsContext
@@ -26,7 +23,16 @@ final class HttpApi(_system: ActorSystem) extends Extension {
   implicit val ec = system.dispatcher
   implicit val mat = ActorMaterializer()
 
-  val hooks = new HttpApiHookControl
+  private val hooks = new HttpApiHookControl
+
+  def runHooks(): Future[Seq[Route]] = hooks.routesHook.runAll()
+
+  // should we pass implicit actor system here, or the one we have in implicit scope here will work???
+  def registerHook(name: String)(f: ActorSystem ⇒ Future[Route]): Unit = {
+    hooks.routesHook.register(name, new HttpApiHook.RoutesHook(system) {
+      override def run(): Future[Route] = f(system)
+    })
+  }
 
   HttpApiFrontend.start(system.settings.config)
 
@@ -67,27 +73,14 @@ private object HttpApiFrontend {
     }
   }
 
-  def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(implicit system: ActorSystem, materializer: Materializer): Unit = {
+  def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(implicit system: ActorSystem): Unit = {
     import system.dispatcher
+    implicit val mat = ActorMaterializer()
 
-    val webhooks = new WebhooksHandler
-    val groups = new GroupsHandler
-    val status = new StatusHandler
-    val bots = new BotsHandler
-    val app = new AppFilesHandler(config.staticFiles)
+    val status = new StatusHttpHandler
+    val app = new AppFilesHttpHandler(config.staticFiles)
 
-    // format: OFF
-    def defaultRoutes: Route =
-      app.routes ~
-      pathPrefix("v1") {
-        respondWithDefaultHeaders(corsHeaders) {
-          bots.routes ~
-          status.routes ~
-          groups.routes ~
-          webhooks.routes
-        }
-      }
-    // format: ON
+    def defaultRoutes: Route = app.routes ~ defaultVersion(status.routes)
 
     // FIXME: consider more optimal Route creation
 
@@ -96,8 +89,7 @@ private object HttpApiFrontend {
         custom ← customRoutes
       } yield custom.foldLeft(defaultRoutes)(_ ~ _)
 
-    def customRoutes: Future[Seq[Route]] =
-      HttpApi(system).hooks.routesHook.runAll()
+    def customRoutes: Future[Seq[Route]] = HttpApi(system).runHooks()
 
     val defaultSettings = ServerSettings(system)
 

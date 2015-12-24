@@ -2,7 +2,7 @@ package im.actor.server.api.http
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Route
-import im.actor.server.hook.{ HooksStorage0, HooksControl, Hook0 }
+import im.actor.hook.{ HooksStorage0, HooksControl, Hook0 }
 
 import scala.concurrent.ExecutionContext
 
