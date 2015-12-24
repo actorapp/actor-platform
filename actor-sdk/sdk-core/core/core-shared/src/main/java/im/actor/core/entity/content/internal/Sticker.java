@@ -21,6 +21,7 @@ public class Sticker extends AbsLocalContent {
     ApiImageLocation apiImageLocation128;
     ApiImageLocation apiImageLocation256;
     ApiImageLocation apiImageLocation512;
+    byte[] thumb;
 
     int stickerId;
     int stickerCollectionId;
@@ -38,6 +39,7 @@ public class Sticker extends AbsLocalContent {
     }
 
     public Sticker(ApiStickerMessage msg) {
+        thumb = msg.getFastPreview();
         this.stickerId = msg.getStickerId();
         this.stickerCollectionId = msg.getStickerCollectionId();
         this.collectionAccessHash = msg.getStickerCollectionAccessHash();
@@ -135,6 +137,9 @@ public class Sticker extends AbsLocalContent {
         return apiImageLocation512.getWidth();
     }
 
+    public byte[] getThumb() {
+        return thumb;
+    }
 
     public int getStickerId() {
         return stickerId;
@@ -158,6 +163,8 @@ public class Sticker extends AbsLocalContent {
         stickerId = values.getInt(4);
         stickerCollectionId = values.getInt(5);
         collectionAccessHash = values.getLong(6);
+
+        thumb = values.getBytes(7);
     }
 
     @Override
@@ -169,5 +176,7 @@ public class Sticker extends AbsLocalContent {
         writer.writeInt(4, stickerId);
         writer.writeInt(5, stickerCollectionId);
         writer.writeLong(6, collectionAccessHash);
+
+        writer.writeBytes(7, thumb);
     }
 }
