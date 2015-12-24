@@ -113,6 +113,7 @@ object Dependencies {
 
   object Testing {
     val akkaTestkit             = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka
+    val akkaMultiNodeTestkit    = "com.typesafe.akka"             %% "akka-multi-node-testkit"       % V.akka
 
     val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.5"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest
@@ -210,5 +211,5 @@ object Dependencies {
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
-  val tests = shared ++ Seq(akkaClusterSharding, amazonaws, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit)
+  val tests = shared ++ Seq(akkaClusterSharding, amazonaws, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit, akkaMultiNodeTestkit)
 }
