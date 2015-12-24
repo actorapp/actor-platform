@@ -66,13 +66,12 @@ class AAWelcomeController: UIViewController {
         self.someInfoLabel.frame =  CGRectMake(screenWidth/2-screenWidth/4-25, self.appNameLabel.frame.maxY + 5, screenWidth/2+50, 60)
         
         ///
-        //vcStarInfoTextColor
         self.doneButton.setTitle(AALocalized("AuthStarButton"), forState: UIControlState.Normal)
         self.doneButton.setTitleColor(ActorSDK.sharedActor().style.vcStarButton, forState: UIControlState.Normal)
         self.doneButton.tintColor = ActorSDK.sharedActor().style.vcStarButton
         self.doneButton.frame = CGRectMake(screenWidth/2-screenWidth/4-20, screenHeight-50, screenWidth/2, 30)
         
-        self.doneButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Light", size: 22)
+        self.doneButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Light", size: 17)
         
         self.doneButton.setImage(UIImage.bundled("OnboardNext"), forState: UIControlState.Normal)
         self.doneButton.imageEdgeInsets = UIEdgeInsetsMake(5, screenWidth/2 + 20, 0, 0)
