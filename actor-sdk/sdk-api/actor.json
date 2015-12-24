@@ -593,7 +593,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "StartLoginAuth",
+            "name": "StartUsernameAuth",
             "header": 2571,
             "response": {
               "type": "anonymous",
@@ -610,7 +610,7 @@
                   "type": "reference",
                   "argument": "isRegistered",
                   "category": "full",
-                  "description": "  If user is registered with this login"
+                  "description": "  If user is registered with this username"
                 }
               ],
               "attributes": [
@@ -630,9 +630,9 @@
               "Starting Login Authentication",
               {
                 "type": "reference",
-                "argument": "login",
+                "argument": "username",
                 "category": "full",
-                "description": "Login for signing in"
+                "description": "Username for signing in"
               },
               {
                 "type": "reference",
@@ -675,7 +675,7 @@
               {
                 "type": "string",
                 "id": 1,
-                "name": "login"
+                "name": "username"
               },
               {
                 "type": "int32",
