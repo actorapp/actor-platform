@@ -969,13 +969,9 @@ $sticker-max-size: 180px;
     }
   }
   .contact {
-
-    &__body {
-      padding-left: 8px;
-    }
-
     &__avatar {
       overflow: hidden;
+      margin-right: 8px;
 
       width: $contact-avatar-size;
       height: $contact-avatar-size;
@@ -1013,6 +1009,17 @@ $sticker-max-size: 180px;
         &:hover {
           text-decoration: underline;
         }
+      }
+    }
+
+    &--empty {
+      font-size: 14px;
+      line-height: 20px;
+      font-style: italic;
+      .material-icons {
+        color: rgba($coral, .8);
+        line-height: 20px;
+        margin-right: 8px;
       }
     }
   }
