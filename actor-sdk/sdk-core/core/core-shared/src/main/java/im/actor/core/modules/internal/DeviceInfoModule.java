@@ -1,23 +1,28 @@
 package im.actor.core.modules.internal;
 
-import java.util.ArrayList;
-
-import im.actor.core.api.rpc.RequestNotifyAboutDeviceInfo;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.internal.device.DeviceInfoActor;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.Props;
+
+import static im.actor.runtime.actors.ActorSystem.system;
 
 public class DeviceInfoModule extends AbsModule {
+
+    private ActorRef actorRef;
 
     public DeviceInfoModule(ModuleContext context) {
         super(context);
     }
 
     public void run() {
-        ArrayList<String> langs = new ArrayList<String>();
-        for (String s : context().getConfiguration().getPreferredLanguages()) {
-            langs.add(s);
-        }
-        String timeZone = context().getConfiguration().getTimeZone();
-        request(new RequestNotifyAboutDeviceInfo(langs, timeZone));
+        actorRef = system().actorOf(Props.create(DeviceInfoActor.class, new ActorCreator<DeviceInfoActor>() {
+            @Override
+            public DeviceInfoActor create() {
+                return new DeviceInfoActor(context());
+            }
+        }), "device_info/notifier");
     }
 }
