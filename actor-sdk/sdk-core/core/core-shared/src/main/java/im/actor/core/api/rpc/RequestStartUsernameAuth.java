@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class RequestStartAnonymousAuth extends Request<ResponseAuth> {
+public class RequestStartUsernameAuth extends Request<ResponseStartUsernameAuth> {
 
-    public static final int HEADER = 0xc6;
-    public static RequestStartAnonymousAuth fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestStartAnonymousAuth(), data);
+    public static final int HEADER = 0xa0b;
+    public static RequestStartUsernameAuth fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestStartUsernameAuth(), data);
     }
 
-    private String name;
+    private String username;
     private int appId;
     private String apiKey;
     private byte[] deviceHash;
@@ -30,8 +30,8 @@ public class RequestStartAnonymousAuth extends Request<ResponseAuth> {
     private String timeZone;
     private List<String> preferredLanguages;
 
-    public RequestStartAnonymousAuth(@NotNull String name, int appId, @NotNull String apiKey, @NotNull byte[] deviceHash, @NotNull String deviceTitle, @Nullable String timeZone, @NotNull List<String> preferredLanguages) {
-        this.name = name;
+    public RequestStartUsernameAuth(@NotNull String username, int appId, @NotNull String apiKey, @NotNull byte[] deviceHash, @NotNull String deviceTitle, @Nullable String timeZone, @NotNull List<String> preferredLanguages) {
+        this.username = username;
         this.appId = appId;
         this.apiKey = apiKey;
         this.deviceHash = deviceHash;
@@ -40,13 +40,13 @@ public class RequestStartAnonymousAuth extends Request<ResponseAuth> {
         this.preferredLanguages = preferredLanguages;
     }
 
-    public RequestStartAnonymousAuth() {
+    public RequestStartUsernameAuth() {
 
     }
 
     @NotNull
-    public String getName() {
-        return this.name;
+    public String getUsername() {
+        return this.username;
     }
 
     public int getAppId() {
@@ -80,7 +80,7 @@ public class RequestStartAnonymousAuth extends Request<ResponseAuth> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.name = values.getString(1);
+        this.username = values.getString(1);
         this.appId = values.getInt(2);
         this.apiKey = values.getString(3);
         this.deviceHash = values.getBytes(4);
@@ -91,10 +91,10 @@ public class RequestStartAnonymousAuth extends Request<ResponseAuth> {
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.name == null) {
+        if (this.username == null) {
             throw new IOException();
         }
-        writer.writeString(1, this.name);
+        writer.writeString(1, this.username);
         writer.writeInt(2, this.appId);
         if (this.apiKey == null) {
             throw new IOException();
@@ -116,8 +116,8 @@ public class RequestStartAnonymousAuth extends Request<ResponseAuth> {
 
     @Override
     public String toString() {
-        String res = "rpc StartAnonymousAuth{";
-        res += "name=" + this.name;
+        String res = "rpc StartUsernameAuth{";
+        res += "username=" + this.username;
         res += ", deviceHash=" + byteArrayToString(this.deviceHash);
         res += ", deviceTitle=" + this.deviceTitle;
         res += ", timeZone=" + this.timeZone;
