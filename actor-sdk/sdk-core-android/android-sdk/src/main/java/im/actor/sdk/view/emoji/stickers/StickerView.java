@@ -4,23 +4,25 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.AttributeSet;
 
-import com.facebook.common.util.UriUtil;
+import com.facebook.common.internal.Files;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.File;
+import java.io.IOException;
 
 import im.actor.core.entity.FileReference;
+import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.runtime.files.FileSystemReference;
+import im.actor.sdk.controllers.conversation.view.FastThumbLoader;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -31,6 +33,12 @@ public class StickerView extends SimpleDraweeView {
     private boolean loaded = false;
     FileReference fileReference;
     FileVM bindedFile;
+    private File imageFile;
+    Sticker sticker;
+    private FastThumbLoader fastThumbLoader;
+    public static final int STICKER_FULL = 512;
+    public static final int STICKER_BIG = 256;
+    public static final int STICKER_SMALL = 128;
 
     public StickerView(Context context, GenericDraweeHierarchy hierarchy) {
         super(context, hierarchy);
@@ -60,10 +68,26 @@ public class StickerView extends SimpleDraweeView {
                 .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_INSIDE)
                 .build();
         setHierarchy(hierarchy);
+
+        fastThumbLoader = new FastThumbLoader(this);
+
     }
 
-    public void bind(FileReference fileReference, final int size) {
-
+    public void bind(final Sticker sticker, int size) {
+        this.sticker = sticker;
+        FileReference fileReference;
+        switch (size) {
+            default:
+            case STICKER_FULL:
+                fileReference = sticker.getFileReference512();
+                break;
+            case STICKER_BIG:
+                fileReference = sticker.getFileReference256();
+                break;
+            case STICKER_SMALL:
+                fileReference = sticker.getFileReference128();
+                break;
+        }
         if (this.fileReference != null && this.fileReference.equals(fileReference)) {
             return;
         }
@@ -78,20 +102,31 @@ public class StickerView extends SimpleDraweeView {
         this.fileReference = fileReference;
 
         bindedFile = messenger().bindFile(fileReference, true, new FileVMCallback() {
+
+            private boolean isFastThumbLoaded = false;
+
+            private void checkFastThumb() {
+                if (!isFastThumbLoaded) {
+                    isFastThumbLoaded = true;
+                    if (sticker.getThumb() != null) {
+                        fastThumbLoader.request(sticker.getThumb());
+                    }
+                }
+            }
             @Override
             public void onNotDownloaded() {
-
+                checkFastThumb();
             }
 
             @Override
             public void onDownloading(float progress) {
-
+                checkFastThumb();
             }
 
             @Override
             public void onDownloaded(FileSystemReference reference) {
-
-                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(new File(reference.getDescriptor())))
+                imageFile = new File(reference.getDescriptor());
+                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(imageFile))
                         .setAutoRotateEnabled(true)
                         .build();
                 PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
@@ -104,6 +139,15 @@ public class StickerView extends SimpleDraweeView {
 
             }
         });
+    }
+
+    public byte[] getThumb() {
+        try {
+            return Files.toByteArray(imageFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new byte[0];
     }
 
     public void shortenFade() {
@@ -134,5 +178,6 @@ public class StickerView extends SimpleDraweeView {
         }
 
         setImageURI(null);
+        fastThumbLoader.cancel();
     }
 }

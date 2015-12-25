@@ -57,7 +57,7 @@ public class StickerHolder extends MessageHolder {
     @Override
     protected void bindData(Message message, boolean isNewMessage, PreprocessedData preprocessedData) {
         StickerContent content = (StickerContent) message.getContent();
-        sticker.bind(content.getSticker().getFileReference512(), Screen.dp(100));
+        sticker.bind(content.getSticker(), StickerView.STICKER_FULL);
 
         int w = ((StickerContent) message.getContent()).getSticker().getWidth512();
         int h = ((StickerContent) message.getContent()).getSticker().getHeight512();
