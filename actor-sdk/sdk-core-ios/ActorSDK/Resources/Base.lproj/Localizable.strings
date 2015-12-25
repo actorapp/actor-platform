@@ -380,6 +380,10 @@
 
 "AuthPhoneHint" = "Please confirm your country code and enter your phone number.";
 
+"AuthTermsOfServiceFull" = "By signing up, you agree to the Terms of Service.";
+
+"AuthTermsOfService" = "Terms of Service";
+
 "AuthPhoneTooShort" = "Phone number too short";
 
 "AuthCodeFieldHint" = "Code";
