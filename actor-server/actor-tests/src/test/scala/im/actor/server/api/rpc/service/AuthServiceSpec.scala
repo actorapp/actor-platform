@@ -133,7 +133,7 @@ final class AuthServiceSpec
 
       whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
         inside(resp) {
-          case Ok(ResponseStartPhoneAuth(hash, false)) ⇒ hash should not be empty
+          case Ok(ResponseStartPhoneAuth(hash, false, Some(ApiPhoneActivationType.CODE))) ⇒ hash should not be empty
         }
       }
     }
@@ -144,7 +144,7 @@ final class AuthServiceSpec
 
       whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
         inside(resp) {
-          case Ok(ResponseStartPhoneAuth(hash, true)) ⇒ hash should not be empty
+          case Ok(ResponseStartPhoneAuth(hash, true, Some(ApiPhoneActivationType.CODE))) ⇒ hash should not be empty
         }
       }
     }
@@ -177,7 +177,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(q()) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
           resp.toOption.get.transactionHash
         }
 
@@ -186,7 +186,7 @@ final class AuthServiceSpec
       whenReady(seq) { resps ⇒
         resps foreach {
           inside(_) {
-            case Ok(ResponseStartPhoneAuth(hash, false)) ⇒
+            case Ok(ResponseStartPhoneAuth(hash, false, Some(ApiPhoneActivationType.CODE))) ⇒
               hash shouldEqual transactionHash
           }
         }
@@ -206,7 +206,7 @@ final class AuthServiceSpec
         timeZone = None,
         preferredLanguages = Vector.empty
       )) { resp ⇒
-        resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+        resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
         resp.toOption.get.transactionHash
       }
 
@@ -219,7 +219,7 @@ final class AuthServiceSpec
         timeZone = None,
         preferredLanguages = Vector.empty
       )) { resp ⇒
-        resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+        resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
         resp.toOption.get.transactionHash
       }
       transactionHash1 should not equal transactionHash2
@@ -230,7 +230,7 @@ final class AuthServiceSpec
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-        resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+        resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
       }
 
       whenReady(service.handleValidateCode("wrongHash123123", correctAuthCode)) { resp ⇒
@@ -247,7 +247,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
           resp.toOption.get.transactionHash
         }
 
@@ -266,7 +266,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
           resp.toOption.get.transactionHash
         }
 
@@ -297,7 +297,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
           resp.toOption.get.transactionHash
         }
 
@@ -322,7 +322,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, true)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, true, Some(ApiPhoneActivationType.CODE))) ⇒ }
           resp.toOption.get.transactionHash
         }
 
@@ -342,7 +342,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
           resp.toOption.get.transactionHash
         }
 
@@ -385,11 +385,11 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleSignUp(transactionHash, userName, userSex)) { resp ⇒
+      whenReady(service.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.NotValidated) ⇒
         }
@@ -413,7 +413,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
           resp.toOption.get.transactionHash
         }
 
@@ -423,7 +423,7 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(service.handleSignUp(transactionHash, userName, userSex)) { resp ⇒
+      whenReady(service.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
         inside(resp) {
           case Ok(ResponseAuth(user, _)) ⇒
             user.name shouldEqual userName
@@ -456,11 +456,11 @@ final class AuthServiceSpec
         implicit val clientData = unregClientData
         val transactionHash =
           whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-            resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+            resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
             resp.toOption.get.transactionHash
           }
         whenReady(service.handleValidateCode(transactionHash, correctAuthCode))(_ ⇒ ())
-        whenReady(service.handleSignUp(transactionHash, userName, userSex))(_.toOption.get.user)
+        whenReady(service.handleSignUp(transactionHash, userName, userSex, None))(_.toOption.get.user)
       }
 
       {
@@ -504,11 +504,11 @@ final class AuthServiceSpec
         implicit val clientData = unregClientData
         val transactionHash =
           whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-            resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+            resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
             resp.toOption.get.transactionHash
           }
         whenReady(service.handleValidateCode(transactionHash, correctAuthCode))(_ ⇒ ())
-        whenReady(service.handleSignUp(transactionHash, userName, userSex))(_.toOption.get.user)
+        whenReady(service.handleSignUp(transactionHash, userName, userSex, None))(_.toOption.get.user)
       }
 
       {
@@ -541,7 +541,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, true)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, true, Some(ApiPhoneActivationType.CODE))) ⇒ }
           resp.toOption.get.transactionHash
         }
       whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
@@ -568,7 +568,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false, Some(ApiPhoneActivationType.CODE))) ⇒ }
           resp.toOption.get.transactionHash
         }
 
@@ -576,7 +576,7 @@ final class AuthServiceSpec
         inside(resp) { case Error(AuthErrors.PhoneNumberUnoccupied) ⇒ }
       }
 
-      whenReady(service.handleSignUp(transactionHash, userName, userSex)) { resp ⇒
+      whenReady(service.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
         inside(resp) { case Ok(ResponseAuth(user, _)) ⇒ }
       }
 
@@ -825,7 +825,7 @@ final class AuthServiceSpec
           resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
-      whenReady(service.handleSignUp(transactionHash, userName, userSex)) { resp ⇒
+      whenReady(service.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.NotValidated) ⇒
         }
@@ -863,7 +863,7 @@ final class AuthServiceSpec
         }
       }
       val user =
-        whenReady(service.handleSignUp(transactionHash, userName, userSex)) { resp ⇒
+        whenReady(service.handleSignUp(transactionHash, userName, userSex, None)) { resp ⇒
           inside(resp) {
             case Ok(ResponseAuth(u, _)) ⇒
               u.name shouldEqual userName
@@ -915,7 +915,7 @@ final class AuthServiceSpec
 
         whenReady(service.handleGetOAuth2Params(transactionHash, correctUri))(_ ⇒ ())
         whenReady(service.handleCompleteOAuth2(transactionHash, "code"))(_ ⇒ ())
-        whenReady(service.handleSignUp(transactionHash, userName, userSex))(_.toOption.get.user)
+        whenReady(service.handleSignUp(transactionHash, userName, userSex, None))(_.toOption.get.user)
       }
 
       {

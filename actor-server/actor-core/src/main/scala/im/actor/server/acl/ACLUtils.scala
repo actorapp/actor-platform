@@ -1,17 +1,27 @@
 package im.actor.server.acl
 
+import java.security.{ MessageDigest, SecureRandom }
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
+
 import akka.actor.ActorSystem
+import com.google.protobuf.ByteString
 import im.actor.acl.{ ACLBase, ACLFiles }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.server.group.GroupExtension
 import im.actor.server.model
+import im.actor.server.model.UserPassword
+import im.actor.server.persist.UserPasswordRepo
 import im.actor.server.user.UserExtension
 import org.apache.commons.codec.digest.DigestUtils
+import slick.dbio.DBIO
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
 object ACLUtils extends ACLBase with ACLFiles {
+  val PasswordMinLength = 8
+  val PasswordMaxLength = 160
 
   def userAccessHash(authId: Long, userId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
     hash(s"$authId:$userId:$accessSalt:${secretKey()}")
@@ -70,4 +80,37 @@ object ACLUtils extends ACLBase with ACLFiles {
     import s.dispatcher
     UserExtension(s).getAccessHash(userId, clientAuthId) map (ApiUserOutPeer(userId, _))
   }
+
+  def isPasswordValid(password: String) = password.length > PasswordMinLength && password.length < PasswordMaxLength
+
+  /**
+   * Generates password salt and hash
+   *
+   * @param password
+   * @return (salt, hash)
+   */
+  def hashPassword(password: String): (Array[Byte], Array[Byte]) = {
+    val seedBytes = 20
+
+    val random = new SecureRandom()
+    val salt = random.generateSeed(seedBytes)
+
+    (salt, hashPassword(password, salt))
+  }
+
+  def hashPassword(password: String, salt: Array[Byte]): Array[Byte] = {
+    val hashBytes = 20
+    val iterations = 1000
+
+    val spec = new PBEKeySpec(password.toCharArray, salt, iterations, hashBytes * 8)
+    val skf = SecretKeyFactory.getInstance("PBKDF2_ALGORITHM")
+    skf.generateSecret(spec).getEncoded
+  }
+
+  def checkPassword(userId: Int, password: String)(implicit ec: ExecutionContext): DBIO[Boolean] =
+    UserPasswordRepo.find(userId) map {
+      case Some(UserPassword(_, salt, hash)) ⇒
+        ByteString.copyFrom(hashPassword(password, salt.toByteArray)) == hash
+      case None ⇒ false
+    }
 }

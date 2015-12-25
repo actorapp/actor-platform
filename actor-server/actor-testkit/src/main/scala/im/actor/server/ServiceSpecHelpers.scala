@@ -139,7 +139,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
       val code = whenReady(db.run(AuthCodeRepo.findByTransactionHash(txHash)))(_.get.code)
       whenReady(service.handleValidateCode(txHash, code))(_ ⇒ ())
 
-      val user = whenReady(service.handleSignUp(txHash, fairy.person().fullName(), None))(_.toOption.get.user)
+      val user = whenReady(service.handleSignUp(txHash, fairy.person().fullName(), None, None))(_.toOption.get.user)
       val authSid = whenReady(db.run(AuthSessionRepo.findByAuthId(authId)))(_.get.id)
 
       (user, authSid)
