@@ -20,6 +20,8 @@ import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.js.entity.JsCounter;
 import im.actor.core.js.entity.JsDialogGroup;
+import im.actor.core.js.entity.JsOnlineGroup;
+import im.actor.core.js.entity.JsOnlineUser;
 import im.actor.core.js.entity.JsSearchEntity;
 import im.actor.core.js.modules.JsFilesModule;
 import im.actor.core.js.modules.JsBindingModule;
@@ -166,8 +168,16 @@ public class JsMessenger extends Messenger {
         return jsBindingModule.getUser(uid);
     }
 
+    public JsBindedValue<JsOnlineUser> getJsUserOnline(int gid) {
+        return jsBindingModule.getUserOnline(gid);
+    }
+
     public JsBindedValue<JsGroup> getJsGroup(int gid) {
         return jsBindingModule.getGroup(gid);
+    }
+
+    public JsBindedValue<JsOnlineGroup> getJsGroupOnline(int gid) {
+        return jsBindingModule.getGroupOnline(gid);
     }
 
     public JsBindedValue<JsTyping> getTyping(Peer peer) {
