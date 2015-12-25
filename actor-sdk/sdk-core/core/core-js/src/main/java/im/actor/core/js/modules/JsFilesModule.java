@@ -169,7 +169,7 @@ public class JsFilesModule extends AbsModule {
             }
             ArrayList<ApiFileLocation> fileLocations = new ArrayList<ApiFileLocation>();
             for (int i = 0; i < MAX_FILE_SIZE && filesQueue.size() > 0; i++) {
-                FileRequest request = filesQueue.get(0);
+                FileRequest request = filesQueue.remove(0);
                 fileLocations.add(new ApiFileLocation(request.getId(),
                         request.getAccessHash()));
             }
