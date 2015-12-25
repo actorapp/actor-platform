@@ -202,7 +202,7 @@ class MessageItem extends Component {
         messageContent = <Voice content={message.content} className="message__content message__content--voice"/>;
         break;
       case MessageContentTypes.CONTACT:
-        messageContent = <Contact content={message.content} className="message__content message__content--contact"/>;
+        messageContent = <Contact {...message.content} className="message__content message__content--contact"/>;
         break;
       case MessageContentTypes.LOCATION:
         messageContent = <Location content={message.content} className="message__content message__content--location"/>;
