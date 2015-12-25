@@ -362,43 +362,55 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     @Override
     public void onFileLoaded(HashSet<Long> fileId) {
+
+        //
+        // Dialogs List
+        //
         if (dialogsList != null) {
+            dialogsList.startReconverting();
             for (Dialog dialog : dialogsList.getRawItems()) {
                 if (checkAvatar(dialog.getDialogAvatar(), fileId)) {
                     dialogsList.forceReconvert(dialog.getEngineId());
                 }
             }
+            dialogsList.stopReconverting();
+        }
+
+        //
+        // Grouped Dialogs
+        //
+        if (dialogsGroupedList != null) {
+            // TODO: Implement
         }
 
         if (contactsList != null) {
+            contactsList.startReconverting();
             for (Contact contact : contactsList.getRawItems()) {
                 if (checkAvatar(contact.getAvatar(), fileId)) {
                     contactsList.forceReconvert(contact.getEngineId());
                 }
             }
+            contactsList.stopReconverting();
         }
 
         for (JsDisplayList<JsMessage, Message> messageList : messageLists.values()) {
-            boolean founded = false;
+            messageList.startReconverting();
             for (Message message : messageList.getRawItems()) {
                 UserVM user = context().getUsersModule().getUsers().get(message.getSenderId());
                 if (checkAvatar(user.getAvatar().get(), fileId)) {
-                    founded = true;
-                    break;
+                    messageList.forceReconvert(message.getEngineId());
+                    continue;
                 }
                 if (message.getContent() instanceof DocumentContent) {
                     DocumentContent doc = (DocumentContent) message.getContent();
                     if (doc.getSource() instanceof FileRemoteSource) {
                         if (fileId.contains(((FileRemoteSource) doc.getSource()).getFileReference().getFileId())) {
-                            founded = true;
-                            break;
+                            messageList.forceReconvert(message.getEngineId());
                         }
                     }
                 }
             }
-            if (founded) {
-                messageList.forceReconvert();
-            }
+            messageList.stopReconverting();
         }
 
         for (JsBindedValue<JsUser> u : users.values()) {
