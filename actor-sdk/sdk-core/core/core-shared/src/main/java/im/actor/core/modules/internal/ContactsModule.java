@@ -32,6 +32,7 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.storage.SyncKeyValue;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -40,11 +41,13 @@ public class ContactsModule extends AbsModule {
     private ListEngine<Contact> contacts;
     private ActorRef bookImportActor;
     private ActorRef contactSyncActor;
+    private SyncKeyValue bookImportState;
 
     public ContactsModule(final Modules modules) {
         super(modules);
 
         contacts = Storage.createList(STORAGE_CONTACTS, Contact.CREATOR);
+        bookImportState = new SyncKeyValue(Storage.createKeyValue(STORAGE_BOOK_IMPORT));
     }
 
     public void run() {
@@ -60,6 +63,10 @@ public class ContactsModule extends AbsModule {
                 return new ContactsSyncActor(context());
             }
         }).changeDispatcher("heavy"), "actor/contacts_sync");
+    }
+
+    public SyncKeyValue getBookImportState() {
+        return bookImportState;
     }
 
     public ListEngine<Contact> getContacts() {
