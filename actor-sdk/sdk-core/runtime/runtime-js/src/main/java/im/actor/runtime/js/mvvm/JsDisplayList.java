@@ -28,6 +28,7 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
 
     private ArrayList<V> values;
     private JsArray<T> jsValues;
+    private boolean isForceReconverted = false;
 
     public JsDisplayList(JsListEngine<V> listEngine, JsEntityConverter<V, T> entityConverter) {
         this.listEngine = listEngine;
@@ -40,7 +41,7 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
         for (long rid : rids) {
             V item = listEngine.getValue(rid);
             if (item == null) {
-                Log.w("AngularList", "Unable to find item #" + rid);
+                Log.w("JsDisplayList", "Unable to find item #" + rid);
                 continue;
             }
             values.add(item);
@@ -75,23 +76,25 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
         callbacksInverted.remove(callback);
     }
 
+    public void startReconverting() {
+        isForceReconverted = false;
+    }
+
     public void forceReconvert(long id) {
         for (int i = 0; i < values.size(); i++) {
             if (values.get(i).getEngineId() == id) {
                 remove(jsValues, i);
                 insert(jsValues, i, entityConverter.convert(values.get(i)));
+                isForceReconverted = true;
             }
         }
     }
 
-    public void forceReconvert() {
-        clear(jsValues);
-
-        for (int i = 0; i < values.size(); i++) {
-            jsValues.push(entityConverter.convert(values.get(i)));
+    public void stopReconverting() {
+        if (isForceReconverted) {
+            isForceReconverted = false;
+            notifySubscribers();
         }
-
-        notifySubscribers();
     }
 
     public ArrayList<V> getRawItems() {
