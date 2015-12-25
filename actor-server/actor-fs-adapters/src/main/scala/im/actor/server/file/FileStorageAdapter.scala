@@ -5,7 +5,11 @@ import java.io.File
 import im.actor.server.model
 import im.actor.server.db.ActorPostgresDriver.api._
 
-import scala.concurrent._
+import scala.concurrent._, duration._
+
+object FileStorageAdapter {
+  val UrlExpirationTimeout = 1.day
+}
 
 trait FileStorageAdapter extends UploadActions with DownloadActions with UploadKeyParsing
 

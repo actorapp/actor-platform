@@ -3,7 +3,7 @@ package im.actor.api.rpc
 import cats.std.{ EitherInstances, FutureInstances }
 
 import scala.concurrent.{ ExecutionContext, Future }
-import cats._, cats.data.{ XorT, Xor }, data.Xor._, syntax.option._
+import cats._, cats.data.{ XorT, Xor }, data.Xor._, syntax.all._
 
 import scala.language.implicitConversions
 import scalaz.{ \/-, -\/, \/ }

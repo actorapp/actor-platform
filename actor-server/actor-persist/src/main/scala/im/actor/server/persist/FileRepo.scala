@@ -31,6 +31,9 @@ object FileRepo {
   def find(id: Long): SqlAction[Option[model.File], NoStream, Read] =
     files.filter(_.id === id).result.headOption
 
+  def fetch(ids: Set[Long]) =
+    files.filter(_.id inSetBind ids).result
+
   def findByKey(key: String) =
     files.filter(_.uploadKey === key).result.headOption
 
