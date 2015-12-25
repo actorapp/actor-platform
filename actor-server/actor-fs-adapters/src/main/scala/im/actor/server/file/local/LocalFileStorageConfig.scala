@@ -17,7 +17,7 @@ object LocalFileStorageConfig {
 
   def load: Try[LocalFileStorageConfig] =
     for {
-      config ← Try(ActorConfig.load().getConfig("services.filestorage"))
+      config ← Try(ActorConfig.load().getConfig("services.file-storage"))
       result ← load(config)
     } yield result
 }
