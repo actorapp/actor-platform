@@ -162,7 +162,11 @@ export default {
         'clear': 'Do you really want to clear this conversation?',
         'delete': 'Do you really want to delete this conversation?',
         'removeContact': 'You really want to remove {name} from your contacts?',
-        'kick': 'Are you sure you want kick {name}'
+        'kick': 'Are you sure you want kick {name}',
+        'nonContactHide': {
+          'title': 'Are you sure you want to hide this conversation?',
+          'body': 'User {name} isn\'t in your contact list.'
+        }
       }
     },
 
