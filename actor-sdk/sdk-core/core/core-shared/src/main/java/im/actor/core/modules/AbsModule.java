@@ -33,12 +33,15 @@ public abstract class AbsModule {
     public static final String STORAGE_NOTIFICATIONS = "notifications";
     public static final String STORAGE_SEARCH = "search";
 
+    public static final String STORAGE_BOOK_IMPORT = "book_import";
+
     public static final String STORAGE_CHAT_PREFIX = "chat_";
     public static final String STORAGE_CHAT_MEDIA_PREFIX = "chat_media_";
     public static final String STORAGE_CHAT_DOCS_PREFIX = "chat_docs_";
     public static final String STORAGE_CHAT_IN = "chat_pending";
     public static final String STORAGE_CHAT_OUT = "chat_pending_out";
     public static final String STORAGE_CURSOR = "chat_cursor";
+
 
     private ModuleContext context;
 
