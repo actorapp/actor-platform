@@ -22,7 +22,7 @@ import scala.util.{ Failure, Success, Try }
 /**
  * File adapter that works with local file system to store and retrieve files
  * To use this file adapter as default provide its FQCN in modules.files.adapter of your server config.
- * You also need to provide default file location in services.filestorage.location of your server config
+ * You also need to provide default file location in services.file-storage.location of your server config
  * On initialization it will try to create default file location, if it does not exist and write simple text file
  * to check user's read/write permissions
  *
