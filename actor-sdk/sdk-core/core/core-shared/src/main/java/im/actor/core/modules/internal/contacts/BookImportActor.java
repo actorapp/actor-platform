@@ -21,6 +21,7 @@ import im.actor.core.entity.PhoneBookContact;
 import im.actor.core.entity.PhoneBookEmail;
 import im.actor.core.entity.PhoneBookPhone;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.internal.contacts.entity.BookImportStorage;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -34,10 +35,19 @@ public class BookImportActor extends ModuleActor {
 
     private static final int MAX_IMPORT_SIZE = 50;
 
+    // Reading Phone Book
+    private boolean phoneBookReadingIsInProgress = false;
+
+    // Import Queue
+    private boolean isUploadingContacts = false;
+    private ArrayList<ImportQueueItem> importQueue = new ArrayList<ImportQueueItem>();
+
+    // Currently importing phones and emails
     private HashSet<Long> importingPhones = new HashSet<Long>();
     private HashSet<String> importingEmails = new HashSet<String>();
 
-    private boolean isSyncInProgress = false;
+    // Imported phones and emails
+    private BookImportStorage storage = new BookImportStorage();
 
     public BookImportActor(ModuleContext context) {
         super(context);
@@ -47,6 +57,14 @@ public class BookImportActor extends ModuleActor {
     @Override
     public void preStart() {
         super.preStart();
+        byte[] data = context().getContactsModule().getBookImportState().get(0);
+        if (data != null) {
+            try {
+                storage = new BookImportStorage(data);
+            } catch (Exception e) {
+                e.getLocalizedMessage();
+            }
+        }
         self().send(new PerformSync());
     }
 
@@ -54,13 +72,13 @@ public class BookImportActor extends ModuleActor {
         if (ENABLE_LOG) {
             Log.d(TAG, "Checking sync...");
         }
-        if (isSyncInProgress) {
+        if (phoneBookReadingIsInProgress) {
             if (ENABLE_LOG) {
                 Log.d(TAG, "Sync already in progress");
             }
             return;
         }
-        isSyncInProgress = true;
+        phoneBookReadingIsInProgress = true;
         if (ENABLE_LOG) {
             Log.d(TAG, "Starting book loading...");
         }
@@ -75,159 +93,159 @@ public class BookImportActor extends ModuleActor {
     }
 
     private void onPhoneBookLoaded(List<PhoneBookContact> phoneBook) {
-        isSyncInProgress = false;
+        phoneBookReadingIsInProgress = false;
         if (ENABLE_LOG) {
             Log.d(TAG, "Book load completed");
         }
 
-        ArrayList<ApiPhoneToImport> phoneToImports = new ArrayList<ApiPhoneToImport>();
-        ArrayList<ApiEmailToImport> emailToImports = new ArrayList<ApiEmailToImport>();
+        int newPhones = 0;
+        int newEmails = 0;
         for (PhoneBookContact record : phoneBook) {
             for (PhoneBookPhone phone : record.getPhones()) {
-                if (isImported(phone.getNumber())) {
+                if (storage.isImported(phone.getNumber())) {
                     continue;
                 }
                 if (importingPhones.contains(phone.getNumber())) {
                     continue;
                 }
                 importingPhones.add(phone.getNumber());
-                phoneToImports.add(new ApiPhoneToImport(phone.getNumber(), record.getName()));
+                importQueue.add(new ImportPhoneQueueItem(phone.getNumber(), record.getName()));
+                newPhones++;
             }
 
             for (PhoneBookEmail email : record.getEmails()) {
-                if (isImported(email.getEmail().toLowerCase())) {
+                if (storage.isImported(email.getEmail().toLowerCase())) {
                     continue;
                 }
                 if (importingEmails.contains(email.getEmail().toLowerCase())) {
                     continue;
                 }
                 importingEmails.add(email.getEmail().toLowerCase());
-                emailToImports.add(new ApiEmailToImport(email.getEmail().toLowerCase(), record.getName()));
+                importQueue.add(new ImportEmailQueueItem(email.getEmail().toLowerCase(), record.getName()));
+                newEmails++;
             }
         }
-
-        if (phoneToImports.size() == 0 && emailToImports.size() == 0) {
-            if (ENABLE_LOG) {
-                Log.d(TAG, "No new contacts found");
-            }
-            markImported();
-            return;
-        } else {
-            if (ENABLE_LOG) {
-                Log.d(TAG, "Founded new " + (phoneToImports.size() + emailToImports.size()) + " contact records");
-            }
-        }
-
-        ArrayList<ApiPhoneToImport> phoneToImportsPart = new ArrayList<ApiPhoneToImport>();
-        ArrayList<ApiEmailToImport> emailToImportsPart = new ArrayList<ApiEmailToImport>();
-        int count = 0;
-        for (ApiPhoneToImport phoneToImport : phoneToImports) {
-            phoneToImportsPart.add(phoneToImport);
-            count++;
-            if (count >= MAX_IMPORT_SIZE) {
-                performImport(phoneToImportsPart, emailToImportsPart);
-                phoneToImportsPart.clear();
-                emailToImportsPart.clear();
-                count = 0;
-            }
-        }
-
-        for (ApiEmailToImport emailToImport : emailToImports) {
-            emailToImportsPart.add(emailToImport);
-            count++;
-            if (count >= MAX_IMPORT_SIZE) {
-                performImport(phoneToImportsPart, emailToImportsPart);
-                phoneToImportsPart.clear();
-                emailToImportsPart.clear();
-                count = 0;
-            }
-        }
-
-        if (count > 0) {
-            performImport(phoneToImportsPart, emailToImportsPart);
-        }
-    }
-
-    private void performImport(ArrayList<ApiPhoneToImport> phoneToImportsPart,
-                               ArrayList<ApiEmailToImport> emailToImportsPart) {
 
         if (ENABLE_LOG) {
-            Log.d(TAG, "Performing import part with " + phoneToImportsPart.size() +
-                    " phones and " + emailToImportsPart.size() + " emails");
+            if (newPhones == 0 && newEmails == 0) {
+                Log.d(TAG, "No new contacts found");
+            } else {
+                Log.d(TAG, "Founded new " + (newPhones + newEmails) + " contact records");
+            }
         }
 
-        final ApiPhoneToImport[] phones = phoneToImportsPart.toArray(new ApiPhoneToImport[phoneToImportsPart.size()]);
-        final ApiEmailToImport[] emailToImports = emailToImportsPart.toArray(new ApiEmailToImport[emailToImportsPart.size()]);
+        performImportIfRequired();
+    }
 
-        request(new RequestImportContacts((java.util.List<ApiPhoneToImport>) phoneToImportsPart.clone(),
-                (java.util.List<ApiEmailToImport>) emailToImportsPart.clone()), new RpcCallback<ResponseImportContacts>() {
+    private void performImportIfRequired() {
+
+        //
+        // Checking state
+        //
+
+        if (ENABLE_LOG) {
+            Log.d(TAG, "performImportIfRequired called");
+        }
+        if (isUploadingContacts) {
+            if (ENABLE_LOG) {
+                Log.d(TAG, "performImportIfRequired:exiting:already importing");
+            }
+            return;
+        }
+
+        if (importQueue.size() == 0) {
+            if (ENABLE_LOG) {
+                Log.d(TAG, "performImportIfRequired:exiting:nothing to import");
+            }
+            // Marking as everything is imported
+            context().getAppStateModule().onBookImported();
+            return;
+        }
+
+        //
+        // Performing import
+        //
+
+        isUploadingContacts = true;
+        final ArrayList<ApiPhoneToImport> phoneToImports = new ArrayList<ApiPhoneToImport>();
+        final ArrayList<ApiEmailToImport> emailToImports = new ArrayList<ApiEmailToImport>();
+        for (int i = 0; i < 50 && importQueue.size() > 0; i++) {
+            ImportQueueItem importQueueItem = importQueue.remove(0);
+            if (importQueueItem instanceof ImportEmailQueueItem) {
+                emailToImports.add(new ApiEmailToImport(((ImportEmailQueueItem) importQueueItem).getEmail(),
+                        ((ImportEmailQueueItem) importQueueItem).getName()));
+            } else if (importQueueItem instanceof ImportPhoneQueueItem) {
+                phoneToImports.add(new ApiPhoneToImport(((ImportPhoneQueueItem) importQueueItem).getPhoneNumber(),
+                        ((ImportPhoneQueueItem) importQueueItem).getName()));
+            } else {
+                throw new RuntimeException();
+            }
+        }
+        request(new RequestImportContacts(phoneToImports, emailToImports), new RpcCallback<ResponseImportContacts>() {
             @Override
             public void onResult(ResponseImportContacts response) {
-                for (ApiPhoneToImport phoneToImport : phones) {
-                    markImported(phoneToImport.getPhoneNumber());
+
+                //
+                // Saving imported state
+                //
+
+                for (ApiPhoneToImport phoneToImport : phoneToImports) {
+                    storage.markAsImported(phoneToImport.getPhoneNumber());
                     importingPhones.remove(phoneToImport.getPhoneNumber());
                 }
                 for (ApiEmailToImport emailToImport : emailToImports) {
-                    markImported(emailToImport.getEmail());
+                    storage.markAsImported(emailToImport.getEmail());
                     importingEmails.remove(emailToImport.getEmail());
                 }
+                context().getContactsModule().getBookImportState().put(0, storage.toByteArray());
 
-                if (importingEmails.size() == 0 && importingPhones.size() == 0) {
-                    markImported();
-                }
+                //
+                // Generating update
+                //
+                if (response.getUsers().size() != 0) {
+                    if (ENABLE_LOG) {
+                        Log.d(TAG, "Import success with " + response.getUsers().size() + " new contacts");
+                    }
 
-                if (response.getUsers().size() == 0) {
+                    ArrayList<Integer> uids = new ArrayList<Integer>();
+                    for (ApiUser u : response.getUsers()) {
+                        uids.add(u.getId());
+                    }
+                    updates().onUpdateReceived(new FatSeqUpdate(
+                            response.getSeq(), response.getState(),
+                            UpdateContactsAdded.HEADER,
+                            new UpdateContactsAdded(uids).toByteArray(),
+                            response.getUsers(),
+                            new ArrayList<ApiGroup>()));
+                } else {
                     if (ENABLE_LOG) {
                         Log.d(TAG, "Import success, but no new contacts found");
                     }
-                    return;
                 }
 
-                if (ENABLE_LOG) {
-                    Log.d(TAG, "Import success with " + response.getUsers().size() + " new contacts");
-                }
-
-                ArrayList<Integer> uids = new ArrayList<Integer>();
-                for (ApiUser u : response.getUsers()) {
-                    uids.add(u.getId());
-                }
-                updates().onUpdateReceived(new FatSeqUpdate(
-                        response.getSeq(), response.getState(),
-                        UpdateContactsAdded.HEADER,
-                        new UpdateContactsAdded(uids).toByteArray(),
-                        response.getUsers(),
-                        new ArrayList<ApiGroup>()));
+                //
+                // Launching next iteration
+                //
+                isUploadingContacts = false;
+                performImportIfRequired();
             }
 
             @Override
             public void onError(RpcException e) {
+
                 // TODO: Better error handling
                 if (ENABLE_LOG) {
                     Log.d(TAG, "Import failure");
                 }
                 e.printStackTrace();
+
+                //
+                // Launching next iteration
+                //
+                isUploadingContacts = false;
+                performImportIfRequired();
             }
         });
-    }
-
-    private boolean isImported(long phone) {
-        return preferences().getBool("book_phone_" + phone, false);
-    }
-
-    private boolean isImported(String email) {
-        return preferences().getBool("book_email_" + email.toLowerCase(), false);
-    }
-
-    private void markImported(long phone) {
-        preferences().putBool("book_phone_" + phone, true);
-    }
-
-    private void markImported(String email) {
-        preferences().putBool("book_email_" + email.toLowerCase(), true);
-    }
-
-    private void markImported() {
-        context().getAppStateModule().onBookImported();
     }
 
     @Override
@@ -254,6 +272,47 @@ public class BookImportActor extends ModuleActor {
 
         public List<PhoneBookContact> getPhoneBook() {
             return phoneBook;
+        }
+    }
+
+    private static abstract class ImportQueueItem {
+
+    }
+
+    private static class ImportPhoneQueueItem extends ImportQueueItem {
+
+        private long phoneNumber;
+        private String name;
+
+        public ImportPhoneQueueItem(long phoneNumber, String name) {
+            this.phoneNumber = phoneNumber;
+            this.name = name;
+        }
+
+        public long getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    private static class ImportEmailQueueItem extends ImportQueueItem {
+        private String email;
+        private String name;
+
+        public ImportEmailQueueItem(String email, String name) {
+            this.email = email;
+            this.name = name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }
