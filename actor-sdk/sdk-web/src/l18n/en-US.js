@@ -31,12 +31,6 @@ export default {
       'signOut': 'Sign Out'
     },
 
-    // Sidebar
-    'sidebar': {
-      'groups': 'Groups',
-      'private': 'Private'
-    },
-
     // Buttons
     'button': {
       'ok': 'Ok',
@@ -75,6 +69,13 @@ export default {
           }
         }
       }
+    },
+
+    // Connection state
+    'connectionState': {
+      'connecting': 'Houston, we have a problem! Connection to Actor server is lost. Trying to reconnect now...',
+      'online': 'You\'re back online!',
+      'updating': ''
     },
 
     // Compose

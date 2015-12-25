@@ -31,12 +31,6 @@ export default {
       'signOut': 'Выход'
     },
 
-    // Sidebar
-    'sidebar': {
-      'groups': 'Группы',
-      'private': 'Люди'
-    },
-
     // Buttons
     'button': {
       'ok': 'Ok',
@@ -76,6 +70,13 @@ export default {
         }
       }
 
+    },
+
+    // Connection state
+    'connectionState': {
+      'connecting': 'Упс! Похоже соединение с сервером потеряно. Пробуем пересоедениться...',
+      'online': 'Вы снова онлайн!',
+      'updating': ''
     },
 
     // Compose

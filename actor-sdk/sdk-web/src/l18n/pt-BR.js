@@ -31,12 +31,6 @@ export default {
       'signOut': 'Sair'
     },
 
-    // Sidebar
-    'sidebar': {
-      'groups': 'Groups',
-      'private': 'Private'
-    },
-
     // Buttons
     'button': {
       'ok': 'Ok',
