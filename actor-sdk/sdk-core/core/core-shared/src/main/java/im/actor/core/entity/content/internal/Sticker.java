@@ -48,7 +48,8 @@ public class Sticker extends AbsLocalContent {
 
     }
 
-    public Sticker(ApiImageLocation apiImageLocation128, ApiImageLocation apiImageLocation256, ApiImageLocation apiImageLocation512, int stickerId, int stickerCollectionId, long collectionAccessHash) {
+    public Sticker(ApiImageLocation apiImageLocation128, ApiImageLocation apiImageLocation256, ApiImageLocation apiImageLocation512, int stickerId, int stickerCollectionId, long collectionAccessHash, byte[] thumb) {
+        this.thumb = thumb;
         this.apiImageLocation128 = apiImageLocation128;
         this.apiImageLocation256 = apiImageLocation256;
         this.apiImageLocation512 = apiImageLocation512;
@@ -139,6 +140,10 @@ public class Sticker extends AbsLocalContent {
 
     public byte[] getThumb() {
         return thumb;
+    }
+
+    public void setThumb(byte[] thumb) {
+        this.thumb = thumb;
     }
 
     public int getStickerId() {

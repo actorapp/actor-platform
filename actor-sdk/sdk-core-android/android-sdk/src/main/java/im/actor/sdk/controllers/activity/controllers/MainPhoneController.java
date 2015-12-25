@@ -393,7 +393,7 @@ public class MainPhoneController extends MainBaseController {
 
         // Icons
         // int width = Screen.dp(72 * 2);
-        int width = Screen.dp(120 * 2 + 72);
+        int width = Screen.dp(120 * 2);
 
         tabsContainer.addView(barTabs, new FrameLayout.LayoutParams(width, Screen.dp(56)));
         Toolbar.LayoutParams lp = new Toolbar.LayoutParams(width, Screen.dp(56));

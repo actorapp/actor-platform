@@ -45,7 +45,7 @@ public class StickerContent extends AbsContent {
     public StickerContent(ContentLocalContainer localContainer) {
         super(localContainer);
         Sticker content = (Sticker) localContainer.getContent();
-        sticker = new Sticker(content.getApiImageLocation128(), content.getApiImageLocation256(), content.getApiImageLocation512(), content.getStickerId(), content.getStickerCollectionId(), content.getCollectionAccessHash());
+        sticker = new Sticker(content.getApiImageLocation128(), content.getApiImageLocation256(), content.getApiImageLocation512(), content.getStickerId(), content.getStickerCollectionId(), content.getCollectionAccessHash(), content.getThumb());
 
     }
 
