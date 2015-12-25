@@ -21,6 +21,7 @@ import im.actor.core.entity.PhoneBookContact;
 import im.actor.core.entity.PhoneBookEmail;
 import im.actor.core.entity.PhoneBookPhone;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.internal.contacts.entity.BookImportStorage;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -38,6 +39,7 @@ public class BookImportActor extends ModuleActor {
     private HashSet<String> importingEmails = new HashSet<String>();
 
     private boolean isSyncInProgress = false;
+    private BookImportStorage storage = new BookImportStorage();
 
     public BookImportActor(ModuleContext context) {
         super(context);
@@ -47,6 +49,7 @@ public class BookImportActor extends ModuleActor {
     @Override
     public void preStart() {
         super.preStart();
+        
         self().send(new PerformSync());
     }
 
@@ -210,21 +213,21 @@ public class BookImportActor extends ModuleActor {
         });
     }
 
-    private boolean isImported(long phone) {
-        return preferences().getBool("book_phone_" + phone, false);
-    }
-
-    private boolean isImported(String email) {
-        return preferences().getBool("book_email_" + email.toLowerCase(), false);
-    }
-
-    private void markImported(long phone) {
-        preferences().putBool("book_phone_" + phone, true);
-    }
-
-    private void markImported(String email) {
-        preferences().putBool("book_email_" + email.toLowerCase(), true);
-    }
+//    private boolean isImported(long phone) {
+//        return preferences().getBool("book_phone_" + phone, false);
+//    }
+//
+//    private boolean isImported(String email) {
+//        return preferences().getBool("book_email_" + email.toLowerCase(), false);
+//    }
+//
+//    private void markImported(long phone) {
+//        preferences().putBool("book_phone_" + phone, true);
+//    }
+//
+//    private void markImported(String email) {
+//        preferences().putBool("book_email_" + email.toLowerCase(), true);
+//    }
 
     private void markImported() {
         context().getAppStateModule().onBookImported();
@@ -254,6 +257,47 @@ public class BookImportActor extends ModuleActor {
 
         public List<PhoneBookContact> getPhoneBook() {
             return phoneBook;
+        }
+    }
+
+    private static abstract class ImportQueueItem {
+
+    }
+
+    private static class ImportPhoneQueueItem extends ImportQueueItem {
+
+        private long phoneNumber;
+        private String name;
+
+        public ImportPhoneQueueItem(long phoneNumber, String name) {
+            this.phoneNumber = phoneNumber;
+            this.name = name;
+        }
+
+        public long getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    private static class ImportEmailQueueItem extends ImportQueueItem {
+        private String email;
+        private String name;
+
+        public ImportEmailQueueItem(String email, String name) {
+            this.email = email;
+            this.name = name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }
