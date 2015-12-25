@@ -8,6 +8,7 @@ import com.google.gwt.core.client.JsArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Contact;
@@ -305,7 +306,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     }
 
     @Override
-    public void onFileLoaded(long fileId) {
+    public void onFileLoaded(HashSet<Long> fileId) {
         if (dialogsList != null) {
             for (Dialog dialog : dialogsList.getRawItems()) {
                 if (checkAvatar(dialog.getDialogAvatar(), fileId)) {
@@ -333,7 +334,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                 if (message.getContent() instanceof DocumentContent) {
                     DocumentContent doc = (DocumentContent) message.getContent();
                     if (doc.getSource() instanceof FileRemoteSource) {
-                        if (((FileRemoteSource) doc.getSource()).getFileReference().getFileId() == fileId) {
+                        if (fileId.contains(((FileRemoteSource) doc.getSource()).getFileReference().getFileId())) {
                             founded = true;
                             break;
                         }
@@ -362,17 +363,17 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
         }
     }
 
-    protected boolean checkAvatar(Avatar avatar, long fileId) {
+    protected boolean checkAvatar(Avatar avatar, HashSet<Long> fileIds) {
         if (avatar == null) {
             return false;
         }
-        if (avatar.getSmallImage() != null && avatar.getSmallImage().getFileReference().getFileId() == fileId) {
+        if (avatar.getSmallImage() != null && fileIds.contains(avatar.getSmallImage().getFileReference().getFileId())) {
             return true;
         }
-        if (avatar.getFullImage() != null && avatar.getFullImage().getFileReference().getFileId() == fileId) {
+        if (avatar.getFullImage() != null && fileIds.contains(avatar.getFullImage().getFileReference().getFileId())) {
             return true;
         }
-        if (avatar.getLargeImage() != null && avatar.getLargeImage().getFileReference().getFileId() == fileId) {
+        if (avatar.getLargeImage() != null && fileIds.contains(avatar.getLargeImage().getFileReference().getFileId())) {
             return true;
         }
         return false;

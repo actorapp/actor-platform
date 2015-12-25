@@ -9,6 +9,7 @@ public enum ApiEmailActivationType {
 
     CODE(1),
     OAUTH2(2),
+    PASSWORD(3),
     UNSUPPORTED_VALUE(-1);
 
     private int value;
@@ -25,6 +26,7 @@ public enum ApiEmailActivationType {
         switch(value) {
             case 1: return ApiEmailActivationType.CODE;
             case 2: return ApiEmailActivationType.OAUTH2;
+            case 3: return ApiEmailActivationType.PASSWORD;
             default: return ApiEmailActivationType.UNSUPPORTED_VALUE;
         }
     }
