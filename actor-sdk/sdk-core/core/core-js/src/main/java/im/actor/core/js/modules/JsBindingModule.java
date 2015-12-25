@@ -251,6 +251,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                     }
                 }
             });
+            groupOnlines.put(gid, value);
         }
         return groupOnlines.get(gid);
     }
