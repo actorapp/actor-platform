@@ -13082,6 +13082,10 @@
             "doc": [
               "Map Value"
             ],
+            "trait": {
+              "name": "RawValue",
+              "key": 6
+            },
             "attributes": [
               {
                 "type": {
