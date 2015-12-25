@@ -280,7 +280,8 @@ public class Authentication {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                request(new RequestSignUp(modules.getPreferences().getString(KEY_TRANSACTION_HASH), name, sex), new RpcCallback<ResponseAuth>() {
+                request(new RequestSignUp(modules.getPreferences().getString(KEY_TRANSACTION_HASH), name, sex,
+                        null), new RpcCallback<ResponseAuth>() {
                     @Override
                     public void onResult(ResponseAuth response) {
                         onLoggedIn(callback, response);
