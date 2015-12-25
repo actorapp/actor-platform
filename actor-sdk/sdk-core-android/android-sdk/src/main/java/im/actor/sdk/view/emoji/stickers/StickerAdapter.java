@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -105,7 +106,7 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
             //Build packs buttons
             final StickerView sv = new StickerView(context);
 
-            sv.bind(pack.getStickers().get().get(0).getFileReference128(), Screen.dp(48));
+            sv.bind(pack.getStickers().get().get(0), StickerView.STICKER_SMALL);
             sv.setPadding(padding, padding, padding, padding);
             sv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -199,25 +200,30 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
             ll.setTag(TAG_KEY, data.getPackCount());
             for (final Sticker s : data.getLine()) {
                 StickerView sv;
-                if (s != null && s.getFileReference256() != null) {
+                if (s != null && s.getFileReference128() != null) {
 
                     sv = stickersCache.get(s.getFileReference128().getFileId());
                     if (sv == null) {
                         sv = new StickerView(context);
                         sv.setPadding(STICKER_PADDING, STICKER_PADDING, STICKER_PADDING, STICKER_PADDING);
-                        sv.bind(s.getFileReference128(), STICKER_SIZE);
+                        sv.bind(s, StickerView.STICKER_SMALL);
                         stickersCache.put(s.getFileReference128().getFileId(), sv);
 
                     } else if (sv.isLoaded()) {
-                        if (sv.getParent() != null) {
-                            ((LinearLayout) sv.getParent()).removeView(sv);
-                        }
                         sv.shortenFade();
                     }
 
+                    if (sv.getParent() != null) {
+                        ((LinearLayout) sv.getParent()).removeView(sv);
+                    }
+
+                    final StickerView finalSv = sv;
                     sv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            if (s.getThumb() == null && finalSv.isLoaded()) {
+                                s.setThumb(finalSv.getThumb());
+                            }
                             keyboard.onStickerClicked(s);
                         }
                     });
