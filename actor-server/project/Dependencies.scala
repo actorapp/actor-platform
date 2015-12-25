@@ -8,7 +8,7 @@ object Dependencies {
     val actorBotkit = "1.0.66"
     val akka = "2.4.0"
     val akkaExperimental = "2.0-M1"
-    val cats = "0.2.0"
+    val cats = "0.3.0"
     val kamon = "0.5.2"
     val scalaz = "7.1.1"
     val slick = "3.1.1"
