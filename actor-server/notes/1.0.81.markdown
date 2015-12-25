@@ -1,0 +1,5 @@
+SDK Features
+---
+
+* Username & Password auth
+* One request for Multiple Files Download Urls 
