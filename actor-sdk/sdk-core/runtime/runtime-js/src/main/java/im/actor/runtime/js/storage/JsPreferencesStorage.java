@@ -93,7 +93,7 @@ public class JsPreferencesStorage implements PreferencesStorage {
         if (v == null) {
             storage.removeItem(key);
         } else {
-            storage.setItem(convertKey(key), v);
+            storage.setItem(key, v);
         }
     }
 
