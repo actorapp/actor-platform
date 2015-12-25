@@ -3,7 +3,7 @@ package im.actor.server.api.rpc.service.files
 import akka.actor._
 import im.actor.api.rpc.FileHelpers.Errors
 import im.actor.api.rpc.files._
-import im.actor.api.rpc.{ ClientData, _ }
+import im.actor.api.rpc._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.file._
@@ -62,4 +62,6 @@ class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
       } yield ResponseCommitFileUpload(ApiFileLocation(file.id, ACLUtils.fileAccessHash(file.id, file.accessSalt)))).value map (_.toScalaz)
     }
 
+  override def jhandleGetFileUrls(files: IndexedSeq[ApiFileLocation], clientData: ClientData): Future[HandlerResult[ResponseGetFileUrls]] =
+    Future.failed(new RuntimeException("Not implemented"))
 }
