@@ -24,13 +24,13 @@ class ConfigsServiceSpec
   implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
   def e1() = {
-    whenReady(service.handleEditParameter("par1", "val1")) { resp ⇒
+    whenReady(service.handleEditParameter("par1", Some("val1"))) { resp ⇒
       resp should matchPattern {
         case Ok(ResponseSeq(_, _)) ⇒
       }
     }
 
-    whenReady(service.handleEditParameter("par1", "val2")) { resp ⇒
+    whenReady(service.handleEditParameter("par1", Some("val2"))) { resp ⇒
       resp should matchPattern {
         case Ok(ResponseSeq(_, _)) ⇒
       }
