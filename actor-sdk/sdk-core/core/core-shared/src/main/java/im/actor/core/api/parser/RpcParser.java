@@ -25,6 +25,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 185: return RequestStartEmailAuth.fromBytes(payload);
             case 198: return RequestStartAnonymousAuth.fromBytes(payload);
             case 203: return RequestStartTokenAuth.fromBytes(payload);
+            case 2571: return RequestStartUsernameAuth.fromBytes(payload);
             case 189: return RequestValidateCode.fromBytes(payload);
             case 207: return RequestValidatePassword.fromBytes(payload);
             case 194: return RequestGetOAuth2Params.fromBytes(payload);
@@ -101,12 +102,14 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 30: return RequestStopTyping.fromBytes(payload);
             case 29: return RequestSetOnline.fromBytes(payload);
             case 77: return RequestGetFileUrl.fromBytes(payload);
+            case 2573: return RequestGetFileUrls.fromBytes(payload);
             case 97: return RequestGetFileUploadUrl.fromBytes(payload);
             case 122: return RequestCommitFileUpload.fromBytes(payload);
             case 142: return RequestGetFileUploadPartUrl.fromBytes(payload);
             case 134: return RequestGetParameters.fromBytes(payload);
             case 128: return RequestEditParameter.fromBytes(payload);
             case 243: return RequestStoreEvents.fromBytes(payload);
+            case 2569: return RequestRawRequest.fromBytes(payload);
             case 241: return RequestLoadWallpappers.fromBytes(payload);
             case 51: return RequestRegisterGooglePush.fromBytes(payload);
             case 76: return RequestRegisterApplePush.fromBytes(payload);
@@ -122,6 +125,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 123: return RequestCompleteWebaction.fromBytes(payload);
             case 193: return ResponseStartPhoneAuth.fromBytes(payload);
             case 186: return ResponseStartEmailAuth.fromBytes(payload);
+            case 2572: return ResponseStartUsernameAuth.fromBytes(payload);
             case 195: return ResponseGetOAuth2Params.fromBytes(payload);
             case 5: return ResponseAuth.fromBytes(payload);
             case 81: return ResponseGetAuthSessions.fromBytes(payload);
@@ -153,10 +157,12 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 2567: return ResponseCreateTeam.fromBytes(payload);
             case 183: return ResponseIntegrationToken.fromBytes(payload);
             case 78: return ResponseGetFileUrl.fromBytes(payload);
+            case 2574: return ResponseGetFileUrls.fromBytes(payload);
             case 121: return ResponseGetFileUploadUrl.fromBytes(payload);
             case 138: return ResponseCommitFileUpload.fromBytes(payload);
             case 141: return ResponseGetFileUploadPartUrl.fromBytes(payload);
             case 135: return ResponseGetParameters.fromBytes(payload);
+            case 2570: return ResponseRawRequest.fromBytes(payload);
             case 242: return ResponseLoadWallpappers.fromBytes(payload);
             case 12: return ResponseGetDifference.fromBytes(payload);
             case 50: return ResponseVoid.fromBytes(payload);

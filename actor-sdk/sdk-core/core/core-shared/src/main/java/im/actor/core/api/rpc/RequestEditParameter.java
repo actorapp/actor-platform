@@ -25,7 +25,7 @@ public class RequestEditParameter extends Request<ResponseSeq> {
     private String key;
     private String value;
 
-    public RequestEditParameter(@NotNull String key, @NotNull String value) {
+    public RequestEditParameter(@NotNull String key, @Nullable String value) {
         this.key = key;
         this.value = value;
     }
@@ -39,7 +39,7 @@ public class RequestEditParameter extends Request<ResponseSeq> {
         return this.key;
     }
 
-    @NotNull
+    @Nullable
     public String getValue() {
         return this.value;
     }
@@ -47,7 +47,7 @@ public class RequestEditParameter extends Request<ResponseSeq> {
     @Override
     public void parse(BserValues values) throws IOException {
         this.key = values.getString(1);
-        this.value = values.getString(2);
+        this.value = values.optString(2);
     }
 
     @Override
@@ -56,10 +56,9 @@ public class RequestEditParameter extends Request<ResponseSeq> {
             throw new IOException();
         }
         writer.writeString(1, this.key);
-        if (this.value == null) {
-            throw new IOException();
+        if (this.value != null) {
+            writer.writeString(2, this.value);
         }
-        writer.writeString(2, this.value);
     }
 
     @Override
