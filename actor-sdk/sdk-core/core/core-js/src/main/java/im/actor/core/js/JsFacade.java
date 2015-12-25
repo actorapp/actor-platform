@@ -574,6 +574,20 @@ public class JsFacade implements Exportable {
         messenger.getJsUser(uid).unsubscribe(callback);
     }
 
+    public void bindUserOnline(int uid, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsUserOnline(uid).subscribe(callback);
+    }
+
+    public void unbindUserOnline(int uid, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsUserOnline(uid).unsubscribe(callback);
+    }
+
     // Groups
 
     public JsGroup getGroup(int gid) {
@@ -592,6 +606,20 @@ public class JsFacade implements Exportable {
             return;
         }
         messenger.getJsGroup(gid).unsubscribe(callback);
+    }
+
+    public void bindGroupOnline(int gid, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsGroupOnline(gid).subscribe(callback);
+    }
+
+    public void unbindGroupOnline(int gid, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsGroupOnline(gid).unsubscribe(callback);
     }
 
     // Actions
