@@ -307,6 +307,9 @@ public class Authentication {
     }
 
     public Command<AuthState> requestValidateCode(final String code) {
+        if (code == null) {
+            throw new RuntimeException("Code couldn't be null!");
+        }
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
