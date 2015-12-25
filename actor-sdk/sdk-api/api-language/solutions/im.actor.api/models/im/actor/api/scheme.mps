@@ -11235,6 +11235,9 @@
       </node>
       <node concept="2m5naR" id="2WAO9Y$lCqr" role="2m5mJr">
         <property role="TrG5h" value="MapValue" />
+        <property role="tsOgz" value="false" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="2WAO9Y$lyRS" resolve="RawValue" />
         <node concept="2m7Kf5" id="2WAO9Y$lCYY" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="items" />
@@ -11246,6 +11249,9 @@
         </node>
         <node concept="NXeRC" id="2WAO9Y$lE6r" role="NXodf">
           <property role="NXePf" value="Map Value" />
+        </node>
+        <node concept="Nu42z" id="6vhvPrvFThv" role="3BtCOu">
+          <property role="Nu42W" value="06" />
         </node>
       </node>
       <node concept="1Dx9M1" id="2WAO9Y$lrKc" role="1Dx9rD">
