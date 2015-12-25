@@ -147,7 +147,10 @@ class PresenceManager extends Actor with ActorLogging with Stash {
       if (newPresence != oldPresence)
         deliverState()
     case DeliverState ⇒
-      deliverState()
+      // TODO: schedule only if online
+      if (this.state.presence != Offline)
+        deliverState()
+
       scheduleDeliverState()
   }
 
