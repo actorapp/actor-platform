@@ -1,6 +1,6 @@
 package im.actor.util
 
-import im.actor.util.misc.StringUtils.validNickName
+import im.actor.util.misc.StringUtils.validUsername
 import org.scalatest.{ Matchers, FlatSpecLike }
 
 class StringUtilsSpec extends FlatSpecLike with Matchers {
@@ -8,19 +8,19 @@ class StringUtilsSpec extends FlatSpecLike with Matchers {
   "validNickName" should "validate nicknames" in e1
 
   def e1() = {
-    validNickName("rockjam") shouldEqual true
-    validNickName("abcde") shouldEqual true
-    validNickName("rock_jam") shouldEqual true
-    validNickName("r0ck_jaM___") shouldEqual true
+    validUsername("rockjam") shouldEqual true
+    validUsername("abcde") shouldEqual true
+    validUsername("rock_jam") shouldEqual true
+    validUsername("r0ck_jaM___") shouldEqual true
 
     //too long
     val tooLong = 0 to 35 map (e ⇒ ".") mkString ""
-    validNickName(tooLong) shouldEqual false
+    validUsername(tooLong) shouldEqual false
     //too short
-    validNickName("roc") shouldEqual false
+    validUsername("roc") shouldEqual false
     //wrong symbols
-    validNickName("rock-jam") shouldEqual false
-    validNickName("rock&^^jam") shouldEqual false
+    validUsername("rock-jam") shouldEqual false
+    validUsername("rock&^^jam") shouldEqual false
   }
 
 }

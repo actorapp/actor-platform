@@ -55,6 +55,22 @@
         {
           "type": "enum",
           "content": {
+            "name": "PhoneActivationType",
+            "values": [
+              {
+                "name": "CODE",
+                "id": 1
+              },
+              {
+                "name": "PASSWORD",
+                "id": 2
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
             "name": "EmailActivationType",
             "values": [
               {
@@ -64,6 +80,10 @@
               {
                 "name": "OAUTH2",
                 "id": 2
+              },
+              {
+                "name": "PASSWORD",
+                "id": 3
               }
             ]
           }
@@ -101,6 +121,17 @@
                   "type": "bool",
                   "id": 2,
                   "name": "isRegistered"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": {
+                      "type": "enum",
+                      "childType": "PhoneActivationType"
+                    }
+                  },
+                  "id": 3,
+                  "name": "activationType"
                 }
               ]
             },
@@ -377,6 +408,42 @@
                 "argument": "name",
                 "category": "full",
                 "description": "Name of new user"
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "category": "hidden",
+                "description": "Application Id"
+              },
+              {
+                "type": "reference",
+                "argument": "apiKey",
+                "category": "hidden",
+                "description": "Application API key"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceHash",
+                "category": "full",
+                "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceTitle",
+                "category": "full",
+                "description": "Device Title"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "TimeZone of device"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "Preferred languages"
               }
             ],
             "attributes": [
@@ -384,6 +451,42 @@
                 "type": "string",
                 "id": 1,
                 "name": "name"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "appId"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "apiKey"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "deviceHash"
+              },
+              {
+                "type": "string",
+                "id": 5,
+                "name": "deviceTitle"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 6,
+                "name": "timeZone"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 7,
+                "name": "preferredLanguages"
               }
             ]
           }
@@ -404,6 +507,42 @@
                 "argument": "token",
                 "category": "full",
                 "description": "Token for authentication"
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "category": "hidden",
+                "description": "Application Id"
+              },
+              {
+                "type": "reference",
+                "argument": "apiKey",
+                "category": "hidden",
+                "description": "Application API key"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceHash",
+                "category": "full",
+                "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceTitle",
+                "category": "full",
+                "description": "Device Title"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "TimeZone of device"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "Preferred languages"
               }
             ],
             "attributes": [
@@ -411,6 +550,168 @@
                 "type": "string",
                 "id": 1,
                 "name": "token"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "appId"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "apiKey"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "deviceHash"
+              },
+              {
+                "type": "string",
+                "id": 5,
+                "name": "deviceTitle"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 6,
+                "name": "timeZone"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 7,
+                "name": "preferredLanguages"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "StartUsernameAuth",
+            "header": 2571,
+            "response": {
+              "type": "anonymous",
+              "header": 2572,
+              "doc": [
+                "Result of login auth start. If is not registered move to signup.",
+                {
+                  "type": "reference",
+                  "argument": "transactionHash",
+                  "category": "danger",
+                  "description": "  Authentication transaction hash"
+                },
+                {
+                  "type": "reference",
+                  "argument": "isRegistered",
+                  "category": "full",
+                  "description": "  If user is registered with this username"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "transactionHash"
+                },
+                {
+                  "type": "bool",
+                  "id": 2,
+                  "name": "isRegistered"
+                }
+              ]
+            },
+            "doc": [
+              "Starting Login Authentication",
+              {
+                "type": "reference",
+                "argument": "username",
+                "category": "full",
+                "description": "Username for signing in"
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "category": "hidden",
+                "description": "Application id"
+              },
+              {
+                "type": "reference",
+                "argument": "apiKey",
+                "category": "hidden",
+                "description": "Application API key"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceHash",
+                "category": "full",
+                "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceTitle",
+                "category": "full",
+                "description": "Device Title"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "Time Zone of device"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "Preferred languages of device"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "username"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "appId"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "apiKey"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "deviceHash"
+              },
+              {
+                "type": "string",
+                "id": 5,
+                "name": "deviceTitle"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 6,
+                "name": "timeZone"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 7,
+                "name": "preferredLanguages"
               }
             ]
           }
@@ -610,6 +911,12 @@
                 "argument": "sex",
                 "category": "full",
                 "description": "Optional user sex"
+              },
+              {
+                "type": "reference",
+                "argument": "password",
+                "category": "full",
+                "description": "Password for password-based accounts"
               }
             ],
             "attributes": [
@@ -633,6 +940,14 @@
                 },
                 "id": 3,
                 "name": "sex"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "password"
               }
             ]
           }
@@ -3194,7 +3509,7 @@
                 "type": "reference",
                 "argument": "isShort",
                 "category": "full",
-                "description": "  Is field can be shown in compact way"
+                "description": "  Is field can be shown in compact way (default is TRUE)"
               }
             ],
             "expandable": "true",
@@ -10379,6 +10694,53 @@
           "type": "empty"
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "FileUrlDescription",
+            "doc": [
+              "File url description",
+              {
+                "type": "reference",
+                "argument": "fileId",
+                "category": "full",
+                "description": "  File id of url"
+              },
+              {
+                "type": "reference",
+                "argument": "url",
+                "category": "full",
+                "description": "  Url for downloading"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "full",
+                "description": "  Timeout of url"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "fileId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "url"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 3,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "GetFileUrl",
@@ -10433,6 +10795,60 @@
                 },
                 "id": 1,
                 "name": "file"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetFileUrls",
+            "header": 2573,
+            "response": {
+              "type": "anonymous",
+              "header": 2574,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "fileUrls",
+                  "category": "full",
+                  "description": "  File urls"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "FileUrlDescription"
+                    }
+                  },
+                  "id": 1,
+                  "name": "fileUrls"
+                }
+              ]
+            },
+            "doc": [
+              "Requesting multiple fle URL for downloading",
+              {
+                "type": "reference",
+                "argument": "files",
+                "category": "hidden",
+                "description": "File locations to load urls"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "FileLocation"
+                  }
+                },
+                "id": 1,
+                "name": "files"
               }
             ]
           }
@@ -10947,6 +11363,89 @@
                 },
                 "id": 1,
                 "name": "events"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Raw API",
+      "package": "raw",
+      "doc": [
+        "Schema-less API that is useful for external integrations"
+      ],
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RawRequest",
+            "header": 2569,
+            "response": {
+              "type": "anonymous",
+              "header": 2570,
+              "doc": [
+                "Response of a raw request",
+                {
+                  "type": "reference",
+                  "argument": "result",
+                  "category": "full",
+                  "description": "  Result of request"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "trait",
+                    "childType": "RawValue"
+                  },
+                  "id": 1,
+                  "name": "result"
+                }
+              ]
+            },
+            "doc": [
+              "Making raw request to external service via shema-less RPC request",
+              {
+                "type": "reference",
+                "argument": "service",
+                "category": "full",
+                "description": "Service name for RPC request"
+              },
+              {
+                "type": "reference",
+                "argument": "method",
+                "category": "full",
+                "description": "Method for execution"
+              },
+              {
+                "type": "reference",
+                "argument": "params",
+                "category": "full",
+                "description": "Optional params for the method"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "service"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "method"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "RawValue"
+                  }
+                },
+                "id": 3,
+                "name": "params"
               }
             ]
           }
