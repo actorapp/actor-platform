@@ -175,7 +175,10 @@ export const ActionTypes = keymirror({
   ATTACHMENT_CHANGE: null,
   ATTACHMENT_DELETE: null,
   ATTACHMENT_SEND: null,
-  ATTACHMENT_SEND_ALL: null
+  ATTACHMENT_SEND_ALL: null,
+
+  GROUP_ONLINE_CHANGE: null,
+  USER_ONLINE_CHANGE: null
 });
 
 export const PeerTypes = {
