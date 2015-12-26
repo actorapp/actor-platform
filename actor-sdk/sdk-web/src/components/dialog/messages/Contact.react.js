@@ -26,7 +26,6 @@ class Contact extends Component {
     const { name, photo64, emails, pones, className } = this.props;
     const contactClassName = classnames(className, 'row');
     const isContactEmpty = emails.length === 0 && pones.length === 0;
-    console.debug(isContactEmpty);
 
     const contactAvatar = photo64
       ? <div className="contact__avatar"><img src={'data:image/jpeg;base64,' + photo64} alt={name}/></div>
