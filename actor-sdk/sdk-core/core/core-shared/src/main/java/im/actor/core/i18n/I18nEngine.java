@@ -149,6 +149,13 @@ public class I18nEngine {
         }
     }
 
+    @ObjectiveCName("formatMonth:")
+    public String formatMonth(Date date) {
+        int month = date.getMonth();
+        int d = date.getDate();
+        return d + " " + MONTHS[month].toUpperCase();
+    }
+
     @ObjectiveCName("formatTyping")
     public String formatTyping() {
         return locale.get("Typing");

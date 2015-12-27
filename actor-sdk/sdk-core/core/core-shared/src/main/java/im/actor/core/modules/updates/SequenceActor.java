@@ -125,7 +125,7 @@ public class SequenceActor extends ModuleActor {
                 pendingRunnables.add(after);
             }
             return;
-        }  else if (u instanceof PushSeq) {
+        } else if (u instanceof PushSeq) {
             PushSeq pushSeq = (PushSeq) u;
             if (pushSeq.seq <= this.seq) {
                 Log.d(TAG, "Ignored PushSeq {seq:" + pushSeq.seq + "}");
@@ -289,6 +289,14 @@ public class SequenceActor extends ModuleActor {
                         }
                     }
                     Log.d(TAG, "Difference parsed  in " + (im.actor.runtime.Runtime.getCurrentTime() - parseStart) + " ms");
+
+                    if (updates.size() > 0) {
+                        String command = "Difference updates:";
+                        for (Update u : updates) {
+                            command += "\n| " + u;
+                        }
+                        Log.d(TAG, command);
+                    }
 
                     long applyStart = im.actor.runtime.Runtime.getCurrentTime();
                     processor.applyDifferenceUpdate(response.getUsers(), response.getGroups(), updates);

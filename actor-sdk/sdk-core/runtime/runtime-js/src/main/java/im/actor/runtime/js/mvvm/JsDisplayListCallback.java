@@ -14,5 +14,5 @@ import org.timepedia.exporter.client.Exportable;
 @Export
 @ExportClosure
 public interface JsDisplayListCallback<T extends JavaScriptObject> extends Exportable {
-    void onCollectionChanged(JsArray<T> array);
+    void onCollectionChanged(JsArray<T> array, JsArray<JavaScriptObject> overlays);
 }
