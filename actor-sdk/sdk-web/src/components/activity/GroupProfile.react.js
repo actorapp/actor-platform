@@ -24,6 +24,7 @@ import DialogStore from '../../stores/DialogStore';
 import NotificationsStore from '../../stores/NotificationsStore';
 import GroupStore from '../../stores/GroupStore';
 import UserStore from '../../stores/UserStore';
+import OnlineStore from '../../stores/OnlineStore';
 
 import AvatarItem from '../common/AvatarItem.react';
 import InviteUser from '../modals/InviteUser.react';
@@ -37,7 +38,8 @@ const getStateFromStores = (gid) => {
   return {
     thisPeer,
     isNotificationsEnabled: NotificationsStore.isNotificationsEnabled(thisPeer),
-    integrationToken: GroupStore.getToken()
+    integrationToken: GroupStore.getToken(),
+    message: OnlineStore.getMessage()
   };
 };
 
@@ -55,6 +57,7 @@ class GroupProfile extends Component {
 
     NotificationsStore.addListener(this.onChange);
     GroupStore.addListener(this.onChange);
+    OnlineStore.addListener(this.onChange);
   }
 
   onAddMemberClick = group => InviteUserActions.show(group);
@@ -128,14 +131,13 @@ class GroupProfile extends Component {
     const {
       isNotificationsEnabled,
       integrationToken,
-      isMoreDropdownOpen
+      isMoreDropdownOpen,
+      message
     } = this.state;
 
     const myId = UserStore.getMyId();
     const admin = UserStore.getUser(group.adminId);
     const isMember = DialogStore.isMember();
-
-    const members = <FormattedMessage message={this.getIntlMessage('members')} numMembers={group.members.length}/>;
 
     const dropdownClassNames = classnames('dropdown', {
       'dropdown--opened': isMoreDropdownOpen
@@ -252,7 +254,7 @@ class GroupProfile extends Component {
 
             <li className="profile__list__item group_profile__members no-p">
               <Fold iconElement={iconElement}
-                    title={members}>
+                    title={message}>
                 <GroupProfileMembers groupId={group.id} members={group.members}/>
               </Fold>
             </li>
