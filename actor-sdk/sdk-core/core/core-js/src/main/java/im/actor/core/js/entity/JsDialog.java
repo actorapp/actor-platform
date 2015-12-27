@@ -15,6 +15,7 @@ import im.actor.runtime.js.mvvm.JsEntityConverter;
 public class JsDialog extends JavaScriptObject {
 
     public static final JsEntityConverter<Dialog, JsDialog> CONVERTER = new JsEntityConverter<Dialog, JsDialog>() {
+
         @Override
         public JsDialog convert(Dialog src) {
 
@@ -54,6 +55,16 @@ public class JsDialog extends JavaScriptObject {
                     messageText, highlightContent,
                     Enums.convert(src.getStatus()),
                     src.getUnreadCount());
+        }
+
+        @Override
+        public boolean isSupportOverlays() {
+            return false;
+        }
+
+        @Override
+        public JavaScriptObject buildOverlay(Dialog prev, Dialog current, Dialog next) {
+            return null;
         }
     };
 
