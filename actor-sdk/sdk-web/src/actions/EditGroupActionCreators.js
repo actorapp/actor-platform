@@ -39,6 +39,7 @@ export default {
   },
 
   editGroupAbout: (gid, about) => {
+    about = about === '' ? null : about;
     if (about !== EditGroupStore.getAbout()) {
       dispatchAsync(ActorClient.editGroupAbout(gid, about), {
         request: ActionTypes.GROUP_EDIT_ABOUT,

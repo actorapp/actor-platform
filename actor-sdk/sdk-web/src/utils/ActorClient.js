@@ -284,8 +284,8 @@ export default {
     return window.messenger.editGroupTitle(gid, title);
   },
 
-  editGroupAbout(gid, title) {
-    return window.messenger.editGroupAbout(gid, title);
+  editGroupAbout(gid, about) {
+    return window.messenger.editGroupAbout(gid, about);
   },
 
   renderMarkdown(markdownText) {
