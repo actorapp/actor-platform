@@ -13,6 +13,7 @@ import im.actor.runtime.js.mvvm.JsEntityConverter;
 public class JsContact extends JavaScriptObject {
 
     public static JsEntityConverter<Contact, JsContact> CONVERTER = new JsEntityConverter<Contact, JsContact>() {
+
         @Override
         public JsContact convert(Contact value) {
 
@@ -25,6 +26,16 @@ public class JsContact extends JavaScriptObject {
 
             return create(value.getUid(), value.getName(),
                     Placeholders.getPlaceholder(value.getUid()), fileUrl);
+        }
+
+        @Override
+        public boolean isSupportOverlays() {
+            return false;
+        }
+
+        @Override
+        public JavaScriptObject buildOverlay(Contact prev, Contact current, Contact next) {
+            return null;
         }
     };
 
