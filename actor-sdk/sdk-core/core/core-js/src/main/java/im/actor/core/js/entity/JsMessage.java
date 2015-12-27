@@ -9,6 +9,9 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.JsDate;
+import com.google.gwt.user.datepicker.client.CalendarUtil;
+
+import java.util.Date;
 
 import im.actor.core.api.ApiTextExMarkdown;
 import im.actor.core.entity.Message;
@@ -30,6 +33,39 @@ import im.actor.runtime.js.mvvm.JsEntityConverter;
 public class JsMessage extends JavaScriptObject {
 
     public static final JsEntityConverter<Message, JsMessage> CONVERTER = new JsEntityConverter<Message, JsMessage>() {
+        @Override
+        public boolean isSupportOverlays() {
+            return true;
+        }
+
+        @Override
+        public JavaScriptObject buildOverlay(Message prev, Message current, Message next) {
+            Date prevDate = prev != null ? new Date(prev.getDate()) : null;
+            Date currentDate = new Date(current.getDate());
+
+            boolean showDate;
+            String dateDiv = null;
+            if (prev != null) {
+                showDate = !CalendarUtil.isSameDate(prevDate, currentDate);
+            } else {
+                showDate = true;
+            }
+            if (showDate) {
+                dateDiv = JsMessenger.getInstance().getFormatter().formatMonth(currentDate);
+            }
+
+            boolean useCompact = false;
+            if (prev != null && !showDate) {
+                if (prev.getSenderId() == current.getSenderId()) {
+                    if (prev.getDate() - current.getDate() < 10 * 60 * 1000) {
+                        useCompact = true;
+                    }
+                }
+            }
+
+            return JsMessageOverlay.create(useCompact, dateDiv);
+        }
+
         @Override
         public JsMessage convert(Message value) {
             JsMessenger messenger = JsMessenger.getInstance();
