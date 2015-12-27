@@ -9,10 +9,21 @@ import im.actor.runtime.js.mvvm.JsEntityConverter;
 public class JsSearchEntity extends JavaScriptObject {
 
     public static final JsEntityConverter<SearchEntity, JsSearchEntity> CONVERTER = new JsEntityConverter<SearchEntity, JsSearchEntity>() {
+
         @Override
         public JsSearchEntity convert(SearchEntity value) {
             JsMessenger messenger = JsMessenger.getInstance();
             return JsSearchEntity.create(messenger.buildPeerInfo(value.getPeer()));
+        }
+
+        @Override
+        public boolean isSupportOverlays() {
+            return false;
+        }
+
+        @Override
+        public JavaScriptObject buildOverlay(SearchEntity prev, SearchEntity current, SearchEntity next) {
+            return null;
         }
     };
 
