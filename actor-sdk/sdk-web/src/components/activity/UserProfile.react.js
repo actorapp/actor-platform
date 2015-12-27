@@ -20,6 +20,7 @@ import NotificationsActionCreators from '../../actions/NotificationsActionCreato
 import PeerStore from '../../stores/PeerStore';
 import DialogStore from '../../stores/DialogStore';
 import NotificationsStore from '../../stores/NotificationsStore';
+import OnlineStore from '../../stores/OnlineStore';
 
 import AvatarItem from '../common/AvatarItem.react';
 import Fold from '../common/Fold.React';
@@ -28,7 +29,8 @@ const getStateFromStores = (userId) => {
   const thisPeer = PeerStore.getUserPeer(userId);
   return {
     thisPeer: thisPeer,
-    isNotificationsEnabled: NotificationsStore.isNotificationsEnabled(thisPeer)
+    isNotificationsEnabled: NotificationsStore.isNotificationsEnabled(thisPeer),
+    message: OnlineStore.getMessage()
   };
 };
 
@@ -46,6 +48,7 @@ class UserProfile extends Component {
 
     NotificationsStore.addListener(this.onChange);
     DialogStore.addListener(this.onChange);
+    OnlineStore.addListener(this.onChange);
   }
 
   addToContacts = () => ContactActionCreators.addContact(this.props.user.id);
@@ -121,7 +124,7 @@ class UserProfile extends Component {
 
   render() {
     const { user } = this.props;
-    const { isNotificationsEnabled, isActionsDropdownOpen } = this.state;
+    const { isNotificationsEnabled, isActionsDropdownOpen, message } = this.state;
 
     const dropdownClassNames = classnames('dropdown pull-left', {
       'dropdown--opened': isActionsDropdownOpen
@@ -166,7 +169,7 @@ class UserProfile extends Component {
                           onClick={this.handleAvatarClick}/>
 
               <h3 className="user_profile__meta__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(user.name)}}/>
-              <div className="user_profile__meta__presence">{user.presence}</div>
+              <div className="user_profile__meta__message">{message}</div>
             </header>
 
             {
