@@ -19,6 +19,7 @@ public class ServiceHolder extends MessageHolder {
 
         messageText = (TextView) itemView.findViewById(R.id.serviceMessage);
         messageText.setTextColor(ActorSDK.sharedActor().style.getConvDatetextColor());
+        onConfigureViewHolder();
     }
 
     @Override

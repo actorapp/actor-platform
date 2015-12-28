@@ -60,27 +60,27 @@ public class PhotoHolder extends MessageHolder {
     private Context context;
 
     // Basic bubble
-    private FrameLayout messageBubble;
-    private View overlay;
+    protected FrameLayout messageBubble;
+    protected View overlay;
 
     // Content Views
-    private SimpleDraweeView previewView;
+    protected SimpleDraweeView previewView;
     private FastThumbLoader fastThumbLoader;
 
-    private TextView time;
-    private TextView duration;
-    private TintImageView stateIcon;
+    protected TextView time;
+    protected TextView duration;
+    protected TintImageView stateIcon;
 
     // Progress
-    private View progressContainer;
-    private TextView progressValue;
-    private CircularView progressView;
-    private ImageView progressIcon;
+    protected View progressContainer;
+    protected TextView progressValue;
+    protected CircularView progressView;
+    protected ImageView progressIcon;
 
     // Binded model
-    private FileVM downloadFileVM;
-    private UploadFileVM uploadFileVM;
-    private boolean isPhoto;
+    protected FileVM downloadFileVM;
+    protected UploadFileVM uploadFileVM;
+    protected boolean isPhoto;
 
     public PhotoHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
@@ -120,6 +120,7 @@ public class PhotoHolder extends MessageHolder {
         progressView = (CircularView) itemView.findViewById(R.id.progressView);
         progressView.setColor(Color.WHITE);
         progressIcon = (ImageView) itemView.findViewById(R.id.contentIcon);
+        onConfigureViewHolder();
     }
 
     @Override

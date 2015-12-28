@@ -18,11 +18,11 @@ import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 
 public class TextHolder extends MessageHolder {
 
-    private ViewGroup mainContainer;
-    private FrameLayout messageBubble;
-    private TextView text;
-    private TextView time;
-    private TintImageView status;
+    protected ViewGroup mainContainer;
+    protected FrameLayout messageBubble;
+    protected TextView text;
+    protected TextView time;
+    protected TintImageView status;
 
     private int waitColor;
     private int sentColor;
@@ -50,6 +50,8 @@ public class TextHolder extends MessageHolder {
         deliveredColor = ActorSDK.sharedActor().style.getConvStateDeliveredColor();
         readColor = ActorSDK.sharedActor().style.getConvStateReadColor();
         errorColor = ActorSDK.sharedActor().style.getConvStateErrorColor();
+
+        onConfigureViewHolder();
     }
 
     @Override
