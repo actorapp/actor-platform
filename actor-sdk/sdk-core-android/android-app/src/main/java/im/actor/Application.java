@@ -4,19 +4,15 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.CheckBox;
 
-import java.util.ArrayList;
-
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
-import im.actor.sdk.controllers.fragment.auth.BaseAuthActivity;
-import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
-import im.actor.sdk.intents.ActorIntent;
+import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
 public class Application extends ActorSDKApplication {
 
@@ -36,7 +32,7 @@ public class Application extends ActorSDKApplication {
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
 
         @Override
-        public ActorIntent getSettingsIntent() {
+        public ActorIntentFragmentActivity getSettingsIntent() {
             return new BaseActorSettingsActivity() {
                 @Override
                 public BaseActorSettingsFragment getSettingsFragment() {

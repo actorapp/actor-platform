@@ -53,18 +53,18 @@ public class LocationHolder extends MessageHolder {
     private Context context;
 
     // Basic bubble
-    private FrameLayout messageBubble;
+    protected FrameLayout messageBubble;
 
     // Content Views
-    private SimpleDraweeView previewView;
+    protected SimpleDraweeView previewView;
 
-    private TextView time;
-    private TintImageView stateIcon;
+    protected TextView time;
+    protected TintImageView stateIcon;
 
     // Binded model
-    private FileVM downloadFileVM;
-    private UploadFileVM uploadFileVM;
-    private boolean isPhoto;
+    protected FileVM downloadFileVM;
+    protected UploadFileVM uploadFileVM;
+    protected boolean isPhoto;
 
     public LocationHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
@@ -94,6 +94,7 @@ public class LocationHolder extends MessageHolder {
         time = (TextView) itemView.findViewById(R.id.time);
 
         stateIcon = (TintImageView) itemView.findViewById(R.id.stateIcon);
+        onConfigureViewHolder();
     }
 
     @Override

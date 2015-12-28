@@ -54,18 +54,18 @@ public class AudioHolder extends MessageHolder {
 
     private Context context;
 
-    private ViewGroup mainContainer;
-    private FrameLayout messageBubble;
-    private AudioPlayerActor.AudioPlayerCallback callback;
-    private String currentAudio;
-    private static String currentPlayingAudio;
-    private ImageView playBtn;
-    private Activity activity;
-    private static ActorRef audioActor;
-    private FileVM downloadFileVM;
-    private UploadFileVM uploadFileVM;
-    private long currentDuration;
-    private boolean treckingTouch;
+    protected ViewGroup mainContainer;
+    protected FrameLayout messageBubble;
+    protected AudioPlayerActor.AudioPlayerCallback callback;
+    protected String currentAudio;
+    protected static String currentPlayingAudio;
+    protected ImageView playBtn;
+    protected Activity activity;
+    protected static ActorRef audioActor;
+    protected FileVM downloadFileVM;
+    protected UploadFileVM uploadFileVM;
+    protected long currentDuration;
+    protected boolean treckingTouch;
 
     public AudioHolder(MessagesAdapter fragment, final View itemView) {
         super(fragment, itemView, false);
@@ -187,6 +187,7 @@ public class AudioHolder extends MessageHolder {
         };
 
         audioActor.send(new AudioPlayerActor.RegisterCallback(callback));
+        onConfigureViewHolder();
     }
 
     private void play(String fileName) {

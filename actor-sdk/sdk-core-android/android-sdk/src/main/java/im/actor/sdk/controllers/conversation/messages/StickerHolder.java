@@ -52,6 +52,7 @@ public class StickerHolder extends MessageHolder {
         time = (TextView) itemView.findViewById(R.id.time);
         stateIcon = (TintImageView) itemView.findViewById(R.id.stateIcon);
 
+        onConfigureViewHolder();
     }
 
     @Override
