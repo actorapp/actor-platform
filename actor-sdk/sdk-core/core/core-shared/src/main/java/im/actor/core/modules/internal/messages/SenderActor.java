@@ -43,6 +43,7 @@ import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
+import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.LocationContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.StickerContent;
@@ -59,6 +60,7 @@ import im.actor.core.modules.utils.RandomUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Storage;
+import im.actor.runtime.json.JSONObject;
 
 public class SenderActor extends ModuleActor {
 
@@ -162,6 +164,22 @@ public class SenderActor extends ModuleActor {
 
         Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content,
                 new ArrayList<Reaction>());
+        context().getMessagesModule().getConversationActor(peer).send(message);
+
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
+        savePending();
+
+        performSendContent(peer, rid, content);
+    }
+
+    public void doSendJson(Peer peer, JSONObject jsonObject) {
+        long rid = RandomUtils.nextRid();
+        long date = createPendingDate();
+        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
+
+        JsonContent content = JsonContent.create(jsonObject);
+
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content, new ArrayList<Reaction>());
         context().getMessagesModule().getConversationActor(peer).send(message);
 
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
@@ -400,6 +418,8 @@ public class SenderActor extends ModuleActor {
             message = new ApiJsonMessage(((LocationContent) content).getRawJson());
         } else if (content instanceof ContactContent) {
             message = new ApiJsonMessage(((ContactContent) content).getRawJson());
+        } else if (content instanceof JsonContent) {
+            message = new ApiJsonMessage(((JsonContent) content).getRawJson());
         } else if (content instanceof StickerContent) {
             Sticker sticker = ((StickerContent) content).getSticker();
             message = new ApiStickerMessage(sticker.getStickerId(), sticker.getThumb(), sticker.getApiImageLocation512(), sticker.getApiImageLocation256(), sticker.getStickerCollectionId(), sticker.getCollectionAccessHash());
@@ -506,6 +526,9 @@ public class SenderActor extends ModuleActor {
         } else if (message instanceof SendSticker) {
             SendSticker sendSticker = (SendSticker) message;
             doSendSticker(sendSticker.getPeer(), sendSticker.getSticker());
+        } else if (message instanceof SendJson) {
+            SendJson sendJson = (SendJson) message;
+            doSendJson(sendJson.getPeer(), sendJson.getJson());
         } else {
             drop(message);
         }
@@ -858,6 +881,26 @@ public class SenderActor extends ModuleActor {
 
         public Sticker getSticker() {
             return sticker;
+        }
+    }
+
+    public static class SendJson {
+        private Peer peer;
+        private JSONObject json;
+
+        public SendJson(Peer peer, JSONObject json) {
+            this.json = json;
+            this.peer = peer;
+
+        }
+
+
+        public JSONObject getJson() {
+            return json;
+        }
+
+        public Peer getPeer() {
+            return peer;
         }
     }
 
