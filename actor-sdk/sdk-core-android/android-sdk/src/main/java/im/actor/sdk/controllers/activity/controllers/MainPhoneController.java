@@ -377,11 +377,11 @@ public class MainPhoneController extends MainBaseController {
                 });
     }
 
-    private void onShowToolbarCustomView() {
+    protected void onShowToolbarCustomView() {
         barTabs.setVisibility(View.VISIBLE);
     }
 
-    private void onHideToolbarCustomView() {
+    protected void onHideToolbarCustomView() {
         barTabs.setVisibility(View.GONE);
     }
 
