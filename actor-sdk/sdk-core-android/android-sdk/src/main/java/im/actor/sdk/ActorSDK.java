@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
@@ -23,9 +25,12 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
+import im.actor.core.entity.content.AbsContent;
 import im.actor.runtime.Log;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.conversation.messages.MessageHolder;
+import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.fragment.auth.AuthActivity;
 import im.actor.sdk.controllers.fragment.dialogs.DialogHolder;
 import im.actor.sdk.controllers.fragment.settings.MyProfileActivity;
@@ -448,9 +453,24 @@ public class ActorSDK {
         }
     }
 
+    public MessageHolder getDelegatedMessageViewHolder(Class<AbsContent> base, OnDelegateViewHolder<MessageHolder> callback, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
+        MessageHolder delegated = delegate.getCustomMessageViewHolder(base, messagesAdapter, viewGroup);
+        if (delegated != null) {
+            return delegated;
+        } else {
+            return callback.onNotDelegated();
+        }
+    }
+
     public interface OnDelegateViewHolder<T> {
         T onNotDelegated();
 
+    }
+
+    public interface OnDeligateMessageHolder {
+        MessageHolder onNotDelegated();
+
+        View getItemView();
     }
 
 }
