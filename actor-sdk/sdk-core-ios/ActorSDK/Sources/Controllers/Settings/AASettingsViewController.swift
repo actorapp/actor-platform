@@ -12,7 +12,7 @@ public class AASettingsViewController: AAContentTableController {
     
     private var headerCell: AAAvatarRow!
     private var nicknameCell: AATitledRow!
-    private var aboutCell: AATextRow!
+    private var aboutCell: AATitledRow!
     
     public init() {
         super.init(style: AAContentTableStyle.SettingsPlain)
@@ -223,16 +223,16 @@ public class AASettingsViewController: AAContentTableController {
             }
             
             // Contacts: About
-            self.aboutCell = s.text("ProfileAbout") { [unowned self] (r) -> () in
-
-                r.navigate = true
+            self.aboutCell = s.titled("ProfileAbout") { [unowned self] (r) -> () in
+                
+                r.accessoryType = .DisclosureIndicator
                 
                 r.bindAction = { [unowned self] (r) -> () in
                     if let about = self.user.getAboutModel().get() {
-                        r.content = about
+                        r.subtitle = about
                         r.isAction = false
                     } else {
-                        r.content = AALocalized("SettingsAboutNotSet")
+                        r.subtitle = AALocalized("SettingsAboutNotSet")
                         r.isAction = true
                     }
                 }
@@ -261,6 +261,7 @@ public class AASettingsViewController: AAContentTableController {
                     
                     return AADevice.isiPad
                 }
+                
             }
  
             // Profile: Phones

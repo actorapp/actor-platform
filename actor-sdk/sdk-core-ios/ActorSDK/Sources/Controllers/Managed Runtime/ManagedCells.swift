@@ -93,7 +93,7 @@ public class AATitledRow: AAManagedRow {
         res.accessoryType = accessoryType
         
         if isAction {
-            res.contentLabel.textColor = ActorSDK.sharedActor().style.cellTintColor
+            res.contentLabel.textColor = ActorSDK.sharedActor().style.vcHintColor
         } else {
             res.contentLabel.textColor = ActorSDK.sharedActor().style.cellTextColor
         }
