@@ -99,4 +99,8 @@ public class ActorApi {
     public synchronized void forceNetworkCheck() {
         this.apiBroker.send(new ApiBroker.ForceNetworkCheck());
     }
+
+    public AuthKeyStorage getKeyStorage() {
+        return keyStorage;
+    }
 }
