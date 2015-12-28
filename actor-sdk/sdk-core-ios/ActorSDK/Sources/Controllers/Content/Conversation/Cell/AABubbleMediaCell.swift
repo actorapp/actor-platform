@@ -27,8 +27,10 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
         
-        timeBg.image = Imaging.imageWithColor(appStyle.chatMediaDateBgColor, size: CGSize(width: 1, height: 1))
-
+//        timeBg.image = Imaging.imageWithColor(appStyle.chatMediaDateBgColor, size: CGSize(width: 1, height: 1))
+        
+        timeBg.image = ActorSDK.sharedActor().style.statusBackgroundImage
+        
         timeLabel.font = UIFont.italicSystemFontOfSize(11)
         timeLabel.textColor = appStyle.chatMediaDateColor
         
@@ -285,7 +287,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
             statusView.frame = CGRectMake(timeLabel.frame.maxX, timeLabel.frame.minY, 23, timeHeight)
         }
         
-        timeBg.frame = CGRectMake(timeLabel.frame.minX - 3, timeLabel.frame.minY - 1, timeWidth + 6, timeHeight + 2)
+        timeBg.frame = CGRectMake(timeLabel.frame.minX - 4, timeLabel.frame.minY - 1, timeWidth + 8, timeHeight + 2)
     }
     
     // Photo preview

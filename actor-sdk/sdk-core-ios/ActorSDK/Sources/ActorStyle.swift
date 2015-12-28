@@ -377,6 +377,11 @@ public class ActorStyle {
     public var chatIconWarring = UIImage.templated("msg_warring")
     public var chatIconClock = UIImage.templated("msg_clock")
     
+    
+    
+    
+    
+    
     private var _chatStatusActive: UIColor?
     public var chatStatusActive: UIColor {
         get { return _chatStatusActive != nil ? _chatStatusActive! : vcTintColor }
@@ -587,6 +592,24 @@ public class ActorStyle {
         set(v) { _dialogStatusError = v }
     }
     
+    private var _statusBackgroundIcon: UIImage?
+    public var statusBackgroundImage:UIImage {
+        get {
+            if (_statusBackgroundIcon == nil){
+
+                let statusImage:UIImage = (UIImage.bundled("bubble_service_bg")?.imageWithColor(UIColor.blackColor().colorWithAlphaComponent(0.7)).imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal))!
+                
+                let center:CGPoint = CGPointMake(statusImage.size.width / 2.0, statusImage.size.height / 2.0);
+                let capInsets:UIEdgeInsets = UIEdgeInsetsMake(center.y, center.x, center.y, center.x);
+                
+                _statusBackgroundIcon = statusImage.resizableImageWithCapInsets(capInsets, resizingMode: UIImageResizingMode.Stretch)
+                return _statusBackgroundIcon!
+            } else {
+                return _statusBackgroundIcon!
+            }
+        }
+    }
+    
     //
     // Contacts styles
     //
@@ -684,6 +707,18 @@ public class ActorStyle {
         set(v) { _vcStarInfoTextColor = v }
     }
     public var _vcStarInfoTextColor : UIColor?
+    
+    //
+    // Settings VC
+    //
+    
+    public var vcSettingsContactsHeaderTextColor: UIColor {
+        get { return _vcSettingsContactsHeaderTextColor != nil ? _vcSettingsContactsHeaderTextColor! : vcTextColor }
+        set(v) { _vcSettingsContactsHeaderTextColor = v }
+    }
+    public var _vcSettingsContactsHeaderTextColor : UIColor?
+    
+    
 }
 
 
