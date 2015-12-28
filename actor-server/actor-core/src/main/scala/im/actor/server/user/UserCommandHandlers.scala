@@ -188,7 +188,7 @@ private[user] trait UserCommandHandlers {
 
     onSuccess(checkNicknameExists(nicknameOpt)) { exists ⇒
       if (!exists) {
-        if (nicknameOpt map StringUtils.validNickName getOrElse true) {
+        if (nicknameOpt map StringUtils.validUsername getOrElse true) {
           persistReply(TSEvent(now(), UserEvents.NicknameChanged(nicknameOpt)), user, replyTo) { _ ⇒
             val update = UpdateUserNickChanged(userId, nicknameOpt)
 

@@ -14,6 +14,7 @@ import MessageActionCreators from '../../actions/MessageActionCreators';
 import VisibilityStore from '../../stores/VisibilityStore';
 import GroupStore from '../../stores/GroupStore';
 import DialogStore from '../../stores/DialogStore';
+import MessageStore from '../../stores/MessageStore';
 
 import MessageItem from './messages/MessageItem.react';
 import Welcome from './messages/Welcome.react';
@@ -57,12 +58,14 @@ class MessagesSection extends Component {
     super(props);
 
     this.state = {
-      isOnlyOneDay: isOnlyOneDay(props.messages)
+      isOnlyOneDay: isOnlyOneDay(props.messages),
+      selectedMessages: MessageStore.getSelected()
     };
 
     lastMessageDate = new Date();
 
     VisibilityStore.addListener(this.onAppVisibilityChange);
+    MessageStore.addListener(this.onMessagesChange);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -71,7 +74,7 @@ class MessagesSection extends Component {
   }
 
   getMessagesListItem = (message, index) => {
-    const { isOnlyOneDay } = this.state;
+    const { isOnlyOneDay, selectedMessages } = this.state;
     const { messages } = this.props;
     const date = message.fullDate;
 
@@ -87,12 +90,16 @@ class MessagesSection extends Component {
     }
     const isSameSender = message.sender.peer.id === lastMessageSenderId && !isFirstMessage && !isNewDay;
 
+    const isSelected = selectedMessages.has(message.rid);
+
     const messageItem = (
       <MessageItem key={message.sortKey}
                    message={message}
                    isNewDay={isNewDay}
                    isSameSender={isSameSender}
                    isThisLastMessage={isThisLastMessage}
+                   onSelect={this.handleMessageSelect}
+                   isSelected={isSelected}
                    onVisibilityChange={this.onMessageVisibilityChange}
                    peer={this.props.peer}/>
     );
@@ -106,6 +113,17 @@ class MessagesSection extends Component {
   onAppVisibilityChange = () => {
     if (VisibilityStore.isAppVisible()) {
       flushDelayed();
+    }
+  };
+
+  onMessagesChange = () => this.setState({selectedMessages: MessageStore.getSelected()});
+
+  handleMessageSelect = (rid) => {
+    const { selectedMessages } = this.state;
+    if (selectedMessages.has(rid)) {
+      MessageActionCreators.setSelected(selectedMessages.remove(rid));
+    } else {
+      MessageActionCreators.setSelected(selectedMessages.add(rid));
     }
   };
 

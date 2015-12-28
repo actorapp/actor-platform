@@ -15,60 +15,55 @@ class Contact extends Component {
   }
 
   static propTypes = {
-    content: PropTypes.object.isRequired,
+    name: PropTypes.string.isRequired,
+    photo64: PropTypes.string.isRequired,
+    emails: PropTypes.array.isRequired,
+    pones: PropTypes.array.isRequired,
     className: PropTypes.string
   };
 
   render() {
-    const { content, className } = this.props;
+    const { name, photo64, emails, pones, className } = this.props;
     const contactClassName = classnames(className, 'row');
+    const isContactEmpty = emails.length === 0 && pones.length === 0;
 
-    const contactAvatar = 'data:image/jpeg;base64,' + content.photo64;
+    const contactAvatar = photo64
+      ? <div className="contact__avatar"><img src={'data:image/jpeg;base64,' + photo64} alt={name}/></div>
+      : null;
 
-    let emails, phones;
-    if (content.emails.length > 0) {
-      emails = map(content.emails, (email) => {
-        return (
-          <li className="contact__emails__item">
-            <a href={'mailto:' + email}>{email}</a>
-          </li>
-        )
-      })
+    let emaislList = [], phonesList = [];
+    if (emails.length > 0) {
+      emaislList = map(emails, (email) => <li className="contact__emails__item"><a href={'mailto:' + email}>{email}</a></li>)
     }
     // TODO: `pones` must be renamed to `phones` in library
-    if (content.pones.length > 0) {
-      phones = map(content.pones, (phone) => {
-        return (
-          <li className="contact__phones__item">
-            <a href={'tel:' + phone}>{phone}</a>
-          </li>
-        )
-      })
+    if (pones.length > 0) {
+      phonesList = map(pones, (phone) => <li className="contact__phones__item"><a href={'tel:' + phone}>{phone}</a></li>)
     }
 
     return (
       <div className={contactClassName}>
-        <div className="contact row">
-          <div className="contact__avatar">
-            <img src={contactAvatar}
-                 alt={content.name}/>
-          </div>
-          <div className="contact__body col-xs">
-            <div className="contact__name">
-              {content.name}
-            </div>
-            {
-              content.emails.length > 0
-                ? <ul className="contact__emails">{emails}</ul>
-                : null
-            }
-            {
-              content.pones.length > 0
-                ? <ul className="contact__phones">{phones}</ul>
-                : null
-            }
-          </div>
-        </div>
+        {
+          isContactEmpty
+            ? <div className="contact contact--empty row">
+                <i className="material-icons">error</i>Empty contact
+              </div>
+            : <div className="contact row">
+                {contactAvatar}
+                <div className="contact__body col-xs">
+                  <div className="contact__name">{name}</div>
+                  {
+                    emaislList.length > 0
+                      ? <ul className="contact__emails">{emaislList}</ul>
+                      : null
+                  }
+                  {
+                    phonesList.length > 0
+                      ? <ul className="contact__phones">{phonesList}</ul>
+                      : null
+                  }
+                </div>
+              </div>
+        }
         <div className="col-xs"/>
       </div>
     );

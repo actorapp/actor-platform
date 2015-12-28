@@ -942,6 +942,11 @@
 
     border-radius: 2px;
     background-color: #fff;
+    .modal_body {
+      padding: 8px 16px;
+      color: $dorado;
+      font-size: 15px;
+    }
   }
   &--quick-search {
     box-sizing: border-box;

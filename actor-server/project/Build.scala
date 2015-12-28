@@ -4,6 +4,8 @@ import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
 import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
+import com.typesafe.sbt.SbtMultiJvm
+import com.typesafe.sbt.SbtMultiJvm.MultiJvmKeys.MultiJvm
 
 object Build extends sbt.Build with Versioning with Releasing {
   val ScalaVersion = "2.11.7"
@@ -60,7 +62,8 @@ object Build extends sbt.Build with Versioning with Releasing {
       libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.17" % PB.protobufConfig,
       PB.includePaths in PB.protobufConfig ++= Seq(
         file("actor-models/src/main/protobuf"),
-        file("actor-core/src/main/protobuf")
+        file("actor-core/src/main/protobuf"),
+        file("actor-fs-adapters/src/main/protobuf")
       ),
       PB.runProtoc in PB.protobufConfig := (args =>
         com.github.os72.protocjar.Protoc.runProtoc("-v300" +: args.toArray))
@@ -123,7 +126,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     settings = defaultSettingsServer ++
       Seq(libraryDependencies ++= Dependencies.bots)
   )
-    .dependsOn(actorCore, actorTestkit % "test")
+    .dependsOn(actorCore, actorHttpApi, actorTestkit % "test")
 
   lazy val actorBotsShared = Project(
     id = "actor-bots-shared",
@@ -166,7 +169,7 @@ object Build extends sbt.Build with Versioning with Releasing {
       libraryDependencies ++= Dependencies.core
     )
   )
-    .dependsOn(actorCodecs, actorModels, actorPersist, actorRuntime)
+    .dependsOn(actorCodecs, actorFileAdapter, actorModels, actorPersist, actorRuntime)
 
   lazy val actorEmail = Project(
     id = "actor-email",
@@ -194,7 +197,7 @@ object Build extends sbt.Build with Versioning with Releasing {
       libraryDependencies ++= Dependencies.httpApi
     )
   )
-    .dependsOn(actorBots, actorCore)
+    .dependsOn(actorPersist, actorRuntime)//runtime deps because of ActorConfig
 
   lazy val actorOAuth = Project(
     id = "actor-oauth",
@@ -243,14 +246,14 @@ object Build extends sbt.Build with Versioning with Releasing {
   )
     .dependsOn(actorRuntime)
 
-  lazy val actorFsAdapters = Project(
+  lazy val actorFileAdapter = Project(
     id = "actor-fs-adapters",
     base = file("actor-fs-adapters"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.fsAdapters
+      libraryDependencies ++= Dependencies.fileAdapter
     )
   )
-    .dependsOn(actorCore, actorHttpApi)
+    .dependsOn(actorHttpApi, actorPersist)
 
   lazy val actorFrontend = Project(
     id = "actor-frontend",
@@ -321,7 +324,6 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorCli,
     actorEnrich,
     actorEmail,
-    actorFsAdapters,
     actorFrontend,
     actorHttpApi,
     actorRpcApi,
@@ -334,7 +336,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorCore,
     actorEmail,
     actorEnrich,
-    actorFsAdapters,
+    actorFileAdapter,
     actorFrontend,
     actorHttpApi,
     actorModels,
@@ -351,18 +353,31 @@ object Build extends sbt.Build with Versioning with Releasing {
     id = "actor-tests",
     base = file("actor-tests"),
     settings = defaultSettingsServer ++ Testing.settings ++ Seq(
-      libraryDependencies ++= Dependencies.tests
+      libraryDependencies ++= Dependencies.tests,
+      compile in MultiJvm <<= (compile in MultiJvm) triggeredBy (compile in Test),
+      executeTests in Test <<= (executeTests in Test, executeTests in MultiJvm) map {
+        case (testResults, multiNodeResults)  =>
+          val overall =
+            if (testResults.overall.id < multiNodeResults.overall.id)
+              multiNodeResults.overall
+            else
+              testResults.overall
+          Tests.Output(overall,
+            testResults.events ++ multiNodeResults.events,
+            testResults.summaries ++ multiNodeResults.summaries)
+      }
     ))
     .configs(Configs.all: _*)
+      .configs(MultiJvm)
     .dependsOn(
       actorTestkit % "test",
       actorActivation,
+      actorBots,
       actorCodecs,
       actorCore,
       actorEmail,
       actorEnrich,
       actorFrontend,
-      actorFsAdapters,
       actorHttpApi,
       actorOAuth,
       actorPersist,

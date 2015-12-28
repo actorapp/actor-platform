@@ -2,6 +2,13 @@
 //  Copyright (C) 2014-2015 Actor LLC. <https://actor.im>
 //
 
+"AuthMoreInfo" = "Mensajería gratis, segura y veloz.";
+
+"AuthStarButton" = "Empieza a chatear";
+
+"AuthTermsOfServiceFull" = "Al inscribirte,aceptas las Condiciones del servicio.";
+
+"AuthTermsOfService" = "Condiciones del servicio";
 
 "TabMessages" = "Mensajes";
 
@@ -72,6 +79,8 @@
 "SettingsLastSeenContacts"  = "Mis contactos";
 
 "SettingsLastSeenNone"    = "Nadie";
+
+"SettingsMobilePhone"    = "Móvil";
 
 "ShareLocation" = "Ubicación";
 

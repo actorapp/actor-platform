@@ -6,26 +6,23 @@ import java.time.{ Duration, Instant }
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.{ HttpMethods, Uri }
-import akka.http.scaladsl.server.Route
-import akka.stream.ActorMaterializer
 import better.files._
-import im.actor.serialization.ActorSerializer
-import im.actor.server.acl.ACLUtils
-import im.actor.server.api.http.{ HttpApiHook, HttpApi, HttpApiConfig }
+import im.actor.acl.ACLFiles
+import im.actor.server.api.http.{ HttpApi, HttpApiConfig }
+import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.db.DbExtension
 import im.actor.server.file._
-import im.actor.server.file.local.http.FilesHandler
+import im.actor.server.file.local.http.FilesHttpHandler
 import im.actor.server.{ model, persist }
-import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Success, Failure, Try }
+import scala.util.{ Failure, Success, Try }
 
 /**
  * File adapter that works with local file system to store and retrieve files
  * To use this file adapter as default provide its FQCN in modules.files.adapter of your server config.
- * You also need to provide default file location in services.filestorage.location of your server config
+ * You also need to provide default file location in services.file-storage.location of your server config
  * On initialization it will try to create default file location, if it does not exist and write simple text file
  * to check user's read/write permissions
  *
@@ -36,20 +33,18 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
   with RequestSigning
   with FileStorageOperations
   with LocalUploadKeyImplicits {
-  ActorSerializer.register(80005 → classOf[LocalUploadKey])
 
   protected implicit val system: ActorSystem = _system
   protected implicit val ec: ExecutionContext = system.dispatcher
-  protected implicit val mat = ActorMaterializer()
 
   private val db = DbExtension(system).db
 
   private val httpConfig: HttpApiConfig = HttpApiConfig.load.get
   private val storageConfig: LocalFileStorageConfig = LocalFileStorageConfig.load.get
 
-  HttpApi(system).hooks.routesHook.register("localstorage", new HttpApiHook.RoutesHook(system) {
-    override def run(): Future[Route] = Future.successful(new FilesHandler(storageConfig).routes)
-  })
+  HttpApi(system).registerHook("localstorage") { implicit system ⇒
+    Future.successful(new FilesHttpHandler(storageConfig).routes)
+  }
 
   protected val storageLocation = initFileStorage(storageConfig.location)
 
@@ -87,15 +82,15 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
   override def uploadFile(name: String, file: io.File): DBIO[FileLocation] = {
     val scalaFile = file.toScala
     val rng = ThreadLocalRandom.current()
-    val id = ACLUtils.randomLong(rng)
-    val accessSalt = ACLUtils.nextAccessSalt(rng)
+    val id = ACLFiles.randomLong(rng)
+    val accessSalt = ACLFiles.nextAccessSalt(rng)
 
     val size = scalaFile.size
     for {
       _ ← persist.FileRepo.create(id, size, accessSalt, LocalUploadKey.fileKey(id).key)
       _ ← DBIO.from(createFile(id, name, scalaFile))
       _ ← persist.FileRepo.setUploaded(id, name)
-    } yield FileLocation(id, ACLUtils.fileAccessHash(id, accessSalt))
+    } yield FileLocation(id, ACLFiles.fileAccessHash(id, accessSalt))
 
   }
 
@@ -112,7 +107,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
     val query = baseUri
       .withPath(Uri.Path(s"/v1/files/$fileId"))
       .withQuery(Uri.Query("expires" → expiresAt().toString))
-    Future.successful(LocalUploadKey.fileKey(fileId) → signRequest(HttpMethods.PUT, query, ACLUtils.secretKey()).toString)
+    Future.successful(LocalUploadKey.fileKey(fileId) → signRequest(HttpMethods.PUT, query, ACLFiles.secretKey()).toString)
   }
 
   override def completeFileUpload(fileId: Long, fileSize: Long, fileName: String, partNames: Seq[String]): Future[Unit] = {
@@ -147,12 +142,12 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
    * @return file download uri
    */
   override def getFileDownloadUrl(file: model.File, accessHash: Long): Future[Option[String]] = {
-    if (ACLUtils.fileAccessHash(file.id, file.accessSalt) == accessHash) {
+    if (ACLFiles.fileAccessHash(file.id, file.accessSalt) == accessHash) {
       val filePart = Option(file.name) filter (_.trim.nonEmpty) map (n ⇒ s"/$n") getOrElse ""
       val query = baseUri
         .withPath(Uri.Path(s"/v1/files/${file.id}" + filePart))
         .withQuery(Uri.Query("expires" → expiresAt().toString))
-      val signedRequest = signRequest(HttpMethods.GET, query, ACLUtils.secretKey()).toString
+      val signedRequest = signRequest(HttpMethods.GET, query, ACLFiles.secretKey()).toString
       Future.successful(Some(signedRequest))
     } else Future.successful(None)
   }
@@ -170,7 +165,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
       baseUri
         .withPath(Uri.Path(s"/v1/files/$fileId/$partNumber"))
         .withQuery(Uri.Query("expires" → expiresAt().toString))
-    Future.successful(LocalUploadKey.partKey(fileId, partNumber) → signRequest(HttpMethods.PUT, query, ACLUtils.secretKey()).toString)
+    Future.successful(LocalUploadKey.partKey(fileId, partNumber) → signRequest(HttpMethods.PUT, query, ACLFiles.secretKey()).toString)
   }
 
   def parseKey(bytes: Array[Byte]): UploadKey = LocalUploadKey.parseFrom(bytes)

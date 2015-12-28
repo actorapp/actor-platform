@@ -34,6 +34,7 @@ import DefaultVoice from './Voice.react';
 import DefaultContact from './Contact.react';
 import DefaultLocation from './Location.react.js';
 import DefaultModern from './Modern.react.js';
+import DefaultSticker from './Sticker.react.js';
 
 const {addons: { PureRenderMixin }} = addons;
 
@@ -43,12 +44,15 @@ class MessageItem extends Component {
     message: PropTypes.object.isRequired,
     isNewDay: PropTypes.bool,
     isSameSender: PropTypes.bool,
+    isSelected: PropTypes.bool,
     isThisLastMessage: PropTypes.bool,
-    onVisibilityChange: PropTypes.func
+    onVisibilityChange: PropTypes.func,
+    onSelect: PropTypes.func
   };
 
   static contextTypes = {
-    delegate: PropTypes.object
+    delegate: PropTypes.object,
+    isExperemental: PropTypes.bool
   };
 
   constructor(props) {
@@ -102,12 +106,17 @@ class MessageItem extends Component {
     document.removeEventListener('click', this.hideActions, false);
   };
 
-  render() {
-    const { message, isSameSender, onVisibilityChange, peer, isThisLastMessage } = this.props;
-    const { isThisMyMessage, isActionsShown } = this.state;
-    const { delegate } = this.context;
+  toggleMessageSelection = () => {
+    const { message, onSelect } = this.props;
+    onSelect && onSelect(message.rid);
+  };
 
-    let Service, Text, Modern, Photo, Document, Voice, Contact, Location;
+  render() {
+    const { message, isSameSender, onVisibilityChange, peer, isThisLastMessage, isSelected } = this.props;
+    const { isThisMyMessage, isActionsShown } = this.state;
+    const { delegate, isExperemental } = this.context;
+
+    let Service, Text, Modern, Photo, Document, Voice, Contact, Location, Sticker;
     if (delegate.components.dialog !== null && delegate.components.dialog.messages) {
       Service = delegate.components.dialog.messages.service || DefaultService;
       Text = delegate.components.dialog.messages.text || DefaultText;
@@ -117,6 +126,7 @@ class MessageItem extends Component {
       Voice = delegate.components.dialog.messages.voice || DefaultVoice;
       Contact = delegate.components.dialog.messages.contact || DefaultContact;
       Location = delegate.components.dialog.messages.location || DefaultLocation;
+      Sticker = delegate.components.dialog.messages.sticker || DefaultSticker;
     } else {
       Service = DefaultService;
       Text = DefaultText;
@@ -126,6 +136,7 @@ class MessageItem extends Component {
       Voice = DefaultVoice;
       Contact = DefaultContact;
       Location = DefaultLocation;
+      Sticker = DefaultSticker;
     }
 
     let header = null,
@@ -136,7 +147,8 @@ class MessageItem extends Component {
 
     const messageClassName = classnames('message row', {
       'message--same-sender': isSameSender,
-      'message--active': isActionsShown
+      'message--active': isActionsShown,
+      'message--selected': isSelected
     });
 
     const actionsDropdownClassName = classnames('message__actions__menu dropdown dropdown--small', {
@@ -190,13 +202,16 @@ class MessageItem extends Component {
         messageContent = <Voice content={message.content} className="message__content message__content--voice"/>;
         break;
       case MessageContentTypes.CONTACT:
-        messageContent = <Contact content={message.content} className="message__content message__content--contact"/>;
+        messageContent = <Contact {...message.content} className="message__content message__content--contact"/>;
         break;
       case MessageContentTypes.LOCATION:
         messageContent = <Location content={message.content} className="message__content message__content--location"/>;
         break;
       case MessageContentTypes.TEXT_MODERN:
         messageContent = <Modern {...message.content} className="message__content message__content--modern"/>;
+        break;
+      case MessageContentTypes.STICKER:
+        messageContent = <Sticker {...message.content} className="message__content message__content--sticker"/>;
         break;
       default:
     }
@@ -243,6 +258,15 @@ class MessageItem extends Component {
               </li>
             </ul>
           </div>
+
+          {
+             isExperemental
+              ? <div className="message__actions__selector" onClick={this.toggleMessageSelection}>
+                  <i className="icon material-icons">check</i>
+                </div>
+              : null
+          }
+
         </div>
       </li>
     );

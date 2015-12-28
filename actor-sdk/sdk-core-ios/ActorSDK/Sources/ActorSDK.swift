@@ -63,6 +63,9 @@ public class ActorSDK {
     /// App name in loc. strings
     public var appNameInLocStrings: String = "Actor"
     
+    /// Use background on welcome screen
+    public var useBackgroundOnWelcomeScreen: Bool? = false
+    
     /// Support email
     public var supportEmail: String? = nil
     
@@ -328,7 +331,8 @@ public class ActorSDK {
         } else {
             var controller: UIViewController! = delegate.actorControllerForAuthStart()
             if controller == nil {
-                controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
+                //controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
+                controller = AAAuthNavigationController(rootViewController: AAWelcomeController())
             }
             window.rootViewController = controller!
         }

@@ -26,7 +26,7 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webactions.WebactionsServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
-import im.actor.server.bot.ActorBot
+import im.actor.server.bot.{ BotExtension, ActorBot }
 import im.actor.server.cli.ActorCliService
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogExtension, DialogProcessor }
@@ -43,6 +43,7 @@ import im.actor.server.sms.{ TelesignCallEngine, TelesignClient, TelesignSmsEngi
 import im.actor.server.social.SocialExtension
 import im.actor.server.stickers.StickerMessages
 import im.actor.server.user._
+import im.actor.server.webhooks.WebhooksExtension
 import kamon.Kamon
 
 import scala.language.existentials
@@ -166,6 +167,9 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       RichMessageWorker.startWorker(richMessageConfig)
       system.log.debug("Starting ReverseHooksListener")
       ReverseHooksListener.startSingleton()
+
+      system.log.debug("Starting WebhooksExtension")
+      val webhooksExt = WebhooksExtension(system)
 
       implicit val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
 

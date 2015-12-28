@@ -6,6 +6,13 @@ package im.actor.runtime.js.mvvm;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
+import java.util.ArrayList;
+
 public interface JsEntityConverter<F, T extends JavaScriptObject> {
-    T convert(F value);
+
+    boolean isSupportOverlays();
+
+    JavaScriptObject buildOverlay(F prev, F current, F next);
+
+    T convert(F item);
 }

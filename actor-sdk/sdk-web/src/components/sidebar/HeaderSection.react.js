@@ -163,6 +163,7 @@ class HeaderSection extends Component {
     }
   }
 }
+
 ReactMixin.onClass(HeaderSection, IntlMixin);
 
 export default Container.create(HeaderSection);

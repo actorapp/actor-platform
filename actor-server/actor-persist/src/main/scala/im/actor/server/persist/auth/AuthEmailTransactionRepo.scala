@@ -4,7 +4,9 @@ import im.actor.server.db.ActorPostgresDriver.api._
 
 import im.actor.server.model
 
-final class AuthEmailTransactionTable(tag: Tag) extends AuthTransactionBase[model.AuthEmailTransaction](tag, "auth_email_transactions") with InheritingTable {
+final class AuthEmailTransactionTable(tag: Tag)
+  extends AuthTransactionRepoBase[model.AuthEmailTransaction](tag, "auth_email_transactions")
+  with InheritingTable {
   def email = column[String]("email")
   def redirectUri = column[Option[String]]("redirect_uri")
 

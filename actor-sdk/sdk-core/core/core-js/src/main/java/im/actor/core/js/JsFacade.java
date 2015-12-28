@@ -502,6 +502,48 @@ public class JsFacade implements Exportable {
         });
     }
 
+    public JsPromise favoriteChat(final JsPeer peer) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.favouriteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        Log.d(TAG, "favouriteChat:result");
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "favouriteChat:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise unfavoriteChat(final JsPeer peer) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.unfavoriteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        Log.d(TAG, "unfavouriteChat:result");
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "unfavouriteChat:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
     // Peers
 
     public JsPeer getUserPeer(int uid) {
@@ -532,6 +574,20 @@ public class JsFacade implements Exportable {
         messenger.getJsUser(uid).unsubscribe(callback);
     }
 
+    public void bindUserOnline(int uid, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsUserOnline(uid).subscribe(callback);
+    }
+
+    public void unbindUserOnline(int uid, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsUserOnline(uid).unsubscribe(callback);
+    }
+
     // Groups
 
     public JsGroup getGroup(int gid) {
@@ -550,6 +606,20 @@ public class JsFacade implements Exportable {
             return;
         }
         messenger.getJsGroup(gid).unsubscribe(callback);
+    }
+
+    public void bindGroupOnline(int gid, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsGroupOnline(gid).subscribe(callback);
+    }
+
+    public void unbindGroupOnline(int gid, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsGroupOnline(gid).unsubscribe(callback);
     }
 
     // Actions

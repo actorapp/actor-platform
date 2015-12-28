@@ -280,7 +280,8 @@ public class Authentication {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                request(new RequestSignUp(modules.getPreferences().getString(KEY_TRANSACTION_HASH), name, sex), new RpcCallback<ResponseAuth>() {
+                request(new RequestSignUp(modules.getPreferences().getString(KEY_TRANSACTION_HASH), name, sex,
+                        null), new RpcCallback<ResponseAuth>() {
                     @Override
                     public void onResult(ResponseAuth response) {
                         onLoggedIn(callback, response);
@@ -307,6 +308,9 @@ public class Authentication {
     }
 
     public Command<AuthState> requestValidateCode(final String code) {
+        if (code == null) {
+            throw new RuntimeException("Code couldn't be null!");
+        }
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
