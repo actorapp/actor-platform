@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<resources>
+    <string name="app_name">Tacatap</string>
+    <string name="app_locale">É</string>
+
+    <string name="dialog_ok">Ok</string>
+    <string name="dialog_cancel">Cancelar</string>
+    <string name="dialog_yes">Sim</string>
+    <string name="dialog_no">Não</string>
+    <string name="dialog_try_again">Tente de novo</string>
+
+    <string name="pick_photo_camera">Tirar fotografia</string>
+    <string name="pick_photo_gallery">Selecionar a partir da Galeria</string>
+    <string name="pick_photo_remove">Eliminar fotografia</string>
+    <string name="pick_downloading">A transferir</string>
+
+    <string name="progress_common">A carregar...</string>
+
+    <string name="toast_no_sdcard">Sem cartão SD</string>
+    <string name="toast_phone_copied">Telefone copiado para o clipboard</string>
+    <string name="toast_messages_copied">Mensagens copiadas para o clipboard</string>
+    <string name="toast_unable_kick">Não se pode excluir membro do grupo</string>
+    <string name="toast_unable_add">Você não pode adicionar o utilizador ao grupo</string>
+    <string name="toast_already_member">O utilizador já é membro do grupo</string>
+    <string name="toast_empty_name">O nome está em branco</string>
+    <string name="toast_unable_change">Não se pode mudar o nome</string>
+    <string name="toast_empty_about">O estado não pode estar vazio</string>
+
+    <string name="menu_share">Partilhar</string>
+    <string name="menu_save">Guardar no telemóvel</string>
+    <string name="menu_saved">Guardar</string>
+    <string name="menu_next">Próximo</string>
+
+    <string name="invite_message">Por favor, tente mensagens Tacatap. http://tacatapinvitacion.com</string>
+
+    <!-- Tour -->
+    <string name="tour_sign_up">COMECE A CONVERSAR</string>
+    <string name="tour_sign_in"></string>
+    <string name="tour_sign_using_tel">com o número de telefone</string>
+    <string name="tour_sign_using_email">com e-mail</string>
+    <string name="tour_sign_using_oauth">com o Google</string>
+    <string name="tour_back_to_top">Voltar ao ecrã inicial</string>
+
+    <string name="tour_welcome_title">TACATAP</string>
+    <string name="tour_welcome_subtitle">Serviço de mensagens grátis, seguro e rápido.</string>
+
+    <string name="tour_groups_title">Nova plataforma web</string>
+    <string name="tour_groups_text">Esqueça para sempre o velho e-mail e mensagens em várias aplicações.Tacatap disponível em Mac, Windows e tablets</string>
+
+    <string name="tour_everywhere_title">Segurança garantida</string>
+    <string name="tour_everywhere_text">Tenha a certeza de que ninguém vai ler as suas mensagens. Partilhe documentos, arquivos e fotos, sem medo de que eles possam cair nas mãos erradas.</string>
+
+    <string name="tour_secure_title">Ficheiros de até 5 GB</string>
+    <string name="tour_secure_text">Partilhar a partir de um ficheiro com todas as imagens da nossa última viagem até vídeos longos com toda a resolução com as últimas façanhas.</string>
+
+    <!-- Phone Sign Fragment -->
+    <string name="auth_phone_title">Verificar número de telemóvel</string>
+    <string name="auth_phone_hint">Confirme o país e introduza o seu número de telemóvel.</string>
+    <string name="auth_phone_number_hint">Número de telemóvel</string>
+    <string name="auth_phone_get_code">Confirmar o número</string>
+    <string name="auth_phone_why">PORQUE NECESSITAMOS DO SEU TELEFONE?</string>
+    <string name="auth_phone_why_description">Utilizamos o número de telemóvel para autenticação, porque atualmente esta é a maneira mais segura.\n\nPalavras-passe e e-mails podem ser hackeados.</string>
+    <string name="auth_phone_why_done">OK</string>
+    <string name="auth_phone_country_title">Selecione o país</string>
+    <string name="auth_phone_error_invalid_country">Código de país inválido</string>
+
+    <!-- Choose auth type-->
+    <string name="choose_auth_type_title">Escolha o tipo de autenticação</string>
+    <string name="choose_auth_type_hint">Por favor, escolha o tipo de autenticação.</string>
+    <string name="choose_auth_type_sign_up">Registar</string>
+    <string name="choose_auth_type_sign_in">Iniciar</string>
+    <string name="choose_auth_type_using_tel">com o número de telemóvel</string>
+    <string name="choose_auth_type_using_email">com e-mail</string>
+
+
+    <!-- Email Sign Fragment -->
+    <string name="auth_email_title">Verifique o correio eletrónico</string>
+    <string name="auth_email_hint">Por favor, escreva o seu e-mail.</string>
+    <string name="auth_email_edit_text_hint">E-mail</string>
+    <string name="auth_email_get_code">CONFIRMAR E-MAIL</string>
+
+    <!-- Sign In Fragment -->
+    <string name="auth_code_phone_hint">Tacatap enviou um SMS com um código de ativação para {0}</string>
+    <string name="auth_code_email_hint">Tacatap enviou um email com um código de ativação para {0}</string>
+    <string name="auth_code_title">Introduza o código SMS</string>
+    <string name="auth_code_sms_hint">Código SMS</string>
+    <string name="auth_code_done">FEITO</string>
+    <string name="auth_code_wrong_number">Telefone incorreto?</string>
+    <string name="auth_code_wrong_email">E-MAIL INCORRETO?</string>
+    <string name="auth_code_phone_change">Tem a certeza de que quer mudar o seu número?</string>
+    <string name="auth_code_email_change">Tem a certeza de que deseja alterar o seu e-mail?</string>
+    <string name="auth_code_change_yes">Alterar</string>
+
+    <!-- Sign Up Fragment -->
+    <string name="auth_profile_title">Informação do perfil</string>
+    <string name="auth_profile_hint">Por favor, forneça o seu nome\ne uma foto de perfil opcional.</string>
+    <string name="auth_profile_name_hint">O seu nome</string>
+    <string name="auth_profile_done">Iniciar o chat</string>
+
+    <!-- Auth errors -->
+    <string name="auth_error_empty_phone">Por favor, introduza o seu número de telemóvel</string>
+    <string name="auth_error_empty_email">Por favor, escreva o seu e-mail</string>
+    <string name="auth_error_code_expired">O código expirou. Por favor, efetue a validação desde o início</string>
+
+    <string name="auth_error_code_invalid">Código inválido. Por favor, tente novamente.</string>
+    <string name="auth_error_failed_get_oauth2_token">Erro no servidor de autorização. Por favor, tente novamente.</string>
+
+    <!-- Typing -->
+    <string name="typing_private">a escrever...</string>
+    <string name="typing_group">{0} está a escrever...</string>
+    <string name="typing_group_many">{0} membros estão a escrever...</string>
+
+    <!-- Main -->
+    <string name="main_search_hint">Escreva algo para iniciar a pesquisa</string>
+    <string name="main_search_empty">Nenhum resultado</string>
+    <string name="main_menu_help">Ajuda</string>
+    <string name="main_menu_search">Pesquisa</string>
+
+    <string name="main_bar_chats">CHATS</string>
+    <string name="main_bar_contacts">CONTACTOS</string>
+
+    <string name="main_fab_compose">Chat</string>
+    <string name="main_fab_new_group">Criar Grupo</string>
+    <string name="main_fab_join_public_group">Juntar-se ao grupo</string>
+    <string name="main_fab_add_contact">Adicionar contacto</string>
+
+    <string name="main_sync_title">Sincronização em processo.</string>
+    <string name="main_sync_message">Por favor, aguarde alguns minutos enquanto configuramos a sua aplicação.</string>
+
+    <string name="main_empty_title">Convidar amigos</string>
+    <string name="main_empty_invite_hint">Nenhum dos seus contatos usa tacatap. Use o botão abaixo para os convidar.</string>
+    <string name="main_empty_invite_action">Contar a um amigo</string>
+    <string name="main_empty_add_hint">Adicionar contacto manualmente</string>
+    <string name="main_empty_add_action">ADICIONAR CONTACTO</string>
+
+    <!-- Own profile/settings -->
+    <string name="settings_share_profile_title">Enviar o meu contacto.</string>
+    <string name="settings_share_text">O meu número de telemóvel é {0}</string>
+    <string name="settings_menu_edit_profile">Editar perfil</string>
+    <string name="settings_menu_change_photo">Alterar foto</string>
+    <string name="settings_header">Definições</string>
+    <string name="settings_mobile_phone">Telemóvel</string>
+    <string name="settings_help">Ajuda</string>
+    <string name="settings_ask">Perguntas</string>
+    <string name="settings_notifications">Notificações</string>
+    <string name="settings_chat">Definições do chat</string>
+    <string name="settings_security">Segurança</string>
+    <string name="nickname_empty">Definir alcunha</string>
+    <string name="nickname_change">Alterar alcunha</string>
+    <string name="nickname">Alcunha</string>
+    <string name="about_user_me">O meu estado</string>
+    <string name="about_user">Estado</string>
+    <string name="wallpaper">Fundos de chats</string>
+
+    <!-- Profile controls -->
+    <string name="phone_menu_call">Chamadas {0}</string>
+    <string name="phone_menu_sms">SMS {0}</string>
+    <string name="phone_menu_share">Partilhados {0}</string>
+    <string name="phone_menu_copy">Copiar</string>
+
+    <!-- Dialogs -->
+    <string name="dialogs_title">Chats</string>
+    <string name="dialogs_hint">Pressão longa para opções adicionais</string>
+    <string name="dialogs_empty_title">Iniciar chat</string>
+    <string name="dialogs_empty">Selecione um utilizador da sua lista de contactos ou pressione o botão para iniciar a conversa neste momento.</string>
+
+    <string name="dialogs_menu_contact_view">Ver contacto</string>
+    <string name="dialogs_menu_contact_rename">Renomear Contacto</string>
+    <string name="dialogs_menu_conversation_delete">Eliminar conversa</string>
+
+    <string name="dialogs_menu_group_view">Informações do grupo</string>
+    <string name="dialogs_menu_group_rename">Renomear grupo</string>
+    <string name="dialogs_menu_group_leave">Sair do grupo</string>
+    <string name="dialogs_menu_group_delete">Eliminar grupo</string>
+
+    <string name="dialogs_text_size_big">Grande</string>
+    <string name="dialogs_text_size_medium">Médio</string>
+    <string name="dialogs_text_size_small">Pequeno</string>
+
+    <!-- Contacts -->
+    <string name="contacts_title">Contactos</string>
+    <string name="contacts_empty_short">Sem contactos</string>
+    <string name="contacts_share">Fale com os seus amigos sobre tacatap</string>
+    <string name="contacts_add">Adicionar amigo</string>
+
+    <string name="contacts_empty_title">Convide os seus amigos</string>
+    <string name="contacts_empty_invite_hint">Nenhum de seus contatos usa tacatap. Use o botão abaixo para convidar.</string>
+    <string name="contacts_empty_invite_action">CONVIDE UM AMIGO</string>
+    <string name="contacts_empty_add_hint">ou adicionar manualmente contactos, premindo o botão abaixo.</string>
+
+    <string name="contacts_menu_remove">Eliminar {0} a partir dos contatos</string>
+    <string name="contacts_menu_remove_progress">A eliminar</string>
+    <string name="contacts_menu_edit">Editar nome</string>
+
+    <string name="contacts_invite_via_link">Convidar via link</string>
+
+    <!-- Chat -->
+    <string name="chat_menu_group_info">Informações do grupo</string>
+    <string name="chat_menu_view_contact">Ver contacto</string>
+    <string name="chat_menu_call">Chamar</string>
+    <string name="chat_menu_files">Registos</string>
+    <string name="chat_menu_clear_chat">Eliminar chat</string>
+    <string name="chat_menu_leave_group">Sair do grupo</string>
+
+    <string name="chat_attach_place">Localização</string>
+    <string name="chat_attach_file">Arquivo</string>
+    <string name="chat_attach_take_video">Vídeo</string>
+    <string name="chat_attach_take_photo">Foto</string>
+    <string name="chat_attach_gallery">Galeria</string>
+    <string name="chat_attach_contact">Contacto</string>
+    <string name="chat_message_hint">Escrever mensagem</string>
+
+    <string name="chat_new_messages">Novas mensagens</string>
+    <string name="chat_add_to_contacts">Adicionar a Contatos</string>
+    <string name="chat_add_to_contacts_progress">A adicionar contacto</string>
+
+    <string name="chat_doc_open">Abrir</string>
+    <string name="chat_doc_send">Enviar</string>
+    <string name="chat_doc_stop">Parar</string>
+    <string name="chat_doc_download">Descarregar</string>
+
+    <string name="chat_not_member">Não é membro deste grupo</string>
+
+    <string name="chat_unsupported">A mensagem não é suportada nesta versão. Por favor, aguarde a atualização da aplicação para visualizar a mensagem.</string>
+    <string name="chat_voice_record_cancel">DESLIZE PARA CANCELAR</string>
+    <!-- Share menu-->
+    <string name="share_menu_gallery">Galeria</string>
+    <string name="share_menu_video">Vídeo</string>
+    <string name="share_menu_file">Arquivo</string>
+    <string name="share_menu_camera">Câmara</string>
+    <string name="share_menu_location">Localização</string>
+    <string name="share_menu_contact">Contacto</string>
+
+    <!-- Map -->
+    <string name="map_title">Localização</string>
+    <string name="map_type_normal">Mapa</string>
+    <string name="map_type_satellite">Satélite</string>
+    <string name="map_type_hybrid">Híbrido</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Perfil</string>
+    <string name="profile_shared_header">Partilhar</string>
+    <string name="profile_shared_files">Documentos</string>
+    <string name="profile_shared_media">Multimédia</string>
+    <string name="profile_settings_header">Definições</string>
+    <string name="profile_settings_notifications">Notificações</string>
+
+    <string name="profile_adding">A adicionar a contactos</string>
+    <string name="profile_removing">A eliminar a partir dos contactos</string>
+
+    <string name="profile_menu_rename">Renomear</string>
+    <string name="profile_menu_call">Chamada</string>
+    <string name="profile_menu_remove">Elimine a partir dos contatos</string>
+    <string name="profile_menu_add">Adicionar a Contatos</string>
+    <string name="profile_menu_security">Segurança</string>
+    <string name="profile_cant_find_user">Não é possível encontrar o utilizador</string>
+
+    <!-- Group -->
+    <string name="group_title">Informações do grupo</string>
+    <string name="group_members_header">Membros</string>
+    <string name="group_members_count">{0} de {1}</string>
+
+    <string name="group_admin">administrador</string>
+
+    <string name="group_created_by">Criado por {0}</string>
+    <string name="group_created_by_you">Criado por si.</string>
+
+    <string name="group_adding">Juntando-se ao grupo</string>
+    <string name="group_removing">A eliminar do grupo</string>
+
+    <string name="group_context_message">Mensagens {0}</string>
+    <string name="group_context_call">Chamadas {0}</string>
+    <string name="group_context_view">Ver {0}</string>
+    <string name="group_context_remove">A eliminar {0} do grupo</string>
+
+    <string name="group_menu_add">A adicionar membro</string>
+    <string name="group_menu_leave">Sair do grupo</string>
+    <string name="group_menu_change_theme">Alterar estado</string>
+    <string name="group_menu_change_photo">Alterar foto</string>
+    <string name="group_menu_integration_token">Integração de Token</string>
+
+    <string name="group_shared_header">Partilhado</string>
+    <string name="group_shared_files">Documentos</string>
+
+    <string name="group_add_member">A adicionar a membros</string>
+
+    <string name="group_not_member">Não é membro deste grupo</string>
+
+    <string name="about_group">Estado</string>
+    <string name="about_group_empty">Estado do grupo</string>
+    <string name="theme_group">Nome do grupo</string>
+    <string name="theme_group_empty">Nome do grupo</string>
+
+    <!-- Avatar -->
+    <string name="avatar_title_your">A sua foto</string>
+    <string name="avatar_title_person">Foto</string>
+    <string name="avatar_title_group">Foto do grupo</string>
+    <string name="avatar_no_photo">Ainda não tem foto</string>
+    <string name="avatar_menu_edit">Editar</string>
+    <string name="avatar_menu_set_as">Definir como</string>
+
+    <!-- Add Contact -->
+    <string name="add_contact_title">Adicionar contacto</string>
+    <string name="add_contact_phone_hint">Introduzir número de telemóvel</string>
+    <string name="add_contact_bar_cancel">CANCELAR</string>
+    <string name="add_contact_bar_continue">CONTINUAR</string>
+
+    <!-- Compose -->
+    <string name="compose_title">Nova mensagem</string>
+
+    <!-- Create Group -->
+    <string name="create_group_title">Criar grupo</string>
+    <string name="create_group_name_hint">Nome do Grupo</string>
+    <string name="create_group_hint">Introduza o tema do grupo e defina uma foto (opcional)</string>
+    <string name="create_group_search_hint">Pesquisar por nome</string>
+    <string name="create_group_done">Feito</string>
+
+    <!-- Group add -->
+    <string name="group_add_title">Adicionar membro</string>
+
+    <!-- Join public group -->
+    <string name="join_public_group_title">grupos públicos</string>
+    <string name="join_public_group_members_count">Membros:</string>
+    <string name="join_public_group_friends_count">Amigos:</string>
+    <string name="join">ADIRA</string>
+    <string name="open">ABRIR</string>
+    <string name="join_public_group_top_title">Ei!</string>
+    <string name="join_public_group_top_subtitle">Confira as nossas primeiras conversas públicas</string>
+    <string name="join_public_group_top_by_friends_title">Conversar com amigos!</string>
+    <string name="join_public_group_top_by_friends_subtitle">Conversas principais com os seus amigos</string>
+    <string name="join_public_group_all_groups">Todos os grupos</string>
+
+
+    <!-- Invite link-->
+    <string name="invite_link_title">convidar Link</string>
+    <string name="invite_link_hint">Qualquer pessoa com tacatap instalado será capaz de participar do seu grupo, seguindo este link</string>
+    <string name="invite_link_action_copy">Copiar link</string>
+    <string name="invite_link_action_revoke">Revogar link</string>
+    <string name="invite_link_action_share">Partilhar link</string>
+    <string name="invite_link_copied">Link copiado para o clipboard</string>
+    <string name="invite_link_chooser_title">Convidar o grupo através do link</string>
+    <string name="invite_link_error_get_link">Não se pode obter link de convite</string>
+    <string name="invite_link_error_revoke_link">Não pode revogar link de convite</string>
+    <string name="invite_link_empty_view">A carregar link de convite</string>
+
+    <!-- Integration token-->
+    <string name="integration_token_title">Integração de Token</string>
+    <string name="integration_token_hint">Este token pode ser utilizado para criar integrações com este grupo</string>
+    <string name="integration_token_action_copy">Copiar token</string>
+    <string name="integration_token_action_revoke">Revogar token</string>
+    <string name="integration_token_action_share">Partilhar token</string>
+    <string name="integration_token_copied">Token copiado para o clipboard</string>
+    <string name="integration_token_chooser_title">Enviar token</string>
+    <string name="integration_token_error_get_token">Não se pode obter token</string>
+    <string name="integration_token_error_revoke_link">Não pode revogar token</string>
+    <string name="integration_token_error_revoke_link_not_admin">Não pode revogar símbolo - Não é administrador deste grupo</string>
+    <string name="integration_token_empty_view">A carregar símbolo de integração</string>
+
+    <!-- Documents -->
+    <string name="documents_title">Documentos</string>
+    <string name="documents_empty">Ainda não há documentos</string>
+
+    <!-- Edit name -->
+    <string name="edit_name_title_you">Introduza o seu nome</string>
+    <string name="edit_name_title_contact">Introduza o nome do contato</string>
+    <string name="edit_name_title_group">Introduza o nome do grupo</string>
+    <string name="edit_name_title_group_theme">Introduza o estado do grupo</string>
+    <string name="edit_name_cancel">CANCELAR</string>
+    <string name="edit_name_save">GUARDAR</string>
+    <string name="edit_name_process">Alteração de nome</string>
+    <string name="edit_about_process">Alterar descrição</string>
+    <string name="edit_theme_process">Alteração de tema</string>
+
+    <!-- Help -->
+    <string name="help_title">Ajuda</string>
+    <string name="help_about_title">Acerca de.</string>
+    <string name="help_about_subtitle">Acerda da aplicação e serviço</string>
+    <string name="help_faq_title">Perguntas frequentes</string>
+    <string name="help_faq_subtitle">perguntas frequentes</string>
+    <string name="help_feedback_title">Feedback</string>
+    <string name="help_feedback_subtitle">Deixe os seus comentários</string>
+    <string name="help_version_title">Versão da aplicação</string>
+    <string name="help_version_copy">Versão da aplicação copiada para o clipboard</string>
+    <string name="help_email_title">Enviar e-mail</string>
+    <string name="help_email_subject">Feedback</string>
+
+    <!-- Notifications -->
+    <string name="not_title">Notificações</string>
+    <string name="not_conv_tones">Tons de conversa</string>
+    <string name="not_conv_tones_subtitle">Reproduzir sons para as mensagens recebidas e enviadas.</string>
+    <string name="not_sound">Sons</string>
+    <string name="not_sound_subtitle">Ativar os sons de notificação</string>
+    <string name="not_vibration">Vibração</string>
+    <string name="not_vibration_subtitle">Ativar a vibração das notificações</string>
+    <string name="not_group">Grupos</string>
+    <string name="not_group_subtitle">Ativar notificações de grupo</string>
+    <string name="not_group_mentions">Apenas para mencionar</string>
+    <string name="not_group_mentions_subtitle">Ativar notificações de grupo apenas para mencionar</string>
+    <string name="not_show_text">Mostrar nomes e mensagens</string>
+    <string name="not_show_text_subtitle">Mostrar texto da mensagem e nome do remetente no painel de notificações</string>
+
+    <!-- Pick user -->
+    <string name="pick_user_title">Selecione a pessoa</string>
+
+    <!-- Chat Settings -->
+    <string name="settings_chat_title">Definições do chat</string>
+    <string name="settings_chat_send_enter">Tecla enter para enviar</string>
+    <string name="settings_chat_send_enter_subtitle">Utilizar a tecla enter para enviar as suas mensagens</string>
+
+    <string name="settings_chat_markdown">Markdown (remarcação)</string>
+    <string name="settings_chat_markdown_subtitle">Compatibilidade de texto de qualquer formato</string>
+
+    <string name="settings_text_size">Tamanho da fonte do chat</string>
+    <string name="settings_text_size_subtitle">Selecione o tamanho da fonte</string>
+
+    <!-- Security -->
+    <string name="security_title">Segurança</string>
+    <string name="security_terminate_title">Terminar todas as sessões</string>
+    <string name="security_terminate_subtitle">Sair em todos os dispositivos</string>
+    <string name="security_privacy_title">Mostre seu status online</string>
+    <string name="security_privacy_always">sempre</string>
+    <string name="security_privacy_contacts">Apenas meus contatos</string>
+    <string name="security_privacy_none">nem</string>
+    <string name="security_terminate_message">Tem a certeza de que deseja encerrar a sessão de todos os dispositivos? Todos os dados serão perdidos.</string>
+    <string name="security_authorized_header">Dispositivos e serviços autorizados</string>
+    <string name="security_authorized_loading">A carregar</string>
+
+    <!-- Alerts -->
+    <string name="alert_delete_messages_text">Tem a certeza de que deseja eliminar {0} mensagens?</string>
+    <string name="alert_delete_messages_yes">Eliminar</string>
+
+    <string name="alert_delete_all_messages_text">Tem a certeza que quer apagar todas as mensagens deste chat?</string>
+    <string name="alert_delete_all_messages_yes">Eliminar</string>
+
+    <string name="alert_remove_contact_text">Tem a certeza de que deseja eliminar {0} a partir de contactos?</string>
+    <string name="alert_remove_contact_yes">Eliminar</string>
+
+    <string name="alert_group_add_text">Tem a certeza de que deseja adicionar {0} ao grupo?</string>
+    <string name="alert_group_add_yes">Adicionar</string>
+
+    <string name="alert_group_remove_text">Tem a certeza de que deseja excluir {0} do grupo?</string>
+    <string name="alert_group_remove_yes">Eliminar</string>
+
+    <string name="alert_invite_text">{0} não estão registados no tacatap. Pretende convidá-los para tacatap?</string>
+    <string name="alert_invite_yes">Convidar</string>
+
+    <!-- Media -->
+    <string name="media">Multimédia</string>
+    <string name="media_picture">Imagens</string>
+    <string formatted="false" name="media_pager">%d de %d</string>
+
+    <!-- Dialogs -->
+    <string name="alert_leave_group_message">Tem a certeza de que quer sair do grupo %1$s?</string>
+    <string name="alert_leave_group_yes">Sair</string>
+
+    <string name="alert_delete_group_title">Eliminar %1$s grupo?</string>
+    <string name="alert_delete_group_yes">Eliminar</string>
+
+    <string name="alert_delete_chat_message">Eliminar chat com %1$s?</string>
+    <string name="alert_delete_chat_yes">Eliminar</string>
+
+    <string name="alert_revoke_link_message">Revogar link?</string>
+    <string name="alert_revoke_link_yes">Revogar</string>
+
+    <string name="alert_revoke_integration_token_message">Revogar token?</string>
+    <string name="alert_revoke_integration_token_yes">Revogar</string>
+
+    <!-- Errors -->
+    <string name="error_connection">Não pode ligar-se. Por favor, verifique se está ligado à Internet e tente novamente.\n\nPor favor, reinicie o seu telefone, se o seu problema de ligação persistir.</string>
+    <string name="error_unknown">Não é possível efetuar a operação.\n\nPor favor, verifique o seu telefone e reinicie se o problema          persistir.</string>
+    <string name="error_view_url">Desconhecido, escreva URL</string>
+</resources>
