@@ -48,7 +48,6 @@ public abstract class MessageHolder extends BindedViewHolder
             container.setOnLongClickListener((View.OnLongClickListener) this);
             container.setOnLongClickListener((BubbleContainer.OnAvatarLongClickListener) this);
         }
-        onConfigureViewHolder();
     }
 
     public void setOnline(boolean online, boolean isBot) {
