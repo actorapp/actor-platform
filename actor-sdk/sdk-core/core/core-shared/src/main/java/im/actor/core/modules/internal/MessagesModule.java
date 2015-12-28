@@ -69,6 +69,7 @@ import im.actor.runtime.actors.tools.BounceFilterActor;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.files.FileSystemReference;
+import im.actor.runtime.json.JSONObject;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.ListEngine;
@@ -336,6 +337,11 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                               @NotNull Double longitude, @NotNull Double latitude,
                               @Nullable String street, @Nullable String place) {
         sendMessageActor.send(new SenderActor.SendLocation(peer, longitude, latitude, street, place));
+    }
+
+    public void sendJson(@NotNull Peer peer,
+                         @NotNull JSONObject jsonObject) {
+        sendMessageActor.send(new SenderActor.SendJson(peer, jsonObject));
     }
 
 
