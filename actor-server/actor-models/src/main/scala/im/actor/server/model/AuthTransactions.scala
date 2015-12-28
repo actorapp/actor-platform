@@ -3,9 +3,9 @@ package im.actor.server.model
 import java.time.LocalDateTime
 
 /**
- * Parent model that stores authorization info before user log in.
+ * Parent model that contains authorization info before user log in.
  */
-case class AuthTransaction(
+final case class AuthTransaction(
   transactionHash: String,
   appId:           Int,
   apiKey:          String,
@@ -18,9 +18,9 @@ case class AuthTransaction(
 )
 
 /**
- * Model that stores info about phone authorization
+ * Model that contains info about phone authorization
  */
-case class AuthPhoneTransaction(
+final case class AuthPhoneTransaction(
   phoneNumber:     Long,
   transactionHash: String,
   appId:           Int,
@@ -31,12 +31,12 @@ case class AuthPhoneTransaction(
   deviceInfo:      Array[Byte],
   isChecked:       Boolean               = false,
   deletedAt:       Option[LocalDateTime] = None
-) extends AuthTransactionChildren
+) extends AuthTransactionBase
 
 /**
- * Model that stores info about email authorization
+ * Model that contains info about email authorization
  */
-case class AuthEmailTransaction(
+final case class AuthEmailTransaction(
   email:           String,
   redirectUri:     Option[String],
   transactionHash: String,
@@ -48,9 +48,26 @@ case class AuthEmailTransaction(
   deviceInfo:      Array[Byte],
   isChecked:       Boolean               = false,
   deletedAt:       Option[LocalDateTime] = None
-) extends AuthTransactionChildren
+) extends AuthTransactionBase
 
-sealed trait AuthTransactionChildren {
+/**
+ * Model that contains info about username authorization
+ */
+final case class AuthUsernameTransaction(
+  username:        String,
+  userId:          Option[Int],
+  transactionHash: String,
+  appId:           Int,
+  apiKey:          String,
+  deviceHash:      Array[Byte],
+  deviceTitle:     String,
+  accessSalt:      String,
+  deviceInfo:      Array[Byte],
+  isChecked:       Boolean               = false,
+  deletedAt:       Option[LocalDateTime] = None
+) extends AuthTransactionBase
+
+sealed trait AuthTransactionBase {
   def transactionHash: String
   def appId: Int
   def apiKey: String

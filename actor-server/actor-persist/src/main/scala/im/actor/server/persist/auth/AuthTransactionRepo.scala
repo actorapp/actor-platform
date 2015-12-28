@@ -5,10 +5,9 @@ import java.time.{ ZoneOffset, LocalDateTime }
 import scala.concurrent.ExecutionContext
 
 import im.actor.server.db.ActorPostgresDriver.api._
-import im.actor.server.model
-import im.actor.server.model.AuthTransactionChildren
+import im.actor.server.model.{ AuthTransaction, AuthTransactionBase }
 
-private[auth] abstract class AuthTransactionBase[T](tag: Tag, tname: String) extends Table[T](tag, tname) {
+private[auth] abstract class AuthTransactionRepoBase[T](tag: Tag, tname: String) extends Table[T](tag, tname) {
   def transactionHash = column[String]("transaction_hash", O.PrimaryKey)
   def appId = column[Int]("app_id")
   def apiKey = column[String]("api_key")
@@ -20,7 +19,7 @@ private[auth] abstract class AuthTransactionBase[T](tag: Tag, tname: String) ext
   def deletedAt = column[Option[LocalDateTime]]("deleted_at")
 }
 
-final class AuthTransactionTable(tag: Tag) extends AuthTransactionBase[model.AuthTransaction](tag, "auth_transactions") {
+final class AuthTransactionTable(tag: Tag) extends AuthTransactionRepoBase[AuthTransaction](tag, "auth_transactions") {
   def * = (
     transactionHash,
     appId,
@@ -31,7 +30,7 @@ final class AuthTransactionTable(tag: Tag) extends AuthTransactionBase[model.Aut
     deviceInfo,
     isChecked,
     deletedAt
-  ) <> (model.AuthTransaction.tupled, model.AuthTransaction.unapply)
+  ) <> (AuthTransaction.tupled, AuthTransaction.unapply)
 }
 
 object AuthTransactionRepo {
@@ -42,7 +41,7 @@ object AuthTransactionRepo {
   def find(transactionHash: String) =
     active.filter(_.transactionHash === transactionHash).result.headOption
 
-  def findChildren(transactionHash: String)(implicit ec: ExecutionContext): DBIO[Option[AuthTransactionChildren]] =
+  def findChildren(transactionHash: String)(implicit ec: ExecutionContext): DBIO[Option[AuthTransactionBase]] =
     for {
       email ← AuthEmailTransactionRepo.find(transactionHash)
       phone ← AuthPhoneTransactionRepo.find(transactionHash)

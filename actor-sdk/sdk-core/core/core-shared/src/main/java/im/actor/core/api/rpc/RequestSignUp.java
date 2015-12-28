@@ -25,11 +25,13 @@ public class RequestSignUp extends Request<ResponseAuth> {
     private String transactionHash;
     private String name;
     private ApiSex sex;
+    private String password;
 
-    public RequestSignUp(@NotNull String transactionHash, @NotNull String name, @Nullable ApiSex sex) {
+    public RequestSignUp(@NotNull String transactionHash, @NotNull String name, @Nullable ApiSex sex, @Nullable String password) {
         this.transactionHash = transactionHash;
         this.name = name;
         this.sex = sex;
+        this.password = password;
     }
 
     public RequestSignUp() {
@@ -51,6 +53,11 @@ public class RequestSignUp extends Request<ResponseAuth> {
         return this.sex;
     }
 
+    @Nullable
+    public String getPassword() {
+        return this.password;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.transactionHash = values.getString(1);
@@ -59,6 +66,7 @@ public class RequestSignUp extends Request<ResponseAuth> {
         if (val_sex != 0) {
             this.sex = ApiSex.parse(val_sex);
         }
+        this.password = values.optString(4);
     }
 
     @Override
@@ -74,6 +82,9 @@ public class RequestSignUp extends Request<ResponseAuth> {
         if (this.sex != null) {
             writer.writeInt(3, this.sex.getValue());
         }
+        if (this.password != null) {
+            writer.writeString(4, this.password);
+        }
     }
 
     @Override
@@ -81,6 +92,7 @@ public class RequestSignUp extends Request<ResponseAuth> {
         String res = "rpc SignUp{";
         res += "name=" + this.name;
         res += ", sex=" + this.sex;
+        res += ", password=" + this.password;
         res += "}";
         return res;
     }

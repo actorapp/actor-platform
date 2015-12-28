@@ -668,10 +668,10 @@
         </node>
       </node>
       <node concept="2m6fVq" id="6Fl2chwBWMC" role="2m5mJr">
-        <property role="TrG5h" value="StartLoginAuth" />
+        <property role="TrG5h" value="StartUsernameAuth" />
         <node concept="2m7Kf5" id="6Fl2chwBWSb" role="2m0hLx">
           <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="login" />
+          <property role="TrG5h" value="username" />
           <node concept="2m5ndX" id="6Fl2chwBWSf" role="2m7DVh" />
         </node>
         <node concept="2m7Kf5" id="6Fl2chwBYwg" role="2m0hLx">
@@ -735,7 +735,7 @@
           </node>
           <node concept="NX1gA" id="6Fl2chwC4us" role="1y2DgH">
             <property role="1GSvIU" value="full" />
-            <property role="NX6R2" value="If user is registered with this login" />
+            <property role="NX6R2" value="If user is registered with this username" />
             <ref role="NX6Kv" node="6Fl2chwBYxX" resolve="isRegistered" />
           </node>
         </node>
@@ -744,8 +744,8 @@
         </node>
         <node concept="NX1gA" id="6Fl2chwC1Ke" role="1GBnQ6">
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Login for signing in" />
-          <ref role="NX6Kv" node="6Fl2chwBWSb" resolve="login" />
+          <property role="NX6R2" value="Username for signing in" />
+          <ref role="NX6Kv" node="6Fl2chwBWSb" resolve="username" />
         </node>
         <node concept="NX1gA" id="6Fl2chwC1Km" role="1GBnQ6">
           <property role="1GSvIU" value="hidden" />
@@ -9277,6 +9277,44 @@
         </node>
       </node>
       <node concept="NvyAe" id="GBscvBBiZs" role="2m5mJr" />
+      <node concept="2m5naR" id="6Fl2chwC7Lu" role="2m5mJr">
+        <property role="TrG5h" value="FileUrlDescription" />
+        <node concept="2m7Kf5" id="6Fl2chwC8Bv" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="fileId" />
+          <node concept="2m5ndQ" id="4PMjvAhaUPo" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwC7NJ" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="url" />
+          <node concept="2m5ndX" id="6Fl2chwC7NN" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6Fl2chwC7NQ" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="timeout" />
+          <node concept="wb0Ql" id="6Fl2chwC7NW" role="2m7DVh">
+            <ref role="wb18D" node="6u8Nlnzqdrq" resolve="sec" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="6Fl2chwC7NZ" role="NXodf">
+          <property role="NXePf" value="File url description" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC9qZ" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="File id of url" />
+          <ref role="NX6Kv" node="6Fl2chwC8Bv" resolve="fileId" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC7O4" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Url for downloading" />
+          <ref role="NX6Kv" node="6Fl2chwC7NJ" resolve="url" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwC7Oc" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Timeout of url" />
+          <ref role="NX6Kv" node="6Fl2chwC7NQ" resolve="timeout" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="3MpuFr6x5xl" role="2m5mJr">
         <property role="TrG5h" value="GetFileUrl" />
         <node concept="NXeRC" id="3MpuFr6x791" role="1GBnQ6">
@@ -9323,6 +9361,47 @@
           <node concept="Nu42z" id="3MpuFr6x68o" role="NuuwV">
             <property role="Nu42W" value="4E" />
           </node>
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6Fl2chwC6Tz" role="2m5mJr">
+        <property role="TrG5h" value="GetFileUrls" />
+        <node concept="2m7Kf5" id="6Fl2chwC6VL" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="files" />
+          <node concept="2m5nlk" id="6Fl2chwC6VP" role="2m7DVh">
+            <node concept="2m5mGg" id="6Fl2chwC6VV" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvB$$Hy" resolve="FileLocation" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="6Fl2chwC6T$" role="NuuwV">
+          <property role="Nu42W" value="A0D" />
+        </node>
+        <node concept="2m1R6W" id="6Fl2chwC7J5" role="2m6efq">
+          <node concept="NX1gA" id="6Fl2chwCds0" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="File urls" />
+            <ref role="NX6Kv" node="6Fl2chwCb1L" resolve="fileUrls" />
+          </node>
+          <node concept="2m7Kf5" id="6Fl2chwCb1L" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="fileUrls" />
+            <node concept="2m5nlk" id="6Fl2chwCefr" role="2m7DVh">
+              <node concept="2m5mGg" id="6Fl2chwCefx" role="3GJlyp">
+                <ref role="2m5mJy" node="6Fl2chwC7Lu" resolve="FileUrlDescription" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="6Fl2chwC7J6" role="NuuwV">
+            <property role="Nu42W" value="A0E" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="6Fl2chwC6VY" role="1GBnQ6">
+          <property role="NXePf" value="Requesting multiple fle URL for downloading" />
+        </node>
+        <node concept="NX1gA" id="6Fl2chwCaep" role="1GBnQ6">
+          <property role="NX6R2" value="File locations to load urls" />
+          <ref role="NX6Kv" node="6Fl2chwC6VL" resolve="files" />
         </node>
       </node>
       <node concept="2m6fVq" id="3MpuFr6x8F5" role="2m5mJr">
@@ -9535,7 +9614,9 @@
         <node concept="2m7Kf5" id="3MpuFr6x9JM" role="2m0hLx">
           <property role="2m7DUN" value="2" />
           <property role="TrG5h" value="value" />
-          <node concept="2m5ndX" id="3MpuFr6x9JS" role="2m7DVh" />
+          <node concept="2m5nlT" id="6Fl2chwCgDC" role="2m7DVh">
+            <node concept="2m5ndX" id="6Fl2chwCgDI" role="3GH5xg" />
+          </node>
         </node>
         <node concept="Nu42z" id="3MpuFr6x9J7" role="NuuwV">
           <property role="Nu42W" value="80" />
@@ -11154,6 +11235,9 @@
       </node>
       <node concept="2m5naR" id="2WAO9Y$lCqr" role="2m5mJr">
         <property role="TrG5h" value="MapValue" />
+        <property role="tsOgz" value="false" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="2WAO9Y$lyRS" resolve="RawValue" />
         <node concept="2m7Kf5" id="2WAO9Y$lCYY" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="items" />
@@ -11165,6 +11249,9 @@
         </node>
         <node concept="NXeRC" id="2WAO9Y$lE6r" role="NXodf">
           <property role="NXePf" value="Map Value" />
+        </node>
+        <node concept="Nu42z" id="6vhvPrvFThv" role="3BtCOu">
+          <property role="Nu42W" value="06" />
         </node>
       </node>
       <node concept="1Dx9M1" id="2WAO9Y$lrKc" role="1Dx9rD">

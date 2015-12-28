@@ -27,6 +27,7 @@ import ActorSDK
         
         // Creating Actor
         ActorSDK.sharedActor().createActor()
+        
     }
     
     public override func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {

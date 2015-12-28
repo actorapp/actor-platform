@@ -2,6 +2,16 @@
 //  Copyright (C) 2014-2015 Actor LLC. <https://actor.im>
 //
 
+
+/*
+ * Auth Screen
+ */
+
+"AuthMoreInfo" = "Free, fast and secure messaging.";
+
+"AuthStarButton" = "Start Messaging";
+
+
 /*
  * Main Screen
  */
@@ -94,6 +104,8 @@
 "SettingsLastSeenContacts"  = "My Contacts";
 
 "SettingsLastSeenNone"    = "Nobody";
+
+"SettingsMobilePhone"    = "Mobile Phone";
 
 
 /*
@@ -367,6 +379,10 @@
 "AuthPhoneNumberHint" = "Your phone number";
 
 "AuthPhoneHint" = "Please confirm your country code and enter your phone number.";
+
+"AuthTermsOfServiceFull" = "By signing up, you agree to the Terms of Service.";
+
+"AuthTermsOfService" = "Terms of Service";
 
 "AuthPhoneTooShort" = "Phone number too short";
 

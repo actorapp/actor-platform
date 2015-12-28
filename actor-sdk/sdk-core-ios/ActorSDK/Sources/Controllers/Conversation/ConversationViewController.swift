@@ -74,11 +74,16 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         
         // right button
-        self.rightButton.tintColor = appStyle.chatSendColor
-        self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-        self.rightButton.setTitle("", forState: UIControlState.Normal)
-        self.rightButton.enabled = true
-        self.rightButton.layoutIfNeeded()
+//        self.rightButton.tintColor = appStyle.chatSendColor
+//        self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+//        self.rightButton.setTitle("", forState: UIControlState.Normal)
+//        self.rightButton.enabled = true
+//        self.rightButton.layoutIfNeeded()
+        
+        self.rightButton.setTitle(AALocalized("ChatSend"), forState: UIControlState.Normal)
+        self.rightButton.setTitleColor(appStyle.chatSendColor, forState: UIControlState.Normal)
+        self.rightButton.setTitleColor(appStyle.chatSendDisabledColor, forState: UIControlState.Disabled)
+        self.rightButton.setImage(nil, forState: UIControlState.Normal)
         
         //
         
@@ -349,23 +354,23 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             
         } else {
             
-            if(self.audioButton.hidden){
-                
-                self.rightButton.tintColor = appStyle.chatSendColor
-                self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-                self.rightButton.setTitle("", forState: UIControlState.Normal)
-                self.rightButton.enabled = true
-                
-            } else {
-                
-                self.rightButton.tintColor = appStyle.chatSendColor
-                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-                self.rightButton.setTitle("", forState: UIControlState.Normal)
-                self.rightButton.enabled = true
-                
-            }
-            
-            self.micOn = true
+//            if(self.audioButton.hidden){
+//                
+//                self.rightButton.tintColor = appStyle.chatSendColor
+//                self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+//                self.rightButton.setTitle("", forState: UIControlState.Normal)
+//                self.rightButton.enabled = true
+//                
+//            } else {
+//                
+//                self.rightButton.tintColor = appStyle.chatSendColor
+//                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+//                self.rightButton.setTitle("", forState: UIControlState.Normal)
+//                self.rightButton.enabled = true
+//                
+//            }
+//            
+//            self.micOn = true
             
         }
         
@@ -387,32 +392,32 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             
         } else {
             
-            if(self.audioButton.hidden){
-                //self.textView.resignFirstResponder()
-                
-                self.rightButton.tintColor = appStyle.chatSendColor
-                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-                self.rightButton.setTitle("", forState: UIControlState.Normal)
-                self.rightButton.enabled = true
-                
-                self.textInputbar.layoutIfNeeded()
-                self.rightButton.layoutIfNeeded()
-                
-                self.audioButton.frame = textView.frame
-                self.audioButton.hidden = false;
-                
-                
-            } else {
-                self.audioButton.hidden = true;
-                
-                self.rightButton.tintColor = appStyle.chatSendColor
-                self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-                self.rightButton.setTitle("", forState: UIControlState.Normal)
-                self.rightButton.enabled = true
-                
-                self.textInputbar.layoutIfNeeded()
-                self.rightButton.layoutIfNeeded()
-            }
+//            if(self.audioButton.hidden){
+//                //self.textView.resignFirstResponder()
+//                
+//                self.rightButton.tintColor = appStyle.chatSendColor
+//                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+//                self.rightButton.setTitle("", forState: UIControlState.Normal)
+//                self.rightButton.enabled = true
+//                
+//                self.textInputbar.layoutIfNeeded()
+//                self.rightButton.layoutIfNeeded()
+//                
+//                self.audioButton.frame = textView.frame
+//                self.audioButton.hidden = false;
+//                
+//                
+//            } else {
+//                self.audioButton.hidden = true;
+//                
+//                self.rightButton.tintColor = appStyle.chatSendColor
+//                self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+//                self.rightButton.setTitle("", forState: UIControlState.Normal)
+//                self.rightButton.enabled = true
+//                
+//                self.textInputbar.layoutIfNeeded()
+//                self.rightButton.layoutIfNeeded()
+//            }
 
         }
         

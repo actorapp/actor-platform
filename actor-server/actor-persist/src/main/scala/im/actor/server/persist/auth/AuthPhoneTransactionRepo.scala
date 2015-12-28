@@ -4,7 +4,7 @@ import im.actor.server.db.ActorPostgresDriver.api._
 
 import im.actor.server.model
 
-class AuthPhoneTransactionTable(tag: Tag) extends AuthTransactionBase[model.AuthPhoneTransaction](tag, "auth_phone_transactions") with InheritingTable {
+class AuthPhoneTransactionTable(tag: Tag) extends AuthTransactionRepoBase[model.AuthPhoneTransaction](tag, "auth_phone_transactions") with InheritingTable {
   def phoneNumber = column[Long]("phone_number")
 
   val inherited = AuthTransactionRepo.transactions.baseTableRow

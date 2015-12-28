@@ -8,6 +8,7 @@ import com.google.gwt.core.client.JsArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Contact;
@@ -26,6 +27,8 @@ import im.actor.core.js.entity.JsDialogGroup;
 import im.actor.core.js.entity.JsDialogShort;
 import im.actor.core.js.entity.JsGroup;
 import im.actor.core.js.entity.JsMessage;
+import im.actor.core.js.entity.JsOnlineGroup;
+import im.actor.core.js.entity.JsOnlineUser;
 import im.actor.core.js.entity.JsPeerInfo;
 import im.actor.core.js.entity.JsSearchEntity;
 import im.actor.core.js.entity.JsTyping;
@@ -52,6 +55,8 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     private HashMap<Integer, JsBindedValue<JsUser>> users = new HashMap<Integer, JsBindedValue<JsUser>>();
     private HashMap<Integer, JsBindedValue<JsGroup>> groups = new HashMap<Integer, JsBindedValue<JsGroup>>();
+    private HashMap<Integer, JsBindedValue<JsOnlineUser>> usersOnlines = new HashMap<Integer, JsBindedValue<JsOnlineUser>>();
+    private HashMap<Integer, JsBindedValue<JsOnlineGroup>> groupOnlines = new HashMap<Integer, JsBindedValue<JsOnlineGroup>>();
     private HashMap<Peer, JsBindedValue<JsTyping>> typing = new HashMap<Peer, JsBindedValue<JsTyping>>();
     private JsBindedValue<String> onlineState;
 
@@ -154,12 +159,12 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             }, false);
 
             // Sign for presence separately
-            userVM.getPresence().subscribe(new ValueChangedListener<UserPresence>() {
-                @Override
-                public void onChanged(UserPresence val, Value<UserPresence> valueModel) {
-                    value.changeValue(JsUser.fromUserVM(userVM, messenger));
-                }
-            }, false);
+//            userVM.getPresence().subscribe(new ValueChangedListener<UserPresence>() {
+//                @Override
+//                public void onChanged(UserPresence val, Value<UserPresence> valueModel) {
+//                    value.changeValue(JsUser.fromUserVM(userVM, messenger));
+//                }
+//            }, false);
 
             // Sign for contact separately
             userVM.isContact().subscribe(new ValueChangedListener<Boolean>() {
@@ -172,6 +177,31 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             users.put(uid, value);
         }
         return users.get(uid);
+    }
+
+    public JsBindedValue<JsOnlineUser> getUserOnline(int uid) {
+        if (!usersOnlines.containsKey(uid)) {
+            final JsBindedValue<JsOnlineUser> value = new JsBindedValue<JsOnlineUser>();
+            final UserVM userVM = context().getUsersModule().getUsers().get(uid);
+
+            userVM.getPresence().subscribe(new ValueChangedListener<UserPresence>() {
+                @Override
+                public void onChanged(UserPresence val, Value<UserPresence> valueModel) {
+                    if (val.getState() == UserPresence.State.UNKNOWN) {
+                        value.changeValue(null);
+                    } else {
+                        String presenceString = messenger.getFormatter().formatPresence(val, userVM.getSex());
+                        if (userVM.isBot()) {
+                            presenceString = "bot";
+                        }
+                        value.changeValue(JsOnlineUser.create(presenceString, val.getState() == UserPresence.State.ONLINE));
+                    }
+                }
+            });
+
+            usersOnlines.put(uid, value);
+        }
+        return usersOnlines.get(uid);
     }
 
     public JsBindedValue<JsGroup> getGroup(int gid) {
@@ -188,15 +218,42 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             }, false);
 
             // Sign for presence separately
-            groupVM.getPresence().subscribe(new ValueChangedListener<Integer>() {
-                @Override
-                public void onChanged(Integer val, Value<Integer> valueModel) {
-                    value.changeValue(JsGroup.fromGroupVM(groupVM, messenger));
-                }
-            }, false);
+//            groupVM.getPresence().subscribe(new ValueChangedListener<Integer>() {
+//                @Override
+//                public void onChanged(Integer val, Value<Integer> valueModel) {
+//                    value.changeValue(JsGroup.fromGroupVM(groupVM, messenger));
+//                }
+//            }, false);
             groups.put(gid, value);
         }
         return groups.get(gid);
+    }
+
+    public JsBindedValue<JsOnlineGroup> getGroupOnline(int gid) {
+        if (!groupOnlines.containsKey(gid)) {
+            final JsBindedValue<JsOnlineGroup> value = new JsBindedValue<JsOnlineGroup>();
+            final GroupVM groupVM = context().getGroupsModule().getGroupsCollection().get(gid);
+            groupVM.getPresence().subscribe(new ValueChangedListener<Integer>() {
+                @Override
+                public void onChanged(Integer val, Value<Integer> valueModel) {
+                    if (groupVM.isMember().get()) {
+                        if (val == null) {
+                            value.changeValue(null);
+                            return;
+                        }
+                        String presence = messenger.getFormatter().formatGroupMembers(groupVM.getMembersCount());
+                        if (val > 0) {
+                            presence += ", " + messenger.getFormatter().formatGroupOnline(val);
+                        }
+                        value.changeValue(JsOnlineGroup.create(groupVM.getMembersCount(), val, presence, false));
+                    } else {
+                        value.changeValue(JsOnlineGroup.create(0, 0, "Not member", false));
+                    }
+                }
+            });
+            groupOnlines.put(gid, value);
+        }
+        return groupOnlines.get(gid);
     }
 
     public JsBindedValue<JsTyping> getTyping(final Peer peer) {
@@ -305,44 +362,56 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     }
 
     @Override
-    public void onFileLoaded(long fileId) {
+    public void onFileLoaded(HashSet<Long> fileId) {
+
+        //
+        // Dialogs List
+        //
         if (dialogsList != null) {
+            dialogsList.startReconverting();
             for (Dialog dialog : dialogsList.getRawItems()) {
                 if (checkAvatar(dialog.getDialogAvatar(), fileId)) {
                     dialogsList.forceReconvert(dialog.getEngineId());
                 }
             }
+            dialogsList.stopReconverting();
+        }
+
+        //
+        // Grouped Dialogs
+        //
+        if (dialogsGroupedList != null) {
+            // TODO: Implement
         }
 
         if (contactsList != null) {
+            contactsList.startReconverting();
             for (Contact contact : contactsList.getRawItems()) {
                 if (checkAvatar(contact.getAvatar(), fileId)) {
                     contactsList.forceReconvert(contact.getEngineId());
                 }
             }
+            contactsList.stopReconverting();
         }
 
         for (JsDisplayList<JsMessage, Message> messageList : messageLists.values()) {
-            boolean founded = false;
+            messageList.startReconverting();
             for (Message message : messageList.getRawItems()) {
                 UserVM user = context().getUsersModule().getUsers().get(message.getSenderId());
                 if (checkAvatar(user.getAvatar().get(), fileId)) {
-                    founded = true;
-                    break;
+                    messageList.forceReconvert(message.getEngineId());
+                    continue;
                 }
                 if (message.getContent() instanceof DocumentContent) {
                     DocumentContent doc = (DocumentContent) message.getContent();
                     if (doc.getSource() instanceof FileRemoteSource) {
-                        if (((FileRemoteSource) doc.getSource()).getFileReference().getFileId() == fileId) {
-                            founded = true;
-                            break;
+                        if (fileId.contains(((FileRemoteSource) doc.getSource()).getFileReference().getFileId())) {
+                            messageList.forceReconvert(message.getEngineId());
                         }
                     }
                 }
             }
-            if (founded) {
-                messageList.forceReconvert();
-            }
+            messageList.stopReconverting();
         }
 
         for (JsBindedValue<JsUser> u : users.values()) {
@@ -362,17 +431,17 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
         }
     }
 
-    protected boolean checkAvatar(Avatar avatar, long fileId) {
+    protected boolean checkAvatar(Avatar avatar, HashSet<Long> fileIds) {
         if (avatar == null) {
             return false;
         }
-        if (avatar.getSmallImage() != null && avatar.getSmallImage().getFileReference().getFileId() == fileId) {
+        if (avatar.getSmallImage() != null && fileIds.contains(avatar.getSmallImage().getFileReference().getFileId())) {
             return true;
         }
-        if (avatar.getFullImage() != null && avatar.getFullImage().getFileReference().getFileId() == fileId) {
+        if (avatar.getFullImage() != null && fileIds.contains(avatar.getFullImage().getFileReference().getFileId())) {
             return true;
         }
-        if (avatar.getLargeImage() != null && avatar.getLargeImage().getFileReference().getFileId() == fileId) {
+        if (avatar.getLargeImage() != null && fileIds.contains(avatar.getLargeImage().getFileReference().getFileId())) {
             return true;
         }
         return false;

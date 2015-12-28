@@ -61,7 +61,7 @@ public class ContactsSyncActor extends ModuleActor {
             }
         }
         notifyState();
-        self().send(new PerformSync());
+        // self().send(new PerformSync());
     }
 
     public void performSync() {

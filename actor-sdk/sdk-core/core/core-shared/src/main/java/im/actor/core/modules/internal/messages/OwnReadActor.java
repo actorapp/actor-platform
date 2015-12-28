@@ -57,17 +57,17 @@ public class OwnReadActor extends ModuleActor {
     }
 
     public void onOutMessage(Peer peer, long sortDate) {
-        long readState = context().getMessagesModule().loadReadState(peer);
-        if (sortDate <= readState) {
-            // Already read
-            return;
-        }
+//        long readState = context().getMessagesModule().loadReadState(peer);
+//        if (sortDate <= readState) {
+//            // Already read
+//            return;
+//        }
 
         // Update Counters
         // context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageReadByMe(sortingDate));
 
         // Saving read state
-        context().getMessagesModule().saveReadState(peer, sortDate);
+        // context().getMessagesModule().saveReadState(peer, sortDate);
     }
 
     public void onMessageRead(Peer peer, long sortingDate) {
