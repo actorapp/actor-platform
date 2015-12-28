@@ -31,6 +31,8 @@ object FutureResultRpcCats extends FutureInstances with EitherInstances {
   def fromFutureEither[A, B](failure: B ⇒ RpcError)(fva: Future[B Xor A])(implicit ec: ExecutionContext): Result[A] =
     Result[A](fva.map(_.leftMap(failure)))
 
+  def fromFutureEither[A](fva: Future[RpcError Xor A])(implicit ec: ExecutionContext): Result[A] = Result[A](fva)
+
   def fromBoolean[A](failure: RpcError)(oa: Boolean): Result[Unit] = Result[Unit](Future.successful(if (oa) right(()) else left(failure)))
 
   implicit class ToScalaz[A](catsResult: RpcError Xor A) {
