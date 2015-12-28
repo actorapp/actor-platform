@@ -1,13 +1,24 @@
 package im.actor;
 
 import android.graphics.Color;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 
+import im.actor.core.api.ApiMessage;
+import im.actor.core.api.ApiTextMessage;
+import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.ContentConverter;
+import im.actor.core.entity.content.TextContent;
+import im.actor.core.entity.content.internal.AbsContentContainer;
+import im.actor.core.entity.content.internal.ContentRemoteContainer;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
+import im.actor.sdk.controllers.conversation.messages.MessageHolder;
+import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
@@ -27,9 +38,44 @@ public class Application extends ActorSDKApplication {
 
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setMainColor(Color.parseColor("#529a88"));
+        AbsContent.registerConverter(new ContentConverter() {
+            @Override
+            public AbsContent convert(AbsContentContainer container) {
+                if (container instanceof ContentRemoteContainer) {
+                    ApiMessage msg = ((ContentRemoteContainer) container).getMessage();
+                    if (msg instanceof ApiTextMessage) {
+                        return new TextContent((ContentRemoteContainer) container);
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public Class destinationType() {
+                return TextExContent.class;
+            }
+        });
+    }
+
+    public class TextExContent extends TextContent {
+
+        public TextExContent(ContentRemoteContainer remoteContainer) {
+            super(remoteContainer);
+        }
     }
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
+
+        @Override
+        public MessageHolder getCustomMessageViewHolder(Class<AbsContent> content, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
+            if (content.isAssignableFrom(TextExContent.class)) {
+                return new TextExHolder(messagesAdapter, LayoutInflater
+                        .from(viewGroup.getContext())
+                        .inflate(R.layout.adapter_dialog_text, viewGroup, false));
+            } else {
+                return null;
+            }
+        }
 
         @Override
         public ActorIntentFragmentActivity getSettingsIntent() {
