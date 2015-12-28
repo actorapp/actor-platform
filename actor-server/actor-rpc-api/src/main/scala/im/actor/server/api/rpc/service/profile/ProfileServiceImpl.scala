@@ -28,7 +28,7 @@ object ProfileErrors {
     "About is too long. It should be no longer then 255 characters", false, None)
 }
 
-class ProfileServiceImpl()(
+final class ProfileServiceImpl()(
   implicit
   actorSystem: ActorSystem
 ) extends ProfileService {
@@ -103,7 +103,7 @@ class ProfileServiceImpl()(
   def jhandleCheckNickName(nickname: String, clientData: ClientData): Future[HandlerResult[ResponseBool]] = {
     authorized(clientData) { implicit client ⇒
       (for {
-        _ ← fromBoolean(ProfileErrors.NicknameInvalid)(StringUtils.validNickName(nickname))
+        _ ← fromBoolean(ProfileErrors.NicknameInvalid)(StringUtils.validUsername(nickname))
         exists ← fromFuture(db.run(persist.UserRepo.nicknameExists(nickname.trim)))
       } yield ResponseBool(!exists)).run
     }

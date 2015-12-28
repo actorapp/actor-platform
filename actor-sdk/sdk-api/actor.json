@@ -593,7 +593,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "StartLoginAuth",
+            "name": "StartUsernameAuth",
             "header": 2571,
             "response": {
               "type": "anonymous",
@@ -610,7 +610,7 @@
                   "type": "reference",
                   "argument": "isRegistered",
                   "category": "full",
-                  "description": "  If user is registered with this login"
+                  "description": "  If user is registered with this username"
                 }
               ],
               "attributes": [
@@ -630,9 +630,9 @@
               "Starting Login Authentication",
               {
                 "type": "reference",
-                "argument": "login",
+                "argument": "username",
                 "category": "full",
-                "description": "Login for signing in"
+                "description": "Username for signing in"
               },
               {
                 "type": "reference",
@@ -675,7 +675,7 @@
               {
                 "type": "string",
                 "id": 1,
-                "name": "login"
+                "name": "username"
               },
               {
                 "type": "int32",
@@ -10694,6 +10694,53 @@
           "type": "empty"
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "FileUrlDescription",
+            "doc": [
+              "File url description",
+              {
+                "type": "reference",
+                "argument": "fileId",
+                "category": "full",
+                "description": "  File id of url"
+              },
+              {
+                "type": "reference",
+                "argument": "url",
+                "category": "full",
+                "description": "  Url for downloading"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "full",
+                "description": "  Timeout of url"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "fileId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "url"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 3,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "GetFileUrl",
@@ -10748,6 +10795,60 @@
                 },
                 "id": 1,
                 "name": "file"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetFileUrls",
+            "header": 2573,
+            "response": {
+              "type": "anonymous",
+              "header": 2574,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "fileUrls",
+                  "category": "full",
+                  "description": "  File urls"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "FileUrlDescription"
+                    }
+                  },
+                  "id": 1,
+                  "name": "fileUrls"
+                }
+              ]
+            },
+            "doc": [
+              "Requesting multiple fle URL for downloading",
+              {
+                "type": "reference",
+                "argument": "files",
+                "category": "hidden",
+                "description": "File locations to load urls"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "FileLocation"
+                  }
+                },
+                "id": 1,
+                "name": "files"
               }
             ]
           }
@@ -11011,7 +11112,10 @@
                 "name": "key"
               },
               {
-                "type": "string",
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
                 "id": 2,
                 "name": "value"
               }
@@ -12978,6 +13082,10 @@
             "doc": [
               "Map Value"
             ],
+            "trait": {
+              "name": "RawValue",
+              "key": 6
+            },
             "attributes": [
               {
                 "type": {

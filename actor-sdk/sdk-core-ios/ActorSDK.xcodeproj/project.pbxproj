@@ -211,6 +211,10 @@
 		153F6B591C2B03E300C0B960 /* AAGarbageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B551C2B03E300C0B960 /* AAGarbageView.m */; };
 		153F6B5B1C2B109400C0B960 /* AABubbleVoiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B5A1C2B109400C0B960 /* AABubbleVoiceCell.swift */; };
 		153F6B5D1C2B3AC500C0B960 /* AABubbleStickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B5C1C2B3AC500C0B960 /* AABubbleStickerCell.swift */; };
+		153F6B611C2BF8EC00C0B960 /* AAAuthWelcomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */; };
+		153F6B8A1C2D7BA300C0B960 /* AATapLabelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B881C2D7BA300C0B960 /* AATapLabelDelegate.swift */; };
+		153F6B8B1C2D7BA400C0B960 /* AATapLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B891C2D7BA300C0B960 /* AATapLabel.swift */; };
+		153F6B8E1C2D868100C0B960 /* AATermsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B8D1C2D868100C0B960 /* AATermsController.swift */; };
 		15D35F161C20185500E3717A /* diag_range.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F0C1C20185500E3717A /* diag_range.c */; };
 		15D35F171C20185500E3717A /* diag_range.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F0D1C20185500E3717A /* diag_range.h */; };
 		15D35F181C20185500E3717A /* opus_header.c in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F0E1C20185500E3717A /* opus_header.c */; };
@@ -480,6 +484,10 @@
 		153F6B551C2B03E300C0B960 /* AAGarbageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAGarbageView.m; sourceTree = "<group>"; };
 		153F6B5A1C2B109400C0B960 /* AABubbleVoiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleVoiceCell.swift; sourceTree = "<group>"; };
 		153F6B5C1C2B3AC500C0B960 /* AABubbleStickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleStickerCell.swift; sourceTree = "<group>"; };
+		153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAuthWelcomeController.swift; path = ../AAAuthWelcomeController.swift; sourceTree = "<group>"; };
+		153F6B881C2D7BA300C0B960 /* AATapLabelDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATapLabelDelegate.swift; sourceTree = "<group>"; };
+		153F6B891C2D7BA300C0B960 /* AATapLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATapLabel.swift; sourceTree = "<group>"; };
+		153F6B8D1C2D868100C0B960 /* AATermsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATermsController.swift; sourceTree = "<group>"; };
 		15D35F0C1C20185500E3717A /* diag_range.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = diag_range.c; sourceTree = "<group>"; };
 		15D35F0D1C20185500E3717A /* diag_range.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = diag_range.h; sourceTree = "<group>"; };
 		15D35F0E1C20185500E3717A /* opus_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = opus_header.c; sourceTree = "<group>"; };
@@ -795,6 +803,8 @@
 		066A52601BC50E6B000E606E /* Auth */ = {
 			isa = PBXGroup;
 			children = (
+				153F6B8C1C2D83B200C0B960 /* Views */,
+				153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */,
 				066A526E1BC51007000E606E /* Views */,
 				066A526B1BC50E83000E606E /* Cells */,
 				066A52611BC50E7B000E606E /* AAAuthCountriesViewController.swift */,
@@ -1093,6 +1103,7 @@
 		152AA8901C29887A0030DEEE /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				153F6B871C2D7B9700C0B960 /* TapedLabel */,
 				152AA8911C29891B0030DEEE /* SlackTextViewController */,
 			);
 			name = Extensions;
@@ -1140,6 +1151,23 @@
 				153F6B4C1C2B03D600C0B960 /* FBShimmeringView.m */,
 			);
 			name = Ext;
+			sourceTree = "<group>";
+		};
+		153F6B871C2D7B9700C0B960 /* TapedLabel */ = {
+			isa = PBXGroup;
+			children = (
+				153F6B881C2D7BA300C0B960 /* AATapLabelDelegate.swift */,
+				153F6B891C2D7BA300C0B960 /* AATapLabel.swift */,
+			);
+			name = TapedLabel;
+			sourceTree = "<group>";
+		};
+		153F6B8C1C2D83B200C0B960 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				153F6B8D1C2D868100C0B960 /* AATermsController.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		15D35F0A1C20182900E3717A /* AudioRecorder */ = {
@@ -1536,6 +1564,7 @@
 				066A518D1BC4C383000E606E /* CocoaStorageRuntime.swift in Sources */,
 				066A52F01BC52B02000E606E /* AASettingsViewController.swift in Sources */,
 				066A52741BC5101A000E606E /* ABPhoneField.m in Sources */,
+				153F6B611C2BF8EC00C0B960 /* AAAuthWelcomeController.swift in Sources */,
 				152AA8A91C2989270030DEEE /* SLKTextInputbar.m in Sources */,
 				066A53071BC53183000E606E /* AARecentViewController.swift in Sources */,
 				06230F411BC95BD200A4807B /* RMPhoneFormat.m in Sources */,
@@ -1556,6 +1585,7 @@
 				066A51241BC4B56D000E606E /* Colors.swift in Sources */,
 				066A53171BC533DD000E606E /* AABubbles.swift in Sources */,
 				153F6B591C2B03E300C0B960 /* AAGarbageView.m in Sources */,
+				153F6B8B1C2D7BA400C0B960 /* AATapLabel.swift in Sources */,
 				066A52081BC4E962000E606E /* Makefile in Sources */,
 				066A53231BC533F5000E606E /* Caches.swift in Sources */,
 				06E7B2471C0F8D7A0090660C /* AALocationPickerController.swift in Sources */,
@@ -1568,6 +1598,7 @@
 				066A51541BC4BE95000E606E /* Images.swift in Sources */,
 				152AA8A71C2989270030DEEE /* SLKInputAccessoryView.m in Sources */,
 				066A52801BC51ED0000E606E /* AARootTabViewController.swift in Sources */,
+				153F6B8E1C2D868100C0B960 /* AATermsController.swift in Sources */,
 				066A522A1BC4EEAC000E606E /* ManagedAlerts.swift in Sources */,
 				069CF4D11BCB909A00C66E12 /* CLTokenInputView.m in Sources */,
 				066A52451BC4EECD000E606E /* AAAvatarCell.swift in Sources */,
@@ -1578,6 +1609,7 @@
 				066A52151BC4EE04000E606E /* AAAvatarView.swift in Sources */,
 				066A52591BC4EF61000E606E /* Executions.swift in Sources */,
 				066A519C1BC4C390000E606E /* FMDBIndex.swift in Sources */,
+				153F6B8A1C2D7BA300C0B960 /* AATapLabelDelegate.swift in Sources */,
 				15D35F5E1C20187E00E3717A /* AANativeAudioPlayer.m in Sources */,
 				066A52DB1BC52385000E606E /* AAContactActionCell.swift in Sources */,
 				15D35F331C20187200E3717A /* opusfile.c in Sources */,
@@ -1831,7 +1863,7 @@
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Debug;
 		};
@@ -1867,6 +1899,7 @@
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils",
 				);
 				MACH_O_TYPE = mh_dylib;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-lactor",
 					"$(inherited)",

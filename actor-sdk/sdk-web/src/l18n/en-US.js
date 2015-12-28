@@ -31,12 +31,6 @@ export default {
       'signOut': 'Sign Out'
     },
 
-    // Sidebar
-    'sidebar': {
-      'groups': 'Groups',
-      'private': 'Private'
-    },
-
     // Buttons
     'button': {
       'ok': 'Ok',
@@ -75,6 +69,13 @@ export default {
           }
         }
       }
+    },
+
+    // Connection state
+    'connectionState': {
+      'connecting': 'Houston, we have a problem! Connection to Actor server is lost. Trying to reconnect now...',
+      'online': 'You\'re back online!',
+      'updating': ''
     },
 
     // Compose
@@ -161,7 +162,11 @@ export default {
         'clear': 'Do you really want to clear this conversation?',
         'delete': 'Do you really want to delete this conversation?',
         'removeContact': 'You really want to remove {name} from your contacts?',
-        'kick': 'Are you sure you want kick {name}'
+        'kick': 'Are you sure you want kick {name}',
+        'nonContactHide': {
+          'title': 'Are you sure you want to hide this conversation?',
+          'body': 'User {name} isn\'t in your contact list.'
+        }
       }
     },
 

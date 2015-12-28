@@ -12,6 +12,7 @@ import MessageActionCreators from './MessageActionCreators';
 import GroupProfileActionCreators from './GroupProfileActionCreators';
 import TypingActionCreators from './TypingActionCreators';
 import DialogInfoActionCreators from './DialogInfoActionCreators';
+import OnlineActionCreators from './OnlineActionCreators';
 
 import DialogStore from '../stores/DialogStore';
 
@@ -33,9 +34,11 @@ const DialogActionCreators = {
       switch (currentPeer.type) {
         case PeerTypes.USER:
           ActorClient.unbindUser(currentPeer.id, DialogInfoActionCreators.setDialogInfo);
+          ActorClient.unbindUserOnline(currentPeer.id, OnlineActionCreators.setUserOnline);
           break;
         case PeerTypes.GROUP:
           ActorClient.unbindGroup(currentPeer.id, DialogInfoActionCreators.setDialogInfo);
+          ActorClient.unbindGroupOnline(currentPeer.id, OnlineActionCreators.setGroupOnline);
           break;
         default:
       }
@@ -49,9 +52,11 @@ const DialogActionCreators = {
     switch(peer.type) {
       case PeerTypes.USER:
         ActorClient.bindUser(peer.id, DialogInfoActionCreators.setDialogInfo);
+        ActorClient.bindUserOnline(peer.id, OnlineActionCreators.setUserOnline);
         break;
       case PeerTypes.GROUP:
         ActorClient.bindGroup(peer.id, DialogInfoActionCreators.setDialogInfo);
+        ActorClient.bindGroupOnline(peer.id, OnlineActionCreators.setGroupOnline);
         GroupProfileActionCreators.getIntegrationToken(peer.id);
         break;
       default:

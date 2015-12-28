@@ -25,11 +25,13 @@ export default {
   },
 
   editGroupTitle(gid, title) {
-    dispatchAsync(ActorClient.editGroupTitle(gid, title), {
-      request: ActionTypes.GROUP_EDIT_TITLE,
-      success: ActionTypes.GROUP_EDIT_TITLE_SUCCESS,
-      failure: ActionTypes.GROUP_EDIT_TITLE_ERROR
-    }, { gid, title });
+    if (title !== EditGroupStore.getTitle()) {
+      dispatchAsync(ActorClient.editGroupTitle(gid, title), {
+        request: ActionTypes.GROUP_EDIT_TITLE,
+        success: ActionTypes.GROUP_EDIT_TITLE_SUCCESS,
+        failure: ActionTypes.GROUP_EDIT_TITLE_ERROR
+      }, { gid, title });
+    }
   },
 
   changeGroupAvatar(gid, avatar) {
@@ -37,11 +39,14 @@ export default {
   },
 
   editGroupAbout: (gid, about) => {
-    dispatchAsync(ActorClient.editGroupAbout(gid, about), {
-      request: ActionTypes.GROUP_EDIT_ABOUT,
-      success: ActionTypes.GROUP_EDIT_ABOUT_SUCCESS,
-      failure: ActionTypes.GROUP_EDIT_ABOUT_ERROR
-    }, { gid, about });
+    about = about === '' ? null : about;
+    if (about !== EditGroupStore.getAbout()) {
+      dispatchAsync(ActorClient.editGroupAbout(gid, about), {
+        request: ActionTypes.GROUP_EDIT_ABOUT,
+        success: ActionTypes.GROUP_EDIT_ABOUT_SUCCESS,
+        failure: ActionTypes.GROUP_EDIT_ABOUT_ERROR
+      }, { gid, about });
+    }
   },
 
   removeGroupAvatar(gid) {

@@ -8,7 +8,7 @@ object Dependencies {
     val actorBotkit = "1.0.66"
     val akka = "2.4.0"
     val akkaExperimental = "2.0-M1"
-    val cats = "0.2.0"
+    val cats = "0.3.0"
     val kamon = "0.5.2"
     val scalaz = "7.1.1"
     val slick = "3.1.1"
@@ -113,6 +113,7 @@ object Dependencies {
 
   object Testing {
     val akkaTestkit             = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka
+    val akkaMultiNodeTestkit    = "com.typesafe.akka"             %% "akka-multi-node-testkit"       % V.akka
 
     val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.5"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest
@@ -192,7 +193,7 @@ object Dependencies {
   
   val models = shared ++ Seq(scodecBits, scodecCore, jodaTime, jodaConvert, slickPg)
 
-  val fsAdapters = shared ++ Seq(amazonaws, awsWrap, betterFiles)
+  val fileAdapter = shared ++ Seq(amazonaws, apacheCommonsCodec, apacheCommonsIo, awsWrap, betterFiles)
 
   val frontend = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaStream,
@@ -206,9 +207,9 @@ object Dependencies {
 
   val sdk = Seq(aspectj)
 
-  val runtime = shared ++ Seq(akkaActor, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, libPhoneNumber, scalapbSer, scalazCore, akkaTestkit % "test", scalatest % "test")
+  val runtime = shared ++ Seq(akkaActor, actorConcurrent, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, libPhoneNumber, scalapbSer, scalazCore, akkaTestkit % "test", scalatest % "test")
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
-  val tests = shared ++ Seq(akkaClusterSharding, amazonaws, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit)
+  val tests = shared ++ Seq(akkaClusterSharding, amazonaws, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit, akkaMultiNodeTestkit)
 }

@@ -8,6 +8,8 @@ import com.google.protobuf.ByteString
 import im.actor.api.rpc.users.ApiSex
 import im.actor.config.ActorConfig
 import im.actor.server.acl.ACLUtils
+import im.actor.server.api.http.HttpApi
+import im.actor.server.bot.http.BotsHttpHandler
 import im.actor.server.db.DbExtension
 import im.actor.server.model.AuthSession
 import im.actor.server.office.EntityNotFound
@@ -55,6 +57,10 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
 
   private def hooksKV(userId: UserId): SimpleKeyValue[String] =
     shardakka.simpleKeyValue(BotExtension.whUserTokensKV(userId))
+
+  HttpApi(system).registerHook("bots") { implicit system ⇒
+    Future.successful(new BotsHttpHandler(this).routes)
+  }
 
   /**
    * Creates a bot user

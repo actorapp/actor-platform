@@ -82,6 +82,8 @@
 
 "SettingsVersion" = "版本 {version}";
 
+"SettingsMobilePhone"    = "手機";
+
 /*
  * Profile
  */

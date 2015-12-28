@@ -359,6 +359,13 @@ public class SettingsModule extends AbsModule {
     // Sync methods
 
     private void changeValue(String key, String val) {
+        String s = readValue(key);
+        if (s == null && val == null) {
+            return;
+        }
+        if (s != null && val != null && s.equals(val)) {
+            return;
+        }
         settingsSync.send(new SettingsSyncActor.ChangeSettings(key, val));
         onUpdatedSetting(key, val);
     }

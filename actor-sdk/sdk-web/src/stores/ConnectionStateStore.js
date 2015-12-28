@@ -7,13 +7,16 @@ import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 
-let _state = '';
+let _state = 'updating';
 
 class ConnectionStateStore extends Store {
   constructor(dispatcher) {
     super(dispatcher);
   }
 
+  /**
+   * @returns {string} Connection state
+   */
   getState() {
     return _state;
   }

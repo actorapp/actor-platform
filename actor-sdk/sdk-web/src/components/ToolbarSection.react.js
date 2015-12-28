@@ -10,6 +10,7 @@ import { escapeWithEmoji } from '../utils/EmojiUtils';
 import ActivityActionCreators from '../actions/ActivityActionCreators';
 
 import DialogInfoStore from '../stores/DialogInfoStore';
+import OnlineStore from '../stores/OnlineStore';
 import ActivityStore from '../stores/ActivityStore';
 
 class ToolbarSection extends Component {
@@ -17,12 +18,13 @@ class ToolbarSection extends Component {
     super(props);
   }
 
-  static getStores = () => [DialogInfoStore, ActivityStore];
+  static getStores = () => [DialogInfoStore, ActivityStore, OnlineStore];
 
   static calculateState() {
     return {
       dialogInfo: DialogInfoStore.getInfo(),
-      isActivityOpen: ActivityStore.isOpen()
+      isActivityOpen: ActivityStore.isOpen(),
+      message: OnlineStore.getMessage()
     };
   }
 
@@ -35,7 +37,7 @@ class ToolbarSection extends Component {
   };
 
   render() {
-    const { dialogInfo, isActivityOpen } = this.state;
+    const { dialogInfo, isActivityOpen, message } = this.state;
 
     const infoButtonClassName = classnames('button button--icon', {
       'active': isActivityOpen
@@ -46,7 +48,7 @@ class ToolbarSection extends Component {
         <header className="toolbar row">
           <div className="toolbar__peer col-xs">
             <span className="toolbar__peer__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialogInfo.name)}}/>
-            <span className="toolbar__peer__presence">{dialogInfo.presence}</span>
+            <span className="toolbar__peer__message">{message}</span>
           </div>
 
           <div className="toolbar__controls">

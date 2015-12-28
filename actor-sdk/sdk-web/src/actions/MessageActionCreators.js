@@ -60,5 +60,9 @@ export default {
 
   setMessages(messages) {
     dispatch(ActionTypes.MESSAGES_CHANGED, { messages });
+  },
+
+  setSelected(selectedMesages) {
+    dispatch(ActionTypes.MESSAGES_SET_SELECTED, { selectedMesages });
   }
 };

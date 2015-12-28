@@ -116,6 +116,22 @@ export default {
     window.messenger.unbindTempGlobalCounter(callback);
   },
 
+  bindUserOnline(uid, callback) {
+    window.messenger.bindUserOnline(uid, callback);
+  },
+
+  unbindUserOnline(uid, callback) {
+    window.messenger.unbindUserOnline(uid, callback);
+  },
+
+  bindGroupOnline(gid, callback) {
+    window.messenger.bindGroupOnline(gid, callback);
+  },
+
+  unbindGroupOnline(gid, callback) {
+    window.messenger.unbindGroupOnline(gid, callback);
+  },
+
   getUser(uid) {
     return window.messenger.getUser(uid);
   },
@@ -268,8 +284,8 @@ export default {
     return window.messenger.editGroupTitle(gid, title);
   },
 
-  editGroupAbout(gid, title) {
-    return window.messenger.editGroupAbout(gid, title);
+  editGroupAbout(gid, about) {
+    return window.messenger.editGroupAbout(gid, about);
   },
 
   renderMarkdown(markdownText) {
@@ -410,5 +426,13 @@ export default {
 
   isElectron() {
     return window.messenger.isElectron();
+  },
+
+  favoriteChat(peer) {
+    return window.messenger.favoriteChat(peer);
+  },
+
+  unfavoriteChat(peer) {
+    return window.messenger.unfavoriteChat(peer);
   }
 }

@@ -48,11 +48,13 @@ window.jsAppLoaded = () => {
 
 class App extends Component {
   static childContextTypes =  {
-    delegate: PropTypes.object
+    delegate: PropTypes.object,
+    isExperemental: PropTypes.bool
   };
 
   static propTypes =  {
-    delegate: PropTypes.object
+    delegate: PropTypes.object,
+    isExperemental: PropTypes.bool
   };
 
   getChildContext() {
@@ -77,13 +79,13 @@ class ActorSDK {
   /**
    * @constructor
    * @param {object} options - Object contains custom components, actions and localisation strings.
-   *
    */
   constructor(options = {}) {
 
     this.endpoints = (options.endpoints && options.endpoints.length > 0) ? options.endpoints : endpoints;
     this.bugsnagApiKey = options.bugsnagApiKey ? options.bugsnagApiKey : bugsnagApiKey;
     this.mixpanelAPIKey = options.mixpanelAPIKey ? options.mixpanelAPIKey : mixpanelAPIKey;
+    this.isExperemental = options.isExperemental ? options.isExperemental : false;
 
     this.delegate = options.delegate ? options.delegate : new SDKDelegate();
     DelegateContainer.set(this.delegate);
@@ -141,7 +143,7 @@ class ActorSDK {
 
     RouterContainer.set(router);
 
-    router.run((Root) => React.render(<Root {...intlData} delegate={this.delegate}/>, appRootElemet));
+    router.run((Root) => React.render(<Root {...intlData} delegate={this.delegate} isExperemental={this.isExperemental}/>, appRootElemet));
 
     if (window.location.hash !== '#/deactivated') {
       if (LoginStore.isLoggedIn()) {
