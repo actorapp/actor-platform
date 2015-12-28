@@ -64,6 +64,7 @@ import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.json.JSONObject;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -693,6 +694,17 @@ public class Messenger {
                              @NotNull Double longitude, @NotNull Double latitude,
                              @Nullable String street, @Nullable String place) {
         modules.getMessagesModule().sendLoacation(peer, longitude, latitude, street, place);
+    }
+
+    /**
+     * Send json message
+     *
+     * @param peer destination peer
+     * @param json json content
+     */
+    @ObjectiveCName("sendJsonWithPeer:withJson:")
+    public void sendJson(@NotNull Peer peer, @NotNull JSONObject json) {
+        modules.getMessagesModule().sendJson(peer, json);
     }
 
     /**
