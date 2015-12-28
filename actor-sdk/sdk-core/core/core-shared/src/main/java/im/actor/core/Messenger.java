@@ -1549,6 +1549,24 @@ public class Messenger {
     }
 
     /**
+     * Change text size
+     *
+     * @param val new chat text size
+     */
+    @ObjectiveCName("changeTextSizeWithValue:")
+    public void changeTextSize(int val) {
+        modules.getSettingsModule().changeTextSize(val);
+    }
+
+    /**
+     * Get text size
+     */
+    @ObjectiveCName("getTextSize")
+    public int getTextSize() {
+        return modules.getSettingsModule().getTextSize();
+    }
+
+    /**
      * Get privacy state
      *
      * @return privacy state
