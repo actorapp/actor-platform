@@ -63,7 +63,7 @@ class AAWelcomeController: UIViewController {
         self.someInfoLabel.numberOfLines = 0
         self.someInfoLabel.textColor = ActorSDK.sharedActor().style.vcStarInfoTextColor
         
-        self.someInfoLabel.frame =  CGRectMake(screenWidth/2-screenWidth/4-25, self.appNameLabel.frame.maxY + 5, screenWidth/2+50, 60)
+        self.someInfoLabel.frame =  CGRectMake(screenWidth/2-screenWidth/4-45, self.appNameLabel.frame.maxY + 5, screenWidth/2+90, 60)
         
         ///
         self.doneButton.setTitle(AALocalized("AuthStarButton"), forState: UIControlState.Normal)
