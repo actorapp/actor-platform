@@ -49,7 +49,7 @@ private object SettingsKeys {
 
   def vibrationEnabled(deviceType: String) = wrapEnabled(deviceType, "vibration")
 
-  def textEnabled(deviceType: String) = wrapEnabled(deviceType, "show_text")
+  def textEnabled(deviceType: String) = wrap(deviceType, "show_text")
 
   def peerEnabled(deviceType: String, peer: Peer) = wrapEnabled(deviceType, s"chat.${peerStr(peer)}")
 }
