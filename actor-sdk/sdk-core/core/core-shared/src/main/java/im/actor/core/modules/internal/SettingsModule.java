@@ -51,6 +51,7 @@ public class SettingsModule extends AbsModule {
 
     private final String KEY_WALLPAPPER;
     private final String KEY_PRIVACY;
+    private final String KEY_CHAT_TEXT_SIZE;
 
     private ActorRef settingsSync;
 
@@ -94,6 +95,7 @@ public class SettingsModule extends AbsModule {
         KEY_SOUND_EFFECTS = "app." + platformType + "" + deviceType + ".tones_enabled";
         KEY_CHAT_SEND_BY_ENTER = "app." + platformType + "" + deviceType + ".send_by_enter";
         KEY_MARKDOWN_ENABLED = "app." + platformType + "" + deviceType + ".use_markdown";
+        KEY_CHAT_TEXT_SIZE = "app." + platformType + "." + deviceType + ".text_size";
 
         // Device-type notification settings
         KEY_NOTIFICATION_ENABLED = "category." + deviceType + ".notification.enabled";
@@ -241,6 +243,15 @@ public class SettingsModule extends AbsModule {
     public void changeMarkdown(boolean val) {
         setBooleanValue(KEY_MARKDOWN_ENABLED, val);
     }
+
+    public int getTextSize() {
+        return getInt(KEY_CHAT_TEXT_SIZE, 15);
+    }
+
+    public void changeTextSize(int textSize) {
+        setInt(KEY_CHAT_TEXT_SIZE, textSize);
+    }
+
 
     // Peer settings
 

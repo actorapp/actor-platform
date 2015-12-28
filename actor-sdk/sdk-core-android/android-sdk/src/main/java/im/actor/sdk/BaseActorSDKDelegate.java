@@ -11,6 +11,7 @@ import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
 import im.actor.sdk.controllers.fragment.auth.SignPhoneFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.intents.ActorIntent;
+import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
 /**
  * Base Implementation of Actor SDK Delegate. This class is recommended to subclass instead
@@ -65,9 +66,20 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     @Override
-    public ActorIntent getSettingsIntent() {
+    public ActorIntentFragmentActivity getSettingsIntent() {
         return null;
     }
+
+    @Override
+    public ActorIntentFragmentActivity getChatSettingsIntent() {
+        return null;
+    }
+
+    @Override
+    public ActorIntentFragmentActivity getSecuritySettingsIntent() {
+        return null;
+    }
+
 
     @Override
     public ActorIntent getChatIntent() {

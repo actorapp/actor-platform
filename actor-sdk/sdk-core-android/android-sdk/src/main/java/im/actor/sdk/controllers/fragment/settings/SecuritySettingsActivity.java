@@ -2,8 +2,11 @@ package im.actor.sdk.controllers.fragment.settings;
 
 import android.os.Bundle;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
+import im.actor.sdk.intents.ActorIntent;
+import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
 public class SecuritySettingsActivity extends BaseFragmentActivity {
     @Override
@@ -12,8 +15,16 @@ public class SecuritySettingsActivity extends BaseFragmentActivity {
 
         getSupportActionBar().setTitle(R.string.security_title);
 
+        SecuritySettingsFragment fragment;
+        ActorIntentFragmentActivity securitySettingsIntent = ActorSDK.sharedActor().getDelegate().getSecuritySettingsIntent();
+        if (securitySettingsIntent != null) {
+            fragment = (SecuritySettingsFragment) securitySettingsIntent.getFragment();
+        } else {
+            fragment = new SecuritySettingsFragment();
+        }
+
         if (savedInstanceState == null) {
-            showFragment(new SecuritySettingsFragment(), false, false);
+            showFragment(fragment, false, false);
         }
     }
 }

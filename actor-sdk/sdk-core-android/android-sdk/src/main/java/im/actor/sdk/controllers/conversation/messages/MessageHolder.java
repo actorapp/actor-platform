@@ -26,13 +26,13 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 public abstract class MessageHolder extends BindedViewHolder
         implements BubbleContainer.OnAvatarClickListener, BubbleContainer.OnAvatarLongClickListener, View.OnClickListener, View.OnLongClickListener {
 
-    private MessagesAdapter adapter;
+    protected MessagesAdapter adapter;
     protected BubbleContainer container;
-    private boolean isFullSize;
+    protected boolean isFullSize;
     protected Message currentMessage;
     protected ActorBinder.Binding onlineBinding;
-    private Spannable reactions;
-    private boolean hasMyReaction;
+    protected Spannable reactions;
+    protected boolean hasMyReaction;
 
     public MessageHolder(MessagesAdapter adapter, final View itemView, boolean isFullSize) {
         super(itemView);
@@ -48,6 +48,7 @@ public abstract class MessageHolder extends BindedViewHolder
             container.setOnLongClickListener((View.OnLongClickListener) this);
             container.setOnLongClickListener((BubbleContainer.OnAvatarLongClickListener) this);
         }
+        onConfigureViewHolder();
     }
 
     public void setOnline(boolean online, boolean isBot) {

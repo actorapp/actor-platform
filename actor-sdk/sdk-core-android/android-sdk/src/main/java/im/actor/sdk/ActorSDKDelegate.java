@@ -10,6 +10,7 @@ import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
 import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.intents.ActorIntent;
+import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
 /**
  * SDK Delegate. Used for delegating some work to
@@ -42,7 +43,21 @@ public interface ActorSDKDelegate {
      *
      * @return Actor Intent
      */
-    ActorIntent getSettingsIntent();
+    ActorIntentFragmentActivity getSettingsIntent();
+
+    /**
+     * If not null returned, overrides settings activity intent
+     *
+     * @return Actor Intent
+     */
+    ActorIntentFragmentActivity getChatSettingsIntent();
+
+    /**
+     * If not null returned, overrides settings activity intent
+     *
+     * @return Actor Intent
+     */
+    ActorIntentFragmentActivity getSecuritySettingsIntent();
 
     /**
      * If not null returned, overrides chat activity intent

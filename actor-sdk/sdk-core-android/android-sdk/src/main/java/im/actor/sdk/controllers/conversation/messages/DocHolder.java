@@ -44,26 +44,26 @@ public class DocHolder extends MessageHolder {
     private int readColor;
     private int errorColor;
     private final TintImageView stateIcon;
-    private final TextView time;
+    protected final TextView time;
 
     // Basic bubble
-    private View menu;
+    protected View menu;
 
     // Content views
-    private TextView fileName;
-    private TextView fileSize;
-    private TextView status;
-    private ImageView fileIcon;
+    protected TextView fileName;
+    protected TextView fileSize;
+    protected TextView status;
+    protected ImageView fileIcon;
 
     // Progress views
-    private TintImageView downloadIcon;
-    private CircularView progressView;
-    private TextView progressValue;
+    protected TintImageView downloadIcon;
+    protected CircularView progressView;
+    protected TextView progressValue;
 
     // Binded model
-    private FileVM downloadFileVM;
-    private UploadFileVM uploadFileVM;
-    private DocumentContent document;
+    protected FileVM downloadFileVM;
+    protected UploadFileVM uploadFileVM;
+    protected DocumentContent document;
 
     public DocHolder(final MessagesAdapter fragment, View itemView) {
         this(fragment, itemView, false);
@@ -141,6 +141,7 @@ public class DocHolder extends MessageHolder {
         progressView.setColor(ActorSDK.sharedActor().style.getMainColor());
         progressValue = (TextView) itemView.findViewById(R.id.progressValue);
         progressValue.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        onConfigureViewHolder();
     }
 
     @Override
