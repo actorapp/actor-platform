@@ -123,6 +123,7 @@ public class MessagesProcessor extends AbsModule {
 
             // Send to own read actor
             ownReadActor().send(new OwnReadActor.InMessage(peer, message));
+            msgContent.onIncoming(peer, context());
         } else {
             // Send to own read actor
             ownReadActor().send(new OwnReadActor.OutMessage(peer, message.getSortDate()));
