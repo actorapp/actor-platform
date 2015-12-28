@@ -1919,4 +1919,8 @@ public class Messenger {
     ModuleContext getModuleContext() {
         return modules;
     }
+
+    public long getAuthId() {
+        return modules.getApiModule().getActorApi().getKeyStorage().getAuthKey();
+    }
 }
