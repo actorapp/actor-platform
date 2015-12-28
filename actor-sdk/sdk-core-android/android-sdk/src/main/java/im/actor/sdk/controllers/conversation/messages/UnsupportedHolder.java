@@ -11,12 +11,13 @@ import im.actor.core.entity.Message;
 
 public class UnsupportedHolder extends TextHolder {
 
-    private String text;
+    protected String text;
 
     public UnsupportedHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView);
 
         text = fragment.getMessagesFragment().getResources().getString(R.string.chat_unsupported);
+        onConfigureViewHolder();
     }
 
     @Override

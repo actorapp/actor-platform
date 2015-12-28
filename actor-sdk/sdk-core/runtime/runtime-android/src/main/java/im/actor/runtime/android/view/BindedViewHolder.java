@@ -31,4 +31,8 @@ public abstract class BindedViewHolder extends android.support.v7.widget.Recycle
             this.contentFrame = null;
         }
     }
+
+    protected void onConfigureViewHolder() {
+
+    }
 }

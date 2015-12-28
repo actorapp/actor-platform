@@ -38,9 +38,9 @@ public class ContactHolder extends MessageHolder {
     private final TintImageView stateIcon;
     private final TextView time;
 
-    private ViewGroup mainContainer;
-    private FrameLayout messageBubble;
-    private TextView text;
+    protected ViewGroup mainContainer;
+    protected FrameLayout messageBubble;
+    protected TextView text;
 
     private ImageView contactAvatar;
 
@@ -63,6 +63,7 @@ public class ContactHolder extends MessageHolder {
         text.setTextColor(ActorSDK.sharedActor().style.getConvTextColor());
         contactAvatar = (ImageView) itemView.findViewById(R.id.contact_avatar);
 
+        onConfigureViewHolder();
     }
 
     @Override
