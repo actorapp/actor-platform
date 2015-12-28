@@ -63,7 +63,7 @@ public class AABubbleContactCell: AABubbleCell, ABNewPersonViewControllerDelegat
                         self.controller.presentViewController(emailController, animated: true, completion: nil)
                     })
                 }
-                menuBuilder.add("Add to Contacts", closure: { () -> () in
+                menuBuilder.add(AALocalized("ProfileAddToContacts"), closure: { () -> () in
                     let add = ABNewPersonViewController()
                     add.newPersonViewDelegate = self
                     
