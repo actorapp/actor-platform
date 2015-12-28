@@ -9,21 +9,18 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
-import im.actor.serialization.ActorSerializer
-import im.actor.server.acl.ACLUtils
+import im.actor.acl.ACLFiles
 import im.actor.server.db.DbExtension
 import im.actor.server.file.FileUtils._
 import im.actor.server.file._
 import im.actor.server.{ model, persist }
-import slick.driver.PostgresDriver.api._
+import im.actor.server.db.ActorPostgresDriver.api._
 
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
 class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
-
-  ActorSerializer.register(80004 → classOf[S3UploadKey])
 
   private implicit val system: ActorSystem = _system
   private implicit val ec: ExecutionContext = system.dispatcher
@@ -56,7 +53,7 @@ class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   override def getFileDownloadUrl(file: model.File, accessHash: Long): Future[Option[String]] = {
     val timeout = 1.day
 
-    if (ACLUtils.fileAccessHash(file.id, file.accessSalt) == accessHash) {
+    if (ACLFiles.fileAccessHash(file.id, file.accessSalt) == accessHash) {
       val presignedRequest = new GeneratePresignedUrlRequest(bucketName, s3Key(file.id, file.name))
 
       val expiration = new java.util.Date
@@ -79,7 +76,7 @@ class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   private def uploadFile(bucketName: String, name: String, file: File): DBIO[FileLocation] = {
     val rnd = ThreadLocalRandom.current()
     val id = rnd.nextLong()
-    val accessSalt = ACLUtils.nextAccessSalt(rnd)
+    val accessSalt = ACLFiles.nextAccessSalt(rnd)
     val sizeF = FileUtils.getFileLength(file)
 
     for {
@@ -87,7 +84,7 @@ class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
       _ ← persist.FileRepo.create(id, size, accessSalt, s3Key(id, name))
       _ ← DBIO.from(s3Upload(bucketName, id, name, file))
       _ ← persist.FileRepo.setUploaded(id, name)
-    } yield FileLocation(id, ACLUtils.fileAccessHash(id, accessSalt))
+    } yield FileLocation(id, ACLFiles.fileAccessHash(id, accessSalt))
   }
 
   private def s3Upload(bucketName: String, id: Long, name: String, file: File): Future[UploadResult] = {

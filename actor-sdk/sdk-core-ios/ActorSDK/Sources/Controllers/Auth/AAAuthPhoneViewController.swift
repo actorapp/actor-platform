@@ -3,8 +3,10 @@
 //
 
 import UIKit
+import TTTAttributedLabel
 
-public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegate, AAAuthCountriesViewControllerDelegate {
+public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegate, AAAuthCountriesViewControllerDelegate ,
+AATapLabelDelegate{
     
     // Views
     
@@ -13,10 +15,13 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
     private var countryButton: UIButton!
     private var phoneBackgroundView: UIImageView!
     private var countryCodeLabel: UILabel!
+    private var termsofuseLabel : TapLabel!
     private var phoneTextField: ABPhoneField!
     private var hintLabel: UILabel!
     private var navigationBarSeparator: UIView!
+    //"AuthTermsOfServiceFull" = "By signing up, you agree to the Terms of Service.";
     
+    //"AuthTermsOfService" = "Terms of Service";
     // Constructors
     
     public override init() {
@@ -99,6 +104,41 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
         hintLabel.textLocalized = "AuthPhoneHint"
         view.addSubview(hintLabel)
         
+        // terms of use
+        termsofuseLabel = TapLabel()
+
+        termsofuseLabel.delegate = self
+        termsofuseLabel.numberOfLines = 0
+        
+        let termsFullString = AALocalized("AuthTermsOfServiceFull")
+        let termsString = AALocalized("AuthTermsOfService")
+        
+        let paragrahStyle = NSMutableParagraphStyle()
+        paragrahStyle.alignment = NSTextAlignment.Center
+        
+        let atrsPolicy = [NSFontAttributeName:UIFont.systemFontOfSize(11),
+            NSParagraphStyleAttributeName : paragrahStyle,
+            NSForegroundColorAttributeName : UIColor.lightGrayColor() ]
+        
+        let policyMutText = NSMutableAttributedString(string: termsFullString,
+            attributes: atrsPolicy)
+        
+        termsofuseLabel.attributedText = policyMutText
+        
+        let termsRangeSwift = termsofuseLabel.text?.rangeOfString(termsString)
+        let termsPos = termsofuseLabel.text?.startIndex.distanceTo(termsRangeSwift!.startIndex)
+
+        let termsRange = NSMakeRange(termsPos!, termsString.length)
+        
+        policyMutText.addAttribute(TapLabel.LinkContentName, value: "openterms", range: termsRange)
+        policyMutText.addAttribute(NSForegroundColorAttributeName, value: UIColor.blueColor(), range: termsRange)
+        policyMutText.addAttribute(TapLabel.SelectedForegroudColorName, value: UIColor.blueColor(), range: termsRange)
+        
+        termsofuseLabel.attributedText = policyMutText
+        
+        self.view.addSubview(termsofuseLabel)
+        
+        
         // Setting default country
         let defaultIso = phoneTextField.currentIso
         let countryCode = ABPhoneField.callingCodeByCountryCode()[defaultIso] as! String
@@ -151,6 +191,11 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
         
         let hintLabelSize = hintLabel.sizeThatFits(CGSize(width: 278.0, height: CGFloat.max))
         hintLabel.frame = CGRect(x: (screenSize.width - hintLabelSize.width) / 2.0, y: hintPadding, width: hintLabelSize.width, height: hintLabelSize.height);
+        
+        let termsLabelSize = termsofuseLabel.sizeThatFits(CGSize(width: 278.0, height: CGFloat.max))
+        
+        termsofuseLabel.frame = CGRect(x: (screenSize.width - termsLabelSize.width) / 2.0, y: hintLabel.frame.maxY+5, width: termsLabelSize.width, height: termsLabelSize.height);
+        
     }
     
     // Constoller states
@@ -158,6 +203,11 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
     public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         phoneTextField.becomeFirstResponder()
+    }
+    
+    public override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        phoneTextField.resignFirstResponder()
     }
     
     // Actions
@@ -206,5 +256,13 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
     
     public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         return true
+    }
+    
+    public func tapLabel(tapLabel: TapLabel, didSelectLink link: String) {
+        
+        // open terms
+        
+        self.presentViewController(AATermsController(), animated: true, completion: nil)
+        
     }
 }

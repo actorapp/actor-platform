@@ -54,6 +54,7 @@ export const ActionTypes = keymirror({
   MESSAGE_SEND_FILE: null,
   MESSAGE_SEND_PHOTO: null,
   MESSAGE_DELETE: null,
+  MESSAGES_SET_SELECTED: null,
 
   ACTIVITY_SHOW: null,
   ACTIVITY_HIDE: null,
@@ -174,7 +175,10 @@ export const ActionTypes = keymirror({
   ATTACHMENT_CHANGE: null,
   ATTACHMENT_DELETE: null,
   ATTACHMENT_SEND: null,
-  ATTACHMENT_SEND_ALL: null
+  ATTACHMENT_SEND_ALL: null,
+
+  GROUP_ONLINE_CHANGE: null,
+  USER_ONLINE_CHANGE: null
 });
 
 export const PeerTypes = {
@@ -202,7 +206,8 @@ export const MessageContentTypes = {
   VOICE: 'voice',
   CONTACT: 'contact',
   LOCATION: 'location',
-  UNSUPPORTED: 'unsupported'
+  UNSUPPORTED: 'unsupported',
+  STICKER: 'sticker'
 };
 
 export const KeyCodes = {

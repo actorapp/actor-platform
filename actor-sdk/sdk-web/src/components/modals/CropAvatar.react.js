@@ -234,14 +234,19 @@ class CropAvatarModal extends Component {
   };
 
   storeScaledSizes = (event) => {
+    const { cropSize } = this.state;
     const originalImage = React.findDOMNode(this.refs.originalImage);
-    this.setState({
-      scaledWidth: originalImage.width,
-      scaledHeight: originalImage.height,
-      naturalWidth: originalImage.naturalWidth,
-      naturalHeight: originalImage.naturalHeight,
-      scaleRatio: originalImage.width/originalImage.naturalWidth
-    })
+    const scaledWidth = originalImage.width;
+    const scaledHeight = originalImage.height;
+    const naturalWidth = originalImage.naturalWidth;
+    const naturalHeight = originalImage.naturalHeight;
+    const scaleRatio = scaledWidth/naturalWidth;
+    const cropPosition = {
+      x: ((naturalWidth / 2) - (cropSize / 2)) * scaleRatio,
+      y: ((naturalHeight / 2) - (cropSize / 2)) * scaleRatio
+    };
+
+    this.setState({cropPosition, scaledWidth, scaledHeight, naturalWidth, naturalHeight, scaleRatio});
   };
 
   render() {

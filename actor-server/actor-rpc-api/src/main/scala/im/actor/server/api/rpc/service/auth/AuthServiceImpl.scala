@@ -2,8 +2,7 @@ package im.actor.server.api.rpc.service.auth
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
-import akka.actor.{ ActorRef, ActorSystem }
-import akka.cluster.pubsub.DistributedPubSub
+import akka.actor.ActorSystem
 import akka.event.Logging
 import akka.util.Timeout
 import im.actor.api.rpc.DBIOResult._
@@ -14,10 +13,13 @@ import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.ApiSex.ApiSex
 import im.actor.server.acl.ACLUtils
 import im.actor.server.activation.{ CodeFailure, CodeActivation }
+import im.actor.server.api.rpc.service.profile.ProfileErrors
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.db.DbExtension
+import im.actor.server.model.AuthUsernameTransaction
 import im.actor.server.oauth.{ GoogleProvider, OAuth2ProvidersDomains }
-import im.actor.server.persist.auth.AuthTransactionRepo
+import im.actor.server.persist.{ UserPasswordRepo, UserRepo }
+import im.actor.server.persist.auth.{ AuthUsernameTransactionRepo, AuthTransactionRepo }
 import im.actor.server.session._
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user.UserExtension
@@ -36,7 +38,7 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.language.postfixOps
 import scalaz._
 
-class AuthServiceImpl(val activationContext: CodeActivation)(
+final class AuthServiceImpl(val activationContext: CodeActivation)(
   implicit
   val sessionRegion: SessionRegion,
   val actorSystem:   ActorSystem,
@@ -109,7 +111,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
 
         email ← fromDBIOOption(AuthErrors.EmailUnoccupied)(persist.UserEmailRepo.find(transaction.email))
 
-        user ← authorizeT(email.userId, profile.locale.getOrElse(""), DeviceInfo.parseFrom(transaction.deviceInfo), clientData)
+        user ← authorizeT(email.userId, profile.locale.getOrElse(""), transaction, clientData)
         userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
 
         //refresh session data
@@ -177,7 +179,46 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
       }
       _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), Some(transactionHash)))
       isRegistered ← fromDBIO(persist.UserPhoneRepo.exists(normalizedPhone))
-    } yield ResponseStartPhoneAuth(transactionHash, isRegistered)
+    } yield ResponseStartPhoneAuth(transactionHash, isRegistered, Some(ApiPhoneActivationType.CODE))
+    db.run(action.run)
+  }
+
+  override def jhandleStartUsernameAuth(
+    username:           String,
+    appId:              Int,
+    apiKey:             String,
+    deviceHash:         Array[Byte],
+    deviceTitle:        String,
+    timeZone:           Option[String],
+    preferredLanguages: IndexedSeq[String],
+    clientData:         ClientData
+  ): Future[HandlerResult[ResponseStartUsernameAuth]] = {
+    val action =
+      for {
+        normUsername ← fromOption(ProfileErrors.NicknameInvalid)(StringUtils.normalizeUsername(username))
+        optUser ← fromDBIO(UserRepo.findByNickname(username))
+        optAuthTransaction ← fromDBIO(AuthUsernameTransactionRepo.find(username, deviceHash))
+        transactionHash ← optAuthTransaction match {
+          case Some(transaction) ⇒ point(transaction.transactionHash)
+          case None ⇒
+            val accessSalt = ACLUtils.nextAccessSalt()
+            val transactionHash = ACLUtils.authTransactionHash(accessSalt)
+            val authTransaction = AuthUsernameTransaction(
+              normUsername,
+              optUser map (_.id),
+              transactionHash,
+              appId,
+              apiKey,
+              deviceHash,
+              deviceTitle,
+              accessSalt,
+              DeviceInfo(timeZone.getOrElse(""), preferredLanguages).toByteArray,
+              isChecked = optUser.isEmpty // we don't need to check password if user signs up
+            )
+            for (_ ← fromDBIO(AuthUsernameTransactionRepo.create(authTransaction))) yield transactionHash
+        }
+      } yield ResponseStartUsernameAuth(transactionHash, optUser.isDefined)
+
     db.run(action.run)
   }
 
@@ -192,39 +233,34 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
     db.run(action.run)
   }
 
-  def jhandleSignUp(transactionHash: String, name: String, sex: Option[ApiSex], clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
+  def jhandleSignUp(transactionHash: String, name: String, sex: Option[ApiSex], password: Option[String], clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
     val action: Result[ResponseAuth] =
       for {
         //retrieve `authTransaction`
+        _ ← fromBoolean(AuthErrors.PasswordInvalid)(password map ACLUtils.isPasswordValid getOrElse true)
         transaction ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(persist.auth.AuthTransactionRepo.findChildren(transactionHash))
         //ensure that `authTransaction` is checked
         _ ← fromBoolean(AuthErrors.NotValidated)(transaction.isChecked)
         signInORsignUp ← transaction match {
           case p: model.AuthPhoneTransaction ⇒ newUserPhoneSignUp(p, name, sex)
           case e: model.AuthEmailTransaction ⇒ newUserEmailSignUp(e, name, sex)
+          case u: AuthUsernameTransaction    ⇒ newUsernameSignUp(u, name, sex)
         }
         //fallback to sign up if user exists
-        user ← signInORsignUp match {
-          case -\/((userId, countryCode)) ⇒ authorizeT(userId, countryCode, DeviceInfo.parseFrom(transaction.deviceInfo), clientData)
-          case \/-(user)                  ⇒ handleUserCreate(user, transaction)
+        userStruct ← signInORsignUp match {
+          case -\/((userId, countryCode)) ⇒ authorizeT(userId, countryCode, transaction, clientData)
+          case \/-(user) ⇒
+            for {
+              _ ← handleUserCreate(user, transaction, clientData)
+              userStruct ← authorizeT(user.id, "", transaction, clientData)
+            } yield userStruct
         }
-        userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
-        //refresh session data
-        authSession = model.AuthSession(
-          userId = user.id,
-          id = nextIntId(ThreadLocalRandom.current()),
-          authId = clientData.authId,
-          appId = transaction.appId,
-          appTitle = model.AuthSession.appTitleOf(transaction.appId),
-          deviceHash = transaction.deviceHash,
-          deviceTitle = transaction.deviceTitle,
-          authTime = DateTime.now,
-          authLocation = "",
-          latitude = None,
-          longitude = None
-        )
-        _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
-        ack ← fromFuture(authorize(user.id, clientData))
+        _ ← fromDBIO(password match {
+          case Some(p) ⇒
+            val (salt, hash) = ACLUtils.hashPassword(p)
+            UserPasswordRepo.createOrReplace(userStruct.id, salt, hash)
+          case None ⇒ DBIO.successful(0)
+        })
       } yield ResponseAuth(userStruct, misc.ApiConfig(maxGroupSize))
     db.run(action.run)
   }
@@ -295,31 +331,26 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         transaction ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(persist.auth.AuthTransactionRepo.findChildren(transactionHash))
 
         //validate code
-        userAndCounty ← validateCode(transaction, code)
-        (userId, countryCode) = userAndCounty
+        (userId, countryCode) ← validateCode(transaction, code)
 
         //sign in user and delete auth transaction
-        user ← authorizeT(userId, countryCode, DeviceInfo.parseFrom(transaction.deviceInfo), clientData)
-        userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
-        _ ← fromDBIO(persist.auth.AuthTransactionRepo.delete(transaction.transactionHash))
-
-        //refresh session data
-        authSession = model.AuthSession(
-          userId = user.id,
-          id = nextIntId(ThreadLocalRandom.current()),
-          authId = clientData.authId,
-          appId = transaction.appId,
-          appTitle = model.AuthSession.appTitleOf(transaction.appId),
-          deviceHash = transaction.deviceHash,
-          deviceTitle = transaction.deviceTitle,
-          authTime = DateTime.now,
-          authLocation = "",
-          latitude = None,
-          longitude = None
-        )
-        _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
-        ack ← fromFuture(authorize(user.id, clientData))
+        userStruct ← authorizeT(userId, countryCode, transaction, clientData)
       } yield ResponseAuth(userStruct, misc.ApiConfig(maxGroupSize))
+    db.run(action.run)
+  }
+
+  override def jhandleValidatePassword(
+    transactionHash: String,
+    password:        String,
+    clientData:      ClientData
+  ): Future[HandlerResult[ResponseAuth]] = {
+    val action =
+      for {
+        transaction ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(AuthTransactionRepo.findChildren(transactionHash))
+        (userId, countryCode) ← validateCode(transaction, password)
+        userStruct ← authorizeT(userId, countryCode, transaction, clientData)
+      } yield ResponseAuth(userStruct, ApiConfig(maxGroupSize))
+
     db.run(action.run)
   }
 
@@ -366,11 +397,11 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleStartAnonymousAuth(name: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = throw new Exception("Not implemented")
+  override def jhandleStartAnonymousAuth(name: String, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, timeZone: Option[String], preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
+    Future.failed(new RuntimeException("Not implemented"))
 
-  override def jhandleStartTokenAuth(token: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = throw new Exception("Not implemented")
-
-  override def jhandleValidatePassword(transactionHash: String, password: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = throw new Exception("Not implemented")
+  override def jhandleStartTokenAuth(token: String, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, timeZone: Option[String], preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
+    Future.failed(new RuntimeException("Not implemented"))
 
   //TODO: move deprecated methods to separate trait
   @deprecated("schema api changes", "2015-06-09")

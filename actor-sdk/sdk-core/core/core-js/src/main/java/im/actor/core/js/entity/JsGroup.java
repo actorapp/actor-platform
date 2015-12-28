@@ -42,7 +42,7 @@ public class JsGroup extends JavaScriptObject {
         GroupMember[] members = groupMembers.toArray(new GroupMember[groupMembers.size()]);
         for (GroupMember g : members) {
             JsPeerInfo peerInfo = messenger.buildPeerInfo(Peer.user(g.getUid()));
-            Log.d("JsGroup", "PeerInfo: " + peerInfo);
+            // Log.d("JsGroup", "PeerInfo: " + peerInfo);
             convertedMembers.add(JsGroupMember.create(peerInfo,
                     g.isAdministrator(),
                     g.getInviterUid() == messenger.myUid() || groupVM.getCreatorId() == messenger.myUid()));

@@ -2,7 +2,7 @@ package im.actor.server.user
 
 import akka.actor._
 import akka.util.Timeout
-import im.actor.server.hook._
+import im.actor.hook._
 import im.actor.server.sequence.SeqUpdatesExtension
 
 import scala.concurrent.duration._
