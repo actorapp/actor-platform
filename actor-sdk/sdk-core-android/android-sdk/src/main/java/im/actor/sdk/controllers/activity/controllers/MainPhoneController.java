@@ -345,7 +345,7 @@ public class MainPhoneController extends MainBaseController {
 
         onConfigireToolbarCustomView(ab);
 
-        barTabs.setVisibility(View.VISIBLE);
+        onShowToolbarCustomView();
         emptyContactsView.setVisibility(View.GONE);
         syncInProgressView.setVisibility(View.GONE);
 
@@ -357,24 +357,32 @@ public class MainPhoneController extends MainBaseController {
                                           Boolean isAppEmpty, Value<Boolean> Value2) {
                         if (isAppEmpty) {
                             if (isAppLoaded) {
-                                barTabs.setVisibility(View.GONE);
+                                onHideToolbarCustomView();
                                 emptyContactsView.setVisibility(View.VISIBLE);
                                 syncInProgressView.setVisibility(View.GONE);
                                 getActivity().invalidateOptionsMenu();
                             } else {
-                                barTabs.setVisibility(View.GONE);
+                                onHideToolbarCustomView();
                                 emptyContactsView.setVisibility(View.GONE);
                                 syncInProgressView.setVisibility(View.VISIBLE);
                                 getActivity().invalidateOptionsMenu();
                             }
                         } else {
-                            barTabs.setVisibility(View.VISIBLE);
+                            onShowToolbarCustomView();
                             emptyContactsView.setVisibility(View.GONE);
                             syncInProgressView.setVisibility(View.GONE);
                             getActivity().invalidateOptionsMenu();
                         }
                     }
                 });
+    }
+
+    private void onShowToolbarCustomView() {
+        barTabs.setVisibility(View.VISIBLE);
+    }
+
+    private void onHideToolbarCustomView() {
+        barTabs.setVisibility(View.GONE);
     }
 
     protected void onConfigireToolbarCustomView(ActionBar ab) {
