@@ -520,7 +520,7 @@ public class MainPhoneController extends MainBaseController {
 
         searchList.setAdapter(recyclerAdapter);
         searchDisplay.addListener(searchListener);
-
+        onHideToolbarCustomView();
         showView(searchHintView, false);
         goneView(searchEmptyView, false);
 
@@ -555,7 +555,7 @@ public class MainPhoneController extends MainBaseController {
         searchList.setAdapter(null);
 
         goneView(searchContainer);
-
+        onShowToolbarCustomView();
         if (searchMenu != null) {
             if (searchMenu.isActionViewExpanded()) {
                 searchMenu.collapseActionView();
