@@ -81,7 +81,9 @@ public class AABubbleCell: UICollectionViewCell {
     // Cached Date bubble images
     //
     
-    private static var dateBgImage = Imaging.roundedImage(ActorSDK.sharedActor().style.chatDateBubbleColor, size: CGSizeMake(18, 18), radius: 9)
+//    private static var dateBgImage = Imaging.roundedImage(ActorSDK.sharedActor().style.chatDateBubbleColor, size: CGSizeMake(18, 18), radius: 9)
+    
+    private static var dateBgImage = ActorSDK.sharedActor().style.statusBackgroundImage
     
     // MARK: -
     // MARK: Public vars
