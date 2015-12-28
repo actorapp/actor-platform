@@ -191,4 +191,8 @@ public abstract class AbsContent {
 
     public void onIncoming(Peer peer, ModuleContext context) {
     }
+
+    public static ContentConverter[] getConverters() {
+        return converters;
+    }
 }

@@ -2,11 +2,15 @@ package im.actor.sdk;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 
 import im.actor.core.AuthState;
+import im.actor.core.entity.content.AbsContent;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
+import im.actor.sdk.controllers.conversation.messages.MessageHolder;
+import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
 import im.actor.sdk.controllers.fragment.auth.SignPhoneFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
@@ -138,6 +142,11 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     @Deprecated
     @Override
     public ActorSettingsCategory[] getAfterSettingsCategories() {
+        return null;
+    }
+
+    @Override
+    public MessageHolder getCustomMessageViewHolder(Class<AbsContent> content, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
         return null;
     }
 
