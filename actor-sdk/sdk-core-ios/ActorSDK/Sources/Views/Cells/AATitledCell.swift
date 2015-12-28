@@ -26,7 +26,7 @@ public class AATitledCell: AATableViewCell {
         titleLabel.text = title
         contentLabel.text = content
         if isAction {
-            contentLabel.textColor = appStyle.cellTintColor
+            contentLabel.textColor = UIColor.lightGrayColor()
         } else {
             contentLabel.textColor = appStyle.cellTextColor
         }
