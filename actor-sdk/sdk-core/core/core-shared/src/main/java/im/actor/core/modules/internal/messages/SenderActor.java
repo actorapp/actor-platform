@@ -402,7 +402,7 @@ public class SenderActor extends ModuleActor {
             message = new ApiJsonMessage(((ContactContent) content).getRawJson());
         } else if (content instanceof StickerContent) {
             Sticker sticker = ((StickerContent) content).getSticker();
-            message = new ApiStickerMessage(sticker.getStickerId(), null, sticker.getApiImageLocation512(), sticker.getApiImageLocation256(), sticker.getStickerCollectionId(), sticker.getCollectionAccessHash());
+            message = new ApiStickerMessage(sticker.getStickerId(), sticker.getThumb(), sticker.getApiImageLocation512(), sticker.getApiImageLocation256(), sticker.getStickerCollectionId(), sticker.getCollectionAccessHash());
         } else {
             return;
         }

@@ -32,7 +32,7 @@ public class StickerContent extends AbsContent {
     public static StickerContent create(@NotNull Sticker sticker) {
 
         return new StickerContent(new ContentRemoteContainer(
-                new ApiStickerMessage(sticker.getId(), null, sticker.getApiImageLocation512(),
+                new ApiStickerMessage(sticker.getId(), sticker.getThumb(), sticker.getApiImageLocation512(),
                         sticker.getApiImageLocation256(), sticker.getStickerCollectionId(), sticker.getCollectionAccessHash())));
     }
 
