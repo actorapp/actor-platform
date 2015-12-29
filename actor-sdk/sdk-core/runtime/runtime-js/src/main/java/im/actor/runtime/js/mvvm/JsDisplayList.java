@@ -241,14 +241,19 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
         }
 
         if (callbacksInverted.size() > 0) {
+            Log.d(TAG, "notifySubscribers:inverted");
             JsArray<T> rev = jsValues.reverse();
             if (isOverlaysSupported) {
+                Log.d(TAG, "notifySubscribers:inverted:isOverlaysSupported");
                 JsArray<JavaScriptObject> revOverlays = jsOverlays.reverse();
                 for (JsDisplayListCallback<T> callback : callbacksInverted) {
+                    Log.d(TAG, "notifySubscribers:inverted:isOverlaysSupported:item");
                     callback.onCollectionChanged(rev, revOverlays);
                 }
             } else {
+                Log.d(TAG, "notifySubscribers:inverted:isOverlaysSupported:false");
                 for (JsDisplayListCallback<T> callback : callbacksInverted) {
+                    Log.d(TAG, "notifySubscribers:inverted:isOverlaysSupported:false:item");
                     callback.onCollectionChanged(rev, null);
                 }
             }
