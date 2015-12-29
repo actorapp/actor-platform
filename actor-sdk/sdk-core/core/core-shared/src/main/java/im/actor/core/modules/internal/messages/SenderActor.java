@@ -60,7 +60,6 @@ import im.actor.core.modules.utils.RandomUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Storage;
-import im.actor.runtime.json.JSONObject;
 
 public class SenderActor extends ModuleActor {
 
@@ -172,12 +171,10 @@ public class SenderActor extends ModuleActor {
         performSendContent(peer, rid, content);
     }
 
-    public void doSendJson(Peer peer, JSONObject jsonObject) {
+    public void doSendJson(Peer peer, JsonContent content) {
         long rid = RandomUtils.nextRid();
         long date = createPendingDate();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
-
-        JsonContent content = JsonContent.create(jsonObject);
 
         Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content, new ArrayList<Reaction>());
         context().getMessagesModule().getConversationActor(peer).send(message);
@@ -886,16 +883,16 @@ public class SenderActor extends ModuleActor {
 
     public static class SendJson {
         private Peer peer;
-        private JSONObject json;
+        private JsonContent json;
 
-        public SendJson(Peer peer, JSONObject json) {
+        public SendJson(Peer peer, JsonContent json) {
             this.json = json;
             this.peer = peer;
 
         }
 
 
-        public JSONObject getJson() {
+        public JsonContent getJson() {
             return json;
         }
 

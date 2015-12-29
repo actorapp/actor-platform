@@ -353,6 +353,8 @@ public class I18nEngine {
                 return locale.get("Location");
             case STICKER:
                 return locale.get("Sticker");
+            case CUSTOM_JSON_MESSAGE:
+                return text;
             case SERVICE:
                 return text;// Should be service message
             case SERVICE_REGISTERED:
