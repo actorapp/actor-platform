@@ -177,6 +177,10 @@ public abstract class AbsContent {
 
     private AbsContentContainer contentContainer;
 
+    public AbsContent() {
+        super();
+    }
+
     public AbsContent(ContentRemoteContainer contentContainer) {
         this.contentContainer = contentContainer;
     }
@@ -187,6 +191,10 @@ public abstract class AbsContent {
 
     public AbsContentContainer getContentContainer() {
         return contentContainer;
+    }
+
+    protected void setContentContainer(AbsContentContainer contentContainer) {
+        this.contentContainer = contentContainer;
     }
 
     public void onIncoming(Peer peer, ModuleContext context) {

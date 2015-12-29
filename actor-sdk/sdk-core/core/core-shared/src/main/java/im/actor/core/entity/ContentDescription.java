@@ -11,6 +11,7 @@ import java.io.IOException;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.DocumentContent;
+import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.LocationContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.ServiceContent;
@@ -58,6 +59,8 @@ public class ContentDescription extends BserObject {
             return new ContentDescription(ContentType.STICKER);
         } else if (msg instanceof ServiceUserRegistered) {
             return new ContentDescription(ContentType.SERVICE_REGISTERED);
+        } else if (msg instanceof JsonContent) {
+            return new ContentDescription(ContentType.CUSTOM_JSON_MESSAGE, ((JsonContent) msg).getContentDescription());
         } else if (msg instanceof ServiceGroupAvatarChanged) {
             if (((ServiceGroupAvatarChanged) msg).getNewAvatar() == null) {
                 return new ContentDescription(ContentType.SERVICE_AVATAR_REMOVED);
