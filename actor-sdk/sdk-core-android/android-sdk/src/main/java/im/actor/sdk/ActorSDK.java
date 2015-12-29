@@ -453,8 +453,8 @@ public class ActorSDK {
         }
     }
 
-    public MessageHolder getDelegatedMessageViewHolder(Class<AbsContent> base, OnDelegateViewHolder<MessageHolder> callback, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
-        MessageHolder delegated = delegate.getCustomMessageViewHolder(base, messagesAdapter, viewGroup);
+    public MessageHolder getDelegatedMessageViewHolder(int id, OnDelegateViewHolder<MessageHolder> callback, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
+        MessageHolder delegated = delegate.getCustomMessageViewHolder(id, messagesAdapter, viewGroup);
         if (delegated != null) {
             return delegated;
         } else {
