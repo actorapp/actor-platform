@@ -26,7 +26,7 @@ let flushDelayed = () => {
   _delayed = [];
 };
 
-let flushDelayedDebounced = debounce(flushDelayed, 30, 100);
+let flushDelayedDebounced = debounce(flushDelayed, 30, {maxWait: 100});
 
 class MessagesSection extends Component {
   static propTypes = {
@@ -51,11 +51,13 @@ class MessagesSection extends Component {
     const { selectedMessages } = this.state;
     const { overlay } = this.props;
 
-    let dateDivider = null;
-    if (overlay[index].dateDivider) {
-      dateDivider = <li className="date-divider">{overlay[index].dateDivider}</li>
-    }
-    const isShortMessage = overlay[index].useShort;
+    const dateDivider = (overlay[index] && overlay[index].dateDivider)
+      ? <li className="date-divider">{overlay[index].dateDivider}</li>
+      : null;
+
+    const isShortMessage = (overlay[index] && overlay[index].useShort)
+      ? overlay[index].useShort
+      : false;
 
     const isSelected = selectedMessages.has(message.rid);
 
