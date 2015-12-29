@@ -227,6 +227,9 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
     }
     
     // SMS Invitation
+    func showSmsInvitation() {
+        self.showSmsInvitation(nil)
+    }
     
     func showSmsInvitation(recipients: [String]?) {
         if MFMessageComposeViewController.canSendText() {
