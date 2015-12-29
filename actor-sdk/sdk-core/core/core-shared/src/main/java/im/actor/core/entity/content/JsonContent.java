@@ -18,33 +18,46 @@ public abstract class JsonContent extends AbsContent {
         super();
     }
 
-
-    public static <T extends JsonContent> T create(Class<T> c, String simpleStringData) {
-        JSONObject jsondata = new JSONObject();
-        try {
-            jsondata.put("data", simpleStringData);
-        } catch (JSONException e) {
-            e.printStackTrace();
+    public static JsonContent convert(AbsContentContainer container, JsonContent content) {
+        if (container instanceof ContentRemoteContainer) {
+            ApiMessage message = ((ContentRemoteContainer) container).getMessage();
+            if (message instanceof ApiJsonMessage) {
+                try {
+                    JSONObject jsonObject = new JSONObject(((ApiJsonMessage) message).getRawJson());
+                    if (jsonObject.getString("dataType").equals(content.getDataType())) {
+                        content.setJsonObject(jsonObject);
+                        content.setContentContainer(new ContentRemoteContainer(new ApiJsonMessage(((ApiJsonMessage) message).getRawJson())));
+                        content.setRawJson(((ApiJsonMessage) message).getRawJson());
+                        return content;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        return create(c, jsondata);
+        return null;
     }
 
-
-    public static <T extends JsonContent> T create(Class<T> c, JSONObject data) {
+    public static JsonContent create(JsonContent content, String simpleStringData) {
+        JSONObject data = new JSONObject();
         try {
-            T t = c.newInstance();
-            JSONObject json = new JSONObject();
-            json.put("dataType", t.getDataType());
+            data.put("data", simpleStringData);
+            return create(content, data);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static JsonContent create(JsonContent content, JSONObject data) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("dataType", content.getDataType());
             json.put("data", data);
             ContentRemoteContainer container = new ContentRemoteContainer(new ApiJsonMessage(json.toString()));
-            t.setJsonObject(json);
-            t.setRawJson(json.toString());
-            t.setContentContainer(container);
-            return t;
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            content.setJsonObject(json);
+            content.setRawJson(json.toString());
+            content.setContentContainer(container);
+            return content;
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -103,31 +116,6 @@ public abstract class JsonContent extends AbsContent {
                 return "";
             }
         }
-    }
-
-    public static <T extends JsonContent> AbsContent convert(AbsContentContainer container, Class<T> classToConvert) {
-        if (container instanceof ContentRemoteContainer) {
-            try {
-                T type = classToConvert.newInstance();
-
-                ApiMessage msg = ((ContentRemoteContainer) container).getMessage();
-                if (msg instanceof ApiJsonMessage) {
-                    try {
-                        JSONObject object = new JSONObject(((ApiJsonMessage) msg).getRawJson());
-                        if (object.get("dataType").equals(type.getDataType())) {
-                            return type.create(classToConvert, object.getJSONObject("data"));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 
     protected void setJsonObject(JSONObject jsonObject) {
