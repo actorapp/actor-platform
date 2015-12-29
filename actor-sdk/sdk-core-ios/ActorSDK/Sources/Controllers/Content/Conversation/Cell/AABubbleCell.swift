@@ -158,7 +158,9 @@ public class AABubbleCell: UICollectionViewCell {
         newMessage.contentMode = UIViewContentMode.Center
         newMessage.textAlignment = NSTextAlignment.Center
         newMessage.backgroundColor = appStyle.chatUnreadBgColor
-        newMessage.text = "New Messages"
+        newMessage.text = AALocalized("ChatNewMessages")
+        
+        //"New Messages"
         
         contentView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
         
