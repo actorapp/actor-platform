@@ -18,8 +18,10 @@ import DialogActionCreators from '../../../actions/DialogActionCreators';
 import MessageActionCreators from '../../../actions/MessageActionCreators';
 import ActivityActionCreators from '../../../actions/ActivityActionCreators';
 import ComposeActionCreators from '../../../actions/ComposeActionCreators';
+import DropdownActionCreators from '../../../actions/DropdownActionCreators';
 
 import UserStore from '../../../stores/UserStore';
+import DropdownStore from '../../../stores/DropdownStore';
 
 import AvatarItem from '../../common/AvatarItem.react';
 import State from './State.react';
@@ -42,10 +44,8 @@ class MessageItem extends Component {
   static propTypes = {
     peer: PropTypes.object.isRequired,
     message: PropTypes.object.isRequired,
-    isNewDay: PropTypes.bool,
-    isSameSender: PropTypes.bool,
+    isShortMessage: PropTypes.bool,
     isSelected: PropTypes.bool,
-    isThisLastMessage: PropTypes.bool,
     onVisibilityChange: PropTypes.func,
     onSelect: PropTypes.func
   };
@@ -59,10 +59,16 @@ class MessageItem extends Component {
     super(props);
 
     this.state = {
-      isThisMyMessage: UserStore.getMyId() === props.message.sender.peer.id,
-      isActionsShown: false
+      isHighlighted: DropdownStore.isOpen(props.message.rid)
     };
+
+    DropdownStore.addListener(this.onMessagesChange);
   }
+
+  onMessagesChange = () => {
+    const { message } = this.props;
+    this.setState({isHighlighted: DropdownStore.isOpen(message.rid)});
+  };
 
   onClick = () => {
     const { message, peer } = this.props;
@@ -75,35 +81,13 @@ class MessageItem extends Component {
   };
 
   onVisibilityChange = (isVisible) => {
+    const { message, onVisibilityChange } = this.props;
+    onVisibilityChange(message, isVisible);
+  };
+
+  showActions = (event) => {
     const { message } = this.props;
-    this.props.onVisibilityChange(message, isVisible);
-  };
-
-  handleDelete = () => {
-    const { peer, message } = this.props;
-    MessageActionCreators.deleteMessage(peer, message.rid);
-  };
-
-  handleReply = () => {
-    const { message } = this.props;
-    const info = UserStore.getUser(message.sender.peer.id);
-    const replyText = info.nick ? `@${info.nick}: ` : `${info.name}: `;
-    ComposeActionCreators.pasteText(replyText);
-  };
-
-  handleQuote = () => {
-    const { message } = this.props;
-    ComposeActionCreators.pasteText(`> ${message.content.text} \n`);
-  };
-
-  showActions = () => {
-    this.setState({isActionsShown: true});
-    document.addEventListener('click', this.hideActions, false);
-  };
-
-  hideActions = () => {
-    this.setState({isActionsShown: false});
-    document.removeEventListener('click', this.hideActions, false);
+    DropdownActionCreators.openMessageActions(event.target.getBoundingClientRect(), message);
   };
 
   toggleMessageSelection = () => {
@@ -112,8 +96,8 @@ class MessageItem extends Component {
   };
 
   render() {
-    const { message, isSameSender, onVisibilityChange, peer, isThisLastMessage, isSelected } = this.props;
-    const { isThisMyMessage, isActionsShown } = this.state;
+    const { message, isShortMessage, onVisibilityChange, peer, isSelected } = this.props;
+    const { isHighlighted } = this.state;
     const { delegate, isExperimental } = this.context;
 
     let Service, Text, Modern, Photo, Document, Voice, Contact, Location, Sticker;
@@ -146,17 +130,15 @@ class MessageItem extends Component {
     const messageSender = escapeWithEmoji(message.sender.title);
 
     const messageClassName = classnames('message row', {
-      'message--same-sender': isSameSender,
-      'message--active': isActionsShown,
+      'message--same-sender': isShortMessage,
+      'message--active': isHighlighted,
       'message--selected': isSelected
     });
-
-    const actionsDropdownClassName = classnames('message__actions__menu dropdown dropdown--small', {
-      'dropdown--opened': isActionsShown,
-      'dropdown--bottom': isThisLastMessage
+    const messageActionsMenuClassName = classnames('message__actions__menu', {
+      'message__actions__menu--opened': isHighlighted
     });
 
-    if (isSameSender) {
+    if (isShortMessage) {
       leftBlock = (
         <div className="message__info text-right">
           <time className="message__timestamp">{message.date}</time>
@@ -227,36 +209,9 @@ class MessageItem extends Component {
         <div className="message__actions">
           <Reactions peer={peer} message={message}/>
 
-          <div className={actionsDropdownClassName}>
-            <span className="dropdown__button" onClick={this.showActions}>
-              <svg className="icon icon--dropdown"
-                   dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#cog"/>'}}/>
-            </span>
-            <ul className="dropdown__menu dropdown__menu--right">
-              <li className="dropdown__menu__item hide">
-                <i className="icon material-icons">star_rate</i> {this.getIntlMessage('message.pin')}
-              </li>
-              {
-                !isThisMyMessage
-                  ? <li className="dropdown__menu__item" onClick={this.handleReply}>
-                      <i className="icon material-icons">reply</i> {this.getIntlMessage('message.reply')}
-                    </li>
-                  : null
-              }
-              {
-                message.content.content === MessageContentTypes.TEXT
-                  ? <li className="dropdown__menu__item" onClick={this.handleQuote}>
-                      <i className="icon material-icons">format_quote</i> {this.getIntlMessage('message.quote')}
-                    </li>
-                  : null
-              }
-              <li className="dropdown__menu__item hide">
-                <i className="icon material-icons">forward</i> {this.getIntlMessage('message.forward')}
-              </li>
-              <li className="dropdown__menu__item" onClick={this.handleDelete}>
-                <i className="icon material-icons">delete</i> {this.getIntlMessage('message.delete')}
-              </li>
-            </ul>
+          <div className={messageActionsMenuClassName} onClick={this.showActions}>
+            <svg className="icon icon--dropdown"
+                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#cog"/>'}}/>
           </div>
 
           {

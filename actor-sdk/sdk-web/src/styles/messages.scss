@@ -507,100 +507,48 @@ $sticker-max-size: 180px;
         vertical-align: top;
       }
     }
-    .dropdown {
+    &__menu {
+      line-height: 20px;
+
+      z-index: 500;
+
       display: inline-block;
-      &__button {
-        line-height: 20px;
 
-        z-index: 500;
+      width: $action-icon-size;
+      height: $action-icon-size;
 
-        display: block;
+      vertical-align: top;
 
+      opacity: 0;
+
+      @include no-select();
+
+      cursor: pointer;
+
+      .icon {
         width: $action-icon-size;
         height: $action-icon-size;
 
+        transition: 200ms;
+        transform: rotate(90deg);
         vertical-align: top;
-
-        opacity: 0;
-
-        @include no-select();
-
-        .icon {
-          width: $action-icon-size;
-          height: $action-icon-size;
-
-          transition: 200ms;
-          transform: rotate(90deg);
-          vertical-align: top;
-        }
-        &:hover {
-          opacity: 1 !important;
-          .icon {
-            color: rgba(0, 0, 0, .3);
-
-            fill: rgba(0, 0, 0, .3);
-          }
-        }
-      }
-      &__menu {
-        z-index: 100;
-        top: 0;
-        right: 22px;
-
-        min-width: 130px !important;
-
-        user-select: none;
-        transition: 100ms;
-        transform: translateX(10px);
         pointer-events: none;
+      }
+      &:hover {
+        opacity: 1 !important;
+        .icon {
+          color: rgba(0, 0, 0, .3);
 
-        border-radius: 3px 0 0 3px;
-        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .05), -8px 0 42px -14px rgba(0, 0, 0, .18);
-        &__item {
-          font-size: 12px !important;
-
-          padding: 4px 16px 4px 40px !important;
-
-          color: rgba(0, 0, 0, .4);
-          &:hover {
-            font-weight: 500;
-
-            text-shadow: 0 1px 0 rgba(0, 0, 0, .2);
-          }
-          span {
-            display: inline-block;
-
-            vertical-align: middle;
-          }
-          .icon {
-            font-size: 16px;
-            line-height: 20px;
-
-            margin-left: -28px;
-          }
+          fill: rgba(0, 0, 0, .3);
         }
       }
+
       &--opened {
-        z-index: 1000;
-        .dropdown__button {
-          opacity: 1 !important;
-          .icon {
-            transform: rotate(0deg);
-
-            color: $dark-sky-blue;
-
-            fill: $dark-sky-blue;
-          }
-        }
-        .dropdown__menu {
-          transform: translateX(0);
-          pointer-events: auto;
-        }
-      }
-      &--bottom {
-        .dropdown__menu {
-          top: auto;
-          bottom: 0;
+        opacity: 1 !important;
+        .icon {
+          transform: rotate(0deg);
+          color: $dark-sky-blue !important;
+          fill: $dark-sky-blue !important;
         }
       }
     }
@@ -617,7 +565,7 @@ $sticker-max-size: 180px;
     }
     .message__actions__like,
     .message__actions__selector,
-    .message__actions__menu .dropdown__button {
+    .message__actions__menu {
       opacity: .7;
     }
   }
@@ -1127,7 +1075,8 @@ $sticker-max-size: 180px;
 }
 
 .date-divider {
-  font-size: 15px;
+  text-transform: uppercase;
+  font-size: 13px;
   font-weight: 500;
   line-height: 16px;
 

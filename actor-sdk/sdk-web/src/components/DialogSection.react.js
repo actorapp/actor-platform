@@ -33,12 +33,16 @@ let lastScrolledFromBottom = 0;
 
 const getStateFromStores = () => {
   const messages = MessageStore.getAll();
+  const overlay = MessageStore.getOverlay();
   const messagesToRender = (messages.length > renderMessagesCount) ? messages.slice(messages.length - renderMessagesCount) : messages;
+  const overlayToRender = (overlay.length > renderMessagesCount) ? overlay.slice(overlay.length - renderMessagesCount) : overlay;
 
   return {
     peer: DialogStore.getCurrentPeer(),
     messages,
+    overlay,
     messagesToRender,
+    overlayToRender,
     isMember: DialogStore.isMember()
   };
 };
@@ -73,7 +77,7 @@ class DialogSection extends Component {
   }
 
   render() {
-    const { peer, isMember, messagesToRender } = this.state;
+    const { peer, isMember, messagesToRender, overlayToRender } = this.state;
     const { delegate } = this.context;
 
     let activity = [],
@@ -103,6 +107,7 @@ class DialogSection extends Component {
         <ConnectionState/>
         <div className="messages">
           <MessagesSection messages={messagesToRender}
+                           overlay={overlayToRender}
                            peer={peer}
                            ref="MessagesSection"
                            onScroll={this.loadMessagesByScroll}/>

@@ -19,7 +19,9 @@ import QuickSearchActionCreators from '../actions/QuickSearchActionCreators';
 import DefaultSidebarSection from './SidebarSection.react';
 import DefaultDialogSection from './DialogSection.react';
 import Favicon from './common/Favicon.react';
+
 import ModalsWrapper from './modals/ModalsWrapper.react';
+import DropdownWrapper from './common/DropdownWrapper.react';
 
 class Main extends Component {
   static contextTypes = {
@@ -98,6 +100,7 @@ class Main extends Component {
         <DialogSection peer={peer}/>
 
         <ModalsWrapper/>
+        <DropdownWrapper/>
       </div>
     );
   }

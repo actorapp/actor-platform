@@ -2,6 +2,21 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+
+.dropdown-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 10;
+  display: none;
+
+  &--opened {
+    display: block;
+  }
+}
+
 .dropdown {
   position: relative;
   &--opened {
@@ -28,7 +43,8 @@
   &__menu {
     position: absolute;
     z-index: 5;
-    top: 47px;
+    //top: 47px;
+    top: 0;
 
     visibility: hidden;
 
@@ -139,14 +155,17 @@
       min-width: 160px;
       padding: 0;
       &__item {
-        font-size: 14px;
         line-height: 20px;
-        //font-weight: 500;
-
-        padding: 6px 16px 6px 40px;
+        font-size: 12px;
+        padding: 4px 16px 4px 40px;
+        color: rgba(black, .4);
         .icon {
           font-size: 18px;
           line-height: 20px;
+        }
+        &:hover {
+          color: white;
+          background-color: $dark-sky-blue;
         }
       }
     }
