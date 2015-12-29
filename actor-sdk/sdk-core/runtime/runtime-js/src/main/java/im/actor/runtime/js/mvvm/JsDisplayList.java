@@ -21,6 +21,8 @@ import im.actor.runtime.storage.ListEngineItem;
 public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & ListEngineItem> implements JsListEngineCallback<V>,
         PlatformDisplayList<V> {
 
+    private static final String TAG = "JsDisplayList";
+
     private final JsListEngine<V> listEngine;
     private final JsEntityConverter<V, T> entityConverter;
 
@@ -223,12 +225,17 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
     }
 
     private void notifySubscribers() {
+        Log.d(TAG, "notifySubscribers");
         if (isOverlaysSupported) {
+            Log.d(TAG, "notifySubscribers:isOverlaysSupported");
             for (JsDisplayListCallback<T> callback : callbacks) {
+                Log.d(TAG, "notifySubscribers:isOverlaysSupported:item");
                 callback.onCollectionChanged(jsValues, jsOverlays);
             }
         } else {
+            Log.d(TAG, "notifySubscribers:isOverlaysSupported:false");
             for (JsDisplayListCallback<T> callback : callbacks) {
+                Log.d(TAG, "notifySubscribers:isOverlaysSupported:item");
                 callback.onCollectionChanged(jsValues, null);
             }
         }
