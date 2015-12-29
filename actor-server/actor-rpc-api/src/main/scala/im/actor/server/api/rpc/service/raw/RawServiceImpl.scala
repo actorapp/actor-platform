@@ -18,9 +18,7 @@ final class RawServiceImpl(implicit system: ActorSystem) extends RawService {
 
   override def jhandleRawRequest(service: String, method: String, params: Option[ApiRawValue], clientData: ClientData): Future[HandlerResult[ResponseRawRequest]] =
     authorized(clientData) { implicit client ⇒
-      (for {
-        func ← fromEither(rawApiExt.getHandlingFunction(service, method))
-        result ← fromFutureEither(func(params))
-      } yield ResponseRawRequest(result)).value map (_.toScalaz)
+      (for (result ← fromFutureEither(rawApiExt.handle(service, method, params)))
+        yield ResponseRawRequest(result)).value map (_.toScalaz)
     }
 }
