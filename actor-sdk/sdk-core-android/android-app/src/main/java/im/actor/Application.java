@@ -90,6 +90,31 @@ public class Application extends ActorSDKApplication {
         public String getContentDescriptionRu() {
             return " бла бла бла";
         }
+
+        @Override
+        public String getContentDescriptionPtPT() {
+            return null;
+        }
+
+        @Override
+        public String getContentDescriptionPtBR() {
+            return null;
+        }
+
+        @Override
+        public String getContentDescriptionAr() {
+            return null;
+        }
+
+        @Override
+        public String getContentDescriptionCn() {
+            return null;
+        }
+
+        @Override
+        public String getContentDescriptionEs() {
+            return null;
+        }
     }
 
     public static class CustomTwo extends JsonContent {
@@ -111,6 +136,31 @@ public class Application extends ActorSDKApplication {
         @Override
         public String getContentDescriptionRu() {
             return " бла бла бла";
+        }
+
+        @Override
+        public String getContentDescriptionPtPT() {
+            return null;
+        }
+
+        @Override
+        public String getContentDescriptionPtBR() {
+            return null;
+        }
+
+        @Override
+        public String getContentDescriptionAr() {
+            return null;
+        }
+
+        @Override
+        public String getContentDescriptionCn() {
+            return null;
+        }
+
+        @Override
+        public String getContentDescriptionEs() {
+            return null;
         }
     }
 
