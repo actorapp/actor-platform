@@ -109,9 +109,8 @@ public class ContactHolder extends MessageHolder {
             messageBubble.setBackgroundResource(R.drawable.conv_bubble_media_in);
         }
         Drawable avatar;
-        if (contact.getPhoto64() != null) {
-            byte[] decodedByte = Base64.decode(contact.getPhoto64(), Base64.NO_WRAP);
-            Bitmap b = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+        Bitmap b = convertPhoto(contact);
+        if (b != null) {
             avatar = getRoundedBitmapDrawable(itemView.getContext(), b);
         } else {
             avatar = new AvatarPlaceholderDrawable(contact.getName(), message.getSenderId(), 18, itemView.getContext());
@@ -120,6 +119,26 @@ public class ContactHolder extends MessageHolder {
 
         text.setText(((PreprocessedTextData) preprocessedData).getSpannableString());
 
+    }
+
+    private Bitmap convertPhoto(ContactContent contact) {
+        Bitmap b = null;
+        byte[] decodedByte;
+        try {
+            decodedByte = Base64.decode(contact.getPhoto64(), Base64.NO_WRAP);
+            b = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+        } catch (Exception e) {
+            //oops
+        }
+        if (b == null) {
+            try {
+                decodedByte = Base64.decode(contact.getPhoto64(), Base64.URL_SAFE | Base64.NO_WRAP);
+                b = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+            } catch (Exception e1) {
+                //no good
+            }
+        }
+        return b;
     }
 
     @Override
