@@ -37,6 +37,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.FastThumb;
+import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
@@ -69,9 +70,7 @@ import im.actor.runtime.actors.tools.BounceFilterActor;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.files.FileSystemReference;
-import im.actor.runtime.json.JSONObject;
 import im.actor.runtime.mvvm.MVVMCollection;
-import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.SyncKeyValue;
 
@@ -340,8 +339,8 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     }
 
     public void sendJson(@NotNull Peer peer,
-                         @NotNull JSONObject jsonObject) {
-        sendMessageActor.send(new SenderActor.SendJson(peer, jsonObject));
+                         @NotNull JsonContent content) {
+        sendMessageActor.send(new SenderActor.SendJson(peer, content));
     }
 
 

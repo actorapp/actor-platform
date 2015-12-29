@@ -85,7 +85,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
         AbsContent content = getItem(position).getContent();
         for (int i = 0; i < AbsContent.getConverters().length; i++) {
             ContentConverter converter = AbsContent.getConverters()[i];
-            if (content.getClass().isAssignableFrom(converter.destinationType())) {
+            if (content.getClass().equals(converter.destinationType())) {
                 return 8 + i;
             }
         }

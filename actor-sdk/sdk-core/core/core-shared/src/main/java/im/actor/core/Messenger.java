@@ -13,12 +13,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import im.actor.core.api.ApiSearchContentType;
-import im.actor.core.api.ApiSearchPieceText;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
-import im.actor.core.api.ApiStickerCollection;
-import im.actor.core.api.rpc.ResponseLoadOwnStickers;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.MentionFilterResult;
@@ -31,8 +27,8 @@ import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.entity.WebActionDescriptor;
 import im.actor.core.entity.content.FastThumb;
+import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.internal.Sticker;
-import im.actor.core.entity.content.internal.StickersPack;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Modules;
@@ -45,8 +41,6 @@ import im.actor.core.modules.events.PeerInfoClosed;
 import im.actor.core.modules.events.PeerInfoOpened;
 import im.actor.core.modules.events.UserVisible;
 import im.actor.core.network.NetworkState;
-import im.actor.core.network.parser.Request;
-import im.actor.core.network.parser.Response;
 import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
 import im.actor.core.viewmodel.AppStateVM;
@@ -64,7 +58,6 @@ import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.json.JSONObject;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -703,8 +696,8 @@ public class Messenger {
      * @param json json content
      */
     @ObjectiveCName("sendJsonWithPeer:withJson:")
-    public void sendJson(@NotNull Peer peer, @NotNull JSONObject json) {
-        modules.getMessagesModule().sendJson(peer, json);
+    public void sendCustomJsonMessage(@NotNull Peer peer, @NotNull JsonContent content) {
+        modules.getMessagesModule().sendJson(peer, content);
     }
 
     /**
