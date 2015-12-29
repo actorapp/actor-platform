@@ -92,14 +92,10 @@ public class Application extends ActorSDKApplication {
         }
 
         @Override
-        public String getContentDescriptionPtPT() {
+        public String getContentDescriptionPt() {
             return null;
         }
 
-        @Override
-        public String getContentDescriptionPtBR() {
-            return null;
-        }
 
         @Override
         public String getContentDescriptionAr() {
@@ -139,12 +135,7 @@ public class Application extends ActorSDKApplication {
         }
 
         @Override
-        public String getContentDescriptionPtPT() {
-            return null;
-        }
-
-        @Override
-        public String getContentDescriptionPtBR() {
+        public String getContentDescriptionPt() {
             return null;
         }
 
