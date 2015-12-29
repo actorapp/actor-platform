@@ -100,5 +100,5 @@ public interface ActorSDKDelegate {
     @Deprecated
     ActorSettingsCategory[] getAfterSettingsCategories();
 
-    MessageHolder getCustomMessageViewHolder(Class<AbsContent> content, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
+    MessageHolder getCustomMessageViewHolder(int id, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
 }
