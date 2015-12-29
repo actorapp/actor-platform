@@ -215,11 +215,11 @@ private[sequence] final class VendorPush(
       log.debug("AuthSid is excluded, not pushing")
     } else {
       rules.data match {
-        case Some(data @ PushData(text, peerOpt)) ⇒
+        case Some(data) ⇒
           val settings = notificationSettings.specific.getOrElse(deviceType, notificationSettings.generic)
 
           val isVisible =
-            (settings.enabled, peerOpt) match {
+            (settings.enabled, data.peer) match {
               case (true, Some(peer)) ⇒
                 settings.peers.get(peer) match {
                   case Some(true) ⇒

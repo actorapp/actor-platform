@@ -44,11 +44,16 @@ final class ActorDelivery()(implicit val system: ActorSystem)
 
     for {
       senderName ← userExt.getName(senderUserId, receiverUserId)
-      pushText ← getPushText(peer, receiverUserId, senderName, message)
+      (pushText, censoredPushText) ← getPushText(peer, receiverUserId, senderName, message)
       _ ← seqUpdatesExt.deliverSingleUpdate(
         receiverUserId,
         receiverUpdate,
-        PushRules(isFat = isFat).withData(PushData().withText(pushText).withPeer(peer)),
+        PushRules(isFat = isFat).withData(
+          PushData()
+            .withText(pushText)
+            .withCensoredText(censoredPushText)
+            .withPeer(peer)
+        ),
         deliveryId = s"msg_${peer.toString}_$randomId"
       )
       counterUpdate ← db.run(getUpdateCountersChanged(receiverUserId))
