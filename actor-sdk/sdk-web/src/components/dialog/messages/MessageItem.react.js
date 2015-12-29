@@ -52,7 +52,7 @@ class MessageItem extends Component {
 
   static contextTypes = {
     delegate: PropTypes.object,
-    isExperemental: PropTypes.bool
+    isExperimental: PropTypes.bool
   };
 
   constructor(props) {
@@ -114,7 +114,7 @@ class MessageItem extends Component {
   render() {
     const { message, isSameSender, onVisibilityChange, peer, isThisLastMessage, isSelected } = this.props;
     const { isThisMyMessage, isActionsShown } = this.state;
-    const { delegate, isExperemental } = this.context;
+    const { delegate, isExperimental } = this.context;
 
     let Service, Text, Modern, Photo, Document, Voice, Contact, Location, Sticker;
     if (delegate.components.dialog !== null && delegate.components.dialog.messages) {
@@ -260,7 +260,7 @@ class MessageItem extends Component {
           </div>
 
           {
-             isExperemental
+            isExperimental
               ? <div className="message__actions__selector" onClick={this.toggleMessageSelection}>
                   <i className="icon material-icons">check</i>
                 </div>
