@@ -49,6 +49,8 @@ private[sequence] final class ApplePushProvider(userId: Int, applePushManager: A
 
       if (data.text.nonEmpty && isTextEnabled)
         builder.setAlertBody(data.text)
+      else if (data.censoredText.nonEmpty)
+        builder.setAlertBody(data.censoredText)
 
       if (isSoundEnabled)
         builder.setSoundFileName("iapetus.caf")

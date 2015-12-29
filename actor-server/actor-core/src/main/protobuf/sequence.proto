@@ -13,6 +13,7 @@ import "model.proto";
 
 message PushData {
     string text = 1;
+    string censoredText = 3;
     Peer peer = 2;
 }
 
