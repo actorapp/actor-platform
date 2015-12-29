@@ -7,11 +7,13 @@ import android.view.ViewGroup;
 
 import java.util.HashMap;
 
+import im.actor.core.api.ApiJsonMessage;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.ContentConverter;
 import im.actor.core.entity.content.DocumentContent;
+import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.LocationContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.ServiceContent;
@@ -19,6 +21,7 @@ import im.actor.core.entity.content.StickerContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
 import im.actor.core.entity.content.VoiceContent;
+import im.actor.core.entity.content.internal.ContentRemoteContainer;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.sdk.ActorSDK;
@@ -85,9 +88,12 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
         AbsContent content = getItem(position).getContent();
         for (int i = 0; i < AbsContent.getConverters().length; i++) {
             ContentConverter converter = AbsContent.getConverters()[i];
-            if (content.getClass().equals(converter.destinationType())) {
-                return 8 + i;
+            if (content instanceof JsonContent) {
+                if (converter.validate(content)) {
+                    return 8 + i;
+                }
             }
+
         }
         if (content instanceof TextContent) {
             return 0;
@@ -178,7 +184,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
                 }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_sticker, viewGroup));
             default:
                 if (viewType - 8 >= 0 && viewType - 8 < AbsContent.getConverters().length) {
-                    return ActorSDK.sharedActor().getDelegatedMessageViewHolder(AbsContent.getConverters()[viewType - 8].destinationType(), new ActorSDK.OnDelegateViewHolder<MessageHolder>() {
+                    return ActorSDK.sharedActor().getDelegatedMessageViewHolder(viewType - 8, new ActorSDK.OnDelegateViewHolder<MessageHolder>() {
                         @Override
                         public MessageHolder onNotDelegated() {
                             return new UnsupportedHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));

@@ -49,23 +49,23 @@ public class Application extends ActorSDKApplication {
         AbsContent.registerConverter(new ContentConverter() {
             @Override
             public AbsContent convert(AbsContentContainer container) {
-                return JsonContent.convert(container, Custom.class);
+                return JsonContent.convert(container, new Custom());
             }
 
             @Override
-            public Class destinationType() {
-                return Custom.class;
+            public boolean validate(AbsContent content) {
+                return content instanceof Custom;
             }
         });
         AbsContent.registerConverter(new ContentConverter() {
             @Override
             public AbsContent convert(AbsContentContainer container) {
-                return JsonContent.convert(container, CustomTwo.class);
+                return JsonContent.convert(container, new CustomTwo());
             }
 
             @Override
-            public Class destinationType() {
-                return CustomTwo.class;
+            public boolean validate(AbsContent content) {
+                return content instanceof CustomTwo;
             }
         });
     }
@@ -167,9 +167,9 @@ public class Application extends ActorSDKApplication {
                     return new MessagesFragment(peer) {
                         @Override
                         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//                            messenger().sendCustomJsonMessage(getPeer(), JsonContent.create(Custom.class, System.currentTimeMillis()+"One"));
-//                            messenger().sendCustomJsonMessage(getPeer(), JsonContent.create(CustomTwo.class, System.currentTimeMillis()+"Two"));
-//                            messenger().sendCustomJsonMessage(getPeer(), JsonContent.create(CustomTwo.class, System.currentTimeMillis()+"Two"));
+                            messenger().sendCustomJsonMessage(getPeer(), JsonContent.create(new Custom(), System.currentTimeMillis() + "One"));
+                            messenger().sendCustomJsonMessage(getPeer(), JsonContent.create(new CustomTwo(), System.currentTimeMillis() + "Two"));
+                            messenger().sendCustomJsonMessage(getPeer(), JsonContent.create(new CustomTwo(), System.currentTimeMillis() + "Two"));
                             return super.onCreateView(inflater, container, savedInstanceState);
                         }
                     };
@@ -178,16 +178,17 @@ public class Application extends ActorSDKApplication {
         }
 
         @Override
-        public BaseCustomHolder getCustomMessageViewHolder(Class<AbsContent> content, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
-            if (content.equals(Custom.class)) {
-                return new CustomHolder(messagesAdapter, viewGroup, R.layout.custom_holder, false);
-            } else if (content.equals(CustomTwo.class)) {
-                return new CustomTwoHolder(messagesAdapter, viewGroup, R.layout.custom_holder, false);
+        public BaseCustomHolder getCustomMessageViewHolder(int id, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
+            switch (id) {
+                case 0:
+                    return new CustomHolder(messagesAdapter, viewGroup, R.layout.custom_holder, false);
 
-            } else {
-                return null;
+                case 1:
+                    return new CustomTwoHolder(messagesAdapter, viewGroup, R.layout.custom_holder, false);
+
+                default:
+                    return null;
             }
-
         }
 
         @Override

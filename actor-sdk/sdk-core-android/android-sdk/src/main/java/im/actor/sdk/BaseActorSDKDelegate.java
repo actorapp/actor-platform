@@ -146,7 +146,7 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     @Override
-    public MessageHolder getCustomMessageViewHolder(Class<AbsContent> content, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
+    public MessageHolder getCustomMessageViewHolder(int id, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
         return null;
     }
 

@@ -5,5 +5,5 @@ import im.actor.core.entity.content.internal.AbsContentContainer;
 public interface ContentConverter {
     AbsContent convert(AbsContentContainer container);
 
-    Class destinationType();
+    boolean validate(AbsContent content);
 }
