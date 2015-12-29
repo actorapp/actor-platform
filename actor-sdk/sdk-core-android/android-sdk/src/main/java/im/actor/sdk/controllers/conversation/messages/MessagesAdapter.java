@@ -177,12 +177,17 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
                     }
                 }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_sticker, viewGroup));
             default:
-                return ActorSDK.sharedActor().getDelegatedMessageViewHolder(AbsContent.getConverters()[viewType - 8].destinationType(), new ActorSDK.OnDelegateViewHolder<MessageHolder>() {
-                    @Override
-                    public MessageHolder onNotDelegated() {
-                        return new UnsupportedHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));
-                    }
-                }, MessagesAdapter.this, viewGroup);
+                if (viewType - 8 >= 0 && viewType - 8 < AbsContent.getConverters().length) {
+                    return ActorSDK.sharedActor().getDelegatedMessageViewHolder(AbsContent.getConverters()[viewType - 8].destinationType(), new ActorSDK.OnDelegateViewHolder<MessageHolder>() {
+                        @Override
+                        public MessageHolder onNotDelegated() {
+                            return new UnsupportedHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));
+                        }
+                    }, MessagesAdapter.this, viewGroup);
+                } else {
+                    return new UnsupportedHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));
+                }
+
         }
     }
 
