@@ -1,8 +1,6 @@
 package im.actor.core.entity.content;
 
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
 
 import im.actor.core.api.ApiJsonMessage;
 import im.actor.core.api.ApiMessage;
@@ -67,9 +65,7 @@ public abstract class JsonContent extends AbsContent {
 
     public abstract String getContentDescriptionRu();
 
-    public abstract String getContentDescriptionPtPT();
-
-    public abstract String getContentDescriptionPtBR();
+    public abstract String getContentDescriptionPt();
 
     public abstract String getContentDescriptionAr();
 
@@ -78,18 +74,16 @@ public abstract class JsonContent extends AbsContent {
     public abstract String getContentDescriptionEs();
 
     public final String getContentDescription() {
-        Locale locale = Locale.getDefault();
-        if (locale.getLanguage().equals("ru")) {
+        String locale = im.actor.runtime.Runtime.getLocaleRuntime().getCurrentLocale();
+        if (locale.equals("Ru")) {
             return fallback(getContentDescriptionRu());
-        } else if (locale.equals(new Locale("pt", "PT"))) {
-            return fallback(getContentDescriptionPtPT());
-        } else if (locale.equals(new Locale("pt", "BR"))) {
-            return fallback(getContentDescriptionPtBR());
-        } else if (locale.getLanguage().equals("ar")) {
+        } else if (locale.equals("Pt")) {
+            return fallback(getContentDescriptionPt());
+        } else if (locale.equals("Ar")) {
             return fallback(getContentDescriptionAr());
-        } else if (locale.getLanguage().equals("cn")) {
+        } else if (locale.equals("Cn")) {
             return fallback(getContentDescriptionCn());
-        } else if (locale.getLanguage().equals("es")) {
+        } else if (locale.equals("Es")) {
             return fallback(getContentDescriptionEs());
         } else {
             return fallback(getContentDescriptionEn());
