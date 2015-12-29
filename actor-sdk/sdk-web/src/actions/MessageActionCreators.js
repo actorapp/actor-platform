@@ -58,8 +58,8 @@ export default {
     ActorClient.removeLike(peer, rid);
   },
 
-  setMessages(messages) {
-    dispatch(ActionTypes.MESSAGES_CHANGED, { messages });
+  setMessages(messages, overlay) {
+    dispatch(ActionTypes.MESSAGES_CHANGED, { messages, overlay });
   },
 
   setSelected(selectedMesages) {

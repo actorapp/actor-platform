@@ -28,28 +28,10 @@ let flushDelayed = () => {
 
 let flushDelayedDebounced = debounce(flushDelayed, 30, 100);
 
-let lastMessageDate = null,
-    lastMessageSenderId = null;
-
-const isOnlyOneDay = (messages) => {
-  let _isOnlyOneDay = true;
-  if (messages.length > 0) {
-    let lastMessageDate = new Date(messages[0].fullDate);
-    forEach(messages, (message) => {
-      let currentMessageDate = new Date(message.fullDate);
-
-      if (lastMessageDate.getDate() !== currentMessageDate.getDate()) {
-        _isOnlyOneDay = false;
-      }
-      lastMessageDate = message.fullDate
-    });
-  }
-  return _isOnlyOneDay;
-};
-
 class MessagesSection extends Component {
   static propTypes = {
     messages: PropTypes.array.isRequired,
+    overlay: PropTypes.array.isRequired,
     peer: PropTypes.object.isRequired,
     onScroll: PropTypes.func.isRequired
   };
@@ -58,54 +40,34 @@ class MessagesSection extends Component {
     super(props);
 
     this.state = {
-      isOnlyOneDay: isOnlyOneDay(props.messages),
       selectedMessages: MessageStore.getSelected()
     };
-
-    lastMessageDate = new Date();
 
     VisibilityStore.addListener(this.onAppVisibilityChange);
     MessageStore.addListener(this.onMessagesChange);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({isOnlyOneDay: isOnlyOneDay(nextProps.messages)});
-    lastMessageDate = new Date();
-  }
-
   getMessagesListItem = (message, index) => {
-    const { isOnlyOneDay, selectedMessages } = this.state;
-    const { messages } = this.props;
-    const date = message.fullDate;
-
-    const isFirstMessage = index === 0;
-    const isThisLastMessage = index > (messages.length - 1) - 3;
-    const isNewDay = date.getDate() !== lastMessageDate.getDate();
+    const { selectedMessages } = this.state;
+    const { overlay } = this.props;
 
     let dateDivider = null;
-    if (isNewDay && !isOnlyOneDay) {
-      const dateDividerFormatOptions = { month: 'long', day: 'numeric' };
-      const dateDividerContent = new Intl.DateTimeFormat(undefined, dateDividerFormatOptions).format(date);
-      dateDivider = <li className="date-divider">{dateDividerContent}</li>
+    if (overlay[index].dateDivider) {
+      dateDivider = <li className="date-divider">{overlay[index].dateDivider}</li>
     }
-    const isSameSender = message.sender.peer.id === lastMessageSenderId && !isFirstMessage && !isNewDay;
+    const isShortMessage = overlay[index].useShort;
 
     const isSelected = selectedMessages.has(message.rid);
 
     const messageItem = (
       <MessageItem key={message.sortKey}
                    message={message}
-                   isNewDay={isNewDay}
-                   isSameSender={isSameSender}
-                   isThisLastMessage={isThisLastMessage}
+                   isShortMessage={isShortMessage}
                    onSelect={this.handleMessageSelect}
                    isSelected={isSelected}
                    onVisibilityChange={this.onMessageVisibilityChange}
                    peer={this.props.peer}/>
     );
-
-    lastMessageDate = date;
-    lastMessageSenderId = message.sender.peer.id;
 
     return [dateDivider, messageItem];
   };
