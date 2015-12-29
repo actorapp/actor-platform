@@ -10,12 +10,12 @@ import scala.concurrent.Future
 /**
  * Base class for raw service handlers.
  */
-abstract class RawServiceHandler(system: ActorSystem) {
+abstract class RawApiService(system: ActorSystem) {
 
-  type RawFunction = AuthorizedClientData ⇒ RawAuthorizedFunction
+  type Response = Future[RpcError Xor ApiRawValue]
 
-  type RawAuthorizedFunction = Option[ApiRawValue] ⇒ Future[RpcError Xor ApiRawValue]
+  type Handler = AuthorizedClientData ⇒ Option[ApiRawValue] ⇒ PartialFunction[String, Response]
 
-  def handle: PartialFunction[String, RawFunction]
+  def handleRequests: Handler
 
 }
