@@ -8,6 +8,7 @@ import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
 let _messages = [];
+let _overlay = [];
 let _selectedMessages = new Immutable.Set();
 
 /**
@@ -26,6 +27,13 @@ class MessageStore extends Store {
   }
 
   /**
+   * @returns {Array} Meesages overlay
+   */
+  getOverlay() {
+    return _overlay;
+  }
+
+  /**
    * @returns {Array} Selected messages
    */
   getSelected() {
@@ -41,6 +49,7 @@ class MessageStore extends Store {
 
       case ActionTypes.MESSAGES_CHANGED:
         _messages = action.messages;
+        _overlay = action.overlay;
         this.__emitChange();
         break;
 

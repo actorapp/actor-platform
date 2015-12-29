@@ -178,7 +178,10 @@ export const ActionTypes = keymirror({
   ATTACHMENT_SEND_ALL: null,
 
   GROUP_ONLINE_CHANGE: null,
-  USER_ONLINE_CHANGE: null
+  USER_ONLINE_CHANGE: null,
+
+  DROPDOWN_SHOW: null,
+  DROPDOWN_HIDE: null
 });
 
 export const PeerTypes = {
