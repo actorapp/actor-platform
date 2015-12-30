@@ -62,7 +62,7 @@ final class V20151108011300__FillUserSequence(implicit system: ActorSystem, mate
       log.warn("Starting filling user sequence")
       val count =
         Await.result({
-          Source(db.stream(UserRepo.allIds))
+          Source.fromPublisher(db.stream(UserRepo.allIds))
             .mapAsync(Parallelism) { userId ⇒
               db.run(for {
                 authIds ← AuthIdRepo.findIdByUserId(userId)
@@ -100,7 +100,7 @@ final class V20151108011300__FillUserSequence(implicit system: ActorSystem, mate
 
     db.run(sql"""SELECT seq FROM user_sequence WHERE user_id = $userId ORDER BY seq DESC LIMIT 1""".as[Int]).map(_.headOption.getOrElse(0)) flatMap { startFrom ⇒
       log.warn(s"Starting userId ${userId} from seq: ${startFrom}")
-      Source(
+      Source.fromPublisher(
         db.stream(
           sql"""SELECT auth_id, timestamp, seq, header, serialized_data, user_ids_str, group_ids_str FROM seq_updates_ngen WHERE auth_id = $authId and seq > $startFrom ORDER BY timestamp ASC"""
           .as[Obsolete].withStatementParameters(
