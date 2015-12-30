@@ -298,9 +298,15 @@ public class DialogsActor extends ModuleActor {
         switch (peer.getPeerType()) {
             case PRIVATE:
                 User u = getUser(peer.getPeerId());
+                if (u == null) {
+                    return null;
+                }
                 return new PeerDesc(u.getName(), u.getAvatar());
             case GROUP:
                 Group g = getGroup(peer.getPeerId());
+                if (g == null) {
+                    return null;
+                }
                 return new PeerDesc(g.getTitle(), g.getAvatar());
             default:
                 return null;
