@@ -17,7 +17,7 @@ public class AALocationPickerController: AAViewController, CLLocationManagerDele
     override init() {
        super.init()
         
-        navigationItem.title = "Location"
+        navigationItem.title = AALocalized("LocationTitle")
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: "cancellDidTap")
         
         updateAuthStatus(CLLocationManager.authorizationStatus())

@@ -235,6 +235,12 @@
 "CreateGroupMembersPlaceholders" = "Введите имена";
 
 /*
+ * Location
+ */
+
+"LocationTitle" = "Местоположение";
+
+/*
  * Notifications
  */
 
