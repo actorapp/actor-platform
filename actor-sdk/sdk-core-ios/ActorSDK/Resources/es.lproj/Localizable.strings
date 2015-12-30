@@ -336,6 +336,8 @@
 
 "AuthProfileHint" = "Escribe tu nombre y añade una imagen de perfil";
 
+"AuthTerms" = "By signing up to {app_name}, you agree not to: \n\n - use our service to send spam and scam users.\n- use our service to send spam and scam users.\n- use our service to send spam and scam users.\n- promote violence on publicly viewable {app_name} bots or channels.\n\nWe reserve the right to update these Terms of Service later.";
+
 "CurrentLocale" = "En";
 
 "InviteText" = "¡Hola! , ¡prueba {appname} mensajería! {link}";
@@ -399,3 +401,9 @@
 "ErrorAlreadyJoined" = "Ya eres miembro del grupo";
 
 "ErrorUnableToJoin" = "Unable to join to group";
+
+/*
+ * Location
+ */
+
+"LocationTitle" = "Ubicatión";
