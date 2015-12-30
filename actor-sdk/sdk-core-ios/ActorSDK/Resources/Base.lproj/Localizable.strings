@@ -2,16 +2,6 @@
 //  Copyright (C) 2014-2015 Actor LLC. <https://actor.im>
 //
 
-
-/*
- * Auth Screen
- */
-
-"AuthMoreInfo" = "Free, fast and secure messaging.";
-
-"AuthStarButton" = "Start Messaging";
-
-
 /*
  * Main Screen
  */
@@ -382,6 +372,10 @@
  * Auth
  */
 
+"AuthMoreInfo" = "Free, fast and secure messaging.";
+
+"AuthStarButton" = "Start Messaging";
+
 "AuthPhoneTitle" = "Your Phone";
 
 "AuthPhoneNumberHint" = "Your phone number";
@@ -413,6 +407,8 @@
 "AuthProfileNameHint" = "Your name";
 
 "AuthProfileHint" = "Enter your name and add a pofile picture";
+
+"AuthTerms" = "By signing up to {app_name}, you agree not to: \n\n - use our service to send spam and scam users.\n- use our service to send spam and scam users.\n- use our service to send spam and scam users.\n- promote violence on publicly viewable {app_name} bots or channels.\n\nWe reserve the right to update these Terms of Service later.";
 
 /*
  * Common Elements
