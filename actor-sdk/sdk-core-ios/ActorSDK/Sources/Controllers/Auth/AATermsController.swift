@@ -88,11 +88,11 @@ class AATermsController: UIViewController,UIViewControllerTransitioningDelegate 
         
         self.alertTextView = UITextView()
         self.alertTextView.font = UIFont(name: "HelveticaNeue-Light", size: 13)
-        self.alertTextView.scrollEnabled = false
         self.alertTextView.backgroundColor = UIColor.clearColor()
         self.alertTextView.editable = false
         self.alertTextView.text = AALocalized("AuthTerms").replace("{app_name}", dest: ActorSDK.sharedActor().appNameInLocStrings)
-        self.alertTextView.frame = CGRectMake(10, 45, 220, 270);
+        self.alertTextView.frame = CGRectMake(10, 45, 220, 245);
+        self.alertTextView.userInteractionEnabled = true
         self.alertView.addSubview(self.alertTextView)
         
         let separatorView = UIView()
