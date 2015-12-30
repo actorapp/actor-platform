@@ -71,7 +71,7 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
                   val writeFu = for {
                     _ <- prepareForPartWrite(fileId, partNumber)
                     _ <- req.entity.dataBytes
-                      .flatMapConcat[Unit](bs => Source(writeContent(bs, fileId, partNumber)))
+                      .flatMapConcat(bs => Source.fromFuture(writeContent(bs, fileId, partNumber)))
                       .runForeach(_ => ())
                   } yield ()
                   onComplete(writeFu) {
