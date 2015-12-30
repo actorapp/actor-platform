@@ -208,5 +208,18 @@ $stem-size: 14px;
       color: $dark-sky-blue;
       opacity: 1;
     }
+
+    &--with-dot {
+      &:after {
+        content: '';
+        background-color: $coral;
+        top: 0;
+        right: 1px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        position: absolute;
+      }
+    }
   }
 }

@@ -16,19 +16,6 @@ services {
   actor-activation {
     auth-token: <token>
   }
-
-  aws {
-    s3 {
-      # S3 Api Key
-      access-key: <YOUR AWS KEY ID>
-      
-      # S3 Api Secret
-      secret-key: <YOUR AWS SECRET KEY>
-
-      # File bucket
-      default-bucket: <bucket for storing files>
-    }
-  }
 }
 
 secret: <put a long random string here>

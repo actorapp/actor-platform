@@ -40,13 +40,13 @@ public class JsMessage extends JavaScriptObject {
 
         @Override
         public JavaScriptObject buildOverlay(Message prev, Message current, Message next) {
-            Date prevDate = prev != null ? new Date(prev.getDate()) : null;
+            Date nextDate = next != null ? new Date(next.getDate()) : null;
             Date currentDate = new Date(current.getDate());
 
             boolean showDate;
             String dateDiv = null;
-            if (prev != null) {
-                showDate = !CalendarUtil.isSameDate(prevDate, currentDate);
+            if (next != null) {
+                showDate = !CalendarUtil.isSameDate(nextDate, currentDate);
             } else {
                 showDate = true;
             }
@@ -55,9 +55,9 @@ public class JsMessage extends JavaScriptObject {
             }
 
             boolean useCompact = false;
-            if (prev != null && !showDate) {
-                if (prev.getSenderId() == current.getSenderId()) {
-                    if (prev.getDate() - current.getDate() < 10 * 60 * 1000) {
+            if (next != null && !showDate) {
+                if (next.getSenderId() == current.getSenderId()) {
+                    if (next.getDate() - current.getDate() < 10 * 60 * 1000) {
                         useCompact = true;
                     }
                 }

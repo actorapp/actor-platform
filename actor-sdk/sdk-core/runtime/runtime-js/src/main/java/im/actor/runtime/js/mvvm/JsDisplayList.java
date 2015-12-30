@@ -21,6 +21,8 @@ import im.actor.runtime.storage.ListEngineItem;
 public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & ListEngineItem> implements JsListEngineCallback<V>,
         PlatformDisplayList<V> {
 
+    private static final String TAG = "JsDisplayList";
+
     private final JsListEngine<V> listEngine;
     private final JsEntityConverter<V, T> entityConverter;
 
@@ -109,6 +111,7 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
                 if (isOverlaysSupported) {
                     markAsDirty(i);
                     jsOverlays.remove(i);
+                    isOverlayDirty.remove(i);
                 }
                 break;
             }
@@ -120,6 +123,7 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
                 jsValues.insert(i, entityConverter.convert(item));
                 if (isOverlaysSupported) {
                     jsOverlays.insert(i, null);
+                    isOverlayDirty.add(i, true);
                     markAsDirty(i);
                 }
                 return;
@@ -130,6 +134,7 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
         jsValues.push(entityConverter.convert(item));
         if (isOverlaysSupported) {
             jsOverlays.push(null);
+            isOverlayDirty.add(true);
             markAsDirty(values.size() - 1);
         }
     }
@@ -158,6 +163,7 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
                 if (isOverlaysSupported) {
                     markAsDirty(i);
                     jsOverlays.remove(i);
+                    isOverlayDirty.add(true);
                 }
                 break;
             }

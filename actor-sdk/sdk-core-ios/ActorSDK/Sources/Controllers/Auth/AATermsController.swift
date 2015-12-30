@@ -91,7 +91,7 @@ class AATermsController: UIViewController,UIViewControllerTransitioningDelegate 
         self.alertTextView.scrollEnabled = false
         self.alertTextView.backgroundColor = UIColor.clearColor()
         self.alertTextView.editable = false
-        self.alertTextView.text = "By signing up to \(ActorSDK.sharedActor().appNameInLocStrings), you agree not to: \n\n - use our service to send spam and scam users.\n" + "- use our service to send spam and scam users.\n" + "- use our service to send spam and scam users.\n" + "- promote violence on publicly viewable \(ActorSDK.sharedActor().appNameInLocStrings) bots or channels.\n\n" + "We reserve the right to update these Terms of Service later."
+        self.alertTextView.text = AALocalized("AuthTerms").replace("{app_name}", dest: ActorSDK.sharedActor().appNameInLocStrings)
         self.alertTextView.frame = CGRectMake(10, 45, 220, 270);
         self.alertView.addSubview(self.alertTextView)
         
