@@ -803,15 +803,15 @@
 		066A52601BC50E6B000E606E /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				153F6B8C1C2D83B200C0B960 /* Views */,
-				153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */,
 				066A526E1BC51007000E606E /* Views */,
 				066A526B1BC50E83000E606E /* Cells */,
+				153F6B8D1C2D868100C0B960 /* AATermsController.swift */,
 				066A52611BC50E7B000E606E /* AAAuthCountriesViewController.swift */,
 				066A52621BC50E7B000E606E /* AAAuthPhoneViewController.swift */,
 				066A52631BC50E7B000E606E /* AAAuthCodeViewController.swift */,
 				066A52641BC50E7B000E606E /* AAAuthRegisterViewController.swift */,
 				066A52651BC50E7B000E606E /* AAAuthViewController.swift */,
+				153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */,
 				065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */,
 			);
 			path = Auth;
@@ -1160,14 +1160,6 @@
 				153F6B891C2D7BA300C0B960 /* AATapLabel.swift */,
 			);
 			name = TapedLabel;
-			sourceTree = "<group>";
-		};
-		153F6B8C1C2D83B200C0B960 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				153F6B8D1C2D868100C0B960 /* AATermsController.swift */,
-			);
-			name = Views;
 			sourceTree = "<group>";
 		};
 		15D35F0A1C20182900E3717A /* AudioRecorder */ = {
