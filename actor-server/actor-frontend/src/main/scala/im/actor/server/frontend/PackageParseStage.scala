@@ -1,20 +1,27 @@
 package im.actor.server.frontend
 
+import akka.stream.{ Outlet, Inlet, Attributes, FlowShape }
+
 import scala.annotation.tailrec
 import scala.util.control.NoStackTrace
 
 import akka.actor.ActorSystem
-import akka.stream.stage.{ Context, StatefulStage }
+import akka.stream.stage._
 import akka.util.ByteString
 import scodec.DecodeResult
 import scodec.bits.BitVector
 
 import im.actor.server.mtproto.codecs._
 import im.actor.server.mtproto.codecs.transport._
-import im.actor.server.mtproto.transport.{ Drop, TransportPackage }
+import im.actor.server.mtproto.transport.TransportPackage
 
 private[frontend] final class PackageParseStage(implicit system: ActorSystem)
-  extends StatefulStage[ByteString, TransportPackage] {
+  extends GraphStage[FlowShape[ByteString, TransportPackage]] {
+
+  private val in = Inlet[ByteString]("in")
+  private val out = Outlet[TransportPackage]("out")
+
+  override def shape = FlowShape(in, out)
 
   private val MaxPackageLength = 1024 * 1024 // TODO: configurable
 
@@ -31,24 +38,31 @@ private[frontend] final class PackageParseStage(implicit system: ActorSystem)
 
   type ParseState = (ParserStep, BitVector)
 
-  private[this] var parserState: ParseState = (AwaitPackageHeader, BitVector.empty)
+  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
+    private[this] var parserState: ParseState = (AwaitPackageHeader, BitVector.empty)
 
-  @inline
-  private def failedState(msg: String) = ((FailedState(msg), BitVector.empty), Vector.empty)
+    @inline
+    private def failedState(msg: String) = ((FailedState(msg), BitVector.empty), Vector.empty)
 
-  def initial = new State {
-    override def onPush(chunk: ByteString, ctx: Context[TransportPackage]) = {
-      val (newState, res) = doParse(parserState._1, parserState._2 ++ BitVector(chunk.toByteBuffer))(Vector.empty)
-      newState._1 match {
-        case FailedState(msg) ⇒
-          system.log.debug("Failed to parse connection-level {}", msg)
-          // ctx.fail(new IllegalStateException(msg))
-          ctx.fail(new Exception(msg) with NoStackTrace)
-        case _ ⇒
-          parserState = newState
-          emit(res.iterator, ctx)
+    setHandler(in, new InHandler {
+      override def onPush(): Unit = {
+        val chunk = grab(in)
+        val (newState, res) = doParse(parserState._1, parserState._2 ++ BitVector(chunk.toByteBuffer))(Vector.empty)
+        newState._1 match {
+          case FailedState(msg) ⇒
+            system.log.debug("Failed to parse connection-level {}", msg)
+            // ctx.fail(new IllegalStateException(msg))
+            failStage(new Exception(msg) with NoStackTrace)
+          case _ ⇒
+            parserState = newState
+            emitMultiple(out, res.iterator)
+        }
       }
-    }
+    })
+
+    setHandler(out, new OutHandler {
+      override def onPull(): Unit = pull(in)
+    })
 
     @tailrec
     private def doParse(state: ParserStep, buf: BitVector)(pSeq: Vector[TransportPackage]): (ParseState, Vector[TransportPackage]) = {
@@ -81,7 +95,7 @@ private[frontend] final class PackageParseStage(implicit system: ActorSystem)
             ((state, buf), pSeq)
           } else {
             val (body, remainder) = buf.splitAt(bitsLength)
-            (new SignedMTProtoDecoder(header, size)).decode(body).toEither match {
+            new SignedMTProtoDecoder(header, size).decode(body).toEither match {
               case Right(DecodeResult(body, BitVector.empty)) ⇒
                 doParse(AwaitPackageHeader, remainder)(pSeq :+ TransportPackage(index, body))
               case Right(_) ⇒
