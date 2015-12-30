@@ -257,6 +257,12 @@
 "CreateGroupMembersPlaceholders" = "Enter Names";
 
 /*
+ * Location
+ */
+
+"LocationTitle" = "Location";
+
+/*
  * Notifications
  */
 
