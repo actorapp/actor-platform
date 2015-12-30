@@ -1,37 +1,25 @@
 package im.actor;
 
 import android.graphics.Color;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
-import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ContentConverter;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.internal.AbsContentContainer;
-import im.actor.core.entity.content.internal.ContentRemoteContainer;
-import im.actor.runtime.json.JSONException;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
 import im.actor.sdk.controllers.conversation.messages.BaseCustomHolder;
-import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
-import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
-import im.actor.sdk.controllers.fragment.settings.BaseActorChatActivity;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
-import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
-
-import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class Application extends ActorSDKApplication {
 
@@ -49,46 +37,31 @@ public class Application extends ActorSDKApplication {
         AbsContent.registerConverter(new ContentConverter() {
             @Override
             public AbsContent convert(AbsContentContainer container) {
-                return JsonContent.convert(container, new Custom());
+                return JsonContent.convert(container, new TCBotMesaage());
             }
 
             @Override
             public boolean validate(AbsContent content) {
-                return content instanceof Custom;
-            }
-        });
-        AbsContent.registerConverter(new ContentConverter() {
-            @Override
-            public AbsContent convert(AbsContentContainer container) {
-                return JsonContent.convert(container, new CustomTwo());
-            }
-
-            @Override
-            public boolean validate(AbsContent content) {
-                return content instanceof CustomTwo;
+                return content instanceof TCBotMesaage;
             }
         });
     }
 
-    public static class Custom extends JsonContent {
-
-        public String getText() {
-            return getSimpleStringData();
-        }
+    public static class TCBotMesaage extends JsonContent {
 
         @Override
         public String getDataType() {
-            return "customJson";
+            return "tcmessage";
         }
 
         @Override
         public String getContentDescriptionEn() {
-            return "custom json msg";
+            return "TeamCity message";
         }
 
         @Override
         public String getContentDescriptionRu() {
-            return " бла бла бла";
+            return null;
         }
 
         @Override
@@ -113,78 +86,16 @@ public class Application extends ActorSDKApplication {
         }
     }
 
-    public static class CustomTwo extends JsonContent {
-
-        public String getText() {
-            return getSimpleStringData();
-        }
-
-        @Override
-        public String getDataType() {
-            return "customTwoJson";
-        }
-
-        @Override
-        public String getContentDescriptionEn() {
-            return "custom json msg";
-        }
-
-        @Override
-        public String getContentDescriptionRu() {
-            return " бла бла бла";
-        }
-
-        @Override
-        public String getContentDescriptionPt() {
-            return null;
-        }
-
-        @Override
-        public String getContentDescriptionAr() {
-            return null;
-        }
-
-        @Override
-        public String getContentDescriptionCn() {
-            return null;
-        }
-
-        @Override
-        public String getContentDescriptionEs() {
-            return null;
-        }
-    }
 
 
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
 
         @Override
-        public ActorIntent getChatIntent() {
-            return new BaseActorChatActivity() {
-                @Override
-                public MessagesFragment getChatFragment(Peer peer) {
-                    return new MessagesFragment(peer) {
-                        @Override
-                        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-                            messenger().sendCustomJsonMessage(getPeer(), JsonContent.create(new Custom(), System.currentTimeMillis() + "One"));
-                            messenger().sendCustomJsonMessage(getPeer(), JsonContent.create(new CustomTwo(), System.currentTimeMillis() + "Two"));
-                            messenger().sendCustomJsonMessage(getPeer(), JsonContent.create(new CustomTwo(), System.currentTimeMillis() + "Two"));
-                            return super.onCreateView(inflater, container, savedInstanceState);
-                        }
-                    };
-                }
-            };
-        }
-
-        @Override
         public BaseCustomHolder getCustomMessageViewHolder(int id, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
             switch (id) {
                 case 0:
-                    return new CustomHolder(messagesAdapter, viewGroup, R.layout.custom_holder, false);
-
-                case 1:
-                    return new CustomTwoHolder(messagesAdapter, viewGroup, R.layout.custom_holder, false);
+                    return new TCMessageHolder(messagesAdapter, viewGroup, R.layout.custom_holder, false);
 
                 default:
                     return null;
