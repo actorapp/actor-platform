@@ -379,6 +379,12 @@
 "AuthProfileHint" = "请输入你的名字并上传头像";
 
 /*
+ * Location
+ */
+
+"LocationTitle" = "Location";
+
+/*
  * Common Elements
  */
 
