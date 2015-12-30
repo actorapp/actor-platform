@@ -106,6 +106,7 @@ final class EchoBotSpec
   }
 
   override def beforeAll = {
+    db // init lazy db
     EchoBot.start()
   }
 }

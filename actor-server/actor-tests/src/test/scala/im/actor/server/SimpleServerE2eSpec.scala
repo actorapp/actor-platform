@@ -21,6 +21,7 @@ import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.session.{ Session, SessionConfig }
+import kamon.Kamon
 
 import scala.concurrent.ExecutionContext
 import scala.util.Random
@@ -47,6 +48,8 @@ class SimpleServerE2eSpec extends ActorSuite(
   it should "throw AuthIdInvalid if valid AuthId invalidated by some reason" in Server.e5
 
   object Server {
+    Kamon.start()
+
     DbExtension(system).clean()
     DbExtension(system).migrate()
 
