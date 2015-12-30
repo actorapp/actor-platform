@@ -11,9 +11,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import im.actor.core.api.ApiGroup;
+import im.actor.core.api.ApiJsonMessage;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
+import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestClearChat;
 import im.actor.core.api.rpc.RequestDeleteChat;
@@ -28,6 +31,8 @@ import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
+import im.actor.core.api.updates.UpdateContactsAdded;
+import im.actor.core.api.updates.UpdateMessageContentChanged;
 import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.DialogSpec;
@@ -55,6 +60,8 @@ import im.actor.core.modules.internal.messages.MessageShownFilter;
 import im.actor.core.modules.internal.messages.OwnReadActor;
 import im.actor.core.modules.internal.messages.SenderActor;
 import im.actor.core.modules.internal.messages.entity.MessageShownEvent;
+import im.actor.core.modules.updates.internal.ChangeContent;
+import im.actor.core.modules.updates.internal.InternalUpdate;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
@@ -70,6 +77,7 @@ import im.actor.runtime.actors.tools.BounceFilterActor;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.files.FileSystemReference;
+import im.actor.runtime.json.JSONObject;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.SyncKeyValue;
@@ -343,6 +351,12 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         sendMessageActor.send(new SenderActor.SendJson(peer, content));
     }
 
+    public void updateJson(Peer peer, long rid, JsonContent json) {
+        ApiPeer apiPeer = new ApiPeer(peer.getPeerType() == PeerType.PRIVATE ? ApiPeerType.PRIVATE : ApiPeerType.GROUP, peer.getPeerId());
+        ApiJsonMessage jsonMessage = new ApiJsonMessage(json.getRawJson());
+        updates().onUpdateReceived(new ChangeContent(new UpdateMessageContentChanged(apiPeer, rid, jsonMessage)));
+
+    }
 
     public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
                              String descriptor) {
