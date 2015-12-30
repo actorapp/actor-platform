@@ -71,7 +71,7 @@ services {
 
   # PostgreSQL storage for data
   # The only required service to start server
-  # For more information see https://github.com/actorapp/actor-bootstrap/blob/master/docs/server/Database.md
+  # For more information see https://github.com/actorapp/actor-bootstrap/blob/master/docs/server/configure-database.md
   postgresql {
     # Host of PostgreSQL instance
     host: localhost
@@ -90,7 +90,7 @@ services {
   # enabling file sharing in apps
   aws {
     # S3 Storage, used for file sharing
-    # For more information see https://github.com/actorapp/actor-bootstrap/blob/master/docs/server/AWS.md
+    # For more information see https://github.com/actorapp/actor-bootstrap/blob/master/docs/server/configure-s3.md
     s3 {
       # S3 Api Key
       access-key: <put_your_aws_key_here>
