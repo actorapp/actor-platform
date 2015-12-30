@@ -5,6 +5,7 @@ import java.time.{ LocalDateTime, ZoneOffset }
 
 import akka.actor._
 import akka.pattern.ask
+import akka.pattern.pipe
 import akka.stream.Materializer
 import akka.util.Timeout
 import im.actor.server.activation.Activation.{ CallCode, Code, EmailCode, SmsCode }
@@ -112,8 +113,7 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
 
   override def receive: Receive = {
     case Send(code) ⇒
-      val replyTo = sender()
-      sendCode(code) foreach { resp ⇒ replyTo ! SendAck(resp) }
+      (sendCode(code) map SendAck) pipeTo sender()
     case ForgetSentCode(code) ⇒ forgetSentCode(code)
   }
 
@@ -131,7 +131,10 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
       }) map { _ ⇒
         forgetSentCodeAfterDelay(code)
         \/-(())
-      } recover { case e ⇒ -\/(SendFailure("Unable to send code")) }
+      } recover { case e ⇒
+        log.error(e, "Failed to send code: {}", code)
+        -\/(SendFailure("Unable to send code"))
+      }
     } else {
       log.debug(s"Ignoring send $code")
       Future.successful(-\/(BadRequest("Try to request code later")))

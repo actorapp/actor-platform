@@ -378,6 +378,14 @@
 
 "AuthProfileHint" = "请输入你的名字并上传头像";
 
+"AuthTerms" = "By signing up to {app_name}, you agree not to: \n\n - use our service to send spam and scam users.\n- use our service to send spam and scam users.\n- use our service to send spam and scam users.\n- promote violence on publicly viewable {app_name} bots or channels.\n\nWe reserve the right to update these Terms of Service later.";
+
+/*
+ * Location
+ */
+
+"LocationTitle" = "Location";
+
 /*
  * Common Elements
  */

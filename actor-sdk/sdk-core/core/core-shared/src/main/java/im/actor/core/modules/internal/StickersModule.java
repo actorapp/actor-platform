@@ -100,7 +100,6 @@ public class StickersModule extends AbsModule {
 
             vms.removeAll(remove);
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return vms;
     }

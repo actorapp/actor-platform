@@ -135,6 +135,7 @@ class EmojiDropdown extends Component {
 
   handleEmojiOpenerMouseEnter = () => {
     this.handleEmojiMouseEnter();
+    localStorage.setItem('isEmojiOpenedBefore', true);
     EmojiActionCreators.open();
   };
 
@@ -148,12 +149,14 @@ class EmojiDropdown extends Component {
 
   render() {
     const { isOpen, dropdownTitle } = this.state;
+    const isEmojiOpenedBefore = (localStorage.getItem('isEmojiOpenedBefore') === 'true') || false;
 
     const emojiDropdownClassName = classnames('emoji-dropdown', {
       'emoji-dropdown--opened': isOpen
     });
     const emojiOpenerClassName = classnames('emoji-opener material-icons', {
-      'emoji-opener--active': isOpen
+      'emoji-opener--active': isOpen,
+      'emoji-opener--with-dot': !isEmojiOpenedBefore
     });
 
     return (
