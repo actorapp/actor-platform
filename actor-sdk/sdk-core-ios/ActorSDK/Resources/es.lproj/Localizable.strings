@@ -399,3 +399,9 @@
 "ErrorAlreadyJoined" = "Ya eres miembro del grupo";
 
 "ErrorUnableToJoin" = "Unable to join to group";
+
+/*
+ * Location
+ */
+
+"LocationTitle" = "Ubicatión";
