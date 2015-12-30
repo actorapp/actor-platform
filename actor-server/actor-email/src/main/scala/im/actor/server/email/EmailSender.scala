@@ -1,5 +1,6 @@
 package im.actor.server.email
 
+import im.actor.config.ActorConfig
 import org.apache.commons.mail.{ DefaultAuthenticator, HtmlEmail }
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -30,8 +31,11 @@ final class DummyEmailSender extends EmailSender {
 }
 
 final class SmtpEmailSender(config: EmailConfig)(implicit ec: ExecutionContext) extends EmailSender {
+  val timeout = (ActorConfig.defaultTimeout.toMillis / 2).toInt
   override def send(message: Message) = Future {
     val email = new HtmlEmail()
+    email.setSocketTimeout(timeout)
+    email.setSocketConnectionTimeout(timeout)
     email.setCharset("UTF-8")
     email.setHostName(config.host)
     email.setSmtpPort(config.port)
