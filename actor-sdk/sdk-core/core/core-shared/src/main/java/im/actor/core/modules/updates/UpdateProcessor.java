@@ -51,6 +51,7 @@ import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.contacts.ContactsSyncActor;
 import im.actor.core.modules.internal.messages.OwnReadActor;
+import im.actor.core.modules.updates.internal.ChangeContent;
 import im.actor.core.modules.updates.internal.CombinedDifference;
 import im.actor.core.modules.updates.internal.ContactsLoaded;
 import im.actor.core.modules.updates.internal.DialogHistoryLoaded;
@@ -148,6 +149,10 @@ public class UpdateProcessor extends AbsModule {
             relatedResponse.getAfterApply().run();
         } else if (update instanceof StickersLoaded) {
             stickersProcessor.onOwnStickerCollectionsChanged(((StickersLoaded) update).getCollections());
+        } else if (update instanceof ChangeContent) {
+            UpdateMessageContentChanged contentChanged = ((ChangeContent) update).getUpdate();
+            messagesProcessor.onMessageContentChanged(contentChanged.getPeer(),
+                    contentChanged.getRid(), contentChanged.getMessage());
         }
     }
 
