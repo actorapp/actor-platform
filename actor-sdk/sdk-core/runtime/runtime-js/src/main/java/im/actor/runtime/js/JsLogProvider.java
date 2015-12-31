@@ -25,7 +25,12 @@ public class JsLogProvider implements LogRuntime {
 
     @Override
     public void e(String tag, Throwable throwable) {
-        error(formatTime() + "[E] " + tag + ":" + throwable);
+        String stackTrace = "";
+        for (StackTraceElement element : throwable.getStackTrace()) {
+            stackTrace += element + "\n";
+        }
+
+        error(formatTime() + "[E] " + tag + ":" + throwable + "\n" + stackTrace);
     }
 
     @Override

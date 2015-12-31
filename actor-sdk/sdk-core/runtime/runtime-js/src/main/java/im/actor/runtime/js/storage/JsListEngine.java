@@ -43,7 +43,7 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
                 callback.onItemAddedOrUpdated(item);
             } catch (Exception e) {
                 Log.d(TAG, "Exception during update (addOrUpdateItem)");
-                e.printStackTrace();
+                Log.e(TAG, e);
             }
         }
 
@@ -65,7 +65,7 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
                 callback.onItemsAddedOrUpdated(items);
             } catch (Exception e) {
                 Log.d(TAG, "Exception during update (addOrUpdateItems)");
-                e.printStackTrace();
+                Log.e(TAG, e);
             }
         }
     }
@@ -87,7 +87,7 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
                 callback.onItemsReplaced(items);
             } catch (Exception e) {
                 Log.d(TAG, "Exception during update (replaceItems)");
-                e.printStackTrace();
+                Log.e(TAG, e);
             }
         }
     }
@@ -102,7 +102,7 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
                 callback.onItemRemoved(key);
             } catch (Exception e) {
                 Log.d(TAG, "Exception during update (removeItem)");
-                e.printStackTrace();
+                Log.e(TAG, e);
             }
         }
     }
@@ -118,7 +118,7 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
                 callback.onItemsRemoved(keys);
             } catch (Exception e) {
                 Log.d(TAG, "Exception during update (removeItems)");
-                e.printStackTrace();
+                Log.e(TAG, e);
             }
         }
     }
@@ -132,7 +132,7 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
                 callback.onClear();
             } catch (Exception e) {
                 Log.d(TAG, "Exception during update (clear)");
-                e.printStackTrace();
+                Log.e(TAG, e);
             }
         }
     }
@@ -150,7 +150,7 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
                 return res;
             } catch (IOException e) {
                 Log.d("JsListEngine", "Unable to decode: " + e.getMessage());
-                e.printStackTrace();
+                Log.e(TAG, e);
             }
         }
 
