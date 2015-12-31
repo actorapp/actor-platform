@@ -19,8 +19,7 @@ trait RequestSigning extends ACLBase {
     calculateSignature(httpVerb, uri, secretKey())
 
   def calculateSignature(httpVerb: HttpMethod, uri: Uri, secret: String): String = {
-    val canonicalUri = urlEncode(uri.withQuery(Uri.Query.Empty).toString)
-
+    val resourcePath = uri.path
     val canonicalQueryString = uri.query() sortBy (_._1) map {
       case (name, value) ⇒
         s"${urlEncode(name)}=${urlEncode(value)}"
@@ -28,7 +27,7 @@ trait RequestSigning extends ACLBase {
 
     val canonicalRequest =
       s"""$httpVerb
-         |$canonicalUri
+         |$resourcePath
          |$canonicalQueryString""".stripMargin
 
     HmacUtils.hmacSha256Hex(secret, sha256Hex(canonicalRequest))
