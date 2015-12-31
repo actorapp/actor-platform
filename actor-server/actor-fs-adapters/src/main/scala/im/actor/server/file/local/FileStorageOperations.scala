@@ -69,10 +69,12 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
     getFile(fileId, optName getOrElse "")
 
   protected def getFile(fileId: Long, name: String): Future[File] =
-    Future(file"$storageLocation/$fileId/${getFileName(name)}")
+    Future(fileDirectory(fileId) / getFileName(name))
 
   protected def getFileName(name: String) = if (name.trim.isEmpty) "file" else name
 
-  private def getOrCreateFileDir(fileId: Long) = file"$storageLocation/$fileId".createIfNotExists(asDirectory = true)
+  protected  def fileDirectory(fileId: Long): File = file"$storageLocation/file_${fileId}"
+
+  private def getOrCreateFileDir(fileId: Long) = fileDirectory(fileId).createIfNotExists(asDirectory = true)
 
 }
