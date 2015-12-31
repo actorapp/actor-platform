@@ -32,7 +32,7 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
     authorized(clientData) { implicit client ⇒
       StringUtils.validName(name) match {
         case \/-(validName) ⇒
-          db.run(persist.UserRepo.find(userId).headOption) flatMap {
+          db.run(persist.UserRepo.find(userId)) flatMap {
             case Some(user) ⇒
               if (accessHash == ACLUtils.userAccessHash(client.authId, user)) {
                 val seqstateF = db.run(persist.contact.UserContactRepo.find(client.userId, userId)) flatMap {

@@ -600,7 +600,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
   }
 
   private def signIn(authId: Long, userId: Int, countryCode: String, clientData: ClientData) = {
-    persist.UserRepo.find(userId).headOption.flatMap {
+    persist.UserRepo.find(userId).flatMap {
       case None ⇒ throw new Exception("Failed to retrieve user")
       case Some(user) ⇒
         for {

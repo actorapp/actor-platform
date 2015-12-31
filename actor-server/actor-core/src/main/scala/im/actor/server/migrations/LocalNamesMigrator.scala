@@ -53,7 +53,7 @@ private final class LocalNamesMigrator(promise: Promise[Unit], ownerUserId: Int,
 
   db.run(for {
     contact ← persist.contact.UserContactRepo.find(ownerUserId, contactUserId)
-    user ← persist.UserRepo.find(contactUserId).headOption
+    user ← persist.UserRepo.find(contactUserId)
   } yield (contact, user)) foreach {
     case (Some(contact), Some(user)) ⇒
       (if (contact.name.contains(user.name)) {
