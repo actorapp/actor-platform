@@ -12,7 +12,7 @@ import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs.ProcessorState
 import im.actor.server.db.DbExtension
 import im.actor.server.model.{ Dialog ⇒ DialogModel, PeerType, Peer }
-import im.actor.server.persist.{ HistoryMessageRepo, DialogRepo }
+import im.actor.server.persist.{ GroupRepo, UserRepo, HistoryMessageRepo, DialogRepo }
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqStateDate }
 import im.actor.server.social.SocialExtension
 import im.actor.server.user.UserExtension
@@ -206,7 +206,12 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
           log.debug("Creating dialog for userId: {}, peer: {}", userId, peer)
           val dialog = DialogModel.withLastMessageDate(userId, peer, new DateTime)
           for {
-            _ ← DialogRepo.create(dialog)
+            exists ← peer.`type` match {
+              case PeerType.Private ⇒ UserRepo.find(peer.id) map (_.isDefined)
+              case PeerType.Group   ⇒ GroupRepo.find(peer.id) map (_.isDefined)
+              case unknown          ⇒ DBIO.failed(new RuntimeException(s"Unknown peer type $unknown"))
+            }
+            _ ← if (exists) DialogRepo.create(dialog) else DBIO.failed(new RuntimeException(s"Entity ${peer} does not exist"))
             _ ← DBIO.from(userExt.notifyDialogsChanged(userId))
           } yield dialog
       }
