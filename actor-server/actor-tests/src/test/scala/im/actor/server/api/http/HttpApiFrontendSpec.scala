@@ -107,7 +107,7 @@ final class HttpApiFrontendSpec
     val publicGroup = createPubGroup("public group", "PG", Set(user2.id)).groupPeer
 
     val resourcesPath = Paths.get(getClass.getResource("/files").toURI).toFile.getCanonicalPath
-    val config = HttpApiConfig("127.0.0.1", 9000, "http", "localhost", resourcesPath, None)
+    val config = HttpApiConfig("127.0.0.1", 9000, "http://localhost:9090", resourcesPath, None)
     HttpApiFrontend.start(config, tlsContext = None)
 
     val http = Http()
@@ -116,7 +116,7 @@ final class HttpApiFrontendSpec
       val token = extractToken(groupOutPeer.groupId)
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token",
+        uri = s"${config.baseUri}/v1/webhooks/$token",
         entity = """{"text":"Good morning everyone!"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
@@ -128,7 +128,7 @@ final class HttpApiFrontendSpec
       val token = extractToken(publicGroup.groupId)
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token",
+        uri = s"${config.baseUri}/v1/webhooks/$token",
         entity = """{"text":"FLOOD FLOOD FLOOD"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
@@ -140,7 +140,7 @@ final class HttpApiFrontendSpec
       val wrongToken = "xxx"
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$wrongToken",
+        uri = s"${config.baseUri}/v1/webhooks/$wrongToken",
         entity = """{"text":"Bla bla bla"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
@@ -153,7 +153,7 @@ final class HttpApiFrontendSpec
       val token = extractToken(groupOutPeer.groupId)
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token",
+        uri = s"${config.baseUri}/v1/webhooks/$token",
         entity = """{"document_url":"http://www.scala-lang.org/docu/files/ScalaReference.pdf"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
@@ -165,7 +165,7 @@ final class HttpApiFrontendSpec
       val token = extractToken(groupOutPeer.groupId)
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token",
+        uri = s"${config.baseUri}/v1/webhooks/$token",
         entity = """{"image_url":"http://www.scala-lang.org/resources/img/smooth-spiral.png"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
@@ -177,7 +177,7 @@ final class HttpApiFrontendSpec
       val token = extractToken(groupOutPeer.groupId)
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse",
+        uri = s"${config.baseUri}/v1/webhooks/$token/reverse",
         entity = """{"url":"This is wrong url"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
@@ -192,7 +192,7 @@ final class HttpApiFrontendSpec
       val wrongToken = "xxx"
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$wrongToken/reverse",
+        uri = s"${config.baseUri}/v1/webhooks/$wrongToken/reverse",
         entity = """{"url":"http://zapier.com/11"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
@@ -208,7 +208,7 @@ final class HttpApiFrontendSpec
       val hookUrl = "https://zapier.com/0"
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse",
+        uri = s"${config.baseUri}/v1/webhooks/$token/reverse",
         entity = s"""{"target_url":"$hookUrl", "other_url":"http://foo.bar"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
@@ -225,7 +225,7 @@ final class HttpApiFrontendSpec
       val duplicatedUrl = "https://zapier.com/0"
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse",
+        uri = s"${config.baseUri}/v1/webhooks/$token/reverse",
         entity = s"""{"url":"$duplicatedUrl"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
@@ -238,7 +238,7 @@ final class HttpApiFrontendSpec
 
     def registerManyHooks() = {
       val token = extractToken(groupOutPeer.groupId)
-      val httpApiUrl = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse"
+      val httpApiUrl = s"${config.baseUri}/v1/webhooks/$token/reverse"
 
       for (i ← 1 to 5) {
         whenReady(http.singleRequest(HttpRequest(POST, httpApiUrl, entity = s"""{"url":"https://zapier.com/$i"}"""))) { resp ⇒
@@ -252,7 +252,7 @@ final class HttpApiFrontendSpec
       val token = extractToken(groupOutPeer.groupId)
       val request = HttpRequest(
         method = GET,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse"
+        uri = s"${config.baseUri}/v1/webhooks/$token/reverse"
       )
       whenReady(http.singleRequest(request)) { resp ⇒
         resp.status shouldEqual OK
@@ -267,7 +267,7 @@ final class HttpApiFrontendSpec
     def hookStatus() = {
       val token = extractToken(groupOutPeer.groupId)
       val hookUrl = "https://zapier.com/77"
-      val baseUri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse"
+      val baseUri = s"${config.baseUri}/v1/webhooks/$token/reverse"
       val request = HttpRequest(POST, baseUri, entity = s"""{"url":"$hookUrl"}""")
 
       val hookId = whenReady(http.singleRequest(request)) { resp ⇒
@@ -302,7 +302,7 @@ final class HttpApiFrontendSpec
       val token = extractToken(groupOutPeer.groupId)
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token",
+        uri = s"${config.baseUri}/v1/webhooks/$token",
         entity = """{"WRONG":"Should not be parsed"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
@@ -316,7 +316,7 @@ final class HttpApiFrontendSpec
       whenReady(db.run(persist.GroupInviteTokenRepo.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
           method = HttpMethods.GET,
-          uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$token"
+          uri = s"${config.baseUri}/v1/groups/invites/$token"
         )
         val resp = whenReady(http.singleRequest(request))(identity)
         resp.status shouldEqual OK
@@ -344,7 +344,7 @@ final class HttpApiFrontendSpec
       whenReady(db.run(persist.GroupInviteTokenRepo.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
           method = HttpMethods.GET,
-          uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$token"
+          uri = s"${config.baseUri}/v1/groups/invites/$token"
         )
 
         val resp = whenReady(http.singleRequest(request))(identity)
@@ -385,7 +385,7 @@ final class HttpApiFrontendSpec
       whenReady(db.run(persist.GroupInviteTokenRepo.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
           method = HttpMethods.GET,
-          uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$token"
+          uri = s"${config.baseUri}/v1/groups/invites/$token"
         )
         val resp = whenReady(http.singleRequest(request))(identity)
         resp.status shouldEqual OK
@@ -411,7 +411,7 @@ final class HttpApiFrontendSpec
       val invalidToken = "Dkajsdljasdlkjaskdj329u90u32jdjlksRandom_stuff"
       val request = HttpRequest(
         method = HttpMethods.GET,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$invalidToken"
+        uri = s"${config.baseUri}/v1/groups/invites/$invalidToken"
       )
       val resp = whenReady(http.singleRequest(request))(identity)
       resp.status shouldEqual NotAcceptable

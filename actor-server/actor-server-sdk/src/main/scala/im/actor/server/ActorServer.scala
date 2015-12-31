@@ -212,7 +212,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       val profileService = new ProfileServiceImpl
 
       system.log.debug("Starting IntegrationsService")
-      val integrationsService = new IntegrationsServiceImpl(s"${httpConfig.scheme}://${httpConfig.host}")
+      val integrationsService = new IntegrationsServiceImpl(httpConfig.baseUri)
 
       system.log.debug("Starting WebactionsService")
       val webactionsService = new WebactionsServiceImpl

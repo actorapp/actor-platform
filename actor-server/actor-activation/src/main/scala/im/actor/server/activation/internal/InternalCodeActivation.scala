@@ -131,9 +131,10 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
       }) map { _ ⇒
         forgetSentCodeAfterDelay(code)
         \/-(())
-      } recover { case e ⇒
-        log.error(e, "Failed to send code: {}", code)
-        -\/(SendFailure("Unable to send code"))
+      } recover {
+        case e ⇒
+          log.error(e, "Failed to send code: {}", code)
+          -\/(SendFailure("Unable to send code"))
       }
     } else {
       log.debug(s"Ignoring send $code")
