@@ -3,7 +3,7 @@
 # http {
 #   interface: "0.0.0.0"
 #   port: 9090
-#   host: "localhost"
+#   base-uri: "https://api.actor.im"
 # }
 
 # Endpoints for Mobile/Web API

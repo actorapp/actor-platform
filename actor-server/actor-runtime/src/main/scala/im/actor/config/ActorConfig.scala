@@ -81,8 +81,6 @@ object ActorConfig {
 
   def baseUrl(implicit system: ActorSystem) = {
     val config = system.settings.config
-    val scheme = config.getString("http.scheme")
-    val host = config.getString("http.host")
-    s"$scheme://$host"
+    config.getString("http.base-uri")
   }
 }
