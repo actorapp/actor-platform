@@ -291,11 +291,11 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
 
     private void markAsDirty(int index) {
         isOverlayDirty.set(index, true);
-        if (index - 1 > 0) {
+        if (index - 1 >= 0) {
             isOverlayDirty.set(index - 1, true);
         }
 
-        if (index < isOverlayDirty.size()) {
+        if (index + 1 < isOverlayDirty.size()) {
             isOverlayDirty.set(index + 1, true);
         }
     }
