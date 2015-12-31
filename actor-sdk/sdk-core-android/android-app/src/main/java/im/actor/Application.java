@@ -20,6 +20,7 @@ import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
+import im.actor.tc.TCMessageHolder;
 
 public class Application extends ActorSDKApplication {
 
