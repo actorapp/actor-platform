@@ -249,7 +249,7 @@ public class JsFacade implements Exportable {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e);
             im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                 @Override
                 public void run() {
