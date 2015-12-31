@@ -59,7 +59,7 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
   override def persistenceId = UserOffice.persistenceIdFor(userId)
 
   def migrate(): Unit = {
-    db.run(p.UserRepo.find(userId).headOption) foreach {
+    db.run(p.UserRepo.find(userId)) foreach {
       case Some(user) ⇒
         db.run(for {
           avatarOpt ← p.AvatarDataRepo.findByUserId(userId).headOption
