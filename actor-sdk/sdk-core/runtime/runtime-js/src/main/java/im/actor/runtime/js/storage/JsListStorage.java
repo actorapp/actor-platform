@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import im.actor.runtime.Log;
 import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.DataOutput;
 import im.actor.runtime.storage.ListEngineRecord;
@@ -20,6 +21,8 @@ import static im.actor.runtime.crypto.Base64Utils.fromBase64;
 import static im.actor.runtime.crypto.Base64Utils.toBase64;
 
 public class JsListStorage implements ListStorage {
+
+    private static final String TAG = "JsListStorage";
 
     private final Storage storage;
     private final String prefix;
@@ -51,7 +54,7 @@ public class JsListStorage implements ListStorage {
                     index.add(new Index(id, order));
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, e);
             }
         }
 

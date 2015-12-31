@@ -65,7 +65,7 @@ public class JsFilesModule extends AbsModule {
                 try {
                     return CachedFileUrl.fromBytes(data);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, e);
                     return null;
                 }
             }

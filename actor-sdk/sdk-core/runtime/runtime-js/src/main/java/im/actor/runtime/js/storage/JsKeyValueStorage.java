@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import im.actor.runtime.Log;
 import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.DataOutput;
 import im.actor.runtime.storage.KeyValueRecord;
@@ -19,6 +20,8 @@ import static im.actor.runtime.crypto.Base64Utils.fromBase64;
 import static im.actor.runtime.crypto.Base64Utils.toBase64;
 
 public class JsKeyValueStorage implements KeyValueStorage {
+
+    private static final String TAG = "JsKeyValueStorage";
 
     private Storage storage;
     private String prefix;
@@ -39,7 +42,7 @@ public class JsKeyValueStorage implements KeyValueStorage {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, e);
         }
     }
 
