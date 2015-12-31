@@ -23,7 +23,7 @@ object PeerHelpers {
     outPeer.`type` match {
       case ApiPeerType.Private ⇒
         (for {
-          optUser ← persist.UserRepo.find(outPeer.id).headOption
+          optUser ← persist.UserRepo.find(outPeer.id)
           usererrOrUser ← validUser(optUser)
           hasherrOrUser ← DBIO.successful(usererrOrUser.map(validUserAccessHash(outPeer.accessHash, _)))
         } yield hasherrOrUser).flatMap {
@@ -176,7 +176,7 @@ object PeerHelpers {
     ec:          ExecutionContext
   ): DBIO[Option[Boolean]] = {
     for {
-      userOpt ← persist.UserRepo.find(userId).headOption
+      userOpt ← persist.UserRepo.find(userId)
     } yield {
       userOpt map (u ⇒ ACLUtils.userAccessHash(client.authId, u.id, u.accessSalt) == accessHash)
     }

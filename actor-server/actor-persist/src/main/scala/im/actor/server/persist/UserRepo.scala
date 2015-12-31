@@ -83,7 +83,7 @@ object UserRepo {
   def fetchPeople = activeHumanUsers.result
 
   def find(id: Int) =
-    byIdC(id).result
+    byIdC(id).result.headOption
 
   def findName(id: Int) =
     nameById(id).result.headOption

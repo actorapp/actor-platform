@@ -26,13 +26,13 @@ import scalaz.{ -\/, \/- }
 trait PersistenceHelpers {
   implicit val timeout = Timeout(5.seconds)
 
-  def getUserModel(userId: Int)(implicit db: Database) = Await.result(db.run(persist.UserRepo.find(userId).head), timeout.duration)
+  def getUserModel(userId: Int)(implicit db: Database) = Await.result(db.run(persist.UserRepo.find(userId)), timeout.duration).get
 }
 
 trait UserStructExtensions {
   implicit class ExtUser(user: ApiUser) {
     def asModel()(implicit db: Database): model.User =
-      Await.result(db.run(persist.UserRepo.find(user.id).head), 3.seconds)
+      Await.result(db.run(persist.UserRepo.find(user.id)), 3.seconds).get
   }
 }
 
