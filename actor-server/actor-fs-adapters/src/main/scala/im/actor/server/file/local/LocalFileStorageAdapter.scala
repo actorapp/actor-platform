@@ -106,7 +106,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
   }
 
   override def completeFileUpload(fileId: Long, fileSize: Long, fileName: String, partNames: Seq[String]): Future[Unit] = {
-    val fileDir = File(s"$storageLocation/$fileId")
+    val fileDir = fileDirectory(fileId)
     for {
       isComplete ← haveAllParts(fileDir, partNames, fileSize)
       result ← concatFiles(fileDir, partNames, fileName, fileSize)
