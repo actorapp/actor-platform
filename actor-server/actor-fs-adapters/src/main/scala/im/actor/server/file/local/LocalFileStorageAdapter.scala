@@ -72,12 +72,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
     }
   }
 
-  val baseUri =
-    Uri.from(
-      scheme = httpConfig.scheme,
-      host = httpConfig.host,
-      port = httpConfig.port
-    )
+  val baseUri = Uri(httpConfig.baseUri)
 
   override def uploadFile(name: String, file: io.File): DBIO[FileLocation] = {
     val scalaFile = file.toScala

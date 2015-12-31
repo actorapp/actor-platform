@@ -15,7 +15,7 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
-class IntegrationsServiceImpl(baseUrl: String)(implicit actorSystem: ActorSystem) extends IntegrationsService with PeersImplicits {
+class IntegrationsServiceImpl(baseUri: String)(implicit actorSystem: ActorSystem) extends IntegrationsService with PeersImplicits {
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout = Timeout(10.seconds)
@@ -28,7 +28,7 @@ class IntegrationsServiceImpl(baseUrl: String)(implicit actorSystem: ActorSystem
         for {
           optToken ← DBIO.from(groupExt.getIntegrationToken(groupOutPeer.groupId, client.userId))
         } yield {
-          val (token, url) = optToken map (t ⇒ t → makeUrl(baseUrl, t)) getOrElse ("" → "")
+          val (token, url) = optToken map (t ⇒ t → makeUrl(baseUri, t)) getOrElse ("" → "")
           Ok(ResponseIntegrationToken(token, url))
         }
       }
@@ -43,7 +43,7 @@ class IntegrationsServiceImpl(baseUrl: String)(implicit actorSystem: ActorSystem
       withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
         for {
           token ← DBIO.from(groupExt.revokeIntegrationToken(groupOutPeer.groupId, client.userId))
-        } yield Ok(ResponseIntegrationToken(token, makeUrl(baseUrl, token)))
+        } yield Ok(ResponseIntegrationToken(token, makeUrl(baseUri, token)))
       }
     }
     db.run(toDBIOAction(authorizedAction)) recover {
