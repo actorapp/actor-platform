@@ -1,10 +1,13 @@
 package im.actor.tc;
 
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import im.actor.Application;
 import im.actor.core.entity.Message;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
@@ -21,12 +24,12 @@ public class TCMessageHolder extends BaseCustomHolder {
 
     TextView text;
     protected static ActorRef tcActor;
-
+    ProgressBar progress;
 
     public TCMessageHolder(MessagesAdapter adapter, ViewGroup viewGroup, int id, boolean isFullSize) {
         super(adapter, viewGroup, id, isFullSize);
         text = (TextView) itemView.findViewById(R.id.tv_text);
-
+        progress = (ProgressBar) itemView.findViewById(R.id.progress);
     }
 
     @Override
@@ -43,9 +46,12 @@ public class TCMessageHolder extends BaseCustomHolder {
             render += "state: " + state;
             int pr = data.optInt("percentageComplete", 0);
             if (state.equals("running")) {
-                render += "progress: " + pr + "%\n";
+                render += ", progress: " + pr + "%\n";
+                progress.setProgress(pr);
+                progress.setVisibility(View.VISIBLE);
+            } else {
+                progress.setVisibility(View.GONE);
             }
-
             final String usr = data.getString("url");
             if (tcActor == null) {
                 tcActor = ActorSystem.system().actorOf(Props.create(TCActor.class, new ActorCreator<TCActor>() {
@@ -54,13 +60,17 @@ public class TCMessageHolder extends BaseCustomHolder {
                         return new TCActor(usr);
                     }
                 }), "actor/tc");
+                Log.d("TC", "create tc actor");
 
             }
 
-            tcActor.send(new TCActor.Bind(id, message.getRid(), getPeer()));
+            if (!data.getString("state").equals("finished")) {
+                tcActor.send(new TCActor.Bind(id, message.getRid(), getPeer()));
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
+//            progress.setVisibility(View.GONE);
         }
 
         text.setText(render);
