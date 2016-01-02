@@ -1,68 +1,79 @@
 package im.actor.tc;
 
+import android.util.Base64;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashSet;
 
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;
+import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.json.JSONException;
 import im.actor.runtime.json.JSONObject;
 
-import static im.actor.sdk.util.ActorSDKMessenger.messenger;
-
 public class TCCheckActor extends Actor {
-    private ArrayList<Integer> ids;
+    private HashSet<Integer> ids;
     private String url;
-    private TCCheckCallback callback;
+    private ActorRef tc;
 
-    public TCCheckActor(ArrayList<Integer> ids, String url, TCCheckCallback callback) {
-        this.ids = ids;
+    public TCCheckActor(String url, ActorRef tc) {
+        this.ids = new HashSet<Integer>();
         this.url = url;
-        this.callback = callback;
+        this.tc = tc;
     }
 
     @Override
     public void preStart() {
-        self().send(new Start());
+        self().send(new Check());
     }
 
-    private void onStart() {
+    private void check() {
         String end = "/httpAuth/app/rest/builds/id:";
         String getUrl;
-        while (true) {
-            if (ids != null && url != null) {
-                for (int i : ids) {
-                    getUrl = url + end + i;
-                    try {
-                        HttpURLConnection connection = (HttpURLConnection) new URL(getUrl).openConnection();
-                        connection.setRequestMethod("GET");
-                        connection.setRequestProperty("Accept", "application/json");
-                        connection.connect();
-                        InputStream in = new BufferedInputStream(connection.getInputStream());
-
-
-                        JSONObject json = new JSONObject(readStream(in));
-                        json.put("url", url);
-                        callback.onIdchecked(i, json);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
+        Log.d("TC ids", ids.toString());
+        if (ids != null && url != null) {
+            for (int i : ids) {
+                getUrl = url + end + i;
                 try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
+                    HttpURLConnection connection = (HttpURLConnection) new URL(getUrl).openConnection();
+                    connection.setRequestProperty("Accept", "application/json");
+//                        connection.setDoInput(true);
+                    String username = "kor_ka";
+                    String password = "Xw9YJk6VHRXGKB";
+
+                    String encoded = Base64.encodeToString(new String(username + ":" + password).getBytes("UTF-8"), Base64.DEFAULT);
+
+                    connection.setRequestProperty("Authorization", "Basic " + encoded);
+                    connection.connect();
+                    InputStream in = new BufferedInputStream(connection.getInputStream());
+
+
+                    JSONObject data = new JSONObject(readStream(in));
+                    data.put("url", url);
+                    tc.send(new TCActor.IdChecked(i, data));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
 
         }
+        self().send(new Check(), 1000);
+    }
+
+    public void onAdd(int id) {
+        ids.add(id);
+    }
+
+    public void onRemove(int id) {
+        ids.remove(id);
     }
 
     private String readStream(InputStream is) {
@@ -72,12 +83,40 @@ public class TCCheckActor extends Actor {
 
     @Override
     public void onReceive(Object message) {
-        if (message instanceof Start) {
-            onStart();
+        if (message instanceof Check) {
+            check();
+        } else if (message instanceof Add) {
+            onAdd(((Add) message).getId());
+        } else if (message instanceof Remove) {
+            onRemove(((Remove) message).getId());
         }
     }
 
-    public static class Start {
+    public static class Check {
+    }
+
+    public static class Add {
+        int id;
+
+        public Add(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+
+    public static class Remove {
+        int id;
+
+        public Remove(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
 
     }
 

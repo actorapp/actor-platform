@@ -127,16 +127,10 @@ public class GroupedDialogsActor extends ModuleActor {
                 Avatar avatar;
                 if (p.getPeerType() == PeerType.GROUP) {
                     Group group = getGroup(p.getPeerId());
-                    if (group == null) {
-                        continue;
-                    }
                     title = group.getTitle();
                     avatar = group.getAvatar();
                 } else if (p.getPeerType() == PeerType.PRIVATE) {
                     User user = getUser(p.getPeerId());
-                    if (user == null) {
-                        continue;
-                    }
                     title = user.getName();
                     avatar = user.getAvatar();
                 } else {
