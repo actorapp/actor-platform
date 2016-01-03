@@ -10093,6 +10093,42 @@
           <ref role="NX6Kv" node="GBscvBBv9B" resolve="token" />
         </node>
       </node>
+      <node concept="2m6fVq" id="7ZzLuuoIUGN" role="2m5mJr">
+        <property role="TrG5h" value="RegisterActorPush" />
+        <node concept="NXeRC" id="7ZzLuuoIUHC" role="1GBnQ6">
+          <property role="NXePf" value="Register Actor Push token" />
+        </node>
+        <node concept="NX1gA" id="7ZzLuuoIVxe" role="1GBnQ6">
+          <property role="NX6R2" value="Endpoint for push sending" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="7ZzLuuoIUHm" resolve="endpoint" />
+        </node>
+        <node concept="NX1gA" id="7ZzLuuoJ20U" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional public keys for receiving push notifications" />
+          <ref role="NX6Kv" node="7ZzLuuoJ20H" resolve="publicKeys" />
+        </node>
+        <node concept="2m7Kf5" id="7ZzLuuoIUHm" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="endpoint" />
+          <node concept="2m5ndX" id="7ZzLuuoIUHq" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="7ZzLuuoJ20H" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="publicKeys" />
+          <node concept="2m5nlk" id="7ZzLuuoJ5gy" role="2m7DVh">
+            <node concept="2m5mGg" id="7ZzLuuoJ5gC" role="3GJlyp">
+              <ref role="2m5mJy" node="7ZzLuuoIYMi" resolve="EncPublicKey" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="7ZzLuuoIUGO" role="NuuwV">
+          <property role="Nu42W" value="A0F" />
+        </node>
+        <node concept="2m1Rp1" id="7ZzLuuoIUHj" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="GBscvBBvmU" role="2m5mJr">
         <property role="TrG5h" value="UnregisterPush" />
         <node concept="Nu42z" id="GBscvBBvmV" role="NuuwV">
@@ -10104,6 +10140,55 @@
         <node concept="NXeRC" id="2EAJ7H6foBJ" role="1GBnQ6">
           <property role="NXePf" value="Unregister push" />
         </node>
+      </node>
+    </node>
+    <node concept="2m5mJO" id="7ZzLuuoIXbw" role="2m5lHt">
+      <property role="TrG5h" value="Encryption" />
+      <property role="3XOG$Z" value="encryption" />
+      <node concept="2m5naR" id="7ZzLuuoIYMi" role="2m5mJr">
+        <property role="TrG5h" value="EncPublicKey" />
+        <node concept="2m7Kf5" id="7ZzLuuoJ2OH" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="keyId" />
+          <node concept="2m5ndX" id="7ZzLuuoJ2OP" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="7ZzLuuoIYMl" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="keyType" />
+          <node concept="2m5ndX" id="7ZzLuuoIYMp" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="7ZzLuuoJ0oR" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="key" />
+          <node concept="2m61tm" id="7ZzLuuoJ0oX" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="7ZzLuuoJ0p0" role="NXodf">
+          <property role="NXePf" value="Encryption Public Key" />
+        </node>
+        <node concept="NX1gA" id="7ZzLuuoJ2OX" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Unique key Id" />
+          <ref role="NX6Kv" node="7ZzLuuoJ2OH" resolve="keyId" />
+        </node>
+        <node concept="NX1gA" id="7ZzLuuoJ0p5" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Type of the key. Specific for each use case." />
+          <ref role="NX6Kv" node="7ZzLuuoIYMl" resolve="keyType" />
+        </node>
+        <node concept="NX1gA" id="7ZzLuuoJ0pd" role="NXodf">
+          <property role="1GSvIU" value="compact" />
+          <property role="NX6R2" value="Raw key data" />
+          <ref role="NX6Kv" node="7ZzLuuoJ0oR" resolve="key" />
+        </node>
+      </node>
+      <node concept="1Dx9M1" id="7ZzLuuoIXYH" role="1Dx9rD">
+        <property role="1Dx9K7" value="Package that include encryption support" />
+      </node>
+      <node concept="1Dx9M1" id="7ZzLuuoJ1cV" role="1Dx9rD">
+        <property role="1Dx9K7" value="Key types:" />
+      </node>
+      <node concept="1Dx9M1" id="7ZzLuuoJ1cY" role="1Dx9rD">
+        <property role="1Dx9K7" value="* Curve25519 - https://en.wikipedia.org/wiki/Curve25519" />
       </node>
     </node>
     <node concept="2m5mJO" id="GBscvBB6e7" role="2m5lHt">
