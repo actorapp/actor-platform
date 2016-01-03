@@ -11723,7 +11723,7 @@
                   "type": "list",
                   "childType": {
                     "type": "struct",
-                    "childType": "EncPublicKey"
+                    "childType": "EncryptionKey"
                   }
                 },
                 "id": 2,
@@ -11755,13 +11755,55 @@
       "doc": [
         "Package that include encryption support",
         "Key types:",
-        "* Curve25519 - https://en.wikipedia.org/wiki/Curve25519"
+        "* Curve25519 - https://en.wikipedia.org/wiki/Curve25519",
+        "* Ed25519 - http://ed25519.cr.yp.to/",
+        "* RSA2048",
+        "* RSA4096"
       ],
       "items": [
         {
           "type": "struct",
           "content": {
-            "name": "EncPublicKey",
+            "name": "EncryptionDevice",
+            "doc": [
+              "Encryption Device",
+              {
+                "type": "reference",
+                "argument": "deviceId",
+                "category": "full",
+                "description": "  Device's unique ID"
+              },
+              {
+                "type": "reference",
+                "argument": "keys",
+                "category": "full",
+                "description": "  Device's encryption keys"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "deviceId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKey"
+                  }
+                },
+                "id": 2,
+                "name": "keys"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptionKey",
             "doc": [
               "Encryption Public Key",
               {
@@ -11774,13 +11816,19 @@
                 "type": "reference",
                 "argument": "keyType",
                 "category": "full",
-                "description": "  Type of the key. Specific for each use case."
+                "description": "  Type of the key: private, public or secret"
               },
               {
                 "type": "reference",
-                "argument": "key",
+                "argument": "keyAlg",
+                "category": "full",
+                "description": "  Key algorithm"
+              },
+              {
+                "type": "reference",
+                "argument": "keyMaterial",
                 "category": "compact",
-                "description": "  Raw key data"
+                "description": "  Optional raw key data"
               }
             ],
             "attributes": [
@@ -11795,9 +11843,166 @@
                 "name": "keyType"
               },
               {
-                "type": "bytes",
+                "type": "string",
                 "id": 3,
-                "name": "key"
+                "name": "keyAlg"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 4,
+                "name": "keyMaterial"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UploadDeviceKeys",
+            "header": 2576,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Uploading device keys",
+              {
+                "type": "reference",
+                "argument": "keys",
+                "category": "full",
+                "description": "Public keys for upload"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKey"
+                  }
+                },
+                "id": 1,
+                "name": "keys"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetUserDevices",
+            "header": 2577,
+            "response": {
+              "type": "anonymous",
+              "header": 2578,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "devices",
+                  "category": "full",
+                  "description": "  Encryption devices"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "EncryptionDevice"
+                    }
+                  },
+                  "id": 1,
+                  "name": "devices"
+                }
+              ]
+            },
+            "doc": [
+              "Get all user's device and it's key ids (without key material) (Can return 100-s of keys)",
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "User's peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "userPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DownloadUserKeys",
+            "header": 2579,
+            "response": {
+              "type": "anonymous",
+              "header": 2580,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "keys",
+                  "category": "full",
+                  "description": "  Loaded keys"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "EncryptionKey"
+                    }
+                  },
+                  "id": 1,
+                  "name": "keys"
+                }
+              ]
+            },
+            "doc": [
+              "Get key material",
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "User's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "keyIds",
+                "category": "full",
+                "description": "Key Ids to load (max size = 50)"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "userPeer"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "keyIds"
               }
             ]
           }
