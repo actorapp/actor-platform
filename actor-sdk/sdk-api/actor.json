@@ -11691,6 +11691,50 @@
         {
           "type": "rpc",
           "content": {
+            "name": "RegisterActorPush",
+            "header": 2575,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Register Actor Push token",
+              {
+                "type": "reference",
+                "argument": "endpoint",
+                "category": "full",
+                "description": "Endpoint for push sending"
+              },
+              {
+                "type": "reference",
+                "argument": "publicKeys",
+                "category": "full",
+                "description": "Optional public keys for receiving push notifications"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "endpoint"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncPublicKey"
+                  }
+                },
+                "id": 2,
+                "name": "publicKeys"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "UnregisterPush",
             "header": 52,
             "response": {
@@ -11701,6 +11745,61 @@
               "Unregister push"
             ],
             "attributes": []
+          }
+        }
+      ]
+    },
+    {
+      "title": "Encryption",
+      "package": "encryption",
+      "doc": [
+        "Package that include encryption support",
+        "Key types:",
+        "* Curve25519 - https://en.wikipedia.org/wiki/Curve25519"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncPublicKey",
+            "doc": [
+              "Encryption Public Key",
+              {
+                "type": "reference",
+                "argument": "keyId",
+                "category": "full",
+                "description": "  Unique key Id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyType",
+                "category": "full",
+                "description": "  Type of the key. Specific for each use case."
+              },
+              {
+                "type": "reference",
+                "argument": "key",
+                "category": "compact",
+                "description": "  Raw key data"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "keyId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "keyType"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "key"
+              }
+            ]
           }
         }
       ]
