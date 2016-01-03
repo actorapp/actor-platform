@@ -10118,7 +10118,7 @@
           <property role="TrG5h" value="publicKeys" />
           <node concept="2m5nlk" id="7ZzLuuoJ5gy" role="2m7DVh">
             <node concept="2m5mGg" id="7ZzLuuoJ5gC" role="3GJlyp">
-              <ref role="2m5mJy" node="7ZzLuuoIYMi" resolve="EncPublicKey" />
+              <ref role="2m5mJy" node="7ZzLuuoIYMi" resolve="EncryptionKey" />
             </node>
           </node>
         </node>
@@ -10145,8 +10145,38 @@
     <node concept="2m5mJO" id="7ZzLuuoIXbw" role="2m5lHt">
       <property role="TrG5h" value="Encryption" />
       <property role="3XOG$Z" value="encryption" />
+      <node concept="2m5naR" id="7ZzLuuoJBuX" role="2m5mJr">
+        <property role="TrG5h" value="EncryptionDevice" />
+        <node concept="2m7Kf5" id="7ZzLuuoJBvM" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="deviceId" />
+          <node concept="2m5ndQ" id="7ZzLuuoJBvV" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="7ZzLuuoJCkW" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="keys" />
+          <node concept="2m5nlk" id="7ZzLuuoJCl5" role="2m7DVh">
+            <node concept="2m5mGg" id="7ZzLuuoJClb" role="3GJlyp">
+              <ref role="2m5mJy" node="7ZzLuuoIYMi" resolve="EncryptionKey" />
+            </node>
+          </node>
+        </node>
+        <node concept="NXeRC" id="7ZzLuuoJBvK" role="NXodf">
+          <property role="NXePf" value="Encryption Device" />
+        </node>
+        <node concept="NX1gA" id="7ZzLuuoJBw9" role="NXodf">
+          <property role="NX6R2" value="Device's unique ID" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="7ZzLuuoJBvM" resolve="deviceId" />
+        </node>
+        <node concept="NX1gA" id="7ZzLuuoJDa7" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Device's encryption keys" />
+          <ref role="NX6Kv" node="7ZzLuuoJCkW" resolve="keys" />
+        </node>
+      </node>
       <node concept="2m5naR" id="7ZzLuuoIYMi" role="2m5mJr">
-        <property role="TrG5h" value="EncPublicKey" />
+        <property role="TrG5h" value="EncryptionKey" />
         <node concept="2m7Kf5" id="7ZzLuuoJ2OH" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="keyId" />
@@ -10157,10 +10187,17 @@
           <property role="TrG5h" value="keyType" />
           <node concept="2m5ndX" id="7ZzLuuoIYMp" role="2m7DVh" />
         </node>
-        <node concept="2m7Kf5" id="7ZzLuuoJ0oR" role="2m0hLx">
+        <node concept="2m7Kf5" id="7ZzLuuoJwTK" role="2m0hLx">
           <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="key" />
-          <node concept="2m61tm" id="7ZzLuuoJ0oX" role="2m7DVh" />
+          <property role="TrG5h" value="keyAlg" />
+          <node concept="2m5ndX" id="7ZzLuuoJwTY" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="7ZzLuuoJ0oR" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="keyMaterial" />
+          <node concept="2m5nlT" id="7ZzLuuoJn1z" role="2m7DVh">
+            <node concept="2m61tm" id="7ZzLuuoJn1D" role="3GH5xg" />
+          </node>
         </node>
         <node concept="NXeRC" id="7ZzLuuoJ0p0" role="NXodf">
           <property role="NXePf" value="Encryption Public Key" />
@@ -10172,13 +10209,136 @@
         </node>
         <node concept="NX1gA" id="7ZzLuuoJ0p5" role="NXodf">
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Type of the key. Specific for each use case." />
+          <property role="NX6R2" value="Type of the key: private, public or secret" />
           <ref role="NX6Kv" node="7ZzLuuoIYMl" resolve="keyType" />
+        </node>
+        <node concept="NX1gA" id="7ZzLuuoJwUu" role="NXodf">
+          <property role="NX6R2" value="Key algorithm" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="7ZzLuuoJwTK" resolve="keyAlg" />
         </node>
         <node concept="NX1gA" id="7ZzLuuoJ0pd" role="NXodf">
           <property role="1GSvIU" value="compact" />
-          <property role="NX6R2" value="Raw key data" />
-          <ref role="NX6Kv" node="7ZzLuuoJ0oR" resolve="key" />
+          <property role="NX6R2" value="Optional raw key data" />
+          <ref role="NX6Kv" node="7ZzLuuoJ0oR" resolve="keyMaterial" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="7ZzLuuoJdat" role="2m5mJr">
+        <property role="TrG5h" value="UploadDeviceKeys" />
+        <node concept="2m7Kf5" id="7ZzLuuoJdaK" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="keys" />
+          <node concept="2m5nlk" id="7ZzLuuoJdaO" role="2m7DVh">
+            <node concept="2m5mGg" id="7ZzLuuoJdaU" role="3GJlyp">
+              <ref role="2m5mJy" node="7ZzLuuoIYMi" resolve="EncryptionKey" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="7ZzLuuoJdau" role="NuuwV">
+          <property role="Nu42W" value="A10" />
+        </node>
+        <node concept="2m1Rp1" id="7ZzLuuoJdaX" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="7ZzLuuoJdb0" role="1GBnQ6">
+          <property role="NXePf" value="Uploading device keys" />
+        </node>
+        <node concept="NX1gA" id="7ZzLuuoJeMT" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Public keys for upload" />
+          <ref role="NX6Kv" node="7ZzLuuoJdaK" resolve="keys" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="7ZzLuuoJma$" role="2m5mJr">
+        <property role="TrG5h" value="GetUserDevices" />
+        <node concept="2m7Kf5" id="7ZzLuuoJmb2" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="userPeer" />
+          <node concept="2m5mGg" id="7ZzLuuoJmbe" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="7ZzLuuoJma_" role="NuuwV">
+          <property role="Nu42W" value="A11" />
+        </node>
+        <node concept="2m1R6W" id="7ZzLuuoJOLq" role="2m6efq">
+          <node concept="2m7Kf5" id="7ZzLuuoJOLv" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="devices" />
+            <node concept="2m5nlk" id="7ZzLuuoJOLz" role="2m7DVh">
+              <node concept="2m5mGg" id="7ZzLuuoJOLD" role="3GJlyp">
+                <ref role="2m5mJy" node="7ZzLuuoJBuX" resolve="EncryptionDevice" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="7ZzLuuoJOLr" role="NuuwV">
+            <property role="Nu42W" value="A12" />
+          </node>
+          <node concept="NX1gA" id="7ZzLuuoJOM$" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Encryption devices" />
+            <ref role="NX6Kv" node="7ZzLuuoJOLv" resolve="devices" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="7ZzLuuoJnST" role="1GBnQ6">
+          <property role="NXePf" value="Get all user's device and it's key ids (without key material) (Can return 100-s of keys)" />
+        </node>
+        <node concept="NX1gA" id="7ZzLuuoJnSY" role="1GBnQ6">
+          <property role="NX6R2" value="User's peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="7ZzLuuoJmb2" resolve="userPeer" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="7ZzLuuoJm9H" role="2m5mJr">
+        <property role="TrG5h" value="DownloadUserKeys" />
+        <node concept="2m7Kf5" id="7ZzLuuoJnSu" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="userPeer" />
+          <node concept="2m5mGg" id="7ZzLuuoJnSy" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="7ZzLuuoJnS_" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="keyIds" />
+          <node concept="2m5nlk" id="7ZzLuuoJnSI" role="2m7DVh">
+            <node concept="2m5ndX" id="7ZzLuuoJnSO" role="3GJlyp" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="7ZzLuuoJm9I" role="NuuwV">
+          <property role="Nu42W" value="A13" />
+        </node>
+        <node concept="NXeRC" id="7ZzLuuoJqlV" role="1GBnQ6">
+          <property role="NXePf" value="Get key material" />
+        </node>
+        <node concept="NX1gA" id="7ZzLuuoJqm0" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="User's peer" />
+          <ref role="NX6Kv" node="7ZzLuuoJnSu" resolve="userPeer" />
+        </node>
+        <node concept="NX1gA" id="7ZzLuuoJqm8" role="1GBnQ6">
+          <property role="NX6R2" value="Key Ids to load (max size = 50)" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="7ZzLuuoJnS_" resolve="keyIds" />
+        </node>
+        <node concept="2m1R6W" id="7ZzLuuoJPB9" role="2m6efq">
+          <node concept="2m7Kf5" id="7ZzLuuoJPBe" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="keys" />
+            <node concept="2m5nlk" id="7ZzLuuoJPBi" role="2m7DVh">
+              <node concept="2m5mGg" id="7ZzLuuoJPBo" role="3GJlyp">
+                <ref role="2m5mJy" node="7ZzLuuoIYMi" resolve="EncryptionKey" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="7ZzLuuoJPBa" role="NuuwV">
+            <property role="Nu42W" value="A14" />
+          </node>
+          <node concept="NX1gA" id="7ZzLuuoJQs2" role="1y2DgH">
+            <property role="NX6R2" value="Loaded keys" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="7ZzLuuoJPBe" resolve="keys" />
+          </node>
         </node>
       </node>
       <node concept="1Dx9M1" id="7ZzLuuoIXYH" role="1Dx9rD">
@@ -10189,6 +10349,15 @@
       </node>
       <node concept="1Dx9M1" id="7ZzLuuoJ1cY" role="1Dx9rD">
         <property role="1Dx9K7" value="* Curve25519 - https://en.wikipedia.org/wiki/Curve25519" />
+      </node>
+      <node concept="1Dx9M1" id="7ZzLuuoJJPU" role="1Dx9rD">
+        <property role="1Dx9K7" value="* Ed25519 - http://ed25519.cr.yp.to/" />
+      </node>
+      <node concept="1Dx9M1" id="7ZzLuuoJaIM" role="1Dx9rD">
+        <property role="1Dx9K7" value="* RSA2048" />
+      </node>
+      <node concept="1Dx9M1" id="7ZzLuuoJLv4" role="1Dx9rD">
+        <property role="1Dx9K7" value="* RSA4096" />
       </node>
     </node>
     <node concept="2m5mJO" id="GBscvBB6e7" role="2m5lHt">
