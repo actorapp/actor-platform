@@ -5,6 +5,7 @@ import java.time.Instant
 import akka.actor.{ Actor, ActorLogging, ActorSystem }
 import akka.persistence.PersistentActor
 import akka.util.Timeout
+import im.actor.config.ActorConfig
 import im.actor.server.KeyValueMappings
 import shardakka.{ InstantCodec, ShardakkaExtension }
 import slick.driver.PostgresDriver.api._
@@ -21,7 +22,7 @@ trait Migration {
   protected def startMigration()(implicit system: ActorSystem, db: Database, ec: ExecutionContext): Future[Unit]
 
   def migrate()(implicit system: ActorSystem, db: Database, ec: ExecutionContext): Unit = {
-    implicit val kvTimeout = Timeout(5.seconds)
+    implicit val kvTimeout = Timeout(ActorConfig.defaultTimeout)
     val migrations = ShardakkaExtension(system).simpleKeyValue[Instant](KeyValueMappings.Migrations, InstantCodec)
     Await.result(migrations.get(migrationName) flatMap {
       case Some(date) ⇒
