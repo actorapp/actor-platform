@@ -5,6 +5,8 @@ But we think that can be a problem in some cases on the server side as this key 
 
 Eventually, in rev4 of MTProto we will eliminate using of TLS for better speed and security.
 
+MTProtoV2 uses Curve25519 for performing DH for calculating AuthKey
+
 # Changes in Transport's Package
 
 Adding new ```signature``` field for signing each package. Depends on authId server will use signature or not.
@@ -24,22 +26,24 @@ Package {
 # New Requesting Authentication Key
 Old method of AuthId creation will continue to work, but rev3 introduces new way of more secure way to get AuthId and AuthKey.
 
-First app need to request starting of Auth Key creation:
+#### Server's Key Loading
+
+Before start Client MUST send ```RequestStartGetServerKeys``` message: 
 ```
-RequestStartAuthKey {
+RequestStartGetServerKeys {
   HEADER = 0xE0
 }
 ```
 
-Server will return truncated to 8 bytes of SHA-256 of available keys
+Server MUST return list of truncated to 8 bytes of SHA-256 of available keys
 ```
-ResponseStartAuthKey {
+ResponseStartGetServerKeys {
   HEADER = 0xE1
   availableKeys: longs
 }
 ```
 
-Client requests required key:
+Client requests required key
 ```
 ResponseGetServerKey {
   HEADER = 0xE2
@@ -53,5 +57,24 @@ ResponseGetServerKey {
   HEADER = 0xE3
   keyId: long
   key: bytes
+}
+```
+
+#### Starting AuthKey creation
+
+Before begin you need to securely generate random long value - randomId. This is temprorary unique id used by server to identify authentication session. Server doesn't try to scope authentication procedure to single connection and even to single server and this value helps it to identify state of DH. If collision will take place it will only lead to DH failure and nothing more.
+
+```
+RequestStartDH {
+  HEADER = 0xE4
+  // Securely generated random id of key creation
+  randomId: long
+  // Used keyId for Diffie-Hellman start
+  keyId: long
+  
+  // DH parameter used for encryption
+  dh_x: bytes
+  //Encrypted DH request
+  encrypted: bytes
 }
 ```
