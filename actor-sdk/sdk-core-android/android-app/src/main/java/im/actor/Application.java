@@ -13,7 +13,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
-import im.actor.sdk.controllers.conversation.messages.BaseCustomHolder;
+import im.actor.sdk.controllers.conversation.messages.BaseJsonHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
@@ -60,31 +60,6 @@ public class Application extends ActorSDKApplication {
             return "TeamCity message";
         }
 
-        @Override
-        public String getContentDescriptionRu() {
-            return null;
-        }
-
-        @Override
-        public String getContentDescriptionPt() {
-            return null;
-        }
-
-
-        @Override
-        public String getContentDescriptionAr() {
-            return null;
-        }
-
-        @Override
-        public String getContentDescriptionCn() {
-            return null;
-        }
-
-        @Override
-        public String getContentDescriptionEs() {
-            return null;
-        }
     }
 
 
@@ -93,10 +68,10 @@ public class Application extends ActorSDKApplication {
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
 
         @Override
-        public BaseCustomHolder getCustomMessageViewHolder(int id, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
+        public BaseJsonHolder getCustomMessageViewHolder(int id, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
             switch (id) {
                 case 0:
-                    return new TCMessageHolder(messagesAdapter, viewGroup, R.layout.custom_holder, false);
+                    return new TCMessageHolder(messagesAdapter, viewGroup, R.layout.tc_holder, false);
 
                 default:
                     return null;

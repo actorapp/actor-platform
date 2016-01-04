@@ -13,24 +13,12 @@
         android:id="@+id/bubbleContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:animateLayoutChanges="true"
         android:duplicateParentState="true">
 
-        <TextView
-            android:id="@+id/tv_text"
-            android:padding="10dp"
-            android:textSize="15sp"
-            android:background="@color/primary_text"
+        <FrameLayout
+            android:id="@+id/custom_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <ProgressBar
-            style="@android:style/Widget.Holo.ProgressBar.Horizontal"
-            android:id="@id/progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="100" />
 
 
     </LinearLayout>
