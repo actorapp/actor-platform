@@ -68,12 +68,6 @@ ResponseGetServerKey {
 
 #### Performing Diffie Hellman
 
-shared_secret := <result_of_dh>
-encryption_key :=SHA256(shared_secret,clientNonce,ServerNonce)
-aes_key := subs(encryption_key, 0, 16)
-aes_iv := subs(encryption_key, 16, 16)
-encrypted := AES-CBC(<data>, aes_key, aes_iv)
-
 ```
 RequestDH {
   HEADER = 0xE6
@@ -87,6 +81,15 @@ RequestDH {
   //Encrypted DH request
   encrypted: bytes
 }
+```
+
+Calculations
+```
+shared_secret := <result_of_dh>
+encryption_key :=SHA256(shared_secret,clientNonce,ServerNonce)
+aes_key := subs(encryption_key, 0, 16)
+aes_iv := subs(encryption_key, 16, 16)
+encrypted := AES-CBC(<data>, aes_key, aes_iv)
 ```
 
 ```
