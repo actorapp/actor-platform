@@ -11,6 +11,21 @@ This technique use [TLS 1.2 RFC](https://tools.ietf.org/html/rfc5246) for it's b
 1) Not sending server certificates if not needed on every connection.
 2) One DiffieHellman to build one shared secret without repeating on almost every reconnect. (we will implement PFS in next revision of MTProto v2)
 3) Using only Curve25519 and AES-CBC
+4) Extending master_secret to make it 256 bytes long
+
+# Primitives
+
+SHA256-based pseudo-random function (https://tools.ietf.org/html/rfc5246#section-5):
+
+```
+PRF(secret: bytes, label: string, seed: bytes) = P_SHA256(secret, bytes(label) + seed);
+P_SHA256(secret, seed) = SHA256(secret, A(1) + seed) + SHA256(secret, A(2) + seed) + SHA256(secret, A(3) + seed) + ...
+  where A():
+    A(0) = seed
+    A(i) = HMAC_hash(secret, A(i-1))
+```
+
+Original key is too short - only 32 bytes and we need to extend key to more bytes in a secure way. Pseudo-code above is taken from TLS 1.2 RFC. Basic idea is to take some plain-text seed from client and server, add some fixed seed to avoid getting same hashes in different parts of a program. We use client and server seed for protecting from not that good random generators. Using text as fixed seed value is for cleaner code and specifications. In our Implementation we are performing **8** SHA256 calculations.
 
 # Changes in Transport's Package
 
@@ -83,23 +98,22 @@ RequestDH {
   clientNonce: bytes
   // Client's key used for encryption
   clientKey: bytes
-  //Encrypted DH request
-  encrypted: bytes
 }
 ```
 
 Calculations
 ```
 pre_master_secret := <result_of_dh>
-master_secret := SHA256(pre_master_secret, "master secret", clientNonce, ServerNonce)
-aes_key := subs(encryption_key, 0, 16)
-aes_iv := subs(encryption_key, 16, 16)
-encrypted := AES-CBC(<data>, aes_key, aes_iv)
+master_secret := PRF(pre_master_secret, "master secret", clientNonce + ServerNonce)
+verification := PRF(master_secret, "client finished", clientNonce + ServerNonce)
 ```
+
+master_secret is resulted 
 
 ```
 ResponseDoDH {
   HEADER = 0xE7
   randomId: long
+  verify: bytes
 }
 ```
