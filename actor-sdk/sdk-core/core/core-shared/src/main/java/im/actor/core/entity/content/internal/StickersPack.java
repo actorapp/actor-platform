@@ -24,6 +24,9 @@ import im.actor.runtime.storage.ListEngineItem;
  */
 public class StickersPack extends WrapperEntity<ApiStickerCollection> implements KeyValueItem, ListEngineItem {
 
+    public static final String ENTITY_NAME = "StickersPack";
+
+
     private static final int RECORD_ID = 10;
     public static BserCreator<StickersPack> CREATOR = new BserCreator<StickersPack>() {
         @Override
@@ -36,11 +39,20 @@ public class StickersPack extends WrapperEntity<ApiStickerCollection> implements
     @Property("readonly, nonatomic")
     private int id;
     @Property("readonly, nonatomic")
+    private int localId;
+    @Property("readonly, nonatomic")
     private long accessHash;
     @NotNull
     @Property("readonly, nonatomic")
     @SuppressWarnings("NullableProblems")
     private List<Sticker> stickers;
+
+    public static StickersPack createLocalStickerPack(@NotNull ApiStickerCollection wrappedPack, int localId) {
+        StickersPack res = new StickersPack();
+        res.localId = localId;
+        res.setWrapped(wrappedPack);
+        return res;
+    }
 
     public StickersPack(@NotNull ApiStickerCollection wrappedPack) {
         super(RECORD_ID, wrappedPack);
@@ -54,23 +66,13 @@ public class StickersPack extends WrapperEntity<ApiStickerCollection> implements
         super(RECORD_ID);
     }
 
-    public StickersPack updateStickers(List<ApiStickerDescriptor> nStickers) {
-        ApiStickerCollection w = getWrapped();
-        ApiStickerCollection res = new ApiStickerCollection(
-                w.getId(),
-                w.getAccessHash(),
-                nStickers);
-        res.setUnmappedObjects(w.getUnmappedObjects());
-        return new StickersPack(res);
-    }
-
     @Override
     protected void applyWrapped(@NotNull ApiStickerCollection wrapped) {
         this.id = wrapped.getId();
         this.accessHash = wrapped.getAccessHash();
         this.stickers = new ArrayList<Sticker>();
         for (ApiStickerDescriptor m : wrapped.getStickers()) {
-            this.stickers.add(new Sticker(m, id, accessHash));
+            this.stickers.add(new Sticker(m, id, localId, accessHash));
         }
     }
 
