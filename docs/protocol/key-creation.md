@@ -12,6 +12,7 @@ This technique use [TLS 1.2 RFC](https://tools.ietf.org/html/rfc5246) for it's b
 2) One DiffieHellman to build one shared secret without repeating on almost every reconnect. (we will implement PFS in next revision of MTProto v2)
 3) Using only Curve25519 and AES-CBC
 4) Extending master_secret to make it 256 bytes long
+5) Added Signing of response just to check that everything is ok and add one more protection level
 
 # Primitives
 
@@ -105,7 +106,8 @@ Calculations
 ```
 pre_master_secret := <result_of_dh>
 master_secret := PRF(pre_master_secret, "master secret", clientNonce + ServerNonce)
-verification := PRF(master_secret, "client finished", clientNonce + ServerNonce)
+verify := PRF(master_secret, "client finished", clientNonce + ServerNonce)
+verify_sign := Ed25519(verification, server_private_signing_key)
 ```
 
 master_secret is resulted 
@@ -115,5 +117,6 @@ ResponseDoDH {
   HEADER = 0xE7
   randomId: long
   verify: bytes
+  verify_sign: bytes
 }
 ```
