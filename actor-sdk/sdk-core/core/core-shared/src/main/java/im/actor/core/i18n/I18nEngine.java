@@ -128,6 +128,15 @@ public class I18nEngine {
         return y1 == y2 && m1 == m2 && d1 == d2;
     }
 
+    @ObjectiveCName("getApplicationName")
+    public String getApplicationName() {
+        String appName = modules.getConfiguration().getCustomAppName();
+        if (appName == null) {
+            appName = locale.get("AppName");
+        }
+        return appName;
+    }
+
     @ObjectiveCName("formatShortDate:")
     public String formatShortDate(long date) {
         // Not using Calendar for GWT
@@ -358,7 +367,8 @@ public class I18nEngine {
             case SERVICE:
                 return text;// Should be service message
             case SERVICE_REGISTERED:
-                return getTemplateNamed(senderId, "ServiceRegistered");
+                return getTemplateNamed(senderId, "ServiceRegistered")
+                        .replace("{app_name}", getApplicationName());
             case SERVICE_CREATED:
                 return getTemplateNamed(senderId, "ServiceGroupCreated");
             case SERVICE_ADD:
@@ -407,7 +417,8 @@ public class I18nEngine {
     @ObjectiveCName("formatFullServiceMessageWithSenderId:withContent:")
     public String formatFullServiceMessage(int senderId, ServiceContent content) {
         if (content instanceof ServiceUserRegistered) {
-            return getTemplateNamed(senderId, "ServiceRegisteredFull");
+            return getTemplateNamed(senderId, "ServiceRegisteredFull")
+                    .replace("{app_name}", getApplicationName());
         } else if (content instanceof ServiceGroupCreated) {
             return getTemplateNamed(senderId, "ServiceGroupCreatedFull");
         } else if (content instanceof ServiceGroupUserInvited) {

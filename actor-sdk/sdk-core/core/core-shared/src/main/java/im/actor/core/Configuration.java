@@ -38,6 +38,8 @@ public class Configuration {
 
     private int maxFailureCount;
 
+    private String customAppName;
+
     Configuration(ConnectionEndpoint[] endpoints,
                   PhoneBookProvider phoneBookProvider,
                   NotificationProvider notificationProvider,
@@ -52,7 +54,8 @@ public class Configuration {
                   int maxFailureCount,
                   ConfigurationExtension[] extensions,
                   String timeZone,
-                  String[] preferredLanguages) {
+                  String[] preferredLanguages,
+                  String customAppName) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
         this.enableContactsLogging = enableContactsLogging;
@@ -68,6 +71,16 @@ public class Configuration {
         this.extensions = extensions;
         this.timeZone = timeZone;
         this.preferredLanguages = preferredLanguages;
+        this.customAppName = customAppName;
+    }
+
+    /**
+     * Get Custom Application name
+     *
+     * @return Application Name if set, otherwise is null
+     */
+    public String getCustomAppName() {
+        return customAppName;
     }
 
     /**

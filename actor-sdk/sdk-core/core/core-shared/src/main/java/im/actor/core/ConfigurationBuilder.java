@@ -41,6 +41,21 @@ public class ConfigurationBuilder {
     private String timeZone;
     private ArrayList<String> preferredLanguages = new ArrayList<String>();
 
+    private String customAppName;
+
+    /**
+     * Setting custom application name
+     *
+     * @param customAppName Name of your App
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("setCustomAppName:")
+    public ConfigurationBuilder setCustomAppName(String customAppName) {
+        this.customAppName = customAppName;
+        return this;
+    }
+
     /**
      * Set App Type
      *
@@ -304,6 +319,7 @@ public class ConfigurationBuilder {
                 enableFilesLogging, deviceCategory, platformType,
                 minDelay, maxDelay, maxFailureCount,
                 extensions.toArray(new ConfigurationExtension[extensions.size()]),
-                timeZone, preferredLanguages.toArray(new String[preferredLanguages.size()]));
+                timeZone, preferredLanguages.toArray(new String[preferredLanguages.size()]),
+                customAppName);
     }
 }
