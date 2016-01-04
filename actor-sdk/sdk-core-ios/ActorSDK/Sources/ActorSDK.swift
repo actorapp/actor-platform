@@ -175,6 +175,11 @@ public class ActorSDK {
         // Logs
         // builder.setEnableFilesLogging(true)
         
+        // Application name
+        if (appNameInLocStrings != "Actor") {
+            builder.setCustomAppName(AALocalized(appNameInLocStrings))
+        }
+        
         // Creating messenger
         messenger = ACCocoaMessenger(configuration: builder.build())
         
