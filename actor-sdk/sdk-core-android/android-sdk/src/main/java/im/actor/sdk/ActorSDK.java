@@ -98,6 +98,12 @@ public class ActorSDK {
      * Is Keeping app alive enabled
      */
     private boolean isKeepAliveEnabled = false;
+
+    /**
+     * Custom application name
+     */
+    private String customApplicationName = null;
+
     /**
      * Delegate
      */
@@ -170,6 +176,11 @@ public class ActorSDK {
         String timeZone = TimeZone.getDefault().getID();
         Log.d(TAG, "Found TimeZone: " + timeZone);
         builder.setTimeZone(timeZone);
+
+        // App Name
+        if (customApplicationName != null) {
+            builder.setCustomAppName(customApplicationName);
+        }
 
         this.messenger = new AndroidMessenger(AndroidContext.getContext(), builder.build());
 
@@ -303,6 +314,24 @@ public class ActorSDK {
      */
     public void setIsKeepAliveEnabled(boolean isKeepAliveEnabled) {
         this.isKeepAliveEnabled = isKeepAliveEnabled;
+    }
+
+    /**
+     * Getting custom application name
+     *
+     * @return application name if set
+     */
+    public String getCustomApplicationName() {
+        return customApplicationName;
+    }
+
+    /**
+     * Setting custom application name
+     *
+     * @param customApplicationName new application name
+     */
+    public void setCustomApplicationName(String customApplicationName) {
+        this.customApplicationName = customApplicationName;
     }
 
     /**
