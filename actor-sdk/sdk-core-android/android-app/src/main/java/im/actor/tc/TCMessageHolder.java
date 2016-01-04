@@ -2,6 +2,8 @@ package im.actor.tc;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -15,13 +17,13 @@ import im.actor.runtime.actors.Props;
 import im.actor.runtime.json.JSONException;
 import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.conversation.messages.BaseCustomHolder;
+import im.actor.sdk.controllers.conversation.messages.BaseJsonHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.conversation.messages.PreprocessedData;
-import im.actor.sdk.core.audio.AudioPlayerActor;
 
-public class TCMessageHolder extends BaseCustomHolder {
+public class TCMessageHolder extends BaseJsonHolder {
 
+    private final LinearLayout messageBubble;
     TextView text;
     protected static ActorRef tcActor;
     ProgressBar progress;
@@ -30,16 +32,16 @@ public class TCMessageHolder extends BaseCustomHolder {
         super(adapter, viewGroup, id, isFullSize);
         text = (TextView) itemView.findViewById(R.id.tv_text);
         progress = (ProgressBar) itemView.findViewById(R.id.progress);
+        messageBubble = (LinearLayout) itemView.findViewById(R.id.bubbleContainer);
+        messageBubble.setBackgroundResource(R.drawable.conv_bubble_media_in);
+
     }
 
     @Override
-    protected void bindData(Message message, boolean isUpdated, PreprocessedData preprocessedData) {
+    protected void bindData(Message message, JSONObject data, boolean isUpdated, PreprocessedData preprocessedData) {
+
         String render = "";
-        JSONObject json = ((Application.TCBotMesaage) message.getContent()).getJson();
         try {
-            final JSONObject data = json.getJSONObject("data");
-
-
             int id = data.getInt("id");
             render += "id: " + id + "\n";
             String state = data.getString("state");
