@@ -72,8 +72,8 @@ RequestStartDH {
   // Used keyId for Diffie-Hellman start
   keyId: long
   
-  // DH parameter used for encryption
-  dh_x: bytes
+  // Client's key used for encryption
+  clientKey: bytes
   //Encrypted DH request
   encrypted: bytes
 }
