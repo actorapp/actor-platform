@@ -32,14 +32,14 @@ import im.actor.runtime.mvvm.ValueModelCreator;
  */
 public class StickerPackVM extends BaseValueModel<StickersPack> {
 
-    public static ValueModelCreator<StickersPack, StickerPackVM> CREATOR() {
-        return new ValueModelCreator<StickersPack, StickerPackVM>() {
+    public static ValueModelCreator<StickersPack, StickerPackVM> CREATOR =
+            new ValueModelCreator<StickersPack, StickerPackVM>() {
             @Override
             public StickerPackVM create(StickersPack baseValue) {
                 return new StickerPackVM(baseValue);
             }
         };
-    }
+
 
     @Property("nonatomic, readonly")
     private int id;
