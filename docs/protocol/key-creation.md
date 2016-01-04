@@ -90,8 +90,8 @@ RequestDH {
 
 Calculations
 ```
-shared_secret := <result_of_dh>
-encryption_key :=SHA256(shared_secret,clientNonce,ServerNonce)
+pre_master_secret := <result_of_dh>
+master_secret := SHA256(pre_master_secret, "master secret", clientNonce, ServerNonce)
 aes_key := subs(encryption_key, 0, 16)
 aes_iv := subs(encryption_key, 16, 16)
 encrypted := AES-CBC(<data>, aes_key, aes_iv)
