@@ -26,6 +26,7 @@ sourceSets {
 }
 
 dependencies {
+    compile project(':actor-sdk:sdk-core:runtime:runtime-se')
     compile 'com.squareup.okhttp:okhttp:2+'
     testCompile "junit:junit:4.11"
 }
