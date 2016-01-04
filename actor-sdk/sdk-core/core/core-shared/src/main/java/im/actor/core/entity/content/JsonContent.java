@@ -76,15 +76,25 @@ public abstract class JsonContent extends AbsContent {
 
     public abstract String getContentDescriptionEn();
 
-    public abstract String getContentDescriptionRu();
+    public String getContentDescriptionRu() {
+        return null;
+    }
 
-    public abstract String getContentDescriptionPt();
+    public String getContentDescriptionPt() {
+        return null;
+    }
 
-    public abstract String getContentDescriptionAr();
+    public String getContentDescriptionAr() {
+        return null;
+    }
 
-    public abstract String getContentDescriptionCn();
+    public String getContentDescriptionCn() {
+        return null;
+    }
 
-    public abstract String getContentDescriptionEs();
+    public String getContentDescriptionEs() {
+        return null;
+    }
 
     public final String getContentDescription() {
         String locale = im.actor.runtime.Runtime.getLocaleRuntime().getCurrentLocale();
@@ -113,7 +123,7 @@ public abstract class JsonContent extends AbsContent {
                 return getContentDescriptionEn();
 
             } else {
-                return "";
+                return getDataType();
             }
         }
     }
