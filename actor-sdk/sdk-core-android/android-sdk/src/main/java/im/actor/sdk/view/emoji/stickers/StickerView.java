@@ -65,7 +65,7 @@ public class StickerView extends SimpleDraweeView {
 
         GenericDraweeHierarchy hierarchy = builder
                 .setFadeDuration(200)
-                .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_INSIDE)
+                .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
                 .build();
         setHierarchy(hierarchy);
 

@@ -7,16 +7,15 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.entity.content.internal.StickersPack;
 import im.actor.core.viewmodel.StickerPackVM;
+import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.ValueModel;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.util.Screen;
@@ -28,7 +27,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 class StickerAdapter extends HolderAdapter<StickerLine> {
     private static final int TAG_KEY = R.id.sticker_pager;
-    ValueModel<ArrayList<StickerPackVM>> packs;
+    MVVMCollection<StickersPack, StickerPackVM> packs;
     StickerLine[] stickerLines;
     EmojiKeyboard keyboard;
     private int stickerInLine;
@@ -67,16 +66,15 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
         stickerSwitchLp = new LinearLayout.LayoutParams(Screen.dp(48), Screen.dp(48));
         padding = Screen.dp(8);
 
-        packs = messenger().getOwnStickerPacks();
-
-        ((BaseActivity) context).bind(packs, new ValueChangedListener<ArrayList<StickerPackVM>>() {
-            @Override
-            public void onChanged(ArrayList<StickerPackVM> val, Value<ArrayList<StickerPackVM>> valueModel) {
-                buildStickerLines(scrollTo);
-                notifyDataSetChanged();
-            }
-        });
-
+//        packs = messenger().getOwnStickerPacks();
+//        packs.addCallback(new MVVMCollection.OnChangedListener() {
+//            @Override
+//            public void onChanged() {
+//                buildStickerLines(scrollTo);
+//                notifyDataSetChanged();
+//
+//            }
+//        });
 
     }
 
@@ -88,37 +86,37 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
         //Add pack switch buttons
         int packCount = 0;
         totalLines = 0;
-        for (final StickerPackVM pack : packs.get()) {
-            ((BaseActivity) context).bind(pack.getStickers(), new ValueChangedListener<ArrayList<Sticker>>() {
-                @Override
-                public void onChanged(ArrayList<Sticker> val, Value<ArrayList<Sticker>> valueModel) {
-                    buildStickerLines(scrollTo);
-                    notifyDataSetChanged();
-                }
-            }, false);
-            if (pack.getStickers().get().size() < 1) {
-                continue;
-            }
-            //Count lines
-            int linesInPack = (int) Math.ceil((double) pack.getStickers().get().size() / stickerInLine);
-            totalLines += linesInPack;
-
-            //Build packs buttons
-            final StickerView sv = new StickerView(context);
-
-            sv.bind(pack.getStickers().get().get(0), StickerView.STICKER_SMALL);
-            sv.setPadding(padding, padding, padding, padding);
-            sv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    scrollTo.requestScroll(packFirstLineMap.get(pack.getId()));
-                    selectCurrentPack((Integer) sv.getTag(TAG_KEY));
-                }
-            });
-            sv.setTag(TAG_KEY, packCount);
-            keyboard.getStickerIndicatorContainer().addView(sv, stickerSwitchLp);
-            packCount++;
-        }
+//        for (final StickerPackVM pack : packs.getValuesMap().values()) {
+//            ((BaseActivity) context).bind(pack.getStickers(), new ValueChangedListener<ArrayList<Sticker>>() {
+//                @Override
+//                public void onChanged(ArrayList<Sticker> val, Value<ArrayList<Sticker>> valueModel) {
+//                    buildStickerLines(scrollTo);
+//                    notifyDataSetChanged();
+//                }
+//            }, false);
+//            if (pack.getStickers().get().size() < 1) {
+//                continue;
+//            }
+//            //Count lines
+//            int linesInPack = (int) Math.ceil((double) pack.getStickers().get().size() / stickerInLine);
+//            totalLines += linesInPack;
+//
+//            //Build packs buttons
+//            final StickerView sv = new StickerView(context);
+//
+//            sv.bind(pack.getStickers().get().get(0), StickerView.STICKER_SMALL);
+//            sv.setPadding(padding, padding, padding, padding);
+//            sv.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    scrollTo.requestScroll(packFirstLineMap.get(pack.getId()));
+//                    selectCurrentPack((Integer) sv.getTag(TAG_KEY));
+//                }
+//            });
+//            sv.setTag(TAG_KEY, packCount);
+//            keyboard.getStickerIndicatorContainer().addView(sv, stickerSwitchLp);
+//            packCount++;
+//        }
         if (stickerIndicatorContainer.getChildAt(0) != null) {
             stickerIndicatorContainer.getChildAt(0).setBackgroundColor(context.getResources().getColor(R.color.selector_selected));
         }
@@ -131,32 +129,32 @@ class StickerAdapter extends HolderAdapter<StickerLine> {
         //Fill lines with packs stickers
         int allLinesCount = 0;
         int linePackCount = 0;
-        for (StickerPackVM pack : packs.get()) {
-            if (pack.getStickers().get().size() < 1) {
-                continue;
-            }
-            int stickerInPack = 0;
-            int linesInPack = (int) Math.ceil((double) pack.getStickers().get().size() / stickerInLine);
-
-            //Loop pack lines
-            for (int lineInPackCount = 0; lineInPackCount < linesInPack; lineInPackCount++, allLinesCount++) {
-                StickerLine line = new StickerLine(new Sticker[stickerInLine], linePackCount);
-                //Remember pack first line position
-                if (lineInPackCount == 0) {
-                    packFirstLineMap.put(pack.getId(), allLinesCount);
-                }
-                //Fill line with stickers
-                for (int stickerInLine = 0; stickerInLine < this.stickerInLine; stickerInLine++, stickerInPack++) {
-                    if (stickerInPack < pack.getStickers().get().size()) {
-                        line.getLine()[stickerInLine] = pack.getStickers().get().get(stickerInPack);
-                    } else {
-                        break;
-                    }
-                }
-                stickerLines[allLinesCount] = line;
-            }
-            linePackCount++;
-        }
+//        for (StickerPackVM pack : packs.getValuesMap().values()) {
+//            if (pack.getStickers().get().size() < 1) {
+//                continue;
+//            }
+//            int stickerInPack = 0;
+//            int linesInPack = (int) Math.ceil((double) pack.getStickers().get().size() / stickerInLine);
+//
+//            //Loop pack lines
+//            for (int lineInPackCount = 0; lineInPackCount < linesInPack; lineInPackCount++, allLinesCount++) {
+//                StickerLine line = new StickerLine(new Sticker[stickerInLine], linePackCount);
+//                //Remember pack first line position
+//                if (lineInPackCount == 0) {
+//                    packFirstLineMap.put(pack.getId(), allLinesCount);
+//                }
+//                //Fill line with stickers
+//                for (int stickerInLine = 0; stickerInLine < this.stickerInLine; stickerInLine++, stickerInPack++) {
+//                    if (stickerInPack < pack.getStickers().get().size()) {
+//                        line.getLine()[stickerInLine] = pack.getStickers().get().get(stickerInPack);
+//                    } else {
+//                        break;
+//                    }
+//                }
+//                stickerLines[allLinesCount] = line;
+//            }
+//            linePackCount++;
+//        }
     }
 
     @Override
