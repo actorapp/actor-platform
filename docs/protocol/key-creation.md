@@ -5,7 +5,12 @@ But we think that can be a problem in some cases on the server side as this key 
 
 Eventually, in rev4 of MTProto we will eliminate using of TLS for better speed and security.
 
-MTProtoV2 uses Curve25519 for performing DH for calculating AuthKey
+MTProtoV2 uses Curve25519 for performing DH for calculating AuthKey.
+
+This technique use [TLS 1.2 RFC](https://tools.ietf.org/html/rfc5246) for it's basis and doesn't try to invent wheel, but improves performance of TLS:
+1) Not sending server certificates if not needed on every connection.
+2) One DiffieHellman to build one shared secret without repeating on almost every reconnect. (we will implement PFS in next revision of MTProto v2)
+3) Using only Curve25519 and AES-CBC
 
 # Changes in Transport's Package
 
