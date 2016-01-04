@@ -1,0 +1,31 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: 'java'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java',
+                       '../core-shared/src/main/java',
+                       '../core-shared/src/ext/java']
+        }
+        resources {
+            srcDirs = ['../core-shared/src/main/resources']
+        }
+    }
+
+}
+
+dependencies {
+    compile 'com.squareup.okhttp:okhttp:2+'
+    testCompile "junit:junit:4.11"
+}
