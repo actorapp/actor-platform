@@ -1,0 +1,21 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java',
+                       '../runtime-shared/src/main/java',
+                       '../runtime-generic/src/main/java']
+        }
+    }
+}
+
+dependencies {
+    compile 'com.squareup.okhttp:okhttp:2+'
+}
