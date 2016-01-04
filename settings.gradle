@@ -34,13 +34,7 @@ include ":actor-sdk:sdk-core-android:android-google-push"
 include ":actor-sdk:sdk-core-ios"
 
 //
-// SDK Web
+// SDK SE
 //
 
-
-
-//
-// SDK Bots
-//
-
-include ":actor-sdk:sdk-bot:bot-example"
+include ":actor-sdk:sdk-core-se"
