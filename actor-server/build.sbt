@@ -19,7 +19,6 @@ daemonGroup in Linux := (daemonUser in Linux).value
 
 bashScriptExtraDefines += """addJava "-Dactor.home=${app_home}/..""""
 bashScriptExtraDefines += """addJava "-Dlogback.configurationFile=${app_home}/../conf/logback.xml""""
-bashScriptExtraDefines += """addJava "-Dfile.encoding=UTF-8""""
 bashScriptExtraDefines += """addJava -javaagent:${app_home}/../lib/org.aspectj.aspectjweaver-1.8.7.jar"""
 bashScriptExtraDefines += """addJava -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${app_home}/../logs/dump-`date`.hprof"""
 
