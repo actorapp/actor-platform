@@ -72,7 +72,7 @@ ResponseStartAuth {
 
 Client downloads required key. Client can skip downloading keys if it have built-in keys installed.
 ```
-ResponseGetServerKey {
+RequestGetServerKey {
   HEADER = 0xE2
   keyId: long
 }
@@ -117,6 +117,6 @@ ResponseDoDH {
   HEADER = 0xE7
   randomId: long
   verify: bytes
-  verify_sign: bytes
+  verifySign: bytes
 }
 ```
