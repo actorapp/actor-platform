@@ -4,8 +4,6 @@ import akka.actor._
 import im.actor.server.api.http.HttpApi
 import im.actor.server.webhooks.http.routes.WebhooksHttpHandler
 
-import scala.concurrent.Future
-
 sealed trait WebhooksExtension extends Extension
 
 /**
@@ -16,7 +14,7 @@ sealed trait WebhooksExtension extends Extension
 final class WebhooksExtensionImpl(system: ActorSystem) extends WebhooksExtension {
 
   HttpApi(system).registerHook("webhooks") { implicit system ⇒
-    Future.successful(new WebhooksHttpHandler().routes)
+    new WebhooksHttpHandler().routes
   }
 
 }

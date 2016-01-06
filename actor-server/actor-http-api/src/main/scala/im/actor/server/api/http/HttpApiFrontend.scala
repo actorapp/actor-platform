@@ -25,12 +25,18 @@ final class HttpApi(_system: ActorSystem) extends Extension {
 
   private val hooks = new HttpApiHookControl
 
-  def runHooks(): Future[Seq[Route]] = hooks.routesHook.runAll()
+  def runHooks(): Seq[Route] = hooks.routesHook.runAll()
 
-  def registerHook(name: String)(f: ActorSystem ⇒ Future[Route]): Unit = {
+  var customRoutes: Seq[Route] = runHooks()
+
+  def registerHook(name: String)(f: ActorSystem ⇒ Route): Unit = {
     hooks.routesHook.register(name, new HttpApiHook.RoutesHook(system) {
-      override def run(): Future[Route] = f(system)
+      override def run(): Route = f(system)
     })
+
+    synchronized {
+      this.customRoutes = runHooks()
+    }
   }
 
   HttpApiFrontend.start(system.settings.config)
@@ -73,7 +79,6 @@ private object HttpApiFrontend {
   }
 
   def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(implicit system: ActorSystem): Unit = {
-    import system.dispatcher
     implicit val mat = ActorMaterializer()
 
     val status = new StatusHttpHandler
@@ -81,14 +86,7 @@ private object HttpApiFrontend {
 
     def defaultRoutes: Route = app.routes ~ defaultVersion(status.routes)
 
-    // FIXME: consider more optimal Route creation
-
-    def routesFuture: Future[Route] =
-      for {
-        custom ← customRoutes
-      } yield custom.foldLeft(defaultRoutes)(_ ~ _)
-
-    def customRoutes: Future[Seq[Route]] = HttpApi(system).runHooks()
+    def routes = HttpApi(system).customRoutes.foldLeft(defaultRoutes)(_ ~ _)
 
     val defaultSettings = ServerSettings(system)
 
@@ -98,12 +96,8 @@ private object HttpApiFrontend {
       httpsContext = tlsContext map (_.asHttpsContext),
       settings = defaultSettings.copy(timeouts = defaultSettings.timeouts.copy(idleTimeout = IdleTimeout))
     )
-      .mapAsync(1) { conn ⇒
-        routesFuture map (conn → _)
-      }
-      .runForeach {
-        case (conn, routes) ⇒
-          conn handleWith routes
+      .runForeach { conn ⇒
+        conn handleWith routes
       }
   }
 }

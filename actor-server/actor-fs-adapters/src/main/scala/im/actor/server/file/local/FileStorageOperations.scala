@@ -73,7 +73,7 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
 
   protected def getFileName(name: String) = if (name.trim.isEmpty) "file" else name
 
-  protected  def fileDirectory(fileId: Long): File = file"$storageLocation/file_${fileId}"
+  protected def fileDirectory(fileId: Long): File = file"$storageLocation/file_${fileId}"
 
   private def getOrCreateFileDir(fileId: Long) = fileDirectory(fileId).createIfNotExists(asDirectory = true)
 
