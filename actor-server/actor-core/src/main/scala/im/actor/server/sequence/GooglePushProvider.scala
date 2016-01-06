@@ -5,7 +5,7 @@ import akka.event.Logging
 import com.google.android.gcm.server.{ Sender, Message }
 import im.actor.server.model.push.GooglePushCredentials
 
-import scala.concurrent.{ Future, blocking }
+import scala.concurrent.{ ExecutionContext, Future, blocking }
 
 private[sequence] final class GooglePushProvider(userId: Int, googlePushManager: GooglePushManager, system: ActorSystem) extends PushProvider {
   private val Retries = 3
@@ -56,7 +56,7 @@ private[sequence] final class GooglePushProvider(userId: Int, googlePushManager:
       case None      ⇒ log.warning("No google push configured for project-id: {}", projectId)
     }
 
-  private def send(message: Message, regId: String, retries: Int)(implicit mgr: Sender): Unit = Future {
+  private def send(message: Message, regId: String, retries: Int)(implicit mgr: Sender, ec: ExecutionContext): Unit = Future {
     blocking {
       mgr.send(message, regId, Retries)
     }
