@@ -8,6 +8,8 @@ import im.actor.server.model.push.GooglePushCredentials
 import scala.concurrent.{ ExecutionContext, Future, blocking }
 
 private[sequence] final class GooglePushProvider(userId: Int, googlePushManager: GooglePushManager, system: ActorSystem) extends PushProvider {
+  import system.dispatcher
+
   private val Retries = 3
 
   private val log = Logging(system, getClass)
