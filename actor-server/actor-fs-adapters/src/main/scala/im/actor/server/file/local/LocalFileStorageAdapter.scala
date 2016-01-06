@@ -118,9 +118,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
     persist.FileRepo.find(id) flatMap {
       case Some(file) ⇒ DBIO.from(for {
         file ← getFile(file.id, file.name)
-        tmpDir ← Future(File.newTempDir())
-        copy ← Future(file.copyTo(tmpDir / file.name))
-      } yield Some(copy.toJava))
+      } yield Some(file.toJava))
       case None ⇒ DBIO.successful(None)
     }
 
