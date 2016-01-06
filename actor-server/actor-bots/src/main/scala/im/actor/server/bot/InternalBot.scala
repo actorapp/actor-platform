@@ -36,11 +36,10 @@ abstract class InternalBot(userId: Int, nickname: String, name: String, isAdmin:
   def receive = {
     case Initialized(authId, authSid) ⇒
       log.warning("Initialized bot {} {} {}", userId, nickname, name)
-      val bp = new BotServerBlueprint(userId, authId, authSid, system)
 
       val rqSource =
         Source.actorRef(100, OverflowStrategy.fail)
-          .via(bp.flow)
+          .via(botExt.botServerBlueprint.flow(userId, authId, authSid))
           .to(Sink.actorRef(self, Kill))
           .run()
 
