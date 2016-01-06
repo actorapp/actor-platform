@@ -18,7 +18,7 @@ import im.actor.server.api.http.json.JsonFormatters._
 import im.actor.server.api.http.json.{ AvatarUrls, _ }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging
-import im.actor.server.file.{ FileStorageExtension, ImageUtils }
+import im.actor.server.file.{ UnsafeFileName, FileStorageExtension, ImageUtils }
 import im.actor.server.webhooks.WebhooksExtension
 import im.actor.server.webhooks.http.routes.OutgoingHooksErrors
 import play.api.libs.json._
@@ -330,7 +330,7 @@ final class HttpApiFrontendSpec
 
     def groupInvitesAvatars1() = {
       val avatarFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
-      val fileLocation = whenReady(db.run(fsAdapter.uploadFile("avatar", avatarFile)))(identity)
+      val fileLocation = whenReady(db.run(fsAdapter.uploadFile(UnsafeFileName("avatar"), avatarFile)))(identity)
 
       whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
@@ -371,7 +371,7 @@ final class HttpApiFrontendSpec
 
     def groupInvitesAvatars2() = {
       val avatarFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
-      val fileLocation = whenReady(db.run(fsAdapter.uploadFile("avatar", avatarFile)))(identity)
+      val fileLocation = whenReady(db.run(fsAdapter.uploadFile(UnsafeFileName("avatar"), avatarFile)))(identity)
       whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
         val avatar =
