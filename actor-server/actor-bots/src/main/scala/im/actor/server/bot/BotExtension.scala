@@ -59,7 +59,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
     shardakka.simpleKeyValue(BotExtension.whUserTokensKV(userId))
 
   HttpApi(system).registerHook("bots") { implicit system ⇒
-    Future.successful(new BotsHttpHandler(this).routes)
+    new BotsHttpHandler(this).routes
   }
 
   /**
