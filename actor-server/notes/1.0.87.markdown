@@ -1,0 +1,10 @@
+Bug fixes
+---
+
+* Fix for utf-8 file names in local file storage
+
+
+Performance
+---
+
+* Some memory optimization in bots flow
