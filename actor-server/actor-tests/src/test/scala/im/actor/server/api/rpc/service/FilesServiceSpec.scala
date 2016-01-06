@@ -10,21 +10,21 @@ import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegion }
 import org.apache.commons.io.IOUtils
 
-class FilesServiceSpec
+final class FilesServiceSpec
   extends BaseAppSuite
   with ImplicitSessionRegion
   with ImplicitAuthService {
   behavior of "FilesService"
 
-  it should "Generate upload url" in e1
+  it should "Generate upload url" in generateUploadUrl
 
-  it should "Generate valid upload part urls" in e2
+  it should "Generate valid upload part urls" in generateUploadPartUrls
 
-  it should "Complete upload" in e3
+  it should "Complete upload" in completeUpload
 
-  it should "Generate valid download urls" in e4
+  it should "Generate valid download urls" in generateValidDownloadUrls
 
-  it should "Generate valid upload part urls when same request comes twice" in e5
+  it should "Generate valid upload part urls when same request comes twice" in validUploadPartUrlsDuplRequest
 
   lazy val service = new FilesServiceImpl
   HttpApi(system)
@@ -40,7 +40,7 @@ class FilesServiceSpec
 
   var expectedContents: Option[String] = None
 
-  def e1() = {
+  def generateUploadUrl() = {
     val size = 20
 
     whenReady(service.handleGetFileUploadUrl(size)) { resp ⇒
@@ -53,7 +53,7 @@ class FilesServiceSpec
     }
   }
 
-  def e2() = {
+  def generateUploadPartUrls() = {
     val part1Size = 1024 * 32 // big part
     val part2Size = 5 // small part
 
@@ -81,10 +81,10 @@ class FilesServiceSpec
         connection.setRequestMethod("PUT")
         connection.addRequestProperty("Content-Type", "application/octet-stream")
         val out = new OutputStreamWriter(connection.getOutputStream)
-        val partContents = ("." * size)
+        val partContents = "." * size
         out.write(partContents)
         out.close()
-        val responseCode = connection.getResponseCode()
+        val responseCode = connection.getResponseCode
         responseCode should ===(200)
         partContents
     }
@@ -92,8 +92,8 @@ class FilesServiceSpec
     this.expectedContents = Some(parts.foldLeft("") { (acc, p) ⇒ acc + p })
   }
 
-  def e3() = {
-    whenReady(service.handleCommitFileUpload(uploadKey, "The.File")) { resp ⇒
+  def completeUpload() = {
+    whenReady(service.handleCommitFileUpload(uploadKey, "/etc/passwd/The.Filë%00 – 'Fear and Loathing in Las Vegas'")) { resp ⇒
       resp should matchPattern {
         case Ok(ResponseCommitFileUpload(_)) ⇒
       }
@@ -102,7 +102,7 @@ class FilesServiceSpec
     }
   }
 
-  def e4() = {
+  def generateValidDownloadUrls() = {
     val urlStr = whenReady(service.handleGetFileUrl(fileLocation.get)) { resp ⇒
       resp should matchPattern {
         case Ok(ResponseGetFileUrl(_, _)) ⇒
@@ -111,7 +111,10 @@ class FilesServiceSpec
       resp.toOption.get.url
     }
 
-    urlStr should include("The.File?")
+    urlStr should include("The.Fil%C3%AB%00%20%E2%80%93%20'Fear%20and%20Loathing%20in%20Las%20Vegas'?")
+    urlStr shouldNot include("//The")
+    urlStr shouldNot include("etc")
+    urlStr shouldNot include("passwd")
 
     val url = new URL(urlStr)
     val connection = url.openConnection().asInstanceOf[HttpURLConnection]
@@ -122,7 +125,7 @@ class FilesServiceSpec
     IOUtils.toString(connection.getInputStream) should ===(expectedContents.get)
   }
 
-  def e5() = {
+  def validUploadPartUrlsDuplRequest() = {
     val partSize = 1024 * 32
     whenReady(service.handleGetFileUploadPartUrl(1, partSize, uploadKey)) { resp ⇒
       resp should matchPattern {

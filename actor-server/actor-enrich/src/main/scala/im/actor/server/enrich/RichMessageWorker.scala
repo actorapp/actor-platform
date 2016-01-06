@@ -11,7 +11,7 @@ import com.sksamuel.scrimage.nio.JpegWriter
 import im.actor.api.rpc.files.ApiFastThumb
 import im.actor.api.rpc.messaging._
 import im.actor.server.db.DbExtension
-import im.actor.server.file.{ FileStorageAdapter, FileStorageExtension, FileUtils, ImageUtils }
+import im.actor.server.file._
 import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
 import im.actor.util.log.AnyRefLogSource
 import org.joda.time.DateTime
@@ -94,7 +94,7 @@ final class RichMessageWorker(config: RichMessageConfig)(implicit materializer: 
       db.run {
         for {
           (file, fileSize) ← DBIO.from(FileUtils.writeBytes(imageBytes))
-          location ← fsAdapter.uploadFile(fullName, file.toFile)
+          location ← fsAdapter.uploadFile(UnsafeFileName(fullName), file.toFile)
           thumb ← DBIO.from(ImageUtils.scaleTo(image, 90))
           thumbBytes = thumb.toImage.forWriter(JpegWriter()).bytes
 

@@ -20,7 +20,7 @@ import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
-class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
+final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
 
   private implicit val system: ActorSystem = _system
   private implicit val ec: ExecutionContext = system.dispatcher
@@ -33,10 +33,10 @@ class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   val s3Client = new AmazonS3ScalaClient(awsCredentials)
   val transferManager = new TransferManager(awsCredentials)
 
-  override def uploadFile(name: String, file: File): DBIO[FileLocation] =
+  override def uploadFile(name: UnsafeFileName, file: File): DBIO[FileLocation] =
     uploadFile(bucketName, name, file)
 
-  override def uploadFileF(name: String, file: File): Future[FileLocation] =
+  override def uploadFileF(name: UnsafeFileName, file: File): Future[FileLocation] =
     db.run(uploadFile(name, file))
 
   override def downloadFile(id: Long): DBIO[Option[File]] = {
@@ -73,7 +73,7 @@ class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
     } yield file
   }
 
-  private def uploadFile(bucketName: String, name: String, file: File): DBIO[FileLocation] = {
+  private def uploadFile(bucketName: String, name: UnsafeFileName, file: File): DBIO[FileLocation] = {
     val rnd = ThreadLocalRandom.current()
     val id = rnd.nextLong()
     val accessSalt = ACLFiles.nextAccessSalt(rnd)
@@ -81,9 +81,9 @@ class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
 
     for {
       size ← DBIO.from(sizeF)
-      _ ← persist.FileRepo.create(id, size, accessSalt, s3Key(id, name))
-      _ ← DBIO.from(s3Upload(bucketName, id, name, file))
-      _ ← persist.FileRepo.setUploaded(id, name)
+      _ ← persist.FileRepo.create(id, size, accessSalt, s3Key(id, name.safe))
+      _ ← DBIO.from(s3Upload(bucketName, id, name.safe, file))
+      _ ← persist.FileRepo.setUploaded(id, name.safe)
     } yield FileLocation(id, ACLFiles.fileAccessHash(id, accessSalt))
   }
 
@@ -93,7 +93,7 @@ class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
 
   override def getFileUploadPartUrl(fileId: Long, partNumber: Int): Future[(UploadKey, String)] = {
     val fileKey = uploadKey(fileId)
-    val partKey = S3UploadKey(s"upload_part_${fileKey.key}_${partNumber}")
+    val partKey = S3UploadKey(s"upload_part_${fileKey.key}_$partNumber")
     val request = new GeneratePresignedUrlRequest(bucketName, partKey.key)
     val expiration = new java.util.Date
     expiration.setTime(expiration.getTime + 1.day.toMillis)
@@ -115,28 +115,29 @@ class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
     for (url ← s3Client.generatePresignedUrlRequest(presignedRequest)) yield fileKey → url.toString
   }
 
-  override def completeFileUpload(fileId: Long, fileSize: Long, fileName: String, partNames: Seq[String]): Future[Unit] = {
+  override def completeFileUpload(fileId: Long, fileSize: Long, fileName: UnsafeFileName, partNames: Seq[String]): Future[Unit] = {
     for {
       tempDir ← createTempDir()
       fk = uploadKey(fileId).key
       _ ← FutureTransfer.listenFor {
-        transferManager.downloadDirectory(bucketName, s"upload_part_${fk}", tempDir)
+        transferManager.downloadDirectory(bucketName, s"upload_part_$fk", tempDir)
       } map (_.waitForCompletion())
       concatFile ← concatFiles(tempDir, partNames)
       _ ← FutureTransfer.listenFor {
-        transferManager.upload(bucketName, s3Key(fileId, fileName), concatFile)
+        transferManager.upload(bucketName, s3Key(fileId, fileName.safe), concatFile)
       } map (_.waitForCompletion())
+      _ ← db.run(persist.FileRepo.setUploaded(fileId, fileName.safe))
       _ ← deleteDir(tempDir)
     } yield ()
   }
 
-  private def uploadKey(fileId: Long): S3UploadKey = S3UploadKey(s"upload_${fileId}")
+  private def uploadKey(fileId: Long): S3UploadKey = S3UploadKey(s"upload_$fileId")
 
   private def s3Key(id: Long, name: String): String =
     if (name.isEmpty) {
-      s"file_${id}"
+      s"file_$id"
     } else {
-      s"file_${id}/${name}"
+      s"file_$id/$name"
     }
 
   override def parseKey(bytes: Array[Byte]): UploadKey = S3UploadKey.parseFrom(bytes)

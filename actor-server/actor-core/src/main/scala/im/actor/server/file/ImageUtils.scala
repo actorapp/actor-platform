@@ -118,8 +118,8 @@ object ImageUtils {
               _ ← Future.fromTry(Try(smallAimg.toImage.forWriter(smallDesc.writer).write(smallFile)))
               _ ← Future.fromTry(Try(largeAimg.toImage.forWriter(largeDesc.writer).write(largeFile)))
 
-              smallFileLocation ← fsAdapter.uploadFileF(smallDesc.name, smallFile)
-              largeFileLocation ← fsAdapter.uploadFileF(largeDesc.name, largeFile)
+              smallFileLocation ← fsAdapter.uploadFileF(UnsafeFileName(smallDesc.name), smallFile)
+              largeFileLocation ← fsAdapter.uploadFileF(UnsafeFileName(largeDesc.name), largeFile)
             } yield {
               // TODO: #perf calculate file sizes efficiently
 
