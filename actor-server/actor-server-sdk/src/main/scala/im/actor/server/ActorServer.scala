@@ -73,6 +73,9 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
    * @return
    */
   def start(): ActorServer = {
+    System.setProperty("sun.jnu.encoding", "UTF-8")
+    System.setProperty("file.encoding", "UTF-8")
+
     Kamon.start()
     SessionMessage.register()
     CommonSerialization.register()
