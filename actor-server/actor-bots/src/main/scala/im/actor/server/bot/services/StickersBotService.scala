@@ -6,7 +6,7 @@ import akka.util.ByteString
 import im.actor.bots.BotMessages._
 import im.actor.concurrent.FutureResultCats
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
-import im.actor.server.file.{ FileStorageAdapter, FileStorageExtension, FileUtils }
+import im.actor.server.file.{ UnsafeFileName, FileStorageAdapter, FileStorageExtension, FileUtils }
 import im.actor.server.sticker.{ Sticker, StickerImage }
 import im.actor.server.stickers.{ StickerErrors, StickersExtension }
 
@@ -142,7 +142,7 @@ private[bot] final class StickersBotService(_system: ActorSystem) extends BotSer
   private def uploadSticker(name: String, bytes: Array[Byte], w: Int, h: Int): Future[Option[StickerImage]] =
     Try(for {
       (path, size) ← FileUtils.writeBytes(ByteString(bytes))
-      fileLocation ← fsAdapter.uploadFileF(name, path.toFile)
+      fileLocation ← fsAdapter.uploadFileF(UnsafeFileName(name), path.toFile)
     } yield Some(StickerImage(fileLocation, w, h, size))).toOption getOrElse Future.successful(None)
 
 }

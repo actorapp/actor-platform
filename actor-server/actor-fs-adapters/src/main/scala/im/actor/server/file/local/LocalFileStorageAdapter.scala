@@ -74,7 +74,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
 
   val baseUri = Uri(httpConfig.baseUri)
 
-  override def uploadFile(name: String, file: io.File): DBIO[FileLocation] = {
+  override def uploadFile(name: UnsafeFileName, file: io.File): DBIO[FileLocation] = {
     val scalaFile = file.toScala
     val rng = ThreadLocalRandom.current()
     val id = ACLFiles.randomLong(rng)
@@ -83,13 +83,13 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
     val size = scalaFile.size
     for {
       _ ← persist.FileRepo.create(id, size, accessSalt, LocalUploadKey.fileKey(id).key)
-      _ ← DBIO.from(createFile(id, name, scalaFile))
-      _ ← persist.FileRepo.setUploaded(id, name)
+      _ ← DBIO.from(createFile(id, name.safe, scalaFile))
+      _ ← persist.FileRepo.setUploaded(id, name.safe)
     } yield FileLocation(id, ACLFiles.fileAccessHash(id, accessSalt))
 
   }
 
-  override def uploadFileF(name: String, file: io.File): Future[FileLocation] = db.run(uploadFile(name, file))
+  override def uploadFileF(name: UnsafeFileName, file: io.File): Future[FileLocation] = db.run(uploadFile(name, file))
 
   /**
    * Generates upload uri similar to:
@@ -105,12 +105,13 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
     Future.successful(LocalUploadKey.fileKey(fileId) → signRequest(HttpMethods.PUT, query, ACLFiles.secretKey()).toString)
   }
 
-  override def completeFileUpload(fileId: Long, fileSize: Long, fileName: String, partNames: Seq[String]): Future[Unit] = {
+  override def completeFileUpload(fileId: Long, fileSize: Long, fileName: UnsafeFileName, partNames: Seq[String]): Future[Unit] = {
     val fileDir = fileDirectory(fileId)
     for {
       isComplete ← haveAllParts(fileDir, partNames, fileSize)
-      result ← concatFiles(fileDir, partNames, fileName, fileSize)
+      result ← concatFiles(fileDir, partNames, fileName.safe, fileSize)
       _ ← if (isComplete) deleteUploadedParts(fileDir, partNames) else Future.successful(())
+      _ ← db.run(persist.FileRepo.setUploaded(fileId, fileName.safe))
     } yield ()
   }
 
