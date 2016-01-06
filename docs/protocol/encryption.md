@@ -39,7 +39,7 @@ AesEncryptedPackage {
 
 ```
 KuznechikEncryptedPackage {
-  // Plain Package object with signature
+  // Plain Message object
   plainPackage: bytes
   
   // HMAC_SHA256(server/client write mac key, plainPackage)
