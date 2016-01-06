@@ -93,7 +93,7 @@ final class FilesServiceSpec
   }
 
   def completeUpload() = {
-    whenReady(service.handleCommitFileUpload(uploadKey, "/etc/passwd/The.Filë%00 – 'Fear and Loathing in Las Vegas'")) { resp ⇒
+    whenReady(service.handleCommitFileUpload(uploadKey, "/etc/passwd/The.Filë%00\u0000 – 'Fear and Loathing in Las Vegas'")) { resp ⇒
       resp should matchPattern {
         case Ok(ResponseCommitFileUpload(_)) ⇒
       }
@@ -111,7 +111,7 @@ final class FilesServiceSpec
       resp.toOption.get.url
     }
 
-    urlStr should include("The.Fil%C3%AB%00%20%E2%80%93%20'Fear%20and%20Loathing%20in%20Las%20Vegas'?")
+    urlStr should include("The.Fil%C3%AB%2500+%E2%80%93+'Fear+and+Loathing+in+Las+Vegas'?")
     urlStr shouldNot include("//The")
     urlStr shouldNot include("etc")
     urlStr shouldNot include("passwd")
