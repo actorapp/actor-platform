@@ -11,13 +11,12 @@ import upickle.Js
 
 import scala.concurrent.Future
 
-final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int, system: ActorSystem) {
+final class BotServerBlueprint(system: ActorSystem) {
 
   import BotMessages._
 
   import system.dispatcher
 
-  private lazy val updBuilder = new BotUpdateBuilder(botUserId, botAuthId, system)
   private val msgService = new MessagingBotService(system)
   private val kvService = new KeyValueBotService(system)
   private val botsService = new BotsBotService(system)
@@ -29,7 +28,9 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int,
 
   private val log = Logging(system, getClass)
 
-  val flow: Flow[BotRequest, BotMessageOut, Unit] = {
+  def flow(botUserId: Int, botAuthId: Long, botAuthSid: Int): Flow[BotRequest, BotMessageOut, Unit] = {
+    val updBuilder = new BotUpdateBuilder(botUserId, botAuthId, system)
+
     val updSource =
       Source.actorPublisher[(Int, Update)](UpdatesSource.props(botUserId, botAuthId, botAuthSid))
         .mapAsync(1) {
@@ -40,7 +41,7 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int,
 
     val rqrspFlow = Flow[BotRequest]
       .mapAsync(1) {
-        case BotRequest(id, service, body) ⇒ handleRequest(id, service, body)
+        case BotRequest(id, service, body) ⇒ handleRequest(botUserId, botAuthId, botAuthSid)(id, service, body)
       }
       .map(_.asInstanceOf[BotMessageOut])
 
@@ -64,7 +65,7 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int,
       }
   }
 
-  private def handleRequest(id: Long, service: String, body: RequestBody): Future[BotResponse] = {
+  private def handleRequest(botUserId: Int, botAuthId: Long, botAuthSid: Int)(id: Long, service: String, body: RequestBody): Future[BotResponse] = {
     val resultFuture =
       if (services.isDefinedAt(service)) {
         val handlers = services(service).handlers

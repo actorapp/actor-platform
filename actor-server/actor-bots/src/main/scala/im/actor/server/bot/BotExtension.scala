@@ -58,6 +58,8 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
   private def hooksKV(userId: UserId): SimpleKeyValue[String] =
     shardakka.simpleKeyValue(BotExtension.whUserTokensKV(userId))
 
+  lazy val botServerBlueprint = new BotServerBlueprint(system)
+
   HttpApi(system).registerHook("bots") { implicit system ⇒
     new BotsHttpHandler(this).routes
   }
