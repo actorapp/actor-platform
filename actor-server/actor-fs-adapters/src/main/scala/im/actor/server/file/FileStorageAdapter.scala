@@ -14,7 +14,7 @@ object FileStorageAdapter {
 trait FileStorageAdapter extends UploadActions with DownloadActions with UploadKeyParsing
 
 final case class UnsafeFileName(fileName: String) {
-  lazy val safe: String = new File(fileName).toPath.normalize().getFileName.toString
+  lazy val safe: String = new File(fileName.replace("\u0000", "")).toPath.normalize().getFileName.toString
 }
 
 private[file] trait UploadActions {
