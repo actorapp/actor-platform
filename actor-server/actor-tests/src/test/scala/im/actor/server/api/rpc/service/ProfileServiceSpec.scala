@@ -2,7 +2,7 @@ package im.actor.server.api.rpc.service
 
 import java.nio.file.{ Files, Paths }
 
-import im.actor.server.file.{ FileStorageExtension, ImageUtils }
+import im.actor.server.file.{ UnsafeFileName, FileStorageExtension, ImageUtils }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -69,7 +69,7 @@ final class ProfileServiceSpec
     implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
     def e1() = {
-      val validOrigFileModel = Await.result(db.run(fsAdapter.uploadFile("avatar.jpg", validOrigFile)), 5.seconds)
+      val validOrigFileModel = Await.result(db.run(fsAdapter.uploadFile(UnsafeFileName("/etc/passwd/avatar.jpg"), validOrigFile)), 5.seconds)
 
       whenReady(service.handleEditAvatar(ApiFileLocation(validOrigFileModel.fileId, validOrigFileModel.accessHash))) { resp ⇒
         resp should matchPattern {
@@ -103,7 +103,7 @@ final class ProfileServiceSpec
     }
 
     def e2() = {
-      val invalidImageFileModel = Await.result(db.run(fsAdapter.uploadFile("invalid-avatar.jpg", invalidImageFile)), 5.seconds)
+      val invalidImageFileModel = Await.result(db.run(fsAdapter.uploadFile(UnsafeFileName("invalid-avatar.jpg"), invalidImageFile)), 5.seconds)
 
       whenReady(service.handleEditAvatar(ApiFileLocation(invalidImageFileModel.fileId, invalidImageFileModel.accessHash))) { resp ⇒
         resp should matchPattern {
@@ -113,7 +113,7 @@ final class ProfileServiceSpec
     }
 
     def e3() = {
-      val tooLargeImageFileModel = Await.result(db.run(fsAdapter.uploadFile("too-large-avatar.jpg", tooLargeImageFile)), 30.seconds) //WTF???
+      val tooLargeImageFileModel = Await.result(db.run(fsAdapter.uploadFile(UnsafeFileName("too-large-avatar.jpg"), tooLargeImageFile)), 30.seconds) //WTF???
 
       whenReady(service.handleEditAvatar(ApiFileLocation(tooLargeImageFileModel.fileId, tooLargeImageFileModel.accessHash))) { resp ⇒
         resp should matchPattern {
