@@ -9,7 +9,8 @@ In Rev4 we will enable support for Axolotl Ratched like encryption directly in p
 ```
 EncryptedPackage {
   HEADER = 0xE8
-  iv: bytes
+  iv_aes: bytes
+  iv_kuznechik: bytes
   encryptedContent: bytes
 }
 ```
