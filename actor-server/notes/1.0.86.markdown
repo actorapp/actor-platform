@@ -2,3 +2,4 @@ Bug fixes
 ===
 
 * Await ActorSystem termination
+* wrap google push send into blocking {}
