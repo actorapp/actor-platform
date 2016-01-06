@@ -50,10 +50,9 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
               //v1/files/:fileId/:fileName
               //v1/files/:fileId
               path(Segments(0, 1)) { seqName =>
-                val optName = seqName.headOption
-                log.debug("Download file request, fileId: {}, fileName: {}", fileId, optName)
+                log.debug("Download file request, fileId: {}", fileId)
                 withRangeSupport {
-                  onComplete(getFile(fileId, optName)) {
+                  onComplete(getFile(fileId)) {
                     case Success(file) =>
                       log.debug("Serving file: {} parts", fileId)
                       complete(file.loadBytes)

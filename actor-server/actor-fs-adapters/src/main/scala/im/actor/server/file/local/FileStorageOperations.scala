@@ -3,6 +3,8 @@ package im.actor.server.file.local
 import akka.actor.ActorSystem
 import akka.event.Logging
 import better.files.{ File, _ }
+import im.actor.server.db.DbExtension
+import im.actor.server.persist.FileRepo
 
 import scala.concurrent.{ ExecutionContext, Future, blocking }
 
@@ -13,6 +15,7 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
   protected val storageLocation: String
 
   private lazy val log = Logging(system, getClass)
+  private lazy val db = DbExtension(system).db
 
   protected def createFile(fileId: Long, name: String, file: File): Future[File] =
     Future(file.copyTo(getOrCreateFileDir(fileId) / getFileName(name)))
@@ -65,11 +68,14 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
   protected def deleteUploadedParts(dir: File, partNames: Seq[String]): Future[Unit] =
     Future.sequence(partNames map { part ⇒ Future((dir / part).delete()) }) map (_ ⇒ ())
 
-  protected def getFile(fileId: Long, optName: Option[String]): Future[File] =
-    getFile(fileId, optName getOrElse "")
+  protected def getFile(fileId: Long): Future[File] =
+    db.run(FileRepo.find(fileId)) flatMap {
+      case Some(model) ⇒ getFile(fileId, model.name)
+      case None        ⇒ Future.failed(new RuntimeException("File not found")) // TODO: throw an exception convertable to 404 response
+    }
 
-  protected def getFile(fileId: Long, name: String): Future[File] =
-    Future(fileDirectory(fileId) / getFileName(name))
+  protected def getFile(fileId: Long, fileName: String): Future[File] =
+    Future(fileDirectory(fileId) / getFileName(fileName))
 
   protected def getFileName(name: String) = if (name.trim.isEmpty) "file" else name
 

@@ -2,6 +2,7 @@ package im.actor.server.file.local
 
 import java.io
 import java.io.IOException
+import java.net.URLEncoder
 import java.time.{ Duration, Instant }
 
 import akka.actor.ActorSystem
@@ -137,7 +138,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
    */
   override def getFileDownloadUrl(file: model.File, accessHash: Long): Future[Option[String]] = {
     if (ACLFiles.fileAccessHash(file.id, file.accessSalt) == accessHash) {
-      val filePart = Option(file.name) filter (_.trim.nonEmpty) map (n ⇒ s"/$n") getOrElse ""
+      val filePart = Option(file.name) filter (_.trim.nonEmpty) map (n ⇒ s"/${URLEncoder.encode(n, "UTF-8")}") getOrElse ""
       val query = baseUri
         .withPath(Uri.Path(s"/v1/files/${file.id}" + filePart))
         .withQuery(Uri.Query("expires" → expiresAt().toString))
