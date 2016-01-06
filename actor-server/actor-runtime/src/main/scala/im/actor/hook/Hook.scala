@@ -8,6 +8,10 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 trait Hook
 
+trait SyncHook0[R] extends Hook {
+  def run(): R
+}
+
 trait Hook0[R] extends Hook {
   def run(): Future[R]
 }
@@ -40,6 +44,10 @@ class HooksStorage[H <: Hook] {
       throw HookException.HookAlreadyRegistered(name)
     }
   }
+}
+
+final class SyncHooksStorage0[H <: SyncHook0[R], R] extends HooksStorage[H] {
+  def runAll(): Seq[R] = hooksList map (_.run())
 }
 
 final class HooksStorage0[H <: Hook0[R], R](implicit ec: ExecutionContext) extends HooksStorage[H] {
