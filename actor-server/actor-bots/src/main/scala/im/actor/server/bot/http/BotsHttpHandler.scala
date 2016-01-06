@@ -137,8 +137,6 @@ private[bot] final class BotsHttpHandler(botExt: BotExtension)(implicit system: 
   }
 
   private def flow(botUserId: Int, botAuthId: Long, botAuthSid: Int) = {
-    val bp = new BotServerBlueprint(botUserId, botAuthId, botAuthSid, system)
-
     Flow[Message]
       .mapAsync(1) {
         case tm: TextMessage ⇒ tm.textStream.runFold("")(_ ++ _) map { fullContent ⇒
@@ -149,7 +147,7 @@ private[bot] final class BotsHttpHandler(botExt: BotExtension)(implicit system: 
         }
         case bm: BinaryMessage ⇒ throw new RuntimeException("Binary message is not supported") with NoStackTrace
       }
-      .via(bp.flow)
+      .via(botExt.botServerBlueprint.flow(botUserId, botAuthId, botAuthSid))
       .map {
         case rsp: BotResponse ⇒
           log.debug("Bot response {}", rsp)
