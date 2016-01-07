@@ -1,7 +1,7 @@
-package im.actor.crypto.primitives.bc.aes;
+package im.actor.crypto.primitives.aes;
 
 import im.actor.crypto.primitives.BlockCipher;
-import im.actor.crypto.primitives.bc.Pack;
+import im.actor.crypto.primitives.util.Pack;
 
 /**
  * an implementation of the AES (Rijndael), from FIPS-197.
@@ -24,6 +24,8 @@ import im.actor.crypto.primitives.bc.Pack;
  * The slowest version uses no static tables at all and computes the values in each round
  * <p/>
  * This file contains the fast version with 8Kbytes of static tables for round precomputation
+ * <p/>
+ * Ported by Steve Kite (steve@actor.im)
  */
 public class AESFastEngine
         implements BlockCipher {
