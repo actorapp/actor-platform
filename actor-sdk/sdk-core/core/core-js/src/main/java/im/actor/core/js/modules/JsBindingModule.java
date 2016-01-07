@@ -367,7 +367,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
         //
         // Dialogs List
         //
-        
+
         if (dialogsList != null) {
             dialogsList.startReconverting();
             for (Dialog dialog : dialogsList.getRawItems()) {
