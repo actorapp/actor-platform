@@ -10696,6 +10696,39 @@
         {
           "type": "struct",
           "content": {
+            "name": "HTTPHeader",
+            "doc": [
+              "HTTP Header record",
+              {
+                "type": "reference",
+                "argument": "key",
+                "category": "full",
+                "description": "  HTTP Header name"
+              },
+              {
+                "type": "reference",
+                "argument": "value",
+                "category": "full",
+                "description": "  HTTP Header value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "key"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "value"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "FileUrlDescription",
             "doc": [
               "File url description",
@@ -10716,6 +10749,18 @@
                 "argument": "timeout",
                 "category": "full",
                 "description": "  Timeout of url"
+              },
+              {
+                "type": "reference",
+                "argument": "unsignedUrl",
+                "category": "hidden",
+                "description": "  Unsigned URL (used to honor web caches)"
+              },
+              {
+                "type": "reference",
+                "argument": "unsignedUrlHeaders",
+                "category": "hidden",
+                "description": "  Headers that is required to download files with unsigned url"
               }
             ],
             "attributes": [
@@ -10736,6 +10781,25 @@
                 },
                 "id": 3,
                 "name": "timeout"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "unsignedUrl"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "HTTPHeader"
+                  }
+                },
+                "id": 5,
+                "name": "unsignedUrlHeaders"
               }
             ]
           }
@@ -10760,6 +10824,18 @@
                   "argument": "timeout",
                   "category": "full",
                   "description": "  Timeout of url"
+                },
+                {
+                  "type": "reference",
+                  "argument": "unsignedUrl",
+                  "category": "full",
+                  "description": "  Unsigned URL (used to honor web caches)"
+                },
+                {
+                  "type": "reference",
+                  "argument": "unsignedUrlHeaders",
+                  "category": "full",
+                  "description": "  Headers that is required to download files with unsigned url"
                 }
               ],
               "attributes": [
@@ -10775,6 +10851,25 @@
                   },
                   "id": 2,
                   "name": "timeout"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "string"
+                  },
+                  "id": 3,
+                  "name": "unsignedUrl"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "HTTPHeader"
+                    }
+                  },
+                  "id": 4,
+                  "name": "unsignedUrlHeaders"
                 }
               ]
             },
