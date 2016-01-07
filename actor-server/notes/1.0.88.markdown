@@ -1,0 +1,4 @@
+Bug fixes
+---
+
+* Upgraded HikariCP to fix db connections loss
