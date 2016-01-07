@@ -12,6 +12,12 @@ package object protocol {
   val RequestAuthIdCodec = provide[RequestAuthId](RequestAuthId)
   val RequestResendCodec = int64.as[RequestResend]
   val ResponseAuthIdCodec = int64.as[ResponseAuthId]
+  val RequestStartAuthCodec = int64.as[RequestStartAuth]
+  val ResponseStartAuthCodec = (int64 :: longs :: bytes).as[ResponseStartAuth]
+  val RequestGetServerKeyCodec = int64.as[RequestGetServerKey]
+  val ResponseGetServerKeyCodec = (int64 :: bytes).as[ResponseGetServerKey]
+  val RequestDHCodec = (int64 :: int64 :: bytes :: bytes).as[RequestDH]
+  val ResponseDoDHCodec = (int64 :: bytes :: bytes).as[ResponseDoDH]
   val RpcRequestBoxCodec = bytes.as[RpcRequestBox]
   val RpcResponseBoxCodec = (int64 :: bytes).as[RpcResponseBox]
   val UnsentMessageCodec = (int64 :: int32).as[UnsentMessage]
