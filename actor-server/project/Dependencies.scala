@@ -66,7 +66,7 @@ object Dependencies {
     val slickPgDate2            = "com.github.tminglei"           %% "slick-pg_date2"                % V.slickPg
     val slickTestkit            = "com.typesafe.slick"            %% "slick-testkit"                 % V.slick
     val flywayCore              = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
-    val hikariCP                = "com.zaxxer"                    %  "HikariCP"                      % "2.3.5"
+    val hikariCP                = "com.zaxxer"                    %  "HikariCP"                      % "2.4.1"
 
     val amazonaws               = "com.amazonaws"                 %  "aws-java-sdk-s3"               % "1.9.31"
     val awsWrap                 = "com.github.dwhjames"           %% "aws-wrap"                      % "0.7.2"
