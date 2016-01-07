@@ -2,7 +2,6 @@ package im.actor.server
 
 import akka.actor._
 import akka.cluster.Cluster
-import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import com.typesafe.config.{ Config, ConfigFactory, ConfigException }
 import im.actor.config.ActorConfig
@@ -26,7 +25,7 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webactions.WebactionsServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
-import im.actor.server.bot.{ BotExtension, ActorBot }
+import im.actor.server.bot.ActorBot
 import im.actor.server.cli.ActorCliService
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogExtension, DialogProcessor }
@@ -46,6 +45,7 @@ import im.actor.server.user._
 import im.actor.server.webhooks.WebhooksExtension
 import kamon.Kamon
 
+import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.language.existentials
 
