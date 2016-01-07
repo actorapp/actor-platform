@@ -52,7 +52,7 @@ trait AuthIdInvalid extends ProtoMessage with OutgoingProtoMessage {
 case object AuthIdInvalid extends AuthIdInvalid
 
 @SerialVersionUID(1L)
-case class NewSession(sessionId: Long, messageId: Long) extends ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage {
+final case class NewSession(sessionId: Long, messageId: Long) extends ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage {
   val header = NewSession.header
 
   override def bodySize = 0
@@ -77,14 +77,68 @@ trait SessionLost extends ProtoMessage with OutgoingProtoMessage {
 case object SessionLost extends SessionLost
 
 @SerialVersionUID(1L)
-trait RequestAuthId extends ProtoMessage with OutgoingProtoMessage {
+trait RequestAuthId extends ProtoMessage with IncomingProtoMessage {
   val header = 0xF0
 }
 
 object RequestAuthId extends RequestAuthId
 
 @SerialVersionUID(1L)
-case class RequestResend(messageId: Long) extends ProtoMessage {
+final case class RequestStartAuth(randomId: Long) extends ProtoMessage with IncomingProtoMessage {
+  val header = RequestStartAuth.header
+}
+
+object RequestStartAuth {
+  val header = 0xE0
+}
+
+@SerialVersionUID(1L)
+final case class ResponseStartAuth(randomId: Long, availableKeys: Vector[Long], serverNonce: BitVector) extends ProtoMessage with OutgoingProtoMessage {
+  val header = ResponseStartAuth.header
+}
+
+object ResponseStartAuth {
+  val header = 0xE1
+}
+
+@SerialVersionUID(1L)
+final case class RequestGetServerKey(keyId: Long) extends ProtoMessage with IncomingProtoMessage {
+  val header = RequestGetServerKey.header
+}
+
+object RequestGetServerKey {
+  val header = 0xE2
+}
+
+@SerialVersionUID(1L)
+final case class ResponseGetServerKey(keyId: Long, key: BitVector) extends ProtoMessage with OutgoingProtoMessage {
+  val header = ResponseGetServerKey.header
+}
+
+object ResponseGetServerKey {
+  val header = 0xE3
+}
+
+@SerialVersionUID(1L)
+final case class RequestDH(randomId: Long, keyId: Long, clientNonce: BitVector, clientKey: BitVector) extends ProtoMessage with IncomingProtoMessage {
+  val header = RequestDH.header
+}
+
+object RequestDH {
+  val header = 0xE6
+}
+
+@SerialVersionUID(1L)
+final case class ResponseDoDH(randomId: Long, verify: BitVector, verifySign: BitVector) extends ProtoMessage with OutgoingProtoMessage {
+  val header = ResponseDoDH.header
+}
+
+object ResponseDoDH {
+  val header = 0xE7
+}
+
+@SerialVersionUID(1L)
+final case class RequestResend(messageId: Long) extends ProtoMessage {
   val header = RequestResend.header
 }
 
@@ -93,7 +147,7 @@ object RequestResend {
 }
 
 @SerialVersionUID(1L)
-case class ResponseAuthId(authId: Long) extends ProtoMessage {
+final case class ResponseAuthId(authId: Long) extends ProtoMessage {
   val header = ResponseAuthId.header
 }
 
@@ -102,7 +156,7 @@ object ResponseAuthId {
 }
 
 @SerialVersionUID(1L)
-case class RpcRequestBox(bodyBytes: BitVector) extends ProtoMessage {
+final case class RpcRequestBox(bodyBytes: BitVector) extends ProtoMessage {
   val header = RpcRequestBox.header
 }
 
@@ -111,7 +165,7 @@ object RpcRequestBox {
 }
 
 @SerialVersionUID(1L)
-case class RpcResponseBox(messageId: Long, bodyBytes: BitVector) extends ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage {
+final case class RpcResponseBox(messageId: Long, bodyBytes: BitVector) extends ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage {
   val header = RpcResponseBox.header
 
   override val bodySize = bodyBytes.bytes.size
@@ -122,7 +176,7 @@ object RpcResponseBox {
 }
 
 @SerialVersionUID(1L)
-case class UnsentMessage(messageId: Long, length: Int) extends ProtoMessage {
+final case class UnsentMessage(messageId: Long, length: Int) extends ProtoMessage {
   val header = UnsentMessage.header
 }
 
@@ -131,7 +185,7 @@ object UnsentMessage {
 }
 
 @SerialVersionUID(1L)
-case class UnsentResponse(messageId: Long, requestMessageId: Long, length: Int) extends ProtoMessage {
+final case class UnsentResponse(messageId: Long, requestMessageId: Long, length: Int) extends ProtoMessage {
   val header = UnsentResponse.header
 }
 
@@ -140,7 +194,7 @@ object UnsentResponse {
 }
 
 @SerialVersionUID(1L)
-case class UpdateBox(bodyBytes: BitVector) extends ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage {
+final case class UpdateBox(bodyBytes: BitVector) extends ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage {
   val header = UpdateBox.header
 
   override val bodySize = bodyBytes.bytes.size
