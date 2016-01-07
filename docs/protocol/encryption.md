@@ -11,42 +11,14 @@ In Rev4 we will enable support for Axolotl Ratched like encryption directly in p
 ```
 EncryptedPackage {
   HEADER = 0xE8
-  // AES Initialization Vector - 16 random bytes
-  iv_aes: bytes
-  // Kuznechik Initialization Vector - 16 random bytes
-  iv_kuznechik: bytes
-  // First encryption level - AesEncryptedPackage
-  encryptedContent: bytes
+  // First encryption level - EncryptionCBCPackage
+  aesPackage: bytes
 }
 ```
 
-## AES Encrypted Level
-Sezialization of package might be 16x bytes in size.
 ```
-AesEncryptedPackage {
-  kuznechikPackage: bytes
-  
-  // HMAC_SHA256(server/client write mac key, kuznechikPackage)
-  mac: bytes
-  
-  // padding is filled with paddingLength value
-  padding: bytes
-  paddingLenght: byte
-}
-```
-
-## Kuznechik Encrypted Level
-
-```
-KuznechikEncryptedPackage {
-  // Plain Message object
-  plainPackage: bytes
-  
-  // HMAC_SHA256(server/client write mac key, plainPackage)
-  mac: bytes
-  
-  // padding is filled with paddingLength value
-  padding: bytes
-  paddingLenght: byte
+EncryptionCBCPackage {
+  iv: bytes
+  content: bytes
 }
 ```
