@@ -20,7 +20,8 @@ object Build extends sbt.Build with Versioning with Releasing {
         crossPaths := false,
         organization := "im.actor.server",
         organizationHomepage := Some(url("https://actor.im")),
-        resolvers ++= Resolvers.seq
+        resolvers ++= Resolvers.seq,
+        scalacOptions ++= Seq("-Yopt-warnings")
       ) ++ Sonatype.sonatypeSettings
 
   lazy val pomExtraXml =

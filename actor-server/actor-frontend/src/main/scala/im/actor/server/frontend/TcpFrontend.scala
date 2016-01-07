@@ -9,7 +9,7 @@ import im.actor.server.session.SessionRegion
 import im.actor.tls.{ Tls, TlsContext }
 
 object TcpFrontend extends Frontend("tcp") {
-  def start(host: String, port: Int, tlsContext: Option[TlsContext])(
+  def start(host: String, port: Int, serverKeys: Seq[ServerKey], tlsContext: Option[TlsContext])(
     implicit
     sessionRegion: SessionRegion,
     system:        ActorSystem,
@@ -22,7 +22,7 @@ object TcpFrontend extends Frontend("tcp") {
         case (Tcp.IncomingConnection(localAddress, remoteAddress, flow)) ⇒
           log.debug("New TCP connection from {}", localAddress)
 
-          val mtProto = mtProtoBlueprint()
+          val mtProto = mtProtoBlueprint(serverKeys)
           val connFlow = tlsContext map (Tls.connection(_, flow)) getOrElse flow join mtProto
           connFlow.run()
       })

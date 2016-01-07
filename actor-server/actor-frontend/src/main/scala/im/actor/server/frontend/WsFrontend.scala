@@ -23,7 +23,7 @@ object WsFrontend extends Frontend("ws") {
 
   val IdleTimeout = 15.minutes
 
-  def start(host: String, port: Int, tlsContext: Option[TlsContext])(
+  def start(host: String, port: Int, serverKeys: Seq[ServerKey], tlsContext: Option[TlsContext])(
     implicit
     sessionRegion: SessionRegion,
     db:            Database,
@@ -43,7 +43,7 @@ object WsFrontend extends Frontend("ws") {
     connections runForeach { conn ⇒
       log.debug("New HTTP Connection {}", conn.remoteAddress)
 
-      conn.handleWith(route(mtProtoBlueprint()))
+      conn.handleWith(route(mtProtoBlueprint(serverKeys)))
     }
   }
 
