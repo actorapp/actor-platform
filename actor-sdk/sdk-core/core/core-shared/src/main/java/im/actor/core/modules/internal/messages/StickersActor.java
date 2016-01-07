@@ -11,9 +11,11 @@ import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.entity.content.internal.StickersPack;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.updates.internal.StickersLoaded;
+import im.actor.core.util.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
-import im.actor.core.util.ModuleActor;
+import im.actor.runtime.Log;
+import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.ListEngine;
 
 public class StickersActor extends ModuleActor {
@@ -28,7 +30,7 @@ public class StickersActor extends ModuleActor {
     public void preStart() {
         this.packs = context().getStickersModule().getPacksEngine();
         this.stickers = context().getStickersModule().getStickersEngine();
-        if (packs.getCount() == 0) {
+        if (!context().getPreferences().getBool("stickers_loaded", false)) {
             loadStickers();
         }
     }
@@ -40,7 +42,8 @@ public class StickersActor extends ModuleActor {
         for (ApiStickerCollection collection : updated) {
             add.add(StickersPack.createLocalStickerPack(collection, getLocalCollectionId(collection.getId())));
             if (collection.getStickers().size() > 0) {
-                stickers.addOrUpdateItem(new Sticker(collection.getStickers().get(0), collection.getId(), getLocalCollectionId(collection.getId()), collection.getAccessHash(), true));
+                Sticker stickerHeader = new Sticker(collection.getStickers().get(0), collection.getId(), getLocalCollectionId(collection.getId()), collection.getAccessHash(), true);
+                stickers.addOrUpdateItem(stickerHeader);
             }
             StickersPack oldPack = packs.getValue(collection.getId());
             if (oldPack != null) {
@@ -125,6 +128,7 @@ public class StickersActor extends ModuleActor {
         request(new RequestLoadOwnStickers(), new RpcCallback<ResponseLoadOwnStickers>() {
             @Override
             public void onResult(final ResponseLoadOwnStickers response) {
+                context().getPreferences().putBool("stickers_loaded", true);
                 updates().onUpdateReceived(
                         new StickersLoaded(response.getOwnStickers())
                 );
@@ -140,9 +144,10 @@ public class StickersActor extends ModuleActor {
     public int getLocalCollectionId(int collectionId) {
         int id = context().getPreferences().getInt("sticker_packs_local_id_map" + collectionId, -1);
         if (id == -1) {
+
             id = context().getPreferences().getInt("sticker_packs_local_id_increment", 0);
             context().getPreferences().putInt("sticker_packs_local_id_map" + collectionId, id);
-            context().getPreferences().putInt("sticker_packs_local_id_increment", ++id);
+            context().getPreferences().putInt("sticker_packs_local_id_increment", id + 1);
         }
         return id;
     }

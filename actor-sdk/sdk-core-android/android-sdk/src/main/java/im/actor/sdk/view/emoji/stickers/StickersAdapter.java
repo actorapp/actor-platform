@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import im.actor.core.entity.content.internal.Sticker;
+import im.actor.runtime.Log;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
@@ -22,6 +23,8 @@ public class StickersAdapter extends BindedListAdapter<Sticker, StickersAdapter.
     private EmojiKeyboard keyboard;
     RecyclerView recyclerView;
     BindedDisplayList<Sticker> displayList;
+    int topPack = -1;
+    PacksAdapter packsAdapter;
 
     public StickersAdapter(BindedDisplayList<Sticker> displayList, Context context, final RecyclerView recyclerView, EmojiKeyboard keyboard) {
         super(displayList);
@@ -37,6 +40,23 @@ public class StickersAdapter extends BindedListAdapter<Sticker, StickersAdapter.
                     return layoutManager.getSpanCount();
                 } else {
                     return 1;
+                }
+            }
+        });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            Sticker s;
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int firstVisiblePosition = layoutManager.findFirstCompletelyVisibleItemPosition();
+                s = getItem(firstVisiblePosition);
+                int newTopPack = s.getLocalCollectionId();
+                if (newTopPack != topPack) {
+                    topPack = newTopPack;
+                    if (packsAdapter != null) {
+                        packsAdapter.selectPack(newTopPack);
+                    }
                 }
             }
         });
@@ -83,7 +103,7 @@ public class StickersAdapter extends BindedListAdapter<Sticker, StickersAdapter.
         int position = displayList.getPosition(s);
 
         if (position != -1) {
-            recyclerView.scrollToPosition(position);
+            ((GridLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(position, 0);
         } else {
             displayList.initCenter(s.getEngineSort(), true);
         }
@@ -104,6 +124,7 @@ public class StickersAdapter extends BindedListAdapter<Sticker, StickersAdapter.
                 @Override
                 public void onClick(View v) {
                     if (s != null) {
+                        s.setThumb(sv.getThumb());
                         keyboard.onStickerClicked(s);
                     }
                 }
@@ -137,5 +158,7 @@ public class StickersAdapter extends BindedListAdapter<Sticker, StickersAdapter.
         }
     }
 
-
+    public void setPacksAdapter(PacksAdapter packsAdapter) {
+        this.packsAdapter = packsAdapter;
+    }
 }
