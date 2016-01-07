@@ -24,4 +24,14 @@ public class PreferenceApiStorage implements AuthKeyStorage {
     public void saveAuthKey(long key) {
         preferencesStorage.putLong("auth_id", key);
     }
+
+    @Override
+    public byte[] getAuthMasterKey() {
+        return preferencesStorage.getBytes("auth_master_key");
+    }
+
+    @Override
+    public void saveMasterKey(byte[] masterKey) {
+        preferencesStorage.putBytes("auth_master_key", masterKey);
+    }
 }
