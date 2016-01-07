@@ -16,6 +16,8 @@ import im.actor.core.api.ApiStickerCollection;
 import im.actor.core.api.ApiStickerDescriptor;
 import im.actor.core.entity.WrapperEntity;
 import im.actor.runtime.bser.BserCreator;
+import im.actor.runtime.bser.BserValues;
+import im.actor.runtime.bser.BserWriter;
 import im.actor.runtime.storage.KeyValueItem;
 import im.actor.runtime.storage.ListEngineItem;
 
@@ -84,7 +86,7 @@ public class StickersPack extends WrapperEntity<ApiStickerCollection> implements
 
     @Override
     public long getEngineSort() {
-        return id;
+        return localId * -1;
     }
 
     @Override
@@ -102,6 +104,10 @@ public class StickersPack extends WrapperEntity<ApiStickerCollection> implements
         return id;
     }
 
+    public int getLocalId() {
+        return localId;
+    }
+
     public long getAccessHash() {
         return accessHash;
     }
@@ -109,5 +115,19 @@ public class StickersPack extends WrapperEntity<ApiStickerCollection> implements
     @NotNull
     public List<Sticker> getStickers() {
         return stickers;
+    }
+
+    @Override
+    public void parse(BserValues values) throws IOException {
+        super.parse(values);
+        localId = values.getInt(9, 0);
+
+    }
+
+    @Override
+    public void serialize(BserWriter writer) throws IOException {
+        super.serialize(writer);
+        writer.writeInt(9, localId);
+
     }
 }
