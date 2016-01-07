@@ -12,9 +12,6 @@ import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 import im.actor.runtime.storage.KeyValueItem;
 
-/**
- * Created by ex3ndr on 01.05.15.
- */
 public class CachedFileUrl extends BserObject implements KeyValueItem {
 
     public static CachedFileUrl fromBytes(byte[] data) throws IOException {
