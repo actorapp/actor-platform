@@ -28,22 +28,6 @@ P_SHA256(secret, seed) = SHA256(secret, A(1) + seed) + SHA256(secret, A(2) + see
 
 Original key is too short - only 32 bytes and we need to extend key to more bytes in a secure way. Pseudo-code above is taken from TLS 1.2 RFC. Basic idea is to take some plain-text seed from client and server, add some fixed seed to avoid getting same hashes in different parts of a program. We use client and server seed for protecting from not that good random generators. Using text as fixed seed value is for cleaner code and specifications. In our Implementation we are performing **8** SHA256 calculations.
 
-# Changes in Transport's Package
-
-Adding new ```signature``` field for signing each package. Depends on authId server will use signature or not.
-```
-Package {
-  // unique identifier that is constant thru all application lifetime 
-  authId: long
-  // random identifier of current session
-  sessionId: long
-  // message
-  message: Message
-  // signature 
-  signature: bytes
-}
-```
-
 # New Requesting Authentication Key
 Old method of AuthId creation will continue to work, but rev3 introduces new way of more secure way to get AuthId and AuthKey.
 
