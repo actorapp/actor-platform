@@ -51,7 +51,18 @@ public class ProtoSerializer {
                 return new SessionLost(bs);
             case AuthIdInvalid.HEADER:
                 return new AuthIdInvalid(bs);
-
+            case RequestStartAuth.HEADER:
+                return new RequestStartAuth(bs);
+            case ResponseStartAuth.HEADER:
+                return new ResponseStartAuth(bs);
+            case RequestGetServerKey.HEADER:
+                return new RequestGetServerKey(bs);
+            case ResponseGetServerKey.HEADER:
+                return new ResponseGetServerKey(bs);
+            case RequestDH.HEADER:
+                return new RequestDH(bs);
+            case ResponseDoDH.HEADER:
+                return new ResponseDoDH(bs);
         }
 
         throw new IOException("Unable to read proto object with header #" + header);

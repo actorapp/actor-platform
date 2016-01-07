@@ -7,7 +7,6 @@ package im.actor.core.network.api;
 import java.io.IOException;
 import java.util.HashMap;
 
-import im.actor.core.api.parser.RpcParser;
 import im.actor.core.network.parser.ApiParserConfig;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
@@ -24,7 +23,6 @@ import im.actor.core.network.NetworkState;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
-import im.actor.core.network.mtp.AuthIdRetriever;
 import im.actor.core.network.mtp.MTProto;
 import im.actor.core.network.mtp.MTProtoCallback;
 import im.actor.core.network.mtp.entity.ProtoSerializer;
@@ -39,8 +37,6 @@ import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.core.network.parser.RpcScope;
 import im.actor.runtime.threading.AtomicIntegerCompat;
-import im.actor.runtime.threading.AtomicLongCompat;
-import im.actor.core.util.ExponentialBackoff;
 
 public class ApiBroker extends Actor {
 
@@ -76,8 +72,7 @@ public class ApiBroker extends Actor {
 
     private long currentAuthId;
     private MTProto proto;
-
-    private ExponentialBackoff authIdBackOff;
+    private ActorRef keyManager;
 
     private ApiParserConfig parserConfig;
 
@@ -92,15 +87,22 @@ public class ApiBroker extends Actor {
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
         this.maxFailureCount = maxFailureCount;
-        this.authIdBackOff = new ExponentialBackoff(minDelay, maxDelay, maxFailureCount);
         this.parserConfig = parserConfig;
     }
 
     @Override
     public void preStart() {
         this.currentAuthId = keyStorage.getAuthKey();
+
+        this.keyManager = system().actorOf(Props.create(AuthKeyActor.class, new ActorCreator<AuthKeyActor>() {
+            @Override
+            public AuthKeyActor create() {
+                return new AuthKeyActor();
+            }
+        }), getPath() + "/key");
+
         if (currentAuthId == 0) {
-            self().send(new RequestAuthId());
+            this.keyManager.send(new AuthKeyActor.StartKeyCreation(this.endpoints), self());
         } else {
             if (isEnableLog) {
                 Log.d(TAG, "Key loaded: " + currentAuthId);
@@ -147,33 +149,23 @@ public class ApiBroker extends Actor {
         Log.w(TAG, "Auth id invalidated");
 
         keyStorage.saveAuthKey(0);
+        keyStorage.saveMasterKey(null);
         currentAuthId = 0;
         proto = null;
 
         callback.onAuthIdInvalidated();
 
-        self().send(new RequestAuthId());
+        this.keyManager.send(new AuthKeyActor.StartKeyCreation(this.endpoints), self());
     }
 
-    private void requestAuthId() {
-        Log.d(TAG, "Creating auth key...");
+    private void onKeyCreated(long authId, byte[] authKey) {
 
-        AuthIdRetriever.requestAuthId(endpoints, minDelay, maxDelay, maxFailureCount, new AuthIdRetriever.AuthIdCallback() {
-            @Override
-            public void onSuccess(long authId) {
-                Log.d(TAG, "Key created: " + authId);
-                self().send(new InitMTProto(authId));
-            }
+        Log.w(TAG, "Auth id created #" + authId);
 
-            @Override
-            public void onFailure() {
-                Log.d(TAG, "Key creation failure");
-                authIdBackOff.onFailure();
-                long delay = authIdBackOff.exponentialWait();
-                Log.d(TAG, "Key creation delay in " + delay + " ms");
-                self().send(new RequestAuthId(), delay);
-            }
-        });
+        keyStorage.saveAuthKey(authId);
+        keyStorage.saveMasterKey(authKey);
+
+        self().send(new InitMTProto(authId));
     }
 
     private void createMtProto(long key) {
@@ -412,10 +404,6 @@ public class ApiBroker extends Actor {
 
     }
 
-    private class RequestAuthId {
-
-    }
-
     private class InitMTProto {
         private long authId;
 
@@ -577,9 +565,7 @@ public class ApiBroker extends Actor {
 
     @Override
     public void onReceive(Object message) {
-        if (message instanceof RequestAuthId) {
-            requestAuthId();
-        } else if (message instanceof InitMTProto) {
+        if (message instanceof InitMTProto) {
             InitMTProto initMTProto = (InitMTProto) message;
             createMtProto(initMTProto.getAuthId());
         } else if (message instanceof PerformRequest) {
@@ -610,6 +596,9 @@ public class ApiBroker extends Actor {
             forceNetworkCheck();
         } else if (message instanceof ConnectionsCountChanged) {
             connectionCountChanged(((ConnectionsCountChanged) message).getCount());
+        } else if (message instanceof AuthKeyActor.KeyCreated) {
+            onKeyCreated(((AuthKeyActor.KeyCreated) message).getAuthKeyId(),
+                    ((AuthKeyActor.KeyCreated) message).getAuthKey());
         } else {
             drop(message);
         }
