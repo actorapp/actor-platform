@@ -1,11 +1,23 @@
 package im.actor.server.frontend
 
-import java.nio.ByteBuffer
-import java.security.{ SecureRandom, MessageDigest }
+import java.security.{ MessageDigest, SecureRandom }
 
+import akka.actor._
+import akka.pattern.pipe
+import akka.stream.actor.ActorPublisher
 import better.files.File
+import com.google.common.primitives.Longs
 import com.typesafe.config.Config
+import im.actor.crypto.Curve25519
+import im.actor.crypto.primitives.digest.SHA256
+import im.actor.crypto.primitives.prf.PRF
+import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.db.DbExtension
+import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
+import im.actor.server.mtproto.protocol._
+import im.actor.server.mtproto.transport._
+import im.actor.server.persist
+import im.actor.server.persist.{ AuthIdRepo, MasterKeyRepo }
 import im.actor.util.misc.IdUtils
 import scodec.bits.BitVector
 
@@ -13,16 +25,7 @@ import scala.annotation.tailrec
 import scala.collection.JavaConversions._
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
-import scala.util.{ Try, Failure, Success }
-
-import akka.actor._
-import akka.stream.actor.ActorPublisher
-import slick.driver.PostgresDriver.api.Database
-
-import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
-import im.actor.server.mtproto.protocol._
-import im.actor.server.mtproto.transport._
-import im.actor.server.persist
+import scala.util.{ Failure, Success, Try }
 
 object ServerKey {
   def loadFromConfig(config: Config): Try[ServerKey] =
@@ -45,38 +48,42 @@ final class ServerKey(val public: Array[Byte], val privat: Array[Byte]) {
     md.digest(public)
   }
 
-  lazy val id: Long = {
-    val bb = ByteBuffer.allocate(java.lang.Long.BYTES)
-    bb.put(hash.take(4))
-    bb.flip()
-    bb.getLong
-  }
+  lazy val id: Long = Longs.fromByteArray(hash.take(java.lang.Long.BYTES))
 }
 
 object AuthorizationManager {
 
   @SerialVersionUID(1L)
-  case class FrontendPackage(p: MTPackage)
+  final case class FrontendPackage(p: MTPackage)
 
   @SerialVersionUID(1L)
-  case class SessionPackage(p: MTProto)
+  final case class SessionPackage(p: MTProto)
+
+  @SerialVersionUID(1L)
+  private case class SendPackage(sessionId: Long, messageId: Long, message: ProtoMessage)
+
+  @SerialVersionUID(1L)
+  private case class SendDrop(messageId: Long, message: String)
 
   def props(serverKeys: Seq[ServerKey]) = Props(classOf[AuthorizationManager], serverKeys)
 
   val NonceBytes = 32
+  val PRFBytes = 256
+  val SignRandomBytes = 64
 }
 
 final class AuthorizationManager(serverKeys: Seq[ServerKey]) extends Actor with ActorLogging with ActorPublisher[MTProto] {
 
+  import AuthorizationManager._
   import akka.stream.actor.ActorPublisherMessage._
   import context.dispatcher
 
-  import AuthorizationManager._
-
   private val db: Database = DbExtension(context.system).db
 
+  private[this] val curve = new Curve25519
   private[this] var authId: Long = 0L
   private[this] var buf = Vector.empty[MTProto]
+  private[this] var sessions = Map.empty[Long, BitVector]
 
   def receive = {
     case FrontendPackage(p) ⇒
@@ -88,30 +95,39 @@ final class AuthorizationManager(serverKeys: Seq[ServerKey]) extends Actor with 
           onCompleteThenStop()
 
       }
+    case SendPackage(sessionId: Long, messageId, message) ⇒ sendPackage(sessionId, messageId, message)
+    case SendDrop(messageId, message) ⇒
+      enqueue(Drop(messageId, 0, message))
+      onCompleteThenStop()
     case Request(_) ⇒
       deliverBuf()
     case Cancel ⇒
       context.stop(self)
   }
 
+  @inline
+  private def sendPackage(sessionId: Long, messageId: Long, message: ProtoMessage) = {
+    val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, message)).require
+    enqueue(MTPackage(authId, sessionId, mbBytes))
+  }
+
   private def handleMessageBox(pAuthId: Long, pSessionId: Long, mb: MessageBox): Unit = {
-    @inline
-    def sendPackage(messageId: Long, message: ProtoMessage) = {
-      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, message)).require
-      enqueue(MTPackage(authId, pSessionId, mbBytes))
-    }
 
     def withValidKey(keyId: Long)(f: ServerKey ⇒ Any): Unit =
       serverKeys find (_.id == keyId) match {
         case Some(serverKey) ⇒ f(serverKey)
-        case None            ⇒ sendDrop("Wrong key id")
+        case None            ⇒ self ! SendDrop(mb.messageId, "Wrong key id")
       }
 
-    @inline
-    def sendDrop(msg: String) = {
-      enqueue(Drop(mb.messageId, 0, msg))
-      onCompleteThenStop()
-    }
+    def withValidSession(randomId: Long)(f: BitVector ⇒ Any): Unit =
+      sessions get randomId match {
+        case Some(serverNonce) ⇒ f(serverNonce)
+        case None              ⇒ self ! SendDrop(mb.messageId, "Wrong random id")
+      }
+
+    def withValidNonce(nonce: BitVector)(f: ⇒ Any): Unit =
+      if (nonce.bytes.length == NonceBytes) f
+      else self ! SendDrop(mb.messageId, "Wrong nonce")
 
     def handleRequestAuthId(): Unit = {
       val f =
@@ -120,43 +136,59 @@ final class AuthorizationManager(serverKeys: Seq[ServerKey]) extends Actor with 
           db.run(persist.AuthIdRepo.create(authId, None, None))
         } else Future.successful(())
 
-      f.onComplete {
-        case Success(_) ⇒ sendPackage(mb.messageId, ResponseAuthId(authId))
-        case Failure(e) ⇒ sendDrop(e.getMessage)
+      f onComplete {
+        case Success(_) ⇒ self ! SendPackage(pSessionId, mb.messageId, ResponseAuthId(authId))
+        case Failure(e) ⇒ self ! SendDrop(mb.messageId, "Failed to create AuthId")
       }
     }
 
     def handleRequestStartAuth(randomId: Long): Unit = {
-      val nonce = new Array[Byte](NonceBytes)
-      new SecureRandom().nextBytes(nonce)
-      val rsp = ResponseStartAuth(randomId, serverKeys.toVector map (_.id), BitVector(nonce))
-      sendPackage(mb.messageId, rsp)
+      val nonceBytes = new Array[Byte](NonceBytes)
+      new SecureRandom().nextBytes(nonceBytes)
+      val nonce = BitVector(nonceBytes)
+      this.sessions += randomId → nonce
+      val rsp = ResponseStartAuth(randomId, serverKeys.toVector map (_.id), nonce)
+      sendPackage(pSessionId, mb.messageId, rsp)
     }
 
     def handleRequestGetServerKey(keyId: Long): Unit = {
       withValidKey(keyId) { serverKey ⇒
         val rsp = ResponseGetServerKey(keyId, BitVector(serverKey.public))
-        sendPackage(mb.messageId, rsp)
+        sendPackage(pSessionId, mb.messageId, rsp)
       }
     }
-    /*
-    @inline
-    def handleRequestDH(randomId: Long, keyId: Long, clientNonce: BitVector, clientKey: BitVector): Unit = {
-      withValidKey(keyId) { serverKey =>
 
-        val rsp = ResponseDoDH(randomId, verify, verifySign)
-        sendPackage(mb.messageId, rsp)
+    def handleRequestDH(randomId: Long, keyId: Long, clientNonce: BitVector, clientKey: BitVector): Unit = {
+      withValidKey(keyId) { serverKey ⇒
+        withValidSession(randomId) { serverNonce ⇒
+          withValidNonce(clientNonce) {
+            val preMaster = curve.calculateAgreement(serverKey.privat, clientKey.toByteArray)
+            val fullNonce = (clientNonce ++ serverNonce).toByteArray
+            val master = new PRF(new SHA256(), "master secret", PRFBytes).calculate(preMaster, fullNonce)
+            val verify = new PRF(new SHA256(), "client finished", PRFBytes).calculate(master, fullNonce)
+            val randomBytes = new Array[Byte](SignRandomBytes)
+            new SecureRandom().nextBytes(randomBytes)
+            val verifySign = curve.calculateSignature(randomBytes, serverKey.privat, verify)
+
+            db.run((
+              for {
+                masterKey ← MasterKeyRepo.create(master)
+                _ ← AuthIdRepo.create(masterKey.authId)
+              } yield SendPackage(pSessionId, mb.messageId, ResponseDoDH(randomId, BitVector(verify), BitVector(verifySign)))
+            ).transactionally) pipeTo self
+          }
+        }
       }
-    }*/
+    }
 
     if (pAuthId == 0L) {
-      if (pSessionId != 0L) sendDrop("sessionId must be equal to zero")
+      if (pSessionId != 0L) self ! SendDrop(mb.messageId, "sessionId must be equal to zero")
       else mb.body match {
-        case RequestAuthId              ⇒ handleRequestAuthId()
+        case RequestAuthId ⇒ handleRequestAuthId()
         case RequestStartAuth(randomId) ⇒ handleRequestStartAuth(randomId)
         case RequestGetServerKey(keyId) ⇒ handleRequestGetServerKey(keyId)
-        // case RequestDH(randomId, keyId, clientNonce, clientKey) => handleRequestDH(randomId, keyId, clientNonce, clientKey)
-        case _                          ⇒ sendDrop("not a RequestAuthId message")
+        case RequestDH(randomId, keyId, clientNonce, clientKey) ⇒ handleRequestDH(randomId, keyId, clientNonce, clientKey)
+        case _ ⇒ self ! SendDrop(mb.messageId, "Unknown request")
       }
     } else {
       log.error("AuthorizationManager can handle packages with authId: 0 only")

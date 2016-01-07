@@ -1,6 +1,6 @@
 package im.actor.crypto;
 
-import im.actor.crypto.primitives.ByteStrings;
+import im.actor.crypto.primitives.util.ByteStrings;
 
 /**
  * Actor's MTProto V2 keys

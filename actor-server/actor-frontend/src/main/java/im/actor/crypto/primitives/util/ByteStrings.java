@@ -1,5 +1,10 @@
-package im.actor.crypto.primitives;
+package im.actor.crypto.primitives.util;
 
+/**
+ * Various binary operation on binary strings
+ *
+ * @author Steve Kite (steve@actor.im)
+ */
 public class ByteStrings {
 
     public static byte[] longToBytes(long v) {

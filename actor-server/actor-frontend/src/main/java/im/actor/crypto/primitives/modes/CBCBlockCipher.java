@@ -1,4 +1,4 @@
-package im.actor.crypto.primitives.block;
+package im.actor.crypto.primitives.modes;
 
 import im.actor.crypto.primitives.BlockCipher;
 
@@ -6,7 +6,8 @@ import im.actor.crypto.primitives.BlockCipher;
  * CBC Cipher implementation
  * by Steve Kite (steve@actor.im)
  */
-public class CBCCipher {
+public class CBCBlockCipher {
+
     private final BlockCipher blockCipher;
     private final int blockSize;
 
@@ -15,7 +16,7 @@ public class CBCCipher {
      *
      * @param blockCipher Underlying block cipher
      */
-    public CBCCipher(BlockCipher blockCipher) {
+    public CBCBlockCipher(BlockCipher blockCipher) {
         this.blockCipher = blockCipher;
         this.blockSize = blockCipher.getBlockSize();
     }
