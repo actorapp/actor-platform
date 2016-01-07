@@ -46,6 +46,7 @@ import im.actor.server.user._
 import im.actor.server.webhooks.WebhooksExtension
 import kamon.Kamon
 
+import scala.concurrent.duration.Duration
 import scala.language.existentials
 
 final case class ActorServer(system: ActorSystem)
@@ -267,10 +268,12 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       case e: ConfigException ⇒
         system.log.error(e, "Failed to load server configuration")
         system.terminate()
+        Await.result(system.whenTerminated, Duration.Inf)
         throw e
       case e: Throwable ⇒
         system.log.error(e, "Server failed to start up")
         system.terminate()
+        Await.result(system.whenTerminated, Duration.Inf)
         throw e
     }
   }
