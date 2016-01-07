@@ -57,7 +57,7 @@ public class Sticker extends AbsLocalContent implements ListEngineItem {
         this.stickerCollectionId = collectionId;
         this.stickerId = isHeader ? localCollectionId : apiStickerDescriptor.getId();
         this.localCollectionId = localCollectionId;
-        if (isHeader) {
+        if (apiStickerDescriptor == null) {
             this.apiImageLocation128 = new ApiImageLocation();
             this.apiImageLocation256 = new ApiImageLocation();
             this.apiImageLocation512 = new ApiImageLocation();
@@ -209,6 +209,7 @@ public class Sticker extends AbsLocalContent implements ListEngineItem {
 
         thumb = values.getBytes(7);
         localCollectionId = values.getInt(8);
+        Log.d("StICKER", "parse, localCollectionId: " + localCollectionId);
         isHeader = values.getBool(9, false);
     }
 
@@ -244,8 +245,7 @@ public class Sticker extends AbsLocalContent implements ListEngineItem {
         } else {
             uid = ((long) stickerId & 0xFFFFFFFFL) + (((long) localCollectionId & 0xFFFFFFFFL) * 10000000000L);
         }
-        Log.d("STICKER", "ID: " + stickerId + " Collection ID: " + localCollectionId + " Unique id: " + uid);
-        return uid;
+        return uid * -1;
     }
 
     @Override
@@ -255,11 +255,6 @@ public class Sticker extends AbsLocalContent implements ListEngineItem {
 
     public boolean isHeader() {
         return isHeader;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof Sticker && ((Sticker) o).getId() == stickerId;
     }
 
     @Override

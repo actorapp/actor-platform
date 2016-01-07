@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 public class StickersView extends RecyclerView {
     boolean disableWhileFastScroll = false;
     EmojiKeyboard keyboard;
-    private StickerAdapter adapter;
 
     public StickersView(Context context, EmojiKeyboard keyboard) {
         super(context);
@@ -85,15 +85,17 @@ public class StickersView extends RecyclerView {
         GridLayoutManager layoutManager = new GridLayoutManager(context, Screen.getWidth() / Screen.dp(70));
         setLayoutManager(layoutManager);
 
+
         StickersAdapter stickersAdapter = new StickersAdapter(messenger().getStickersDisplayList(), context, this, keyboard);
         setAdapter(stickersAdapter);
 
         RecyclerView packSwitch = new RecyclerView(context);
-        packSwitch.setLayoutManager(new LinearLayoutManager(context, HORIZONTAL, false));
-        PacksAdapter packsAdapter = new PacksAdapter(messenger().getStickersPacksDisplayList(), context, stickersAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, HORIZONTAL, false);
+        packSwitch.setLayoutManager(linearLayoutManager);
+        PacksAdapter packsAdapter = new PacksAdapter(messenger().getStickersPacksDisplayList(), context, stickersAdapter, keyboard.getStickerIndicatorContainer());
         packSwitch.setAdapter(packsAdapter);
         keyboard.getStickerIndicatorContainer().removeAllViews();
-        keyboard.getStickerIndicatorContainer().addView(packSwitch);
+        keyboard.getStickerIndicatorContainer().addView(packSwitch, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
     }
 
