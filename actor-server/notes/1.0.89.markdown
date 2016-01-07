@@ -1,0 +1,4 @@
+Features
+---
+
+* Secure way of AuthId obtaining
