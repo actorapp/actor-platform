@@ -1,6 +1,5 @@
 package im.actor.runtime.crypto;
 
-import java.security.SecureRandom;
 import java.util.Random;
 
 import im.actor.runtime.crypto.primitives.curve25519.Sha512;
@@ -18,7 +17,7 @@ public class Curve25519 {
      *
      * @return generated key pair
      */
-    public synchronized Curve25519KeyPair keyGen() {
+    public Curve25519KeyPair keyGen() {
         byte[] privateKey = keyGenPrivate();
         byte[] publicKey = keyGenPublic(privateKey);
         return new Curve25519KeyPair(publicKey, privateKey);
@@ -29,7 +28,7 @@ public class Curve25519 {
      *
      * @return generated private key
      */
-    public synchronized byte[] keyGenPrivate() {
+    public byte[] keyGenPrivate() {
 
         // Hashing Random Bytes instead of using random bytes directly
         // Just in case as reference ed255519 implementation do same
@@ -54,7 +53,7 @@ public class Curve25519 {
      * @param privateKey private key
      * @return generated public key
      */
-    public synchronized byte[] keyGenPublic(byte[] privateKey) {
+    public byte[] keyGenPublic(byte[] privateKey) {
         byte[] publicKey = new byte[32];
         curve_sigs.curve25519_keygen(publicKey, privateKey);
         return publicKey;
@@ -67,7 +66,7 @@ public class Curve25519 {
      * @param theirPublic Theirs Public key
      * @return calculated agreement
      */
-    public synchronized byte[] calculateAgreement(byte[] ourPrivate, byte[] theirPublic) {
+    public byte[] calculateAgreement(byte[] ourPrivate, byte[] theirPublic) {
         byte[] agreement = new byte[32];
         scalarmult.crypto_scalarmult(agreement, ourPrivate, theirPublic);
         return agreement;
@@ -81,7 +80,7 @@ public class Curve25519 {
      * @param message    message to sign
      * @return signature
      */
-    public synchronized byte[] calculateSignature(byte[] random, byte[] privateKey, byte[] message) {
+    public byte[] calculateSignature(byte[] random, byte[] privateKey, byte[] message) {
         byte[] result = new byte[64];
 
         if (curve_sigs.curve25519_sign(SHA512Provider, result, privateKey, message, message.length, random) != 0) {
@@ -99,7 +98,7 @@ public class Curve25519 {
      * @param signature signature of a message
      * @return true if signature correct
      */
-    public synchronized boolean verifySignature(byte[] publicKey, byte[] message, byte[] signature) {
+    public boolean verifySignature(byte[] publicKey, byte[] message, byte[] signature) {
         return curve_sigs.curve25519_verify(SHA512Provider, signature, publicKey, message, message.length) == 0;
     }
 
