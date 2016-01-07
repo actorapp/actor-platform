@@ -367,6 +367,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
         //
         // Dialogs List
         //
+        
         if (dialogsList != null) {
             dialogsList.startReconverting();
             for (Dialog dialog : dialogsList.getRawItems()) {
@@ -380,9 +381,25 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
         //
         // Grouped Dialogs
         //
+
         if (dialogsGroupedList != null) {
-            // TODO: Implement
+            ArrayList<DialogGroup> groups = context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().get();
+            if (groups != null) {
+                outer:
+                for (DialogGroup g : groups) {
+                    for (DialogSmall ds : g.getDialogs()) {
+                        if (checkAvatar(ds.getAvatar(), fileId)) {
+                            context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().forceNotify();
+                            break outer;
+                        }
+                    }
+                }
+            }
         }
+
+        //
+        // Contacts List
+        //
 
         if (contactsList != null) {
             contactsList.startReconverting();
@@ -393,6 +410,10 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             }
             contactsList.stopReconverting();
         }
+
+        //
+        // Message Contents
+        //
 
         for (JsDisplayList<JsMessage, Message> messageList : messageLists.values()) {
             messageList.startReconverting();
@@ -414,6 +435,10 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             messageList.stopReconverting();
         }
 
+        //
+        // Users
+        //
+
         for (JsBindedValue<JsUser> u : users.values()) {
             int uid = u.get().getUid();
             UserVM userVM = context().getUsersModule().getUsers().get(uid);
@@ -421,6 +446,10 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                 u.changeValue(JsUser.fromUserVM(userVM, messenger));
             }
         }
+
+        //
+        // Groups
+        //
 
         for (JsBindedValue<JsGroup> g : groups.values()) {
             int gid = g.get().getGid();
