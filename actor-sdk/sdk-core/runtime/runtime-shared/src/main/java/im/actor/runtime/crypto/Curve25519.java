@@ -1,6 +1,7 @@
 package im.actor.runtime.crypto;
 
 import java.security.SecureRandom;
+import java.util.Random;
 
 import im.actor.runtime.crypto.primitives.curve25519.Sha512;
 import im.actor.runtime.crypto.primitives.curve25519.curve_sigs;
@@ -10,7 +11,7 @@ import im.actor.runtime.crypto.primitives.digest.SHA512;
 
 public class Curve25519 {
 
-    private SecureRandom random = new SecureRandom();
+    private Random random = new Random();
 
     /**
      * Generating KeyPair

@@ -1,6 +1,7 @@
 package im.actor.runtime.crypto;
 
 import java.security.SecureRandom;
+import java.util.Random;
 
 import im.actor.runtime.crypto.primitives.kuznechik.KuznechikCipher;
 import im.actor.runtime.crypto.primitives.modes.CBCBlockCipher;
@@ -13,7 +14,7 @@ import im.actor.runtime.crypto.primitives.modes.CBCBlockCipher;
  */
 public class Kuznechik {
 
-    private SecureRandom random = new SecureRandom();
+    private Random random = new Random();
 
     /**
      * Encrypting data with key
