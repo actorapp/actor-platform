@@ -1,5 +1,6 @@
 package im.actor.runtime.crypto.primitives.hmac;
 
+
 import im.actor.runtime.crypto.primitives.Digest;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 
@@ -39,7 +40,7 @@ public class HMAC {
         byte[] innnerHash = new byte[digest.getDigestSize()];
         digest.reset();
         digest.update(innerKeyPad, 0, innerKeyPad.length);
-        digest.update(message, 0, message.length);
+        digest.update(message, offset, length);
         digest.doFinal(innnerHash, 0);
 
         // Outer digest

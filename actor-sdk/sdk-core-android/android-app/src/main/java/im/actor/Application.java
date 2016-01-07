@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
+import java.util.ArrayList;
+
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ContentConverter;
 import im.actor.core.entity.content.JsonContent;
@@ -30,7 +32,7 @@ public class Application extends ActorSDKApplication {
         ActorSDK.sharedActor().setPushId(209133700967L);
 
 //        ArrayList<String> endpoints = new ArrayList<String>();
-//        endpoints.add("foo");
+//        endpoints.add("tcp://192.168.1.184:9070");
 //        ActorSDK.sharedActor().setEndpoints(endpoints);
 
         ActorStyle style = ActorSDK.sharedActor().style;
@@ -61,8 +63,6 @@ public class Application extends ActorSDKApplication {
         }
 
     }
-
-
 
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
