@@ -1,6 +1,6 @@
 package im.actor.crypto;
 
-import im.actor.crypto.primitives.block.CBCCipher;
+import im.actor.crypto.primitives.modes.CBCBlockCipher;
 import im.actor.crypto.primitives.kuznechik.KuznechikCipher;
 
 import java.security.SecureRandom;
@@ -24,8 +24,8 @@ public class Kuznechik {
      * @return encrypted data
      */
     public byte[] encrypt(byte[] key, byte[] iv, byte[] data) {
-        CBCCipher cbcCipher = new CBCCipher(new KuznechikCipher(key));
-        return cbcCipher.encrypt(iv, data);
+        CBCBlockCipher cbcBlockCipher = new CBCBlockCipher(new KuznechikCipher(key));
+        return cbcBlockCipher.encrypt(iv, data);
     }
 
     /**
@@ -37,8 +37,8 @@ public class Kuznechik {
      * @return decrypted data
      */
     public byte[] decrypt(byte[] key, byte[] iv, byte[] data) {
-        CBCCipher cbcCipher = new CBCCipher(new KuznechikCipher(key));
-        return cbcCipher.decrypt(iv, data);
+        CBCBlockCipher cbcBlockCipher = new CBCBlockCipher(new KuznechikCipher(key));
+        return cbcBlockCipher.decrypt(iv, data);
     }
 
     /**

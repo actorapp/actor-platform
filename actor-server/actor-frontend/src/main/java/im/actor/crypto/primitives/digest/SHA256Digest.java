@@ -1,6 +1,7 @@
-package im.actor.crypto.primitives.bc.hash;
+package im.actor.crypto.primitives.digest;
 
-import im.actor.crypto.primitives.bc.Pack;
+
+import im.actor.crypto.primitives.util.Pack;
 
 /**
  * FIPS 180-2 implementation of SHA-256.
@@ -13,7 +14,7 @@ import im.actor.crypto.primitives.bc.Pack;
  * SHA-512 1024   64    512
  * </pre>
  */
-public class SHA256Digest {
+public class SHA256Digest extends GeneralDigest {
     private static final int DIGEST_LENGTH = 32;
 
     private int H1, H2, H3, H4, H5, H6, H7, H8;
@@ -36,7 +37,9 @@ public class SHA256Digest {
         return DIGEST_LENGTH;
     }
 
-    protected void processWord(byte[] in, int inOff) {
+    protected void processWord(
+            byte[] in,
+            int inOff) {
         // Note: Inlined for performance
 //        X[xOff] = Pack.bigEndianToInt(in, inOff);
         int n = in[inOff] << 24;
@@ -50,7 +53,8 @@ public class SHA256Digest {
         }
     }
 
-    protected void processLength(long bitLength) {
+    protected void processLength(
+            long bitLength) {
         if (xOff > 14) {
             processBlock();
         }
@@ -59,7 +63,10 @@ public class SHA256Digest {
         X[15] = (int) (bitLength & 0xffffffff);
     }
 
-    public int doFinal(byte[] out, int outOff) {
+    public int doFinal(
+            byte[] out,
+            int outOff) {
+        finish();
 
         Pack.intToBigEndian(H1, out, outOff);
         Pack.intToBigEndian(H2, out, outOff + 4);
@@ -79,6 +86,7 @@ public class SHA256Digest {
      * reset the chaining variables
      */
     public void reset() {
+        super.reset();
 
         /* SHA-256 initial hash value
          * The first 32 bits of the fractional parts of the square roots
@@ -238,6 +246,5 @@ public class SHA256Digest {
             0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
             0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
     };
-
 }
 

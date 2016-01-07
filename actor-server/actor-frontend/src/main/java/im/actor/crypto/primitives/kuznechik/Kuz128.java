@@ -1,6 +1,6 @@
 package im.actor.crypto.primitives.kuznechik;
 
-import im.actor.crypto.primitives.ByteStrings;
+import im.actor.crypto.primitives.util.ByteStrings;
 
 /**
  * 128-bit variable
