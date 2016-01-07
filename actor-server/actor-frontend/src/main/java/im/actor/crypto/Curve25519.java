@@ -1,5 +1,7 @@
 package im.actor.crypto;
 
+import im.actor.crypto.primitives.digest.SHA256;
+import im.actor.crypto.primitives.digest.SHA512;
 import im.actor.crypto.primitives.curve25519.Sha512;
 import im.actor.crypto.primitives.curve25519.curve_sigs;
 import im.actor.crypto.primitives.curve25519.scalarmult;
@@ -32,7 +34,10 @@ public class Curve25519 {
         // Just in case as reference ed255519 implementation do same
         byte[] randomBytes = new byte[32];
         random.nextBytes(randomBytes);
-        byte[] privateKey = SHA256.calc(randomBytes);
+        byte[] privateKey = new byte[32];
+        SHA256 sha256 = new SHA256();
+        sha256.update(randomBytes, 0, 32);
+        sha256.doFinal(privateKey, 0);
 
         // Performing bit's flipping
         privateKey[0] &= 248;
@@ -100,10 +105,9 @@ public class Curve25519 {
     private final Sha512 SHA512Provider = new Sha512() {
         @Override
         public void calculateDigest(byte[] out, byte[] in, long length) {
-            byte[] res = SHA512.calc(in, (int) length);
-            for (int i = 0; i < 64; i++) {
-                out[i] = res[i];
-            }
+            SHA512 sha512 = new SHA512();
+            sha512.update(in, 0, (int) length);
+            sha512.doFinal(out, 0);
         }
     };
 }
