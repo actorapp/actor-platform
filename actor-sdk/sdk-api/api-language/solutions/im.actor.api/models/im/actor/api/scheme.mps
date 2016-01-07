@@ -9277,6 +9277,32 @@
         </node>
       </node>
       <node concept="NvyAe" id="GBscvBBiZs" role="2m5mJr" />
+      <node concept="2m5naR" id="1B$5xp_zl9$" role="2m5mJr">
+        <property role="TrG5h" value="HTTPHeader" />
+        <node concept="2m7Kf5" id="1B$5xp_zlcl" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="key" />
+          <node concept="2m5ndX" id="1B$5xp_zlcp" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1B$5xp_zlcs" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="value" />
+          <node concept="2m5ndX" id="1B$5xp_zlcy" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="1B$5xp_zox_" role="NXodf">
+          <property role="NXePf" value="HTTP Header record" />
+        </node>
+        <node concept="NX1gA" id="1B$5xp_zoxE" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="HTTP Header name" />
+          <ref role="NX6Kv" node="1B$5xp_zlcl" resolve="key" />
+        </node>
+        <node concept="NX1gA" id="1B$5xp_zoxM" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="HTTP Header value" />
+          <ref role="NX6Kv" node="1B$5xp_zlcs" resolve="value" />
+        </node>
+      </node>
       <node concept="2m5naR" id="6Fl2chwC7Lu" role="2m5mJr">
         <property role="TrG5h" value="FileUrlDescription" />
         <node concept="2m7Kf5" id="6Fl2chwC8Bv" role="2m0hLx">
@@ -9296,6 +9322,22 @@
             <ref role="wb18D" node="6u8Nlnzqdrq" resolve="sec" />
           </node>
         </node>
+        <node concept="2m7Kf5" id="1B$5xp_zi_E" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="unsignedUrl" />
+          <node concept="2m5nlT" id="1B$5xp_zjr_" role="2m7DVh">
+            <node concept="2m5ndX" id="1B$5xp_zjrF" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1B$5xp_zm1P" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="unsignedUrlHeaders" />
+          <node concept="2m5nlk" id="1B$5xp_zm22" role="2m7DVh">
+            <node concept="2m5mGg" id="1B$5xp_zm28" role="3GJlyp">
+              <ref role="2m5mJy" node="1B$5xp_zl9$" resolve="HTTPHeader" />
+            </node>
+          </node>
+        </node>
         <node concept="NXeRC" id="6Fl2chwC7NZ" role="NXodf">
           <property role="NXePf" value="File url description" />
         </node>
@@ -9313,6 +9355,14 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Timeout of url" />
           <ref role="NX6Kv" node="6Fl2chwC7NQ" resolve="timeout" />
+        </node>
+        <node concept="NX1gA" id="1B$5xp_zjsa" role="NXodf">
+          <property role="NX6R2" value="Unsigned URL (used to honor web caches)" />
+          <ref role="NX6Kv" node="1B$5xp_zi_E" resolve="unsignedUrl" />
+        </node>
+        <node concept="NX1gA" id="1B$5xp_zmRa" role="NXodf">
+          <property role="NX6R2" value="Headers that is required to download files with unsigned url" />
+          <ref role="NX6Kv" node="1B$5xp_zm1P" resolve="unsignedUrlHeaders" />
         </node>
       </node>
       <node concept="2m6fVq" id="3MpuFr6x5xl" role="2m5mJr">
@@ -9346,6 +9396,16 @@
             <property role="NX6R2" value="Timeout of url" />
             <ref role="NX6Kv" node="3MpuFr6x68z" resolve="timeout" />
           </node>
+          <node concept="NX1gA" id="1B$5xp_znGq" role="1y2DgH">
+            <property role="NX6R2" value="Unsigned URL (used to honor web caches)" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="1B$5xp_zjsh" resolve="unsignedUrl" />
+          </node>
+          <node concept="NX1gA" id="1B$5xp_znG$" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Headers that is required to download files with unsigned url" />
+            <ref role="NX6Kv" node="1B$5xp_zkhh" resolve="unsignedUrlHeaders" />
+          </node>
           <node concept="2m7Kf5" id="3MpuFr6x68s" role="2m0hLx">
             <property role="2m7DUN" value="1" />
             <property role="TrG5h" value="url" />
@@ -9356,6 +9416,22 @@
             <property role="TrG5h" value="timeout" />
             <node concept="wb0Ql" id="6u8Nlnzqexu" role="2m7DVh">
               <ref role="wb18D" node="6u8Nlnzqdrq" resolve="sec" />
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="1B$5xp_zjsh" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="unsignedUrl" />
+            <node concept="2m5nlT" id="1B$5xp_zkh8" role="2m7DVh">
+              <node concept="2m5ndX" id="1B$5xp_zkhe" role="3GH5xg" />
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="1B$5xp_zkhh" role="2m0hLx">
+            <property role="2m7DUN" value="4" />
+            <property role="TrG5h" value="unsignedUrlHeaders" />
+            <node concept="2m5nlk" id="1B$5xp_znGh" role="2m7DVh">
+              <node concept="2m5mGg" id="1B$5xp_znGn" role="3GJlyp">
+                <ref role="2m5mJy" node="1B$5xp_zl9$" resolve="HTTPHeader" />
+              </node>
             </node>
           </node>
           <node concept="Nu42z" id="3MpuFr6x68o" role="NuuwV">
