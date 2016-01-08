@@ -12,11 +12,11 @@ import im.actor.sdk.core.ActorPushManager;
 
 public class PushManager implements ActorPushManager {
     private static final String TAG = "im.actor.push.PushManager";
-    private boolean isRegistered;
+    private boolean isRegistered = false;
 
     @Override
     public void registerPush(final Context context) {
-        isRegistered = ActorSDK.sharedActor().getMessenger().getPreferences().getBool("push_registered", false);
+//        isRegistered = ActorSDK.sharedActor().getMessenger().getPreferences().getBool("push_registered", false);
 
         if (!isRegistered) {
             Log.d(TAG, "Requesting push token...");
