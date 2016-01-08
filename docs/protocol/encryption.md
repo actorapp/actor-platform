@@ -6,7 +6,7 @@ We are not invenging the wheel and implement encryption logic exactly as [TLS 1.
 
 In Rev4 we will enable support for Axolotl Ratched like encryption directly in protocol.
 
-HMAC is calculated from (seqNumber + content.length + content).
+HMAC is calculated from (seqNumber + iv + content.length + content).
 
 ## Base Encrypted Package
 
@@ -15,14 +15,16 @@ EncryptedPackage {
   HEADER = 0xE8
   // Sequence number starting from zero for each encrypted package
   seqNumber: long
-  // First encryption level - EncryptionCBCPackage
-  aesPackage: bytes
+  // First encryption level
+  encryptedPackage: bytes
 }
 ```
+
+Container for encryption level. First one is AES, second one is Kuznechik. After decrypting AES package, you will get other EncryptionCBCPackage, decrypt it and you will get Plain Text Message object.
 
 ```
 EncryptionCBCPackage {
   iv: bytes
-  content: bytes
+  encryptedContent: bytes
 }
 ```
