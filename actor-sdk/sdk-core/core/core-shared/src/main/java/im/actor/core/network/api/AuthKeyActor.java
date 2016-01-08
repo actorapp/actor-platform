@@ -5,6 +5,7 @@ import java.util.Random;
 
 import im.actor.core.network.ActorApi;
 import im.actor.core.network.Endpoints;
+import im.actor.core.network.TrustedKey;
 import im.actor.core.network.mtp.entity.ProtoMessage;
 import im.actor.core.network.mtp.entity.ProtoPackage;
 import im.actor.core.network.mtp.entity.ProtoSerializer;
@@ -22,6 +23,7 @@ import im.actor.runtime.Network;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.bser.DataInput;
+import im.actor.runtime.bser.Utils;
 import im.actor.runtime.crypto.Cryptos;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.Curve25519KeyPair;
@@ -138,7 +140,24 @@ public class AuthKeyActor extends Actor {
                         throw new IOException("Incorrect RandomId");
                     }
                     long[] keys = startAuth.getAvailableKeys();
-                    gotoKeyDownloadState(keys[0], startAuth.getServerNonce());
+
+                    if (endpoints.getTrustedKeys().length == 0) {
+                        gotoKeyDownloadState(keys[0], startAuth.getServerNonce());
+                    } else {
+                        for (long l : keys) {
+                            for (TrustedKey tk : endpoints.getTrustedKeys()) {
+                                if (tk.getKeyId() == l) {
+                                    if (tk.getKey() != null) {
+                                        gotoDHState(tk.getKeyId(), tk.getKey(), startAuth.getServerNonce());
+                                    } else {
+                                        gotoKeyDownloadState(tk.getKeyId(), startAuth.getServerNonce());
+                                    }
+                                    return;
+                                }
+                            }
+                        }
+                        throw new IOException("No trusted keys found!");
+                    }
                 } else {
                     throw new IOException("Expected: ResponseStartAuth, got: " + struct.getClass().getName());
                 }
@@ -247,7 +266,7 @@ public class AuthKeyActor extends Actor {
                 ActorApi.MTPROTO_VERSION,
                 ActorApi.API_MAJOR_VERSION,
                 ActorApi.API_MINOR_VERSION,
-                endpoints.fetchEndpoint(),
+                endpoints.fetchEndpoint(false),
                 new ConnectionCallback() {
                     @Override
                     public void onConnectionRedirect(String host, int port, int timeout) {

@@ -33,7 +33,8 @@ public class ApiModule extends AbsModule implements BusSubscriber {
         // Register initial scheme parsers
         this.parserConfig.addExtension(new ParsingExtension(new RpcParser(), new UpdatesParser()));
 
-        this.actorApi = new ActorApi(new Endpoints(context().getConfiguration().getEndpoints()),
+        this.actorApi = new ActorApi(new Endpoints(context().getConfiguration().getEndpoints(),
+                context().getConfiguration().getTrustedKeys()),
                 new PreferenceApiStorage(context().getPreferences()),
                 new ActorApiCallbackImpl(),
                 context().getConfiguration().isEnableNetworkLogging(),
@@ -113,7 +114,7 @@ public class ApiModule extends AbsModule implements BusSubscriber {
 
         @Override
         public void onUpdateReceived(Object obj) {
-            if (context().getUpdatesModule()!=null) {
+            if (context().getUpdatesModule() != null) {
                 context().getUpdatesModule().onUpdateReceived(obj);
             }
         }
