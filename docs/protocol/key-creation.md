@@ -12,7 +12,7 @@ This technique use [TLS 1.2 RFC](https://tools.ietf.org/html/rfc5246) for it's b
 * Not sending server certificates if not needed on every connection.
 * One DiffieHellman to build one shared secret without repeating on almost every reconnect. (we will implement PFS in next revision of MTProto v2)
 * Using only Curve25519, AES-CBC, Kuznechik-CBC and Streebog
-* Extending master_secret to make it 256 bytes long
+* Extending master_secret to make it 256 bytes long with two different algorithms based on TLS's PRF function with SHA256 and Streebog hashes.
 * Added Signing of response just to check that everything is ok and add one more protection level
 
 # Primitives
@@ -90,12 +90,16 @@ RequestDH {
 Calculations
 ```
 pre_master_secret := <result_of_dh>
-master_secret := PRF(pre_master_secret, "master secret", clientNonce + ServerNonce)
-verify := PRF(master_secret, "client finished", clientNonce + ServerNonce)
+master_secret := 
+  PRF_SHA256(pre_master_secret, "kgb secret", clientNonce + ServerNonce, 128) + 
+  PRF_STREEBOG256(pre_master_secret, "nsa secret", clientNonce + ServerNonce, 128)
+verify := 
+  PRF_SHA256(master_secret, "client finished", clientNonce + ServerNonce, 128) + 
+  PRF_STREEBOG256(master_secret, "patron finished", clientNonce + ServerNonce, 128) 
 verify_sign := Ed25519(verification, server_private_signing_key)
 ```
 
-master_secret is resulted 
+master_secret is result encryption key. First 128 bytes is US encryption keys and last 128 bytes is Russian encryption keys.
 
 ```
 ResponseDoDH {
