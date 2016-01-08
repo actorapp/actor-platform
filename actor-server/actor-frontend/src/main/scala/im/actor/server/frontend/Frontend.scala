@@ -73,6 +73,7 @@ object Frontend {
     system:        ActorSystem,
     mat:           Materializer
   ): Unit = {
+    val serverKeys = ServerKey.loadKeysFromConfig(serverConfig).get
     val kssConfig = serverConfig.getConfig("tls.keystores")
 
     endpoint match {
@@ -82,7 +83,7 @@ object Frontend {
           case Right(ctx) ⇒ ctx
         }
 
-        TcpFrontend.start(host, port, tlsContext)
+        TcpFrontend.start(host, port, serverKeys, tlsContext)
 
       case Endpoint(WebSocket, host, port, keystore) ⇒
         val tlsContext = keystore map (TlsContext.load(kssConfig, _)) map {
@@ -90,7 +91,7 @@ object Frontend {
           case Right(ctx) ⇒ ctx
         }
 
-        WsFrontend.start(host, port, tlsContext)
+        WsFrontend.start(host, port, serverKeys, tlsContext)
     }
   }
 }
@@ -105,6 +106,6 @@ abstract class Frontend(connIdPrefix: String) {
 
   private def nextConnId(): String = s"conn-$connIdPrefix-${connCounter.incrementAndGet()}"
 
-  protected def mtProtoBlueprint()(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoBlueprint.MTProtoFlow =
-    MTProtoBlueprint(nextConnId(), connectionTime, connectionCount)
+  protected def mtProtoBlueprint(serverKeys: Seq[ServerKey])(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoBlueprint.MTProtoFlow =
+    MTProtoBlueprint(nextConnId(), connectionTime, connectionCount, serverKeys)
 }

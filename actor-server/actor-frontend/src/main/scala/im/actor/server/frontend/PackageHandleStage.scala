@@ -1,6 +1,7 @@
 package im.actor.server.frontend
 
 import akka.stream.{ Attributes, Outlet, Inlet, FlowShape }
+import im.actor.server.model.MasterKey
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
@@ -29,6 +30,8 @@ private[frontend] final class PackageHandleStage(
   override def shape = FlowShape(in, out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
+    var authIds = Set.empty[Either[Long, MasterKey]]
+
     setHandler(in, new InHandler {
       override def onPush(): Unit = grab(in) match {
         case TransportPackage(_, h: Handshake) ⇒
@@ -41,18 +44,16 @@ private[frontend] final class PackageHandleStage(
             hresp
           })
         case TransportPackage(index, body) ⇒
-          // TODO: get rid of respOptFuture and ask pattern
-
           val ack = Ack(index)
 
           val fs: Seq[MTProto] = body match {
-            case m: MTPackage ⇒
+            case m: Package ⇒
               if (m.authId == 0) {
-                // FIXME: remove this side effect
                 authManager ! AuthorizationManager.FrontendPackage(m)
                 Seq(ack)
               } else {
-                sessionClient ! SessionClient.SendToSession(m)
+                // FIXME: check authId
+                sessionClient ! SessionClient.SendToSession(m.authId, m.sessionId, m.messageBytes)
                 Seq(ack)
               }
             case Ping(bytes) ⇒ Seq(ack, Pong(bytes))
