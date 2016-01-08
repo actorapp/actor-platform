@@ -20,14 +20,14 @@ object MTProtoBlueprint {
 
   type MTProtoFlow = Flow[ByteString, ByteString, Unit]
 
-  val protoVersions: Set[Byte] = Set(1)
+  val protoVersions: Set[Byte] = Set(1, 2, 3)
   val apiMajorVersions: Set[Byte] = Set(1)
 
-  def apply(connId: String, connTimeHist: Histogram, connCountMM: MinMaxCounter)(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoFlow = {
-    val authManager = system.actorOf(AuthorizationManager.props, s"authManager-$connId")
+  def apply(connId: String, connTimeHist: Histogram, connCountMM: MinMaxCounter, serverKeys: Seq[ServerKey])(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoFlow = {
+    val sessionClient = system.actorOf(SessionClient.props(sessionRegion), s"sessionClient-$connId")
+    val authManager = system.actorOf(AuthorizationManager.props(serverKeys, sessionClient), s"authManager-$connId")
     val authSource = Source.fromPublisher(ActorPublisher[MTProto](authManager))
 
-    val sessionClient = system.actorOf(SessionClient.props(sessionRegion), s"sessionClient-$connId")
     val sessionClientSource = Source.fromPublisher(ActorPublisher[MTProto](sessionClient))
 
     val mtprotoFlow = Flow.fromGraph(new PackageParseStage())

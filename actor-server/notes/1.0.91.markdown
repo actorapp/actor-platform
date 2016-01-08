@@ -1,0 +1,4 @@
+Fixes
+---
+
+* Incremented protoVersion

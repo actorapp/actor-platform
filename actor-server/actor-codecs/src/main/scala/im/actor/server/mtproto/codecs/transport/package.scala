@@ -15,7 +15,7 @@ package object transport {
 
   val HandshakeResponseCodec = (C.byte :: C.byte :: C.byte :: C.bits).as[HandshakeResponse]
 
-  val MTPackageCodec = (C.int64 :: C.int64 :: C.bits).as[MTPackage]
+  val PackageCodec = (C.int64 :: C.int64 :: C.bits).as[Package]
 
   val PingCodec = intLengthBits.as[Ping]
 
@@ -37,7 +37,7 @@ package object transport {
     header match {
       case Handshake.header         ⇒ HandshakeCodec.map(_.asInstanceOf[MTProto])
       case HandshakeResponse.header ⇒ HandshakeResponseCodec.map(_.asInstanceOf[MTProto])
-      case MTPackage.header         ⇒ MTPackageCodec.map(_.asInstanceOf[MTProto])
+      case Package.header           ⇒ PackageCodec.map(_.asInstanceOf[MTProto])
       case Ping.header              ⇒ PingCodec.map(_.asInstanceOf[MTProto])
       case Pong.header              ⇒ PongCodec.map(_.asInstanceOf[MTProto])
       case Drop.header              ⇒ DropCodec.map(_.asInstanceOf[MTProto])

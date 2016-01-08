@@ -1189,6 +1189,11 @@ public class ChatActivity extends ActorEditTextActivity {
         }
         isAudioVisible = true;
 
+        hideView(attachButton);
+        hideView(messageEditText);
+        hideView(emojiButton);
+        hideView(sendContainer);
+
         audioFile = ActorSDK.sharedActor().getMessenger().getInternalTempFile("voice_msg", "opus");
 
         long id = VoiceCaptureActor.LAST_ID.incrementAndGet();
@@ -1219,6 +1224,12 @@ public class ChatActivity extends ActorEditTextActivity {
             return;
         }
         isAudioVisible = false;
+
+        showView(attachButton);
+        showView(messageEditText);
+        showView(emojiButton);
+        showView(sendContainer);
+
         voiceRecordActor.send(new VoiceCaptureActor.Stop(cancel));
         TranslateAnimation animation = new TranslateAnimation(0, Screen.getWidth(), 0, 0);
         animation.setDuration(160);

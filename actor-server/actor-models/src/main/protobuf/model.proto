@@ -71,3 +71,8 @@ message UserPassword {
     bytes salt = 2;
     bytes hash = 3;
 }
+
+message MasterKey {
+    int64 auth_id = 1;
+    bytes body = 2;
+}
