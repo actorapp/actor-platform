@@ -20,7 +20,7 @@ object MTProtoBlueprint {
 
   type MTProtoFlow = Flow[ByteString, ByteString, Unit]
 
-  val protoVersions: Set[Byte] = Set(1, 2)
+  val protoVersions: Set[Byte] = Set(1, 2, 3)
   val apiMajorVersions: Set[Byte] = Set(1)
 
   def apply(connId: String, connTimeHist: Histogram, connCountMM: MinMaxCounter, serverKeys: Seq[ServerKey])(implicit sessionRegion: SessionRegion, system: ActorSystem): MTProtoFlow = {
