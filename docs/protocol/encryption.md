@@ -13,7 +13,7 @@ HMAC is calculated from (seqNumber + iv + content.length + content).
 ```
 EncryptedPackage {
   HEADER = 0xE8
-  // Sequence number starting from zero for each encrypted package
+  // Sequence number starting from zero for each direction
   seqNumber: long
   // First encryption level
   encryptedPackage: bytes
