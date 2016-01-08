@@ -1,6 +1,6 @@
-package im.actor.runtime.crypto;
+package im.actor.crypto;
 
-import im.actor.runtime.crypto.primitives.util.ByteStrings;
+import im.actor.crypto.primitives.util.ByteStrings;
 
 /**
  * Actor's MTProto V2 keys
@@ -12,11 +12,24 @@ public class ActorProtoKey {
     private byte[] clientKey;
     private byte[] serverKey;
 
+    private byte[] clientMacRussianKey;
+    private byte[] serverMacRussianKey;
+    private byte[] clientRussianKey;
+    private byte[] serverRussianKey;
+
     public ActorProtoKey(byte[] masterKey) {
-        clientMacKey = ByteStrings.substring(masterKey, 0, 32);
-        serverMacKey = ByteStrings.substring(masterKey, 32, 32);
-        clientKey = ByteStrings.substring(masterKey, 64, 32);
-        serverKey = ByteStrings.substring(masterKey, 96, 32);
+        int offset = 0;
+        clientMacKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);
+        serverMacKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);
+        clientKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);
+        serverKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);
+
+        // Moving to russian part
+        offset = 128;
+        clientMacRussianKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);
+        serverMacRussianKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);
+        clientRussianKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);
+        serverRussianKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);
     }
 
     public byte[] getClientMacKey() {
@@ -33,5 +46,21 @@ public class ActorProtoKey {
 
     public byte[] getServerKey() {
         return serverKey;
+    }
+
+    public byte[] getClientMacRussianKey() {
+        return clientMacRussianKey;
+    }
+
+    public byte[] getServerMacRussianKey() {
+        return serverMacRussianKey;
+    }
+
+    public byte[] getClientRussianKey() {
+        return clientRussianKey;
+    }
+
+    public byte[] getServerRussianKey() {
+        return serverRussianKey;
     }
 }

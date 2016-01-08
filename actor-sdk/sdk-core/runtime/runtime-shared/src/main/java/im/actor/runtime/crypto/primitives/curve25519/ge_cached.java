@@ -1,4 +1,3 @@
-
 package im.actor.runtime.crypto.primitives.curve25519;
 
 public class ge_cached {
