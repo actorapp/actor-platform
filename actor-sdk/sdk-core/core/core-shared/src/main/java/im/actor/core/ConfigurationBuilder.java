@@ -10,6 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import im.actor.core.network.TrustedKey;
+import im.actor.core.util.Hex;
+import im.actor.runtime.Log;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
 
 /**
@@ -17,6 +20,7 @@ import im.actor.runtime.mtproto.ConnectionEndpoint;
  */
 public class ConfigurationBuilder {
 
+    private ArrayList<TrustedKey> trustedKeys = new ArrayList<TrustedKey>();
     private ArrayList<ConfigurationExtension> extensions = new ArrayList<ConfigurationExtension>();
     private ArrayList<ConnectionEndpoint> endpoints = new ArrayList<ConnectionEndpoint>();
 
@@ -42,6 +46,19 @@ public class ConfigurationBuilder {
     private ArrayList<String> preferredLanguages = new ArrayList<String>();
 
     private String customAppName;
+
+    /**
+     * Adding Trusted key for protocol encryption securing
+     *
+     * @param trustedKey hex representation of trusted key
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("addTrustedKey:")
+    public ConfigurationBuilder addTrustedKey(String trustedKey) {
+        trustedKeys.add(new TrustedKey(Hex.fromHex(trustedKey)));
+        return this;
+    }
 
     /**
      * Setting custom application name
@@ -313,6 +330,9 @@ public class ConfigurationBuilder {
         if (platformType == null) {
             throw new RuntimeException("App Category not set");
         }
+        if (trustedKeys.size() == 0) {
+            Log.w("ConfigurationBuilder", "No Trusted keys set. Using anonymous server authentication.");
+        }
         return new Configuration(endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
                 phoneBookProvider, notificationProvider,
                 apiConfiguration, enableContactsLogging, enableNetworkLogging,
@@ -320,6 +340,7 @@ public class ConfigurationBuilder {
                 minDelay, maxDelay, maxFailureCount,
                 extensions.toArray(new ConfigurationExtension[extensions.size()]),
                 timeZone, preferredLanguages.toArray(new String[preferredLanguages.size()]),
-                customAppName);
+                customAppName,
+                trustedKeys.toArray(new TrustedKey[trustedKeys.size()]));
     }
 }

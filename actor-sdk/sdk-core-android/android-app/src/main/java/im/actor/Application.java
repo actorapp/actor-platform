@@ -31,9 +31,9 @@ public class Application extends ActorSDKApplication {
         ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
         ActorSDK.sharedActor().setPushId(209133700967L);
 
-        ArrayList<String> endpoints = new ArrayList<String>();
-        endpoints.add("tcp://192.168.1.184:9070");
-        ActorSDK.sharedActor().setEndpoints(endpoints);
+//        ArrayList<String> endpoints = new ArrayList<String>();
+//        endpoints.add("tcp://192.168.1.184:9070");
+//        ActorSDK.sharedActor().setEndpoints(endpoints);
 
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setMainColor(Color.parseColor("#529a88"));

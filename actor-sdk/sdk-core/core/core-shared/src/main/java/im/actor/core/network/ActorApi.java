@@ -18,7 +18,7 @@ import im.actor.runtime.threading.AtomicLongCompat;
  */
 public class ActorApi {
 
-    public static final int MTPROTO_VERSION = 2;
+    public static final int MTPROTO_VERSION = 3;
     public static final int API_MAJOR_VERSION = ApiVersion.VERSION_MAJOR;
     public static final int API_MINOR_VERSION = ApiVersion.VERSION_MINOR;
 

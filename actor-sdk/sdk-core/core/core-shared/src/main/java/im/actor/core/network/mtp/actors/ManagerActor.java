@@ -276,7 +276,7 @@ public class ManagerActor extends Actor {
             Network.createConnection(id, ActorApi.MTPROTO_VERSION,
                     ActorApi.API_MAJOR_VERSION,
                     ActorApi.API_MINOR_VERSION,
-                    endpoints.fetchEndpoint(), new ConnectionCallback() {
+                    endpoints.fetchEndpoint(authKey == null), new ConnectionCallback() {
 
                         @Override
                         public void onConnectionRedirect(String host, int port, int timeout) {
