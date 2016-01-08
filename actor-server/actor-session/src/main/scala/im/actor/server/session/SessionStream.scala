@@ -8,22 +8,21 @@ import scodec.bits._
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.protocol._
-import im.actor.server.mtproto.transport.MTPackage
 
 sealed trait SessionStreamMessage
 
 object SessionStreamMessage {
   @SerialVersionUID(1L)
-  case class HandleMessageBox(messageBox: MessageBox, clientData: ClientData) extends SessionStreamMessage
+  final case class HandleMessageBox(messageBox: MessageBox, clientData: ClientData) extends SessionStreamMessage
 
   @SerialVersionUID(1L)
-  case class HandleRpcRequest(messageId: Long, requestBytes: BitVector, clientData: ClientData) extends SessionStreamMessage
+  final case class HandleRpcRequest(messageId: Long, requestBytes: BitVector, clientData: ClientData) extends SessionStreamMessage
 
   @SerialVersionUID(1L)
-  case class HandleSubscribe(command: SubscribeCommand) extends SessionStreamMessage
+  final case class HandleSubscribe(command: SubscribeCommand) extends SessionStreamMessage
 
   @SerialVersionUID(1L)
-  case class SendProtoMessage(message: ProtoMessage with OutgoingProtoMessage) extends SessionStreamMessage
+  final case class SendProtoMessage(message: ProtoMessage with OutgoingProtoMessage) extends SessionStreamMessage
 }
 
 private[session] object SessionStream {
@@ -60,7 +59,7 @@ private[session] object SessionStream {
       val updatesPublisher = builder.add(Source.fromPublisher(ActorPublisher[OutProtoMessage](updatesHandler)).map(out))
 
       val reSendSubscriber = builder.add(Sink.fromSubscriber(ActorSubscriber[ReSenderMessage](reSender)))
-      val reSendPublisher = builder.add(Source.fromPublisher(ActorPublisher[MTPackage](reSender)))
+      val reSendPublisher = builder.add(Source.fromPublisher(ActorPublisher[MessageBox](reSender)))
 
       val mergeProto = builder.add(MergePreferred[ReSenderMessage](3))
       val mergeProtoPriority = builder.add(MergePreferred[ReSenderMessage](1))

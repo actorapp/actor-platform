@@ -5,9 +5,7 @@ import java.util.concurrent.TimeUnit
 import akka.actor.{ ActorLogging, ActorRef, Cancellable, Props }
 import akka.stream.actor._
 import com.typesafe.config.Config
-import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
-import im.actor.server.mtproto.transport.MTPackage
 
 import scala.annotation.tailrec
 import scala.collection.immutable
@@ -50,7 +48,7 @@ private[session] object ReSender {
 }
 
 private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: ReSenderConfig)
-  extends ActorSubscriber with ActorPublisher[MTPackage] with ActorLogging with MessageIdHelper {
+  extends ActorSubscriber with ActorPublisher[MessageBox] with ActorLogging with MessageIdHelper {
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
@@ -160,7 +158,7 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
 
   // Publisher-related
 
-  private[this] var packageQueue = immutable.Queue.empty[MTPackage]
+  private[this] var mbQueue = immutable.Queue.empty[MessageBox]
 
   def publisher: Receive = {
     case Request(_) ⇒
@@ -205,27 +203,27 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
     }
   }
 
-  private def enqueueProtoMessage(message: ProtoMessage): (MTPackage, Long) =
+  private def enqueueProtoMessage(message: ProtoMessage): (MessageBox, Long) =
     enqueueProtoMessage(nextMessageId(), message)
 
-  private def enqueueProtoMessage(messageId: Long, message: ProtoMessage): (MTPackage, Long) = {
-    val pkg = packProtoMessage(messageId, message)
+  private def enqueueProtoMessage(messageId: Long, message: ProtoMessage): (MessageBox, Long) = {
+    val mb = MessageBox(messageId, message)
 
-    if (packageQueue.isEmpty && totalDemand > 0) {
-      onNext(pkg)
+    if (mbQueue.isEmpty && totalDemand > 0) {
+      onNext(mb)
     } else {
-      packageQueue = packageQueue.enqueue(pkg)
+      mbQueue = mbQueue.enqueue(mb)
       deliverBuf()
     }
 
-    (pkg, messageId)
+    (mb, messageId)
   }
 
   @tailrec final def deliverBuf(): Unit = {
     if (isActive && totalDemand > 0)
-      packageQueue.dequeueOption match {
+      mbQueue.dequeueOption match {
         case Some((el, q)) ⇒
-          packageQueue = q
+          mbQueue = q
           onNext(el)
           deliverBuf()
         case None ⇒
@@ -240,20 +238,6 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
   private def cleanReduceKey(reduceKey: String, messageId: Long): Unit = {
     if (reduceMap.get(reduceKey).contains(messageId))
       reduceMap -= reduceKey
-  }
-
-  private def packProtoMessage(messageId: Long, message: ProtoMessage): MTPackage = {
-    val mb = boxProtoMessage(messageId, message)
-    packMessageBox(mb)
-  }
-
-  private def packMessageBox(mb: MessageBox): MTPackage = {
-    val bytes = MessageBoxCodec.encode(mb).require
-    MTPackage(authId, sessionId, bytes)
-  }
-
-  private def boxProtoMessage(messageId: Long, message: ProtoMessage): MessageBox = {
-    MessageBox(messageId, message)
   }
 
   private def cleanup(): Unit = {

@@ -1,5 +1,6 @@
 package im.actor.crypto.primitives.modes;
 
+import im.actor.crypto.IntegrityException;
 import im.actor.crypto.primitives.BlockCipher;
 
 /**
@@ -28,12 +29,12 @@ public class CBCBlockCipher {
      * @param data data for encryption
      * @return encrypted data
      */
-    public byte[] encrypt(byte[] iv, byte[] data) {
+    public byte[] encrypt(byte[] iv, byte[] data) throws IntegrityException {
         if (data.length % blockSize != 0) {
-            throw new RuntimeException("Incorrect data size");
+            throw new IntegrityException("Incorrect data size");
         }
         if (iv.length != blockSize) {
-            throw new RuntimeException("Incorrect iv size");
+            throw new IntegrityException("Incorrect iv size");
         }
 
         byte[] currentBlock = new byte[blockSize];
@@ -68,12 +69,12 @@ public class CBCBlockCipher {
      * @param data data for decryption
      * @return decrypted data
      */
-    public byte[] decrypt(byte[] iv, byte[] data) {
+    public byte[] decrypt(byte[] iv, byte[] data) throws IntegrityException {
         if (data.length % blockSize != 0) {
-            throw new RuntimeException("Incorrect data size");
+            throw new IntegrityException("Incorrect data size");
         }
         if (iv.length != blockSize) {
-            throw new RuntimeException("Incorrect iv size");
+            throw new IntegrityException("Incorrect iv size");
         }
 
         byte[] res = new byte[data.length];
