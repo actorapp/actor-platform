@@ -16,11 +16,13 @@ import im.actor.core.network.mtp.entity.ResponseDoDH;
 import im.actor.core.network.mtp.entity.ResponseGetServerKey;
 import im.actor.core.network.mtp.entity.ResponseStartAuth;
 import im.actor.core.util.ExponentialBackoff;
+import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.Network;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.bser.DataInput;
+import im.actor.runtime.crypto.Cryptos;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.Curve25519KeyPair;
 import im.actor.runtime.crypto.primitives.digest.SHA256;
@@ -42,7 +44,6 @@ public class AuthKeyActor extends Actor {
     private Random random = new Random();
     private final ExponentialBackoff exponentialBackoff = new ExponentialBackoff(1000, 30000, 25);
     private ActorState currentState;
-    private Curve25519 curve25519 = new Curve25519();
 
     private void startKeyCreation(Endpoints endpoints) {
         Log.d(TAG, "startKeyCreation");
@@ -131,6 +132,7 @@ public class AuthKeyActor extends Actor {
             @Override
             public void onMessage(ProtoStruct struct) throws IOException {
                 if (struct instanceof ResponseStartAuth) {
+                    Log.d(TAG, "Received ResponseStartAuth");
                     ResponseStartAuth startAuth = (ResponseStartAuth) struct;
                     if (startAuth.getRandomId() != randomId) {
                         throw new IOException("Incorrect RandomId");
@@ -155,6 +157,7 @@ public class AuthKeyActor extends Actor {
             @Override
             public void onMessage(ProtoStruct struct) throws IOException {
                 if (struct instanceof ResponseGetServerKey) {
+                    Log.d(TAG, "Received ResponseGetServerKey");
                     ResponseGetServerKey r = (ResponseGetServerKey) struct;
                     if (r.getKeyId() != keyId) {
                         throw new IOException("Incorrect KeyId");
@@ -169,8 +172,10 @@ public class AuthKeyActor extends Actor {
 
     private void gotoDHState(final long keyId, final byte[] key, final byte[] serverNonce) {
         final byte[] clientNonce = new byte[32];
-        random.nextBytes(clientNonce);
-        final Curve25519KeyPair clientKeyPair = curve25519.keyGen();
+        Crypto.nextBytes(clientNonce);
+        byte[] keyMaterial = new byte[32];
+        Crypto.nextBytes(keyMaterial);
+        final Curve25519KeyPair clientKeyPair = Curve25519.keyGen(keyMaterial);
 
         goToState(new ActorState() {
             @Override
@@ -182,18 +187,18 @@ public class AuthKeyActor extends Actor {
             @Override
             public void onMessage(ProtoStruct struct) throws IOException {
                 if (struct instanceof ResponseDoDH) {
+                    Log.d(TAG, "Received ResponseDoDH");
                     ResponseDoDH r = (ResponseDoDH) struct;
                     if (r.getRandomId() != randomId) {
                         throw new IOException("Incorrect RandomId");
                     }
 
-                    PRF masterPRF = new PRF(new SHA256(), "master secret", 256);
-                    PRF clientPRF = new PRF(new SHA256(), "client finished", 256);
+                    PRF combinedPrf = Cryptos.PRF_SHA_STREEBOG_256();
                     byte[] nonce = ByteStrings.merge(clientNonce, serverNonce);
-                    byte[] pre_master_secret = curve25519.calculateAgreement(clientKeyPair.getPrivateKey(), key);
-                    byte[] master_secret = masterPRF.calculate(pre_master_secret, nonce);
-                    byte[] verify = clientPRF.calculate(master_secret, nonce);
-                    if (!curve25519.verifySignature(key, verify, r.getVerifySign())) {
+                    byte[] pre_master_secret = Curve25519.calculateAgreement(clientKeyPair.getPrivateKey(), key);
+                    byte[] master_secret = combinedPrf.calculate(pre_master_secret, "master secret", nonce, 256);
+                    byte[] verify = combinedPrf.calculate(master_secret, "client finished", nonce, 256);
+                    if (!Curve25519.verifySignature(key, verify, r.getVerifySign())) {
                         throw new IOException("Incorrect Signature");
                     }
                     SHA256 sha256 = new SHA256();
