@@ -6,15 +6,17 @@ import im.actor.crypto.primitives.Digest;
 import static im.actor.crypto.primitives.util.ByteStrings.merge;
 import static im.actor.crypto.primitives.util.ByteStrings.substring;
 
-public class HMAC {
+public class HMAC implements Digest {
 
     private Digest digest;
+    private final byte[] secret;
+    private final byte[] outerKeyPad;
+    private final byte[] innerKeyPad;
 
-    public HMAC(Digest digest) {
+    public HMAC(byte[] secret, Digest digest) {
+
         this.digest = digest;
-    }
 
-    public void calculate(byte[] secret, byte[] message, int offset, int length, byte[] dest, int destOffset) {
         byte[] fixedSecret = new byte[digest.getDigestSize()];
         if (secret.length > digest.getDigestSize()) {
             digest.reset();
@@ -28,28 +30,41 @@ public class HMAC {
         } else {
             fixedSecret = secret;
         }
+        this.secret = fixedSecret;
 
-        // Paddings
-        byte[] outerKeyPad = new byte[digest.getDigestSize()];
-        byte[] innerKeyPad = new byte[digest.getDigestSize()];
+        outerKeyPad = new byte[digest.getDigestSize()];
+        innerKeyPad = new byte[digest.getDigestSize()];
         for (int i = 0; i < outerKeyPad.length; i++) {
-            outerKeyPad[i] = (byte) (0x5c ^ fixedSecret[i]);
-            innerKeyPad[i] = (byte) (0x36 ^ fixedSecret[i]);
+            outerKeyPad[i] = (byte) (0x5c ^ this.secret[i]);
+            innerKeyPad[i] = (byte) (0x36 ^ this.secret[i]);
         }
+    }
 
-        // Inner digest
-        // digest(i_key_pad ∥ message)
-        byte[] innnerHash = new byte[digest.getDigestSize()];
+    @Override
+    public void reset() {
         digest.reset();
         digest.update(innerKeyPad, 0, innerKeyPad.length);
-        digest.update(message, offset, length);
-        digest.doFinal(innnerHash, 0);
+    }
 
-        // Outer digest
-        // digest(o_key_pad ∥ digest(i_key_pad ∥ message))
+    @Override
+    public void update(byte[] src, int offset, int length) {
+        digest.update(src, offset, length);
+    }
+
+    @Override
+    public void doFinal(byte[] dest, int destOffset) {
+        byte[] innnerHash = new byte[digest.getDigestSize()];
+        digest.doFinal(innnerHash, 0);
         digest.reset();
         digest.update(outerKeyPad, 0, outerKeyPad.length);
         digest.update(innnerHash, 0, innnerHash.length);
         digest.doFinal(dest, destOffset);
+
+        reset();
+    }
+
+    @Override
+    public int getDigestSize() {
+        return digest.getDigestSize();
     }
 }

@@ -6,19 +6,16 @@ import im.actor.crypto.primitives.curve25519.Sha512;
 import im.actor.crypto.primitives.curve25519.curve_sigs;
 import im.actor.crypto.primitives.curve25519.scalarmult;
 
-import java.security.SecureRandom;
-
-public class Curve25519 {
-
-    private SecureRandom random = new SecureRandom();
+public final class Curve25519 {
 
     /**
      * Generating KeyPair
      *
+     * @param randomBytes 32 random bytes
      * @return generated key pair
      */
-    public synchronized Curve25519KeyPair keyGen() {
-        byte[] privateKey = keyGenPrivate();
+    public static Curve25519KeyPair keyGen(byte[] randomBytes) {
+        byte[] privateKey = keyGenPrivate(randomBytes);
         byte[] publicKey = keyGenPublic(privateKey);
         return new Curve25519KeyPair(publicKey, privateKey);
     }
@@ -26,17 +23,20 @@ public class Curve25519 {
     /**
      * Generating private key. Source: https://cr.yp.to/ecdh.html
      *
+     * @param randomBytes random bytes (32+ bytes)
      * @return generated private key
      */
-    public synchronized byte[] keyGenPrivate() {
+    public static byte[] keyGenPrivate(byte[] randomBytes) {
+
+        if (randomBytes.length < 32) {
+            throw new RuntimeException("Random bytes too small");
+        }
 
         // Hashing Random Bytes instead of using random bytes directly
         // Just in case as reference ed255519 implementation do same
-        byte[] randomBytes = new byte[32];
-        random.nextBytes(randomBytes);
         byte[] privateKey = new byte[32];
         SHA256 sha256 = new SHA256();
-        sha256.update(randomBytes, 0, 32);
+        sha256.update(randomBytes, 0, randomBytes.length);
         sha256.doFinal(privateKey, 0);
 
         // Performing bit's flipping
@@ -53,7 +53,7 @@ public class Curve25519 {
      * @param privateKey private key
      * @return generated public key
      */
-    public synchronized byte[] keyGenPublic(byte[] privateKey) {
+    public static byte[] keyGenPublic(byte[] privateKey) {
         byte[] publicKey = new byte[32];
         curve_sigs.curve25519_keygen(publicKey, privateKey);
         return publicKey;
@@ -66,7 +66,7 @@ public class Curve25519 {
      * @param theirPublic Theirs Public key
      * @return calculated agreement
      */
-    public synchronized byte[] calculateAgreement(byte[] ourPrivate, byte[] theirPublic) {
+    public static byte[] calculateAgreement(byte[] ourPrivate, byte[] theirPublic) {
         byte[] agreement = new byte[32];
         scalarmult.crypto_scalarmult(agreement, ourPrivate, theirPublic);
         return agreement;
@@ -80,7 +80,7 @@ public class Curve25519 {
      * @param message    message to sign
      * @return signature
      */
-    public synchronized byte[] calculateSignature(byte[] random, byte[] privateKey, byte[] message) {
+    public static byte[] calculateSignature(byte[] random, byte[] privateKey, byte[] message) {
         byte[] result = new byte[64];
 
         if (curve_sigs.curve25519_sign(SHA512Provider, result, privateKey, message, message.length, random) != 0) {
@@ -98,11 +98,11 @@ public class Curve25519 {
      * @param signature signature of a message
      * @return true if signature correct
      */
-    public synchronized boolean verifySignature(byte[] publicKey, byte[] message, byte[] signature) {
+    public static boolean verifySignature(byte[] publicKey, byte[] message, byte[] signature) {
         return curve_sigs.curve25519_verify(SHA512Provider, signature, publicKey, message, message.length) == 0;
     }
 
-    private final Sha512 SHA512Provider = new Sha512() {
+    private static final Sha512 SHA512Provider = new Sha512() {
         @Override
         public void calculateDigest(byte[] out, byte[] in, long length) {
             SHA512 sha512 = new SHA512();
@@ -110,4 +110,8 @@ public class Curve25519 {
             sha512.doFinal(out, 0);
         }
     };
+
+    private Curve25519() {
+
+    }
 }

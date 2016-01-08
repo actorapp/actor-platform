@@ -4,6 +4,9 @@ import im.actor.server.mtproto.protocol._
 import scodec.codecs._
 
 package object protocol {
+  val EncryptedPackageCodec = (int64 :: bytes).as[EncryptedPackage]
+  val EncryptionCBCPackageCodec = (bytes :: bytes).as[EncryptionCBCPackage]
+
   val MessageAckCodec = longs.as[MessageAck]
   val NewSessionCodec = (int64 :: int64).as[NewSession]
   val AuthIdInvalidCodec = provide[AuthIdInvalid](AuthIdInvalid)
