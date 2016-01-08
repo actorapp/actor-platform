@@ -10,7 +10,11 @@ import im.actor.core.network.ActorApi;
 import im.actor.core.network.Endpoints;
 import im.actor.core.network.NetworkState;
 import im.actor.core.network.mtp.MTProto;
+import im.actor.core.network.mtp.entity.EncryptedCBCPackage;
+import im.actor.core.network.mtp.entity.EncryptedPackage;
 import im.actor.core.network.mtp.entity.ProtoMessage;
+import im.actor.core.network.mtp.entity.ProtoSerializer;
+import im.actor.core.network.mtp.entity.ProtoStruct;
 import im.actor.core.util.ExponentialBackoff;
 import im.actor.runtime.*;
 import im.actor.runtime.actors.Actor;
@@ -21,6 +25,14 @@ import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.DataOutput;
+import im.actor.runtime.crypto.ActorProtoKey;
+import im.actor.runtime.crypto.CBCHmacPackage;
+import im.actor.runtime.crypto.IntegrityException;
+import im.actor.runtime.crypto.primitives.aes.AESFastEngine;
+import im.actor.runtime.crypto.primitives.digest.SHA256;
+import im.actor.runtime.crypto.primitives.kuznechik.KuznechikCipher;
+import im.actor.runtime.crypto.primitives.streebog.Streebog256;
+import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.mtproto.Connection;
 import im.actor.runtime.mtproto.ConnectionCallback;
 import im.actor.runtime.mtproto.CreateConnectionCallback;
@@ -49,6 +61,12 @@ public class ManagerActor extends Actor {
     private final MTProto mtProto;
     private final Endpoints endpoints;
     private final long authId;
+    private final byte[] authKey;
+    private final ActorProtoKey authProtoKey;
+    private final CBCHmacPackage serverUSDecryptor;
+    private final CBCHmacPackage serverRUDecryptor;
+    private final CBCHmacPackage clientUSEncryptor;
+    private final CBCHmacPackage clientRUEncryptor;
     private final long sessionId;
     private final boolean isEnableLog;
 
@@ -56,6 +74,8 @@ public class ManagerActor extends Actor {
     private int currentConnectionId;
     private Connection currentConnection;
     private NetworkState networkState = NetworkState.UNKNOWN;
+    private int outSeq = 0;
+    private int inSeq = 0;
 
     // Creating
     private boolean isCheckingConnections = false;
@@ -68,6 +88,32 @@ public class ManagerActor extends Actor {
         this.mtProto = mtProto;
         this.endpoints = mtProto.getEndpoints();
         this.authId = mtProto.getAuthId();
+        this.authKey = mtProto.getAuthKey();
+        if (this.authKey != null) {
+            this.authProtoKey = new ActorProtoKey(this.authKey);
+            this.serverUSDecryptor = new CBCHmacPackage(
+                    new AESFastEngine(this.authProtoKey.getServerKey()),
+                    new SHA256(),
+                    this.authProtoKey.getServerMacKey());
+            this.serverRUDecryptor = new CBCHmacPackage(
+                    new KuznechikCipher(this.authProtoKey.getServerRussianKey()),
+                    new Streebog256(),
+                    this.authProtoKey.getServerMacRussianKey());
+            this.clientUSEncryptor = new CBCHmacPackage(
+                    new AESFastEngine(this.authProtoKey.getClientKey()),
+                    new SHA256(),
+                    this.authProtoKey.getClientMacKey());
+            this.clientRUEncryptor = new CBCHmacPackage(
+                    new KuznechikCipher(this.authProtoKey.getClientRussianKey()),
+                    new Streebog256(),
+                    this.authProtoKey.getClientMacRussianKey());
+        } else {
+            this.authProtoKey = null;
+            this.serverUSDecryptor = null;
+            this.serverRUDecryptor = null;
+            this.clientUSEncryptor = null;
+            this.clientRUEncryptor = null;
+        }
         this.sessionId = mtProto.getSessionId();
         this.isEnableLog = mtProto.isEnableLog();
         backoff = new ExponentialBackoff(mtProto.getMinDelay(), mtProto.getMaxDelay(), mtProto.getMaxFailureCount());
@@ -148,6 +194,8 @@ public class ManagerActor extends Actor {
 
         currentConnectionId = id;
         currentConnection = connection;
+        outSeq = 0;
+        inSeq = 0;
         connectionStateChanged();
 
 
@@ -172,6 +220,8 @@ public class ManagerActor extends Actor {
         if (currentConnectionId == id) {
             currentConnectionId = 0;
             currentConnection = null;
+            outSeq = 0;
+            inSeq = 0;
             connectionStateChanged();
             requestCheckConnection();
         }
@@ -273,18 +323,42 @@ public class ManagerActor extends Actor {
                 throw new IOException("Incorrect header");
             }
 
-            long messageId = bis.readLong();
-            byte[] payload = bis.readProtoBytes();
 
-            receiver.send(new ProtoMessage(messageId, payload));
+            if (authKey != null) {
+                EncryptedPackage encryptedPackage = new EncryptedPackage(bis);
+                int seq = (int) encryptedPackage.getSeqNumber();
+                if (seq != inSeq) {
+                    throw new IOException("Expected " + inSeq + ", got: " + seq);
+                }
+                inSeq++;
+
+                EncryptedCBCPackage usEncryptedPackage = new EncryptedCBCPackage(new DataInput(encryptedPackage.getEncryptedPackage()));
+                byte[] ruPackage = serverUSDecryptor.decryptPackage(seq, usEncryptedPackage.getIv(), usEncryptedPackage.getEncryptedContent());
+                EncryptedCBCPackage ruEncryptedPackage = new EncryptedCBCPackage(new DataInput(ruPackage));
+                byte[] plainText = serverRUDecryptor.decryptPackage(seq, ruEncryptedPackage.getIv(), ruEncryptedPackage.getEncryptedContent());
+                DataInput ptInput = new DataInput(plainText);
+                long messageId = ptInput.readLong();
+                byte[] ptPayload = ptInput.readProtoBytes();
+                receiver.send(new ProtoMessage(messageId, ptPayload));
+            } else {
+                long messageId = bis.readLong();
+                byte[] payload = bis.readProtoBytes();
+                receiver.send(new ProtoMessage(messageId, payload));
+            }
         } catch (IOException e) {
             Log.w(TAG, "Closing connection: incorrect package");
-            e.printStackTrace();
+            Log.e(TAG, e);
 
             if (currentConnection != null) {
-                currentConnection.close();
+                try {
+                    currentConnection.close();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
                 currentConnection = null;
                 currentConnectionId = 0;
+                outSeq = 0;
+                inSeq = 0;
                 // Log.d(TAG, "Set connection #" + 0);
             }
             checkConnection();
@@ -299,17 +373,61 @@ public class ManagerActor extends Actor {
             currentConnection = null;
             // Log.d(TAG, "Set connection #" + 0);
             currentConnectionId = 0;
+            outSeq = 0;
+            inSeq = 0;
             checkConnection();
         }
 
-        if (currentConnection != null) {
-            DataOutput bos = new DataOutput();
-            bos.writeLong(authId);
-            bos.writeLong(sessionId);
-            bos.writeBytes(data, offset, len);
-            byte[] pkg = bos.toByteArray();
-            currentConnection.post(pkg, 0, pkg.length);
-            // Log.d(TAG, "Posted message to connection #" + currentConnectionId);
+        try {
+            if (currentConnection != null) {
+                if (authKey != null) {
+                    int seq = outSeq++;
+                    byte[] ruIv = new byte[16];
+                    Crypto.nextBytes(ruIv);
+                    byte[] usIv = new byte[16];
+                    Crypto.nextBytes(usIv);
+
+
+                    byte[] ruCipherText = clientRUEncryptor.encryptPackage(seq, ruIv, ByteStrings.substring(data, offset, len));
+                    byte[] ruPackage = new EncryptedCBCPackage(ruIv, ruCipherText).toByteArray();
+                    byte[] usCipherText = clientUSEncryptor.encryptPackage(seq, usIv, ruPackage);
+                    byte[] usPackage = new EncryptedCBCPackage(usIv, usCipherText).toByteArray();
+
+                    EncryptedPackage encryptedPackage = new EncryptedPackage(seq, usPackage);
+                    byte[] cipherData = encryptedPackage.toByteArray();
+                    DataOutput bos = new DataOutput();
+                    bos.writeLong(authId);
+                    bos.writeLong(sessionId);
+                    bos.writeBytes(cipherData, 0, cipherData.length);
+                    byte[] pkg = bos.toByteArray();
+                    currentConnection.post(pkg, 0, pkg.length);
+                } else {
+                    DataOutput bos = new DataOutput();
+                    bos.writeLong(authId);
+                    bos.writeLong(sessionId);
+                    bos.writeBytes(data, offset, len);
+                    byte[] pkg = bos.toByteArray();
+                    currentConnection.post(pkg, 0, pkg.length);
+                }
+                // Log.d(TAG, "Posted message to connection #" + currentConnectionId);
+            }
+        } catch (IOException e) {
+            Log.w(TAG, "Closing connection: exception during push");
+            Log.e(TAG, e);
+
+            if (currentConnection != null) {
+                try {
+                    currentConnection.close();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+                currentConnection = null;
+                currentConnectionId = 0;
+                outSeq = 0;
+                inSeq = 0;
+                // Log.d(TAG, "Set connection #" + 0);
+            }
+            checkConnection();
         }
     }
 

@@ -107,7 +107,7 @@ public class ApiBroker extends Actor {
             if (isEnableLog) {
                 Log.d(TAG, "Key loaded: " + currentAuthId);
             }
-            self().send(new InitMTProto(currentAuthId));
+            self().send(new InitMTProto(currentAuthId, keyStorage.getAuthMasterKey()));
         }
     }
 
@@ -165,15 +165,17 @@ public class ApiBroker extends Actor {
         keyStorage.saveAuthKey(authId);
         keyStorage.saveMasterKey(authKey);
 
-        self().send(new InitMTProto(authId));
+        self().send(new InitMTProto(authId, authKey));
     }
 
-    private void createMtProto(long key) {
+    private void createMtProto(long key, byte[] authKey) {
         Log.d(TAG, "Creating proto");
         keyStorage.saveAuthKey(key);
+        keyStorage.saveMasterKey(authKey);
         currentAuthId = key;
 
         proto = new MTProto(key,
+                authKey,
                 RandomUtils.nextRid(),
                 endpoints,
                 new ProtoCallback(key),
@@ -406,13 +408,19 @@ public class ApiBroker extends Actor {
 
     private class InitMTProto {
         private long authId;
+        private byte[] authKey;
 
-        public InitMTProto(long authId) {
+        public InitMTProto(long authId, byte[] authKey) {
             this.authId = authId;
+            this.authKey = authKey;
         }
 
         public long getAuthId() {
             return authId;
+        }
+
+        public byte[] getAuthKey() {
+            return authKey;
         }
     }
 
@@ -567,7 +575,7 @@ public class ApiBroker extends Actor {
     public void onReceive(Object message) {
         if (message instanceof InitMTProto) {
             InitMTProto initMTProto = (InitMTProto) message;
-            createMtProto(initMTProto.getAuthId());
+            createMtProto(initMTProto.getAuthId(), initMTProto.getAuthKey());
         } else if (message instanceof PerformRequest) {
             PerformRequest request = (PerformRequest) message;
             performRequest(request.getRid(), request.getMessage(), request.getCallback());
