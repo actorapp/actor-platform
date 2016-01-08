@@ -90,13 +90,13 @@ RequestDH {
 Calculations
 ```
 pre_master_secret := <result_of_dh>
-master_secret := 
-  PRF_SHA256(pre_master_secret, "kgb secret", clientNonce + ServerNonce, 128) + 
-  PRF_STREEBOG256(pre_master_secret, "nsa secret", clientNonce + ServerNonce, 128)
-verify := 
-  PRF_SHA256(master_secret, "client finished", clientNonce + ServerNonce, 128) + 
-  PRF_STREEBOG256(master_secret, "patron finished", clientNonce + ServerNonce, 128) 
+master_secret := PRF_COMBINED(pre_master_secret, "master secret", clientNonce + ServerNonce, 128)
+verify := PRF_COMBINED(master_secret, "client finished", clientNonce + ServerNonce, 256)
 verify_sign := Ed25519(verification, server_private_signing_key)
+
+where PRF_COMBINED:
+  PRF(COMBINE(SHA256, STREEBOG256)), where:
+    COMBINE(str, HASH1, HASH2) = HASH1(str + HASH2(str))
 ```
 
 master_secret is result encryption key. First 128 bytes is US encryption keys and last 128 bytes is Russian encryption keys.
