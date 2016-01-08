@@ -1,6 +1,5 @@
 package im.actor.runtime.crypto.primitives.digest;
 
-
 import im.actor.runtime.crypto.primitives.util.Pack;
 
 /**

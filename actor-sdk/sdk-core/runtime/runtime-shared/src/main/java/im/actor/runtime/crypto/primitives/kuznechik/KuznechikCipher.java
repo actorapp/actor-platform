@@ -1,12 +1,11 @@
 package im.actor.runtime.crypto.primitives.kuznechik;
 
-
 import im.actor.runtime.crypto.primitives.BlockCipher;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 
 /**
  * Kuzhnechik (aka Grasshopper) russian encryption standard implementation
- * <p/>
+ * <p>
  * Ported by Steven Kite (steve@actor.im) from
  * https://github.com/mjosaarinen/kuznechik/blob/master/kuznechik_8bit.c
  */
