@@ -4,6 +4,7 @@
 
 package im.actor.core;
 
+import im.actor.core.network.TrustedKey;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
 
 /**
@@ -14,6 +15,8 @@ public class Configuration {
     private final ConfigurationExtension[] extensions;
 
     private final ConnectionEndpoint[] endpoints;
+
+    private final TrustedKey[] trustedKeys;
 
     private PhoneBookProvider phoneBookProvider;
 
@@ -55,7 +58,8 @@ public class Configuration {
                   ConfigurationExtension[] extensions,
                   String timeZone,
                   String[] preferredLanguages,
-                  String customAppName) {
+                  String customAppName,
+                  TrustedKey[] trustedKeys) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
         this.enableContactsLogging = enableContactsLogging;
@@ -72,6 +76,16 @@ public class Configuration {
         this.timeZone = timeZone;
         this.preferredLanguages = preferredLanguages;
         this.customAppName = customAppName;
+        this.trustedKeys = trustedKeys;
+    }
+
+    /**
+     * Getting Trusted keys
+     *
+     * @return trusted keys if set
+     */
+    public TrustedKey[] getTrustedKeys() {
+        return trustedKeys;
     }
 
     /**
