@@ -15,7 +15,7 @@ import im.actor.api.rpc.{ AuthData, ClientData }
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
-import im.actor.server.mtproto.transport.{ Drop, MTPackage }
+import im.actor.server.mtproto.transport.Drop
 import im.actor.server.persist.{ AuthSessionRepo, AuthIdRepo }
 import im.actor.server.pubsub.PubSubExtension
 import im.actor.server.user.{ AuthEvents, UserExtension }
@@ -27,7 +27,7 @@ import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
-case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig)
+final case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig)
 
 object SessionConfig {
   def load(config: Config): SessionConfig = {
@@ -147,7 +147,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
       val waiting: Receive = {
         case _: SessionMessage ⇒
           log.warning("Reporting AuthIdInvalid and dying")
-          sender ! MTPackage(authId, sessionId, MessageBoxCodec.encode(MessageBox(Long.MaxValue, AuthIdInvalid)).require)
+          sender ! MessageBoxCodec.encode(MessageBox(Long.MaxValue, AuthIdInvalid)).require
           context stop self
         case msg ⇒ log.warning("Ignoring {}", msg)
       }
@@ -167,12 +167,13 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
           import GraphDSL.Implicits._
 
           val source = b.add(Source.fromPublisher(ActorPublisher[SessionStreamMessage](sessionMessagePublisher)))
-          val sink = b.add(Sink.foreach[MTPackage](m ⇒ clients foreach (_ ! m)))
-          val bcast = b.add(Broadcast[MTPackage](2))
+          val sink = b.add(Sink.foreach[BitVector](m ⇒ clients foreach (_ ! m)))
+          val encode = b.add(Flow[MessageBox].map(MessageBoxCodec.encode(_).require))
+          val bcast = b.add(Broadcast[BitVector](2))
 
           // format: OFF
 
-          source ~> graph ~> bcast ~> sink
+          source ~> graph ~> encode ~> bcast ~> sink
           bcast ~> Sink.onComplete { c ⇒
             c.failed foreach { e =>
               log.error(e, "Dying due to stream error");
@@ -264,7 +265,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
   private def sendAuthIdInvalidAndStop(): Unit = {
     log.warning("Reporting AuthIdInvalid and dying")
-    val authIdInvalid = MTPackage(authId, sessionId, MessageBoxCodec.encode(MessageBox(Long.MaxValue, AuthIdInvalid)).require)
+    val authIdInvalid = MessageBoxCodec.encode(MessageBox(Long.MaxValue, AuthIdInvalid)).require
     clients foreach (_ ! authIdInvalid)
     self ! PoisonPill
   }

@@ -29,6 +29,8 @@ object AuthIdRepo {
   def create(authId: Long, userId: Option[Int], publicKeyHash: Option[Long]) =
     authIds += model.AuthId(authId, userId, publicKeyHash)
 
+  def create(authId: Long) = authIds += model.AuthId(authId, None, None)
+
   def byAuthIdNotDeleted(authId: Rep[Long]) =
     activeAuthIds.filter(a ⇒ a.id === authId)
 

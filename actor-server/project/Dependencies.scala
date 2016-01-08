@@ -66,7 +66,7 @@ object Dependencies {
     val slickPgDate2            = "com.github.tminglei"           %% "slick-pg_date2"                % V.slickPg
     val slickTestkit            = "com.typesafe.slick"            %% "slick-testkit"                 % V.slick
     val flywayCore              = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
-    val hikariCP                = "com.zaxxer"                    %  "HikariCP"                      % "2.3.5"
+    val hikariCP                = "com.zaxxer"                    %  "HikariCP"                      % "2.4.1"
 
     val amazonaws               = "com.amazonaws"                 %  "aws-java-sdk-s3"               % "1.9.31"
     val awsWrap                 = "com.github.dwhjames"           %% "aws-wrap"                      % "0.7.2"
@@ -109,6 +109,8 @@ object Dependencies {
     val apacheCommonsCodec      = "commons-codec"                 % "commons-codec"                  % "1.10"
     val apacheCommonsIo         = "commons-io"                    % "commons-io"                     % "2.4"
     val apacheCommonsValidator  = "commons-validator"             % "commons-validator"              % "1.4.1"
+
+    val guava                   = "com.google.guava"              % "guava"                          % "19.0"
   }
 
   object Testing {
@@ -183,7 +185,7 @@ object Dependencies {
 
   val sessionMessages = Seq(akkaActor)
 
-  val persist = shared ++ Seq(akkaActor, akkaStream, apacheCommonsCodec, postgresJdbc, slick, slickHikaricp, slickJoda, slickPg, slickPgDate2, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
+  val persist = shared ++ Seq(akkaActor, akkaStream, apacheCommonsCodec, guava, postgresJdbc, slick, slickHikaricp, slickJoda, slickPg, slickPgDate2, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val presences = shared :+ akkaClusterSharding
 
@@ -197,6 +199,7 @@ object Dependencies {
 
   val frontend = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaStream,
+    guava,
     scodecBits, scodecCore,
     scalazCore, scalazConcurrent
   )
