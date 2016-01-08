@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,6 +46,8 @@ public abstract class ActorEditTextActivity extends BaseActivity {
 
     // Emoji keyboard
     protected EmojiKeyboard emojiKeyboard;
+    protected ImageView emojiButton;
+    protected FrameLayout sendContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +145,7 @@ public abstract class ActorEditTextActivity extends BaseActivity {
         ((TextView) removedFromGroup.findViewById(R.id.kicked_text)).setTextColor(ActorSDK.sharedActor().style.getMainColor());
 
         // Emoji keyboard
-        final ImageView emojiButton = (ImageView) findViewById(R.id.ib_emoji);
+        emojiButton = (ImageView) findViewById(R.id.ib_emoji);
         emojiKeyboard = new EmojiKeyboard(this);
         emojiKeyboard.setKeyboardStatusListener(new KeyboardStatusListener() {
 
@@ -163,6 +166,8 @@ public abstract class ActorEditTextActivity extends BaseActivity {
                 emojiKeyboard.toggle(messageEditText);
             }
         });
+
+        sendContainer = (FrameLayout) findViewById(R.id.sendContainer);
 
         // Keyboard helper for show/hide keyboard
         keyboardUtils = new KeyboardHelper(this);

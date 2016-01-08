@@ -8,11 +8,12 @@ Eventually, in rev4 of MTProto we will eliminate using of TLS for better speed a
 MTProtoV2 uses Curve25519 for performing DH for calculating AuthKey.
 
 This technique use [TLS 1.2 RFC](https://tools.ietf.org/html/rfc5246) for it's basis and doesn't try to invent wheel, but improves performance of TLS:
-1) Not sending server certificates if not needed on every connection.
-2) One DiffieHellman to build one shared secret without repeating on almost every reconnect. (we will implement PFS in next revision of MTProto v2)
-3) Using only Curve25519 and AES-CBC
-4) Extending master_secret to make it 256 bytes long
-5) Added Signing of response just to check that everything is ok and add one more protection level
+
+* Not sending server certificates if not needed on every connection.
+* One DiffieHellman to build one shared secret without repeating on almost every reconnect. (we will implement PFS in next revision of MTProto v2)
+* Using only Curve25519, AES-CBC, Kuznechik-CBC and Streebog
+* Extending master_secret to make it 256 bytes long with two different algorithms based on TLS's PRF function with SHA256 and Streebog hashes.
+* Added Signing of response just to check that everything is ok and add one more protection level
 
 # Primitives
 
@@ -89,12 +90,16 @@ RequestDH {
 Calculations
 ```
 pre_master_secret := <result_of_dh>
-master_secret := PRF(pre_master_secret, "master secret", clientNonce + ServerNonce)
-verify := PRF(master_secret, "client finished", clientNonce + ServerNonce)
+master_secret := PRF_COMBINED(pre_master_secret, "master secret", clientNonce + ServerNonce, 128)
+verify := PRF_COMBINED(master_secret, "client finished", clientNonce + ServerNonce, 256)
 verify_sign := Ed25519(verification, server_private_signing_key)
+
+where PRF_COMBINED:
+  PRF(COMBINE(SHA256, STREEBOG256)), where:
+    COMBINE(str, HASH1, HASH2) = HASH1(str + HASH2(str))
 ```
 
-master_secret is resulted 
+master_secret is result encryption key. First 128 bytes is US encryption keys and last 128 bytes is Russian encryption keys.
 
 ```
 ResponseDoDH {

@@ -14,17 +14,16 @@ import im.actor.server.api.rpc.{ RpcApiExtension, RpcResultCodec }
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
-import im.actor.server.mtproto.transport.MTPackage
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.session.SessionEnvelope.Payload
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
+import scodec.bits.BitVector
 import slick.driver.PostgresDriver
 
 import scala.concurrent.duration._
 import scala.concurrent.{ Await, Future, blocking }
-import scala.reflect.ClassTag
 import scala.util.Random
 
 abstract class BaseSessionSpec(_system: ActorSystem = {
@@ -58,7 +57,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   protected val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   protected implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
   protected implicit val authService = new AuthServiceImpl(new DummyCodeActivation)
-  protected val sequenceConfig = SequenceServiceConfig.load.toOption.get
+  protected val sequenceConfig = SequenceServiceConfig.load().toOption.get
   protected lazy val sequenceService = new SequenceServiceImpl(sequenceConfig)
 
   override def beforeAll = {
@@ -81,7 +80,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
     expectUpdateBox(classOf[WeakUpdate], authId, sessionId, None)
 
   protected def expectUpdateBox[T <: im.actor.api.rpc.UpdateBox](clazz: Class[T], authId: Long, sessionId: Long, sendAckAt: Option[Duration])(implicit probe: TestProbe, m: Manifest[T]): T = {
-    val mb = expectMessageBox(authId, sessionId)
+    val mb = expectMessageBox()
 
     val update = UpdateBoxCodec.decode(mb.body.asInstanceOf[UpdateBox].bodyBytes).require.value
 
@@ -99,26 +98,26 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
     update.asInstanceOf[T]
   }
 
-  protected def expectRpcResult(sendAckAt: Option[Duration] = Some(0.seconds), expectAckFor: Set[Long] = Set.empty)(implicit probe: TestProbe, sessionRegion: SessionRegion): RpcResult = {
+  protected def expectRpcResult(authId: Long, sessionId: Long, sendAckAt: Option[Duration] = Some(0.seconds), expectAckFor: Set[Long] = Set.empty)(implicit probe: TestProbe, sessionRegion: SessionRegion): RpcResult = {
     val messages = probe.receiveN(1 + expectAckFor.size, patienceConfig.timeout.totalNanos.nano).toSet
 
     if (messages.size != expectAckFor.size + 1) {
       fail(s"Expected response and acks for ${expectAckFor.mkString(",")}, got: ${messages.mkString(",")}")
     } else {
-      val (rest, ackIds) = messages.foldLeft(Vector.empty[(Long, Long, Long, ProtoMessage)], Set.empty[Long]) {
-        case ((rest, ackIds), MTPackage(authId, sessionId, mbBytes)) ⇒
+      val (rest, ackIds) = messages.foldLeft(Vector.empty[(Long, ProtoMessage)], Set.empty[Long]) {
+        case ((rest, ackIds), mbBytes: BitVector) ⇒
           val mb = MessageBoxCodec.decode(mbBytes).require.value
 
           mb.body match {
             case MessageAck(ids) ⇒ (rest, ackIds ++ ids)
-            case body            ⇒ (rest :+ ((authId, sessionId, mb.messageId, body)), ackIds)
+            case body            ⇒ (rest :+ ((mb.messageId, body)), ackIds)
           }
       }
 
       ackIds shouldEqual expectAckFor
 
       rest match {
-        case Vector((authId, sessionId, messageId, RpcResponseBox(_, rpcResultBytes))) ⇒
+        case Vector((messageId, RpcResponseBox(_, rpcResultBytes))) ⇒
           sendAckAt map { delay ⇒
             Future {
               blocking {
@@ -134,16 +133,16 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
     }
   }
 
-  protected def expectMessageAck(authId: Long, sessionId: Long)(implicit probe: TestProbe): MessageAck = {
-    val mb = expectMessageBox(authId, sessionId)
+  protected def expectMessageAck()(implicit probe: TestProbe): MessageAck = {
+    val mb = expectMessageBox()
     mb.body shouldBe a[MessageAck]
 
     val ack = mb.body.asInstanceOf[MessageAck]
     ack
   }
 
-  protected def expectMessageAck(authId: Long, sessionId: Long, messageId: Long)(implicit probe: TestProbe): MessageAck = {
-    val mb = expectMessageBox(authId, sessionId)
+  protected def expectMessageAck(messageId: Long)(implicit probe: TestProbe): MessageAck = {
+    val mb = expectMessageBox()
     mb.body shouldBe a[MessageAck]
 
     val ack = mb.body.asInstanceOf[MessageAck]
@@ -152,8 +151,8 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   }
 
   protected def expectNewSession(authId: Long, sessionId: Long, messageId: Long)(implicit probe: TestProbe, sessionRegion: SessionRegion): NewSession = {
-    expectMessageBoxPF(authId, sessionId) {
-      case mb @ MessageBox(_, NewSession(sid, mid)) if sid == sessionId && mid == messageId ⇒
+    expectMessageBoxPF() {
+      case mb @ MessageBox(_, NewSession(sid, mid)) ⇒
         sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong(), MessageAck(Vector(mb.messageId)))
 
         val ns = mb.body.asInstanceOf[NewSession]
@@ -162,27 +161,27 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
     }
   }
 
-  protected def ignoreNewSession(authId: Long, sessionId: Long)(implicit probe: TestProbe): Unit = {
+  protected def ignoreNewSession()(implicit probe: TestProbe): Unit = {
     probe.ignoreMsg {
-      case MTPackage(aid, sid, body) if aid == authId && sid == sessionId ⇒
+      case body: BitVector ⇒
         MessageBoxCodec.decode(body).require.value.body.isInstanceOf[NewSession]
       case _ ⇒ false
     }
   }
 
-  protected def expectMessageBoxPF[T](authId: Long, sessionId: Long, hint: String = "")(pf: PartialFunction[MessageBox, T])(implicit probe: TestProbe): T = {
+  protected def expectMessageBoxPF[T](hint: String = "")(pf: PartialFunction[MessageBox, T])(implicit probe: TestProbe): T = {
     probe.expectMsgPF(max = patienceConfig.timeout.totalNanos.nano) {
-      case MTPackage(aid, sid, body) if aid == authId && sid == sessionId ⇒
+      case body: BitVector ⇒
         val mb = MessageBoxCodec.decode(body).require.value
 
-        assert(pf.isDefinedAt(mb), s"expected: ${hint} but got ${mb}")
+        assert(pf.isDefinedAt(mb), s"expected: $hint but got $mb")
         pf(mb)
     }
   }
 
-  protected def expectMessageBox(authId: Long, sessionId: Long)(implicit probe: TestProbe): MessageBox = {
+  protected def expectMessageBox()(implicit probe: TestProbe): MessageBox = {
     val packageBody = probe.expectMsgPF(max = patienceConfig.timeout.totalNanos.nano) {
-      case MTPackage(aid, sid, body) if aid == authId && sid == sessionId ⇒ body
+      case body: BitVector ⇒ body
     }
 
     MessageBoxCodec.decode(packageBody).require.value

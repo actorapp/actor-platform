@@ -22,7 +22,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
 
-class SessionSpec extends BaseSessionSpec {
+final class SessionSpec extends BaseSessionSpec {
   behavior of "Session actor"
 
   it should "send Drop on message on wrong message box" in sessions().wrongMessageBox
@@ -78,9 +78,9 @@ class SessionSpec extends BaseSessionSpec {
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
       expectNewSession(authId, sessionId, messageId)
-      expectMessageAck(authId, sessionId, messageId)
+      expectMessageAck(messageId)
 
-      expectRpcResult() should matchPattern {
+      expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseSendAuthCodeObsolete(_, false)) ⇒
       }
     }
@@ -96,9 +96,9 @@ class SessionSpec extends BaseSessionSpec {
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
-      expectMessageAck(authId, sessionId, firstMessageId)
+      expectMessageAck(firstMessageId)
 
-      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
+      val smsHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
 
       val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUpObsolete(
         phoneNumber = phoneNumber,
@@ -114,9 +114,9 @@ class SessionSpec extends BaseSessionSpec {
 
       val secondMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, RpcRequestBox(encodedSignUpRequest))
-      expectMessageAck(authId, sessionId, secondMessageId)
+      expectMessageAck(secondMessageId)
 
-      expectRpcResult() should matchPattern {
+      expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseAuth(_, _)) ⇒
       }
 
@@ -125,8 +125,8 @@ class SessionSpec extends BaseSessionSpec {
       val thirdMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, RpcRequestBox(encodedSignOutRequest))
 
-      expectMessageAck(authId, sessionId, thirdMessageId)
-      expectRpcResult() should matchPattern {
+      expectMessageAck(thirdMessageId)
+      expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseVoid) ⇒
       }
     }
@@ -142,9 +142,9 @@ class SessionSpec extends BaseSessionSpec {
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
-      expectMessageAck(authId, sessionId, firstMessageId)
+      expectMessageAck(firstMessageId)
 
-      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
+      val smsHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
 
       val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUpObsolete(
         phoneNumber = phoneNumber,
@@ -161,9 +161,9 @@ class SessionSpec extends BaseSessionSpec {
       val secondMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, RpcRequestBox(encodedSignUpRequest))
 
-      expectMessageAck(authId, sessionId, secondMessageId)
+      expectMessageAck(secondMessageId)
 
-      val authResult = expectRpcResult()
+      val authResult = expectRpcResult(authId, sessionId)
       authResult should matchPattern {
         case RpcOk(ResponseAuth(_, _)) ⇒
       }
@@ -176,8 +176,8 @@ class SessionSpec extends BaseSessionSpec {
       val thirdMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, RpcRequestBox(encodedGetSeqRequest))
 
-      expectMessageAck(authId, sessionId, thirdMessageId)
-      expectRpcResult() should matchPattern {
+      expectMessageAck(thirdMessageId)
+      expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseSeq(_, _)) ⇒
       }
 
@@ -198,9 +198,9 @@ class SessionSpec extends BaseSessionSpec {
       val thirdMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, RpcRequestBox(encodedGetSeqRequest))
 
-      ignoreNewSession(authId, sessionId)
-      expectMessageAck(authId, sessionId, thirdMessageId)
-      expectRpcResult() should matchPattern {
+      ignoreNewSession()
+      expectMessageAck(thirdMessageId)
+      expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseSeq(_, _)) ⇒
       }
 
@@ -225,9 +225,9 @@ class SessionSpec extends BaseSessionSpec {
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
-      expectMessageAck(authId, sessionId, firstMessageId)
+      expectMessageAck(firstMessageId)
 
-      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
+      val smsHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
 
       val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUpObsolete(
         phoneNumber = phoneNumber,
@@ -244,9 +244,9 @@ class SessionSpec extends BaseSessionSpec {
       val secondMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, RpcRequestBox(encodedSignUpRequest))
 
-      expectMessageAck(authId, sessionId, secondMessageId)
+      expectMessageAck(secondMessageId)
 
-      val authResult = expectRpcResult()
+      val authResult = expectRpcResult(authId, sessionId)
       authResult should matchPattern {
         case RpcOk(ResponseAuth(_, _)) ⇒
       }
@@ -270,9 +270,9 @@ class SessionSpec extends BaseSessionSpec {
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
-      expectMessageAck(authId, sessionId, firstMessageId)
+      expectMessageAck(firstMessageId)
 
-      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
+      val smsHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
 
       {
         val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUpObsolete(
@@ -290,9 +290,9 @@ class SessionSpec extends BaseSessionSpec {
         val messageId = Random.nextLong()
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedSignUpRequest))
 
-        expectMessageAck(authId, sessionId, messageId)
+        expectMessageAck(messageId)
 
-        val authResult = expectRpcResult()
+        val authResult = expectRpcResult(authId, sessionId)
         authResult should matchPattern {
           case RpcOk(ResponseAuth(_, _)) ⇒
         }
@@ -307,9 +307,9 @@ class SessionSpec extends BaseSessionSpec {
         val messageId = Random.nextLong()
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedSubscribeRequest))
 
-        expectMessageAck(authId, sessionId, messageId)
+        expectMessageAck(messageId)
 
-        val subscribeResult = expectRpcResult()
+        val subscribeResult = expectRpcResult(authId, sessionId)
         subscribeResult should matchPattern {
           case RpcOk(ResponseVoid) ⇒
         }
@@ -327,7 +327,7 @@ class SessionSpec extends BaseSessionSpec {
 
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, SessionHello)
       expectNewSession(authId, sessionId, messageId)
-      expectMessageAck(authId, sessionId, messageId)
+      expectMessageAck(messageId)
       probe.expectNoMsg()
     }
   }
