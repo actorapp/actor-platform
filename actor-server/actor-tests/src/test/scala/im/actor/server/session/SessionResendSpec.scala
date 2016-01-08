@@ -16,7 +16,7 @@ import im.actor.server.sequence.{ SeqUpdatesExtension, WeakUpdatesExtension }
 import scala.concurrent.duration._
 import scala.util.Random
 
-class SessionResendSpec extends BaseSessionSpec(
+final class SessionResendSpec extends BaseSessionSpec(
   ActorSpecification.createSystem(ConfigFactory.parseString(
     """
       |session {
@@ -49,31 +49,31 @@ class SessionResendSpec extends BaseSessionSpec(
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
-      ignoreNewSession(authId, sessionId)
-      expectMessageAck(authId, sessionId, messageId)
+      ignoreNewSession()
+      expectMessageAck(messageId)
 
-      expectRpcResult(sendAckAt = None) should matchPattern {
+      expectRpcResult(authId, sessionId, sendAckAt = None) should matchPattern {
         case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
       }
 
       // We didn't send Ack
       Thread.sleep(5000)
 
-      expectRpcResult(sendAckAt = None) should matchPattern {
+      expectRpcResult(authId, sessionId, sendAckAt = None) should matchPattern {
         case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
       }
 
       // Still no ack
       Thread.sleep(5000)
 
-      expectRpcResult(sendAckAt = None) should matchPattern {
+      expectRpcResult(authId, sessionId, sendAckAt = None) should matchPattern {
         case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
       }
 
       // Still no ack
       Thread.sleep(5000)
 
-      expectRpcResult() should matchPattern {
+      expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
       }
 
@@ -93,9 +93,9 @@ class SessionResendSpec extends BaseSessionSpec(
 
         expectNewSession(authId, sessionId, messageId)
 
-        expectMessageAck(authId, sessionId, messageId)
+        expectMessageAck(messageId)
 
-        expectRpcResult(sendAckAt = None) should matchPattern {
+        expectRpcResult(authId, sessionId, sendAckAt = None) should matchPattern {
           case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
         }
       }
@@ -109,11 +109,11 @@ class SessionResendSpec extends BaseSessionSpec(
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, SessionHello)
 
         // response to previous request
-        expectRpcResult() should matchPattern {
+        expectRpcResult(authId, sessionId) should matchPattern {
           case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
         }
 
-        expectMessageAck(authId, sessionId, messageId)
+        expectMessageAck(messageId)
 
         probe.expectNoMsg(6.seconds)
       }
@@ -125,15 +125,15 @@ class SessionResendSpec extends BaseSessionSpec(
       val authId = createAuthId()
       val sessionId = Random.nextLong()
 
-      ignoreNewSession(authId, sessionId)
+      ignoreNewSession()
 
       // Single ack
       {
         val messageId = Random.nextLong()
         val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
-        expectMessageAck(authId, sessionId, messageId)
-        val mb = expectMessageBox(authId, sessionId)
+        expectMessageAck(messageId)
+        val mb = expectMessageBox()
         sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong(), MessageAck(Vector(mb.messageId)))
         probe.expectNoMsg(6.seconds)
       }
@@ -143,12 +143,12 @@ class SessionResendSpec extends BaseSessionSpec(
         val messageId = Random.nextLong()
         val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
-        expectMessageAck(authId, sessionId, messageId)
-        val mb = expectMessageBox(authId, sessionId)
+        expectMessageAck(messageId)
+        val mb = expectMessageBox()
 
         val containerMessageId = Random.nextLong()
         sendMessageBox(authId, sessionId, sessionRegion.ref, containerMessageId, Container(Seq(MessageBox(Random.nextLong, MessageAck(Vector(mb.messageId))))))
-        expectMessageAck(authId, sessionId, containerMessageId)
+        expectMessageAck(containerMessageId)
         probe.expectNoMsg(6.seconds)
       }
     }
@@ -162,14 +162,14 @@ class SessionResendSpec extends BaseSessionSpec(
       val helloMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, helloMessageId, SessionHello)
       expectNewSession(authId, sessionId, helloMessageId)
-      expectMessageAck(authId, sessionId, helloMessageId)
+      expectMessageAck(helloMessageId)
 
       val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState)).require
 
       val getSeqMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, getSeqMessageId, RpcRequestBox(encodedGetSeqRequest))
-      expectMessageAck(authId, sessionId, getSeqMessageId)
-      expectRpcResult() should matchPattern {
+      expectMessageAck(getSeqMessageId)
+      expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseSeq(_, _)) ⇒
       }
 
@@ -194,7 +194,7 @@ class SessionResendSpec extends BaseSessionSpec(
       val helloMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, helloMessageId, SessionHello)
       expectNewSession(authId, sessionId, helloMessageId)
-      expectMessageAck(authId, sessionId, helloMessageId)
+      expectMessageAck(helloMessageId)
 
       val upd1 = UpdateUserOffline(1)
       val upd2first = UpdateUserOnline(2)
