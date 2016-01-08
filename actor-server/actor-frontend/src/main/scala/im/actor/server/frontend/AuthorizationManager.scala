@@ -8,9 +8,7 @@ import akka.stream.actor.ActorPublisher
 import better.files.File
 import com.google.common.primitives.Longs
 import com.typesafe.config.Config
-import im.actor.crypto.Curve25519
-import im.actor.crypto.primitives.digest.SHA256
-import im.actor.crypto.primitives.prf.PRF
+import im.actor.crypto.{ Cryptos, Curve25519 }
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
@@ -54,7 +52,7 @@ final class ServerKey(val public: Array[Byte], val privat: Array[Byte]) {
 object AuthorizationManager {
 
   @SerialVersionUID(1L)
-  final case class FrontendPackage(p: MTPackage)
+  final case class FrontendPackage(p: Package)
 
   @SerialVersionUID(1L)
   final case class SessionPackage(p: MTProto)
@@ -65,14 +63,14 @@ object AuthorizationManager {
   @SerialVersionUID(1L)
   private case class SendDrop(messageId: Long, message: String)
 
-  def props(serverKeys: Seq[ServerKey]) = Props(classOf[AuthorizationManager], serverKeys)
+  def props(serverKeys: Seq[ServerKey], sessionClient: ActorRef) = Props(classOf[AuthorizationManager], serverKeys, sessionClient)
 
   val NonceBytes = 32
   val PRFBytes = 256
   val SignRandomBytes = 64
 }
 
-final class AuthorizationManager(serverKeys: Seq[ServerKey]) extends Actor with ActorLogging with ActorPublisher[MTProto] {
+final class AuthorizationManager(serverKeys: Seq[ServerKey], sessionClient: ActorRef) extends Actor with ActorLogging with ActorPublisher[MTProto] {
 
   import AuthorizationManager._
   import akka.stream.actor.ActorPublisherMessage._
@@ -80,7 +78,6 @@ final class AuthorizationManager(serverKeys: Seq[ServerKey]) extends Actor with 
 
   private val db: Database = DbExtension(context.system).db
 
-  private[this] val curve = new Curve25519
   private[this] var authId: Long = 0L
   private[this] var buf = Vector.empty[MTProto]
   private[this] var sessions = Map.empty[Long, BitVector]
@@ -108,7 +105,7 @@ final class AuthorizationManager(serverKeys: Seq[ServerKey]) extends Actor with 
   @inline
   private def sendPackage(sessionId: Long, messageId: Long, message: ProtoMessage) = {
     val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, message)).require
-    enqueue(MTPackage(authId, sessionId, mbBytes))
+    enqueue(Package(authId, sessionId, mbBytes))
   }
 
   private def handleMessageBox(pAuthId: Long, pSessionId: Long, mb: MessageBox): Unit = {
@@ -137,7 +134,8 @@ final class AuthorizationManager(serverKeys: Seq[ServerKey]) extends Actor with 
         } else Future.successful(())
 
       f onComplete {
-        case Success(_) ⇒ self ! SendPackage(pSessionId, mb.messageId, ResponseAuthId(authId))
+        case Success(_) ⇒
+          self ! SendPackage(pSessionId, mb.messageId, ResponseAuthId(authId))
         case Failure(e) ⇒ self ! SendDrop(mb.messageId, "Failed to create AuthId")
       }
     }
@@ -162,20 +160,25 @@ final class AuthorizationManager(serverKeys: Seq[ServerKey]) extends Actor with 
       withValidKey(keyId) { serverKey ⇒
         withValidSession(randomId) { serverNonce ⇒
           withValidNonce(clientNonce) {
-            val preMaster = curve.calculateAgreement(serverKey.privat, clientKey.toByteArray)
+            val preMaster = Curve25519.calculateAgreement(serverKey.privat, clientKey.toByteArray)
             val fullNonce = (clientNonce ++ serverNonce).toByteArray
-            val master = new PRF(new SHA256(), "master secret", PRFBytes).calculate(preMaster, fullNonce)
-            val verify = new PRF(new SHA256(), "client finished", PRFBytes).calculate(master, fullNonce)
+            val prfCombined = Cryptos.PRF_SHA_STREEBOG_256()
+            val master = prfCombined.calculate(preMaster, "master secret", fullNonce, PRFBytes)
+            val verify = prfCombined.calculate(master, "client finished", fullNonce, PRFBytes)
             val randomBytes = new Array[Byte](SignRandomBytes)
             new SecureRandom().nextBytes(randomBytes)
-            val verifySign = curve.calculateSignature(randomBytes, serverKey.privat, verify)
+            val verifySign = Curve25519.calculateSignature(randomBytes, serverKey.privat, verify)
 
             db.run((
               for {
                 masterKey ← MasterKeyRepo.create(master)
                 _ ← AuthIdRepo.create(masterKey.authId)
-              } yield SendPackage(pSessionId, mb.messageId, ResponseDoDH(randomId, BitVector(verify), BitVector(verifySign)))
-            ).transactionally) pipeTo self
+              } yield masterKey
+            ).transactionally)
+              .map { masterKey ⇒
+                SendPackage(pSessionId, mb.messageId, ResponseDoDH(randomId, BitVector(verify), BitVector(verifySign)))
+              }
+              .pipeTo(self)
           }
         }
       }

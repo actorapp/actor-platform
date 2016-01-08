@@ -14,7 +14,7 @@ class MTProtoDecoder(header: Int) extends Decoder[MTProto] {
     val decoder: Decoder[MTProto] = header match {
       case Handshake.header         ⇒ HandshakeCodec.asDecoder
       case HandshakeResponse.header ⇒ HandshakeResponseCodec.asDecoder
-      case MTPackage.header         ⇒ MTPackageCodec.asDecoder
+      case Package.header           ⇒ PackageCodec.asDecoder
       case Ping.header              ⇒ PingCodec.asDecoder
       case Pong.header              ⇒ PongCodec.asDecoder
       case Drop.header              ⇒ DropCodec.asDecoder
@@ -34,7 +34,7 @@ object MTProtoEncoder extends Encoder[MTProto] {
     mtp match {
       case x: Handshake         ⇒ HandshakeCodec.encode(x)
       case x: HandshakeResponse ⇒ HandshakeResponseCodec.encode(x)
-      case x: MTPackage         ⇒ MTPackageCodec.encode(x)
+      case x: Package           ⇒ PackageCodec.encode(x)
       case x: Ping              ⇒ PingCodec.encode(x)
       case x: Pong              ⇒ PongCodec.encode(x)
       case x: Drop              ⇒ DropCodec.encode(x)

@@ -20,10 +20,16 @@ final class MasterKeyTable(tag: Tag) extends Table[MasterKey](tag, "master_keys"
 object MasterKeyRepo {
   val masterKeys = TableQuery[MasterKeyTable]
 
+  val byIdC = Compiled { id: Rep[Long] ⇒
+    masterKeys filter (_.authId === id)
+  }
+
   def create(body: Array[Byte])(implicit ec: ExecutionContext) = {
     val md = MessageDigest.getInstance("SHA-256")
     val authId = Longs.fromByteArray(md.digest(body).take(java.lang.Long.BYTES))
     val masterKey = MasterKey(authId, ByteString.copyFrom(body))
     (masterKeys += masterKey) map (_ ⇒ masterKey)
   }
+
+  def find(authId: Long) = byIdC(authId).result.headOption
 }

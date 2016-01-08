@@ -7,18 +7,15 @@ import im.actor.crypto.primitives.util.ByteStrings;
 public class PRF {
 
     private Digest digest;
-    private HMAC hmac;
-    private String label;
-    private int length;
 
-    public PRF(Digest digest, String label, int length) {
+    public PRF(Digest digest) {
         this.digest = digest;
-        this.label = label;
-        this.length = length;
-        this.hmac = new HMAC(digest);
     }
 
-    public byte[] calculate(byte[] secret, byte[] seed) {
+    public byte[] calculate(byte[] secret, String label, byte[] seed, int length) {
+
+        HMAC hmac = new HMAC(secret, digest);
+
         // PRF(secret: bytes, label: string, seed: bytes) = P_HASH(secret, bytes(label) + seed);
         // P_HASH(secret, seed) = HASH(secret, A(1) + seed) + HASH(secret, A(2) + seed) + HASH(secret, A(3) + seed) + ...
         //    where A():
@@ -32,7 +29,9 @@ public class PRF {
         while (offset * 32 < length) {
 
             // Update A
-            hmac.calculate(secret, A, 0, A.length, tHash, 0);
+            hmac.reset();
+            hmac.update(A, 0, A.length);
+            hmac.doFinal(tHash, 0);
             A = new byte[digest.getDigestSize()];
             ByteStrings.write(A, 0, tHash, 0, A.length);
 

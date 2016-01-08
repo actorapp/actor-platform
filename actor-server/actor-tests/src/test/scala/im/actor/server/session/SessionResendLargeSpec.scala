@@ -41,16 +41,16 @@ final class SessionResendLargeSpec extends BaseSessionSpec(
       sendMessageBox(authId, sessionId, sessionRegion.ref, requestMessageId, RpcRequestBox(encodedRequest))
 
       expectNewSession(authId, sessionId, requestMessageId)
-      expectMessageAck(authId, sessionId, requestMessageId)
+      expectMessageAck(requestMessageId)
 
-      expectRpcResult(sendAckAt = None) should matchPattern {
+      expectRpcResult(authId, sessionId, sendAckAt = None) should matchPattern {
         case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
       }
 
       // We didn't send Ack
       Thread.sleep(5000)
 
-      val messageBox = expectMessageBox(authId, sessionId)
+      val messageBox = expectMessageBox()
       messageBox.body should matchPattern {
         case UnsentResponse(_, rqMessageId, length) if rqMessageId == requestMessageId && length > 0 ⇒
       }
@@ -58,7 +58,7 @@ final class SessionResendLargeSpec extends BaseSessionSpec(
       val msgId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, msgId, RequestResend(messageBox.body.asInstanceOf[UnsentResponse].messageId))
 
-      expectRpcResult(sendAckAt = None, expectAckFor = Set(msgId)) should matchPattern {
+      expectRpcResult(authId, sessionId, sendAckAt = None, expectAckFor = Set(msgId)) should matchPattern {
         case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
       }
 
