@@ -1,0 +1,4 @@
+Features
+---
+
+* Client-Server Encryption, no need in HAProxy with TLS anymore!
