@@ -6,11 +6,15 @@ We are not invenging the wheel and implement encryption logic exactly as [TLS 1.
 
 In Rev4 we will enable support for Axolotl Ratched like encryption directly in protocol.
 
+HMAC is calculated from (seqNumber + content.length + content).
+
 ## Base Encrypted Package
 
 ```
 EncryptedPackage {
   HEADER = 0xE8
+  // Sequence number starting from zero for each encrypted package
+  seqNumber: long
   // First encryption level - EncryptionCBCPackage
   aesPackage: bytes
 }
