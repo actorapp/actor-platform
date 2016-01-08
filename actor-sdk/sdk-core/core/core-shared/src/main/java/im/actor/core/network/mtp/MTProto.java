@@ -17,6 +17,7 @@ import im.actor.core.network.util.MTUids;
 
 public class MTProto {
     private final long authId;
+    private final byte[] authKey;
     private final long sessionId;
     private final Endpoints endpoints;
     private final MTProtoCallback callback;
@@ -35,6 +36,7 @@ public class MTProto {
     private boolean isClosed;
 
     public MTProto(long authId,
+                   byte[] authKey,
                    long sessionId,
                    Endpoints endpoints,
                    MTProtoCallback callback,
@@ -44,6 +46,7 @@ public class MTProto {
                    int maxDelay,
                    int maxFailureCount) {
         this.authId = authId;
+        this.authKey = authKey;
         this.sessionId = sessionId;
         this.endpoints = endpoints;
         this.callback = callback;
@@ -68,6 +71,10 @@ public class MTProto {
 
     public long getAuthId() {
         return authId;
+    }
+
+    public byte[] getAuthKey() {
+        return authKey;
     }
 
     public long getSessionId() {

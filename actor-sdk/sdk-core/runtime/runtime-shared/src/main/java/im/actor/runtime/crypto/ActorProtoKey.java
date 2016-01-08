@@ -1,6 +1,6 @@
-package im.actor.crypto;
+package im.actor.runtime.crypto;
 
-import im.actor.crypto.primitives.util.ByteStrings;
+import im.actor.runtime.crypto.primitives.util.ByteStrings;
 
 /**
  * Actor's MTProto V2 keys
@@ -24,8 +24,6 @@ public class ActorProtoKey {
         clientKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);
         serverKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);
 
-        // Moving to russian part
-        offset = 128;
         clientMacRussianKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);
         serverMacRussianKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);
         clientRussianKey = ByteStrings.substring(masterKey, (offset++) * 32, 32);

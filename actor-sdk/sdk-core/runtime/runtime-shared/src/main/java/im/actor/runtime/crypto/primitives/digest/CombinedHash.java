@@ -27,7 +27,7 @@ public class CombinedHash implements Digest {
     @Override
     public void doFinal(byte[] dest, int destOffset) {
         // Folding digests
-        for (int i = digests.length - 1; i > 0; i++) {
+        for (int i = digests.length - 1; i > 0; i--) {
             byte[] currentDigest = new byte[digests[i].getDigestSize()];
             digests[i].doFinal(currentDigest, 0);
             digests[i - 1].update(currentDigest, 0, currentDigest.length);
