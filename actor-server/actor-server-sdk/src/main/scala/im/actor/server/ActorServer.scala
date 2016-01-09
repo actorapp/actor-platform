@@ -269,11 +269,13 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
         system.log.error(e, "Failed to load server configuration")
         system.terminate()
         Await.result(system.whenTerminated, Duration.Inf)
+        System.exit(1)
         throw e
       case e: Throwable ⇒
         system.log.error(e, "Server failed to start up")
         system.terminate()
         Await.result(system.whenTerminated, Duration.Inf)
+        System.exit(1)
         throw e
     }
   }
