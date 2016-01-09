@@ -17,12 +17,15 @@ private case class Config(
   command:            String             = "help",
   createBot:          CreateBot          = CreateBot(),
   updateIsAdmin:      UpdateIsAdmin      = UpdateIsAdmin(),
-  httpApiTokenCreate: HttpApiTokenCreate = HttpApiTokenCreate()
+  httpApiTokenCreate: HttpApiTokenCreate = HttpApiTokenCreate(),
+  key:                Key                = Key()
 )
 
 private[cli] trait Request {
   type Response
 }
+
+private[cli] case class Key(create: Boolean = true, path: String = "actor-key")
 
 private[cli] case class CreateBot(
   username: String  = "",
@@ -56,6 +59,7 @@ private object Commands {
   val AdminRevoke = "admin-revoke"
   val MigrateUserSequence = "migrate-user-sequence"
   val HttpApiTokenCreate = "http-api-token-create"
+  val Key = "key"
 }
 
 object ActorCli extends App {
@@ -100,11 +104,22 @@ object ActorCli extends App {
         c.copy(httpApiTokenCreate = c.httpApiTokenCreate.copy(isAdmin = true))
       }
     )
+    cmd(Commands.Key) action { (_, c) ⇒
+      c.copy(command = Commands.Key)
+    } children (
+      opt[Unit]("create") abbr "c" required () action { (x, c) ⇒
+        c.copy(key = c.key.copy(create = true))
+      },
+      opt[String]("out") abbr "o" optional () action { (x, c) ⇒
+        c.copy(key = c.key.copy(path = x))
+      }
+    )
   }
 
   parser.parse(args, Config()) foreach { config ⇒
     val handlers = new CliHandlers
     val migrationHandlers = new MigrationHandlers
+    val securityHandlers = new SecurityHandlers
 
     config.command match {
       case Commands.Help ⇒
@@ -115,6 +130,8 @@ object ActorCli extends App {
         cmd(handlers.updateIsAdmin(config.updateIsAdmin))
       case Commands.MigrateUserSequence ⇒
         cmd(migrationHandlers.userSequence(), 2.hours)
+      case Commands.Key ⇒
+        cmd(securityHandlers.createKey(config.key.path))
     }
 
     def cmd(f: Future[Unit], timeout: Duration = 10.seconds): Unit = {
