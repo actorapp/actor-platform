@@ -3635,6 +3635,11 @@
         <node concept="NXeRC" id="2tyCW$TWsO4" role="NXodf">
           <property role="NXePf" value="Update about phone call" />
         </node>
+        <node concept="NX1gA" id="6tgpW9bxrsC" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Duration of a phone call" />
+          <ref role="NX6Kv" node="2tyCW$TWsq1" resolve="duration" />
+        </node>
         <node concept="2m7Kf5" id="2tyCW$TWsq1" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="duration" />
@@ -9602,6 +9607,307 @@
             <ref role="NX6Kv" node="gbd4oSiwMM" resolve="url" />
           </node>
         </node>
+      </node>
+    </node>
+    <node concept="2m5mJO" id="6tgpW9bx_JP" role="2m5lHt">
+      <property role="TrG5h" value="Features" />
+      <property role="3XOG$Z" value="features" />
+      <node concept="2m6fVq" id="6tgpW9bxBsP" role="2m5mJr">
+        <property role="TrG5h" value="EnableFeature" />
+        <node concept="2m7Kf5" id="6tgpW9bxBsX" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="featureName" />
+          <node concept="2m5ndX" id="6tgpW9bxBt1" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6tgpW9bxBty" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="args" />
+          <node concept="2m5nlT" id="6tgpW9bxBtF" role="2m7DVh">
+            <node concept="2m61tm" id="6tgpW9bxBtL" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6tgpW9bxBsQ" role="NuuwV">
+          <property role="Nu42W" value="A1C" />
+        </node>
+        <node concept="2m1Rp1" id="6tgpW9bxBt4" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="6tgpW9bxCkG" role="1GBnQ6">
+          <property role="NXePf" value="Enabling feature on the device" />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxCkL" role="1GBnQ6">
+          <property role="NX6R2" value="Feature name" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6tgpW9bxBsX" resolve="featureName" />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxCkT" role="1GBnQ6">
+          <property role="1GSvIU" value="danger" />
+          <property role="NX6R2" value="Optional arguments to a feature" />
+          <ref role="NX6Kv" node="6tgpW9bxBty" resolve="args" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6tgpW9bxBte" role="2m5mJr">
+        <property role="TrG5h" value="DisableFeature" />
+        <node concept="2m7Kf5" id="6tgpW9bxBtr" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="featureName" />
+          <node concept="2m5ndX" id="6tgpW9bxBtv" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="6tgpW9bxBtf" role="NuuwV">
+          <property role="Nu42W" value="A1D" />
+        </node>
+        <node concept="2m1Rp1" id="6tgpW9bxBtO" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="6tgpW9bxDbQ" role="1GBnQ6">
+          <property role="NXePf" value="Disabling feature on the device" />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxDbV" role="1GBnQ6">
+          <property role="NX6R2" value="Feature name" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6tgpW9bxBtr" resolve="featureName" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6tgpW9bxE3o" role="2m5mJr">
+        <property role="TrG5h" value="ChekFeatureEnabled" />
+        <node concept="2m7Kf5" id="6tgpW9bxE3M" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="userOutPee" />
+          <node concept="2m5mGg" id="6tgpW9bxE3T" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6tgpW9bxE3W" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="featureName" />
+          <node concept="2m5ndX" id="6tgpW9bxE42" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="6tgpW9bxE3p" role="NuuwV">
+          <property role="Nu42W" value="A1E" />
+        </node>
+        <node concept="2m1Rp1" id="6tgpW9bxE3Q" role="2m6efq">
+          <ref role="2m1o9l" node="6WYZhOUYtcE" resolve="Bool" />
+        </node>
+        <node concept="NXeRC" id="6tgpW9bxE45" role="1GBnQ6">
+          <property role="NXePf" value="Method for checking if feature is available to user" />
+        </node>
+      </node>
+      <node concept="1Dx9M1" id="6tgpW9bxAA9" role="1Dx9rD">
+        <property role="1Dx9K7" value="Enable feature discovery. Currently available features:" />
+      </node>
+      <node concept="1Dx9M1" id="6tgpW9by68p" role="1Dx9rD">
+        <property role="1Dx9K7" value="* &quot;call&quot; - private audio calls" />
+      </node>
+    </node>
+    <node concept="2m5mJO" id="6tgpW9bxo4d" role="2m5lHt">
+      <property role="TrG5h" value="WebRTC" />
+      <property role="3XOG$Z" value="webrtc" />
+      <node concept="2m6fVq" id="6tgpW9bxsiR" role="2m5mJr">
+        <property role="TrG5h" value="SubscribeToCalls" />
+        <node concept="Nu42z" id="6tgpW9bxsiS" role="NuuwV">
+          <property role="Nu42W" value="A20" />
+        </node>
+        <node concept="2m1Rp1" id="6tgpW9bxsiZ" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="6tgpW9bxz9M" role="1GBnQ6">
+          <property role="NXePf" value="Enabling subscription to calls (on NewSession need to re-subscribing)" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6tgpW9bxsj7" role="2m5mJr">
+        <property role="TrG5h" value="UnsubscribeToCalls" />
+        <node concept="Nu42z" id="6tgpW9bxsj8" role="NuuwV">
+          <property role="Nu42W" value="A21" />
+        </node>
+        <node concept="2m1Rp1" id="6tgpW9bxsji" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="6tgpW9bx$0p" role="1GBnQ6">
+          <property role="NXePf" value="Disabling subscription to calls" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="6tgpW9bxsjt" role="2m5mJr">
+        <property role="TrG5h" value="IncomingCall" />
+        <node concept="2m7Kf5" id="6tgpW9bxt9W" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="6tgpW9bxta0" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6tgpW9bxta3" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="uid" />
+          <node concept="wb0Ql" id="6tgpW9by2EK" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6tgpW9bxsju" role="NuuwV">
+          <property role="Nu42W" value="34" />
+        </node>
+        <node concept="NXeRC" id="6tgpW9bxsjC" role="NXp_2">
+          <property role="NXePf" value="Update about incoming call" />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxu0_" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Call Id" />
+          <ref role="NX6Kv" node="6tgpW9bxt9W" resolve="callId" />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxu0H" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="User's id" />
+          <ref role="NX6Kv" node="6tgpW9bxta3" resolve="uid" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="6tgpW9bxuRr" role="2m5mJr">
+        <property role="TrG5h" value="CallEnded" />
+        <node concept="2m7Kf5" id="6tgpW9bxuRJ" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="6tgpW9bxuRN" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="6tgpW9bxuRs" role="NuuwV">
+          <property role="Nu42W" value="35" />
+        </node>
+        <node concept="NXeRC" id="6tgpW9bxuRQ" role="NXp_2">
+          <property role="NXePf" value="Update about call end" />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxz9I" role="NXp_2">
+          <property role="NX6R2" value="Call Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6tgpW9bxuRJ" resolve="callId" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="6tgpW9bxK5O" role="2m5mJr">
+        <property role="TrG5h" value="CallSignal" />
+        <node concept="2m7Kf5" id="6tgpW9bxKXq" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="6tgpW9bxKXu" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6tgpW9bxKXx" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="package" />
+          <node concept="2m61tm" id="6tgpW9bxKXB" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="6tgpW9bxK5P" role="NuuwV">
+          <property role="Nu42W" value="38" />
+        </node>
+        <node concept="NXeRC" id="6tgpW9bxOAe" role="NXp_2">
+          <property role="NXePf" value="WebRTC signaling package" />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxOAj" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Call id" />
+          <ref role="NX6Kv" node="6tgpW9bxKXq" resolve="callId" />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxOAr" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Signaling raw package" />
+          <ref role="NX6Kv" node="6tgpW9bxKXx" resolve="package" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="6tgpW9bxNHu" role="2m5mJr">
+        <property role="TrG5h" value="CallInProgress" />
+        <node concept="2m7Kf5" id="6tgpW9bxNIn" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="6tgpW9bxNIr" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6tgpW9bxNIA" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="timeout" />
+          <node concept="wb0Ql" id="6tgpW9bxNIG" role="2m7DVh">
+            <ref role="wb18D" node="6u8Nlnzqdrq" resolve="sec" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6tgpW9bxNHv" role="NuuwV">
+          <property role="Nu42W" value="39" />
+        </node>
+        <node concept="NXeRC" id="6tgpW9bxOAw" role="NXp_2">
+          <property role="NXePf" value="Update about call in progress. If doesn't get next update in specified timeout - end call." />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxOA_" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Call Id" />
+          <ref role="NX6Kv" node="6tgpW9bxNIn" resolve="callId" />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxOAH" role="NXp_2">
+          <property role="NX6R2" value="Update timeout" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6tgpW9bxNIA" resolve="timeout" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6tgpW9bxLVc" role="2m5mJr">
+        <property role="TrG5h" value="EndCall" />
+        <node concept="2m7Kf5" id="6tgpW9bxLVW" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="6tgpW9bxLW0" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="6tgpW9bxLVd" role="NuuwV">
+          <property role="Nu42W" value="A23" />
+        </node>
+        <node concept="2m1Rp1" id="6tgpW9bxLW3" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="6tgpW9bxOAV" role="1GBnQ6">
+          <property role="NXePf" value="Ending Call" />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxOB0" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Call Id" />
+          <ref role="NX6Kv" node="6tgpW9bxLVW" resolve="callId" />
+        </node>
+        <node concept="2uC4CA" id="6tgpW9bxPuJ" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="CALL_NOT_STARTED" />
+          <property role="2uCiSL" value="Throws if call not started" />
+        </node>
+        <node concept="2uC4CA" id="6tgpW9bxPuL" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="CALL_ENDED" />
+          <property role="2uCiSL" value="Throsw if call already ended" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6tgpW9bxMO7" role="2m5mJr">
+        <property role="TrG5h" value="CallInProgress" />
+        <node concept="2uC4CA" id="6tgpW9by3yv" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="CALL_ENDED" />
+          <property role="2uCiSL" value="Throws when call is already ended" />
+        </node>
+        <node concept="2m7Kf5" id="6tgpW9bxMOZ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="6tgpW9bxMP3" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6tgpW9bxMP6" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="timeout" />
+          <node concept="wb0Ql" id="6tgpW9bxMPc" role="2m7DVh">
+            <ref role="wb18D" node="6u8Nlnzqdrq" resolve="sec" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6tgpW9bxMO8" role="NuuwV">
+          <property role="Nu42W" value="A24" />
+        </node>
+        <node concept="2m1Rp1" id="6tgpW9bxMOW" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="6tgpW9bxQmw" role="1GBnQ6">
+          <property role="NXePf" value="Notifying about call. Need to be continiously sent to server with timeout/2. Sent as initial call answering." />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxQmD" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Call Id" />
+          <ref role="NX6Kv" node="6tgpW9bxMOZ" resolve="callId" />
+        </node>
+        <node concept="NX1gA" id="6tgpW9bxQmL" role="1GBnQ6">
+          <property role="NX6R2" value="Timeout of sec" />
+          <ref role="NX6Kv" node="6tgpW9bxMP6" resolve="timeout" />
+        </node>
+      </node>
+      <node concept="1Dx9M1" id="6tgpW9bxpK8" role="1Dx9rD">
+        <property role="1Dx9K7" value="WebRTC package that enables support to audio and video calls" />
       </node>
     </node>
     <node concept="2m5mJO" id="3MpuFr6x9eS" role="2m5lHt">

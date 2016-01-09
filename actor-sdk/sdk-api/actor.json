@@ -3862,7 +3862,13 @@
           "content": {
             "name": "ServiceExPhoneCall",
             "doc": [
-              "Update about phone call"
+              "Update about phone call",
+              {
+                "type": "reference",
+                "argument": "duration",
+                "category": "full",
+                "description": "  Duration of a phone call"
+              }
             ],
             "trait": {
               "name": "ServiceEx",
@@ -11093,6 +11099,351 @@
                 "type": "bytes",
                 "id": 3,
                 "name": "uploadKey"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Features",
+      "package": "features",
+      "doc": [
+        "Enable feature discovery. Currently available features:",
+        "* \"call\" - private audio calls"
+      ],
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EnableFeature",
+            "header": 2588,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Enabling feature on the device",
+              {
+                "type": "reference",
+                "argument": "featureName",
+                "category": "full",
+                "description": "Feature name"
+              },
+              {
+                "type": "reference",
+                "argument": "args",
+                "category": "danger",
+                "description": "Optional arguments to a feature"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "featureName"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 2,
+                "name": "args"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DisableFeature",
+            "header": 2589,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Disabling feature on the device",
+              {
+                "type": "reference",
+                "argument": "featureName",
+                "category": "full",
+                "description": "Feature name"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "featureName"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ChekFeatureEnabled",
+            "header": 2590,
+            "response": {
+              "type": "reference",
+              "name": "Bool"
+            },
+            "doc": [
+              "Method for checking if feature is available to user"
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "userOutPee"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "featureName"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "WebRTC",
+      "package": "webrtc",
+      "doc": [
+        "WebRTC package that enables support to audio and video calls"
+      ],
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SubscribeToCalls",
+            "header": 2592,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Enabling subscription to calls (on NewSession need to re-subscribing)"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UnsubscribeToCalls",
+            "header": 2593,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Disabling subscription to calls"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "IncomingCall",
+            "header": 52,
+            "doc": [
+              "Update about incoming call",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "  Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "uid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "CallEnded",
+            "header": 53,
+            "doc": [
+              "Update about call end",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "  Call Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "callId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "CallSignal",
+            "header": 56,
+            "doc": [
+              "WebRTC signaling package",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "  Call id"
+              },
+              {
+                "type": "reference",
+                "argument": "package",
+                "category": "full",
+                "description": "  Signaling raw package"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "package"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "CallInProgress",
+            "header": 57,
+            "doc": [
+              "Update about call in progress. If doesn't get next update in specified timeout - end call.",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "  Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "full",
+                "description": "  Update timeout"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 2,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EndCall",
+            "header": 2595,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Ending Call",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "Call Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "CallInProgress",
+            "header": 2596,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Notifying about call. Need to be continiously sent to server with timeout/2. Sent as initial call answering.",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "hidden",
+                "description": "Timeout of sec"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 2,
+                "name": "timeout"
               }
             ]
           }
