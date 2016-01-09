@@ -11184,7 +11184,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "ChekFeatureEnabled",
+            "name": "CheckFeatureEnabled",
             "header": 2590,
             "response": {
               "type": "reference",
