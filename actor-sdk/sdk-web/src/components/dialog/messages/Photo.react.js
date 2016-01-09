@@ -30,20 +30,20 @@ class Photo extends Component {
 
   openLightBox = () => {
     lightbox.open(this.props.content.fileUrl, 'message');
-  }
+  };
 
   onLoad = () => {
     this.setCached();
     if (!this.state.isImageLoaded) {
       this.setState({isImageLoaded: true});
     }
-  }
+  };
 
   isCached = () => cache[this.props.content.fileUrl] === true;
 
   setCached = () => {
     cache[this.props.content.fileUrl] = true;
-  }
+  };
 
   render() {
     const { content, className, loadedClassName } = this.props;

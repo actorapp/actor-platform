@@ -81,7 +81,7 @@ class MyProfileStore extends Store {
         break;
       default:
     }
-  }
+  };
 }
 
 export default new MyProfileStore(Dispatcher);

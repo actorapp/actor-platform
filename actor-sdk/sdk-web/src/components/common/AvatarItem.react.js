@@ -50,5 +50,5 @@ export default class AvatarItem extends React.Component {
   handleClick = (event) => {
     const { onClick } = this.props;
     onClick && onClick(event);
-  }
+  };
 }

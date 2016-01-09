@@ -43,7 +43,7 @@ class DropdownWrapper extends Component {
             ? <MessageActions message={message}
                               targetRect={targetRect}
                               peer={peer}
-                              hideOnScroll={true}/>
+                              hideOnScroll/>
             : null
         }
       </div>

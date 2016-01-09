@@ -102,7 +102,7 @@ class ContactItem extends Component {
     const { onSelect, id, isContact } = this.props;
     event.preventDefault();
     onSelect && onSelect(id, isContact)
-  }
+  };
 }
 
 ReactMixin.onClass(ContactItem, PureRenderMixin);
