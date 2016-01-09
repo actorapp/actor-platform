@@ -62,7 +62,11 @@ import Foundation
     }
     
     func putBytesWithKey(key: String!, withValue v: IOSByteArray!) {
-        prefs.setObject(v.toNSData(), forKey: key)
+        if (v == nil) {
+            prefs.removeObjectForKey(key)
+        } else {
+            prefs.setObject(v.toNSData(), forKey: key)
+        }
         prefs.synchronize()
     }
     
