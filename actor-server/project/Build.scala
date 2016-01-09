@@ -161,7 +161,7 @@ object Build extends sbt.Build with Versioning with Releasing {
       mainClass in Compile := Some("im.actor.server.cli.ActorCliApp")
     )
   )
-    .dependsOn(actorCore)
+    .dependsOn(actorCore, actorFrontend)
 
   lazy val actorCore = Project(
     id = "actor-core",
