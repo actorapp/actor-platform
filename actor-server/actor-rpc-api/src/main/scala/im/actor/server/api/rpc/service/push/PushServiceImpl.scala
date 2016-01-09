@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.push
 import akka.actor.ActorSystem
 import com.google.protobuf.ByteString
 import im.actor.api.rpc._
+import im.actor.api.rpc.encryption.ApiEncryptionKey
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.push.PushService
 import im.actor.server.db.DbExtension
@@ -54,4 +55,11 @@ final class PushServiceImpl(
         Future.successful(Error(RpcError(400, "WRONG_TOKEN", "Wrong APNS Token", false, None)))
     }
   }
+
+  override def jhandleRegisterActorPush(
+    endpoint:   String,
+    publicKeys: IndexedSeq[ApiEncryptionKey],
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseVoid]] =
+    Future.failed(new RuntimeException("Not implemented"))
 }

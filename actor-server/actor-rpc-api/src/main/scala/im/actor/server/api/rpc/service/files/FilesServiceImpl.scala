@@ -28,7 +28,7 @@ class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
       (for {
         file ← fromFutureOption(Errors.LocationInvalid)(db.run(FileRepo.find(location.fileId)))
         url ← fromFutureOption(Errors.LocationInvalid)(fsAdapter.getFileDownloadUrl(file, location.accessHash))
-      } yield ResponseGetFileUrl(url, FileStorageAdapter.UrlExpirationTimeout.toSeconds.toInt)).value map (_.toScalaz)
+      } yield ResponseGetFileUrl(url, FileStorageAdapter.UrlExpirationTimeout.toSeconds.toInt, None, Vector.empty)).value map (_.toScalaz)
     }
 
   override def jhandleGetFileUrls(files: IndexedSeq[ApiFileLocation], clientData: ClientData): Future[HandlerResult[ResponseGetFileUrls]] =
@@ -40,7 +40,7 @@ class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
           val accessHash = idsHashes.getOrElse(model.id, throw new RuntimeException("Db returned file"))
           (for {
             url ← fromFutureOption(Errors.LocationInvalid)(fsAdapter.getFileDownloadUrl(model, accessHash))
-          } yield ApiFileUrlDescription(model.id, url, FileStorageAdapter.UrlExpirationTimeout.toSeconds.toInt)).value
+          } yield ApiFileUrlDescription(model.id, url, FileStorageAdapter.UrlExpirationTimeout.toSeconds.toInt, None, Vector.empty)).value
         })
         // FIXME: fail-fast here
         urlDescs ← fromEither((e: RpcError) ⇒ e)(attempts.foldLeft(Xor.Right(Nil): Xor[RpcError, List[ApiFileUrlDescription]]) {
