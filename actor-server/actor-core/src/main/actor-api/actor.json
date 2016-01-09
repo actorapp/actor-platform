@@ -3862,7 +3862,13 @@
           "content": {
             "name": "ServiceExPhoneCall",
             "doc": [
-              "Update about phone call"
+              "Update about phone call",
+              {
+                "type": "reference",
+                "argument": "duration",
+                "category": "full",
+                "description": "  Duration of a phone call"
+              }
             ],
             "trait": {
               "name": "ServiceEx",
@@ -10696,6 +10702,39 @@
         {
           "type": "struct",
           "content": {
+            "name": "HTTPHeader",
+            "doc": [
+              "HTTP Header record",
+              {
+                "type": "reference",
+                "argument": "key",
+                "category": "full",
+                "description": "  HTTP Header name"
+              },
+              {
+                "type": "reference",
+                "argument": "value",
+                "category": "full",
+                "description": "  HTTP Header value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "key"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "value"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "FileUrlDescription",
             "doc": [
               "File url description",
@@ -10716,6 +10755,18 @@
                 "argument": "timeout",
                 "category": "full",
                 "description": "  Timeout of url"
+              },
+              {
+                "type": "reference",
+                "argument": "unsignedUrl",
+                "category": "hidden",
+                "description": "  Unsigned URL (used to honor web caches)"
+              },
+              {
+                "type": "reference",
+                "argument": "unsignedUrlHeaders",
+                "category": "hidden",
+                "description": "  Headers that is required to download files with unsigned url"
               }
             ],
             "attributes": [
@@ -10736,6 +10787,25 @@
                 },
                 "id": 3,
                 "name": "timeout"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "unsignedUrl"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "HTTPHeader"
+                  }
+                },
+                "id": 5,
+                "name": "unsignedUrlHeaders"
               }
             ]
           }
@@ -10760,6 +10830,18 @@
                   "argument": "timeout",
                   "category": "full",
                   "description": "  Timeout of url"
+                },
+                {
+                  "type": "reference",
+                  "argument": "unsignedUrl",
+                  "category": "full",
+                  "description": "  Unsigned URL (used to honor web caches)"
+                },
+                {
+                  "type": "reference",
+                  "argument": "unsignedUrlHeaders",
+                  "category": "full",
+                  "description": "  Headers that is required to download files with unsigned url"
                 }
               ],
               "attributes": [
@@ -10775,6 +10857,25 @@
                   },
                   "id": 2,
                   "name": "timeout"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "string"
+                  },
+                  "id": 3,
+                  "name": "unsignedUrl"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "HTTPHeader"
+                    }
+                  },
+                  "id": 4,
+                  "name": "unsignedUrlHeaders"
                 }
               ]
             },
@@ -10998,6 +11099,351 @@
                 "type": "bytes",
                 "id": 3,
                 "name": "uploadKey"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Features",
+      "package": "features",
+      "doc": [
+        "Enable feature discovery. Currently available features:",
+        "* \"call\" - private audio calls"
+      ],
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EnableFeature",
+            "header": 2588,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Enabling feature on the device",
+              {
+                "type": "reference",
+                "argument": "featureName",
+                "category": "full",
+                "description": "Feature name"
+              },
+              {
+                "type": "reference",
+                "argument": "args",
+                "category": "danger",
+                "description": "Optional arguments to a feature"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "featureName"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 2,
+                "name": "args"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DisableFeature",
+            "header": 2589,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Disabling feature on the device",
+              {
+                "type": "reference",
+                "argument": "featureName",
+                "category": "full",
+                "description": "Feature name"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "featureName"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ChekFeatureEnabled",
+            "header": 2590,
+            "response": {
+              "type": "reference",
+              "name": "Bool"
+            },
+            "doc": [
+              "Method for checking if feature is available to user"
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "userOutPee"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "featureName"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "WebRTC",
+      "package": "webrtc",
+      "doc": [
+        "WebRTC package that enables support to audio and video calls"
+      ],
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SubscribeToCalls",
+            "header": 2592,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Enabling subscription to calls (on NewSession need to re-subscribing)"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UnsubscribeToCalls",
+            "header": 2593,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Disabling subscription to calls"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "IncomingCall",
+            "header": 52,
+            "doc": [
+              "Update about incoming call",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "  Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "uid"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "CallEnded",
+            "header": 53,
+            "doc": [
+              "Update about call end",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "  Call Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "callId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "CallSignal",
+            "header": 56,
+            "doc": [
+              "WebRTC signaling package",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "  Call id"
+              },
+              {
+                "type": "reference",
+                "argument": "package",
+                "category": "full",
+                "description": "  Signaling raw package"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "package"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "CallInProgress",
+            "header": 57,
+            "doc": [
+              "Update about call in progress. If doesn't get next update in specified timeout - end call.",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "  Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "full",
+                "description": "  Update timeout"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 2,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EndCall",
+            "header": 2595,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Ending Call",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "Call Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "CallInProgress",
+            "header": 2596,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Notifying about call. Need to be continiously sent to server with timeout/2. Sent as initial call answering.",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "hidden",
+                "description": "Timeout of sec"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 2,
+                "name": "timeout"
               }
             ]
           }
@@ -11691,6 +12137,50 @@
         {
           "type": "rpc",
           "content": {
+            "name": "RegisterActorPush",
+            "header": 2575,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Register Actor Push token",
+              {
+                "type": "reference",
+                "argument": "endpoint",
+                "category": "full",
+                "description": "Endpoint for push sending"
+              },
+              {
+                "type": "reference",
+                "argument": "publicKeys",
+                "category": "full",
+                "description": "Optional public keys for receiving push notifications"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "endpoint"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKey"
+                  }
+                },
+                "id": 2,
+                "name": "publicKeys"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "UnregisterPush",
             "header": 52,
             "response": {
@@ -11701,6 +12191,266 @@
               "Unregister push"
             ],
             "attributes": []
+          }
+        }
+      ]
+    },
+    {
+      "title": "Encryption",
+      "package": "encryption",
+      "doc": [
+        "Package that include encryption support",
+        "Key types:",
+        "* Curve25519 - https://en.wikipedia.org/wiki/Curve25519",
+        "* Ed25519 - http://ed25519.cr.yp.to/",
+        "* RSA2048",
+        "* RSA4096"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptionDevice",
+            "doc": [
+              "Encryption Device",
+              {
+                "type": "reference",
+                "argument": "deviceId",
+                "category": "full",
+                "description": "  Device's unique ID"
+              },
+              {
+                "type": "reference",
+                "argument": "keys",
+                "category": "full",
+                "description": "  Device's encryption keys"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "deviceId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKey"
+                  }
+                },
+                "id": 2,
+                "name": "keys"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptionKey",
+            "doc": [
+              "Encryption Public Key",
+              {
+                "type": "reference",
+                "argument": "keyId",
+                "category": "full",
+                "description": "  Unique key Id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyType",
+                "category": "full",
+                "description": "  Type of the key: private, public or secret"
+              },
+              {
+                "type": "reference",
+                "argument": "keyAlg",
+                "category": "full",
+                "description": "  Key algorithm"
+              },
+              {
+                "type": "reference",
+                "argument": "keyMaterial",
+                "category": "compact",
+                "description": "  Optional raw key data"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "keyId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "keyType"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "keyAlg"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 4,
+                "name": "keyMaterial"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UploadDeviceKeys",
+            "header": 2576,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Uploading device keys",
+              {
+                "type": "reference",
+                "argument": "keys",
+                "category": "full",
+                "description": "Public keys for upload"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKey"
+                  }
+                },
+                "id": 1,
+                "name": "keys"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetUserDevices",
+            "header": 2577,
+            "response": {
+              "type": "anonymous",
+              "header": 2578,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "devices",
+                  "category": "full",
+                  "description": "  Encryption devices"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "EncryptionDevice"
+                    }
+                  },
+                  "id": 1,
+                  "name": "devices"
+                }
+              ]
+            },
+            "doc": [
+              "Get all user's device and it's key ids (without key material) (Can return 100-s of keys)",
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "User's peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "userPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DownloadUserKeys",
+            "header": 2579,
+            "response": {
+              "type": "anonymous",
+              "header": 2580,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "keys",
+                  "category": "full",
+                  "description": "  Loaded keys"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "EncryptionKey"
+                    }
+                  },
+                  "id": 1,
+                  "name": "keys"
+                }
+              ]
+            },
+            "doc": [
+              "Get key material",
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "User's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "keyIds",
+                "category": "full",
+                "description": "Key Ids to load (max size = 50)"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "userPeer"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "keyIds"
+              }
+            ]
           }
         }
       ]
@@ -13082,6 +13832,10 @@
             "doc": [
               "Map Value"
             ],
+            "trait": {
+              "name": "RawValue",
+              "key": 6
+            },
             "attributes": [
               {
                 "type": {
