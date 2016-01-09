@@ -81,7 +81,7 @@ class TextField extends Component {
     const { onBlur } = this.props;
     this.setState({isFocused: false});
     onBlur && onBlur(event);
-  }
+  };
 }
 
 export default TextField;

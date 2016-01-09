@@ -65,7 +65,7 @@ class QuickSearchStore extends Store {
         this.handleSearchQuery(action.query);
         break;
     }
-  }
+  };
 }
 
 export default new QuickSearchStore(Dispatcher);

@@ -37,7 +37,7 @@ class CropAvatarStore extends Store {
       default:
         // no op
     }
-  }
+  };
 }
 
 export default new CropAvatarStore(Dispatcher);

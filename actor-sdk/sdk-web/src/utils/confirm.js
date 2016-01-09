@@ -61,7 +61,7 @@ class Confirm extends React.Component {
       event.preventDefault();
       this.reject();
     }
-  }
+  };
 }
 
 export default function confirm(message, options = {})  {

@@ -76,22 +76,22 @@ class AddContact extends React.Component {
 
   onClose = () => {
     AppCacheActionCreators.closeModal();
-  }
+  };
 
   onConfirm = () => {
     AppCacheActionCreators.confirmUpdate();
-  }
+  };
 
   onChange = () => {
     this.setState(getStateFromStores());
-  }
+  };
 
   onKeyDown = (event) => {
     if (event.keyCode === KeyCodes.ESC) {
       event.preventDefault();
       this.onClose();
     }
-  }
+  };
 }
 
 export default AddContact;

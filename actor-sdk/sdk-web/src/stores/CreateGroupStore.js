@@ -83,7 +83,7 @@ class CreateGroupStore extends Store {
         this.__emitChange();
         break;
     }
-  }
+  };
 }
 
 export default new CreateGroupStore(Dispatcher);
