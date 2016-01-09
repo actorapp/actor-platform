@@ -1,0 +1,4 @@
+Features
+---
+
+* server key gen using actor-cli
