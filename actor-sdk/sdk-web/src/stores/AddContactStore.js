@@ -74,7 +74,7 @@ class AddContactStore extends Store {
         break;
       default:
     }
-  }
+  };
 }
 
 export default new AddContactStore(Dispatcher);

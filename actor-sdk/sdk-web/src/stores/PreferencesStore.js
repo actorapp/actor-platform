@@ -109,7 +109,7 @@ class PreferencesStore extends Store {
 
       default:
     }
-  }
+  };
 }
 
 export default new PreferencesStore(Dispatcher);

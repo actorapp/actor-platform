@@ -88,7 +88,7 @@ class AttachmentStore extends Store {
         break;
       default:
     }
-  }
+  };
 }
 
 export default new AttachmentStore(Dispatcher);
