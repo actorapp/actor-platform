@@ -34,7 +34,7 @@ class FaviconStore extends Store {
         break;
       default:
     }
-  }
+  };
 }
 
 export default new FaviconStore(Dispatcher);
