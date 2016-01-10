@@ -64,6 +64,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Sharing location</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -103,7 +105,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Sharing location</string>
 </dict>
 </plist>
