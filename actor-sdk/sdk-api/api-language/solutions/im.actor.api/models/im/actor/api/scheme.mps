@@ -9672,7 +9672,7 @@
         <property role="TrG5h" value="CheckFeatureEnabled" />
         <node concept="2m7Kf5" id="6tgpW9bxE3M" role="2m0hLx">
           <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="userOutPee" />
+          <property role="TrG5h" value="userOutPeer" />
           <node concept="2m5mGg" id="6tgpW9bxE3T" role="2m7DVh">
             <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
           </node>
