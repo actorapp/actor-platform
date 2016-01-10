@@ -19,7 +19,7 @@ class AABubbles {
         serviceLayouter,
         mediaLayouter,
         voiceLayouter,
-        //stickerLayouter,
+        stickerLayouter,
         documentLayouter,
         locationLayouter,
         contactLayouter,

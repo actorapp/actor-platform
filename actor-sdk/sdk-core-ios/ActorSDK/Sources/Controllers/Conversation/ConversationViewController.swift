@@ -33,6 +33,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     private let backgroundView = UIImageView()
     private var audioButton: UIButton = UIButton()
     
+    // Stickers
+    
+    private var stickersView: AAStickersView!
+    private var stickersButton : UIButton!
+    private var stickersOpen = false
+    
     private let audioRecorder: AAAudioRecorder! = AAAudioRecorder()
     
     override init(peer: ACPeer) {
@@ -74,16 +80,16 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         
         // right button
-//        self.rightButton.tintColor = appStyle.chatSendColor
-//        self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-//        self.rightButton.setTitle("", forState: UIControlState.Normal)
-//        self.rightButton.enabled = true
-//        self.rightButton.layoutIfNeeded()
+        self.rightButton.tintColor = appStyle.chatSendColor
+        self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+        self.rightButton.setTitle("", forState: UIControlState.Normal)
+        self.rightButton.enabled = true
+        self.rightButton.layoutIfNeeded()
         
-        self.rightButton.setTitle(AALocalized("ChatSend"), forState: UIControlState.Normal)
-        self.rightButton.setTitleColor(appStyle.chatSendColor, forState: UIControlState.Normal)
-        self.rightButton.setTitleColor(appStyle.chatSendDisabledColor, forState: UIControlState.Disabled)
-        self.rightButton.setImage(nil, forState: UIControlState.Normal)
+//        self.rightButton.setTitle(AALocalized("ChatSend"), forState: UIControlState.Normal)
+//        self.rightButton.setTitleColor(appStyle.chatSendColor, forState: UIControlState.Normal)
+//        self.rightButton.setTitleColor(appStyle.chatSendDisabledColor, forState: UIControlState.Disabled)
+//        self.rightButton.setImage(nil, forState: UIControlState.Normal)
         
         //
         
@@ -103,6 +109,15 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.audioButton.addTarget(self, action: "onAudioRecordingCancelled:", forControlEvents: UIControlEvents.TouchUpOutside)
         self.audioButton.addTarget(self, action: "onAudioRecordingCancelled:", forControlEvents: UIControlEvents.TouchDragOutside)
         self.audioButton.addTarget(self, action: "onAudioRecordingCancelled:", forControlEvents: UIControlEvents.TouchDragExit)
+        
+        //add stickers button
+        self.stickersButton = UIButton(type: UIButtonType.System)
+        self.stickersButton.tintColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.5)
+        self.stickersButton.setImage(UIImage.bundled("sticker_button"), forState: UIControlState.Normal)
+        self.stickersButton.frame = CGRectMake(self.view.frame.size.width-67, 12, 20, 20)
+        self.stickersButton.addTarget(self, action: "changeKeyboard", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        self.textInputbar.addSubview(stickersButton)
         
         self.keyboardPanningEnabled = true
         
@@ -157,6 +172,16 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         super.viewDidLoad()
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        
+        let frame = CGRectMake(0, 0, self.view.frame.size.width, 216)
+        self.stickersView = AAStickersView(frame: frame, convContrller: self)
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: "updateStickersStateOnCloseKeyboard",
+            name: SLKKeyboardWillHideNotification,
+            object: nil)
+        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -342,6 +367,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         //change button
         
         if !text.isEmpty {
+            self.stickersButton.hidden = true
             
             self.rightButton.setTitle(AALocalized("ChatSend"), forState: UIControlState.Normal)
             self.rightButton.setTitleColor(appStyle.chatSendColor, forState: UIControlState.Normal)
@@ -353,24 +379,24 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             }
             
         } else {
+            self.stickersButton.hidden = false
+            if(self.audioButton.hidden){
+                
+                self.rightButton.tintColor = appStyle.chatSendColor
+                self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+                self.rightButton.setTitle("", forState: UIControlState.Normal)
+                self.rightButton.enabled = true
+                
+            } else {
+                
+                self.rightButton.tintColor = appStyle.chatSendColor
+                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+                self.rightButton.setTitle("", forState: UIControlState.Normal)
+                self.rightButton.enabled = true
+                
+            }
             
-//            if(self.audioButton.hidden){
-//                
-//                self.rightButton.tintColor = appStyle.chatSendColor
-//                self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-//                self.rightButton.setTitle("", forState: UIControlState.Normal)
-//                self.rightButton.enabled = true
-//                
-//            } else {
-//                
-//                self.rightButton.tintColor = appStyle.chatSendColor
-//                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-//                self.rightButton.setTitle("", forState: UIControlState.Normal)
-//                self.rightButton.enabled = true
-//                
-//            }
-//            
-//            self.micOn = true
+            self.micOn = true
             
         }
         
@@ -392,32 +418,32 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             
         } else {
             
-//            if(self.audioButton.hidden){
-//                //self.textView.resignFirstResponder()
-//                
-//                self.rightButton.tintColor = appStyle.chatSendColor
-//                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-//                self.rightButton.setTitle("", forState: UIControlState.Normal)
-//                self.rightButton.enabled = true
-//                
-//                self.textInputbar.layoutIfNeeded()
-//                self.rightButton.layoutIfNeeded()
-//                
-//                self.audioButton.frame = textView.frame
-//                self.audioButton.hidden = false;
-//                
-//                
-//            } else {
-//                self.audioButton.hidden = true;
-//                
-//                self.rightButton.tintColor = appStyle.chatSendColor
-//                self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-//                self.rightButton.setTitle("", forState: UIControlState.Normal)
-//                self.rightButton.enabled = true
-//                
-//                self.textInputbar.layoutIfNeeded()
-//                self.rightButton.layoutIfNeeded()
-//            }
+            if(self.audioButton.hidden){
+                //self.textView.resignFirstResponder()
+                
+                self.rightButton.tintColor = appStyle.chatSendColor
+                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+                self.rightButton.setTitle("", forState: UIControlState.Normal)
+                self.rightButton.enabled = true
+                
+                self.textInputbar.layoutIfNeeded()
+                self.rightButton.layoutIfNeeded()
+                
+                self.audioButton.frame = textView.frame
+                self.audioButton.hidden = false;
+                
+                
+            } else {
+                self.audioButton.hidden = true;
+                
+                self.rightButton.tintColor = appStyle.chatSendColor
+                self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+                self.rightButton.setTitle("", forState: UIControlState.Normal)
+                self.rightButton.enabled = true
+                
+                self.textInputbar.layoutIfNeeded()
+                self.rightButton.layoutIfNeeded()
+            }
 
         }
         
@@ -721,5 +747,51 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         }
     }
     
+    // MARK: - Stickers actions
+    
+    func updateStickersStateOnCloseKeyboard() {
+        
+        self.stickersOpen = false
+        self.stickersButton.setImage(UIImage.bundled("sticker_button"), forState: UIControlState.Normal)
+        self.textInputbar.textView.inputView = nil
+        
+    }
+    
+    func changeKeyboard() {
+        
+        self.stickersView.loadStickers()
+        
+        if self.stickersOpen == false {
+            
+            self.textInputbar.textView.becomeFirstResponder()
+            self.textInputbar.textView.inputView = self.stickersView
+            self.textInputbar.textView.refreshFirstResponder()
+            self.textInputbar.textView.refreshInputViews()
+            
+            self.stickersButton.setImage(UIImage.bundled("keyboard_button"), forState: UIControlState.Normal)
+            
+            self.stickersOpen = true
+            
+            
+        } else {
+            
+            //self.textInputbar.textView.resignFirstResponder()
+            self.textInputbar.textView.inputView = nil
+            self.textInputbar.textView.refreshFirstResponder()
+            self.textInputbar.textView.refreshInputViews()
+            
+            self.stickersButton.setImage(UIImage.bundled("sticker_button"), forState: UIControlState.Normal)
+            
+            self.stickersOpen = false
+            
+        }
+        
+    }
+    
+    func sendSticker(sticker:ACSticker) {
+
+        Actor.sendStickerWithPeer(self.peer, withSticker: sticker)
+        
+    }
     
 }
