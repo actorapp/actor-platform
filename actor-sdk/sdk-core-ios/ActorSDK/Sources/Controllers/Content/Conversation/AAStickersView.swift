@@ -215,16 +215,23 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         
         Actor.loadStickers()
         
-        let packsArray = Actor.getOwnStickerPacksIdsVM()!.get() as! JavaUtilArrayList
-        let sickersPack = packsArray.getWithInt(0) as! ACStickerPackVM
-        let sickers = sickersPack.stickers.get() as! JavaUtilArrayList
-        
-        for i in 0..<sickers.size() {
-            let stickerModel = sickers.getWithInt(i) as! ACSticker
-            self.stickersArray.append(stickerModel)
+        if let packsArray = Actor.getOwnStickerPacksIdsVM()!.get() {
+            
+            let packesArrarChecked = packsArray as! JavaUtilArrayList
+                if packesArrarChecked.size() > 0 {
+                    let sickersPack = packesArrarChecked.getWithInt(0) as! ACStickerPackVM
+                    let sickers = sickersPack.stickers.get() as! JavaUtilArrayList
+                    
+                    for i in 0..<sickers.size() {
+                        let stickerModel = sickers.getWithInt(i) as! ACSticker
+                        self.stickersArray.append(stickerModel)
+                    }
+                    
+                    print("packs class === \(sickers)")
+                }
+            
         }
         
-        print("packs class === \(sickers)")
         
         self.collectionView.reloadData()
         
