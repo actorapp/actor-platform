@@ -13,6 +13,7 @@ import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.device.DeviceServiceImpl
+import im.actor.server.api.rpc.service.features.FeaturesServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.{ MessagingServiceImpl, ReverseHooksListener }
@@ -227,6 +228,9 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       system.log.debug("Starting StickersServiceImpl")
       val stickerService = new StickersServiceImpl
 
+      system.log.debug("Starting FeaturesServiceImpl")
+      val featuresService = new FeaturesServiceImpl
+
       val services = Seq(
         authService,
         contactsService,
@@ -243,7 +247,8 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
         integrationsService,
         webactionsService,
         deviceService,
-        stickerService
+        stickerService,
+        featuresService
       )
 
       system.log.warning("Starting ActorBot")

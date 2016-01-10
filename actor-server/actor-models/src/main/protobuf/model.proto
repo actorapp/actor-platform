@@ -76,3 +76,9 @@ message MasterKey {
     int64 auth_id = 1;
     bytes body = 2;
 }
+
+message DeviceFeature {
+    int64 auth_id = 1;
+    string name = 2;
+    bytes args = 3;
+}
