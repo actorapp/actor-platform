@@ -221,4 +221,9 @@ final class AuthorizationManager(serverKeys: Seq[ServerKey], sessionClient: Acto
         deliverBuf()
       }
     }
+
+  override def unhandled(message: Any): Unit = {
+    super.unhandled(message)
+    log.error("Unhandled message: {}", message)
+  }
 }
