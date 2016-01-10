@@ -4,13 +4,13 @@
 
 import UIKit
 import VBFPopFlatButton
+import SDWebImage
 
 public class AABubbleStickerCell: AABubbleBaseFileCell {
 
     // Views
     
     let preview = UIImageView()
-    let progress = AAProgressView(size: CGSizeMake(64, 64))
     let timeBg = UIImageView()
     let timeLabel = UILabel()
     let statusView = UIImageView()
@@ -21,12 +21,14 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
     var thumbLoaded = false
     var contentLoaded = false
     
+    private var callback: AAFileCallback? = nil
+    
     // Constructors
     
     public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
         
-        timeBg.image = Imaging.imageWithColor(appStyle.chatMediaDateBgColor, size: CGSize(width: 1, height: 1))
+        timeBg.image = ActorSDK.sharedActor().style.statusBackgroundImage
         
         timeLabel.font = UIFont.italicSystemFontOfSize(11)
         timeLabel.textColor = appStyle.chatMediaDateColor
@@ -34,7 +36,6 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         statusView.contentMode = UIViewContentMode.Center
         
         contentView.addSubview(preview)
-        contentView.addSubview(progress)
         
         contentView.addSubview(timeBg)
         contentView.addSubview(timeLabel)
@@ -63,12 +64,6 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         
         if (!reuse) {
             
-            // Bind bubble
-//            if (self.isOut) {
-//                bindBubbleType(BubbleType.MediaOut, isCompact: false)
-//            } else {
-//                bindBubbleType(BubbleType.MediaIn, isCompact: false)
-//            }
             
             bindBubbleType(BubbleType.Sticker, isCompact: false)
             
@@ -78,14 +73,35 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
             thumbLoaded = false
             
             // Reset progress
-            self.progress.hideButton()
-            UIView.animateWithDuration(0, animations: { () -> Void in
-                self.progress.alpha = 0
-                self.preview.alpha = 0
-            })
+
+            let sticker = message.content as! ACStickerContent
+            
+            var fileLocation: ACFileReference?
+            fileLocation = sticker.getSticker().getFileReference512()
+            
+            self.callback = AAFileCallback(onDownloaded: { (reference) -> () in
+                
+                let data = NSFileManager.defaultManager().contentsAtPath(CocoaFiles.pathFromDescriptor(reference))
+                let image = UIImage.sd_imageWithWebPData(data)
+                
+                if (image == nil) {
+                    return
+                }
+                
+                dispatchOnUi {
+                    
+                    UIView.transitionWithView(self, duration: 0.3, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: { () -> Void in
+                        self.preview.image = image;
+                        }, completion: nil)
+                    
+                }
+            });
+            Actor.bindRawFileWithReference(fileLocation, autoStart: true, withCallback: self.callback)
+            
             
             // Bind file
-            fileBind(message, autoDownload: bindedLayout.autoDownload)
+            //fileBind(message, autoDownload: bindedLayout.autoDownload)
+            
         }
         
         // Update time
@@ -131,9 +147,9 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
-            self.progress.showView()
-            self.progress.setButtonType(FlatButtonType.buttonUpBasicType, animated: true)
-            self.progress.hideProgress()
+//            self.progress.showView()
+//            self.progress.setButtonType(FlatButtonType.buttonUpBasicType, animated: true)
+//            self.progress.hideProgress()
         }
     }
     
@@ -141,9 +157,9 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
-            self.progress.showView()
-            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
-            self.progress.setProgress(progress)
+//            self.progress.showView()
+//            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
+//            self.progress.setProgress(progress)
         }
     }
     
@@ -151,9 +167,9 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         bgLoadThumb(selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
-            self.progress.showView()
-            self.progress.setButtonType(FlatButtonType.buttonDownloadType, animated: true)
-            self.progress.hideProgress()
+//            self.progress.showView()
+//            self.progress.setButtonType(FlatButtonType.buttonDownloadType, animated: true)
+//            self.progress.hideProgress()
         }
     }
     
@@ -161,9 +177,9 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         bgLoadThumb(selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
-            self.progress.showView()
-            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
-            self.progress.setProgress(progress)
+//            self.progress.showView()
+//            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
+//            self.progress.setProgress(progress)
         }
     }
     
@@ -171,8 +187,8 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
-            self.progress.setProgress(1)
-            self.progress.hideView()
+//            self.progress.setProgress(1)
+//            self.progress.hideView()
         }
     }
     
@@ -221,38 +237,8 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
     // Media Action
     
     public func mediaDidTap() {
-//        let content = bindedMessage!.content as! ACDocumentContent
-//        if let fileSource = content.getSource() as? ACFileRemoteSource {
-//            Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: AAFileCallback(
-//                notDownloaded: { () -> () in
-//                    Actor.startDownloadingWithReference(fileSource.getFileReference())
-//                }, onDownloading: { (progress) -> () in
-//                    Actor.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
-//                }, onDownloaded: { (reference) -> () in
-////                    if let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference)) {
-////                        let previewImage = PreviewImage(image: img)
-////                        let previewController = AAPhotoPreviewController(photo: previewImage, fromView: self.preview)
-////                        previewController.autoShowBadge = true
-////                        self.controller.presentViewController(previewController, animated: true, completion: nil)
-////                    }
-//            }))
-//        } else if let fileSource = content.getSource() as? ACFileLocalSource {
-//            let rid = bindedMessage!.rid
-//            Actor.requestUploadStateWithRid(rid, withCallback: AAUploadFileCallback(
-//                notUploaded: { () -> () in
-//                    Actor.resumeUploadWithRid(rid)
-//                }, onUploading: { (progress) -> () in
-//                    Actor.pauseUploadWithRid(rid)
-//                }, onUploadedClosure: { () -> () in
-//                    
-////                    if let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))) {
-////                        let previewImage = PreviewImage(image: img)
-////                        let previewController = AAPhotoPreviewController(photo: previewImage, fromView: self.preview)
-////                        previewController.autoShowBadge = true
-////                        self.controller.presentViewController(previewController, animated: true, completion: nil)
-////                    }
-//            }))
-//        }
+        
+        
     }
     
     // Layouting
@@ -272,7 +258,7 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
             preview.frame = CGRectMake(insets.left, insets.top, bubbleWidth, bubbleHeight)
         }
         
-        progress.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
+        //progress.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
         
         timeLabel.frame = CGRectMake(0, 0, 1000, 1000)
         timeLabel.sizeToFit()
@@ -286,7 +272,7 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
             statusView.frame = CGRectMake(timeLabel.frame.maxX, timeLabel.frame.minY, 23, timeHeight)
         }
         
-        timeBg.frame = CGRectMake(timeLabel.frame.minX - 3, timeLabel.frame.minY - 1, timeWidth + 6, timeHeight + 2)
+        timeBg.frame = CGRectMake(timeLabel.frame.minX - 4, timeLabel.frame.minY - 1, timeWidth + 8, timeHeight + 2)
     }
     
 }
@@ -316,7 +302,6 @@ public class StikerCellLayout: AACellLayout {
         
         // Prepare fast thumb
         self.fastThumb = sticker?.getFileReference256().toByteArray().toNSData()
-            //.getImage().toNSData()
         
         // Creating layout
         super.init(height: self.screenSize.height + 2, date: date, key: "media")

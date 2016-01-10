@@ -271,6 +271,7 @@
 		15F89F091C211FED00776ACD /* opus_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F051C211FED00776ACD /* opus_types.h */; };
 		15F89F0A1C211FED00776ACD /* opus.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F061C211FED00776ACD /* opus.h */; };
 		697B3A12994653F581459F63 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */; };
+		BE237C9D1C422FFA00060648 /* AAStickersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE237C9C1C422FFA00060648 /* AAStickersView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -547,6 +548,7 @@
 		22BAEA363892E475F59B7E9F /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		333F91AE5263DD450666CC87 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 		9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE237C9C1C422FFA00060648 /* AAStickersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAStickersView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1245,6 +1247,7 @@
 			isa = PBXGroup;
 			children = (
 				15D35F6E1C20196E00E3717A /* AARecordAudioController.swift */,
+				BE237C9C1C422FFA00060648 /* AAStickersView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1594,6 +1597,7 @@
 				066A522A1BC4EEAC000E606E /* ManagedAlerts.swift in Sources */,
 				069CF4D11BCB909A00C66E12 /* CLTokenInputView.m in Sources */,
 				066A52451BC4EECD000E606E /* AAAvatarCell.swift in Sources */,
+				BE237C9D1C422FFA00060648 /* AAStickersView.swift in Sources */,
 				066A52D21BC52204000E606E /* AADialogSearchCell.swift in Sources */,
 				066A52371BC4EEBA000E606E /* AATableViewCell.swift in Sources */,
 				066A51481BC4BBF4000E606E /* Views.swift in Sources */,

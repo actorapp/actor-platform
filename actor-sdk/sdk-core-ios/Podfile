@@ -21,6 +21,7 @@ target 'ActorApp' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
+    pod 'SDWebImage/WebP'
 
     # Main UI
     pod 'NYTPhotoViewer'
@@ -54,6 +55,7 @@ target 'ActorSDK' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
+    pod 'SDWebImage/WebP'
 
     # Main UI
     pod 'NYTPhotoViewer'
