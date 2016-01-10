@@ -193,6 +193,7 @@ private[frontend] final class SessionClient(sessionRegion: SessionRegion)
         case Status.Failure(e) ⇒
           log.error(e, "Failed to check authId")
           onErrorThenStop(e)
+        case other => stash()
       }
   }
 
