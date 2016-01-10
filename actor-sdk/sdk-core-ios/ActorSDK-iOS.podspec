@@ -24,7 +24,6 @@ Pod::Spec.new do |s|
   s.dependency 'VBFPopFlatButton'
   s.dependency 'MBProgressHUD'
   s.dependency 'PSTAlertController'
-  s.dependency 'DZNPhotoPickerController'
   s.dependency 'SZTextView'
   s.dependency 'SlackTextViewController'
   s.dependency 'NYTPhotoViewer'
