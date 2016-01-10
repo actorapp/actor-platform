@@ -11383,6 +11383,65 @@
         {
           "type": "rpc",
           "content": {
+            "name": "DoCall",
+            "header": 2597,
+            "response": {
+              "type": "anonymous",
+              "header": 2598,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "callId",
+                  "category": "full",
+                  "description": "  Call Id"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "int64",
+                  "id": 1,
+                  "name": "callId"
+                }
+              ]
+            },
+            "doc": [
+              "Do Call. Right after a call client need to start sending CallInProgress",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "hidden",
+                "description": "Call timeout"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 2,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "EndCall",
             "header": 2595,
             "response": {
