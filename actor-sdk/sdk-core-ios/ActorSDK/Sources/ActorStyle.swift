@@ -42,6 +42,8 @@ public class ActorStyle {
     /// View Controller background color for settings
     public var vcBackyardColor = UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1)
     
+
+    
     //
     // UINavigationBar
     //
@@ -368,6 +370,8 @@ public class ActorStyle {
     public var chatServiceBubbleColor = UIColor(rgb: 0x2D394A, alpha: 0.56)
     
     public var chatUnreadBgColor = UIColor.alphaBlack(0.3)
+    
+    public var chatReadMediaColor = UIColor(red: 46.6/255.0, green: 211.3/255.0, blue: 253.6/255.0, alpha: 1.0)
 
     // Status Colors
     
@@ -402,7 +406,7 @@ public class ActorStyle {
     
     private var _chatStatusMediaActive: UIColor?
     public var chatStatusMediaActive: UIColor {
-        get { return _chatStatusMediaActive != nil ? _chatStatusMediaActive! : chatStatusActive }
+        get { return _chatStatusMediaActive != nil ? _chatStatusMediaActive! : chatReadMediaColor }
         set(v) { _chatStatusMediaActive = v }
     }
 
