@@ -432,6 +432,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                 self.audioButton.frame = textView.frame
                 self.audioButton.hidden = false;
                 
+                self.stickersButton.hidden = true;
+                
                 
             } else {
                 self.audioButton.hidden = true;
@@ -443,6 +445,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                 
                 self.textInputbar.layoutIfNeeded()
                 self.rightButton.layoutIfNeeded()
+                
+                self.stickersButton.hidden = false
             }
 
         }
@@ -759,18 +763,22 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     
     func changeKeyboard() {
         
-        self.stickersView.loadStickers()
         
         if self.stickersOpen == false {
+            self.stickersView.loadStickers()
             
-            self.textInputbar.textView.becomeFirstResponder()
+            //self.textInputbar.textView.becomeFirstResponder()
             self.textInputbar.textView.inputView = self.stickersView
             self.textInputbar.textView.refreshFirstResponder()
             self.textInputbar.textView.refreshInputViews()
+            self.textInputbar.textView.becomeFirstResponder()
             
             self.stickersButton.setImage(UIImage.bundled("keyboard_button"), forState: UIControlState.Normal)
             
             self.stickersOpen = true
+            
+            self.textInputbar.layoutIfNeeded()
+            self.view.layoutIfNeeded()
             
             
         } else {
@@ -779,10 +787,14 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             self.textInputbar.textView.inputView = nil
             self.textInputbar.textView.refreshFirstResponder()
             self.textInputbar.textView.refreshInputViews()
+            self.textInputbar.textView.becomeFirstResponder()
             
             self.stickersButton.setImage(UIImage.bundled("sticker_button"), forState: UIControlState.Normal)
             
             self.stickersOpen = false
+            
+            self.textInputbar.layoutIfNeeded()
+            self.view.layoutIfNeeded()
             
         }
         
