@@ -1,0 +1,4 @@
+Fixes
+---
+
+* Added exec permission to actor-cli 
