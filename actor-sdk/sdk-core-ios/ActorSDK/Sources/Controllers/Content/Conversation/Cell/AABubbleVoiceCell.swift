@@ -97,7 +97,7 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
             }
             
             titleLabel.text = "Voice message"
-            sizeLabel.text = bindedLayout.fileSize
+            sizeLabel.text = bindedLayout.voiceDuration
             
             // Reset progress
             self.progress.hideButton()
@@ -304,11 +304,12 @@ public class VoiceMessageCellLayout: AACellLayout {
     public let fileName: String
     public let fileExt: String
     public let fileSize: String
+    public var voiceDuration: String!
     
     /**
      Creting layout for media bubble
      */
-    public init(fileName: String, fileExt: String, fileSize: Int,id: Int64, date: Int64, autoDownload: Bool) {
+    public init(fileName: String, fileExt: String, fileSize: Int,id: Int64, date: Int64, autoDownload: Bool,duration:jint) {
         
         // Saving content size
         self.contentSize = CGSizeMake(200, 66)
@@ -325,6 +326,29 @@ public class VoiceMessageCellLayout: AACellLayout {
         
         // Creating layout
         super.init(height: self.screenSize.height + 2, date: date, key: "voice")
+        
+        self.voiceDuration = getTimeString(Int(duration))
+    }
+    
+    func getTimeString(totalSeconds:Int) -> String {
+        
+        let seconds = Int(totalSeconds % 60)
+        let minutes = Int((totalSeconds / 60) % 60)
+        
+        if minutes < 10 {
+            if seconds < 10 {
+                return "0\(minutes):0\(seconds)"
+            } else {
+                return "0\(minutes):\(seconds)"
+            }
+        } else {
+            if seconds < 10 {
+                return "\(minutes):0\(seconds)"
+            } else {
+                return "\(minutes):\(seconds)"
+            }
+        }
+        
     }
     
     /**
@@ -334,7 +358,7 @@ public class VoiceMessageCellLayout: AACellLayout {
     public convenience init(id: Int64, voiceContent: ACVoiceContent, date: Int64) {
         
         
-        self.init(fileName: voiceContent.getName(), fileExt: voiceContent.getExt(), fileSize: Int(voiceContent.getSource().getSize()),id: id, date: date, autoDownload: true)
+        self.init(fileName: voiceContent.getName(), fileExt: voiceContent.getExt(), fileSize: Int(voiceContent.getSource().getSize()),id: id, date: date, autoDownload: true,duration:voiceContent.getDuration())
     }
     
     
