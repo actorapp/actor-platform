@@ -9836,6 +9836,58 @@
           <ref role="NX6Kv" node="6tgpW9bxNIA" resolve="timeout" />
         </node>
       </node>
+      <node concept="2m6fVq" id="201xLeQvfQO" role="2m5mJr">
+        <property role="TrG5h" value="DoCall" />
+        <node concept="2m7Kf5" id="201xLeQvfRW" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="201xLeQvfS5" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="201xLeQvh_H" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="timeout" />
+          <node concept="wb0Ql" id="201xLeQvh_N" role="2m7DVh">
+            <ref role="wb18D" node="6u8Nlnzqdrq" resolve="sec" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="201xLeQvfQP" role="NuuwV">
+          <property role="Nu42W" value="A25" />
+        </node>
+        <node concept="2m1R6W" id="201xLeQvfS8" role="2m6efq">
+          <node concept="2m7Kf5" id="201xLeQvfSd" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="callId" />
+            <node concept="2m5ndQ" id="201xLeQvfSh" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="201xLeQvfS9" role="NuuwV">
+            <property role="Nu42W" value="A26" />
+          </node>
+          <node concept="NX1gA" id="201xLeQvgJ5" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Call Id" />
+            <ref role="NX6Kv" node="201xLeQvfSd" resolve="callId" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="201xLeQvfSk" role="1GBnQ6">
+          <property role="NXePf" value="Do Call. Right after a call client need to start sending CallInProgress" />
+        </node>
+        <node concept="NX1gA" id="201xLeQvfSp" role="1GBnQ6">
+          <property role="NX6R2" value="destination peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="201xLeQvfRW" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="201xLeQvisy" role="1GBnQ6">
+          <property role="NX6R2" value="Call timeout" />
+          <ref role="NX6Kv" node="201xLeQvh_H" resolve="timeout" />
+        </node>
+        <node concept="2uC4CA" id="201xLeQvjjg" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="CALL_ENDED" />
+          <property role="2uCiSL" value="Throws when call is already ended" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="6tgpW9bxLVc" role="2m5mJr">
         <property role="TrG5h" value="EndCall" />
         <node concept="2m7Kf5" id="6tgpW9bxLVW" role="2m0hLx">
