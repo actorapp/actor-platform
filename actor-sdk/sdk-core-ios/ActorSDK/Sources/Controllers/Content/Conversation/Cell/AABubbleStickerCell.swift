@@ -193,21 +193,21 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
     }
     
     public func bgLoadThumb(selfGeneration: Int) {
-        if (thumbLoaded) {
-            return
-        }
-        thumbLoaded = true
-        
-        if (bindedLayout.fastThumb != nil) {
-            let loadedThumb = UIImage(data: bindedLayout.fastThumb!)?
-                .roundCorners(bindedLayout.screenSize.width,
-                    h: bindedLayout.screenSize.height,
-                    roundSize: 14)
-            
-            runOnUiThread(selfGeneration,closure: { ()->() in
-                self.setPreviewImage(loadedThumb!, fast: true)
-            });
-        }
+//        if (thumbLoaded) {
+//            return
+//        }
+//        thumbLoaded = true
+//        
+//        if (bindedLayout.fastThumb != nil) {
+//            let loadedThumb = UIImage(data: bindedLayout.fastThumb!)?
+//                .roundCorners(bindedLayout.screenSize.width,
+//                    h: bindedLayout.screenSize.height,
+//                    roundSize: 14)
+//            
+//            runOnUiThread(selfGeneration,closure: { ()->() in
+//                self.setPreviewImage(loadedThumb!, fast: true)
+//            });
+//        }
     }
     
     public func bgLoadReference(reference: String, selfGeneration: Int) {
