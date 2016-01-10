@@ -350,13 +350,15 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         }
     }
     
-    // Text bar actions
+    // MARK: - Text bar actions
     
     override func textWillUpdate() {
         super.textWillUpdate();
 
         Actor.onTypingWithPeer(peer);
     }
+    
+    
     
     override func textDidUpdate(animated: Bool) {
         super.textDidUpdate(animated)
@@ -380,21 +382,21 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             
         } else {
             self.stickersButton.hidden = false
-            if(self.audioButton.hidden){
-                
-                self.rightButton.tintColor = appStyle.chatSendColor
-                self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-                self.rightButton.setTitle("", forState: UIControlState.Normal)
-                self.rightButton.enabled = true
-                
-            } else {
-                
-                self.rightButton.tintColor = appStyle.chatSendColor
-                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-                self.rightButton.setTitle("", forState: UIControlState.Normal)
-                self.rightButton.enabled = true
-                
-            }
+//            if(self.audioButton.hidden){
+//                
+//                self.rightButton.tintColor = appStyle.chatSendColor
+//                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+//                self.rightButton.setTitle("", forState: UIControlState.Normal)
+//                self.rightButton.enabled = true
+//                
+//            } else {
+//                
+//                self.rightButton.tintColor = appStyle.chatSendColor
+//                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+//                self.rightButton.setTitle("", forState: UIControlState.Normal)
+//                self.rightButton.enabled = true
+//                
+//            }
             
             self.micOn = true
             
@@ -405,11 +407,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
     }
     
+    // MARK: - right button
+    
     override func didPressRightButton(sender: AnyObject!) {
-        
-        
-//        Actor.sendMessageWithMentionsDetect(peer, withText: textView.text)
-//        super.didPressRightButton(sender)
         
         if !self.textView.text.isEmpty {
             
@@ -421,8 +421,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             if(self.audioButton.hidden){
                 //self.textView.resignFirstResponder()
                 
-                self.rightButton.tintColor = appStyle.chatSendColor
-                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+                self.rightButton.tintColor = appStyle.chatAttachColor
+                self.rightButton.setImage(UIImage.bundled("keyboard_button"), forState: UIControlState.Normal)
                 self.rightButton.setTitle("", forState: UIControlState.Normal)
                 self.rightButton.enabled = true
                 
@@ -438,8 +438,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             } else {
                 self.audioButton.hidden = true;
                 
-                self.rightButton.tintColor = appStyle.chatSendColor
-                self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+                self.rightButton.tintColor = appStyle.chatAttachColor
+                self.rightButton.setImage(UIImage.bundled("aa_micbutton"), forState: UIControlState.Normal)
                 self.rightButton.setTitle("", forState: UIControlState.Normal)
                 self.rightButton.enabled = true
                 
@@ -485,9 +485,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         }
         
         showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
+        
+        self.rightButton.layoutIfNeeded()
     }
  
-    // Completition
+    //MARK: - Completition
+    
     
     override func didChangeAutoCompletionPrefix(prefix: String!, andWord word: String!) {
         if UInt(self.peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue {
