@@ -1,0 +1,4 @@
+Bug fixes
+---
+
+Fixed packet loss in connection initialization process
