@@ -381,24 +381,16 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             }
             
         } else {
-            self.stickersButton.hidden = false
-//            if(self.audioButton.hidden){
-//                
-//                self.rightButton.tintColor = appStyle.chatSendColor
-//                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-//                self.rightButton.setTitle("", forState: UIControlState.Normal)
-//                self.rightButton.enabled = true
-//                
-//            } else {
-//                
-//                self.rightButton.tintColor = appStyle.chatSendColor
-//                self.rightButton.setImage(UIImage.tinted("aa_keyboard", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-//                self.rightButton.setTitle("", forState: UIControlState.Normal)
-//                self.rightButton.enabled = true
-//                
-//            }
             
-            self.micOn = true
+            self.stickersButton.hidden = false
+            if(self.micOn == false){
+                
+                self.rightButton.tintColor = appStyle.chatAttachColor
+                self.rightButton.setImage(UIImage.bundled("aa_micbutton"), forState: UIControlState.Normal)
+                self.rightButton.setTitle("", forState: UIControlState.Normal)
+                self.rightButton.enabled = true
+                
+            }
             
         }
         
@@ -417,9 +409,11 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             super.didPressRightButton(sender)
             
         } else {
-            
+
             if(self.audioButton.hidden){
-                //self.textView.resignFirstResponder()
+                self.textView.resignFirstResponder()
+                
+                self.micOn = true
                 
                 self.rightButton.tintColor = appStyle.chatAttachColor
                 self.rightButton.setImage(UIImage.bundled("keyboard_button"), forState: UIControlState.Normal)
@@ -436,6 +430,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                 
                 
             } else {
+                
+                self.micOn = false
+                
                 self.audioButton.hidden = true;
                 
                 self.rightButton.tintColor = appStyle.chatAttachColor
