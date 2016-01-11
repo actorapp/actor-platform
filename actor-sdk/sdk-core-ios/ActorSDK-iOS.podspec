@@ -29,6 +29,7 @@ Pod::Spec.new do |s|
   s.dependency 'NYTPhotoViewer'
   s.dependency 'RSKImageCropper'
   s.dependency 'JDStatusBarNotification'
+  s.dependency 'SDWebImage/WebP'
 
   s.dependency 'BlockAlertsAnd-ActionSheets'
   s.dependency 'RMUniversalAlert'
