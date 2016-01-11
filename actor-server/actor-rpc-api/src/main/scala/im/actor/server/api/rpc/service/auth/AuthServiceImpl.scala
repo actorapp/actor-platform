@@ -4,6 +4,7 @@ import java.time.{ LocalDateTime, ZoneOffset }
 
 import akka.actor.ActorSystem
 import akka.event.Logging
+import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
@@ -11,11 +12,14 @@ import im.actor.api.rpc.auth.ApiEmailActivationType._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.ApiSex.ApiSex
+import im.actor.config.ActorConfig
 import im.actor.server.acl.ACLUtils
+import im.actor.server.activation.internal.{ DummyCallEngine, DummySmsEngine, ActivationConfig, InternalCodeActivation }
 import im.actor.server.activation.{ CodeFailure, CodeActivation }
 import im.actor.server.api.rpc.service.profile.ProfileErrors
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.db.DbExtension
+import im.actor.server.email.{ EmailConfig, SmtpEmailSender }
 import im.actor.server.model.AuthUsernameTransaction
 import im.actor.server.oauth.{ GoogleProvider, OAuth2ProvidersDomains }
 import im.actor.server.persist.{ UserPasswordRepo, UserRepo }
@@ -57,6 +61,19 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
   protected implicit val db: Database = DbExtension(actorSystem).db
   protected val userExt = UserExtension(actorSystem)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
+  private implicit val mat = ActorMaterializer()
+
+  // this is workaround to use internal mail sender, when using actor-activation option
+  protected val emailSender = ActorConfig.load().getString("services.activation.default-service") match {
+    case "internal" | "telesign" ⇒ activationContext
+    case "actor-activation" ⇒
+      InternalCodeActivation.newContext(
+        ActivationConfig.load.get,
+        new DummySmsEngine(),
+        new DummyCallEngine(),
+        new SmtpEmailSender(EmailConfig.load.get)
+      )
+  }
 
   protected val log = Logging(actorSystem, this)
 
