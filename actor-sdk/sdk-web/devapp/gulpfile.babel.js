@@ -47,12 +47,12 @@ gulp.task('webpack:dev', () => {
 gulp.task('assets', ['sounds', 'images']);
 
 gulp.task('sounds', () => {
-  gulp.src(['node_modules/actor-sdk/build/assets/sound/**/*'])
+  gulp.src(['../build/assets/sound/**/*'])
     .pipe(gulp.dest('./dist/assets/sound'));
 });
 
 gulp.task('images', () => {
-  gulp.src(['node_modules/actor-sdk/build/assets/images/**/*'])
+  gulp.src(['../build/assets/images/**/*'])
     .pipe(gulpif(isProduction, image({svgo: false})))
     .pipe(gulp.dest('./dist/assets/images'));
 });
@@ -62,7 +62,15 @@ gulp.task('html', () => {
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('static', ['html', 'assets']);
+gulp.task('workers', () => {
+  gulp.src([
+    '../build/workers/offline-worker.*',
+    '../build/workers/serviceworker-cache-polyfill.*'
+  ])
+    .pipe(gulp.dest('./dist/'));
+});
+
+gulp.task('static', ['html', 'assets', 'workers']);
 
 gulp.task('dev', ['static', 'webpack:dev']);
 
