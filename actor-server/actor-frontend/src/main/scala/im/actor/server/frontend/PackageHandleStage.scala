@@ -30,7 +30,10 @@ private[frontend] final class PackageHandleStage(
   override def shape = FlowShape(in, out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
-    var authIds = Set.empty[Either[Long, MasterKey]]
+    val pullIn = () ⇒ {
+      if (!hasBeenPulled(in))
+        pull(in)
+    }
 
     setHandler(in, new InHandler {
       override def onPush(): Unit = grab(in) match {
@@ -61,12 +64,12 @@ private[frontend] final class PackageHandleStage(
             case m           ⇒ Seq(ack)
           }
 
-          emitMultiple(out, fs.iterator)
+          emitMultiple(out, fs.iterator, pullIn)
       }
     })
 
     setHandler(out, new OutHandler {
-      override def onPull(): Unit = pull(in)
+      override def onPull(): Unit = pullIn()
     })
   }
 }
