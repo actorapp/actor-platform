@@ -11,7 +11,7 @@ import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.users.{ ApiContactRecord, ApiContactType, ApiSex }
 import im.actor.concurrent.FutureExt
 import im.actor.server._
-import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
+import im.actor.server.activation.internal.{DummyCallEngine, DummySmsEngine, ActivationConfig, InternalCodeActivation}
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
@@ -1077,12 +1077,3 @@ object DummyOAuth2Server {
     }
   }
 }
-
-final class DummySmsEngine extends AuthSmsEngine {
-  override def sendCode(phoneNumber: Long, code: String): Future[Unit] = Future.successful(())
-}
-
-final class DummyCallEngine extends AuthCallEngine {
-  override def sendCode(phoneNumber: Long, code: String, language: String): Future[Unit] = Future.successful(())
-}
-

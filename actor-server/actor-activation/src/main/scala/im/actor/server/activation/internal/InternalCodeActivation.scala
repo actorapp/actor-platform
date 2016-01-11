@@ -22,6 +22,14 @@ import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 import scalaz.{ -\/, \/, \/- }
 
+final class DummySmsEngine extends AuthSmsEngine {
+  override def sendCode(phoneNumber: Long, code: String): Future[Unit] = Future.successful(())
+}
+
+final class DummyCallEngine extends AuthCallEngine {
+  override def sendCode(phoneNumber: Long, code: String, language: String): Future[Unit] = Future.successful(())
+}
+
 object InternalCodeActivation {
 
   private[activation] sealed trait Message

@@ -238,7 +238,7 @@ trait AuthHelpers extends Helpers {
 
   protected def sendEmailCode(email: String, code: String, transactionHash: String)(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
     log.info("Sending email code {} to {}", code, email)
-    activationContext.send(Some(transactionHash), EmailCode(email, code))
+    emailSender.send(Some(transactionHash), EmailCode(email, code))
   }
 
   protected def genSmsHash() = ThreadLocalRandom.current.nextLong().toString
