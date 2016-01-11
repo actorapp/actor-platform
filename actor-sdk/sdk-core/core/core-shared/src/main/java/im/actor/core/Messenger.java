@@ -192,6 +192,18 @@ public class Messenger {
     }
 
     /**
+     * Sending password
+     *
+     * @param password Account password
+     * @return Command for execution
+     */
+    @NotNull
+    @ObjectiveCName("validatePasswordCommand:")
+    public Command<AuthState> validatePassword(String password) {
+        return modules.getAuthModule().requestValidatePassword(password);
+    }
+
+    /**
      * Perform signup
      *
      * @param name       Name of User
@@ -678,11 +690,11 @@ public class Messenger {
     /**
      * Send Location Message
      *
-     * @param peer         destination peer
-     * @param longitude    user location longitude
-     * @param latitude     user location latitude
-     * @param street       user location street
-     * @param place        user location place
+     * @param peer      destination peer
+     * @param longitude user location longitude
+     * @param latitude  user location latitude
+     * @param street    user location street
+     * @param place     user location place
      */
     @ObjectiveCName("sendLocationWithPeer:withLongitude:withLatitude:withStreet:withPlace:")
     public void sendLocation(@NotNull Peer peer,
@@ -1772,7 +1784,7 @@ public class Messenger {
     }
 
     /**
-     *  Getting saved sticker packs
+     * Getting saved sticker packs
      *
      * @return list of saved sticker packs Value Models
      */

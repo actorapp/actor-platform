@@ -18,7 +18,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.frontend.TcpFrontend
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
-import im.actor.server.mtproto.transport.{ Package$, TransportPackage }
+import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.session.{ Session, SessionConfig }
 import kamon.Kamon
@@ -101,7 +101,7 @@ class SimpleServerE2eSpec extends ActorSuite(
 
       val requestBytes = RequestCodec.encode(Request(RequestGetDifference(999, Array()))).require
       val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
-      val mtPackage = Package(authId, sessionId, mbBytes)
+      val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
       client.send(mtPackage)
 
@@ -124,7 +124,7 @@ class SimpleServerE2eSpec extends ActorSuite(
       {
         val helloMessageId = Random.nextLong()
         val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello)).require
-        val helloMtPackage = Package(authId, sessionId, helloMbBytes)
+        val helloMtPackage = MTPackage(authId, sessionId, helloMbBytes)
         client.send(helloMtPackage)
         expectNewSession(sessionId, helloMessageId)
         expectMessageAck(helloMessageId)
@@ -136,7 +136,7 @@ class SimpleServerE2eSpec extends ActorSuite(
       {
         val helloMessageId = Random.nextLong()
         val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello)).require
-        val helloMtPackage = Package(authId, sessionId, helloMbBytes)
+        val helloMtPackage = MTPackage(authId, sessionId, helloMbBytes)
         client.send(helloMtPackage)
         expectNewSession(sessionId, helloMessageId)
         expectMessageAck(helloMessageId)
@@ -153,7 +153,7 @@ class SimpleServerE2eSpec extends ActorSuite(
       val authId = Random.nextLong()
       val sessionId = Random.nextLong()
 
-      client.send(Package(authId, sessionId, MessageBoxCodec.encode(MessageBox(Random.nextLong, SessionHello)).require))
+      client.send(MTPackage(authId, sessionId, MessageBoxCodec.encode(MessageBox(Random.nextLong, SessionHello)).require))
       expectAuthIdInvalid()
 
       client.close()
@@ -181,7 +181,7 @@ class SimpleServerE2eSpec extends ActorSuite(
         implicit val client = client2
         signUp(authId2, sessionId2, phoneNumber)
         val requestBits = RequestCodec.encode(Request(RequestTerminateAllSessions)).require
-        client.send(Package(authId2, Random.nextLong(), MessageBoxCodec.encode(MessageBox(Random.nextLong, RpcRequestBox(requestBits))).require))
+        client.send(MTPackage(authId2, Random.nextLong(), MessageBoxCodec.encode(MessageBox(Random.nextLong, RpcRequestBox(requestBits))).require))
       }
 
       {
@@ -189,7 +189,7 @@ class SimpleServerE2eSpec extends ActorSuite(
         expectAuthIdInvalid()
         expectSessionLost()
 
-        client.send(Package(authId1, sessionId1, MessageBoxCodec.encode(MessageBox(Random.nextLong, SessionHello)).require))
+        client.send(MTPackage(authId1, sessionId1, MessageBoxCodec.encode(MessageBox(Random.nextLong, SessionHello)).require))
         expectAuthIdInvalid()
       }
 
@@ -204,7 +204,7 @@ class SimpleServerE2eSpec extends ActorSuite(
       val smsHash = {
         val helloMessageId = Random.nextLong()
         val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello)).require
-        val helloMtPackage = Package(authId, sessionId, helloMbBytes)
+        val helloMtPackage = MTPackage(authId, sessionId, helloMbBytes)
         client.send(helloMtPackage)
         expectNewSession(sessionId, helloMessageId)
         expectMessageAck(helloMessageId)
@@ -213,7 +213,7 @@ class SimpleServerE2eSpec extends ActorSuite(
 
         val requestBytes = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
         val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
-        val mtPackage = Package(authId, sessionId, mbBytes)
+        val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
         client.send(mtPackage)
 
@@ -242,7 +242,7 @@ class SimpleServerE2eSpec extends ActorSuite(
           isSilent = false
         ))).require
         val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
-        val mtPackage = Package(authId, sessionId, mbBytes)
+        val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
         client.send(mtPackage)
 
@@ -258,7 +258,7 @@ class SimpleServerE2eSpec extends ActorSuite(
     private def requestAuthId()(implicit client: MTProtoClient): Long = {
       val messageId = Random.nextLong()
       val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RequestAuthId)).require
-      client.send(Package(0, 0, mbBytes))
+      client.send(MTPackage(0, 0, mbBytes))
 
       receiveMessageBox().body match {
         case ResponseAuthId(authId) ⇒ authId
@@ -314,14 +314,14 @@ class SimpleServerE2eSpec extends ActorSuite(
       MessageBoxCodec.decode(mtp.messageBytes).require.value
     }
 
-    private def receiveMTPackage()(implicit client: MTProtoClient): Package = {
+    private def receiveMTPackage()(implicit client: MTProtoClient): MTPackage = {
       val body = client.receiveTransportPackage() match {
         case Some(TransportPackage(_, body)) ⇒ body
         case None                            ⇒ throw new Exception("Transport package not received")
       }
 
-      body shouldBe a[Package]
-      body.asInstanceOf[Package]
+      body shouldBe a[MTPackage]
+      body.asInstanceOf[MTPackage]
     }
 
     private def expectNewSession()(implicit client: MTProtoClient): NewSession = {

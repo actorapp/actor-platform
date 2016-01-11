@@ -218,6 +218,22 @@
 
 "ChatNewMessages" = "Nuevos mensajes";
 
+/*
+ * Voice
+ */
+
+"ChatVoiceMessage" = "Mensaje de voz";
+
+"ChatHoldToTalk" = "Pulsar para grabar";
+
+"ChatReleaseToSend" = "Dejar de pulsar para enviar";
+
+"ChatSlideUpToCancel" = "Deslizar para cancelar";
+
+/*
+ * Notifications
+ */
+
 "NotificationsTitle" = "Notificaciones y Sonidos";
 
 "NotificationsEffectsTitle" = "Efectos";
