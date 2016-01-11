@@ -17,6 +17,7 @@ import im.actor.core.api.rpc.RequestSignUp;
 import im.actor.core.api.rpc.RequestStartEmailAuth;
 import im.actor.core.api.rpc.RequestStartPhoneAuth;
 import im.actor.core.api.rpc.RequestValidateCode;
+import im.actor.core.api.rpc.RequestValidatePassword;
 import im.actor.core.api.rpc.ResponseAuth;
 import im.actor.core.api.rpc.ResponseGetOAuth2Params;
 import im.actor.core.api.rpc.ResponseStartEmailAuth;
@@ -46,7 +47,7 @@ public class Authentication {
     private static final String KEY_SMS_HASH = "auth_sms_hash";
     private static final String KEY_SMS_CODE = "auth_sms_code";
     private static final String KEY_TRANSACTION_HASH = "auth_transaction_hash";
-    private static final String KEY_CODE = "auth_code";
+    //private static final String KEY_CODE = "auth_code";
     private static final String KEY_OAUTH_REDIRECT_URL = "oauth_redirect_url";
 
     private Modules modules;
@@ -136,6 +137,8 @@ public class Authentication {
                             state = AuthState.GET_OAUTH_PARAMS;
                         } else if (emailActivationType.equals(ApiEmailActivationType.CODE)) {
                             state = AuthState.CODE_VALIDATION_EMAIL;
+                        } else if (emailActivationType.equals(ApiEmailActivationType.PASSWORD)) {
+                            state = AuthState.PASSWORD_VALIDATION;
                         }
 
                         im.actor.runtime.Runtime.postToMainThread(new Runnable() {
@@ -258,7 +261,7 @@ public class Authentication {
                         if ("EMAIL_EXPIRED".equals(e.getTag())) {
                             resetAuth();
                         } else if ("EMAIL_UNOCCUPIED".equals(e.getTag())) {
-                            modules.getPreferences().putString(KEY_CODE, code);
+                            // modules.getPreferences().putString(KEY_CODE, code);
                             state = AuthState.SIGN_UP;
                             callback.onResult(AuthState.SIGN_UP);
                             return;
@@ -328,7 +331,7 @@ public class Authentication {
                         if ("PHONE_CODE_EXPIRED".equals(e.getTag()) || "EMAIL_CODE_EXPIRED".equals(e.getTag())) {
                             resetAuth();
                         } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
-                            modules.getPreferences().putString(KEY_CODE, code);
+                            // modules.getPreferences().putString(KEY_CODE, code);
                             state = AuthState.SIGN_UP;
                             Runtime.postToMainThread(new Runnable() {
                                 @Override
@@ -347,6 +350,44 @@ public class Authentication {
                         });
                     }
                 });
+            }
+        };
+    }
+
+    public Command<AuthState> requestValidatePassword(final String password) {
+        return new Command<AuthState>() {
+            @Override
+            public void start(final CommandCallback<AuthState> callback) {
+                String transactionHash = modules.getPreferences()
+                        .getString(KEY_TRANSACTION_HASH);
+                request(new RequestValidatePassword(transactionHash, password),
+                        new RpcCallback<ResponseAuth>() {
+                            @Override
+                            public void onResult(ResponseAuth response) {
+                                onLoggedIn(callback, response);
+                            }
+
+                            @Override
+                            public void onError(final RpcException e) {
+                                if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
+                                    state = AuthState.SIGN_UP;
+                                    Runtime.postToMainThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            callback.onResult(AuthState.SIGN_UP);
+                                        }
+                                    });
+                                    return;
+                                }
+
+                                Runtime.postToMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onError(e);
+                                    }
+                                });
+                            }
+                        });
             }
         };
     }
