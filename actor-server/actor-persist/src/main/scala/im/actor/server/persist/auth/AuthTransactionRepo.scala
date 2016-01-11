@@ -45,10 +45,12 @@ object AuthTransactionRepo {
     for {
       email ← AuthEmailTransactionRepo.find(transactionHash)
       phone ← AuthPhoneTransactionRepo.find(transactionHash)
-    } yield (email, phone) match {
-      case (Some(e), None) ⇒ email
-      case (None, Some(p)) ⇒ phone
-      case _               ⇒ None
+      username ← AuthUsernameTransactionRepo.find(transactionHash)
+    } yield (email, phone, username) match {
+      case (Some(e), None, None) ⇒ email
+      case (None, Some(p), None) ⇒ phone
+      case (None, None, Some(p)) ⇒ username
+      case _                     ⇒ None
     }
 
   def delete(transactionHash: String) =
