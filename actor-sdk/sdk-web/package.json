@@ -55,7 +55,7 @@
     "assign-deep": "0.4.3",
     "babel-polyfill": "^6.2.0",
     "bugsnag-js": "^2.4.8",
-    "classnames": "2.2.1",
+    "classnames": "2.2.3",
     "crosstab": "0.2.12",
     "emoji-data": "github:olegshilov/emoji-data.git#develop",
     "flexboxgrid": "6.3.0",
@@ -81,29 +81,17 @@
     "react-visibility-sensor": "2.1.0"
   },
   "devDependencies": {
-    "autoprefixer-loader": "^3.1.0",
-    "babel-core": "^6.2.4",
+    "babel-core": "^6.4.0",
     "babel-eslint": "^5.0.0-beta4",
-    "babel-loader": "^6.2.0",
     "babel-plugin-transform-strict-mode": "^6.2.0",
     "babel-preset-es2015": "^6.2.4",
     "babel-preset-react": "^6.2.4",
     "babel-preset-stage-0": "^6.2.4",
     "copyfiles": "^0.2.1",
-    "css-loader": "^0.23.0",
     "eslint": "^1.10.3",
-    "eslint-loader": "^1.1.1",
-    "eslint-plugin-react": "^3.11.3",
-    "file-loader": "^0.8.5",
-    "json-loader": "^0.5.4",
+    "eslint-plugin-react": "^3.14.0",
     "node-sass": "^3.3.3",
-    "react-hot-loader": "^1.3.0",
     "rimraf": "^2.4.4",
-    "sass-loader": "^3.1.2",
-    "source-map-loader": "^0.1.5",
-    "style-loader": "^0.13.0",
-    "svg-sprite": "^1.2.16",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.12.9"
+    "svg-sprite": "^1.2.19"
   }
 }

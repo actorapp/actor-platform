@@ -5,7 +5,7 @@ export default {
   devtool: 'source-map',
   entry: {
     app: ['./src/index.js'],
-    styles: ['./src/styles']
+    styles: ['./src/styles.js']
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -50,8 +50,11 @@ export default {
       test: /\.json$/,
       loaders: ['json']
     }, {
-      test: /\.(png|mp3|svg)$/,
-      loaders: ['file?name=assets/[name].[ext]']
+      test: /\.(png|svg)$/,
+      loaders: ['file?name=assets/images/[name].[ext]']
+    }, {
+      test: /\.(mp3)$/,
+      loaders: ['file?name=assets/sounds/[name].[ext]']
     }, {
       test: /\.(ttf|eot|svg|woff|woff2)$/,
       loaders: ['file?name=assets/fonts/[name].[ext]']
