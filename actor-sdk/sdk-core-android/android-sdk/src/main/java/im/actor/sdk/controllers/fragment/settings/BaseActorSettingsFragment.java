@@ -205,7 +205,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                         value.setText(phoneNumber);
                         TextView title = (TextView) recordView.findViewById(R.id.title);
                         title.setTextColor(style.getTextSecondaryColor());
-                        title.setText(record.getTitle());
+                        title.setText(record.getTitle().replace("Mobile phone", getString(R.string.settings_mobile_phone)));
                         contactsContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                 Screen.dp(72)));
 
