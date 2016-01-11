@@ -23,6 +23,7 @@ Pod::Spec.new do |s|
   # UI
   s.dependency 'VBFPopFlatButton'
   s.dependency 'MBProgressHUD'
+  s.dependency 'SVProgressHUD'
   s.dependency 'PSTAlertController'
   s.dependency 'SZTextView'
   s.dependency 'SlackTextViewController'
