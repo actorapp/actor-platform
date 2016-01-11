@@ -28,13 +28,13 @@ private[frontend] final class PackageParseStage(implicit system: ActorSystem)
   sealed trait ParserStep
 
   @SerialVersionUID(1L)
-  final case object AwaitPackageHeader extends ParserStep
+  case object AwaitPackageHeader extends ParserStep
 
   @SerialVersionUID(1L)
-  final case class AwaitPackageBody(header: TransportPackageHeader) extends ParserStep
+  case class AwaitPackageBody(header: TransportPackageHeader) extends ParserStep
 
   @SerialVersionUID(1L)
-  final case class FailedState(msg: String) extends ParserStep
+  case class FailedState(msg: String) extends ParserStep
 
   type ParseState = (ParserStep, BitVector)
 
