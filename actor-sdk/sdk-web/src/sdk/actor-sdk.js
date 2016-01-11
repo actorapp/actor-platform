@@ -4,6 +4,7 @@
 
 import 'babel-polyfill';
 import '../utils/intl-polyfill';
+import '../workers'
 
 import RouterContainer from '../utils/RouterContainer';
 import DelegateContainer from '../utils/DelegateContainer';
