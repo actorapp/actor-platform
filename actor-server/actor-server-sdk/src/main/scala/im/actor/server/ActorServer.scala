@@ -266,7 +266,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       Frontend.start(serverConfig)
 
       system.log.debug("Starting Http Api")
-      HttpApi(system)
+      HttpApi(system).start()
 
       ActorServer(system)
     } catch {
