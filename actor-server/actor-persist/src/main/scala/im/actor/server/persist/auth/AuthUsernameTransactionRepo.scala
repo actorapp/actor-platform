@@ -41,6 +41,8 @@ object AuthUsernameTransactionRepo {
 
   def find(username: String, deviceHash: Array[Byte]) = byUsernameAndDeviceHash((username, deviceHash)).result.headOption
 
+  def find(hash: String) = byHash(hash).result.headOption
+
   def setUserId(hash: String, userId: Int) =
     byHash(hash).map(_.userId).update(Some(userId))
 }
