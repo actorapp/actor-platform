@@ -37,3 +37,12 @@ master_secret_extendend = HKDF(master_secret, 64)
 root_key = master_secret_extendend[0..31]
 chain_key = master_secret_extendend[32..63]
 ```
+
+## Encryption key for a message
+For each message chain_key is derived to a message_key:
+```
+message_key = HMAC_SHA256(chain_key, 0x01)
+message_key_extendend = HKDF(message_key, 64)
+cipher_key = message_key_extendend[0..31]
+mac_key = message_key_extendend[32..63]
+```
