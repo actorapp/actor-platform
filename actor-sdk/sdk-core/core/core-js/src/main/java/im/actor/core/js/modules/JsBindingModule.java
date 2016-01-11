@@ -19,6 +19,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileRemoteSource;
+import im.actor.core.entity.content.StickerContent;
 import im.actor.core.js.JsMessenger;
 import im.actor.core.js.entity.JsContact;
 import im.actor.core.js.entity.JsCounter;
@@ -427,6 +428,16 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                     DocumentContent doc = (DocumentContent) message.getContent();
                     if (doc.getSource() instanceof FileRemoteSource) {
                         if (fileId.contains(((FileRemoteSource) doc.getSource()).getFileReference().getFileId())) {
+                            messageList.forceReconvert(message.getEngineId());
+                        }
+                    }
+                }
+                if (message.getContent() instanceof StickerContent) {
+                    StickerContent content = (StickerContent) message.getContent();
+                    if (content.getSticker().getApiImageLocation512() != null) {
+                        long stickerFileId =
+                                content.getSticker().getApiImageLocation512().getFileLocation().getFileId();
+                        if (fileId.contains(stickerFileId)) {
                             messageList.forceReconvert(message.getEngineId());
                         }
                     }
