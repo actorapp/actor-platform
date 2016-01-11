@@ -146,6 +146,18 @@ public class Messenger {
     }
 
     /**
+     * Request user name auth
+     *
+     * @param userName userName to authenticate
+     * @return Command for execution
+     */
+    @NotNull
+    @ObjectiveCName("requestStartAuthCommandWithUserName:")
+    public Command<AuthState> requestStartUserNameAuth(String userName) {
+        return modules.getAuthModule().requestStartUserNameAuth(userName);
+    }
+
+    /**
      * Request OAuth params
      *
      * @return Command for execution
