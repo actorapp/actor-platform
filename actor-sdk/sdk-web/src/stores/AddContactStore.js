@@ -43,7 +43,7 @@ class AddContactStore extends Store {
     _results = [];
   }
 
-  __onDispatch = (action) => {
+  __onDispatch(action) {
     switch(action.type) {
       case ActionTypes.CONTACT_ADD_MODAL_SHOW:
         _isOpen = true;

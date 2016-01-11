@@ -45,7 +45,7 @@ class MyProfileStore extends Store {
     _about = profile.about;
   };
 
-  __onDispatch = (action) => {
+  __onDispatch(action) {
     switch(action.type) {
       case ActionTypes.MY_PROFILE_MODAL_SHOW:
         _isModalOpen = true;

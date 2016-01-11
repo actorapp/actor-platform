@@ -42,7 +42,7 @@ class QuickSearchStore extends Store {
     this.__emitChange();
   }
 
-  __onDispatch = (action) => {
+  __onDispatch(action) {
     switch (action.type) {
       case ActionTypes.QUICK_SEARCH_SHOW:
         _isOpen = true;

@@ -22,7 +22,7 @@ class CropAvatarStore extends Store {
     return _pictureSource;
   }
 
-  __onDispatch = (action) => {
+  __onDispatch(action) {
     switch(action.type) {
       case ActionTypes.CROP_AVATAR_MODAL_SHOW:
         _isOpen = true;
@@ -35,7 +35,6 @@ class CropAvatarStore extends Store {
         this.__emitChange();
         break;
       default:
-        // no op
     }
   };
 }

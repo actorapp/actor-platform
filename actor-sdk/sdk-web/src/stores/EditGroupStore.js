@@ -44,7 +44,7 @@ class EditGroupStore extends Store {
     _about = _group.about;
   }
 
-  __onDispatch = action => {
+  __onDispatch(action) {
     switch (action.type) {
       case ActionTypes.GROUP_EDIT_MODAL_SHOW:
         _isOpen = true;
