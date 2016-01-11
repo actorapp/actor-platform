@@ -1,0 +1,4 @@
+SDK Features
+---
+
+* DataEntity and DataEntities usable from Circe 
