@@ -159,7 +159,7 @@ private[frontend] final class SessionClient(sessionRegion: SessionRegion)
 
       context become {
         case IdsObtained(Some(Left(authId)), sessionId) ⇒
-          context become working(authId, sessionId, (bits: BitVector) ⇒ T.Package(authId, sessionId, bits), (bits: BitVector) ⇒ Success(bits))
+          context become working(authId, sessionId, (bits: BitVector) ⇒ T.MTPackage(authId, sessionId, bits), (bits: BitVector) ⇒ Success(bits))
           unstashAll()
         case IdsObtained(Some(Right(masterKey)), sessionId) ⇒
           val crypto = new CryptoHelper(new ActorProtoKey(masterKey.body.toByteArray))
@@ -169,7 +169,7 @@ private[frontend] final class SessionClient(sessionRegion: SessionRegion)
             sessionId, (bits: BitVector) ⇒ {
             this.seq += 1
             val encrPackageBits = EncryptedPackageCodec.encode(EncryptedPackage(seq, crypto.encrypt(seq, bits))).require
-            T.Package(masterKey.authId, sessionId, encrPackageBits)
+            T.MTPackage(masterKey.authId, sessionId, encrPackageBits)
           },
             (encryptedBits: BitVector) ⇒ {
               EncryptedPackageCodec.decode(encryptedBits) match {
@@ -188,7 +188,7 @@ private[frontend] final class SessionClient(sessionRegion: SessionRegion)
           )
           unstashAll()
         case IdsObtained(None, _) ⇒
-          enqueuePackage(T.Package(pAuthId, pSessionId, MessageBoxCodec.encode(MessageBox(Long.MaxValue, AuthIdInvalid)).require))
+          enqueuePackage(T.MTPackage(pAuthId, pSessionId, MessageBoxCodec.encode(MessageBox(Long.MaxValue, AuthIdInvalid)).require))
           onCompleteThenStop()
         case Status.Failure(e) ⇒
           log.error(e, "Failed to check authId")

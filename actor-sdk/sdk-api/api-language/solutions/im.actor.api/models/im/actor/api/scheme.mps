@@ -9958,6 +9958,48 @@
           <ref role="NX6Kv" node="6tgpW9bxMP6" resolve="timeout" />
         </node>
       </node>
+      <node concept="2m6fVq" id="201xLeQvo8l" role="2m5mJr">
+        <property role="TrG5h" value="SendCallSignal" />
+        <node concept="NXeRC" id="201xLeQvo9Y" role="1GBnQ6">
+          <property role="NXePf" value="Sending call signal message" />
+        </node>
+        <node concept="NX1gA" id="201xLeQvoa4" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Call Id" />
+          <ref role="NX6Kv" node="201xLeQvo9G" resolve="callId" />
+        </node>
+        <node concept="NX1gA" id="201xLeQvoac" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Signaling raw package" />
+          <ref role="NX6Kv" node="201xLeQvo9N" resolve="package" />
+        </node>
+        <node concept="2m7Kf5" id="201xLeQvo9G" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="201xLeQvo9K" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="201xLeQvo9N" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="package" />
+          <node concept="2m61tm" id="201xLeQvo9T" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="201xLeQvo8m" role="NuuwV">
+          <property role="Nu42W" value="A27" />
+        </node>
+        <node concept="2m1Rp1" id="201xLeQvo9D" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="2uC4CA" id="201xLeQvp5r" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="CALL_ENDED" />
+          <property role="2uCiSL" value="Throws when call is already ended" />
+        </node>
+        <node concept="2uC4CA" id="201xLeQvp5t" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="CALL_NOT_STARTED" />
+          <property role="2uCiSL" value="Throws when call is not started" />
+        </node>
+      </node>
       <node concept="1Dx9M1" id="6tgpW9bxpK8" role="1Dx9rD">
         <property role="1Dx9K7" value="WebRTC package that enables support to audio and video calls" />
       </node>

@@ -44,10 +44,16 @@ private[frontend] final class PackageParseStage(implicit system: ActorSystem)
     @inline
     private def failedState(msg: String) = ((FailedState(msg), BitVector.empty), Vector.empty)
 
+    val pullIn = () ⇒ {
+      if (!hasBeenPulled(in))
+        pull(in)
+    }
+
     setHandler(in, new InHandler {
       override def onPush(): Unit = {
         val chunk = grab(in)
         val (newState, res) = doParse(parserState._1, parserState._2 ++ BitVector(chunk.toByteBuffer))(Vector.empty)
+
         newState._1 match {
           case FailedState(msg) ⇒
             system.log.debug("Failed to parse connection-level {}", msg)
@@ -55,13 +61,13 @@ private[frontend] final class PackageParseStage(implicit system: ActorSystem)
             failStage(new Exception(msg) with NoStackTrace)
           case _ ⇒
             parserState = newState
-            emitMultiple(out, res.iterator)
+            emitMultiple(out, res.iterator, pullIn)
         }
       }
     })
 
     setHandler(out, new OutHandler {
-      override def onPull(): Unit = pull(in)
+      override def onPull(): Unit = pullIn()
     })
 
     @tailrec

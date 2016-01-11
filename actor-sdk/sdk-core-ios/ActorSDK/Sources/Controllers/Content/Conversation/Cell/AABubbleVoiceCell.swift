@@ -96,7 +96,7 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
                 bindBubbleType(BubbleType.MediaIn, isCompact: false)
             }
             
-            titleLabel.text = "Voice message"
+            titleLabel.text = AALocalized("ChatVoiceMessage")
             sizeLabel.text = bindedLayout.voiceDuration
             
             // Reset progress
