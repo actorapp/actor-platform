@@ -35,7 +35,7 @@ object ActorConfig {
         |    }
         |  }
         |
-        |  extensions: ["im.actor.server.db.DbExtension", "im.actor.server.bot.BotExtension", "akka.cluster.client.ClusterClientReceptionist"] $${akka.extensions}
+        |  extensions: ["im.actor.server.db.DbExtension", "akka.cluster.client.ClusterClientReceptionist"] $${akka.extensions}
         |
         |  loggers = ["akka.event.slf4j.Slf4jLogger"]
         |  logging-filter = "akka.event.slf4j.Slf4jLoggingFilter"
