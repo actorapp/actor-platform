@@ -16,12 +16,14 @@ import im.actor.core.api.rpc.RequestSendCodeByPhoneCall;
 import im.actor.core.api.rpc.RequestSignUp;
 import im.actor.core.api.rpc.RequestStartEmailAuth;
 import im.actor.core.api.rpc.RequestStartPhoneAuth;
+import im.actor.core.api.rpc.RequestStartUsernameAuth;
 import im.actor.core.api.rpc.RequestValidateCode;
 import im.actor.core.api.rpc.RequestValidatePassword;
 import im.actor.core.api.rpc.ResponseAuth;
 import im.actor.core.api.rpc.ResponseGetOAuth2Params;
 import im.actor.core.api.rpc.ResponseStartEmailAuth;
 import im.actor.core.api.rpc.ResponseStartPhoneAuth;
+import im.actor.core.api.rpc.ResponseStartUsernameAuth;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.ContactRecord;
 import im.actor.core.entity.ContactRecordType;
@@ -140,6 +142,51 @@ public class Authentication {
                         } else if (emailActivationType.equals(ApiEmailActivationType.PASSWORD)) {
                             state = AuthState.PASSWORD_VALIDATION;
                         }
+
+                        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onResult(state);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(final RpcException e) {
+                        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(e);
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<AuthState> requestStartUserNameAuth(final String userName) {
+        return new Command<AuthState>() {
+            @Override
+            public void start(final CommandCallback<AuthState> callback) {
+                ArrayList<String> langs = new ArrayList<String>();
+                for (String s : modules.getConfiguration().getPreferredLanguages()) {
+                    langs.add(s);
+                }
+                request(new RequestStartUsernameAuth(userName,
+                        apiConfiguration.getAppId(),
+                        apiConfiguration.getAppKey(),
+                        deviceHash,
+                        apiConfiguration.getDeviceTitle(),
+                        modules.getConfiguration().getTimeZone(),
+                        langs), new RpcCallback<ResponseStartUsernameAuth>() {
+
+                    @Override
+                    public void onResult(ResponseStartUsernameAuth response) {
+                        modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
+
+                        state = AuthState.PASSWORD_VALIDATION;
 
                         im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                             @Override
