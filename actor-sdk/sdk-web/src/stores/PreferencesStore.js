@@ -71,7 +71,7 @@ class PreferencesStore extends Store {
     ActorClient.changeIsShowNotificationTextEnabled(isShowNotificationsTextEnabled);
   }
 
-  __onDispatch = (action) => {
+  __onDispatch(action) {
     switch(action.type) {
       case ActionTypes.PREFERENCES_MODAL_SHOW:
         _isOpen = true;

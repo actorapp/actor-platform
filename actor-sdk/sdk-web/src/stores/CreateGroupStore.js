@@ -42,7 +42,7 @@ class CreateGroupStore extends Store {
     _selectedUserIds = new Immutable.Set();
   }
 
-  __onDispatch = (action) => {
+  __onDispatch(action) {
     switch (action.type) {
 
       case ActionTypes.GROUP_CREATE_MODAL_OPEN:

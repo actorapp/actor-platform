@@ -56,7 +56,7 @@ class LoginStore extends Store {
     myUid = null;
   };
 
-  __onDispatch = (action) => {
+  __onDispatch(action) {
     switch (action.type) {
 
       case ActionTypes.AUTH_CHANGE_LOGIN:
