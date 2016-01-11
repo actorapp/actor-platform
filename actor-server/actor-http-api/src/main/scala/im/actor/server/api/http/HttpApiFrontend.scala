@@ -39,8 +39,6 @@ final class HttpApi(_system: ActorSystem) extends Extension {
     }
   }
 
-  HttpApiFrontend.start(system.settings.config)
-
   val authenticator: AsyncAuthenticator[Boolean] = {
     case p @ Credentials.Provided(_) ⇒
       for {
@@ -51,6 +49,9 @@ final class HttpApi(_system: ActorSystem) extends Extension {
 
   val adminAuthenticator: AsyncAuthenticator[Unit] =
     authenticator andThen (_ map (isAdminOpt ⇒ if (isAdminOpt.isDefined) Some(()) else None))
+
+  def start(): Unit =
+    HttpApiFrontend.start(system.settings.config)
 }
 
 object HttpApi extends ExtensionId[HttpApi] with ExtensionIdProvider {
