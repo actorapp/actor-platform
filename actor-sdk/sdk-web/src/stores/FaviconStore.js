@@ -22,7 +22,7 @@ class FaviconStore extends Store {
     return _iconPath;
   }
 
-  __onDispatch = (action) => {
+  __onDispatch(action) {
     switch(action.type) {
       case ActionTypes.FAVICON_SET:
         if (action.counter === 0) {

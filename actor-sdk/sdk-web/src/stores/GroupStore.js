@@ -22,7 +22,7 @@ class GroupStore extends Store {
     return _integrationToken;
   }
 
-  __onDispatch = (action) => {
+  __onDispatch(action) {
     switch (action.type) {
 
       case ActionTypes.GROUP_GET_TOKEN:
