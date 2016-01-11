@@ -50,7 +50,11 @@ public class AndroidProperties implements PreferencesStorage {
 
     @Override
     public synchronized void putBytes(String key, byte[] v) {
-        preference.edit().putString(key, Base64.encodeToString(v, Base64.DEFAULT)).commit();
+        if (v != null) {
+            preference.edit().putString(key, Base64.encodeToString(v, Base64.DEFAULT)).commit();
+        } else {
+            preference.edit().remove(key).commit();
+        }
     }
 
     @Override
