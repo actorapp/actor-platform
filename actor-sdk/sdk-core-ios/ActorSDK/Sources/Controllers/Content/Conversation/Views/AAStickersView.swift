@@ -1,13 +1,17 @@
 //
-//  AAStickersView.swift
-//  ActorSDK
-//
-//  Created by kioshimafx on 1/10/16.
-//  Copyright © 2016 Steve Kite. All rights reserved.
+//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
 //
 
 import UIKit
 import SDWebImage
+
+public struct AAStickersPack {
+    
+    var pack_id: Int!
+    var stickers: Array<ACSticker>!
+    
+}
+
 
 public class AAStickersViewCell : UICollectionViewCell {
     
@@ -23,6 +27,8 @@ public class AAStickersViewCell : UICollectionViewCell {
         
         super.init(frame: frame)
         
+        self.backgroundColor = UIColor.clearColor()
+        self.contentView.backgroundColor = UIColor.clearColor()
         
         self.addSubview(self.stickerImage)
         
@@ -48,23 +54,27 @@ public class AAStickersViewCell : UICollectionViewCell {
     
     func bind(sticker: ACSticker!, clearPrev: Bool) {
         
-        
         var fileLocation: ACFileReference?
         fileLocation = sticker.getFileReference128()
+        
+        print("file name === \(fileLocation!.fileName)")
         
         let cached = checkCache(512, id: Int64(fileLocation!.getFileId()))
         if (cached != nil) {
             self.stickerImage.image = cached
             return
         }
-        
     
         self.callback = AAFileCallback(onDownloaded: { (reference) -> () in
             
-            
             let data = NSFileManager.defaultManager().contentsAtPath(CocoaFiles.pathFromDescriptor(reference))
-            let image = UIImage.sd_imageWithWebPData(data)
             
+            if (data == nil) {
+                return
+            }
+            
+            var image:UIImage!
+            image = UIImage.sd_imageWithWebPData(data)
             
             if (image == nil) {
                 return
@@ -80,7 +90,9 @@ public class AAStickersViewCell : UICollectionViewCell {
                 
             }
         });
+        
         Actor.bindRawFileWithReference(fileLocation, autoStart: true, withCallback: self.callback)
+        
     }
     
     //
@@ -115,7 +127,7 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
     private weak var conv       : ConversationViewController!
     private var visualEffectView : UIVisualEffectView!
     
-    private var stickersArray   = Array<ACSticker>()
+    private var stickersPacks   = Array<AAStickersPack>()
     
     private let binder = AABinder()
     
@@ -128,6 +140,7 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         let layoutCV = UICollectionViewFlowLayout()
         layoutCV.scrollDirection = .Vertical
         layoutCV.itemSize = CGSizeMake(widthHightItem, widthHightItem)
+        layoutCV.sectionInset = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
         
         // init collection view
         self.collectionView = UICollectionView(frame: frame, collectionViewLayout: layoutCV)
@@ -182,19 +195,23 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
     /// collectionView
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return 1
+        return self.stickersPacks.count
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.stickersArray.count
+        
+        let sickerPack = self.stickersPacks[section];
+        return sickerPack.stickers.count
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let stickerCell = self.collectionView.dequeueReusableCellWithReuseIdentifier("AAStickersViewCell", forIndexPath: indexPath) as! AAStickersViewCell
         
+        let sickerPack = self.stickersPacks[indexPath.section];
+        
         stickerCell.stickerImage.backgroundColor = UIColor.clearColor()
-        stickerCell.bind(self.stickersArray[indexPath.row], clearPrev: true)
+        stickerCell.bind(sickerPack.stickers[indexPath.row], clearPrev: true)
         
         return stickerCell;
         
@@ -202,7 +219,8 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-        let stickerModel = self.stickersArray[indexPath.row]
+        let sickerPack = self.stickersPacks[indexPath.section];
+        let stickerModel = sickerPack.stickers[indexPath.row]
         
         self.conv.sendSticker(stickerModel)
         
@@ -211,23 +229,37 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
     
     func loadStickers() {
         
-        self.stickersArray = Array<ACSticker>()
-        
         Actor.loadStickers()
+        
+        self.stickersPacks = Array<AAStickersPack>()
         
         if let packsArray = Actor.getOwnStickerPacksIdsVM()!.get() {
             
             let packesArrarChecked = packsArray as! JavaUtilArrayList
+            
                 if packesArrarChecked.size() > 0 {
-                    let sickersPack = packesArrarChecked.getWithInt(0) as! ACStickerPackVM
-                    let sickers = sickersPack.stickers.get() as! JavaUtilArrayList
                     
-                    for i in 0..<sickers.size() {
-                        let stickerModel = sickers.getWithInt(i) as! ACSticker
-                        self.stickersArray.append(stickerModel)
+                    for x in 0..<packesArrarChecked.size() {
+                        
+                        let sickersPack = packesArrarChecked.getWithInt(x) as! ACStickerPackVM
+                        let sickers = sickersPack.stickers.get() as! JavaUtilArrayList
+                        
+                        var parsedStickerPack = AAStickersPack()
+                        
+                        parsedStickerPack.pack_id = Int(sickersPack.getId())
+                        parsedStickerPack.stickers = Array<ACSticker>()
+                        
+                        for i in 0..<sickers.size() {
+                            let stickerModel = sickers.getWithInt(i) as! ACSticker
+                            parsedStickerPack.stickers.append(stickerModel)
+                        }
+                        
+                        self.stickersPacks.append(parsedStickerPack)
+                        
+                         print("stickers list === \(sickers)")
+                        
                     }
                     
-                    print("packs class === \(sickers)")
                 }
             
         }
