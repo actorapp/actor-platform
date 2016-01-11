@@ -480,4 +480,11 @@
         persists.
     </string>
     <string name="error_view_url">Unknown URL type</string>
+
+
+    <string name="messages_action_forward">Forward</string>
+    <string name="messages_action_quote">Quote</string>
+    <string name="messages_action_delete">Delete</string>
+    <string name="messages_action_copy">Copy</string>
+    <string name="messages_action_like">Like</string>
 </resources>
