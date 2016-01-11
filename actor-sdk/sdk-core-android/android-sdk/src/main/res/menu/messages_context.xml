@@ -9,27 +9,27 @@
     <item
         android:id="@+id/forward"
         android:icon="@drawable/ic_forward_white_36dp"
-        android:title="Forward" />
+        android:title="@string/messages_action_forward" />
 
     <item
         android:id="@+id/quote"
         android:icon="@drawable/ic_editor_format_quote_36dp"
-        android:title="Quote" />
+        android:title="@string/messages_action_quote" />
 
     <item
         android:id="@+id/delete"
         android:icon="@drawable/ic_delete_white_36dp"
-        android:title="Delete" />
+        android:title="@string/messages_action_delete" />
 
     <item
         android:id="@+id/copy"
         android:icon="@drawable/ic_content_copy_white_36dp"
-        android:title="Copy" />
+        android:title="@string/messages_action_copy" />
 
     <item
         android:icon="@drawable/ic_favorite_white_36dp"
         android:id="@+id/like"
-        android:title="Like" />
+        android:title="@string/messages_action_like" />
 
     <!--<item-->
     <!--android:id="@+id/forward"-->
