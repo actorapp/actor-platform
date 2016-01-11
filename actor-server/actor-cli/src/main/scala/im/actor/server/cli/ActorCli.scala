@@ -14,11 +14,11 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 private case class Config(
-  command:            String             = "help",
-  createBot:          CreateBot          = CreateBot(),
-  updateIsAdmin:      UpdateIsAdmin      = UpdateIsAdmin(),
-  httpApiTokenCreate: HttpApiTokenCreate = HttpApiTokenCreate(),
-  key:                Key                = Key()
+  command:       String        = "help",
+  createBot:     CreateBot     = CreateBot(),
+  updateIsAdmin: UpdateIsAdmin = UpdateIsAdmin(),
+  httpToken:     HttpToken     = HttpToken(),
+  key:           Key           = Key()
 )
 
 private[cli] trait Request {
@@ -49,8 +49,12 @@ private[cli] case object UpdateIsAdminResponse extends UpdateIsAdminResponse {
   def apply(): UpdateIsAdminResponse = this
 }
 
-private[cli] case class HttpApiTokenCreate(isAdmin: Boolean = false)
-private case class HttpApiTokenCreateResponse(token: String)
+private[cli] case class HttpToken(command: String = "create", create: HttpTokenCreate = HttpTokenCreate())
+
+private[cli] case class HttpTokenCreate(isAdmin: Boolean = false) extends Request {
+  override type Response = HttpTokenCreateResponse
+}
+private case class HttpTokenCreateResponse(token: String)
 
 private object Commands {
   val Help = "help"
@@ -58,7 +62,7 @@ private object Commands {
   val AdminGrant = "admin-grant"
   val AdminRevoke = "admin-revoke"
   val MigrateUserSequence = "migrate-user-sequence"
-  val HttpApiTokenCreate = "http-api-token-create"
+  val HttpToken = "http-token"
   val Key = "key"
 }
 
@@ -97,12 +101,16 @@ object ActorCli extends App {
     cmd(Commands.MigrateUserSequence) action { (_, c) ⇒
       c.copy(command = Commands.MigrateUserSequence)
     }
-    cmd(Commands.HttpApiTokenCreate) action { (_, c) ⇒
-      c.copy(command = Commands.HttpApiTokenCreate)
+    cmd(Commands.HttpToken) action { (_, c) ⇒
+      c.copy(command = Commands.HttpToken)
     } children (
-      opt[Unit]("admin") abbr "a" optional () action { (x, c) ⇒
-        c.copy(httpApiTokenCreate = c.httpApiTokenCreate.copy(isAdmin = true))
-      }
+      cmd("create") action { (_, c) ⇒
+        c.copy(httpToken = c.httpToken.copy(command = "create"))
+      } children (
+        opt[Unit]("admin") abbr "a" optional () action { (x, c) ⇒
+          c.copy(httpToken = c.httpToken.copy(create = c.httpToken.create.copy(isAdmin = true)))
+        }
+      )
     )
     cmd(Commands.Key) action { (_, c) ⇒
       c.copy(command = Commands.Key)
@@ -132,6 +140,10 @@ object ActorCli extends App {
         cmd(migrationHandlers.userSequence(), 2.hours)
       case Commands.Key ⇒
         cmd(securityHandlers.createKey(config.key.path))
+      case Commands.HttpToken ⇒
+        config.httpToken.command match {
+          case "create" ⇒ cmd(handlers.createToken(config.httpToken.create))
+        }
     }
 
     def cmd(f: Future[Unit], timeout: Duration = 10.seconds): Unit = {
@@ -144,9 +156,10 @@ object ActorCli extends App {
   }
 }
 
-final class CliHandlers extends BotHandlers with UsersHandlers {
+final class CliHandlers extends BotHandlers with UsersHandlers with HttpHandlers {
   protected val BotService = "bots"
   protected val UsersService = "users"
+  protected val HttpService = "http"
 
   protected val config = ConfigFactory.parseResources("cli.conf").resolve()
 
