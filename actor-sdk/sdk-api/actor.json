@@ -11506,6 +11506,44 @@
               }
             ]
           }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SendCallSignal",
+            "header": 2599,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Sending call signal message",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "package",
+                "category": "full",
+                "description": "Signaling raw package"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "package"
+              }
+            ]
+          }
         }
       ]
     },
