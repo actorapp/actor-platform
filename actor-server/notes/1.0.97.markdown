@@ -2,6 +2,7 @@ Fixes
 ---
 
 * Http api token creation
+* Password auth fix
 
 Features
 ---
