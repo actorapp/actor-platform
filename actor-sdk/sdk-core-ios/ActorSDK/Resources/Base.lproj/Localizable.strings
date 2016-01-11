@@ -322,6 +322,14 @@
 
 "ChatNewMessages" = "New messages";
 
+"ChatVoiceMessage" = "Voice message";
+
+"ChatHoldToTalk" = "Hold to talk";
+
+"ChatReleaseToSend" = "Release to send";
+
+"ChatSlideUpToCancel" = "Slide up to cancel";
+
 /*
  * Find
  */
