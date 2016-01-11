@@ -1,0 +1,4 @@
+Features
+---
+
+* Added circe to dependencies
