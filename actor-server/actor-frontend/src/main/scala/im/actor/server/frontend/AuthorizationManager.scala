@@ -52,7 +52,7 @@ final class ServerKey(val public: Array[Byte], val privat: Array[Byte]) {
 object AuthorizationManager {
 
   @SerialVersionUID(1L)
-  final case class FrontendPackage(p: Package)
+  final case class FrontendPackage(p: MTPackage)
 
   @SerialVersionUID(1L)
   final case class SessionPackage(p: MTProto)
@@ -105,7 +105,7 @@ final class AuthorizationManager(serverKeys: Seq[ServerKey], sessionClient: Acto
   @inline
   private def sendPackage(sessionId: Long, messageId: Long, message: ProtoMessage) = {
     val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, message)).require
-    enqueue(Package(authId, sessionId, mbBytes))
+    enqueue(MTPackage(authId, sessionId, mbBytes))
   }
 
   private def handleMessageBox(pAuthId: Long, pSessionId: Long, mb: MessageBox): Unit = {

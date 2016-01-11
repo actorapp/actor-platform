@@ -50,7 +50,7 @@ private[frontend] final class PackageHandleStage(
           val ack = Ack(index)
 
           val fs: Seq[MTProto] = body match {
-            case m: Package ⇒
+            case m: MTPackage ⇒
               if (m.authId == 0) {
                 authManager ! AuthorizationManager.FrontendPackage(m)
                 Seq(ack)
