@@ -1,8 +1,5 @@
-/* @import url('//fonts.googleapis.com/icon?family=Material+Icons'); */
-@import url('//fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700');
-
 @mixin font-face($family, $file, $style: normal, $weight: normal) {
-  $fonts-folder: '../assets/fonts';
+  $fonts-folder: '../../assets/fonts';
   $path: $fonts-folder + '/' + $family + '/' + $file;
 
   @font-face {
@@ -21,10 +18,10 @@
 }
 
 /* Roboto */
-@include font-face(Roboto, Roboto-Light, normal, 300);
-@include font-face(Roboto, Roboto-Regular, normal, 400);
-@include font-face(Roboto, Roboto-Medium, normal, 500);
-@include font-face(Roboto, Roboto-Bold, normal, 700);
+@include font-face(RobotoDraft, RobotoDraft-Light, normal, 300);
+@include font-face(RobotoDraft, RobotoDraft-Regular, normal, 400);
+@include font-face(RobotoDraft, RobotoDraft-Medium, normal, 500);
+@include font-face(RobotoDraft, RobotoDraft-Bold, normal, 700);
 
 /*  Self hosted Google Material icons font */
 @font-face {
@@ -33,10 +30,10 @@
   font-weight: 400;
   src: local('Material Icons'),
        local('MaterialIcons-Regular'),
-       url('../assets/fonts/Material Icons/MaterialIcons-Regular.eot?#iefix') format('embedded-opentype'),
-       url('../assets/fonts/Material Icons/MaterialIcons-Regular.woff') format('woff'),
-       url('../assets/fonts/Material Icons/MaterialIcons-Regular.woff2') format('woff2'),
-       url('../assets/fonts/Material Icons/MaterialIcons-Regular.ttf')  format('truetype');
+       url('../../assets/fonts/Material Icons/MaterialIcons-Regular.eot?#iefix') format('embedded-opentype'),
+       url('../../assets/fonts/Material Icons/MaterialIcons-Regular.woff') format('woff'),
+       url('../../assets/fonts/Material Icons/MaterialIcons-Regular.woff2') format('woff2'),
+       url('../../assets/fonts/Material Icons/MaterialIcons-Regular.ttf')  format('truetype');
 }
 
 .material-icons {
