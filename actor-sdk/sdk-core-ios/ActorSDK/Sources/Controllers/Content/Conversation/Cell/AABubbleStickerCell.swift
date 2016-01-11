@@ -35,6 +35,8 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         
         statusView.contentMode = UIViewContentMode.Center
         
+        preview.contentMode = .ScaleAspectFit
+        
         contentView.addSubview(preview)
         
         contentView.addSubview(timeBg)
