@@ -9,6 +9,7 @@ object Dependencies {
     val akka = "2.4.0"
     val akkaExperimental = "2.0.1"
     val cats = "0.3.0"
+    val circe = "0.2.1"
     val kamon = "0.5.2"
     val scalaz = "7.1.1"
     val slick = "3.1.1"
@@ -49,6 +50,10 @@ object Dependencies {
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
 
     val cats                    = "org.spire-math"                %% "cats"                          % V.cats
+
+    val circeCore               = "io.circe"                      %% "circe-core"                    % V.circe
+    val circeGeneric            = "io.circe"                      %% "circe-generic"                 % V.circe
+    val circeParse              = "io.circe"                      %% "circe-parse"                   % V.circe
 
     val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.2.4"
 
@@ -173,7 +178,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, bcprov, apacheCommonsIo, apacheCommonsValidator, shapeless, akkaHttpPlayJson
   )
 
-  val httpApi = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, jodaTime, playJson)
+  val httpApi = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, circeCore, circeGeneric, circeParse, jodaTime, playJson)
 
   val email = shared ++ Seq(akkaActor, apacheEmail)
 
