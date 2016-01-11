@@ -346,7 +346,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
   ): Future[HandlerResult[ResponseAuth]] = {
     val action =
       for {
-        transaction ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(AuthTransactionRepo.findChildren(transactionHash))
+        transaction ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(AuthUsernameTransactionRepo.find(transactionHash))
         (userId, countryCode) ← validateCode(transaction, password)
         userStruct ← authorizeT(userId, countryCode, transaction, clientData)
       } yield ResponseAuth(userStruct, ApiConfig(maxGroupSize))
