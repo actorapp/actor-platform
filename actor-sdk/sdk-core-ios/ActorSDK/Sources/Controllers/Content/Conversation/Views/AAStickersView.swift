@@ -24,6 +24,7 @@ public class AAStickersViewCell : UICollectionViewCell {
         
         self.stickerImage = UIImageView()
         self.stickerImage.backgroundColor = UIColor.clearColor()
+        self.stickerImage.contentMode = .ScaleAspectFit
         
         super.init(frame: frame)
         
