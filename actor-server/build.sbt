@@ -6,6 +6,8 @@ name := "actor"
 enablePlugins(JavaServerAppPackaging)
 enablePlugins(JDebPackaging)
 
+scriptClasspath := Seq("*")
+
 maintainer := "Actor LLC <oss@actor.im>"
 packageSummary := "Messaging platform server"
 packageDescription := "Open source messaging platform for team communications"
