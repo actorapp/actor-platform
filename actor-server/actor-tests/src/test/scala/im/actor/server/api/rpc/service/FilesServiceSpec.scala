@@ -105,7 +105,7 @@ final class FilesServiceSpec
   def generateValidDownloadUrls() = {
     val urlStr = whenReady(service.handleGetFileUrl(fileLocation.get)) { resp ⇒
       resp should matchPattern {
-        case Ok(ResponseGetFileUrl(_, _)) ⇒
+        case Ok(ResponseGetFileUrl(_, _, _, _)) ⇒
       }
 
       resp.toOption.get.url

@@ -96,8 +96,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.audioButton = UIButton(type: UIButtonType.Custom)
         self.audioButton.frame = textView.frame
         self.audioButton.backgroundColor = appStyle.chatAttachColor
-        self.audioButton.setTitle("Hold to talk", forState:UIControlState.Normal)
-        self.audioButton.setTitle("Release to send", forState:UIControlState.Highlighted)
+        self.audioButton.setTitle(AALocalized("ChatHoldToTalk"), forState:UIControlState.Normal)
+        self.audioButton.setTitle(AALocalized("ChatReleaseToSend"), forState:UIControlState.Highlighted)
         self.audioButton.setTitleColor(UIColor.whiteColor(),forState: .Normal)
         self.audioButton.setTitleColor(UIColor.greenColor(),forState: .Highlighted)
         self.audioButton.layer.cornerRadius = 5
@@ -710,7 +710,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     func onAudioRecordingStarted(sender: AnyObject) {
         print("onAudioRecordingStarted\n")
         stopAudioRecording()
-        SVProgressHUD.showWithStatus("Slide up to cancel")
+        SVProgressHUD.showWithStatus(AALocalized("ChatSlideUpToCancel"))
         audioRecorder.start()
     }
     
