@@ -252,6 +252,7 @@
     <string name="profile_shared_media">Media</string>
     <string name="profile_settings_header">Settings</string>
     <string name="profile_settings_notifications">Notifications</string>
+    <string name="settings_mobile_phone">Mobile phone</string>
 
     <string name="profile_adding">Adding to Contacts…</string>
     <string name="profile_removing">Removing from Contacts…</string>
