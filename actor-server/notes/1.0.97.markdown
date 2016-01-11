@@ -1,0 +1,9 @@
+Fixes
+---
+
+* Http api token creation
+
+Features
+---
+
+* No more long process name in `ps` output
