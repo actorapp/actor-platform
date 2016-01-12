@@ -43,6 +43,7 @@ trait Releasing {
       runClean,
       setReleaseVersion,
       commitReleaseVersion,
+      pushChanges,
       ReleaseStep(
         action = { state =>
           if (sys.env.isDefinedAt("TEAMCITY_VERSION")) {
