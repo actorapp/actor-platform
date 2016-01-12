@@ -61,7 +61,7 @@ object ActorServer {
   def newBuilder: ActorServerBuilder = ActorServerBuilder()
 }
 
-final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty()) extends ActorServerModules {
+final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty()) {
   /**
    *
    * @param config
@@ -257,8 +257,6 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       system.log.debug("Registering services")
       RpcApiExtension(system).register(services)
 
-      startModules(system)
-
       system.log.debug("Starting Actor CLI")
       ActorCliService.start(system)
 
@@ -267,6 +265,8 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
 
       system.log.debug("Starting Http Api")
       HttpApi(system).start()
+
+      ActorServerModules(system).startModules()
 
       ActorServer(system)
     } catch {
