@@ -8,6 +8,7 @@ object Dependencies {
     val actorBotkit = "1.0.66"
     val akka = "2.4.0"
     val akkaExperimental = "2.0.1"
+    val akkaHttpJson = "1.4.1"
     val cats = "0.3.0"
     val circe = "0.2.1"
     val kamon = "0.5.2"
@@ -33,7 +34,8 @@ object Dependencies {
     val akkaStream              = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
     val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
-    val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "1.4.1"
+    val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % V.akkaHttpJson
+    val akkaHttpCirce           = "de.heikoseeberger"             %% "akka-http-circe"               % V.akkaHttpJson
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
     val aspectj                 = "org.aspectj"                   %  "aspectjweaver"                 % "1.8.7"
@@ -178,7 +180,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, bcprov, apacheCommonsIo, apacheCommonsValidator, shapeless, akkaHttpPlayJson
   )
 
-  val httpApi = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, circeCore, circeGeneric, circeParse, jodaTime, playJson)
+  val httpApi = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, akkaHttpCirce, circeCore, circeGeneric, circeParse, jodaTime, playJson)
 
   val email = shared ++ Seq(akkaActor, apacheEmail)
 
