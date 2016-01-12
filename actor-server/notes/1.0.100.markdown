@@ -1,0 +1,10 @@
+Fixes
+---
+
+* Fixed race condition in modules loading
+* Fixed password hashing
+
+SDK Features
+---
+
+* Improved circe support in HttpApi
