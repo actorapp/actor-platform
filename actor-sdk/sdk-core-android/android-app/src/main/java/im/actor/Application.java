@@ -30,6 +30,10 @@ public class Application extends ActorSDKApplication {
     public void onConfigureActorSDK() {
         ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
         ActorSDK.sharedActor().setPushId(209133700967L);
+        ActorSDK.sharedActor().setTwitter("");
+        ActorSDK.sharedActor().setHomePage("http://www.foo.com");
+        ActorSDK.sharedActor().setInviteUrl("http://www.foo.com");
+
 
 //        ArrayList<String> endpoints = new ArrayList<String>();
 //        endpoints.add("tcp://192.168.1.184:9070");

@@ -68,7 +68,7 @@ public class AddContactActivity extends BaseFragmentActivity {
                                     .setPositiveButton(R.string.alert_invite_yes, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
-                                            String inviteMessage = getString(R.string.invite_message);
+                                            String inviteMessage = getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl());
                                             Intent sendIntent = new Intent(Intent.ACTION_VIEW);
                                             sendIntent.setData(Uri.parse("sms:" + query));
                                             sendIntent.putExtra("sms_body", inviteMessage);

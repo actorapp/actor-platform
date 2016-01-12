@@ -36,7 +36,7 @@
     <string name="menu_saved">Сохранено</string>
     <string name="menu_next">Далее</string>
 
-    <string name="invite_message">Привет! Давай продолжим наше общение в Акторе https://actor.im/dl</string>
+    <string name="invite_message">Привет! Давай продолжим наше общение в Акторе {inviteUrl}</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">РЕГИСТРАЦИЯ</string>
@@ -146,6 +146,7 @@
     <string name="settings_ask">Задать вопрос</string>
     <string name="settings_notifications">Оповещения</string>
     <string name="settings_chat">Настройки чата</string>
+    <string name="settings_home_page">Домашняя страница</string>
     <string name="settings_security">Безопасность</string>
     <string name="nickname_empty">Добавить ник</string>
     <string name="nickname_hint">Вы можете выбрать ник в Акторе. Если вы это сделаете, то другие люди смогут найти вас без номера телефона.\n\nВы можете использовать латинские буквы, цифры и подчеркивание. Минимальная длинна - 5 символов.</string>

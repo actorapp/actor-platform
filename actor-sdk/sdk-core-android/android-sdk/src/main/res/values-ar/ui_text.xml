@@ -34,7 +34,7 @@
     <string name="menu_saved">تم حفظ</string>
     <string name="menu_next">تالي</string>
 
-    <string name="invite_message">هيا بنا نبدل الى اكتور https://actor.im/dl</string>
+    <string name="invite_message">هيا بنا نبدل الى اكتور {inviteUrl}</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">تسجيل</string>
