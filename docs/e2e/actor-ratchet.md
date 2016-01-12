@@ -67,7 +67,7 @@ Client's *MUST* create new ecnryption chains when they receive new ephermal key 
 
 Chain is *one-side* entity, that mean that only sender use it **only** for encryption and receiver use it **only** for decryption.
 
-Let's say we pick A1 and B1 keys to our new Chain then we will calculate *root_chain_key*:
+Let's say we pick A1 and B1 keys to our new Chain then we will calculate *root_chain_key* (**TODO: key size?**):
 ```
 root_chain_key = HKDF(key = ECDH(A1', B1), salt = master_secret, info = "ActorRatchet".getBytes())
 ```
