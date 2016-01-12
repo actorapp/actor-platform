@@ -38,7 +38,7 @@
     <string name="menu_saved">Saved</string>
     <string name="menu_next">Next</string>
 
-    <string name="invite_message">Hi! Let\'s switch to Actor! https://actor.im/dl</string>
+    <string name="invite_message">Hi! Let\'s switch to Actor! {inviteUrl}</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">SIGN UP</string>
@@ -148,6 +148,8 @@
     <string name="settings_header">Settings</string>
     <string name="settings_help">Help</string>
     <string name="settings_ask">Ask Question</string>
+    <string name="settings_twitter">Twitter</string>
+    <string name="settings_home_page">Home page</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_chat">Chat Settings</string>
     <string name="settings_security">Security</string>
