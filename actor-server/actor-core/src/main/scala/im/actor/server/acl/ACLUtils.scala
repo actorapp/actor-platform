@@ -1,6 +1,6 @@
 package im.actor.server.acl
 
-import java.security.{ MessageDigest, SecureRandom }
+import java.security.SecureRandom
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
@@ -22,6 +22,9 @@ import scala.concurrent.{ ExecutionContext, Future }
 object ACLUtils extends ACLBase with ACLFiles {
   val PasswordMinLength = 8
   val PasswordMaxLength = 160
+
+  type Hash = Array[Byte]
+  type Salt = Array[Byte]
 
   def userAccessHash(authId: Long, userId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
     hash(s"$authId:$userId:$accessSalt:${secretKey()}")
@@ -87,29 +90,29 @@ object ACLUtils extends ACLBase with ACLFiles {
    * Generates password salt and hash
    *
    * @param password
-   * @return (salt, hash)
+   * @return (hash, salt)
    */
-  def hashPassword(password: String): (Array[Byte], Array[Byte]) = {
+  def hashPassword(password: String): (Hash, Salt) = {
     val seedBytes = 20
 
     val random = new SecureRandom()
     val salt = random.generateSeed(seedBytes)
 
-    (salt, hashPassword(password, salt))
+    (hashPassword(password, salt), salt)
   }
 
-  def hashPassword(password: String, salt: Array[Byte]): Array[Byte] = {
+  def hashPassword(password: String, salt: Array[Byte]): Hash = {
     val hashBytes = 20
     val iterations = 1000
 
     val spec = new PBEKeySpec(password.toCharArray, salt, iterations, hashBytes * 8)
-    val skf = SecretKeyFactory.getInstance("PBKDF2_ALGORITHM")
+    val skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
     skf.generateSecret(spec).getEncoded
   }
 
   def checkPassword(userId: Int, password: String)(implicit ec: ExecutionContext): DBIO[Boolean] =
     UserPasswordRepo.find(userId) map {
-      case Some(UserPassword(_, salt, hash)) ⇒
+      case Some(UserPassword(_, hash, salt)) ⇒
         ByteString.copyFrom(hashPassword(password, salt.toByteArray)) == hash
       case None ⇒ false
     }
