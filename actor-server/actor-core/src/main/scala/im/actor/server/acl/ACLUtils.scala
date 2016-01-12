@@ -14,6 +14,7 @@ import im.actor.server.model.UserPassword
 import im.actor.server.persist.UserPasswordRepo
 import im.actor.server.user.UserExtension
 import org.apache.commons.codec.digest.DigestUtils
+import scodec.bits.BitVector
 import slick.dbio.DBIO
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -113,6 +114,8 @@ object ACLUtils extends ACLBase with ACLFiles {
   def checkPassword(userId: Int, password: String)(implicit ec: ExecutionContext): DBIO[Boolean] =
     UserPasswordRepo.find(userId) map {
       case Some(UserPassword(_, hash, salt)) ⇒
+        println(s"=== password ${password} hash ${BitVector(hash.toByteArray).toHex} salt ${BitVector(salt.toByteArray).toHex}")
+        println(s"=== calculated ${BitVector(hashPassword(password, salt.toByteArray))}")
         ByteString.copyFrom(hashPassword(password, salt.toByteArray)) == hash
       case None ⇒ false
     }

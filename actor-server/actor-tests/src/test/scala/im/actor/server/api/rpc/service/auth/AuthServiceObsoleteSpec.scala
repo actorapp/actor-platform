@@ -1,16 +1,16 @@
-package im.actor.server.api.rpc.service
-
-import scala.concurrent.Await
-import scala.concurrent.duration._
-import scalaz._
+package im.actor.server.api.rpc.service.auth
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ ResponseAuth, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.contacts.UpdateContactRegistered
-import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.AuthErrors
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server._
+import im.actor.server.api.rpc.RpcApiService
+import im.actor.server.api.rpc.service.auth
+import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import scalaz._
 
 final class AuthServiceObsoleteSpec extends BaseAppSuite with SeqUpdateMatchers {
   behavior of "Obsolete methods in AuthService"
