@@ -85,21 +85,23 @@ mac_key = message_key_extendend[32..63]
 
 ## Encryption
 
-Binary plain-text message is encrypted and MACed:
+For each message random iv (16 bytes) is generated and then message encrypted and MACed:
 ```
 iv = random[0..16]
 cipher_text = AES-128-CBC(iv, cipher_key, plain_text)
 cipher_mac = HMAC_SHA256(mac_key, cipher_text)
 ```
 
-## Packing Result
+## Outgoing Package
 
 Encrypted Result is serialized to:
 
 ```
 PreMessage {
-  identity: bytes = AI
-  used_ephermal_id: int63 = B0.id
+  sender_ephermal_id: int64 = A0.id
+  receiver_ephermal_id: int64 = A0.id
+  sender_ephermal_key: bytes = A1
+  receiver_ephermal_key: bytes = B1
   iv: bytes
   cipher_text: bytes
   cipher_mac: bytes
