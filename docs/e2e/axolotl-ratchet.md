@@ -46,3 +46,26 @@ message_key_extendend = HKDF(message_key, 64)
 cipher_key = message_key_extendend[0..31]
 mac_key = message_key_extendend[32..63]
 ```
+
+## Encryption
+
+Binary plain-text message is encrypted and MACed:
+```
+iv = random[0..16]
+cipher_text = AES-128-CBC(iv, cipher_key, plain_text)
+cipher_mac = HMAC_SHA256(mac_key, cipher_text)
+```
+
+## Packing Result
+
+Encrypted Result is serialized to:
+
+```
+PreMessage {
+  identity: bytes = AI
+  used_ephermal_id: int63 = B0.id
+  iv: bytes
+  cipher_text: bytes
+  cipher_mac: bytes
+}
+```
