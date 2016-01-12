@@ -25,6 +25,8 @@ public abstract class ApiRawValue extends BserObject {
             case 3: return Bser.parse(new ApiInt64Value(), content);
             case 4: return Bser.parse(new ApiDoubleValue(), content);
             case 5: return Bser.parse(new ApiArrayValue(), content);
+            case 6:
+                return Bser.parse(new ApiMapValue(), content);
             default: return new ApiRawValueUnsupported(key, content);
         }
     }

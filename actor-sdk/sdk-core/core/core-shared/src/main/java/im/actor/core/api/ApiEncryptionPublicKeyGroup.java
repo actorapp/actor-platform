@@ -5,38 +5,51 @@ package im.actor.core.api;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
+
 import static im.actor.runtime.bser.Utils.*;
+
 import im.actor.core.network.parser.*;
+
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
+
 import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiServiceExPhoneCall extends ApiServiceEx {
+public class ApiEncryptionPublicKeyGroup extends BserObject {
 
-    private int duration;
+    private int keyGroupId;
+    private List<ApiEncryptionPublicKey> publicKeys;
 
-    public ApiServiceExPhoneCall(int duration) {
-        this.duration = duration;
+    public ApiEncryptionPublicKeyGroup(int keyGroupId, @NotNull List<ApiEncryptionPublicKey> publicKeys) {
+        this.keyGroupId = keyGroupId;
+        this.publicKeys = publicKeys;
     }
 
-    public ApiServiceExPhoneCall() {
+    public ApiEncryptionPublicKeyGroup() {
 
     }
 
-    public int getHeader() {
-        return 16;
+    public int getKeyGroupId() {
+        return this.keyGroupId;
     }
 
-    public int getDuration() {
-        return this.duration;
+    @NotNull
+    public List<ApiEncryptionPublicKey> getPublicKeys() {
+        return this.publicKeys;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.duration = values.getInt(1);
+        this.keyGroupId = values.getInt(1);
+        List<ApiEncryptionPublicKey> _publicKeys = new ArrayList<ApiEncryptionPublicKey>();
+        for (int i = 0; i < values.getRepeatedCount(4); i++) {
+            _publicKeys.add(new ApiEncryptionPublicKey());
+        }
+        this.publicKeys = values.getRepeatedObj(4, _publicKeys);
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -44,7 +57,8 @@ public class ApiServiceExPhoneCall extends ApiServiceEx {
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.duration);
+        writer.writeInt(1, this.keyGroupId);
+        writer.writeRepeatedObj(4, this.publicKeys);
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -56,8 +70,8 @@ public class ApiServiceExPhoneCall extends ApiServiceEx {
 
     @Override
     public String toString() {
-        String res = "struct ServiceExPhoneCall{";
-        res += "duration=" + this.duration;
+        String res = "struct EncryptionPublicKeyGroup{";
+        res += "keyGroupId=" + this.keyGroupId;
         res += "}";
         return res;
     }
