@@ -138,6 +138,7 @@ public class MainPhoneController extends MainBaseController {
         syncInProgressView.findViewById(R.id.sync_background).setBackgroundColor(style.getMainColor());
         emptyContactsView = findViewById(R.id.emptyContacts);
         ((TextView) emptyContactsView.findViewById(R.id.no_contacts)).setTextColor(style.getTextSecondaryColor());
+        ((TextView) emptyContactsView.findViewById(R.id.no_contacts)).setText(getResources().getString(R.string.main_empty_invite_hint).replace("{appName}", ActorSDK.sharedActor().getAppName()));
         ((TextView) emptyContactsView.findViewById(R.id.add_contact_manually_text)).setTextColor(style.getTextSecondaryColor());
         ((TextView) emptyContactsView.findViewById(R.id.empty_contacts_text)).setTextColor(style.getMainColor());
         emptyContactsView.findViewById(R.id.empty_contacts_bg).setBackgroundColor(style.getMainColor());
@@ -281,7 +282,7 @@ public class MainPhoneController extends MainBaseController {
         findViewById(R.id.inviteButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl());
+                String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl()).replace("{appName}", ActorSDK.sharedActor().getAppName());
                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
                 sendIntent.setType("text/plain");

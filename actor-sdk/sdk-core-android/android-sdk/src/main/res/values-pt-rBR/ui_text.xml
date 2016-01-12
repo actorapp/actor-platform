@@ -3,7 +3,7 @@
   -->
 
 <resources>
-    <string name="app_name">Actor</string>
+    <string name="app_name">{appName}</string>
     <string name="app_locale">Pt</string>
 
     <string name="dialog_ok">OK</string>
@@ -33,7 +33,7 @@
     <string name="menu_saved">Salvo</string>
     <string name="menu_next">Próximo</string>
 
-    <string name="invite_message">Olá! Vamos mudar para o Actor! {inviteUrl}</string>
+    <string name="invite_message">Olá! Vamos mudar para o {appName}! {inviteUrl}</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">Registrar</string>
@@ -43,7 +43,7 @@
     <string name="tour_sign_using_oauth">com google</string>
     <string name="tour_back_to_top">Voltar ao topo</string>
 
-    <string name="tour_welcome_title">Actor</string>
+    <string name="tour_welcome_title">{appName}</string>
     <string name="tour_welcome_subtitle">Mensagens seguras para Equipes e Amigos</string>
 
     <string name="tour_groups_title">Grandes Grupos de Conversação</string>
@@ -130,7 +130,7 @@
     <string name="main_sync_message">Por favor espere um pouco enquanto habilitamos seu aplicativo.</string>
 
     <string name="main_empty_title">Convide seus amigos</string>
-    <string name="main_empty_invite_hint">Nenhum dos seus contatos usa Actor. Use o botão abaixo para convidá-los.</string>
+    <string name="main_empty_invite_hint">Nenhum dos seus contatos usa {appName}. Use o botão abaixo para convidá-los.</string>
     <string name="main_empty_invite_action">AVISE UM AMIGO</string>
     <string name="main_empty_add_hint">ou adicione um contato manualmente</string>
     <string name="main_empty_add_action">ADICIONAR CONTATO</string>
@@ -171,11 +171,11 @@
     <!-- Contacts -->
     <string name="contacts_title">Contatos</string>
     <string name="contacts_empty_short">Não há contatos</string>
-    <string name="contacts_share">Avise um amigo sobre o Actor</string>
+    <string name="contacts_share">Avise um amigo sobre o {appName}</string>
     <string name="contacts_add">Adicionar amigo...</string>
 
     <string name="contacts_empty_title">Convide seus amigos</string>
-    <string name="contacts_empty_invite_hint">Nenhum dos seus contatos usa Actor. Use o botão abaixo para convidá-los.</string>
+    <string name="contacts_empty_invite_hint">Nenhum dos seus contatos usa {appName}. Use o botão abaixo para convidá-los.</string>
     <string name="contacts_empty_invite_action">Avise um amigo</string>
     <string name="contacts_empty_add_hint">ou adicione manualmente usando o botão abaixo.</string>
 
@@ -305,7 +305,7 @@
 
     <!-- Invite link-->
     <string name="invite_link_title">Link do convite</string>
-    <string name="invite_link_hint">Qualquer um que tenha Actor instalado poderá entrar no seu grupo acessando esse link</string>
+    <string name="invite_link_hint">Qualquer um que tenha {appName} instalado poderá entrar no seu grupo acessando esse link</string>
     <string name="invite_link_action_copy">Copiar link</string>
     <string name="invite_link_action_revoke">Remover link</string>
     <string name="invite_link_action_share">Compartilhar link</string>
@@ -399,7 +399,7 @@
     <string name="alert_group_remove_text">Você tem certeza que quer remover {0} do grupo?</string>
     <string name="alert_group_remove_yes">Remover</string>
 
-    <string name="alert_invite_text">"{0}" não está registrado no Actor. Quer convidar?</string>
+    <string name="alert_invite_text">"{0}" não está registrado no {appName}. Quer convidar?</string>
     <string name="alert_invite_yes">Convidar</string>
 
     <!-- Media -->

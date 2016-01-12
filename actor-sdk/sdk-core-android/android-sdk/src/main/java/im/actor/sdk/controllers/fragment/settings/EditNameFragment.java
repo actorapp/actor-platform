@@ -58,7 +58,7 @@ public class EditNameFragment extends BaseFragment {
             UserVM userModel = users().get(myUid());
             nameEdit.setText(userModel.getNick().get());
             nameEdit.setHint(getString(R.string.nickname_edittext_hint));
-            hintTv.setText(getString(R.string.nickname_hint));
+            hintTv.setText(getString(R.string.nickname_hint).replace("{appName}", ActorSDK.sharedActor().getAppName()));
         } else if (type == EditNameActivity.TYPE_USER) {
             UserVM userModel = users().get(id);
             nameEdit.setText(userModel.getName().get());
