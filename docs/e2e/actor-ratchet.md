@@ -99,9 +99,10 @@ Encrypted Result is serialized to:
 ```
 PreMessage {
   sender_ephermal_id: int64 = A0.id
-  receiver_ephermal_id: int64 = A0.id
+  receiver_ephermal_id: int64 = B0.id
   sender_ephermal_key: bytes = A1
   receiver_ephermal_key: bytes = B1
+  message_index: int32 = message_index
   iv: bytes
   cipher_text: bytes
   cipher_mac: bytes
