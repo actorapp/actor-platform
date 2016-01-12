@@ -1,11 +1,15 @@
-# Axolotl Ratchet
+# Actor Ratchet (ex Axolotl Ratchet)
 
-There are various sources for describing Axolotl Ratchet and there are different ways to implement this:
+Actor Ratchet is based on ideas of Axolotl Ratchet, but imrove it to make it self-healing proto if something goes wrong in implementation or device environment.
+
+Axolotl also requires to keep RootKey and complex state about encryption. We are trying to avoid this and make proto to be able to automatically heal itself.
+
+Instead of Axolotl, Actor Ratchet support multi-device key syncing for better performance and less offline key verification iterations.
+
+There are various sources for describing Axolotl Ratchet and there are different ways to implement this, our specs are based on:
 * https://whispersystems.org/blog/advanced-ratcheting/
 * https://github.com/trevp/axolotl/wiki
 * https://github.com/WhisperSystems/Signal-Android/wiki/ProtocolV2
-
-We are trying to combine everything one one actual documentation and implement it in Actor.
 
 # Public Keys
 
