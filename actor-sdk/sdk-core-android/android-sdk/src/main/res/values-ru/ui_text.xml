@@ -46,7 +46,7 @@
     <string name="tour_sign_using_oauth">используя google</string>
     <string name="tour_back_to_top">Вернуться назад</string>
 
-    <string name="tour_welcome_title">Actor</string>
+    <string name="tour_welcome_title">{appName}</string>
     <string name="tour_welcome_subtitle">Безопасное общение для команд и друзей</string>
 
     <string name="tour_groups_title">Огромные группы</string>
@@ -339,7 +339,7 @@
 
     <!-- Invite link-->
     <string name="invite_link_title">Пригласить по ссылке</string>
-    <string name="invite_link_hint">Все, у кого установлен Actor, смогут присоединиться к этой группе, перейдя по данной ссылке</string>
+    <string name="invite_link_hint">Все, у кого установлен {appName}, смогут присоединиться к этой группе, перейдя по данной ссылке</string>
     <string name="invite_link_action_copy">Копировать ссылку</string>
     <string name="invite_link_action_revoke">Отозвать ссылку</string>
     <string name="invite_link_action_share">Отправить ссылку</string>
@@ -439,7 +439,7 @@
     <string name="alert_group_remove_text">Вы уверены, что хотите исключить {0} из группы?</string>
     <string name="alert_group_remove_yes">Исключить</string>
 
-    <string name="alert_invite_text">"{0}" не зарегистрирован в Акторе. Выслать ему приглашение?</string>
+    <string name="alert_invite_text">"{0}" не зарегистрирован в {appName}. Выслать ему приглашение?</string>
     <string name="alert_invite_yes">Пригласить</string>
 
     <!-- Media -->

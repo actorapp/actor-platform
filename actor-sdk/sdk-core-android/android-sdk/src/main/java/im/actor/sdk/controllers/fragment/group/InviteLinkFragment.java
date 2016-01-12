@@ -209,7 +209,7 @@ public class InviteLinkFragment extends BaseFragment {
                     break;
 
                 case 1:
-                    action.setText(getString(R.string.invite_link_hint));
+                    action.setText(getString(R.string.invite_link_hint).replace("{appName}", ActorSDK.sharedActor().getAppName()));
                     break;
 
                 case 2:

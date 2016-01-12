@@ -108,7 +108,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionShareColor(), R.drawable.ic_share_white_24dp, R.string.contacts_share, false, new Runnable() {
                 @Override
                 public void run() {
-                    String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl());
+                    String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl()).replace("{appName}", ActorSDK.sharedActor().getAppName());
                     Intent sendIntent = new Intent(Intent.ACTION_SEND);
                     sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
                     sendIntent.setType("text/plain");
@@ -171,7 +171,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         }
 
         TextView inviteText = new TextView(getActivity());
-        inviteText.setText(text);
+        inviteText.setText(getString(text).replace("{appName}", ActorSDK.sharedActor().getAppName()));
         inviteText.setTextColor(color);
         inviteText.setPadding(Screen.dp(72), 0, Screen.dp(8), 0);
         inviteText.setTextSize(16);
