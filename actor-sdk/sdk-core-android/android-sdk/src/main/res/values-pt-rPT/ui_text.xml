@@ -32,7 +32,7 @@
     <string name="menu_saved">Guardar</string>
     <string name="menu_next">Próximo</string>
 
-    <string name="invite_message">Por favor, tente mensagens Actor. http://actor.im</string>
+    <string name="invite_message">Por favor, tente mensagens Actor. {inviteUrl}</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">COMECE A CONVERSAR</string>

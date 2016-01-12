@@ -34,7 +34,7 @@
     <string name="menu_saved">保存</string>
     <string name="menu_next">下一步</string>
 
-    <string name="invite_message">您好！让我们一起使用优聆安全开聊吧! https://actor.im/dl</string>
+    <string name="invite_message">您好！让我们一起使用优聆安全开聊吧! {inviteUrl}</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">注册</string>

@@ -281,7 +281,7 @@ public class MainPhoneController extends MainBaseController {
         findViewById(R.id.inviteButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String inviteMessage = getResources().getString(R.string.invite_message);
+                String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl());
                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
                 sendIntent.setType("text/plain");

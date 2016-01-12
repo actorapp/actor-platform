@@ -33,7 +33,7 @@
     <string name="menu_saved">Salvo</string>
     <string name="menu_next">Próximo</string>
 
-    <string name="invite_message">Olá! Vamos mudar para o Actor! https://actor.im/dl</string>
+    <string name="invite_message">Olá! Vamos mudar para o Actor! {inviteUrl}</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">Registrar</string>

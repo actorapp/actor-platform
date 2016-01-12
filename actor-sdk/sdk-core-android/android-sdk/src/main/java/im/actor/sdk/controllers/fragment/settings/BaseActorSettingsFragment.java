@@ -361,10 +361,15 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         });
 
         View askQuestion = view.findViewById(R.id.askQuestion);
+
+        if (ActorSDK.sharedActor().getHelpPhone() == null || ActorSDK.sharedActor().getHelpPhone().isEmpty()) {
+            askQuestion.setVisibility(View.GONE);
+            view.findViewById(R.id.divider3).setVisibility(View.GONE);
+        }
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                execute(messenger().findUsers(ActorSDK.sharedActor().getDelegate().getHelpPhone()), R.string.progress_common, new CommandCallback<UserVM[]>() {
+                execute(messenger().findUsers(ActorSDK.sharedActor().getHelpPhone()), R.string.progress_common, new CommandCallback<UserVM[]>() {
                     @Override
                     public void onResult(UserVM[] res) {
                         if (res.length >= 1) {
@@ -380,10 +385,49 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
-        if (!showAskQuestion()) {
-            askQuestion.setVisibility(View.GONE);
-            view.findViewById(R.id.divider3).setVisibility(View.GONE);
+        //Twitter
+        View twitterView = view.findViewById(R.id.twitter);
+
+        if (ActorSDK.sharedActor().getTwitterAcc() == null || ActorSDK.sharedActor().getTwitterAcc().isEmpty()) {
+            twitterView.setVisibility(View.GONE);
+            view.findViewById(R.id.divider5).setVisibility(View.GONE);
         }
+        twitterView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/" + ActorSDK.sharedActor().getTwitterAcc()));
+                startActivity(viewIntent);
+            }
+        });
+
+        TextView twitterTitle = (TextView) view.findViewById(R.id.settings_twitter);
+        twitterTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
+
+        TintImageView twitterIcon = (TintImageView) view.findViewById(R.id.settings_twitter_icon);
+        twitterIcon.setTint(style.getSettingsIconColor());
+
+        //Home page
+        View homePageView = view.findViewById(R.id.home_page);
+
+        if (ActorSDK.sharedActor().getHomePage() == null || ActorSDK.sharedActor().getHomePage().isEmpty()) {
+            homePageView.setVisibility(View.GONE);
+            view.findViewById(R.id.divider6).setVisibility(View.GONE);
+        }
+        homePageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ActorSDK.sharedActor().getHomePage()));
+                startActivity(viewIntent);
+            }
+        });
+
+        TextView homePageTitle = (TextView) view.findViewById(R.id.settings_home_page);
+        homePageTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
+
+        TintImageView homePageIcon = (TintImageView) view.findViewById(R.id.settings_home_page_icon);
+        homePageIcon.setTint(style.getSettingsIconColor());
+
+
 
         TextView settingsHeaderText = (TextView) view.findViewById(R.id.settings_header_text);
         settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
@@ -425,6 +469,8 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         view.findViewById(R.id.divider2).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         view.findViewById(R.id.divider3).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         view.findViewById(R.id.divider4).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        view.findViewById(R.id.divider5).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        view.findViewById(R.id.divider6).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
         if (getBeforeNickSettingsView() != null) {
             FrameLayout beforeNick = (FrameLayout) view.findViewById(R.id.before_nick_container);
