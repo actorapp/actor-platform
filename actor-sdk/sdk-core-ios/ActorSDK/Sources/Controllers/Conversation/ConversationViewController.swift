@@ -600,7 +600,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     func pickImage(source: UIImagePickerControllerSourceType) {
         let pickerController = AAImagePickerController()
         pickerController.sourceType = source
-        pickerController.mediaTypes = [kUTTypeImage as String]
+        pickerController.mediaTypes = [kUTTypeImage as String,kUTTypeMovie as String]
 
 //        // Style controller bg
 //        pickerController.view.backgroundColor = appStyle.vcBgColor
@@ -622,7 +622,14 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         picker.dismissViewControllerAnimated(true, completion: nil)
-        Actor.sendUIImage(info[UIImagePickerControllerOriginalImage] as! UIImage, peer: peer)
+        
+        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            Actor.sendUIImage(image, peer: peer)
+            
+        } else {
+            //Actor.sendVideo(info[UIImagePickerControllerMediaURL] as! NSURL, peer: peer)
+        }
+        
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
