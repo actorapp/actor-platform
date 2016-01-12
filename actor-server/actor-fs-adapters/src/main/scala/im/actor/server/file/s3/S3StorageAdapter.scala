@@ -31,7 +31,11 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   private val db = DbExtension(system).db
 
   val s3Client = new AmazonS3ScalaClient(awsCredentials)
-  val transferManager = new TransferManager(awsCredentials)
+  if (!config.endpoint.isEmpty) {
+    s3Client.client.setEndpoint(config.endpoint)
+  }
+
+  val transferManager = new TransferManager(s3Client.client)
 
   override def uploadFile(name: UnsafeFileName, file: File): DBIO[FileLocation] =
     uploadFile(bucketName, name, file)
