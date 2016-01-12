@@ -61,7 +61,11 @@ private[frontend] final class PackageParseStage(implicit system: ActorSystem)
             failStage(new Exception(msg) with NoStackTrace)
           case _ ⇒
             parserState = newState
-            emitMultiple(out, res.iterator, pullIn)
+
+            if (res.iterator.hasNext)
+              emitMultiple(out, res.iterator, pullIn)
+            else
+              pullIn()
         }
       }
     })
