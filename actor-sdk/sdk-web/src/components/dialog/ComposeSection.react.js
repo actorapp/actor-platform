@@ -29,6 +29,7 @@ import AttachmentStore from '../../stores/AttachmentStore';
 import AvatarItem from '../common/AvatarItem.react';
 import MentionDropdown from '../common/MentionDropdown.react';
 import EmojiDropdown from '../common/EmojiDropdown.react';
+import VoiceRecorder from '../common/VoiceRecorder.react';
 import DropZone from '../common/DropZone.react';
 import SendAttachment from '../modals/SendAttachment';
 
@@ -45,6 +46,10 @@ let getStateFromStores = () => {
 class ComposeSection extends Component {
   static propTypes = {
     peer: PropTypes.object.isRequired
+  };
+
+  static contextTypes = {
+    isExperimental: PropTypes.bool
   };
 
   constructor(props) {
@@ -194,9 +199,13 @@ class ComposeSection extends Component {
     this.resetAttachmentForm();
   };
 
+  sendVoiceRecord = (record) => {
+    console.debug('sendVoiceRecord: ', record)
+  };
+
   render() {
     const { text, profile, mentions, isMardownHintShow, isSendAttachmentOpen } = this.state;
-
+    const { isExperimental } = this.context;
     const markdownHintClassName = classnames('compose__markdown-hint', {
       'compose__markdown-hint--active': isMardownHintShow
     });
@@ -208,6 +217,12 @@ class ComposeSection extends Component {
                          onClose={this.onMentionClose}/>
 
         <EmojiDropdown onSelect={this.handleEmojiSelect}/>
+
+        {
+          isExperimental
+            ? <VoiceRecorder onFinish={this.sendVoiceRecord}/>
+            : null
+        }
 
         <div className={markdownHintClassName}>
           <b>*{this.getIntlMessage('compose.markdown.bold')}*</b>

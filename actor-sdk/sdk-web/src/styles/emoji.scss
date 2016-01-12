@@ -3,7 +3,7 @@
  */
 
 $emoji-dropdown-width: 328px;
-$stem-size: 14px;
+$stem-size: $default-stem-size;
 
 .emoji-outer {
   line-height: $message-line-height;

@@ -14,8 +14,8 @@ const FaviconPath = {
 let _iconPath = FaviconPath.DEFAULT;
 
 class FaviconStore extends Store {
-  constructor(Dispatcher) {
-    super(Dispatcher);
+  constructor(dispatcher) {
+    super(dispatcher);
   }
 
   getFaviconPath() {

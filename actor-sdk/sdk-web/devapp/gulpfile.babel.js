@@ -65,7 +65,11 @@ gulp.task('html', () => {
 gulp.task('workers', () => {
   gulp.src([
     '../build/workers/offline-worker.*',
-    '../build/workers/serviceworker-cache-polyfill.*'
+    '../build/workers/serviceworker-cache-polyfill.*',
+    'node_modules/opus-recorder/libopus.js',
+    'node_modules/opus-recorder/oggopusDecoder.js',
+    'node_modules/opus-recorder/oggopusEncoder.js',
+    'node_modules/opus-recorder/resampler.js',
   ])
     .pipe(gulp.dest('./dist/'));
 });
