@@ -360,7 +360,8 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
-        view.findViewById(R.id.askQuestion).setOnClickListener(new View.OnClickListener() {
+        View askQuestion = view.findViewById(R.id.askQuestion);
+        askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 execute(messenger().findUsers(ActorSDK.sharedActor().getDelegate().getHelpPhone()), R.string.progress_common, new CommandCallback<UserVM[]>() {
@@ -378,6 +379,11 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                 });
             }
         });
+
+        if (!showAskQuestion()) {
+            askQuestion.setVisibility(View.GONE);
+            view.findViewById(R.id.divider3).setVisibility(View.GONE);
+        }
 
         TextView settingsHeaderText = (TextView) view.findViewById(R.id.settings_header_text);
         settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
