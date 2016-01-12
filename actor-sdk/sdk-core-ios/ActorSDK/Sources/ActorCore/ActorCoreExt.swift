@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 public var Actor : ACCocoaMessenger {
     get {
@@ -25,6 +26,44 @@ public extension ACCocoaMessenger {
         UIImageJPEGRepresentation(resized, 0.80)!.writeToFile(path, atomically: true)
         
         sendPhotoWithPeer(peer, withName: "image.jpg", withW: jint(resized.size.width), withH: jint(resized.size.height), withThumb: fastThumb, withDescriptor: descriptor)
+    }
+    
+    
+    public func sendVideo(url: NSURL, peer: ACPeer) {
+        
+        if let videoData = NSData(contentsOfURL: url) {
+            
+            let descriptor = "/tmp/"+NSUUID().UUIDString
+            let path = CocoaFiles.pathFromDescriptor(descriptor);
+            
+            videoData.writeToFile(path, atomically: true)
+            
+            let movieAsset = AVAsset(URL: url) // video asset
+            let imageGenerator = AVAssetImageGenerator(asset: movieAsset)
+            let time = CMTimeMake(1, 1)
+            
+            // time
+            
+            let assetforduration = AVURLAsset(URL: url)
+            let videoDuration = assetforduration.duration
+            let videoDurationSeconds = CMTimeGetSeconds(videoDuration)
+            
+            do {
+                let imageRef = try imageGenerator.copyCGImageAtTime(time, actualTime: nil)
+                let thumbnail = UIImage(CGImage: imageRef)
+                let resized = thumbnail.resizeOptimize(1200 * 1200);
+                let thumbData = UIImageJPEGRepresentation(thumbnail, 0.55);
+                let fastThumb = ACFastThumb(int: jint(thumbnail.size.width), withInt: jint(thumbnail.size.height), withByteArray: thumbData!.toJavaBytes())
+                
+                sendVideoWithPeer(peer, withName: "video.mov", withW: jint(resized.size.width), withH: jint(resized.size.height), withDuration: jint(videoDurationSeconds), withThumb: fastThumb, withDescriptor: descriptor)
+                
+            } catch {
+                print("can't get thumbnail image")
+            }
+        
+
+        }
+
     }
     
     private func prepareAvatar(image: UIImage) -> String {
