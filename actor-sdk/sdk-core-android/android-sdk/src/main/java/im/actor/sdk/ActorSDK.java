@@ -109,6 +109,22 @@ public class ActorSDK {
      * Custom application name
      */
     private String customApplicationName = null;
+    /**
+     * Invite url
+     */
+    private String inviteUrl = "https://actor.im/dl";
+    /**
+     * Help phone
+     */
+    private String helpPhone = "75551234567";
+    /**
+     * Home page
+     */
+    private String homePage = "https://actor.im";
+    /**
+     * Twitter
+     */
+    private String twitter = "actorapp";
 
     /**
      * Delegate
@@ -410,6 +426,30 @@ public class ActorSDK {
         this.pushId = pushId;
     }
 
+    public String getHelpPhone() {
+        return helpPhone;
+    }
+
+    public void setHelpPhone(String helpPhone) {
+        this.helpPhone = helpPhone;
+    }
+
+    public String getHomePage() {
+        return homePage;
+    }
+
+    public void setHomePage(String homePage) {
+        this.homePage = homePage;
+    }
+
+    public String getTwitterAcc() {
+        return twitter;
+    }
+
+    public void setTwitter(String twitter) {
+        this.twitter = twitter;
+    }
+
     /**
      * Getting Application Delegate.
      *
@@ -531,6 +571,14 @@ public class ActorSDK {
         } else {
             return callback.onNotDelegated();
         }
+    }
+
+    public String getInviteUrl() {
+        return inviteUrl;
+    }
+
+    public void setInviteUrl(String inviteUrl) {
+        this.inviteUrl = inviteUrl;
     }
 
     public interface OnDelegateViewHolder<T> {
