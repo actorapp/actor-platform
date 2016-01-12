@@ -111,6 +111,11 @@ public class Application extends ActorSDKApplication {
                         }
 
                         @Override
+                        public boolean showAskQuestion() {
+                            return true;
+                        }
+
+                        @Override
                         public ActorSettingsCategory[] getBeforeSettingsCategories() {
                             return new ActorSettingsCategory[]{
                                     new ActorSettingsCategory() {
