@@ -274,8 +274,8 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
         }
         _ ← fromDBIO(password match {
           case Some(p) ⇒
-            val (salt, hash) = ACLUtils.hashPassword(p)
-            UserPasswordRepo.createOrReplace(userStruct.id, salt, hash)
+            val (hash, salt) = ACLUtils.hashPassword(p)
+            UserPasswordRepo.createOrReplace(userStruct.id, hash, salt)
           case None ⇒ DBIO.successful(0)
         })
       } yield ResponseAuth(userStruct, misc.ApiConfig(maxGroupSize))

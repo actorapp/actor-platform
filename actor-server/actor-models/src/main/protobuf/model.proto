@@ -68,8 +68,8 @@ message HttpApiToken {
 
 message UserPassword {
     int32 user_id = 1;
-    bytes salt = 2;
-    bytes hash = 3;
+    bytes hash = 2;
+    bytes salt = 3;
 }
 
 message MasterKey {
