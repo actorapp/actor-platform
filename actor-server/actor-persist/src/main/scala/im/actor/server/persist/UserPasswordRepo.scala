@@ -22,7 +22,7 @@ object UserPasswordRepo {
   }
 
   def createOrReplace(userId: Int, hash: Array[Byte], salt: Array[Byte]) =
-    userPasswords.insertOrUpdate(UserPassword(userId, ByteString.copyFrom(salt), ByteString.copyFrom(hash)))
+    userPasswords.insertOrUpdate(UserPassword(userId, ByteString.copyFrom(hash), ByteString.copyFrom(salt)))
 
   def find(userId: Int) = byUserId(userId).result.headOption
 }
