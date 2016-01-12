@@ -41,8 +41,8 @@ class MTProtoClient(system: ActorSystem) {
     }
   }
 
-  def send(tp: MTProto): Unit = {
-    clientActor ! Send(tp)
+  def send(tp: MTProto, slowly: Boolean = false): Unit = {
+    clientActor ! Send(tp, slowly)
   }
 
   def receiveTransportPackage()(implicit timeout: Timeout = Timeout(10.seconds)): Option[TransportPackage] = {
@@ -57,7 +57,7 @@ object MTProtoClientActor {
 
   case object MTConnected
 
-  case class Send(p: MTProto)
+  case class Send(p: MTProto, slowly: Boolean)
 
   case object GetTransportPackage
 
@@ -107,8 +107,8 @@ class MTProtoClientActor extends Actor with ActorLogging {
   }
 
   def receiving(connection: ActorRef, buffer: BitVector, tps: Seq[TransportPackage], consumers: Seq[ActorRef]): Receive = {
-    case Send(p) ⇒
-      send(connection, p)
+    case Send(p, slowly) ⇒
+      send(connection, p, slowly)
     case GetTransportPackage ⇒
       if (tps.isEmpty || !consumers.isEmpty) {
         context.become(receiving(connection, buffer, tps, consumers :+ sender()), discardOld = true)
@@ -165,15 +165,24 @@ class MTProtoClientActor extends Actor with ActorLogging {
     //val randomBytesDigest = DigestUtils.sha1(Array(protoVersion, apiMajorVersion, apiMinorVersion) ++ randomBytes)
     val handshake = Handshake(protoVersion, apiMajorVersion, apiMinorVersion, randomBytes)
     log.debug("Sending handshake {}", handshake)
-    send(connection, handshake)
+    send(connection, handshake, slowly = false)
   }
 
-  private def send(connection: ActorRef, mtp: MTProto): Unit = {
+  private def send(connection: ActorRef, mtp: MTProto, slowly: Boolean): Unit = {
     val bits = TransportPackageCodec.encode(TransportPackage(1, mtp)).require
 
     val data = ByteString(bits.toByteBuffer)
 
-    log.debug("Writing {}", data)
-    connection ! Write(data)
+    if (!slowly) {
+      log.debug("Writing {}", data)
+      connection ! Write(data)
+    } else {
+      log.debug("Writing slowly {}", data)
+
+      data.grouped(5) foreach { chunk ⇒
+        connection ! Write(chunk)
+        Thread.sleep(5)
+      }
+    }
   }
 }
