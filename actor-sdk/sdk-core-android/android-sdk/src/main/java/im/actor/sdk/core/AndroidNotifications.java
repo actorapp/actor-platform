@@ -225,7 +225,7 @@ public class AndroidNotifications implements NotificationProvider {
 
         } else {
             // Multiple conversations notification
-            builder.setContentTitle(context.getString(R.string.app_name));
+            builder.setContentTitle(ActorSDK.sharedActor().getAppName());
             builder.setContentText(messagesCount + " messages in " + conversationsCount + " chats");
             visiblePeer = null;
 

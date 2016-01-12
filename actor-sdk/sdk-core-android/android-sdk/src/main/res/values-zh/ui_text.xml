@@ -34,7 +34,7 @@
     <string name="menu_saved">保存</string>
     <string name="menu_next">下一步</string>
 
-    <string name="invite_message">您好！让我们一起使用优聆安全开聊吧! {inviteUrl}</string>
+    <string name="invite_message">您好！让我们一起使用{appName}安全开聊吧! {inviteUrl}</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">注册</string>
@@ -44,7 +44,7 @@
     <string name="tour_sign_using_oauth">(使用谷歌)</string>
     <string name="tour_back_to_top">返回顶部</string>
 
-    <string name="tour_welcome_title">优聆</string>
+    <string name="tour_welcome_title">{appName}</string>
     <string name="tour_welcome_subtitle">针对团队和朋友的安全交流工具</string>
 
     <string name="tour_groups_title">超多人的群组</string>
@@ -131,7 +131,7 @@
     <string name="main_sync_message">请稍等，应用马上可用</string>
 
     <string name="main_empty_title">邀请好友</string>
-    <string name="main_empty_invite_hint">你的好友无人使用优聆，使用下面按钮邀请他们吧。</string>
+    <string name="main_empty_invite_hint">你的好友无人使用{appName}，使用下面按钮邀请他们吧。</string>
     <string name="main_empty_invite_action">告诉好友</string>
     <string name="main_empty_add_hint">或者手动添加好友</string>
     <string name="main_empty_add_action">添加好友</string>
@@ -172,11 +172,11 @@
     <!-- Contacts -->
     <string name="contacts_title">好友</string>
     <string name="contacts_empty_short">还没有任何好友</string>
-    <string name="contacts_share">把优聆告诉好友</string>
+    <string name="contacts_share">把{appName}告诉好友</string>
     <string name="contacts_add">添加好友...</string>
 
     <string name="contacts_empty_title">邀请好友</string>
-    <string name="contacts_empty_invite_hint">你的好友无人使用优聆，使用下面按钮邀请他们吧。</string>
+    <string name="contacts_empty_invite_hint">你的好友无人使用{appName}，使用下面按钮邀请他们吧。</string>
     <string name="contacts_empty_invite_action">告诉好友</string>
     <string name="contacts_empty_add_hint">或者点击下面的＋号按钮手动添加好友。</string>
 
@@ -306,7 +306,7 @@
 
     <!-- Invite link-->
     <string name="invite_link_title">邀请链接</string>
-    <string name="invite_link_hint">通过以下链接可以邀请已经安装优聆的用户加入你的群组</string>
+    <string name="invite_link_hint">通过以下链接可以邀请已经安装{appName}的用户加入你的群组</string>
     <string name="invite_link_action_copy">复制链接</string>
     <string name="invite_link_action_revoke">重置链接</string>
     <string name="invite_link_action_share">分享链接</string>
@@ -400,7 +400,7 @@
     <string name="alert_group_remove_text">确认要从群组中移除{0}吗?</string>
     <string name="alert_group_remove_yes">移除</string>
 
-    <string name="alert_invite_text">"{0}"没有注册优聆。 邀请他使用优聆吗?</string>
+    <string name="alert_invite_text">"{0}"没有注册{appName}。 邀请他使用{appName}吗?</string>
     <string name="alert_invite_yes">邀请</string>
 
     <!-- Media -->
