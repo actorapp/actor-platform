@@ -7,6 +7,7 @@ import android.view.View;
  * Created by root on 11/11/15.
  */
 public interface IActorSettingsFragment {
+
     View getBeforeNickSettingsView();
 
     View getAfterPhoneSettingsView();
@@ -16,6 +17,8 @@ public interface IActorSettingsFragment {
     View getSettingsBottomView();
 
     boolean showWallpaperCategory();
+
+    boolean showAskQuestion();
 
     ActorSettingsCategory[] getBeforeSettingsCategories();
 
