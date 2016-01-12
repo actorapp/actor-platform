@@ -7,11 +7,11 @@ import im.actor.server.model.UserPassword
 final class UserPasswordTable(tag: Tag) extends Table[UserPassword](tag, "user_passwords") {
   def userId = column[Int]("user_id", O.PrimaryKey)
 
-  def salt = column[ByteString]("salt")
-
   def hash = column[ByteString]("hash")
 
-  def * = (userId, salt, hash) <> ((UserPassword.apply _).tupled, UserPassword.unapply)
+  def salt = column[ByteString]("salt")
+
+  def * = (userId, hash, salt) <> ((UserPassword.apply _).tupled, UserPassword.unapply)
 }
 
 object UserPasswordRepo {
@@ -21,7 +21,7 @@ object UserPasswordRepo {
     userPasswords filter (_.userId === userId) take 1
   }
 
-  def createOrReplace(userId: Int, salt: Array[Byte], hash: Array[Byte]) =
+  def createOrReplace(userId: Int, hash: Array[Byte], salt: Array[Byte]) =
     userPasswords.insertOrUpdate(UserPassword(userId, ByteString.copyFrom(salt), ByteString.copyFrom(hash)))
 
   def find(userId: Int) = byUserId(userId).result.headOption
