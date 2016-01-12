@@ -19,11 +19,15 @@ public class ApiFileUrlDescription extends BserObject {
     private long fileId;
     private String url;
     private int timeout;
+    private String unsignedUrl;
+    private List<ApiHTTPHeader> unsignedUrlHeaders;
 
-    public ApiFileUrlDescription(long fileId, @NotNull String url, int timeout) {
+    public ApiFileUrlDescription(long fileId, @NotNull String url, int timeout, @Nullable String unsignedUrl, @NotNull List<ApiHTTPHeader> unsignedUrlHeaders) {
         this.fileId = fileId;
         this.url = url;
         this.timeout = timeout;
+        this.unsignedUrl = unsignedUrl;
+        this.unsignedUrlHeaders = unsignedUrlHeaders;
     }
 
     public ApiFileUrlDescription() {
@@ -43,11 +47,27 @@ public class ApiFileUrlDescription extends BserObject {
         return this.timeout;
     }
 
+    @Nullable
+    public String getUnsignedUrl() {
+        return this.unsignedUrl;
+    }
+
+    @NotNull
+    public List<ApiHTTPHeader> getUnsignedUrlHeaders() {
+        return this.unsignedUrlHeaders;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.fileId = values.getLong(1);
         this.url = values.getString(2);
         this.timeout = values.getInt(3);
+        this.unsignedUrl = values.optString(4);
+        List<ApiHTTPHeader> _unsignedUrlHeaders = new ArrayList<ApiHTTPHeader>();
+        for (int i = 0; i < values.getRepeatedCount(5); i++) {
+            _unsignedUrlHeaders.add(new ApiHTTPHeader());
+        }
+        this.unsignedUrlHeaders = values.getRepeatedObj(5, _unsignedUrlHeaders);
     }
 
     @Override
@@ -58,6 +78,10 @@ public class ApiFileUrlDescription extends BserObject {
         }
         writer.writeString(2, this.url);
         writer.writeInt(3, this.timeout);
+        if (this.unsignedUrl != null) {
+            writer.writeString(4, this.unsignedUrl);
+        }
+        writer.writeRepeatedObj(5, this.unsignedUrlHeaders);
     }
 
     @Override
