@@ -3,7 +3,7 @@
   -->
 
 <resources>
-    <string name="app_name">{appName}</string>
+    <string name="app_name">Actor</string>
     <string name="app_locale">Pt</string>
 
     <string name="dialog_ok">OK</string>
