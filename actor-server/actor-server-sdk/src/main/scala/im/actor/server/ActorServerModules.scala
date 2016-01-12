@@ -1,24 +1,29 @@
 package im.actor.server
 
-import akka.actor.ActorSystem
+import akka.actor._
 import com.typesafe.config.{ ConfigException, ConfigObject, Config }
 import im.actor.server.api.rpc.RpcApiExtension
 
 import scala.collection.JavaConversions._
 import scala.util.{ Failure, Success, Try }
 
-private[server] trait ActorServerModules {
-  private val RpcServiceClazz = classOf[im.actor.api.rpc.Service]
-  private val AkkaExtensionClazz = classOf[akka.actor.Extension]
+object ActorServerModules extends ExtensionId[ActorServerModules] with ExtensionIdProvider {
+  override def createExtension(system: ExtendedActorSystem): ActorServerModules = new ActorServerModules(system)
 
-  protected def startModules(system: ActorSystem): Unit =
+  override def lookup(): ExtensionId[_ <: Extension] = ActorServerModules
+}
+
+final class ActorServerModules(system: ExtendedActorSystem) extends Extension {
+  private val RpcServiceClazz = classOf[im.actor.api.rpc.Service]
+
+  def startModules(): Unit =
     system.settings.config.getObject("modules") foreach {
-      case (n, c: ConfigObject) ⇒ startModule(system, n, c.toConfig)
+      case (n, c: ConfigObject) ⇒ startModule(n, c.toConfig)
       case (_, c) ⇒
         throw new RuntimeException(s"Module have to be a config but got: ${c.getClass.getName}")
     }
 
-  private def startModule(system: ActorSystem, name: String, config: Config): Unit = {
+  def startModule(name: String, config: Config): Unit = {
     system.log.debug("Starting module {}", name)
 
     (for {
@@ -34,13 +39,15 @@ private[server] trait ActorServerModules {
 
     (for {
       fqcn ← Try(config.getString("extension"))
-      clazz ← Try(Class.forName(fqcn).asSubclass(AkkaExtensionClazz))
-    } yield clazz.getDeclaredConstructor(classOf[ActorSystem]).newInstance(system)) match {
-      case Success(_)                          ⇒
-      case Failure(_: ConfigException.Missing) ⇒
-      case Failure(_: ClassCastException) ⇒
+      obj ← system.dynamicAccess.getObjectFor[AnyRef](fqcn)
+    } yield obj) match {
+      case Success(eid: ExtensionId[_]) ⇒ startExtension(eid)
+      case Success(_) ⇒
         throw new RuntimeException(s"extension should extend akka.actor.Extension")
-      case Failure(e) ⇒ throw e
+      case Failure(_: ConfigException.Missing) ⇒
+      case Failure(e)                          ⇒ throw e
     }
   }
+
+  private def startExtension[T <: Extension](ext: ExtensionId[T]): T = ext.apply(system)
 }
