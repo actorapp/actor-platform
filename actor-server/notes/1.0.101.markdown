@@ -1,0 +1,4 @@
+Fixes
+---
+
+* Fixed password hashing
