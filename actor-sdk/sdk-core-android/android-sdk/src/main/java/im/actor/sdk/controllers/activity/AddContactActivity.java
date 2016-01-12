@@ -64,11 +64,11 @@ public class AddContactActivity extends BaseFragmentActivity {
                     public void onResult(final UserVM[] res) {
                         if (res.length == 0) {
                             new AlertDialog.Builder(AddContactActivity.this)
-                                    .setMessage(getString(R.string.alert_invite_text).replace("{0}", query))
+                                    .setMessage(getString(R.string.alert_invite_text).replace("{0}", query).replace("{appName}", ActorSDK.sharedActor().getAppName()))
                                     .setPositiveButton(R.string.alert_invite_yes, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
-                                            String inviteMessage = getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl());
+                                            String inviteMessage = getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl()).replace("{appName}", ActorSDK.sharedActor().getAppName());
                                             Intent sendIntent = new Intent(Intent.ACTION_VIEW);
                                             sendIntent.setData(Uri.parse("sms:" + query));
                                             sendIntent.putExtra("sms_body", inviteMessage);

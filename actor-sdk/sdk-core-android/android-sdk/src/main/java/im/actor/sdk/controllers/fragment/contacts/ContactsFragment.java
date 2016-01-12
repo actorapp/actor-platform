@@ -29,7 +29,7 @@ public class ContactsFragment extends BaseContactFragment {
         res.findViewById(R.id.inviteButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl());
+                String inviteMessage = getResources().getString(R.string.invite_message).replace("{inviteUrl}", ActorSDK.sharedActor().getInviteUrl()).replace("{appName}", ActorSDK.sharedActor().getAppName());
                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
                 sendIntent.setType("text/plain");
@@ -37,6 +37,7 @@ public class ContactsFragment extends BaseContactFragment {
             }
         });
         ((TextView) res.findViewById(R.id.no_contacts_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        ((TextView) res.findViewById(R.id.no_contacts_text)).setText(getString(R.string.contacts_empty_invite_hint).replace("{appName}", ActorSDK.sharedActor().getAppName()));
         ((TextView) res.findViewById(R.id.add_contact_hint_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         return res;
     }
