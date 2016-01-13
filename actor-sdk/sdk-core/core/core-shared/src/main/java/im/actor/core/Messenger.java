@@ -16,6 +16,7 @@ import java.util.List;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
+import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.MentionFilterResult;
@@ -41,6 +42,7 @@ import im.actor.core.modules.events.PeerChatOpened;
 import im.actor.core.modules.events.PeerInfoClosed;
 import im.actor.core.modules.events.PeerInfoOpened;
 import im.actor.core.modules.events.UserVisible;
+import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
@@ -961,6 +963,22 @@ public class Messenger {
     @ObjectiveCName("findAllPhotosWithPeer:")
     public Command<List<MessageSearchEntity>> findAllPhotos(Peer peer) {
         return modules.getSearchModule().findAllPhotos(peer);
+    }
+
+    //////////////////////////////////////
+    //             Calls
+    //////////////////////////////////////
+
+    public Command<ResponseDoCall> doCall(User user, CallsModule.CallCallback callCallback) {
+        return modules.getCallsModule().makeCall(user, callCallback);
+    }
+
+    public void endCall(long callId) {
+        modules.getCallsModule().endCall(callId);
+    }
+
+    public void answerCall(long callId, CallsModule.CallCallback callback) {
+        modules.getCallsModule().answerCall(callId, callback);
     }
 
     //////////////////////////////////////

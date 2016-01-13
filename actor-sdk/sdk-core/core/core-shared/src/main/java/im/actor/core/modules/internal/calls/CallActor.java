@@ -7,6 +7,7 @@ import im.actor.runtime.actors.messages.PoisonPill;
 
 public class CallActor extends ModuleActor {
 
+    private boolean inited = false;
     private int timeout = 0;
     private boolean alive = false;
     private long callId;
@@ -21,7 +22,6 @@ public class CallActor extends ModuleActor {
     @Override
     public void preStart() {
         super.preStart();
-        self().send(new CheckAlive(), CallsModule.CALL_TIMEOUT);
         self().send(new SendCallInProgress());
     }
 
@@ -69,6 +69,10 @@ public class CallActor extends ModuleActor {
     private void onCallInProgress(int timeout) {
         alive = true;
         this.timeout = timeout;
+        if (!inited) {
+            inited = true;
+            self().send(new CheckAlive(), CallsModule.CALL_TIMEOUT);
+        }
     }
 
     public static class EndCall {
