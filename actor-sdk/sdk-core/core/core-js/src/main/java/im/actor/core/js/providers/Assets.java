@@ -14,8 +14,8 @@ public interface Assets extends ClientBundleWithLookup {
     @Source("AppText_Ar.properties")
     TextResource AppText_Ar_properties();
 
-    @Source("AppText_Cn.properties")
-    TextResource AppText_Cn_properties();
+    @Source("AppText_Zn.properties")
+    TextResource AppText_Zn_properties();
 
     @Source("AppText_Es.properties")
     TextResource AppText_Es_properties();
@@ -32,8 +32,8 @@ public interface Assets extends ClientBundleWithLookup {
     @Source("Months_Ar.properties")
     TextResource Months_Ar_properties();
 
-    @Source("Months_Cn.properties")
-    TextResource Months_Cn_properties();
+    @Source("Months_Zn.properties")
+    TextResource Months_Zn_properties();
 
     @Source("Months_Es.properties")
     TextResource Months_Es_properties();
