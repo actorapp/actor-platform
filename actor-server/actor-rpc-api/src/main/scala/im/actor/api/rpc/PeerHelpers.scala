@@ -1,9 +1,10 @@
 package im.actor.api.rpc
 
 import im.actor.server.acl.ACLUtils
+import im.actor.server.db.DbExtension
 
 import scala.collection.immutable
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ Future, ExecutionContext }
 import scalaz._
 
 import akka.actor._
@@ -15,6 +16,13 @@ import im.actor.util.misc.StringUtils
 import im.actor.server.{ model, persist }
 
 object PeerHelpers {
+  def withOutPeerF[R <: RpcResponse](
+    outPeer: ApiOutPeer
+  )(
+    f: ⇒ Future[RpcError \/ R]
+  )(implicit client: AuthorizedClientData, actorSystem: ActorSystem, ec: ExecutionContext): Future[RpcError \/ R] =
+    DbExtension(actorSystem).db.run(withOutPeer(outPeer)(DBIO.from(f)))
+
   def withOutPeer[R <: RpcResponse](
     outPeer: ApiOutPeer
   )(

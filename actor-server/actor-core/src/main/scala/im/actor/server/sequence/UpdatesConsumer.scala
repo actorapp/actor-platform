@@ -95,7 +95,7 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
         seqUpdExt.subscribe(userId, self) pipeTo self
       }
     case SubscribeToWeak ⇒
-      weakUpdatesExt.subscribe(authId, self) onFailure {
+      weakUpdatesExt.subscribe(authId, self, None) onFailure {
         case e ⇒
           self ! SubscribeToWeak
           log.error(e, "Failed to subscribe to weak updates")
