@@ -32,7 +32,7 @@
     <string name="menu_saved">Guardar</string>
     <string name="menu_next">Próximo</string>
 
-    <string name="invite_message">Por favor, tente mensagens Actor. http://actor.im</string>
+    <string name="invite_message">Por favor, tente mensagens {appName}. {inviteUrl}</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">COMECE A CONVERSAR</string>
@@ -42,11 +42,11 @@
     <string name="tour_sign_using_oauth">com o Google</string>
     <string name="tour_back_to_top">Voltar ao ecrã inicial</string>
 
-    <string name="tour_welcome_title">Actor</string>
+    <string name="tour_welcome_title">{appName}</string>
     <string name="tour_welcome_subtitle">Serviço de mensagens grátis, seguro e rápido.</string>
 
     <string name="tour_groups_title">Nova plataforma web</string>
-    <string name="tour_groups_text">Esqueça para sempre o velho e-mail e mensagens em várias aplicações.Actor disponível em Mac, Windows e tablets</string>
+    <string name="tour_groups_text">Esqueça para sempre o velho e-mail e mensagens em várias aplicações.{appName} disponível em Mac, Windows e tablets</string>
 
     <string name="tour_everywhere_title">Segurança garantida</string>
     <string name="tour_everywhere_text">Tenha a certeza de que ninguém vai ler as suas mensagens. Partilhe documentos, arquivos e fotos, sem medo de que eles possam cair nas mãos erradas.</string>
@@ -81,8 +81,8 @@
     <string name="auth_email_get_code">CONFIRMAR E-MAIL</string>
 
     <!-- Sign In Fragment -->
-    <string name="auth_code_phone_hint">Actor enviou um SMS com um código de ativação para {0}</string>
-    <string name="auth_code_email_hint">Actor enviou um email com um código de ativação para {0}</string>
+    <string name="auth_code_phone_hint">{appName} enviou um SMS com um código de ativação para {0}</string>
+    <string name="auth_code_email_hint">{appName} enviou um email com um código de ativação para {0}</string>
     <string name="auth_code_title">Introduza o código SMS</string>
     <string name="auth_code_sms_hint">Código SMS</string>
     <string name="auth_code_done">FEITO</string>
@@ -129,7 +129,7 @@
     <string name="main_sync_message">Por favor, aguarde alguns minutos enquanto configuramos a sua aplicação.</string>
 
     <string name="main_empty_title">Convidar amigos</string>
-    <string name="main_empty_invite_hint">Nenhum dos seus contatos usa Actor. Use o botão abaixo para os convidar.</string>
+    <string name="main_empty_invite_hint">Nenhum dos seus contatos usa {appName}. Use o botão abaixo para os convidar.</string>
     <string name="main_empty_invite_action">Contar a um amigo</string>
     <string name="main_empty_add_hint">Adicionar contacto manualmente</string>
     <string name="main_empty_add_action">ADICIONAR CONTACTO</string>
@@ -181,11 +181,11 @@
     <!-- Contacts -->
     <string name="contacts_title">Contactos</string>
     <string name="contacts_empty_short">Sem contactos</string>
-    <string name="contacts_share">Fale com os seus amigos sobre Actor</string>
+    <string name="contacts_share">Fale com os seus amigos sobre {appName}</string>
     <string name="contacts_add">Adicionar amigo</string>
 
     <string name="contacts_empty_title">Convide os seus amigos</string>
-    <string name="contacts_empty_invite_hint">Nenhum de seus contatos usa Actor. Use o botão abaixo para convidar.</string>
+    <string name="contacts_empty_invite_hint">Nenhum de seus contatos usa {appName}. Use o botão abaixo para convidar.</string>
     <string name="contacts_empty_invite_action">CONVIDE UM AMIGO</string>
     <string name="contacts_empty_add_hint">ou adicionar manualmente contactos, premindo o botão abaixo.</string>
 
@@ -334,7 +334,7 @@
 
     <!-- Invite link-->
     <string name="invite_link_title">convidar Link</string>
-    <string name="invite_link_hint">Qualquer pessoa com Actor instalado será capaz de participar do seu grupo, seguindo este link</string>
+    <string name="invite_link_hint">Qualquer pessoa com {appName} instalado será capaz de participar do seu grupo, seguindo este link</string>
     <string name="invite_link_action_copy">Copiar link</string>
     <string name="invite_link_action_revoke">Revogar link</string>
     <string name="invite_link_action_share">Partilhar link</string>
@@ -442,7 +442,7 @@
     <string name="alert_group_remove_text">Tem a certeza de que deseja excluir {0} do grupo?</string>
     <string name="alert_group_remove_yes">Eliminar</string>
 
-    <string name="alert_invite_text">{0} não estão registados no Actor. Pretende convidá-los para Actor?</string>
+    <string name="alert_invite_text">{0} não estão registados no {appName}. Pretende convidá-los para {appName}?</string>
     <string name="alert_invite_yes">Convidar</string>
 
     <!-- Media -->

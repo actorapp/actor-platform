@@ -313,7 +313,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                 autoDetect));
     }
 
-    public void sendContact(Peer peer, String name, HashSet<String> phones, HashSet<String> emails, String base64photo) {
+    public void sendContact(Peer peer, String name, ArrayList<String> phones, ArrayList<String> emails, String base64photo) {
         sendMessageActor.send(new SenderActor.SendContact(peer, phones, emails, name, base64photo));
     }
 
