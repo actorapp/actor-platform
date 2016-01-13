@@ -684,7 +684,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         // Phones
         
-        let jPhones = JavaUtilHashSet()
+        let jPhones = JavaUtilArrayList()
         let phoneNumbers: ABMultiValueRef = ABRecordCopyValue(person, kABPersonPhoneProperty).takeRetainedValue()
         let phoneCount = ABMultiValueGetCount(phoneNumbers)
         for (var i = 0;i < phoneCount ; i++) {
@@ -694,7 +694,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         
         // Email
-        let jEmails = JavaUtilHashSet()
+        let jEmails = JavaUtilArrayList()
         let emails: ABMultiValueRef = ABRecordCopyValue(person, kABPersonEmailProperty).takeRetainedValue()
         let emailsCount = ABMultiValueGetCount(emails)
         for (var i = 0; i < emailsCount; i++) {
