@@ -41,10 +41,11 @@ public class CallsModule extends AbsModule {
         }
     }
 
-    public Command<ResponseDoCall> makeCall(final User u, final CallCallback callCallback) {
+    public Command<ResponseDoCall> makeCall(final int uid, final CallCallback callCallback) {
         return new Command<ResponseDoCall>() {
             @Override
             public void start(final CommandCallback<ResponseDoCall> callback) {
+                User u = users().getValue(uid);
                 request(new RequestDoCall(new ApiOutPeer(ApiPeerType.PRIVATE, u.getUid(), u.getAccessHash()), CALL_TIMEOUT), new RpcCallback<ResponseDoCall>() {
                     @Override
                     public void onResult(final ResponseDoCall response) {
