@@ -10,7 +10,7 @@ import AddressBookUI
 import SVProgressHUD
 
 class ConversationViewController: AAConversationContentController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AALocationPickerControllerDelegate,
-    ABPeoplePickerNavigationControllerDelegate {
+    ABPeoplePickerNavigationControllerDelegate, AAActionSheetDelegate {
     
     // Data binder
     private let binder = AABinder()
@@ -32,6 +32,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     private let avatarView = AABarAvatarView(frameSize: 36, type: .Rounded)
     private let backgroundView = UIImageView()
     private var audioButton: UIButton = UIButton()
+    private var actionSheet: AAConvActionSheet!
     
     // Stickers
     
@@ -68,6 +69,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         // slk settings
         self.bounces = true
+        
         
         // Text Input
         
@@ -175,6 +177,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         let frame = CGRectMake(0, 0, self.view.frame.size.width, 216)
         self.stickersView = AAStickersView(frame: frame, convContrller: self)
+        
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -294,6 +297,14 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         if !AADevice.isiPad {
             AANavigationBadge.showBadge()
         }
+        
+        // action sheet
+        
+        self.actionSheet = AAConvActionSheet(maxSelected: 9, weakSuperIn: self)
+        self.actionSheet.delegate = self
+        //self.navigationController!.view.addSubview(self.actionSheet)
+        
+        self.navigationController?.view.addSubview(self.actionSheet)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -455,6 +466,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     override func didPressLeftButton(sender: AnyObject!) {
         super.didPressLeftButton(sender)
         
+        self.textInputbar.textView.resignFirstResponder()
+        
         let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
         
         let builder = AAMenuBuilder()
@@ -482,6 +495,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         }
         
         showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
+        
+//        self.actionSheet.showAnimation()
         
         self.rightButton.layoutIfNeeded()
     }
@@ -627,7 +642,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             Actor.sendUIImage(image, peer: peer)
             
         } else {
-            //Actor.sendVideo(info[UIImagePickerControllerMediaURL] as! NSURL, peer: peer)
+            Actor.sendVideo(info[UIImagePickerControllerMediaURL] as! NSURL, peer: peer)
         }
         
     }
@@ -810,6 +825,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     func sendSticker(sticker:ACSticker) {
 
         Actor.sendStickerWithPeer(self.peer, withSticker: sticker)
+        
+    }
+    
+    ///
+    
+    func actionSheetDidFinished(selectedObjs:Array<AnyObject>) {
         
     }
     
