@@ -36,7 +36,7 @@
     <string name="menu_saved">Сохранено</string>
     <string name="menu_next">Далее</string>
 
-    <string name="invite_message">Привет! Давай продолжим наше общение в Акторе {inviteUrl}</string>
+    <string name="invite_message">Привет! Давай продолжим наше общение в {appName} {inviteUrl}</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">РЕГИСТРАЦИЯ</string>
@@ -46,7 +46,7 @@
     <string name="tour_sign_using_oauth">используя google</string>
     <string name="tour_back_to_top">Вернуться назад</string>
 
-    <string name="tour_welcome_title">{appName}</string>
+    <string name="tour_welcome_title">Actor</string>
     <string name="tour_welcome_subtitle">Безопасное общение для команд и друзей</string>
 
     <string name="tour_groups_title">Огромные группы</string>
