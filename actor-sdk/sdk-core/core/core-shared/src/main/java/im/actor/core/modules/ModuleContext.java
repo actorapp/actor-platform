@@ -5,6 +5,7 @@ import im.actor.core.Extension;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.internal.AppStateModule;
+import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.modules.internal.ContactsModule;
 import im.actor.core.modules.internal.DeviceInfoModule;
 import im.actor.core.modules.internal.DisplayLists;
@@ -51,6 +52,8 @@ public interface ModuleContext {
     GroupsModule getGroupsModule();
 
     StickersModule getStickersModule();
+
+    CallsModule getCallsModule();
 
     MessagesModule getMessagesModule();
 
