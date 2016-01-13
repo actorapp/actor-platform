@@ -1,0 +1,15 @@
+syntax = 'proto3';
+
+package im.actor.server;
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+    import: "im.actor.server.model.ModelTypeMappers._"
+};
+
+message WebrtcCall {
+    int64 id = 1;
+    int32 initiator_user_id = 2;
+    int32 receiver_user_id = 3;
+}

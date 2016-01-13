@@ -21,6 +21,8 @@ message SessionEnvelope {
         SubscribeToGroupOnline subscribe_to_group_online = 7;
         SubscribeFromGroupOnline subscribe_from_group_online = 8;
         SubscribeToSeq subscribe_to_seq = 9;
+        SubscribeToWeak subscribe_to_weak = 10;
+        UnsubscribeFromWeak unsubscribe_from_weak = 11;
     }
 }
 
@@ -61,4 +63,14 @@ message SubscribeFromGroupOnline {
 
 message SubscribeToSeq {
     option (scalapb.message).extends = "im.actor.server.session.SubscribeCommand";
+}
+
+message SubscribeToWeak {
+    option (scalapb.message).extends = "im.actor.server.session.SubscribeCommand";
+    optional string group = 1;
+}
+
+message UnsubscribeFromWeak {
+    option (scalapb.message).extends = "im.actor.server.session.SubscribeCommand";
+    optional string group = 1;
 }
