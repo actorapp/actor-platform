@@ -91,6 +91,11 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     @Override
+    public void onIncominCall(long callId, int uid) {
+
+    }
+
+    @Override
     public <T extends BindedViewHolder, J extends T> J getViewHolder(Class<T> base, Object[] args) {
         return null;
     }
