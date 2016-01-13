@@ -12,6 +12,9 @@ import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
+import im.actor.core.api.updates.UpdateCallEnded;
+import im.actor.core.api.updates.UpdateCallInProgress;
+import im.actor.core.api.updates.UpdateCallSignal;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
@@ -29,6 +32,7 @@ import im.actor.core.api.updates.UpdateGroupTopicChanged;
 import im.actor.core.api.updates.UpdateGroupUserInvited;
 import im.actor.core.api.updates.UpdateGroupUserKick;
 import im.actor.core.api.updates.UpdateGroupUserLeave;
+import im.actor.core.api.updates.UpdateIncomingCall;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.api.updates.UpdateMessageContentChanged;
 import im.actor.core.api.updates.UpdateMessageDelete;
@@ -80,6 +84,7 @@ public class UpdateProcessor extends AbsModule {
     private TypingProcessor typingProcessor;
     private ContactsProcessor contactsProcessor;
     private StickersProcessor stickersProcessor;
+    private CallsProcessor callsProcessor;
 
     public UpdateProcessor(ModuleContext context) {
         super(context);
@@ -91,6 +96,7 @@ public class UpdateProcessor extends AbsModule {
         this.presenceProcessor = new PresenceProcessor(context);
         this.typingProcessor = new TypingProcessor(context);
         this.stickersProcessor = new StickersProcessor(context);
+        this.callsProcessor = new CallsProcessor(context);
     }
 
     public void applyRelated(List<ApiUser> users,
@@ -213,6 +219,14 @@ public class UpdateProcessor extends AbsModule {
         } else if (update instanceof UpdateTypingStop) {
             UpdateTypingStop typing = (UpdateTypingStop) update;
             typingProcessor.onTypingStop(typing.getPeer(), typing.getUid(), typing.getTypingType());
+        } else if (update instanceof UpdateIncomingCall) {
+            callsProcessor.onIncomingCall((UpdateIncomingCall) update);
+        } else if (update instanceof UpdateCallInProgress) {
+            callsProcessor.onCallInProgress((UpdateCallInProgress) update);
+        } else if (update instanceof UpdateCallSignal) {
+            callsProcessor.onSignal((UpdateCallSignal) update);
+        } else if (update instanceof UpdateCallEnded) {
+            callsProcessor.onCallEnd((UpdateCallEnded) update);
         }
     }
 
@@ -323,6 +337,14 @@ public class UpdateProcessor extends AbsModule {
             stickersProcessor.onOwnStickerCollectionsChanged(((UpdateOwnStickersChanged) update).getCollections());
         } else if (update instanceof UpdateStickerCollectionsChanged) {
             stickersProcessor.onStickerCollectionsChanged(((UpdateStickerCollectionsChanged) update).getCollections());
+        } else if (update instanceof UpdateIncomingCall) {
+            callsProcessor.onIncomingCall((UpdateIncomingCall) update);
+        } else if (update instanceof UpdateCallInProgress) {
+            callsProcessor.onCallInProgress((UpdateCallInProgress) update);
+        } else if (update instanceof UpdateCallSignal) {
+            callsProcessor.onSignal((UpdateCallSignal) update);
+        } else if (update instanceof UpdateCallEnded) {
+            callsProcessor.onCallEnd((UpdateCallEnded) update);
         }
     }
 
