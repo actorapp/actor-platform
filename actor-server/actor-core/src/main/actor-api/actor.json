@@ -30,6 +30,14 @@
     {
       "type": "int32",
       "alias": "groupId"
+    },
+    {
+      "type": "int32",
+      "alias": "keyId"
+    },
+    {
+      "type": "int32",
+      "alias": "keyGroupId"
     }
   ],
   "sections": [
@@ -11324,7 +11332,7 @@
               },
               {
                 "type": "reference",
-                "argument": "package",
+                "argument": "content",
                 "category": "full",
                 "description": "  Signaling raw package"
               }
@@ -11338,7 +11346,7 @@
               {
                 "type": "bytes",
                 "id": 2,
-                "name": "package"
+                "name": "content"
               }
             ]
           }
@@ -11368,6 +11376,65 @@
                 "type": "int64",
                 "id": 1,
                 "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 2,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DoCall",
+            "header": 2597,
+            "response": {
+              "type": "anonymous",
+              "header": 2598,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "callId",
+                  "category": "full",
+                  "description": "  Call Id"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "int64",
+                  "id": 1,
+                  "name": "callId"
+                }
+              ]
+            },
+            "doc": [
+              "Do Call. Right after a call client need to start sending CallInProgress",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "hidden",
+                "description": "Call timeout"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
               },
               {
                 "type": {
@@ -11444,6 +11511,44 @@
                 },
                 "id": 2,
                 "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SendCallSignal",
+            "header": 2599,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Sending call signal message",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "content",
+                "category": "full",
+                "description": "Signaling raw package"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "content"
               }
             ]
           }
@@ -12200,13 +12305,419 @@
       "package": "encryption",
       "doc": [
         "Package that include encryption support",
-        "Key types:",
-        "* Curve25519 - https://en.wikipedia.org/wiki/Curve25519",
-        "* Ed25519 - http://ed25519.cr.yp.to/",
-        "* RSA2048",
-        "* RSA4096"
+        "Key alg types:",
+        "* curve25519 - https://en.wikipedia.org/wiki/Curve25519",
+        "* rsa-2048",
+        "* rsa-4096",
+        "* aes-128",
+        "* kuznechik-128"
       ],
       "items": [
+        {
+          "type": "comment",
+          "content": "Public Keys"
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptionPublicKeyGroup",
+            "doc": [
+              "Encryption Key Group",
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "  Key Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "publicKeys",
+                "category": "hidden",
+                "description": "  Public keys of Key Group"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 1,
+                "name": "keyGroupId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionPublicKey"
+                  }
+                },
+                "id": 4,
+                "name": "publicKeys"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptionPublicKey",
+            "doc": [
+              "Encryption Public Key",
+              {
+                "type": "reference",
+                "argument": "keyId",
+                "category": "full",
+                "description": "  Key Id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyAlg",
+                "category": "full",
+                "description": "  Key Algorithm"
+              },
+              {
+                "type": "reference",
+                "argument": "keyMaterial",
+                "category": "compact",
+                "description": "  Public key material. Can be null, but always not null for LoadPublicKey"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "keyId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "keyAlg"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 3,
+                "name": "keyMaterial"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 4,
+                "name": "keyHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "PublicKeys",
+            "header": 2602,
+            "doc": [
+              "Public Keys response",
+              {
+                "type": "reference",
+                "argument": "publicKey",
+                "category": "full",
+                "description": "  Public keys"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionPublicKey"
+                  }
+                },
+                "id": 1,
+                "name": "publicKey"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "PublicKeyGroups",
+            "header": 2604,
+            "doc": [
+              "Public key groups response"
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionPublicKeyGroup"
+                  }
+                },
+                "id": 1,
+                "name": "publicKeyGroups"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadPublicKeyGroups",
+            "header": 2601,
+            "response": {
+              "type": "reference",
+              "name": "PublicKeyGroups"
+            },
+            "doc": [
+              "Loading Public key groups",
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "User's peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "userPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadPublicKey",
+            "header": 2605,
+            "response": {
+              "type": "reference",
+              "name": "PublicKeys"
+            },
+            "doc": [
+              "Loading public key explictly",
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "User's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "Key group's id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyIds",
+                "category": "full",
+                "description": "Key ids for loading"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "userPeer"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "keyGroupId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int64"
+                },
+                "id": 3,
+                "name": "keyIds"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadEphermalPublicKeys",
+            "header": 2603,
+            "response": {
+              "type": "reference",
+              "name": "PublicKeys"
+            },
+            "doc": [
+              "Loading ephermal public keys",
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "User's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "User's key group id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "userPeer"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "keyGroupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "PublicKeyGroupChanged",
+            "header": 103,
+            "doc": [
+              "Update about public key group changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyGroup",
+                "category": "full",
+                "description": "  Updated Key Group"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "EncryptionPublicKeyGroup"
+                },
+                "id": 2,
+                "name": "keyGroup"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "PublicKeyGroupAdded",
+            "header": 104,
+            "doc": [
+              "Update about public key group added",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyGroup",
+                "category": "full",
+                "description": "  Added Key Group"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "EncryptionPublicKeyGroup"
+                },
+                "id": 2,
+                "name": "keyGroup"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "PublicKeyGroupRemoved",
+            "header": 105,
+            "doc": [
+              "Update about public key group removed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "hidden",
+                "description": "  Removed Key Group Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 2,
+                "name": "keyGroupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": "Device Side"
+        },
         {
           "type": "struct",
           "content": {
