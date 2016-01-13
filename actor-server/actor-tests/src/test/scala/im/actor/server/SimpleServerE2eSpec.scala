@@ -7,9 +7,11 @@ import com.amazonaws.services.s3.transfer.TransferManager
 import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.codecs.RequestCodec
+import im.actor.api.rpc.configs.RequestEditParameter
 import im.actor.api.rpc.sequence.RequestGetDifference
 import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
+import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
@@ -41,6 +43,8 @@ class SimpleServerE2eSpec extends ActorSuite(
 
   it should "respond to RPC requests" in Server.e2
 
+  it should "respond to big RPC requests" in Server.bigRequests
+
   it should "notify about lost session" in Server.e3
 
   it should "throw AuthIdInvalid if sending wrong AuthId" in Server.authIdInvalid
@@ -71,7 +75,8 @@ class SimpleServerE2eSpec extends ActorSuite(
       new AuthServiceImpl(new DummyCodeActivation),
       new ContactsServiceImpl,
       MessagingServiceImpl(),
-      new SequenceServiceImpl(sequenceConfig)
+      new SequenceServiceImpl(sequenceConfig),
+      new ConfigsServiceImpl()
     )
 
     RpcApiExtension(system).register(services)
@@ -104,6 +109,33 @@ class SimpleServerE2eSpec extends ActorSuite(
       val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
       client.send(mtPackage)
+
+      expectMessageAck(messageId)
+
+      val result = receiveRpcResult(messageId)
+      result shouldBe an[RpcOk]
+
+      client.close()
+    }
+
+    def bigRequests() = {
+      implicit val client = MTProtoClient()
+
+      client.connectAndHandshake(remote)
+
+      val authId = requestAuthId()
+      val sessionId = 2L
+      val phoneNumber = 75550000000L
+
+      signUp(authId, sessionId, phoneNumber)
+
+      val messageId = Random.nextLong()
+
+      val requestBytes = RequestCodec.encode(Request(RequestEditParameter(s"very l${"o" * 100}ng key", Some(s"very lo${"n" * 100}g value")))).require
+      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+      val mtPackage = MTPackage(authId, sessionId, mbBytes)
+
+      client.send(mtPackage, slowly = true)
 
       expectMessageAck(messageId)
 

@@ -36,7 +36,7 @@
     <string name="menu_saved">Сохранено</string>
     <string name="menu_next">Далее</string>
 
-    <string name="invite_message">Привет! Давай продолжим наше общение в Акторе https://actor.im/dl</string>
+    <string name="invite_message">Привет! Давай продолжим наше общение в {appName} {inviteUrl}</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">РЕГИСТРАЦИЯ</string>
@@ -146,6 +146,7 @@
     <string name="settings_ask">Задать вопрос</string>
     <string name="settings_notifications">Оповещения</string>
     <string name="settings_chat">Настройки чата</string>
+    <string name="settings_home_page">Домашняя страница</string>
     <string name="settings_security">Безопасность</string>
     <string name="nickname_empty">Добавить ник</string>
     <string name="nickname_hint">Вы можете выбрать ник в Акторе. Если вы это сделаете, то другие люди смогут найти вас без номера телефона.\n\nВы можете использовать латинские буквы, цифры и подчеркивание. Минимальная длинна - 5 символов.</string>
@@ -338,7 +339,7 @@
 
     <!-- Invite link-->
     <string name="invite_link_title">Пригласить по ссылке</string>
-    <string name="invite_link_hint">Все, у кого установлен Actor, смогут присоединиться к этой группе, перейдя по данной ссылке</string>
+    <string name="invite_link_hint">Все, у кого установлен {appName}, смогут присоединиться к этой группе, перейдя по данной ссылке</string>
     <string name="invite_link_action_copy">Копировать ссылку</string>
     <string name="invite_link_action_revoke">Отозвать ссылку</string>
     <string name="invite_link_action_share">Отправить ссылку</string>
@@ -438,7 +439,7 @@
     <string name="alert_group_remove_text">Вы уверены, что хотите исключить {0} из группы?</string>
     <string name="alert_group_remove_yes">Исключить</string>
 
-    <string name="alert_invite_text">"{0}" не зарегистрирован в Акторе. Выслать ему приглашение?</string>
+    <string name="alert_invite_text">"{0}" не зарегистрирован в {appName}. Выслать ему приглашение?</string>
     <string name="alert_invite_yes">Пригласить</string>
 
     <!-- Media -->

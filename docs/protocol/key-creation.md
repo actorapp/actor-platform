@@ -14,6 +14,7 @@ This technique use [TLS 1.2 RFC](https://tools.ietf.org/html/rfc5246) for it's b
 * Using only Curve25519, AES-CBC, Kuznechik-CBC and Streebog
 * Extending master_secret to make it 256 bytes long with two different algorithms based on TLS's PRF function with SHA256 and Streebog hashes.
 * Added Signing of response just to check that everything is ok and add one more protection level
+* **Protocol uses 256 bits of block length in HMAC instead of standart one**. This was caused by bug in initial implementation of HMAC, but doesn't affect security parameters.
 
 # Primitives
 

@@ -46,6 +46,8 @@ private[frontend] final class PackageHandleStage(
             val hresp = HandshakeResponse(protoVersion, apiMajorVersion, apiMinorVersion, sha256Sign)
             hresp
           })
+
+          pullIn()
         case TransportPackage(index, body) ⇒
           val ack = Ack(index)
 
@@ -64,7 +66,10 @@ private[frontend] final class PackageHandleStage(
             case m           ⇒ Seq(ack)
           }
 
-          emitMultiple(out, fs.iterator, pullIn)
+          if (fs.nonEmpty)
+            emitMultiple(out, fs.iterator, pullIn)
+          else
+            pullIn()
       }
     })
 
