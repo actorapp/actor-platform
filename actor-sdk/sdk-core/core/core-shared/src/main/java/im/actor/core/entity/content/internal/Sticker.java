@@ -184,4 +184,9 @@ public class Sticker extends AbsLocalContent {
 
         writer.writeBytes(7, thumb);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Sticker && ((Sticker) o).getId() == getId();
+    }
 }
