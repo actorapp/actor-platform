@@ -7,6 +7,7 @@ import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.rpc.RequestCallInProgress;
 import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.RequestEndCall;
+import im.actor.core.api.rpc.RequestSendCallSignal;
 import im.actor.core.api.rpc.RequestSubscribeToCalls;
 import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.api.updates.UpdateIncomingCall;
@@ -118,6 +119,10 @@ public class CallsModule extends AbsModule {
         if (call != null) {
             call.send(new CallActor.CallInProgress(timeout));
         }
+    }
+
+    public void sendSignal(long callId, byte[] data) {
+        request(new RequestSendCallSignal(callId, data));
     }
 
     public void onSignal(long callId, byte[] data) {
