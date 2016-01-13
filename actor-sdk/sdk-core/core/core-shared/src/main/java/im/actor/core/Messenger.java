@@ -969,8 +969,8 @@ public class Messenger {
     //             Calls
     //////////////////////////////////////
 
-    public Command<ResponseDoCall> doCall(User user, CallsModule.CallCallback callCallback) {
-        return modules.getCallsModule().makeCall(user, callCallback);
+    public Command<ResponseDoCall> doCall(int uid, CallsModule.CallCallback callCallback) {
+        return modules.getCallsModule().makeCall(uid, callCallback);
     }
 
     public void endCall(long callId) {
