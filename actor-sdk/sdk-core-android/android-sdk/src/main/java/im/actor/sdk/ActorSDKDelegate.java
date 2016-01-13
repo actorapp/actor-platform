@@ -70,7 +70,6 @@ public interface ActorSDKDelegate {
      */
     ActorIntent getChatIntent();
 
-    String getHelpPhone();
 
     <T extends BindedViewHolder, J extends T> J getViewHolder(Class<T> base, Object... args);
 

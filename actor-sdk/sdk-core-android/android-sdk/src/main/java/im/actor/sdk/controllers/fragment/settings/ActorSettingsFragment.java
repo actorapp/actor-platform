@@ -33,6 +33,11 @@ public class ActorSettingsFragment extends BaseActorSettingsFragment {
     }
 
     @Override
+    public boolean showAskQuestion() {
+        return true;
+    }
+
+    @Override
     public ActorSettingsCategory[] getBeforeSettingsCategories() {
         return null;
     }

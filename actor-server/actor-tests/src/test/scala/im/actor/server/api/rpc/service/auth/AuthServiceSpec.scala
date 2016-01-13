@@ -1,4 +1,4 @@
-package im.actor.server.api.rpc.service
+package im.actor.server.api.rpc.service.auth
 
 import java.net.URLEncoder
 import java.time.{ LocalDateTime, ZoneOffset }
@@ -11,21 +11,16 @@ import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.users.{ ApiContactRecord, ApiContactType, ApiSex }
 import im.actor.concurrent.FutureExt
 import im.actor.server._
-import im.actor.server.activation.internal.{DummyCallEngine, DummySmsEngine, ActivationConfig, InternalCodeActivation}
+import im.actor.server.activation.internal.{ ActivationConfig, DummyCallEngine, DummySmsEngine, InternalCodeActivation }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
+import im.actor.server.email.DummyEmailSender
 import im.actor.server.model.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.session.{ HandleMessageBox, Session, SessionConfig, SessionEnvelope }
-import im.actor.server.email.DummyEmailSender
-import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
-import im.actor.server.user.ContactsUtils
-import org.scalatest.Inside._
-import shardakka.ShardakkaExtension
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Random
@@ -117,7 +112,7 @@ final class AuthServiceSpec
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     val activationConfig = ActivationConfig.load.get
     val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, new DummyCallEngine, new DummyEmailSender)
-    implicit val service = new auth.AuthServiceImpl(activationContext)
+    implicit val service = new AuthServiceImpl(activationContext)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     implicit val contactService = new ContactsServiceImpl
 

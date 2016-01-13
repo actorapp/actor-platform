@@ -6,6 +6,8 @@ We are not invenging the wheel and implement encryption logic exactly as [TLS 1.
 
 In Rev4 we will enable support for Axolotl Ratched like encryption directly in protocol.
 
+**Protocol uses 256 bits of block length in HMAC instead of standart one**. This was caused by bug in initial implementation of HMAC, but doesn't affect security parameters.
+
 HMAC is calculated from (seqNumber + iv + content.length + content).
 
 ## Base Encrypted Package

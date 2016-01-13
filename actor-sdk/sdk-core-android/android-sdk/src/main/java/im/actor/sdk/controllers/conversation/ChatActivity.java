@@ -830,8 +830,8 @@ public class ChatActivity extends ActorEditTextActivity {
                     }
                 }
             } else if (requestCode == REQUEST_CONTACT) {
-                HashSet<String> phones = new HashSet<String>();
-                HashSet<String> emails = new HashSet<String>();
+                ArrayList<String> phones = new ArrayList<String>();
+                ArrayList<String> emails = new ArrayList<String>();
                 String name = "";
                 byte[] photo = null;
 
