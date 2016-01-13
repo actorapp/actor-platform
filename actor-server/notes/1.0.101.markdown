@@ -1,0 +1,5 @@
+Fixes
+---
+
+* Fixed password hashing
+* Fixed connection hangup for slow clients

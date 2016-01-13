@@ -24,7 +24,7 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
 
   def receive = {
     case (mb: MessageBox, clientData: ClientData) ⇒
-      log.info("MessageBox: {} clientData: {}", mb, clientData)
+      log.debug("MessageBox: {} clientData: {}", mb, clientData)
 
       // TODO: tail-recursive function for container unpacking
       mb.body match {

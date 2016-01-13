@@ -91,11 +91,6 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     @Override
-    public String getHelpPhone() {
-        return "75551234567";
-    }
-
-    @Override
     public <T extends BindedViewHolder, J extends T> J getViewHolder(Class<T> base, Object[] args) {
         return null;
     }

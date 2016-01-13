@@ -98,6 +98,8 @@ services {
       secret-key: <put_your_aws_secret_here>
       # File bucket
       default-bucket: <put_your_bucket_here>
+      # S3 Endpoint
+      # endpoint: <put_your_custom_endpoint_here>
     }
   }
 

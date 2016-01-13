@@ -38,7 +38,7 @@
     <string name="menu_saved">Saved</string>
     <string name="menu_next">Next</string>
 
-    <string name="invite_message">Hi! Let\'s switch to Actor! https://actor.im/dl</string>
+    <string name="invite_message">Hi! Let\'s switch to {appName}! {inviteUrl}</string>
 
     <!-- Tour -->
     <string name="tour_sign_up">SIGN UP</string>
@@ -135,7 +135,7 @@
     <string name="main_sync_message">Please, wait couple minutes while we enable your app.</string>
 
     <string name="main_empty_title">Invite your friends</string>
-    <string name="main_empty_invite_hint">None of your contacts use Actor. Use button below to invite them.</string>
+    <string name="main_empty_invite_hint">None of your contacts use {appName}. Use button below to invite them.</string>
     <string name="main_empty_invite_action">TELL A FRIEND</string>
     <string name="main_empty_add_hint">or manually add contact</string>
     <string name="main_empty_add_action">ADD CONTACT</string>
@@ -148,13 +148,15 @@
     <string name="settings_header">Settings</string>
     <string name="settings_help">Help</string>
     <string name="settings_ask">Ask Question</string>
+    <string name="settings_twitter">Twitter</string>
+    <string name="settings_home_page">Home page</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_chat">Chat Settings</string>
     <string name="settings_security">Security</string>
     <string name="nickname_empty">Set nickname</string>
     <string name="nickname_change">Change nickname</string>
     <string name="nickname">Nickname</string>
-    <string name="nickname_hint">You can choose a username in Actor. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a–z, 0–9 and underscores. Minimum length is 5 characters.</string>
+    <string name="nickname_hint">You can choose a username in {appName}. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a–z, 0–9 and underscores. Minimum length is 5 characters.</string>
     <string name="nickname_edittext_hint">Enter your Username</string>
     <string name="about_user_me">About me</string>
     <string name="about_user">About user</string>
@@ -185,11 +187,11 @@
     <!-- Contacts -->
     <string name="contacts_title">Contacts</string>
     <string name="contacts_empty_short">No contacts yet</string>
-    <string name="contacts_share">Tell friends about Actor</string>
+    <string name="contacts_share">Tell friends about {appName}</string>
     <string name="contacts_add">Add friend...</string>
 
     <string name="contacts_empty_title">Invite your friends</string>
-    <string name="contacts_empty_invite_hint">None of your contacts use Actor. Use button below to invite them.</string>
+    <string name="contacts_empty_invite_hint">None of your contacts use {appName}. Use button below to invite them.</string>
     <string name="contacts_empty_invite_action">Tell a friend</string>
     <string name="contacts_empty_add_hint">or manually add contact by pressing plus button below.</string>
 
@@ -342,7 +344,7 @@
 
     <!-- Invite link-->
     <string name="invite_link_title">Invite Link</string>
-    <string name="invite_link_hint">Anyone who has Actor installed will be able to join your group by following this link</string>
+    <string name="invite_link_hint">Anyone who has {appName} installed will be able to join your group by following this link</string>
     <string name="invite_link_action_copy">Copy link</string>
     <string name="invite_link_action_revoke">Revoke link</string>
     <string name="invite_link_action_share">Share link</string>
@@ -447,7 +449,7 @@
     <string name="alert_group_remove_text">Are you sure want to remove {0} from group?</string>
     <string name="alert_group_remove_yes">Remove</string>
 
-    <string name="alert_invite_text">"{0}" is not registered in Actor. Invite him to actor?</string>
+    <string name="alert_invite_text">"{0}" is not registered in {appName}. Invite him to {appName}?</string>
     <string name="alert_invite_yes">Invite</string>
 
     <!-- Media -->

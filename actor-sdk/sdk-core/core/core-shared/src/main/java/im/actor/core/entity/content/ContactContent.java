@@ -26,7 +26,7 @@ public class ContactContent extends AbsContent {
     private ArrayList<String> emails;
 
     @NotNull
-    public static ContactContent create(@NotNull String name, @NotNull HashSet<String> phones, @NotNull HashSet<String> emails, @Nullable String base64photo) {
+    public static ContactContent create(@NotNull String name, @NotNull ArrayList<String> phones, @NotNull ArrayList<String> emails, @Nullable String base64photo) {
 
         try {
             JSONObject obj = new JSONObject();
