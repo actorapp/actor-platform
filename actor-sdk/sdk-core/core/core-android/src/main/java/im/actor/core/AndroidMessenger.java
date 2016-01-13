@@ -42,6 +42,7 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.android.AndroidContext;
+import im.actor.runtime.eventbus.EventBus;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
@@ -477,5 +478,9 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         }
 
         return docsLists.get(peer);
+    }
+
+    public EventBus getEvents() {
+        return modules.getEvents();
     }
 }

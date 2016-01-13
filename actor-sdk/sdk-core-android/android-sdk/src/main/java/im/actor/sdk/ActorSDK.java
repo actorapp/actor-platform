@@ -26,8 +26,11 @@ import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.modules.events.IncomingCall;
 import im.actor.runtime.Log;
 import im.actor.runtime.android.view.BindedViewHolder;
+import im.actor.runtime.eventbus.BusSubscriber;
+import im.actor.runtime.eventbus.Event;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
@@ -245,6 +248,13 @@ public class ActorSDK {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        messenger.getEvents().subscribe(new BusSubscriber() {
+            @Override
+            public void onBusEvent(Event event) {
+                delegate.onIncominCall(((IncomingCall) event).getCall(), ((IncomingCall) event).getUid());
+            }
+        }, IncomingCall.EVENT);
     }
 
     /**
