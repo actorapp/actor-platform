@@ -91,11 +91,7 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
                 }
                 
                 dispatchOnUi {
-                    
-                    UIView.transitionWithView(self, duration: 0.3, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: { () -> Void in
-                        self.preview.image = image;
-                        }, completion: nil)
-                    
+                    self.preview.image = image;
                 }
             });
             Actor.bindRawFileWithReference(fileLocation, autoStart: true, withCallback: self.callback)
@@ -313,7 +309,7 @@ public class StikerCellLayout: AACellLayout {
      Creating layout for sticker content
      */
     public convenience init(id: Int64, stickerContent: ACStickerContent, date: Int64) {
-       self.init(id: id, width: CGFloat(200), height: CGFloat(200), date: date, sticker: stickerContent.getSticker(), autoDownload: true)
+       self.init(id: id, width: CGFloat(150), height: CGFloat(150), date: date, sticker: stickerContent.getSticker(), autoDownload: true)
         
     }
 

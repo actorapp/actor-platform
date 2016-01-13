@@ -58,8 +58,6 @@ public class AAStickersViewCell : UICollectionViewCell {
         var fileLocation: ACFileReference?
         fileLocation = sticker.getFileReference128()
         
-        print("file name === \(fileLocation!.fileName)")
-        
         let cached = checkCache(512, id: Int64(fileLocation!.getFileId()))
         if (cached != nil) {
             self.stickerImage.image = cached
@@ -255,9 +253,11 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
                             parsedStickerPack.stickers.append(stickerModel)
                         }
                         
-                        self.stickersPacks.append(parsedStickerPack)
+                        if (parsedStickerPack.stickers.count > 0) {
+                            self.stickersPacks.append(parsedStickerPack)
+                        }
                         
-                         print("stickers list === \(sickers)")
+                        print("stickers list === \(sickers)")
                         
                     }
                     

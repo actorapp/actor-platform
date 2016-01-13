@@ -31,31 +31,42 @@ public extension ACCocoaMessenger {
     
     public func sendVideo(url: NSURL, peer: ACPeer) {
         
-        if let videoData = NSData(contentsOfURL: url) {
+        if let videoData = NSData(contentsOfURL: url) { // if data have on this local path url go to upload
             
             let descriptor = "/tmp/"+NSUUID().UUIDString
             let path = CocoaFiles.pathFromDescriptor(descriptor);
             
-            videoData.writeToFile(path, atomically: true)
+            videoData.writeToFile(path, atomically: true) // write to file
+        
             
-            let movieAsset = AVAsset(URL: url) // video asset
-            let imageGenerator = AVAssetImageGenerator(asset: movieAsset)
-            let time = CMTimeMake(1, 1)
-            
-            // time
+            // get video duration
             
             let assetforduration = AVURLAsset(URL: url)
             let videoDuration = assetforduration.duration
             let videoDurationSeconds = CMTimeGetSeconds(videoDuration)
             
+            // get thubnail and upload
+            
+            let movieAsset = AVAsset(URL: url) // video asset
+            let imageGenerator = AVAssetImageGenerator(asset: movieAsset)
+            var thumbnailTime = movieAsset.duration
+            thumbnailTime.value = 25
+            
             do {
-                let imageRef = try imageGenerator.copyCGImageAtTime(time, actualTime: nil)
+                let imageRef = try imageGenerator.copyCGImageAtTime(thumbnailTime, actualTime: nil)
                 let thumbnail = UIImage(CGImage: imageRef)
-                let resized = thumbnail.resizeOptimize(1200 * 1200);
-                let thumbData = UIImageJPEGRepresentation(thumbnail, 0.55);
+                let thumbData = UIImageJPEGRepresentation(thumbnail, 0.55); // thumbnail binary data
                 let fastThumb = ACFastThumb(int: jint(thumbnail.size.width), withInt: jint(thumbnail.size.height), withByteArray: thumbData!.toJavaBytes())
                 
-                sendVideoWithPeer(peer, withName: "video.mov", withW: jint(resized.size.width), withH: jint(resized.size.height), withDuration: jint(videoDurationSeconds), withThumb: fastThumb, withDescriptor: descriptor)
+                print("video upload imageRef = \(imageRef)")
+                print("video upload thumbnail = \(thumbnail)")
+                //print("video upload thumbData = \(thumbData)")
+                print("video upload fastThumb = \(fastThumb)")
+                print("video upload videoDurationSeconds = \(videoDurationSeconds)")
+                print("video upload width = \(thumbnail.size.width)")
+                print("video upload height = \(thumbnail.size.height)")
+                
+                sendVideoWithPeer(peer, withName: "video.mp4", withW: jint(thumbnail.size.width), withH: jint(thumbnail.size.height), withDuration: jint(videoDurationSeconds), withThumb: fastThumb, withDescriptor: descriptor)
                 
             } catch {
                 print("can't get thumbnail image")
