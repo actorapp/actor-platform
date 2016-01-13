@@ -243,7 +243,7 @@ public class SenderActor extends ModuleActor {
     }
 
     public void doSendContact(@NotNull Peer peer,
-                              @NotNull HashSet<String> emails, @NotNull HashSet<String> phones,
+                              @NotNull ArrayList<String> emails, @NotNull ArrayList<String> phones,
                               @Nullable String name,
                               @Nullable String base64photo) {
 
@@ -755,12 +755,12 @@ public class SenderActor extends ModuleActor {
 
     public static class SendContact {
         private Peer peer;
-        private HashSet<String> phones;
-        private HashSet<String> emails;
+        private ArrayList<String> phones;
+        private ArrayList<String> emails;
         private String name;
         private String base64photo;
 
-        public SendContact(Peer peer, HashSet<String> phones, HashSet<String> emails, String name, String base64photo) {
+        public SendContact(Peer peer, ArrayList<String> phones, ArrayList<String> emails, String name, String base64photo) {
             this.peer = peer;
             this.phones = phones;
             this.emails = emails;
@@ -772,11 +772,11 @@ public class SenderActor extends ModuleActor {
             return peer;
         }
 
-        public HashSet<String> getPhones() {
+        public ArrayList<String> getPhones() {
             return phones;
         }
 
-        public HashSet<String> getEmails() {
+        public ArrayList<String> getEmails() {
             return emails;
         }
 

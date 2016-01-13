@@ -576,8 +576,8 @@ public class Messenger {
      * @param base64photo contact photo
      */
     @ObjectiveCName("sendContactWithPeer:withName:withPhones:withEmails:withPhoto:")
-    public void sendContact(@NotNull Peer peer, @NotNull String name, @NotNull HashSet<String> phones,
-                            @NotNull HashSet<String> emails, @Nullable String base64photo) {
+    public void sendContact(@NotNull Peer peer, @NotNull String name, @NotNull ArrayList<String> phones,
+                            @NotNull ArrayList<String> emails, @Nullable String base64photo) {
         modules.getMessagesModule().sendContact(peer, name, phones, emails, base64photo);
     }
 
