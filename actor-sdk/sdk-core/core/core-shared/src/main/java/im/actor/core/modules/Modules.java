@@ -9,6 +9,7 @@ import im.actor.core.ConfigurationExtension;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.internal.AppStateModule;
+import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.modules.internal.ContactsModule;
 import im.actor.core.modules.internal.DeviceInfoModule;
 import im.actor.core.modules.internal.DisplayLists;
@@ -58,6 +59,7 @@ public class Modules implements ModuleContext {
     private volatile UsersModule users;
     private volatile GroupsModule groups;
     private volatile StickersModule stickers;
+    private volatile CallsModule calls;
     private volatile MessagesModule messages;
     private volatile PushesModule pushes;
     private volatile PresenceModule presence;
@@ -123,6 +125,8 @@ public class Modules implements ModuleContext {
         groups = new GroupsModule(this);
         timing.section("Stickers");
         stickers = new StickersModule(this);
+        timing.section("Calls");
+        calls = new CallsModule(this);
         timing.section("Search");
         search = new SearchModule(this);
         timing.section("Security");
@@ -173,6 +177,8 @@ public class Modules implements ModuleContext {
         messages.run();
         timing.section("Updates");
         updates.run();
+        timing.section("Calls");
+        calls.run();
         timing.section("Extensions");
         extensions.runExtensions();
         timing.end();
@@ -214,6 +220,10 @@ public class Modules implements ModuleContext {
 
     public StickersModule getStickersModule() {
         return stickers;
+    }
+
+    public CallsModule getCallsModule() {
+        return calls;
     }
 
     public MessagesModule getMessagesModule() {
