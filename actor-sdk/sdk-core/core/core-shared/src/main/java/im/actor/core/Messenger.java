@@ -981,6 +981,10 @@ public class Messenger {
         modules.getCallsModule().answerCall(callId, callback);
     }
 
+    public void sendCallSignal(long callId, byte[] data) {
+        modules.getCallsModule().sendSignal(callId, data);
+    }
+
     //////////////////////////////////////
     //         Peer operations
     //////////////////////////////////////
