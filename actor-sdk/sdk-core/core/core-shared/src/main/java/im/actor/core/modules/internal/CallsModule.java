@@ -95,7 +95,7 @@ public class CallsModule extends AbsModule {
 
     public void onIncomingCall(long callId, int uid) {
         if (!calls.keySet().contains(callId)) {
-            context().getEvents().post(new IncomingCall(callId));
+            context().getEvents().post(new IncomingCall(callId, uid));
         }
     }
 
