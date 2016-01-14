@@ -16,7 +16,7 @@ class VoiceRecorder extends Component {
 
     this.state = {
       isRecording: false
-    }
+    };
 
     this.recorder = new Recorder();
     this.recorder.addEventListener('duration', this.handleChangeDuration);
