@@ -12,21 +12,27 @@ protocol AAActionSheetDelegate{
     func actionSheetDidFinished(selectedObjs:Array<AnyObject>)
 }
 
+let screenWidth = UIScreen.mainScreen().bounds.size.width
+let screenHeigth = UIScreen.mainScreen().bounds.size.height
+
 class AAConvActionSheet: UIView {
 
     var delegate:AAActionSheetDelegate?
     
     var sheetView:UIView!
-    var btnAlbum:UIButton!
+    
     var btnCamera:UIButton!
+    var btnLibrary:UIButton!
+    var btnDocuments:UIButton!
+    var btnLocation:UIButton!
+    var btnContact:UIButton!
     var btnCancel:UIButton!
-    var thumbnailView:AAThumbnailView!
+    
+    var thumbnailView = AAThumbnailView()
     
     weak var weakSuper : ConversationViewController!
     
     
-    let screenWidth = UIScreen.mainScreen().bounds.size.width
-    let screenHeigth = UIScreen.mainScreen().bounds.size.height
     
     init(maxSelected:Int,weakSuperIn:ConversationViewController) {
         super.init(frame: CGRectZero)
@@ -48,14 +54,12 @@ class AAConvActionSheet: UIView {
         
         self.alpha = 0
         self.frame = CGRectMake(0, 0, screenWidth, screenHeigth)
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
         
-        self.addSubview(self.sheetView)
         
-//        self.sheetView.addSubview(self.btnCancel)
-//        self.sheetView.addSubview(self.btnAlbum)
-//        self.sheetView.addSubview(self.btnCamera)
-//        self.sheetView.addSubview(self.thumbnailView)
+        
+        //make photo
+        
         
         self.configNotification()
         
@@ -63,17 +67,13 @@ class AAConvActionSheet: UIView {
     
     func configNotification() {
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "", name: kNotificationSendPhotos, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "", name: kNotificationUpdateSelected, object: nil)
         
     }
     
     deinit {
         
         self.weakSuper = nil
-        
-        AAASAssetManager.sharedInstance.clearData()
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+
         
     }
     
@@ -81,17 +81,20 @@ class AAConvActionSheet: UIView {
     func showAnimation() {
         
         //self.btnCamera.selected = true
-        //self.thumbnailView.reloadView()
         //self.btnCamera.setTitle("Camera", forState: UIControlState.Normal)
         
         var frame = self.sheetView.frame
-        frame.origin.y = screenHeigth - 350
+        frame.origin.y = screenHeigth - 400
         
         UIView.animateWithDuration(0.25) { () -> Void in
             self.sheetView.frame = frame
             self.alpha = 1
             
+            self.thumbnailView.open()
+            self.thumbnailView.reloadView()
+            
         }
+        
         
         
     }
@@ -101,10 +104,10 @@ class AAConvActionSheet: UIView {
         var frame = self.sheetView.frame
         frame.origin.y = screenHeigth
         
-        UIView.animateWithDuration(0.25) { () -> Void in
+        UIView.animateWithDuration(0.25, animations: { () -> Void in
             self.sheetView.frame = frame
             self.alpha = 0
-            
+            }) { (bool) -> Void in
         }
         
     }
@@ -117,21 +120,128 @@ class AAConvActionSheet: UIView {
         
         
         // sheet view
-        let frame = CGRectMake(0, screenHeigth, screenWidth, 350)
+        let frame = CGRectMake(0, screenHeigth, screenWidth, 400)
         self.sheetView = UIView(frame: frame)
-        self.sheetView.backgroundColor = UIColor(red: 230.0/255.0, green: 231.0/255.0, blue: 234.0/255.0, alpha: 1)
+        self.sheetView.backgroundColor = UIColor.whiteColor()
         
+        self.addSubview(self.sheetView)
         
-        // button cancel
+        self.btnCamera = UIButton(type: UIButtonType.System)
+        self.btnLibrary = UIButton(type: UIButtonType.System)
+        self.btnDocuments = UIButton(type: UIButtonType.System)
+        self.btnLocation = UIButton(type: UIButtonType.System)
+        self.btnContact = UIButton(type: UIButtonType.System)
+        self.btnCancel = UIButton(type: UIButtonType.System)
         
-        self.btnCancel = UIButton(type: UIButtonType.Custom)
+        // color
         
-        // thumbnail view 
-
+        self.btnCamera.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnLibrary.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnDocuments.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnLocation.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnContact.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnCancel.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
         
+        // font size
         
+        self.btnCamera.titleLabel?.font = UIFont.systemFontOfSize(17)
+        self.btnLibrary.titleLabel?.font = UIFont.systemFontOfSize(17)
+        self.btnDocuments.titleLabel?.font = UIFont.systemFontOfSize(17)
+        self.btnLocation.titleLabel?.font = UIFont.systemFontOfSize(17)
+        self.btnContact.titleLabel?.font = UIFont.systemFontOfSize(17)
+        self.btnCancel.titleLabel?.font = UIFont.systemFontOfSize(17)
         
+        // add buttons as subivews
+        
+        self.sheetView.addSubview(self.btnCamera)
+        self.sheetView.addSubview(self.btnLibrary)
+        self.sheetView.addSubview(self.btnDocuments)
+        self.sheetView.addSubview(self.btnLocation)
+        self.sheetView.addSubview(self.btnContact)
+        self.sheetView.addSubview(self.btnCancel)
+        self.sheetView.addSubview(self.thumbnailView)
+        
+        self.thumbnailView.frame = CGRectMake(0, 5, screenWidth, 100)
+        self.btnCamera.frame = CGRectMake(0, 100, screenWidth, 50)
+        self.btnLibrary.frame = CGRectMake(0, 150, screenWidth, 50)
+        self.btnDocuments.frame = CGRectMake(0, 200, screenWidth, 50)
+        self.btnLocation.frame = CGRectMake(0, 250, screenWidth, 50)
+        self.btnContact.frame = CGRectMake(0, 300, screenWidth, 50)
+        self.btnCancel.frame = CGRectMake(0, 350, screenWidth, 50)
+        
+        // separators
+        
+        let spearator1 = UIView(frame: CGRectMake(0, 99, screenWidth, 1))
+        spearator1.backgroundColor = UIColor(red: 223.9/255.0, green: 223.9/255.0, blue: 223.9/255.0, alpha: 0.6)
+        let spearator2 = UIView(frame: CGRectMake(10, 149, screenWidth-20, 1))
+        spearator2.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
+        let spearator3 = UIView(frame: CGRectMake(10, 199, screenWidth-20, 1))
+        spearator3.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
+        let spearator4 = UIView(frame: CGRectMake(10, 249, screenWidth-20, 1))
+        spearator4.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
+        let spearator5 = UIView(frame: CGRectMake(10, 299, screenWidth-20, 1))
+        spearator5.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
+        let spearator6 = UIView(frame: CGRectMake(10, 349, screenWidth-20, 1))
+        spearator6.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
+        
+        // add separatos as subview
+        
+        self.sheetView.addSubview(spearator1)
+        self.sheetView.addSubview(spearator2)
+        self.sheetView.addSubview(spearator3)
+        self.sheetView.addSubview(spearator4)
+        self.sheetView.addSubview(spearator5)
+        self.sheetView.addSubview(spearator6)
+        
+        // set title for buttons
+        
+        self.btnCamera.setTitle(AALocalized("PhotoCamera"), forState: UIControlState.Normal)
+        self.btnLibrary.setTitle(AALocalized("PhotoLibrary"), forState: UIControlState.Normal)
+        self.btnDocuments.setTitle(AALocalized("SendDocument"), forState: UIControlState.Normal)
+        self.btnLocation.setTitle(AALocalized("ShareLocation"), forState: UIControlState.Normal)
+        self.btnContact.setTitle(AALocalized("ShareContact"), forState: UIControlState.Normal)
+        self.btnCancel.setTitle(AALocalized("AlertCancel"), forState: UIControlState.Normal)
+        
+        // add actins
+        
+        self.btnCamera.addTarget(self, action: "btnCameraAction", forControlEvents: UIControlEvents.TouchUpInside)
+        self.btnLibrary.addTarget(self, action: "btnLibraryAction", forControlEvents: UIControlEvents.TouchUpInside)
+        self.btnDocuments.addTarget(self, action: "btnDocumentAction", forControlEvents: UIControlEvents.TouchUpInside)
+        self.btnLocation.addTarget(self, action: "btnLocationAction", forControlEvents: UIControlEvents.TouchUpInside)
+        self.btnContact.addTarget(self, action: "btnContactAction", forControlEvents: UIControlEvents.TouchUpInside)
+        self.btnCancel.addTarget(self, action: "btnCloseAction", forControlEvents: UIControlEvents.TouchUpInside)
+    
     }
     
+    //MARK: - Button's actions
+    
+    func btnCameraAction() {
+        cancelAnimation()
+        self.weakSuper.pickImage(.Camera)
+    }
+    
+    func btnLibraryAction() {
+        cancelAnimation()
+        self.weakSuper.pickImage(.PhotoLibrary)
+    }
+    
+    func btnDocumentAction() {
+        cancelAnimation()
+        self.weakSuper.pickDocument()
+    }
+    
+    func btnLocationAction() {
+        cancelAnimation()
+        self.weakSuper.pickLocation()
+    }
+    
+    func btnContactAction() {
+        cancelAnimation()
+        self.weakSuper.pickContact()
+    }
+    
+    func btnCloseAction() {
+        cancelAnimation()
+    }
 
 }

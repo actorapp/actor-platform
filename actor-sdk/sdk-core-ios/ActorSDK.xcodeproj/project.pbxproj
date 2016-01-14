@@ -273,7 +273,6 @@
 		BE2621571C4656D700A817AB /* AAConvActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2621561C4656D700A817AB /* AAConvActionSheet.swift */; };
 		BE2621591C4656EE00A817AB /* AAThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2621581C4656EE00A817AB /* AAThumbnailView.swift */; };
 		BEAC2B311C42D683007F7A2F /* libopus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15F89F001C211FDE00776ACD /* libopus.a */; };
-		BEF11DB51C4657D20076400A /* AAASAssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF11DB41C4657D20076400A /* AAASAssetManager.swift */; };
 		BEF11DB61C466D800076400A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153F6B3C1C2A9B1900C0B960 /* begin_record.caf */; };
 		BEFE68D51C4657360001F2D6 /* AAThumbnailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */; };
 /* End PBXBuildFile section */
@@ -555,7 +554,6 @@
 		BE237C9C1C422FFA00060648 /* AAStickersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAStickersView.swift; sourceTree = "<group>"; };
 		BE2621561C4656D700A817AB /* AAConvActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAConvActionSheet.swift; sourceTree = "<group>"; };
 		BE2621581C4656EE00A817AB /* AAThumbnailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailView.swift; sourceTree = "<group>"; };
-		BEF11DB41C4657D20076400A /* AAASAssetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAASAssetManager.swift; sourceTree = "<group>"; };
 		BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailCollectionCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1320,7 +1318,6 @@
 		BE26215A1C4656F100A817AB /* Manager */ = {
 			isa = PBXGroup;
 			children = (
-				BEF11DB41C4657D20076400A /* AAASAssetManager.swift */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -1692,7 +1689,6 @@
 				15D35F671C20187E00E3717A /* NSObject+TGLock.m in Sources */,
 				15D35F5C1C20187E00E3717A /* AAAudioPlayer.m in Sources */,
 				152AA8BF1C298C4B0030DEEE /* AASettingsLastSeenController.swift in Sources */,
-				BEF11DB51C4657D20076400A /* AAASAssetManager.swift in Sources */,
 				066A51561BC4BEF5000E606E /* AALocalized.swift in Sources */,
 				069CF4CF1BCB909A00C66E12 /* CLToken.m in Sources */,
 				15D35F751C201B6B00E3717A /* AACustomPresentationController.swift in Sources */,
