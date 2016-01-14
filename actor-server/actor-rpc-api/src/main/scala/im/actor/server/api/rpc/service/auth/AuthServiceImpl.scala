@@ -20,10 +20,10 @@ import im.actor.server.api.rpc.service.profile.ProfileErrors
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.db.DbExtension
 import im.actor.server.email.{ EmailConfig, SmtpEmailSender }
-import im.actor.server.model.AuthUsernameTransaction
+import im.actor.server.model.{ AuthAnonymousTransaction, AuthUsernameTransaction }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2ProvidersDomains }
 import im.actor.server.persist.{ UserPasswordRepo, UserRepo }
-import im.actor.server.persist.auth.{ AuthUsernameTransactionRepo, AuthTransactionRepo }
+import im.actor.server.persist.auth.{ AuthAnonymousTransactionRepo, AuthUsernameTransactionRepo, AuthTransactionRepo }
 import im.actor.server.session._
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user.UserExtension
@@ -239,6 +239,42 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
     db.run(action.run)
   }
 
+  override def jhandleStartAnonymousAuth(
+    username:           String,
+    appId:              Int,
+    apiKey:             String,
+    deviceHash:         Array[Byte],
+    deviceTitle:        String,
+    timeZone:           Option[String],
+    preferredLanguages: IndexedSeq[String],
+    clientData:         ClientData
+  ): Future[HandlerResult[ResponseAuth]] = {
+    val action =
+      for {
+        normUsername ← fromOption(ProfileErrors.NicknameInvalid)(StringUtils.normalizeUsername(username))
+        accessSalt = ACLUtils.nextAccessSalt()
+        nicknameExists ← fromDBIO(UserRepo.nicknameExists(normUsername))
+        optUser ← fromBoolean(ProfileErrors.NicknameBusy)(!nicknameExists)
+        transactionHash = ACLUtils.authTransactionHash(accessSalt)
+        transaction = AuthAnonymousTransaction(
+          normUsername,
+          transactionHash,
+          appId,
+          apiKey,
+          deviceHash,
+          deviceTitle,
+          accessSalt,
+          DeviceInfo(timeZone.getOrElse(""), preferredLanguages).toByteArray,
+          isChecked = false // we don't need to check password if user signs up
+        )
+        user ← newUser(Some(normUsername))
+        _ ← handleUserCreate(user, transaction, clientData)
+        userStruct ← authorizeT(user.id, "", transaction, clientData)
+      } yield ResponseAuth(userStruct, ApiConfig(maxGroupSize))
+
+    db.run(action.run)
+  }
+
   override def jhandleSendCodeByPhoneCall(transactionHash: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = for {
       tx ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(persist.auth.AuthPhoneTransactionRepo.find(transactionHash))
@@ -262,6 +298,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
           case p: model.AuthPhoneTransaction ⇒ newUserPhoneSignUp(p, name, sex)
           case e: model.AuthEmailTransaction ⇒ newUserEmailSignUp(e, name, sex)
           case u: AuthUsernameTransaction    ⇒ newUsernameSignUp(u, name, sex)
+          case _: AuthAnonymousTransaction   ⇒ fromEither(-\/(AuthErrors.NotValidated))
         }
         //fallback to sign up if user exists
         userStruct ← signInORsignUp match {
@@ -413,9 +450,6 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
 
     db.run(toDBIOAction(authorizedAction))
   }
-
-  override def jhandleStartAnonymousAuth(name: String, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, timeZone: Option[String], preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
-    Future.failed(new RuntimeException("Not implemented"))
 
   override def jhandleStartTokenAuth(token: String, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, timeZone: Option[String], preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
     Future.failed(new RuntimeException("Not implemented"))

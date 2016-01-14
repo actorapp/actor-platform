@@ -11,6 +11,7 @@ import im.actor.api.rpc.users.ApiUser
 import im.actor.server.acl.ACLUtils
 import im.actor.server.activation.Activation.{ CallCode, EmailCode, SmsCode }
 import im.actor.server.activation._
+import im.actor.server.api.rpc.service.profile.ProfileErrors
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.model._
 import im.actor.server.persist.UserRepo
@@ -41,7 +42,7 @@ trait AuthHelpers extends Helpers {
       (_, countryCode) = phoneAndCode
       result ← optPhone match {
         case Some(userPhone) ⇒ point(-\/((userPhone.userId, countryCode)))
-        case None            ⇒ newUser(name, countryCode, sex)
+        case None            ⇒ newUser(name, countryCode, sex, username = None)
       }
     } yield result
   }
@@ -60,7 +61,7 @@ trait AuthHelpers extends Helpers {
                 val locale = oauth2Service.fetchProfile(token.accessToken).map(_.flatMap(_.locale))
                 fromFuture(locale)
               }.getOrElse(point(None))
-              user ← newUser(name, locale.getOrElse("").toUpperCase, sex)
+              user ← newUser(name, locale.getOrElse("").toUpperCase, sex, username = None)
             } yield user
           userResult
       }
@@ -73,7 +74,7 @@ trait AuthHelpers extends Helpers {
       optUser ← fromDBIO(UserRepo.findByNickname(username))
       result ← optUser match {
         case Some(existingUser) ⇒ point(-\/((existingUser.id, "")))
-        case None               ⇒ newUser(name, "", sex)
+        case None               ⇒ newUser(name, "", sex, username = Some(username))
       }
     } yield result
   }
@@ -96,6 +97,8 @@ trait AuthHelpers extends Helpers {
           } yield ()
         case u: AuthUsernameTransaction ⇒
           fromFuture(userExt.changeNickname(user.id, Some(u.username)))
+        case u: AuthAnonymousTransaction ⇒
+          fromFuture(userExt.changeNickname(user.id, Some(u.username)))
       }
     } yield ()
   }
@@ -106,11 +109,10 @@ trait AuthHelpers extends Helpers {
    * @param transaction
    * @return Right((codeExpiredError, codeInvalidError)) or Left(authUsernameTransaction) if it's a username transaction
    */
-  private def expirationErrors(transaction: AuthTransactionBase) =
+  private def expirationErrors(transaction: AuthTransactionBase with ExpirableCode) =
     transaction match {
-      case _: AuthPhoneTransaction    ⇒ Right((AuthErrors.PhoneCodeExpired, AuthErrors.PhoneCodeInvalid))
-      case _: AuthEmailTransaction    ⇒ Right((AuthErrors.EmailCodeExpired, AuthErrors.EmailCodeInvalid))
-      case t: AuthUsernameTransaction ⇒ Left(t)
+      case _: AuthPhoneTransaction ⇒ (AuthErrors.PhoneCodeExpired, AuthErrors.PhoneCodeInvalid)
+      case _: AuthEmailTransaction ⇒ (AuthErrors.EmailCodeExpired, AuthErrors.EmailCodeInvalid)
     }
 
   /**
@@ -120,8 +122,9 @@ trait AuthHelpers extends Helpers {
   protected def validateCode(transaction: model.AuthTransactionBase, code: String): Result[(Int, String)] = {
     val transactionHash = transaction.transactionHash
     for {
-      _ ← expirationErrors(transaction) match {
-        case Right((codeExpired, codeInvalid)) ⇒
+      _ ← transaction match {
+        case tx: AuthTransactionBase with ExpirableCode ⇒
+          val (codeExpired, codeInvalid) = expirationErrors(tx)
           for {
             validationResponse ← fromDBIO(activationContext.validate(transactionHash, code))
             _ ← validationResponse match {
@@ -133,7 +136,7 @@ trait AuthHelpers extends Helpers {
             }
             _ ← fromDBIO(persist.auth.AuthTransactionRepo.updateSetChecked(transactionHash))
           } yield ()
-        case Left(tx) ⇒
+        case tx: AuthUsernameTransaction ⇒
           tx.userId match {
             case Some(userId) if !tx.isChecked ⇒
               for {
@@ -149,6 +152,7 @@ trait AuthHelpers extends Helpers {
               log.error("AuthUsernameTransaction with not set userId and not checked")
               point(DBIO.successful(AuthErrors.PasswordInvalid))
           }
+        case tx: AuthAnonymousTransaction ⇒ fromEither(-\/(AuthErrors.NotValidated))
       }
 
       userAndCountry ← transaction match {
@@ -170,6 +174,8 @@ trait AuthHelpers extends Helpers {
           for {
             userModel ← fromDBIOOption(AuthErrors.UsernameUnoccupied)(UserRepo.findByNickname(u.username))
           } yield (userModel.id, "")
+        case _: AuthAnonymousTransaction ⇒
+          fromEither(-\/(AuthErrors.NotValidated))
       }
     } yield userAndCountry
   }
@@ -251,7 +257,7 @@ trait AuthHelpers extends Helpers {
     case _                               ⇒ genCode()
   }
 
-  private def newUser(name: String, countryCode: String, optSex: Option[ApiSex]): Result[\/-[User]] = {
+  protected def newUser(name: String, countryCode: String, optSex: Option[ApiSex], username: Option[String]): Result[\/-[User]] = {
     val rng = ThreadLocalRandom.current()
     val sex = optSex.map(s ⇒ model.Sex.fromInt(s.id)).getOrElse(model.NoSex)
     for {
@@ -264,9 +270,26 @@ trait AuthHelpers extends Helpers {
         sex = sex,
         state = model.UserState.Registered,
         createdAt = LocalDateTime.now(ZoneOffset.UTC),
-        external = None
+        external = None,
+        nickname = username
       )
     } yield \/-(user)
+  }
+
+  protected def newUser(username: Option[String]): Result[User] = {
+    val rng = ThreadLocalRandom.current()
+    val user = model.User(
+      id = nextIntId(rng),
+      accessSalt = ACLUtils.nextAccessSalt(rng),
+      name = "",
+      countryCode = "",
+      sex = model.NoSex,
+      state = model.UserState.Registered,
+      createdAt = LocalDateTime.now(ZoneOffset.UTC),
+      external = None,
+      nickname = username
+    )
+    point(user)
   }
 
   private def cleanupAndError(transactionHash: String, error: RpcError): Result[Unit] = {
