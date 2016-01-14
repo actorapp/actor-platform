@@ -9,7 +9,7 @@ import '../workers'
 import RouterContainer from '../utils/RouterContainer';
 import DelegateContainer from '../utils/DelegateContainer';
 import SDKDelegate from './actor-sdk-delegate';
-import { endpoints, bugsnagApiKey, mixpanelAPIKey } from '../constants/ActorAppConstants'
+import { endpoints } from '../constants/ActorAppConstants'
 import Pace from 'pace';
 
 import React, { Component, PropTypes } from 'react';
@@ -30,8 +30,6 @@ import Main from '../components/Main.react';
 import DefaultJoinGroup from '../components/JoinGroup.react';
 import DefaultInstall from '../components/Install.react';
 
-import { initBugsnag } from '../utils/Bugsnag';
-import { initMixpanel } from '../utils/Mixpanel';
 import { extendL18n, getIntlData } from '../l18n';
 
 const { DefaultRoute, Route, RouteHandler } = Router;
@@ -85,15 +83,10 @@ class ActorSDK {
   constructor(options = {}) {
 
     this.endpoints = (options.endpoints && options.endpoints.length > 0) ? options.endpoints : endpoints;
-    this.bugsnagApiKey = options.bugsnagApiKey ? options.bugsnagApiKey : bugsnagApiKey;
-    this.mixpanelAPIKey = options.mixpanelAPIKey ? options.mixpanelAPIKey : mixpanelAPIKey;
     this.isExperimental = options.isExperimental ? options.isExperimental : false;
 
     this.delegate = options.delegate ? options.delegate : new SDKDelegate();
     DelegateContainer.set(this.delegate);
-
-    initBugsnag(this.bugsnagApiKey);
-    initMixpanel(this.mixpanelAPIKey);
 
     if (this.delegate.l18n) {
       extendL18n();
