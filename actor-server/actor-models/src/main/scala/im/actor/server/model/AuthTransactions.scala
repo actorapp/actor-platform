@@ -31,7 +31,7 @@ final case class AuthPhoneTransaction(
   deviceInfo:      Array[Byte],
   isChecked:       Boolean               = false,
   deletedAt:       Option[LocalDateTime] = None
-) extends AuthTransactionBase
+) extends AuthTransactionBase with ExpirableCode
 
 /**
  * Model that contains info about email authorization
@@ -48,7 +48,7 @@ final case class AuthEmailTransaction(
   deviceInfo:      Array[Byte],
   isChecked:       Boolean               = false,
   deletedAt:       Option[LocalDateTime] = None
-) extends AuthTransactionBase
+) extends AuthTransactionBase with ExpirableCode
 
 /**
  * Model that contains info about username authorization
@@ -66,6 +66,21 @@ final case class AuthUsernameTransaction(
   isChecked:       Boolean               = false,
   deletedAt:       Option[LocalDateTime] = None
 ) extends AuthTransactionBase
+
+final case class AuthAnonymousTransaction(
+  username:        String,
+  transactionHash: String,
+  appId:           Int,
+  apiKey:          String,
+  deviceHash:      Array[Byte],
+  deviceTitle:     String,
+  accessSalt:      String,
+  deviceInfo:      Array[Byte],
+  isChecked:       Boolean               = false,
+  deletedAt:       Option[LocalDateTime] = None
+) extends AuthTransactionBase
+
+sealed trait ExpirableCode
 
 sealed trait AuthTransactionBase {
   def transactionHash: String
