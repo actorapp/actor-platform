@@ -20,6 +20,8 @@
     "url": "https://github.com/actorapp/actor-platform/issues"
   },
   "scripts": {
+    "heal": "npm install -g babel-cli webpack node-sass gulp eslint",
+
     "clean": "$(npm bin)/rimraf build && $(npm bin)/rimraf publish",
     "lint": "$(npm bin)/eslint src",
 
