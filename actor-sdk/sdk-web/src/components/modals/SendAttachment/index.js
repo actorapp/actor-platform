@@ -2,4 +2,6 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-export default './Modal.react';
+import SendAttachmentModal from './Modal.react';
+
+export default SendAttachmentModal;
