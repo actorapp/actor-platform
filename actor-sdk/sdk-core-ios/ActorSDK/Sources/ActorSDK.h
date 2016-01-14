@@ -36,6 +36,9 @@ FOUNDATION_EXPORT const unsigned char ActorSDKVersionString[];
 
 #import "SLKTextViewController.h"
 
+#import "NYTPhotosViewController.h"
+#import "NYTPhoto.h"
+
 #import "AAAudioRecorder.h"
 #import "AAAudioPlayer.h"
 #import "AAModernConversationAudioPlayer.h"
