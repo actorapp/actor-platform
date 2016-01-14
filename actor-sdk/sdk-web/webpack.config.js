@@ -2,10 +2,21 @@ import path from 'path';
 import webpack from 'webpack';
 
 export default {
-  devtool: 'source-map',
+  cache: true,
+  debug: true,
+  devtool: 'inline-source-map',
+  hotComponents: true,
   entry: {
-    app: ['./src/index.js'],
-    styles: ['./src/styles.js']
+    app: [
+      'webpack-dev-server/client?http://localhost:3000',
+      'webpack/hot/dev-server',
+      './devapp/index.js'
+    ],
+    styles: [
+      'webpack-dev-server/client?http://localhost:3000',
+      'webpack/hot/dev-server',
+      './devapp/styles.js'
+    ]
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -28,23 +39,22 @@ export default {
       test: /\.js$/,
       loaders: ['eslint'],
       include: [path.resolve(__dirname, 'src')]
-    }, {
-      test: /\.js$/,
-      loaders: ['source-map'],
-      include: [path.resolve(__dirname, 'node_modules/actor-sdk')],
-      exclude: /(node_modules)/
     }],
     loaders: [{
       test: /\.(scss|css)$/,
       loaders: [
+        'react-hot',
         'style',
         'css',
         'autoprefixer?browsers=last 3 versions',
-        'sass?outputStyle=compressed&includePaths[]=' + path.resolve(__dirname, 'node_modules')
+        'sass?outputStyle=expanded&includePaths[]=' + path.resolve(__dirname, 'node_modules')
       ]
     }, {
       test: /\.js$/,
-      loaders: ['babel'],
+      loaders: [
+        'react-hot',
+        'babel?cacheDirectory=true'
+      ],
       exclude: /(node_modules)/
     }, {
       test: /\.json$/,
@@ -63,18 +73,13 @@ export default {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('production')
+        'NODE_ENV': JSON.stringify('development')
       }
     }),
     new webpack.ResolverPlugin([
       new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main'])
-    ]),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false
-      }
-    })
+    ], ['context']),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin()
   ]
 };
