@@ -26,6 +26,7 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webactions.WebactionsServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
+import im.actor.server.api.rpc.service.webrtc.WebrtcServiceImpl
 import im.actor.server.bot.{ BotExtension, ActorBot }
 import im.actor.server.cli.ActorCliService
 import im.actor.server.db.DbExtension
@@ -231,6 +232,9 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       system.log.debug("Starting FeaturesServiceImpl")
       val featuresService = new FeaturesServiceImpl
 
+      system.log.debug("Starting WebrtcServiceImpl")
+      val webrtcService = new WebrtcServiceImpl()
+
       val services = Seq(
         authService,
         contactsService,
@@ -248,7 +252,8 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
         webactionsService,
         deviceService,
         stickerService,
-        featuresService
+        featuresService,
+        webrtcService
       )
 
       system.log.warning("Starting BotExtension")
