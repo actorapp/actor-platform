@@ -46,8 +46,8 @@ public class ActorTrace implements TraceInterface {
 
     @Override
     public void onActorDie(ActorRef ref, Envelope envelope, Exception e) {
-        Log.w(TAG, "Die(" + ref.getPath() + ") by " + envelope.getMessage());
-        //Log.e(TAG, e);
-        e.printStackTrace();
+        Log.w(TAG, "Die(" + ref.getPath() + ") by " + envelope.getMessage() + " with " + e.getMessage());
+        Log.e(TAG, e);
+        // e.printStackTrace();
     }
 }
