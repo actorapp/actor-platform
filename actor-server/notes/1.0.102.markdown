@@ -1,0 +1,4 @@
+Features
+---
+
+* Anonymous auth by username
