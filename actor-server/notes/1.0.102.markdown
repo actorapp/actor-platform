@@ -1,4 +1,3 @@
-Features
----
 
-* Anonymous auth by username
+* :shipit: Anonymous auth by username 
+* :bug: Memory leak 
