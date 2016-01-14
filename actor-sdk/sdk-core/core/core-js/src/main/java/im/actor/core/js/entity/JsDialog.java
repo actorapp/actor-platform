@@ -44,7 +44,7 @@ public class JsDialog extends JavaScriptObject {
             String messageText = messenger.getFormatter().formatContentText(src.getSenderId(),
                     src.getMessageType(), src.getText(), src.getRelatedUid());
 
-            JsPeerInfo peerInfo = JsPeerInfo.create(JsPeer.create(src.getPeer()), src.getDialogTitle(), fileUrl,
+            JsPeerInfo peerInfo = JsPeerInfo.create(JsPeer.create(src.getPeer()), src.getDialogTitle(), null, fileUrl,
                     Placeholders.getPlaceholder(src.getPeer().getPeerId()));
 
             return JsDialog.create(
