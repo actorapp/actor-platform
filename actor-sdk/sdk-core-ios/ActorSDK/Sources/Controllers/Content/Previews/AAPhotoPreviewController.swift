@@ -115,7 +115,7 @@ public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewCon
         }
     }
     
-    public func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
+    public func photosViewController(photosViewController: NYTPhotosViewController, referenceViewForPhoto photo: NYTPhoto) -> UIView? {
         return self.fromView
     }
     

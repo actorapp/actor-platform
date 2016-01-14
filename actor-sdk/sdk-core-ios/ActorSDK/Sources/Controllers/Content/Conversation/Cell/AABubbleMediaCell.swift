@@ -291,11 +291,11 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     
     // Photo preview
     
-    public func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
+    public func photosViewController(photosViewController: NYTPhotosViewController, referenceViewForPhoto photo: NYTPhoto) -> UIView? {
         return self.preview
     }
     
-    public func photosViewControllerWillDismiss(photosViewController: NYTPhotosViewController!) {
+    public func photosViewControllerWillDismiss(photosViewController: NYTPhotosViewController) {
         // (UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
         UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
     }
