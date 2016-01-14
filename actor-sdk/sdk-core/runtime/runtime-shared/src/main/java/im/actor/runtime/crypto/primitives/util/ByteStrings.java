@@ -52,7 +52,7 @@ public class ByteStrings {
         long res2 = (b1) + (b2 << 8) + (b3 << 16) + (b4 << 24);
         offset += 4;
 
-        return res2 + (res1 << 32);
+        return (res2 + (res1 << 32)) & 0xFFFFFFFFFFFFFFFFL;
     }
 
     public static int bytesToInt(byte[] data) {
@@ -65,7 +65,7 @@ public class ByteStrings {
         int a3 = data[offset + 1] & 0xFF;
         int a4 = data[offset + 0] & 0xFF;
 
-        return (a1) + (a2 << 8) + (a3 << 16) + (a4 << 24);
+        return ((a1) + (a2 << 8) + (a3 << 16) + (a4 << 24)) & 0xFFFFFFFF;
     }
 
     public static byte[] substring(byte[] data, int offset, int size) {

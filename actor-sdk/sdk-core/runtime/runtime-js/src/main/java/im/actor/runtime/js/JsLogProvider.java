@@ -30,7 +30,7 @@ public class JsLogProvider implements LogRuntime {
             stackTrace += element + "\n";
         }
 
-        error(formatTime() + "[E] " + tag + ":" + throwable + "\n" + stackTrace);
+        error(formatTime() + "[E] " + tag + ":" + throwable.getMessage() + "\n" + stackTrace);
     }
 
     @Override

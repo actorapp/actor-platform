@@ -24,7 +24,7 @@ public class Int512 {
     public void setBytes(byte[] value) {
         this.value = new byte[64];
         for (int i = 0; i < 64; i++) {
-            this.value[i] = value[i];
+            this.value[i] = (byte) (value[i] & 0xFF);
         }
     }
 
@@ -37,7 +37,7 @@ public class Int512 {
     }
 
     public int getWord16(int index) {
-        return (value[index * 2] & 0xFF) + ((value[index * 2 + 1] & 0xFF) << 8);
+        return (value[index * 2] & 0xFF) + (((value[index * 2 + 1] & 0xFF) << 8) & 0xFFFF);
     }
 
     public void setWord16(int index, int val) {
