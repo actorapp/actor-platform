@@ -34,19 +34,19 @@ object UpdatesConsumerMessage {
   case object SubscribeToSeq extends UpdatesConsumerMessage
 
   @SerialVersionUID(1L)
-  case object SubscribeToWeak extends UpdatesConsumerMessage
+  final case class SubscribeToWeak(group: Option[String]) extends UpdatesConsumerMessage
 
   @SerialVersionUID(1L)
-  case class SubscribeToUserPresences(userIds: Set[Int]) extends UpdatesConsumerMessage
+  final case class SubscribeToUserPresences(userIds: Set[Int]) extends UpdatesConsumerMessage
 
   @SerialVersionUID(1L)
-  case class UnsubscribeFromUserPresences(userIds: Set[Int]) extends UpdatesConsumerMessage
+  final case class UnsubscribeFromUserPresences(userIds: Set[Int]) extends UpdatesConsumerMessage
 
   @SerialVersionUID(1L)
-  case class SubscribeToGroupPresences(groupIds: Set[Int]) extends UpdatesConsumerMessage
+  final case class SubscribeToGroupPresences(groupIds: Set[Int]) extends UpdatesConsumerMessage
 
   @SerialVersionUID(1L)
-  case class UnsubscribeFromGroupPresences(groupIds: Set[Int]) extends UpdatesConsumerMessage
+  final case class UnsubscribeFromGroupPresences(groupIds: Set[Int]) extends UpdatesConsumerMessage
 
 }
 
@@ -73,7 +73,7 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
   private var subscribedToSeq: Boolean = false
 
   override def preStart(): Unit = {
-    self ! SubscribeToWeak
+    self ! SubscribeToWeak(None)
   }
 
   def receive = {
@@ -94,11 +94,17 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
 
         seqUpdExt.subscribe(userId, self) pipeTo self
       }
-    case SubscribeToWeak ⇒
+    case SubscribeToWeak(None) ⇒
       weakUpdatesExt.subscribe(authId, self, None) onFailure {
         case e ⇒
-          self ! SubscribeToWeak
+          self ! SubscribeToWeak(None)
           log.error(e, "Failed to subscribe to weak updates")
+      }
+    case SubscribeToWeak(Some(group)) ⇒
+      weakUpdatesExt.subscribe(authId, self, Some(group)) onFailure {
+        case e ⇒
+          self ! SubscribeToWeak(Some(group))
+          log.error(e, "Failed to subscribe to weak updates, group: {}", group)
       }
     case cmd @ SubscribeToUserPresences(userIds) ⇒
       userIds foreach { userId ⇒
