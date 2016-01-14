@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import NYTPhotoViewer
 import VBFPopFlatButton
 
 public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate {

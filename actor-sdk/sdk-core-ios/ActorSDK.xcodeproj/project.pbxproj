@@ -199,15 +199,6 @@
 		152AA8B91C2989270030DEEE /* UIView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8A51C2989270030DEEE /* UIView+SLKAdditions.m */; };
 		152AA8BD1C298BF00030DEEE /* AASettingsSessionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8BC1C298BF00030DEEE /* AASettingsSessionsController.swift */; };
 		152AA8BF1C298C4B0030DEEE /* AASettingsLastSeenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8BE1C298C4B0030DEEE /* AASettingsLastSeenController.swift */; };
-		153F6B4D1C2B03D600C0B960 /* FBShimmering.h in Headers */ = {isa = PBXBuildFile; fileRef = 153F6B481C2B03D600C0B960 /* FBShimmering.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		153F6B4E1C2B03D600C0B960 /* FBShimmeringLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 153F6B491C2B03D600C0B960 /* FBShimmeringLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		153F6B4F1C2B03D600C0B960 /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B4A1C2B03D600C0B960 /* FBShimmeringLayer.m */; };
-		153F6B501C2B03D600C0B960 /* FBShimmeringView.h in Headers */ = {isa = PBXBuildFile; fileRef = 153F6B4B1C2B03D600C0B960 /* FBShimmeringView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		153F6B511C2B03D600C0B960 /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B4C1C2B03D600C0B960 /* FBShimmeringView.m */; };
-		153F6B561C2B03E300C0B960 /* AASlideView.h in Headers */ = {isa = PBXBuildFile; fileRef = 153F6B521C2B03E300C0B960 /* AASlideView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		153F6B571C2B03E300C0B960 /* AASlideView.m in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B531C2B03E300C0B960 /* AASlideView.m */; };
-		153F6B581C2B03E300C0B960 /* AAGarbageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 153F6B541C2B03E300C0B960 /* AAGarbageView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		153F6B591C2B03E300C0B960 /* AAGarbageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B551C2B03E300C0B960 /* AAGarbageView.m */; };
 		153F6B5B1C2B109400C0B960 /* AABubbleVoiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B5A1C2B109400C0B960 /* AABubbleVoiceCell.swift */; };
 		153F6B5D1C2B3AC500C0B960 /* AABubbleStickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B5C1C2B3AC500C0B960 /* AABubbleStickerCell.swift */; };
 		153F6B611C2BF8EC00C0B960 /* AAAuthWelcomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */; };
@@ -273,6 +264,36 @@
 		BE2621571C4656D700A817AB /* AAConvActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2621561C4656D700A817AB /* AAConvActionSheet.swift */; };
 		BE2621591C4656EE00A817AB /* AAThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2621581C4656EE00A817AB /* AAThumbnailView.swift */; };
 		BEAC2B311C42D683007F7A2F /* libopus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15F89F001C211FDE00776ACD /* libopus.a */; };
+		BED5A1D71C4839590045FDB0 /* NYTPhotoViewerCloseButtonX.png in Resources */ = {isa = PBXBuildFile; fileRef = BED5A1D11C4839590045FDB0 /* NYTPhotoViewerCloseButtonX.png */; };
+		BED5A1D81C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BED5A1D21C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@2x.png */; };
+		BED5A1D91C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BED5A1D31C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@3x.png */; };
+		BED5A1DA1C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape.png in Resources */ = {isa = PBXBuildFile; fileRef = BED5A1D41C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape.png */; };
+		BED5A1DB1C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BED5A1D51C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@2x.png */; };
+		BED5A1DC1C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BED5A1D61C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@3x.png */; };
+		BED5A1F01C48396A0045FDB0 /* NYTPhotoCaptionView.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1DE1C48396A0045FDB0 /* NYTPhotoCaptionView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A1F11C48396A0045FDB0 /* NYTPhotoCaptionView.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1DF1C48396A0045FDB0 /* NYTPhotoCaptionView.m */; };
+		BED5A1F21C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1E01C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A1F31C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1E11C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.m */; };
+		BED5A1F41C48396A0045FDB0 /* NYTPhotosDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1E21C48396A0045FDB0 /* NYTPhotosDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A1F51C48396A0045FDB0 /* NYTPhotosDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1E31C48396A0045FDB0 /* NYTPhotosDataSource.m */; };
+		BED5A1F61C48396A0045FDB0 /* NYTPhotosOverlayView.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1E41C48396A0045FDB0 /* NYTPhotosOverlayView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A1F71C48396A0045FDB0 /* NYTPhotosOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1E51C48396A0045FDB0 /* NYTPhotosOverlayView.m */; };
+		BED5A1F81C48396A0045FDB0 /* NYTPhotosViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1E61C48396A0045FDB0 /* NYTPhotosViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A1F91C48396A0045FDB0 /* NYTPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1E71C48396A0045FDB0 /* NYTPhotosViewController.m */; };
+		BED5A1FA1C48396A0045FDB0 /* NYTPhotoTransitionAnimator.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1E81C48396A0045FDB0 /* NYTPhotoTransitionAnimator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A1FB1C48396A0045FDB0 /* NYTPhotoTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1E91C48396A0045FDB0 /* NYTPhotoTransitionAnimator.m */; };
+		BED5A1FC1C48396A0045FDB0 /* NYTPhotoTransitionController.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1EA1C48396A0045FDB0 /* NYTPhotoTransitionController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A1FD1C48396A0045FDB0 /* NYTPhotoTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1EB1C48396A0045FDB0 /* NYTPhotoTransitionController.m */; };
+		BED5A1FE1C48396A0045FDB0 /* NYTPhotoViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1EC1C48396A0045FDB0 /* NYTPhotoViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A1FF1C48396A0045FDB0 /* NYTPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1ED1C48396A0045FDB0 /* NYTPhotoViewController.m */; };
+		BED5A2001C48396A0045FDB0 /* NYTScalingImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1EE1C48396A0045FDB0 /* NYTScalingImageView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A2011C48396A0045FDB0 /* NYTScalingImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1EF1C48396A0045FDB0 /* NYTScalingImageView.m */; };
+		BED5A2071C4839790045FDB0 /* NYTPhoto.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2031C4839790045FDB0 /* NYTPhoto.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A2081C4839790045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2041C4839790045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A2091C4839790045FDB0 /* NYTPhotoContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2051C4839790045FDB0 /* NYTPhotoContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A20A1C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2061C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A20E1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A20C1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A20F1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A20D1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m */; };
 		BEF11DB61C466D800076400A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153F6B3C1C2A9B1900C0B960 /* begin_record.caf */; };
 		BEFE68D51C4657360001F2D6 /* AAThumbnailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */; };
 /* End PBXBuildFile section */
@@ -477,15 +498,6 @@
 		152AA8BC1C298BF00030DEEE /* AASettingsSessionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AASettingsSessionsController.swift; sourceTree = "<group>"; };
 		152AA8BE1C298C4B0030DEEE /* AASettingsLastSeenController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AASettingsLastSeenController.swift; sourceTree = "<group>"; };
 		153F6B3C1C2A9B1900C0B960 /* begin_record.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = begin_record.caf; sourceTree = "<group>"; };
-		153F6B481C2B03D600C0B960 /* FBShimmering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmering.h; sourceTree = "<group>"; };
-		153F6B491C2B03D600C0B960 /* FBShimmeringLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmeringLayer.h; sourceTree = "<group>"; };
-		153F6B4A1C2B03D600C0B960 /* FBShimmeringLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBShimmeringLayer.m; sourceTree = "<group>"; };
-		153F6B4B1C2B03D600C0B960 /* FBShimmeringView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmeringView.h; sourceTree = "<group>"; };
-		153F6B4C1C2B03D600C0B960 /* FBShimmeringView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBShimmeringView.m; sourceTree = "<group>"; };
-		153F6B521C2B03E300C0B960 /* AASlideView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AASlideView.h; sourceTree = "<group>"; };
-		153F6B531C2B03E300C0B960 /* AASlideView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AASlideView.m; sourceTree = "<group>"; };
-		153F6B541C2B03E300C0B960 /* AAGarbageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAGarbageView.h; sourceTree = "<group>"; };
-		153F6B551C2B03E300C0B960 /* AAGarbageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAGarbageView.m; sourceTree = "<group>"; };
 		153F6B5A1C2B109400C0B960 /* AABubbleVoiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleVoiceCell.swift; sourceTree = "<group>"; };
 		153F6B5C1C2B3AC500C0B960 /* AABubbleStickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleStickerCell.swift; sourceTree = "<group>"; };
 		153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthWelcomeController.swift; sourceTree = "<group>"; };
@@ -554,6 +566,36 @@
 		BE237C9C1C422FFA00060648 /* AAStickersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAStickersView.swift; sourceTree = "<group>"; };
 		BE2621561C4656D700A817AB /* AAConvActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAConvActionSheet.swift; sourceTree = "<group>"; };
 		BE2621581C4656EE00A817AB /* AAThumbnailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailView.swift; sourceTree = "<group>"; };
+		BED5A1D11C4839590045FDB0 /* NYTPhotoViewerCloseButtonX.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NYTPhotoViewerCloseButtonX.png; sourceTree = "<group>"; };
+		BED5A1D21C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NYTPhotoViewerCloseButtonX@2x.png"; sourceTree = "<group>"; };
+		BED5A1D31C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NYTPhotoViewerCloseButtonX@3x.png"; sourceTree = "<group>"; };
+		BED5A1D41C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NYTPhotoViewerCloseButtonXLandscape.png; sourceTree = "<group>"; };
+		BED5A1D51C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NYTPhotoViewerCloseButtonXLandscape@2x.png"; sourceTree = "<group>"; };
+		BED5A1D61C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NYTPhotoViewerCloseButtonXLandscape@3x.png"; sourceTree = "<group>"; };
+		BED5A1DE1C48396A0045FDB0 /* NYTPhotoCaptionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotoCaptionView.h; sourceTree = "<group>"; };
+		BED5A1DF1C48396A0045FDB0 /* NYTPhotoCaptionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYTPhotoCaptionView.m; sourceTree = "<group>"; };
+		BED5A1E01C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotoDismissalInteractionController.h; sourceTree = "<group>"; };
+		BED5A1E11C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYTPhotoDismissalInteractionController.m; sourceTree = "<group>"; };
+		BED5A1E21C48396A0045FDB0 /* NYTPhotosDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotosDataSource.h; sourceTree = "<group>"; };
+		BED5A1E31C48396A0045FDB0 /* NYTPhotosDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYTPhotosDataSource.m; sourceTree = "<group>"; };
+		BED5A1E41C48396A0045FDB0 /* NYTPhotosOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotosOverlayView.h; sourceTree = "<group>"; };
+		BED5A1E51C48396A0045FDB0 /* NYTPhotosOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYTPhotosOverlayView.m; sourceTree = "<group>"; };
+		BED5A1E61C48396A0045FDB0 /* NYTPhotosViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotosViewController.h; sourceTree = "<group>"; };
+		BED5A1E71C48396A0045FDB0 /* NYTPhotosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYTPhotosViewController.m; sourceTree = "<group>"; };
+		BED5A1E81C48396A0045FDB0 /* NYTPhotoTransitionAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotoTransitionAnimator.h; sourceTree = "<group>"; };
+		BED5A1E91C48396A0045FDB0 /* NYTPhotoTransitionAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYTPhotoTransitionAnimator.m; sourceTree = "<group>"; };
+		BED5A1EA1C48396A0045FDB0 /* NYTPhotoTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotoTransitionController.h; sourceTree = "<group>"; };
+		BED5A1EB1C48396A0045FDB0 /* NYTPhotoTransitionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYTPhotoTransitionController.m; sourceTree = "<group>"; };
+		BED5A1EC1C48396A0045FDB0 /* NYTPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotoViewController.h; sourceTree = "<group>"; };
+		BED5A1ED1C48396A0045FDB0 /* NYTPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYTPhotoViewController.m; sourceTree = "<group>"; };
+		BED5A1EE1C48396A0045FDB0 /* NYTScalingImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTScalingImageView.h; sourceTree = "<group>"; };
+		BED5A1EF1C48396A0045FDB0 /* NYTScalingImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYTScalingImageView.m; sourceTree = "<group>"; };
+		BED5A2031C4839790045FDB0 /* NYTPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhoto.h; sourceTree = "<group>"; };
+		BED5A2041C4839790045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotoCaptionViewLayoutWidthHinting.h; sourceTree = "<group>"; };
+		BED5A2051C4839790045FDB0 /* NYTPhotoContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotoContainer.h; sourceTree = "<group>"; };
+		BED5A2061C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotosViewControllerDataSource.h; sourceTree = "<group>"; };
+		BED5A20C1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+NYTPhotoViewer.h"; sourceTree = "<group>"; };
+		BED5A20D1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+NYTPhotoViewer.m"; sourceTree = "<group>"; };
 		BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailCollectionCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1109,6 +1151,7 @@
 		152AA8901C29887A0030DEEE /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				BED5A1CF1C4839200045FDB0 /* NYTPhotoViewer */,
 				152AA8911C29891B0030DEEE /* SlackTextViewController */,
 				153F6B871C2D7B9700C0B960 /* TapedLabel */,
 			);
@@ -1146,15 +1189,6 @@
 		153F6B471C2B03A400C0B960 /* Ext */ = {
 			isa = PBXGroup;
 			children = (
-				153F6B541C2B03E300C0B960 /* AAGarbageView.h */,
-				153F6B551C2B03E300C0B960 /* AAGarbageView.m */,
-				153F6B521C2B03E300C0B960 /* AASlideView.h */,
-				153F6B531C2B03E300C0B960 /* AASlideView.m */,
-				153F6B481C2B03D600C0B960 /* FBShimmering.h */,
-				153F6B491C2B03D600C0B960 /* FBShimmeringLayer.h */,
-				153F6B4A1C2B03D600C0B960 /* FBShimmeringLayer.m */,
-				153F6B4B1C2B03D600C0B960 /* FBShimmeringView.h */,
-				153F6B4C1C2B03D600C0B960 /* FBShimmeringView.m */,
 			);
 			path = Ext;
 			sourceTree = "<group>";
@@ -1322,6 +1356,75 @@
 			name = Manager;
 			sourceTree = "<group>";
 		};
+		BED5A1CF1C4839200045FDB0 /* NYTPhotoViewer */ = {
+			isa = PBXGroup;
+			children = (
+				BED5A1DD1C4839610045FDB0 /* Classes */,
+				BED5A1D01C4839510045FDB0 /* Assets */,
+			);
+			name = NYTPhotoViewer;
+			sourceTree = "<group>";
+		};
+		BED5A1D01C4839510045FDB0 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				BED5A1D11C4839590045FDB0 /* NYTPhotoViewerCloseButtonX.png */,
+				BED5A1D21C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@2x.png */,
+				BED5A1D31C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@3x.png */,
+				BED5A1D41C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape.png */,
+				BED5A1D51C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@2x.png */,
+				BED5A1D61C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@3x.png */,
+			);
+			name = Assets;
+			sourceTree = "<group>";
+		};
+		BED5A1DD1C4839610045FDB0 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				BED5A20B1C48397F0045FDB0 /* ResourseLoading */,
+				BED5A2021C4839710045FDB0 /* Protocols */,
+				BED5A1DE1C48396A0045FDB0 /* NYTPhotoCaptionView.h */,
+				BED5A1DF1C48396A0045FDB0 /* NYTPhotoCaptionView.m */,
+				BED5A1E01C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.h */,
+				BED5A1E11C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.m */,
+				BED5A1E21C48396A0045FDB0 /* NYTPhotosDataSource.h */,
+				BED5A1E31C48396A0045FDB0 /* NYTPhotosDataSource.m */,
+				BED5A1E41C48396A0045FDB0 /* NYTPhotosOverlayView.h */,
+				BED5A1E51C48396A0045FDB0 /* NYTPhotosOverlayView.m */,
+				BED5A1E61C48396A0045FDB0 /* NYTPhotosViewController.h */,
+				BED5A1E71C48396A0045FDB0 /* NYTPhotosViewController.m */,
+				BED5A1E81C48396A0045FDB0 /* NYTPhotoTransitionAnimator.h */,
+				BED5A1E91C48396A0045FDB0 /* NYTPhotoTransitionAnimator.m */,
+				BED5A1EA1C48396A0045FDB0 /* NYTPhotoTransitionController.h */,
+				BED5A1EB1C48396A0045FDB0 /* NYTPhotoTransitionController.m */,
+				BED5A1EC1C48396A0045FDB0 /* NYTPhotoViewController.h */,
+				BED5A1ED1C48396A0045FDB0 /* NYTPhotoViewController.m */,
+				BED5A1EE1C48396A0045FDB0 /* NYTScalingImageView.h */,
+				BED5A1EF1C48396A0045FDB0 /* NYTScalingImageView.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		BED5A2021C4839710045FDB0 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				BED5A2031C4839790045FDB0 /* NYTPhoto.h */,
+				BED5A2041C4839790045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h */,
+				BED5A2051C4839790045FDB0 /* NYTPhotoContainer.h */,
+				BED5A2061C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
+		BED5A20B1C48397F0045FDB0 /* ResourseLoading */ = {
+			isa = PBXGroup;
+			children = (
+				BED5A20C1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.h */,
+				BED5A20D1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m */,
+			);
+			name = ResourseLoading;
+			sourceTree = "<group>";
+		};
 		FB42EA44E242A3F8E680012E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1352,7 +1455,6 @@
 				066A517C1BC4C373000E606E /* FMDatabase+Private.h in Headers */,
 				15D35F5B1C20187E00E3717A /* AAAudioPlayer.h in Headers */,
 				152AA8B11C2989270030DEEE /* SLKTypingIndicatorView.h in Headers */,
-				153F6B4D1C2B03D600C0B960 /* FBShimmering.h in Headers */,
 				152AA8A81C2989270030DEEE /* SLKTextInputbar.h in Headers */,
 				066A52731BC5101A000E606E /* ABPhoneField.h in Headers */,
 				152AA8AA1C2989270030DEEE /* SLKTextView.h in Headers */,
@@ -1363,11 +1465,21 @@
 				152AA8B31C2989270030DEEE /* SLKUIConstants.h in Headers */,
 				152AA8B61C2989270030DEEE /* UIScrollView+SLKAdditions.h in Headers */,
 				152AA8B81C2989270030DEEE /* UIView+SLKAdditions.h in Headers */,
-				153F6B561C2B03E300C0B960 /* AASlideView.h in Headers */,
-				153F6B501C2B03D600C0B960 /* FBShimmeringView.h in Headers */,
-				153F6B581C2B03E300C0B960 /* AAGarbageView.h in Headers */,
-				153F6B4E1C2B03D600C0B960 /* FBShimmeringLayer.h in Headers */,
 				152AA8B41C2989270030DEEE /* UIResponder+SLKAdditions.h in Headers */,
+				BED5A1FE1C48396A0045FDB0 /* NYTPhotoViewController.h in Headers */,
+				BED5A1F81C48396A0045FDB0 /* NYTPhotosViewController.h in Headers */,
+				BED5A2001C48396A0045FDB0 /* NYTScalingImageView.h in Headers */,
+				BED5A2071C4839790045FDB0 /* NYTPhoto.h in Headers */,
+				BED5A1F21C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.h in Headers */,
+				BED5A20E1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.h in Headers */,
+				BED5A1F01C48396A0045FDB0 /* NYTPhotoCaptionView.h in Headers */,
+				BED5A1FA1C48396A0045FDB0 /* NYTPhotoTransitionAnimator.h in Headers */,
+				BED5A1F41C48396A0045FDB0 /* NYTPhotosDataSource.h in Headers */,
+				BED5A1F61C48396A0045FDB0 /* NYTPhotosOverlayView.h in Headers */,
+				BED5A2081C4839790045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h in Headers */,
+				BED5A2091C4839790045FDB0 /* NYTPhotoContainer.h in Headers */,
+				BED5A1FC1C48396A0045FDB0 /* NYTPhotoTransitionController.h in Headers */,
+				BED5A20A1C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h in Headers */,
 				15D35F571C20187E00E3717A /* AAAudioRecorder.h in Headers */,
 				15D35F641C20187E00E3717A /* AAModernConversationAudioPlayerContext.h in Headers */,
 				15D35F681C20187E00E3717A /* AAModernViewInlineMediaContext.h in Headers */,
@@ -1465,9 +1577,13 @@
 			files = (
 				06230F451BC95C0E00A4807B /* ABPhoneFieldCodes.txt in Resources */,
 				0630741B1BD68E370053DEAF /* bg_1_preview.jpg in Resources */,
+				BED5A1D91C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@3x.png in Resources */,
+				BED5A1D81C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@2x.png in Resources */,
+				BED5A1D71C4839590045FDB0 /* NYTPhotoViewerCloseButtonX.png in Resources */,
 				06230F461BC95C0E00A4807B /* PhoneFormats.dat in Resources */,
 				065975511BC7DD3C00B8C7DF /* highlight-default.min.css in Resources */,
 				0659754B1BC7DBA000B8C7DF /* iapetus.caf in Resources */,
+				BED5A1DC1C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@3x.png in Resources */,
 				0630741A1BD68E370053DEAF /* bg_2_preview.jpg in Resources */,
 				065975221BC7C84E00B8C7DF /* bg_3.jpg in Resources */,
 				065975211BC7C84E00B8C7DF /* bg_1.jpg in Resources */,
@@ -1475,9 +1591,11 @@
 				065975231BC7C84E00B8C7DF /* bg_2.jpg in Resources */,
 				065975521BC7DD3C00B8C7DF /* highlight.min.js in Resources */,
 				065975441BC7D34200B8C7DF /* Localizable.strings in Resources */,
+				BED5A1DB1C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@2x.png in Resources */,
 				0659754C1BC7DBA000B8C7DF /* notification.caf in Resources */,
 				BEF11DB61C466D800076400A /* begin_record.caf in Resources */,
 				063074191BD68E370053DEAF /* bg_3_preview.jpg in Resources */,
+				BED5A1DA1C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1540,8 +1658,10 @@
 				066A52F81BC52B13000E606E /* AAWallpapperSettingsCell.swift in Sources */,
 				BEFE68D51C4657360001F2D6 /* AAThumbnailCollectionCell.swift in Sources */,
 				066A51591BC4C14A000E606E /* AASwiftlyLRU.swift in Sources */,
+				BED5A1FB1C48396A0045FDB0 /* NYTPhotoTransitionAnimator.m in Sources */,
 				15D35F161C20185500E3717A /* diag_range.c in Sources */,
 				066A525E1BC503BB000E606E /* ActorApplicationDelegate.swift in Sources */,
+				BED5A1F91C48396A0045FDB0 /* NYTPhotosViewController.m in Sources */,
 				066A53101BC53317000E606E /* AAWallpapperPreviewController.swift in Sources */,
 				152AA8B91C2989270030DEEE /* UIView+SLKAdditions.m in Sources */,
 				066A52F21BC52B02000E606E /* AASettingsPrivacyViewController.swift in Sources */,
@@ -1550,6 +1670,7 @@
 				066A532E1BC53406000E606E /* AABubbleBaseFileCell.swift in Sources */,
 				066A514A1BC4BCE0000E606E /* Dispatch.swift in Sources */,
 				066A52401BC4EECD000E606E /* AABigPlaceholderView.swift in Sources */,
+				BED5A1F51C48396A0045FDB0 /* NYTPhotosDataSource.m in Sources */,
 				066A52FF1BC52FA9000E606E /* AAGroupMembersController.swift in Sources */,
 				066A53301BC53406000E606E /* AABubbleDocumentCell.swift in Sources */,
 				066A52FD1BC52FA8000E606E /* AAComposeController.swift in Sources */,
@@ -1567,6 +1688,7 @@
 				153F6B5D1C2B3AC500C0B960 /* AABubbleStickerCell.swift in Sources */,
 				15D35F1E1C20185500E3717A /* wav_io.c in Sources */,
 				065974A51BC621F100B8C7DF /* AAAuthNavigationController.swift in Sources */,
+				BED5A1FF1C48396A0045FDB0 /* NYTPhotoViewController.m in Sources */,
 				066A518E1BC4C383000E606E /* iOSNotificationProvider.swift in Sources */,
 				066A52681BC50E7B000E606E /* AAAuthCodeViewController.swift in Sources */,
 				06E7B2541C139B6F0090660C /* AABubbleContactCell.swift in Sources */,
@@ -1584,6 +1706,7 @@
 				066A52741BC5101A000E606E /* ABPhoneField.m in Sources */,
 				153F6B611C2BF8EC00C0B960 /* AAAuthWelcomeController.swift in Sources */,
 				152AA8A91C2989270030DEEE /* SLKTextInputbar.m in Sources */,
+				BED5A1F31C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.m in Sources */,
 				066A53071BC53183000E606E /* AARecentViewController.swift in Sources */,
 				06230F411BC95BD200A4807B /* RMPhoneFormat.m in Sources */,
 				066A52361BC4EEBA000E606E /* AATitledCell.swift in Sources */,
@@ -1602,7 +1725,6 @@
 				066A52D71BC52378000E606E /* AAContactsListContentControllerDelegate.swift in Sources */,
 				066A51241BC4B56D000E606E /* Colors.swift in Sources */,
 				066A53171BC533DD000E606E /* AABubbles.swift in Sources */,
-				153F6B591C2B03E300C0B960 /* AAGarbageView.m in Sources */,
 				153F6B8B1C2D7BA400C0B960 /* AATapLabel.swift in Sources */,
 				066A52081BC4E962000E606E /* Makefile in Sources */,
 				066A53231BC533F5000E606E /* Caches.swift in Sources */,
@@ -1634,7 +1756,6 @@
 				15D35F331C20187200E3717A /* opusfile.c in Sources */,
 				065975391BC7CA7B00B8C7DF /* Bundle.swift in Sources */,
 				15D35F6B1C20187E00E3717A /* AATimerTarget.m in Sources */,
-				153F6B571C2B03E300C0B960 /* AASlideView.m in Sources */,
 				066A53111BC53317000E606E /* AACorePreviewController.swift in Sources */,
 				066A519B1BC4C390000E606E /* FMDBKeyValue.swift in Sources */,
 				15D35F521C20187E00E3717A /* ASQueue.m in Sources */,
@@ -1652,10 +1773,10 @@
 				BE2621591C4656EE00A817AB /* AAThumbnailView.swift in Sources */,
 				066A52561BC4EF61000E606E /* AATableViewController.swift in Sources */,
 				152AA8AB1C2989270030DEEE /* SLKTextView.m in Sources */,
-				153F6B511C2B03D600C0B960 /* FBShimmeringView.m in Sources */,
 				066A52D61BC52378000E606E /* AAContactsListContentController.swift in Sources */,
 				065975021BC7534100B8C7DF /* FMDBBridge.swift in Sources */,
 				15D35F351C20187200E3717A /* stream.c in Sources */,
+				BED5A1F71C48396A0045FDB0 /* NYTPhotosOverlayView.m in Sources */,
 				066A519E1BC4C390000E606E /* FMDBExtensions.swift in Sources */,
 				066A52E61BC52A20000E606E /* AAAddParticipantViewController.swift in Sources */,
 				066A52C81BC521EA000E606E /* AAEditFieldController.swift in Sources */,
@@ -1693,6 +1814,7 @@
 				069CF4CF1BCB909A00C66E12 /* CLToken.m in Sources */,
 				15D35F751C201B6B00E3717A /* AACustomPresentationController.swift in Sources */,
 				066A51441BC4BBAF000E606E /* Strings.swift in Sources */,
+				BED5A2011C48396A0045FDB0 /* NYTScalingImageView.m in Sources */,
 				066A53331BC534F5000E606E /* AAFileTypes.swift in Sources */,
 				066A52FE1BC52FA9000E606E /* AAGroupCreateViewController.swift in Sources */,
 				066A52E71BC52A20000E606E /* AAInviteLinkViewController.swift in Sources */,
@@ -1703,6 +1825,8 @@
 				15D35F761C201B6B00E3717A /* AACustomPresentationAnimationController.swift in Sources */,
 				06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */,
 				06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */,
+				BED5A1F11C48396A0045FDB0 /* NYTPhotoCaptionView.m in Sources */,
+				BED5A20F1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m in Sources */,
 				066A516D1BC4C366000E606E /* ActorCoreExt.swift in Sources */,
 				066A517E1BC4C373000E606E /* FMDatabaseAdditions.m in Sources */,
 				066A519A1BC4C390000E606E /* FMDBList.swift in Sources */,
@@ -1710,7 +1834,7 @@
 				152AA8B51C2989270030DEEE /* UIResponder+SLKAdditions.m in Sources */,
 				066A52EA1BC52A2B000E606E /* AAGroupMemberCell.swift in Sources */,
 				066A52291BC4EEAC000E606E /* ManagedTableExtensions.swift in Sources */,
-				153F6B4F1C2B03D600C0B960 /* FBShimmeringLayer.m in Sources */,
+				BED5A1FD1C48396A0045FDB0 /* NYTPhotoTransitionController.m in Sources */,
 				066A514C1BC4BD05000E606E /* Collections.swift in Sources */,
 				066A526A1BC50E7B000E606E /* AAAuthViewController.swift in Sources */,
 				066A52541BC4EF61000E606E /* AAImagePickerController.swift in Sources */,
