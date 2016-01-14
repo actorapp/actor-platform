@@ -3,10 +3,12 @@ package im.actor.core.modules.internal.calls;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.modules.utils.ModuleActor;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.PoisonPill;
 
 public class CallActor extends ModuleActor {
 
+    public static final String TAG = "CallActor";
     private boolean inited = false;
     private int timeout = 0;
     private boolean alive = false;
@@ -55,8 +57,9 @@ public class CallActor extends ModuleActor {
         if (alive) {
             alive = false;
         } else {
-            context().getCallsModule().endCall(callId);
-            self().send(PoisonPill.INSTANCE);
+            Log.d(TAG, "call probably dead, ignore for now");
+//            context().getCallsModule().endCall(callId);
+//            self().send(PoisonPill.INSTANCE);
         }
     }
 
