@@ -20,6 +20,8 @@ sealed abstract class WebrtcCallError(message: String) extends RuntimeException(
 
 object WebrtcCallErrors {
   object NotAParticipant extends WebrtcCallError("Not participant")
+  object CallNotStarted extends WebrtcCallError("Call not started")
+  object CallAlreadyStarted extends WebrtcCallError("Call already started")
 }
 
 sealed trait WebrtcCallMessage
@@ -72,15 +74,16 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
       becomeStashing(replyTo ⇒ {
         case () ⇒
           replyTo ! CallStarted
-          context become callInProgress(System.currentTimeMillis(), callerUserId, receiverUserId, scheduleEnd(DefaultCallTimeout))
+          context become callInProgress(System.currentTimeMillis(), callerUserId, receiverUserId, scheduleEnd(DefaultCallTimeout), scheduleEnd(DefaultCallTimeout))
           unstashAll()
         case failure: Status.Failure ⇒
           replyTo forward failure
           throw failure.cause
       }, discardOld = true)
+    case _ ⇒ sender() ! Status.Failure(WebrtcCallErrors.CallNotStarted)
   }
 
-  def callInProgress(startTime: Long, callerUserId: Int, receiverUserId: Int, scheduledEnd: Cancellable): Receive = {
+  def callInProgress(startTime: Long, callerUserId: Int, receiverUserId: Int, scheduledEndCaller: Cancellable, scheduledEndReceiver: Cancellable): Receive = {
     def end(): Future[Unit] = {
       val duration = ((System.currentTimeMillis() - startTime) / 1000).toInt
       val update = UpdateCallEnded(id)
@@ -109,25 +112,32 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
 
     {
       case CallInProgress(userId, timeout) ⇒
-        withOrigin(userId) { _ ⇒
-          scheduledEnd.cancel()
-          scheduleEnd(timeout.seconds)
+        withOrigin(userId) { targetUserId ⇒
+          val newReceive =
+            if (userId == receiverUserId) {
+              scheduledEndReceiver.cancel()
+              callInProgress(startTime, callerUserId, receiverUserId, scheduledEndCaller, scheduleEnd(timeout.seconds))
+            } else {
+              scheduledEndCaller.cancel()
+              callInProgress(startTime, callerUserId, receiverUserId, scheduleEnd(timeout.seconds), scheduledEndReceiver)
+            }
+
           val update = UpdateCallInProgress(id, timeout)
 
           (for {
-            _ ← weakUpdExt.broadcastUserWeakUpdate(receiverUserId, update, Some(s"webrtc_call_inprogress_$id"), Some(Webrtc.WeakGroup))
-            _ ← weakUpdExt.broadcastUserWeakUpdate(callerUserId, update, Some(s"webrtc_call_inprogress_$id"), Some(Webrtc.WeakGroup))
+            _ ← weakUpdExt.broadcastUserWeakUpdate(targetUserId, update, Some(s"webrtc_call_inprogress_$id"), Some(Webrtc.WeakGroup))
           } yield ()) pipeTo self
 
           becomeStashing(replyTo ⇒ {
             case () ⇒
-              context.unbecome()
+              context become newReceive
               unstashAll()
               replyTo ! CallInProgressAck
-            case Status.Failure(cause) ⇒
-              end()
+            case failure @ Status.Failure(cause) ⇒
+              replyTo ! failure
               log.error(cause, "Failed to process CallInProgress")
-              throw cause
+              unstashAll()
+              context.unbecome()
           }, discardOld = false)
         }
       case CallSignal(userId, pkg) ⇒
@@ -139,7 +149,8 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
         }
       case EndCall(userId) ⇒
         withOrigin(userId) { _ ⇒
-          scheduledEnd.cancel()
+          scheduledEndReceiver.cancel()
+          scheduledEndCaller.cancel()
           val replyTo = sender()
 
           end() map (_ ⇒ PoisonPill) pipeTo self onComplete {
@@ -149,8 +160,14 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
               log.error(e, "Failed to end call")
           }
         }
+      case _: StartCall ⇒ sender() ! WebrtcCallErrors.CallAlreadyStarted
     }
   }
 
   def scheduleEnd(timeout: FiniteDuration): Cancellable = context.system.scheduler.scheduleOnce(timeout, self, EndCall)
+
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    super.preRestart(reason, message)
+    log.error(reason, "Failure on message: {}", message)
+  }
 }
