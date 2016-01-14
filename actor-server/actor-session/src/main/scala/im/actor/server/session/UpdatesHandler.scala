@@ -49,6 +49,10 @@ private[session] class UpdatesHandler(authId: Long)
           consumer ! UpdatesConsumerMessage.UnsubscribeFromGroupPresences(groupIds.toSet)
         case SubscribeToSeq() ⇒
           consumer ! UpdatesConsumerMessage.SubscribeToSeq
+        case SubscribeToWeak(Some(group)) ⇒
+          consumer ! UpdatesConsumerMessage.SubscribeToWeak(Some(group))
+        case SubscribeToWeak(None) ⇒
+          log.error("Subscribe to weak is done implicitly on UpdatesConsumer start")
       }
     case OnComplete ⇒
       context.stop(self)

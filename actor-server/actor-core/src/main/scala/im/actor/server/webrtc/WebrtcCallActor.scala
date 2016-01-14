@@ -14,6 +14,7 @@ import im.actor.server.sequence.{ WeakUpdatesExtension, SeqUpdatesExtension }
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.util.{ Failure, Success }
 
 sealed abstract class WebrtcCallError(message: String) extends RuntimeException(message)
 
@@ -21,20 +22,23 @@ object WebrtcCallErrors {
   object NotAParticipant extends WebrtcCallError("Not participant")
 }
 
-sealed trait WebrtcCallMessages
+sealed trait WebrtcCallMessage
 
 object WebrtcCallMessages {
-  final case class StartCall(callerUserId: Int, receiverUserId: Int) extends WebrtcCallMessages
+  final case class StartCall(callerUserId: Int, receiverUserId: Int) extends WebrtcCallMessage
   case object CallStarted
 
-  final case class CallInProgress(userId: Int, timeout: Int) extends WebrtcCallMessages
+  final case class CallInProgress(userId: Int, timeout: Int) extends WebrtcCallMessage
+  object CallInProgressAck
 
-  final case class CallSignal(userId: Int, pkg: Array[Byte]) extends WebrtcCallMessages
+  final case class CallSignal(userId: Int, pkg: Array[Byte]) extends WebrtcCallMessage
+  object CallSignalAck
 
-  case class EndCall(userId: Int) extends WebrtcCallMessages
+  final case class EndCall(userId: Int) extends WebrtcCallMessage
+  object EndCallAck
 }
 
-final case class WebrtcCallEnvelope(id: Long, message: WebrtcCallMessages)
+final case class WebrtcCallEnvelope(id: Long, message: WebrtcCallMessage)
 
 object WebrtcCallActor {
   val RegionTypeName = "WebrtcCall"
@@ -119,9 +123,11 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
             case () ⇒
               context.unbecome()
               unstashAll()
-            case failure: Status.Failure ⇒
+              replyTo ! CallInProgressAck
+            case Status.Failure(cause) ⇒
               end()
-              throw failure.cause
+              log.error(cause, "Failed to process CallInProgress")
+              throw cause
           }, discardOld = false)
         }
       case CallSignal(userId, pkg) ⇒
@@ -129,13 +135,18 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
           // TODO: stashing
           val update = UpdateCallSignal(id, pkg)
           weakUpdExt.broadcastUserWeakUpdate(target, update, Some(s"webrtc_call_signal_$id"), Some(Webrtc.WeakGroup))
+          sender() ! CallSignalAck
         }
       case EndCall(userId) ⇒
         withOrigin(userId) { _ ⇒
           scheduledEnd.cancel()
+          val replyTo = sender()
 
-          end() map (_ ⇒ PoisonPill) pipeTo self onFailure {
-            case e ⇒ log.error(e, "Failed to end call")
+          end() map (_ ⇒ PoisonPill) pipeTo self onComplete {
+            case Success(_) ⇒ replyTo ! EndCallAck
+            case Failure(e) ⇒
+              replyTo ! Status.Failure(e)
+              log.error(e, "Failed to end call")
           }
         }
     }
