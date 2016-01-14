@@ -82,7 +82,9 @@ class MessageItem extends Component {
 
   onVisibilityChange = (isVisible) => {
     const { message, onVisibilityChange } = this.props;
-    onVisibilityChange(message, isVisible);
+    if (message.sender.peer.id !== UserStore.getMyId()) {
+      onVisibilityChange(message, isVisible);
+    }
   };
 
   showActions = (event) => {
