@@ -11,6 +11,7 @@ public class CallActor extends ModuleActor {
     private int timeout = 0;
     private boolean alive = false;
     private long callId;
+    private static final long SAFE_TIMEOUT = 100;
     private CallsModule.CallCallback callback;
 
     public CallActor(long callId, CallsModule.CallCallback callback, ModuleContext context) {
@@ -53,7 +54,6 @@ public class CallActor extends ModuleActor {
     public void checkAlive() {
         if (alive) {
             alive = false;
-            self().send(new CheckAlive(), timeout);
         } else {
             context().getCallsModule().endCall(callId);
             self().send(PoisonPill.INSTANCE);
@@ -71,8 +71,9 @@ public class CallActor extends ModuleActor {
         this.timeout = timeout;
         if (!inited) {
             inited = true;
-            self().send(new CheckAlive(), CallsModule.CALL_TIMEOUT);
+            alive = false;
         }
+        self().send(new CheckAlive(), CallsModule.CALL_TIMEOUT + SAFE_TIMEOUT);
     }
 
     public static class EndCall {
