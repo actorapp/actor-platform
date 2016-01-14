@@ -37,7 +37,6 @@ public extension ACCocoaMessenger {
             let path = CocoaFiles.pathFromDescriptor(descriptor);
             
             videoData.writeToFile(path, atomically: true) // write to file
-        
             
             // get video duration
             
@@ -55,8 +54,9 @@ public extension ACCocoaMessenger {
             do {
                 let imageRef = try imageGenerator.copyCGImageAtTime(thumbnailTime, actualTime: nil)
                 let thumbnail = UIImage(CGImage: imageRef)
-                let thumbData = UIImageJPEGRepresentation(thumbnail, 0.55); // thumbnail binary data
-                let fastThumb = ACFastThumb(int: jint(thumbnail.size.width), withInt: jint(thumbnail.size.height), withByteArray: thumbData!.toJavaBytes())
+                let thumb = thumbnail.resizeSquare(90, maxH: 90);
+                let thumbData = UIImageJPEGRepresentation(thumb, 0.55); // thumbnail binary data
+                let fastThumb = ACFastThumb(int: jint(thumb.size.width), withInt: jint(thumb.size.height), withByteArray: thumbData!.toJavaBytes())
                 
                 print("video upload imageRef = \(imageRef)")
                 print("video upload thumbnail = \(thumbnail)")

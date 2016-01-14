@@ -47,12 +47,16 @@ class AAThumbnailCollectionCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        self.imgThumbnails.frame = CGRectMake(0, 0, self.contentView.frame.size.width, self.contentView.frame.size.height)
+        self.imgSelected.frame = CGRectMake(0, 0, self.contentView.frame.size.width, self.contentView.frame.size.height)
+        
         
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        self.imgSelected.image = nil
         
     }
     
