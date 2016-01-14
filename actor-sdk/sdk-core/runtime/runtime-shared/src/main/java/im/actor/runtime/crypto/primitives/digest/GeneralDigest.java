@@ -96,7 +96,7 @@ public abstract class GeneralDigest {
     }
 
     public void finish() {
-        long bitLength = (byteCount << 3);
+        long bitLength = ((byteCount << 3)) & 0xFFFFFFFFFFFFFFFFL;
 
         //
         // add the pad bytes.
