@@ -18,7 +18,7 @@ if (!Cache.prototype.addAll) {
 
     return Promise.resolve().then(function() {
       if (arguments.length < 1) throw new TypeError();
-      
+
       // Simulate sequence<(Request or USVString)> binding:
       var sequence = [];
 
@@ -40,7 +40,7 @@ if (!Cache.prototype.addAll) {
           var scheme = new URL(request.url).protocol;
 
           if (scheme !== 'http:' && scheme !== 'https:') {
-            throw new NetworkError("Invalid scheme");
+            throw new NetworkError('Invalid scheme');
           }
 
           return fetch(request.clone());
