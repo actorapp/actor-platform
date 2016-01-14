@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import NYTPhotoViewer
 
 public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDelegate {
     
@@ -167,6 +166,7 @@ public class PreviewImage {
 class AAPhoto: NSObject, NYTPhoto {
     
     var image: UIImage?
+    var imageData: NSData?
     var placeholderImage: UIImage?
     let attributedCaptionTitle: NSAttributedString?
     let attributedCaptionSummary: NSAttributedString?
@@ -187,4 +187,41 @@ class AAPhoto: NSObject, NYTPhoto {
         self.attributedCaptionSummary = attributedCaptionSummary
         self.attributedCaptionCredit = attributedCaptionCredit
     }
+    
+    
+    /*
+    @available(iOS 2.0, *)
+    public var image: UIImage? { get }
+    
+    /**
+    * The image data to display. This will be preferred over the `image` property.
+    * In case this is empty `image` will be used. The main advantage of using this is animated gif support.
+    */
+    public var imageData: NSData? { get }
+    
+    /**
+    *  A placeholder image for display while the image is loading.
+    */
+    @available(iOS 2.0, *)
+    public var placeholderImage: UIImage? { get }
+    
+    /**
+    *  An attributed string for display as the title of the caption.
+    */
+    @available(iOS 3.2, *)
+    public var attributedCaptionTitle: NSAttributedString? { get }
+    
+    /**
+    *  An attributed string for display as the summary of the caption.
+    */
+    @available(iOS 3.2, *)
+    public var attributedCaptionSummary: NSAttributedString? { get }
+    
+    /**
+    *  An attributed string for display as the credit of the caption.
+    */
+    @available(iOS 3.2, *)
+    public var attributedCaptionCredit: NSAttributedString? { get }
+    */
+    
 }

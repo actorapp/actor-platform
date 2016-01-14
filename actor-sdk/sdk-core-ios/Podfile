@@ -24,7 +24,6 @@ target 'ActorApp' do
     pod 'SDWebImage/WebP'
 
     # Main UI
-    pod 'NYTPhotoViewer'
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
@@ -58,7 +57,6 @@ target 'ActorSDK' do
     pod 'SDWebImage/WebP'
 
     # Main UI
-    pod 'NYTPhotoViewer'
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
