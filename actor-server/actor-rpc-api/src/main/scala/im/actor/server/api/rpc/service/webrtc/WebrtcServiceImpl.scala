@@ -7,9 +7,15 @@ import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.ApiOutPeer
 import im.actor.api.rpc.webrtc.{ ResponseDoCall, WebrtcService }
 import im.actor.server.session._
-import im.actor.server.webrtc.{ WebrtcExtension, Webrtc }
+import im.actor.server.webrtc.{ WebrtcCallErrors, WebrtcExtension, Webrtc }
 
 import scala.concurrent.{ ExecutionContext, Future }
+
+object WebrtcErrors {
+  val CallNotStarted = RpcError(400, "CALL_NOT_STARTED", "Call not started.", canTryAgain = false, None)
+  val CallAlreadyStareted = RpcError(400, "CALL_ALREADY_STARTED", "Call already started", canTryAgain = false, None)
+  val NotAParticipant = RpcError(403, "NOT_A_PARTICIPANT", "Not a participant", canTryAgain = false, None)
+}
 
 final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: SessionRegion) extends WebrtcService {
   import PeerHelpers._
@@ -21,17 +27,21 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
   override def jhandleDoCall(peer: ApiOutPeer, timeout: Int, clientData: ClientData): Future[HandlerResult[ResponseDoCall]] =
     authorized(clientData) { implicit client ⇒
       withOutPeerF(peer) {
-        for {
+        (for {
           callId ← webrtcExt.doCall(client.userId, peer.id)
-        } yield Ok(ResponseDoCall(callId))
+        } yield Ok(ResponseDoCall(callId))) recover {
+          case WebrtcCallErrors.CallAlreadyStarted ⇒ Error(WebrtcErrors.CallAlreadyStareted)
+        }
       }
     }
 
   override def jhandleEndCall(callId: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     authorized(clientData) { client ⇒
-      for {
+      (for {
         _ ← webrtcExt.endCall(client.userId, callId)
-      } yield Ok(ResponseVoid)
+      } yield Ok(ResponseVoid)) recover {
+        case WebrtcCallErrors.CallNotStarted ⇒ Error(WebrtcErrors.CallNotStarted)
+      }
     }
 
   override def jhandleUnsubscribeToCalls(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
