@@ -45,7 +45,6 @@ class Field extends Component {
 
   constructor(props) {
     super(props);
-    //console.debug('Field', props);
   }
 
   render() {
@@ -85,7 +84,6 @@ class Attach extends Component {
 
   constructor(props) {
     super(props);
-    //console.debug('Attach', props);
   }
 
   render() {
@@ -98,7 +96,6 @@ class Attach extends Component {
     const attachmentStyles = {
       borderColor: getColor(paragraphStyle.color) || 'transparent',
       backgroundColor: getColor(paragraphStyle.bgColor) || 'transparent'
-      //color: getColor(paragraphStyle.color) || 'inherit'
     };
 
     const visibleTitle = titleUrl ? <a href={titleUrl}>{title}</a> : {title};
@@ -134,7 +131,6 @@ class TextModern extends Component {
 
   constructor(props) {
     super(props);
-    //console.debug('Modern', props);
   }
 
   render() {
@@ -146,7 +142,6 @@ class TextModern extends Component {
     const modernStyles = {
       borderColor: getColor(paragraphStyle.color) || 'transparent',
       backgroundColor: getColor(paragraphStyle.bgColor) || 'transparent'
-      //color: getColor(paragraphStyle.color) || 'inherit'
     };
 
     const modernAttachments = map(attaches, (attachment, index) => <Attach key={index} {...attachment}/>);
