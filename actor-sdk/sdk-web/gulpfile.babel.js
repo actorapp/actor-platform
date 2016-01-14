@@ -73,8 +73,10 @@ gulp.task('lib', ['lib:build', 'lib:copy']);
 
 gulp.task('sdk', shell.task('npm run build'));
 
-gulp.task('static', ['lib', 'assets', 'workers']);
+gulp.task('static', ['sdk', 'assets', 'workers']);
 
 gulp.task('dev', ['static', 'webpack:dev']);
+
+gulp.task('dev:core', ['lib', 'dev']);
 
 gulp.task('default', ['dev']);
