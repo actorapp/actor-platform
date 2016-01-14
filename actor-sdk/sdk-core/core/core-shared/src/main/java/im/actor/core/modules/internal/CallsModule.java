@@ -32,7 +32,7 @@ public class CallsModule extends AbsModule {
     }
 
 
-    public static final int CALL_TIMEOUT = 5000;
+    public static final int CALL_TIMEOUT = 10;
     public boolean callsEnabled = true;
     HashMap<Long, ActorRef> calls = new HashMap<Long, ActorRef>();
 

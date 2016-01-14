@@ -13,7 +13,6 @@ public class CallActor extends ModuleActor {
     private int timeout = 0;
     private boolean alive = false;
     private long callId;
-    private static final long SAFE_TIMEOUT = 100;
     private CallsModule.CallCallback callback;
 
     public CallActor(long callId, CallsModule.CallCallback callback, ModuleContext context) {
@@ -56,16 +55,17 @@ public class CallActor extends ModuleActor {
     public void checkAlive() {
         if (alive) {
             alive = false;
+            self().send(new CheckAlive(), timeout * 1000);
         } else {
-            Log.d(TAG, "call probably dead, ignore for now");
-//            context().getCallsModule().endCall(callId);
-//            self().send(PoisonPill.INSTANCE);
+            Log.d(TAG, "no call in progress - call is dead");
+            context().getCallsModule().endCall(callId);
+            self().send(PoisonPill.INSTANCE);
         }
     }
 
     private void sendCallInProgress() {
         context().getCallsModule().callInProgress(callId);
-        self().send(new SendCallInProgress(), CallsModule.CALL_TIMEOUT);
+        self().send(new SendCallInProgress(), CallsModule.CALL_TIMEOUT * 1000 / 3);
 
     }
 
@@ -75,8 +75,8 @@ public class CallActor extends ModuleActor {
         if (!inited) {
             inited = true;
             alive = false;
+            self().send(new CheckAlive(), timeout * 1000);
         }
-        self().send(new CheckAlive(), CallsModule.CALL_TIMEOUT + SAFE_TIMEOUT);
     }
 
     public static class EndCall {
