@@ -88,11 +88,6 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.rightButton.enabled = true
         self.rightButton.layoutIfNeeded()
         
-//        self.rightButton.setTitle(AALocalized("ChatSend"), forState: UIControlState.Normal)
-//        self.rightButton.setTitleColor(appStyle.chatSendColor, forState: UIControlState.Normal)
-//        self.rightButton.setTitleColor(appStyle.chatSendDisabledColor, forState: UIControlState.Disabled)
-//        self.rightButton.setImage(nil, forState: UIControlState.Normal)
-        
         //
         
         self.audioButton = UIButton(type: UIButtonType.Custom)
@@ -496,7 +491,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
         
-//        self.actionSheet.showAnimation()
+        //self.actionSheet.showAnimation()
         
         self.rightButton.layoutIfNeeded()
     }
@@ -615,7 +610,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     func pickImage(source: UIImagePickerControllerSourceType) {
         let pickerController = AAImagePickerController()
         pickerController.sourceType = source
-        pickerController.mediaTypes = [kUTTypeImage as String,kUTTypeMovie as String]
+        pickerController.mediaTypes = [kUTTypeImage as String]
+        
+        //[kUTTypeImage as String,kUTTypeMovie as String]
 
 //        // Style controller bg
 //        pickerController.view.backgroundColor = appStyle.vcBgColor
