@@ -202,6 +202,7 @@ public class JsMessenger extends Messenger {
             return JsPeerInfo.create(
                     JsPeer.create(peer),
                     userVM.getName().get(),
+                    userVM.getNick().get(),
                     getSmallAvatarUrl(userVM.getAvatar().get()),
                     Placeholders.getPlaceholder(peer.getPeerId()));
         } else if (peer.getPeerType() == PeerType.GROUP) {
@@ -209,6 +210,7 @@ public class JsMessenger extends Messenger {
             return JsPeerInfo.create(
                     JsPeer.create(peer),
                     groupVM.getName().get(),
+                    null,
                     getSmallAvatarUrl(groupVM.getAvatar().get()),
                     Placeholders.getPlaceholder(peer.getPeerId()));
         } else {
