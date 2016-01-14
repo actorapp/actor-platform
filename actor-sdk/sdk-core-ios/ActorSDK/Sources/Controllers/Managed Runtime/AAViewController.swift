@@ -184,7 +184,7 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         navigationController!.presentViewController(UINavigationController(rootViewController: cropController), animated: true, completion: nil)
     }
     
-    public func imageCropViewController(controller: RSKImageCropViewController!, didCropImage croppedImage: UIImage!, usingCropRect cropRect: CGRect) {
+    public func imageCropViewController(controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect) {
         if (pendingPickClosure != nil){
             pendingPickClosure!(image: croppedImage)
         }
@@ -192,7 +192,7 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    public func imageCropViewControllerDidCancelCrop(controller: RSKImageCropViewController!) {
+    public func imageCropViewControllerDidCancelCrop(controller: RSKImageCropViewController) {
         pendingPickClosure = nil
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
     }

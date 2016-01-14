@@ -177,7 +177,6 @@
 		06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B24B1C0FAB500090660C /* AAMapFastView.swift */; };
 		06E7B2521C1345E70090660C /* AAMapPinPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2511C1345E70090660C /* AAMapPinPointView.swift */; };
 		06E7B2541C139B6F0090660C /* AABubbleContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */; };
-		152AA8A61C2989270030DEEE /* SLKInputAccessoryView.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8921C2989270030DEEE /* SLKInputAccessoryView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8A71C2989270030DEEE /* SLKInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8931C2989270030DEEE /* SLKInputAccessoryView.m */; };
 		152AA8A81C2989270030DEEE /* SLKTextInputbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8941C2989270030DEEE /* SLKTextInputbar.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8A91C2989270030DEEE /* SLKTextInputbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8951C2989270030DEEE /* SLKTextInputbar.m */; };
@@ -191,7 +190,6 @@
 		152AA8B11C2989270030DEEE /* SLKTypingIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89D1C2989270030DEEE /* SLKTypingIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8B21C2989270030DEEE /* SLKTypingIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA89E1C2989270030DEEE /* SLKTypingIndicatorView.m */; };
 		152AA8B31C2989270030DEEE /* SLKUIConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA89F1C2989270030DEEE /* SLKUIConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		152AA8B41C2989270030DEEE /* UIResponder+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8A01C2989270030DEEE /* UIResponder+SLKAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8B51C2989270030DEEE /* UIResponder+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8A11C2989270030DEEE /* UIResponder+SLKAdditions.m */; };
 		152AA8B61C2989270030DEEE /* UIScrollView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 152AA8A21C2989270030DEEE /* UIScrollView+SLKAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		152AA8B71C2989270030DEEE /* UIScrollView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 152AA8A31C2989270030DEEE /* UIScrollView+SLKAdditions.m */; };
@@ -270,30 +268,22 @@
 		BED5A1DA1C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape.png in Resources */ = {isa = PBXBuildFile; fileRef = BED5A1D41C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape.png */; };
 		BED5A1DB1C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BED5A1D51C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@2x.png */; };
 		BED5A1DC1C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BED5A1D61C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@3x.png */; };
-		BED5A1F01C48396A0045FDB0 /* NYTPhotoCaptionView.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1DE1C48396A0045FDB0 /* NYTPhotoCaptionView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A1F11C48396A0045FDB0 /* NYTPhotoCaptionView.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1DF1C48396A0045FDB0 /* NYTPhotoCaptionView.m */; };
-		BED5A1F21C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1E01C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A1F31C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1E11C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.m */; };
-		BED5A1F41C48396A0045FDB0 /* NYTPhotosDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1E21C48396A0045FDB0 /* NYTPhotosDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A1F51C48396A0045FDB0 /* NYTPhotosDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1E31C48396A0045FDB0 /* NYTPhotosDataSource.m */; };
-		BED5A1F61C48396A0045FDB0 /* NYTPhotosOverlayView.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1E41C48396A0045FDB0 /* NYTPhotosOverlayView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A1F71C48396A0045FDB0 /* NYTPhotosOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1E51C48396A0045FDB0 /* NYTPhotosOverlayView.m */; };
 		BED5A1F81C48396A0045FDB0 /* NYTPhotosViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1E61C48396A0045FDB0 /* NYTPhotosViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A1F91C48396A0045FDB0 /* NYTPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1E71C48396A0045FDB0 /* NYTPhotosViewController.m */; };
-		BED5A1FA1C48396A0045FDB0 /* NYTPhotoTransitionAnimator.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1E81C48396A0045FDB0 /* NYTPhotoTransitionAnimator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A1FB1C48396A0045FDB0 /* NYTPhotoTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1E91C48396A0045FDB0 /* NYTPhotoTransitionAnimator.m */; };
-		BED5A1FC1C48396A0045FDB0 /* NYTPhotoTransitionController.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1EA1C48396A0045FDB0 /* NYTPhotoTransitionController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A1FD1C48396A0045FDB0 /* NYTPhotoTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1EB1C48396A0045FDB0 /* NYTPhotoTransitionController.m */; };
 		BED5A1FE1C48396A0045FDB0 /* NYTPhotoViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1EC1C48396A0045FDB0 /* NYTPhotoViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A1FF1C48396A0045FDB0 /* NYTPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1ED1C48396A0045FDB0 /* NYTPhotoViewController.m */; };
-		BED5A2001C48396A0045FDB0 /* NYTScalingImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A1EE1C48396A0045FDB0 /* NYTScalingImageView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A2011C48396A0045FDB0 /* NYTScalingImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A1EF1C48396A0045FDB0 /* NYTScalingImageView.m */; };
 		BED5A2071C4839790045FDB0 /* NYTPhoto.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2031C4839790045FDB0 /* NYTPhoto.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BED5A2081C4839790045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2041C4839790045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BED5A2091C4839790045FDB0 /* NYTPhotoContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2051C4839790045FDB0 /* NYTPhotoContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BED5A20A1C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2061C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BED5A20E1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A20C1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A20F1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = BED5A20D1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m */; };
+		BED5A2111C48413C0045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2041C4839790045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A2121C48413C0045FDB0 /* NYTPhotoContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2051C4839790045FDB0 /* NYTPhotoContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A2131C48413C0045FDB0 /* NYTPhotosViewControllerDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2061C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BEF11DB61C466D800076400A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153F6B3C1C2A9B1900C0B960 /* begin_record.caf */; };
 		BEFE68D51C4657360001F2D6 /* AAThumbnailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */; };
 /* End PBXBuildFile section */
@@ -1460,26 +1450,16 @@
 				152AA8AA1C2989270030DEEE /* SLKTextView.h in Headers */,
 				152AA8B01C2989270030DEEE /* SLKTypingIndicatorProtocol.h in Headers */,
 				152AA8AC1C2989270030DEEE /* SLKTextView+SLKAdditions.h in Headers */,
-				152AA8A61C2989270030DEEE /* SLKInputAccessoryView.h in Headers */,
 				152AA8AE1C2989270030DEEE /* SLKTextViewController.h in Headers */,
 				152AA8B31C2989270030DEEE /* SLKUIConstants.h in Headers */,
 				152AA8B61C2989270030DEEE /* UIScrollView+SLKAdditions.h in Headers */,
+				BED5A2111C48413C0045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h in Headers */,
+				BED5A2121C48413C0045FDB0 /* NYTPhotoContainer.h in Headers */,
+				BED5A2131C48413C0045FDB0 /* NYTPhotosViewControllerDataSource.h in Headers */,
 				152AA8B81C2989270030DEEE /* UIView+SLKAdditions.h in Headers */,
-				152AA8B41C2989270030DEEE /* UIResponder+SLKAdditions.h in Headers */,
 				BED5A1FE1C48396A0045FDB0 /* NYTPhotoViewController.h in Headers */,
 				BED5A1F81C48396A0045FDB0 /* NYTPhotosViewController.h in Headers */,
-				BED5A2001C48396A0045FDB0 /* NYTScalingImageView.h in Headers */,
 				BED5A2071C4839790045FDB0 /* NYTPhoto.h in Headers */,
-				BED5A1F21C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.h in Headers */,
-				BED5A20E1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.h in Headers */,
-				BED5A1F01C48396A0045FDB0 /* NYTPhotoCaptionView.h in Headers */,
-				BED5A1FA1C48396A0045FDB0 /* NYTPhotoTransitionAnimator.h in Headers */,
-				BED5A1F41C48396A0045FDB0 /* NYTPhotosDataSource.h in Headers */,
-				BED5A1F61C48396A0045FDB0 /* NYTPhotosOverlayView.h in Headers */,
-				BED5A2081C4839790045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h in Headers */,
-				BED5A2091C4839790045FDB0 /* NYTPhotoContainer.h in Headers */,
-				BED5A1FC1C48396A0045FDB0 /* NYTPhotoTransitionController.h in Headers */,
-				BED5A20A1C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h in Headers */,
 				15D35F571C20187E00E3717A /* AAAudioRecorder.h in Headers */,
 				15D35F641C20187E00E3717A /* AAModernConversationAudioPlayerContext.h in Headers */,
 				15D35F681C20187E00E3717A /* AAModernViewInlineMediaContext.h in Headers */,
