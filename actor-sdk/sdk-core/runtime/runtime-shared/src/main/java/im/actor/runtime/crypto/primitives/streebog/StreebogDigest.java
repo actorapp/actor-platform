@@ -38,7 +38,7 @@ public class StreebogDigest {
         // j = sbx->pt;
         int j = pt;
         for (int i = 0; i < length; i++) {
-            m.setByte(j--, in[offset + i]);
+            m.setByte(j--, (byte) (in[offset + i] & 0xFF));
 
             // compress
             // if (j < 0) {
@@ -93,7 +93,7 @@ public class StreebogDigest {
             // sbx->e.b[i] = c & 0xFF;
             e.setByte(i, (byte) (c & 0xFF));
             // c >>= 8;
-            c >>= 8;
+            c = c >> 8;
         }
 
         // finalization n
@@ -108,7 +108,7 @@ public class StreebogDigest {
             // sbx->m.b[i] = sbx->n & 0xFF;
             m.setByte(i, (byte) (n & 0xFF));
             // sbx->n >>= 8;
-            n >>= 8;
+            n = n >> 8;
         }
 
         // streebog_g(&sbx->h, &sbx->m, 0);

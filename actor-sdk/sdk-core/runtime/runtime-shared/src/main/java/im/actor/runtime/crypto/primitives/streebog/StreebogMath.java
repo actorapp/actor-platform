@@ -38,7 +38,7 @@ class StreebogMath {
             // t.b[i] ^= n & 0xFF;
             t.setByte(i, (byte) (t.getByte(i) ^ ((byte) (n & 0xFF))));
             // n >>= 8;
-            n >>= 8;
+            n = (n >> 8) & 0xFFFFFFFFFFFFFFFFL;
         }
 
         for (int i = 0; i < 8; i++) {

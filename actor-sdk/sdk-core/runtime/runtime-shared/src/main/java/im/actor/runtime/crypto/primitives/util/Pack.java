@@ -2,11 +2,11 @@ package im.actor.runtime.crypto.primitives.util;
 
 /**
  * Source: Bouncy Castle v1.54
- * <p/>
+ * <p>
  * Refactored by Steve Kite (steve@actor.im)
  */
 public abstract class Pack {
-    
+
     public static int bigEndianToInt(byte[] bs, int off) {
         int n = bs[off] << 24;
         n |= (bs[++off] & 0xff) << 16;
@@ -29,10 +29,10 @@ public abstract class Pack {
     }
 
     public static void intToBigEndian(int n, byte[] bs, int off) {
-        bs[off] = (byte) (n >>> 24);
-        bs[++off] = (byte) (n >>> 16);
-        bs[++off] = (byte) (n >>> 8);
-        bs[++off] = (byte) (n);
+        bs[off] = jsWrap((byte) (n >>> 24));
+        bs[++off] = jsWrap((byte) (n >>> 16));
+        bs[++off] = jsWrap((byte) (n >>> 8));
+        bs[++off] = jsWrap((byte) (n));
     }
 
     public static byte[] intToBigEndian(int[] ns) {
@@ -114,10 +114,10 @@ public abstract class Pack {
     }
 
     public static void intToLittleEndian(int n, byte[] bs, int off) {
-        bs[off] = (byte) (n);
-        bs[++off] = (byte) (n >>> 8);
-        bs[++off] = (byte) (n >>> 16);
-        bs[++off] = (byte) (n >>> 24);
+        bs[off] = jsWrap((byte) (n));
+        bs[++off] = jsWrap((byte) (n >>> 8));
+        bs[++off] = jsWrap((byte) (n >>> 16));
+        bs[++off] = jsWrap((byte) (n >>> 24));
     }
 
     public static byte[] intToLittleEndian(int[] ns) {
@@ -168,5 +168,13 @@ public abstract class Pack {
             longToLittleEndian(ns[i], bs, off);
             off += 8;
         }
+    }
+
+    public static int jsWrap(int val) {
+        return val & 0xFFFFFFFF;
+    }
+
+    public static byte jsWrap(byte val) {
+        return (byte) (val & 0xFF);
     }
 }
