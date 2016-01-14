@@ -4270,6 +4270,74 @@
         {
           "type": "struct",
           "content": {
+            "name": "BinaryMessage",
+            "doc": [
+              "Binary Message. Useful for implementing your own content types",
+              {
+                "type": "reference",
+                "argument": "contentTag",
+                "category": "full",
+                "description": "  Content Tag"
+              },
+              {
+                "type": "reference",
+                "argument": "msg",
+                "category": "compact",
+                "description": "  Message contents"
+              }
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 7
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "contentTag"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "msg"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedMessage",
+            "doc": [
+              "Encrypted Message",
+              {
+                "type": "reference",
+                "argument": "box",
+                "category": "full",
+                "description": "  Encrypted box"
+              }
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 8
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "EncryptedBox"
+                },
+                "id": 1,
+                "name": "box"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "DialogShort",
             "doc": [
               "Short Dialog from grouped conversation list",
@@ -12340,6 +12408,12 @@
               },
               {
                 "type": "reference",
+                "argument": "supportedEncryption",
+                "category": "full",
+                "description": "  Supported encryption methods by this key group"
+              },
+              {
+                "type": "reference",
                 "argument": "keys",
                 "category": "compact",
                 "description": "  keys of Key Group"
@@ -12363,10 +12437,18 @@
               },
               {
                 "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "supportedEncryption"
+              },
+              {
+                "type": {
                   "type": "struct",
                   "childType": "EncryptionKey"
                 },
-                "id": 2,
+                "id": 3,
                 "name": "identityKey"
               },
               {
@@ -12664,7 +12746,7 @@
               "name": "PublicKeys"
             },
             "doc": [
-              "Loading ephermal public keys",
+              "Loading SOME of ephermal public keys",
               {
                 "type": "reference",
                 "argument": "userPeer",
@@ -12919,7 +13001,7 @@
               {
                 "type": "reference",
                 "argument": "keyGroupId",
-                "category": "hidden",
+                "category": "full",
                 "description": "  Removed Key Group Id"
               }
             ],
@@ -12953,8 +13035,26 @@
             "name": "CreateNewKeyGroup",
             "header": 2609,
             "response": {
-              "type": "reference",
-              "name": "Void"
+              "type": "anonymous",
+              "header": 2610,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "keyGroupId",
+                  "category": "full",
+                  "description": "  Created Key Group id"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "keyGroupId"
+                  },
+                  "id": 1,
+                  "name": "keyGroupId"
+                }
+              ]
             },
             "doc": [
               "Creation of a new Key Group",
@@ -12987,6 +13087,165 @@
                 "name": "identityKey"
               },
               {
+                "type": "int32",
+                "id": 2,
+                "name": "encryptionVersion"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKey"
+                  }
+                },
+                "id": 3,
+                "name": "keys"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKeySignature"
+                  }
+                },
+                "id": 4,
+                "name": "signatures"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DeleteKeyGroup",
+            "header": 2611,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Deletion of a Key Group",
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "Key Group Id for deletion"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 1,
+                "name": "keyGroupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DisconnectKeyGroup",
+            "header": 2613,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Disconnect Key Group from device",
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "Key Group Id for disconnection"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 1,
+                "name": "keyGroupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ConnectKeyGroup",
+            "header": 2614,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Connectiong Key Group to device",
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "Key Group Id for connection"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 1,
+                "name": "keyGroupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UploadEphermalKey",
+            "header": 2612,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Uploading Ephermal Keys",
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "Key Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "keys",
+                "category": "compact",
+                "description": "Encryprion keys"
+              },
+              {
+                "type": "reference",
+                "argument": "signatures",
+                "category": "compact",
+                "description": "Key signatures"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 1,
+                "name": "keyGroupId"
+              },
+              {
                 "type": {
                   "type": "list",
                   "childType": {
@@ -13012,28 +13271,110 @@
           }
         },
         {
-          "type": "rpc",
+          "type": "comment",
+          "content": "Encrypted Packages"
+        },
+        {
+          "type": "struct",
           "content": {
-            "name": "DeleteKeyGroup",
-            "header": 2610,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
+            "name": "EncryptedBox",
             "doc": [
-              "Deletion of a Key Group",
+              "Encrypted package that is encrypted for multiple keys",
               {
                 "type": "reference",
-                "argument": "keyGroupId",
+                "argument": "keys",
                 "category": "full",
-                "description": "Key Group Id for deletion"
+                "description": "  Encrypted encryption keys"
+              },
+              {
+                "type": "reference",
+                "argument": "algType",
+                "category": "full",
+                "description": "  Package encryption type"
+              },
+              {
+                "type": "reference",
+                "argument": "encPackage",
+                "category": "full",
+                "description": "  Encrypted package"
               }
             ],
             "attributes": [
               {
-                "type": "int64",
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncyptedBoxKey"
+                  }
+                },
                 "id": 1,
+                "name": "keys"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "algType"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "encPackage"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncyptedBoxKey",
+            "doc": [
+              "Encrypted package encryption key",
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "  Key Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "algType",
+                "category": "full",
+                "description": "  Key encryption algorithm"
+              },
+              {
+                "type": "reference",
+                "argument": "encryptedKey",
+                "category": "hidden",
+                "description": "  Encrypted encryption key"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "usersId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 2,
                 "name": "keyGroupId"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "algType"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "encryptedKey"
               }
             ]
           }
