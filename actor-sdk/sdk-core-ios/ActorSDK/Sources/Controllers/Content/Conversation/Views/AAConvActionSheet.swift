@@ -250,9 +250,9 @@ class AAConvActionSheet: UIView {
             var sendString:String!
             
             if self.thumbnailView.selectedAssets.count == 1 {
-                sendString = "Send \(self.thumbnailView.selectedAssets.count) Photo"
+                sendString = AALocalized("AttachmentsSendPhoto").replace("{count}", dest: "\(self.thumbnailView.selectedAssets.count)")
             } else {
-                sendString = "Send \(self.thumbnailView.selectedAssets.count) Photos"
+                sendString = AALocalized("AttachmentsSendPhotos").replace("{count}", dest: "\(self.thumbnailView.selectedAssets.count)")
             }
             
             // remove target
