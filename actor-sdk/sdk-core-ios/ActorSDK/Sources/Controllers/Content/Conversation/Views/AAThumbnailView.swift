@@ -18,13 +18,16 @@ public enum ImagePickerMediaType {
 class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSource {
 
     var collectionView:UICollectionView!
+    weak var bindedConvSheet : AAConvActionSheet!
     let mediaType: ImagePickerMediaType = ImagePickerMediaType.Image
     
     private var assets = [PHAsset]()
+    var selectedAssets = [PHAsset]()
     private let imageManager = PHCachingImageManager()
+    private let imageManagerForOrig = PHCachingImageManager()
     
-    private let minimumPreviewHeight: CGFloat = 70
-    private var maximumPreviewHeight: CGFloat = 70
+    private let minimumPreviewHeight: CGFloat = 90
+    private var maximumPreviewHeight: CGFloat = 90
     
     private lazy var requestOptions: PHImageRequestOptions = {
         let options = PHImageRequestOptions()
@@ -104,6 +107,7 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
                 self.imageManager.requestImageDataForAsset(asset, options: requestOptions) { data, _, _, info in
                     if data != nil {
                         self.assets.append(asset)
+                        self.prefetchImagesForAsset(asset)
                     }
                 }
             }
@@ -116,6 +120,24 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     }
     
     private func requestImageForAsset(asset: PHAsset, completion: (image: UIImage?) -> ()) {
+        let targetSize = sizeForAsset(asset, scale: UIScreen.mainScreen().scale)
+        requestOptions.synchronous = false
+        
+        // Workaround because PHImageManager.requestImageForAsset doesn't work for burst images
+        if asset.representsBurst {
+            imageManager.requestImageDataForAsset(asset, options: requestOptions) { data, _, _, _ in
+                let image = data.flatMap { UIImage(data: $0) }
+                completion(image: image)
+            }
+        }
+        else {
+            imageManager.requestImageForAsset(asset, targetSize: targetSize, contentMode: .AspectFill, options: requestOptions) { image, _ in
+                completion(image: image)
+            }
+        }
+    }
+    
+    private func requestOriginalImageForAsset(asset: PHAsset, completion: (image: UIImage?) -> ()) {
         let targetSize = sizeForAsset(asset, scale: UIScreen.mainScreen().scale)
         requestOptions.synchronous = true
         
@@ -134,12 +156,16 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     }
     
     private func sizeForAsset(asset: PHAsset, scale: CGFloat = 1) -> CGSize {
-        let proportion = CGFloat(asset.pixelWidth)/CGFloat(asset.pixelHeight)
         
-        let imageHeight = maximumPreviewHeight - 2 * previewCollectionViewInset
-        let imageWidth = floor(proportion * imageHeight)
+        var complitedCGSize : CGSize!
         
-        return CGSize(width: imageWidth * scale, height: imageHeight * scale)
+        if asset.pixelWidth > asset.pixelHeight {
+            complitedCGSize = CGSizeMake(CGFloat(asset.pixelHeight),CGFloat(asset.pixelHeight))
+        } else {
+            complitedCGSize = CGSizeMake(CGFloat(asset.pixelWidth),CGFloat(asset.pixelWidth))
+        }
+        
+        return complitedCGSize
     }
     
     /// collection view delegate
@@ -157,13 +183,68 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
         
         let cell = self.collectionView.dequeueReusableCellWithReuseIdentifier("AAThumbnailCollectionCell", forIndexPath: indexPath) as! AAThumbnailCollectionCell
         
+        cell.bindedThumbView = self
+        
+        let photoModel = self.assets[indexPath.row]
+        
+        cell.bindedPhotoModel = photoModel
+        
+        if self.selectedAssets.contains(photoModel) {
+            cell.isCheckSelected = true
+            cell.imgSelected.image = UIImage.bundled("ImageSelectedOn")
+            
+        } else {
+            cell.isCheckSelected = false
+            cell.imgSelected.image = UIImage.bundled("ImageSelectedOff")
+            
+        }
+        
         cell.backgroundColor = UIColor.whiteColor()
         
         let asset = assets[indexPath.row]
         
         requestImageForAsset(asset) { image in
-            cell.imgSelected.image = image
+            
+            var complitedImage : UIImage!
+            
+            if image!.size.width > image!.size.height {
+                complitedImage = self.imageByCroppingImage(image!, toSize: CGSizeMake(image!.size.height,image!.size.height))
+            } else {
+                complitedImage = self.imageByCroppingImage(image!, toSize: CGSizeMake(image!.size.width,image!.size.width))
+            }
+            
+            cell.imgThumbnails.image = complitedImage
+            
+            
         }
+        
+        
+//        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+//        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+//        // do some task
+//        
+//        self.requestOptions.synchronous = true
+//        
+//        self.imageManagerForOrig.requestImageDataForAsset(photoModel, options: self.requestOptions, resultHandler: { (data, _, _, _) -> Void in
+//        if data != nil {
+//        
+//        let imageFromAsset = UIImage(data: data!)!
+//        var complitedImage : UIImage!
+//        
+//        if imageFromAsset.size.width > imageFromAsset.size.height {
+//        complitedImage = self.imageByCroppingImage(imageFromAsset, toSize: CGSizeMake(imageFromAsset.size.height,imageFromAsset.size.height))
+//        } else {
+//        complitedImage = self.imageByCroppingImage(imageFromAsset, toSize: CGSizeMake(imageFromAsset.size.width,imageFromAsset.size.width))
+//        }
+//        
+//        dispatch_async(dispatch_get_main_queue()) {
+//        // update some UI
+//        cell.imgThumbnails.image = complitedImage
+//        }
+//        }
+//        })
+//        
+//        }
         
         
         return cell
@@ -176,7 +257,7 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     }
     
     func collectionViewSetup() {
-            
+        
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .Horizontal
         flowLayout.minimumLineSpacing = 4
@@ -189,7 +270,7 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
         self.collectionView.showsHorizontalScrollIndicator = false
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
-        self.collectionView.frame = CGRectMake(0,0,screenWidth,80)
+        self.collectionView.frame = CGRectMake(0,0,screenWidth,90)
         
         self.collectionView.registerClass(AAThumbnailCollectionCell.self, forCellWithReuseIdentifier: "AAThumbnailCollectionCell")
 
@@ -212,5 +293,41 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
         
         return cropped;
     }
+    
+    func addSelectedModel(model:PHAsset) {
+        
+        self.selectedAssets.append(model)
+        self.bindedConvSheet.updateSelectedPhotos()
+        
+    }
+    
+    func removeSelectedModel(model:PHAsset) {
+        if let index = self.selectedAssets.indexOf(model) {
+            self.selectedAssets.removeAtIndex(index)
+            self.bindedConvSheet.updateSelectedPhotos()
+        }
+    }
+   
+    func getSelectedAsImages() -> [UIImage] {
+        
+        let arrayModelsForSend = self.selectedAssets
+        
+        var compliedArray = [UIImage]()
+
+        for (_,model) in arrayModelsForSend.enumerate() {
+
+            self.imageManagerForOrig.requestImageDataForAsset(model, options: requestOptions, resultHandler: { (data, _, _, _) -> Void in
+                if data != nil {
+                    compliedArray.append(UIImage(data: data!)!)
+                }
+            })
+
+        }
+        
+        return compliedArray
+        
+    }
+    
+    
     
 }
