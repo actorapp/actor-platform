@@ -1,11 +1,14 @@
 package im.actor.server.file.s3
 
-import java.io.File
+import java.io.{ ByteArrayInputStream, InputStream, File }
 
 import akka.actor._
+import akka.stream.{ ActorMaterializer, Materializer }
+import akka.stream.scaladsl.{ Sink, FileIO }
+import akka.util.ByteString
 import com.amazonaws.HttpMethod
 import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
+import com.amazonaws.services.s3.model.{ ObjectMetadata, PutObjectRequest, GeneratePresignedUrlRequest }
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
@@ -24,6 +27,7 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
 
   private implicit val system: ActorSystem = _system
   private implicit val ec: ExecutionContext = system.dispatcher
+  private implicit val mat: Materializer = ActorMaterializer()
 
   private val config = S3StorageAdapterConfig.load(system.settings.config.getConfig("services.aws.s3")).get
   private val bucketName = config.bucketName
@@ -37,13 +41,13 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
 
   val transferManager = new TransferManager(s3Client.client)
 
-  override def uploadFile(name: UnsafeFileName, file: File): DBIO[FileLocation] =
-    uploadFile(bucketName, name, file)
+  override def uploadFile(name: UnsafeFileName, data: Array[Byte]): DBIO[FileLocation] =
+    uploadFile(bucketName, name, data)
 
-  override def uploadFileF(name: UnsafeFileName, file: File): Future[FileLocation] =
-    db.run(uploadFile(name, file))
+  override def uploadFileF(name: UnsafeFileName, data: Array[Byte]): Future[FileLocation] =
+    db.run(uploadFile(name, data))
 
-  override def downloadFile(id: Long): DBIO[Option[File]] = {
+  override def downloadFile(id: Long): DBIO[Option[Array[Byte]]] = {
     persist.FileRepo.find(id) flatMap {
       case Some(file) ⇒
         downloadFile(bucketName, file.id, file.name) map (Some(_))
@@ -51,7 +55,7 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
     }
   }
 
-  override def downloadFileF(id: Long): Future[Option[File]] =
+  override def downloadFileF(id: Long): Future[Option[Array[Byte]]] =
     db.run(downloadFile(id))
 
   override def getFileDownloadUrl(file: model.File, accessHash: Long): Future[Option[String]] = {
@@ -74,25 +78,27 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
       dirFile ← DBIO.from(FileUtils.createTempDir())
       file = dirFile.toPath.resolve("file").toFile
       _ ← DBIO.from(FutureTransfer.listenFor(transferManager.download(bucketName, s3Key(id, name), file)) map (_.waitForCompletion()))
-    } yield file
+      data ← DBIO.from(FileIO.fromFile(file).runFold(ByteString.empty)(_ ++ _))
+    } yield data.toArray
   }
 
-  private def uploadFile(bucketName: String, name: UnsafeFileName, file: File): DBIO[FileLocation] = {
+  private def uploadFile(bucketName: String, name: UnsafeFileName, data: Array[Byte]): DBIO[FileLocation] = {
     val rnd = ThreadLocalRandom.current()
     val id = rnd.nextLong()
     val accessSalt = ACLFiles.nextAccessSalt(rnd)
-    val sizeF = FileUtils.getFileLength(file)
+    val size = data.length
 
     for {
-      size ← DBIO.from(sizeF)
-      _ ← persist.FileRepo.create(id, size, accessSalt, s3Key(id, name.safe))
-      _ ← DBIO.from(s3Upload(bucketName, id, name.safe, file))
+      _ ← persist.FileRepo.create(id, size.toLong, accessSalt, s3Key(id, name.safe))
+      _ ← DBIO.from(s3Upload(bucketName, id, name.safe, data))
       _ ← persist.FileRepo.setUploaded(id, name.safe)
     } yield FileLocation(id, ACLFiles.fileAccessHash(id, accessSalt))
   }
 
-  private def s3Upload(bucketName: String, id: Long, name: String, file: File): Future[UploadResult] = {
-    FutureTransfer.listenFor(transferManager.upload(bucketName, s3Key(id, name), file)) map (_.waitForUploadResult())
+  private def s3Upload(bucketName: String, id: Long, name: String, data: Array[Byte]): Future[UploadResult] = {
+    val is = new ByteArrayInputStream(data)
+    val md = new ObjectMetadata()
+    FutureTransfer.listenFor(transferManager.upload(bucketName, s3Key(id, name), is, md)) map (_.waitForUploadResult())
   }
 
   override def getFileUploadPartUrl(fileId: Long, partNumber: Int): Future[(UploadKey, String)] = {

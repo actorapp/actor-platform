@@ -25,9 +25,9 @@ private[file] trait UploadActions {
 
   def completeFileUpload(fileId: Long, fieSize: Long, fileName: UnsafeFileName, partNames: Seq[String]): Future[Unit]
 
-  def uploadFile(name: UnsafeFileName, file: File): DBIO[FileLocation]
+  def uploadFile(name: UnsafeFileName, data: Array[Byte]): DBIO[FileLocation]
 
-  def uploadFileF(name: UnsafeFileName, file: File): Future[FileLocation]
+  def uploadFileF(name: UnsafeFileName, data: Array[Byte]): Future[FileLocation]
 }
 
 private[file] trait UploadKeyParsing {
@@ -37,8 +37,8 @@ private[file] trait UploadKeyParsing {
 private[file] trait DownloadActions {
   def getFileDownloadUrl(file: model.File, accessHash: Long): Future[Option[String]]
 
-  def downloadFile(id: Long): DBIO[Option[File]]
+  def downloadFile(id: Long): DBIO[Option[Array[Byte]]]
 
-  def downloadFileF(id: Long): Future[Option[File]]
+  def downloadFileF(id: Long): Future[Option[Array[Byte]]]
 }
 

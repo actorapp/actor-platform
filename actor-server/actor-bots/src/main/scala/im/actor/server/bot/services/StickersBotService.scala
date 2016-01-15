@@ -141,8 +141,7 @@ private[bot] final class StickersBotService(_system: ActorSystem) extends BotSer
 
   private def uploadSticker(name: String, bytes: Array[Byte], w: Int, h: Int): Future[Option[StickerImage]] =
     Try(for {
-      (path, size) ← FileUtils.writeBytes(ByteString(bytes))
-      fileLocation ← fsAdapter.uploadFileF(UnsafeFileName(name), path.toFile)
-    } yield Some(StickerImage(fileLocation, w, h, size))).toOption getOrElse Future.successful(None)
+      fileLocation ← fsAdapter.uploadFileF(UnsafeFileName(name), bytes)
+    } yield Some(StickerImage(fileLocation, w, h, bytes.length.toLong))).toOption getOrElse Future.successful(None)
 
 }

@@ -2,6 +2,10 @@ package im.actor.server.file.local
 
 import akka.actor.ActorSystem
 import akka.event.Logging
+import akka.http.scaladsl.util.FastFuture
+import akka.stream.Materializer
+import akka.stream.scaladsl.{ Source, FileIO }
+import akka.util.ByteString
 import better.files.{ File, _ }
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.FileRepo
@@ -12,25 +16,37 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
 
   protected implicit val system: ActorSystem //just for logging
   protected implicit val ec: ExecutionContext
+  protected implicit val mat: Materializer
   protected val storageLocation: String
 
   private lazy val log = Logging(system, getClass)
   private lazy val db = DbExtension(system).db
 
-  protected def createFile(fileId: Long, name: String, file: File): Future[File] =
-    Future(file.copyTo(getOrCreateFileDir(fileId) / getFileName(name)))
-
-  protected def prepareForPartWrite(fileId: Long, partNumber: Int): Future[Unit] = Future {
-    val partUploadKey = LocalUploadKey.partKey(fileId, partNumber).key
-    val partFile = getOrCreateFileDir(fileId) / partUploadKey
-    if (partFile.exists) partFile.delete(ignoreIOExceptions = true)
-    ()
+  protected def createFile(fileId: Long, name: String, data: Array[Byte]): Future[Unit] = {
+    for {
+      dir ← getOrCreateFileDir(fileId)
+      file = dir / name
+      _ ← Source(List(ByteString(data))).runWith(FileIO.toFile(file.toJava)) map (_ ⇒ ())
+    } yield ()
   }
 
-  protected def appendPartBytes(bytes: Array[Byte], fileId: Long, partNumber: Int): Future[Unit] = Future {
-    val partFile = getOrCreateFileDir(fileId).createChild(LocalUploadKey.partKey(fileId, partNumber).key)
-    log.debug("Appending bytes to part number: {}, fileId: {}, data length: {} target file: {}", partNumber, fileId, bytes.length, partFile)
-    partFile append bytes
+  protected def prepareForPartWrite(fileId: Long, partNumber: Int): Future[Unit] = {
+    val partUploadKey = LocalUploadKey.partKey(fileId, partNumber).key
+
+    for {
+      dir ← getOrCreateFileDir(fileId)
+      partFile = dir / partUploadKey
+      _ ← if (partFile.exists) Future { blocking { partFile.delete(ignoreIOExceptions = true) } } else FastFuture.successful(())
+    } yield ()
+  }
+
+  protected def appendPartBytes(bytes: Array[Byte], fileId: Long, partNumber: Int): Future[Unit] = {
+    for {
+      dir ← getOrCreateFileDir(fileId)
+      partFile ← Future { blocking { dir.createChild(LocalUploadKey.partKey(fileId, partNumber).key) } }
+      _ = log.debug("Appending bytes to part number: {}, fileId: {}, data length: {} target file: {}", partNumber, fileId, bytes.length, partFile)
+      _ ← Source(List(ByteString(bytes))).runWith(FileIO.toFile(partFile.toJava, append = true))
+    } yield ()
   }
 
   protected def haveAllParts(dir: File, partNames: Seq[String], fileSize: Long): Future[Boolean] = Future {
@@ -68,19 +84,25 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
   protected def deleteUploadedParts(dir: File, partNames: Seq[String]): Future[Unit] =
     Future.sequence(partNames map { part ⇒ Future((dir / part).delete()) }) map (_ ⇒ ())
 
-  protected def getFile(fileId: Long): Future[File] =
+  protected def getFileData(fileId: Long): Future[ByteString] =
     db.run(FileRepo.find(fileId)) flatMap {
-      case Some(model) ⇒ getFile(fileId, model.name)
+      case Some(model) ⇒ getFileData(fileId, model.name)
       case None        ⇒ Future.failed(new RuntimeException("File not found")) // TODO: throw an exception convertable to 404 response
     }
 
-  protected def getFile(fileId: Long, fileName: String): Future[File] =
-    Future(fileDirectory(fileId) / getFileName(fileName))
+  protected def getFileData(fileId: Long, fileName: String): Future[ByteString] = {
+    val file = fileDirectory(fileId) / getFileName(fileName)
+    FileIO.fromFile(file.toJava).runFold(ByteString.empty)(_ ++ _)
+  }
 
   protected def getFileName(name: String) = if (name.trim.isEmpty) "file" else name
 
   protected def fileDirectory(fileId: Long): File = file"$storageLocation/file_${fileId}"
 
-  private def getOrCreateFileDir(fileId: Long) = fileDirectory(fileId).createIfNotExists(asDirectory = true)
+  private def getOrCreateFileDir(fileId: Long) = Future {
+    blocking {
+      fileDirectory(fileId).createIfNotExists(asDirectory = true)
+    }
+  }
 
 }

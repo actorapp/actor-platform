@@ -44,13 +44,12 @@ final class ProfileServiceSpec
 
   private val fsAdapter = FileStorageExtension(system).fsAdapter
 
-  private val invalidImageFile = Paths.get(getClass.getResource("/invalid-avatar.jpg").toURI).toFile
-  private val tooLargeImageFile = Paths.get(getClass.getResource("/too-large-avatar.jpg").toURI).toFile
+  private val invalidImageFile = Files.readAllBytes(Paths.get(getClass.getResource("/invalid-avatar.jpg").toURI))
+  private val tooLargeImageFile = Files.readAllBytes(Paths.get(getClass.getResource("/too-large-avatar.jpg").toURI))
 
-  private val validOrigBytes =
-    Files.readAllBytes(Paths.get(getClass.getResource("/valid-avatar.jpg").toURI))
-  private val validOrigFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
-  private val validOrigAImg = Image.fromFile(validOrigFile).toPar
+  private val validOrigBytes = Files.readAllBytes(Paths.get(getClass.getResource("/valid-avatar.jpg").toURI))
+  private val validOrigFile = Files.readAllBytes(Paths.get(getClass.getResource("/valid-avatar.jpg").toURI))
+  private val validOrigAImg = Image(validOrigFile).toPar
 
   private val validOrigDimensions = ImageUtils.dimensions(validOrigAImg)
 
@@ -82,21 +81,21 @@ final class ProfileServiceSpec
         r.avatar.fullImage.get.height should ===(validOrigDimensions._2)
         r.avatar.fullImage.get.fileSize should ===(validOrigBytes.length)
         whenReady(db.run(fsAdapter.downloadFile(r.avatar.fullImage.get.fileLocation.fileId))) { fileOpt ⇒
-          org.apache.commons.io.FileUtils.readFileToByteArray(fileOpt.get) should ===(validOrigBytes)
+          fileOpt.get should ===(validOrigBytes)
         }
 
         r.avatar.smallImage.get.width should ===(validSmallDimensions._1)
         r.avatar.smallImage.get.height should ===(validSmallDimensions._2)
         r.avatar.smallImage.get.fileSize should ===(validSmallBytes.length)
         whenReady(db.run(fsAdapter.downloadFile(r.avatar.smallImage.get.fileLocation.fileId))) { fileOpt ⇒
-          org.apache.commons.io.FileUtils.readFileToByteArray(fileOpt.get) should ===(validSmallBytes)
+          fileOpt.get should ===(validSmallBytes)
         }
 
         r.avatar.largeImage.get.width should ===(validLargeDimensions._1)
         r.avatar.largeImage.get.height should ===(validLargeDimensions._2)
         r.avatar.largeImage.get.fileSize should ===(validLargeBytes.length)
         whenReady(db.run(fsAdapter.downloadFile(r.avatar.largeImage.get.fileLocation.fileId))) { fileOpt ⇒
-          org.apache.commons.io.FileUtils.readFileToByteArray(fileOpt.get) should ===(validLargeBytes)
+          fileOpt.get should ===(validLargeBytes)
         }
 
       }
