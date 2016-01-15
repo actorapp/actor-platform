@@ -116,13 +116,17 @@ final class FilesServiceSpec
     urlStr shouldNot include("etc")
     urlStr shouldNot include("passwd")
 
-    val url = new URL(urlStr)
-    val connection = url.openConnection().asInstanceOf[HttpURLConnection]
-    connection.setDoOutput(true)
-    connection.setRequestMethod("GET")
-    connection.getResponseMessage should ===("OK")
+    {
+      val url = new URL(urlStr)
+      val connection = url.openConnection().asInstanceOf[HttpURLConnection]
+      connection.setDoOutput(true)
+      connection.setRequestMethod("GET")
+      connection.getResponseMessage should ===("OK")
+      IOUtils.toString(connection.getInputStream) should ===(expectedContents.get)
+    }
 
-    IOUtils.toString(connection.getInputStream) should ===(expectedContents.get)
+    checkRanged(urlStr, s"${expectedContents.get.length - 10}-", expectedContents.get.drop(expectedContents.get.length - 10))
+    checkRanged(urlStr, s"10-13", expectedContents.get.slice(10, 14))
   }
 
   def validUploadPartUrlsDuplRequest() = {
@@ -139,4 +143,14 @@ final class FilesServiceSpec
     }
   }
 
+  private def checkRanged(urlStr: String, range: String, expected: String): Unit = {
+    val url = new URL(urlStr)
+    val connection = url.openConnection().asInstanceOf[HttpURLConnection]
+    connection.setDoOutput(true)
+    connection.setRequestMethod("GET")
+    connection.setRequestProperty("Range", s"bytes=${range}")
+
+    connection.getResponseMessage should ===("Partial Content")
+    IOUtils.toString(connection.getInputStream) should ===(expected)
+  }
 }
