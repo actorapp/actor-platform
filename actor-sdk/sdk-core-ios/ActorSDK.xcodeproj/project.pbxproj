@@ -74,7 +74,7 @@
 		066A52001BC4E0B0000E606E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */; };
 		066A52081BC4E962000E606E /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 066A52051BC4E962000E606E /* Makefile */; };
 		066A52151BC4EE04000E606E /* AAAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52141BC4EE04000E606E /* AAAvatarView.swift */; };
-		066A52221BC4EEAC000E606E /* AAManagedTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52191BC4EEAC000E606E /* AAManagedTable.swift */; };
+		066A52221BC4EEAC000E606E /* AAManagedTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52191BC4EEAC000E606E /* AAManagedTable.swift */; settings = {COMPILER_FLAGS = "-w"; }; };
 		066A52231BC4EEAC000E606E /* AAManagedSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521A1BC4EEAC000E606E /* AAManagedSection.swift */; };
 		066A52241BC4EEAC000E606E /* AAManagedRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521B1BC4EEAC000E606E /* AAManagedRange.swift */; };
 		066A52251BC4EEAC000E606E /* ManagedBindedCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521C1BC4EEAC000E606E /* ManagedBindedCells.swift */; };
@@ -226,7 +226,7 @@
 		15D35F511C20187E00E3717A /* ASQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F361C20187E00E3717A /* ASQueue.h */; };
 		15D35F521C20187E00E3717A /* ASQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F371C20187E00E3717A /* ASQueue.m */; };
 		15D35F531C20187E00E3717A /* AAOpusAudioRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F381C20187E00E3717A /* AAOpusAudioRecorder.h */; };
-		15D35F541C20187E00E3717A /* AAOpusAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F391C20187E00E3717A /* AAOpusAudioRecorder.m */; };
+		15D35F541C20187E00E3717A /* AAOpusAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F391C20187E00E3717A /* AAOpusAudioRecorder.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		15D35F551C20187E00E3717A /* AAAlertView.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F3A1C20187E00E3717A /* AAAlertView.h */; };
 		15D35F561C20187E00E3717A /* AAAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F3B1C20187E00E3717A /* AAAlertView.m */; };
 		15D35F571C20187E00E3717A /* AAAudioRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F3C1C20187E00E3717A /* AAAudioRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -237,7 +237,7 @@
 		15D35F5D1C20187E00E3717A /* AANativeAudioPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F421C20187E00E3717A /* AANativeAudioPlayer.h */; };
 		15D35F5E1C20187E00E3717A /* AANativeAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F431C20187E00E3717A /* AANativeAudioPlayer.m */; };
 		15D35F5F1C20187E00E3717A /* AAOpusAudioPlayerAU.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F441C20187E00E3717A /* AAOpusAudioPlayerAU.h */; };
-		15D35F601C20187E00E3717A /* AAOpusAudioPlayerAU.mm in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F451C20187E00E3717A /* AAOpusAudioPlayerAU.mm */; };
+		15D35F601C20187E00E3717A /* AAOpusAudioPlayerAU.mm in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F451C20187E00E3717A /* AAOpusAudioPlayerAU.mm */; settings = {COMPILER_FLAGS = "-w"; }; };
 		15D35F611C20187E00E3717A /* AAAudioBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F461C20187E00E3717A /* AAAudioBuffer.h */; };
 		15D35F621C20187E00E3717A /* AAModernConversationAudioPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F471C20187E00E3717A /* AAModernConversationAudioPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		15D35F631C20187E00E3717A /* AAModernConversationAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F481C20187E00E3717A /* AAModernConversationAudioPlayer.m */; };
@@ -252,7 +252,7 @@
 		15D35F6F1C20196E00E3717A /* AARecordAudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F6E1C20196E00E3717A /* AARecordAudioController.swift */; };
 		15D35F751C201B6B00E3717A /* AACustomPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F731C201B6B00E3717A /* AACustomPresentationController.swift */; };
 		15D35F761C201B6B00E3717A /* AACustomPresentationAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F741C201B6B00E3717A /* AACustomPresentationAnimationController.swift */; };
-		15D35F781C20273D00E3717A /* AAAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F3D1C20187E00E3717A /* AAAudioRecorder.m */; };
+		15D35F781C20273D00E3717A /* AAAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F3D1C20187E00E3717A /* AAAudioRecorder.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		15F89F071C211FED00776ACD /* opus_defines.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F031C211FED00776ACD /* opus_defines.h */; };
 		15F89F081C211FED00776ACD /* opus_multistream.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F041C211FED00776ACD /* opus_multistream.h */; };
 		15F89F091C211FED00776ACD /* opus_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F051C211FED00776ACD /* opus_types.h */; };

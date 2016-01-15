@@ -93,18 +93,20 @@ static void playSoundCompleted(__unused SystemSoundID ssID, __unused void *clien
                 
                 currentTimerId = timerId;
                 
-                static SystemSoundID soundId;
-                static dispatch_once_t onceToken;
-                dispatch_once(&onceToken, ^
-                {
-                    NSString *path = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] resourcePath], @"begin_record.caf"];
-                    NSURL *filePath = [NSURL fileURLWithPath:path isDirectory:false];
-                    AudioServicesCreateSystemSoundID((__bridge CFURLRef)filePath, &soundId);
-                    if (soundId != 0)
-                        AudioServicesAddSystemSoundCompletion(soundId, NULL, kCFRunLoopCommonModes, &playSoundCompleted, NULL);
-                });
+                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
                 
-                AudioServicesPlaySystemSound(soundId);
+//                static SystemSoundID soundId;
+//                static dispatch_once_t onceToken;
+//                dispatch_once(&onceToken, ^
+//                {
+//                    NSString *path = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] resourcePath], @"begin_record.caf"];
+//                    NSURL *filePath = [NSURL fileURLWithPath:path isDirectory:false];
+//                    AudioServicesCreateSystemSoundID((__bridge CFURLRef)filePath, &soundId);
+//                    if (soundId != 0)
+//                        AudioServicesAddSystemSoundCompletion(soundId, NULL, kCFRunLoopCommonModes, &playSoundCompleted, NULL);
+//                });
+//                
+//                AudioServicesPlaySystemSound(soundId);
             }
             else
             {
