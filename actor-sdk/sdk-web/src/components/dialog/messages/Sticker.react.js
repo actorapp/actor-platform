@@ -5,6 +5,8 @@
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 
+let cache = {};
+
 /**
  * Class that represents a component for display sticker message content
  */
@@ -13,16 +15,27 @@ class Sticker extends Component {
     className: PropTypes.string,
     fileUrl: PropTypes.string.isRequired,
     h: PropTypes.number.isRequired,
-    w: PropTypes.number.isRequired,
+    w: PropTypes.number.isRequired
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      isLoaded: false
+      isLoaded: this.isCached()
     }
   }
+
+  onLoad = () => {
+    this.setCached();
+    if (!this.state.isLoaded) {
+      this.setState({isLoaded: true});
+    }
+  };
+
+  isCached = () => cache[this.props.fileUrl] === true;
+
+  setCached = () => cache[this.props.fileUrl] = true;
 
   render() {
     const { className, w, h, fileUrl} = this.props;
@@ -53,7 +66,10 @@ class Sticker extends Component {
       <div className={className}>
         <div className={stickerClassName} style={{width, height}}>
           {preloader}
-          <img src={fileUrl} width={width} height={height} onLoad={() => this.setState({isLoaded: true})}/>
+          <img src={fileUrl}
+               width={width}
+               height={height}
+               onLoad={this.onLoad}/>
         </div>
       </div>
     );
