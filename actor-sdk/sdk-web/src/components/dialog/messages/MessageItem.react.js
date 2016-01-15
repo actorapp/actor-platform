@@ -160,7 +160,18 @@ class MessageItem extends Component {
       header = (
         <header className="message__header">
           <h3 className="message__sender">
-            <a onClick={this.onClick} dangerouslySetInnerHTML={{__html: messageSender}}/>
+            <a onClick={this.onClick}>
+              {
+                message.sender.title
+                  ? <span className="message__sender__name" dangerouslySetInnerHTML={{__html: messageSender}}/>
+                  : null
+              }
+              {
+                message.sender.userName
+                  ? <span className="message__sender__nick">@{message.sender.userName}</span>
+                  : null
+              }
+            </a>
           </h3>
           <time className="message__timestamp">{message.date}</time>
           <State message={message}/>
