@@ -62,13 +62,23 @@ class MessageItem extends Component {
       isHighlighted: DropdownStore.isOpen(props.message.rid)
     };
 
-    DropdownStore.addListener(this.onMessagesChange);
+    this.dropdownToken = DropdownStore.addListener(this.onMessagesChange);
   }
-
+  
   onMessagesChange = () => {
     const { message } = this.props;
     this.setState({isHighlighted: DropdownStore.isOpen(message.rid)});
   };
+  
+  componentWillUnmount() {
+      // console.warn('messageItem:onComponentUnmount')
+      this.dropdownToken.remove();
+  }
+  
+  shouldComponentUpdate(nextProps, nextState) {
+      // console.warn('messageItem:shouldComponentUpdate')
+      return false
+  }
 
   onClick = () => {
     const { message, peer } = this.props;
@@ -242,6 +252,6 @@ class MessageItem extends Component {
 }
 
 ReactMixin.onClass(MessageItem, IntlMixin);
-ReactMixin.onClass(MessageItem, PureRenderMixin);
+// ReactMixin.onClass(MessageItem, PureRenderMixin);
 
 export default MessageItem;
