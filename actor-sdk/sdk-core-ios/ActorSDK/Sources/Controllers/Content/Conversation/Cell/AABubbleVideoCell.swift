@@ -236,7 +236,7 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
             }
             
             let loadedContent = thumbnail.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
-            print("loadedContent === \(loadedContent)")
+            
             runOnUiThread(selfGeneration, closure: { () -> () in
                 self.setPreviewImage(loadedContent, fast: false)
                 self.contentLoaded = true
