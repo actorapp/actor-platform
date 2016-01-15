@@ -463,37 +463,37 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         self.textInputbar.textView.resignFirstResponder()
         
-        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+//        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+//        
+//        let builder = AAMenuBuilder()
+//        
+//        if hasCamera {
+//            builder.add("PhotoCamera") {
+//                self.pickImage(.Camera)
+//            }
+//        }
+//        
+//        builder.add("PhotoLibrary") {
+//            self.pickImage(.PhotoLibrary)
+//        }
+//        
+//        if (NSFileManager.defaultManager().ubiquityIdentityToken != nil) {
+//            builder.add("SendDocument") {
+//                self.pickDocument()
+//            }
+//        }
+//        
+//        builder.add("ShareLocation") {
+//            self.pickLocation()
+//        }
+//        
+//        builder.add("ShareContact") {
+//            self.pickContact()
+//        }
+//        
+//        showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
         
-        let builder = AAMenuBuilder()
-        
-        if hasCamera {
-            builder.add("PhotoCamera") {
-                self.pickImage(.Camera)
-            }
-        }
-        
-        builder.add("PhotoLibrary") {
-            self.pickImage(.PhotoLibrary)
-        }
-        
-        if (NSFileManager.defaultManager().ubiquityIdentityToken != nil) {
-            builder.add("SendDocument") {
-                self.pickDocument()
-            }
-        }
-        
-        builder.add("ShareLocation") {
-            self.pickLocation()
-        }
-        
-        builder.add("ShareContact") {
-            self.pickContact()
-        }
-        
-        showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
-        
-        //self.actionSheet.showAnimation()
+        self.actionSheet.showAnimation()
         
         self.rightButton.layoutIfNeeded()
     }
@@ -648,6 +648,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         picker.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func sendImageFromActionSheet(image:UIImage) {
+        Actor.sendUIImage(image, peer: peer)
     }
     
     // Location picking
