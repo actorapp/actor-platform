@@ -27,13 +27,10 @@ public class AAAuthCodeViewController: AAAuthViewController, UIAlertViewDelegate
     private var counter = AAAuthCodeViewController.DIAL_SECONDS
     
     private let phoneNumber: String
-    private let supportEnabled: Bool
-    
+
     public init(phoneNumber: String) {
         
         self.phoneNumber = phoneNumber
-        self.supportEnabled = true
-        // self.supportEnabled = AppConfig.activationEmail != nil || AppConfig.supportEmail != nil
         
         super.init()
         
@@ -178,10 +175,14 @@ public class AAAuthCodeViewController: AAAuthViewController, UIAlertViewDelegate
         updateTimerText()
     }
     
+    func supportEnabled() -> Bool {
+        return ActorSDK.sharedActor().supportEmail != nil
+    }
+
     func updateTimerText() {
         if dialed {
             callHintLabel.textLocalized = "AuthCallDoneHint"
-            if self.supportEnabled {
+            if self.supportEnabled() {
                 callActionLabel.hidden = false
             }
         } else {
@@ -231,18 +232,14 @@ public class AAAuthCodeViewController: AAAuthViewController, UIAlertViewDelegate
     }
     
     public func noCodeDidPressed() {
-        let emailController = MFMailComposeViewController()
-        emailController.setSubject("Activation code problem (\(phoneNumber))")
-//        if AppConfig.activationEmail != nil {
-//            emailController.setToRecipients([AppConfig.activationEmail!])
-//        } else if AppConfig.supportEmail != nil {
-//            emailController.setToRecipients([AppConfig.supportEmail!])
-//        } else {
-//            fatalError("Support emails not set")
-//        }
-        emailController.setMessageBody("Hello, Dear Support!\n\nI can't receive any activation codes to the phone: \(phoneNumber).\n\nHope, you will answer soon. Thank you!", isHTML: false)
-        emailController.delegate = self
-        presentViewController(emailController, animated: true, completion: nil)
+        if self.supportEnabled() {
+            let emailController = MFMailComposeViewController()
+            emailController.setSubject("Activation code problem (\(phoneNumber))")
+            emailController.setToRecipients([ActorSDK.sharedActor().supportEmail!])
+            emailController.setMessageBody("Hello, Dear Support!\n\nI can't receive any activation codes to the phone: \(phoneNumber).\n\nHope, you will answer soon. Thank you!", isHTML: false)
+            emailController.delegate = self
+            presentViewController(emailController, animated: true, completion: nil)
+        }
     }
     
     public func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
