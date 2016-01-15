@@ -54,9 +54,11 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
 
   override def jhandleCallInProgress(callId: Long, timeout: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     authorized(clientData) { client ⇒
-      for {
+      (for {
         _ ← webrtcExt.sendCallInProgress(client.userId, callId, timeout)
-      } yield Ok(ResponseVoid)
+      } yield Ok(ResponseVoid)) recover {
+        case WebrtcCallErrors.CallNotStarted ⇒ Error(WebrtcErrors.CallNotStarted)
+      }
     }
 
   override def jhandleSubscribeToCalls(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
@@ -69,8 +71,10 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
 
   override def jhandleSendCallSignal(callId: Long, content: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     authorized(clientData) { client ⇒
-      for {
+      (for {
         _ ← webrtcExt.sendCallSignal(client.userId, callId, content)
-      } yield Ok(ResponseVoid)
+      } yield Ok(ResponseVoid)) recover {
+        case WebrtcCallErrors.CallNotStarted ⇒ Error(WebrtcErrors.CallNotStarted)
+      }
     }
 }
