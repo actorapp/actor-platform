@@ -477,8 +477,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             self.pickImage(.PhotoLibrary)
         }
         
-        builder.add("SendDocument") {
-            self.pickDocument()
+        if (NSFileManager.defaultManager().ubiquityIdentityToken != nil) {
+            builder.add("SendDocument") {
+                self.pickDocument()
+            }
         }
         
         builder.add("ShareLocation") {
