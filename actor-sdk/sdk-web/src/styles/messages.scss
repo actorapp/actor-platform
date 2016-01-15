@@ -144,12 +144,19 @@ $sticker-max-size: 180px;
 
     vertical-align: middle;
 
-    color: $message-sender-text-color !important;
-
     a {
       display: inline-block;
 
       cursor: pointer;
+    }
+
+    &__name {
+      color: $message-sender-text-color !important;
+    }
+    &__nick {
+      font-weight: 400;
+      margin-left: 6px;
+      color: rgba($message-sender-text-color, .5);
     }
 
     .emoji-outer {
