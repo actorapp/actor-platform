@@ -117,15 +117,9 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
     } yield ()
   }
 
-  override def downloadFile(id: Long): DBIO[Option[Array[Byte]]] =
-    persist.FileRepo.find(id) flatMap {
-      case Some(file) ⇒ DBIO.from(for {
-        data ← getFileData(file.id, file.name)
-      } yield Some(data.toArray))
-      case None ⇒ DBIO.successful(None)
-    }
+  override def downloadFile(id: Long): DBIO[Option[Array[Byte]]] = DBIO.from(downloadFileF(id))
 
-  override def downloadFileF(id: Long): Future[Option[Array[Byte]]] = db.run(downloadFile(id))
+  override def downloadFileF(id: Long): Future[Option[Array[Byte]]] = getFileData(id) map (_ map (_.toArray))
 
   /**
    * Generates download uri similar to:
