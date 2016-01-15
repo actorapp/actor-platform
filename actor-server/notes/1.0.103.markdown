@@ -1,0 +1,2 @@
+* :bug: :rocket: Fixed blocking calls in LocalFileStorage to prevent server hangups on file IO
+* :bug: :rocket: Fixed partial file download
