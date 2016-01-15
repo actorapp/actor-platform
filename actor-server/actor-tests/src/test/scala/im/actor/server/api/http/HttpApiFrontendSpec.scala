@@ -1,6 +1,6 @@
 package im.actor.server.api.http
 
-import java.nio.file.Paths
+import java.nio.file.{ Files, Paths }
 
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpMethods.{ DELETE, GET, POST }
@@ -329,8 +329,8 @@ final class HttpApiFrontendSpec
     }
 
     def groupInvitesAvatars1() = {
-      val avatarFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
-      val fileLocation = whenReady(db.run(fsAdapter.uploadFile(UnsafeFileName("avatar"), avatarFile)))(identity)
+      val avatarData = Files.readAllBytes(Paths.get(getClass.getResource("/valid-avatar.jpg").toURI))
+      val fileLocation = whenReady(db.run(fsAdapter.uploadFile(UnsafeFileName("avatar"), avatarData)))(identity)
 
       whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
@@ -370,8 +370,8 @@ final class HttpApiFrontendSpec
     }
 
     def groupInvitesAvatars2() = {
-      val avatarFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
-      val fileLocation = whenReady(db.run(fsAdapter.uploadFile(UnsafeFileName("avatar"), avatarFile)))(identity)
+      val avatarData = Files.readAllBytes(Paths.get(getClass.getResource("/valid-avatar.jpg").toURI))
+      val fileLocation = whenReady(db.run(fsAdapter.uploadFile(UnsafeFileName("avatar"), avatarData)))(identity)
       whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
         val avatar =

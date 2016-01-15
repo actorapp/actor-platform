@@ -93,8 +93,7 @@ final class RichMessageWorker(config: RichMessageConfig)(implicit materializer: 
       val image = Image(imageBytes.toArray).toPar
       db.run {
         for {
-          (file, fileSize) ← DBIO.from(FileUtils.writeBytes(imageBytes))
-          location ← fsAdapter.uploadFile(UnsafeFileName(fullName), file.toFile)
+          location ← fsAdapter.uploadFile(UnsafeFileName(fullName), imageBytes.toArray)
           thumb ← DBIO.from(ImageUtils.scaleTo(image, 90))
           thumbBytes = thumb.toImage.forWriter(JpegWriter()).bytes
 
@@ -104,7 +103,7 @@ final class RichMessageWorker(config: RichMessageConfig)(implicit materializer: 
           updated = ApiDocumentMessage(
             fileId = location.fileId,
             accessHash = location.accessHash,
-            fileSize = fileSize.toInt,
+            fileSize = imageBytes.size,
             name = fullName,
             mimeType = mimeType,
             thumb = Some(ApiFastThumb(thumb.width, thumb.height, thumbBytes)),

@@ -12,7 +12,6 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import im.actor.server.api.http.HttpHandler
-import im.actor.server.db.DbExtension
 import im.actor.server.file.local.{ FileStorageOperations, LocalFileStorageConfig, RequestSigning }
 import im.actor.util.log.AnyRefLogSource
 
@@ -25,8 +24,7 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
   with FileStorageOperations
   with AnyRefLogSource {
 
-  private val db = DbExtension(system).db
-  private implicit val mat = ActorMaterializer()
+  protected implicit val mat = ActorMaterializer()
 
   protected implicit val ec: ExecutionContext = system.dispatcher
   protected val storageLocation = storageConfig.location
@@ -38,8 +36,7 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
     extractRequest { request =>
       //      log.debug("Got file request {}", request)
       defaultVersion {
-        pathPrefix("files" / Segment) { strFileId =>
-          val fileId = strFileId.toLong
+        pathPrefix("files" / LongNumber) { fileId =>
           options {
             log.debug("Responded OK to OPTIONS req: {}", request.uri)
             complete(HttpResponse(OK))
@@ -52,10 +49,11 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
               path(Segments(0, 1)) { seqName =>
                 log.debug("Download file request, fileId: {}", fileId)
                 withRangeSupport {
-                  onComplete(getFile(fileId)) {
-                    case Success(file) =>
+                  onComplete(getFileData(fileId)) {
+                    case Success(data) =>
                       log.debug("Serving file: {} parts", fileId)
-                      complete(file.loadBytes)
+
+                      complete(data)
                     case Failure(e) =>
                       log.error(e, "Failed to get file content, fileId: {}", fileId)
                       complete(HttpResponse(500))
