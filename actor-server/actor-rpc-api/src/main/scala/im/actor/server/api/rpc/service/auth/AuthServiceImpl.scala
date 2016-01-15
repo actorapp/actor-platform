@@ -23,7 +23,7 @@ import im.actor.server.email.{ EmailConfig, SmtpEmailSender }
 import im.actor.server.model.{ AuthAnonymousTransaction, AuthUsernameTransaction }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2ProvidersDomains }
 import im.actor.server.persist.{ UserPasswordRepo, UserRepo }
-import im.actor.server.persist.auth.{ AuthAnonymousTransactionRepo, AuthUsernameTransactionRepo, AuthTransactionRepo }
+import im.actor.server.persist.auth.{ AuthUsernameTransactionRepo, AuthTransactionRepo }
 import im.actor.server.session._
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user.UserExtension
