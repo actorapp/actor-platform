@@ -285,8 +285,6 @@ public class AASettingsViewController: AAContentTableController {
                     if (!hasPhone) {
                         UIPasteboard.generalPasteboard().string = "+\(d.phone)"
                         self.alertUser("NumberCopied")
-                    } else {
-                        ActorSDK.sharedActor().openUrl("telprompt://+\(d.phone)")
                     }
                     return true
                 }
