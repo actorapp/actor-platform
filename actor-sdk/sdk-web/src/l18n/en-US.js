@@ -68,7 +68,8 @@ export default {
             'invite': 'invite more users'
           }
         }
-      }
+      },
+      'loading': 'Loading messages from history'
     },
 
     // Connection state

@@ -5,12 +5,16 @@
 import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedHTMLMessage } from 'react-intl'
+import addons from 'react/addons';
+
 import { PeerTypes } from '../../../constants/ActorAppConstants';
 
 import InviteUserActions from '../../../actions/InviteUserActions';
 
 import UserStore from '../../../stores/UserStore';
 import GroupStore from '../../../stores/GroupStore';
+
+const {addons: { PureRenderMixin }} = addons;
 
 class Welcome extends Component {
   constructor(props) {
@@ -66,5 +70,6 @@ class Welcome extends Component {
 }
 
 ReactMixin.onClass(Welcome, IntlMixin);
+ReactMixin.onClass(Welcome, PureRenderMixin);
 
 export default Welcome;

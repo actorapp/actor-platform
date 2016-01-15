@@ -18,6 +18,7 @@ import MessageStore from '../../stores/MessageStore';
 
 import MessageItem from './messages/MessageItem.react';
 import Welcome from './messages/Welcome.react';
+import Loading from './messages/Loading.react';
 
 let _delayed = [];
 
@@ -112,14 +113,6 @@ class MessagesSection extends Component {
     const messagesList = map(messages, this.getMessagesListItem);
     const isMember = DialogStore.isMember();
 
-    const messagesLoading = (
-      <li className="message message--loading">
-        <div className="message__body col-xs text-center">
-          Loading messages from history
-        </div>
-      </li>
-    );
-
     return (
       <ul className="messages__list" onScroll={this.handleScroll}>
         {
@@ -129,7 +122,7 @@ class MessagesSection extends Component {
         }
         {
           messagesList.length >= 30
-            ? messagesLoading
+            ? <Loading/>
             : null
         }
         {messagesList}
