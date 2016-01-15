@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 protocol AAActionSheetDelegate{
     func actionSheetDidFinished(selectedObjs:Array<AnyObject>)
@@ -32,8 +33,6 @@ class AAConvActionSheet: UIView {
     
     weak var weakSuper : ConversationViewController!
     
-    
-    
     init(maxSelected:Int,weakSuperIn:ConversationViewController) {
         super.init(frame: CGRectZero)
         
@@ -54,21 +53,14 @@ class AAConvActionSheet: UIView {
         
         self.alpha = 0
         self.frame = CGRectMake(0, 0, screenWidth, screenHeigth)
-        self.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+        self.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
         
         
         
         //make photo
         
-        
-        self.configNotification()
-        
     }
     
-    func configNotification() {
-        
-        
-    }
     
     deinit {
         
@@ -80,11 +72,10 @@ class AAConvActionSheet: UIView {
     
     func showAnimation() {
         
-        //self.btnCamera.selected = true
-        //self.btnCamera.setTitle("Camera", forState: UIControlState.Normal)
-        
         var frame = self.sheetView.frame
         frame.origin.y = screenHeigth - 400
+        
+        self.weakSuper.navigationController!.interactivePopGestureRecognizer!.enabled = false
         
         UIView.animateWithDuration(0.25) { () -> Void in
             self.sheetView.frame = frame
@@ -95,19 +86,26 @@ class AAConvActionSheet: UIView {
             
         }
         
-        
-        
     }
     
     func cancelAnimation() {
         
+        
         var frame = self.sheetView.frame
         frame.origin.y = screenHeigth
+        
         
         UIView.animateWithDuration(0.25, animations: { () -> Void in
             self.sheetView.frame = frame
             self.alpha = 0
             }) { (bool) -> Void in
+                
+                self.weakSuper.navigationController!.interactivePopGestureRecognizer!.enabled = true
+                
+                self.thumbnailView.selectedAssets = [PHAsset]()
+                self.thumbnailView.reloadView()
+                self.thumbnailView.collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.None, animated: false)
+                self.updateSelectedPhotos()
         }
         
     }
@@ -161,7 +159,7 @@ class AAConvActionSheet: UIView {
         self.sheetView.addSubview(self.btnCancel)
         self.sheetView.addSubview(self.thumbnailView)
         
-        self.thumbnailView.frame = CGRectMake(0, 5, screenWidth, 100)
+        self.thumbnailView.frame = CGRectMake(0, 5, screenWidth, 90)
         self.btnCamera.frame = CGRectMake(0, 100, screenWidth, 50)
         self.btnLibrary.frame = CGRectMake(0, 150, screenWidth, 50)
         self.btnDocuments.frame = CGRectMake(0, 200, screenWidth, 50)
@@ -210,6 +208,10 @@ class AAConvActionSheet: UIView {
         self.btnLocation.addTarget(self, action: "btnLocationAction", forControlEvents: UIControlEvents.TouchUpInside)
         self.btnContact.addTarget(self, action: "btnContactAction", forControlEvents: UIControlEvents.TouchUpInside)
         self.btnCancel.addTarget(self, action: "btnCloseAction", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        // bineded self
+        
+        self.thumbnailView.bindedConvSheet = self
     
     }
     
@@ -227,7 +229,11 @@ class AAConvActionSheet: UIView {
     
     func btnDocumentAction() {
         cancelAnimation()
-        self.weakSuper.pickDocument()
+        
+        if (NSFileManager.defaultManager().ubiquityIdentityToken != nil) {
+            self.weakSuper.pickDocument()
+        }
+        
     }
     
     func btnLocationAction() {
@@ -242,6 +248,66 @@ class AAConvActionSheet: UIView {
     
     func btnCloseAction() {
         cancelAnimation()
+    }
+    
+    func updateSelectedPhotos() {
+        
+        if self.thumbnailView.selectedAssets.count > 0 {
+            
+            var sendString:String!
+            
+            if self.thumbnailView.selectedAssets.count == 1 {
+                sendString = "Send \(self.thumbnailView.selectedAssets.count) Photo"
+            } else {
+                sendString = "Send \(self.thumbnailView.selectedAssets.count) Photos"
+            }
+            
+            // remove target
+            self.btnCamera.removeTarget(self, action: "btnCameraAction", forControlEvents: UIControlEvents.TouchUpInside)
+            
+            // add new target
+            self.btnCamera.setTitle(sendString, forState: UIControlState.Normal)
+            self.btnCamera.addTarget(self, action: "sendPhotos", forControlEvents: UIControlEvents.TouchUpInside)
+            self.btnCamera.titleLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 17)
+            
+            
+        } else {
+            
+            // remove target
+            self.btnCamera.removeTarget(self, action: "sendPhotos", forControlEvents: UIControlEvents.TouchUpInside)
+            
+            
+            // add new target
+            self.btnCamera.setTitle(AALocalized("PhotoCamera"), forState: UIControlState.Normal)
+            self.btnCamera.addTarget(self, action: "btnCameraAction", forControlEvents: UIControlEvents.TouchUpInside)
+            self.btnCamera.titleLabel?.font = UIFont.systemFontOfSize(17)
+            
+        }
+        
+    }
+    
+    func sendPhotos() {
+        
+        self.cancelAnimation()
+        
+        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+            
+            let arrayModelsForSend = self.thumbnailView.getSelectedAsImages()
+            self.thumbnailView.selectedAssets = [PHAsset]()
+            
+            for (_,image) in arrayModelsForSend.enumerate() {
+            
+                self.weakSuper.sendImageFromActionSheet(image)
+                
+            }
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                self.updateSelectedPhotos()
+            }
+
+        }
+        
     }
 
 }
