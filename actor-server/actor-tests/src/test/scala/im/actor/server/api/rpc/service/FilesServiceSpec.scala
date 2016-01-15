@@ -27,7 +27,7 @@ final class FilesServiceSpec
   it should "Generate valid upload part urls when same request comes twice" in validUploadPartUrlsDuplRequest
 
   lazy val service = new FilesServiceImpl
-  HttpApi(system)
+  HttpApi(system).start()
 
   val (user, authId, authSid, _) = createUser()
   val sessionId = createSessionId()

@@ -1,7 +1,5 @@
 package im.actor.server.bot.services
 
-import java.nio.file.Files
-
 import akka.actor.ActorSystem
 import im.actor.bots.BotMessages._
 import im.actor.concurrent.FutureResultCats
@@ -41,8 +39,8 @@ private[bot] final class FilesBotService(_system: ActorSystem) extends BotServic
           f ← fromFutureOption(LocationInvalid)(db.run(FileRepo.find(location.fileId)))
           _ ← fromBoolean(Forbidden)(location.accessHash == ACLUtils.fileAccessHash(f.id, f.accessSalt))
           _ ← fromBoolean(FileTooBig)(f.size <= MaxSize)
-          file ← fromFutureOption(DownloadFailed)(fsAdapter.downloadFileF(f.id))
-        } yield ResponseDownloadFile(Files.readAllBytes(file.toPath))).value
+          data ← fromFutureOption(DownloadFailed)(fsAdapter.downloadFileF(f.id))
+        } yield ResponseDownloadFile(data)).value
       }
   }
 
