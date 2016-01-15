@@ -23,8 +23,7 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     
     private var assets = [PHAsset]()
     var selectedAssets = [PHAsset]()
-    private let imageManager = PHCachingImageManager()
-    private let imageManagerForOrig = PHCachingImageManager()
+    private var imageManager = PHCachingImageManager()
     
     private let minimumPreviewHeight: CGFloat = 90
     private var maximumPreviewHeight: CGFloat = 90
@@ -62,6 +61,7 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
             PHPhotoLibrary.requestAuthorization() { status in
                 if status == .Authorized {
                     dispatch_async(dispatch_get_main_queue()) {
+                        self.imageManager = PHCachingImageManager()
                         self.fetchAssets()
                         self.collectionView.reloadData()
                     }
@@ -122,24 +122,6 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     private func requestImageForAsset(asset: PHAsset, completion: (image: UIImage?) -> ()) {
         let targetSize = sizeForAsset(asset, scale: UIScreen.mainScreen().scale)
         requestOptions.synchronous = false
-        
-        // Workaround because PHImageManager.requestImageForAsset doesn't work for burst images
-        if asset.representsBurst {
-            imageManager.requestImageDataForAsset(asset, options: requestOptions) { data, _, _, _ in
-                let image = data.flatMap { UIImage(data: $0) }
-                completion(image: image)
-            }
-        }
-        else {
-            imageManager.requestImageForAsset(asset, targetSize: targetSize, contentMode: .AspectFill, options: requestOptions) { image, _ in
-                completion(image: image)
-            }
-        }
-    }
-    
-    private func requestOriginalImageForAsset(asset: PHAsset, completion: (image: UIImage?) -> ()) {
-        let targetSize = sizeForAsset(asset, scale: UIScreen.mainScreen().scale)
-        requestOptions.synchronous = true
         
         // Workaround because PHImageManager.requestImageForAsset doesn't work for burst images
         if asset.representsBurst {
@@ -308,7 +290,7 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
         }
     }
    
-    func getSelectedAsImages() -> [UIImage] {
+    func getSelectedAsImages(completion: (images: [UIImage]) -> ()){
         
         let arrayModelsForSend = self.selectedAssets
         
@@ -316,15 +298,16 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
 
         for (_,model) in arrayModelsForSend.enumerate() {
 
-            self.imageManagerForOrig.requestImageDataForAsset(model, options: requestOptions, resultHandler: { (data, _, _, _) -> Void in
+            self.imageManager.requestImageDataForAsset(model, options: requestOptions, resultHandler: { (data, _, _, _) -> Void in
                 if data != nil {
                     compliedArray.append(UIImage(data: data!)!)
+                    if compliedArray.count == arrayModelsForSend.count {
+                        completion(images: compliedArray)
+                    }
                 }
             })
-
+            
         }
-        
-        return compliedArray
         
     }
     
