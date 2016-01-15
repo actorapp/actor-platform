@@ -1322,7 +1322,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
     
     NSInteger curve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
-    NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    //NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     
     CGRect beginFrame = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
@@ -1344,7 +1344,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     if (!CGRectEqualToRect(beginFrame, endFrame))
     {
         // Only for this animation, we set bo to bounce since we want to give the impression that the text input is glued to the keyboard.
-        [self.view slk_animateLayoutIfNeededWithDuration:duration
+        [self.view slk_animateLayoutIfNeededWithDuration:0.0
                                                   bounce:NO
                                                  options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
                                               animations:animations
