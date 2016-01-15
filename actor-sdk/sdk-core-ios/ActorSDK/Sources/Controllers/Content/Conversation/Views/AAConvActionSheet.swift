@@ -293,18 +293,21 @@ class AAConvActionSheet: UIView {
         let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
         dispatch_async(dispatch_get_global_queue(priority, 0)) {
             
-            let arrayModelsForSend = self.thumbnailView.getSelectedAsImages()
-            self.thumbnailView.selectedAssets = [PHAsset]()
-            
-            for (_,image) in arrayModelsForSend.enumerate() {
-            
-                self.weakSuper.sendImageFromActionSheet(image)
+            self.thumbnailView.getSelectedAsImages({ (images) -> () in
+                let arrayModelsForSend = images
+                self.thumbnailView.selectedAssets = [PHAsset]()
                 
-            }
+                for (_,image) in arrayModelsForSend.enumerate() {
+                    
+                    self.weakSuper.sendImageFromActionSheet(image)
+                    
+                }
+                
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.updateSelectedPhotos()
+                }
+            })
             
-            dispatch_async(dispatch_get_main_queue()) {
-                self.updateSelectedPhotos()
-            }
 
         }
         
