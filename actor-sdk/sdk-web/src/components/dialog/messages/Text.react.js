@@ -22,7 +22,7 @@ const processText = (text) => {
 };
 
 const memoizedProcessText = memoize(processText, {
-  length: 1000,
+  length: 1,
   maxAge: 60 * 60 * 1000,
   max: 10000
 });

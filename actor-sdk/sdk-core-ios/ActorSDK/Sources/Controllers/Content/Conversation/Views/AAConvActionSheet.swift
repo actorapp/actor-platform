@@ -9,16 +9,10 @@
 import UIKit
 import Photos
 
-protocol AAActionSheetDelegate{
-    func actionSheetDidFinished(selectedObjs:Array<AnyObject>)
-}
-
 let screenWidth = UIScreen.mainScreen().bounds.size.width
 let screenHeigth = UIScreen.mainScreen().bounds.size.height
 
 class AAConvActionSheet: UIView {
-
-    var delegate:AAActionSheetDelegate?
     
     var sheetView:UIView!
     
@@ -104,7 +98,6 @@ class AAConvActionSheet: UIView {
                 
                 self.thumbnailView.selectedAssets = [PHAsset]()
                 self.thumbnailView.reloadView()
-                self.thumbnailView.collectionView.scrollToItemAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.None, animated: false)
                 self.updateSelectedPhotos()
         }
         

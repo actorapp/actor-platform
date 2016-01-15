@@ -284,6 +284,7 @@
 		BED5A2111C48413C0045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2041C4839790045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A2121C48413C0045FDB0 /* NYTPhotoContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2051C4839790045FDB0 /* NYTPhotoContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A2131C48413C0045FDB0 /* NYTPhotosViewControllerDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2061C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BED5A2151C49504B0045FDB0 /* AABubbleVideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED5A2141C49504B0045FDB0 /* AABubbleVideoCell.swift */; };
 		BEF11DB61C466D800076400A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153F6B3C1C2A9B1900C0B960 /* begin_record.caf */; };
 		BEFE68D51C4657360001F2D6 /* AAThumbnailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */; };
 /* End PBXBuildFile section */
@@ -586,6 +587,7 @@
 		BED5A2061C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYTPhotosViewControllerDataSource.h; sourceTree = "<group>"; };
 		BED5A20C1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+NYTPhotoViewer.h"; sourceTree = "<group>"; };
 		BED5A20D1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+NYTPhotoViewer.m"; sourceTree = "<group>"; };
+		BED5A2141C49504B0045FDB0 /* AABubbleVideoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleVideoCell.swift; sourceTree = "<group>"; };
 		BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailCollectionCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1084,6 +1086,7 @@
 				153F6B5C1C2B3AC500C0B960 /* AABubbleStickerCell.swift */,
 				066A53261BC53406000E606E /* AABubbleTextCell.swift */,
 				153F6B5A1C2B109400C0B960 /* AABubbleVoiceCell.swift */,
+				BED5A2141C49504B0045FDB0 /* AABubbleVideoCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -1800,6 +1803,7 @@
 				066A52E71BC52A20000E606E /* AAInviteLinkViewController.swift in Sources */,
 				152AA8AD1C2989270030DEEE /* SLKTextView+SLKAdditions.m in Sources */,
 				152AA8B71C2989270030DEEE /* UIScrollView+SLKAdditions.m in Sources */,
+				BED5A2151C49504B0045FDB0 /* AABubbleVideoCell.swift in Sources */,
 				066A52241BC4EEAC000E606E /* AAManagedRange.swift in Sources */,
 				066A50E21BC4AF9F000E606E /* ActorSDK.swift in Sources */,
 				15D35F761C201B6B00E3717A /* AACustomPresentationAnimationController.swift in Sources */,
