@@ -141,6 +141,7 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
     // File state binding
     
     public override func fileUploadPaused(reference: String, selfGeneration: Int) {
+        bgLoadThumb(selfGeneration)
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
@@ -152,6 +153,7 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
     }
     
     public override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
+        bgLoadThumb(selfGeneration)
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
@@ -185,7 +187,8 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
     }
     
     public override func fileReady(reference: String, selfGeneration: Int) {
-        bgLoadReference(reference, selfGeneration: selfGeneration)
+        bgLoadThumb(selfGeneration)
+        self.bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
             self.progress.setProgress(1)
@@ -198,6 +201,7 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
         if (thumbLoaded) {
             return
         }
+        
         thumbLoaded = true
         
         if (bindedLayout.fastThumb != nil) {
@@ -210,14 +214,10 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
                 self.setPreviewImage(loadedThumb!, fast: true)
             });
         }
+        
     }
     
     public func bgLoadReference(reference: String, selfGeneration: Int) {
-        if (contentLoaded) {
-            return
-        }
-        contentLoaded = true
-        
         
         let movieAsset = AVAsset(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))) // video asset
         let imageGenerator = AVAssetImageGenerator(asset: movieAsset)
@@ -236,15 +236,15 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
             }
             
             let loadedContent = thumbnail.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
-            
+            print("loadedContent === \(loadedContent)")
             runOnUiThread(selfGeneration, closure: { () -> () in
                 self.setPreviewImage(loadedContent, fast: false)
+                self.contentLoaded = true
             })
             
         } catch {
             
         }
-        
         
     }
     
@@ -363,7 +363,7 @@ public class VideoCellLayout: AACellLayout {
      Creating layout for video content
      */
     public convenience init(id: Int64, videoContent: ACVideoContent, date: Int64) {
-        self.init(id: id, width: CGFloat(videoContent.getW()), height: CGFloat(videoContent.getH()), date: date, fastThumb: videoContent.getFastThumb(),autoDownload: true)
+        self.init(id: id, width: CGFloat(videoContent.getW()), height: CGFloat(videoContent.getH()), date: date, fastThumb: videoContent.getFastThumb(),autoDownload: false)
     }
     
     /**
