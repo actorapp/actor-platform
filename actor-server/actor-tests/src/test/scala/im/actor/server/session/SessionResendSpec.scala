@@ -201,13 +201,13 @@ final class SessionResendSpec extends BaseSessionSpec(
       val upd2second = UpdateUserOffline(2)
       val upd3 = UpdateUserOffline(3)
 
-      weakUpdatesExt.pushUpdate(authId, upd1, Some("reduceKey 1 (uniq)"))
+      weakUpdatesExt.pushUpdate(authId, upd1, Some("reduceKey 1 (uniq)"), None)
 
-      weakUpdatesExt.pushUpdate(authId, upd2first, Some("reduceKey 2 (same)"))
+      weakUpdatesExt.pushUpdate(authId, upd2first, Some("reduceKey 2 (same)"), None)
 
-      weakUpdatesExt.pushUpdate(authId, upd2second, Some("reduceKey 2 (same)"))
+      weakUpdatesExt.pushUpdate(authId, upd2second, Some("reduceKey 2 (same)"), None)
 
-      weakUpdatesExt.pushUpdate(authId, upd3, Some("reduceKey 3 (uniq)"))
+      weakUpdatesExt.pushUpdate(authId, upd3, Some("reduceKey 3 (uniq)"), None)
 
       expectUserOffline(authId, sessionId, 1)
 
