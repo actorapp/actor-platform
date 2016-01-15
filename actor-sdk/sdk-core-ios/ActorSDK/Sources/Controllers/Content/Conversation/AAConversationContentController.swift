@@ -4,6 +4,9 @@
 
 import Foundation
 import UIKit
+import MediaPlayer
+import AVKit
+import AVFoundation
 
 public class AAConversationContentController: SLKTextViewController, ARDisplayList_AppleChangeListener {
 
@@ -366,6 +369,17 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         
         self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)
         self.voicePlayer.play(0)
+        
+    }
+    
+    func playVideoFromPath(path:String) {
+        
+        let player = AVPlayer(URL: NSURL(fileURLWithPath: path))
+        let playerController = AVPlayerViewController()
+        playerController.player = player
+        self.presentViewController(playerController, animated: true) {
+            player.play()
+        }
         
     }
     

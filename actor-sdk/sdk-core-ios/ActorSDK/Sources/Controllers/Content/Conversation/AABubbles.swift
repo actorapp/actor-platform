@@ -14,9 +14,11 @@ class AABubbles {
     static let contactLayouter = AABubbleContactCellLayouter()
     static let voiceLayouter = AABubbleVoiceCellLayouter()
     static let stickerLayouter = AABubbleStickerCellLayouter()
+    static let videoLayouter = AABubbleVideoCellLayouter()
     
     static let builtInLayouters: [AABubbleLayouter] = [
         serviceLayouter,
+        videoLayouter,
         mediaLayouter,
         voiceLayouter,
         stickerLayouter,

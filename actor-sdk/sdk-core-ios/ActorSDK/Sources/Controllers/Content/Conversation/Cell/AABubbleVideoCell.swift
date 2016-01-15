@@ -1,11 +1,12 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
-import Foundation
+import UIKit
 import VBFPopFlatButton
+import AVFoundation
 
-public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate {
+public class AABubbleVideoCell: AABubbleBaseFileCell {
     
     // Views
     
@@ -14,10 +15,11 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     let timeBg = UIImageView()
     let timeLabel = UILabel()
     let statusView = UIImageView()
+    let playView = UIImageView(image: UIImage.bundled("aa_playbutton"))
     
     // Binded data
     
-    var bindedLayout: MediaCellLayout!
+    var bindedLayout: VideoCellLayout!
     var thumbLoaded = false
     var contentLoaded = false
     
@@ -25,8 +27,6 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     
     public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
-        
-//        timeBg.image = Imaging.imageWithColor(appStyle.chatMediaDateBgColor, size: CGSize(width: 1, height: 1))
         
         timeBg.image = ActorSDK.sharedActor().style.statusBackgroundImage
         
@@ -41,13 +41,17 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         contentView.addSubview(timeBg)
         contentView.addSubview(timeLabel)
         contentView.addSubview(statusView)
+        contentView.addSubview(playView)
         
         preview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "mediaDidTap"))
         preview.userInteractionEnabled = true
         
+        playView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "mediaDidTap"))
+        playView.userInteractionEnabled = true
+        
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
     }
-
+    
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -55,7 +59,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     // Binding
     
     public override func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
-        self.bindedLayout = cellLayout as! MediaCellLayout
+        self.bindedLayout = cellLayout as! VideoCellLayout
         
         bubbleInsets = UIEdgeInsets(
             top: setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop,
@@ -83,7 +87,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
                 self.progress.alpha = 0
                 self.preview.alpha = 0
             })
-
+            
             // Bind file
             fileBind(message, autoDownload: bindedLayout.autoDownload)
         }
@@ -125,6 +129,15 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         }
     }
     
+    func applyBlurEffect(image: UIImage)-> UIImage {
+        let imageToBlur = CIImage(image: image)
+        let blurfilter = CIFilter(name: "CIGaussianBlur")
+        blurfilter!.setValue(5, forKey: kCIInputRadiusKey)
+        blurfilter!.setValue(imageToBlur, forKey: "inputImage")
+        let resultImage = blurfilter!.valueForKey("outputImage") as! CIImage
+        return UIImage(CIImage: resultImage)
+    }
+    
     // File state binding
     
     public override func fileUploadPaused(reference: String, selfGeneration: Int) {
@@ -132,6 +145,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         
         runOnUiThread(selfGeneration) { () -> () in
             self.progress.showView()
+            self.playView.hideView()
             self.progress.setButtonType(FlatButtonType.buttonUpBasicType, animated: true)
             self.progress.hideProgress()
         }
@@ -142,6 +156,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         
         runOnUiThread(selfGeneration) { () -> () in
             self.progress.showView()
+            self.playView.hideView()
             self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
             self.progress.setProgress(progress)
         }
@@ -149,9 +164,10 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     
     public override func fileDownloadPaused(selfGeneration: Int) {
         bgLoadThumb(selfGeneration)
-
+        
         runOnUiThread(selfGeneration) { () -> () in
             self.progress.showView()
+            self.playView.hideView()
             self.progress.setButtonType(FlatButtonType.buttonDownloadType, animated: true)
             self.progress.hideProgress()
         }
@@ -159,9 +175,10 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     
     public override func fileDownloading(progress: Double, selfGeneration: Int) {
         bgLoadThumb(selfGeneration)
-
+        
         runOnUiThread(selfGeneration) { () -> () in
             self.progress.showView()
+            self.playView.hideView()
             self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
             self.progress.setProgress(progress)
         }
@@ -171,8 +188,9 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
-            self.progress.setProgress(1)            
+            self.progress.setProgress(1)
             self.progress.hideView()
+            self.playView.showView()
         }
     }
     
@@ -200,20 +218,39 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         }
         contentLoaded = true
         
-        let loadedContent = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
         
-        if (loadedContent == nil) {
-            return
+        let movieAsset = AVAsset(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))) // video asset
+        let imageGenerator = AVAssetImageGenerator(asset: movieAsset)
+        var thumbnailTime = movieAsset.duration
+        thumbnailTime.value = 25
+        
+        do {
+            
+            let imageRef = try imageGenerator.copyCGImageAtTime(thumbnailTime, actualTime: nil)
+            var thumbnail = UIImage(CGImage: imageRef)
+            
+            let orientation = movieAsset.videoOrientation()
+            
+            if (orientation.orientation.isPortrait) == true {
+                thumbnail = thumbnail.imageRotatedByDegrees(90, flip: false)
+            }
+            
+            let loadedContent = thumbnail.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
+            
+            runOnUiThread(selfGeneration, closure: { () -> () in
+                self.setPreviewImage(loadedContent, fast: false)
+            })
+            
+        } catch {
+            
         }
         
-        runOnUiThread(selfGeneration, closure: { () -> () in
-            self.setPreviewImage(loadedContent!, fast: false)
-        })
+        
     }
     
     public func setPreviewImage(img: UIImage, fast: Bool){
         if ((fast && self.preview.image == nil) || !fast) {
-            self.preview.image = img;
+            self.preview.image = img
             self.preview.showView()
         }
     }
@@ -229,12 +266,9 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
                 }, onDownloading: { (progress) -> () in
                     Actor.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
                 }, onDownloaded: { (reference) -> () in
-                    if let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference)) {
-                        let previewImage = PreviewImage(image: img)
-                        let previewController = AAPhotoPreviewController(photo: previewImage, fromView: self.preview)
-                        previewController.autoShowBadge = true
-                        self.controller.presentViewController(previewController, animated: true, completion: nil)
-                    }
+                    
+                    self.controller.playVideoFromPath(CocoaFiles.pathFromDescriptor(reference))
+                    
             }))
         } else if let fileSource = content.getSource() as? ACFileLocalSource {
             let rid = bindedMessage!.rid
@@ -245,12 +279,9 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
                     Actor.pauseUploadWithRid(rid)
                 }, onUploadedClosure: { () -> () in
                     
-                    if let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))) {
-                        let previewImage = PreviewImage(image: img)
-                        let previewController = AAPhotoPreviewController(photo: previewImage, fromView: self.preview)
-                        previewController.autoShowBadge = true
-                        self.controller.presentViewController(previewController, animated: true, completion: nil)
-                    }
+                    
+                    self.controller.playVideoFromPath(CocoaFiles.pathFromDescriptor(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor())))
+                    
             }))
         }
     }
@@ -274,6 +305,8 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         
         progress.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
         
+        playView.frame = progress.frame
+        
         timeLabel.frame = CGRectMake(0, 0, 1000, 1000)
         timeLabel.sizeToFit()
         
@@ -289,22 +322,10 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         timeBg.frame = CGRectMake(timeLabel.frame.minX - 4, timeLabel.frame.minY - 1, timeWidth + 8, timeHeight + 2)
     }
     
-    // Photo preview
-    
-    public func photosViewController(photosViewController: NYTPhotosViewController, referenceViewForPhoto photo: NYTPhoto) -> UIView? {
-        return self.preview
-    }
-    
-    public func photosViewControllerWillDismiss(photosViewController: NYTPhotosViewController) {
-        // (UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
-        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
-    }
+
 }
 
-/**
-    Media cell layout
-*/
-public class MediaCellLayout: AACellLayout {
+public class VideoCellLayout: AACellLayout {
     
     public let fastThumb: NSData?
     public let contentSize: CGSize
@@ -312,8 +333,8 @@ public class MediaCellLayout: AACellLayout {
     public let autoDownload: Bool
     
     /**
-        Creting layout for media bubble
-    */
+     Creting layout for media bubble
+     */
     public init(id: Int64, width: CGFloat, height:CGFloat, date: Int64, fastThumb: ACFastThumb?, autoDownload: Bool) {
         
         // Saving content size
@@ -321,64 +342,58 @@ public class MediaCellLayout: AACellLayout {
         
         // Saving autodownload flag
         self.autoDownload = autoDownload
-
+        
         // Calculating bubble screen size
         let scaleW = 240 / width
-        let scaleH = 340 / height
+        let scaleH = 240 / height
         let scale = min(scaleW, scaleH)
         self.screenSize = CGSize(width: scale * width, height: scale * height)
         
         // Prepare fast thumb
+        print("video thumb === \(fastThumb?.getImage().toNSData())")
+        
         self.fastThumb = fastThumb?.getImage().toNSData()
         
         // Creating layout
         super.init(height: self.screenSize.height + 2, date: date, key: "media")
     }
     
-    /**
-        Creating layout for photo content
-    */
-    public convenience init(id: Int64, photoContent: ACPhotoContent, date: Int64) {
-        self.init(id: id, width: CGFloat(photoContent.getW()), height: CGFloat(photoContent.getH()), date: date, fastThumb: photoContent.getFastThumb(), autoDownload: true)
-    }
     
     /**
-        Creating layout for video content
-    */
+     Creating layout for video content
+     */
     public convenience init(id: Int64, videoContent: ACVideoContent, date: Int64) {
-        self.init(id: id, width: CGFloat(videoContent.getW()), height: CGFloat(videoContent.getH()), date: date, fastThumb: videoContent.getFastThumb(),autoDownload: false)
+        self.init(id: id, width: CGFloat(videoContent.getW()), height: CGFloat(videoContent.getH()), date: date, fastThumb: videoContent.getFastThumb(),autoDownload: true)
     }
     
     /**
-        Creating layout for message
-    */
+     Creating layout for message
+     */
     public convenience init(message: ACMessage) {
-        if let content = message.content as? ACPhotoContent {
-            self.init(id: Int64(message.rid), photoContent: content, date: Int64(message.date))
+        if let content = message.content as? ACVideoContent {
+            self.init(id: Int64(message.rid), videoContent: content, date: Int64(message.date))
         } else {
             fatalError("Unsupported content for media cell")
         }
     }
 }
 
-/**
-    Layouter for media bubbles
-*/
-public class AABubbleMediaCellLayouter: AABubbleLayouter {
+
+
+public class AABubbleVideoCellLayouter: AABubbleLayouter {
     
     public func isSuitable(message: ACMessage) -> Bool {
-        if message.content is ACPhotoContent {
+        if message.content is ACVideoContent {
             return true
         }
-        
         return false
     }
     
     public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
-        return MediaCellLayout(message: message)
+        return VideoCellLayout(message: message)
     }
     
     public func cellClass() -> AnyClass {
-        return AABubbleMediaCell.self
+        return AABubbleVideoCell.self
     }
 }
