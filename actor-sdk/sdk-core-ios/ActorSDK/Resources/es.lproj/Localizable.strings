@@ -231,6 +231,14 @@
 "ChatSlideUpToCancel" = "Deslizar para cancelar";
 
 /*
+ * Chat attachment menu
+ */
+
+"AttachmentsSendPhoto" = "Enviar {count} Foto";
+
+"AttachmentsSendPhotos" = "Enviar {count} Fotos";
+
+/*
  * Notifications
  */
 
