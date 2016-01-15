@@ -1,12 +1,12 @@
 package im.actor.server.file.local
 
-import java.io
 import java.io.IOException
 import java.net.URLEncoder
 import java.time.{ Duration, Instant }
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.{ HttpMethods, Uri }
+import akka.stream.{ Materializer, ActorMaterializer }
 import better.files._
 import im.actor.acl.ACLFiles
 import im.actor.server.api.http.{ HttpApi, HttpApiConfig }
@@ -37,6 +37,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
 
   protected implicit val system: ActorSystem = _system
   protected implicit val ec: ExecutionContext = system.dispatcher
+  protected implicit val mat: Materializer = ActorMaterializer()
 
   private val db = DbExtension(system).db
 
@@ -75,22 +76,22 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
 
   val baseUri = Uri(httpConfig.baseUri)
 
-  override def uploadFile(name: UnsafeFileName, file: io.File): DBIO[FileLocation] = {
-    val scalaFile = file.toScala
+  override def uploadFile(name: UnsafeFileName, data: Array[Byte]): DBIO[FileLocation] = {
     val rng = ThreadLocalRandom.current()
     val id = ACLFiles.randomLong(rng)
     val accessSalt = ACLFiles.nextAccessSalt(rng)
 
-    val size = scalaFile.size
+    val size = data.length
+
     for {
-      _ ← persist.FileRepo.create(id, size, accessSalt, LocalUploadKey.fileKey(id).key)
-      _ ← DBIO.from(createFile(id, name.safe, scalaFile))
+      _ ← persist.FileRepo.create(id, size.toLong, accessSalt, LocalUploadKey.fileKey(id).key)
+      _ ← DBIO.from(createFile(id, name.safe, data))
       _ ← persist.FileRepo.setUploaded(id, name.safe)
     } yield FileLocation(id, ACLFiles.fileAccessHash(id, accessSalt))
 
   }
 
-  override def uploadFileF(name: UnsafeFileName, file: io.File): Future[FileLocation] = db.run(uploadFile(name, file))
+  override def uploadFileF(name: UnsafeFileName, data: Array[Byte]): Future[FileLocation] = db.run(uploadFile(name, data))
 
   /**
    * Generates upload uri similar to:
@@ -116,15 +117,15 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
     } yield ()
   }
 
-  override def downloadFile(id: Long): DBIO[Option[io.File]] =
+  override def downloadFile(id: Long): DBIO[Option[Array[Byte]]] =
     persist.FileRepo.find(id) flatMap {
       case Some(file) ⇒ DBIO.from(for {
-        file ← getFile(file.id, file.name)
-      } yield Some(file.toJava))
+        data ← getFileData(file.id, file.name)
+      } yield Some(data.toArray))
       case None ⇒ DBIO.successful(None)
     }
 
-  override def downloadFileF(id: Long): Future[Option[io.File]] = db.run(downloadFile(id))
+  override def downloadFileF(id: Long): Future[Option[Array[Byte]]] = db.run(downloadFile(id))
 
   /**
    * Generates download uri similar to:

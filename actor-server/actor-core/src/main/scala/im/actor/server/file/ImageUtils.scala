@@ -1,5 +1,7 @@
 package im.actor.server.file
 
+import java.io.ByteArrayOutputStream
+
 import akka.actor.ActorSystem
 import com.sksamuel.scrimage.nio.{ JpegWriter, ImageWriter, PngWriter }
 import com.sksamuel.scrimage.{ Image, ParImage, Position }
@@ -104,22 +106,25 @@ object ImageUtils {
     persist.FileRepo.find(fullFileId) flatMap {
       case Some(fullFileModel) ⇒
         fsAdapter.downloadFile(fullFileId) flatMap {
-          case Some(fullFile) ⇒
+          case Some(fullFileData) ⇒
             val action = for {
-              fullAimg ← Future.fromTry(Try(Image.fromFile(fullFile).toPar))
+              fullAimg ← Future.fromTry(Try(Image(fullFileData).toPar))
               (fiw, fih) = dimensions(fullAimg)
 
               smallAimg ← resizeTo(fullAimg, smallDesc.side)
               largeAimg ← resizeTo(fullAimg, largeDesc.side)
 
-              smallFile = fullFile.getParentFile.toPath.resolve(smallDesc.name).toFile
-              largeFile = fullFile.getParentFile.toPath.resolve(largeDesc.name).toFile
+              smallBaos = new ByteArrayOutputStream()
+              largeBaos = new ByteArrayOutputStream()
 
-              _ ← Future.fromTry(Try(smallAimg.toImage.forWriter(smallDesc.writer).write(smallFile)))
-              _ ← Future.fromTry(Try(largeAimg.toImage.forWriter(largeDesc.writer).write(largeFile)))
+              _ ← Future.fromTry(Try(smallAimg.toImage.forWriter(smallDesc.writer).write(smallBaos)))
+              _ ← Future.fromTry(Try(largeAimg.toImage.forWriter(largeDesc.writer).write(largeBaos)))
 
-              smallFileLocation ← fsAdapter.uploadFileF(UnsafeFileName(smallDesc.name), smallFile)
-              largeFileLocation ← fsAdapter.uploadFileF(UnsafeFileName(largeDesc.name), largeFile)
+              smallBytes = smallBaos.toByteArray
+              largeBytes = largeBaos.toByteArray
+
+              smallFileLocation ← fsAdapter.uploadFileF(UnsafeFileName(smallDesc.name), smallBytes)
+              largeFileLocation ← fsAdapter.uploadFileF(UnsafeFileName(largeDesc.name), largeBytes)
             } yield {
               // TODO: #perf calculate file sizes efficiently
 
@@ -127,21 +132,21 @@ object ImageUtils {
                 smallFileLocation,
                 smallAimg.width,
                 smallAimg.height,
-                smallFile.length()
+                smallBytes.length.toLong
               )
 
               val largeImage = AvatarImage(
                 largeFileLocation,
                 largeAimg.width,
                 largeAimg.height,
-                largeFile.length()
+                largeBytes.length.toLong
               )
 
               val fullImage = AvatarImage(
                 FileLocation(fullFileId, ACLUtils.fileAccessHash(fullFileId, fullFileModel.accessSalt)),
                 fullAimg.width,
                 fullAimg.height,
-                fullFile.length()
+                fullFileData.length.toLong
               )
 
               Avatar(Some(smallImage), Some(largeImage), Some(fullImage))
