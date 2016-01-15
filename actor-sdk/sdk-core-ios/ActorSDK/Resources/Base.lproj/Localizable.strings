@@ -331,6 +331,14 @@
 "ChatSlideUpToCancel" = "Slide up to cancel";
 
 /*
+ * Chat attachment menu
+ */
+
+"AttachmentsSendPhoto" = "Send {count} Photo";
+
+"AttachmentsSendPhotos" = "Send {count} Photos";
+
+/*
  * Find
  */
 

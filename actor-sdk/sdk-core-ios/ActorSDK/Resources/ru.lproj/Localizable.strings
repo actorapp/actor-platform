@@ -309,6 +309,14 @@
 "ChatNoGroupAccess" = "Вы не состоите в группе";
 
 /*
+ * Chat attachment menu
+ */
+
+"AttachmentsSendPhoto" = "Отправить {count} Фото";
+
+"AttachmentsSendPhotos" = "Отправить {count} Фото";
+
+/*
  * Find
  */
 
