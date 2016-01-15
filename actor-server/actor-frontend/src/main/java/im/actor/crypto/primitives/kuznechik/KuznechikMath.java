@@ -5,8 +5,10 @@ package im.actor.crypto.primitives.kuznechik;
  * <p/>
  * Ported by Steven Kite (steve@actor.im) from
  * https://github.com/mjosaarinen/kuznechik/blob/master/kuznechik_8bit.c
+ * Multiplication optimization from
+ * http://www.cs.utsa.edu/~wagner/laws/FFM.html
  */
-class KuznechikMath {
+public class KuznechikMath {
 
     // poly multiplication mod p(x) = x^8 + x^7 + x^6 + x + 1
     // totally not constant time
@@ -33,6 +35,15 @@ class KuznechikMath {
         return z;
     }
 
+    // Fast implementation of multiplication in GF(2^8) on x^8 + x^7 + x^6 + x + 1
+    // Implemented with
+    public static byte kuz_mul_gf256_fast(byte a, byte b) {
+        if (a == 0 || b == 0) return 0;
+        int t = (KuznechikTables.gf256_L[(a & 0xff)] & 0xff) + (KuznechikTables.gf256_L[(b & 0xff)] & 0xff);
+        if (t > 255) t = t - 255;
+        return KuznechikTables.gf256_E[(t & 0xff)];
+    }
+
     // linear operation l
     // static void kuz_l(w128_t *w)
     public static void kuz_l(Kuz128 w) {
@@ -46,7 +57,7 @@ class KuznechikMath {
                 // w->b[i + 1] = w->b[i];
                 w.getB()[i + 1] = w.getB()[i];
                 // x ^= kuz_mul_gf256(w->b[i], kuz_lvec[i]);
-                x ^= kuz_mul_gf256(w.getB()[i], KuznechikTables.kuz_lvec[i]);
+                x ^= kuz_mul_gf256_fast(w.getB()[i], KuznechikTables.kuz_lvec[i]);
             }
             w.getB()[0] = x;
         }
@@ -67,7 +78,7 @@ class KuznechikMath {
                 w.getB()[i] = w.getB()[i + 1];
 
                 // x ^= kuz_mul_gf256(w->b[i], kuz_lvec[i]);
-                x ^= kuz_mul_gf256(w.getB()[i], KuznechikTables.kuz_lvec[i]);
+                x ^= kuz_mul_gf256_fast(w.getB()[i], KuznechikTables.kuz_lvec[i]);
             }
 
             // w->b[15] = x;
