@@ -72,6 +72,8 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     }
     
     private func fetchAssets() {
+        self.assets = [PHAsset]()
+        
         let options = PHFetchOptions()
         options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
@@ -86,7 +88,7 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
         
         options.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.Image.rawValue)
         
-        let fetchLimit = 50
+        let fetchLimit = 100
         if #available(iOS 9, *) {
             options.fetchLimit = fetchLimit
         }
@@ -97,21 +99,23 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
         requestOptions.deliveryMode = .FastFormat
         
         result.enumerateObjectsUsingBlock { asset, _, stop in
-            defer {
+            //defer {
                 if self.assets.count > fetchLimit {
                     stop.initialize(true)
                 }
-            }
+            //}
             
             if let asset = asset as? PHAsset {
+                self.assets.append(asset)
                 self.imageManager.requestImageDataForAsset(asset, options: requestOptions) { data, _, _, info in
                     if data != nil {
-                        self.assets.append(asset)
                         self.prefetchImagesForAsset(asset)
                     }
                 }
             }
         }
+        
+        
     }
     
     private func prefetchImagesForAsset(asset: PHAsset) {
@@ -158,6 +162,7 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         print("ASSSEEETS === \(self.assets.count)")
+        
         return self.assets.count
     }
     
