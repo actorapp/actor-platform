@@ -4,10 +4,10 @@ import java.time.{ Duration, Instant }
 
 import akka.actor.ActorSystem
 import akka.event.Logging
-import akka.http.scaladsl.model.HttpResponse
+import akka.http.scaladsl.model.{ StatusCodes, HttpResponse }
 import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{ Directive0, Route }
+import akka.http.scaladsl.server._
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
@@ -31,12 +31,18 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
 
   private val log = Logging(system, this)
 
+  val SignedLongNumber: PathMatcher1[Long] =
+    PathMatcher("""[+-]?\d+""".r) flatMap { string ⇒
+      try Some(java.lang.Long.parseLong(string))
+      catch { case _: NumberFormatException ⇒ None }
+    }
+
   // format: OFF
   def routes: Route =
     extractRequest { request =>
       //      log.debug("Got file request {}", request)
       defaultVersion {
-        pathPrefix("files" / LongNumber) { fileId =>
+        pathPrefix("files" / SignedLongNumber) { fileId =>
           options {
             log.debug("Responded OK to OPTIONS req: {}", request.uri)
             complete(HttpResponse(OK))
@@ -49,11 +55,12 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
               path(Segments(0, 1)) { seqName =>
                 log.debug("Download file request, fileId: {}", fileId)
                 withRangeSupport {
-                  onComplete(getFileData(fileId)) {
-                    case Success(data) =>
+                  onComplete(getFile(fileId)) {
+                    case Success(Some(file)) =>
                       log.debug("Serving file: {} parts", fileId)
-
-                      complete(data)
+                      getFromFile(file.toJava)
+                    case Success(None) =>
+                      complete(HttpResponse(StatusCodes.NotFound))
                     case Failure(e) =>
                       log.error(e, "Failed to get file content, fileId: {}", fileId)
                       complete(HttpResponse(500))

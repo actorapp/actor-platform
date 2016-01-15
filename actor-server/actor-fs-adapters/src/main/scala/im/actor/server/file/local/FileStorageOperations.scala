@@ -84,16 +84,23 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
   protected def deleteUploadedParts(dir: File, partNames: Seq[String]): Future[Unit] =
     Future.sequence(partNames map { part ⇒ Future((dir / part).delete()) }) map (_ ⇒ ())
 
-  protected def getFileData(fileId: Long): Future[ByteString] =
-    db.run(FileRepo.find(fileId)) flatMap {
-      case Some(model) ⇒ getFileData(fileId, model.name)
-      case None        ⇒ Future.failed(new RuntimeException("File not found")) // TODO: throw an exception convertable to 404 response
+  protected def getFileData(fileId: Long): Future[Option[ByteString]] =
+    for {
+      fileOpt ← getFile(fileId)
+      dataOpt ← fileOpt match {
+        case Some(file) ⇒ getFileData(file) map (Some(_))
+        case None       ⇒ FastFuture.successful(None)
+      }
+    } yield dataOpt
+
+  protected def getFile(fileId: Long): Future[Option[File]] =
+    db.run(FileRepo.find(fileId)) map {
+      case Some(model) ⇒ Some(fileDirectory(fileId) / getFileName(model.name))
+      case None        ⇒ None
     }
 
-  protected def getFileData(fileId: Long, fileName: String): Future[ByteString] = {
-    val file = fileDirectory(fileId) / getFileName(fileName)
+  protected def getFileData(file: File): Future[ByteString] =
     FileIO.fromFile(file.toJava).runFold(ByteString.empty)(_ ++ _)
-  }
 
   protected def getFileName(name: String) = if (name.trim.isEmpty) "file" else name
 
