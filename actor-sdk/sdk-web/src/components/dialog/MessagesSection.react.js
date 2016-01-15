@@ -19,6 +19,7 @@ import MessageStore from '../../stores/MessageStore';
 import MessageItem from './messages/MessageItem.react';
 import Welcome from './messages/Welcome.react';
 import Loading from './messages/Loading.react';
+import {Container} from 'flux/utils';
 
 let _delayed = [];
 
@@ -36,16 +37,13 @@ class MessagesSection extends Component {
     peer: PropTypes.object.isRequired,
     onScroll: PropTypes.func.isRequired
   };
-
+  
   constructor(props) {
     super(props);
 
     this.state = {
       selectedMessages: MessageStore.getSelected()
     };
-
-    VisibilityStore.addListener(this.onAppVisibilityChange);
-    MessageStore.addListener(this.onMessagesChange);
   }
 
   getMessagesListItem = (message, index) => {
@@ -72,7 +70,8 @@ class MessagesSection extends Component {
                    peer={this.props.peer}/>
     );
 
-    return [dateDivider, messageItem];
+    // return [dateDivider, messageItem];
+    return messageItem;
   };
 
   onAppVisibilityChange = () => {
@@ -82,6 +81,11 @@ class MessagesSection extends Component {
   };
 
   onMessagesChange = () => this.setState({selectedMessages: MessageStore.getSelected()});
+  
+  shouldComponentUpdate(nextProps, nextState) {
+      // console.warn('messagesSection:shouldComponentUpdate')
+      return true
+  }
 
   handleMessageSelect = (rid) => {
     const { selectedMessages } = this.state;

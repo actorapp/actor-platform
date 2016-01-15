@@ -47,7 +47,7 @@ class Text extends Component {
 
     return (
       <div className={className}>
-        <div className="text" dangerouslySetInnerHTML={{__html: memoizedProcessText(text)}}/>
+        <div className="text" dangerouslySetInnerHTML={{__html: processText(text)}}/>
       </div>
     );
   }
