@@ -10,7 +10,7 @@ import AddressBookUI
 import SVProgressHUD
 
 class ConversationViewController: AAConversationContentController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AALocationPickerControllerDelegate,
-    ABPeoplePickerNavigationControllerDelegate, AAActionSheetDelegate {
+    ABPeoplePickerNavigationControllerDelegate {
     
     // Data binder
     private let binder = AABinder()
@@ -296,8 +296,6 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         // action sheet
         
         self.actionSheet = AAConvActionSheet(maxSelected: 9, weakSuperIn: self)
-        self.actionSheet.delegate = self
-        //self.navigationController!.view.addSubview(self.actionSheet)
         
         self.navigationController?.view.addSubview(self.actionSheet)
     }
@@ -463,36 +461,6 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         self.textInputbar.textView.resignFirstResponder()
         
-//        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-//        
-//        let builder = AAMenuBuilder()
-//        
-//        if hasCamera {
-//            builder.add("PhotoCamera") {
-//                self.pickImage(.Camera)
-//            }
-//        }
-//        
-//        builder.add("PhotoLibrary") {
-//            self.pickImage(.PhotoLibrary)
-//        }
-//        
-//        if (NSFileManager.defaultManager().ubiquityIdentityToken != nil) {
-//            builder.add("SendDocument") {
-//                self.pickDocument()
-//            }
-//        }
-//        
-//        builder.add("ShareLocation") {
-//            self.pickLocation()
-//        }
-//        
-//        builder.add("ShareContact") {
-//            self.pickContact()
-//        }
-//        
-//        showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
-        
         self.actionSheet.showAnimation()
         
         self.rightButton.layoutIfNeeded()
@@ -612,7 +580,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     func pickImage(source: UIImagePickerControllerSourceType) {
         let pickerController = AAImagePickerController()
         pickerController.sourceType = source
-        pickerController.mediaTypes = [kUTTypeImage as String]
+        pickerController.mediaTypes = [kUTTypeImage as String,kUTTypeMovie as String]
         
         //[kUTTypeImage as String,kUTTypeMovie as String]
 
@@ -830,11 +798,6 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         Actor.sendStickerWithPeer(self.peer, withSticker: sticker)
         
     }
-    
-    ///
-    
-    func actionSheetDidFinished(selectedObjs:Array<AnyObject>) {
-        
-    }
+
     
 }
