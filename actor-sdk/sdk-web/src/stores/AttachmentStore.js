@@ -56,7 +56,7 @@ class AttachmentStore extends Store {
       case ActionTypes.ATTACHMENT_MODAL_SHOW:
         _isOpen = true;
         _attachments = map(action.attachments, (file) => {
-          const isImage = file.type.includes('image');
+          const isImage = file.type.includes('image') && file.type !== 'image/gif';
           return {
             isImage,
             sendAsPicture: SEND_AS_PICTURE,
