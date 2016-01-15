@@ -400,9 +400,9 @@
 
 "PhotoRemoveGroupMessage" = "Вы уверены, что хотите удалить фото группы?";
 
-"PhotoCamera" = "Снять фото";
+"PhotoCamera" = "Снять фото/видео";
 
-"PhotoLibrary" = "Фотоархив";
+"PhotoLibrary" = "Выбрать фото/видео";
 
 "ShareLocation" = "Местоположение";
 
