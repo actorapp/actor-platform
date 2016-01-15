@@ -23,7 +23,7 @@ public class AABubbleLocationCell: AABubbleCell {
     public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
         
-        timeBg.image = Imaging.imageWithColor(appStyle.chatMediaDateBgColor, size: CGSize(width: 1, height: 1))
+        timeBg.image = ActorSDK.sharedActor().style.statusBackgroundImage
         
         timeLabel.font = UIFont.italicSystemFontOfSize(11)
         timeLabel.textColor = appStyle.chatMediaDateColor
@@ -144,7 +144,8 @@ public class AABubbleLocationCell: AABubbleCell {
         pin.frame = CGRectMake((map.width - pin.image!.size.width)/2, (map.height / 2 - pin.image!.size.height),
             pin.image!.size.width, pin.image!.size.height)
         
-        timeBg.frame = CGRectMake(timeLabel.frame.minX - 3, timeLabel.frame.minY - 1, timeWidth + 6, timeHeight + 2)
+        timeBg.frame = CGRectMake(timeLabel.frame.minX - 4, timeLabel.frame.minY - 1, timeWidth + 8, timeHeight + 2)
+        
     }
 }
 

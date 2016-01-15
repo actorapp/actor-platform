@@ -51,12 +51,20 @@ public extension ACCocoaMessenger {
             var thumbnailTime = movieAsset.duration
             thumbnailTime.value = 25
             
+            let orientation = movieAsset.videoOrientation()
+            
             do {
                 let imageRef = try imageGenerator.copyCGImageAtTime(thumbnailTime, actualTime: nil)
                 let thumbnail = UIImage(CGImage: imageRef)
-                let thumb = thumbnail.resizeSquare(90, maxH: 90);
+                var thumb = thumbnail.resizeSquare(90, maxH: 90);
+                let resized = thumbnail.resizeOptimize(1200 * 1200);
+                
+                if (orientation.orientation.isPortrait) == true {
+                    thumb = thumb.imageRotatedByDegrees(90, flip: false)
+                }
+                
                 let thumbData = UIImageJPEGRepresentation(thumb, 0.55); // thumbnail binary data
-                let fastThumb = ACFastThumb(int: jint(thumb.size.width), withInt: jint(thumb.size.height), withByteArray: thumbData!.toJavaBytes())
+                let fastThumb = ACFastThumb(int: jint(resized.size.width), withInt: jint(resized.size.height), withByteArray: thumbData!.toJavaBytes())
                 
                 print("video upload imageRef = \(imageRef)")
                 print("video upload thumbnail = \(thumbnail)")
@@ -66,7 +74,12 @@ public extension ACCocoaMessenger {
                 print("video upload width = \(thumbnail.size.width)")
                 print("video upload height = \(thumbnail.size.height)")
                 
-                sendVideoWithPeer(peer, withName: "video.mp4", withW: jint(thumbnail.size.width), withH: jint(thumbnail.size.height), withDuration: jint(videoDurationSeconds), withThumb: fastThumb, withDescriptor: descriptor)
+                if (orientation.orientation.isPortrait == true) {
+                    sendVideoWithPeer(peer, withName: "video.mp4", withW: jint(thumbnail.size.height/2), withH: jint(thumbnail.size.width/2), withDuration: jint(videoDurationSeconds), withThumb: fastThumb, withDescriptor: descriptor)
+                } else {
+                    sendVideoWithPeer(peer, withName: "video.mp4", withW: jint(thumbnail.size.width), withH: jint(thumbnail.size.height), withDuration: jint(videoDurationSeconds), withThumb: fastThumb, withDescriptor: descriptor)
+                }
+                
                 
             } catch {
                 print("can't get thumbnail image")
@@ -112,6 +125,7 @@ extension JavaUtilAbstractCollection : SequenceType {
         return NSFastGenerator(self)
     }
 }
+
 
 public extension JavaUtilList {
     public func toSwiftArray<T>() -> [T] {
