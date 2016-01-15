@@ -1,3 +1,4 @@
 
 * :shipit: Anonymous auth by username 
 * :bug: Memory leak in websocket connection
+* :rocket: Performance problem of Kuznechik encryption
