@@ -95,7 +95,7 @@ public class ProfileFragment extends BaseFragment {
         boolean aboutVivisbe = false;
 
         final FrameLayout about = (FrameLayout) res.findViewById(R.id.about);
-        about.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        about.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
         TextView aboutTitle = (TextView) about.findViewById(R.id.title);
         aboutTitle.setTextColor(style.getTextSecondaryColor());
         aboutTitle.setMaxLines(2);
@@ -137,7 +137,7 @@ public class ProfileFragment extends BaseFragment {
             nickIcon.setResource(R.drawable.ic_star_white_36dp);
             String value = "@".concat(nick);
             String title = getString(R.string.nickname);
-            recordView.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+            recordView.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
             ((TextView) recordView.findViewById(R.id.value)).setText(value);
             ((TextView) recordView.findViewById(R.id.title)).setText(title);
             nickContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -171,7 +171,7 @@ public class ProfileFragment extends BaseFragment {
                     phoneIcon.setVisibility(View.INVISIBLE);
                 }
                 View divider = recordView.findViewById(R.id.divider);
-                divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+                divider.setBackgroundColor(style.getDividerColor());
                 if (i != phones.size() - 1) {
                     divider.setVisibility(View.VISIBLE);
                 } else {
@@ -260,7 +260,7 @@ public class ProfileFragment extends BaseFragment {
                 final UserEmail record = emails.get(i);
                 View recordView = inflater.inflate(R.layout.contact_record, contactsContainer, false);
                 TintImageView emailIcon = (TintImageView) recordView.findViewById(R.id.recordIcon);
-                emailIcon.setTint(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
+                emailIcon.setTint(style.getSettingsCategoryTextColor());
                 if (i == 0) {
                     emailIcon.setResource(R.drawable.ic_email_white_36dp);
                     emailIcon.setVisibility(View.VISIBLE);
@@ -274,7 +274,7 @@ public class ProfileFragment extends BaseFragment {
                 } else {
                     divider.setVisibility(View.GONE);
                 }
-                divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+                divider.setBackgroundColor(style.getDividerColor());
 
                 final String email = record.getEmail();
 
@@ -337,8 +337,8 @@ public class ProfileFragment extends BaseFragment {
 
 
         FloatingActionButton fab = (FloatingActionButton) res.findViewById(R.id.profileAction);
-        fab.setColorNormal(ActorSDK.sharedActor().style.getFabColor());
-        fab.setColorPressed(ActorSDK.sharedActor().style.getFabPressedColor());
+        fab.setColorNormal(style.getFabColor());
+        fab.setColorPressed(style.getFabPressedColor());
 
         fab.setVisibility(View.VISIBLE);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -350,7 +350,11 @@ public class ProfileFragment extends BaseFragment {
 
         avatarView = (CoverAvatarView) res.findViewById(R.id.avatar);
         ImageView avatarBkgrnd = (ImageView) res.findViewById(R.id.avatar_bgrnd);
-        avatarBkgrnd.setBackgroundColor(ActorSDK.sharedActor().style.getAvatarBackgroundColor());
+        if (style.getAvatarBackgroundResourse() != 0) {
+            avatarBkgrnd.setImageResource(style.getAvatarBackgroundResourse());
+        } else {
+            avatarBkgrnd.setBackgroundColor(style.getAvatarBackgroundColor());
+        }
         avatarView.setBkgrnd(avatarBkgrnd);
 
         bind(avatarView, user.getAvatar());
@@ -394,10 +398,10 @@ public class ProfileFragment extends BaseFragment {
         });
 
         TextView settingsHeaderText = (TextView) res.findViewById(R.id.settings_header_text);
-        settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
+        settingsHeaderText.setTextColor(style.getSettingsTitleColor());
 
         TextView sharedHeaderText = (TextView) res.findViewById(R.id.shared_header_text);
-        sharedHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
+        sharedHeaderText.setTextColor(style.getSettingsTitleColor());
 
         TintImageView shareMediaIcon = (TintImageView) res.findViewById(R.id.share_media_icon);
         shareMediaIcon.setTint(style.getSettingsIconColor());
@@ -408,12 +412,12 @@ public class ProfileFragment extends BaseFragment {
         TintImageView notificationsSettingsIcon = (TintImageView) res.findViewById(R.id.settings_notification_icon);
         notificationsSettingsIcon.setTint(style.getSettingsIconColor());
 
-        res.findViewById(R.id.phoneDivider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
-        res.findViewById(R.id.after_shared_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
-        res.findViewById(R.id.bottom_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+        res.findViewById(R.id.phoneDivider).setBackgroundColor(style.getBackyardBackgroundColor());
+        res.findViewById(R.id.after_shared_divider).setBackgroundColor(style.getBackyardBackgroundColor());
+        res.findViewById(R.id.bottom_divider).setBackgroundColor(style.getBackyardBackgroundColor());
 
         final ScrollView scrollView = ((ScrollView) res.findViewById(R.id.scrollContainer));
-        scrollView.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+        scrollView.setBackgroundColor(style.getBackyardBackgroundColor());
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {

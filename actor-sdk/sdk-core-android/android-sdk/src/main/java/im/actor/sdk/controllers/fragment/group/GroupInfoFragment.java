@@ -87,7 +87,8 @@ public class GroupInfoFragment extends BaseFragment {
         View res = inflater.inflate(R.layout.fragment_group, container, false);
 
         notMemberView = res.findViewById(R.id.notMember);
-        ((TextView) notMemberView.findViewById(R.id.not_member_text)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        ActorStyle style = ActorSDK.sharedActor().style;
+        ((TextView) notMemberView.findViewById(R.id.not_member_text)).setTextColor(style.getTextPrimaryColor());
         bind(groupInfo.isMember(), new ValueChangedListener<Boolean>() {
             @Override
             public void onChanged(Boolean val, Value<Boolean> Value) {
@@ -97,15 +98,19 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
         listView = (ListView) res.findViewById(R.id.groupList);
-        listView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        listView.setBackgroundColor(style.getMainBackgroundColor());
 
         final View header = inflater.inflate(R.layout.fragment_group_header, listView, false);
-        header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        header.setBackgroundColor(style.getMainBackgroundColor());
 
         // Avatar
         avatarView = (CoverAvatarView) header.findViewById(R.id.avatar);
         ImageView avatarBkgrnd = (ImageView) header.findViewById(R.id.avatar_bgrnd);
-        avatarBkgrnd.setBackgroundColor(ActorSDK.sharedActor().style.getAvatarBackgroundColor());
+        if (style.getAvatarBackgroundResourse() != 0) {
+            avatarBkgrnd.setImageResource(style.getAvatarBackgroundResourse());
+        } else {
+            avatarBkgrnd.setBackgroundColor(style.getAvatarBackgroundColor());
+        }
         avatarView.setBkgrnd(avatarBkgrnd);
         bind(avatarView, groupInfo.getAvatar());
         avatarView.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +120,6 @@ public class GroupInfoFragment extends BaseFragment {
             }
         });
 
-        ActorStyle style = ActorSDK.sharedActor().style;
         // Title
         TextView title = (TextView) header.findViewById(R.id.title);
         title.setTextColor(style.getProfileTitleColor());
@@ -142,11 +146,11 @@ public class GroupInfoFragment extends BaseFragment {
         theme = new String[1];
         about = new String[1];
         TextView themeTV = (TextView) header.findViewById(R.id.theme);
-        themeTV.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-        ((TextView) header.findViewById(R.id.group_theme_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        themeTV.setTextColor(style.getTextPrimaryColor());
+        ((TextView) header.findViewById(R.id.group_theme_hint)).setTextColor(style.getTextSecondaryColor());
         TextView aboutTV = (TextView) header.findViewById(R.id.about);
-        aboutTV.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-        ((TextView) header.findViewById(R.id.about_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        aboutTV.setTextColor(style.getTextPrimaryColor());
+        ((TextView) header.findViewById(R.id.about_hint)).setTextColor(style.getTextSecondaryColor());
         final View descriptionContainer = header.findViewById(R.id.descriptionContainer);
         final TextView themeHeader = (TextView) header.findViewById(R.id.theme_header);
         themeHeader.setTextColor(style.getProfileSubtitleColor());
@@ -219,17 +223,17 @@ public class GroupInfoFragment extends BaseFragment {
                 getString(R.string.group_members_count)
                         .replace("{0}", groupInfo.getMembersCount() + "")
                         .replace("{1}", "300"));
-        memberCount.setTextColor(ActorSDK.sharedActor().style.getTextHintColor());
+        memberCount.setTextColor(style.getTextHintColor());
         listView.addHeaderView(header, null, false);
 
         View add = inflater.inflate(R.layout.fragment_group_add, listView, false);
-        add.findViewById(R.id.bottom_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+        add.findViewById(R.id.bottom_divider).setBackgroundColor(style.getBackyardBackgroundColor());
         TextView name = (TextView) add.findViewById(R.id.name);
-        name.setTextColor(ActorSDK.sharedActor().style.getActionAddContactColor());
+        name.setTextColor(style.getActionAddContactColor());
         name.setTypeface(Fonts.medium());
         TintImageView addIcon = (TintImageView) add.findViewById(R.id.add_icon);
-        addIcon.setTint(ActorSDK.sharedActor().style.getGroupActionAddIconColor());
-        addIcon.setTint(ActorSDK.sharedActor().style.getActionAddContactColor());
+        addIcon.setTint(style.getGroupActionAddIconColor());
+        addIcon.setTint(style.getActionAddContactColor());
 
         add.findViewById(R.id.addUser).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -355,33 +359,33 @@ public class GroupInfoFragment extends BaseFragment {
             }
         });
 
-        res.findViewById(R.id.after_about_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
-        res.findViewById(R.id.after_settings_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
-        res.findViewById(R.id.bottom_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+        res.findViewById(R.id.after_about_divider).setBackgroundColor(style.getBackyardBackgroundColor());
+        res.findViewById(R.id.after_settings_divider).setBackgroundColor(style.getBackyardBackgroundColor());
+        res.findViewById(R.id.bottom_divider).setBackgroundColor(style.getBackyardBackgroundColor());
 
 
         TextView settingsHeaderText = (TextView) res.findViewById(R.id.settings_header_text);
-        settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
+        settingsHeaderText.setTextColor(style.getSettingsCategoryTextColor());
 
         TintImageView notificationSettingIcon = (TintImageView) res.findViewById(R.id.settings_notification_icon);
         notificationSettingIcon.setTint(style.getSettingsIconColor());
-        ((TextView) res.findViewById(R.id.settings_notifications_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.settings_notifications_title)).setTextColor(style.getTextPrimaryColor());
 
         TintImageView shareMediaIcon = (TintImageView) res.findViewById(R.id.share_media_icon);
         shareMediaIcon.setTint(style.getSettingsIconColor());
-        ((TextView) res.findViewById(R.id.settings_media_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-        ((TextView) res.findViewById(R.id.mediaCount)).setTextColor(ActorSDK.sharedActor().style.getTextHintColor());
+        ((TextView) res.findViewById(R.id.settings_media_title)).setTextColor(style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.mediaCount)).setTextColor(style.getTextHintColor());
 
         TintImageView shareDocsIcon = (TintImageView) res.findViewById(R.id.share_docs_icon);
         shareDocsIcon.setTint(style.getSettingsIconColor());
-        ((TextView) res.findViewById(R.id.share_docs_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-        ((TextView) res.findViewById(R.id.docCount)).setTextColor(ActorSDK.sharedActor().style.getTextHintColor());
+        ((TextView) res.findViewById(R.id.share_docs_title)).setTextColor(style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.docCount)).setTextColor(style.getTextHintColor());
 
         TextView sharedHeaderText = (TextView) res.findViewById(R.id.shared_header_text);
-        sharedHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
+        sharedHeaderText.setTextColor(style.getSettingsCategoryTextColor());
 
         TextView membersHeaderText = (TextView) res.findViewById(R.id.membersTitle);
-        membersHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
+        membersHeaderText.setTextColor(style.getSettingsCategoryTextColor());
 
         return res;
     }
