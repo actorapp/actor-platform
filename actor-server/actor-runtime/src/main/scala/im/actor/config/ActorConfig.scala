@@ -46,6 +46,12 @@ object ActorConfig {
         |    journal.plugin: "jdbc-journal"
         |    snapshot-store.plugin: "jdbc-snapshot-store"
         |  }
+        |
+        |  stream {
+        |    materializer {
+        |      auto-fusing: off
+        |    }
+        |  }
         |}
         |
         |jdbc-journal {
