@@ -16,6 +16,7 @@ public class ActorStyle {
     private int settingsCategoryTextColor = 0;
     private int recordIconTintColor = 0;
     private int avatarBackgroundColor = 0;
+    private int avatarBackgroundResource = 0;
     private int actionShareColor = 0;
 
     //Root colors
@@ -194,6 +195,14 @@ public class ActorStyle {
         } else {
             return getMainColor();
         }
+    }
+
+    public void setAvatarBackgroundResource(int avatarBackgroundResource) {
+        this.avatarBackgroundResource = avatarBackgroundResource;
+    }
+
+    public int getAvatarBackgroundResourse() {
+        return avatarBackgroundResource;
     }
 
     public void setAvatarBackgroundColor(int avatarBackgroundColor) {
