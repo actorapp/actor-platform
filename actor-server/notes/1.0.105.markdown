@@ -1,0 +1,1 @@
+* :rocket: disable Akka Stream auto-fusing due to big CPU overhead
