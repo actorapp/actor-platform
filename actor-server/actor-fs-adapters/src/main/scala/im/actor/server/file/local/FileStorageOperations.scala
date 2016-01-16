@@ -40,12 +40,12 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
     } yield ()
   }
 
-  protected def appendPartBytes(bytes: Array[Byte], fileId: Long, partNumber: Int): Future[Unit] = {
+  protected def appendPartBytes(bs: Source[ByteString, Any], fileId: Long, partNumber: Int): Future[Unit] = {
     for {
       dir ← getOrCreateFileDir(fileId)
       partFile ← Future { blocking { dir.createChild(LocalUploadKey.partKey(fileId, partNumber).key) } }
-      _ = log.debug("Appending bytes to part number: {}, fileId: {}, data length: {} target file: {}", partNumber, fileId, bytes.length, partFile)
-      _ ← Source(List(ByteString(bytes))).runWith(FileIO.toFile(partFile.toJava, append = true))
+      _ = log.debug("Appending bytes to part number: {}, fileId: {}, target file: {}", partNumber, fileId, partFile)
+      _ ← bs.runWith(FileIO.toFile(partFile.toJava, append = true))
     } yield ()
   }
 
