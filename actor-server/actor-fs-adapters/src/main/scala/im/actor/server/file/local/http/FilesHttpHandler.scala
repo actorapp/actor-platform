@@ -74,9 +74,7 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
                 extractRequest { req =>
                   val writeFu = for {
                     _ <- prepareForPartWrite(fileId, partNumber)
-                    _ <- req.entity.dataBytes
-                      .flatMapConcat(bs => Source.fromFuture(writeContent(bs, fileId, partNumber)))
-                      .runForeach(_ => ())
+                    _ <- appendPartBytes(req.entity.dataBytes, fileId, partNumber)
                   } yield ()
                   onComplete(writeFu) {
                     case Success(_) =>
@@ -94,9 +92,6 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
       }
     }
   // format: ON
-
-  private def writeContent(bs: ByteString, fileId: Long, partNumber: Int): Future[Unit] =
-    appendPartBytes(bs.toArray, fileId, partNumber)
 
   def validateRequest: Directive0 =
     extractRequestContext flatMap { ctx ⇒
