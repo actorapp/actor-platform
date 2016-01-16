@@ -6,7 +6,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.Credentials
-import akka.stream.{ ActorMaterializerSettings, ActorMaterializer, Materializer }
+import akka.stream.{ ActorMaterializer, Materializer }
 import com.typesafe.config.Config
 import im.actor.server.api.http.app.AppFilesHttpHandler
 import im.actor.server.api.http.status.StatusHttpHandler
@@ -67,7 +67,8 @@ private object HttpApiFrontend {
 
   def start(serverConfig: Config)(
     implicit
-    system: ActorSystem
+    system:       ActorSystem,
+    materializer: Materializer
   ): Unit = {
     HttpApiConfig.load(serverConfig.getConfig("http")) match {
       case Success(apiConfig) ⇒
@@ -79,7 +80,7 @@ private object HttpApiFrontend {
   }
 
   def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(implicit system: ActorSystem): Unit = {
-    implicit val mat = ActorMaterializer(ActorMaterializerSettings(system).withAutoFusing(false))
+    implicit val mat = ActorMaterializer()
 
     val status = new StatusHttpHandler
     val app = new AppFilesHttpHandler(config.staticFiles)
