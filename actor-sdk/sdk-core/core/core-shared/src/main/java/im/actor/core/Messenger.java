@@ -154,9 +154,9 @@ public class Messenger {
      * @return Command for execution
      */
     @NotNull
-    @ObjectiveCName("requestStartAuthCommandWithUserName:")
+    @ObjectiveCName("requestStartAnonymousAuthWithUserName:")
     public Command<AuthState> requestStartAnonymousAuth(String userName) {
-        return modules.getAuthModule().requestStartAnonumousAuth(userName);
+        return modules.getAuthModule().requestStartAnonymousAuth(userName);
     }
 
     /**
