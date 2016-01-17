@@ -55,7 +55,7 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
                 withRangeSupport {
                   onComplete(getFile(fileId)) {
                     case Success(Some(file)) =>
-                      log.debug("Serving file: {} parts", fileId)
+                      log.debug("Serving fileId: {}, file: {} parts", fileId, file)
                       getFromFile(file.toJava)
                     case Success(None) =>
                       complete(HttpResponse(StatusCodes.NotFound))
