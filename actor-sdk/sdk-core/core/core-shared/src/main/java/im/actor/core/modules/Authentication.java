@@ -116,7 +116,7 @@ public class Authentication {
         }
     }
 
-    public Command<AuthState> requestStartAnonumousAuth(final String userName) {
+    public Command<AuthState> requestStartAnonymousAuth(final String userName) {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
