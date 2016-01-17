@@ -353,7 +353,11 @@ public class SequenceActor extends ModuleActor {
                 break;
             }
         }
-        further.clear();
+        for (Integer key : further.keySet().toArray(new Integer[0])) {
+            if (key <= seq) {
+                further.remove(key);
+            }
+        }
     }
 
     private void checkRunnables() {
