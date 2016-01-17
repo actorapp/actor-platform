@@ -1,0 +1,1 @@
+CREATE INDEX ON google_push_credentials(reg_id);
