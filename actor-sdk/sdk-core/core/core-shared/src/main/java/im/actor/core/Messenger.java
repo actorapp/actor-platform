@@ -148,6 +148,18 @@ public class Messenger {
     }
 
     /**
+     * Request user name anonymous auth
+     *
+     * @param userName userName to authenticate
+     * @return Command for execution
+     */
+    @NotNull
+    @ObjectiveCName("requestStartAuthCommandWithUserName:")
+    public Command<AuthState> requestStartAnonymousAuth(String userName) {
+        return modules.getAuthModule().requestStartAnonumousAuth(userName);
+    }
+
+    /**
      * Request user name auth
      *
      * @param userName userName to authenticate
