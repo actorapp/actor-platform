@@ -38,16 +38,16 @@ public class AndroidHttpProvider implements HttpRuntime {
             public void onFailure(Request request, IOException e) {
                 Log.d(TAG, "Downloading part error: " + request.toString());
                 e.printStackTrace();
-                callback.onDownloadFailure();
+                callback.onDownloadFailure(0, 0);
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
                 Log.d(TAG, "Downloading part response: " + request.toString() + " -> " + response.toString());
-                if (response.code() == 206) {
+                if (response.code() >= 200 && response.code() < 300) {
                     callback.onDownloaded(response.body().bytes());
                 } else {
-                    callback.onDownloadFailure();
+                    callback.onDownloadFailure(response.code(), 0);
                 }
             }
         });
@@ -65,16 +65,16 @@ public class AndroidHttpProvider implements HttpRuntime {
             public void onFailure(Request request, IOException e) {
                 Log.d(TAG, "Uploading part error: " + request.toString());
                 e.printStackTrace();
-                callback.onUploadFailure();
+                callback.onUploadFailure(0, 0);
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
                 Log.d(TAG, "Upload part response: " + request.toString() + " -> " + response.toString());
-                if (response.code() == 200) {
+                if (response.code() >= 200 && response.code() < 300) {
                     callback.onUploaded();
                 } else {
-                    callback.onUploadFailure();
+                    callback.onUploadFailure(response.code(), 0);
                 }
             }
         });

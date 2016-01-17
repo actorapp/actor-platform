@@ -4,8 +4,11 @@
 
 package im.actor.runtime.http;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 public interface FileUploadCallback {
     void onUploaded();
 
-    void onUploadFailure();
+    @ObjectiveCName("onUploadFailureWithError:withRetryIn:")
+    void onUploadFailure(int error, int retryInSecs);
 }

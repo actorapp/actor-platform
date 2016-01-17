@@ -30,6 +30,7 @@ public class UploadTask extends ModuleActor {
 
     private static final int SIM_BLOCKS_COUNT = 4;
     private static final int NOTIFY_THROTTLE = 1000;
+    private static final int DEFAULT_RETRY = 15;
 
     private final String TAG;
     private final boolean LOG;
@@ -125,6 +126,9 @@ public class UploadTask extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof NotifyProgress) {
             performReportProgress();
+        } else if (message instanceof Retry) {
+            Retry retry = (Retry) message;
+            retryPart(retry.getBlockIndex(), retry.getData(), retry.getAttempt());
         } else {
             super.onReceive(message);
         }
@@ -257,7 +261,7 @@ public class UploadTask extends ModuleActor {
                         }
 
                         uploadCount++;
-                        uploadPart(blockIndex, fileOffset, data);
+                        uploadPart(blockIndex, data, 0);
                         checkQueue();
                     }
                 });
@@ -281,7 +285,17 @@ public class UploadTask extends ModuleActor {
         });
     }
 
-    private void uploadPart(final int blockIndex, final int offset, final byte[] data) {
+    private void retryPart(int blockIndex, byte[] data, int attempt) {
+        if (isCompleted) {
+            return;
+        }
+        if (LOG) {
+            Log.d(TAG, "Retrying block upload #" + blockIndex);
+        }
+        uploadPart(blockIndex, data, attempt);
+    }
+
+    private void uploadPart(final int blockIndex, final byte[] data, final int attempt) {
         request(new RequestGetFileUploadPartUrl(blockIndex, blockSize, uploadConfig),
                 new RpcCallback<ResponseGetFileUploadPartUrl>() {
                     @Override
@@ -306,16 +320,31 @@ public class UploadTask extends ModuleActor {
                             }
 
                             @Override
-                            public void onUploadFailure() {
-                                self().send(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (LOG) {
-                                            Log.w(TAG, "Block #" + blockIndex + " upload failure");
-                                        }
-                                        reportError();
+                            public void onUploadFailure(int error, int retryInSecs) {
+                                if ((error >= 500 && error < 600) || error == 0) {
+                                    // Is Server Error or unknown error
+
+                                    if (retryInSecs <= 0) {
+                                        retryInSecs = DEFAULT_RETRY;
                                     }
-                                });
+
+                                    if (LOG) {
+                                        Log.w(TAG, "Block #" + blockIndex + " upload error #" + error + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
+                                    }
+
+                                    self().send(new Retry(blockIndex, data, attempt + 1), retryInSecs * 1000L);
+                                } else {
+                                    // User Error
+                                    self().send(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (LOG) {
+                                                Log.w(TAG, "Block #" + blockIndex + " upload failure");
+                                            }
+                                            reportError();
+                                        }
+                                    });
+                                }
                             }
                         });
                     }
@@ -376,5 +405,30 @@ public class UploadTask extends ModuleActor {
 
     private class NotifyProgress {
 
+    }
+
+    private class Retry {
+
+        private int blockIndex;
+        private byte[] data;
+        private int attempt;
+
+        public Retry(int blockIndex, byte[] data, int attempt) {
+            this.blockIndex = blockIndex;
+            this.data = data;
+            this.attempt = attempt;
+        }
+
+        public int getBlockIndex() {
+            return blockIndex;
+        }
+
+        public byte[] getData() {
+            return data;
+        }
+
+        public int getAttempt() {
+            return attempt;
+        }
     }
 }
