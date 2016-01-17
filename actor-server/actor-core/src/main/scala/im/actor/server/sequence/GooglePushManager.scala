@@ -69,15 +69,17 @@ final class GooglePushManager(config: GooglePushManagerConfig)(implicit system: 
               case Xor.Right(json) ⇒
                 json.asObject match {
                   case Some(obj) ⇒
-                    obj("error") flatMap (_.asString) foreach {
-                      case "InvalidRegistration" ⇒
+                    obj("error") map (_.asString) foreach {
+                      case Some("InvalidRegistration") ⇒
                         log.warning("Invalid registration, deleting")
                         remove(delivery.regId)
-                      case "NotRegistered" ⇒
+                      case Some("NotRegistered") ⇒
                         log.warning("Token is not registered, deleting")
                         remove(delivery.regId)
-                      case other ⇒
+                      case Some(other) ⇒
                         log.warning("Error in GCM response: {}", other)
+                      case None =>
+                        log.debug("Delivered successfully")
                     }
                   case None ⇒
                     log.error("Expected JSON Object but got: {}", json)
@@ -85,10 +87,13 @@ final class GooglePushManager(config: GooglePushManagerConfig)(implicit system: 
               case Xor.Left(failure) ⇒ log.error(failure.underlying, "Failed to parse response")
             }
           }
-        } else log.error("Status code was not OK: {}", resp.status)
+        } else log.error("Failed to deliver message, StatusCode was not OK: {}", resp.status)
       case (Failure(e), delivery) ⇒
         log.error(e, "Failed to deliver message: {}", delivery.m)
-    }
+    } onComplete {
+    case Failure(e) => log.error(e, "Failure in stream")
+    case Success(_) => log.debug("Stream completed")
+  }
 
   private def remove(regId: String): Future[Int] = db.run(GooglePushCredentialsRepo.deleteByToken(regId))
 
@@ -135,6 +140,8 @@ private final class GooglePushDelivery extends ActorPublisher[(HttpRequest, Goog
     case d: Delivery if buf.size == MaxQueue ⇒
       log.error("Current queue is already at size MaxQueue: {}, ignoring delivery", MaxQueue)
     case d: Delivery ⇒
+      log.debug("New delivery")
+
       if (buf.isEmpty && totalDemand > 0)
         onNext(mkJob(d))
       else {
