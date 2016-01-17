@@ -24,6 +24,7 @@ public class DownloadTask extends ModuleActor {
 
     private static final int SIM_BLOCKS_COUNT = 4;
     private static final int NOTIFY_THROTTLE = 1000;
+    private static final int DEFAULT_RETRY = 15;
 
     private final String TAG;
     private final boolean LOG;
@@ -85,6 +86,9 @@ public class DownloadTask extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof NotifyProgress) {
             performReportProgress();
+        } else if (message instanceof Retry) {
+            Retry retry = (Retry) message;
+            retryPart(retry.getBlockIndex(), retry.getFileOffset(), retry.getAttempt());
         } else {
             super.onReceive(message);
         }
@@ -172,7 +176,7 @@ public class DownloadTask extends ModuleActor {
                 Log.d(TAG, "Starting part #" + blockIndex + " download");
             }
 
-            downloadPart(blockIndex, offset);
+            downloadPart(blockIndex, offset, 0);
 
             checkQueue();
         } else {
@@ -182,7 +186,19 @@ public class DownloadTask extends ModuleActor {
         }
     }
 
-    private void downloadPart(final int blockIndex, final int fileOffset) {
+    private void retryPart(int blockIndex, int fileOffset, int attempt) {
+        if (isCompleted) {
+            return;
+        }
+
+        if (LOG) {
+            Log.d(TAG, "Trying again part #" + blockIndex + " download");
+        }
+
+        downloadPart(blockIndex, fileOffset, attempt);
+    }
+
+    private void downloadPart(final int blockIndex, final int fileOffset, final int attempt) {
         HTTP.getMethod(fileUrl, fileOffset, blockSize, fileReference.getFileSize(), new FileDownloadCallback() {
             @Override
             public void onDownloaded(final byte[] data) {
@@ -205,16 +221,30 @@ public class DownloadTask extends ModuleActor {
             }
 
             @Override
-            public void onDownloadFailure() {
-                self().send(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (LOG) {
-                            Log.d(TAG, "Download part #" + blockIndex + " failure");
-                        }
-                        reportError();
+            public void onDownloadFailure(int error, int retryInSecs) {
+                if ((error >= 500 && error < 600) || error == 0) {
+                    // Server on unknown error
+
+                    if (retryInSecs <= 0) {
+                        retryInSecs = DEFAULT_RETRY;
                     }
-                });
+
+                    if (LOG) {
+                        Log.w(TAG, "Download part #" + blockIndex + " failure #" + error + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
+                    }
+
+                    self().send(new Retry(blockIndex, fileOffset, attempt + 1));
+                } else {
+                    self().send(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (LOG) {
+                                Log.d(TAG, "Download part #" + blockIndex + " failure");
+                            }
+                            reportError();
+                        }
+                    });
+                }
             }
         });
     }
@@ -262,5 +292,30 @@ public class DownloadTask extends ModuleActor {
 
     private class NotifyProgress {
 
+    }
+
+    private class Retry {
+
+        private int blockIndex;
+        private int fileOffset;
+        private int attempt;
+
+        public Retry(int blockIndex, int fileOffset, int attempt) {
+            this.blockIndex = blockIndex;
+            this.fileOffset = fileOffset;
+            this.attempt = attempt;
+        }
+
+        public int getBlockIndex() {
+            return blockIndex;
+        }
+
+        public int getFileOffset() {
+            return fileOffset;
+        }
+
+        public int getAttempt() {
+            return attempt;
+        }
     }
 }

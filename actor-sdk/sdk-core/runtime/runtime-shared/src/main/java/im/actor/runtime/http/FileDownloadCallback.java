@@ -4,8 +4,11 @@
 
 package im.actor.runtime.http;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 public interface FileDownloadCallback {
     void onDownloaded(byte[] data);
 
-    void onDownloadFailure();
+    @ObjectiveCName("onDownloadFailureWithError:withRetryIn:")
+    void onDownloadFailure(int error, int retryInSecs);
 }
