@@ -104,7 +104,6 @@ object Dependencies {
 
     val tyrex                   = "tyrex"                         %  "tyrex"                         % "1.0.1"
 
-    val gcmServer               = "com.google.android.gcm"        %  "gcm-server"                    % "1.0.2"
     val pushy                   = "com.relayrides"                %  "pushy"                         % "0.4.3"
 
     val logbackClassic          = "ch.qos.logback"                % "logback-classic"                % "1.1.2"
@@ -167,7 +166,6 @@ object Dependencies {
     akkaClusterSharding,
     akkaDdata,
     caffeine,
-    gcmServer,
     pushy,
     jodaTime,
     postgresJdbc,
