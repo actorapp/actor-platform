@@ -14,6 +14,7 @@ import im.actor.core.api.rpc.RequestCompleteOAuth2;
 import im.actor.core.api.rpc.RequestGetOAuth2Params;
 import im.actor.core.api.rpc.RequestSendCodeByPhoneCall;
 import im.actor.core.api.rpc.RequestSignUp;
+import im.actor.core.api.rpc.RequestStartAnonymousAuth;
 import im.actor.core.api.rpc.RequestStartEmailAuth;
 import im.actor.core.api.rpc.RequestStartPhoneAuth;
 import im.actor.core.api.rpc.RequestStartUsernameAuth;
@@ -39,6 +40,8 @@ import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 
 public class Authentication {
+
+    private static final String TAG = "Authentication";
 
     private static final String KEY_DEVICE_HASH = "device_hash";
 
@@ -113,6 +116,41 @@ public class Authentication {
         }
     }
 
+    public Command<AuthState> requestStartAnonumousAuth(final String userName) {
+        return new Command<AuthState>() {
+            @Override
+            public void start(final CommandCallback<AuthState> callback) {
+                ArrayList<String> langs = new ArrayList<String>();
+                for (String s : modules.getConfiguration().getPreferredLanguages()) {
+                    langs.add(s);
+                }
+                request(new RequestStartAnonymousAuth(userName,
+                        apiConfiguration.getAppId(),
+                        apiConfiguration.getAppKey(),
+                        deviceHash,
+                        apiConfiguration.getDeviceTitle(),
+                        modules.getConfiguration().getTimeZone(),
+                        langs), new RpcCallback<ResponseAuth>() {
+                    @Override
+                    public void onResult(ResponseAuth response) {
+                        onLoggedIn(callback, response);
+                    }
+
+                    @Override
+                    public void onError(final RpcException e) {
+                        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.e(TAG, e);
+                                callback.onError(e);
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
     public Command<AuthState> requestStartEmailAuth(final String email) {
         return new Command<AuthState>() {
             @Override
@@ -156,8 +194,8 @@ public class Authentication {
                         im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                             @Override
                             public void run() {
+                                Log.e(TAG, e);
                                 callback.onError(e);
-                                e.printStackTrace();
                             }
                         });
                     }
@@ -201,8 +239,8 @@ public class Authentication {
                         im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                             @Override
                             public void run() {
+                                Log.e(TAG, e);
                                 callback.onError(e);
-                                e.printStackTrace();
                             }
                         });
                     }
@@ -247,8 +285,8 @@ public class Authentication {
                         im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                             @Override
                             public void run() {
+                                Log.e(TAG, e);
                                 callback.onError(e);
-                                e.printStackTrace();
                             }
                         });
                     }
@@ -283,8 +321,8 @@ public class Authentication {
                                 im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        Log.e(TAG, e);
                                         callback.onError(e);
-                                        e.printStackTrace();
                                     }
                                 });
                             }
@@ -317,6 +355,7 @@ public class Authentication {
                         Runtime.postToMainThread(new Runnable() {
                             @Override
                             public void run() {
+                                Log.e(TAG, e);
                                 callback.onError(e);
                             }
                         });
@@ -348,6 +387,7 @@ public class Authentication {
                         Runtime.postToMainThread(new Runnable() {
                             @Override
                             public void run() {
+                                Log.e(TAG, e);
                                 callback.onError(e);
                             }
                         });
@@ -392,6 +432,7 @@ public class Authentication {
                         Runtime.postToMainThread(new Runnable() {
                             @Override
                             public void run() {
+                                Log.e(TAG, e);
                                 callback.onError(e);
                             }
                         });
@@ -430,6 +471,7 @@ public class Authentication {
                                 Runtime.postToMainThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        Log.e(TAG, e);
                                         callback.onError(e);
                                     }
                                 });
