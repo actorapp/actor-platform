@@ -43,6 +43,8 @@ public class Configuration {
 
     private String customAppName;
 
+    private boolean enablePhoneBookImport;
+
     Configuration(ConnectionEndpoint[] endpoints,
                   PhoneBookProvider phoneBookProvider,
                   NotificationProvider notificationProvider,
@@ -59,7 +61,8 @@ public class Configuration {
                   String timeZone,
                   String[] preferredLanguages,
                   String customAppName,
-                  TrustedKey[] trustedKeys) {
+                  TrustedKey[] trustedKeys,
+                  boolean enablePhoneBookImport) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
         this.enableContactsLogging = enableContactsLogging;
@@ -77,6 +80,16 @@ public class Configuration {
         this.preferredLanguages = preferredLanguages;
         this.customAppName = customAppName;
         this.trustedKeys = trustedKeys;
+        this.enablePhoneBookImport = enablePhoneBookImport;
+    }
+
+    /**
+     * Getting if app automatically imports phone book to server
+     *
+     * @return if phone book enabled
+     */
+    public boolean isEnablePhoneBookImport() {
+        return enablePhoneBookImport;
     }
 
     /**
