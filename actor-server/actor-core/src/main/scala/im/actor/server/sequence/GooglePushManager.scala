@@ -20,7 +20,7 @@ import io.circe.syntax._
 
 import scala.annotation.tailrec
 import scala.concurrent.Future
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 
 case class GooglePushKey(projectId: Long, key: String)
 

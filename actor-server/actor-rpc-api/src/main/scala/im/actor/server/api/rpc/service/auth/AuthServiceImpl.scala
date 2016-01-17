@@ -21,12 +21,12 @@ import im.actor.server.auth.DeviceInfo
 import im.actor.server.db.DbExtension
 import im.actor.server.email.{ EmailConfig, SmtpEmailSender }
 import im.actor.server.model.{ AuthAnonymousTransaction, AuthUsernameTransaction }
-import im.actor.server.oauth.{ GoogleProvider, OAuth2ProvidersDomains }
+import im.actor.server.oauth.GoogleProvider
 import im.actor.server.persist.{ UserPasswordRepo, UserRepo }
 import im.actor.server.persist.auth.{ AuthUsernameTransactionRepo, AuthTransactionRepo }
 import im.actor.server.session._
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
-import im.actor.server.user.UserExtension
+import im.actor.server.user.{ UserErrors, UserExtension }
 import im.actor.server.{ model, persist }
 import im.actor.util.log.AnyRefLogSource
 import im.actor.util.misc.PhoneNumberUtils._
@@ -267,12 +267,14 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
           DeviceInfo(timeZone.getOrElse(""), preferredLanguages).toByteArray,
           isChecked = false // we don't need to check password if user signs up
         )
-        user ← newUser(Some(normUsername))
+        user ← newUser()
         _ ← handleUserCreate(user, transaction, clientData)
         userStruct ← authorizeT(user.id, "", transaction, clientData)
       } yield ResponseAuth(userStruct, ApiConfig(maxGroupSize))
 
-    db.run(action.run)
+    recover(db.run(action.run)) recover {
+      case UserErrors.NicknameTaken ⇒ Error(ProfileErrors.NicknameBusy)
+    }
   }
 
   override def jhandleSendCodeByPhoneCall(transactionHash: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
