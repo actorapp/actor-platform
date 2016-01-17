@@ -9,12 +9,16 @@ import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.typedarrays.shared.Uint8Array;
 
+import im.actor.runtime.Log;
 import im.actor.runtime.js.utils.Conversion;
 import im.actor.runtime.mtproto.AsyncConnection;
 import im.actor.runtime.mtproto.AsyncConnectionInterface;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
 
 public class WebSocketConnection extends AsyncConnection {
+
+    private static int connectionId = 0;
+    private final String TAG = "WebSocketConnection#" + (connectionId++);
 
     private JavaScriptObject jsWebSocket;
     private boolean isClosed;
@@ -25,6 +29,8 @@ public class WebSocketConnection extends AsyncConnection {
 
     @Override
     public void doConnect() {
+        Log.d(TAG, "doConnect");
+
         isClosed = true;
 
         String url;
@@ -40,6 +46,7 @@ public class WebSocketConnection extends AsyncConnection {
 
     @Override
     public void doSend(byte[] data) {
+        Log.d(TAG, "doSend");
         if (isClosed) {
             return;
         }
@@ -52,11 +59,13 @@ public class WebSocketConnection extends AsyncConnection {
 
     @Override
     public void doClose() {
+        Log.d(TAG, "doClose");
         isClosed = true;
         close();
     }
 
     private void onRawMessage(ArrayBuffer message) {
+        Log.d(TAG, "onRawMessage");
         if (isClosed) {
             return;
         }
@@ -64,11 +73,13 @@ public class WebSocketConnection extends AsyncConnection {
     }
 
     private void onRawConnected() {
+        Log.d(TAG, "onRawConnected");
         isClosed = false;
         onConnected();
     }
 
     private void onRawClosed() {
+        Log.d(TAG, "onRawClosed");
         isClosed = true;
         onClosed();
     }

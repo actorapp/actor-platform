@@ -330,7 +330,7 @@ public class ManagedConnection implements Connection {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e);
             close();
         }
 
@@ -380,7 +380,7 @@ public class ManagedConnection implements Connection {
         try {
             sendProtoPackage(data, offset, len);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e);
             close();
         }
     }
