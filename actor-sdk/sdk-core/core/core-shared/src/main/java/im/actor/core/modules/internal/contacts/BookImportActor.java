@@ -65,10 +65,16 @@ public class BookImportActor extends ModuleActor {
                 e.getLocalizedMessage();
             }
         }
+
         self().send(new PerformSync());
     }
 
     private void performSync() {
+        // Ignoring syncing if not enabled
+        if (!config().isEnablePhoneBookImport()) {
+            return;
+        }
+
         if (ENABLE_LOG) {
             Log.d(TAG, "Checking sync...");
         }

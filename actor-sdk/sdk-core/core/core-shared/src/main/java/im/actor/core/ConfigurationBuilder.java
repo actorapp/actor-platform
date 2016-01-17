@@ -47,6 +47,21 @@ public class ConfigurationBuilder {
 
     private String customAppName;
 
+    private boolean isPhoneBookImportEnabled = true;
+
+    /**
+     * Setting if application need to upload phone book to server
+     *
+     * @param isPhoneBookImportEnabled enabled flag
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("setPhoneBookImportEnabled:")
+    public ConfigurationBuilder setPhoneBookImportEnabled(boolean isPhoneBookImportEnabled) {
+        this.isPhoneBookImportEnabled = isPhoneBookImportEnabled;
+        return this;
+    }
+
     /**
      * Adding Trusted key for protocol encryption securing
      *
@@ -341,6 +356,7 @@ public class ConfigurationBuilder {
                 extensions.toArray(new ConfigurationExtension[extensions.size()]),
                 timeZone, preferredLanguages.toArray(new String[preferredLanguages.size()]),
                 customAppName,
-                trustedKeys.toArray(new TrustedKey[trustedKeys.size()]));
+                trustedKeys.toArray(new TrustedKey[trustedKeys.size()]),
+                isPhoneBookImportEnabled);
     }
 }

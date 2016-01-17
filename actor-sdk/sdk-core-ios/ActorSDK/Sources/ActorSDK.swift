@@ -72,6 +72,9 @@ public class ActorSDK {
     /// Push token registration id. Required for sending push tokens
     public var apiPushId: Int? = nil
     
+    /// Enable phone book import
+    public var enablePhoneBookImport = true
+    
     /// Invitation URL for apps
     public var inviteUrl: String = "https://actor.im/dl"
     
@@ -197,6 +200,9 @@ public class ActorSDK {
         if (appNameInLocStrings != "Actor") {
             builder.setCustomAppName(AALocalized(appNameInLocStrings))
         }
+        
+        // Config
+        builder.setPhoneBookImportEnabled(jboolean(enablePhoneBookImport))
         
         // Creating messenger
         messenger = ACCocoaMessenger(configuration: builder.build())
