@@ -29,11 +29,10 @@ public class JsHttpProvider implements HttpRuntime {
             @Override
             public void onStateChanged(JsHttpRequest request) {
                 if (request.getReadyState() == 4) {
-                    if (request.getStatus() == 200) {
-
+                    if (request.getStatus() >= 200 && request.getStatus() < 300) {
                         callback.onUploaded();
                     } else {
-                        callback.onUploadFailure();
+                        callback.onUploadFailure(request.getStatus(), 0);
                     }
                 }
             }
