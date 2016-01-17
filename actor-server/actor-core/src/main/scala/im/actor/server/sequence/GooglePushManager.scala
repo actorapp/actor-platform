@@ -10,18 +10,17 @@ import akka.stream.actor.ActorPublisher
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import cats.data.Xor
+import com.github.kxbmap.configs._
+import com.typesafe.config.Config
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.push.GooglePushCredentialsRepo
 import io.circe.generic.auto._
-
-import com.github.kxbmap.configs._
-import com.typesafe.config.Config
 import io.circe.jawn._
 import io.circe.syntax._
 
 import scala.annotation.tailrec
 import scala.concurrent.Future
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 
 case class GooglePushKey(projectId: Long, key: String)
 
@@ -45,6 +44,7 @@ object GooglePushManagerConfig {
 }
 
 final case class GooglePushMessage(
+  to:          String,
   collapseKey: Option[String],
   data:        Option[Map[String, String]]
 )
@@ -72,13 +72,13 @@ final class GooglePushManager(config: GooglePushManagerConfig)(implicit system: 
                     obj("error") map (_.asString) foreach {
                       case Some("InvalidRegistration") ⇒
                         log.warning("Invalid registration, deleting")
-                        remove(delivery.regId)
+                        remove(delivery.m.to)
                       case Some("NotRegistered") ⇒
                         log.warning("Token is not registered, deleting")
-                        remove(delivery.regId)
+                        remove(delivery.m.to)
                       case Some(other) ⇒
                         log.warning("Error in GCM response: {}", other)
-                      case None =>
+                      case None ⇒
                         log.debug("Delivered successfully")
                     }
                   case None ⇒
@@ -91,9 +91,9 @@ final class GooglePushManager(config: GooglePushManagerConfig)(implicit system: 
       case (Failure(e), delivery) ⇒
         log.error(e, "Failed to deliver message: {}", delivery.m)
     } onComplete {
-    case Failure(e) => log.error(e, "Failure in stream")
-    case Success(_) => log.debug("Stream completed")
-  }
+      case Failure(e) ⇒ log.error(e, "Failure in stream")
+      case Success(_) ⇒ log.debug("Stream completed")
+    }
 
   private def remove(regId: String): Future[Int] = db.run(GooglePushCredentialsRepo.deleteByToken(regId))
 
@@ -102,10 +102,10 @@ final class GooglePushManager(config: GooglePushManagerConfig)(implicit system: 
       case GooglePushKey(projectId, key) ⇒ projectId → key
     }).toMap
 
-  def send(projectId: Long, regId: String, message: GooglePushMessage): Unit =
+  def send(projectId: Long, message: GooglePushMessage): Unit =
     keys get projectId match {
       case Some(key) ⇒
-        deliveryPublisher ! GooglePushDelivery.Delivery(message, key, regId)
+        deliveryPublisher ! GooglePushDelivery.Delivery(message, key)
       case None ⇒
         log.warning("Key not found for projectId: {}", projectId)
     }
@@ -115,7 +115,7 @@ private object GooglePushDelivery {
 
   object Tick
 
-  final case class Delivery(m: GooglePushMessage, key: String, regId: String)
+  final case class Delivery(m: GooglePushMessage, key: String)
 
   private val MaxQueue = 100000
   private val MaxConnections = 4
@@ -140,8 +140,6 @@ private final class GooglePushDelivery extends ActorPublisher[(HttpRequest, Goog
     case d: Delivery if buf.size == MaxQueue ⇒
       log.error("Current queue is already at size MaxQueue: {}, ignoring delivery", MaxQueue)
     case d: Delivery ⇒
-      log.debug("New delivery")
-
       if (buf.isEmpty && totalDemand > 0)
         onNext(mkJob(d))
       else {
@@ -164,11 +162,12 @@ private final class GooglePushDelivery extends ActorPublisher[(HttpRequest, Goog
       }
     }
 
-  private def mkJob(d: Delivery): (HttpRequest, Delivery) =
+  private def mkJob(d: Delivery): (HttpRequest, Delivery) = {
     HttpRequest(
       method = HttpMethods.POST,
       uri = Uri("/gcm/send"),
-      headers = List(headers.Authorization(headers.GenericHttpCredentials(s"key=${d.regId}", Map.empty[String, String]))),
+      headers = List(headers.Authorization(headers.GenericHttpCredentials(s"key=${d.key}", Map.empty[String, String]))),
       entity = HttpEntity(ContentTypes.`application/json`, d.m.asJson.toString())
     ) → d
+  }
 }
