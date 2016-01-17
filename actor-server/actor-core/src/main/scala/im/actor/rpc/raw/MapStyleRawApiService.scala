@@ -11,11 +11,11 @@ import scala.concurrent.Future
 trait ProductImplicits {
 
   /**
-    * Implicit conversion for case classes and case objects.
-    * Allows to represent case class as ApiMap.
-    * Case classes with 0 fields and case objects are converted to empty ApiMap
-    * @param product case class or case object
-    */
+   * Implicit conversion for case classes and case objects.
+   * Allows to represent case class as ApiMap.
+   * Case classes with 0 fields and case objects are converted to empty ApiMap
+   * @param product case class or case object
+   */
   implicit class Foo(product: Product) {
     def asApiMap: ApiMapValue = {
       //case object or empty case class
