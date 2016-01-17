@@ -276,7 +276,7 @@ trait AuthHelpers extends Helpers {
     } yield \/-(user)
   }
 
-  protected def newUser(username: Option[String]): Result[User] = {
+  protected def newUser(): Result[User] = {
     val rng = ThreadLocalRandom.current()
     val user = model.User(
       id = nextIntId(rng),
@@ -287,7 +287,7 @@ trait AuthHelpers extends Helpers {
       state = model.UserState.Registered,
       createdAt = LocalDateTime.now(ZoneOffset.UTC),
       external = None,
-      nickname = username
+      nickname = None
     )
     point(user)
   }
