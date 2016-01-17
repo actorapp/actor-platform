@@ -17,10 +17,14 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
         request.HTTPMethod = "GET"
         
         NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-            if (error != nil) {
-                callback.onDownloadFailure()
+            if let respHttp = response as? NSHTTPURLResponse {
+                if (respHttp.statusCode >= 200 && respHttp.statusCode < 300) {
+                    callback.onDownloadedWithByteArray(data!.toJavaBytes())
+                } else {
+                    callback.onDownloadFailureWithError(jint(respHttp.statusCode), withRetryIn: 0)
+                }
             } else {
-                callback.onDownloadedWithByteArray(data!.toJavaBytes())
+                callback.onDownloadFailureWithError(0, withRetryIn: 0)
             }
         })
     }
@@ -34,10 +38,14 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
         request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
         
         NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-            if (error != nil) {
-                callback.onUploadFailure()
+            if let respHttp = response as? NSHTTPURLResponse {
+                if (respHttp.statusCode >= 200 && respHttp.statusCode < 300) {
+                    callback.onUploaded()
+                } else {
+                    callback.onUploadFailureWithError(jint(respHttp.statusCode), withRetryIn: 0)
+                }
             } else {
-                callback.onUploaded()
+                callback.onUploadFailureWithError(0, withRetryIn: 0)
             }
         })
     }
