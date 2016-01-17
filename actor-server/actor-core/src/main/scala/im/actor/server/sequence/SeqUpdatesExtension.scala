@@ -4,6 +4,7 @@ import akka.actor._
 import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import akka.event.Logging
 import akka.pattern.ask
+import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.Update
@@ -239,6 +240,8 @@ object SeqUpdatesExtension extends ExtensionId[SeqUpdatesExtension] with Extensi
   override def lookup = SeqUpdatesExtension
 
   override def createExtension(system: ExtendedActorSystem) = {
+    implicit val _system = system
+    implicit val mat = ActorMaterializer()
     val log = Logging(system, getClass)
 
     try {
