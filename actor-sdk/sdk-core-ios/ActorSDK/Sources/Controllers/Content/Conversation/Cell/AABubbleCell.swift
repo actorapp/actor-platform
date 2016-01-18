@@ -122,7 +122,7 @@ public class AABubbleCell: UICollectionViewCell {
     
     // Binded data
     public var peer: ACPeer!
-    public var controller: AAConversationContentController!
+    public weak var controller: AAConversationContentController!
     public var isGroup: Bool = false
     public var isFullSize: Bool!
     public var bindedSetting: AACellSetting?
