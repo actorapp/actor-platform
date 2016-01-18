@@ -14,6 +14,8 @@ import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.LocationContent;
 import im.actor.core.entity.content.PhotoContent;
+import im.actor.core.entity.content.ServiceCallEnded;
+import im.actor.core.entity.content.ServiceCallMissed;
 import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
 import im.actor.core.entity.content.ServiceGroupCreated;
@@ -59,6 +61,10 @@ public class ContentDescription extends BserObject {
             return new ContentDescription(ContentType.STICKER);
         } else if (msg instanceof ServiceUserRegistered) {
             return new ContentDescription(ContentType.SERVICE_REGISTERED);
+        } else if (msg instanceof ServiceCallEnded) {
+            return new ContentDescription(ContentType.SERVICE_CALL_ENDED);
+        } else if (msg instanceof ServiceCallMissed) {
+            return new ContentDescription(ContentType.SERVICE_CALL_MISSED);
         } else if (msg instanceof JsonContent) {
             return new ContentDescription(ContentType.CUSTOM_JSON_MESSAGE, ((JsonContent) msg).getContentDescription());
         } else if (msg instanceof ServiceGroupAvatarChanged) {

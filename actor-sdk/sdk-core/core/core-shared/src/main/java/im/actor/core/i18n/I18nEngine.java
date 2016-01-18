@@ -387,6 +387,10 @@ public class I18nEngine {
                 return getTemplateNamed(senderId, "ServiceGroupTitle");
             case SERVICE_JOINED:
                 return getTemplateNamed(senderId, "ServiceGroupJoined");
+            case SERVICE_CALL_ENDED:
+                return getTemplateNamed(senderId, "ServiceCallEnded");
+            case SERVICE_CALL_MISSED:
+                return getTemplateNamed(senderId, "ServiceCallMissed");
             case NONE:
                 return "";
             default:
