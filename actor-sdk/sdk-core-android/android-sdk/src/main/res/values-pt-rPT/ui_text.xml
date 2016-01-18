@@ -2,7 +2,7 @@
 
 <resources>
     <string name="app_name">Actor</string>
-    <string name="app_locale">É</string>
+    <string name="app_locale">Pt</string>
 
     <string name="dialog_ok">Ok</string>
     <string name="dialog_cancel">Cancelar</string>
