@@ -1,0 +1,415 @@
+syntax = "proto3";
+
+////////////////////////////
+//         User
+////////////////////////////
+
+/// User entity
+message User {
+
+ 	/// Required User's Id
+	int32 uid = 1;
+
+	/// Required User's Access Hash
+	bytes accessHash = 2;
+
+	/// Required Kind
+	Kind kind = 3;
+
+	/// Required name
+	string name = 4;
+
+	/// Optional Avatar
+	Avatar avatar = 5;
+
+	/// Optional username
+	string username = 6;
+
+	/// Online Status of a User
+	string status = 7;
+
+	/// User's about
+	string about = 8;
+
+	/// Contacts information
+	repeated Contact contacts = 9;
+
+	/// Optional sex of a user
+	Sex sex = 10;
+
+	/// Optional Timezone in TZ format
+	string timezone = 11;
+
+	/// Optional preferred languages of a user
+	repeated string preferredLanguages = 12;
+
+	/// Unixtime of user updated
+	int64 userUpdated = 13;
+
+	/// Kind of a user
+	enum Kind {
+		HUMAN = 0;
+		BOT = 1;
+		SERVICE = 2;
+	}
+
+	/// Sex of a user (other types can be added in future releases)
+	enum Sex {
+		UNKNOWN = 0;
+		MALE = 1;
+		FEMALE = 2;
+	}
+}
+
+////////////////////////////
+//         Group
+////////////////////////////
+
+/// Group entity
+message Group {
+
+	/// Required Group's id
+	int32 gid = 1;
+
+	/// Required Group's access hash
+	bytes accessHash = 2;
+
+	/// Required kind of a group
+	Kind kind = 3;
+
+	/// Required title of a group
+	string title = 4;
+
+	/// Optional avatar of a group
+	Avatar avatar = 5;
+
+	/// Optional about of a group
+	string about = 6;
+
+	/// Members of a group
+	repeated Member members = 7;
+
+	/// Member of a group
+	message Member {
+
+		/// User's id of a member
+		int32 uid = 1;
+	}
+
+	/// Kind of a group
+	enum Kind {
+		GENERIC = 0;
+		PUBLIC = 1;
+	}
+}
+
+////////////////////////////
+//         Messages
+////////////////////////////
+
+message TextContent {
+	string text = 0;
+}
+
+message Content {
+	oneof content {
+		TextContent text = 0;
+	}
+}
+
+////////////////////////////
+//     Common entities
+////////////////////////////
+
+/// Avatar for User or a Group
+message Avatar {
+
+	/// Required 800px max image
+	Image avatar800 = 0;
+}
+
+/// Image reference
+message Image {
+
+	/// Width of a image
+	int32 width = 0;
+
+	/// Height of a image
+	int32 height = 1;
+
+	/// Encoding format of a image
+	Format format = 2;
+
+	/// Reference for a image
+	FileReference file = 3;
+
+	/// File format of a image (more formats can be added later)
+	enum Format {
+		JPEG = 0;
+	}
+}
+
+/// File Reference to a file
+message FileReference {
+
+	/// Unique ID of a file
+	int32 fileId = 1;
+
+	/// Access Hash of a file
+	bytes accessHash = 2;
+}
+
+////////////////////////////
+//         Peers
+////////////////////////////
+
+/// Peer reference
+message Peer {
+
+	/// Peer's id
+	int32 peerId = 0;
+
+	/// Peer's type
+	PeerType peerType = 1;
+}
+
+/// Out Peer used for performing operations with peers
+message OutPeer {
+
+	/// Peer's id
+	int32 peerId = 0;
+
+	/// Peer's type
+	PeerType peerType = 1;
+
+	/// Peer's access hash
+	bytes accessHash = 2;
+}
+
+/// Peer types (more types can be added in future versions)
+enum PeerType {
+
+ 	/// Private Chat
+	PRIVATE = 0;
+
+	/// Group Chat
+	GROUP = 1;
+}
+
+////////////////////////////
+//         Push
+////////////////////////////
+
+/// Push about new message in group
+message PushMessage {
+
+	/// Peer of a message
+	Peer peer = 0;
+
+	/// Sender of a message
+	int32 senderId = 1;
+
+	/// Unique Random Id of a message
+	int64 randomId = 2;
+
+	/// Date of a message
+	int64 date = 3;
+
+	/// Message content
+	Content message = 4;
+}
+
+/// Push about content changed
+message PushContentChanged {
+
+	/// Peer of a Message
+	Peer peer = 0;
+
+	/// Random Id of a message
+	int64 randomId = 1;
+
+	/// New message content
+	Content message = 3;
+}
+
+/// Push about messages read
+message PushMessagesRead {
+
+	/// Peer for read
+	Peer peer = 0;
+
+	/// Read from date
+	int64 readFrom = 1;
+}
+
+/// Pish about messages received
+message PushMessagesReceived {
+
+	/// Peer for received
+	Peer peer = 0;
+
+	/// Received from date
+	int64 receivedFrom = 1;
+}
+
+/// Push about typing
+message PushTyping {
+
+	/// Peer for typing
+	Peer peer = 0;
+
+	/// Author of a typing
+	int32 senderId = 1;
+
+	/// Typing type
+	Type typingType = 2;
+
+	/// Timeout of typing
+	int32 timeout = 3;
+
+	/// Event type
+	EventType eventType = 4;
+
+	/// Types of typing
+	enum Type {
+		TEXT = 0;
+	}
+
+	/// Event Type
+	enum EventType {
+		START = 0;
+		STOP = 0;
+	}
+}
+
+/// Push message about online state
+message PushOnline {
+
+	/// User's Id
+	int32 uid = 0;
+
+	/// Optional last known online time
+	int32 lastOnline = 1;
+
+	/// Optional time of timeout of current push
+	int32 timeout = 2;
+
+	/// Is event about user's online
+	boolean isOnline = 3;
+
+	/// Online type
+	PresenceType onlineType = 4;
+
+	/// Optional Online Type on current state timeout
+	PresenceType timeoutOnlineType = 4;
+
+	/// Presence types (can be added more statuses in future releases)
+	enum PresenceType {
+		UNAVAILABLE = 0;
+		ONLINE = 1;
+		BUSY = 2;
+		AWAY = 3;
+		OFFLINE = 4;
+	}
+}
+
+/// Push message container
+message Push {
+	oneof push {
+		PushMessage message = 0;
+		PushContentChanged contentChanged = 1;
+		PushMessagesRead messageRead = 2;
+		PushMessagesReceived messageReceived = 3;
+		PushTyping typing = 4;
+		PushOnline online = 5;
+	}
+}
+
+/// Push Service
+service Push {
+	rpc deliverPush (DeliverPushRequest) returns DeliverPushResponse;
+}
+
+message DeliverPushRequest {
+
+	/// Next sequence number
+	int64 seq = 1;
+
+	/// Starting sequence number
+	int64 fromSeq = 2;
+
+	bool isFullUpdates = 3;
+
+	/// Updates
+	repeated Push updates = 4;
+
+	/// Updated Users
+	repeated User users = 5;
+
+	/// Updated groups
+	repeated Group groups = 6;
+}
+
+message DeliverPushResponse {
+
+	oneof response {
+		ResponseOk ok = 0;
+		ResponseRepeat repeat = 1;
+	}
+
+	message ResponseOk {
+
+	}
+
+	message ResponseRepeat {
+		int64 seq = 0;
+		bool forceFullUpdate = 1;
+		int32 delay = 2;
+	}
+}
+
+////////////////////////////
+//    Sending Message
+////////////////////////////
+
+service Messaging {
+	rpc sendMessage (RequestSendMessage) returns ResponseSendMessage;
+}
+
+message RequestSendMessage {
+	OutPeer peer = 0;
+	int64 randomId = 1;
+	Content content = 2;
+}
+
+message ResponseSendMessage {
+
+	oneof response {
+		ResponseOk ok = 0;
+		ResponseError error = 1;
+	}
+
+	message ResponseOk {
+		int64 date = 0;
+	}
+
+	message ResponseError {
+		string message = 0;
+	}
+}
+
+////////////////////////////
+//       User Search
+////////////////////////////
+
+message UserSearchRequest {
+	string query = 0;
+}
+
+message UserSearchResponse {
+	repeated User users = 0;
+}
+
+service UserSearch {
+	rpc Search (UserSearchRequest) returns UserSearchResponse;
+}
