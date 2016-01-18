@@ -489,4 +489,7 @@
     <string name="messages_action_delete">Delete</string>
     <string name="messages_action_copy">Copy</string>
     <string name="messages_action_like">Like</string>
+    <string name="notification_multiple_canversations_after_msg_count">" messages in "</string>
+    <string name="notifications_multiple_canversations_after_coversations_count">" chats"</string>
+    <string name="notifications_single_conversation_аfter_messages_count">" messages"</string>
 </resources>
