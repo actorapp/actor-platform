@@ -6,7 +6,7 @@ Currently s2s ptorofol is based on HTTP/1.1. In future releases underlying trans
 
 We found that our ideas are often the same as project [matrix.org](http://matrix.org/docs/spec/r0.0.1/server_server.html) have. We believe that we can work together and enrich their's network with Actor. Draft version of our federation API is **NOT** compatable with matrix, but release one we expect to be one.
 
-Protocol is JSON-based, but can be easily transformed to any form of key-value format, for example, protobuf.
+Protocol is Protobuf-based, but can be easily transformed to any form of key-value format, for example, protobuf.
 
 ## Basic requirements
 
