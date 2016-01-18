@@ -8,6 +8,7 @@ import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import { lightbox } from '../../utils/ImageUtils';
+import { Container } from 'flux/utils';
 
 import ActorClient from '../../utils/ActorClient';
 import confirm from '../../utils/confirm'
@@ -34,10 +35,11 @@ import Fold from '../common/Fold.React';
 import EditGroup from '../modals/EditGroup.react';
 
 const getStateFromStores = (gid) => {
-  const thisPeer = GroupStore.getGroup(gid);
+  const thisPeer = gid ? GroupStore.getGroup(gid) : null;
   return {
     thisPeer,
-    isNotificationsEnabled: NotificationsStore.isNotificationsEnabled(thisPeer),
+    // should not require to pass a peer
+    isNotificationsEnabled: thisPeer ? NotificationsStore.isNotificationsEnabled(thisPeer) : true,
     integrationToken: GroupStore.getToken(),
     message: OnlineStore.getMessage()
   };
@@ -48,16 +50,26 @@ class GroupProfile extends Component {
     group: PropTypes.object.isRequired
   };
 
+  static getStores() {
+    return [NotificationsStore, GroupStore, OnlineStore];
+  }
+
+  static calculateState(prevState) {
+    return getStateFromStores((prevState && prevState.group) ? prevState.group.id : null);
+  }
+
   constructor(props) {
     super(props);
 
-    this.state = assign({
-      isMoreDropdownOpen: false
-    }, getStateFromStores(props.group.id));
+    this.state = {
+      isMoreDropdownOpen: false,
+      group: props.group // hack to be able to access groupId in getStateFromStores
+    }
+  }
 
-    NotificationsStore.addListener(this.onChange);
-    GroupStore.addListener(this.onChange);
-    OnlineStore.addListener(this.onChange);
+  // hack for groupId in getStateFromStores
+  componentWillReceiveProps(nextProps) {
+    this.setState({group: nextProps.group});
   }
 
   onAddMemberClick = group => InviteUserActions.show(group);
@@ -284,4 +296,4 @@ class GroupProfile extends Component {
 
 ReactMixin.onClass(GroupProfile, IntlMixin);
 
-export default GroupProfile;
+export default Container.create(GroupProfile);
