@@ -276,12 +276,12 @@ trait AuthHelpers extends Helpers {
     } yield \/-(user)
   }
 
-  protected def newUser(): Result[User] = {
+  protected def newUser(name: String): Result[User] = {
     val rng = ThreadLocalRandom.current()
     val user = model.User(
       id = nextIntId(rng),
       accessSalt = ACLUtils.nextAccessSalt(rng),
-      name = "",
+      name = name,
       countryCode = "",
       sex = model.NoSex,
       state = model.UserState.Registered,
