@@ -19,6 +19,8 @@ import im.actor.core.api.ApiServiceExChangedAvatar;
 import im.actor.core.api.ApiServiceExChangedTitle;
 import im.actor.core.api.ApiServiceExContactRegistered;
 import im.actor.core.api.ApiServiceExGroupCreated;
+import im.actor.core.api.ApiServiceExPhoneCall;
+import im.actor.core.api.ApiServiceExPhoneMissed;
 import im.actor.core.api.ApiServiceExUserInvited;
 import im.actor.core.api.ApiServiceExUserJoined;
 import im.actor.core.api.ApiServiceExUserKicked;
@@ -148,6 +150,10 @@ public abstract class AbsContent {
                         return new ServiceGroupUserLeave(remoteContainer);
                     } else if (ext instanceof ApiServiceExUserJoined) {
                         return new ServiceGroupUserJoined(remoteContainer);
+                    } else if (ext instanceof ApiServiceExPhoneCall) {
+                        return new ServiceCallEnded(remoteContainer);
+                    } else if (ext instanceof ApiServiceExPhoneMissed) {
+                        return new ServiceCallMissed(remoteContainer);
                     } else {
                         return new ServiceContent(remoteContainer);
                     }
