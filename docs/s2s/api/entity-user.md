@@ -14,7 +14,7 @@ How Users are presented in API. Users are secured with Access Hashes.
   "about": "Founder of Actor",
   "contacts": [],
   "sex": null,
-  "timeZone: "UTC+0",
+  "timeZone": "UTC+0",
   "preferredLanguages": ["en", "us", "zh", "ar"]
 }
 ```
