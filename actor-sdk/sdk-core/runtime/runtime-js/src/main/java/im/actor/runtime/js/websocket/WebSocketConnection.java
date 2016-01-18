@@ -115,7 +115,7 @@ public class WebSocketConnection extends AsyncConnection {
      * @param url
      */
     private native JavaScriptObject createJSWebSocket(final String url, final WebSocketConnection webSocket) /*-{
-        var jsWebSocket = new WebSocket(url);
+        var jsWebSocket = new WebSocket(url, ['binary']);
         jsWebSocket.binaryType = "arraybuffer"
 
         jsWebSocket.onopen = function () {
