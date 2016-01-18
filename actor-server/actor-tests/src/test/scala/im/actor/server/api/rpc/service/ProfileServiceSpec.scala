@@ -39,6 +39,8 @@ final class ProfileServiceSpec
   it should "respond with error on invalid locale" in profile.invalidPreferredLanguages
   it should "respond with error on same preferred languages" in profile.samePreferredLanguages
 
+  "Edit name" should "not allow to use empty name" in profile.editNameEmpty
+
   implicit lazy val service = new ProfileServiceImpl
   implicit lazy val filesService = new FilesServiceImpl
 
@@ -298,6 +300,20 @@ final class ProfileServiceSpec
           case Error(RpcError(400, "UPDATE_ALREADY_APPLIED", _, false, _)) ⇒
         }
       }
+    }
+
+    def editNameEmpty() = {
+      val (user, authId, authSid, _) = createUser()
+      val sessionId = createSessionId()
+
+      val clientData1 = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+
+      whenReady(service.jhandleEditName("", clientData)) { resp ⇒
+        inside(resp) {
+          case Error(e) ⇒ e shouldEqual ProfileErrors.NameInvalid
+        }
+      }
+
     }
   }
 }
