@@ -18,6 +18,8 @@ import im.actor.core.entity.Notification;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
+import im.actor.core.entity.content.ServiceCallEnded;
+import im.actor.core.entity.content.ServiceCallMissed;
 import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
 import im.actor.core.entity.content.ServiceGroupCreated;
@@ -388,9 +390,9 @@ public class I18nEngine {
             case SERVICE_JOINED:
                 return getTemplateNamed(senderId, "ServiceGroupJoined");
             case SERVICE_CALL_ENDED:
-                return getTemplateNamed(senderId, "ServiceCallEnded");
+                return locale.get("ServiceCallEnded");
             case SERVICE_CALL_MISSED:
-                return getTemplateNamed(senderId, "ServiceCallMissed");
+                return locale.get("ServiceCallMissed");
             case NONE:
                 return "";
             default:
@@ -447,6 +449,10 @@ public class I18nEngine {
             }
         } else if (content instanceof ServiceGroupUserJoined) {
             return getTemplateNamed(senderId, "ServiceGroupJoined");
+        } else if (content instanceof ServiceCallEnded) {
+            return locale.get("ServiceCallEnded");
+        } else if (content instanceof ServiceCallMissed) {
+            return locale.get("ServiceCallMissed");
         }
 
         return content.getCompatText();
