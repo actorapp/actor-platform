@@ -2,7 +2,23 @@
 
 How Users are presented in API. Users are secured with Access Hashes.
 
-## User object
+## Definition
+
+| required | field | type | description |
+|:--------:|-------|------|-------------|
+|+|uid|int|User's ID|
+|+|accessHash|string|Access Hash of a user|
+|+|isBot|bool|Is user actually a bot|
+|+|name|string|Name of the user|
+|+|avatar|Avatar|Avatar of the user|
+|+|contacts|Contact[]|Contact information of the user|
+|-|username|string|Username of the user|
+|-|about|string|About text|
+|-|sex|Sex|Sex of the user|
+|-|timeZone|string|Timezone of the user|
+|-|preferredLangiages|string[]|Preferred languages|
+
+## Example
 ```json
 {
   "uid": 1122334455,
