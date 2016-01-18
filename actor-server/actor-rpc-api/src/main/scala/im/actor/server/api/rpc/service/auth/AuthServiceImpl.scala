@@ -267,7 +267,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
           DeviceInfo(timeZone.getOrElse(""), preferredLanguages).toByteArray,
           isChecked = false // we don't need to check password if user signs up
         )
-        user ← newUser()
+        user ← newUser(normUsername)
         _ ← handleUserCreate(user, transaction, clientData)
         userStruct ← authorizeT(user.id, "", transaction, clientData)
       } yield ResponseAuth(userStruct, ApiConfig(maxGroupSize))

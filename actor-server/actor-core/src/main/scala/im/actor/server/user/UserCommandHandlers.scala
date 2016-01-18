@@ -43,6 +43,8 @@ object UserErrors {
 
   case object InvalidNickname extends UserError("Invalid nickname")
 
+  case object InvalidName extends UserError("Invalid name")
+
   final case class InvalidTimeZone(tz: String) extends UserError(s"Invalid time zone: $tz")
 
   final case class InvalidLocale(locale: String) extends UserError(s"Invalid locale: $locale")
@@ -136,16 +138,23 @@ private[user] trait UserCommandHandlers {
       db.run(p.UserRepo.setCountryCode(userId, countryCode) map (_ ⇒ ChangeCountryCodeAck()))
     }
 
-  protected def changeName(user: User, name: String): Unit =
-    persistReply(TSEvent(now(), UserEvents.NameChanged(name)), user) { _ ⇒
-      val update = UpdateUserNameChanged(userId, name)
-      for {
-        relatedUserIds ← getRelations(userId)
-        _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds, update)
-        seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, update)
-        _ ← db.run(UserRepo.setName(userId, name))
-      } yield seqstate
+  protected def changeName(user: User, name: String): Unit = {
+    val replyTo = sender()
+
+    if (StringUtils.validName(name).fold(l ⇒ false, r ⇒ true)) {
+      persistReply(TSEvent(now(), UserEvents.NameChanged(name)), user) { _ ⇒
+        val update = UpdateUserNameChanged(userId, name)
+        for {
+          relatedUserIds ← getRelations(userId)
+          _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds, update)
+          seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, update)
+          _ ← db.run(UserRepo.setName(userId, name))
+        } yield seqstate
+      }
+    } else {
+      replyTo ! Status.Failure(UserErrors.InvalidName)
     }
+  }
 
   protected def delete(user: User): Unit =
     persistStashingReply(TSEvent(now(), UserEvents.Deleted()), user) { _ ⇒
@@ -198,8 +207,9 @@ private[user] trait UserCommandHandlers {
               (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relatedUserIds, update)
             } yield seqstate
           }
-        } else
+        } else {
           replyTo ! Status.Failure(UserErrors.InvalidNickname)
+        }
       } else {
         replyTo ! Status.Failure(UserErrors.NicknameTaken)
       }

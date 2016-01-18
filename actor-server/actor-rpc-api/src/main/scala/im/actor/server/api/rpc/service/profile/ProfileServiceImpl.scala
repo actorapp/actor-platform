@@ -23,27 +23,25 @@ import scala.concurrent.{ ExecutionContext, Future }
 object ProfileErrors {
   val NicknameInvalid = RpcError(400, "NICKNAME_INVALID",
     "Invalid nickname. Valid nickname should contain from 5 to 32 characters, and may consist of latin characters, numbers and underscores", false, None)
+  val NameInvalid = RpcError(400, "NAME_INVALID", "Invalid name. Valid name should not be empty or contain bad symbols", false, None)
   val NicknameBusy = RpcError(400, "NICKNAME_BUSY", "This nickname already belongs some other user, we are sorry!", false, None)
   val AboutTooLong = RpcError(400, "ABOUT_TOO_LONG",
     "About is too long. It should be no longer then 255 characters", false, None)
 }
 
-final class ProfileServiceImpl()(
-  implicit
-  actorSystem: ActorSystem
-) extends ProfileService {
+final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileService {
 
   import FileHelpers._
   import ImageUtils._
 
-  override implicit val ec: ExecutionContext = actorSystem.dispatcher
+  override implicit val ec: ExecutionContext = system.dispatcher
 
   private implicit val timeout = Timeout(5.seconds)
   // TODO: configurable
-  private val db: Database = DbExtension(actorSystem).db
-  private val userExt = UserExtension(actorSystem)
-  private implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
-  private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(actorSystem).fsAdapter
+  private val db: Database = DbExtension(system).db
+  private val userExt = UserExtension(system)
+  private implicit val socialRegion: SocialManagerRegion = SocialExtension(system).region
+  private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(system).fsAdapter
 
   override def jhandleEditAvatar(fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] = {
     // TODO: flatten
@@ -80,14 +78,14 @@ final class ProfileServiceImpl()(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
-      DBIO.from(userExt.changeName(client.userId, name) map {
-        case SeqState(seq, state) ⇒ Ok(ResponseSeq(seq, state.toByteArray))
-      })
+  override def jhandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { implicit client ⇒
+      for {
+        SeqState(seq, state) ← userExt.changeName(client.userId, name)
+      } yield Ok(ResponseSeq(seq, state.toByteArray))
+    } recover {
+      case UserErrors.InvalidName ⇒ Error(ProfileErrors.NameInvalid)
     }
-    db.run(toDBIOAction(authorizedAction))
-  }
 
   def jhandleEditNickName(nickname: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
