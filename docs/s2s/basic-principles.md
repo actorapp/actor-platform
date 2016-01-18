@@ -18,7 +18,7 @@ Protocol is JSON-based, but can be easily transformed to any form of key-value f
 ## Data Types
 
 * **Server Address** - Array of Host Names and ports for connecting to server. There are different ports for different transports.
-* **Sequence Updates** - updates that affects persistent state of a conversation or entyty. For example: new message, group member invite, user's avatar change, etc...
+* **Strong Updates** - updates that affects persistent state of a conversation or entyty. For example: new message, group member invite, user's avatar change, etc...
 * **Weak Updates** - ephermal updates that is usually notification about temporary state and doesn't need to be stored in any offline storage. For example: typing notifications, online/offline notifications, etc...
 * **Requests** - Abstract request-response from one server to another.
 
@@ -29,6 +29,68 @@ As MTProto v2 server-server protocol is divided to layers.
 * Transport Level - Low Level transport protocol. Defines how requests made and updates delivered. HTTP/1.1 is used in this spec.
 * Protection Level - level that encrypt everything and checks data integrity. Not included in current draft.
 * Basic API level - API requests and update support. Defines how it is posslbe to make requests from server to server and how to receive updates even throught 3rd party servers.
+
+## Basic API level
+
+Basic API level have PUSH and RPC support. RPC and PUSH are both request-response entities with minor differences in how they work.
+
+#### Push
+As we mentioned before, protocol is push-based and all responsibility of push delivery is on sender's side.
+
+```json
+{
+  "weak": [
+    {
+      "update": "typing",
+      "user_id": "uid",
+      "peer": {
+        "type": "group",
+        "id": 11223344
+      }
+    }
+  ],
+  "strong": [
+    {
+      "update": "message",
+      "peer": {
+        "type": "group",
+        "id": 11223344
+      },
+      "content": {
+        "type": "text",
+        "text": "Hello Wordl!"
+      }
+    }
+  ],
+  "seq": 234234
+}
+```
+
+Response OK
+```json
+{
+  "receive": "ok",
+  "seq": 234234
+}
+```
+
+Response Hole Detected
+Response when in seq updates hole is detected. Sender need to resend all **STRONG** updates starting from returned seq.
+```json
+{
+  "receive": "hole_detected",
+  "seq": 234234
+}
+```
+
+Response Wait
+Response when request need to be repeated in `wait` seconds
+```json
+{
+  "receive": "wait",
+  "wait": 123
+}
+```
 
 ## Transport Level: HTTPS
 
