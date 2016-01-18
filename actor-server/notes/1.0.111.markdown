@@ -1,0 +1,1 @@
+* Don't allow users to change name to empty
