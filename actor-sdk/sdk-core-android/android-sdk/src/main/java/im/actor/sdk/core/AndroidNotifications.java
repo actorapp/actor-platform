@@ -163,7 +163,7 @@ public class AndroidNotifications implements NotificationProvider {
 
             String sender = getNotificationSender(topNotification);
             builder.setContentTitle(sender);
-            builder.setContentText(messagesCount + " messages");
+            builder.setContentText(messagesCount + context.getString(R.string.notifications_single_conversation_аfter_messages_count));
             visiblePeer = topNotification.getPeer();
 
 
@@ -176,7 +176,7 @@ public class AndroidNotifications implements NotificationProvider {
                     inboxStyle.addLine(messenger.getFormatter().formatNotificationText(n));
                 }
             }
-            inboxStyle.setSummaryText(messagesCount + " messages");
+            inboxStyle.setSummaryText(messagesCount + context.getString(R.string.notifications_single_conversation_аfter_messages_count));
             Avatar avatar = null;
             int id = 0;
             String avatarTitle = "";
@@ -226,7 +226,7 @@ public class AndroidNotifications implements NotificationProvider {
         } else {
             // Multiple conversations notification
             builder.setContentTitle(ActorSDK.sharedActor().getAppName());
-            builder.setContentText(messagesCount + " messages in " + conversationsCount + " chats");
+            builder.setContentText(messagesCount + context.getString(R.string.notification_multiple_canversations_after_msg_count) + conversationsCount + context.getString(R.string.notifications_multiple_canversations_after_coversations_count));
             visiblePeer = null;
 
             intent = new Intent(context, ActorMainActivity.class);
@@ -239,7 +239,7 @@ public class AndroidNotifications implements NotificationProvider {
             for (Notification n : topNotifications) {
                 inboxStyle.addLine(getNotificationTextFull(n, messenger));
             }
-            inboxStyle.setSummaryText(messagesCount + " messages in " + conversationsCount + " chats");
+            inboxStyle.setSummaryText(messagesCount + context.getString(R.string.notification_multiple_canversations_after_msg_count) + conversationsCount + context.getString(R.string.notifications_multiple_canversations_after_coversations_count));
 
             result = builder
                     .setStyle(inboxStyle)
