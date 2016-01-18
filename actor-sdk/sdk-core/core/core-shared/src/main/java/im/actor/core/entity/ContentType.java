@@ -24,6 +24,8 @@ public enum ContentType {
     SERVICE_AVATAR(13),
     SERVICE_AVATAR_REMOVED(14),
     CUSTOM_JSON_MESSAGE(21),
+    SERVICE_CALL_ENDED(22),
+    SERVICE_CALL_MISSED(23),
     UNKNOWN_CONTENT(15);
 
     int value;
@@ -79,6 +81,10 @@ public enum ContentType {
                 return STICKER;
             case 21:
                 return CUSTOM_JSON_MESSAGE;
+            case 22:
+                return SERVICE_CALL_ENDED;
+            case 23:
+                return SERVICE_CALL_MISSED;
         }
     }
 }
