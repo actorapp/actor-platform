@@ -37,7 +37,13 @@ export default class AvatarItem extends React.Component {
     const avatar = image ? <img alt={title} className="avatar__image" src={image}/> : null;
 
     const emojiFirstChar = /([\uE000-\uF8FF]|\uD83C|\uD83D)/g;
-    const placeholderChar = title[0].match(emojiFirstChar) ? '#' : title[0];
+
+    let placeholderChar;
+    if (title.length == 0) {
+      placeholderChar = '#'
+    } else {
+      placeholderChar = title[0].match(emojiFirstChar) ? '#' : title[0];
+    }
 
     return (
       <div className={avatarClassName} onClick={this.handleClick}>
