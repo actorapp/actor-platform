@@ -180,12 +180,6 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             name: SLKKeyboardWillHideNotification,
             object: nil)
         
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        textView.text = Actor.loadDraftWithPeer(peer)
         
         // Installing bindings
         if (UInt(peer.peerType.ordinal()) == ACPeerType.PRIVATE.rawValue) {
@@ -240,7 +234,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                 } else {
                     self.setTextInputbarHidden(false, animated: false)
                 }
-            
+                
                 if (typingValue != nil && typingValue!.length() > 0) {
                     self.subtitleView.textColor = self.appStyle.navigationSubtitleActiveColor
                     if (typingValue!.length() == 1) {
@@ -268,6 +262,19 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         Actor.onConversationOpenWithPeer(peer)
         ActorSDK.sharedActor().trackPageVisible(content)
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        
+        if textView.isFirstResponder() == false {
+            textView.resignFirstResponder()
+        }
+        
+        textView.text = Actor.loadDraftWithPeer(peer)
+        
     }
     
     override func viewWillLayoutSubviews() {
@@ -320,6 +327,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         // Releasing bindings
         binder.unbindAll()
+    
+        self.actionSheet.removeFromSuperview()
+        self.actionSheet = nil
     }
 
     // Chat avatar tap
@@ -797,6 +807,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
 
         Actor.sendStickerWithPeer(self.peer, withSticker: sticker)
         
+    }
+    
+    deinit {
+        print("conversation controller deinit'ed")
     }
 
     
