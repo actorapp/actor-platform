@@ -39,12 +39,6 @@ class MessagingReadsSpec
     val user1AccessHash = ACLUtils.userAccessHash(client2.authId, user1.id, getUserModel(user1.id).accessSalt)
     val user1OutPeer = ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
 
-    {
-      implicit val client = client2
-
-      sendPrivateMessage(user1.id, ApiTextMessage(s"This is hack to initialize dialog and set isOpen to `true`", Vector.empty, None))
-    }
-
     val states_1_3 = {
       implicit val client = client1
       (1 to 3) map { i ⇒
