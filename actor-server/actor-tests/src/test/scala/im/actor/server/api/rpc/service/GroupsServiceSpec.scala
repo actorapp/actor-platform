@@ -11,7 +11,7 @@ import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupRpcErrors, GroupsServiceImpl }
 import im.actor.server.group.GroupServiceMessages
 import im.actor.server.model.PeerType
-import org.scalatest.Inside._
+import im.actor.server.persist.HistoryMessageRepo
 import slick.dbio.DBIO
 
 import scala.util.Random
@@ -81,9 +81,11 @@ final class GroupsServiceSpec
 
   "Kick user" should "mark messages read in public group" in markReadOnKickInPublic
 
+  "Kicked user" should "not be able to write to group" in e27
+
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  val messagingService = messaging.MessagingServiceImpl()
+  implicit val messagingService = messaging.MessagingServiceImpl()
   implicit val service = new GroupsServiceImpl(groupInviteConfig)
 
   def sendInvitesOnCreate() = {
@@ -987,4 +989,65 @@ final class GroupsServiceSpec
 
   }
 
+  def e27() = {
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
+
+    val sessionId = createSessionId()
+
+    val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
+
+    val groupOutPeer = {
+      implicit val clientData = clientData1
+      createGroup("Fun group", Set(user2.id)).groupPeer
+    }
+    val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+
+    for (_ ← 1 to 6) {
+      implicit val clientData = clientData2
+      sendMessageToGroup(groupOutPeer.groupId, ApiTextMessage("hello", Vector.empty, None))
+    }
+
+    {
+      implicit val clientData = clientData1
+      whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+      }
+    }
+
+    val user1Seq = whenReady(sequenceService.jhandleGetState(clientData1))(_.toOption.get.seq)
+    val user2Seq = whenReady(sequenceService.jhandleGetState(clientData2))(_.toOption.get.seq)
+
+    {
+      implicit val clientData = clientData2
+
+      val randomId = Random.nextLong()
+      whenReady(messagingService.handleSendMessage(outPeer, randomId, ApiTextMessage("WTF? am i kicked?!!?!?!?!?!?!?!?!??!?!?!", Vector.empty, None))) { resp ⇒
+        inside(resp) {
+          case Error(err) ⇒ err.code shouldEqual 403
+        }
+
+        expectNoUpdate(user2Seq, classOf[UpdateMessageSent])
+
+        whenReady(db.run(HistoryMessageRepo.find(user2.id, outPeer.asModel, Set(randomId)))) { ms ⇒
+          ms shouldBe empty
+        }
+        whenReady(db.run(HistoryMessageRepo.find(user1.id, outPeer.asModel, Set(randomId)))) { ms ⇒
+          ms shouldBe empty
+        }
+
+      }
+    }
+    {
+      implicit val clientData = clientData1
+
+      expectNoUpdate(user1Seq, classOf[UpdateMessage])
+      expectNoUpdate(user1Seq, classOf[UpdateCountersChanged])
+    }
+  }
 }
