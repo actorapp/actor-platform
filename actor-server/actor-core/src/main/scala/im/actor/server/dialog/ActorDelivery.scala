@@ -56,10 +56,15 @@ final class ActorDelivery()(implicit val system: ActorSystem)
         ),
         deliveryId = s"msg_${peer.toString}_$randomId"
       )
-      counterUpdate ← db.run(getUpdateCountersChanged(receiverUserId))
-      _ ← seqUpdatesExt.deliverSingleUpdate(receiverUserId, counterUpdate, deliveryId = s"counter_$randomId")
     } yield ()
   }
+
+  override def sendCountersUpdate(userId: Int): Future[Unit] =
+    for {
+      counterUpdate ← db.run(getUpdateCountersChanged(userId))
+      _ ← seqUpdatesExt.deliverSingleUpdate(userId, counterUpdate)
+
+    } yield ()
 
   override def senderDelivery(
     senderUserId:  Int,
@@ -103,22 +108,13 @@ final class ActorDelivery()(implicit val system: ActorSystem)
     ) map (_ ⇒ ())
   }
 
-  override def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long): Future[Unit] = {
-    val update = UpdateMessageReadByMe(peer.asStruct, date)
-    val pushRules = PushRules()
+  override def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long): Future[Unit] =
     for {
-      counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
       _ ← seqUpdatesExt.deliverSingleUpdate(
         userId = readerUserId,
-        update = update,
-        pushRules = pushRules
-      )
-      _ ← seqUpdatesExt.deliverSingleUpdate(
-        userId = readerUserId,
-        update = counterUpdate,
-        pushRules = pushRules
+        update = UpdateMessageReadByMe(peer.asStruct, date),
+        pushRules = PushRules()
       )
     } yield ()
-  }
 
 }

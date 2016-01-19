@@ -28,6 +28,7 @@ message DialogCommands {
             WriteMessageSelf write_message_self = 11;
             Favourite favourite = 12;
             Unfavourite unfavourite = 13;
+            UpdateCounters update_counters = 14;
         }
     }
 
@@ -151,4 +152,13 @@ message DialogCommands {
         required SeqState seqstate = 1;
         repeated MessageReaction reactions = 2;
     }
+
+    message UpdateCounters {
+        option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
+
+        required Peer origin = 1;
+        required Peer dest = 2;
+    }
+
+    message UpdateCountersAck {}
 }

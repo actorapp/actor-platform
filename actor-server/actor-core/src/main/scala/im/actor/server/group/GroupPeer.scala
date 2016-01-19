@@ -59,6 +59,7 @@ private[group] final class GroupPeer(val groupId: Int)
     case sr: SetReaction         ⇒ setReaction(state, sr)
     case rr: RemoveReaction      ⇒ removeReaction(state, rr)
     case sc: LastSenderIdChanged ⇒ context become initialized(state.updated(sc))
+    case uc: UpdateCounters      ⇒ updateCountersChanged(uc)
   }
 
   override def receive: Receive = initialized(GroupPeerState.empty)
