@@ -31,16 +31,6 @@ public class IndexEngine implements IndexStorage {
     }
 
     @Override
-    public Long loadTop() {
-        return storage.loadTop();
-    }
-
-    @Override
-    public Long loadBottom() {
-        return storage.loadBottom();
-    }
-
-    @Override
     public void remove(long key) {
         storage.remove(key);
     }
