@@ -46,6 +46,8 @@ import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.events.AppVisibleChanged;
+import im.actor.core.modules.events.PeerChatClosed;
 import im.actor.core.modules.events.PeerChatOpened;
 import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.core.modules.internal.messages.ConversationHistoryActor;
@@ -177,6 +179,8 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         }), "actor/shown");
 
         context().getEvents().subscribe(this, PeerChatOpened.EVENT);
+        context().getEvents().subscribe(this, PeerChatClosed.EVENT);
+        context().getEvents().subscribe(this, AppVisibleChanged.EVENT);
     }
 
     public DialogGroupsVM getDialogGroupsVM() {
@@ -952,8 +956,16 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     @Override
     public void onBusEvent(Event event) {
+
+        // Need to be here as events can be sent when no actor is created yet.
         if (event instanceof PeerChatOpened) {
-            assumeConvActor(((PeerChatOpened) event).getPeer());
+            Peer peer = ((PeerChatOpened) event).getPeer();
+            assumeConvActor(peer);
+            conversationActors.get(peer).send(new ConversationActor.ConversationVisible());
+        } else if (event instanceof PeerChatClosed) {
+            Peer peer = ((PeerChatClosed) event).getPeer();
+            assumeConvActor(peer);
+            conversationActors.get(peer).send(new ConversationActor.ConversationHidden());
         }
     }
 }
