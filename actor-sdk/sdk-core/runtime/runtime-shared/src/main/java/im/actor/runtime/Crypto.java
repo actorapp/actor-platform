@@ -6,6 +6,8 @@ package im.actor.runtime;
 
 import java.math.BigInteger;
 
+import im.actor.runtime.crypto.primitives.digest.SHA256;
+
 public class Crypto {
 
     final protected static char[] hexArray = "0123456789abcdef".toCharArray();
@@ -24,17 +26,12 @@ public class Crypto {
      * @return SHA256 of data
      */
     public static byte[] SHA256(byte[] data) {
-        return provider.SHA256(data);
-    }
-
-    /**
-     * Calculating SHA256
-     *
-     * @param data source data
-     * @return SHA256 of data
-     */
-    public static byte[] SHA512(byte[] data) {
-        return provider.SHA512(data);
+        SHA256 sha256 = new SHA256();
+        sha256.reset();
+        sha256.update(data, 0, data.length);
+        byte[] res = new byte[32];
+        sha256.doFinal(res, 0);
+        return res;
     }
 
     /**

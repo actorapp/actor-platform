@@ -14,9 +14,6 @@ import im.actor.runtime.threading.AtomicLongCompat;
 import im.actor.runtime.threading.ThreadLocalCompat;
 import im.actor.runtime.threading.TimerCompat;
 
-/**
- * Created by ex3ndr on 07.08.15.
- */
 public class GenericThreadingProvider implements ThreadingRuntime {
 
     public GenericThreadingProvider() {
