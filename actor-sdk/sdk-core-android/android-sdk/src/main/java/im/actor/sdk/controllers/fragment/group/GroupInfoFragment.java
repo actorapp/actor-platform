@@ -59,7 +59,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class GroupInfoFragment extends BaseFragment {
 
-    private static final String EXTRA_CHAT_ID = "chat_id";
+    protected static final String EXTRA_CHAT_ID = "chat_id";
     private String[] theme;
     private String[] about;
     private int chatId;
@@ -68,6 +68,7 @@ public class GroupInfoFragment extends BaseFragment {
     private MembersAdapter groupUserAdapter;
     private CoverAvatarView avatarView;
     private View notMemberView;
+    protected View header;
 
     public static GroupInfoFragment create(int chatId) {
         Bundle args = new Bundle();
@@ -100,7 +101,7 @@ public class GroupInfoFragment extends BaseFragment {
         listView = (ListView) res.findViewById(R.id.groupList);
         listView.setBackgroundColor(style.getMainBackgroundColor());
 
-        final View header = inflater.inflate(R.layout.fragment_group_header, listView, false);
+        header = inflater.inflate(R.layout.fragment_group_header, listView, false);
         header.setBackgroundColor(style.getMainBackgroundColor());
 
         // Avatar

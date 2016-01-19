@@ -113,6 +113,33 @@
                 android:scaleType="center"
                 android:src="@drawable/conv_media_docs_more" />
 
+            <LinearLayout
+                android:visibility="invisible"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:baselineAligned="false"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:textSize="13sp" />
+
+                <im.actor.sdk.view.TintImageView
+                    android:visibility="gone"
+                    android:id="@+id/stateIcon"
+                    android:layout_width="16dp"
+                    android:layout_height="9dp"
+                    android:layout_marginLeft="2dp" />
+            </LinearLayout>
+
         </FrameLayout>
 
     </LinearLayout>
