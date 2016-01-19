@@ -1,0 +1,4 @@
+* :bug: Fixed message reads that affected web application
+* :bug: Fixed message counters updates
+* :bug: Don't allow kicked user to write to group
+* :bug: Stash dialog on incoming message
