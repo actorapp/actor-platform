@@ -9,7 +9,9 @@ import im.actor.runtime.storage.IndexStorage;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.ListStorage;
 import im.actor.runtime.storage.PreferencesStorage;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import im.actor.runtime.storage.memory.MemoryKeyValueStorage;
+import im.actor.runtime.storage.memory.MemoryListStorage;
+import im.actor.runtime.storage.memory.MemoryPreferencesStorage;
 
 public class JavaSeStorageProvider implements StorageRuntime {
 
@@ -19,26 +21,26 @@ public class JavaSeStorageProvider implements StorageRuntime {
 
     @Override
     public PreferencesStorage createPreferencesStorage() {
-        throw new NotImplementedException();
+        return new MemoryPreferencesStorage();
     }
 
     @Override
     public IndexStorage createIndex(String name) {
-        throw new NotImplementedException();
+        throw new RuntimeException();
     }
 
     @Override
     public KeyValueStorage createKeyValue(String name) {
-        throw new NotImplementedException();
+        return new MemoryKeyValueStorage();
     }
 
     @Override
     public ListStorage createList(String name) {
-        throw new NotImplementedException();
+        return new MemoryListStorage();
     }
 
     @Override
     public void resetStorage() {
-        throw new NotImplementedException();
+        
     }
 }
