@@ -12,8 +12,6 @@ import { escapeWithEmoji } from '../../../utils/EmojiUtils';
 import PeerUtils from '../../../utils/PeerUtils';
 import { MessageContentTypes } from '../../../constants/ActorAppConstants';
 
-import VisibilitySensor from 'react-visibility-sensor';
-
 import DialogActionCreators from '../../../actions/DialogActionCreators';
 import MessageActionCreators from '../../../actions/MessageActionCreators';
 import ActivityActionCreators from '../../../actions/ActivityActionCreators';
@@ -46,7 +44,6 @@ class MessageItem extends Component {
     message: PropTypes.object.isRequired,
     isShortMessage: PropTypes.bool,
     isSelected: PropTypes.bool,
-    onVisibilityChange: PropTypes.func,
     onSelect: PropTypes.func
   };
 
@@ -96,13 +93,6 @@ class MessageItem extends Component {
     }
   };
 
-  onVisibilityChange = (isVisible) => {
-    const { message, onVisibilityChange } = this.props;
-    if (message.sender.peer.id !== UserStore.getMyId()) {
-      onVisibilityChange(message, isVisible);
-    }
-  };
-
   showActions = (event) => {
     const { message } = this.props;
     DropdownActionCreators.openMessageActions(event.target.getBoundingClientRect(), message);
@@ -114,7 +104,7 @@ class MessageItem extends Component {
   };
 
   render() {
-    const { message, isShortMessage, onVisibilityChange, peer, isSelected } = this.props;
+    const { message, isShortMessage, peer, isSelected } = this.props;
     const { isHighlighted } = this.state;
     const { delegate, isExperimental } = this.context;
 
@@ -233,7 +223,6 @@ class MessageItem extends Component {
         <div className="message__body col-xs">
           {header}
           {messageContent}
-          {onVisibilityChange ? <VisibilitySensor onChange={this.onVisibilityChange}/> : null}
         </div>
         <div className="message__actions">
           <Reactions peer={peer} message={message}/>

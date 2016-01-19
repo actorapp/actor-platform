@@ -560,6 +560,8 @@ public class ConversationActor extends ModuleActor {
             docs.addOrUpdateItems(updatedDocs);
         }
 
+        // TODO: Implement intial message read state
+
         // No need to update dialogs: all history messages are always too old
     }
 
