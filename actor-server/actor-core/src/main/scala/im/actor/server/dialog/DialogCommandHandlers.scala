@@ -26,7 +26,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   import DialogEvents._
 
   protected def sendMessage(state: DialogState, sm: SendMessage): Unit = {
-    (withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
+    val sendFuture = (withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
       for {
         _ ← dialogExt.ackSendMessage(peer, sm)
         message = sm.message
@@ -38,12 +38,11 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       case e ⇒
         log.error(e, "Failed to send message")
         throw e
-    }) pipeTo sender() onSuccess {
-      case _ ⇒
-        if (state.isHidden)
-          self.tell(Show(peer), ActorRef.noSender)
+    }) pipeTo sender()
+    onSuccess(sendFuture) { result ⇒
+      if (state.isHidden) { self.tell(Show(peer), ActorRef.noSender) }
+      updateMessageDate(state, sm.date, checkOpen = true)
     }
-    updateMessageDate(state, sm.date, checkOpen = true)
   }
 
   protected def updateCountersChanged(): Unit = {
