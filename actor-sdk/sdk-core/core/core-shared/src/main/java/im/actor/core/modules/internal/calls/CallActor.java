@@ -1,5 +1,7 @@
 package im.actor.core.modules.internal.calls;
 
+import java.util.ArrayList;
+
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.modules.utils.ModuleActor;
@@ -14,11 +16,17 @@ public class CallActor extends ModuleActor {
     private boolean alive = false;
     private long callId;
     private CallsModule.CallCallback callback;
+    private ArrayList<byte[]> signals = new ArrayList<byte[]>();
 
-    public CallActor(long callId, CallsModule.CallCallback callback, ModuleContext context) {
+    public CallActor(long callId, ModuleContext context) {
         super(context);
         this.callId = callId;
-        this.callback = callback;
+    }
+
+    public CallActor(long callId, CallsModule.CallCallback callCallback, ModuleContext context) {
+        super(context);
+        this.callId = callId;
+        this.callback = callCallback;
     }
 
     @Override
@@ -39,14 +47,24 @@ public class CallActor extends ModuleActor {
             onEndCall();
         } else if (message instanceof Signal) {
             onSignal(((Signal) message).getData());
+        } else if (message instanceof AnswerCall) {
+            onAnswerCall(((AnswerCall) message).getCallback());
         }
     }
 
     public void onSignal(byte[] data) {
-        callback.onSignal(data);
+        if (callback != null) {
+            callback.onSignal(data);
+        } else {
+            signals.add(data);
+        }
     }
 
     public void onEndCall() {
+        if (callback == null) {
+            self().send(new EndCall(), 500);
+            return;
+        }
         callback.onCallEnd();
         context().getCallsModule().onCallEnded(callId);
         self().send(PoisonPill.INSTANCE);
@@ -79,6 +97,13 @@ public class CallActor extends ModuleActor {
         }
     }
 
+    private void onAnswerCall(CallsModule.CallCallback callCallback) {
+        this.callback = callCallback;
+        for (byte[] s : signals) {
+            callback.onSignal(s);
+        }
+    }
+
     public static class EndCall {
 
     }
@@ -107,6 +132,18 @@ public class CallActor extends ModuleActor {
             return timeout;
         }
 
+    }
+
+    public static class AnswerCall {
+        CallsModule.CallCallback callback;
+
+        public AnswerCall(CallsModule.CallCallback callback) {
+            this.callback = callback;
+        }
+
+        public CallsModule.CallCallback getCallback() {
+            return callback;
+        }
     }
 
     private static class CheckAlive {
