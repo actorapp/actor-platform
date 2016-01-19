@@ -14,6 +14,8 @@ import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
 import im.actor.sdk.controllers.fragment.auth.SignPhoneFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
+import im.actor.sdk.controllers.fragment.settings.BaseActorProfileActivity;
+import im.actor.sdk.controllers.fragment.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
@@ -71,6 +73,16 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
 
     @Override
     public ActorIntentFragmentActivity getSettingsIntent() {
+        return null;
+    }
+
+    @Override
+    public BaseActorProfileActivity getProfileIntent() {
+        return null;
+    }
+
+    @Override
+    public BaseGroupInfoActivity getGroupInfoIntent() {
         return null;
     }
 
