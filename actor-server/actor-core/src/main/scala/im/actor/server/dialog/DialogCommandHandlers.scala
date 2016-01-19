@@ -62,8 +62,8 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       .map(_ ⇒ SendMessageAck())
       .pipeTo(sender()) onSuccess {
         case _ ⇒
-          if (state.isHidden)
-            self.tell(Show(peer), ActorRef.noSender)
+          if (state.isHidden) { self.tell(Show(peer), ActorRef.noSender) }
+          updateOpen(state)
       }
   }
 
@@ -304,6 +304,9 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
     context become initialized(newState)
   }
+
+  protected def updateOpen(state: DialogState): Unit =
+    if (!state.isOpen) { context become initialized(state.updated(Open)) }
 
   private def updateReceiveDate(state: DialogState, date: Long): Unit =
     context become initialized(state.updated(LastReceiveDate(date)))
