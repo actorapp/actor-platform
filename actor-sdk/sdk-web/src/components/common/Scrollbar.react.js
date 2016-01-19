@@ -4,7 +4,6 @@
 
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
-import tinyscrollbar from 'tinyscrollbar/lib/tinyscrollbar';
 import SimpleScroll from 'simple-scrollbar';
 
 class Scrollbar extends Component {
