@@ -37,7 +37,9 @@ import im.actor.core.js.entity.JsUser;
 import im.actor.core.js.entity.Placeholders;
 import im.actor.core.js.images.JsImageResize;
 import im.actor.core.js.images.JsResizeListener;
+import im.actor.core.js.modules.JsIdleModule;
 import im.actor.core.js.providers.electron.JsElectronApp;
+import im.actor.core.js.providers.electron.JsElectronListener;
 import im.actor.core.js.providers.notification.JsChromePush;
 import im.actor.core.js.providers.notification.JsSafariPush;
 import im.actor.core.js.providers.notification.PushSubscribeResult;
@@ -62,6 +64,7 @@ public class JsMessenger extends Messenger {
         return instance;
     }
 
+    private JsIdleModule jsIdleModule;
     private JsBindingModule jsBindingModule;
     private JsFilesModule filesModule;
     private JsFileSystemProvider fileSystemProvider;
@@ -74,31 +77,20 @@ public class JsMessenger extends Messenger {
         jsBindingModule = new JsBindingModule(this, filesModule, modules);
         isElectron = JsElectronApp.isElectron();
 
-        if (JsChromePush.isSupported()) {
-            Log.d("JsMessenger", "ChromePush Supported");
-            JsChromePush.subscribe(new PushSubscribeResult() {
+        jsIdleModule = new JsIdleModule(this, modules);
 
+        if (isElectron()) {
+            JsElectronApp.subscribe("window", new JsElectronListener() {
                 @Override
-                public void onSubscribedChrome(String token) {
-                    Log.d("JsMessenger", "Subscribed: " + token);
-                    registerGooglePush(209133700967L, token);
-                }
-
-                @Override
-                public void onSubscriptionFailure() {
-                    Log.d("JsMessenger", "Subscribe failure");
+                public void onEvent(String content) {
+                    if ("focus".equals(content)) {
+                        jsIdleModule.onVisible();
+                    } else if ("blur".equals(content)) {
+                        jsIdleModule.onHidden();
+                    }
                 }
             });
-        } else {
-            Log.d("JsMessenger", "ChromePush NOT Supported");
         }
-        if (JsSafariPush.isSupported()) {
-            Log.d("JsMessenger", "SafariPush Supported");
-        } else {
-            Log.d("JsMessenger", "SafariPush NOT Supported");
-        }
-
-        JsMessenger.instance = this;
 
         if (isElectron) {
             getAppState().getGlobalTempCounter().subscribe(new ValueChangedListener<Integer>() {
@@ -112,6 +104,12 @@ public class JsMessenger extends Messenger {
                 }
             });
         }
+
+        JsMessenger.instance = this;
+    }
+
+    public JsIdleModule getJsIdleModule() {
+        return jsIdleModule;
     }
 
     public boolean isElectron() {
