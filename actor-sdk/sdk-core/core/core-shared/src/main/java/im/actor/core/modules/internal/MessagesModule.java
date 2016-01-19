@@ -375,27 +375,27 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     }
 
     public void onMessageShown(final Peer peer, final int sender, final long sortDate) {
-        if (!context().getAppStateModule().getAppStateVM().getIsAppVisible().get()) {
-            return;
-        }
-        im.actor.runtime.Runtime.dispatch(new Runnable() {
-            @Override
-            public void run() {
-                if (sender != myUid()) {
-                    if (!messageShownFilter.containsKey(peer)) {
-                        messageShownFilter.put(peer, system().actorOf(Props.create(MessageShownFilter.class, new ActorCreator<MessageShownFilter>() {
-                            @Override
-                            public MessageShownFilter create() {
-                                return new MessageShownFilter();
-                            }
-                        }), "actor/shown_filter_" + peer.getPeerType() + "_" + peer.getPeerId()));
-                    }
-
-                    messageShownFilter.get(peer).send(new BounceFilterActor.Message(new MessageShownEvent(peer, sortDate),
-                            messageShownActor));
-                }
-            }
-        });
+//        if (!context().getAppStateModule().getAppStateVM().getIsAppVisible().get()) {
+//            return;
+//        }
+//        im.actor.runtime.Runtime.dispatch(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (sender != myUid()) {
+//                    if (!messageShownFilter.containsKey(peer)) {
+//                        messageShownFilter.put(peer, system().actorOf(Props.create(MessageShownFilter.class, new ActorCreator<MessageShownFilter>() {
+//                            @Override
+//                            public MessageShownFilter create() {
+//                                return new MessageShownFilter();
+//                            }
+//                        }), "actor/shown_filter_" + peer.getPeerType() + "_" + peer.getPeerId()));
+//                    }
+//
+//                    messageShownFilter.get(peer).send(new BounceFilterActor.Message(new MessageShownEvent(peer, sortDate),
+//                            messageShownActor));
+//                }
+//            }
+//        });
     }
 
     public void saveReadState(Peer peer, long lastReadDate) {
