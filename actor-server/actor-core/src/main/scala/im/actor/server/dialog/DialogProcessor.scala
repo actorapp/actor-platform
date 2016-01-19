@@ -216,20 +216,18 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
             _ ← DBIO.from(userExt.notifyDialogsChanged(userId))
           } yield dialog
       }
-      isOpen ← restoreIsOpen()
     } yield Initialized(
       dialog.lastMessageDate.getMillis,
       dialog.ownerLastReceivedAt.getMillis,
       dialog.ownerLastReadAt.getMillis,
       dialog.shownAt.isEmpty,
       dialog.isFavourite,
-      isOpen
+      isOpen = isOpen(peer)
     )) pipeTo self
 
-  private def restoreIsOpen(): DBIO[Boolean] =
+  private def isOpen(peer: Peer): Boolean =
     peer.typ match {
-      case PeerType.Private ⇒
-        HistoryMessageRepo.findNewest(peer.id, Peer.privat(userId)) map (_.isDefined)
-      case _ ⇒ DBIO.successful(true)
+      case PeerType.Private ⇒ false
+      case _                ⇒ true
     }
 }
