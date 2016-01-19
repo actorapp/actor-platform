@@ -78,18 +78,22 @@ public class AAWallpapperPreviewController: AAViewController {
     }
     
     func setDidTap() {
+        self.dismissViewControllerAnimated(true, completion: nil)
+        
         if self.fromName == true {
             Actor.changeSelectedWallpaper("local:\(imageName)")
             
         } else {
-            let descriptor = "/tmp/"+NSUUID().UUIDString
-            let path = CocoaFiles.pathFromDescriptor(descriptor);
+            dispatchBackground({ () -> Void in
+                let descriptor = "/tmp/"+NSUUID().UUIDString
+                let path = CocoaFiles.pathFromDescriptor(descriptor);
+                
+                UIImageJPEGRepresentation(self.selectedImage, 1.00)!.writeToFile(path, atomically: true)
+                
+                Actor.changeSelectedWallpaper("file:\(path)")
+            })
             
-            UIImageJPEGRepresentation(self.selectedImage, 1.00)!.writeToFile(path, atomically: true)
-            
-            Actor.changeSelectedWallpaper("file:\(path)")
         }
 
-        self.dismissViewControllerAnimated(true, completion: nil)
     }
 }
