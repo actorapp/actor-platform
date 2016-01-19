@@ -56,7 +56,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class ProfileFragment extends BaseFragment {
 
-    private static final String EXTRA_UID = "uid";
+    public static final String EXTRA_UID = "uid";
     private int baseColor;
     private CoverAvatarView avatarView;
     private boolean noEmails = false;
