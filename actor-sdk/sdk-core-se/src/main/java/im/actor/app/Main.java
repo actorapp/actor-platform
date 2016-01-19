@@ -17,7 +17,7 @@ public class Main {
             }
         }), "auth_key_mon");
 
-        actor.send(new AuthKeyCreationMon.StartMonitoring(0));
+        actor.send(new AuthKeyCreationMon.StartMonitoring(500));
 
         while (true) {
             try {

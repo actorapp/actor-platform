@@ -13,6 +13,7 @@ import im.actor.runtime.mtproto.ConnectionEndpoint;
 public class AuthKeyCreationMon extends Actor {
     private ActorRef keyCreation;
     private Endpoints endpoints;
+    private long delay;
 
     @Override
     public void preStart() {
@@ -30,13 +31,14 @@ public class AuthKeyCreationMon extends Actor {
     }
 
     private void startMonitoring(long delay) {
+        this.delay = delay;
         Log.d("AuthKeyCreation", "Start monitoring");
         keyCreation.send(new AuthKeyActor.StartKeyCreation(endpoints), self());
     }
 
     private void onKeyCreated() {
         Log.d("AuthKeyCreation", "Key created");
-        keyCreation.send(new AuthKeyActor.StartKeyCreation(endpoints), self());
+        keyCreation.send(new AuthKeyActor.StartKeyCreation(endpoints), delay, self());
     }
 
     @Override
