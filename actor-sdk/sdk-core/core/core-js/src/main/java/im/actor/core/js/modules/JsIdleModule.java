@@ -53,13 +53,13 @@ public class JsIdleModule extends AbsModule {
 
         @Override
         public void preStart() {
-            Log.d("JsIdle", "preStart");
+            // Log.d("JsIdle", "preStart");
             JsIdleDetection.subscribe(this);
             self().sendOnce(new FlushTimeout(), TIMEOUT);
         }
 
         public void onActionDetected() {
-            Log.d("JsIdle", "onActionDetected");
+            // Log.d("JsIdle", "onActionDetected");
             if (!isAppVisible) {
                 isAppVisible = true;
                 messenger.onAppVisible();
@@ -68,7 +68,7 @@ public class JsIdleModule extends AbsModule {
         }
 
         public void onTimeoutDetected() {
-            Log.d("JsIdle", "onTimeoutDetected");
+            // Log.d("JsIdle", "onTimeoutDetected");
             if (isAppVisible) {
                 isAppVisible = false;
                 messenger.onAppHidden();
@@ -76,13 +76,13 @@ public class JsIdleModule extends AbsModule {
         }
 
         public void onHidden() {
-            Log.d("JsIdle", "onHidden");
+            // Log.d("JsIdle", "onHidden");
             onTimeoutDetected();
         }
 
         public void onVisible() {
+            // Log.d("JsIdle", "onVisible");
             onActionDetected();
-            Log.d("JsIdle", "onVisible");
         }
 
         @Override
