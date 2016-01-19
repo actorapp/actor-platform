@@ -77,13 +77,7 @@ public class CallsModule extends AbsModule {
     }
 
     public void answerCall(final long callId, final CallCallback callback) {
-        calls.put(callId,
-                ActorSystem.system().actorOf(Props.create(CallActor.class, new ActorCreator<CallActor>() {
-                    @Override
-                    public CallActor create() {
-                        return new CallActor(callId, callback, context());
-                    }
-                }), "actor/call"));
+        calls.get(callId).send(new CallActor.AnswerCall(callback));
     }
 
     //do end call
@@ -95,8 +89,15 @@ public class CallsModule extends AbsModule {
         }
     }
 
-    public void onIncomingCall(long callId, int uid) {
+    public void onIncomingCall(final long callId, int uid) {
         if (!calls.keySet().contains(callId)) {
+            calls.put(callId,
+                    ActorSystem.system().actorOf(Props.create(CallActor.class, new ActorCreator<CallActor>() {
+                        @Override
+                        public CallActor create() {
+                            return new CallActor(callId, context());
+                        }
+                    }), "actor/call"));
             context().getEvents().post(new IncomingCall(callId, uid));
         }
     }
