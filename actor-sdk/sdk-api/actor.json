@@ -12770,7 +12770,7 @@
                 "name": "userPeer"
               },
               {
-                "type": "int64",
+                "type": "int32",
                 "id": 2,
                 "name": "keyGroupId"
               }
