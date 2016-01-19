@@ -19,22 +19,4 @@ public interface CryptoRuntime {
      */
     @ObjectiveCName("MD5WithData:")
     byte[] MD5(byte[] data);
-
-    /**
-     * Calculate SHA256
-     *
-     * @param data source data
-     * @return sha256 hash of data
-     */
-    @ObjectiveCName("SHA256WithData:")
-    byte[] SHA256(byte[] data);
-
-    /**
-     * Calculate SHA512
-     *
-     * @param data source data
-     * @return sha512 hash of data
-     */
-    @ObjectiveCName("SHA512WithData:")
-    byte[] SHA512(byte[] data);
 }

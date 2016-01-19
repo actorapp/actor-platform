@@ -8,22 +8,22 @@ import im.actor.runtime.LogRuntime;
 
 public class JavaSeLogProvider implements LogRuntime {
     @Override
-    public void w(String tag, String message) {
-        // TODO: Implement
+    public synchronized void w(String tag, String message) {
+        System.out.println(tag + "[w]: " + message);
     }
 
     @Override
     public void e(String tag, Throwable throwable) {
-        // TODO: Implement
+        System.out.println(tag + "[e]: " + throwable);
     }
 
     @Override
     public void d(String tag, String message) {
-        // TODO: Implement
+        System.out.println(tag + "[d]: " + message);
     }
 
     @Override
     public void v(String tag, String message) {
-        // TODO: Implement
+        System.out.println(tag + "[v]: " + message);
     }
 }
