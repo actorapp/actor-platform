@@ -4,5 +4,4 @@ import im.actor.runtime.generic.GenericRandomProvider;
 
 public class JavaSeRandomProvider extends GenericRandomProvider {
 
-
 }

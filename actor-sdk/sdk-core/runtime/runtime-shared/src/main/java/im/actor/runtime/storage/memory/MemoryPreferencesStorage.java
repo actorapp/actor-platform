@@ -49,7 +49,11 @@ public class MemoryPreferencesStorage implements PreferencesStorage {
 
     @Override
     public void putBytes(String key, byte[] v) {
-        keys.put(key, v);
+        if (v != null) {
+            keys.put(key, v);
+        } else {
+            keys.remove(key);
+        }
     }
 
     @Override
@@ -62,7 +66,11 @@ public class MemoryPreferencesStorage implements PreferencesStorage {
 
     @Override
     public void putString(String key, String v) {
-        keys.put(key, v);
+        if (v != null) {
+            keys.put(key, v);
+        } else {
+            keys.remove(key);
+        }
     }
 
     @Override
