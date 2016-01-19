@@ -11,11 +11,33 @@ public class AAWallpapperPreviewController: AAViewController {
     private let setButton = UIButton()
     
     private let imageName: String
+    private let selectedImage: UIImage
+    private var fromName: Bool
     
     public init(imageName: String) {
         self.imageName = imageName
+        self.selectedImage = UIImage()
+        self.fromName = true
         super.init()
         imageView.image = UIImage.bundled(imageName)!
+        imageView.contentMode = .ScaleAspectFill
+        imageView.clipsToBounds = true
+        cancelButton.backgroundColor = appStyle.vcPanelBgColor
+        cancelButton.addTarget(self, action: "cancelDidTap", forControlEvents: .TouchUpInside)
+        cancelButton.setTitle(AALocalized("AlertCancel"), forState: .Normal)
+        cancelButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
+        setButton.backgroundColor = appStyle.vcPanelBgColor
+        setButton.addTarget(self, action: "setDidTap", forControlEvents: .TouchUpInside)
+        setButton.setTitle(AALocalized("AlertSet"), forState: .Normal)
+        setButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
+    }
+    
+    public init(selectedImage: UIImage) {
+        self.selectedImage = selectedImage
+        self.imageName = ""
+        self.fromName = false
+        super.init()
+        imageView.image = selectedImage
         imageView.contentMode = .ScaleAspectFill
         imageView.clipsToBounds = true
         cancelButton.backgroundColor = appStyle.vcPanelBgColor
@@ -56,7 +78,18 @@ public class AAWallpapperPreviewController: AAViewController {
     }
     
     func setDidTap() {
-        Actor.changeSelectedWallpaper("local:\(imageName)")
+        if self.fromName == true {
+            Actor.changeSelectedWallpaper("local:\(imageName)")
+            
+        } else {
+            let descriptor = "/tmp/"+NSUUID().UUIDString
+            let path = CocoaFiles.pathFromDescriptor(descriptor);
+            
+            UIImageJPEGRepresentation(self.selectedImage, 1.00)!.writeToFile(path, atomically: true)
+            
+            Actor.changeSelectedWallpaper("file:\(path)")
+        }
+
         self.dismissViewControllerAnimated(true, completion: nil)
     }
 }

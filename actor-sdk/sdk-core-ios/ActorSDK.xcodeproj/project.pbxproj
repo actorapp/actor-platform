@@ -285,6 +285,8 @@
 		BED5A2121C48413C0045FDB0 /* NYTPhotoContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2051C4839790045FDB0 /* NYTPhotoContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A2131C48413C0045FDB0 /* NYTPhotosViewControllerDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = BED5A2061C4839790045FDB0 /* NYTPhotosViewControllerDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BED5A2151C49504B0045FDB0 /* AABubbleVideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED5A2141C49504B0045FDB0 /* AABubbleVideoCell.swift */; };
+		BEE6EB011C4D7B7500A2280E /* AASettingsWallpapersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE6EB001C4D7B7500A2280E /* AASettingsWallpapersController.swift */; };
+		BEE6EB041C4D9A4900A2280E /* AAWallpapersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE6EB031C4D9A4900A2280E /* AAWallpapersCell.swift */; };
 		BEF11DB61C466D800076400A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153F6B3C1C2A9B1900C0B960 /* begin_record.caf */; };
 		BEFE68D51C4657360001F2D6 /* AAThumbnailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */; };
 /* End PBXBuildFile section */
@@ -588,6 +590,8 @@
 		BED5A20C1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+NYTPhotoViewer.h"; sourceTree = "<group>"; };
 		BED5A20D1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+NYTPhotoViewer.m"; sourceTree = "<group>"; };
 		BED5A2141C49504B0045FDB0 /* AABubbleVideoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleVideoCell.swift; sourceTree = "<group>"; };
+		BEE6EB001C4D7B7500A2280E /* AASettingsWallpapersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AASettingsWallpapersController.swift; sourceTree = "<group>"; };
+		BEE6EB031C4D9A4900A2280E /* AAWallpapersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAWallpapersCell.swift; sourceTree = "<group>"; };
 		BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailCollectionCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -976,6 +980,7 @@
 		066A52EB1BC52AF8000E606E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				BEE6EAFF1C4D7B5600A2280E /* Wallpapers */,
 				066A52F41BC52B09000E606E /* Cells */,
 				152AA8BE1C298C4B0030DEEE /* AASettingsLastSeenController.swift */,
 				066A52ED1BC52B02000E606E /* AASettingsNotificationsViewController.swift */,
@@ -1418,6 +1423,23 @@
 			name = ResourseLoading;
 			sourceTree = "<group>";
 		};
+		BEE6EAFF1C4D7B5600A2280E /* Wallpapers */ = {
+			isa = PBXGroup;
+			children = (
+				BEE6EB021C4D9A1B00A2280E /* Cells */,
+				BEE6EB001C4D7B7500A2280E /* AASettingsWallpapersController.swift */,
+			);
+			name = Wallpapers;
+			sourceTree = "<group>";
+		};
+		BEE6EB021C4D9A1B00A2280E /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				BEE6EB031C4D9A4900A2280E /* AAWallpapersCell.swift */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
 		FB42EA44E242A3F8E680012E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1776,6 +1798,7 @@
 				152AA8BD1C298BF00030DEEE /* AASettingsSessionsController.swift in Sources */,
 				066A515B1BC4C178000E606E /* AAHashMap.swift in Sources */,
 				066A52811BC51ED0000E606E /* AANoSelectionViewController.swift in Sources */,
+				BEE6EB041C4D9A4900A2280E /* AAWallpapersCell.swift in Sources */,
 				152AA8B21C2989270030DEEE /* SLKTypingIndicatorView.m in Sources */,
 				066A52281BC4EEAC000E606E /* AAManagedTableController.swift in Sources */,
 				065975541BC7DF5100B8C7DF /* CocoaAssetsRuntime.swift in Sources */,
@@ -1797,6 +1820,7 @@
 				069CF4CF1BCB909A00C66E12 /* CLToken.m in Sources */,
 				15D35F751C201B6B00E3717A /* AACustomPresentationController.swift in Sources */,
 				066A51441BC4BBAF000E606E /* Strings.swift in Sources */,
+				BEE6EB011C4D7B7500A2280E /* AASettingsWallpapersController.swift in Sources */,
 				BED5A2011C48396A0045FDB0 /* NYTScalingImageView.m in Sources */,
 				066A53331BC534F5000E606E /* AAFileTypes.swift in Sources */,
 				066A52FE1BC52FA9000E606E /* AAGroupCreateViewController.swift in Sources */,

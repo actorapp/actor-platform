@@ -167,7 +167,14 @@ public class AASettingsViewController: AAContentTableController {
                     cell.wallpapperDidTap = { [unowned self] (name) -> () in
                         self.presentViewController(AAWallpapperPreviewController(imageName: name), animated: true, completion: nil)
                     }
+                    
                 }
+                
+                r.selectAction = { () -> Bool in
+                    self.navigateNext(AASettingsWallpapersController(), removeCurrent: false)
+                    return false
+                }
+
             })
             
             ActorSDK.sharedActor().delegate.actorSettingsConfigurationDidCreated(self, section: s)
