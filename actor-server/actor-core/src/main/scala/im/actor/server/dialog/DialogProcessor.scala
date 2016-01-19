@@ -68,7 +68,7 @@ private[dialog] object DialogState {
 }
 
 private[dialog] final case class DialogState(
-  lastMessageDate: Long,
+  lastMessageDate: Long, //we don't use it now anywhere. should we remove it?
   lastReceiveDate: Long,
   lastReadDate:    Long,
   isHidden:        Boolean,
@@ -85,7 +85,7 @@ private[dialog] final case class DialogState(
     case Favourited ⇒ this.copy(isFavourite = true)
     case Unfavourited ⇒ this.copy(isFavourite = false)
     case Open ⇒ this.copy(isOpen = true)
-    case unm ⇒ this
+    case _ ⇒ this
   }
 }
 
@@ -169,6 +169,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
     case Favourite(_) ⇒ favourite(state)
     case Unfavourite(_) ⇒ unfavourite(state)
     case Delete(_) ⇒ delete(state)
+    case uc: UpdateCounters ⇒ updateCountersChanged()
   }
 
   /**

@@ -195,6 +195,15 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   def ackRemoveReaction(peer: Peer, rr: RemoveReaction): Future[Unit] =
     (processorRegion(peer) ? Envelope(peer).withRemoveReaction(rr)) map (_ ⇒ ())
 
+  def updateCounters(peer: Peer, userId: Int): Future[Unit] =
+    (processorRegion(peer) ? Envelope(peer).withUpdateCounters(UpdateCounters(
+      origin = Peer.privat(userId),
+      dest = peer
+    ))) map (_ ⇒ ())
+
+  def ackUpdateCounters(peer: Peer, uc: UpdateCounters): Future[Unit] =
+    (processorRegion(peer) ? Envelope(peer).withUpdateCounters(uc)) map (_ ⇒ ())
+
   def getDeliveryExtension(extensions: Seq[ApiExtension]): DeliveryExtension = {
     extensions match {
       case Seq() ⇒

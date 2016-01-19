@@ -28,10 +28,11 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   protected def sendMessage(state: DialogState, sm: SendMessage): Unit = {
     (withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
       for {
-        SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sm.date, sm.message, sm.isFat)
+        _ ← dialogExt.ackSendMessage(peer, sm)
         message = sm.message
         _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sm.date), sm.randomId, message.header, message.toByteArray))
-        _ ← dialogExt.ackSendMessage(peer, sm)
+        _ ← dialogExt.updateCounters(peer, userId)
+        SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sm.date, message, sm.isFat)
       } yield SeqStateDate(seq, state, sm.date)
     } recover {
       case e ⇒
@@ -43,6 +44,12 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
           self.tell(Show(peer), ActorRef.noSender)
     }
     updateMessageDate(state, sm.date, checkOpen = true)
+  }
+
+  protected def updateCountersChanged(): Unit = {
+    deliveryExt.sendCountersUpdate(userId)
+      .map(_ ⇒ SendMessageAck())
+      .pipeTo(sender())
   }
 
   protected def ackSendMessage(state: DialogState, sm: SendMessage): Unit = {
@@ -123,15 +130,13 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   protected def messageRead(state: DialogState, mr: MessageRead): Unit = {
     val mustRead = mustMakeRead(state, mr) && state.isOpen
 
-    val readerUpd = for {
-      _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
-      _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date)
-    } yield ()
-
+    val readerUpd = deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date)
     (if (mustRead) {
       for {
         _ ← readerUpd
         _ ← dialogExt.ackMessageRead(peer, mr)
+        _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
+        _ ← deliveryExt.sendCountersUpdate(userId)
       } yield MessageReadAck()
     } else {
       Future.successful(MessageReadAck())
@@ -284,13 +289,11 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   private def mustMakeReceive(state: DialogState, mr: MessageReceived): Boolean =
     (mr.date > state.lastReceiveDate) && //receive date is later than last receive date
-      (mr.date <= mr.now) && // and receive date is not in future
-      (state.lastMessageDate == 0L || mr.date > state.lastMessageDate) //and receive date if after date of last message sent by this user
+      (mr.date <= mr.now) // and receive date is not in future
 
   private def mustMakeRead(state: DialogState, mr: MessageRead): Boolean =
     (mr.date > state.lastReadDate) && //read date is later than last read date
-      (mr.date <= mr.now) && // and read date is not in future
-      (state.lastMessageDate == 0L || mr.date > state.lastMessageDate) //and read date if after date of last message sent by this user
+      (mr.date <= mr.now) // and read date is not in future
 
   // if checkOpen is true, open dialog if it's not open already
   protected def updateMessageDate(state: DialogState, date: Long, checkOpen: Boolean): Unit = {
