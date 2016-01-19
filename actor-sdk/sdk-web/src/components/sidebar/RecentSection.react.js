@@ -5,6 +5,7 @@
 import { map } from 'lodash';
 
 import React, { Component } from 'react';
+import Scrollbar from '../common/Scrollbar.react';
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
 
@@ -46,11 +47,11 @@ class RecentSection extends Component {
 
     return (
       <section className="sidebar__recent">
-        <div className="sidebar__recent__scroll-container" onScroll={this.onScroll}>
+        <Scrollbar onScroll={this.onScroll}>
           <ul className="sidebar__list">
             {dialogList}
           </ul>
-        </div>
+        </Scrollbar>
       </section>
     );
   }

@@ -242,15 +242,11 @@
   }
 
   &__recent {
-    &__scroll-container {
-      position: absolute;
-      top: $toolbar-height;
-      right: 0;
-      bottom: 50px;
-      left: 0;
-
-      overflow: auto;
-    }
+    position: absolute;
+    top: $toolbar-height;
+    right: 0;
+    bottom: 50px;
+    left: 0;
   }
 
   &__quick-search {
