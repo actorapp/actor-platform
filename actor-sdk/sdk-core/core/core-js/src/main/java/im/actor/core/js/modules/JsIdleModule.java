@@ -38,7 +38,7 @@ public class JsIdleModule extends AbsModule {
     }
 
     public void onVisible() {
-        idleActor.send(new IdleActor.OnHidden());
+        idleActor.send(new IdleActor.OnVisible());
     }
 
     private static class IdleActor extends ModuleActor implements JsIdleCallback {

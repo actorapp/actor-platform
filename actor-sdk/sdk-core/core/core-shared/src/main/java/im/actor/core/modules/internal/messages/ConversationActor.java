@@ -17,10 +17,12 @@ import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.events.AppVisibleChanged;
 import im.actor.core.modules.utils.ModuleActor;
+import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.eventbus.Event;
+import im.actor.runtime.storage.IndexEngine;
 import im.actor.runtime.storage.IndexStorage;
 import im.actor.runtime.storage.ListEngine;
 
@@ -36,6 +38,7 @@ import im.actor.runtime.storage.ListEngine;
 public class ConversationActor extends ModuleActor {
 
     private final String IN_READ_STATE_PREF;
+    private final String IN_READ_STATE_NEW_PREF;
     private final String OUT_READ_STATE_PREF;
     private final String OUT_RECEIVE_STATE_PREF;
 
@@ -48,9 +51,12 @@ public class ConversationActor extends ModuleActor {
     private IndexStorage inPendingIndex;
     private ActorRef dialogsActor;
     private ActorRef dialogsGroupedActor;
+    private ActorRef readerActor;
+    private long inReadStateNew;
     private long inReadState;
     private long outReadState;
     private long outReceiveState;
+
     private boolean isConversationVisible = false;
     private boolean isAppVisible = false;
 
@@ -58,6 +64,7 @@ public class ConversationActor extends ModuleActor {
         super(context);
         this.peer = peer;
         this.IN_READ_STATE_PREF = "chat_state." + peer + ".in_read";
+        this.IN_READ_STATE_NEW_PREF = "chat_state." + peer + ".in_read_new";
         this.OUT_READ_STATE_PREF = "chat_state." + peer + ".out_read";
         this.OUT_RECEIVE_STATE_PREF = "chat_state." + peer + ".out_receive";
     }
@@ -66,13 +73,15 @@ public class ConversationActor extends ModuleActor {
     public void preStart() {
         messages = context().getMessagesModule().getConversationEngine(peer);
         docs = context().getMessagesModule().getConversationDocsEngine(peer);
+        readerActor = context().getMessagesModule().getOwnReadActor();
 
         dialogsActor = context().getMessagesModule().getDialogsActor();
         dialogsGroupedActor = context().getMessagesModule().getDialogsGroupedActor();
-        outPendingIndex = Storage.createIndex("out_pending_" + peer.getPeerType() + "_" + peer.getPeerId());
-        inPendingIndex = Storage.createIndex("in_pending_" + peer.getPeerType() + "_" + peer.getPeerId());
+        outPendingIndex = new IndexEngine(Storage.createIndex("out_pending_" + peer.getPeerType() + "_" + peer.getPeerId()));
+        inPendingIndex = new IndexEngine(Storage.createIndex("in_pending_" + peer.getPeerType() + "_" + peer.getPeerId()));
 
         inReadState = context().getPreferences().getLong(IN_READ_STATE_PREF, 0);
+        inReadStateNew = context().getPreferences().getLong(IN_READ_STATE_NEW_PREF, 0);
         outReadState = context().getPreferences().getLong(OUT_READ_STATE_PREF, 0);
         outReceiveState = context().getPreferences().getLong(OUT_RECEIVE_STATE_PREF, 0);
 
@@ -86,26 +95,30 @@ public class ConversationActor extends ModuleActor {
     // Visibility state
 
     private void onConversationVisible() {
+        // Log.d("ConversationActor", "onConversationVisible");
         isConversationVisible = true;
 
         if (isConversationAutoRead()) {
-            checkReadState();
+            checkReadState(true);
         }
     }
 
     private void onConversationHidden() {
+        // Log.d("ConversationActor", "onConversationHidden");
         isConversationVisible = false;
     }
 
     private void onAppVisible() {
+        // Log.d("ConversationActor", "onAppVisible");
         isAppVisible = true;
 
         if (isConversationAutoRead()) {
-            checkReadState();
+            checkReadState(true);
         }
     }
 
     private void onAppHidden() {
+        // Log.d("ConversationActor", "onAppHidden");
         isAppVisible = false;
     }
 
@@ -113,9 +126,6 @@ public class ConversationActor extends ModuleActor {
         return isAppVisible && isConversationVisible;
     }
 
-    private void checkReadState() {
-
-    }
 
     // Messages receive/update
 
@@ -167,6 +177,11 @@ public class ConversationActor extends ModuleActor {
                     outPendingIndex.put(m.getRid(), m.getDate());
                 }
             } else {
+                if (m.getSortDate() > inReadStateNew) {
+                    inReadStateNew = m.getSortDate();
+                    preferences().putLong(IN_READ_STATE_NEW_PREF, inReadStateNew);
+                }
+
                 // Detecting if message already read
                 if (m.getSortDate() > inReadState) {
                     // Writing to income unread storage
@@ -175,8 +190,14 @@ public class ConversationActor extends ModuleActor {
             }
         }
 
+        // Reading messages
+        if (isConversationAutoRead()) {
+            checkReadState(false);
+        }
+
         // Update dialogs
         if (topMessage != null) {
+
             if (!isHiddenPeer) {
                 dialogsActor.send(new DialogsActor.InMessage(peer, topMessage, inPendingIndex.getCount()));
             }
@@ -214,17 +235,27 @@ public class ConversationActor extends ModuleActor {
 
         // Updating dialog if on server
         if (message.isOnServer()) {
+
             if (message.getSenderId() == myUid()) {
                 // Adding to unread index if message is unread
                 if (message.isOnServer() && message.getMessageState() != MessageState.READ) {
                     outPendingIndex.put(message.getRid(), message.getDate());
                 }
             } else {
+                if (message.getSortDate() > inReadStateNew) {
+                    inReadStateNew = message.getSortDate();
+                    preferences().putLong(IN_READ_STATE_NEW_PREF, inReadStateNew);
+                }
+
                 // Detecting if message already read
                 if (message.getSortDate() > inReadState) {
                     // Writing to income unread storage
                     inPendingIndex.put(message.getRid(), message.getDate());
                 }
+            }
+
+            if (isConversationAutoRead()) {
+                checkReadState(false);
             }
 
             if (!isHiddenPeer) {
@@ -421,7 +452,9 @@ public class ConversationActor extends ModuleActor {
             return;
         }
         inReadState = date;
+        inReadStateNew = Math.max(date, inReadStateNew);
         preferences().putLong(IN_READ_STATE_PREF, date);
+        preferences().putLong(IN_READ_STATE_NEW_PREF, inReadStateNew);
 
         inPendingIndex.removeBeforeValue(date);
 
@@ -429,6 +462,24 @@ public class ConversationActor extends ModuleActor {
             dialogsActor.send(new DialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
         }
         dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+    }
+
+    private void checkReadState(boolean updateDialogs) {
+        //Log.d("ConversationActor", "checkReadState");
+        if (inReadStateNew > inReadState) {
+            //  Log.d("ConversationActor", "reading");
+            inReadState = inReadStateNew;
+            preferences().putLong(IN_READ_STATE_PREF, inReadState);
+            boolean wasNotNull = inPendingIndex.getCount() != 0;
+            inPendingIndex.clear();
+            readerActor.send(new OwnReadActor.MessageRead(peer, inReadState));
+            if (wasNotNull && updateDialogs) {
+                if (!isHiddenPeer) {
+                    dialogsActor.send(new DialogsActor.CounterChanged(peer, 0));
+                }
+                dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, 0));
+            }
+        }
     }
 
     // Deletions
@@ -460,7 +511,10 @@ public class ConversationActor extends ModuleActor {
         inPendingIndex.clear();
         outPendingIndex.clear();
         dialogsActor.send(new DialogsActor.ChatClear(peer));
-        // TODO: Implement for grouped
+        inReadStateNew = 0;
+        inReadState = 0;
+        preferences().putLong(IN_READ_STATE_PREF, inReadState);
+        preferences().putLong(IN_READ_STATE_NEW_PREF, inReadStateNew);
     }
 
     @Verified
@@ -470,7 +524,10 @@ public class ConversationActor extends ModuleActor {
         inPendingIndex.clear();
         outPendingIndex.clear();
         dialogsActor.send(new DialogsActor.ChatDelete(peer));
-        // TODO: Implement for grouped
+        inReadStateNew = 0;
+        inReadState = 0;
+        preferences().putLong(IN_READ_STATE_PREF, inReadState);
+        preferences().putLong(IN_READ_STATE_NEW_PREF, inReadStateNew);
     }
 
     // History
