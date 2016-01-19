@@ -29,7 +29,7 @@ public class WebSocketConnection extends AsyncConnection {
 
     @Override
     public void doConnect() {
-        Log.d(TAG, "doConnect");
+        // Log.d(TAG, "doConnect");
 
         isClosed = true;
 
@@ -46,7 +46,7 @@ public class WebSocketConnection extends AsyncConnection {
 
     @Override
     public void doSend(byte[] data) {
-        Log.d(TAG, "doSend");
+        // Log.d(TAG, "doSend");
         if (isClosed) {
             return;
         }
@@ -59,13 +59,13 @@ public class WebSocketConnection extends AsyncConnection {
 
     @Override
     public void doClose() {
-        Log.d(TAG, "doClose");
+        // Log.d(TAG, "doClose");
         isClosed = true;
         close();
     }
 
     private void onRawMessage(ArrayBuffer message) {
-        Log.d(TAG, "onRawMessage");
+        // Log.d(TAG, "onRawMessage");
         if (isClosed) {
             return;
         }
@@ -73,13 +73,13 @@ public class WebSocketConnection extends AsyncConnection {
     }
 
     private void onRawConnected() {
-        Log.d(TAG, "onRawConnected");
+        // Log.d(TAG, "onRawConnected");
         isClosed = false;
         onConnected();
     }
 
     private void onRawClosed() {
-        Log.d(TAG, "onRawClosed");
+        // Log.d(TAG, "onRawClosed");
         isClosed = true;
         onClosed();
     }

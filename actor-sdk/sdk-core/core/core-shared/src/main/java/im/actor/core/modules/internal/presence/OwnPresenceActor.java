@@ -36,7 +36,7 @@ public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
     public void preStart() {
         // isAlwaysOnline = config().getDeviceCategory() == DeviceCategory.DESKTOP;
         isAlwaysOnline = false;
-        
+
         if (isAlwaysOnline) {
             self().sendOnce(new PerformOnline());
         } else {
