@@ -62,13 +62,15 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         if let bg = Actor.getSelectedWallpaper() {
             if bg.startsWith("local:") {
                 backgroundView.image = UIImage.bundled(bg.skip(6))
+            } else {
+                backgroundView.image = UIImage(contentsOfFile: bg.skip(5))
             }
         }
         
         view.insertSubview(backgroundView, atIndex: 0)
         
         // slk settings
-        self.bounces = true
+        self.bounces = false
         
         
         // Text Input
@@ -181,6 +183,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             object: nil)
         
         
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
         // Installing bindings
         if (UInt(peer.peerType.ordinal()) == ACPeerType.PRIVATE.rawValue) {
             let user = Actor.getUserWithUid(peer.peerId)
@@ -262,11 +270,6 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         Actor.onConversationOpenWithPeer(peer)
         ActorSDK.sharedActor().trackPageVisible(content)
-        
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
         
         
         if textView.isFirstResponder() == false {
