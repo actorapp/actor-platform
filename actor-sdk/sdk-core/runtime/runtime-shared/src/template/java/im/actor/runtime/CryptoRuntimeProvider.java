@@ -6,14 +6,5 @@ public class CryptoRuntimeProvider implements CryptoRuntime {
     public byte[] MD5(byte[] data) {
         throw new RuntimeException("Dumb");
     }
-
-    @Override
-    public byte[] SHA256(byte[] data) {
-        throw new RuntimeException("Dumb");
-    }
-
-    @Override
-    public byte[] SHA512(byte[] data) {
-        throw new RuntimeException("Dumb");
-    }
+    
 }

@@ -6,6 +6,9 @@ buildscript {
 
 apply plugin: 'java'
 
+group = 'im.actor'
+version = '0.0.1'
+
 compileJava {
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
@@ -29,4 +32,81 @@ dependencies {
     compile project(':actor-sdk:sdk-core:runtime:runtime-se')
     compile 'com.squareup.okhttp:okhttp:2+'
     testCompile "junit:junit:4.11"
+}
+
+//
+// Configuration of publishing
+//
+
+String ossrhUsername = ""
+String ossrhPassword = ""
+boolean isDeployConfigured = false
+if (project.rootProject.file('gradle.properties').exists()) {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('gradle.properties').newDataInputStream())
+    ossrhUsername = properties.getProperty("ossrhUsername", "")
+    ossrhPassword = properties.getProperty("ossrhPassword", "")
+    version = properties.getProperty("version", "")
+
+    nexusStaging {
+        username ossrhUsername
+        password ossrhPassword
+    }
+
+    isDeployConfigured = true
+}
+
+project.afterEvaluate {
+
+    artifacts {
+        archives javadocJarRelease
+        archives sourcesJarRelease
+    }
+
+    if (isDeployConfigured) {
+
+        signing {
+            sign configurations.archives
+        }
+
+        uploadArchives {
+            repositories {
+                mavenDeployer {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                        authentication(userName: ossrhUsername, password: ossrhPassword)
+                    }
+
+                    pom.project {
+                        name 'Actor Core for Java SE'
+                        packaging 'jar'
+                        description 'Actor Core: Actor Java library'
+                        url 'https://github.com/actorapp/actor-platform'
+
+                        scm {
+                            url 'scm:git@github.com:actorapp/actor-platform.git'
+                            connection 'scm:git@github.com:actorapp/actor-platform.git'
+                            developerConnection 'scm:git@github.com:actorapp/actor-platform.git'
+                        }
+
+                        licenses {
+                            license {
+                                name 'The MIT License (MIT)'
+                                url 'http://opensource.org/licenses/MIT'
+                                distribution 'repo'
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id 'ex3ndr'
+                                name 'Stepan Korshakov'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
