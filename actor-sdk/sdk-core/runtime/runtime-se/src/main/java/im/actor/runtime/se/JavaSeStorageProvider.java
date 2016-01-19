@@ -9,6 +9,7 @@ import im.actor.runtime.storage.IndexStorage;
 import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.ListStorage;
 import im.actor.runtime.storage.PreferencesStorage;
+import im.actor.runtime.storage.memory.MemoryIndexStorage;
 import im.actor.runtime.storage.memory.MemoryKeyValueStorage;
 import im.actor.runtime.storage.memory.MemoryListStorage;
 import im.actor.runtime.storage.memory.MemoryPreferencesStorage;
@@ -26,7 +27,7 @@ public class JavaSeStorageProvider implements StorageRuntime {
 
     @Override
     public IndexStorage createIndex(String name) {
-        throw new RuntimeException();
+        return new MemoryIndexStorage();
     }
 
     @Override
@@ -41,6 +42,6 @@ public class JavaSeStorageProvider implements StorageRuntime {
 
     @Override
     public void resetStorage() {
-        
+
     }
 }
