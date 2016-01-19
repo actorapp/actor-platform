@@ -1,26 +1,31 @@
 package im.actor.app;
 
-import im.actor.core.ApiConfiguration;
-import im.actor.core.ConfigurationBuilder;
-import im.actor.core.JavaSeMessenger;
-import im.actor.core.PhoneBookProvider;
+import im.actor.app.monitoring.AuthKeyCreationMon;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.actors.Props;
 
 public class Main {
 
     public static void main(String[] args) {
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.addEndpoint("tcp://front1-mtproto-api-rev3.actor.im:443");
-        builder.addEndpoint("tcp://front2-mtproto-api-rev3.actor.im:443");
-        builder.setPhoneBookProvider(new PhoneBookProvider() {
-            @Override
-            public void loadPhoneBook(Callback callback) {
 
+        ActorRef actor = ActorSystem.system().actorOf(Props.create(AuthKeyCreationMon.class, new ActorCreator<AuthKeyCreationMon>() {
+            @Override
+            public AuthKeyCreationMon create() {
+                return new AuthKeyCreationMon();
             }
-        });
-        builder.setPhoneBookImportEnabled(false);
-        builder.setApiConfiguration(new ApiConfiguration("", 0,
-                "", "", ""));
-        JavaSeMessenger messenger = new JavaSeMessenger(builder.build());
-        // TODO: Start working with messenger object
+        }), "auth_key_mon");
+
+        actor.send(new AuthKeyCreationMon.StartMonitoring(0));
+
+        while (true) {
+            try {
+                Thread.sleep(100000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
     }
 }
