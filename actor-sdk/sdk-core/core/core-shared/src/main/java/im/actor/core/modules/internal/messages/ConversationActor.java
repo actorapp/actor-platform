@@ -15,10 +15,12 @@ import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.events.AppVisibleChanged;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.annotations.Verified;
+import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.storage.IndexStorage;
 import im.actor.runtime.storage.ListEngine;
 
@@ -49,6 +51,8 @@ public class ConversationActor extends ModuleActor {
     private long inReadState;
     private long outReadState;
     private long outReceiveState;
+    private boolean isConversationVisible = false;
+    private boolean isAppVisible = false;
 
     public ConversationActor(Peer peer, ModuleContext context) {
         super(context);
@@ -75,6 +79,42 @@ public class ConversationActor extends ModuleActor {
         if (peer.getPeerType() == PeerType.GROUP) {
             isHiddenPeer = getGroup(peer.getPeerId()).isHidden();
         }
+
+        subscribe(AppVisibleChanged.EVENT);
+    }
+
+    // Visibility state
+
+    private void onConversationVisible() {
+        isConversationVisible = true;
+
+        if (isConversationAutoRead()) {
+            checkReadState();
+        }
+    }
+
+    private void onConversationHidden() {
+        isConversationVisible = false;
+    }
+
+    private void onAppVisible() {
+        isAppVisible = true;
+
+        if (isConversationAutoRead()) {
+            checkReadState();
+        }
+    }
+
+    private void onAppHidden() {
+        isAppVisible = false;
+    }
+
+    private boolean isConversationAutoRead() {
+        return isAppVisible && isConversationVisible;
+    }
+
+    private void checkReadState() {
+
     }
 
     // Messages receive/update
@@ -499,9 +539,25 @@ public class ConversationActor extends ModuleActor {
             onMessageReadByMe(((MessageReadByMe) message).getDate());
         } else if (message instanceof MessageReactionsChanged) {
             onMessageReactionsUpdated(((MessageReactionsChanged) message).getRid(), ((MessageReactionsChanged) message).getReactions());
+        } else if (message instanceof ConversationVisible) {
+            onConversationVisible();
+        } else if (message instanceof ConversationHidden) {
+            onConversationHidden();
         } else {
             drop(message);
         }
+    }
+
+    @Override
+    public void onBusEvent(Event event) {
+        if (event instanceof AppVisibleChanged) {
+            if (((AppVisibleChanged) event).isVisible()) {
+                onAppVisible();
+            } else {
+                onAppHidden();
+            }
+        }
+        super.onBusEvent(event);
     }
 
     public static class MessageContentUpdated {
@@ -649,5 +705,13 @@ public class ConversationActor extends ModuleActor {
         public ArrayList<Message> getMessages() {
             return messages;
         }
+    }
+
+    public static class ConversationVisible {
+
+    }
+
+    public static class ConversationHidden {
+
     }
 }
