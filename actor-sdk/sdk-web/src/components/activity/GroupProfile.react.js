@@ -9,6 +9,7 @@ import { IntlMixin, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import { lightbox } from '../../utils/ImageUtils';
 import { Container } from 'flux/utils';
+import Scrollbar from '../common/Scrollbar.react';
 
 import ActorClient from '../../utils/ActorClient';
 import confirm from '../../utils/confirm'
@@ -197,82 +198,84 @@ class GroupProfile extends Component {
     if (isMember) {
       return (
         <div className="activity__body group_profile">
-          <ul className="profile__list">
-            <li className="profile__list__item group_profile__meta">
-              {groupMeta}
-              <footer className="row">
-                <div className="col-xs">
-                  <button className="button button--flat button--wide"
-                          onClick={() => this.onAddMemberClick(group)}>
-                    <i className="material-icons">person_add</i>
-                    {this.getIntlMessage('addPeople')}
-                  </button>
-                </div>
-                <div style={{width: 10}}/>
-                <div className="col-xs">
-                  <div className={dropdownClassNames}>
-                    <button className="dropdown__button button button--flat button--wide"
-                            onClick={this.toggleMoreDropdown}>
-                      <i className="material-icons">more_horiz</i>
-                      {this.getIntlMessage('more')}
+          <Scrollbar>
+            <ul className="profile__list">
+              <li className="profile__list__item group_profile__meta">
+                {groupMeta}
+                <footer className="row">
+                  <div className="col-xs">
+                    <button className="button button--flat button--wide"
+                            onClick={() => this.onAddMemberClick(group)}>
+                      <i className="material-icons">person_add</i>
+                      {this.getIntlMessage('addPeople')}
                     </button>
-                    <ul className="dropdown__menu dropdown__menu--right">
-                      <li className="dropdown__menu__item" onClick={() => this.onEditGroupClick(group.id)}>
-                        <i className="material-icons">mode_edit</i>
-                        {this.getIntlMessage('editGroup')}
-                      </li>
-                      <li className="dropdown__menu__item"
-                          onClick={() => this.onLeaveGroupClick(group.id)}>
-                        {this.getIntlMessage('leaveGroup')}
-                      </li>
-                      <li className="dropdown__menu__item"
-                          onClick={() => this.onClearGroupClick(group.id)}>
-                        {this.getIntlMessage('clearGroup')}
-                      </li>
-                      <li className="dropdown__menu__item"
-                          onClick={() => this.onDeleteGroupClick(group.id)}>
-                        {this.getIntlMessage('deleteGroup')}
-                      </li>
-                    </ul>
                   </div>
-                </div>
-              </footer>
-            </li>
+                  <div style={{width: 10}}/>
+                  <div className="col-xs">
+                    <div className={dropdownClassNames}>
+                      <button className="dropdown__button button button--flat button--wide"
+                              onClick={this.toggleMoreDropdown}>
+                        <i className="material-icons">more_horiz</i>
+                        {this.getIntlMessage('more')}
+                      </button>
+                      <ul className="dropdown__menu dropdown__menu--right">
+                        <li className="dropdown__menu__item" onClick={() => this.onEditGroupClick(group.id)}>
+                          <i className="material-icons">mode_edit</i>
+                          {this.getIntlMessage('editGroup')}
+                        </li>
+                        <li className="dropdown__menu__item"
+                            onClick={() => this.onLeaveGroupClick(group.id)}>
+                          {this.getIntlMessage('leaveGroup')}
+                        </li>
+                        <li className="dropdown__menu__item"
+                            onClick={() => this.onClearGroupClick(group.id)}>
+                          {this.getIntlMessage('clearGroup')}
+                        </li>
+                        <li className="dropdown__menu__item"
+                            onClick={() => this.onDeleteGroupClick(group.id)}>
+                          {this.getIntlMessage('deleteGroup')}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </footer>
+              </li>
 
-            <li className="profile__list__item group_profile__media no-p hide">
-              <Fold icon="attach_file" iconClassName="icon--gray" title={this.getIntlMessage('sharedMedia')}>
-                <ul>
-                  <li><a>230 Shared Photos and Videos</a></li>
-                  <li><a>49 Shared Links</a></li>
-                  <li><a>49 Shared Files</a></li>
-                </ul>
-              </Fold>
-            </li>
+              <li className="profile__list__item group_profile__media no-p hide">
+                <Fold icon="attach_file" iconClassName="icon--gray" title={this.getIntlMessage('sharedMedia')}>
+                  <ul>
+                    <li><a>230 Shared Photos and Videos</a></li>
+                    <li><a>49 Shared Links</a></li>
+                    <li><a>49 Shared Files</a></li>
+                  </ul>
+                </Fold>
+              </li>
 
-            <li className="profile__list__item group_profile__notifications no-p">
-              <label htmlFor="notifications">
-                <i className="material-icons icon icon--squash">notifications_none</i>
-                {this.getIntlMessage('notifications')}
+              <li className="profile__list__item group_profile__notifications no-p">
+                <label htmlFor="notifications">
+                  <i className="material-icons icon icon--squash">notifications_none</i>
+                  {this.getIntlMessage('notifications')}
 
-                <div className="switch pull-right">
-                  <input checked={isNotificationsEnabled}
-                         id="notifications"
-                         onChange={this.onNotificationChange}
-                         type="checkbox"/>
-                  <label htmlFor="notifications"></label>
-                </div>
-              </label>
-            </li>
+                  <div className="switch pull-right">
+                    <input checked={isNotificationsEnabled}
+                           id="notifications"
+                           onChange={this.onNotificationChange}
+                           type="checkbox"/>
+                    <label htmlFor="notifications"></label>
+                  </div>
+                </label>
+              </li>
 
-            <li className="profile__list__item group_profile__members no-p">
-              <Fold iconElement={iconElement}
-                    title={message}>
-                <GroupProfileMembers groupId={group.id} members={group.members}/>
-              </Fold>
-            </li>
+              <li className="profile__list__item group_profile__members no-p">
+                <Fold iconElement={iconElement}
+                      title={message}>
+                  <GroupProfileMembers groupId={group.id} members={group.members}/>
+                </Fold>
+              </li>
 
-            {token}
-          </ul>
+              {token}
+            </ul>
+          </Scrollbar>
 
           <InviteUser/>
           <InviteByLink/>
