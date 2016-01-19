@@ -41,6 +41,7 @@ import im.actor.core.modules.events.PeerChatClosed;
 import im.actor.core.modules.events.PeerChatOpened;
 import im.actor.core.modules.events.PeerInfoClosed;
 import im.actor.core.modules.events.PeerInfoOpened;
+import im.actor.core.modules.events.UserIDLEChanged;
 import im.actor.core.modules.events.UserVisible;
 import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.network.NetworkState;
@@ -449,6 +450,22 @@ public class Messenger {
     }
 
     /**
+     * Can be called to indicate that user is active
+     */
+    @ObjectiveCName("onUserActive")
+    public void onUserActive() {
+        modules.getEvents().postSticky(new UserIDLEChanged(false));
+    }
+
+    /**
+     * Can be called to indicate that user became idle
+     */
+    @ObjectiveCName("onUserIDLE")
+    public void onUserIDLE() {
+        modules.getEvents().postSticky(new UserIDLEChanged(true));
+    }
+
+    /**
      * MUST be called on dialogs open
      */
     @ObjectiveCName("onDialogsOpen")
@@ -733,7 +750,7 @@ public class Messenger {
      * Send json message
      *
      * @param peer destination peer
-     * @param json json content
+     * @param content json content
      */
     @ObjectiveCName("sendJsonWithPeer:withJson:")
     public void sendCustomJsonMessage(@NotNull Peer peer, @NotNull JsonContent content) {
