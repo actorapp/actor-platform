@@ -34,6 +34,18 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
     }) pipeTo sender()
   }
 
+  protected def updateCountersChanged(uc: UpdateCounters) = {
+    (withMemberIds(groupId) { (memberIds, _, _) ⇒
+      Future.traverse(memberIds - uc.origin.id) { userId ⇒
+        dialogExt.ackUpdateCounters(Peer.privat(userId), uc)
+      } map (_ ⇒ UpdateCountersAck())
+    } recover {
+      case e ⇒
+        log.error(e, "Failed to send update counters changed")
+        throw e
+    }) pipeTo sender()
+  }
+
   protected def messageReceived(state: GroupPeerState, mr: MessageReceived) = {
     val receiverUserId = mr.origin.id
     val canReceive = canMakeReceive(state, mr)

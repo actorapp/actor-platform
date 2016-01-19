@@ -28,6 +28,8 @@ trait DeliveryExtension {
     isFat:         Boolean
   ): Future[SeqState]
 
+  def sendCountersUpdate(userId: Int): Future[Unit]
+
   def notifyReceive(authorUserId: Int, peer: Peer, date: Long, now: Long): Future[Unit]
 
   def notifyRead(userId: Int, peer: Peer, date: Long, now: Long): Future[Unit]
