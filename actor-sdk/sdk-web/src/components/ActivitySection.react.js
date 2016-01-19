@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
-import classNames from 'classnames';
+import classnames from 'classnames';
 import { PeerTypes } from '../constants/ActorAppConstants';
 
 import ActivityStore from '../stores/ActivityStore';
@@ -33,7 +33,7 @@ class ActivitySection extends Component {
     const { peer, info, isOpen } = this.state;
 
     if (peer !== null) {
-      const activityClassName = classNames('activity', {
+      const activityClassName = classnames('activity', {
         'activity--shown': isOpen
       });
       let activityBody;
@@ -49,9 +49,7 @@ class ActivitySection extends Component {
       }
 
       return (
-        <section className={activityClassName}>
-          {activityBody}
-        </section>
+        <section className={activityClassName}>{activityBody}</section>
       );
     } else {
       return null;

@@ -107,18 +107,23 @@ $sticker-max-size: 180px;
 
 .message {
   position: relative;
+
   margin: 0;
   padding: 6px 39px 6px 32px;
 
   &:before {
-    content: '';
     position: absolute;
+    top: - $extend-background;
     left: 0;
+
+    display: none;
+
     width: 100%;
     height: $extend-background;
+
+    content: '';
+
     background-color: $message-hover-background;
-    top: - $extend-background;
-    display: none;
   }
 
   &__header {
@@ -155,7 +160,9 @@ $sticker-max-size: 180px;
     }
     &__nick {
       font-weight: 400;
+
       margin-left: 6px;
+
       color: rgba($message-sender-text-color, .5);
     }
 
@@ -185,8 +192,9 @@ $sticker-max-size: 180px;
 
     margin-left: 8px;
 
-    @include no-select();
     vertical-align: middle;
+
+    @include no-select();
   }
 
   &__info {
@@ -379,8 +387,8 @@ $sticker-max-size: 180px;
       font-weight: 500;
 
       margin-left: 62px;
-      padding-bottom: 24px;
       padding-top: 24px;
+      padding-bottom: 24px;
 
       color: rgba(black, .2);
       border-bottom: 1px dotted rgba(black, .12);
@@ -486,14 +494,18 @@ $sticker-max-size: 180px;
     }
     &__selector {
       position: absolute;
-      left: 8px;
       top: 6px;
+      left: 8px;
+
       display: block;
+
+      width: $action-icon-size - 2;
+      height: $action-icon-size - 2;
+
       text-align: center;
       vertical-align: top;
       text-decoration: none;
-      width: $action-icon-size - 2;
-      height: $action-icon-size - 2;
+
       opacity: 0;
       border-radius: 50%;
       background-color: rgba(0, 0, 0, .25);
@@ -503,7 +515,6 @@ $sticker-max-size: 180px;
       }
       .icon {
         font-size: 12px;
-        color: white;
         line-height: $action-icon-size - 2;
 
         width: $action-icon-size - 2;
@@ -512,6 +523,8 @@ $sticker-max-size: 180px;
         cursor: pointer;
         transition: 150ms;
         vertical-align: top;
+
+        color: white;
       }
     }
     &__menu {
@@ -524,13 +537,12 @@ $sticker-max-size: 180px;
       width: $action-icon-size;
       height: $action-icon-size;
 
+      cursor: pointer;
       vertical-align: top;
 
       opacity: 0;
 
       @include no-select();
-
-      cursor: pointer;
 
       .icon {
         width: $action-icon-size;
@@ -554,7 +566,9 @@ $sticker-max-size: 180px;
         opacity: 1 !important;
         .icon {
           transform: rotate(0deg);
+
           color: $dark-sky-blue !important;
+
           fill: $dark-sky-blue !important;
         }
       }
@@ -581,6 +595,7 @@ $sticker-max-size: 180px;
     background-color: $message-selected-background !important;
     &:before {
       display: block;
+
       background-color: $message-selected-background !important;
     }
     .message__actions__selector {
@@ -650,10 +665,11 @@ $sticker-max-size: 180px;
   }
   .photo {
     line-height: 0;
-    max-width: 100%;
-    max-height: $maximum-image-height;
-    height: auto;
+
     width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: $maximum-image-height;
     &--preview {
       display: block;
 
@@ -911,15 +927,19 @@ $sticker-max-size: 180px;
       }
       &--loading {
         cursor: default !important;
+
         background-color: rgba(0, 0, 0, .01);
-        &:after{
-          content: '';
+        &:after {
           display: block;
+
           width: 100%;
           height: 100%;
+
+          content: '';
           animation: move 1s linear infinite;
-          background-size: 16px 16px;
+
           background-image: linear-gradient(-45deg, rgba($dark-sky-blue, .2) 25%, transparent 25%, transparent 50%, rgba($dark-sky-blue, .2) 50%, rgba($dark-sky-blue, .2) 75%, transparent 75%, transparent 100%);
+          background-size: 16px 16px;
         }
       }
     }
@@ -927,10 +947,10 @@ $sticker-max-size: 180px;
   .contact {
     &__avatar {
       overflow: hidden;
-      margin-right: 8px;
 
       width: $contact-avatar-size;
       height: $contact-avatar-size;
+      margin-right: 8px;
 
       border-radius: 50%;
       img {
@@ -970,17 +990,20 @@ $sticker-max-size: 180px;
 
     &--empty {
       font-size: 14px;
-      line-height: 20px;
       font-style: italic;
+      line-height: 20px;
       .material-icons {
-        color: rgba($coral, .8);
         line-height: 20px;
+
         margin-right: 8px;
+
+        color: rgba($coral, .8);
       }
     }
   }
   .location {
     overflow: hidden;
+
     cursor: pointer;
 
     border-radius: $default-border-radius;
@@ -998,20 +1021,23 @@ $sticker-max-size: 180px;
   }
   .modern {
     font-size: 14px;
+
     color: $dove-gray;
     &--paragraph {
       margin-left: - ($modern-text-padding + $modern-text-line-width);
       padding: $modern-text-padding;
-      border-radius: 0 $default-border-radius $default-border-radius 0;
+
       border-left: $modern-text-line-width solid transparent;
+      border-radius: 0 $default-border-radius $default-border-radius 0;
       .attachment--paragraph {
         margin-left: 0 !important;
       }
     }
 
     a {
-      color: $dark-sky-blue;
       text-decoration: none;
+
+      color: $dark-sky-blue;
       &:hover {
         text-decoration: underline;
       }
@@ -1029,20 +1055,21 @@ $sticker-max-size: 180px;
       &--paragraph {
         margin-left: - ($modern-text-padding + $modern-text-line-width);
         padding: $modern-text-padding;
-        border-radius: 0 3px 3px 0;
+
         border-left: $modern-text-line-width solid transparent;
+        border-radius: 0 3px 3px 0;
       }
       &__title {
-        font-weight: 500;
         font-size: 15px;
+        font-weight: 500;
+
         display: block;
       }
-      &__fields {}
     }
 
     .field {
       margin-top: 6px;
-      &--short {}
+
       &__title {
         font-weight: 500;
         line-height: 20px;
@@ -1051,23 +1078,27 @@ $sticker-max-size: 180px;
   }
   .sticker {
     position: relative;
+
     max-width: $sticker-max-size;
     max-height: $sticker-max-size;
+
     @include no-select();
 
     .preloader {
       position: absolute;
-      left: 50%;
       top: 50%;
-      margin-left: -20px;
+      left: 50%;
+
       margin-top: -20px;
+      margin-left: -20px;
     }
     img {
       display: none;
-      max-width: $sticker-max-size;
-      max-height: $sticker-max-size;
-      height: auto;
+
       width: auto;
+      max-width: $sticker-max-size;
+      height: auto;
+      max-height: $sticker-max-size;
     }
 
     &--loaded {
@@ -1082,12 +1113,13 @@ $sticker-max-size: 180px;
 }
 
 .date-divider {
-  text-transform: uppercase;
   font-size: 13px;
   font-weight: 500;
   line-height: 16px;
 
   padding: 12px 32px 12px 43px;
+
+  text-transform: uppercase;
 
   color: $havelock-blue;
 }
