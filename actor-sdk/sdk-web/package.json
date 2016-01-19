@@ -80,7 +80,7 @@
     "react-router": "0.13.3",
     "react-scroll": "github:actorapp/react-scroll.git#f690add1cd1367e5483074d5a2dcddd3892f28fe",
     "react-visibility-sensor": "2.1.0",
-    "simple-scrollbar": "github:olegshilov/simple-scrollbar.git"
+    "simple-scrollbar": "github:actorapp/simple-scrollbar.git"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.1.0",
