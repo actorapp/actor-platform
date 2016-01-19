@@ -9,12 +9,16 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import im.actor.core.viewmodel.UserVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
+import im.actor.sdk.controllers.fragment.settings.ActorSettingsFragment;
+import im.actor.sdk.controllers.fragment.settings.BaseActorProfileActivity;
+import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
@@ -46,7 +50,15 @@ public class ProfileActivity extends BaseFragmentActivity {
         }
 
         if (savedInstanceState == null) {
-            showFragment(ProfileFragment.create(uid), false, false);
+            ProfileFragment fragment;
+            BaseActorProfileActivity profileIntent = ActorSDK.sharedActor().getDelegate().getProfileIntent();
+            if (profileIntent != null) {
+                fragment = profileIntent.getProfileFragment(uid);
+            } else {
+                fragment = ProfileFragment.create(uid);
+            }
+
+            showFragment(fragment, false, false);
         }
     }
 

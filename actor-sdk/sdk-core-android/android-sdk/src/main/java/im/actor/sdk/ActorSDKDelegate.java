@@ -13,6 +13,8 @@ import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
+import im.actor.sdk.controllers.fragment.settings.BaseActorProfileActivity;
+import im.actor.sdk.controllers.fragment.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
@@ -48,6 +50,20 @@ public interface ActorSDKDelegate {
      * @return Actor Intent
      */
     ActorIntentFragmentActivity getSettingsIntent();
+
+    /**
+     * If not null returned, overrides users profile activity intent
+     *
+     * @return Actor Intent
+     */
+    BaseActorProfileActivity getProfileIntent();
+
+    /**
+     * If not null returned, overrides group info activity intent
+     *
+     * @return Actor Intent
+     */
+    BaseGroupInfoActivity getGroupInfoIntent();
 
     /**
      * If not null returned, overrides settings activity intent

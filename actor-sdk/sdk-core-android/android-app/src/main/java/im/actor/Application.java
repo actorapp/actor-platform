@@ -1,6 +1,8 @@
 package im.actor;
 
 import android.graphics.Color;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -17,10 +19,14 @@ import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
 import im.actor.sdk.controllers.conversation.messages.BaseJsonHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.fragment.group.GroupInfoFragment;
+import im.actor.sdk.controllers.fragment.profile.ProfileFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
+import im.actor.sdk.controllers.fragment.settings.BaseActorProfileActivity;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
+import im.actor.sdk.controllers.fragment.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 import im.actor.tc.TCMessageHolder;
 
@@ -79,6 +85,26 @@ public class Application extends ActorSDKApplication {
                 default:
                     return null;
             }
+        }
+
+        @Override
+        public BaseActorProfileActivity getProfileIntent() {
+            return new BaseActorProfileActivity() {
+                @Override
+                public ProfileFragment getProfileFragment(int uid) {
+                    return ProfileFragmentEx.create(uid);
+                }
+            };
+        }
+
+        @Override
+        public BaseGroupInfoActivity getGroupInfoIntent() {
+            return new BaseGroupInfoActivity() {
+                @Override
+                public GroupInfoFragment getGroupInfoFragment(int chatId) {
+                    return GroupInfoEx.create(chatId);
+                }
+            };
         }
 
         @Override
@@ -162,6 +188,46 @@ public class Application extends ActorSDKApplication {
                     };
                 }
             };
+        }
+    }
+
+    public static class ProfileFragmentEx extends ProfileFragment {
+
+        public static ProfileFragment create(int uid) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(EXTRA_UID, uid);
+            ProfileFragment res = new ProfileFragmentEx();
+            res.setArguments(bundle);
+            return res;
+        }
+
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = super.onCreateView(inflater, container, savedInstanceState);
+            view.findViewById(R.id.docsContainer).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
+            return view;
+        }
+    }
+
+    public static class GroupInfoEx extends GroupInfoFragment {
+
+        public static GroupInfoFragment create(int chatId) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(EXTRA_CHAT_ID, chatId);
+            GroupInfoFragment res = new GroupInfoEx();
+            res.setArguments(bundle);
+            return res;
+        }
+
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = super.onCreateView(inflater, container, savedInstanceState);
+            header.findViewById(R.id.docsContainer).setVisibility(View.VISIBLE);
+            header.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
+            return view;
         }
     }
 }
