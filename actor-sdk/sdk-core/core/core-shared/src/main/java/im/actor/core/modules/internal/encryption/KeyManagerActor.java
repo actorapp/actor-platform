@@ -21,6 +21,8 @@ import im.actor.core.network.RpcException;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
+import im.actor.runtime.actors.Future;
+import im.actor.runtime.actors.ask.AskRequest;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.storage.KeyValueRecord;
 import im.actor.runtime.storage.KeyValueStorage;
@@ -33,6 +35,7 @@ public class KeyManagerActor extends ModuleActor {
 
     private PrivateKeyStorage privateKeyStorage;
     private KeyValueStorage ephemeralStorage;
+    private boolean isReady = false;
 
     public KeyManagerActor(ModuleContext context) {
         super(context);
@@ -183,7 +186,7 @@ public class KeyManagerActor extends ModuleActor {
                     List<KeyValueRecord> updated = new ArrayList<KeyValueRecord>();
                     for (EphemeralEncryptionKey k : pendingEphermalKeys) {
                         updated.add(new KeyValueRecord(k.getEncryptionKey().getKeyId(),
-                                k.toByteArray()));
+                                k.markUploaded().toByteArray()));
                     }
                     ephemeralStorage.addOrUpdateItems(updated);
 
@@ -208,5 +211,63 @@ public class KeyManagerActor extends ModuleActor {
         Log.d(TAG, "Ephemeral Keys are ready");
 
         // Now we can start receiving encrypted messages
+
+        isReady = true;
+        unstashAll();
+    }
+
+    private void fetchOwnKey(Future future) {
+        List<KeyValueRecord> records = ephemeralStorage.loadAllItems();
+        EphemeralEncryptionKey ephemeralEncryptionKey;
+        try {
+            ephemeralEncryptionKey = new EphemeralEncryptionKey(records.get(RandomUtils.randomId(records.size())).getData());
+        } catch (IOException e) {
+            e.printStackTrace();
+            future.onError(e);
+            return;
+        }
+
+        future.onResult(new FetchOwnKeyResult(privateKeyStorage.getIdentityKey(), ephemeralEncryptionKey.getEncryptionKey()));
+    }
+
+    @Override
+    public void onReceive(Object message) {
+        if (message instanceof AskRequest && !isReady) {
+            stash();
+            return;
+        }
+        super.onReceive(message);
+    }
+
+    @Override
+    public boolean onAsk(Object message, Future future) {
+        if (message instanceof FetchOwnKey) {
+            fetchOwnKey(future);
+            return false;
+        }
+        return super.onAsk(message, future);
+    }
+
+    public static class FetchOwnKey {
+
+    }
+
+    public static class FetchOwnKeyResult {
+
+        private EncryptionKey identityKey;
+        private EncryptionKey ephemeralKey;
+
+        public FetchOwnKeyResult(EncryptionKey identityKey, EncryptionKey ephemeralKey) {
+            this.identityKey = identityKey;
+            this.ephemeralKey = ephemeralKey;
+        }
+
+        public EncryptionKey getIdentityKey() {
+            return identityKey;
+        }
+
+        public EncryptionKey getEphemeralKey() {
+            return ephemeralKey;
+        }
     }
 }

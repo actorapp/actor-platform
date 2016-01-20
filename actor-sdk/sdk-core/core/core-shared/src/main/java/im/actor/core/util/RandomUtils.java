@@ -13,4 +13,8 @@ public class RandomUtils {
     public static synchronized long nextRid() {
         return RANDOM.nextLong();
     }
+
+    public static synchronized int randomId(int n) {
+        return RANDOM.nextInt(n);
+    }
 }
