@@ -66,15 +66,17 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
   }
 
   def createKeyGroup(
-    userId:      Int,
-    identityKey: EncryptionKey,
-    keys:        Seq[EncryptionKey],
-    signatures:  Seq[EncryptionKeySignature]
+    userId:               Int,
+    supportedEncryptions: Seq[String],
+    identityKey:          EncryptionKey,
+    keys:                 Seq[EncryptionKey],
+    signatures:           Seq[EncryptionKeySignature]
   ): Future[Int] = {
     val id = IdUtils.nextIntId()
     val keyGroup = EncryptionKeyGroup(
       userId = userId,
       id = id,
+      supportedEncryptions = supportedEncryptions,
       identityKey = Some(identityKey),
       keys = keys,
       signatures = signatures
@@ -97,16 +99,17 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
   }
 
   def createKeyGroup(
-    userId:         Int,
-    apiIdentityKey: ApiEncryptionKey,
-    apiKeys:        Seq[ApiEncryptionKey],
-    apiSignatures:  Seq[ApiEncryptionKeySignature]
+    userId:               Int,
+    supportedEncryptions: Seq[String],
+    apiIdentityKey:       ApiEncryptionKey,
+    apiKeys:              Seq[ApiEncryptionKey],
+    apiSignatures:        Seq[ApiEncryptionKeySignature]
   ): Future[Int] = {
     val futureT = for {
       identityKey ← XorT.fromXor[Future](toModel(apiIdentityKey))
       keys ← XorT.fromXor[Future](apiKeys.toVector.traverseU(toModel))
       signs ← XorT(FastFuture.successful(apiSignatures.toVector.traverseU(toModel)))
-      id ← XorT.right[Future, Exception, Int](createKeyGroup(userId, identityKey, keys, signs))
+      id ← XorT.right[Future, Exception, Int](createKeyGroup(userId, supportedEncryptions, identityKey, keys, signs))
     } yield id
 
     futureT.value map (_.valueOr(throw _))

@@ -28,15 +28,15 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
     }
 
   override def jhandleCreateNewKeyGroup(
-    identityKey:       ApiEncryptionKey,
-    encryptionVersion: Int,
-    keys:              IndexedSeq[ApiEncryptionKey],
-    signatures:        IndexedSeq[ApiEncryptionKeySignature],
-    clientData:        ClientData
+    identityKey:          ApiEncryptionKey,
+    supportedEncryptions: IndexedSeq[String],
+    keys:                 IndexedSeq[ApiEncryptionKey],
+    signatures:           IndexedSeq[ApiEncryptionKeySignature],
+    clientData:           ClientData
   ): Future[HandlerResult[ResponseCreateNewKeyGroup]] =
     authorized(clientData) { client ⇒
       for {
-        id ← encExt.createKeyGroup(client.userId, identityKey, keys, signatures)
+        id ← encExt.createKeyGroup(client.userId, supportedEncryptions, identityKey, keys, signatures)
       } yield Ok(ResponseCreateNewKeyGroup(id))
     }
 
