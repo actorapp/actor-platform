@@ -1,6 +1,6 @@
 package im.actor.server.user
 
-import akka.actor.{ActorLogging, Actor, ActorRef, Props}
+import akka.actor.{ ActorLogging, Actor, ActorRef, Props }
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.server.dialog.{ DirectDialogCommand, DialogProcessor, DialogCommand }
