@@ -50,6 +50,15 @@ public class ActorContext {
     }
 
     /**
+     * Setting sender
+     *
+     * @param ref sender's ActorRef
+     */
+    public void setSender(ActorRef ref) {
+        actorScope.setSender(ref);
+    }
+
+    /**
      * Stopping actor
      */
     public void stopSelf() {

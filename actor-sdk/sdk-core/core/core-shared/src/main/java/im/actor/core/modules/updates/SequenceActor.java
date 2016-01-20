@@ -27,6 +27,9 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.Props;
 
 public class SequenceActor extends ModuleActor {
 
@@ -50,6 +53,8 @@ public class SequenceActor extends ModuleActor {
     private UpdateProcessor processor;
     private UpdatesParser parser;
 
+    private ActorRef sequenceHandler;
+
     public SequenceActor(ModuleContext modules) {
         super(modules);
     }
@@ -60,29 +65,52 @@ public class SequenceActor extends ModuleActor {
         state = preferences().getBytes(KEY_STATE);
         parser = new UpdatesParser();
         processor = new UpdateProcessor(context());
+        sequenceHandler = system().actorOf(Props.create(SequenceHandlerActor.class, new ActorCreator<SequenceHandlerActor>() {
+            @Override
+            public SequenceHandlerActor create() {
+                return new SequenceHandlerActor(processor, context());
+            }
+        }), getPath() + "/handler");
 
         self().send(new Invalidate());
     }
 
-    @Override
-    public void onReceive(Object message) {
-        if (message instanceof Invalidate || message instanceof SeqUpdateTooLong ||
-                message instanceof ForceInvalidate) {
-            invalidate();
-        } else if (message instanceof SeqUpdate) {
-            onUpdateReceived(message);
-        } else if (message instanceof FatSeqUpdate) {
-            onUpdateReceived(message);
-        } else if (message instanceof WeakUpdate) {
-            onUpdateReceived(message);
-        } else if (message instanceof InternalUpdate) {
-            onUpdateReceived(message);
-        } else if (message instanceof ExecuteAfter) {
-            onUpdateReceived(message);
-        } else if (message instanceof PushSeq) {
-            onUpdateReceived(message);
+    private void onWeakUpdateReceived(WeakUpdate weakUpdate) {
+        Update update;
+        try {
+            update = parser.read(weakUpdate.getUpdateHeader(), weakUpdate.getUpdate());
+            Log.d(TAG, "Weak Update: " + update);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.w(TAG, "Unable to parse update: ignoring");
+            return;
+        }
+
+        Log.d(TAG, "Starting stashing");
+        beginStash(null);
+        Log.d(TAG, "Processing weak update");
+        sequenceHandler.send(new SequenceHandlerActor.WeakUpdate(update, weakUpdate.getDate()), self());
+    }
+
+    private void onInternalUpdateReceived(InternalUpdate internalUpdate) {
+        Log.d(TAG, "Received internal update");
+        processor.processInternalUpdate(internalUpdate);
+    }
+
+    private void onExecuteAfterReceived(ExecuteAfter after) {
+        if (after.getSeq() <= this.seq) {
+            after.getRunnable().run();
         } else {
-            drop(message);
+            pendingRunnables.add(after);
+        }
+    }
+
+    private void onPushSeqReceived(int seq) {
+        if (seq <= this.seq) {
+            Log.d(TAG, "Ignored PushSeq {seq:" + seq + "}");
+        } else {
+            Log.w(TAG, "External Out of sequence: starting timer for invalidation");
+            self().sendOnce(new ForceInvalidate(), INVALIDATE_GAP);
         }
     }
 
@@ -102,38 +130,6 @@ public class SequenceActor extends ModuleActor {
             state = ((FatSeqUpdate) u).getState();
             type = ((FatSeqUpdate) u).getUpdateHeader();
             body = ((FatSeqUpdate) u).getUpdate();
-        } else if (u instanceof WeakUpdate) {
-            WeakUpdate w = (WeakUpdate) u;
-            try {
-                Update update = parser.read(w.getUpdateHeader(), w.getUpdate());
-                processor.processWeakUpdate(update, w.getDate());
-                Log.d(TAG, "Weak Update: " + update);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.w(TAG, "Unable to parse update: ignoring");
-            }
-            return;
-        } else if (u instanceof InternalUpdate) {
-            Log.d(TAG, "Received internal update");
-            processor.processInternalUpdate((InternalUpdate) u);
-            return;
-        } else if (u instanceof ExecuteAfter) {
-            ExecuteAfter after = (ExecuteAfter) u;
-            if (after.getSeq() <= this.seq) {
-                after.getRunnable().run();
-            } else {
-                pendingRunnables.add(after);
-            }
-            return;
-        } else if (u instanceof PushSeq) {
-            PushSeq pushSeq = (PushSeq) u;
-            if (pushSeq.seq <= this.seq) {
-                Log.d(TAG, "Ignored PushSeq {seq:" + pushSeq.seq + "}");
-            } else {
-                Log.w(TAG, "External Out of sequence: starting timer for invalidation");
-                self().sendOnce(new ForceInvalidate(), INVALIDATE_GAP);
-            }
-            return;
         } else {
             return;
         }
@@ -151,7 +147,7 @@ public class SequenceActor extends ModuleActor {
             return;
         }
 
-        if (!isValidSeq(seq)) {
+        if (seq != this.seq + 1) {
             further.put(seq, u);
 
             if (seq - this.seq > INVALIDATE_MAX_SEC_HOLE) {
@@ -215,10 +211,6 @@ public class SequenceActor extends ModuleActor {
         // Faaaaaar away
         isTimerStarted = false;
         self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
-    }
-
-    private boolean isValidSeq(final int seq) {
-        return this.seq <= 0 || seq == this.seq + 1;
     }
 
     private void invalidate() {
@@ -371,6 +363,31 @@ public class SequenceActor extends ModuleActor {
         }
     }
 
+    @Override
+    public void onReceive(Object message) {
+        if (message instanceof Invalidate ||
+                message instanceof SeqUpdateTooLong ||
+                message instanceof ForceInvalidate) {
+            invalidate();
+        } else if (message instanceof SeqUpdate ||
+                message instanceof FatSeqUpdate) {
+            onUpdateReceived(message);
+        } else if (message instanceof WeakUpdate) {
+            onWeakUpdateReceived((WeakUpdate) message);
+        } else if (message instanceof InternalUpdate) {
+            onInternalUpdateReceived((InternalUpdate) message);
+        } else if (message instanceof ExecuteAfter) {
+            onExecuteAfterReceived((ExecuteAfter) message);
+        } else if (message instanceof PushSeq) {
+            onPushSeqReceived(((PushSeq) message).seq);
+        } else if (message instanceof UpdateProcessed) {
+            Log.d(TAG, "Ending stashing");
+            endStash();
+        } else {
+            drop(message);
+        }
+    }
+
     public static class ForceInvalidate {
 
     }
@@ -385,5 +402,9 @@ public class SequenceActor extends ModuleActor {
         public PushSeq(int seq) {
             this.seq = seq;
         }
+    }
+
+    public static class UpdateProcessed {
+
     }
 }
