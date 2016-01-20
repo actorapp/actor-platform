@@ -15,45 +15,40 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class RequestLoadPublicKeyGroups extends Request<ResponsePublicKeyGroups> {
+public class ResponseCreateNewKeyGroup extends Response {
 
-    public static final int HEADER = 0xa29;
-    public static RequestLoadPublicKeyGroups fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestLoadPublicKeyGroups(), data);
+    public static final int HEADER = 0xa32;
+    public static ResponseCreateNewKeyGroup fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseCreateNewKeyGroup(), data);
     }
 
-    private ApiUserOutPeer userPeer;
+    private int keyGroupId;
 
-    public RequestLoadPublicKeyGroups(@NotNull ApiUserOutPeer userPeer) {
-        this.userPeer = userPeer;
+    public ResponseCreateNewKeyGroup(int keyGroupId) {
+        this.keyGroupId = keyGroupId;
     }
 
-    public RequestLoadPublicKeyGroups() {
+    public ResponseCreateNewKeyGroup() {
 
     }
 
-    @NotNull
-    public ApiUserOutPeer getUserPeer() {
-        return this.userPeer;
+    public int getKeyGroupId() {
+        return this.keyGroupId;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.userPeer = values.getObj(1, new ApiUserOutPeer());
+        this.keyGroupId = values.getInt(1);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.userPeer == null) {
-            throw new IOException();
-        }
-        writer.writeObject(1, this.userPeer);
+        writer.writeInt(1, this.keyGroupId);
     }
 
     @Override
     public String toString() {
-        String res = "rpc LoadPublicKeyGroups{";
-        res += "userPeer=" + this.userPeer;
+        String res = "tuple CreateNewKeyGroup{";
         res += "}";
         return res;
     }

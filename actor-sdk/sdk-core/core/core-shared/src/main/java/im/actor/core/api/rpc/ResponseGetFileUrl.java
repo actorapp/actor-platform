@@ -63,7 +63,7 @@ public class ResponseGetFileUrl extends Response {
         this.timeout = values.getInt(2);
         this.unsignedUrl = values.optString(3);
         List<ApiHTTPHeader> _unsignedUrlHeaders = new ArrayList<ApiHTTPHeader>();
-        for (int i = 0; i < values.getRepeatedCount(4); i++) {
+        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
             _unsignedUrlHeaders.add(new ApiHTTPHeader());
         }
         this.unsignedUrlHeaders = values.getRepeatedObj(4, _unsignedUrlHeaders);
