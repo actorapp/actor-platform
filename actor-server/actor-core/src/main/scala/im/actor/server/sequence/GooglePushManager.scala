@@ -126,9 +126,9 @@ private object GooglePushDelivery {
 
     Http(system)
       .cachedHostConnectionPoolTls[GooglePushDelivery.Delivery](
-      "gcm-http.googleapis.com",
-      settings = ConnectionPoolSettings(system).copy(maxConnections = maxConnections)
-    )
+        "gcm-http.googleapis.com",
+        settings = ConnectionPoolSettings(system).copy(maxConnections = maxConnections)
+      )
   }
 }
 
