@@ -60,6 +60,25 @@ public class EnvelopeCollection {
         return key;
     }
 
+    public long putEnvelopeFirst(Envelope envelope) {
+
+        long key;
+        if (topKey == 0) {
+            key = root.buildKey(0);
+        } else {
+            key = topKey - 1;
+        }
+
+        synchronized (envelopes) {
+            envelopes.put(key, new ScheduledEnvelope(key, 0, envelope));
+            topKey = key;
+        }
+
+        root.changedTopKey(this);
+
+        return key;
+    }
+
     public void removeEnvelope(Envelope envelope, EnvelopeComparator comparator) {
 
         long oldKey;
