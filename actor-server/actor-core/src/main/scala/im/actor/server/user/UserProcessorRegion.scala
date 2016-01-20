@@ -2,23 +2,28 @@ package im.actor.server.user
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
+import akka.event.Logging
 import im.actor.server.dialog.DialogCommands.Envelope
 import im.actor.server.model.{ Peer, PeerType }
 
 object UserProcessorRegion {
   private def extractEntityId(system: ActorSystem): ShardRegion.ExtractEntityId = {
-    case c: UserCommand ⇒ (c.userId.toString, c)
-    case q: UserQuery   ⇒ (q.userId.toString, q)
-    case e @ Envelope(peer, payload) ⇒ peer match {
-      case Peer(PeerType.Private, userId) ⇒
-        e.getField(Envelope.descriptor.findFieldByNumber(payload.number)) match {
-          case Some(any) ⇒ (userId.toString, any)
-          case None ⇒
-            val error = new RuntimeException(s"Payload not found for $e")
-            system.log.error(error, error.getMessage)
-            throw error
-        }
-      case Peer(peerType, _) ⇒ throw new RuntimeException(s"DialogCommand with peerType: $peerType passed in UserProcessor")
+    val log = Logging(system, getClass)
+
+    {
+      case c: UserCommand ⇒ (c.userId.toString, c)
+      case q: UserQuery   ⇒ (q.userId.toString, q)
+      case e @ Envelope(peer, payload) ⇒ peer match {
+        case Peer(PeerType.Private, userId) ⇒
+          e.getField(Envelope.descriptor.findFieldByNumber(payload.number)) match {
+            case Some(any) ⇒ (userId.toString, any)
+            case None ⇒
+              val error = new RuntimeException(s"Payload not found for $e")
+              log.error(error, error.getMessage)
+              throw error
+          }
+        case Peer(peerType, _) ⇒ throw new RuntimeException(s"DialogCommand with peerType: $peerType passed in UserProcessor")
+      }
     }
   }
 
