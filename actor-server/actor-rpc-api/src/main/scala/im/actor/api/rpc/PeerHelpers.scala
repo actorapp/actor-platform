@@ -2,6 +2,7 @@ package im.actor.api.rpc
 
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
+import im.actor.server.user.UserExtension
 
 import scala.collection.immutable
 import scala.concurrent.{ Future, ExecutionContext }
@@ -30,13 +31,9 @@ object PeerHelpers {
   )(implicit client: AuthorizedClientData, actorSystem: ActorSystem, ec: ExecutionContext): DBIO[RpcError \/ R] = {
     outPeer.`type` match {
       case ApiPeerType.Private ⇒
-        (for {
-          optUser ← persist.UserRepo.find(outPeer.id)
-          usererrOrUser ← validUser(optUser)
-          hasherrOrUser ← DBIO.successful(usererrOrUser.map(validUserAccessHash(outPeer.accessHash, _)))
-        } yield hasherrOrUser).flatMap {
-          case Error(err) ⇒ DBIO.successful(Error(err))
-          case _          ⇒ f
+        DBIO.from(ACLUtils.checkOutPeer(outPeer, client.authId)) flatMap {
+          case false ⇒ DBIO.successful(Error(CommonErrors.InvalidAccessHash))
+          case true  ⇒ f
         }
       case ApiPeerType.Group ⇒
         (for {
@@ -195,14 +192,6 @@ object PeerHelpers {
       userOpt ← persist.UserRepo.find(userId)
     } yield {
       userOpt map (u ⇒ ACLUtils.userAccessHash(client.authId, u.id, u.accessSalt) == accessHash)
-    }
-  }
-
-  private def validUser(optUser: Option[model.User]) = {
-    optUser match {
-      case Some(user) ⇒
-        DBIO.successful(\/-(user))
-      case None ⇒ DBIO.successful(Error(CommonErrors.UserNotFound))
     }
   }
 
