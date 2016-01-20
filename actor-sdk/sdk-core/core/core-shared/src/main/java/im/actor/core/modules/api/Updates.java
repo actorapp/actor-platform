@@ -13,7 +13,6 @@ import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.events.NewSessionCreated;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.api.SequenceActor;
 import im.actor.core.modules.updates.internal.ExecuteAfter;
 import im.actor.core.modules.updates.internal.RelatedResponse;
 import im.actor.core.network.parser.Update;

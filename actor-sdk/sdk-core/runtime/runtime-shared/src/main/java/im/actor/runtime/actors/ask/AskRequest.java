@@ -2,11 +2,11 @@ package im.actor.runtime.actors.ask;
 
 import im.actor.runtime.actors.Future;
 
-public class AskRequest<T> {
+public class AskRequest {
     private final Object message;
-    private final Future<T> future;
+    private final Future future;
 
-    public AskRequest(Object message, Future<T> future) {
+    public AskRequest(Object message, Future future) {
         this.message = message;
         this.future = future;
     }
@@ -15,7 +15,7 @@ public class AskRequest<T> {
         return message;
     }
 
-    public Future<T> getFuture() {
+    public Future getFuture() {
         return future;
     }
 }
