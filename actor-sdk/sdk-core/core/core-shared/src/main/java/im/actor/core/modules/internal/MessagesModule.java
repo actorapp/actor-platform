@@ -220,6 +220,9 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                 }), "actor/conv_" + peer.getPeerType() + "_" + peer.getPeerId() + "/history"));
             }
         }
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            context().getEncryption().getEncryptedChatManager(peer.getPeerId());
+        }
     }
 
     public ActorRef getConversationHistoryActor(final Peer peer) {
