@@ -15,8 +15,8 @@ let _isOpen = false,
 const SEND_AS_PICTURE = true;
 
 class AttachmentStore extends Store {
-  constructor(Dispatcher) {
-    super(Dispatcher);
+  constructor(dispatcher) {
+    super(dispatcher);
   }
 
   isOpen() {
