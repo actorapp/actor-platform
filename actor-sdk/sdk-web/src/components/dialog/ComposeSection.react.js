@@ -133,7 +133,8 @@ class ComposeSection extends Component {
     forEach(event.clipboardData.items, (item) => {
       if (item.type.indexOf('image') !== -1) {
         preventDefault = true;
-        MessageActionCreators.sendClipboardPhotoMessage(this.props.peer, item.getAsFile());
+        console.debug(item.getAsFile());
+        MessageActionCreators.sendClipboardPhotoMessage(this.state.peer, item.getAsFile());
       }
     }, this);
 
@@ -161,7 +162,7 @@ class ComposeSection extends Component {
 
   handleEmojiSelect = (emoji) => {
     EmojiActionCreators.insertEmoji(this.state.text, this.getCaretPosition(), emoji);
-    React.findDOMNode(this.refs.area).focus()
+    React.findDOMNode(this.refs.area).focus();
   };
 
   setFocus = () => {
@@ -204,10 +205,10 @@ class ComposeSection extends Component {
   };
 
   render() {
-    const { text, profile, mentions, isMardownHintShow, isSendAttachmentOpen } = this.state;
+    const { text, profile, mentions, isMarkdownHintShow, isSendAttachmentOpen } = this.state;
     const { isExperimental } = this.context;
     const markdownHintClassName = classnames('compose__markdown-hint', {
-      'compose__markdown-hint--active': isMardownHintShow
+      'compose__markdown-hint--active': isMarkdownHintShow
     });
 
     return (
