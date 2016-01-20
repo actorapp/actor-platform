@@ -6,6 +6,7 @@ import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
+import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogCommand, DialogExtension }
 import im.actor.server.event.TSEvent
@@ -146,6 +147,9 @@ private[user] final class UserProcessor
   protected lazy val dialogExt = DialogExtension(system)
   protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(system).region
+
+  // For GetApiStruct
+  protected val aclMD = ACLUtils.getMDInstance()
 
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 
