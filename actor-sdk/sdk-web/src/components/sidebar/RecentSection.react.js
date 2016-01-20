@@ -6,6 +6,7 @@ import { map } from 'lodash';
 
 import React, { Component } from 'react';
 import Scrollbar from '../common/Scrollbar.react';
+import { Container } from 'flux/utils';
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
 
@@ -15,22 +16,29 @@ import RecentSectionItem from './RecentSectionItem.react';
 
 const LoadDialogsScrollBottom = 100;
 
-const getStateFromStore = () => {
-  return {
-    dialogs: AllDialogsStore.getAllDialogs()
-  };
-};
-
 class RecentSection extends Component {
   constructor(props) {
     super(props);
-
-    this.state = getStateFromStore();
-
-    AllDialogsStore.addListener(this.onChange);
   }
 
-  onChange = () => this.setState(getStateFromStore());
+  static getStores = () => [AllDialogsStore];
+
+  static calculateState() {
+    return {
+      dialogs: AllDialogsStore.getAllDialogs()
+    };
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      const listRect = React.findDOMNode(this.refs.list).getBoundingClientRect();
+      const recentRect = React.findDOMNode(this.refs.recent).getBoundingClientRect();
+
+      if (listRect.height < recentRect.height) {
+        DialogActionCreators.onDialogsEnd();
+      }
+    });
+  }
 
   onScroll = event => {
     const { scrollHeight, scrollTop, clientHeight } = event.target;
@@ -46,9 +54,9 @@ class RecentSection extends Component {
     const dialogList = map(dialogs, (dialog, index) => <RecentSectionItem dialog={dialog} key={index}/>);
 
     return (
-      <section className="sidebar__recent">
+      <section className="sidebar__recent" ref="recent">
         <Scrollbar onScroll={this.onScroll}>
-          <ul className="sidebar__list">
+          <ul className="sidebar__list" ref="list">
             {dialogList}
           </ul>
         </Scrollbar>
@@ -57,4 +65,4 @@ class RecentSection extends Component {
   }
 }
 
-export default RecentSection;
+export default Container.create(RecentSection);
