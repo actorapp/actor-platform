@@ -21,8 +21,18 @@ export default {
       failure: ActionTypes.GROUP_JOIN_VIA_LINK_ERROR
     }, { token });
 
-    const selectJoined = (peer) => DialogActionCreators.selectDialogPeer(peer);
-    const goHome = () => RouterContainer.get().replaceWith('/');
+    const selectJoined = (peer) => {
+      if (peer) {
+        DialogActionCreators.selectDialogPeer(peer);
+      } else {
+        throw new Error();
+      }
+    };
+
+    const goHome = () => {
+      const router = RouterContainer.get();
+      router.replaceWith('/');
+    };
 
     joinViaLink()
       .then(selectJoined)
