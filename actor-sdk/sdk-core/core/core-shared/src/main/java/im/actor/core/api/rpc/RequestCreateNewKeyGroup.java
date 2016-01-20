@@ -23,13 +23,13 @@ public class RequestCreateNewKeyGroup extends Request<ResponseCreateNewKeyGroup>
     }
 
     private ApiEncryptionKey identityKey;
-    private int encryptionVersion;
+    private List<String> supportedEncryptions;
     private List<ApiEncryptionKey> keys;
     private List<ApiEncryptionKeySignature> signatures;
 
-    public RequestCreateNewKeyGroup(@NotNull ApiEncryptionKey identityKey, int encryptionVersion, @NotNull List<ApiEncryptionKey> keys, @NotNull List<ApiEncryptionKeySignature> signatures) {
+    public RequestCreateNewKeyGroup(@NotNull ApiEncryptionKey identityKey, @NotNull List<String> supportedEncryptions, @NotNull List<ApiEncryptionKey> keys, @NotNull List<ApiEncryptionKeySignature> signatures) {
         this.identityKey = identityKey;
-        this.encryptionVersion = encryptionVersion;
+        this.supportedEncryptions = supportedEncryptions;
         this.keys = keys;
         this.signatures = signatures;
     }
@@ -43,8 +43,9 @@ public class RequestCreateNewKeyGroup extends Request<ResponseCreateNewKeyGroup>
         return this.identityKey;
     }
 
-    public int getEncryptionVersion() {
-        return this.encryptionVersion;
+    @NotNull
+    public List<String> getSupportedEncryptions() {
+        return this.supportedEncryptions;
     }
 
     @NotNull
@@ -60,7 +61,7 @@ public class RequestCreateNewKeyGroup extends Request<ResponseCreateNewKeyGroup>
     @Override
     public void parse(BserValues values) throws IOException {
         this.identityKey = values.getObj(1, new ApiEncryptionKey());
-        this.encryptionVersion = values.getInt(2);
+        this.supportedEncryptions = values.getRepeatedString(2);
         List<ApiEncryptionKey> _keys = new ArrayList<ApiEncryptionKey>();
         for (int i = 0; i < values.getRepeatedCount(3); i ++) {
             _keys.add(new ApiEncryptionKey());
@@ -79,7 +80,7 @@ public class RequestCreateNewKeyGroup extends Request<ResponseCreateNewKeyGroup>
             throw new IOException();
         }
         writer.writeObject(1, this.identityKey);
-        writer.writeInt(2, this.encryptionVersion);
+        writer.writeRepeatedString(2, this.supportedEncryptions);
         writer.writeRepeatedObj(3, this.keys);
         writer.writeRepeatedObj(4, this.signatures);
     }
@@ -88,6 +89,7 @@ public class RequestCreateNewKeyGroup extends Request<ResponseCreateNewKeyGroup>
     public String toString() {
         String res = "rpc CreateNewKeyGroup{";
         res += "identityKey=" + this.identityKey;
+        res += ", supportedEncryptions=" + this.supportedEncryptions;
         res += ", keys=" + this.keys;
         res += ", signatures=" + this.signatures;
         res += "}";
