@@ -174,8 +174,6 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         
         self.backgroundColor = UIColor.clearColor()
         
-        self.loadStickers()
-        
     }
     
     required init?(coder aDecoder: NSCoder) {

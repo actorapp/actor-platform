@@ -23,7 +23,7 @@ class AAConvActionSheet: UIView {
     var btnContact:UIButton!
     var btnCancel:UIButton!
     
-    var thumbnailView = AAThumbnailView()
+    var thumbnailView: AAThumbnailView!
     
     weak var weakSuper : ConversationViewController!
     
@@ -49,17 +49,12 @@ class AAConvActionSheet: UIView {
         self.frame = CGRectMake(0, 0, screenWidth, screenHeigth)
         self.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
         
-        
-        
-        //make photo
-        
     }
     
     
     deinit {
         
         self.weakSuper = nil
-
         
     }
     
@@ -70,6 +65,17 @@ class AAConvActionSheet: UIView {
         frame.origin.y = screenHeigth - 400
         
         self.weakSuper.navigationController!.interactivePopGestureRecognizer!.enabled = false
+        
+        //
+        
+        if (self.thumbnailView == nil) {
+            
+            self.thumbnailView = AAThumbnailView()
+            self.sheetView.addSubview(self.thumbnailView)
+            self.thumbnailView.frame    = CGRectMake(0, 5, screenWidth, 90)
+            self.thumbnailView.bindedConvSheet = self
+            
+        }
         
         UIView.animateWithDuration(0.25) { () -> Void in
             self.sheetView.frame = frame
@@ -117,30 +123,30 @@ class AAConvActionSheet: UIView {
         
         self.addSubview(self.sheetView)
         
-        self.btnCamera = UIButton(type: UIButtonType.System)
-        self.btnLibrary = UIButton(type: UIButtonType.System)
-        self.btnDocuments = UIButton(type: UIButtonType.System)
-        self.btnLocation = UIButton(type: UIButtonType.System)
-        self.btnContact = UIButton(type: UIButtonType.System)
-        self.btnCancel = UIButton(type: UIButtonType.System)
+        self.btnCamera      = UIButton(type: UIButtonType.System)
+        self.btnLibrary     = UIButton(type: UIButtonType.System)
+        self.btnDocuments   = UIButton(type: UIButtonType.System)
+        self.btnLocation    = UIButton(type: UIButtonType.System)
+        self.btnContact     = UIButton(type: UIButtonType.System)
+        self.btnCancel      = UIButton(type: UIButtonType.System)
         
         // color
         
-        self.btnCamera.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnLibrary.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnDocuments.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnLocation.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnContact.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnCancel.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnCamera.tintColor        = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnLibrary.tintColor       = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnDocuments.tintColor     = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnLocation.tintColor      = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnContact.tintColor       = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnCancel.tintColor        = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
         
         // font size
         
-        self.btnCamera.titleLabel?.font = UIFont.systemFontOfSize(17)
-        self.btnLibrary.titleLabel?.font = UIFont.systemFontOfSize(17)
-        self.btnDocuments.titleLabel?.font = UIFont.systemFontOfSize(17)
-        self.btnLocation.titleLabel?.font = UIFont.systemFontOfSize(17)
-        self.btnContact.titleLabel?.font = UIFont.systemFontOfSize(17)
-        self.btnCancel.titleLabel?.font = UIFont.systemFontOfSize(17)
+        self.btnCamera.titleLabel?.font         = UIFont.systemFontOfSize(17)
+        self.btnLibrary.titleLabel?.font        = UIFont.systemFontOfSize(17)
+        self.btnDocuments.titleLabel?.font      = UIFont.systemFontOfSize(17)
+        self.btnLocation.titleLabel?.font       = UIFont.systemFontOfSize(17)
+        self.btnContact.titleLabel?.font        = UIFont.systemFontOfSize(17)
+        self.btnCancel.titleLabel?.font         = UIFont.systemFontOfSize(17)
         
         // add buttons as subivews
         
@@ -150,15 +156,15 @@ class AAConvActionSheet: UIView {
         self.sheetView.addSubview(self.btnLocation)
         self.sheetView.addSubview(self.btnContact)
         self.sheetView.addSubview(self.btnCancel)
-        self.sheetView.addSubview(self.thumbnailView)
+        //self.sheetView.addSubview(self.thumbnailView)
         
-        self.thumbnailView.frame = CGRectMake(0, 5, screenWidth, 90)
-        self.btnCamera.frame = CGRectMake(0, 100, screenWidth, 50)
-        self.btnLibrary.frame = CGRectMake(0, 150, screenWidth, 50)
-        self.btnDocuments.frame = CGRectMake(0, 200, screenWidth, 50)
-        self.btnLocation.frame = CGRectMake(0, 250, screenWidth, 50)
-        self.btnContact.frame = CGRectMake(0, 300, screenWidth, 50)
-        self.btnCancel.frame = CGRectMake(0, 350, screenWidth, 50)
+        //self.thumbnailView.frame    = CGRectMake(0, 5, screenWidth, 90)
+        self.btnCamera.frame        = CGRectMake(0, 100, screenWidth, 50)
+        self.btnLibrary.frame       = CGRectMake(0, 150, screenWidth, 50)
+        self.btnDocuments.frame     = CGRectMake(0, 200, screenWidth, 50)
+        self.btnLocation.frame      = CGRectMake(0, 250, screenWidth, 50)
+        self.btnContact.frame       = CGRectMake(0, 300, screenWidth, 50)
+        self.btnCancel.frame        = CGRectMake(0, 350, screenWidth, 50)
         
         // separators
         
@@ -204,7 +210,7 @@ class AAConvActionSheet: UIView {
         
         // bineded self
         
-        self.thumbnailView.bindedConvSheet = self
+        //self.thumbnailView.bindedConvSheet = self
     
     }
     
