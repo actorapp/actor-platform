@@ -24,20 +24,35 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Storage;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.Props;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.storage.KeyValueEngine;
 
+import static im.actor.runtime.actors.ActorSystem.system;
+
 public class UsersModule extends AbsModule {
 
+    private ActorRef usersUpdatesActor;
     private KeyValueEngine<User> users;
     private MVVMCollection<User, UserVM> collection;
 
-    public UsersModule(ModuleContext context) {
+    public UsersModule(final ModuleContext context) {
         super(context);
 
         this.collection = Storage.createKeyValue(STORAGE_USERS, UserVM.CREATOR(context()), User.CREATOR);
         this.users = collection.getEngine();
+
+        usersUpdatesActor = system().actorOf(Props.create(UsersUpdatesActor.class, new ActorCreator<UsersUpdatesActor>() {
+            @Override
+            public UsersUpdatesActor create() {
+                return new UsersUpdatesActor(context);
+            }
+        }), "sequence/user");
     }
+
+    // Model
 
     public KeyValueEngine<User> getUsersStorage() {
         return users;
@@ -46,6 +61,12 @@ public class UsersModule extends AbsModule {
     public MVVMCollection<User, UserVM> getUsers() {
         return collection;
     }
+
+    public ActorRef getUsersUpdatesActor() {
+        return usersUpdatesActor;
+    }
+
+    // Actions
 
     public Command<Boolean> editMyName(final String newName) {
         return new Command<Boolean>() {

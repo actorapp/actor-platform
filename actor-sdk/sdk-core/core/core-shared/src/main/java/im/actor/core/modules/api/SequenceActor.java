@@ -8,8 +8,11 @@ package im.actor.core.modules.api;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import im.actor.core.api.ApiDifferenceUpdate;
+import im.actor.core.api.ApiGroup;
+import im.actor.core.api.ApiUser;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.base.SeqUpdateTooLong;
@@ -31,6 +34,7 @@ import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.actors.ask.AskCallback;
 
 public class SequenceActor extends ModuleActor {
 
@@ -114,8 +118,8 @@ public class SequenceActor extends ModuleActor {
 
     private void onUpdateReceived(Object u) {
         // Building parameters
-        int seq;
-        byte[] state;
+        final int seq;
+        final byte[] state;
         int type;
         byte[] body;
         if (u instanceof SeqUpdate) {
@@ -165,50 +169,41 @@ public class SequenceActor extends ModuleActor {
             return;
         }
 
-        // Checking update
-        Update update = null;
-        try {
-            update = new UpdatesParser().read(type, body);
-        } catch (IOException e) {
-            Log.w(TAG, "Unable to parse update: ignoring");
-            e.printStackTrace();
+        List<ApiUser> users = null;
+        List<ApiGroup> groups = null;
+        if (u instanceof FatSeqUpdate) {
+            FatSeqUpdate fatSeqUpdate = (FatSeqUpdate) u;
+            users = fatSeqUpdate.getUsers();
+            groups = fatSeqUpdate.getGroups();
         }
+        ask(sequenceHandler, new SequenceHandlerActor.SeqUpdate(type, body, users, groups), new AskCallback() {
 
-        if (update != null) {
-            if ((!(u instanceof FatSeqUpdate)) && processor.isCausesInvalidation(update)) {
-                Log.w(TAG, "Message causes invalidation");
+            @Override
+            public void onResult(Object obj) {
+                Log.d(TAG, "Seq Update onResult");
+
+                // Saving state
+                SequenceActor.this.seq = seq;
+                SequenceActor.this.state = state;
+                preferences().putInt(KEY_SEQ, seq);
+                preferences().putBytes(KEY_STATE, state);
+
+                checkRunnables();
+                checkFuture();
+
+                // Faaaaaar away
+                isTimerStarted = false;
+                self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+                Log.d(TAG, "Seq Update required difference");
                 invalidate();
-                return;
             }
+        });
 
-            // Processing update
-            Log.d(TAG, "Processing update: " + update);
-
-            if (u instanceof FatSeqUpdate) {
-                FatSeqUpdate fatSeqUpdate = (FatSeqUpdate) u;
-                processor.applyRelated(fatSeqUpdate.getUsers(), fatSeqUpdate.getGroups(), false);
-            }
-
-            processor.processUpdate(update);
-
-            if (u instanceof FatSeqUpdate) {
-                FatSeqUpdate fatSeqUpdate = (FatSeqUpdate) u;
-                processor.applyRelated(fatSeqUpdate.getUsers(), fatSeqUpdate.getGroups(), true);
-            }
-        }
-
-        // Saving state
-        this.seq = seq;
-        this.state = state;
-        preferences().putInt(KEY_SEQ, seq);
-        preferences().putBytes(KEY_STATE, state);
-
-        checkRunnables();
-        checkFuture();
-
-        // Faaaaaar away
-        isTimerStarted = false;
-        self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
     }
 
     private void invalidate() {

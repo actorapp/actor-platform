@@ -1,11 +1,11 @@
 package im.actor.runtime.actors.ask;
 
-public class AskResult<T> {
+public class AskResult {
 
-    private T result;
+    private Object result;
     private long id;
 
-    public AskResult(long id, T result) {
+    public AskResult(long id, Object result) {
         this.result = result;
         this.id = id;
     }
@@ -14,7 +14,7 @@ public class AskResult<T> {
         return id;
     }
 
-    public T getResult() {
+    public Object getResult() {
         return result;
     }
 }

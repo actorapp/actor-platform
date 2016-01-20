@@ -52,7 +52,6 @@ public class UsersProcessor extends AbsModule implements Processor {
         }
     }
 
-
     @Verified
     public boolean hasUsers(Collection<Integer> uids) {
         for (Integer uid : uids) {
