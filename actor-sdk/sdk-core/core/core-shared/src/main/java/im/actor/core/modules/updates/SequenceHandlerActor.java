@@ -23,7 +23,7 @@ public class SequenceHandlerActor extends ModuleActor {
         this.processor.processWeakUpdate(update, date);
 
         Log.d(TAG, "Unlocking sequence in 1500 ms");
-        sender().send(new StashIgnore(new SequenceActor.UpdateProcessed()), 1500);
+        sender().send(new StashIgnore(new SequenceActor.UpdateProcessed()));
     }
 
     @Override
