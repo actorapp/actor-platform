@@ -2,6 +2,7 @@ package im.actor.server.user
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.cluster.pubsub.DistributedPubSub
+import akka.event.{LoggingAdapter, Logging}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.protobuf.ByteString
@@ -230,6 +231,7 @@ private[user] sealed trait Queries {
   val viewRegion: UserViewRegion
   implicit val system: ActorSystem
   import system.dispatcher
+  val log: LoggingAdapter
 
   implicit val timeout: Timeout
 
@@ -307,7 +309,7 @@ private[user] sealed trait AuthCommands {
   }
 
   def logout(session: model.AuthSession)(implicit db: Database): Future[Unit] = {
-    system.log.warning(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
+    log.warning(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
     for {
       _ ← removeAuth(session.userId, session.authId)
       _ ← SeqUpdatesExtension(system).deletePushCredentials(session.authId)

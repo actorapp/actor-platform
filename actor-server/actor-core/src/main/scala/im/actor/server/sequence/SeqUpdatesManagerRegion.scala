@@ -2,6 +2,7 @@ package im.actor.server.sequence
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
+import akka.event.Logging
 
 final case class SeqUpdatesManagerRegion(ref: ActorRef)
 
@@ -10,13 +11,17 @@ object SeqUpdatesManagerRegion {
   import UserSequenceCommands._
 
   private def extractEntityId(system: ActorSystem): ShardRegion.ExtractEntityId = {
-    case e @ Envelope(userId, payload) ⇒ (userId.toString, e.getField(Envelope.descriptor.findFieldByNumber(payload.number)) match {
-      case Some(any) ⇒ any
-      case None ⇒
-        val error = new RuntimeException(s"Payload not found for $e")
-        system.log.error(error, error.getMessage)
-        throw error
-    })
+    val log = Logging(system, getClass)
+
+    {
+      case e @ Envelope(userId, payload) ⇒ (userId.toString, e.getField(Envelope.descriptor.findFieldByNumber(payload.number)) match {
+        case Some(any) ⇒ any
+        case None ⇒
+          val error = new RuntimeException(s"Payload not found for $e")
+          log.error(error, error.getMessage)
+          throw error
+      })
+    }
   }
 
   private val extractShardId: ShardRegion.ExtractShardId = {

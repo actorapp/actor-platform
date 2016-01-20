@@ -85,13 +85,14 @@ private class LoggingRejectedNotificationListener(_system: ActorSystem) extends 
   private implicit val system: ActorSystem = _system
   private implicit val ec: ExecutionContext = _system.dispatcher
   private lazy val seqUpdExt = SeqUpdatesExtension(system)
+  private val log = Logging(system, getClass)
 
   override def handleRejectedNotification(pushManager: PushManager[_ <: SimpleApnsPushNotification], notification: SimpleApnsPushNotification, rejectionReason: RejectedNotificationReason): Unit = {
-    system.log.warning("APNS rejected notification with reason: {}", rejectionReason)
+    log.warning("APNS rejected notification with reason: {}", rejectionReason)
 
     if (rejectionReason.getErrorCode == RejectedNotificationReason.INVALID_TOKEN.getErrorCode) {
-      system.log.warning("Deleting token")
-      system.log.error("Implement push token deletion")
+      log.warning("Deleting token")
+      log.error("Implement push token deletion")
       seqUpdExt.deleteApplePushCredentials(notification.getToken)
     }
   }
@@ -99,6 +100,7 @@ private class LoggingRejectedNotificationListener(_system: ActorSystem) extends 
 
 private class CleanExpiredTokenListener(_system: ActorSystem) extends ExpiredTokenListener[SimpleApnsPushNotification] {
   private implicit val system: ActorSystem = _system
+  private val log = Logging(system, getClass)
   implicit val db: Database = DbExtension(system).db
 
   override def handleExpiredTokens(
@@ -106,7 +108,7 @@ private class CleanExpiredTokenListener(_system: ActorSystem) extends ExpiredTok
     expiredTokens: util.Collection[ExpiredToken]
   ): Unit = {
     expiredTokens foreach { t ⇒
-      system.log.warning("APNS reported expired token")
+      log.warning("APNS reported expired token")
       //UserExtension(system).logoutByAppleToken(t.getToken)
     }
   }
