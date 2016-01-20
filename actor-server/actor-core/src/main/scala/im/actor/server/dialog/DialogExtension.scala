@@ -207,18 +207,18 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   def getDeliveryExtension(extensions: Seq[ApiExtension]): DeliveryExtension = {
     extensions match {
       case Seq() ⇒
-        system.log.debug("No delivery extensions, using default one")
+        log.debug("No delivery extensions, using default one")
         new ActorDelivery()
       case ext +: tail ⇒
-        system.log.debug("Got extensions: {}", extensions)
+        log.debug("Got extensions: {}", extensions)
         val idToName = InternalExtensions.extensions(InternalDialogExtensions)
         idToName.get(ext.id) flatMap { className ⇒
           val extension = InternalExtensions.extensionOf[DeliveryExtension](className, system, ext.data).toOption
-          system.log.debug("Created delivery extension: {}", extension)
+          log.debug("Created delivery extension: {}", extension)
           extension
         } getOrElse {
           val err = s"Dialog extension with id: ${ext.id} was not found"
-          system.log.error(err)
+          log.error(err)
           throw new Exception(err)
         }
     }
