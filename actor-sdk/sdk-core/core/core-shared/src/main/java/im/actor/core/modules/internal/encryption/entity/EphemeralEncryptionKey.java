@@ -6,17 +6,17 @@ import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
-public class EphermalEncryptionKey extends BserObject {
+public class EphemeralEncryptionKey extends BserObject {
 
     private EncryptionKey encryptionKey;
     private boolean isUploaded;
 
-    public EphermalEncryptionKey(EncryptionKey encryptionKey, boolean isUploaded) {
+    public EphemeralEncryptionKey(EncryptionKey encryptionKey, boolean isUploaded) {
         this.encryptionKey = encryptionKey;
         this.isUploaded = isUploaded;
     }
 
-    public EphermalEncryptionKey(byte[] data) throws IOException {
+    public EphemeralEncryptionKey(byte[] data) throws IOException {
         load(data);
     }
 
@@ -28,8 +28,8 @@ public class EphermalEncryptionKey extends BserObject {
         return isUploaded;
     }
 
-    public EphermalEncryptionKey markUploaded() {
-        return new EphermalEncryptionKey(encryptionKey, true);
+    public EphemeralEncryptionKey markUploaded() {
+        return new EphemeralEncryptionKey(encryptionKey, true);
     }
 
     @Override
