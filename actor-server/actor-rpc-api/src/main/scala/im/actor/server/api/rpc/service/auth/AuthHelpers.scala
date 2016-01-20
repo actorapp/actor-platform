@@ -191,11 +191,11 @@ trait AuthHelpers extends Helpers {
       _ ← persist.AuthSessionRepo.create(newSession)
     } yield ()
 
-  protected def authorize(userId: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[AuthorizeUserAck] = {
+  protected def authorize(userId: Int, authSid: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[AuthorizeUserAck] = {
     for {
       _ ← userExt.auth(userId, clientData.authId)
       ack ← sessionRegion.ref
-        .ask(SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(userId)))
+        .ask(SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(userId, authSid)))
         .mapTo[AuthorizeUserAck]
     } yield ack
   }
@@ -228,7 +228,7 @@ trait AuthHelpers extends Helpers {
       )
       _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
       _ ← fromDBIO(persist.auth.AuthTransactionRepo.delete(transaction.transactionHash))
-      _ ← fromFuture(authorize(userId, clientData))
+      _ ← fromFuture(authorize(userId, authSession.id, clientData))
     } yield userStruct
   }
 
