@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import im.actor.core.api.ApiDocumentExVoice;
@@ -55,8 +54,8 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.file.UploadManager;
 import im.actor.core.modules.internal.messages.entity.PendingMessage;
 import im.actor.core.modules.internal.messages.entity.PendingMessagesStorage;
-import im.actor.core.modules.utils.ModuleActor;
-import im.actor.core.modules.utils.RandomUtils;
+import im.actor.core.util.ModuleActor;
+import im.actor.core.util.RandomUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Storage;

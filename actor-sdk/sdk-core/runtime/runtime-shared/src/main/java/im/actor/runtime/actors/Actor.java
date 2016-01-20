@@ -6,11 +6,14 @@ package im.actor.runtime.actors;
 
 import java.util.ArrayList;
 
+import im.actor.core.util.RandomUtils;
+import im.actor.runtime.actors.ask.AskCallback;
+import im.actor.runtime.actors.ask.AskError;
+import im.actor.runtime.actors.ask.AskFuture;
+import im.actor.runtime.actors.ask.AskRequest;
+import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.actors.mailbox.Mailbox;
 import im.actor.runtime.actors.messages.DeadLetter;
-import im.actor.runtime.actors.messages.StashBegin;
-import im.actor.runtime.actors.messages.StashEnd;
-import im.actor.runtime.actors.messages.StashIgnore;
 
 /**
  * Actor object
@@ -22,9 +25,8 @@ public class Actor {
     private ActorContext context;
     private Mailbox mailbox;
 
+    private ArrayList<Receiver> receivers = new ArrayList<Receiver>();
     private ArrayList<StashedMessage> stashed = new ArrayList<StashedMessage>();
-    private Runnable beforeUnstash = null;
-    private boolean isStashing = false;
 
     public Actor() {
 
@@ -51,41 +53,14 @@ public class Actor {
      * @param message message
      */
     public final void handleMessage(Object message, ActorRef sender) {
-        if (message instanceof StashEnd) {
-            endStash();
-        } else if (message instanceof StashBegin) {
-            beginStash(null);
-        } else if (message instanceof StashIgnore) {
-            intHandle(((StashIgnore) message).getMessage(), sender);
-        } else {
-            // Stashing message
-            if (isStashing) {
-                stashed.add(new StashedMessage(message, sender));
-                return;
-            }
-            intHandle(message, sender);
-        }
+        intHandle(message, sender);
     }
 
-    public void beginStash(Runnable beforeUnstash) {
-        if (isStashing) {
-            throw new RuntimeException("Actor is already stashed");
-        }
-        this.beforeUnstash = beforeUnstash;
-        isStashing = true;
+    public void stash() {
+        stashed.add(new StashedMessage(context.message(), context.sender()));
     }
 
-    public void endStash() {
-        if (!isStashing) {
-            throw new RuntimeException("Actor is not stashed");
-        }
-        isStashing = false;
-
-        if (beforeUnstash != null) {
-            beforeUnstash.run();
-            beforeUnstash = null;
-        }
-
+    public void unstashAll() {
         StashedMessage[] msgs = stashed.toArray(new StashedMessage[stashed.size()]);
         stashed.clear();
         for (int i = msgs.length - 1; i >= 0; i--) {
@@ -93,13 +68,29 @@ public class Actor {
         }
     }
 
+    public void become(Receiver receiver) {
+        receivers.add(receiver);
+    }
+
+    public void unbecome() {
+        receivers.remove(receivers.size() - 1);
+    }
+
     private void intHandle(Object message, ActorRef sender) {
         context.setSender(sender);
+        context.setMessage(message);
+
+        if (receivers.size() > 0) {
+            receivers.get(receivers.size() - 1).onReceive(message);
+            return;
+        }
 
         if (message instanceof Runnable) {
             ((Runnable) message).run();
             return;
         }
+
+
         onReceive(message);
     }
 
@@ -208,5 +199,45 @@ public class Actor {
             system().getTraceInterface().onDrop(sender(), message, this);
         }
         reply(new DeadLetter(message));
+    }
+
+    public void ask(ActorRef dest, Object message) {
+        ask(dest, message, null);
+    }
+
+    public void ask(ActorRef dest, Object message, final AskCallback callback) {
+        final long id = RandomUtils.nextRid();
+        become(new Receiver() {
+            @Override
+            public void onReceive(Object message) {
+                if (message instanceof AskResult) {
+                    AskResult askResult = ((AskResult) message);
+                    if (askResult.getId() != id) {
+                        stash();
+                        return;
+                    }
+
+                    if (callback != null) {
+                        callback.onResult(askResult.getResult());
+                    }
+                    unbecome();
+                    unstashAll();
+                } else if (message instanceof AskError) {
+                    AskError error = ((AskError) message);
+                    if (error.getId() != id) {
+                        stash();
+                        return;
+                    }
+                    if (callback != null) {
+                        callback.onError(error.getException());
+                    }
+                    unbecome();
+                    unstashAll();
+                } else {
+                    stash();
+                }
+            }
+        });
+        dest.send(new AskRequest<Object>(message, new AskFuture<Object>(id, self())));
     }
 }

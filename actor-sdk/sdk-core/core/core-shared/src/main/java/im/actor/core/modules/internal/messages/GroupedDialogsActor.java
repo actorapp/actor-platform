@@ -17,7 +17,7 @@ import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.messages.entity.GroupedItem;
 import im.actor.core.modules.internal.messages.entity.GroupedStorage;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.DialogGroup;

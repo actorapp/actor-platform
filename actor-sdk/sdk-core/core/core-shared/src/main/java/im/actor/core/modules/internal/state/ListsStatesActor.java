@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import im.actor.core.api.ApiAppCounters;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.runtime.bser.BserParser;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.DataInput;
