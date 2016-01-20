@@ -4,6 +4,7 @@
 
 $min-scrollbar-width: 4px;
 $max-scrollbar-width: $min-scrollbar-width + 2;
+$default-scrollbar-color: $pigeon-post;
 
 .scroll-wrapper {
   width: 100%;
@@ -44,7 +45,12 @@ $max-scrollbar-width: $min-scrollbar-width + 2;
 
     cursor: pointer;
 
-    background: $dark-sky-blue;
+    background: $default-scrollbar-color;
+    &:active,
+    &:hover {
+      width: $max-scrollbar-width;
+    }
+
     &.ss-hidden {
       display: none;
     }
@@ -54,7 +60,6 @@ $max-scrollbar-width: $min-scrollbar-width + 2;
   &:hover {
     .ss-scroll {
       opacity: 1;
-      width: $max-scrollbar-width;
     }
   }
 }
