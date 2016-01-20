@@ -1339,19 +1339,11 @@
 		BE2621551C46569800A817AB /* AttachmentView */ = {
 			isa = PBXGroup;
 			children = (
-				BE26215A1C4656F100A817AB /* Manager */,
 				BE2621561C4656D700A817AB /* AAConvActionSheet.swift */,
 				BE2621581C4656EE00A817AB /* AAThumbnailView.swift */,
 				BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */,
 			);
 			name = AttachmentView;
-			sourceTree = "<group>";
-		};
-		BE26215A1C4656F100A817AB /* Manager */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Manager;
 			sourceTree = "<group>";
 		};
 		BED5A1CF1C4839200045FDB0 /* NYTPhotoViewer */ = {
