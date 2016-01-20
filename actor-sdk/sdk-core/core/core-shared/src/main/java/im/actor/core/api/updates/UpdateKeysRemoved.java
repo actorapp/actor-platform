@@ -15,22 +15,24 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdatePublicKeyGroupAdded extends Update {
+public class UpdateKeysRemoved extends Update {
 
-    public static final int HEADER = 0x68;
-    public static UpdatePublicKeyGroupAdded fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdatePublicKeyGroupAdded(), data);
+    public static final int HEADER = 0x71;
+    public static UpdateKeysRemoved fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateKeysRemoved(), data);
     }
 
     private int uid;
-    private ApiEncryptionKeyGroup keyGroup;
+    private int keyGroupId;
+    private List<Long> keyIds;
 
-    public UpdatePublicKeyGroupAdded(int uid, @NotNull ApiEncryptionKeyGroup keyGroup) {
+    public UpdateKeysRemoved(int uid, int keyGroupId, @NotNull List<Long> keyIds) {
         this.uid = uid;
-        this.keyGroup = keyGroup;
+        this.keyGroupId = keyGroupId;
+        this.keyIds = keyIds;
     }
 
-    public UpdatePublicKeyGroupAdded() {
+    public UpdateKeysRemoved() {
 
     }
 
@@ -38,31 +40,35 @@ public class UpdatePublicKeyGroupAdded extends Update {
         return this.uid;
     }
 
+    public int getKeyGroupId() {
+        return this.keyGroupId;
+    }
+
     @NotNull
-    public ApiEncryptionKeyGroup getKeyGroup() {
-        return this.keyGroup;
+    public List<Long> getKeyIds() {
+        return this.keyIds;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.uid = values.getInt(1);
-        this.keyGroup = values.getObj(2, new ApiEncryptionKeyGroup());
+        this.keyGroupId = values.getInt(2);
+        this.keyIds = values.getRepeatedLong(3);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.uid);
-        if (this.keyGroup == null) {
-            throw new IOException();
-        }
-        writer.writeObject(2, this.keyGroup);
+        writer.writeInt(2, this.keyGroupId);
+        writer.writeRepeatedLong(3, this.keyIds);
     }
 
     @Override
     public String toString() {
-        String res = "update PublicKeyGroupAdded{";
+        String res = "update KeysRemoved{";
         res += "uid=" + this.uid;
-        res += ", keyGroup=" + this.keyGroup;
+        res += ", keyGroupId=" + this.keyGroupId;
+        res += ", keyIds=" + this.keyIds;
         res += "}";
         return res;
     }

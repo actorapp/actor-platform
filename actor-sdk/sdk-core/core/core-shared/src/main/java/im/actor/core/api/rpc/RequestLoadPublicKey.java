@@ -5,35 +5,28 @@ package im.actor.core.api.rpc;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
 import static im.actor.runtime.bser.Utils.*;
-
 import im.actor.core.network.parser.*;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-
 import im.actor.core.api.*;
 
 public class RequestLoadPublicKey extends Request<ResponsePublicKeys> {
 
     public static final int HEADER = 0xa2d;
-
     public static RequestLoadPublicKey fromBytes(byte[] data) throws IOException {
         return Bser.parse(new RequestLoadPublicKey(), data);
     }
 
     private ApiUserOutPeer userPeer;
-    private long keyGroupId;
+    private int keyGroupId;
     private List<Long> keyIds;
 
-    public RequestLoadPublicKey(@NotNull ApiUserOutPeer userPeer, long keyGroupId, @NotNull List<Long> keyIds) {
+    public RequestLoadPublicKey(@NotNull ApiUserOutPeer userPeer, int keyGroupId, @NotNull List<Long> keyIds) {
         this.userPeer = userPeer;
         this.keyGroupId = keyGroupId;
         this.keyIds = keyIds;
@@ -48,7 +41,7 @@ public class RequestLoadPublicKey extends Request<ResponsePublicKeys> {
         return this.userPeer;
     }
 
-    public long getKeyGroupId() {
+    public int getKeyGroupId() {
         return this.keyGroupId;
     }
 
@@ -60,7 +53,7 @@ public class RequestLoadPublicKey extends Request<ResponsePublicKeys> {
     @Override
     public void parse(BserValues values) throws IOException {
         this.userPeer = values.getObj(1, new ApiUserOutPeer());
-        this.keyGroupId = values.getLong(2);
+        this.keyGroupId = values.getInt(2);
         this.keyIds = values.getRepeatedLong(3);
     }
 
@@ -70,7 +63,7 @@ public class RequestLoadPublicKey extends Request<ResponsePublicKeys> {
             throw new IOException();
         }
         writer.writeObject(1, this.userPeer);
-        writer.writeLong(2, this.keyGroupId);
+        writer.writeInt(2, this.keyGroupId);
         writer.writeRepeatedLong(3, this.keyIds);
     }
 

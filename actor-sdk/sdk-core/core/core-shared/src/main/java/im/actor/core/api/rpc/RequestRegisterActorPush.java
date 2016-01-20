@@ -5,36 +5,29 @@ package im.actor.core.api.rpc;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
 import static im.actor.runtime.bser.Utils.*;
-
 import im.actor.core.network.parser.*;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-
 import im.actor.core.api.*;
 
 public class RequestRegisterActorPush extends Request<ResponseVoid> {
 
     public static final int HEADER = 0xa0f;
-
     public static RequestRegisterActorPush fromBytes(byte[] data) throws IOException {
         return Bser.parse(new RequestRegisterActorPush(), data);
     }
 
     private String endpoint;
-    private List<ApiEncryptionKey> publicKeys;
+    private List<ApiEncryptionKey> encryptionKeys;
 
-    public RequestRegisterActorPush(@NotNull String endpoint, @NotNull List<ApiEncryptionKey> publicKeys) {
+    public RequestRegisterActorPush(@NotNull String endpoint, @NotNull List<ApiEncryptionKey> encryptionKeys) {
         this.endpoint = endpoint;
-        this.publicKeys = publicKeys;
+        this.encryptionKeys = encryptionKeys;
     }
 
     public RequestRegisterActorPush() {
@@ -47,18 +40,18 @@ public class RequestRegisterActorPush extends Request<ResponseVoid> {
     }
 
     @NotNull
-    public List<ApiEncryptionKey> getPublicKeys() {
-        return this.publicKeys;
+    public List<ApiEncryptionKey> getEncryptionKeys() {
+        return this.encryptionKeys;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.endpoint = values.getString(1);
-        List<ApiEncryptionKey> _publicKeys = new ArrayList<ApiEncryptionKey>();
-        for (int i = 0; i < values.getRepeatedCount(2); i++) {
-            _publicKeys.add(new ApiEncryptionKey());
+        List<ApiEncryptionKey> _encryptionKeys = new ArrayList<ApiEncryptionKey>();
+        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+            _encryptionKeys.add(new ApiEncryptionKey());
         }
-        this.publicKeys = values.getRepeatedObj(2, _publicKeys);
+        this.encryptionKeys = values.getRepeatedObj(2, _encryptionKeys);
     }
 
     @Override
@@ -67,14 +60,14 @@ public class RequestRegisterActorPush extends Request<ResponseVoid> {
             throw new IOException();
         }
         writer.writeString(1, this.endpoint);
-        writer.writeRepeatedObj(2, this.publicKeys);
+        writer.writeRepeatedObj(2, this.encryptionKeys);
     }
 
     @Override
     public String toString() {
         String res = "rpc RegisterActorPush{";
         res += "endpoint=" + this.endpoint;
-        res += ", publicKeys=" + this.publicKeys;
+        res += ", encryptionKeys=" + this.encryptionKeys;
         res += "}";
         return res;
     }

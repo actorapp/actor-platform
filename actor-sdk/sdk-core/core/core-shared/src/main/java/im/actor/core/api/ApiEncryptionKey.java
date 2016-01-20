@@ -5,46 +5,35 @@ package im.actor.core.api;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
 import static im.actor.runtime.bser.Utils.*;
-
 import im.actor.core.network.parser.*;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
 public class ApiEncryptionKey extends BserObject {
 
-    private String keyId;
-    private String keyType;
+    private long keyId;
     private String keyAlg;
     private byte[] keyMaterial;
+    private byte[] keyHash;
 
-    public ApiEncryptionKey(@NotNull String keyId, @NotNull String keyType, @NotNull String keyAlg, @Nullable byte[] keyMaterial) {
+    public ApiEncryptionKey(long keyId, @NotNull String keyAlg, @Nullable byte[] keyMaterial, @Nullable byte[] keyHash) {
         this.keyId = keyId;
-        this.keyType = keyType;
         this.keyAlg = keyAlg;
         this.keyMaterial = keyMaterial;
+        this.keyHash = keyHash;
     }
 
     public ApiEncryptionKey() {
 
     }
 
-    @NotNull
-    public String getKeyId() {
+    public long getKeyId() {
         return this.keyId;
-    }
-
-    @NotNull
-    public String getKeyType() {
-        return this.keyType;
     }
 
     @NotNull
@@ -57,30 +46,41 @@ public class ApiEncryptionKey extends BserObject {
         return this.keyMaterial;
     }
 
+    @Nullable
+    public byte[] getKeyHash() {
+        return this.keyHash;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
-        this.keyId = values.getString(1);
-        this.keyType = values.getString(2);
-        this.keyAlg = values.getString(3);
-        this.keyMaterial = values.optBytes(4);
+        this.keyId = values.getLong(1);
+        this.keyAlg = values.getString(2);
+        this.keyMaterial = values.optBytes(3);
+        this.keyHash = values.optBytes(4);
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.keyId == null) {
-            throw new IOException();
-        }
-        writer.writeString(1, this.keyId);
-        if (this.keyType == null) {
-            throw new IOException();
-        }
-        writer.writeString(2, this.keyType);
+        writer.writeLong(1, this.keyId);
         if (this.keyAlg == null) {
             throw new IOException();
         }
-        writer.writeString(3, this.keyAlg);
+        writer.writeString(2, this.keyAlg);
         if (this.keyMaterial != null) {
-            writer.writeBytes(4, this.keyMaterial);
+            writer.writeBytes(3, this.keyMaterial);
+        }
+        if (this.keyHash != null) {
+            writer.writeBytes(4, this.keyHash);
+        }
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
         }
     }
 
@@ -88,7 +88,6 @@ public class ApiEncryptionKey extends BserObject {
     public String toString() {
         String res = "struct EncryptionKey{";
         res += "keyId=" + this.keyId;
-        res += ", keyType=" + this.keyType;
         res += ", keyAlg=" + this.keyAlg;
         res += ", keyMaterial=" + byteArrayToStringCompact(this.keyMaterial);
         res += "}";
