@@ -40,6 +40,7 @@ trait EncryptionApiConverters {
     } yield EncryptionKeyGroup(
       userId = userId,
       id = kg.keyGroupId,
+      supportedEncryptions = kg.supportedEncryption,
       identityKey = Some(identityKey),
       keys = keys,
       signatures = signs
@@ -65,7 +66,7 @@ trait EncryptionApiConverters {
       signs ← kg.signatures.toVector.traverseU(toApi)
     } yield ApiEncryptionKeyGroup(
       keyGroupId = kg.id,
-      supportedEncryption = kg.keys.toIndexedSeq map (_.alg),
+      supportedEncryption = kg.supportedEncryptions.toVector,
       identityKey = identity,
       keys = keys,
       signatures = signs
