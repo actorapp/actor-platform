@@ -45,6 +45,27 @@ class AASettingsWallpapersController: AATableViewController {
         return 1
     }
     
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        if indexPath.section == 0 {
+            return photosLibrary(indexPath)
+        } else {
+            return wallpapersCell(indexPath)
+        }
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        //
+        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        if indexPath.section == 0 {
+            
+            self.pickImage(.PhotoLibrary)
+            
+        }
+        
+    }
+    
+    
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return nil
     }
@@ -60,6 +81,9 @@ class AASettingsWallpapersController: AATableViewController {
             return 180
         }
     }
+    
+    // MARK: -
+    // MARK: Create cells
     
     private func photosLibrary(indexPath: NSIndexPath) -> AACommonCell {
         let cell = AACommonCell()
@@ -81,26 +105,8 @@ class AASettingsWallpapersController: AATableViewController {
         return cell
     }
     
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            return photosLibrary(indexPath)
-        } else {
-            return wallpapersCell(indexPath)
-        }
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        //
-        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        
-        if indexPath.section == 0 {
-            
-            self.pickImage(.PhotoLibrary)
-            
-        }
-    
-    }
+    // MARK: -
+    // MARK: Picker delegate
     
     override func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         
@@ -120,7 +126,8 @@ class AASettingsWallpapersController: AATableViewController {
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    // Image picking
+    // MARK: -
+    // MARK: Image picking
     
     func pickImage(source: UIImagePickerControllerSourceType) {
         let pickerController = AAImagePickerController()
