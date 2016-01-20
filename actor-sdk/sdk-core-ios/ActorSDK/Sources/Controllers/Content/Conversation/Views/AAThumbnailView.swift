@@ -161,8 +161,6 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("ASSSEEETS === \(self.assets.count)")
-        
         return self.assets.count
     }
     
