@@ -4,12 +4,11 @@
 
 package im.actor.core.modules.internal.presence;
 
-import im.actor.core.DeviceCategory;
 import im.actor.core.api.rpc.RequestSetOnline;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.modules.Modules;
-import im.actor.core.modules.events.AppVisibleChanged;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.events.AppVisibleChanged;
+import im.actor.core.util.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.eventbus.BusSubscriber;
