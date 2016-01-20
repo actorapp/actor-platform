@@ -1,5 +1,7 @@
 package im.actor.server.social
 
+import im.actor.config.ActorConfig
+
 import scala.concurrent.Future
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -19,10 +21,14 @@ sealed trait SocialExtension extends Extension {
 }
 
 final class SocialExtensionImpl(system: ActorSystem, db: Database) extends SocialExtension {
-  lazy val region: SocialManagerRegion = SocialManager.startRegion()(system, db)
+  import system.dispatcher
+  implicit lazy val region: SocialManagerRegion = SocialManager.startRegion()(system, db)
+  private implicit val timeout = Timeout(ActorConfig.defaultTimeout)
+
+  def getRelations(userId: Int) = SocialManager.getRelations(userId)
 }
 
-object SocialExtension extends ExtensionId[SocialExtension] with ExtensionIdProvider {
+object SocialExtension extends ExtensionId[SocialExtensionImpl] with ExtensionIdProvider {
   override def lookup = SocialExtension
 
   override def createExtension(system: ExtendedActorSystem) = new SocialExtensionImpl(system, DbExtension(system).db)
