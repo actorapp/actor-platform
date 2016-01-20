@@ -9,11 +9,11 @@ import im.actor.runtime.bser.BserWriter;
 
 public class PrivateKeyStorage extends BserObject {
 
-    private long keyGroupId;
+    private int keyGroupId;
     private EncryptionKey identityKey = null;
     private ArrayList<EncryptionKey> keys = new ArrayList<EncryptionKey>();
 
-    public PrivateKeyStorage(EncryptionKey identityKey, ArrayList<EncryptionKey> keys, long keyGroupId) {
+    public PrivateKeyStorage(EncryptionKey identityKey, ArrayList<EncryptionKey> keys, int keyGroupId) {
         this.identityKey = identityKey;
         this.keys = keys;
         this.keyGroupId = keyGroupId;
@@ -31,18 +31,18 @@ public class PrivateKeyStorage extends BserObject {
         return keys;
     }
 
-    public long getKeyGroupId() {
+    public int getKeyGroupId() {
         return keyGroupId;
     }
 
-    public PrivateKeyStorage markUploaded(long keyGroupId) {
+    public PrivateKeyStorage markUploaded(int keyGroupId) {
         return new PrivateKeyStorage(identityKey, keys, keyGroupId);
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         identityKey = new EncryptionKey(values.getBytes(1));
-        keyGroupId = values.optLong(2);
+        keyGroupId = values.optInt(2);
         for (byte[] b : values.getRepeatedBytes(3)) {
             keys.add(new EncryptionKey(b));
         }
@@ -51,7 +51,7 @@ public class PrivateKeyStorage extends BserObject {
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeObject(1, identityKey);
-        writer.writeLong(2, keyGroupId);
+        writer.writeInt(2, keyGroupId);
         writer.writeRepeatedObj(3, keys);
     }
 }
