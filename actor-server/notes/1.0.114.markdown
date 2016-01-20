@@ -1,1 +1,2 @@
 * :shipit: Encryption Keys RPC API for End-to-End messaging
+* :bug: Fixed push problems with zero authSid (#285)
