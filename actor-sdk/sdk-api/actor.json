@@ -13066,6 +13066,12 @@
               },
               {
                 "type": "reference",
+                "argument": "supportedEncryptions",
+                "category": "full",
+                "description": "Supported encryption methods"
+              },
+              {
+                "type": "reference",
                 "argument": "keys",
                 "category": "full",
                 "description": "keys of current group"
@@ -13087,9 +13093,12 @@
                 "name": "identityKey"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
                 "id": 2,
-                "name": "encryptionVersion"
+                "name": "supportedEncryptions"
               },
               {
                 "type": {
