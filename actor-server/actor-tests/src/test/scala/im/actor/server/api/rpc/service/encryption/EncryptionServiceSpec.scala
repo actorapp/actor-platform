@@ -17,6 +17,7 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
     val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
     val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
 
+    val supportedEncryptions = Vector("sup1", "sup2", "sup3")
     val identityKey = ApiEncryptionKey(1L, "idalg", Some(Array[Byte](1, 2, 3)), Some(Array[Byte](1)))
     val keys = Vector(ApiEncryptionKey(2L, "keyalg", Some(Array[Byte](3, 4, 5)), Some(Array[Byte](3))))
     val signatures = Vector(
@@ -30,7 +31,7 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
 
       whenReady(service.handleCreateNewKeyGroup(
         identityKey = identityKey,
-        encryptionVersion = 0,
+        supportedEncryptions = supportedEncryptions,
         keys = keys,
         signatures = signatures
       ))(_.toOption.get.keyGroupId)
@@ -44,6 +45,7 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
             kg.keyGroupId shouldBe keyGroupId
             kg.keys.map(_.keyId) shouldBe keys.map(_.keyId)
             kg.signatures.map(_.keyId) shouldBe signatures.map(_.keyId)
+            kg.supportedEncryption shouldBe supportedEncryptions
         }
       }
 
@@ -67,6 +69,7 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
     val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
     val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
 
+    val supportedEncryptions = Vector("sup1", "sup2", "sup3")
     val identityKey = ApiEncryptionKey(1L, "idalg", Some(Array[Byte](1, 2, 3)), Some(Array[Byte](1)))
     val keys = Vector(ApiEncryptionKey(2L, "keyalg", Some(Array[Byte](3, 4, 5)), Some(Array[Byte](3))))
     val signatures = Vector(
@@ -86,7 +89,7 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
 
       val keyGroupId = whenReady(service.handleCreateNewKeyGroup(
         identityKey = identityKey,
-        encryptionVersion = 0,
+        supportedEncryptions = supportedEncryptions,
         keys = keys,
         signatures = signatures
       ))(_.toOption.get.keyGroupId)
@@ -110,7 +113,7 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
         inside(resp) {
           case Ok(ResponsePublicKeys(ks, sigs)) ⇒
             ks.map(_.keyId) shouldBe ephKeys.map(_.keyId)
-            sigs.map(_.keyId) shouldBe ephSignatures.map(_.keyId)
+            sigs.map(_.keyId) shouldBe ephSignatures.take(1).map(_.keyId)
         }
       }
     }
