@@ -312,6 +312,7 @@ public class AAGroupViewController: AAContentTableController {
                 self.memberRows.data = v.toArray().toSwiftArray()
                 self.memberRows.data.sortInPlace(self.membersSort)
                 self.memberRows.reload()
+                
             }
         }
         
