@@ -23,7 +23,7 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     
     private var assets = [PHAsset]()
     var selectedAssets = [PHAsset]()
-    private var imageManager = PHCachingImageManager()
+    private var imageManager : PHCachingImageManager!
     
     private let minimumPreviewHeight: CGFloat = 90
     private var maximumPreviewHeight: CGFloat = 90
@@ -53,6 +53,8 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     ///
     
     func open() {
+        
+        self.imageManager = PHCachingImageManager()
         
         if PHPhotoLibrary.authorizationStatus() == .Authorized {
             fetchAssets()
@@ -202,34 +204,6 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
             
             
         }
-        
-        
-//        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-//        dispatch_async(dispatch_get_global_queue(priority, 0)) {
-//        // do some task
-//        
-//        self.requestOptions.synchronous = true
-//        
-//        self.imageManagerForOrig.requestImageDataForAsset(photoModel, options: self.requestOptions, resultHandler: { (data, _, _, _) -> Void in
-//        if data != nil {
-//        
-//        let imageFromAsset = UIImage(data: data!)!
-//        var complitedImage : UIImage!
-//        
-//        if imageFromAsset.size.width > imageFromAsset.size.height {
-//        complitedImage = self.imageByCroppingImage(imageFromAsset, toSize: CGSizeMake(imageFromAsset.size.height,imageFromAsset.size.height))
-//        } else {
-//        complitedImage = self.imageByCroppingImage(imageFromAsset, toSize: CGSizeMake(imageFromAsset.size.width,imageFromAsset.size.width))
-//        }
-//        
-//        dispatch_async(dispatch_get_main_queue()) {
-//        // update some UI
-//        cell.imgThumbnails.image = complitedImage
-//        }
-//        }
-//        })
-//        
-//        }
         
         
         return cell
