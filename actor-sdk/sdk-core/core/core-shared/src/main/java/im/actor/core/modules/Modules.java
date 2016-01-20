@@ -13,6 +13,7 @@ import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.modules.internal.ContactsModule;
 import im.actor.core.modules.internal.DeviceInfoModule;
 import im.actor.core.modules.internal.DisplayLists;
+import im.actor.core.modules.internal.EncryptionModule;
 import im.actor.core.modules.internal.ExternalModule;
 import im.actor.core.modules.internal.FilesModule;
 import im.actor.core.modules.internal.GroupsModule;
@@ -73,6 +74,7 @@ public class Modules implements ModuleContext {
     private volatile SecurityModule security;
     private volatile DisplayLists displayLists;
     private volatile MentionsModule mentions;
+    private volatile EncryptionModule encryptionModule;
     private volatile DeviceInfoModule deviceInfoModule;
 
     public Modules(Messenger messenger, Configuration configuration) {
@@ -151,6 +153,8 @@ public class Modules implements ModuleContext {
         profile = new ProfileModule(this);
         timing.section("Mentions");
         mentions = new MentionsModule(this);
+        timing.section("Encryption");
+        encryptionModule = new EncryptionModule(this);
         timing.section("DisplayLists");
         displayLists = new DisplayLists(this);
         timing.section("DeviceInfo");
@@ -171,6 +175,8 @@ public class Modules implements ModuleContext {
         notifications.run();
         timing.section("AppState");
         appStateModule.run();
+        timing.section("Encryption");
+        encryptionModule.run();
         timing.section("Contacts");
         contacts.run();
         timing.section("Messages");
@@ -309,6 +315,11 @@ public class Modules implements ModuleContext {
 
     public DeviceInfoModule getDeviceInfoModule() {
         return deviceInfoModule;
+    }
+
+    @Override
+    public EncryptionModule getEncryption() {
+        return encryptionModule;
     }
 
     @Override
