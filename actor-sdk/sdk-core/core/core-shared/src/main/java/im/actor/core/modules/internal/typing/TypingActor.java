@@ -9,7 +9,7 @@ import java.util.HashSet;
 
 import im.actor.core.api.ApiTypingType;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;

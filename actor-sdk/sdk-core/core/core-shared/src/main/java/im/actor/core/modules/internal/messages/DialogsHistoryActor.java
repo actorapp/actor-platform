@@ -8,7 +8,7 @@ import im.actor.core.api.rpc.RequestLoadDialogs;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.updates.internal.DialogHistoryLoaded;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Log;
