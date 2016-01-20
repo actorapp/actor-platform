@@ -4,8 +4,13 @@
 
 package im.actor.runtime.actors;
 
+import java.util.ArrayList;
+
 import im.actor.runtime.actors.mailbox.Mailbox;
 import im.actor.runtime.actors.messages.DeadLetter;
+import im.actor.runtime.actors.messages.StashBegin;
+import im.actor.runtime.actors.messages.StashEnd;
+import im.actor.runtime.actors.messages.StashIgnore;
 
 /**
  * Actor object
@@ -16,6 +21,10 @@ public class Actor {
 
     private ActorContext context;
     private Mailbox mailbox;
+
+    private ArrayList<StashedMessage> stashed = new ArrayList<StashedMessage>();
+    private Runnable beforeUnstash = null;
+    private boolean isStashing = false;
 
     public Actor() {
 
@@ -33,6 +42,65 @@ public class Actor {
         this.path = path;
         this.context = context;
         this.mailbox = mailbox;
+    }
+
+    /**
+     * <p>INTERNAL API</p>
+     * Handling of a message in Actor
+     *
+     * @param message message
+     */
+    public final void handleMessage(Object message, ActorRef sender) {
+        if (message instanceof StashEnd) {
+            endStash();
+        } else if (message instanceof StashBegin) {
+            beginStash(null);
+        } else if (message instanceof StashIgnore) {
+            intHandle(((StashIgnore) message).getMessage(), sender);
+        } else {
+            // Stashing message
+            if (isStashing) {
+                stashed.add(new StashedMessage(message, sender));
+                return;
+            }
+            intHandle(message, sender);
+        }
+    }
+
+    public void beginStash(Runnable beforeUnstash) {
+        if (isStashing) {
+            throw new RuntimeException("Actor is already stashed");
+        }
+        this.beforeUnstash = beforeUnstash;
+        isStashing = true;
+    }
+
+    public void endStash() {
+        if (!isStashing) {
+            throw new RuntimeException("Actor is not stashed");
+        }
+        isStashing = false;
+
+        if (beforeUnstash != null) {
+            beforeUnstash.run();
+            beforeUnstash = null;
+        }
+
+        StashedMessage[] msgs = stashed.toArray(new StashedMessage[stashed.size()]);
+        stashed.clear();
+        for (int i = msgs.length - 1; i >= 0; i--) {
+            self().sendFirst(msgs[i].getMessage(), msgs[i].getSender());
+        }
+    }
+
+    private void intHandle(Object message, ActorRef sender) {
+        context.setSender(sender);
+
+        if (message instanceof Runnable) {
+            ((Runnable) message).run();
+            return;
+        }
+        onReceive(message);
     }
 
     /**
