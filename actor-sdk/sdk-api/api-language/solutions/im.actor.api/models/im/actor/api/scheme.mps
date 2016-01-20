@@ -11228,8 +11228,10 @@
         </node>
         <node concept="2m7Kf5" id="5_CDdZ2rbVo" role="2m0hLx">
           <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="encryptionVersion" />
-          <node concept="2m5ndE" id="5_CDdZ2rbV$" role="2m7DVh" />
+          <property role="TrG5h" value="supportedEncryptions" />
+          <node concept="2m5nlk" id="51JxSFfSq5F" role="2m7DVh">
+            <node concept="2m5ndX" id="51JxSFfSq5L" role="3GJlyp" />
+          </node>
         </node>
         <node concept="2m7Kf5" id="5_CDdZ2qF4i" role="2m0hLx">
           <property role="2m7DUN" value="3" />
@@ -11259,6 +11261,11 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Identity Key of a new group" />
           <ref role="NX6Kv" node="5_CDdZ2qF4J" resolve="identityKey" />
+        </node>
+        <node concept="NX1gA" id="51JxSFfSq5U" role="1GBnQ6">
+          <property role="NX6R2" value="Supported encryption methods" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5_CDdZ2rbVo" resolve="supportedEncryptions" />
         </node>
         <node concept="NX1gA" id="5_CDdZ2qF59" role="1GBnQ6">
           <property role="1GSvIU" value="full" />
