@@ -238,6 +238,6 @@ public class Actor {
                 }
             }
         });
-        dest.send(new AskRequest<Object>(message, new AskFuture<Object>(id, self())));
+        dest.send(new AskRequest(message, new AskFuture(id, self())));
     }
 }

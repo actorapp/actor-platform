@@ -2,13 +2,19 @@ package im.actor.runtime.actors;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class Future<T> {
+import im.actor.runtime.actors.messages.Void;
 
-    private T result;
+public abstract class Future {
+
+    private Object result;
     private Exception exception;
     private boolean isFinished;
 
-    public void onResult(@NotNull T result) {
+    public void onResult() {
+        onResult(Void.INSTANCE);
+    }
+
+    public void onResult(@NotNull Object result) {
         if (isFinished) {
             throw new RuntimeException("Already finished!");
         }
@@ -17,12 +23,13 @@ public abstract class Future<T> {
         deliverResult();
     }
 
-    public void onError(@NotNull Exception e){
+    public void onError(@NotNull Exception e) {
         if (isFinished) {
             throw new RuntimeException("Already finished!");
         }
         this.isFinished = true;
         this.exception = e;
+        deliverResult();
     }
 
     protected abstract void deliverResult();
@@ -32,10 +39,10 @@ public abstract class Future<T> {
     }
 
     public boolean isSuccess() {
-        return isFinished && exception != null;
+        return isFinished && exception == null;
     }
 
-    public T getResult() {
+    public Object getResult() {
         return result;
     }
 
