@@ -63,7 +63,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             if bg.startsWith("local:") {
                 backgroundView.image = UIImage.bundled(bg.skip(6))
             } else {
-                backgroundView.image = UIImage(contentsOfFile: bg.skip(5))
+                let path = CocoaFiles.pathFromDescriptor(bg.skip(5))
+                backgroundView.image = UIImage(contentsOfFile:path)
             }
         }
         
