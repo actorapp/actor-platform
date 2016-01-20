@@ -266,6 +266,8 @@ trait HistoryHandlers {
       case _: ApiDocumentMessage          ⇒ Set.empty
       case _: ApiStickerMessage           ⇒ Set.empty
       case _: ApiUnsupportedMessage       ⇒ Set.empty
+      case _: ApiBinaryMessage            ⇒ Set.empty
+      case _: ApiEncryptedMessage         ⇒ Set.empty
     }
   }
 

@@ -1,0 +1,33 @@
+syntax = 'proto3';
+
+package im.actor.server.model;
+
+import "scalapb/scalapb.proto";
+
+message EncryptionKey {
+    int64 id = 1;
+    string alg = 3;
+    bytes material = 4;
+    bytes hash = 5;
+}
+
+message EncryptionKeySignature {
+    int64 keyId = 1;
+    string alg = 2;
+    bytes signature = 3;
+}
+
+message EncryptionKeyGroup {
+    int32 user_id = 1;
+    int32 id = 2;
+    EncryptionKey identity_key = 3;
+    repeated EncryptionKey keys = 4;
+    repeated EncryptionKeySignature signatures = 5;
+}
+
+message EphermalPublicKey {
+    int32 user_id = 1;
+    int32 key_group_id = 2;
+    EncryptionKey key = 3;
+    repeated EncryptionKeySignature signatures = 4;
+}
