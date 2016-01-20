@@ -60,6 +60,14 @@ object PeerHelpers {
     }
   }
 
+  def withUserOutPeerF[R <: RpcResponse](userOutPeer: ApiUserOutPeer)(f: ⇒ Future[RpcError \/ R])(
+    implicit
+    client:      AuthorizedClientData,
+    actorSystem: ActorSystem,
+    ec:          ExecutionContext
+  ): Future[RpcError \/ R] =
+    DbExtension(actorSystem).db.run(withUserOutPeer(userOutPeer)(DBIO.from(f)))
+
   def withUserOutPeer[R <: RpcResponse](userOutPeer: ApiUserOutPeer)(f: ⇒ DBIO[RpcError \/ R])(
     implicit
     client:      AuthorizedClientData,
