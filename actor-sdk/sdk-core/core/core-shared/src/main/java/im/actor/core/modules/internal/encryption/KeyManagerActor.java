@@ -130,7 +130,7 @@ public class KeyManagerActor extends ModuleActor {
 
         // Generating ephemeral keys
         List<KeyValueRecord> records = ephemeralStorage.loadAllItems();
-        for (int i = 0; i < records.size() - 100; i++) {
+        for (int i = 0; i < 100 - records.size(); i++) {
             long randomId = RandomUtils.nextRid();
             EncryptionKey encryptionKey = new EncryptionKey(
                     randomId,
