@@ -12,7 +12,6 @@ import im.actor.core.util.ModuleActor;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Future;
-import im.actor.runtime.actors.Promise;
 
 public class SequenceHandlerActor extends ModuleActor {
 
