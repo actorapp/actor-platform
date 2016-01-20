@@ -31,7 +31,7 @@ trait IngoingHooks extends ContentUnmarshaller with PlayJsonSupport {
               case Right(_)         ⇒ complete(OK → Status("Ok"))
             }
           case Failure(e) ⇒
-            system.log.error(e, "Failed to handle ingoing hook")
+            log.error(e, "Failed to handle ingoing hook")
             complete(InternalServerError)
         }
       }
