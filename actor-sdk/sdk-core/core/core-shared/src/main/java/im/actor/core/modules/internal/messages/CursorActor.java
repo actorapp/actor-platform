@@ -11,7 +11,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.messages.entity.PlainCursor;
 import im.actor.core.modules.internal.messages.entity.PlainCursorsStorage;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.runtime.storage.SyncKeyValue;
 
 public abstract class CursorActor extends ModuleActor {

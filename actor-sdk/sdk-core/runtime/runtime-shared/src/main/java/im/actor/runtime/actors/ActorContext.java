@@ -49,6 +49,10 @@ public class ActorContext {
         return actorScope.getSender();
     }
 
+    public Object message() {
+        return actorScope.getMessage();
+    }
+
     /**
      * Setting sender
      *
@@ -56,6 +60,10 @@ public class ActorContext {
      */
     public void setSender(ActorRef ref) {
         actorScope.setSender(ref);
+    }
+
+    public void setMessage(Object message) {
+        actorScope.setMessage(message);
     }
 
     /**

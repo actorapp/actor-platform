@@ -26,6 +26,7 @@ public class ActorScope {
 
     private Actor actor;
 
+    private Object message;
     private ActorRef sender;
 
     private ActorEndpoint endpoint;
@@ -79,6 +80,14 @@ public class ActorScope {
 
     public void setSender(ActorRef sender) {
         this.sender = sender;
+    }
+
+    public Object getMessage() {
+        return message;
+    }
+
+    public void setMessage(Object message) {
+        this.message = message;
     }
 
     public void onActorCreated(Actor actor) {

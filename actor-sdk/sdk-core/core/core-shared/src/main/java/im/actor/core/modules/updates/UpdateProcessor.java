@@ -67,6 +67,7 @@ import im.actor.core.modules.updates.internal.MessagesHistoryLoaded;
 import im.actor.core.modules.updates.internal.RelatedResponse;
 import im.actor.core.modules.updates.internal.StickersLoaded;
 import im.actor.core.modules.updates.internal.UsersFounded;
+import im.actor.core.modules.users.UsersProcessor;
 import im.actor.core.network.parser.Update;
 import im.actor.core.viewmodel.UserVM;
 

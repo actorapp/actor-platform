@@ -8,7 +8,7 @@ import im.actor.core.api.rpc.RequestRegisterApplePush;
 import im.actor.core.api.rpc.RequestRegisterGooglePush;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 
