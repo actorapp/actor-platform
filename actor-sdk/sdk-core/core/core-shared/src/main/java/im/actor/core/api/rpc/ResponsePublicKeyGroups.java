@@ -5,33 +5,26 @@ package im.actor.core.api.rpc;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
 import static im.actor.runtime.bser.Utils.*;
-
 import im.actor.core.network.parser.*;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-
 import im.actor.core.api.*;
 
 public class ResponsePublicKeyGroups extends Response {
 
     public static final int HEADER = 0xa2c;
-
     public static ResponsePublicKeyGroups fromBytes(byte[] data) throws IOException {
         return Bser.parse(new ResponsePublicKeyGroups(), data);
     }
 
-    private List<ApiEncryptionPublicKeyGroup> publicKeyGroups;
+    private List<ApiEncryptionKeyGroup> publicKeyGroups;
 
-    public ResponsePublicKeyGroups(@NotNull List<ApiEncryptionPublicKeyGroup> publicKeyGroups) {
+    public ResponsePublicKeyGroups(@NotNull List<ApiEncryptionKeyGroup> publicKeyGroups) {
         this.publicKeyGroups = publicKeyGroups;
     }
 
@@ -40,15 +33,15 @@ public class ResponsePublicKeyGroups extends Response {
     }
 
     @NotNull
-    public List<ApiEncryptionPublicKeyGroup> getPublicKeyGroups() {
+    public List<ApiEncryptionKeyGroup> getPublicKeyGroups() {
         return this.publicKeyGroups;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<ApiEncryptionPublicKeyGroup> _publicKeyGroups = new ArrayList<ApiEncryptionPublicKeyGroup>();
-        for (int i = 0; i < values.getRepeatedCount(1); i++) {
-            _publicKeyGroups.add(new ApiEncryptionPublicKeyGroup());
+        List<ApiEncryptionKeyGroup> _publicKeyGroups = new ArrayList<ApiEncryptionKeyGroup>();
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+            _publicKeyGroups.add(new ApiEncryptionKeyGroup());
         }
         this.publicKeyGroups = values.getRepeatedObj(1, _publicKeyGroups);
     }
