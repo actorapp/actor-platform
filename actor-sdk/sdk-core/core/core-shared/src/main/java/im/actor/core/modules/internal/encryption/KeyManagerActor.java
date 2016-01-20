@@ -1,8 +1,8 @@
 package im.actor.core.modules.internal.encryption;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 import im.actor.core.api.ApiEncryptionKey;
 import im.actor.core.api.ApiEncryptionKeySignature;
@@ -10,13 +10,17 @@ import im.actor.core.api.rpc.RequestCreateNewKeyGroup;
 import im.actor.core.api.rpc.ResponseCreateNewKeyGroup;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.encryption.entity.EncryptionKey;
+import im.actor.core.modules.internal.encryption.entity.EphermalEncryptionKey;
 import im.actor.core.modules.internal.encryption.entity.PrivateKeyStorage;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
+import im.actor.runtime.Storage;
 import im.actor.runtime.crypto.Curve25519;
+import im.actor.runtime.storage.KeyValueRecord;
+import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.sdk.util.Randoms;
 
 public class KeyManagerActor extends ModuleActor {
@@ -26,6 +30,7 @@ public class KeyManagerActor extends ModuleActor {
     private static final String TAG = "KeyManagerActor";
 
     private PrivateKeyStorage privateKeyStorage;
+    private KeyValueStorage ephermalStorage;
 
     public KeyManagerActor(ModuleContext context) {
         super(context);
@@ -33,6 +38,8 @@ public class KeyManagerActor extends ModuleActor {
 
     @Override
     public void preStart() {
+        ephermalStorage = Storage.createKeyValue("ephermal_keys");
+
         byte[] data = preferences().getBytes(PRIVATE_KEYS);
         if (data != null) {
             try {
@@ -118,5 +125,22 @@ public class KeyManagerActor extends ModuleActor {
 
     private void onMainKeysReady() {
         Log.d(TAG, "Main Keys are ready");
+
+        // Generating ephemeral keys
+        List<KeyValueRecord> records = ephermalStorage.loadAllItems();
+        for (int i = 0; i < records.size() - 100; i++) {
+            long randomId = Randoms.randomId();
+            EncryptionKey encryptionKey = new EncryptionKey(
+                    randomId,
+                    Curve25519.keyGen(Crypto.randomBytes(64)));
+            EphermalEncryptionKey ephermalEncryptionKey =
+                    new EphermalEncryptionKey(encryptionKey, false);
+            ephermalStorage.addOrUpdateItem(randomId, ephermalEncryptionKey.toByteArray());
+        }
+
+        // Uploading ephemeral keys
+        records = ephermalStorage.loadAllItems();
+
+        // TODO: Implement uploading
     }
 }
