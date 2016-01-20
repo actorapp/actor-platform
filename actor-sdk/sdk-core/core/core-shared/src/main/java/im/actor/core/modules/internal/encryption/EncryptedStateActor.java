@@ -1,37 +1,32 @@
 package im.actor.core.modules.internal.encryption;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import im.actor.core.api.ApiEncryptionKeyGroup;
+import im.actor.core.api.ApiUserOutPeer;
+import im.actor.core.api.rpc.RequestLoadPublicKeyGroups;
+import im.actor.core.api.rpc.ResponsePublicKeyGroups;
+import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.encryption.entity.EncryptedBox;
-import im.actor.core.modules.internal.encryption.entity.EncryptionKey;
+import im.actor.core.network.RpcCallback;
+import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
-import im.actor.core.util.RandomUtils;
-import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Future;
-import im.actor.runtime.actors.ask.AskCallback;
+import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.ask.AskRequest;
-import im.actor.runtime.crypto.Curve25519;
 
 public class EncryptedStateActor extends ModuleActor {
 
     private static final String TAG = "EncryptedStateActor";
 
     private int uid;
-    private EncryptionKey ownIdentityKey;
-    private EncryptionKey theirIdentityKey;
-    private EncryptionKey ownEphermalKey0;
-    private EncryptionKey theirEphermalKey0;
-
-    private ArrayList<EncryptionKey> prevOwnKeys = new ArrayList<EncryptionKey>();
-    private ArrayList<EncryptionKey> prevTheirKeys = new ArrayList<EncryptionKey>();
-
-    private EncryptionKey currentOwnKey;
-    private EncryptionKey currentTheirKey;
-
-    private byte[] rootChainKey;
-
+    private ArrayList<ApiEncryptionKeyGroup> keyGroups;
+    private HashMap<Integer, ActorRef> sessions = new HashMap<Integer, ActorRef>();
     private boolean isReady = false;
 
     public EncryptedStateActor(int uid, ModuleContext context) {
@@ -43,38 +38,40 @@ public class EncryptedStateActor extends ModuleActor {
     public void preStart() {
         super.preStart();
 
-        if (ownIdentityKey == null || ownEphermalKey0 == null || currentOwnKey == null) {
+        if (keyGroups == null) {
             Log.d(TAG, "Loading own keys for conversation");
-            ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchOwnKey(), new AskCallback() {
+            User user = getUser(uid);
+            request(new RequestLoadPublicKeyGroups(new ApiUserOutPeer(user.getUid(), user.getAccessHash())), new RpcCallback<ResponsePublicKeyGroups>() {
                 @Override
-                public void onResult(Object obj) {
-                    Log.d(TAG, "Own keys loaded");
-                    KeyManagerActor.FetchOwnKeyResult res = (KeyManagerActor.FetchOwnKeyResult) obj;
-                    ownIdentityKey = res.getIdentityKey();
-                    ownEphermalKey0 = res.getEphemeralKey();
-                    currentOwnKey = new EncryptionKey(RandomUtils.nextRid(), Curve25519.keyGen(Crypto.randomBytes(64)));
-                    onOwnReady();
+                public void onResult(ResponsePublicKeyGroups response) {
+                    keyGroups = new ArrayList<ApiEncryptionKeyGroup>(response.getPublicKeyGroups());
+                    onGroupsReady();
                 }
 
                 @Override
-                public void onError(Exception e) {
-                    // Nothing to do
-                    Log.w(TAG, "Own keys error");
+                public void onError(RpcException e) {
+                    Log.d(TAG, "Error during loading public key groups");
                     Log.e(TAG, e);
 
+                    // Do nothing
                 }
             });
         } else {
-            onOwnReady();
+            onGroupsReady();
         }
     }
 
-    private void onOwnReady() {
-        Log.w(TAG, "Own keys ready");
-    }
+    private void onGroupsReady() {
+        Log.w(TAG, "Groups ready #" + keyGroups.size());
 
-    private void onTheirReady() {
-
+        for (final ApiEncryptionKeyGroup g : keyGroups) {
+            sessions.put(g.getKeyGroupId(), system().actorOf(Props.create(EncryptionSessionActor.class, new ActorCreator<EncryptionSessionActor>() {
+                @Override
+                public EncryptionSessionActor create() {
+                    return new EncryptionSessionActor(context(), uid, g);
+                }
+            }), getPath() + "/k_" + g.getKeyGroupId()));
+        }
     }
 
     private void doEncrypt(byte[] data, Future future) {
