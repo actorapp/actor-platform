@@ -39,6 +39,8 @@ $max-scrollbar-width: $min-scrollbar-width + 2;
     right: 0;
 
     width: $min-scrollbar-width;
+    opacity: 0;
+    transition: opacity 100ms linear;
 
     cursor: pointer;
 
@@ -51,6 +53,7 @@ $max-scrollbar-width: $min-scrollbar-width + 2;
   &:active,
   &:hover {
     .ss-scroll {
+      opacity: 1;
       width: $max-scrollbar-width;
     }
   }
