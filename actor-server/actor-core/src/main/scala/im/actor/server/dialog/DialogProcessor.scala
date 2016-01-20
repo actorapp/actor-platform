@@ -152,25 +152,33 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
       self ! Kill
   })
 
-  def initialized(state: DialogState): Receive = {
-    case sm: SendMessage if invokes(sm) ⇒ sendMessage(state, sm) //User sends message
-    case sm: SendMessage if accepts(sm) ⇒ ackSendMessage(state, sm) //User's message been sent
-    case mrv: MessageReceived if invokes(mrv) ⇒ messageReceived(state, mrv) //User received messages
-    case mrv: MessageReceived if accepts(mrv) ⇒ ackMessageReceived(state, mrv) //User's messages been received
-    case mrd: MessageRead if invokes(mrd) ⇒ messageRead(state, mrd) //User reads messages
-    case mrd: MessageRead if accepts(mrd) ⇒ ackMessageRead(state, mrd) //User's messages been read
-    case sr: SetReaction if invokes(sr) ⇒ setReaction(state, sr)
-    case sr: SetReaction if accepts(sr) ⇒ ackSetReaction(state, sr)
-    case rr: RemoveReaction if invokes(rr) ⇒ removeReaction(state, rr)
-    case rr: RemoveReaction if accepts(rr) ⇒ ackRemoveReaction(state, rr)
-    case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
+  def initialized(state: DialogState): Receive = actions(state) orElse reactions(state)
+
+  // when receiving this messages, dialog reacts on other dialog's
+  // action(except for WriteMessage and WriteMessageSelf - they don't really belong here)
+  def reactions(state: DialogState): Receive = {
+    case sm: SendMessage if accepts(sm)                             ⇒ ackSendMessage(state, sm) //User's message been sent
+    case mrv: MessageReceived if accepts(mrv)                       ⇒ ackMessageReceived(state, mrv) //User's messages been received
+    case mrd: MessageRead if accepts(mrd)                           ⇒ ackMessageRead(state, mrd) //User's messages been read
+    case sr: SetReaction if accepts(sr)                             ⇒ ackSetReaction(state, sr)
+    case rr: RemoveReaction if accepts(rr)                          ⇒ ackRemoveReaction(state, rr)
+    case WriteMessage(_, _, date, randomId, message)                ⇒ writeMessage(date, randomId, message)
     case WriteMessageSelf(_, senderUserId, date, randomId, message) ⇒ writeMessageSelf(senderUserId, date, randomId, message)
-    case Show(_) ⇒ show(state)
-    case Hide(_) ⇒ hide(state)
-    case Favourite(_) ⇒ favourite(state)
-    case Unfavourite(_) ⇒ unfavourite(state)
-    case Delete(_) ⇒ delete(state)
-    case uc: UpdateCounters ⇒ updateCountersChanged()
+    case uc: UpdateCounters                                         ⇒ updateCountersChanged()
+  }
+
+  // when receiving this messages, dialog required to take action
+  def actions(state: DialogState): Receive = {
+    case sm: SendMessage if invokes(sm)       ⇒ sendMessage(state, sm) //User sends message
+    case mrv: MessageReceived if invokes(mrv) ⇒ messageReceived(state, mrv) //User received messages
+    case mrd: MessageRead if invokes(mrd)     ⇒ messageRead(state, mrd) //User reads messages
+    case sr: SetReaction if invokes(sr)       ⇒ setReaction(state, sr)
+    case rr: RemoveReaction if invokes(rr)    ⇒ removeReaction(state, rr)
+    case Show(_)                              ⇒ show(state)
+    case Hide(_)                              ⇒ hide(state)
+    case Favourite(_)                         ⇒ favourite(state)
+    case Unfavourite(_)                       ⇒ unfavourite(state)
+    case Delete(_)                            ⇒ delete(state)
   }
 
   /**
