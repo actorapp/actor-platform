@@ -15,7 +15,6 @@ import im.actor.server.social.SocialManager
 import im.actor.util.cache.CacheHelpers._
 import im.actor.server.ApiConversions._
 import org.joda.time.DateTime
-import slick.dbio.DBIO
 
 import scala.concurrent.Future
 import scala.util.Failure
@@ -27,6 +26,19 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   import DialogEvents._
 
   protected def sendMessage(state: DialogState, sm: SendMessage): Unit = {
+    context become receiveStashing(replyTo ⇒ ({
+      case seq: SeqStateDate ⇒
+        replyTo ! seq
+        if (state.isHidden) {
+          self.tell(Show(peer), ActorRef.noSender)
+        }
+        updateMessageDate(state, sm.date, checkOpen = true)
+        unstashAll()
+      case fail: Status.Failure ⇒
+        replyTo forward fail
+        unstashAll()
+    }: Receive) orElse reactions(state))
+
     (withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
       for {
         _ ← dialogExt.ackSendMessage(peer, sm)
@@ -39,12 +51,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       case e ⇒
         log.error(e, "Failed to send message")
         throw e
-    }) pipeTo sender() onSuccess {
-      case _ ⇒
-        if (state.isHidden)
-          self.tell(Show(peer), ActorRef.noSender)
-    }
-    updateMessageDate(state, sm.date, checkOpen = true)
+    }) pipeTo self
   }
 
   protected def updateCountersChanged(): Unit = {
