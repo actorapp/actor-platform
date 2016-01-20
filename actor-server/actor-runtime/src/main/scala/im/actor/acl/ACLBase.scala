@@ -9,11 +9,13 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 
 trait ACLBase {
 
+  def getMDInstance() = MessageDigest.getInstance("MD5")
+
   def secretKey()(implicit s: ActorSystem) =
     s.settings.config.getString("secret")
 
-  def hash(s: String): Long =
-    ByteBuffer.wrap(MessageDigest.getInstance("MD5").digest(s.getBytes)).getLong
+  def hash(s: String, md: MessageDigest = getMDInstance()): Long =
+    ByteBuffer.wrap(md.digest(s.getBytes)).getLong
 
   def randomLong(): Long = randomLong(ThreadLocalRandom.current())
 
