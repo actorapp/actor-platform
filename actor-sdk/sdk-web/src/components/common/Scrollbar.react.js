@@ -32,6 +32,11 @@ class Scrollbar extends Component {
     onScroll && onScroll(event);
   };
 
+  scrollTo = (to) => {
+    const scrollNode = React.findDOMNode(this.refs.scroll);
+    this.scrollbar.scrollTo(scrollNode, to);
+  };
+
   render() {
     const { children, className } = this.props;
     const wrapperClassName = classnames('scroll-wrapper', className);
