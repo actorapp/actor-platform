@@ -2,7 +2,7 @@ package im.actor.server.user
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.cluster.pubsub.DistributedPubSub
-import akka.event.{LoggingAdapter, Logging}
+import akka.event.{ LoggingAdapter, Logging }
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.protobuf.ByteString
