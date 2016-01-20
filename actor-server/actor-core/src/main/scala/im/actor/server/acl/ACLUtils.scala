@@ -1,6 +1,6 @@
 package im.actor.server.acl
 
-import java.security.SecureRandom
+import java.security.{ MessageDigest, SecureRandom }
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
@@ -27,8 +27,8 @@ object ACLUtils extends ACLBase with ACLFiles {
   type Hash = Array[Byte]
   type Salt = Array[Byte]
 
-  def userAccessHash(authId: Long, userId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
-    hash(s"$authId:$userId:$accessSalt:${secretKey()}")
+  def userAccessHash(authId: Long, userId: Int, accessSalt: String, md: MessageDigest = getMDInstance())(implicit s: ActorSystem): Long =
+    hash(s"$authId:$userId:$accessSalt:${secretKey()}", md)
 
   def userAccessHash(authId: Long, u: model.User)(implicit s: ActorSystem): Long =
     userAccessHash(authId, u.id, u.accessSalt)
