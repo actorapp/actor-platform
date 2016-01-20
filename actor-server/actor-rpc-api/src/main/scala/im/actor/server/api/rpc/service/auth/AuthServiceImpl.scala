@@ -147,7 +147,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
         )
         _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
         _ ← fromDBIO(persist.auth.AuthTransactionRepo.delete(transactionHash))
-        ack ← fromFuture(authorize(user.id, clientData))
+        ack ← fromFuture(authorize(user.id, authSession.id, clientData))
       } yield ResponseAuth(userStruct, misc.ApiConfig(maxGroupSize))
     db.run(action.run)
   }
