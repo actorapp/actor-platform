@@ -398,6 +398,8 @@ $sticker-max-size: 180px;
     width: 40px;
     height: $action-icon-size;
     margin-right: -20px;
+
+    @include no-select();
     &__like {
       position: relative;
 
