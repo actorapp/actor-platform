@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.text.Editable;
 import android.text.Spannable;
@@ -111,6 +113,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private static final int REQUEST_LOCATION = 4;
     private static final int REQUEST_CONTACT = 5;
     private static final int PERMISSIONS_REQUEST_CAMERA = 6;
+    private static final int PERMISSION_REQUEST_RECORD_AUDIO = 7;
     // Peer of current chat
     private Peer peer;
 
@@ -1184,6 +1187,13 @@ public class ChatActivity extends ActorEditTextActivity {
     }
 
     private void showAudio() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("Permissions", "recordAudio - no permission :c");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.VIBRATE}, PERMISSION_REQUEST_RECORD_AUDIO);
+            return;
+        }
+
         if (isAudioVisible) {
             return;
         }
