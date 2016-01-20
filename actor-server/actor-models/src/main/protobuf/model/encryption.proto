@@ -20,6 +20,7 @@ message EncryptionKeySignature {
 message EncryptionKeyGroup {
     int32 user_id = 1;
     int32 id = 2;
+    repeated string supported_encryptions = 6;
     EncryptionKey identity_key = 3;
     repeated EncryptionKey keys = 4;
     repeated EncryptionKeySignature signatures = 5;
