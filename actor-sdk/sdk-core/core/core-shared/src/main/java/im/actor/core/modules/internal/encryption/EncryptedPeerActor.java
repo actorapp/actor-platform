@@ -10,17 +10,23 @@ import im.actor.core.api.rpc.ResponsePublicKeyGroups;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.encryption.entity.EncryptedBox;
+import im.actor.core.modules.internal.encryption.entity.EncryptedBoxKey;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
+import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Future;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.actors.ask.AskCallback;
 import im.actor.runtime.actors.ask.AskRequest;
+import im.actor.runtime.crypto.IntegrityException;
+import im.actor.runtime.crypto.box.ActorBox;
+import im.actor.runtime.crypto.box.ActorBoxKey;
 
-public class EncryptedStateActor extends ModuleActor {
+public class EncryptedPeerActor extends ModuleActor {
 
     private static final String TAG = "EncryptedStateActor";
 
@@ -29,7 +35,7 @@ public class EncryptedStateActor extends ModuleActor {
     private HashMap<Integer, ActorRef> sessions = new HashMap<Integer, ActorRef>();
     private boolean isReady = false;
 
-    public EncryptedStateActor(int uid, ModuleContext context) {
+    public EncryptedPeerActor(int uid, ModuleContext context) {
         super(context);
         this.uid = uid;
     }
@@ -74,8 +80,41 @@ public class EncryptedStateActor extends ModuleActor {
         }
     }
 
-    private void doEncrypt(byte[] data, Future future) {
+    private void doEncrypt(final byte[] data, final Future future) {
+        final byte[] encKey = Crypto.randomBytes(64);
 
+        final ArrayList<EncryptedBoxKey> encryptedKeys = new ArrayList<EncryptedBoxKey>();
+        for (final Integer keyGroup : sessions.keySet()) {
+            ask(sessions.get(keyGroup), new EncryptionSessionActor.EncryptPackage(encKey), new AskCallback() {
+                @Override
+                public void onResult(Object obj) {
+                    EncryptionSessionActor.EncryptedPackageRes res = (EncryptionSessionActor.EncryptedPackageRes) obj;
+                    encryptedKeys.add(new EncryptedBoxKey(uid, keyGroup, res.getData()));
+                    if (encryptedKeys.size() == sessions.size()) {
+                        doEncrypt(encKey, data, encryptedKeys, future);
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    future.onError(e);
+                }
+            });
+        }
+    }
+
+    private void doEncrypt(byte[] encKey, byte[] data, ArrayList<EncryptedBoxKey> encryptedKeys, Future future) {
+        byte[] encData;
+        try {
+            encData = ActorBox.closeBox(new byte[0], data, Crypto.randomBytes(32), new ActorBoxKey(encKey));
+        } catch (IntegrityException e) {
+            e.printStackTrace();
+            future.onError(e);
+            return;
+        }
+
+        EncryptedBox encryptedBox = new EncryptedBox(encryptedKeys.toArray(new EncryptedBoxKey[0]), encData);
+        future.onResult(encryptedBox);
     }
 
     private void doDecrypt(EncryptedBox data, Future future) {

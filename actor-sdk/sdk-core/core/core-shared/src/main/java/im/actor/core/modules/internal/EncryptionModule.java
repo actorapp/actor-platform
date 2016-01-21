@@ -4,9 +4,8 @@ import java.util.HashMap;
 
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.internal.encryption.EncryptedStateActor;
+import im.actor.core.modules.internal.encryption.EncryptedPeerActor;
 import im.actor.core.modules.internal.encryption.KeyManagerActor;
-import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
@@ -39,10 +38,10 @@ public class EncryptionModule extends AbsModule {
     public ActorRef getEncryptedChatManager(final int uid) {
         synchronized (encryptedStates) {
             if (!encryptedStates.containsKey(uid)) {
-                encryptedStates.put(uid, system().actorOf(Props.create(EncryptedStateActor.class, new ActorCreator<EncryptedStateActor>() {
+                encryptedStates.put(uid, system().actorOf(Props.create(EncryptedPeerActor.class, new ActorCreator<EncryptedPeerActor>() {
                     @Override
-                    public EncryptedStateActor create() {
-                        return new EncryptedStateActor(uid, context());
+                    public EncryptedPeerActor create() {
+                        return new EncryptedPeerActor(uid, context());
                     }
                 }), "encryption/uid_" + uid));
             }
