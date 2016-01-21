@@ -47,8 +47,8 @@ public class CallActor extends ModuleActor {
             onEndCall();
         } else if (message instanceof Signal) {
             onSignal(((Signal) message).getData());
-        } else if (message instanceof AnswerCall) {
-            onAnswerCall(((AnswerCall) message).getCallback());
+        } else if (message instanceof HandleCall) {
+            onHandleCall(((HandleCall) message).getCallback());
         }
     }
 
@@ -97,7 +97,7 @@ public class CallActor extends ModuleActor {
         }
     }
 
-    private void onAnswerCall(CallsModule.CallCallback callCallback) {
+    private void onHandleCall(CallsModule.CallCallback callCallback) {
         this.callback = callCallback;
         for (byte[] s : signals) {
             callback.onSignal(s);
@@ -134,10 +134,10 @@ public class CallActor extends ModuleActor {
 
     }
 
-    public static class AnswerCall {
+    public static class HandleCall {
         CallsModule.CallCallback callback;
 
-        public AnswerCall(CallsModule.CallCallback callback) {
+        public HandleCall(CallsModule.CallCallback callback) {
             this.callback = callback;
         }
 
