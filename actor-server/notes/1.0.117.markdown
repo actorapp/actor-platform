@@ -1,1 +1,2 @@
-* :rocket: GC adjustments
+* :rocket: reduce amount of update pushes and inside a difference
+* :bug: respond with one random ephermal key
