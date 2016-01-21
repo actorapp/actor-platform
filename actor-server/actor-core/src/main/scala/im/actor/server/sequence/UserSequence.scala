@@ -104,7 +104,7 @@ private[sequence] final class UserSequence(
 
       writeToDb(seqUpdate) map (_ ⇒ SeqState(seq)) andThen {
         case Success(_) ⇒
-          pubSubExt.publish(Publish(topic(userId), UserSequenceEvents.NewUpdate(Some(seqUpdate), pushRules, ByteString.EMPTY)))
+          pubSubExt.publish(Publish(topic(userId), UserSequenceEvents.NewUpdate(Some(seqUpdate), pushRules, reduceKey, ByteString.EMPTY)))
           vendorPush ! DeliverPush(seq, pushRules)
       }
     }

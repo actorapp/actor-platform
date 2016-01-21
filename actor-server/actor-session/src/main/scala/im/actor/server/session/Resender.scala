@@ -89,6 +89,9 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
   // Provides mapping from reduceKey to the last message with the reduceKey
   private[this] var reduceMap = immutable.Map.empty[String, Long]
 
+  // Used to prevent scheduling multiple updates at the same millisecond and result out of order
+  private[this] var lastScheduledResend = System.currentTimeMillis - 1
+
   // Subscriber-related
 
   def subscriber: Receive = {
@@ -194,7 +197,19 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
         reduceMap += (reduceKey → messageId)
       }
 
-      val scheduledResend = context.system.scheduler.scheduleOnce(AckTimeout, self, ScheduledResend(messageId))
+      val currentTime = System.currentTimeMillis()
+
+      val scheduleDelay =
+        if (currentTime > this.lastScheduledResend) {
+          this.lastScheduledResend = currentTime
+          AckTimeout
+        } else {
+          val delta = this.lastScheduledResend - currentTime + 1
+          this.lastScheduledResend = currentTime + delta
+          AckTimeout + delta.milli
+        }
+
+      val scheduledResend = context.system.scheduler.scheduleOnce(scheduleDelay, self, ScheduledResend(messageId))
       resendBuffer = resendBuffer.updated(messageId, (message, reduceKeyOpt, scheduledResend))
     } else {
       val msg = "Completing stream due to maximum buffer size reached"
@@ -232,6 +247,7 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
 
   /**
    * Removes mapping from reduceMap if messageId equals to the one stored in the mapping
+   *
    * @param reduceKey
    * @param messageId
    */
