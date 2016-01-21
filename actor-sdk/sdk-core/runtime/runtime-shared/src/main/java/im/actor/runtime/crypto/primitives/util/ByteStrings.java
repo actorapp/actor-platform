@@ -96,4 +96,16 @@ public class ByteStrings {
             dest[destOffset + i] = src[srcOffset + i];
         }
     }
+
+    public static boolean isEquals(byte[] a, byte[] b) {
+        if (a.length != b.length) {
+            return false;
+        }
+        // To avoid timing attacks
+        int result = 0;
+        for (int i = 0; i < a.length; i++) {
+            result |= a[i] ^ b[i];
+        }
+        return result == 0;
+    }
 }
