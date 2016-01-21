@@ -74,10 +74,10 @@ public class EncryptedPeerActor extends ModuleActor {
         Log.w(TAG, "Groups ready #" + keyGroups.size());
 
         for (final ApiEncryptionKeyGroup g : keyGroups) {
-            sessions.put(g.getKeyGroupId(), system().actorOf(Props.create(EncryptionSessionActor.class, new ActorCreator<EncryptionSessionActor>() {
+            sessions.put(g.getKeyGroupId(), system().actorOf(Props.create(EncryptedSessionActor.class, new ActorCreator<EncryptedSessionActor>() {
                 @Override
-                public EncryptionSessionActor create() {
-                    return new EncryptionSessionActor(context(), uid, g);
+                public EncryptedSessionActor create() {
+                    return new EncryptedSessionActor(context(), uid, g);
                 }
             }), getPath() + "/k_" + g.getKeyGroupId()));
         }
@@ -108,10 +108,10 @@ public class EncryptedPeerActor extends ModuleActor {
 
         final ArrayList<EncryptedBoxKey> encryptedKeys = new ArrayList<EncryptedBoxKey>();
         for (final Integer keyGroup : sessions.keySet()) {
-            ask(sessions.get(keyGroup), new EncryptionSessionActor.EncryptPackage(encKey), new AskCallback() {
+            ask(sessions.get(keyGroup), new EncryptedSessionActor.EncryptPackage(encKey), new AskCallback() {
                 @Override
                 public void onResult(Object obj) {
-                    EncryptionSessionActor.EncryptedPackageRes res = (EncryptionSessionActor.EncryptedPackageRes) obj;
+                    EncryptedSessionActor.EncryptedPackageRes res = (EncryptedSessionActor.EncryptedPackageRes) obj;
                     encryptedKeys.add(new EncryptedBoxKey(uid, keyGroup, res.getData()));
                     if (encryptedKeys.size() == sessions.size()) {
                         doEncrypt(encKey, data, encryptedKeys, future);
@@ -168,7 +168,7 @@ public class EncryptedPeerActor extends ModuleActor {
                 Log.d(TAG, "Key: " + Hex.toHex(k.getEncryptedKey()));
             }
 
-            ask(sessions.get(senderKeyGroup), new EncryptionSessionActor.DecryptPackage(encKey), new AskCallback() {
+            ask(sessions.get(senderKeyGroup), new EncryptedSessionActor.DecryptPackage(encKey), new AskCallback() {
                 @Override
                 public void onResult(Object obj) {
                     Log.d(TAG, "Decryption with key group:onResult");
