@@ -28,6 +28,7 @@ message UserSequenceEvents {
     message NewUpdate {
         SeqUpdate seq_update = 1;
         PushRules push_rules = 2;
+        google.protobuf.StringValue reduce_key = 4;
         bytes state = 3;
     }
 }
