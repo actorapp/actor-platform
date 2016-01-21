@@ -325,11 +325,11 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
           expectUpdates(
             classOf[UpdateChatGroupsChanged],
             classOf[UpdateMessage],
-            classOf[UpdateCountersChanged],
+            //classOf[UpdateCountersChanged],
             classOf[UpdateMessage],
-            classOf[UpdateCountersChanged],
+            //classOf[UpdateCountersChanged],
             classOf[UpdateMessage],
-            classOf[UpdateCountersChanged],
+            //classOf[UpdateCountersChanged],
             classOf[UpdateMessageReadByMe],
             classOf[UpdateCountersChanged]
           )(emptyCheck)
@@ -341,11 +341,11 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
           expectUpdates(
             classOf[UpdateChatGroupsChanged],
             classOf[UpdateMessage],
-            classOf[UpdateCountersChanged],
+            //classOf[UpdateCountersChanged],
             classOf[UpdateMessage],
-            classOf[UpdateCountersChanged],
+            //classOf[UpdateCountersChanged],
             classOf[UpdateMessage],
-            classOf[UpdateCountersChanged],
+            //classOf[UpdateCountersChanged],
             classOf[UpdateMessageReadByMe],
             classOf[UpdateCountersChanged]
           )(emptyCheck)
