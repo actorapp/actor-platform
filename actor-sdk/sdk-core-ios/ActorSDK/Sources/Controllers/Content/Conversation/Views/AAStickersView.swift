@@ -162,6 +162,9 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         
         self.collectionView.contentInset = UIEdgeInsetsMake(15, 10, 15, 10)
         
+        self.collectionView.preservesSuperviewLayoutMargins = false
+        self.collectionView.layoutMargins = UIEdgeInsetsZero
+        
         
         // add collection view as subview
         self.addSubview(self.collectionView)
@@ -203,6 +206,7 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         stickerCell.stickerImage.backgroundColor = UIColor.clearColor()
         stickerCell.bind(sickerPack.stickers[indexPath.row], clearPrev: true)
         
+        
         return stickerCell;
         
     }
@@ -213,6 +217,13 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         let stickerModel = sickerPack.stickers[indexPath.row]
         
         self.conv.sendSticker(stickerModel)
+        
+    }
+    
+    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+        
+        
+        
         
     }
     
