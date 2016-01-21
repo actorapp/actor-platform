@@ -1,0 +1,1 @@
+* :bug: Fixed sequence breaking by ReadByMe
