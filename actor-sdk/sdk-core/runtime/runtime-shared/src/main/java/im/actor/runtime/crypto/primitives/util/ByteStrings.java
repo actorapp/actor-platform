@@ -22,7 +22,7 @@ public class ByteStrings {
     }
 
     public static byte[] intToBytes(int v) {
-        byte[] data = new byte[8];
+        byte[] data = new byte[4];
         int offset = 0;
         data[offset++] = (byte) ((v >> 24) & 0xFF);
         data[offset++] = (byte) ((v >> 16) & 0xFF);
