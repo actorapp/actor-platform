@@ -42,7 +42,7 @@ const getQuery = (text, position) => {
 
 let text = '';
 let mentions = null;
-let _isFocusDisabled = false;
+let _isAutoFocusEnabled = true;
 
 class ComposeStore extends Store {
   constructor(dispatcher) {
@@ -57,8 +57,8 @@ class ComposeStore extends Store {
     return text;
   }
 
-  isFocusDisabled() {
-    return _isFocusDisabled;
+  isAutoFocusEnabled() {
+    return _isAutoFocusEnabled;
   }
 
   onTyping = (action) => {
@@ -143,6 +143,12 @@ class ComposeStore extends Store {
       case ActionTypes.COMPOSE_PASTE:
         this.onComposePaste(action.text);
         break;
+
+      case ActionTypes.COMPOSE_TOGGLE_AUTO_FOCUS:
+        _isAutoFocusEnabled = action.isEnable;
+        this.__emitChange();
+        break;
+
       default:
     }
   };
