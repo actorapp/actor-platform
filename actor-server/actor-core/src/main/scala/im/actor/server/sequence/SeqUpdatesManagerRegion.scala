@@ -4,6 +4,8 @@ import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
 import akka.event.Logging
 
+import scala.util.{ Success, Try }
+
 final case class SeqUpdatesManagerRegion(ref: ActorRef)
 
 object SeqUpdatesManagerRegion {
@@ -14,9 +16,9 @@ object SeqUpdatesManagerRegion {
     val log = Logging(system, getClass)
 
     {
-      case e @ Envelope(userId, payload) ⇒ (userId.toString, e.getField(Envelope.descriptor.findFieldByNumber(payload.number)) match {
-        case Some(any) ⇒ any
-        case None ⇒
+      case e @ Envelope(userId, payload) ⇒ (userId.toString, Try(e.getField(Envelope.descriptor.findFieldByNumber(payload.number))) match {
+        case Success(any) ⇒ any
+        case _ ⇒
           val error = new RuntimeException(s"Payload not found for $e")
           log.error(error, error.getMessage)
           throw error
