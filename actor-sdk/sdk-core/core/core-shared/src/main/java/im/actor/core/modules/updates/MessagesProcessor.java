@@ -10,6 +10,7 @@ import java.util.List;
 
 import im.actor.core.api.ApiDialog;
 import im.actor.core.api.ApiDialogGroup;
+import im.actor.core.api.ApiEncryptedMessage;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiMessageReaction;
 import im.actor.core.api.ApiPeer;
@@ -54,6 +55,11 @@ public class MessagesProcessor extends AbsModule {
 
         ArrayList<Message> nMesages = new ArrayList<Message>();
         for (UpdateMessage u : messages) {
+
+            if (u.getMessage() instanceof ApiEncryptedMessage) {
+                // TODO: Decrypt message
+                continue;
+            }
 
             AbsContent msgContent;
             try {
