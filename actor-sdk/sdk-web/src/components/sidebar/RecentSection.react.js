@@ -40,7 +40,7 @@ class RecentSection extends Component {
     });
   }
 
-  onScroll = event => {
+  onScroll = (event) => {
     const { scrollHeight, scrollTop, clientHeight } = event.target;
 
     if (scrollHeight - scrollTop - clientHeight <= LoadDialogsScrollBottom) {

@@ -44,7 +44,7 @@ class ComposeSection extends Component {
       mentions: ComposeStore.getMentions(),
       isSendAttachmentOpen: AttachmentStore.isOpen(),
       isMarkdownHintShow: prevState ? prevState.isMarkdownHintShow || false : false,
-      isFocusDisabled: ComposeStore.isFocusDisabled()
+      isAutoFocusEnabled: ComposeStore.isAutoFocusEnabled()
     };
   }
 
@@ -55,26 +55,44 @@ class ComposeSection extends Component {
   constructor(props) {
     super(props);
 
-    window.addEventListener('focus', this.setFocus);
-    document.addEventListener('keydown', this.handleKeyDown, false);
+    this.setListeners();
   }
 
   componentWillUnmount() {
-    window.removeEventListener('focus', this.setFocus);
-    document.removeEventListener('keydown', this.handleKeyDown, false);
+    this.clearListeners();
   }
 
   componentDidMount() {
     this.setFocus();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
+    const { isAutoFocusEnabled } = this.state;
+
+    if (isAutoFocusEnabled == true && prevState.isAutoFocusEnabled !== true) {
+      this.setListeners();
+    } else if (isAutoFocusEnabled == false && prevState.isAutoFocusEnabled !== false) {
+      this.clearListeners();
+    }
+
     this.setFocus();
   }
 
+  setListeners() {
+    window.addEventListener('focus', this.setFocus);
+    document.addEventListener('keydown', this.handleKeyDown, false);
+  }
+  clearListeners() {
+    window.removeEventListener('focus', this.setFocus);
+    document.removeEventListener('keydown', this.handleKeyDown, false);
+  }
+
   handleKeyDown = (event) => {
-    if (!event.metaKey && !event.altKey && !event.ctrlKey && !event.shiftKey) {
-      this.setFocus();
+    const { isAutoFocusEnabled } = this.state;
+    if (isAutoFocusEnabled) {
+      if (!event.metaKey && !event.altKey && !event.ctrlKey && !event.shiftKey) {
+        this.setFocus();
+      }
     }
   };
 
@@ -166,12 +184,7 @@ class ComposeSection extends Component {
   };
 
   setFocus = () => {
-    const { isFocusDisabled } = this.state;
-
-    if (!isFocusDisabled) {
-      React.findDOMNode(this.refs.area).focus();
-    }
-
+    React.findDOMNode(this.refs.area).focus();
   };
 
   handleDrop = (files) => {
@@ -271,4 +284,4 @@ class ComposeSection extends Component {
 
 ReactMixin.onClass(ComposeSection, IntlMixin);
 
-export default Container.create(ComposeSection);
+export default Container.create(ComposeSection, {pure: false});
