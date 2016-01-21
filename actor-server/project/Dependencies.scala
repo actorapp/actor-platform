@@ -88,8 +88,6 @@ object Dependencies {
 
     val libPhoneNumber          = "com.googlecode.libphonenumber" % "libphonenumber"                 % "7.0.+"
 
-    val protobuf                = "com.google.protobuf"           %  "protobuf-java"                 % "3.0.0-beta-1"
-
     val scodecBits              = "org.scodec"                    %% "scodec-bits"                   % "1.0.9"
     val scodecCore              = "org.scodec"                    %% "scodec-core"                   % "1.8.1"
 
