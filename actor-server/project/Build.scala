@@ -61,6 +61,9 @@ object Build extends sbt.Build with Versioning with Releasing {
       PB.protobufSettings ++ Seq(
       //PB.javaConversions in PB.protobufConfig := true,
       libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.21" % PB.protobufConfig,
+      dependencyOverrides ~= { overrides =>
+        overrides + "com.google.protobuf" % "protobuf-java" % "3.0.0-beta-2"
+      },
       PB.includePaths in PB.protobufConfig ++= Seq(
         file("actor-models/src/main/protobuf"),
         file("actor-core/src/main/protobuf"),
