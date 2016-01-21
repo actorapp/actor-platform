@@ -8,6 +8,7 @@ option (scalapb.options) = {
 };
 
 import "scalapb/scalapb.proto";
+import "google/protobuf/wrappers.proto";
 import "model/push.proto";
 import "model.proto";
 
@@ -47,6 +48,7 @@ message UserSequenceCommands {
     message DeliverUpdate {
         UpdateMapping mapping = 1;
         PushRules push_rules = 2;
+        google.protobuf.StringValue reduce_key = 5;
         string delivery_id = 4;
     }
 
