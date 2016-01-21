@@ -10,9 +10,8 @@ import im.actor.core.api.rpc.RequestEndCall;
 import im.actor.core.api.rpc.RequestSendCallSignal;
 import im.actor.core.api.rpc.RequestSubscribeToCalls;
 import im.actor.core.api.rpc.ResponseDoCall;
-import im.actor.core.api.updates.UpdateIncomingCall;
-import im.actor.core.entity.Peer;
 import im.actor.core.entity.User;
+import im.actor.core.entity.signals.AbsSignal;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.events.IncomingCall;
@@ -76,8 +75,11 @@ public class CallsModule extends AbsModule {
         request(new RequestCallInProgress(callId, CALL_TIMEOUT));
     }
 
-    public void answerCall(final long callId, final CallCallback callback) {
-        calls.get(callId).send(new CallActor.AnswerCall(callback));
+    public void handleCall(final long callId, final CallCallback callback) {
+        ActorRef call = calls.get(callId);
+        if (call != null) {
+            call.send(new CallActor.HandleCall(callback));
+        }
     }
 
     //do end call
@@ -122,8 +124,8 @@ public class CallsModule extends AbsModule {
         }
     }
 
-    public void sendSignal(long callId, byte[] data) {
-        request(new RequestSendCallSignal(callId, data));
+    public void sendSignal(long callId, AbsSignal signal) {
+        request(new RequestSendCallSignal(callId, signal.toByteArray()));
     }
 
     public void onSignal(long callId, byte[] data) {
