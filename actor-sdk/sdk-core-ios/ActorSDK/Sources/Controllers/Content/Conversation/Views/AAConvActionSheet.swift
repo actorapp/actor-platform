@@ -11,6 +11,7 @@ let screenHeigth = UIScreen.mainScreen().bounds.size.height
 class AAConvActionSheet: UIView {
     
     var sheetView:UIView!
+    var backgroundView:UIView!
     
     var btnCamera:UIButton!
     var btnLibrary:UIButton!
@@ -43,7 +44,7 @@ class AAConvActionSheet: UIView {
         
         self.alpha = 0
         self.frame = CGRectMake(0, 0, screenWidth, screenHeigth)
-        self.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
+        self.backgroundColor = UIColor.clearColor()
         
     }
     
@@ -62,7 +63,6 @@ class AAConvActionSheet: UIView {
         
         self.weakSuper.navigationController!.interactivePopGestureRecognizer!.enabled = false
         
-        //
         
         if (self.thumbnailView == nil) {
             
@@ -73,14 +73,26 @@ class AAConvActionSheet: UIView {
             
         }
         
-        UIView.animateWithDuration(0.25) { () -> Void in
+        
+        self.alpha = 1
+        self.backgroundView.alpha = 0
+        
+        
+        UIView.animateWithDuration(0.4, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.6, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+            
+            self.backgroundView.alpha = 1
+            
             self.sheetView.frame = frame
-            self.alpha = 1
             
             self.thumbnailView.open()
             self.thumbnailView.reloadView()
             
-        }
+            }, completion: { (complite) -> Void in
+                
+                // animation complite
+                
+        })
+        
         
     }
     
@@ -90,17 +102,24 @@ class AAConvActionSheet: UIView {
         var frame = self.sheetView.frame
         frame.origin.y = screenHeigth
         
-        
+        self.weakSuper.rightButton.layoutIfNeeded()
         UIView.animateWithDuration(0.25, animations: { () -> Void in
+            self.weakSuper.rightButton.layoutIfNeeded()
             self.sheetView.frame = frame
-            self.alpha = 0
+            
+            self.backgroundView.alpha = 0
+            
             }) { (bool) -> Void in
                 
                 self.weakSuper.navigationController!.interactivePopGestureRecognizer!.enabled = true
                 
+                self.alpha = 0
+                
                 self.thumbnailView.selectedAssets = [PHAsset]()
                 self.thumbnailView.reloadView()
                 self.updateSelectedPhotos()
+                
+                
         }
         
     }
@@ -113,6 +132,14 @@ class AAConvActionSheet: UIView {
         
         
         // sheet view
+        
+        self.backgroundView = UIView()
+        self.backgroundView.frame = CGRectMake(0, 0, screenWidth, screenHeigth)
+        self.backgroundView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
+        self.backgroundView.alpha = 0
+        
+        self.addSubview(self.backgroundView)
+        
         let frame = CGRectMake(0, screenHeigth, screenWidth, 400)
         self.sheetView = UIView(frame: frame)
         self.sheetView.backgroundColor = UIColor.whiteColor()
