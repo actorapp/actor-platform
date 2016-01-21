@@ -152,14 +152,18 @@ class ComposeSection extends Component {
 
   onPaste = event => {
     let preventDefault = false;
+    let attachments = [];
 
     forEach(event.clipboardData.items, (item) => {
       if (item.type.indexOf('image') !== -1) {
         preventDefault = true;
-        console.debug(item.getAsFile());
-        MessageActionCreators.sendClipboardPhotoMessage(this.state.peer, item.getAsFile());
+        attachments.push(item.getAsFile());
       }
     }, this);
+
+    if (attachments.length > 0) {
+      AttachmentsActionCreators.show(attachments);
+    }
 
     if (preventDefault) {
       event.preventDefault();

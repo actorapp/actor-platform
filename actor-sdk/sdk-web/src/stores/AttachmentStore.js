@@ -14,6 +14,13 @@ let _isOpen = false,
 
 const SEND_AS_PICTURE = true;
 
+const blobToFile = (blob, fileName) => {
+  blob.lastModifiedDate = blob.lastModifiedDate ? blob.lastModifiedDate : new Date();
+  blob.name = fileName ? fileName : `${blob.lastModifiedDate}.${blob.type.split('/')[1]}`;
+  return blob;
+};
+
+
 class AttachmentStore extends Store {
   constructor(dispatcher) {
     super(dispatcher);
@@ -56,6 +63,10 @@ class AttachmentStore extends Store {
       case ActionTypes.ATTACHMENT_MODAL_SHOW:
         _isOpen = true;
         _attachments = map(action.attachments, (file) => {
+          if (file instanceof Blob) {
+            file = blobToFile(file);
+          }
+
           const isImage = file.type.includes('image') && file.type !== 'image/gif';
           return {
             isImage,
