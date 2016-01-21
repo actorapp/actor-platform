@@ -6,6 +6,8 @@ import akka.event.Logging
 import im.actor.server.dialog.DialogCommands.Envelope
 import im.actor.server.model.{ Peer, PeerType }
 
+import scala.util.{ Try, Success }
+
 object UserProcessorRegion {
   private def extractEntityId(system: ActorSystem): ShardRegion.ExtractEntityId = {
     val log = Logging(system, getClass)
@@ -15,9 +17,9 @@ object UserProcessorRegion {
       case q: UserQuery   ⇒ (q.userId.toString, q)
       case e @ Envelope(peer, payload) ⇒ peer match {
         case Peer(PeerType.Private, userId) ⇒
-          e.getField(Envelope.descriptor.findFieldByNumber(payload.number)) match {
-            case Some(any) ⇒ (userId.toString, any)
-            case None ⇒
+          Try(e.getField(Envelope.descriptor.findFieldByNumber(payload.number))) match {
+            case Success(any) ⇒ (userId.toString, any)
+            case _ ⇒
               val error = new RuntimeException(s"Payload not found for $e")
               log.error(error, error.getMessage)
               throw error

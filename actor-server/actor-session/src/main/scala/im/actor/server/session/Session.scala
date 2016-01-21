@@ -26,6 +26,7 @@ import slick.driver.PostgresDriver.api._
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.util.{ Success, Try }
 
 final case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig)
 
@@ -42,9 +43,9 @@ object Session {
 
   private[this] val extractEntityId: ShardRegion.ExtractEntityId = {
     case env @ SessionEnvelope(authId, sessionId, payload) ⇒
-      env.getField(SessionEnvelope.descriptor.findFieldByNumber(payload.number)) match {
-        case Some(any) ⇒ s"${authId}_$sessionId" → any
-        case None      ⇒ throw new RuntimeException(s"Empty payload $env")
+      Try(env.getField(SessionEnvelope.descriptor.findFieldByNumber(payload.number))) match {
+        case Success(any) ⇒ s"${authId}_$sessionId" → any
+        case _            ⇒ throw new RuntimeException(s"Empty payload $env")
       }
   }
 
