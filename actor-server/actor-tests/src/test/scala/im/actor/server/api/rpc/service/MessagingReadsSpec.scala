@@ -57,9 +57,9 @@ class MessagingReadsSpec
       }
 
       expectUpdates(classOf[UpdateCountersChanged]) {
-        case counters @ Seq(c1: UpdateCountersChanged, c2: UpdateCountersChanged, c3: UpdateCountersChanged) ⇒
-          val cs = List(c1, c2, c3) flatMap (_.counters.globalCounter)
-          cs should contain theSameElementsAs List(1, 2, 3)
+        case counters @ Seq(c3: UpdateCountersChanged) ⇒
+          val cs = List(c3) flatMap (_.counters.globalCounter)
+          cs should contain theSameElementsAs List(3)
         case _ ⇒ fail("Unmatched UpdateCountersChanged updates")
       }
 
