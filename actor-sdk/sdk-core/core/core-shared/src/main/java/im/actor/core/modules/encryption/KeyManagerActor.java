@@ -2,6 +2,7 @@ package im.actor.core.modules.encryption;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import im.actor.core.api.ApiEncryptionKey;
@@ -24,6 +25,7 @@ import im.actor.runtime.Storage;
 import im.actor.runtime.actors.Future;
 import im.actor.runtime.actors.ask.AskRequest;
 import im.actor.runtime.crypto.Curve25519;
+import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.storage.KeyValueRecord;
 import im.actor.runtime.storage.KeyValueStorage;
 
@@ -33,6 +35,7 @@ public class KeyManagerActor extends ModuleActor {
 
     private static final String TAG = "KeyManagerActor";
 
+    private HashMap<Long, EphemeralEncryptionKey> ephemeralKeys = new HashMap<Long, EphemeralEncryptionKey>();
     private PrivateKeyStorage privateKeyStorage;
     private KeyValueStorage ephemeralStorage;
     private boolean isReady = false;
@@ -131,9 +134,18 @@ public class KeyManagerActor extends ModuleActor {
     private void onMainKeysReady() {
         Log.d(TAG, "Main Keys are ready");
 
-        // Generating ephemeral keys
-        List<KeyValueRecord> records = ephemeralStorage.loadAllItems();
-        for (int i = 0; i < 100 - records.size(); i++) {
+        // Loading all keys
+        for (KeyValueRecord r : ephemeralStorage.loadAllItems()) {
+            try {
+                EphemeralEncryptionKey encryptionKey = new EphemeralEncryptionKey(r.getData());
+                ephemeralKeys.put(encryptionKey.getEncryptionKey().getKeyId(), encryptionKey);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Generating missing ephemeral keys
+        for (int i = 0; i < 100 - ephemeralKeys.size(); i++) {
             long randomId = RandomUtils.nextRid();
             EncryptionKey encryptionKey = new EncryptionKey(
                     randomId,
@@ -141,20 +153,16 @@ public class KeyManagerActor extends ModuleActor {
             EphemeralEncryptionKey ephemeralEncryptionKey =
                     new EphemeralEncryptionKey(encryptionKey, false);
             ephemeralStorage.addOrUpdateItem(randomId, ephemeralEncryptionKey.toByteArray());
+            ephemeralKeys.put(randomId, ephemeralEncryptionKey);
         }
 
         // Uploading ephemeral keys
-        records = ephemeralStorage.loadAllItems();
+        // records = ephemeralStorage.loadAllItems();
 
         final ArrayList<EphemeralEncryptionKey> pendingEphermalKeys = new ArrayList<EphemeralEncryptionKey>();
-        for (KeyValueRecord record : records) {
-            try {
-                EphemeralEncryptionKey encryptionKey = new EphemeralEncryptionKey(record.getData());
-                if (!encryptionKey.isUploaded()) {
-                    pendingEphermalKeys.add(encryptionKey);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        for (EphemeralEncryptionKey record : ephemeralKeys.values()) {
+            if (!record.isUploaded()) {
+                pendingEphermalKeys.add(record);
             }
         }
 
@@ -185,11 +193,11 @@ public class KeyManagerActor extends ModuleActor {
                 public void onResult(ResponseVoid response) {
                     List<KeyValueRecord> updated = new ArrayList<KeyValueRecord>();
                     for (EphemeralEncryptionKey k : pendingEphermalKeys) {
-                        updated.add(new KeyValueRecord(k.getEncryptionKey().getKeyId(),
-                                k.markUploaded().toByteArray()));
+                        EphemeralEncryptionKey uploaded = k.markUploaded();
+                        updated.add(new KeyValueRecord(uploaded.getEncryptionKey().getKeyId(), uploaded.toByteArray()));
+                        ephemeralKeys.put(uploaded.getEncryptionKey().getKeyId(), uploaded);
                     }
                     ephemeralStorage.addOrUpdateItems(updated);
-
 
                     onAllKeysReady();
                 }
@@ -217,21 +225,33 @@ public class KeyManagerActor extends ModuleActor {
     }
 
     private void fetchOwnKey(Future future) {
-        List<KeyValueRecord> records = ephemeralStorage.loadAllItems();
-        EphemeralEncryptionKey ephemeralEncryptionKey;
-        try {
-            ephemeralEncryptionKey = new EphemeralEncryptionKey(records.get(RandomUtils.randomId(records.size())).getData());
-        } catch (IOException e) {
-            e.printStackTrace();
-            future.onError(e);
-            return;
-        }
-
+        Long[] keys = ephemeralKeys.keySet().toArray(new Long[ephemeralKeys.size()]);
+        EphemeralEncryptionKey ephemeralEncryptionKey = ephemeralKeys.get(keys[RandomUtils.randomId(keys.length)]);
         future.onResult(new FetchOwnKeyResult(privateKeyStorage.getIdentityKey(), ephemeralEncryptionKey.getEncryptionKey()));
     }
 
     private void fetchKeyGroup(Future future) {
         future.onResult(new FetchOwnKeyGroupResult(privateKeyStorage.getKeyGroupId()));
+    }
+
+    private void fetchEphemeralKey(byte[] publicKey, Future future) {
+        for (EphemeralEncryptionKey encryptionKey : ephemeralKeys.values()) {
+            if (ByteStrings.isEquals(encryptionKey.getEncryptionKey().getPublicKey(), publicKey)) {
+                future.onResult(new FetchEphemeralPrivateKeyRes(encryptionKey.getEncryptionKey().getPrivateKey()));
+                return;
+            }
+        }
+        future.onError(new RuntimeException("Unable to find ephemeral key"));
+    }
+
+    private void fetchEphemeralKey(long keyId, Future future) {
+        for (EphemeralEncryptionKey encryptionKey : ephemeralKeys.values()) {
+            if (encryptionKey.getEncryptionKey().getKeyId() == keyId) {
+                future.onResult(new FetchEphemeralPrivateKeyRes(encryptionKey.getEncryptionKey().getPrivateKey()));
+                return;
+            }
+        }
+        future.onError(new RuntimeException("Unable to find ephemeral key"));
     }
 
     @Override
@@ -250,6 +270,12 @@ public class KeyManagerActor extends ModuleActor {
             return false;
         } else if (message instanceof FetchOwnKeyGroup) {
             fetchKeyGroup(future);
+            return false;
+        } else if (message instanceof FetchEphemeralPrivateKey) {
+            fetchEphemeralKey(((FetchEphemeralPrivateKey) message).getPublicKey(), future);
+            return false;
+        } else if (message instanceof FetchEphemeralPrivateKeyById) {
+            fetchEphemeralKey(((FetchEphemeralPrivateKeyById) message).getKeyId(), future);
             return false;
         }
         return super.onAsk(message, future);
@@ -291,6 +317,44 @@ public class KeyManagerActor extends ModuleActor {
 
         public int getKeyGroupId() {
             return keyGroupId;
+        }
+    }
+
+    public static class FetchEphemeralPrivateKey {
+
+        private byte[] publicKey;
+
+        public FetchEphemeralPrivateKey(byte[] publicKey) {
+            this.publicKey = publicKey;
+        }
+
+        public byte[] getPublicKey() {
+            return publicKey;
+        }
+    }
+
+    public static class FetchEphemeralPrivateKeyById {
+
+        private long keyId;
+
+        public FetchEphemeralPrivateKeyById(long keyId) {
+            this.keyId = keyId;
+        }
+
+        public long getKeyId() {
+            return keyId;
+        }
+    }
+
+    public static class FetchEphemeralPrivateKeyRes {
+        private byte[] privateKey;
+
+        public FetchEphemeralPrivateKeyRes(byte[] privateKey) {
+            this.privateKey = privateKey;
+        }
+
+        public byte[] getPrivateKey() {
+            return privateKey;
         }
     }
 }
