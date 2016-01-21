@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-struct TGAudioBuffer
+struct AAAudioBuffer
 {
     NSUInteger capacity;
     uint8_t *data;
@@ -8,9 +8,9 @@ struct TGAudioBuffer
     int64_t pcmOffset;
 };
 
-inline TGAudioBuffer *TGAudioBufferWithCapacity(NSUInteger capacity)
+inline AAAudioBuffer *AAAudioBufferWithCapacity(NSUInteger capacity)
 {
-    TGAudioBuffer *audioBuffer = (TGAudioBuffer *)malloc(sizeof(TGAudioBuffer));
+    AAAudioBuffer *audioBuffer = (AAAudioBuffer *)malloc(sizeof(AAAudioBuffer));
     audioBuffer->capacity = capacity;
     audioBuffer->data = (uint8_t *)malloc(capacity);
     audioBuffer->size = 0;
@@ -18,7 +18,7 @@ inline TGAudioBuffer *TGAudioBufferWithCapacity(NSUInteger capacity)
     return audioBuffer;
 }
 
-inline void TGAudioBufferDispose(TGAudioBuffer *audioBuffer)
+inline void AAAudioBufferDispose(AAAudioBuffer *audioBuffer)
 {
     if (audioBuffer != NULL)
     {
