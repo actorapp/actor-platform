@@ -125,6 +125,7 @@ private[bot] final class BotsHttpHandler(botExt: BotExtension)(implicit system: 
         ),
         pushText = None,
         isFat = false,
+        reduceKey = None,
         deliveryId = None
       ))
     } yield Right(())).value map {

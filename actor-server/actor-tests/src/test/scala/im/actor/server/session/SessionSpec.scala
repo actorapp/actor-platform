@@ -205,7 +205,7 @@ final class SessionSpec extends BaseSessionSpec {
       }
 
       val update = UpdateContactRegistered(user.id, true, 1L, 2L)
-      whenReady(UserExtension(system).broadcastUserUpdate(user.id, update, pushText = Some("text"), isFat = true, deliveryId = None))(identity)
+      whenReady(UserExtension(system).broadcastUserUpdate(user.id, update, pushText = Some("text"), isFat = true, reduceKey = None, deliveryId = None))(identity)
 
       val fat = expectFatSeqUpdate(authId, sessionId)
 
