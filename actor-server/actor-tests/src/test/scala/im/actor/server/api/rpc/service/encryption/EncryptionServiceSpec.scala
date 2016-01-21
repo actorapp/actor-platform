@@ -78,10 +78,14 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
       ApiEncryptionKeySignature(4L, "signalg", Array[Byte](5))
     )
 
-    val ephKeys = Vector(ApiEncryptionKey(5L, "ephkeyalg", Some(Array[Byte](8, 9, 10)), Some(Array[Byte](3))))
+    val ephKeys = Vector(
+      ApiEncryptionKey(5L, "ephkeyalg", Some(Array[Byte](8, 9, 10)), Some(Array[Byte](3))),
+      ApiEncryptionKey(6L, "ephkeyalg", Some(Array[Byte](8, 9, 10)), Some(Array[Byte](3)))
+    )
     val ephSignatures = Vector(
       ApiEncryptionKeySignature(5L, "ephsignalg", Array[Byte](40)),
-      ApiEncryptionKeySignature(6L, "ephsignalg", Array[Byte](40))
+      ApiEncryptionKeySignature(5L, "ephsignalg", Array[Byte](41)),
+      ApiEncryptionKeySignature(6L, "ephsignalg", Array[Byte](60))
     )
 
     val keyGroupId = {
@@ -111,9 +115,9 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
         keyGroupId
       )) { resp ⇒
         inside(resp) {
-          case Ok(ResponsePublicKeys(ks, sigs)) ⇒
-            ks.map(_.keyId) shouldBe ephKeys.map(_.keyId)
-            sigs.map(_.keyId) shouldBe ephSignatures.take(1).map(_.keyId)
+          case Ok(ResponsePublicKeys(Vector(k), sigs)) ⇒
+            ephKeys.map(_.keyId) should contain(k.keyId)
+            sigs.map(_.keyId).distinct shouldBe Vector(k.keyId)
         }
       }
     }
