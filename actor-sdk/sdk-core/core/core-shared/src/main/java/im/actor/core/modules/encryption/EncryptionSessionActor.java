@@ -1,4 +1,4 @@
-package im.actor.core.modules.internal.encryption;
+package im.actor.core.modules.encryption;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,7 @@ import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestLoadEphermalPublicKeys;
 import im.actor.core.api.rpc.ResponsePublicKeys;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.internal.encryption.entity.EncryptionKey;
+import im.actor.core.modules.encryption.entity.EncryptionKey;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
@@ -24,7 +24,6 @@ import im.actor.runtime.crypto.box.ActorBox;
 import im.actor.runtime.crypto.box.ActorBoxKey;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.crypto.ratchet.RatchetMasterSecret;
-import im.actor.runtime.crypto.ratchet.RatchetMessage;
 import im.actor.runtime.crypto.ratchet.RatchetMessageKey;
 import im.actor.runtime.crypto.ratchet.RatchetPrivateKey;
 import im.actor.runtime.crypto.ratchet.RatchetPublicKey;

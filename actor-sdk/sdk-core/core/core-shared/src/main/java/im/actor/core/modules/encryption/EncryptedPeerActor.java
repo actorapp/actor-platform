@@ -1,4 +1,4 @@
-package im.actor.core.modules.internal.encryption;
+package im.actor.core.modules.encryption;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,8 +9,8 @@ import im.actor.core.api.rpc.RequestLoadPublicKeyGroups;
 import im.actor.core.api.rpc.ResponsePublicKeyGroups;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.internal.encryption.entity.EncryptedBox;
-import im.actor.core.modules.internal.encryption.entity.EncryptedBoxKey;
+import im.actor.core.modules.encryption.entity.EncryptedBox;
+import im.actor.core.modules.encryption.entity.EncryptedBoxKey;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
@@ -78,10 +78,15 @@ public class EncryptedPeerActor extends ModuleActor {
                 }
             }), getPath() + "/k_" + g.getKeyGroupId()));
         }
+        isReady = true;
+        unstashAll();
     }
 
     private void doEncrypt(final byte[] data, final Future future) {
-        final byte[] encKey = Crypto.randomBytes(64);
+
+        Log.d(TAG, "doEncrypt");
+
+        final byte[] encKey = Crypto.randomBytes(128);
 
         final ArrayList<EncryptedBoxKey> encryptedKeys = new ArrayList<EncryptedBoxKey>();
         for (final Integer keyGroup : sessions.keySet()) {
@@ -104,6 +109,7 @@ public class EncryptedPeerActor extends ModuleActor {
     }
 
     private void doEncrypt(byte[] encKey, byte[] data, ArrayList<EncryptedBoxKey> encryptedKeys, Future future) {
+        Log.d(TAG, "doEncrypt2");
         byte[] encData;
         try {
             encData = ActorBox.closeBox(new byte[0], data, Crypto.randomBytes(32), new ActorBoxKey(encKey));
