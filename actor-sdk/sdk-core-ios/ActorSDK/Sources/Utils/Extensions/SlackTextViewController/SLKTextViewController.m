@@ -328,6 +328,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     return _textInputbar;
 }
 
+- (void) rebindRightButton {
+    [_textInputbar.rightButton addTarget:self action:@selector(didPressRightButton:) forControlEvents:UIControlEventTouchUpInside];
+}
+
 - (UIView <SLKTypingIndicatorProtocol> *)typingIndicatorProxyView
 {
     if (!_typingIndicatorProxyView) {
@@ -368,6 +372,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (UIButton *)rightButton
 {
     return self.textInputbar.rightButton;
+}
+
+- (void)setRightButton:(UIButton *)rightButton {
+    self.textInputbar.rightButton = rightButton;
 }
 
 - (UIModalPresentationStyle)modalPresentationStyle

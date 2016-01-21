@@ -261,6 +261,7 @@
 		BE237C9D1C422FFA00060648 /* AAStickersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE237C9C1C422FFA00060648 /* AAStickersView.swift */; };
 		BE2621571C4656D700A817AB /* AAConvActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2621561C4656D700A817AB /* AAConvActionSheet.swift */; };
 		BE2621591C4656EE00A817AB /* AAThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2621581C4656EE00A817AB /* AAThumbnailView.swift */; };
+		BE281CC51C502B230042F6D4 /* AAVoiceRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE281CC41C502B230042F6D4 /* AAVoiceRecorderView.swift */; };
 		BEAC2B311C42D683007F7A2F /* libopus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15F89F001C211FDE00776ACD /* libopus.a */; };
 		BED5A1D71C4839590045FDB0 /* NYTPhotoViewerCloseButtonX.png in Resources */ = {isa = PBXBuildFile; fileRef = BED5A1D11C4839590045FDB0 /* NYTPhotoViewerCloseButtonX.png */; };
 		BED5A1D81C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BED5A1D21C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@2x.png */; };
@@ -559,6 +560,7 @@
 		BE237C9C1C422FFA00060648 /* AAStickersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAStickersView.swift; sourceTree = "<group>"; };
 		BE2621561C4656D700A817AB /* AAConvActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAConvActionSheet.swift; sourceTree = "<group>"; };
 		BE2621581C4656EE00A817AB /* AAThumbnailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailView.swift; sourceTree = "<group>"; };
+		BE281CC41C502B230042F6D4 /* AAVoiceRecorderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAVoiceRecorderView.swift; sourceTree = "<group>"; };
 		BED5A1D11C4839590045FDB0 /* NYTPhotoViewerCloseButtonX.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NYTPhotoViewerCloseButtonX.png; sourceTree = "<group>"; };
 		BED5A1D21C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NYTPhotoViewerCloseButtonX@2x.png"; sourceTree = "<group>"; };
 		BED5A1D31C4839590045FDB0 /* NYTPhotoViewerCloseButtonX@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NYTPhotoViewerCloseButtonX@3x.png"; sourceTree = "<group>"; };
@@ -1282,6 +1284,7 @@
 		15D35F6D1C20196700E3717A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				BE281CC31C502B070042F6D4 /* VoiceView */,
 				BE2621551C46569800A817AB /* AttachmentView */,
 				15D35F6E1C20196E00E3717A /* AARecordAudioController.swift */,
 				BE237C9C1C422FFA00060648 /* AAStickersView.swift */,
@@ -1344,6 +1347,14 @@
 				BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */,
 			);
 			name = AttachmentView;
+			sourceTree = "<group>";
+		};
+		BE281CC31C502B070042F6D4 /* VoiceView */ = {
+			isa = PBXGroup;
+			children = (
+				BE281CC41C502B230042F6D4 /* AAVoiceRecorderView.swift */,
+			);
+			name = VoiceView;
 			sourceTree = "<group>";
 		};
 		BED5A1CF1C4839200045FDB0 /* NYTPhotoViewer */ = {
@@ -1800,6 +1811,7 @@
 				066A526D1BC50E8B000E606E /* AAAuthCountryCell.swift in Sources */,
 				152AA8AF1C2989270030DEEE /* SLKTextViewController.m in Sources */,
 				066A51911BC4C383000E606E /* CocoaHttpRuntime.swift in Sources */,
+				BE281CC51C502B230042F6D4 /* AAVoiceRecorderView.swift in Sources */,
 				066A53211BC533F5000E606E /* BubbleLayouts.swift in Sources */,
 				066A51821BC4C373000E606E /* FMDatabaseQueue.m in Sources */,
 				066A525A1BC4EF61000E606E /* Navigations.swift in Sources */,
