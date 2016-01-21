@@ -18,11 +18,11 @@ final class V20151108011300__FillUserSequenceSpec extends BaseAppSuite with Impl
   it should "properly migrate updates from authId with max sequence" in maxSeq
   it should "migrate new updates on second run" in secondRun
 
-  implicit val getSeqUpdate = GetResult[SeqUpdate](r ⇒ SeqUpdate(
+  implicit val getSeqUpdate = GetResult[New](r ⇒ New(
     userId = r.nextInt(),
     seq = r.nextInt(),
     timestamp = r.nextLong(),
-    mapping = Some(UpdateMapping.parseFrom(r.nextBytes()))
+    mapping = UpdateMapping.parseFrom(r.nextBytes()).toByteArray
   ))
 
   def maxSeq() = {
@@ -74,18 +74,18 @@ final class V20151108011300__FillUserSequenceSpec extends BaseAppSuite with Impl
 
   private def checkValidSeq(userId: Int, oldestAuthId: Long): Unit = {
     Await.result(db.run(for {
-      seqs ← sql"""SELECT * FROM user_sequence WHERE user_id = $userId ORDER BY seq ASC""".as[SeqUpdate]
+      seqs ← sql"""SELECT * FROM user_sequence WHERE user_id = $userId ORDER BY seq ASC""".as[New]
       obsSeq ← sql"""SELECT seq FROM seq_updates_ngen WHERE auth_id = $oldestAuthId ORDER BY timestamp DESC LIMIT 1"""
         .as[Int].headOption.map(_.getOrElse(0))
     } yield {
-      assert(seqs.size.toInt == obsSeq, "wrong sequence size")
+      assert(seqs.size.toInt == obsSeq.toInt, "wrong sequence size")
 
       seqs.zipWithIndex foreach {
-        case (SeqUpdate(`userId`, seq, timestamp, Some(mappingBytes)), index) ⇒
+        case (New(`userId`, seq, timestamp, mappingBytes), index) ⇒
           assert(index + 1 == seq, "seq is broken")
           val seqUpd =
             UpdateMapping
-              .parseFrom(mappingBytes.toByteArray)
+              .parseFrom(mappingBytes)
               .getDefault
 
           assert(seqUpd.header == UpdateContactsAdded.header, "wrong header")

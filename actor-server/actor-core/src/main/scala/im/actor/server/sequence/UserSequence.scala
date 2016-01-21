@@ -4,6 +4,7 @@ import akka.actor._
 import akka.pattern.pipe
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.google.protobuf.ByteString
+import com.google.protobuf.wrappers.StringValue
 import im.actor.server.db.DbExtension
 import im.actor.server.model.{ SeqUpdate, UpdateMapping }
 import im.actor.server.persist.sequence.UserSequenceRepo
@@ -74,9 +75,9 @@ private[sequence] final class UserSequence(
 
   def initialized: Receive = {
     case cmd: VendorPushCommand ⇒ vendorPush forward cmd
-    case DeliverUpdate(mappingOpt, pushRules, deliveryId) ⇒
+    case DeliverUpdate(mappingOpt, pushRules, reduceKey, deliveryId) ⇒
       mappingOpt match {
-        case Some(mapping) ⇒ deliver(mapping, pushRules, deliveryId)
+        case Some(mapping) ⇒ deliver(mapping, pushRules, reduceKey, deliveryId)
         case None ⇒
           log.error("Empty mapping")
       }
@@ -89,7 +90,7 @@ private[sequence] final class UserSequence(
       seq ← UserSequenceRepo.fetchSeq(userId) map (_ getOrElse 0)
     } yield Initialized(seq)) pipeTo self
 
-  private def deliver(mapping: UpdateMapping, pushRules: Option[PushRules], deliveryId: String): Unit = {
+  private def deliver(mapping: UpdateMapping, pushRules: Option[PushRules], reduceKey: Option[StringValue], deliveryId: String): Unit = {
     cached(deliveryId) {
       val seq = nextSeq()
 
@@ -97,6 +98,7 @@ private[sequence] final class UserSequence(
         userId,
         seq,
         System.currentTimeMillis(),
+        reduceKey,
         Some(mapping)
       )
 

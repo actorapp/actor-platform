@@ -17,7 +17,7 @@ object Dependencies {
     val slickPg = "0.10.2"
     val scalatest = "2.2.4"
     val shardakka = "0.1.20"
-    val scalapbSer = "0.1.6"
+    val scalapbSer = "0.1.9"
   }
 
   object Compile {
