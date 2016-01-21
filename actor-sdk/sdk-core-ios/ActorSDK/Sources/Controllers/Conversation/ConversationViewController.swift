@@ -769,18 +769,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         self.voiceRecorderView.trackTouchPoint = currentLocation
         
-        if ((self.voiceRecorderView.firstTouchPoint.x - self.voiceRecorderView.trackTouchPoint.x) > 130) {
+        if ((self.voiceRecorderView.firstTouchPoint.x - self.voiceRecorderView.trackTouchPoint.x) > 120) {
             //cancel
-            
-            
-            let leftButtonFrame = self.leftButton.frame
-            leftButton.frame.origin.x = -100
-            
-            let textViewFrame = self.textView.frame
-            textView.frame.origin.x = textView.frame.origin.x + 500
-            
-            let stickerViewFrame = self.stickersButton.frame
-            stickersButton.frame.origin.x = self.stickersButton.frame.origin.x + 500
             
             self.voiceRecorderView.hidden = true
             self.stickersButton.hidden = false
@@ -788,22 +778,40 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             self.voiceRecorderView.recordingStoped()
             button.cancelTrackingWithEvent(event)
             
-            
-            UIView.animateWithDuration(0.3, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
-                
-                self.leftButton.frame = leftButtonFrame
-                self.textView.frame = textViewFrame
-                self.stickersButton.frame = stickerViewFrame
-
-                }) { (complite) -> Void in
-
-            }
+            closeRecorderAnimation()
             
         }
         
     }
     
+    func closeRecorderAnimation() {
+        
+        let leftButtonFrame = self.leftButton.frame
+        leftButton.frame.origin.x = -100
+        
+        let textViewFrame = self.textView.frame
+        textView.frame.origin.x = textView.frame.origin.x + 500
+        
+        let stickerViewFrame = self.stickersButton.frame
+        stickersButton.frame.origin.x = self.stickersButton.frame.origin.x + 500
+        
+        UIView.animateWithDuration(0.45, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+            
+            self.leftButton.frame = leftButtonFrame
+            self.textView.frame = textViewFrame
+            self.stickersButton.frame = stickerViewFrame
+            
+            }, completion: { (complite) -> Void in
+                
+                // animation complite
+                
+        })
+        
+    }
+    
     func finishRecord(button:UIButton,event:UIEvent) {
+        
+        closeRecorderAnimation()
         self.voiceRecorderView.hidden = true
         self.stickersButton.hidden = false
         self.onAudioRecordingFinished()

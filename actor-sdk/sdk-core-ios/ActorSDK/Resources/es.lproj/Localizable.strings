@@ -122,6 +122,10 @@
 
 "JoinAlertMessage" = "¿Quieres formar parte de este grupo?";
 
+/*
+ * Group
+ */
+
 "GroupEditHeader" = "Estado";
 
 "GroupEditHint" = "Introducir estado de grupo";
@@ -302,6 +306,10 @@
 
 "FindNotFound" = "Lo sentimos, pero no somos capaces de encontrar la persona para esta consulta de búsqueda";
 
+/*
+ *  Placeholder
+ */
+
 "Placeholder_Empty_Title" = "Invita a tus amigos";
 
 "Placeholder_Empty_Message" = "Ninguno de tus contactos usar {appname}. Utiliza el botón de abajo para invitarlos.";
@@ -331,6 +339,10 @@
 "Placeholder_Group_Title" = "No es miembro";
 
 "Placeholder_Group_Message" = "Desafortunadamente, no eres miembro de este grupo.";
+
+/*
+ *  Auth
+ */
 
 "AuthPhoneTitle" = "Registrarse";
 
@@ -376,6 +388,10 @@
 
 "SendDocument" = "Documentos";
 
+/*
+ *  Navigation
+ */
+
 "NavigationEdit" = "Editar";
 
 "NavigationDone" = "Hecho";
@@ -387,6 +403,10 @@
 "NavigationSave" = "Guardar";
 
 "NavigationFind" = "Buscar";
+
+/*
+ *  Alerts
+ */
 
 "AlertCancel" = "Cancelar";
 
@@ -410,6 +430,10 @@
 
 "UnsupportedContent" = "Mensaje no es compatible con esta versión. Por favor, espera actualización de la aplicación para ver el mensaje.";
 
+/*
+ * Actions
+ */
+
 "ActionCopyLink" = "Copiar enlace";
 
 "ActionRevokeLink" = "Revocar enlace";
@@ -417,6 +441,11 @@
 "ActionShareLink" = "Compartir enlace";
 
 "AlertLinkCopied" = "Enlace copiado al portapapeles.";
+
+
+/*
+ * Erros
+ */
 
 "ErrorPhoneIncorrect" = "Número de móvil introducido no es válido. Por favor, vuelve a intentarlo.";
 

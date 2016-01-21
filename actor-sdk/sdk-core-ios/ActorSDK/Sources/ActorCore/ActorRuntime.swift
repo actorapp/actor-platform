@@ -19,5 +19,6 @@ class AAActorRuntime {
         ARCocoaFileSystemProxyProvider.setFileSystemRuntime(CocoaFileSystemRuntime())
         ARCocoaNetworkProxyProvider.setNetworkRuntime(CocoaNetworkRuntime())
         ARCocoaAssetsProxyProvider.setAssetsRuntimeWithARAssetsRuntime(CocoaAssetsRuntime())
+        
     }
 }
