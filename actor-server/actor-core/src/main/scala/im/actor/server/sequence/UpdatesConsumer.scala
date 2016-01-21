@@ -138,7 +138,7 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
             log.error(e, "Failed to unsubscribe from group presences")
         }
       }
-    case UserSequenceEvents.NewUpdate(Some(seqUpd), pushRulesOpt, state) ⇒
+    case UserSequenceEvents.NewUpdate(Some(seqUpd), pushRulesOpt, reduceKey, state) ⇒
       val pushRules = pushRulesOpt.getOrElse(PushRules())
 
       if (!pushRules.excludeAuthSids.contains(authSid)) {
@@ -163,7 +163,7 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
             log.error("Improper seq update box")
         }
 
-        boxFuture foreach (sendUpdateBox(_, None))
+        boxFuture foreach (sendUpdateBox(_, reduceKey map (_.value)))
 
         boxFuture onFailure {
           case e: Throwable ⇒ log.error(e, "Failed to push update")
