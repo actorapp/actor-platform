@@ -8,9 +8,11 @@ import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestLoadEphermalPublicKeys;
 import im.actor.core.api.rpc.ResponsePublicKeys;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.entity.EncryptedBoxKey;
 import im.actor.core.modules.encryption.entity.EncryptionKey;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
+import im.actor.core.util.Hex;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.runtime.Crypto;
@@ -101,7 +103,7 @@ public class EncryptionSessionActor extends ModuleActor {
                         return;
                     }
 
-                    ApiEncryptionKey encryptionKey = response.getPublicKey().get(0);
+                    ApiEncryptionKey encryptionKey = response.getPublicKey().get(RandomUtils.randomId(response.getPublicKey().size()));
                     theirEphermalKey0 = new EncryptionKey(encryptionKey.getKeyId(), encryptionKey.getKeyAlg(), encryptionKey.getKeyMaterial(), null);
                     onTheirReady0();
                 }
@@ -169,6 +171,7 @@ public class EncryptionSessionActor extends ModuleActor {
         ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rootChainKey, 0);
 
         byte[] header = ByteStrings.merge(
+                ByteStrings.intToBytes(encryptionKeyGroup.getKeyGroupId()),
                 ByteStrings.longToBytes(ownEphermalKey0.getKeyId()), /*Alice Initial Ephermal*/
                 ByteStrings.longToBytes(theirEphermalKey0.getKeyId()), /*Bob Initial Ephermal*/
                 currentOwnKey.getPublicKey(),
@@ -186,7 +189,44 @@ public class EncryptionSessionActor extends ModuleActor {
 
         byte[] pkg = ByteStrings.merge(header, encrypted);
 
+
+        int keyGroupId = ByteStrings.bytesToInt(pkg, 0);
+        long ownEphermalKey0Id = ByteStrings.bytesToLong(pkg, 4);
+        long theirEphermalKey0Id = ByteStrings.bytesToLong(pkg, 12);
+        byte[] ownEphermalKey = ByteStrings.substring(pkg, 20, 32);
+        byte[] theirEphermalKey = ByteStrings.substring(pkg, 52, 32);
+        int messageIndex = ByteStrings.bytesToInt(pkg, 84);
+
+        Log.d(TAG, "onEncrypt: " + Hex.toHex(pkg));
+        Log.d(TAG, "onEncrypt:key group id: " + encryptionKeyGroup.getKeyGroupId());
+        Log.d(TAG, "onEncrypt:ownEphermalKey0Id: " + ownEphermalKey0.getKeyId());
+        Log.d(TAG, "onEncrypt:theirEphermalKey0Id: " + theirEphermalKey0.getKeyId());
+        Log.d(TAG, "onEncrypt:messageIndex: " + outIndex);
+
+
+        Log.d(TAG, "onEncrypt:2key group id: " + keyGroupId);
+        Log.d(TAG, "onEncrypt:2ownEphermalKey0Id: " + ownEphermalKey0Id);
+        Log.d(TAG, "onEncrypt:2theirEphermalKey0Id: " + theirEphermalKey0Id);
+        Log.d(TAG, "onEncrypt:2messageIndex: " + messageIndex);
+
         future.onResult(new EncryptedPackageRes(pkg));
+    }
+
+    private void onDecrypt(byte[] data, Future future) {
+        int keyGroupId = ByteStrings.bytesToInt(data, 0);
+        long ownEphermalKey0Id = ByteStrings.bytesToLong(data, 4);
+        long theirEphermalKey0Id = ByteStrings.bytesToLong(data, 12);
+        byte[] ownEphermalKey = ByteStrings.substring(data, 20, 32);
+        byte[] theirEphermalKey = ByteStrings.substring(data, 52, 32);
+        int messageIndex = ByteStrings.bytesToInt(data, 84);
+
+        Log.d(TAG, "onDecrypt: " + Hex.toHex(data));
+        Log.d(TAG, "onDecrypt:key group id: " + keyGroupId + ", " + data.length);
+        Log.d(TAG, "onDecrypt:ownEphermalKey0Id: " + ownEphermalKey0Id);
+        Log.d(TAG, "onDecrypt:theirEphermalKey0Id: " + theirEphermalKey0Id);
+        Log.d(TAG, "onDecrypt:messageIndex: " + messageIndex);
+        
+        // future.onResult();
     }
 
     @Override
@@ -202,6 +242,10 @@ public class EncryptionSessionActor extends ModuleActor {
     public boolean onAsk(Object message, Future future) {
         if (message instanceof EncryptPackage) {
             onEncrypt(((EncryptPackage) message).getData(), future);
+            return false;
+        } else if (message instanceof DecryptPackage) {
+            DecryptPackage decryptPackage = (DecryptPackage) message;
+            onDecrypt(decryptPackage.getData(), future);
             return false;
         } else {
             return super.onAsk(message, future);
@@ -225,6 +269,19 @@ public class EncryptionSessionActor extends ModuleActor {
         private byte[] data;
 
         public EncryptedPackageRes(byte[] data) {
+            this.data = data;
+        }
+
+        public byte[] getData() {
+            return data;
+        }
+    }
+
+    public static class DecryptPackage {
+
+        private byte[] data;
+
+        public DecryptPackage(byte[] data) {
             this.data = data;
         }
 
