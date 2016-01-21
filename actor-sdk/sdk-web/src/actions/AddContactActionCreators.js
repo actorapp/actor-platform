@@ -7,10 +7,19 @@ import ActorClient from '../utils/ActorClient';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ContactActionCreators from './ContactActionCreators';
 import DialogActionCreators from './DialogActionCreators';
+import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 export default {
-  open: () => dispatch(ActionTypes.CONTACT_ADD_MODAL_SHOW),
-  close: () => dispatch(ActionTypes.CONTACT_ADD_MODAL_HIDE),
+  open() {
+    dispatch(ActionTypes.CONTACT_ADD_MODAL_SHOW);
+    ComposeActionCreators.toggleAutoFocus(false);
+  },
+
+
+  close() {
+    dispatch(ActionTypes.CONTACT_ADD_MODAL_HIDE);
+    ComposeActionCreators.toggleAutoFocus(true);
+  },
 
   findUsers(query) {
     dispatchAsync(ActorClient.findUsers(query), {

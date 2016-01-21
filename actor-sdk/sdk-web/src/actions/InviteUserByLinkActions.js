@@ -5,15 +5,16 @@
 
 import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
+import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 export default {
-  show: (group) => {
-    dispatch(ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW, {
-      group
-    });
+  show(group) {
+    dispatch(ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW, { group });
+    ComposeActionCreators.toggleAutoFocus(false);
   },
 
-  hide: () => {
+  hide() {
     dispatch(ActionTypes.INVITE_USER_BY_LINK_MODAL_HIDE);
+    ComposeActionCreators.toggleAutoFocus(true);
   }
 };
