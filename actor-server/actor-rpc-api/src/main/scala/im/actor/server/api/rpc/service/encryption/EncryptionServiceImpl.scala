@@ -7,6 +7,7 @@ import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.ApiUserOutPeer
 import im.actor.server.encryption.EncryptionExtension
 
+import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
 final class EncryptionServiceImpl(implicit system: ActorSystem) extends EncryptionService {
@@ -85,7 +86,16 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
       withUserOutPeerF(userPeer) {
         for {
           (keys, signs) ← encExt.fetchApiEphermalKeys(userPeer.userId, keyGroupId)
-        } yield Ok(ResponsePublicKeys(keys, signs))
+        } yield {
+          val (respKeys, respSigns) =
+            if (keys.nonEmpty) {
+              val key = keys(ThreadLocalRandom.current().nextInt(keys.length))
+              val respSigns = signs filter (_.keyId == key.keyId)
+              (Vector(key), respSigns)
+            } else (keys, signs)
+
+          Ok(ResponsePublicKeys(respKeys, respSigns))
+        }
       }
     }
 
