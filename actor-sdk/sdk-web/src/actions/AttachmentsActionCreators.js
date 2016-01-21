@@ -15,7 +15,7 @@ import AttachmentStore from '../stores/AttachmentStore';
 
 export default {
   show(attachments) {
-    dispatch(ActionTypes.ATTACHMENT_MODAL_SHOW, {attachments});
+    dispatch(ActionTypes.ATTACHMENT_MODAL_SHOW, { attachments });
     ComposeActionCreators.toggleAutoFocus(false);
   },
 
@@ -47,6 +47,7 @@ export default {
     }
 
     dispatch(ActionTypes.ATTACHMENT_SEND);
+    ComposeActionCreators.toggleAutoFocus(true);
   },
 
   sendAll: (attachments) => {
@@ -61,5 +62,6 @@ export default {
     });
 
     dispatch(ActionTypes.ATTACHMENT_SEND_ALL, { attachments });
+    ComposeActionCreators.toggleAutoFocus(true);
   }
 }
