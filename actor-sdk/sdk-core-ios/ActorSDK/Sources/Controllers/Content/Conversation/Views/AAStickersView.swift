@@ -124,7 +124,6 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
 
     private let collectionView  : UICollectionView!
     private weak var conv       : ConversationViewController!
-    private var visualEffectView : UIVisualEffectView!
     
     private var stickersPacks   = Array<AAStickersPack>()
     
@@ -149,13 +148,8 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         super.init(frame: frame)
         
         // bind convController
+        
         self.conv = convContrller
-        
-        self.visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .Light))
-        
-        visualEffectView.frame = frame
-        
-        self.addSubview(visualEffectView)
         
         // delegate/datasource
         
@@ -170,7 +164,7 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         
         
         // add collection view as subview
-        self.visualEffectView.addSubview(self.collectionView)
+        self.addSubview(self.collectionView)
         
         self.backgroundColor = UIColor.clearColor()
         
@@ -184,10 +178,9 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         super.layoutSubviews()
         
         self.collectionView.frame = self.frame
-        self.visualEffectView.frame = self.frame
         
     }
-    
+
     
     /// collectionView
     
@@ -254,8 +247,6 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
                         if (parsedStickerPack.stickers.count > 0) {
                             self.stickersPacks.append(parsedStickerPack)
                         }
-                        
-                        print("stickers list === \(sickers)")
                         
                     }
                     
