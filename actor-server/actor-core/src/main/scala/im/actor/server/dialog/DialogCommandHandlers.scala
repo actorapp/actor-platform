@@ -26,32 +26,30 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   import DialogEvents._
 
   protected def sendMessage(state: DialogState, sm: SendMessage): Unit = {
-    context become receiveStashing(replyTo ⇒ ({
+    becomeStashing(replyTo ⇒ ({
       case seq: SeqStateDate ⇒
         replyTo ! seq
-        if (state.isHidden) {
-          self.tell(Show(peer), ActorRef.noSender)
-        }
-        updateMessageDate(state, sm.date, checkOpen = true)
+        if (state.isHidden) { self.tell(Show(peer), ActorRef.noSender) }
+        updateMessageDate(state, sm.date)
         unstashAll()
       case fail: Status.Failure ⇒
         replyTo forward fail
         unstashAll()
-    }: Receive) orElse reactions(state))
+    }: Receive) orElse reactions(isHidden = state.isHidden))
 
-    (withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
-      for {
+    withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
+      (for {
         _ ← dialogExt.ackSendMessage(peer, sm)
         message = sm.message
         _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sm.date), sm.randomId, message.header, message.toByteArray))
         _ ← dialogExt.updateCounters(peer, userId)
         SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sm.date, message, sm.isFat)
-      } yield SeqStateDate(seq, state, sm.date)
-    } recover {
-      case e ⇒
-        log.error(e, "Failed to send message")
-        throw e
-    }) pipeTo self
+      } yield SeqStateDate(seq, state, sm.date)) recover {
+        case e ⇒
+          log.error(e, "Failed to send message")
+          throw e
+      }
+    } pipeTo self
   }
 
   protected def updateCountersChanged(): Unit = {
@@ -60,7 +58,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       .pipeTo(sender())
   }
 
-  protected def ackSendMessage(state: DialogState, sm: SendMessage): Unit = {
+  protected def ackSendMessage(isHidden: Boolean, sm: SendMessage): Unit = {
     if (peer.typ == PeerType.Private) {
       SocialManager.recordRelation(sm.origin.id, userId)
       SocialManager.recordRelation(userId, sm.origin.id)
@@ -71,8 +69,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       .map(_ ⇒ SendMessageAck())
       .pipeTo(sender()) onSuccess {
         case _ ⇒
-          if (state.isHidden) { self.tell(Show(peer), ActorRef.noSender) }
-          updateOpen(state)
+          if (isHidden) { self.tell(Show(peer), ActorRef.noSender) }
       }
   }
 
@@ -115,7 +112,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     val mustReceive = mustMakeReceive(state, mr)
     (if (mustReceive) {
       for {
-        _ ← if (state.isOpen) dialogExt.ackMessageReceived(peer, mr) else Future.successful(())
+        _ ← dialogExt.ackMessageReceived(peer, mr)
         _ ← db.run(markMessagesReceived(selfPeer, peer, new DateTime(mr.date)))
       } yield MessageReceivedAck()
     } else {
@@ -129,14 +126,14 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     }
   }
 
-  protected def ackMessageReceived(state: DialogState, mr: MessageReceived): Unit = {
+  protected def ackMessageReceived(mr: MessageReceived): Unit = {
     (deliveryExt.notifyReceive(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReceivedAck() }) pipeTo sender() andThen {
       case Failure(e) ⇒ log.error(e, "Failed to ack MessageReceived")
     }
   }
 
   protected def messageRead(state: DialogState, mr: MessageRead): Unit = {
-    val mustRead = mustMakeRead(state, mr) && state.isOpen
+    val mustRead = mustMakeRead(state, mr)
 
     val readerUpd = deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date)
     (if (mustRead) {
@@ -157,11 +154,10 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     }
   }
 
-  protected def ackMessageRead(state: DialogState, mr: MessageRead): Unit = {
+  protected def ackMessageRead(mr: MessageRead): Unit =
     (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
       case Failure(e) ⇒ log.error(e, "Failed to ack MessageRead")
     }
-  }
 
   protected def show(state: DialogState): Unit = {
     if (!state.isHidden)
@@ -260,7 +256,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     } yield SetReactionAck(seqstate, reactions)) pipeTo sender()
   }
 
-  protected def ackSetReaction(state: DialogState, sr: SetReaction): Unit = {
+  protected def ackSetReaction(sr: SetReaction): Unit = {
     (for {
       reactions ← db.run(dialogExt.fetchReactions(peer, userId, sr.randomId))
       _ ← seqUpdExt.deliverSingleUpdate(
@@ -285,7 +281,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     } yield RemoveReactionAck(seqstate, reactions)) pipeTo sender()
   }
 
-  protected def ackRemoveReaction(state: DialogState, rr: RemoveReaction): Unit = {
+  protected def ackRemoveReaction(rr: RemoveReaction): Unit = {
     (for {
       reactions ← db.run(dialogExt.fetchReactions(peer, userId, rr.randomId))
       _ ← seqUpdExt.deliverSingleUpdate(
@@ -304,18 +300,8 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       (mr.date <= mr.now) // and read date is not in future
 
   // if checkOpen is true, open dialog if it's not open already
-  protected def updateMessageDate(state: DialogState, date: Long, checkOpen: Boolean): Unit = {
-    val newState =
-      (if (checkOpen && !state.isOpen)
-        state.updated(Open)
-      else
-        state).updated(LastMessageDate(date))
-
-    context become initialized(newState)
-  }
-
-  protected def updateOpen(state: DialogState): Unit =
-    if (!state.isOpen) { context become initialized(state.updated(Open)) }
+  protected def updateMessageDate(state: DialogState, date: Long): Unit =
+    context become initialized(state.updated(LastMessageDate(date)))
 
   private def updateReceiveDate(state: DialogState, date: Long): Unit =
     context become initialized(state.updated(LastReceiveDate(date)))

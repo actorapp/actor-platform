@@ -1,62 +1,68 @@
 package im.actor.server.dialog
 
-import akka.testkit.TestProbe
-import im.actor.api.rpc.PeersImplicits
+import im.actor.api.rpc.messaging.{ ApiTextMessage, ResponseLoadHistory }
+import im.actor.api.rpc.{ Ok, AuthData, ClientData, PeersImplicits }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.acl.ACLUtils
-import im.actor.server.dialog.DialogCommands.{ SendMessageAck, SendMessage }
-import im.actor.server.model.Peer
-import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegion }
+import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
+import im.actor.server.sequence.SeqStateDate
+import im.actor.server.{ MessageParsing, BaseAppSuite, ImplicitAuthService, ImplicitSessionRegion }
 
-import scala.concurrent.duration._
+import scala.concurrent.Future
 
-final class DialogProcessorSpec extends BaseAppSuite with ImplicitAuthService with ImplicitSessionRegion with PeersImplicits {
+final class DialogProcessorSpec extends BaseAppSuite
+  with ImplicitAuthService
+  with ImplicitSessionRegion
+  with PeersImplicits
+  with MessageParsing {
 
   behavior of "Dialog Processor"
 
-  it should "not allow deadlocks with high frequent messages" in e1()
+  it should "not allow time out when there are highly frequent messages" in e1()
+
+  private val dialogExt = DialogExtension(system)
+
+  private val messService = MessagingServiceImpl()
 
   def e1() = {
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
 
-    val alicePeer = Peer.privat(alice.id)
-    val bobPeer = Peer.privat(bob.id)
+    val alicePeer = ApiPeer(ApiPeerType.Private, alice.id)
+    val bobPeer = ApiPeer(ApiPeerType.Private, bob.id)
 
-    val aliceDialog = system.actorOf(DialogProcessor.props(alice.id, bobPeer, Seq.empty), s"Private_dialog_with_bob")
-    val bobDialog = system.actorOf(DialogProcessor.props(bob.id, alicePeer, Seq.empty), s"Private_dialog_with_alice")
+    def sendMessageToBob(text: String): Future[SeqStateDate] =
+      dialogExt.sendMessage(bobPeer, alice.id, aliceAuthSid, ACLUtils.randomLong(), textMessage(text))
 
-    val probe = TestProbe()
+    def sendMessageToAlice(text: String): Future[SeqStateDate] =
+      dialogExt.sendMessage(alicePeer, bob.id, bobAuthSid, ACLUtils.randomLong(), textMessage(text))
 
-    def sendMessageToAlice(text: String) =
-      aliceDialog.tell(SendMessage(bobPeer, alicePeer, bobAuthSid, System.currentTimeMillis, ACLUtils.randomLong(), textMessage(text)), probe.ref)
+    val toAlice = for (i ← 1 to 50) yield sendMessageToAlice(s"Hello $i")
+    val toBob = for (i ← 1 to 50) yield sendMessageToBob(s"Hello you back $i")
 
-    def sendMessageToBob(text: String) =
-      bobDialog.tell(SendMessage(alicePeer, bobPeer, aliceAuthSid, System.currentTimeMillis, ACLUtils.randomLong(), textMessage(text)), probe.ref)
+    toAlice foreach { whenReady(_)(identity) }
+    toBob foreach { whenReady(_)(identity) }
 
-    // 3 messages to alice
-    for (i ← 1 to 3) { sendMessageToAlice(s"Hello $i") }
-    // 1 message to bob
-    sendMessageToBob("Hello you back")
+    {
+      implicit val clientData = ClientData(bobAuthId, 2, Some(AuthData(bob.id, bobAuthSid)))
+      val aliceOutPeer = whenReady(ACLUtils.getOutPeer(alicePeer, bobAuthId))(identity)
+      whenReady(messService.handleLoadHistory(aliceOutPeer, 0L, Int.MaxValue)) { resp ⇒
+        inside(resp) {
+          case Ok(ResponseLoadHistory(messages, _)) ⇒
+            val (hello, hello2) = messages map { mess ⇒
+              val parsed = parseMessage(mess.message.toByteArray)
+              parsed.isRight shouldEqual true
+              val message = parsed.right.toOption.get
+              message match {
+                case ApiTextMessage(text, _, _) ⇒ text
+                case _                          ⇒ fail()
+              }
+            } partition (mess ⇒ mess startsWith "Hello you back")
+            hello should have length 50
+            hello2 should have length 50
+        }
+      }
+    }
 
-    // 4 messages to alice
-    for (i ← 1 to 4) { sendMessageToAlice(s"How are you $i") }
-    // 2 messages to bob
-    sendMessageToBob("Well, I am fine 1")
-    sendMessageToBob("Well, I am fine 2")
-
-    // 4 messages to alice
-    for (i ← 1 to 4) { sendMessageToAlice(s"Mee too $i") }
-
-    // 1 message to bob
-    sendMessageToBob("Cool")
-
-    // 2 messages to alice
-    for (i ← 1 to 2) { sendMessageToAlice(s"Well bye $i") }
-
-    // 3 + 1 + 4 + 2 + 4 + 1 + 2 = 17 messages
-    val expectThese = Array.fill(17)(classOf[SendMessageAck])
-
-    probe.expectMsgAllConformingOf(20.seconds, expectThese: _*)
   }
-
 }
