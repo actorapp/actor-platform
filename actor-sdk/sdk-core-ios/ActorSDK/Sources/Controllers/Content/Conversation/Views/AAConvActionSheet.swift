@@ -1,9 +1,5 @@
 //
-//  AAConvActionSheet.swift
-//  ActorSDK
-//
-//  Created by kioshimafx on 1/13/16.
-//  Copyright © 2016 Steve Kite. All rights reserved.
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit

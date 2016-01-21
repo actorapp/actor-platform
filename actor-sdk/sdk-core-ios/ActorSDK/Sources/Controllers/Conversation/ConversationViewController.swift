@@ -10,7 +10,7 @@ import AddressBookUI
 import SVProgressHUD
 
 class ConversationViewController: AAConversationContentController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AALocationPickerControllerDelegate,
-    ABPeoplePickerNavigationControllerDelegate {
+    ABPeoplePickerNavigationControllerDelegate,AAAudioRecorderDelegate {
     
     // Data binder
     private let binder = AABinder()
@@ -33,6 +33,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     private let backgroundView = UIImageView()
     private var audioButton: UIButton = UIButton()
     private var actionSheet: AAConvActionSheet!
+    private var voiceRecorderView : AAVoiceRecorderView!
+    private var voiceButton : UIButton!
     
     // Stickers
     
@@ -40,7 +42,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     private var stickersButton : UIButton!
     private var stickersOpen = false
     
-    private let audioRecorder: AAAudioRecorder! = AAAudioRecorder()
+    var audioRecorder: AAAudioRecorder!
+    
+    // MARK: - Init
     
     override init(peer: ACPeer) {
         
@@ -84,31 +88,20 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.textView.placeholder = AALocalized("ChatPlaceholder")
         
         
-        // right button
         self.rightButton.tintColor = appStyle.chatSendColor
         self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
         self.rightButton.setTitle("", forState: UIControlState.Normal)
         self.rightButton.enabled = true
         self.rightButton.layoutIfNeeded()
         
-        //
+        self.rightButton.addTarget(self, action: "beginRecord:event:", forControlEvents: UIControlEvents.TouchDown)
+        self.rightButton.addTarget(self, action: "mayCancelRecord:event:", forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
+        self.rightButton.addTarget(self, action: "finishRecord:event:", forControlEvents: UIControlEvents.TouchUpInside.union(UIControlEvents.TouchCancel).union(UIControlEvents.TouchUpOutside))
         
-        self.audioButton = UIButton(type: UIButtonType.Custom)
-        self.audioButton.frame = textView.frame
-        self.audioButton.backgroundColor = appStyle.chatAttachColor
-        self.audioButton.setTitle(AALocalized("ChatHoldToTalk"), forState:UIControlState.Normal)
-        self.audioButton.setTitle(AALocalized("ChatReleaseToSend"), forState:UIControlState.Highlighted)
-        self.audioButton.setTitleColor(UIColor.whiteColor(),forState: .Normal)
-        self.audioButton.setTitleColor(UIColor.greenColor(),forState: .Highlighted)
-        self.audioButton.layer.cornerRadius = 5
-        self.textInputbar.addSubview(self.audioButton)
-        self.audioButton.hidden = true
-        
-        self.audioButton.addTarget(self, action: "onAudioRecordingStarted:", forControlEvents: UIControlEvents.TouchDown)
-        self.audioButton.addTarget(self, action: "onAudioRecordingFinished:", forControlEvents: UIControlEvents.TouchUpInside)
-        self.audioButton.addTarget(self, action: "onAudioRecordingCancelled:", forControlEvents: UIControlEvents.TouchUpOutside)
-        self.audioButton.addTarget(self, action: "onAudioRecordingCancelled:", forControlEvents: UIControlEvents.TouchDragOutside)
-        self.audioButton.addTarget(self, action: "onAudioRecordingCancelled:", forControlEvents: UIControlEvents.TouchDragExit)
+        // voice recorder delegate
+        self.audioRecorder = AAAudioRecorder()
+        self.audioRecorder.delegate = self
+
         
         //add stickers button
         self.stickersButton = UIButton(type: UIButtonType.System)
@@ -170,6 +163,11 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.voiceRecorderView = AAVoiceRecorderView(frame: CGRectMake(0,0,self.view.frame.size.width-30,44))
+        self.voiceRecorderView.hidden = true
+        self.voiceRecorderView.binedController = self
+        self.textInputbar.addSubview(self.voiceRecorderView)
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
         
@@ -292,7 +290,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.audioButton.frame = textView.frame
+        //self.audioButton.frame = textView.frame
         
         if navigationController!.viewControllers.count > 2 {
             let firstController = navigationController!.viewControllers[0]
@@ -386,7 +384,15 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         //change button
         
+        
         if !text.isEmpty {
+            
+            self.rightButton.removeTarget(self, action: "beginRecord:event:", forControlEvents: UIControlEvents.TouchDown)
+            self.rightButton.removeTarget(self, action: "mayCancelRecord:event:", forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
+            self.rightButton.removeTarget(self, action: "finishRecord:event:", forControlEvents: UIControlEvents.TouchUpInside.union(UIControlEvents.TouchCancel).union(UIControlEvents.TouchUpOutside))
+            
+            self.rebindRightButton()
+            
             self.stickersButton.hidden = true
             
             self.rightButton.setTitle(AALocalized("ChatSend"), forState: UIControlState.Normal)
@@ -399,6 +405,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             }
             
         } else {
+            
+            self.rightButton.addTarget(self, action: "beginRecord:event:", forControlEvents: UIControlEvents.TouchDown)
+            self.rightButton.addTarget(self, action: "mayCancelRecord:event:", forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
+            self.rightButton.addTarget(self, action: "finishRecord:event:", forControlEvents: UIControlEvents.TouchUpInside.union(UIControlEvents.TouchCancel).union(UIControlEvents.TouchUpOutside))
             
             self.stickersButton.hidden = false
             if(self.micOn == false){
@@ -426,48 +436,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             Actor.sendMessageWithMentionsDetect(peer, withText: textView.text)
             super.didPressRightButton(sender)
             
-        } else {
-
-            if(self.audioButton.hidden){
-                self.textView.resignFirstResponder()
-                
-                self.micOn = true
-                
-                self.rightButton.tintColor = appStyle.chatAttachColor
-                self.rightButton.setImage(UIImage.bundled("keyboard_button"), forState: UIControlState.Normal)
-                self.rightButton.setTitle("", forState: UIControlState.Normal)
-                self.rightButton.enabled = true
-                
-                self.textInputbar.layoutIfNeeded()
-                self.rightButton.layoutIfNeeded()
-                
-                self.audioButton.frame = textView.frame
-                self.audioButton.hidden = false;
-                
-                self.stickersButton.hidden = true;
-                
-                
-            } else {
-                
-                self.micOn = false
-                
-                self.audioButton.hidden = true;
-                
-                self.rightButton.tintColor = appStyle.chatAttachColor
-                self.rightButton.setImage(UIImage.bundled("aa_micbutton"), forState: UIControlState.Normal)
-                self.rightButton.setTitle("", forState: UIControlState.Normal)
-                self.rightButton.enabled = true
-                
-                self.textInputbar.layoutIfNeeded()
-                self.rightButton.layoutIfNeeded()
-                
-                self.stickersButton.hidden = false
-            }
-
         }
-        
-        
-        
+
     }
     
     override func didPressLeftButton(sender: AnyObject!) {
@@ -714,16 +684,17 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     
     // MARK: -
     // MARK: Audio recording callbacks
-    func onAudioRecordingStarted(sender: AnyObject) {
+    
+    func onAudioRecordingStarted() {
         print("onAudioRecordingStarted\n")
         stopAudioRecording()
-        SVProgressHUD.showWithStatus(AALocalized("ChatSlideUpToCancel"))
+        audioRecorder.delegate = self
         audioRecorder.start()
+        
     }
     
-    func onAudioRecordingFinished(sender: AnyObject) {
+    func onAudioRecordingFinished() {
         print("onAudioRecordingFinished\n")
-        SVProgressHUD.dismiss()
         audioRecorder.finish({ (path: String!, duration: NSTimeInterval) -> Void in
             
             if (nil == path) {
@@ -743,10 +714,14 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         })
     }
     
-    func onAudioRecordingCancelled(sender: AnyObject) {
+    func audioRecorderDidStartRecording() {
+        self.voiceRecorderView.recordingStarted()
+        
+    }
+    
+    func onAudioRecordingCancelled() {
         print("onAudioRecordingCancelled\n")
         stopAudioRecording()
-        SVProgressHUD.dismiss()
     }
     
     func stopAudioRecording()
@@ -756,6 +731,84 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             audioRecorder.delegate = nil
             audioRecorder.cancel()
         }
+    }
+    
+    func beginRecord(button:UIButton,event:UIEvent) {
+        
+        self.voiceRecorderView.startAnimation()
+        
+        self.voiceRecorderView.hidden = false
+        self.stickersButton.hidden = true
+        
+        let touches : Set<UITouch> = event.touchesForView(button)!
+        let touch = touches.first!
+        let location = touch.locationInView(button)
+        
+        self.voiceRecorderView.trackTouchPoint = location
+        self.voiceRecorderView.firstTouchPoint = location
+        
+        
+        self.onAudioRecordingStarted()
+    }
+    
+    func mayCancelRecord(button:UIButton,event:UIEvent) {
+        
+        let touches : Set<UITouch> = event.touchesForView(button)!
+        let touch = touches.first!
+        let currentLocation = touch.locationInView(button)
+        
+        if (currentLocation.x < self.rightButton.frame.origin.x) {
+            
+            if (self.voiceRecorderView.trackTouchPoint.x > currentLocation.x) {
+                self.voiceRecorderView.updateLocation(currentLocation.x - self.voiceRecorderView.trackTouchPoint.x,slideToRight: false)
+            } else {
+                self.voiceRecorderView.updateLocation(currentLocation.x - self.voiceRecorderView.trackTouchPoint.x,slideToRight: true)
+            }
+
+        }
+        
+        self.voiceRecorderView.trackTouchPoint = currentLocation
+        
+        if ((self.voiceRecorderView.firstTouchPoint.x - self.voiceRecorderView.trackTouchPoint.x) > 130) {
+            //cancel
+            
+            
+            let leftButtonFrame = self.leftButton.frame
+            leftButton.frame.origin.x = -100
+            
+            let textViewFrame = self.textView.frame
+            textView.frame.origin.x = textView.frame.origin.x + 500
+            
+            let stickerViewFrame = self.stickersButton.frame
+            stickersButton.frame.origin.x = self.stickersButton.frame.origin.x + 500
+            
+            self.voiceRecorderView.hidden = true
+            self.stickersButton.hidden = false
+            self.stopAudioRecording()
+            self.voiceRecorderView.recordingStoped()
+            button.cancelTrackingWithEvent(event)
+            
+            
+            UIView.animateWithDuration(0.3, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+                
+                self.leftButton.frame = leftButtonFrame
+                self.textView.frame = textViewFrame
+                self.stickersButton.frame = stickerViewFrame
+
+                }) { (complite) -> Void in
+
+            }
+            
+        }
+        
+    }
+    
+    func finishRecord(button:UIButton,event:UIEvent) {
+        self.voiceRecorderView.hidden = true
+        self.stickersButton.hidden = false
+        self.onAudioRecordingFinished()
+        self.voiceRecorderView.recordingStoped()
+        
     }
     
     // MARK: - Stickers actions
@@ -774,11 +827,13 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         if self.stickersOpen == false {
             self.stickersView.loadStickers()
             
-            //self.textInputbar.textView.becomeFirstResponder()
             self.textInputbar.textView.inputView = self.stickersView
+            self.textInputbar.textView.inputView?.opaque = false
+            self.textInputbar.textView.inputView?.backgroundColor = UIColor.clearColor()
             self.textInputbar.textView.refreshFirstResponder()
             self.textInputbar.textView.refreshInputViews()
             self.textInputbar.textView.becomeFirstResponder()
+            
             
             self.stickersButton.setImage(UIImage.bundled("keyboard_button"), forState: UIControlState.Normal)
             
@@ -790,8 +845,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             
         } else {
             
-            //self.textInputbar.textView.resignFirstResponder()
             self.textInputbar.textView.inputView = nil
+            
             self.textInputbar.textView.refreshFirstResponder()
             self.textInputbar.textView.refreshInputViews()
             self.textInputbar.textView.becomeFirstResponder()
