@@ -5,10 +5,11 @@ import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.codecs.RequestCodec
-import im.actor.api.rpc.contacts.UpdateContactRegistered
+import im.actor.api.rpc.contacts.{ UpdateContactsAdded, UpdateContactRegistered }
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.sequence.RequestGetState
 import im.actor.api.rpc.weak.{ UpdateUserOffline, UpdateUserOnline }
+import im.actor.concurrent.FutureExt
 import im.actor.server.ActorSpecification
 import im.actor.server.mtproto.protocol._
 import im.actor.server.sequence.{ SeqUpdatesExtension, WeakUpdatesExtension }
@@ -33,7 +34,8 @@ final class SessionResendSpec extends BaseSessionSpec(
   it should "resend messages to new client" in Sessions().newClient
   it should "not resend messages if ack received within ack-timeout" in Sessions().noResendOnAck
   it should "resend updates if no ack received within ack-timeout" in Sessions().resendUpdates
-  it should "not resend messages when another came with the same reduceKey" in Sessions().reduceKey
+  it should "not resend messages when another came with the same reduceKey (weak)" in Sessions().reduceKeyWeak
+  it should "not resend messages when another came with the same reduceKey (seq)" in Sessions().reduceKeySeq
 
   case class Sessions() {
     val weakUpdatesExt = WeakUpdatesExtension(system)
@@ -164,14 +166,7 @@ final class SessionResendSpec extends BaseSessionSpec(
       expectNewSession(authId, sessionId, helloMessageId)
       expectMessageAck(helloMessageId)
 
-      val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState)).require
-
-      val getSeqMessageId = Random.nextLong()
-      sendMessageBox(authId, sessionId, sessionRegion.ref, getSeqMessageId, RpcRequestBox(encodedGetSeqRequest))
-      expectMessageAck(getSeqMessageId)
-      expectRpcResult(authId, sessionId) should matchPattern {
-        case RpcOk(ResponseSeq(_, _)) ⇒
-      }
+      subscribeToSeq(authId, sessionId, user.id)
 
       val update = UpdateContactRegistered(1, false, 1L, 2L)
       seqUpdExt.deliverSingleUpdate(user.id, update)
@@ -185,7 +180,7 @@ final class SessionResendSpec extends BaseSessionSpec(
       probe.expectNoMsg(6.seconds)
     }
 
-    def reduceKey() = {
+    def reduceKeyWeak() = {
       implicit val probe = TestProbe()
 
       val (_, authId, _, _) = createUser()
@@ -230,6 +225,75 @@ final class SessionResendSpec extends BaseSessionSpec(
       expectUserOffline(authId, sessionId, 2)
       expectUserOffline(authId, sessionId, 3)
     }
+
+    def reduceKeySeq() = {
+      implicit val probe = TestProbe()
+
+      val (user, authId, _, _) = createUser()
+      val sessionId = Random.nextLong()
+
+      val helloMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, helloMessageId, SessionHello)
+      expectNewSession(authId, sessionId, helloMessageId)
+      expectMessageAck(helloMessageId)
+
+      subscribeToSeq(authId, sessionId, user.id)
+
+      val upd1 = UpdateContactsAdded(Vector(1))
+      val upd2first = UpdateContactsAdded(Vector(2))
+      val upd2second = UpdateContactsAdded(Vector(2))
+      val upd3 = UpdateContactsAdded(Vector(3))
+      val upd4 = UpdateContactsAdded(Vector(4))
+
+      whenReady(for {
+        _ ← seqUpdExt.deliverSingleUpdate(user.id, upd1, reduceKey = Some("reduceKey 1 (uniq)"))
+        _ ← seqUpdExt.deliverSingleUpdate(user.id, upd2first, reduceKey = Some("reduceKey 2 (same)"))
+        _ ← seqUpdExt.deliverSingleUpdate(user.id, upd2second, reduceKey = Some("reduceKey 2 (same)"))
+        _ ← seqUpdExt.deliverSingleUpdate(user.id, upd3, reduceKey = Some("reduceKey 3 (uniq)"))
+        _ ← seqUpdExt.deliverSingleUpdate(user.id, upd4, reduceKey = Some("reduceKey 4 (uniq)"))
+      } yield ())(identity)
+
+      expectContactsAdded(authId, sessionId, 1)
+
+      expectContactsAdded(authId, sessionId, 2)
+      expectContactsAdded(authId, sessionId, 2)
+
+      expectContactsAdded(authId, sessionId, 3)
+      expectContactsAdded(authId, sessionId, 4)
+
+      // No ack
+      probe.expectNoMsg(4.seconds)
+
+      expectContactsAdded(authId, sessionId, 1)
+      expectContactsAdded(authId, sessionId, 2)
+      expectContactsAdded(authId, sessionId, 3)
+      expectContactsAdded(authId, sessionId, 4)
+
+      // Still no ack
+      probe.expectNoMsg(4.seconds)
+
+      expectContactsAdded(authId, sessionId, 1)
+      expectContactsAdded(authId, sessionId, 2)
+      expectContactsAdded(authId, sessionId, 3)
+      expectContactsAdded(authId, sessionId, 4)
+    }
+  }
+
+  private def subscribeToSeq(authId: Long, sessionId: Long, userId: Int)(implicit probe: TestProbe): Unit = {
+    val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState)).require
+
+    val getSeqMessageId = Random.nextLong()
+    sendMessageBox(authId, sessionId, sessionRegion.ref, getSeqMessageId, RpcRequestBox(encodedGetSeqRequest))
+    expectMessageAck(getSeqMessageId)
+    expectRpcResult(authId, sessionId) should matchPattern {
+      case RpcOk(ResponseSeq(_, _)) ⇒
+    }
+  }
+
+  private def expectContactsAdded(authId: Long, sessionId: Long, userId: Int)(implicit probe: TestProbe): Unit = {
+    val seq = expectSeqUpdate(authId, sessionId, sendAckAt = None)
+    seq.updateHeader shouldBe UpdateContactsAdded.header
+    UpdateContactsAdded.parseFrom(seq.update) shouldBe Right(UpdateContactsAdded(Vector(userId)))
   }
 
   private def expectUserOnline(authId: Long, sessionId: Long, userId: Int)(implicit probe: TestProbe): Unit = {
