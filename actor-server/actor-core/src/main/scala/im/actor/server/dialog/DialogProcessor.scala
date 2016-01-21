@@ -6,6 +6,7 @@ import akka.actor._
 import akka.pattern.pipe
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
+import im.actor.api.rpc.messaging.ApiTextMessage
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.concurrent.{ ActorFutures, ActorStashing }
 import im.actor.serialization.ActorSerializer
@@ -20,7 +21,6 @@ import im.actor.server.user.UserExtension
 import im.actor.util.cache.CacheHelpers._
 import org.joda.time.DateTime
 import slick.dbio.DBIO
-
 import slick.driver.PostgresDriver.api.Database
 
 import scala.concurrent.duration._
@@ -30,14 +30,28 @@ object DialogEvents {
 
   private[dialog] sealed trait DialogEvent
 
+  sealed trait InitState
+
+  private[dialog] object Initialized {
+    def fromDialog(dialog: DialogModel): Initialized =
+      Initialized(
+        dialog.lastMessageDate.getMillis,
+        dialog.ownerLastReceivedAt.getMillis,
+        dialog.ownerLastReadAt.getMillis,
+        dialog.shownAt.isEmpty,
+        dialog.isFavourite
+      )
+  }
+
   private[dialog] final case class Initialized(
     lastMessageDate: Long,
     lastReceiveDate: Long,
     lastReadDate:    Long,
     isHidden:        Boolean,
-    isFavourite:     Boolean,
-    isOpen:          Boolean
-  ) extends DialogEvent
+    isFavourite:     Boolean
+  ) extends DialogEvent with InitState
+
+  private[dialog] case object Uninitialized extends DialogEvent with InitState
 
   private[dialog] final case class LastMessageDate(date: Long) extends DialogEvent
 
@@ -51,10 +65,6 @@ object DialogEvents {
   private[dialog] case object Favourited extends DialogEvent
   private[dialog] case object Unfavourited extends DialogEvent
 
-  // Event  which means there was a message sent to all dialog participant
-  // Closed dialog means dialog with only ServiceMessage like ContactRegistered
-  private[dialog] case object Open extends DialogEvent
-
 }
 
 private[dialog] object DialogState {
@@ -63,9 +73,8 @@ private[dialog] object DialogState {
     lastReceiveDate: Long,
     lastReadDate:    Long,
     isHidden:        Boolean,
-    isFavourite:     Boolean,
-    isOpen:          Boolean
-  ) = DialogState(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isFavourite, isOpen)
+    isFavourite:     Boolean
+  ) = DialogState(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isFavourite)
 }
 
 private[dialog] final case class DialogState(
@@ -73,8 +82,7 @@ private[dialog] final case class DialogState(
   lastReceiveDate: Long,
   lastReadDate:    Long,
   isHidden:        Boolean,
-  isFavourite:     Boolean,
-  isOpen:          Boolean
+  isFavourite:     Boolean
 ) extends ProcessorState[DialogState] {
   import DialogEvents._
   override def updated(e: AnyRef, ts: Instant): DialogState = e match {
@@ -85,7 +93,6 @@ private[dialog] final case class DialogState(
     case Hidden ⇒ this.copy(isHidden = true)
     case Favourited ⇒ this.copy(isFavourite = true)
     case Unfavourited ⇒ this.copy(isFavourite = false)
-    case Open ⇒ this.copy(isOpen = true)
     case _ ⇒ this
   }
 }
@@ -118,9 +125,9 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   with DialogCommandHandlers
   with ActorFutures
   with ActorStashing {
-  import DialogProcessor._
   import DialogCommands._
   import DialogEvents._
+  import DialogProcessor._
 
   protected implicit val ec: ExecutionContext = context.dispatcher
   protected implicit val system: ActorSystem = context.system
@@ -139,46 +146,75 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   protected implicit val sendResponseCache: Cache[AuthSidRandomId, Future[SeqStateDate]] =
     createCache[AuthSidRandomId, Future[SeqStateDate]](MaxCacheSize)
 
-  init()
-
   override def receive: Receive = initializing
 
-  def initializing: Receive = receiveStashing(replyTo ⇒ {
-    case Initialized(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isFavourite, isOpen) ⇒
-      context become initialized(DialogState.init(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isFavourite, isOpen))
-      unstashAll()
-    case Status.Failure(e) ⇒
-      log.error(e, "Failed to init dialog")
-      self ! Kill
-  })
+  def initializing: Receive = {
+    case msg ⇒
+      stash()
+      becomeStashing(replyTo ⇒ ({
+        case Initialized(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isFavourite) ⇒
+          context become initialized(DialogState.init(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isFavourite))
+          unstashAll()
+        case Status.Failure(e) ⇒
+          log.error(e, "Failed to init dialog")
+          self ! Kill
+      }: Receive) orElse reactions(isHidden = false))
 
-  def initialized(state: DialogState): Receive = actions(state) orElse reactions(state)
+      (for {
+        state ← initialState
+        resultMessage ← state match {
+          case init: Initialized ⇒ Future.successful(init)
+          case Uninitialized ⇒
+            if (isWriteOperation(msg)) {
+              log.debug("Creating dialog for userId: {}, peer: {}", userId, peer)
+              val dialog = DialogModel.withLastMessageDate(userId, peer, new DateTime)
+              db.run(for {
+                exists ← peer.`type` match {
+                  case PeerType.Private ⇒ UserRepo.find(peer.id) map (_.isDefined)
+                  case PeerType.Group   ⇒ GroupRepo.find(peer.id) map (_.isDefined)
+                  case unknown          ⇒ DBIO.failed(new RuntimeException(s"Unknown peer type $unknown"))
+                }
+                _ ← if (exists) DialogRepo.create(dialog) else DBIO.failed(new RuntimeException(s"Entity ${peer} does not exist"))
+                _ ← DBIO.from(userExt.notifyDialogsChanged(userId))
+              } yield Initialized.fromDialog(dialog))
+            } else {
+              Future.successful(msg)
+            }
+        }
+      } yield resultMessage).to(self, sender())
+  }
 
-  // when receiving this messages, dialog reacts on other dialog's
-  // action(except for WriteMessage and WriteMessageSelf - they don't really belong here)
-  def reactions(state: DialogState): Receive = {
-    case sm: SendMessage if accepts(sm)                             ⇒ ackSendMessage(state, sm) //User's message been sent
-    case mrv: MessageReceived if accepts(mrv)                       ⇒ ackMessageReceived(state, mrv) //User's messages been received
-    case mrd: MessageRead if accepts(mrd)                           ⇒ ackMessageRead(state, mrd) //User's messages been read
-    case sr: SetReaction if accepts(sr)                             ⇒ ackSetReaction(state, sr)
-    case rr: RemoveReaction if accepts(rr)                          ⇒ ackRemoveReaction(state, rr)
-    case WriteMessage(_, _, date, randomId, message)                ⇒ writeMessage(date, randomId, message)
-    case WriteMessageSelf(_, senderUserId, date, randomId, message) ⇒ writeMessageSelf(senderUserId, date, randomId, message)
-    case uc: UpdateCounters                                         ⇒ updateCountersChanged()
+  private def isWriteOperation: PartialFunction[Any, Boolean] = {
+    case _: SendMessage | _: WriteMessage | _: WriteMessageSelf ⇒ true
+    case _ ⇒ false
+  }
+
+  def initialized(state: DialogState): Receive = actions(state) orElse reactions(isHidden = state.isHidden)
+
+  // when receiving this messages, dialog reacts on other dialog's action
+  def reactions(isHidden: Boolean): Receive = {
+    case sm: SendMessage if accepts(sm)       ⇒ ackSendMessage(isHidden, sm) //User's message been sent
+    case mrv: MessageReceived if accepts(mrv) ⇒ ackMessageReceived(mrv) //User's messages been received
+    case mrd: MessageRead if accepts(mrd)     ⇒ ackMessageRead(mrd) //User's messages been read
+    case sr: SetReaction if accepts(sr)       ⇒ ackSetReaction(sr)
+    case rr: RemoveReaction if accepts(rr)    ⇒ ackRemoveReaction(rr)
+    case uc: UpdateCounters                   ⇒ updateCountersChanged()
   }
 
   // when receiving this messages, dialog required to take action
   def actions(state: DialogState): Receive = {
-    case sm: SendMessage if invokes(sm)       ⇒ sendMessage(state, sm) //User sends message
+    case sm: SendMessage if invokes(sm) ⇒ sendMessage(state, sm) //User sends message
     case mrv: MessageReceived if invokes(mrv) ⇒ messageReceived(state, mrv) //User received messages
-    case mrd: MessageRead if invokes(mrd)     ⇒ messageRead(state, mrd) //User reads messages
-    case sr: SetReaction if invokes(sr)       ⇒ setReaction(state, sr)
-    case rr: RemoveReaction if invokes(rr)    ⇒ removeReaction(state, rr)
-    case Show(_)                              ⇒ show(state)
-    case Hide(_)                              ⇒ hide(state)
-    case Favourite(_)                         ⇒ favourite(state)
-    case Unfavourite(_)                       ⇒ unfavourite(state)
-    case Delete(_)                            ⇒ delete(state)
+    case mrd: MessageRead if invokes(mrd) ⇒ messageRead(state, mrd) //User reads messages
+    case sr: SetReaction if invokes(sr) ⇒ setReaction(state, sr)
+    case rr: RemoveReaction if invokes(rr) ⇒ removeReaction(state, rr)
+    case Show(_) ⇒ show(state)
+    case Hide(_) ⇒ hide(state)
+    case Favourite(_) ⇒ favourite(state)
+    case Unfavourite(_) ⇒ unfavourite(state)
+    case Delete(_) ⇒ delete(state)
+    case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
+    case WriteMessageSelf(_, senderUserId, date, randomId, message) ⇒ writeMessageSelf(senderUserId, date, randomId, message)
   }
 
   /**
@@ -205,38 +241,15 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
    * @param dc command
    * @return does dialog owner accepts this command
    */
-  def accepts(dc: DirectDialogCommand) = (dc.dest == selfPeer) || ((dc.dest == peer) && (dc.origin != selfPeer))
+  private def accepts(dc: DirectDialogCommand) = (dc.dest == selfPeer) || ((dc.dest == peer) && (dc.origin != selfPeer))
 
-  private def init(): Unit =
-    db.run(for {
-      optDialog ← DialogRepo.findDialog(userId, peer)
-      dialog ← optDialog match {
-        case Some(dialog) ⇒ DBIO.successful(dialog)
-        case None ⇒
-          log.debug("Creating dialog for userId: {}, peer: {}", userId, peer)
-          val dialog = DialogModel.withLastMessageDate(userId, peer, new DateTime)
-          for {
-            exists ← peer.`type` match {
-              case PeerType.Private ⇒ UserRepo.find(peer.id) map (_.isDefined)
-              case PeerType.Group   ⇒ GroupRepo.find(peer.id) map (_.isDefined)
-              case unknown          ⇒ DBIO.failed(new RuntimeException(s"Unknown peer type $unknown"))
-            }
-            _ ← if (exists) DialogRepo.create(dialog) else DBIO.failed(new RuntimeException(s"Entity ${peer} does not exist"))
-            _ ← DBIO.from(userExt.notifyDialogsChanged(userId))
-          } yield dialog
+  private def initialState: Future[InitState] =
+    for {
+      optDialog ← db.run(DialogRepo.findDialog(userId, peer))
+      initState ← optDialog match {
+        case Some(dialog) ⇒ Future.successful(Initialized.fromDialog(dialog))
+        case None         ⇒ Future.successful(Uninitialized)
       }
-    } yield Initialized(
-      dialog.lastMessageDate.getMillis,
-      dialog.ownerLastReceivedAt.getMillis,
-      dialog.ownerLastReadAt.getMillis,
-      dialog.shownAt.isEmpty,
-      dialog.isFavourite,
-      isOpen = isOpen(peer)
-    )) pipeTo self
+    } yield initState
 
-  private def isOpen(peer: Peer): Boolean =
-    peer.typ match {
-      case PeerType.Private ⇒ false
-      case _                ⇒ true
-    }
 }
