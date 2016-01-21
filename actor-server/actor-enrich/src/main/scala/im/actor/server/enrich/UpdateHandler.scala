@@ -34,11 +34,11 @@ class PrivateHandler(fromPeer: Peer, toPeer: Peer, randomId: Long)(implicit syst
     DBIO.from(for {
       fromUpdate ← UserExtension(system).broadcastUserUpdate(
         fromPeer.id,
-        UpdateMessageContentChanged(toPeer.asStruct, randomId, message), None, false, deliveryId = Some(s"msgcontent_$randomId")
+        UpdateMessageContentChanged(toPeer.asStruct, randomId, message), None, false, reduceKey = None, deliveryId = Some(s"msgcontent_$randomId")
       )
       toUpdate ← UserExtension(system).broadcastUserUpdate(
         toPeer.id,
-        UpdateMessageContentChanged(fromPeer.asStruct, randomId, message), None, false, deliveryId = Some(s"msgcontent_$randomId")
+        UpdateMessageContentChanged(fromPeer.asStruct, randomId, message), None, false, reduceKey = None, deliveryId = Some(s"msgcontent_$randomId")
       )
     } yield Seq(fromUpdate, toUpdate))
 

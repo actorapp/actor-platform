@@ -292,7 +292,7 @@ private[user] trait UserCommandHandlers {
   protected def notifyDialogsChanged(user: User): Unit = {
     (for {
       shortDialogs ← dialogExt.getGroupedDialogs(user.id)
-      seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, UpdateChatGroupsChanged(shortDialogs))
+      seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, UpdateChatGroupsChanged(shortDialogs), reduceKey = Some("chat_groups_changed"))
     } yield seqstate) pipeTo sender()
   }
 
@@ -354,8 +354,8 @@ private[user] trait UserCommandHandlers {
         val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
         for {
           _ ← userExt.addContact(contact.ownerUserId, user.id, localName, Some(phoneNumber), None)
-          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None)
-          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, deliveryId = None)
+          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, reduceKey = None, deliveryId = None)
+          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, reduceKey = None, deliveryId = None)
           _ ← dialogExt.writeMessageSelf(
             contact.ownerUserId,
             ApiPeer(ApiPeerType.Private, user.id),
@@ -386,8 +386,8 @@ private[user] trait UserCommandHandlers {
         val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
         for {
           _ ← userExt.addContact(contact.ownerUserId, user.id, localName, None, Some(email))
-          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(serviceMessage.text), isFat = true, deliveryId = None)
-          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, deliveryId = None)
+          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(serviceMessage.text), isFat = true, reduceKey = None, deliveryId = None)
+          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, reduceKey = None, deliveryId = None)
           _ ← dialogExt.writeMessageSelf(
             contact.ownerUserId,
             ApiPeer(ApiPeerType.Private, user.id),
