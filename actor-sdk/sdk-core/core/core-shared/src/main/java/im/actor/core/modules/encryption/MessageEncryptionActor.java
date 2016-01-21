@@ -48,6 +48,29 @@ public class MessageEncryptionActor extends ModuleActor {
         });
     }
 
+    public void onDecrypt(int uid, ApiEncryptedMessage message) {
+        Log.d(TAG, "onDecrypt:" + uid);
+        ArrayList<EncryptedBoxKey> encryptedBoxKeys = new ArrayList<EncryptedBoxKey>();
+        for (ApiEncyptedBoxKey key : message.getBox().getKeys()) {
+            if (key.getUsersId() == myUid()) {
+                encryptedBoxKeys.add(new EncryptedBoxKey(key.getUsersId(), key.getKeyGroupId(),
+                        key.getEncryptedKey()));
+            }
+        }
+        EncryptedBox encryptedBox = new EncryptedBox(encryptedBoxKeys.toArray(new EncryptedBoxKey[0]), message.getBox().getEncPackage());
+        ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.DecryptPackage(encryptedBox), new AskCallback() {
+            @Override
+            public void onResult(Object obj) {
+                Log.d(TAG, "onDecrypt:onResult");
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.d(TAG, "onDecrypt:onError");
+            }
+        });
+    }
+
     @Override
     public boolean onAsk(Object message, Future future) {
         if (message instanceof EncryptMessage) {
@@ -56,6 +79,16 @@ public class MessageEncryptionActor extends ModuleActor {
             return false;
         }
         return super.onAsk(message, future);
+    }
+
+    @Override
+    public void onReceive(Object message) {
+        if (message instanceof InMessage) {
+            InMessage inMessage = (InMessage) message;
+            onDecrypt(inMessage.senderUid, inMessage.encryptedMessage);
+        } else {
+            super.onReceive(message);
+        }
     }
 
     public static class InMessage {
@@ -98,6 +131,19 @@ public class MessageEncryptionActor extends ModuleActor {
         private ApiEncryptedMessage encryptedMessage;
 
         public EncryptedMessage(ApiEncryptedMessage encryptedMessage) {
+            this.encryptedMessage = encryptedMessage;
+        }
+
+        public ApiEncryptedMessage getEncryptedMessage() {
+            return encryptedMessage;
+        }
+    }
+
+    public static class DecryptMessage {
+
+        private ApiEncryptedMessage encryptedMessage;
+
+        public DecryptMessage(ApiEncryptedMessage encryptedMessage) {
             this.encryptedMessage = encryptedMessage;
         }
 

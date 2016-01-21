@@ -230,6 +230,10 @@ public class KeyManagerActor extends ModuleActor {
         future.onResult(new FetchOwnKeyResult(privateKeyStorage.getIdentityKey(), ephemeralEncryptionKey.getEncryptionKey()));
     }
 
+    private void fetchKeyGroup(Future future) {
+        future.onResult(new FetchOwnKeyGroupResult(privateKeyStorage.getKeyGroupId()));
+    }
+
     @Override
     public void onReceive(Object message) {
         if (message instanceof AskRequest && !isReady) {
@@ -243,6 +247,9 @@ public class KeyManagerActor extends ModuleActor {
     public boolean onAsk(Object message, Future future) {
         if (message instanceof FetchOwnKey) {
             fetchOwnKey(future);
+            return false;
+        } else if (message instanceof FetchOwnKeyGroup) {
+            fetchKeyGroup(future);
             return false;
         }
         return super.onAsk(message, future);
@@ -268,6 +275,22 @@ public class KeyManagerActor extends ModuleActor {
 
         public EncryptionKey getEphemeralKey() {
             return ephemeralKey;
+        }
+    }
+
+    public static class FetchOwnKeyGroup {
+
+    }
+
+    public static class FetchOwnKeyGroupResult {
+        private int keyGroupId;
+
+        public FetchOwnKeyGroupResult(int keyGroupId) {
+            this.keyGroupId = keyGroupId;
+        }
+
+        public int getKeyGroupId() {
+            return keyGroupId;
         }
     }
 }

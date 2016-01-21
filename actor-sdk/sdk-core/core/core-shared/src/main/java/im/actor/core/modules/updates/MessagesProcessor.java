@@ -27,6 +27,7 @@ import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.MessageEncryptionActor;
 import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.core.modules.internal.messages.ConversationHistoryActor;
 import im.actor.core.modules.internal.messages.CursorReceiverActor;
@@ -53,11 +54,13 @@ public class MessagesProcessor extends AbsModule {
         long intMessageSortDate = 0;
         Peer peer = convert(_peer);
 
-        ArrayList<Message> nMesages = new ArrayList<Message>();
+        ArrayList<Message> nMessages = new ArrayList<Message>();
         for (UpdateMessage u : messages) {
 
             if (u.getMessage() instanceof ApiEncryptedMessage) {
-                // TODO: Decrypt message
+                // TODO: Proper decrypt message
+                context().getEncryption().getMessageEncryptor().send(new MessageEncryptionActor.InMessage(peer,
+                        u.getDate(), u.getSenderUid(), u.getRid(), (ApiEncryptedMessage) u.getMessage()));
                 continue;
             }
 
@@ -72,7 +75,7 @@ public class MessagesProcessor extends AbsModule {
             boolean isOut = myUid() == u.getSenderUid();
 
             // Sending message to conversation
-            nMesages.add(new Message(u.getRid(), u.getDate(), u.getDate(), u.getSenderUid(),
+            nMessages.add(new Message(u.getRid(), u.getDate(), u.getDate(), u.getSenderUid(),
                     isOut ? MessageState.SENT : MessageState.UNKNOWN, msgContent,
                     new ArrayList<Reaction>()));
 
@@ -84,7 +87,7 @@ public class MessagesProcessor extends AbsModule {
             }
         }
 
-        conversationActor(peer).send(new ConversationActor.Messages(nMesages));
+        conversationActor(peer).send(new ConversationActor.Messages(nMessages));
 
         if (intMessageSortDate > 0) {
             plainReceiveActor().send(new CursorReceiverActor.MarkReceived(peer, intMessageSortDate));
@@ -95,7 +98,7 @@ public class MessagesProcessor extends AbsModule {
         }
 
         // OwnReadActor
-        for (Message m : nMesages) {
+        for (Message m : nMessages) {
             if (m.getSenderId() != myUid()) {
                 ownReadActor().send(new OwnReadActor.InMessage(peer, m));
             }
@@ -107,6 +110,13 @@ public class MessagesProcessor extends AbsModule {
                           ApiMessage content) {
 
         Peer peer = convert(_peer);
+
+        if (content instanceof ApiEncryptedMessage) {
+            // TODO: Proper decrypt message
+            context().getEncryption().getMessageEncryptor().send(new MessageEncryptionActor.InMessage(peer,
+                    date, senderUid, rid, (ApiEncryptedMessage) content));
+        }
+
         AbsContent msgContent;
         try {
             msgContent = AbsContent.fromMessage(content);
