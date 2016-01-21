@@ -120,7 +120,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       _ ← seqUpdatesExt.deliverSingleUpdate(
         userId = readerUserId,
         update = UpdateMessageReadByMe(peer.asStruct, date),
-        pushRules = PushRules(excludeAuthSids = Seq(readerAuthSid)),
+        pushRules = PushRules(),
         reduceKey = Some(s"read_by_me_${peer.toString}")
       )
     } yield ()
