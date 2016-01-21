@@ -5,15 +5,18 @@
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
+import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 const GroupListActionCreators = {
   open() {
     dispatch(ActionTypes.GROUP_LIST_SHOW);
     this.loadGroups();
+    ComposeActionCreators.toggleAutoFocus(false);
   },
 
   close() {
-    dispatch(ActionTypes.GROUP_LIST_HIDE)
+    dispatch(ActionTypes.GROUP_LIST_HIDE);
+    ComposeActionCreators.toggleAutoFocus(true);
   },
 
   search(query) {

@@ -6,13 +6,17 @@ import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 
+import ComposeActionCreators from '../actions/ComposeActionCreators';
+
 export default {
   open() {
-    dispatch(ActionTypes.CONTACT_LIST_SHOW)
+    dispatch(ActionTypes.CONTACT_LIST_SHOW);
+    ComposeActionCreators.toggleAutoFocus(false);
   },
 
   close() {
-    dispatch(ActionTypes.CONTACT_LIST_HIDE)
+    dispatch(ActionTypes.CONTACT_LIST_HIDE);
+    ComposeActionCreators.toggleAutoFocus(true);
   },
 
   setContacts(contacts) {

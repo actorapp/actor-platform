@@ -8,19 +8,35 @@ import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
 import MessageActionCreators from './MessageActionCreators';
+import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 import DialogStore from '../stores/DialogStore';
 import AttachmentStore from '../stores/AttachmentStore';
 
 export default {
-  show: (attachments) => dispatch(ActionTypes.ATTACHMENT_MODAL_SHOW, { attachments }),
-  hide: () => dispatch(ActionTypes.ATTACHMENT_MODAL_HIDE),
+  show(attachments) {
+    dispatch(ActionTypes.ATTACHMENT_MODAL_SHOW, {attachments});
+    ComposeActionCreators.toggleAutoFocus(false);
+  },
 
-  selectAttachment: (index) => dispatch(ActionTypes.ATTACHMENT_SELECT, { index }),
-  changeAttachment: (sendAsPicture) => dispatch(ActionTypes.ATTACHMENT_CHANGE, { sendAsPicture }),
-  deleteAttachment: () => dispatch(ActionTypes.ATTACHMENT_DELETE),
+  hide() {
+    dispatch(ActionTypes.ATTACHMENT_MODAL_HIDE);
+    ComposeActionCreators.toggleAutoFocus(true);
+  },
 
-  sendAttachment: () => {
+  selectAttachment(index) {
+    dispatch(ActionTypes.ATTACHMENT_SELECT, { index })
+  },
+
+  changeAttachment(sendAsPicture) {
+    dispatch(ActionTypes.ATTACHMENT_CHANGE, { sendAsPicture });
+  },
+
+  deleteAttachment() {
+    dispatch(ActionTypes.ATTACHMENT_DELETE);
+  },
+
+  sendAttachment() {
     const currentPeer = DialogStore.getCurrentPeer();
     const attachment = AttachmentStore.getAttachment();
 
@@ -43,6 +59,7 @@ export default {
         MessageActionCreators.sendFileMessage(currentPeer, attachment.file);
       }
     });
+
     dispatch(ActionTypes.ATTACHMENT_SEND_ALL, { attachments });
   }
 }
