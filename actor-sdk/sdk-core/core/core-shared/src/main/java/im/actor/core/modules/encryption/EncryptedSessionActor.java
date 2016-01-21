@@ -6,9 +6,9 @@ import im.actor.core.api.ApiEncryptionKey;
 import im.actor.core.api.ApiEncryptionKeyGroup;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestLoadEphermalPublicKeys;
+import im.actor.core.api.rpc.RequestLoadPublicKey;
 import im.actor.core.api.rpc.ResponsePublicKeys;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.entity.EncryptedBoxKey;
 import im.actor.core.modules.encryption.entity.EncryptionKey;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -31,7 +31,7 @@ import im.actor.runtime.crypto.ratchet.RatchetPrivateKey;
 import im.actor.runtime.crypto.ratchet.RatchetPublicKey;
 import im.actor.runtime.crypto.ratchet.RatchetRootChainKey;
 
-public class EncryptionSessionActor extends ModuleActor {
+public class EncryptedSessionActor extends ModuleActor {
 
     private final String TAG;
 
@@ -43,19 +43,18 @@ public class EncryptionSessionActor extends ModuleActor {
     private EncryptionKey ownEphermalKey0;
     private EncryptionKey theirEphermalKey0;
 
-    private ArrayList<EncryptionKey> prevOwnKeys = new ArrayList<EncryptionKey>();
-    private ArrayList<EncryptionKey> prevTheirKeys = new ArrayList<EncryptionKey>();
-
+    private EncryptionKey prevOwnKey;
     private EncryptionKey currentOwnKey;
     private EncryptionKey currentTheirKey;
 
     private byte[] rootChainKey;
 
     private int outIndex = 0;
+    private int inIndex = 0;
 
     private boolean isReady = false;
 
-    public EncryptionSessionActor(ModuleContext context, int uid, ApiEncryptionKeyGroup encryptionKeyGroup) {
+    public EncryptedSessionActor(ModuleContext context, int uid, ApiEncryptionKeyGroup encryptionKeyGroup) {
         super(context);
         this.TAG = "EncryptionSessionActor#" + uid + "_" + encryptionKeyGroup.getKeyGroupId();
         this.uid = uid;
@@ -212,21 +211,95 @@ public class EncryptionSessionActor extends ModuleActor {
         future.onResult(new EncryptedPackageRes(pkg));
     }
 
-    private void onDecrypt(byte[] data, Future future) {
-        int keyGroupId = ByteStrings.bytesToInt(data, 0);
-        long ownEphermalKey0Id = ByteStrings.bytesToLong(data, 4);
-        long theirEphermalKey0Id = ByteStrings.bytesToLong(data, 12);
-        byte[] ownEphermalKey = ByteStrings.substring(data, 20, 32);
-        byte[] theirEphermalKey = ByteStrings.substring(data, 52, 32);
-        int messageIndex = ByteStrings.bytesToInt(data, 84);
+    private void onDecrypt(final byte[] data, final Future future) {
+        final int keyGroupId = ByteStrings.bytesToInt(data, 0);
+        final long ownEphermalKey0Id = ByteStrings.bytesToLong(data, 4);
+        final long theirEphermalKey0Id = ByteStrings.bytesToLong(data, 12);
+        final byte[] ownEphermalKey = ByteStrings.substring(data, 20, 32);
+        final byte[] theirEphermalKey = ByteStrings.substring(data, 52, 32);
+        final int messageIndex = ByteStrings.bytesToInt(data, 84);
 
         Log.d(TAG, "onDecrypt: " + Hex.toHex(data));
         Log.d(TAG, "onDecrypt:key group id: " + keyGroupId + ", " + data.length);
         Log.d(TAG, "onDecrypt:ownEphermalKey0Id: " + ownEphermalKey0Id);
         Log.d(TAG, "onDecrypt:theirEphermalKey0Id: " + theirEphermalKey0Id);
         Log.d(TAG, "onDecrypt:messageIndex: " + messageIndex);
-        
+
+        ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchEphemeralPrivateKey(ownEphermalKey), new AskCallback() {
+            @Override
+            public void onResult(Object obj) {
+
+                final KeyManagerActor.FetchEphemeralPrivateKeyRes ownEphermalKey
+                        = (KeyManagerActor.FetchEphemeralPrivateKeyRes) obj;
+
+                ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchEphemeralPrivateKeyById(ownEphermalKey0Id),
+                        new AskCallback() {
+                            @Override
+                            public void onResult(Object obj) {
+                                final KeyManagerActor.FetchEphemeralPrivateKeyRes ownEphermalKey0
+                                        = (KeyManagerActor.FetchEphemeralPrivateKeyRes) obj;
+
+                                ArrayList<Long> keys = new ArrayList<Long>();
+                                keys.add(theirEphermalKey0Id);
+
+                                request(new RequestLoadPublicKey(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), keyGroupId, keys), new RpcCallback<ResponsePublicKeys>() {
+                                    @Override
+                                    public void onResult(ResponsePublicKeys response) {
+                                        onDecrypt(data, ownEphermalKey0.getPrivateKey(),
+                                                ownEphermalKey.getPrivateKey(),
+                                                theirEphermalKey,
+                                                response.getPublicKey().get(0).getKeyMaterial(),
+                                                messageIndex,
+                                                future);
+                                    }
+
+                                    @Override
+                                    public void onError(RpcException e) {
+                                        future.onError(e);
+                                    }
+                                });
+
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                future.onError(e);
+                            }
+                        });
+            }
+
+            @Override
+            public void onError(Exception e) {
+                future.onError(e);
+            }
+        });
+
         // future.onResult();
+    }
+
+    private void onDecrypt(byte[] data,
+                           byte[] ownEphemeralPrivateKey0,
+                           byte[] ownEphemeralPrivateKey,
+                           byte[] theirEphemeralKey0,
+                           byte[] theirEphemeralKey,
+                           int index,
+                           Future future) {
+
+        byte[] ms = RatchetMasterSecret.calculateMasterSecret(
+                new RatchetPrivateKey(ownIdentityKey.getPrivateKey()),
+                new RatchetPrivateKey(ownEphemeralPrivateKey0),
+                new RatchetPublicKey(encryptionKeyGroup.getIdentityKey().getKeyMaterial()),
+                new RatchetPublicKey(theirEphemeralKey0));
+
+        byte[] rc = RatchetRootChainKey.makeRootChainKey(
+                new RatchetPrivateKey(ownEphemeralPrivateKey),
+                new RatchetPublicKey(theirEphemeralKey),
+                ms);
+
+        ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rc, index);
+
+
+        future.onResult();
     }
 
     @Override
