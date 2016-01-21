@@ -5,14 +5,17 @@
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
+import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 export default {
   show() {
     dispatch(ActionTypes.MY_PROFILE_MODAL_SHOW);
+    ComposeActionCreators.toggleAutoFocus(false);
   },
 
   hide() {
     dispatch(ActionTypes.MY_PROFILE_MODAL_HIDE);
+    ComposeActionCreators.toggleAutoFocus(true);
   },
 
   onProfileChanged(profile) {

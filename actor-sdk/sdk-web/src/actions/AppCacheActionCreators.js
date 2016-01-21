@@ -1,21 +1,16 @@
-import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
 export default {
-  openModal: () => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.APP_UPDATE_MODAL_SHOW
-    });
+  openModal() {
+    dispatch(ActionTypes.APP_UPDATE_MODAL_SHOW);
   },
 
-  closeModal: () => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.APP_UPDATE_MODAL_HIDE
-    });
+  closeModal() {
+    dispatch(ActionTypes.APP_UPDATE_MODAL_HIDE);
   },
 
-  confirmUpdate: () => {
+  confirmUpdate() {
     window.location.reload();
   }
-
 };

@@ -14,48 +14,42 @@ const replaceColons = (text) => {
 };
 
 export default {
-  setMessageShown: (peer, message) => {
+  setMessageShown(peer, message) {
     ActorClient.onMessageShown(peer, message);
   },
 
-  sendTextMessage: (peer, text) => {
-    dispatch(ActionTypes.MESSAGE_SEND_TEXT, {
-      peer, text
-    });
+  sendTextMessage(peer, text) {
     ActorClient.sendTextMessage(peer, replaceColons(text));
+    dispatch(ActionTypes.MESSAGE_SEND_TEXT, { peer, text });
   },
 
-  sendFileMessage: (peer, file) => {
-    dispatch(ActionTypes.MESSAGE_SEND_FILE, {
-      peer, file
-    });
+  sendFileMessage(peer, file) {
     ActorClient.sendFileMessage(peer, file);
+    dispatch(ActionTypes.MESSAGE_SEND_FILE, { peer, file });
   },
 
-  sendPhotoMessage: (peer, photo) => {
-    dispatch(ActionTypes.MESSAGE_SEND_PHOTO, {
-      peer, photo
-    });
+  sendPhotoMessage(peer, photo) {
     ActorClient.sendPhotoMessage(peer, photo);
+    dispatch(ActionTypes.MESSAGE_SEND_PHOTO, { peer, photo });
   },
 
-  sendClipboardPhotoMessage: (peer, photo) => {
+  sendClipboardPhotoMessage(peer, photo) {
     ActorClient.sendClipboardPhotoMessage(peer, photo);
   },
 
-  deleteMessage: (peer, rid) => {
+  deleteMessage(peer, rid) {
     ActorClient.deleteMessage(peer, rid);
-    dispatch(ActionTypes.MESSAGE_DELETE, {
-      peer, rid
-    });
+    dispatch(ActionTypes.MESSAGE_DELETE, { peer, rid });
   },
 
-  addLike: (peer, rid) => {
+  addLike(peer, rid) {
     ActorClient.addLike(peer, rid);
+    dispatch(ActionTypes.MESSAGE_LIKE_ADD, { peer, rid });
   },
 
-  removeLike: (peer, rid) => {
+  removeLike(peer, rid) {
     ActorClient.removeLike(peer, rid);
+    dispatch(ActionTypes.MESSAGE_LIKE_REMOVE, { peer, rid });
   },
 
   setMessages(messages, overlay) {

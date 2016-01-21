@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { KeyCodes } from '../constants/ActorAppConstants'
+import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 class Confirm extends React.Component {
   static propTypes = {
@@ -23,11 +24,13 @@ class Confirm extends React.Component {
   }
 
   componentDidMount() {
+    ComposeActionCreators.toggleAutoFocus(false);
     React.findDOMNode(this.refs.confirm).focus();
     document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
+    ComposeActionCreators.toggleAutoFocus(true);
     document.removeEventListener('keydown', this.onKeyDown, false);
   }
 

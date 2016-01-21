@@ -59,6 +59,7 @@ class ComposeSection extends Component {
   }
 
   componentWillUnmount() {
+    this.setBlur();
     this.clearListeners();
   }
 
@@ -69,19 +70,23 @@ class ComposeSection extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { isAutoFocusEnabled } = this.state;
 
-    if (isAutoFocusEnabled == true && prevState.isAutoFocusEnabled !== true) {
-      this.setListeners();
-    } else if (isAutoFocusEnabled == false && prevState.isAutoFocusEnabled !== false) {
-      this.clearListeners();
+    if (isAutoFocusEnabled) {
+      if (prevState.isAutoFocusEnabled !== true) {
+        this.setListeners();
+      }
+      this.setFocus();
+    } else {
+      if (prevState.isAutoFocusEnabled !== false) {
+        this.clearListeners();
+      }
     }
-
-    this.setFocus();
   }
 
   setListeners() {
     window.addEventListener('focus', this.setFocus);
     document.addEventListener('keydown', this.handleKeyDown, false);
   }
+
   clearListeners() {
     window.removeEventListener('focus', this.setFocus);
     document.removeEventListener('keydown', this.handleKeyDown, false);
@@ -185,6 +190,10 @@ class ComposeSection extends Component {
 
   setFocus = () => {
     React.findDOMNode(this.refs.area).focus();
+  };
+
+  setBlur = () => {
+    React.findDOMNode(this.refs.area).blur();
   };
 
   handleDrop = (files) => {
