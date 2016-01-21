@@ -10,10 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.rpc.ResponseDoCall;
@@ -62,7 +60,6 @@ import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.json.JSONObject;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -1007,7 +1004,7 @@ public class Messenger {
     }
 
     public void answerCall(long callId, CallsModule.CallCallback callback) {
-        modules.getCallsModule().answerCall(callId, callback);
+        modules.getCallsModule().handleCall(callId, callback);
     }
 
     public void sendCallSignal(long callId, byte[] data) {
