@@ -81,7 +81,7 @@ class AAVoiceRecorderView: UIView {
         self.sliderArrow.image = UIImage.tinted("aa_recorderarrow", color: UIColor(red: 0.7287, green: 0.7252, blue: 0.7322, alpha: 1.0))
         self.sliderArrow.frame = CGRectMake(110,12,20,20)
         
-        self.recorderImageCircle.image = UIImage.bundled("aa_recordercircle")
+        self.recorderImageCircle.image = UIImage.tinted("aa_recordercircle", color: UIColor(red: 0.7287, green: 0.7252, blue: 0.7322, alpha: 1.0))
         self.recorderImageCircle.frame = CGRectMake(10, 15, 14, 14)
         
         
@@ -141,23 +141,39 @@ class AAVoiceRecorderView: UIView {
         self.sliderArrow.frame = CGRectMake(310,12,20,20)
         self.recorderImageCircle.frame = CGRectMake(-110, 15, 14, 14)
         
-        UIView.animateWithDuration(0.2, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+        UIView.animateWithDuration(0.3, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
             
             self.timeLabel.frame = CGRectMake(29, 12, 50, 20)
             self.sliderLabel.frame = CGRectMake(140,12,100,20)
             self.sliderArrow.frame = CGRectMake(110,12,20,20)
             self.recorderImageCircle.frame = CGRectMake(10, 15, 14, 14)
             
-            }) { (complite) -> Void in
-                //
-        }
+            }, completion: { (complite) -> Void in
+                
+                // animation complite
+                
+        })
         
     }
     
     func recordingStarted() {
         
-        addAnimationsOnRecorderCircle()
-        startUpdateTimer()
+        UIView.animateWithDuration(0.3, animations: { () -> Void in
+            
+                self.recorderImageCircle.alpha = 0
+            
+            }) { (comp) -> Void in
+                
+                self.recorderImageCircle.image = UIImage.bundled("aa_recordercircle")
+                
+                UIView.animateWithDuration(0.3, animations: { () -> Void in
+                    self.recorderImageCircle.alpha = 1
+                })
+                
+                self.addAnimationsOnRecorderCircle()
+                self.startUpdateTimer()
+                
+        }
         
     }
     
@@ -165,6 +181,7 @@ class AAVoiceRecorderView: UIView {
         meterTimer?.invalidate()
         self.timeLabel.text = "0:00"
         self.recorderImageCircle.layer.removeAllAnimations()
+        self.recorderImageCircle.image = UIImage.tinted("aa_recordercircle", color: UIColor(red: 0.7287, green: 0.7252, blue: 0.7322, alpha: 1.0))
         
         self.timeLabel.frame = CGRectMake(29, 12, 50, 20)
         self.sliderLabel.frame = CGRectMake(140,12,100,20)
