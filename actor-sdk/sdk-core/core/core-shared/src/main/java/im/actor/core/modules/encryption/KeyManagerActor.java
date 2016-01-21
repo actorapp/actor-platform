@@ -1,4 +1,4 @@
-package im.actor.core.modules.internal.encryption;
+package im.actor.core.modules.encryption;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,9 +11,9 @@ import im.actor.core.api.rpc.RequestUploadEphermalKey;
 import im.actor.core.api.rpc.ResponseCreateNewKeyGroup;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.internal.encryption.entity.EncryptionKey;
-import im.actor.core.modules.internal.encryption.entity.EphemeralEncryptionKey;
-import im.actor.core.modules.internal.encryption.entity.PrivateKeyStorage;
+import im.actor.core.modules.encryption.entity.EncryptionKey;
+import im.actor.core.modules.encryption.entity.EphemeralEncryptionKey;
+import im.actor.core.modules.encryption.entity.PrivateKeyStorage;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.network.RpcCallback;

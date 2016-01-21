@@ -1,4 +1,4 @@
-package im.actor.core.modules.internal.encryption.entity;
+package im.actor.core.modules.encryption.entity;
 
 import java.io.IOException;
 
