@@ -29,6 +29,7 @@ import im.actor.core.entity.WebActionDescriptor;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.entity.signals.AbsSignal;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Modules;
@@ -1007,7 +1008,7 @@ public class Messenger {
         modules.getCallsModule().handleCall(callId, callback);
     }
 
-    public void sendCallSignal(long callId, byte[] data) {
+    public void sendCallSignal(long callId, AbsSignal data) {
         modules.getCallsModule().sendSignal(callId, data);
     }
 
