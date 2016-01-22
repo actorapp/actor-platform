@@ -16,6 +16,8 @@ import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.dialog.DialogExtension
 import im.actor.server.model.PeerType
+import im.actor.server.persist.dialog
+import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.{ persist ⇒ p, model }
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ ImageUtils, Avatar }
@@ -405,8 +407,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         deliveryId = None
       ))
       // TODO: Move to a History Writing subsystem
-      _ ← p.DialogRepo.updateLastReadAt(userId, groupPeer, date)
-      _ ← p.DialogRepo.updateOwnerLastReadAt(userId, groupPeer, date)
+      _ ← dialog.DialogRepo.updateOwnerLastReadAt(userId, groupPeer, date)
       _ ← DBIO.from(dialogExt.writeMessage(
         ApiPeer(ApiPeerType.Group, groupId),
         userId,
