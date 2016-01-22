@@ -24,7 +24,10 @@ final class ActorBotSpec
   private lazy val msgService = MessagingServiceImpl()
   private lazy val contactsService = new ContactsServiceImpl
 
-  ActorBot.start()
+  override protected def beforeAll(): Unit = {
+    super.beforeAll()
+    ActorBot.start()
+  }
 
   def rcv() = {
     val (user, authId, authSid, _) = createUser()
