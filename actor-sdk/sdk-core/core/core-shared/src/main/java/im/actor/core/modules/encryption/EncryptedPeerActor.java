@@ -11,6 +11,8 @@ import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.entity.EncryptedBox;
 import im.actor.core.modules.encryption.entity.EncryptedBoxKey;
+import im.actor.core.modules.encryption.entity.UserKeys;
+import im.actor.core.modules.encryption.entity.UserKeysGroup;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.Hex;
@@ -30,16 +32,17 @@ import im.actor.runtime.crypto.primitives.util.ByteStrings;
 
 public class EncryptedPeerActor extends ModuleActor {
 
-    private static final String TAG = "EncryptedStateActor";
+    private final String TAG;
 
     private int uid;
-    private ArrayList<ApiEncryptionKeyGroup> keyGroups;
+
+    private UserKeys userKeys;
     private HashMap<Integer, ActorRef> sessions = new HashMap<Integer, ActorRef>();
-    private boolean isReady = false;
     private int ownKeyGroupId;
 
     public EncryptedPeerActor(int uid, ModuleContext context) {
         super(context);
+        TAG = "EncryptedPeerActor#" + uid;
         this.uid = uid;
     }
 
@@ -47,43 +50,30 @@ public class EncryptedPeerActor extends ModuleActor {
     public void preStart() {
         super.preStart();
 
-        if (keyGroups == null) {
-            Log.d(TAG, "Loading own keys for conversation");
-            User user = getUser(uid);
-            request(new RequestLoadPublicKeyGroups(new ApiUserOutPeer(user.getUid(), user.getAccessHash())), new RpcCallback<ResponsePublicKeyGroups>() {
-                @Override
-                public void onResult(ResponsePublicKeyGroups response) {
-                    keyGroups = new ArrayList<ApiEncryptionKeyGroup>(response.getPublicKeyGroups());
-                    onGroupsReady();
-                }
+        Log.d(TAG, "Loading groups...");
+        ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchUserKeyGroups(uid), new AskCallback() {
+            @Override
+            public void onResult(Object obj) {
+                KeyManagerActor.FetchUserKeyGroupsResponse response = (KeyManagerActor.FetchUserKeyGroupsResponse) obj;
+                userKeys = response.getUserKeys();
+                onGroupsReady();
+            }
 
-                @Override
-                public void onError(RpcException e) {
-                    Log.d(TAG, "Error during loading public key groups");
-                    Log.e(TAG, e);
-
-                    // Do nothing
-                }
-            });
-        } else {
-            onGroupsReady();
-        }
+            @Override
+            public void onError(Exception e) {
+                Log.d(TAG, "Unable to load key groups");
+                Log.e(TAG, e);
+            }
+        });
     }
 
     private void onGroupsReady() {
-        Log.w(TAG, "Groups ready #" + keyGroups.size());
+        Log.w(TAG, "Groups ready #" + userKeys.getUserKeysGroups().length);
 
-        for (final ApiEncryptionKeyGroup g : keyGroups) {
-            sessions.put(g.getKeyGroupId(), system().actorOf(Props.create(EncryptedSessionActor.class, new ActorCreator<EncryptedSessionActor>() {
-                @Override
-                public EncryptedSessionActor create() {
-                    return new EncryptedSessionActor(context(), uid, g);
-                }
-            }), getPath() + "/k_" + g.getKeyGroupId()));
-        }
         ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchOwnKeyGroup(), new AskCallback() {
             @Override
             public void onResult(Object obj) {
+                Log.w(TAG, "FetchOwnKeyGroup: onResult");
                 KeyManagerActor.FetchOwnKeyGroupResult res = (KeyManagerActor.FetchOwnKeyGroupResult) obj;
                 ownKeyGroupId = res.getKeyGroupId();
                 onOwnKeysReady();
@@ -92,14 +82,23 @@ public class EncryptedPeerActor extends ModuleActor {
             @Override
             public void onError(Exception e) {
                 // Do nothing
+                Log.w(TAG, "FetchOwnKeyGroup: onError");
+                Log.e(TAG, e);
             }
         });
     }
 
     private void onOwnKeysReady() {
         Log.w(TAG, "onOwnKeysReady");
-        isReady = true;
-        unstashAll();
+
+        for (final UserKeysGroup g : userKeys.getUserKeysGroups()) {
+            sessions.put(g.getKeyGroupId(), system().actorOf(Props.create(EncryptedSessionActor.class, new ActorCreator<EncryptedSessionActor>() {
+                @Override
+                public EncryptedSessionActor create() {
+                    return new EncryptedSessionActor(context(), uid, g);
+                }
+            }), getPath() + "/k_" + g.getKeyGroupId()));
+        }
     }
 
     private void doEncrypt(final byte[] data, final Future future) {
@@ -202,10 +201,7 @@ public class EncryptedPeerActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
-        if (!isReady && message instanceof AskRequest) {
-            stash();
-            return;
-        }
+        Log.d(TAG, "msg: " + message);
         super.onReceive(message);
     }
 

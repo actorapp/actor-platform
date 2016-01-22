@@ -7,25 +7,19 @@ import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 import im.actor.runtime.crypto.Curve25519KeyPair;
 
-public class EncryptionKey extends BserObject {
+public class UserPublicKey extends BserObject {
 
     private long keyId;
     private String keyAlg;
     private byte[] publicKey;
-    private byte[] privateKey;
 
-    public EncryptionKey(long keyId, String keyAlg, byte[] publicKey, byte[] privateKey) {
+    public UserPublicKey(long keyId, String keyAlg, byte[] publicKey) {
         this.keyId = keyId;
         this.keyAlg = keyAlg;
         this.publicKey = publicKey;
-        this.privateKey = privateKey;
     }
 
-    public EncryptionKey(long keyId, Curve25519KeyPair keyPair) {
-        this(keyId, "curve25519", keyPair.getPublicKey(), keyPair.getPrivateKey());
-    }
-
-    public EncryptionKey(byte[] data) throws IOException {
+    public UserPublicKey(byte[] data) throws IOException {
         load(data);
     }
 
@@ -41,16 +35,11 @@ public class EncryptionKey extends BserObject {
         return publicKey;
     }
 
-    public byte[] getPrivateKey() {
-        return privateKey;
-    }
-
     @Override
     public void parse(BserValues values) throws IOException {
         keyId = values.getLong(1);
         keyAlg = values.getString(2);
         publicKey = values.getBytes(3);
-        privateKey = values.optBytes(4);
     }
 
     @Override
@@ -58,8 +47,5 @@ public class EncryptionKey extends BserObject {
         writer.writeLong(1, keyId);
         writer.writeString(2, keyAlg);
         writer.writeBytes(3, publicKey);
-        if (privateKey != null) {
-            writer.writeBytes(4, privateKey);
-        }
     }
 }

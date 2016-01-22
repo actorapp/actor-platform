@@ -217,22 +217,25 @@ public class Actor {
                         return;
                     }
 
+                    unbecome();
+                    unstashAll();
+
                     if (callback != null) {
                         callback.onResult(askResult.getResult());
                     }
-                    unbecome();
-                    unstashAll();
                 } else if (message instanceof AskError) {
                     AskError error = ((AskError) message);
                     if (error.getId() != id) {
                         stash();
                         return;
                     }
+
+                    unbecome();
+                    unstashAll();
+
                     if (callback != null) {
                         callback.onError(error.getException());
                     }
-                    unbecome();
-                    unstashAll();
                 } else {
                     stash();
                 }

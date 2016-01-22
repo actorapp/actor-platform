@@ -27,7 +27,7 @@ import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.MessageEncryptionActor;
+import im.actor.core.modules.encryption.EncryptedMsgActor;
 import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.core.modules.internal.messages.ConversationHistoryActor;
 import im.actor.core.modules.internal.messages.CursorReceiverActor;
@@ -59,7 +59,7 @@ public class MessagesProcessor extends AbsModule {
 
             if (u.getMessage() instanceof ApiEncryptedMessage) {
                 // TODO: Proper decrypt message
-                context().getEncryption().getMessageEncryptor().send(new MessageEncryptionActor.InMessage(peer,
+                context().getEncryption().getMessageEncryptor().send(new EncryptedMsgActor.InMessage(peer,
                         u.getDate(), u.getSenderUid(), u.getRid(), (ApiEncryptedMessage) u.getMessage()));
                 continue;
             }
@@ -113,7 +113,7 @@ public class MessagesProcessor extends AbsModule {
 
         if (content instanceof ApiEncryptedMessage) {
             // TODO: Proper decrypt message
-            context().getEncryption().getMessageEncryptor().send(new MessageEncryptionActor.InMessage(peer,
+            context().getEncryption().getMessageEncryptor().send(new EncryptedMsgActor.InMessage(peer,
                     date, senderUid, rid, (ApiEncryptedMessage) content));
         }
 
