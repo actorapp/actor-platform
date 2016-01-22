@@ -3,11 +3,12 @@ package im.actor.server.dialog
 import akka.actor.ActorSystem
 import im.actor.server.group.{ GroupExtension, GroupUtils }
 import im.actor.server.model.{ HistoryMessage, PeerType, Peer }
-import im.actor.server.persist.{ GroupUserRepo, DialogRepo, HistoryMessageRepo }
+import im.actor.server.persist.dialog.DialogRepo
+import im.actor.server.persist.{ GroupUserRepo, HistoryMessageRepo }
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ Future, ExecutionContext }
 import scala.util.control.NoStackTrace
 
 object HistoryUtils {
@@ -53,29 +54,28 @@ object HistoryUtils {
 
       for {
         _ ← HistoryMessageRepo.create(messages)
-        _ ← DialogRepo.updateLastMessageDate(fromPeer.id, toPeer, date)
-        _ ← DialogRepo.updateLastMessageDate(toPeer.id, fromPeer, date)
+        _ ← DialogRepo.updateLastMessageDatePrivate(fromPeer.id, toPeer, date)
+        _ ← DialogRepo.updateLastMessageDatePrivate(toPeer.id, fromPeer, date)
       } yield ()
     } else if (toPeer.typ == PeerType.Group) {
-      DBIO.from(GroupExtension(system).isHistoryShared(toPeer.id)) flatMap { isHistoryShared ⇒
-        withGroupUserIds(toPeer.id) { groupUserIds ⇒
-          if (isHistoryShared) {
-            val historyMessage = HistoryMessage(SharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
+      val groupInfo = for {
+        isShared ← GroupExtension(system).isHistoryShared(toPeer.id)
+        (memberIds, _, _) ← GroupExtension(system).getMemberIds(toPeer.id)
+      } yield (isShared, memberIds)
 
-            for {
-              _ ← DialogRepo.updateLastMessageDates(groupUserIds.toSet, toPeer, date)
-              _ ← HistoryMessageRepo.create(historyMessage)
-            } yield ()
-          } else {
-            val historyMessages = groupUserIds.map { groupUserId ⇒
-              HistoryMessage(groupUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
-            }
-            val dialogAction = DialogRepo.updateLastMessageDates(groupUserIds.toSet, toPeer, date)
-
-            DBIO.sequence(Seq(dialogAction, HistoryMessageRepo.create(historyMessages) map (_.getOrElse(0)))) map (_ ⇒ ())
+      for {
+        (isHistoryShared, groupUserIds) ← DBIO.from(groupInfo)
+        _ ← DialogRepo.updateLastMessageDateGroup(toPeer, date)
+        _ ← if (isHistoryShared) {
+          val historyMessage = HistoryMessage(SharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
+          HistoryMessageRepo.create(historyMessage) map (_ ⇒ ())
+        } else {
+          val historyMessages = groupUserIds.map { groupUserId ⇒
+            HistoryMessage(groupUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
           }
+          HistoryMessageRepo.create(historyMessages) map (_ ⇒ ())
         }
-      }
+      } yield ()
     } else {
       DBIO.failed(new Exception("PeerType is not supported") with NoStackTrace)
     }
@@ -101,7 +101,7 @@ object HistoryUtils {
         messageContentData = messageContentData,
         deletedAt = None
       ))
-      _ ← DialogRepo.updateLastMessageDate(userId, toPeer, date)
+      _ ← DialogRepo.updateLastMessageDatePrivate(userId, toPeer, date)
     } yield ()
   }
 
@@ -111,21 +111,17 @@ object HistoryUtils {
 
     peer.typ match {
       case PeerType.Private ⇒
-        // TODO: #perf do in single query
         DBIO.sequence(Seq(
-          DialogRepo.updateLastReceivedAt(peer.id, Peer(PeerType.Private, byPeer.id), date),
+          DialogRepo.updateLastReceivedAtPrivate(peer.id, Peer(PeerType.Private, byPeer.id), date),
           DialogRepo.updateOwnerLastReceivedAt(byPeer.id, peer, date)
         )) map (_ ⇒ ())
       case PeerType.Group ⇒
         withGroup(peer.id) { _ ⇒
           GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
-            // TODO: #perf update dialogs in one query
-
-            val selfAction = DialogRepo.updateOwnerLastReceivedAt(byPeer.id, Peer(PeerType.Group, peer.id), date)
-            val otherGroupUserIds = groupUserIds.view.filterNot(_ == byPeer.id).toSet
-            val otherAction = DialogRepo.updateLastReceivedAt(otherGroupUserIds, Peer(PeerType.Group, peer.id), date)
-
-            selfAction andThen otherAction map (_ ⇒ ())
+            for {
+              _ ← DialogRepo.updateOwnerLastReceivedAt(byPeer.id, Peer(PeerType.Group, peer.id), date)
+              _ ← DialogRepo.updateLastReceivedAtGroup(Peer(PeerType.Group, peer.id), date)
+            } yield ()
           }
         }
       case _ ⇒ throw new RuntimeException(s"Unknown peer type ${peer.typ}")
@@ -138,34 +134,29 @@ object HistoryUtils {
 
     peer.typ match {
       case PeerType.Private ⇒
-        // TODO: #perf do in single query
         DBIO.sequence(Seq(
-          DialogRepo.updateLastReadAt(peer.id, Peer(PeerType.Private, byPeer.id), date),
+          DialogRepo.updateLastReadAtPrivate(peer.id, Peer(PeerType.Private, byPeer.id), date),
           DialogRepo.updateOwnerLastReadAt(byPeer.id, peer, date)
         )) map (_ ⇒ ())
       case PeerType.Group ⇒
         withGroup(peer.id) { _ ⇒
           GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
-            // TODO: #perf update dialogs in one query
-
-            val selfAction = DialogRepo.updateOwnerLastReadAt(byPeer.id, Peer(PeerType.Group, peer.id), date)
-
-            val otherGroupUserIds = groupUserIds.view.filterNot(_ == byPeer.id).toSet
-            val otherAction = DialogRepo.updateLastReadAt(otherGroupUserIds, Peer(PeerType.Group, peer.id), date)
-
-            selfAction andThen otherAction map (_ ⇒ ())
+            for {
+              _ ← DialogRepo.updateOwnerLastReadAt(byPeer.id, Peer(PeerType.Group, peer.id), date)
+              _ ← DialogRepo.updateLastReadAtGroup(Peer(PeerType.Group, peer.id), date)
+            } yield ()
           }
         }
       case _ ⇒ throw new RuntimeException(s"Unknown peer type ${peer.typ}")
     }
   }
 
+  // todo: remove this in favor of getHistoryOwner
   def withHistoryOwner[A](peer: Peer, clientUserId: Int)(f: Int ⇒ DBIO[A])(implicit system: ActorSystem): DBIO[A] = {
     import system.dispatcher
     (peer.typ match {
       case PeerType.Private ⇒ DBIO.successful(clientUserId)
       case PeerType.Group ⇒
-        implicit val groupViewRegion = GroupExtension(system).viewRegion
         DBIO.from(GroupExtension(system).isHistoryShared(peer.id)) flatMap { isHistoryShared ⇒
           if (isHistoryShared) {
             DBIO.successful(SharedUserId)
@@ -175,6 +166,18 @@ object HistoryUtils {
         }
       case _ ⇒ throw new RuntimeException(s"Unknown peer type ${peer.typ}")
     }) flatMap f
+  }
+
+  def getHistoryOwner(peer: Peer, clientUserId: Int)(implicit system: ActorSystem): Future[Int] = {
+    import system.dispatcher
+    peer.typ match {
+      case PeerType.Private ⇒ Future.successful(clientUserId)
+      case PeerType.Group ⇒
+        for {
+          isHistoryShared ← GroupExtension(system).isHistoryShared(peer.id)
+        } yield if (isHistoryShared) SharedUserId else clientUserId
+      case _ ⇒ throw new RuntimeException(s"Unknown peer type ${peer.typ}")
+    }
   }
 
   def isSharedUser(userId: Int): Boolean = userId == SharedUserId

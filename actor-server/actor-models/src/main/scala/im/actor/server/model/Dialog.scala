@@ -20,9 +20,23 @@ object Dialog {
 
   def withOwnerLastReadAt(userId: Int, peer: Peer, ownerLastReadAt: DateTime) =
     Dialog(userId, peer, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0), ownerLastReadAt, Some(new DateTime), false, false, new DateTime)
+
+  def fromCommonAndUser(c: DialogCommon, u: UserDialog) = Dialog(
+    userId = u.userId,
+    peer = u.peer,
+    lastMessageDate = c.lastMessageDate,
+    lastReceivedAt = c.lastReceivedAt,
+    lastReadAt = c.lastReadAt,
+    ownerLastReceivedAt = u.ownerLastReceivedAt,
+    ownerLastReadAt = u.ownerLastReadAt,
+    shownAt = u.shownAt,
+    isFavourite = u.isFavourite,
+    isArchived = u.isArchived,
+    createdAt = c.createdAt
+  )
+
 }
 
-@SerialVersionUID(1L)
 case class Dialog(
   userId:              Int,
   peer:                Peer,
@@ -35,4 +49,22 @@ case class Dialog(
   isFavourite:         Boolean,
   isArchived:          Boolean,
   createdAt:           DateTime
+)
+
+case class DialogCommon(
+  dialogId:        String,
+  lastMessageDate: DateTime,
+  lastReceivedAt:  DateTime,
+  lastReadAt:      DateTime,
+  createdAt:       DateTime
+)
+
+case class UserDialog(
+  userId:              Int,
+  peer:                Peer,
+  ownerLastReceivedAt: DateTime,
+  ownerLastReadAt:     DateTime,
+  shownAt:             Option[DateTime],
+  isFavourite:         Boolean,
+  isArchived:          Boolean
 )
