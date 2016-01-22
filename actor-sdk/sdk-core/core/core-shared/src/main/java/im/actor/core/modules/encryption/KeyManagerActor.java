@@ -252,22 +252,22 @@ public class KeyManagerActor extends ModuleActor {
 
     private void fetchUserGroups(final int uid, final Future future) {
         Log.d(TAG, "fetchUserGroups");
-        UserKeys userKeys = cachedUserKeys.get(uid);
-        if (userKeys == null) {
-            byte[] cached = encryptionKeysStorage.loadItem(uid);
-            if (cached != null) {
-                try {
-                    userKeys = new UserKeys(cached);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        if (userKeys != null) {
-            Log.d(TAG, "onResult:fast");
-            future.onResult(new FetchUserKeyGroupsResponse(userKeys));
-            return;
-        }
+        UserKeys userKeys = null;//cachedUserKeys.get(uid);
+//        if (userKeys == null) {
+//            byte[] cached = encryptionKeysStorage.loadItem(uid);
+//            if (cached != null) {
+//                try {
+//                    userKeys = new UserKeys(cached);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        if (userKeys != null) {
+//            Log.d(TAG, "onResult:fast");
+//            future.onResult(new FetchUserKeyGroupsResponse(userKeys));
+//            return;
+//        }
 
         Log.d(TAG, "Requesting");
         User user = users().getValue(uid);
