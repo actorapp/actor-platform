@@ -51,8 +51,6 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
         let trackLeftResizable = trackLeftImage.resizableImageWithCapInsets(insets)
         soundProgressSlider.setMinimumTrackImage(trackLeftResizable, forState: .Normal)
         
-        //UIColor(red: 0.0, green: 0.5856, blue: 0.9985, alpha: 1.0 )
-        
         let trackRightImage = UIImage.tinted("aa_voiceplaybackground", color: UIColor(red: 0.0, green: 0.5856, blue: 0.9985, alpha: 1.0 ))
         let trackRightResizable = trackRightImage.resizableImageWithCapInsets(insets)
         soundProgressSlider.setMaximumTrackImage(trackRightResizable, forState: .Normal)
@@ -105,7 +103,7 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
         fatalError("init(coder:) has not been implemented")
     }
     
-    // Binding
+    // MARK: - Binding
     
     public override func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         self.bindedLayout = cellLayout as! VoiceMessageCellLayout
@@ -183,7 +181,8 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
         }
     }
     
-    // File state binding
+    
+    //MARK: - File state binding
     
     public override func fileUploadPaused(reference: String, selfGeneration: Int) {
         
@@ -240,7 +239,7 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
     }
     
     
-    // Media Action
+    //MARK: - Media Action
     
     public func mediaDidTap() {
         let content = bindedMessage!.content as! ACDocumentContent
@@ -302,7 +301,7 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
         
     }
     
-    // Layouting
+    //MARK: - Layouting
     
     public override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
         let insets = fullContentInsets
