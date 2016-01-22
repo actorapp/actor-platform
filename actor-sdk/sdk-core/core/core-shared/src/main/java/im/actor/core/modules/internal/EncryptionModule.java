@@ -6,8 +6,7 @@ import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.EncryptedPeerActor;
 import im.actor.core.modules.encryption.KeyManagerActor;
-import im.actor.core.modules.encryption.MessageEncryptionActor;
-import im.actor.runtime.actors.Actor;
+import im.actor.core.modules.encryption.EncryptedMsgActor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
@@ -32,11 +31,11 @@ public class EncryptionModule extends AbsModule {
                         return new KeyManagerActor(context());
                     }
                 }), "encryption/keys");
-        messageEncryptor = system().actorOf(Props.create(MessageEncryptionActor.class,
-                new ActorCreator<MessageEncryptionActor>() {
+        messageEncryptor = system().actorOf(Props.create(EncryptedMsgActor.class,
+                new ActorCreator<EncryptedMsgActor>() {
                     @Override
-                    public MessageEncryptionActor create() {
-                        return new MessageEncryptionActor(context());
+                    public EncryptedMsgActor create() {
+                        return new EncryptedMsgActor(context());
                     }
                 }), "encryption/messaging");
     }

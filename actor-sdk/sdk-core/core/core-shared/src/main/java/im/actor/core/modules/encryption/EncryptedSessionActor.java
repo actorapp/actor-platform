@@ -3,13 +3,14 @@ package im.actor.core.modules.encryption;
 import java.util.ArrayList;
 
 import im.actor.core.api.ApiEncryptionKey;
-import im.actor.core.api.ApiEncryptionKeyGroup;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestLoadEphermalPublicKeys;
 import im.actor.core.api.rpc.RequestLoadPublicKey;
 import im.actor.core.api.rpc.ResponsePublicKeys;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.entity.EncryptionKey;
+import im.actor.core.modules.encryption.entity.OwnPrivateKey;
+import im.actor.core.modules.encryption.entity.UserKeysGroup;
+import im.actor.core.modules.encryption.entity.UserPublicKey;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.Hex;
@@ -36,16 +37,16 @@ public class EncryptedSessionActor extends ModuleActor {
     private final String TAG;
 
     private final int uid;
-    private final ApiEncryptionKeyGroup encryptionKeyGroup;
+    private final UserKeysGroup encryptionKeyGroup;
 
-    private EncryptionKey ownIdentityKey;
-    private EncryptionKey theirIdentityKey;
-    private EncryptionKey ownEphermalKey0;
-    private EncryptionKey theirEphermalKey0;
+    private OwnPrivateKey ownIdentityKey;
+    private OwnPrivateKey ownEphermalKey0;
+    private UserPublicKey theirIdentityKey;
+    private UserPublicKey theirEphermalKey0;
 
-    private EncryptionKey prevOwnKey;
-    private EncryptionKey currentOwnKey;
-    private EncryptionKey currentTheirKey;
+    private OwnPrivateKey prevOwnKey;
+    private OwnPrivateKey currentOwnKey;
+    private UserPublicKey currentTheirKey;
 
     private byte[] rootChainKey;
 
@@ -54,12 +55,12 @@ public class EncryptedSessionActor extends ModuleActor {
 
     private boolean isReady = false;
 
-    public EncryptedSessionActor(ModuleContext context, int uid, ApiEncryptionKeyGroup encryptionKeyGroup) {
+    public EncryptedSessionActor(ModuleContext context, int uid, UserKeysGroup encryptionKeyGroup) {
         super(context);
         this.TAG = "EncryptionSessionActor#" + uid + "_" + encryptionKeyGroup.getKeyGroupId();
         this.uid = uid;
         this.encryptionKeyGroup = encryptionKeyGroup;
-        this.theirIdentityKey = new EncryptionKey(encryptionKeyGroup.getIdentityKey().getKeyId(), encryptionKeyGroup.getIdentityKey().getKeyAlg(), encryptionKeyGroup.getIdentityKey().getKeyMaterial(), null);
+        this.theirIdentityKey = encryptionKeyGroup.getIdentityKey();
     }
 
     @Override
@@ -73,7 +74,7 @@ public class EncryptedSessionActor extends ModuleActor {
                     KeyManagerActor.FetchOwnKeyResult res = (KeyManagerActor.FetchOwnKeyResult) obj;
                     ownIdentityKey = res.getIdentityKey();
                     ownEphermalKey0 = res.getEphemeralKey();
-                    currentOwnKey = new EncryptionKey(RandomUtils.nextRid(), Curve25519.keyGen(Crypto.randomBytes(64)));
+                    currentOwnKey = new OwnPrivateKey(RandomUtils.nextRid(), "curve25519", Curve25519.keyGenPrivate(Crypto.randomBytes(64)));
                     onOwnReady();
                 }
 
@@ -103,7 +104,7 @@ public class EncryptedSessionActor extends ModuleActor {
                     }
 
                     ApiEncryptionKey encryptionKey = response.getPublicKey().get(RandomUtils.randomId(response.getPublicKey().size()));
-                    theirEphermalKey0 = new EncryptionKey(encryptionKey.getKeyId(), encryptionKey.getKeyAlg(), encryptionKey.getKeyMaterial(), null);
+                    theirEphermalKey0 = new UserPublicKey(encryptionKey.getKeyId(), encryptionKey.getKeyAlg(), encryptionKey.getKeyMaterial());
                     onTheirReady0();
                 }
 
@@ -132,7 +133,7 @@ public class EncryptedSessionActor extends ModuleActor {
                     }
 
                     ApiEncryptionKey encryptionKey = response.getPublicKey().get(RandomUtils.randomId(response.getPublicKey().size()));
-                    currentTheirKey = new EncryptionKey(encryptionKey.getKeyId(), encryptionKey.getKeyAlg(), encryptionKey.getKeyMaterial(), null);
+                    currentTheirKey = new UserPublicKey(encryptionKey.getKeyId(), encryptionKey.getKeyAlg(), encryptionKey.getKeyMaterial());
                     allSet();
                 }
 
@@ -153,12 +154,12 @@ public class EncryptedSessionActor extends ModuleActor {
         isReady = true;
 
         byte[] master_secret = RatchetMasterSecret.calculateMasterSecret(
-                new RatchetPrivateKey(ownIdentityKey.getPrivateKey()),
-                new RatchetPrivateKey(ownEphermalKey0.getPrivateKey()),
+                new RatchetPrivateKey(ownIdentityKey.getKey()),
+                new RatchetPrivateKey(ownEphermalKey0.getKey()),
                 new RatchetPublicKey(theirIdentityKey.getPublicKey()),
                 new RatchetPublicKey(theirEphermalKey0.getPublicKey()));
         rootChainKey = RatchetRootChainKey.makeRootChainKey(
-                new RatchetPrivateKey(ownEphermalKey0.getPrivateKey()),
+                new RatchetPrivateKey(ownEphermalKey0.getKey()),
                 new RatchetPublicKey(theirEphermalKey0.getPublicKey()),
                 master_secret);
 
@@ -173,7 +174,7 @@ public class EncryptedSessionActor extends ModuleActor {
                 ByteStrings.intToBytes(encryptionKeyGroup.getKeyGroupId()),
                 ByteStrings.longToBytes(ownEphermalKey0.getKeyId()), /*Alice Initial Ephermal*/
                 ByteStrings.longToBytes(theirEphermalKey0.getKeyId()), /*Bob Initial Ephermal*/
-                currentOwnKey.getPublicKey(),
+                Curve25519.keyGenPublic(currentOwnKey.getKey()),
                 currentTheirKey.getPublicKey(),
                 ByteStrings.intToBytes(outIndex++)); /* Message Index */
 
@@ -286,9 +287,9 @@ public class EncryptedSessionActor extends ModuleActor {
                            Future future) {
 
         byte[] ms = RatchetMasterSecret.calculateMasterSecret(
-                new RatchetPrivateKey(ownIdentityKey.getPrivateKey()),
+                new RatchetPrivateKey(ownIdentityKey.getKey()),
                 new RatchetPrivateKey(ownEphemeralPrivateKey0),
-                new RatchetPublicKey(encryptionKeyGroup.getIdentityKey().getKeyMaterial()),
+                new RatchetPublicKey(encryptionKeyGroup.getIdentityKey().getPublicKey()),
                 new RatchetPublicKey(theirEphemeralKey0));
 
         byte[] rc = RatchetRootChainKey.makeRootChainKey(
@@ -304,6 +305,7 @@ public class EncryptedSessionActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
+        Log.d(TAG, "msg: " + message);
         if (!isReady && message instanceof AskRequest) {
             stash();
             return;
