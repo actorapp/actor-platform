@@ -91,8 +91,8 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
             // Reset progress
             self.progress.hideButton()
             UIView.animateWithDuration(0, animations: { () -> Void in
-                self.progress.alpha = 0
-                self.fileIcon.alpha = 0
+                self.progress.hidden = true
+                self.fileIcon.hidden = true
             })
             
             // Bind file

@@ -140,7 +140,7 @@ class AAConvActionSheet: UIView {
         
         self.addSubview(self.backgroundView)
         
-        let frame = CGRectMake(0, screenHeigth, screenWidth, 400)
+        let frame = CGRectMake(0, screenHeigth, screenWidth, 1000)
         self.sheetView = UIView(frame: frame)
         self.sheetView.backgroundColor = UIColor.whiteColor()
         

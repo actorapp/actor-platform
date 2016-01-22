@@ -154,4 +154,5 @@ public class AABubbleBaseFileCell: AABubbleCell {
             bindedUploadCallback = nil
         }
     }
+    
 }
