@@ -23,9 +23,11 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     private var prevCount: Int = 0
     private var unreadMessageId: jlong = 0
     
-    ///
-    
+    // Audio notes
     public var voicePlayer : AAModernConversationAudioPlayer!
+    
+    public var currentAudioFileId: jlong = 0
+    public var voicesCache: Dictionary<jlong,Float> = Dictionary<jlong,Float>()
     
     public init(peer: ACPeer) {
         self.peer = peer
@@ -359,19 +361,32 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         })
     }
     
+    ///////////////////////
+    // MARK: - audio play
+    ///////////////////////
     
-    // audio play
     
-    func playVoiceFromPath(path:String) {
+    func playVoiceFromPath(path:String,fileId:jlong,position:Float) {
         
-        if (self.voicePlayer != nil) {
-            
-            self.voicePlayer.pause()
-            
+        if (self.voicePlayer == nil) {
+            self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)
         }
         
-        self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)
-        self.voicePlayer.play(0)
+        if (self.currentAudioFileId != fileId) {
+            self.voicePlayer?.pause()
+            
+            self.currentAudioFileId = fileId
+            self.voicePlayer?.play(position)
+            
+        } else {
+            
+            if self.voicePlayer?.isPaused() == false {
+                self.voicePlayer?.pause()
+            } else {
+                self.voicePlayer?.play(position)
+            }
+            
+        }
         
     }
     
