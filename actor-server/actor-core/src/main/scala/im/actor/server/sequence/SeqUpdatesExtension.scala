@@ -12,7 +12,7 @@ import im.actor.api.rpc.Update
 import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.server.db.DbExtension
 import im.actor.server.model._
-import im.actor.server.model.push.{ ApplePushCredentials ⇒ ApplePushCredentialsModel, GooglePushCredentials ⇒ GooglePushCredentialsModel, PushCredentials }
+import im.actor.server.model.push.{ ApplePushCredentials ⇒ ApplePushCredentialsModel, GooglePushCredentials ⇒ GooglePushCredentialsModel, ActorPushCredentials ⇒ ActorPushCredentialsModel, PushCredentials }
 import im.actor.server.persist.AuthSessionRepo
 import im.actor.server.persist.push.ApplePushCredentialsRepo
 import im.actor.server.persist.sequence.UserSequenceRepo
@@ -184,12 +184,15 @@ final class SeqUpdatesExtension(
 
   def registerApplePushCredentials(creds: ApplePushCredentialsModel) = registerPushCredentials(creds)
 
+  def registerActorPushCredentials(creds: ActorPushCredentialsModel) = registerPushCredentials(creds)
+
   // TODO: real future
   def registerPushCredentials(creds: PushCredentials) =
     withAuthSession(creds.authId) { session ⇒
       val register = creds match {
         case c: GooglePushCredentialsModel ⇒ RegisterPushCredentials().withGoogle(c)
         case c: ApplePushCredentialsModel  ⇒ RegisterPushCredentials().withApple(c)
+        case c: ActorPushCredentialsModel  ⇒ RegisterPushCredentials().withActor(c)
       }
       region.ref ! Envelope(session.userId).withRegisterPushCredentials(register)
       Future.successful(())
