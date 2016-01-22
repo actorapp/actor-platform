@@ -25,11 +25,11 @@ object MessageBoxCodec extends Codec[MessageBox] {
     .\(RequestDH.header) { case r: RequestDH ⇒ r }(RequestDHCodec)
     .\(ResponseDoDH.header) { case r: ResponseDoDH ⇒ r }(ResponseDoDHCodec)
     .\(RequestResend.header) { case r: RequestResend ⇒ r }(RequestResendCodec)
-    .\(RpcRequestBox.header) { case r: RpcRequestBox ⇒ r }(RpcRequestBoxCodec)
-    .\(RpcResponseBox.header) { case r: RpcResponseBox ⇒ r }(RpcResponseBoxCodec)
+    .\(ProtoRpcRequest.header) { case r: ProtoRpcRequest ⇒ r }(ProtoRpcRequestCodec)
+    .\(ProtoRpcResponse.header) { case r: ProtoRpcResponse ⇒ r }(ProtoRpcResponseCodec)
     .\(UnsentMessage.header) { case r: UnsentMessage ⇒ r }(UnsentMessageCodec)
     .\(UnsentResponse.header) { case r: UnsentResponse ⇒ r }(UnsentResponseCodec)
-    .\(UpdateBox.header) { case r: UpdateBox ⇒ r }(UpdateBoxCodec)
+    .\(ProtoPush.header) { case r: ProtoPush ⇒ r }(ProtoPushCodec)
     .\(0, _ ⇒ true) { case a ⇒ a }(DiscriminatedErrorCodec("MessageBox"))
 
   private val codec = (int64 :: PayloadCodec(protoMessageCodec)).as[MessageBox]
