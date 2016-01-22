@@ -135,14 +135,14 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
           resendBufferSize -= message.bodySize
 
           message match {
-            case rspBox @ RpcResponseBox(requestMessageId, bodyBytes) ⇒
+            case rspBox @ ProtoRpcResponse(requestMessageId, bodyBytes) ⇒
               if (message.bodySize <= MaxResendSize) {
                 enqueueProtoMessageWithResend(messageId, rspBox, reduceKey)
               } else {
                 scheduleResend(messageId, rspBox, reduceKey)
                 enqueueProtoMessage(nextMessageId(), UnsentResponse(messageId, requestMessageId, message.bodySize))
               }
-            case ub @ UpdateBox(bodyBytes) ⇒
+            case ub @ ProtoPush(bodyBytes) ⇒
               if (message.bodySize <= MaxResendSize) {
                 enqueueProtoMessageWithResend(messageId, ub, reduceKey)
               } else {
