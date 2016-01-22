@@ -12,7 +12,8 @@ import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs.ProcessorState
 import im.actor.server.db.DbExtension
 import im.actor.server.model.{ Dialog ⇒ DialogModel, PeerType, Peer }
-import im.actor.server.persist.{ GroupRepo, UserRepo, HistoryMessageRepo, DialogRepo }
+import im.actor.server.persist.dialog.DialogRepo
+import im.actor.server.persist.{ GroupRepo, UserRepo, HistoryMessageRepo }
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqStateDate }
 import im.actor.server.social.SocialExtension
 import im.actor.server.user.UserExtension
@@ -200,7 +201,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   private def init(): Unit =
     db.run(for {
-      optDialog ← DialogRepo.find(userId, peer)
+      optDialog ← DialogRepo.findDialog(userId, peer)
       dialog ← optDialog match {
         case Some(dialog) ⇒ DBIO.successful(dialog)
         case None ⇒

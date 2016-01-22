@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.PeerType
+import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.user.UserExtension
 import im.actor.server.{ model, persist }
 import org.joda.time.DateTime
@@ -33,7 +34,7 @@ private class UnreadWatcher()(implicit system: ActorSystem, config: UnreadWatche
   private def findUnread(userId: Int, now: DateTime): DBIO[Seq[(Option[String], Int)]] = {
     val dateToReadBefore = now.minus(unreadTimeout)
     for {
-      dialogs ← persist.DialogRepo.findLastReadBefore(dateToReadBefore, userId)
+      dialogs ← DialogRepo.findLastReadBefore(dateToReadBefore, userId)
       senderAndCount ← DBIO.sequence(dialogs.map { dialog ⇒
         for {
           exists ← persist.HistoryMessageRepo.haveMessagesBetween(userId, dialog.peer, dialog.ownerLastReadAt, dateToReadBefore)

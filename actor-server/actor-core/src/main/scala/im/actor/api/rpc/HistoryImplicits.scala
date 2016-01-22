@@ -8,7 +8,7 @@ import org.joda.time.DateTime
 trait HistoryImplicits {
 
   implicit class ExtHistoryMessageModel(model: HistoryMessage) {
-    def asStruct(lastReceivedAt: DateTime, lastReadAt: DateTime, reactions: Seq[MessageReaction]) = {
+    def asStruct(lastReceivedAt: DateTime, lastReadAt: DateTime, reactions: Seq[MessageReaction]): ApiMessageContainer = {
       val in = CodedInputStream.newInstance(model.messageContentData)
       try {
         ApiMessage.parseFrom(in) match {

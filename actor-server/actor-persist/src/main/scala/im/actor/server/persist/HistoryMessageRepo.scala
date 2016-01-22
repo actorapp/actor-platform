@@ -2,6 +2,7 @@ package im.actor.server.persist
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import im.actor.server.model.{ Peer, PeerType, HistoryMessage }
+import im.actor.server.persist.dialog.DialogRepo
 import org.joda.time.DateTime
 import slick.dbio.Effect.{ Write, Read }
 import slick.driver.PostgresDriver
@@ -150,12 +151,11 @@ object HistoryMessageRepo {
       .as[HistoryMessage]
   }
 
-  //возможно тут не учитываются
   private def unreadTotal(userId: Rep[Int]) =
     (for {
-      d ← DialogRepo.notHiddenNotArchived.filter(_.userId === userId)
+      ud ← DialogRepo.findUsersVisible(userId)
       m ← notDeletedMessages.filter(_.senderUserId =!= userId)
-      if m.userId === d.userId && m.peerType === d.peerType && m.peerId === d.peerId && m.date > d.ownerLastReadAt
+      if m.userId === ud.userId && m.peerType === ud.peerType && m.peerId === ud.peerId && m.date > ud.ownerLastReadAt
     } yield m.date).length
 
   private val unreadTotalC = Compiled(unreadTotal _)
