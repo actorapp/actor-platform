@@ -1,4 +1,7 @@
 #import <Foundation/Foundation.h>
+#import "AAModernConversationAudioPlayerContext.h"
+#import "AAModernConversationAudioPlayer.h"
+
 
 @class AAModernConversationAudioPlayer;
 @class AAModernViewInlineMediaContext;
