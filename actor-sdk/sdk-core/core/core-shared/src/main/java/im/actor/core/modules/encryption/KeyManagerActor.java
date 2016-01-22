@@ -3,18 +3,25 @@ package im.actor.core.modules.encryption;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import im.actor.core.api.ApiEncryptionKey;
+import im.actor.core.api.ApiEncryptionKeyGroup;
 import im.actor.core.api.ApiEncryptionKeySignature;
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateNewKeyGroup;
+import im.actor.core.api.rpc.RequestLoadPublicKeyGroups;
 import im.actor.core.api.rpc.RequestUploadEphermalKey;
 import im.actor.core.api.rpc.ResponseCreateNewKeyGroup;
+import im.actor.core.api.rpc.ResponsePublicKeyGroups;
 import im.actor.core.api.rpc.ResponseVoid;
+import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.entity.EncryptionKey;
-import im.actor.core.modules.encryption.entity.EphemeralEncryptionKey;
-import im.actor.core.modules.encryption.entity.PrivateKeyStorage;
+import im.actor.core.modules.encryption.entity.OwnKeys;
+import im.actor.core.modules.encryption.entity.OwnPrivateKey;
+import im.actor.core.modules.encryption.entity.OwnPrivateKeyUploadable;
+import im.actor.core.modules.encryption.entity.UserKeys;
+import im.actor.core.modules.encryption.entity.UserKeysGroup;
+import im.actor.core.modules.encryption.entity.UserPublicKey;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.network.RpcCallback;
@@ -26,18 +33,17 @@ import im.actor.runtime.actors.Future;
 import im.actor.runtime.actors.ask.AskRequest;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
-import im.actor.runtime.storage.KeyValueRecord;
 import im.actor.runtime.storage.KeyValueStorage;
 
 public class KeyManagerActor extends ModuleActor {
 
-    private static final String PRIVATE_KEYS = "private_keys";
-
     private static final String TAG = "KeyManagerActor";
 
-    private HashMap<Long, EphemeralEncryptionKey> ephemeralKeys = new HashMap<Long, EphemeralEncryptionKey>();
-    private PrivateKeyStorage privateKeyStorage;
-    private KeyValueStorage ephemeralStorage;
+    private KeyValueStorage encryptionKeysStorage;
+
+    private HashMap<Integer, UserKeys> cachedUserKeys = new HashMap<Integer, UserKeys>();
+    private OwnKeys ownKeys;
+
     private boolean isReady = false;
 
     public KeyManagerActor(ModuleContext context) {
@@ -46,41 +52,40 @@ public class KeyManagerActor extends ModuleActor {
 
     @Override
     public void preStart() {
-        ephemeralStorage = Storage.createKeyValue("ephemeral_keys");
 
-        byte[] data = preferences().getBytes(PRIVATE_KEYS);
-        if (data != null) {
+        encryptionKeysStorage = Storage.createKeyValue("encryption_keys");
+
+        ownKeys = null;
+        byte[] ownKeysStorage = encryptionKeysStorage.loadItem(0);
+        if (ownKeysStorage != null) {
             try {
-                privateKeyStorage = new PrivateKeyStorage(data);
+                ownKeys = new OwnKeys(ownKeysStorage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        if (privateKeyStorage == null) {
-            Log.d(TAG, "Generating new encryption keys...");
+        if (ownKeys == null) {
+            byte[] identityPrivate = Curve25519.keyGenPrivate(Crypto.randomBytes(64));
+            byte[] key0 = Curve25519.keyGenPrivate(Crypto.randomBytes(64));
 
-            EncryptionKey identityKey = new EncryptionKey(RandomUtils.nextRid(),
-                    Curve25519.keyGen(Crypto.randomBytes(64)));
-            ArrayList<EncryptionKey> keyPairs = new ArrayList<EncryptionKey>();
-            keyPairs.add(new EncryptionKey(RandomUtils.nextRid(),
-                    Curve25519.keyGen(Crypto.randomBytes(64))));
-
-            privateKeyStorage = new PrivateKeyStorage(identityKey, keyPairs, 0);
-            preferences().putBytes(PRIVATE_KEYS, privateKeyStorage.toByteArray());
+            ownKeys = new OwnKeys(0,
+                    new OwnPrivateKey(RandomUtils.nextRid(), "curve25519", identityPrivate),
+                    new OwnPrivateKey[]{
+                            new OwnPrivateKey(RandomUtils.nextRid(), "curve25519", key0)
+                    },
+                    new OwnPrivateKeyUploadable[0]);
+            encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
         }
 
-        if (privateKeyStorage.getKeyGroupId() == 0) {
-            Log.d(TAG, "Uploading main encryption keys...");
-
-            EncryptionKey identityKey = privateKeyStorage.getIdentityKey();
-            ApiEncryptionKey apiEncryptionKey =
-                    new ApiEncryptionKey(
-                            identityKey.getKeyId(),
-                            identityKey.getKeyAlg(),
-                            identityKey.getPublicKey(),
-                            null);
-
+        if (ownKeys.getKeyGroupId() == 0) {
+            OwnPrivateKey privateKey = ownKeys.getIdentityKey();
+            byte[] publicKey = Curve25519.keyGenPublic(privateKey.getKey());
+            ApiEncryptionKey apiEncryptionKey = new ApiEncryptionKey(
+                    privateKey.getKeyId(),
+                    privateKey.getKeyAlg(),
+                    publicKey,
+                    null);
             ArrayList<String> encryption = new ArrayList<String>();
             encryption.add("curve25519");
             encryption.add("Ed25519");
@@ -92,17 +97,18 @@ public class KeyManagerActor extends ModuleActor {
 
             ArrayList<ApiEncryptionKey> keys = new ArrayList<ApiEncryptionKey>();
             ArrayList<ApiEncryptionKeySignature> keySignatures = new ArrayList<ApiEncryptionKeySignature>();
-            for (EncryptionKey key : privateKeyStorage.getKeys()) {
+            for (OwnPrivateKey key : ownKeys.getKeys()) {
+                byte[] publicKey2 = Curve25519.keyGenPublic(privateKey.getKey());
                 ApiEncryptionKey apiKey =
                         new ApiEncryptionKey(
                                 key.getKeyId(),
                                 key.getKeyAlg(),
-                                key.getPublicKey(),
+                                publicKey2,
                                 null);
                 keys.add(apiKey);
 
 
-                byte[] signature = Curve25519.calculateSignature(Crypto.randomBytes(64), identityKey.getPrivateKey(), apiKey.toByteArray());
+                byte[] signature = Curve25519.calculateSignature(Crypto.randomBytes(64), privateKey.getKey(), apiKey.toByteArray());
                 keySignatures.add(
                         new ApiEncryptionKeySignature(
                                 key.getKeyId(),
@@ -113,8 +119,8 @@ public class KeyManagerActor extends ModuleActor {
             request(new RequestCreateNewKeyGroup(apiEncryptionKey, encryption, keys, keySignatures), new RpcCallback<ResponseCreateNewKeyGroup>() {
                 @Override
                 public void onResult(ResponseCreateNewKeyGroup response) {
-                    privateKeyStorage = privateKeyStorage.markUploaded(response.getKeyGroupId());
-                    preferences().putBytes(PRIVATE_KEYS, privateKeyStorage.toByteArray());
+                    ownKeys = ownKeys.setGroupId(response.getKeyGroupId());
+                    encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
                     onMainKeysReady();
                 }
 
@@ -134,71 +140,59 @@ public class KeyManagerActor extends ModuleActor {
     private void onMainKeysReady() {
         Log.d(TAG, "Main Keys are ready");
 
-        // Loading all keys
-        for (KeyValueRecord r : ephemeralStorage.loadAllItems()) {
-            try {
-                EphemeralEncryptionKey encryptionKey = new EphemeralEncryptionKey(r.getData());
-                ephemeralKeys.put(encryptionKey.getEncryptionKey().getKeyId(), encryptionKey);
-            } catch (IOException e) {
-                e.printStackTrace();
+        // Generation of missed ephemeral keys
+        int missingKeysCount = Math.max(0, Configuration.EPHEMERAL_KEYS_COUNT - ownKeys.getEphemeralKeys().length);
+        if (missingKeysCount > 0) {
+            OwnPrivateKeyUploadable[] nKeys = new OwnPrivateKeyUploadable[missingKeysCount];
+            for (int i = 0; i < missingKeysCount; i++) {
+                nKeys[i] = new OwnPrivateKeyUploadable(
+                        RandomUtils.nextRid(),
+                        "curve25519",
+                        Curve25519.keyGenPrivate(Crypto.randomBytes(64)),
+                        false);
             }
+            ownKeys = ownKeys.appendEphemeralKeys(nKeys);
+            encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
         }
 
-        // Generating missing ephemeral keys
-        for (int i = 0; i < 100 - ephemeralKeys.size(); i++) {
-            long randomId = RandomUtils.nextRid();
-            EncryptionKey encryptionKey = new EncryptionKey(
-                    randomId,
-                    Curve25519.keyGen(Crypto.randomBytes(64)));
-            EphemeralEncryptionKey ephemeralEncryptionKey =
-                    new EphemeralEncryptionKey(encryptionKey, false);
-            ephemeralStorage.addOrUpdateItem(randomId, ephemeralEncryptionKey.toByteArray());
-            ephemeralKeys.put(randomId, ephemeralEncryptionKey);
-        }
 
         // Uploading ephemeral keys
         // records = ephemeralStorage.loadAllItems();
 
-        final ArrayList<EphemeralEncryptionKey> pendingEphermalKeys = new ArrayList<EphemeralEncryptionKey>();
-        for (EphemeralEncryptionKey record : ephemeralKeys.values()) {
-            if (!record.isUploaded()) {
-                pendingEphermalKeys.add(record);
+        final ArrayList<OwnPrivateKeyUploadable> pendingEphermalKeys = new ArrayList<OwnPrivateKeyUploadable>();
+        for (OwnPrivateKeyUploadable key : ownKeys.getEphemeralKeys()) {
+            if (!key.isUploaded()) {
+                pendingEphermalKeys.add(key);
             }
         }
 
         if (pendingEphermalKeys.size() > 0) {
-            ArrayList<ApiEncryptionKey> uploadingKeys = new ArrayList<ApiEncryptionKey>();
+            final ArrayList<ApiEncryptionKey> uploadingKeys = new ArrayList<ApiEncryptionKey>();
             ArrayList<ApiEncryptionKeySignature> uploadingSignatures = new ArrayList<ApiEncryptionKeySignature>();
-            for (EphemeralEncryptionKey k : pendingEphermalKeys) {
+            for (OwnPrivateKeyUploadable k : pendingEphermalKeys) {
                 ApiEncryptionKey apiKey =
                         new ApiEncryptionKey(
-                                k.getEncryptionKey().getKeyId(),
-                                k.getEncryptionKey().getKeyAlg(),
-                                k.getEncryptionKey().getPublicKey(),
+                                k.getKeyId(),
+                                k.getKeyAlg(),
+                                Curve25519.keyGenPublic(k.getKey()),
                                 null);
                 uploadingKeys.add(apiKey);
 
 
                 byte[] signature = Curve25519.calculateSignature(Crypto.randomBytes(64),
-                        privateKeyStorage.getIdentityKey().getPrivateKey(), apiKey.toByteArray());
+                        ownKeys.getIdentityKey().getKey(), apiKey.toByteArray());
                 uploadingSignatures.add(
                         new ApiEncryptionKeySignature(
-                                k.getEncryptionKey().getKeyId(),
+                                k.getKeyId(),
                                 "Ed25519",
                                 signature));
             }
 
-            request(new RequestUploadEphermalKey(privateKeyStorage.getKeyGroupId(), uploadingKeys, uploadingSignatures), new RpcCallback<ResponseVoid>() {
+            request(new RequestUploadEphermalKey(ownKeys.getKeyGroupId(), uploadingKeys, uploadingSignatures), new RpcCallback<ResponseVoid>() {
                 @Override
                 public void onResult(ResponseVoid response) {
-                    List<KeyValueRecord> updated = new ArrayList<KeyValueRecord>();
-                    for (EphemeralEncryptionKey k : pendingEphermalKeys) {
-                        EphemeralEncryptionKey uploaded = k.markUploaded();
-                        updated.add(new KeyValueRecord(uploaded.getEncryptionKey().getKeyId(), uploaded.toByteArray()));
-                        ephemeralKeys.put(uploaded.getEncryptionKey().getKeyId(), uploaded);
-                    }
-                    ephemeralStorage.addOrUpdateItems(updated);
-
+                    ownKeys = ownKeys.markAsUploaded(pendingEphermalKeys.toArray(new OwnPrivateKeyUploadable[pendingEphermalKeys.size()]));
+                    encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
                     onAllKeysReady();
                 }
 
@@ -225,19 +219,20 @@ public class KeyManagerActor extends ModuleActor {
     }
 
     private void fetchOwnKey(Future future) {
-        Long[] keys = ephemeralKeys.keySet().toArray(new Long[ephemeralKeys.size()]);
-        EphemeralEncryptionKey ephemeralEncryptionKey = ephemeralKeys.get(keys[RandomUtils.randomId(keys.length)]);
-        future.onResult(new FetchOwnKeyResult(privateKeyStorage.getIdentityKey(), ephemeralEncryptionKey.getEncryptionKey()));
+        Log.d(TAG, "fetchOwnKey");
+        future.onResult(new FetchOwnKeyResult(ownKeys.getIdentityKey(), ownKeys.pickRandomEphemeralKey()));
     }
 
     private void fetchKeyGroup(Future future) {
-        future.onResult(new FetchOwnKeyGroupResult(privateKeyStorage.getKeyGroupId()));
+        Log.d(TAG, "fetchKeyGroup");
+        future.onResult(new FetchOwnKeyGroupResult(ownKeys.getKeyGroupId()));
     }
 
     private void fetchEphemeralKey(byte[] publicKey, Future future) {
-        for (EphemeralEncryptionKey encryptionKey : ephemeralKeys.values()) {
-            if (ByteStrings.isEquals(encryptionKey.getEncryptionKey().getPublicKey(), publicKey)) {
-                future.onResult(new FetchEphemeralPrivateKeyRes(encryptionKey.getEncryptionKey().getPrivateKey()));
+        Log.d(TAG, "fetchEphemeralKey");
+        for (OwnPrivateKey k : ownKeys.getEphemeralKeys()) {
+            if (ByteStrings.isEquals(Curve25519.keyGenPublic(k.getKey()), publicKey)) {
+                future.onResult(new FetchEphemeralPrivateKeyRes(k.getKey()));
                 return;
             }
         }
@@ -245,13 +240,71 @@ public class KeyManagerActor extends ModuleActor {
     }
 
     private void fetchEphemeralKey(long keyId, Future future) {
-        for (EphemeralEncryptionKey encryptionKey : ephemeralKeys.values()) {
-            if (encryptionKey.getEncryptionKey().getKeyId() == keyId) {
-                future.onResult(new FetchEphemeralPrivateKeyRes(encryptionKey.getEncryptionKey().getPrivateKey()));
+        Log.d(TAG, "fetchEphemeralKey");
+        for (OwnPrivateKey k : ownKeys.getEphemeralKeys()) {
+            if (k.getKeyId() == keyId) {
+                future.onResult(new FetchEphemeralPrivateKeyRes(k.getKey()));
                 return;
             }
         }
         future.onError(new RuntimeException("Unable to find ephemeral key"));
+    }
+
+    private void fetchUserGroups(final int uid, final Future future) {
+        Log.d(TAG, "fetchUserGroups");
+        UserKeys userKeys = cachedUserKeys.get(uid);
+        if (userKeys == null) {
+            byte[] cached = encryptionKeysStorage.loadItem(uid);
+            if (cached != null) {
+                try {
+                    userKeys = new UserKeys(cached);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (userKeys != null) {
+            Log.d(TAG, "onResult:fast");
+            future.onResult(new FetchUserKeyGroupsResponse(userKeys));
+            return;
+        }
+
+        Log.d(TAG, "Requesting");
+        User user = users().getValue(uid);
+        request(new RequestLoadPublicKeyGroups(new ApiUserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponsePublicKeyGroups>() {
+            @Override
+            public void onResult(ResponsePublicKeyGroups response) {
+                Log.d(TAG, "onResult");
+                UserKeysGroup[] groups = new UserKeysGroup[response.getPublicKeyGroups().size()];
+                for (int i = 0; i < groups.length; i++) {
+                    ApiEncryptionKeyGroup encryptionKey = response.getPublicKeyGroups().get(i);
+
+                    // TODO: Validate signatures
+
+                    UserPublicKey identity = new UserPublicKey(
+                            encryptionKey.getIdentityKey().getKeyId(),
+                            encryptionKey.getIdentityKey().getKeyAlg(),
+                            encryptionKey.getIdentityKey().getKeyMaterial());
+                    UserPublicKey[] keys = new UserPublicKey[encryptionKey.getKeys().size()];
+                    for (int j = 0; j < keys.length; j++) {
+                        keys[j] = new UserPublicKey(
+                                encryptionKey.getKeys().get(j).getKeyId(),
+                                encryptionKey.getKeys().get(j).getKeyAlg(),
+                                encryptionKey.getKeys().get(j).getKeyMaterial());
+                    }
+                    groups[i] = new UserKeysGroup(encryptionKey.getKeyGroupId(), identity, keys, new UserPublicKey[0]);
+                }
+                UserKeys userKeys1 = new UserKeys(uid, groups);
+                encryptionKeysStorage.addOrUpdateItem(uid, userKeys1.toByteArray());
+                future.onResult(new FetchUserKeyGroupsResponse(userKeys1));
+            }
+
+            @Override
+            public void onError(RpcException e) {
+                Log.d(TAG, "onError");
+                future.onError(e);
+            }
+        });
     }
 
     @Override
@@ -277,6 +330,9 @@ public class KeyManagerActor extends ModuleActor {
         } else if (message instanceof FetchEphemeralPrivateKeyById) {
             fetchEphemeralKey(((FetchEphemeralPrivateKeyById) message).getKeyId(), future);
             return false;
+        } else if (message instanceof FetchUserKeyGroups) {
+            fetchUserGroups(((FetchUserKeyGroups) message).getUid(), future);
+            return false;
         }
         return super.onAsk(message, future);
     }
@@ -287,19 +343,19 @@ public class KeyManagerActor extends ModuleActor {
 
     public static class FetchOwnKeyResult {
 
-        private EncryptionKey identityKey;
-        private EncryptionKey ephemeralKey;
+        private OwnPrivateKey identityKey;
+        private OwnPrivateKey ephemeralKey;
 
-        public FetchOwnKeyResult(EncryptionKey identityKey, EncryptionKey ephemeralKey) {
+        public FetchOwnKeyResult(OwnPrivateKey identityKey, OwnPrivateKey ephemeralKey) {
             this.identityKey = identityKey;
             this.ephemeralKey = ephemeralKey;
         }
 
-        public EncryptionKey getIdentityKey() {
+        public OwnPrivateKey getIdentityKey() {
             return identityKey;
         }
 
-        public EncryptionKey getEphemeralKey() {
+        public OwnPrivateKey getEphemeralKey() {
             return ephemeralKey;
         }
     }
@@ -355,6 +411,31 @@ public class KeyManagerActor extends ModuleActor {
 
         public byte[] getPrivateKey() {
             return privateKey;
+        }
+    }
+
+    public static class FetchUserKeyGroups {
+        private int uid;
+
+        public FetchUserKeyGroups(int uid) {
+            this.uid = uid;
+        }
+
+        public int getUid() {
+            return uid;
+        }
+    }
+
+    public static class FetchUserKeyGroupsResponse {
+
+        private UserKeys userKeys;
+
+        public FetchUserKeyGroupsResponse(UserKeys userKeys) {
+            this.userKeys = userKeys;
+        }
+
+        public UserKeys getUserKeys() {
+            return userKeys;
         }
     }
 }

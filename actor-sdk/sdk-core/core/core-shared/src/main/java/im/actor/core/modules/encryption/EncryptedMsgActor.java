@@ -15,11 +15,11 @@ import im.actor.runtime.Log;
 import im.actor.runtime.actors.Future;
 import im.actor.runtime.actors.ask.AskCallback;
 
-public class MessageEncryptionActor extends ModuleActor {
+public class EncryptedMsgActor extends ModuleActor {
 
     private static final String TAG = "MessageEncryptionActor";
 
-    public MessageEncryptionActor(ModuleContext context) {
+    public EncryptedMsgActor(ModuleContext context) {
         super(context);
     }
 
@@ -83,6 +83,7 @@ public class MessageEncryptionActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
+        Log.d(TAG, "msg: " + message);
         if (message instanceof InMessage) {
             InMessage inMessage = (InMessage) message;
             onDecrypt(inMessage.senderUid, inMessage.encryptedMessage);
