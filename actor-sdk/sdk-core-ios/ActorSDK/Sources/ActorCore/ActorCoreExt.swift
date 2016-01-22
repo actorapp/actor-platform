@@ -220,7 +220,7 @@ class AAUploadFileCallback : NSObject, ACUploadFileCallback {
     }
     
     func onNotUploading() {
-        self.notUploaded?();
+        self.notUploaded?()
     }
     
     func onUploaded() {
@@ -262,6 +262,7 @@ class AAFileCallback : NSObject, ACFileCallback {
         self.onDownloaded?(fileName: reference!.getDescriptor());
     }
 }
+
 
 //
 // Markdown
