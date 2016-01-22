@@ -84,9 +84,6 @@ class AAVoiceRecorderView: UIView {
         self.recorderImageCircle.image = UIImage.tinted("aa_recordercircle", color: UIColor(red: 0.7287, green: 0.7252, blue: 0.7322, alpha: 1.0))
         self.recorderImageCircle.frame = CGRectMake(10, 15, 14, 14)
         
-        
-        
-        
         //
         
     }

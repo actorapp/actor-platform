@@ -180,6 +180,8 @@ public class AABubbleCell: UICollectionViewCell {
         
         self.layer.shouldRasterize = true
         self.layer.rasterizationScale = UIScreen.mainScreen().scale
+        self.layer.drawsAsynchronously = true
+        self.contentView.layer.drawsAsynchronously = true
     }
     
     public required init(coder aDecoder: NSCoder) {
@@ -218,10 +220,6 @@ public class AABubbleCell: UICollectionViewCell {
     }
     
     public func performBind(message: ACMessage, setting: AACellSetting, isShowNewMessages: Bool, layout: AACellLayout) {
-        self.clipsToBounds = true
-        self.contentView.clipsToBounds = true
-        self.layer.drawsAsynchronously = true
-        self.contentView.layer.drawsAsynchronously = true
         
         var reuse = false
         if (bindedMessage != nil && bindedMessage?.rid == message.rid) {

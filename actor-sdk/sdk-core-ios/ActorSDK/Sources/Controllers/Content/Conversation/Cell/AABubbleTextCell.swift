@@ -49,13 +49,19 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             kCTUnderlineStyleAttributeName: NSNumber(bool: false)]
         messageText.verticalAlignment = TTTAttributedLabelVerticalAlignment.Center
         
+        messageText.layer.drawsAsynchronously = true
+        
         dateText.font = AABubbleTextCell.dateFont
         dateText.lineBreakMode = .ByClipping
         dateText.numberOfLines = 1
         dateText.contentMode = UIViewContentMode.TopLeft
         dateText.textAlignment = NSTextAlignment.Right
         
+        dateText.layer.drawsAsynchronously = true
+        
         statusView.contentMode = UIViewContentMode.Center
+        
+        dateText.layer.drawsAsynchronously = true
         
         contentView.addSubview(messageText)
         contentView.addSubview(dateText)

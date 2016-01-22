@@ -79,8 +79,11 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             }
             
             self.isStarted = true
-            UIView.animateWithDuration(0.15, animations: { () -> Void in
+            
+            UIView.animateWithDuration(0.6, animations: { () -> Void in
                 self.collectionView.alpha = 1
+                }, completion: { (comp) -> Void in
+                    self.navigationController?.view.layer.speed = 1
             })
             
             self.willUpdate()
@@ -363,7 +366,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         
         if (self.voicePlayer != nil) {
             
-            self.voicePlayer.stop()
+            self.voicePlayer.pause()
             
         }
         

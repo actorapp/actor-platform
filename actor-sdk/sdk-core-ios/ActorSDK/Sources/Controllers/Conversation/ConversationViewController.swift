@@ -42,6 +42,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     private var stickersButton : UIButton!
     private var stickersOpen = false
     
+    // Mode
+    
+    private var textMode:Bool!
+    
     var audioRecorder: AAAudioRecorder!
     
     // MARK: - Init
@@ -59,7 +63,6 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         // Background
         
         backgroundView.contentMode = .ScaleAspectFill
-        backgroundView.clipsToBounds = true
         backgroundView.backgroundColor = appStyle.chatBgColor
         
         // Custom background if available
@@ -87,23 +90,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         // Text view placeholder
         self.textView.placeholder = AALocalized("ChatPlaceholder")
         
-        
-        self.rightButton.tintColor = appStyle.chatSendColor
-        self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
-        self.rightButton.setTitle("", forState: UIControlState.Normal)
-        self.rightButton.enabled = true
-        self.rightButton.layoutIfNeeded()
-        
-        self.rightButton.addTarget(self, action: "beginRecord:event:", forControlEvents: UIControlEvents.TouchDown)
-        self.rightButton.addTarget(self, action: "mayCancelRecord:event:", forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
-        self.rightButton.addTarget(self, action: "finishRecord:event:", forControlEvents: UIControlEvents.TouchUpInside.union(UIControlEvents.TouchCancel).union(UIControlEvents.TouchUpOutside))
-        
-        // voice recorder delegate
-        self.audioRecorder = AAAudioRecorder()
-        self.audioRecorder.delegate = self
-
-        
-        //add stickers button
+        // Add stickers button
         self.stickersButton = UIButton(type: UIButtonType.System)
         self.stickersButton.tintColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.5)
         self.stickersButton.setImage(UIImage.bundled("sticker_button"), forState: UIControlState.Normal)
@@ -111,6 +98,45 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.stickersButton.addTarget(self, action: "changeKeyboard", forControlEvents: UIControlEvents.TouchUpInside)
         
         self.textInputbar.addSubview(stickersButton)
+        
+        // Check text for set right button
+        let checkText = Actor.loadDraftWithPeer(peer).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        
+        if (checkText.isEmpty) {
+            
+            self.textMode = false
+            
+            self.rightButton.tintColor = appStyle.chatSendColor
+            self.rightButton.setImage(UIImage.tinted("aa_micbutton", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
+            self.rightButton.setTitle("", forState: UIControlState.Normal)
+            self.rightButton.enabled = true
+            
+            self.rightButton.layoutIfNeeded()
+            
+            self.rightButton.addTarget(self, action: "beginRecord:event:", forControlEvents: UIControlEvents.TouchDown)
+            self.rightButton.addTarget(self, action: "mayCancelRecord:event:", forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
+            self.rightButton.addTarget(self, action: "finishRecord:event:", forControlEvents: UIControlEvents.TouchUpInside.union(UIControlEvents.TouchCancel).union(UIControlEvents.TouchUpOutside))
+            
+        } else {
+            
+            self.textMode = true
+            
+            self.stickersButton.hidden = true
+            
+            self.rightButton.setTitle(AALocalized("ChatSend"), forState: UIControlState.Normal)
+            self.rightButton.setTitleColor(appStyle.chatSendColor, forState: UIControlState.Normal)
+            self.rightButton.setTitleColor(appStyle.chatSendDisabledColor, forState: UIControlState.Disabled)
+            self.rightButton.setImage(nil, forState: UIControlState.Normal)
+            self.rightButton.enabled = true
+            
+            self.rightButton.layoutIfNeeded()
+            
+        }
+        
+        // voice recorder delegate
+        self.audioRecorder = AAAudioRecorder()
+        self.audioRecorder.delegate = self
+
         
         self.keyboardPanningEnabled = true
         
@@ -181,7 +207,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             name: SLKKeyboardWillHideNotification,
             object: nil)
         
-        
+        navigationController?.view.layer.speed = 1.5
         
     }
     
@@ -290,7 +316,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        //self.audioButton.frame = textView.frame
+        //navigationController?.view.layer.speed = 1
         
         if navigationController!.viewControllers.count > 2 {
             let firstController = navigationController!.viewControllers[0]
@@ -312,6 +338,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
+        navigationController?.view.layer.speed = 1.5
+        
         Actor.onConversationClosedWithPeer(peer)
         ActorSDK.sharedActor().trackPageHidden(content)
 
@@ -325,6 +353,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
 
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
+        navigationController?.view.layer.speed = 1
+        
         Actor.saveDraftWithPeer(peer, withDraft: textView.text)
         
         // Releasing bindings
@@ -379,13 +409,19 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     override func textDidUpdate(animated: Bool) {
         super.textDidUpdate(animated)
         
+        self.checkTextInTextView()
+        
+    }
+    
+    func checkTextInTextView() {
+        
+        
         let text = self.textView.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         self.rightButton.enabled = true
         
-        //change button
+        //change button's
         
-        
-        if !text.isEmpty {
+        if !text.isEmpty && textMode == false {
             
             self.rightButton.removeTarget(self, action: "beginRecord:event:", forControlEvents: UIControlEvents.TouchDown)
             self.rightButton.removeTarget(self, action: "mayCancelRecord:event:", forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
@@ -400,30 +436,32 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             self.rightButton.setTitleColor(appStyle.chatSendDisabledColor, forState: UIControlState.Disabled)
             self.rightButton.setImage(nil, forState: UIControlState.Normal)
             
-            if self.micOn == true {
-                self.micOn = false
-            }
+            self.rightButton.layoutIfNeeded()
+            self.textInputbar.layoutIfNeeded()
             
-        } else {
+            self.textMode = true
+            
+        } else if (text.isEmpty && textMode == true) {
             
             self.rightButton.addTarget(self, action: "beginRecord:event:", forControlEvents: UIControlEvents.TouchDown)
             self.rightButton.addTarget(self, action: "mayCancelRecord:event:", forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
             self.rightButton.addTarget(self, action: "finishRecord:event:", forControlEvents: UIControlEvents.TouchUpInside.union(UIControlEvents.TouchCancel).union(UIControlEvents.TouchUpOutside))
             
             self.stickersButton.hidden = false
-            if(self.micOn == false){
+            
                 
-                self.rightButton.tintColor = appStyle.chatAttachColor
-                self.rightButton.setImage(UIImage.bundled("aa_micbutton"), forState: UIControlState.Normal)
-                self.rightButton.setTitle("", forState: UIControlState.Normal)
-                self.rightButton.enabled = true
-                
-            }
+            self.rightButton.tintColor = appStyle.chatAttachColor
+            self.rightButton.setImage(UIImage.bundled("aa_micbutton"), forState: UIControlState.Normal)
+            self.rightButton.setTitle("", forState: UIControlState.Normal)
+            self.rightButton.enabled = true
+            
+            
+            self.rightButton.layoutIfNeeded()
+            self.textInputbar.layoutIfNeeded()
+            
+            self.textMode = false
             
         }
-        
-        self.textInputbar.layoutIfNeeded()
-        self.rightButton.layoutIfNeeded()
         
     }
     
@@ -708,8 +746,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             NSLog("Audio Recording file: \(descriptor)")
             
 
-            Actor.sendAudioWithPeer(self.peer, withName: NSString.localizedStringWithFormat("%.0fs.ogg", duration + 0.5) as String,
-                withDuration: jint(duration), withDescriptor: descriptor)
+            Actor.sendAudioWithPeer(self.peer, withName: NSString.localizedStringWithFormat("%.0fms.ogg", duration*1000) as String,
+                withDuration: jint(duration*1000), withDescriptor: descriptor)
             
         })
     }

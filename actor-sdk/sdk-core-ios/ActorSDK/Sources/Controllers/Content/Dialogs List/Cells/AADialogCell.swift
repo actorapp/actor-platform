@@ -30,6 +30,15 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        self.avatarView.layer.drawsAsynchronously       = true
+        self.titleView.layer.drawsAsynchronously        = true
+        self.dateView.layer.drawsAsynchronously         = true
+        self.statusView.layer.drawsAsynchronously       = true
+        self.counterViewBg.layer.drawsAsynchronously    = true
+        self.counterView.layer.drawsAsynchronously      = true
+        
+        ////////////////////////////////////////////////
+        
         self.contentView.addSubview(avatarView)
         
         titleView.font = UIFont.mediumSystemFontOfSize(17)
@@ -56,6 +65,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         counterView.textColor = appStyle.dialogCounterColor
         counterView.textAlignment = .Center
         self.contentView.addSubview(counterView)
+        
     }
 
     public required init(coder aDecoder: NSCoder) {

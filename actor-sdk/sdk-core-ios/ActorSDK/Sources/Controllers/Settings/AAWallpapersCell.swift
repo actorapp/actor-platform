@@ -15,17 +15,14 @@ public class AAWallpapersCell: AATableViewCell {
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        wallpapper1.clipsToBounds = true
         wallpapper1.contentMode = .ScaleAspectFill
         wallpapper1.image = UIImage.bundled("bg_1_preview.jpg")!
         wallpapper1.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_1.jpg") }
         
-        wallpapper2.clipsToBounds = true
         wallpapper2.contentMode = .ScaleAspectFill
         wallpapper2.image = UIImage.bundled("bg_2_preview.jpg")!
         wallpapper2.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_2.jpg") }
         
-        wallpapper3.clipsToBounds = true
         wallpapper3.contentMode = .ScaleAspectFill
         wallpapper3.image = UIImage.bundled("bg_3_preview.jpg")!
         wallpapper3.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_3.jpg") }
