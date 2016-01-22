@@ -158,7 +158,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
         case Status.Failure(e) ⇒
           log.error(e, "Failed to init dialog")
           self ! Kill
-      }: Receive) orElse reactions(isHidden = false))
+      }: Receive) orElse reactions(isHidden = false) orElse dummyActions)
 
       (for {
         state ← initialState
@@ -184,11 +184,6 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
       } yield resultMessage).to(self, sender())
   }
 
-  private def isWriteOperation: PartialFunction[Any, Boolean] = {
-    case _: SendMessage | _: WriteMessage | _: WriteMessageSelf ⇒ true
-    case _ ⇒ false
-  }
-
   def initialized(state: DialogState): Receive = actions(state) orElse reactions(isHidden = state.isHidden)
 
   // when receiving this messages, dialog reacts on other dialog's action
@@ -199,6 +194,11 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
     case sr: SetReaction if accepts(sr)       ⇒ ackSetReaction(sr)
     case rr: RemoveReaction if accepts(rr)    ⇒ ackRemoveReaction(rr)
     case uc: UpdateCounters                   ⇒ updateCountersChanged()
+  }
+
+  def dummyActions: Receive = {
+    case mrv: MessageReceived if invokes(mrv) ⇒ Future.successful(MessageReceivedAck()) pipeTo sender()
+    case mrd: MessageRead if invokes(mrd)     ⇒ Future.successful(MessageReadAck()) pipeTo sender()
   }
 
   // when receiving this messages, dialog required to take action
@@ -242,6 +242,11 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
    * @return does dialog owner accepts this command
    */
   private def accepts(dc: DirectDialogCommand) = (dc.dest == selfPeer) || ((dc.dest == peer) && (dc.origin != selfPeer))
+
+  private def isWriteOperation: PartialFunction[Any, Boolean] = {
+    case _: SendMessage | _: WriteMessage | _: WriteMessageSelf ⇒ true
+    case _ ⇒ false
+  }
 
   private def initialState: Future[InitState] =
     for {

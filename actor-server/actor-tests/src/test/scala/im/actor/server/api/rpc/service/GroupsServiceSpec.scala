@@ -20,6 +20,7 @@ final class GroupsServiceSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with MessageParsing
+  with MessagingSpecHelpers
   with ImplicitSequenceService
   with ImplicitAuthService
   with ImplicitSessionRegion
@@ -511,6 +512,8 @@ final class GroupsServiceSpec
       val groupOutPeer = createGroup("Invite Fun group", Set.empty).groupPeer
 
       whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong, user2OutPeer)) { _ ⇒ }
+
+      sendMessageToGroup(groupOutPeer.groupId, ApiTextMessage("This is message to initialize group dialog", Vector.empty, None))
 
       groupOutPeer
     }
