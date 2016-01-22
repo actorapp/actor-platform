@@ -226,26 +226,32 @@ public class EncryptedSessionActor extends ModuleActor {
         Log.d(TAG, "onDecrypt:theirEphermalKey0Id: " + theirEphermalKey0Id);
         Log.d(TAG, "onDecrypt:messageIndex: " + messageIndex);
 
-        ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchEphemeralPrivateKey(ownEphermalKey), new AskCallback() {
+        ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchEphemeralPrivateKey(theirEphermalKey), new AskCallback() {
             @Override
             public void onResult(Object obj) {
+
+                Log.d(TAG, "onDecrypt:onResultEphermal");
 
                 final KeyManagerActor.FetchEphemeralPrivateKeyRes ownEphermalKey
                         = (KeyManagerActor.FetchEphemeralPrivateKeyRes) obj;
 
-                ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchEphemeralPrivateKeyById(ownEphermalKey0Id),
+                ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchEphemeralPrivateKeyById(theirEphermalKey0Id),
                         new AskCallback() {
                             @Override
                             public void onResult(Object obj) {
+
+                                Log.d(TAG, "onDecrypt:onResultPrivate");
+
                                 final KeyManagerActor.FetchEphemeralPrivateKeyRes ownEphermalKey0
                                         = (KeyManagerActor.FetchEphemeralPrivateKeyRes) obj;
 
                                 ArrayList<Long> keys = new ArrayList<Long>();
-                                keys.add(theirEphermalKey0Id);
+                                keys.add(ownEphermalKey0Id);
 
                                 request(new RequestLoadPublicKey(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), keyGroupId, keys), new RpcCallback<ResponsePublicKeys>() {
                                     @Override
                                     public void onResult(ResponsePublicKeys response) {
+                                        Log.d(TAG, "onDecrypt:RequestLoadPublicKey");
                                         onDecrypt(data, ownEphermalKey0.getPrivateKey(),
                                                 ownEphermalKey.getPrivateKey(),
                                                 theirEphermalKey,
@@ -256,6 +262,7 @@ public class EncryptedSessionActor extends ModuleActor {
 
                                     @Override
                                     public void onError(RpcException e) {
+                                        Log.d(TAG, "onDecrypt:RequestLoadPublicKey:onError");
                                         future.onError(e);
                                     }
                                 });
@@ -264,6 +271,7 @@ public class EncryptedSessionActor extends ModuleActor {
 
                             @Override
                             public void onError(Exception e) {
+                                Log.d(TAG, "onDecrypt:onResultPrivate:onError");
                                 future.onError(e);
                             }
                         });
@@ -271,6 +279,7 @@ public class EncryptedSessionActor extends ModuleActor {
 
             @Override
             public void onError(Exception e) {
+                Log.d(TAG, "onDecrypt:onResultEphermal:onError");
                 future.onError(e);
             }
         });
