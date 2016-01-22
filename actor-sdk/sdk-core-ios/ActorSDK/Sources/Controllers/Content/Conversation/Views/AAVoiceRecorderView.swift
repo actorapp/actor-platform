@@ -197,9 +197,9 @@ class AAVoiceRecorderView: UIView {
     
     func updateAudioMeter(timer:NSTimer) {
         
-        if (self.binedController.audioRecorder != nil) {
+        if let recorder = self.binedController?.audioRecorder {
             
-            let dur = self.binedController.audioRecorder.currentDuration()
+            let dur = recorder.currentDuration()
             
             let minutes = Int(dur / 60)
             let seconds = Int(dur % 60)
