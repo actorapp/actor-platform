@@ -13,7 +13,7 @@ import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.configs.Parameter
-import im.actor.server.mtproto.protocol.UpdateBox
+import im.actor.server.mtproto.protocol.ProtoPush
 import im.actor.server.persist.configs.ParameterRepo
 import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.presences._
@@ -24,7 +24,7 @@ import slick.dbio.DBIO
 import scala.concurrent._
 import scala.concurrent.duration._
 
-final case class NewUpdate(ub: UpdateBox, reduceKey: Option[String])
+final case class NewUpdate(ub: ProtoPush, reduceKey: Option[String])
 
 sealed trait UpdatesConsumerMessage
 
@@ -238,7 +238,7 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
   }
 
   private def sendUpdateBox(updateBox: ProtoUpdateBox, reduceKey: Option[String]): Unit =
-    subscriber ! NewUpdate(UpdateBox(UpdateBoxCodec.encode(updateBox).require), reduceKey)
+    subscriber ! NewUpdate(ProtoPush(UpdateBoxCodec.encode(updateBox).require), reduceKey)
 
   private def getFatData(
     userId:      Int,

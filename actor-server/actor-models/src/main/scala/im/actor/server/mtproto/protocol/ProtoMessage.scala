@@ -156,22 +156,22 @@ object ResponseAuthId {
 }
 
 @SerialVersionUID(1L)
-final case class RpcRequestBox(bodyBytes: BitVector) extends ProtoMessage {
-  val header = RpcRequestBox.header
+final case class ProtoRpcRequest(bodyBytes: BitVector) extends ProtoMessage {
+  val header = ProtoRpcRequest.header
 }
 
-object RpcRequestBox {
+object ProtoRpcRequest {
   val header = 0x03
 }
 
 @SerialVersionUID(1L)
-final case class RpcResponseBox(messageId: Long, bodyBytes: BitVector) extends ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage {
-  val header = RpcResponseBox.header
+final case class ProtoRpcResponse(messageId: Long, bodyBytes: BitVector) extends ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage {
+  val header = ProtoRpcResponse.header
 
   override val bodySize = bodyBytes.bytes.size
 }
 
-object RpcResponseBox {
+object ProtoRpcResponse {
   val header = 0x04
 }
 
@@ -194,12 +194,12 @@ object UnsentResponse {
 }
 
 @SerialVersionUID(1L)
-final case class UpdateBox(bodyBytes: BitVector) extends ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage {
-  val header = UpdateBox.header
+final case class ProtoPush(bodyBytes: BitVector) extends ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage {
+  val header = ProtoPush.header
 
   override val bodySize = bodyBytes.bytes.size
 }
 
-object UpdateBox {
+object ProtoPush {
   val header = 0x05
 }
