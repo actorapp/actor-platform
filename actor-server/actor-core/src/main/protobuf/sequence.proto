@@ -66,6 +66,7 @@ message UserSequenceCommands {
         oneof creds {
             GooglePushCredentials google = 1;
             ApplePushCredentials apple = 2;
+            ActorPushCredentials actor = 3;
         }
     }
 
