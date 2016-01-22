@@ -28,7 +28,7 @@ import kamon.Kamon
 import scala.concurrent.ExecutionContext
 import scala.util.Random
 
-class SimpleServerE2eSpec extends ActorSuite(
+final class SimpleServerE2eSpec extends ActorSuite(
   ActorSpecification.createSystem(ConfigFactory.parseString(
     """
       |session {
@@ -45,7 +45,7 @@ class SimpleServerE2eSpec extends ActorSuite(
 
   it should "respond to big RPC requests" in Server.bigRequests
 
-  it should "notify about lost session" in Server.e3
+  it should "notify about lost session" in Server.sessionLost
 
   it should "throw AuthIdInvalid if sending wrong AuthId" in Server.authIdInvalid
 
@@ -60,7 +60,7 @@ class SimpleServerE2eSpec extends ActorSuite(
     val serverConfig = system.settings.config
 
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-    val sequenceConfig = SequenceServiceConfig.load.toOption.get
+    val sequenceConfig = SequenceServiceConfig.load().toOption.get
 
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
     Session.startRegion(Session.props)
@@ -145,7 +145,7 @@ class SimpleServerE2eSpec extends ActorSuite(
       client.close()
     }
 
-    def e3() = {
+    def sessionLost() = {
       implicit val client = MTProtoClient()
 
       client.connectAndHandshake(remote)
@@ -162,7 +162,7 @@ class SimpleServerE2eSpec extends ActorSuite(
         expectMessageAck(helloMessageId)
       }
 
-      Thread.sleep(3000)
+      Thread.sleep(5000)
       expectSessionLost()
 
       {
