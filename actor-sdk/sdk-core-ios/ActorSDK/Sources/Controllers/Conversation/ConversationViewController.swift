@@ -67,6 +67,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         // Background
         
+        backgroundView.clipsToBounds = true
         backgroundView.contentMode = .ScaleAspectFill
         backgroundView.backgroundColor = appStyle.chatBgColor
         

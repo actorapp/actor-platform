@@ -24,10 +24,12 @@ class AAConvActionSheet: UIView {
     
     weak var weakSuper : ConversationViewController!
     
+    var superWidth : CGFloat!
+    
     init(maxSelected:Int,weakSuperIn:ConversationViewController) {
         super.init(frame: CGRectZero)
         
-        
+        superWidth = weakSuperIn.view.frame.size.width
         self.setupAllViews()
         self.configUI()
         self.weakSuper = weakSuperIn
@@ -58,34 +60,30 @@ class AAConvActionSheet: UIView {
     
     func showAnimation() {
         
+        self.alpha = 1
+        self.backgroundView.alpha = 0
+        
         var frame = self.sheetView.frame
         frame.origin.y = screenHeigth - 400
         
         self.weakSuper.navigationController!.interactivePopGestureRecognizer!.enabled = false
         
-        
         if (self.thumbnailView == nil) {
             
             self.thumbnailView = AAThumbnailView()
             self.sheetView.addSubview(self.thumbnailView)
-            self.thumbnailView.frame    = CGRectMake(0, 5, screenWidth, 90)
+            self.thumbnailView.frame    = CGRectMake(0, 5, superWidth, 90)
             self.thumbnailView.bindedConvSheet = self
             
         }
         
-        
-        self.alpha = 1
-        self.backgroundView.alpha = 0
-        
+        self.thumbnailView.open()
         
         UIView.animateWithDuration(0.4, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.6, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
             
+            self.sheetView.frame = frame
             self.backgroundView.alpha = 1
             
-            self.sheetView.frame = frame
-            
-            self.thumbnailView.open()
-            self.thumbnailView.reloadView()
             
             }, completion: { (complite) -> Void in
                 
@@ -182,12 +180,12 @@ class AAConvActionSheet: UIView {
         //self.sheetView.addSubview(self.thumbnailView)
         
         //self.thumbnailView.frame    = CGRectMake(0, 5, screenWidth, 90)
-        self.btnCamera.frame        = CGRectMake(0, 100, screenWidth, 50)
-        self.btnLibrary.frame       = CGRectMake(0, 150, screenWidth, 50)
-        self.btnDocuments.frame     = CGRectMake(0, 200, screenWidth, 50)
-        self.btnLocation.frame      = CGRectMake(0, 250, screenWidth, 50)
-        self.btnContact.frame       = CGRectMake(0, 300, screenWidth, 50)
-        self.btnCancel.frame        = CGRectMake(0, 350, screenWidth, 50)
+        self.btnCamera.frame        = CGRectMake(0, 100, superWidth, 50)
+        self.btnLibrary.frame       = CGRectMake(0, 150, superWidth, 50)
+        self.btnDocuments.frame     = CGRectMake(0, 200, superWidth, 50)
+        self.btnLocation.frame      = CGRectMake(0, 250, superWidth, 50)
+        self.btnContact.frame       = CGRectMake(0, 300, superWidth, 50)
+        self.btnCancel.frame        = CGRectMake(0, 350, superWidth, 50)
         
         // separators
         

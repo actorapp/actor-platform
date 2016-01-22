@@ -50,23 +50,32 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     
     func open() {
         
-        self.imageManager = PHCachingImageManager()
-        
-        if PHPhotoLibrary.authorizationStatus() == .Authorized {
-            fetchAssets()
-            self.collectionView.reloadData()
-        } else if PHPhotoLibrary.authorizationStatus() == .NotDetermined {
-            PHPhotoLibrary.requestAuthorization() { status in
-                if status == .Authorized {
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.imageManager = PHCachingImageManager()
-                        self.fetchAssets()
-                        self.collectionView.reloadData()
+        dispatchBackground { () -> Void in
+            self.imageManager = PHCachingImageManager()
+            
+            if PHPhotoLibrary.authorizationStatus() == .Authorized {
+                
+                self.fetchAssets()
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.collectionView.reloadData()
+                }
+                
+            } else if PHPhotoLibrary.authorizationStatus() == .NotDetermined {
+                
+                PHPhotoLibrary.requestAuthorization() { status in
+                    if status == .Authorized {
+                        dispatch_async(dispatch_get_main_queue()) {
+                            self.imageManager = PHCachingImageManager()
+                            self.fetchAssets()
+                            self.collectionView.reloadData()
+                        }
                     }
                 }
+
             }
+            
         }
-        
+
     }
     
     private func fetchAssets() {
@@ -93,7 +102,7 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
         
         let result = PHAsset.fetchAssetsWithOptions(options)
         let requestOptions = PHImageRequestOptions()
-        requestOptions.synchronous = true
+        requestOptions.synchronous = false
         requestOptions.deliveryMode = .FastFormat
         
         result.enumerateObjectsUsingBlock { asset, _, stop in
