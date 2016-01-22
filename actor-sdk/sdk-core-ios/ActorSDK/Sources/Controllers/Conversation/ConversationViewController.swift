@@ -46,7 +46,6 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     
     private var textMode:Bool!
     
-    //
     
     
     var audioRecorder: AAAudioRecorder!

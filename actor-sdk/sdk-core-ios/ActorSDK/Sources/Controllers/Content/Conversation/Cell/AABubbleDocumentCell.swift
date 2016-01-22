@@ -154,7 +154,7 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
                     if (content.getName().hasSuffix(".ogg")) {
                         
                         print("paaaaath ==== \(CocoaFiles.pathFromDescriptor(reference))")
-                        self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(reference))
+                        //self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(reference))
                         
                         return
                     }
@@ -180,7 +180,7 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
                     if (content.getName().hasSuffix(".ogg")) {
                         
                         print("paaaaath2 ==== \(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))")
-                        self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
+                        //self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
                         
                         return
                     }

@@ -45,6 +45,10 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
         
         soundProgressSlider.tintColor = appStyle.chatStatusSending
         
+        soundProgressSlider.userInteractionEnabled = false
+        
+        //soundProgressSlider.addTarget(self, action: "seekToNewAudioValue", forControlEvents: UIControlEvents.ValueChanged)
+        
         let insets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
         let trackLeftImage = UIImage.tinted("aa_voiceplaybackground", color: UIColor(red: 0.0, green: 0.761, blue: 0.9964, alpha: 1.0 ))
@@ -140,8 +144,34 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
         
         }
         
-        self.controller.voicePlayer?.inlineMediaContext().delegate = nil
-        self.controller.voicePlayer?.delegate = nil
+        dispatchOnUi { () -> Void in
+            self.controller.voicePlayer?.inlineMediaContext().delegate = nil
+            self.controller.voicePlayer?.delegate = nil
+            
+            
+            //let content = bindedMessage!.content as! ACDocumentContent
+            
+            
+            if self.controller.currentAudioFileId != self.bindedMessage?.rid {
+                self.soundProgressSlider.value = 0.0
+            } else {
+                self.controller.voicePlayer?.inlineMediaContext().delegate = self
+                self.controller.voicePlayer?.delegate = self
+                if self.controller.voicePlayer?.isPaused() == false {
+                    self.playPauseButton.setImage(UIImage.bundled("aa_pauserecordbutton"), forState: UIControlState.Normal)
+                } else {
+                    self.playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
+                }
+                
+            }
+            
+            if let progressVoice = self.controller.voicesCache[(self.bindedMessage?.rid)!] {
+                if progressVoice > 0.0 {
+                    self.soundProgressSlider.value = progressVoice
+                }
+            }
+            
+        }
         
         
         // Update time
@@ -252,11 +282,16 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
                 }, onDownloaded: { (reference) -> () in
                     
                     dispatchOnUi({ () -> Void in
-                        self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(reference))
+                        
+                        let path = CocoaFiles.pathFromDescriptor(reference)
+                    
+                        
+                        self.controller.playVoiceFromPath(path,fileId: fileSource.getFileReference().getFileId(),position:self.soundProgressSlider.value)
                         self.playPauseButton.setImage(UIImage.bundled("aa_pauserecordbutton"), forState: UIControlState.Normal)
                         
                         self.controller.voicePlayer.delegate = self
                         self.controller.voicePlayer.inlineMediaContext().delegate = self
+                        
                     })
 
             }))
@@ -271,11 +306,17 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
                 }, onUploadedClosure: { () -> () in
                     
                     dispatchOnUi({ () -> Void in
-                        self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
+                        
+                        let path = CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor())
+                        
+                        self.controller.playVoiceFromPath(path,fileId: rid,position:self.soundProgressSlider.value)
+                    
                         self.playPauseButton.setImage(UIImage.bundled("aa_pauserecordbutton"), forState: UIControlState.Normal)
                         
                         self.controller.voicePlayer.delegate = self
                         self.controller.voicePlayer.inlineMediaContext().delegate = self
+                        
+
                     })
                     
                     
@@ -284,20 +325,34 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
         }
     }
     
+    public func seekToNewAudioValue() {
+        
+    }
+    
     public func audioPlayerDidFinish() {
         
-        playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
-        soundProgressSlider.value = 0.0
+        dispatchOnUi { () -> Void in
+            self.playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
+            self.soundProgressSlider.value = 0.0
+            self.controller.currentAudioFileId = 0
+            self.controller.voicesCache[(self.bindedMessage?.rid)!] = 0
+        }
         
     }
     
     public func inlineMediaPlaybackStateUpdated(isPaused: Bool, playbackPosition: Float, timestamp: NSTimeInterval, preciseDuration: NSTimeInterval) {
         
-        soundProgressSlider.value = playbackPosition
+        dispatchOnUi({ () -> Void in
         
-        if (isPaused == true) {
-            playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
-        }
+            self.soundProgressSlider.value = playbackPosition
+            
+            if (isPaused == true) {
+                self.playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
+            }
+            
+            self.controller.voicesCache[(self.bindedMessage?.rid)!] = playbackPosition
+            
+        })
         
     }
     
