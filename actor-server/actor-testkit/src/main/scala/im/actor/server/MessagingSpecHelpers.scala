@@ -10,11 +10,12 @@ import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogGroup
 import im.actor.server.model.Dialog
-import im.actor.server.persist.DialogRepo
+import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.sequence.SeqStateDate
 import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures
 
+import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
 import scala.util.Random
 
@@ -48,11 +49,11 @@ trait MessagingSpecHelpers extends ScalaFutures with PeersImplicits with Matcher
     }
   }
 
-  def findPrivateDialog(withUserId: Int)(implicit clientData: ClientData): Dialog = {
+  def findPrivateDialog(withUserId: Int)(implicit clientData: ClientData, ec: ExecutionContext): Dialog = {
     clientData.authData shouldBe defined
     val clientUserId = clientData.authData.get.userId
     whenReady(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Private, withUserId), clientData.authId)) { peer ⇒
-      whenReady(DbExtension(system).db.run(DialogRepo.find(clientUserId, peer.asModel))) { resp ⇒
+      whenReady(DbExtension(system).db.run(DialogRepo.findDialog(clientUserId, peer.asModel))) { resp ⇒
         resp shouldBe defined
         resp.get
       }

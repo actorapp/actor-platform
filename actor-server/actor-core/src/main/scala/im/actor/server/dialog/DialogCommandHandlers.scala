@@ -7,8 +7,9 @@ import im.actor.api.rpc.messaging._
 import im.actor.server.dialog.HistoryUtils._
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.model._
+import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.persist.messaging.ReactionEventRepo
-import im.actor.server.persist.{ DialogRepo, HistoryMessageRepo }
+import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager
 import im.actor.util.cache.CacheHelpers._
