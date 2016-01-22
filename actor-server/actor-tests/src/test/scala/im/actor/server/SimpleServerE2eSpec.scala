@@ -105,7 +105,7 @@ final class SimpleServerE2eSpec extends ActorSuite(
       val messageId = Random.nextLong()
 
       val requestBytes = RequestCodec.encode(Request(RequestGetDifference(999, Array()))).require
-      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
       val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
       client.send(mtPackage)
@@ -132,7 +132,7 @@ final class SimpleServerE2eSpec extends ActorSuite(
       val messageId = Random.nextLong()
 
       val requestBytes = RequestCodec.encode(Request(RequestEditParameter(s"very l${"o" * 100}ng key", Some(s"very lo${"n" * 100}g value")))).require
-      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
       val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
       client.send(mtPackage, slowly = true)
@@ -213,7 +213,7 @@ final class SimpleServerE2eSpec extends ActorSuite(
         implicit val client = client2
         signUp(authId2, sessionId2, phoneNumber)
         val requestBits = RequestCodec.encode(Request(RequestTerminateAllSessions)).require
-        client.send(MTPackage(authId2, Random.nextLong(), MessageBoxCodec.encode(MessageBox(Random.nextLong, RpcRequestBox(requestBits))).require))
+        client.send(MTPackage(authId2, Random.nextLong(), MessageBoxCodec.encode(MessageBox(Random.nextLong, ProtoRpcRequest(requestBits))).require))
       }
 
       {
@@ -244,7 +244,7 @@ final class SimpleServerE2eSpec extends ActorSuite(
         val messageId = Random.nextLong()
 
         val requestBytes = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
-        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
         val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
         client.send(mtPackage)
@@ -273,7 +273,7 @@ final class SimpleServerE2eSpec extends ActorSuite(
           appKey = "appKey",
           isSilent = false
         ))).require
-        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
         val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
         client.send(mtPackage)
@@ -333,9 +333,9 @@ final class SimpleServerE2eSpec extends ActorSuite(
 
     private def receiveRpcResult(messageId: Long)(implicit client: MTProtoClient): RpcResult = {
       val mb = receiveMessageBox()
-      mb.body shouldBe an[RpcResponseBox]
+      mb.body shouldBe an[ProtoRpcResponse]
 
-      val rspBox = mb.body.asInstanceOf[RpcResponseBox]
+      val rspBox = mb.body.asInstanceOf[ProtoRpcResponse]
       rspBox.messageId should ===(messageId)
 
       RpcResultCodec.decode(rspBox.bodyBytes).require.value
