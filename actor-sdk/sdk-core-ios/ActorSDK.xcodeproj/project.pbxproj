@@ -241,11 +241,11 @@
 		15D35F611C20187E00E3717A /* AAAudioBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F461C20187E00E3717A /* AAAudioBuffer.h */; };
 		15D35F621C20187E00E3717A /* AAModernConversationAudioPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F471C20187E00E3717A /* AAModernConversationAudioPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		15D35F631C20187E00E3717A /* AAModernConversationAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F481C20187E00E3717A /* AAModernConversationAudioPlayer.m */; };
-		15D35F641C20187E00E3717A /* AAModernConversationAudioPlayerContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F491C20187E00E3717A /* AAModernConversationAudioPlayerContext.h */; };
+		15D35F641C20187E00E3717A /* AAModernConversationAudioPlayerContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F491C20187E00E3717A /* AAModernConversationAudioPlayerContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		15D35F651C20187E00E3717A /* AAModernConversationAudioPlayerContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F4A1C20187E00E3717A /* AAModernConversationAudioPlayerContext.m */; };
 		15D35F661C20187E00E3717A /* NSObject+TGLock.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F4B1C20187E00E3717A /* NSObject+TGLock.h */; };
 		15D35F671C20187E00E3717A /* NSObject+TGLock.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F4C1C20187E00E3717A /* NSObject+TGLock.m */; };
-		15D35F681C20187E00E3717A /* AAModernViewInlineMediaContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F4D1C20187E00E3717A /* AAModernViewInlineMediaContext.h */; };
+		15D35F681C20187E00E3717A /* AAModernViewInlineMediaContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F4D1C20187E00E3717A /* AAModernViewInlineMediaContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		15D35F691C20187E00E3717A /* AAModernViewInlineMediaContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F4E1C20187E00E3717A /* AAModernViewInlineMediaContext.m */; };
 		15D35F6A1C20187E00E3717A /* AATimerTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 15D35F4F1C20187E00E3717A /* AATimerTarget.h */; };
 		15D35F6B1C20187E00E3717A /* AATimerTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D35F501C20187E00E3717A /* AATimerTarget.m */; };
@@ -1484,13 +1484,13 @@
 				BED5A2111C48413C0045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h in Headers */,
 				BED5A2121C48413C0045FDB0 /* NYTPhotoContainer.h in Headers */,
 				BED5A2131C48413C0045FDB0 /* NYTPhotosViewControllerDataSource.h in Headers */,
+				15D35F681C20187E00E3717A /* AAModernViewInlineMediaContext.h in Headers */,
 				152AA8B81C2989270030DEEE /* UIView+SLKAdditions.h in Headers */,
 				BED5A1FE1C48396A0045FDB0 /* NYTPhotoViewController.h in Headers */,
 				BED5A1F81C48396A0045FDB0 /* NYTPhotosViewController.h in Headers */,
+				15D35F641C20187E00E3717A /* AAModernConversationAudioPlayerContext.h in Headers */,
 				BED5A2071C4839790045FDB0 /* NYTPhoto.h in Headers */,
 				15D35F571C20187E00E3717A /* AAAudioRecorder.h in Headers */,
-				15D35F641C20187E00E3717A /* AAModernConversationAudioPlayerContext.h in Headers */,
-				15D35F681C20187E00E3717A /* AAModernViewInlineMediaContext.h in Headers */,
 				15F89F071C211FED00776ACD /* opus_defines.h in Headers */,
 				15D35F341C20187200E3717A /* opusfile.h in Headers */,
 				15D35F661C20187E00E3717A /* NSObject+TGLock.h in Headers */,

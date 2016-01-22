@@ -83,10 +83,10 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
             
             // Reset progress
             self.progress.hideButton()
-            UIView.animateWithDuration(0, animations: { () -> Void in
-                self.progress.alpha = 0
-                self.preview.alpha = 0
-            })
+            //UIView.animateWithDuration(0, animations: { () -> Void in
+                self.progress.hidden = true
+                self.preview.hidden = true
+            //})
             
             // Bind file
             fileBind(message, autoDownload: bindedLayout.autoDownload)

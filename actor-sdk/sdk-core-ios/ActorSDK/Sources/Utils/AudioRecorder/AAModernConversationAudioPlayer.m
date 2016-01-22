@@ -134,6 +134,7 @@
     }
     
     [self cleanup];
+    
 }
 
 - (float)playbackPosition
