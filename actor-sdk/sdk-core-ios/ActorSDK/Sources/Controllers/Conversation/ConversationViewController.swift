@@ -46,9 +46,14 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     
     private var textMode:Bool!
     
+    //
+    
+    
     var audioRecorder: AAAudioRecorder!
     
+    ////////////////////////////////////////////////////////////
     // MARK: - Init
+    ////////////////////////////////////////////////////////////
     
     override init(peer: ACPeer) {
         
@@ -136,7 +141,6 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         // voice recorder delegate
         self.audioRecorder = AAAudioRecorder()
         self.audioRecorder.delegate = self
-
         
         self.keyboardPanningEnabled = true
         
@@ -185,8 +189,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         fatalError("init(coder:) has not been implemented")
     }
     
-    // Lifecycle
-    
+    ////////////////////////////////////////////////////////////
+    // MARK: - Lifecycle
+    ////////////////////////////////////////////////////////////
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -328,8 +333,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             AANavigationBadge.showBadge()
         }
         
-        // action sheet
-        
+        // action sheet init
         self.actionSheet = AAConvActionSheet(maxSelected: 9, weakSuperIn: self)
         
         self.navigationController?.view.addSubview(self.actionSheet)
@@ -364,7 +368,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.actionSheet = nil
     }
 
-    // Chat avatar tap
+    ////////////////////////////////////////////////////////////
+    // MARK: - Chat avatar tap
+    ////////////////////////////////////////////////////////////
     
     func onAvatarTap() {
         let id = Int(peer.peerId)
@@ -396,7 +402,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         }
     }
     
+    ////////////////////////////////////////////////////////////
     // MARK: - Text bar actions
+    ////////////////////////////////////////////////////////////
     
     override func textWillUpdate() {
         super.textWillUpdate();
@@ -465,7 +473,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
     }
     
-    // MARK: - right button
+    ////////////////////////////////////////////////////////////
+    // MARK: - Right/Left button pressed
+    ////////////////////////////////////////////////////////////
     
     override func didPressRightButton(sender: AnyObject!) {
         
@@ -488,8 +498,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.rightButton.layoutIfNeeded()
     }
  
-    //MARK: - Completition
-    
+    ////////////////////////////////////////////////////////////
+    // MARK: - Completition
+    ////////////////////////////////////////////////////////////
     
     override func didChangeAutoCompletionPrefix(prefix: String!, andWord word: String!) {
         if UInt(self.peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue {
@@ -518,6 +529,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             self.showAutoCompletionView(false)
         }
     }
+    
+    ////////////////////////////////////////////////////////////
+    // MARK: - TableView for completition
+    ////////////////////////////////////////////////////////////
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredMembers.count
@@ -551,7 +566,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         cell.layoutMargins = UIEdgeInsetsZero
     }
     
-    // Document picking
+    ////////////////////////////////////////////////////////////
+    // MARK: - Document picking
+    ////////////////////////////////////////////////////////////
     
     func pickDocument() {
         let documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll as! [String], inMode: UIDocumentPickerMode.Import)
@@ -597,22 +614,15 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         }
     }
     
-    // Image picking
+    
+    ////////////////////////////////////////////////////////////
+    // MARK: - Image picking
+    ////////////////////////////////////////////////////////////
     
     func pickImage(source: UIImagePickerControllerSourceType) {
         let pickerController = AAImagePickerController()
         pickerController.sourceType = source
         pickerController.mediaTypes = [kUTTypeImage as String,kUTTypeMovie as String]
-        
-        //[kUTTypeImage as String,kUTTypeMovie as String]
-
-//        // Style controller bg
-//        pickerController.view.backgroundColor = appStyle.vcBgColor
-//        
-//        // Style navigation bar
-//        pickerController.navigationBar.barTintColor = appStyle.navigationBgColor
-//        pickerController.navigationBar.tintColor = appStyle.navigationTintColor
-//        pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: appStyle.navigationTitleColor]
 
         pickerController.delegate = self
 
@@ -644,7 +654,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         Actor.sendUIImage(image, peer: peer)
     }
     
-    // Location picking
+    ////////////////////////////////////////////////////////////
+    // MARK: - Location picking
+    ////////////////////////////////////////////////////////////
     
     func pickLocation() {
         let pickerController = AALocationPickerController()
@@ -660,6 +672,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         Actor.sendLocationWithPeer(self.peer, withLongitude: JavaLangDouble(double: longitude), withLatitude: JavaLangDouble(double: latitude), withStreet: nil, withPlace: nil)
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
+    
+    ////////////////////////////////////////////////////////////
+    // MARK: - Contact picking
+    ////////////////////////////////////////////////////////////
     
     func pickContact() {
         let pickerController = ABPeoplePickerNavigationController()
@@ -718,10 +734,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     }
     
     
-    // send audio document
-    
+    ////////////////////////////////////////////////////////////
     // MARK: -
-    // MARK: Audio recording callbacks
+    // MARK: Audio recording statments + send
+    ////////////////////////////////////////////////////////////
     
     func onAudioRecordingStarted() {
         print("onAudioRecordingStarted\n")
@@ -857,7 +873,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
     }
     
+    ////////////////////////////////////////////////////////////
     // MARK: - Stickers actions
+    ////////////////////////////////////////////////////////////
     
     func updateStickersStateOnCloseKeyboard() {
         
