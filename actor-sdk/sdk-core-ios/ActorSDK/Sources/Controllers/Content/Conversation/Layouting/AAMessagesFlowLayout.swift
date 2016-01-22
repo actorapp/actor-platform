@@ -143,6 +143,7 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
         let start = CFAbsoluteTimeGetCurrent()
         
         if disableAutoScroll {
+
             var delta: CGFloat! = nil
             for item in items {
                 for current in currentItems {
@@ -157,6 +158,7 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
             if delta != nil {
                 self.collectionView!.contentOffset = CGPointMake(0, self.collectionView!.contentOffset.y - delta)
             }
+            
         }
         
         if ENABLE_LOGS { print("finalizeCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)") }
