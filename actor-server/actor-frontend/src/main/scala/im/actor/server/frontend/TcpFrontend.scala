@@ -29,6 +29,5 @@ object TcpFrontend extends Frontend("tcp") {
           (tlsContext map (Tls.connection(_, flow)) getOrElse flow).joinMat(mtProto)(Keep.right).run()
       })
       .run()
-
   }
 }
