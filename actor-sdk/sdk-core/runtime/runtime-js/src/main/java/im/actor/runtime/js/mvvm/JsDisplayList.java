@@ -25,7 +25,7 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
     private final JsListEngine<V> listEngine;
     private final JsEntityConverter<V, T> entityConverter;
 
-    private HashMap<JsDisplayListCallback<T>, JsDisplayListBind<T, V>> binds = new HashMap<>();
+    private ArrayList<SubscriberHolder> binds = new ArrayList<SubscriberHolder>();
 
     public JsDisplayList(JsListEngine<V> listEngine, JsEntityConverter<V, T> entityConverter) {
         this.listEngine = listEngine;
@@ -33,23 +33,33 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
     }
 
     public JsDisplayListBind<T, V> subscribe(JsDisplayListCallback<T> callback, boolean isInverted) {
-        if (binds.containsKey(callback)) {
-            binds.remove(callback).dispose();
-        }
+        unbind(callback);
         JsDisplayListBind<T, V> b = new JsDisplayListBind<T, V>(callback, isInverted, listEngine, entityConverter);
         b.initAll();
-        binds.put(callback, b);
+        binds.add(new SubscriberHolder(callback, b));
         return b;
     }
 
     public void unsubscribe(JsDisplayListCallback<T> callback) {
-        if (binds.containsKey(callback)) {
-            binds.remove(callback).dispose();
+        unbind(callback);
+    }
+
+    private void unbind(JsDisplayListCallback<T> callback) {
+        for (SubscriberHolder s : binds) {
+            if (s.callback.equals(callback)) {
+                s.bind.dispose();
+                binds.remove(s);
+                break; // Can be only one
+            }
         }
     }
 
     public JsDisplayListBind<T, V>[] getActiveBinds() {
-        return binds.values().toArray(new JsDisplayListBind[0]);
+        JsDisplayListBind[] res = new JsDisplayListBind[binds.size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = binds.get(i).bind;
+        }
+        return res;
     }
 
     //
@@ -69,5 +79,27 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
     @Override
     public void initEmpty() {
         // Nothing to do
+    }
+
+    /**
+     * Work-around for impossibility of using of hash maps for closures
+     */
+    private class SubscriberHolder {
+
+        private JsDisplayListCallback<T> callback;
+        private JsDisplayListBind<T, V> bind;
+
+        public SubscriberHolder(JsDisplayListCallback<T> callback, JsDisplayListBind<T, V> bind) {
+            this.callback = callback;
+            this.bind = bind;
+        }
+
+        public JsDisplayListCallback<T> getCallback() {
+            return callback;
+        }
+
+        public JsDisplayListBind<T, V> getBind() {
+            return bind;
+        }
     }
 }
