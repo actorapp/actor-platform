@@ -408,14 +408,16 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        messenger.getSharedChatList(peer.convert()).subscribeInverted(callback);
+        // TODO: Fix inverted
+        messenger.getSharedChatList(peer.convert()).subscribe(callback);
     }
 
     public void unbindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
         if (callback == null) {
             return;
         }
-        messenger.getSharedChatList(peer.convert()).unsubscribeInverted(callback);
+        // TODO: Fix inverted
+        messenger.getSharedChatList(peer.convert()).unsubscribe(callback);
     }
 
     public void onMessageShown(JsPeer peer, JsMessage message) {
