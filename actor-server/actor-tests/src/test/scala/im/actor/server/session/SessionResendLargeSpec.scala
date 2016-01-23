@@ -6,7 +6,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.server.ActorSpecification
-import im.actor.server.mtproto.protocol.{ RequestResend, ProtoRpcRequest$, UnsentResponse }
+import im.actor.server.mtproto.protocol.{ RequestResend, ProtoRpcRequest, UnsentResponse }
 
 import scala.concurrent.duration._
 import scala.util.Random
