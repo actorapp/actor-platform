@@ -1,17 +1,20 @@
 package im.actor.util.misc
 
-import scala.concurrent.forkjoin.ThreadLocalRandom
+import im.actor.util.ThreadLocalSecureRandom
 
 object IdUtils {
-  def nextIntId(): Int = nextIntId(ThreadLocalRandom.current())
+  def nextIntId(): Int = nextIntId(ThreadLocalSecureRandom.current())
 
-  def nextIntId(rnd: ThreadLocalRandom): Int = rnd.nextInt(1000, Int.MaxValue) + 1
+  def nextIntId(rnd: ThreadLocalSecureRandom): Int = {
+    val min = 1000
+    min + rnd.nextInt(Int.MaxValue - min + 1)
+  }
 
-  def nextLongId(): Long = ThreadLocalRandom.current().nextLong()
+  def nextLongId(): Long = ThreadLocalSecureRandom.current().nextLong()
 
-  def nextAuthId(): Long = nextAuthId(ThreadLocalRandom.current())
+  def nextAuthId(): Long = nextAuthId(ThreadLocalSecureRandom.current())
 
-  def nextAuthId(rng: ThreadLocalRandom): Long = {
+  def nextAuthId(rng: ThreadLocalSecureRandom): Long = {
     val candidate = rng.nextLong()
     if (candidate == 0L) nextAuthId(rng) else candidate
   }
