@@ -180,6 +180,10 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
         return storage.getOrderedIds();
     }
 
+    public long[] getPrevIdsExclusive(long sortKey) {
+        return storage.getPrevIdsExclusive(sortKey);
+    }
+
     public void addListener(JsListEngineCallback<T> callback) {
         if (!callbacks.contains(callback)) {
             callbacks.add(callback);
