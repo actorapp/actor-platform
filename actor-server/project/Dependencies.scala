@@ -4,7 +4,7 @@ import sbt._
 
 object Dependencies {
   object V {
-    val actorCommons = "0.0.9"
+    val actorCommons = "0.0.11"
     val actorBotkit = "1.0.66"
     val akka = "2.4.0"
     val akkaExperimental = "2.0.2"
@@ -22,6 +22,7 @@ object Dependencies {
 
   object Compile {
     val actorConcurrent         = "im.actor"                      %% "actor-concurrent"              % V.actorCommons
+    val actorUtil               = "im.actor"                      %% "actor-util"                    % V.actorCommons
     val actorBotkit             = "im.actor"                      %  "actor-botkit"                  % V.actorBotkit
     val shardakka               = "im.actor"                      %% "shardakka"                     % V.shardakka
     val scalapbSer              = "im.actor"                      %% "akka-scalapb-serialization"    % V.scalapbSer
@@ -133,6 +134,7 @@ object Dependencies {
 
   val shared = Seq(
     configs,
+    actorUtil,
     javaCompat,
     logbackClassic,
     scalaLogging,
