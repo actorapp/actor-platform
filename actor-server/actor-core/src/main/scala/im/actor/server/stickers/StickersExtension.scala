@@ -13,10 +13,10 @@ import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sticker.Sticker
 import im.actor.server.user.UserExtension
 import im.actor.util.misc.IdUtils
+import im.actor.util.ThreadLocalSecureRandom
 import slick.dbio.DBIO
 
 import scala.concurrent.Future
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.control.NoStackTrace
 
 abstract class StickerError(message: String) extends RuntimeException(message) with NoStackTrace
@@ -53,7 +53,7 @@ final class StickersExtensionImpl(_system: ActorSystem)
   private val seqExt = SeqUpdatesExtension(system)
 
   def createPack(creatorUserId: Int, isDefault: Boolean): Future[Int] = {
-    val rng = ThreadLocalRandom.current()
+    val rng = ThreadLocalSecureRandom.current()
     val packId = IdUtils.nextIntId(rng)
     val accessSalt = ACLUtils.nextAccessSalt(rng)
     db.run(for {
