@@ -183,4 +183,35 @@
     });
 }
 
+- (void)audioPlayerStopAndFinish
+{
+    dispatch_async(dispatch_get_main_queue(), ^
+                   {
+                       
+                       _isPaused = true;
+                       
+                       if (_timer != nil)
+                       {
+                           [_timer invalidate];
+                           _timer = nil;
+                       }
+                       
+                       [_inlineMediaContext postUpdatePlaybackPosition:false];
+                       
+                       [self cleanup];
+
+                       [_delegate audioPlayerDidFinish];
+                       
+                       //[_audioPlayer _notifyFinished];
+                       
+                       //[_inlineMediaContext postUpdatePlaybackPosition:false];
+                       
+                       //[self cleanup];
+                       
+//                       id<AAModernConversationAudioPlayerDelegate> delegate = _delegate;
+//                       if ([delegate respondsToSelector:@selector(audioPlayerDidFinish)])
+//                           [delegate audioPlayerDidFinish];
+                   });
+}
+
 @end
