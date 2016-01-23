@@ -120,6 +120,18 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
             sigs.map(_.keyId).distinct shouldBe Vector(k.keyId)
         }
       }
+
+      whenReady(service.handleLoadPublicKey(
+        getUserOutPeer(alice.id, bobAuthId),
+        keyGroupId,
+        Vector(ephKeys.head.keyId)
+      )) { resp ⇒
+        inside(resp) {
+          case Ok(ResponsePublicKeys(Vector(k), signs)) ⇒
+            k.keyId shouldBe ephKeys.head.keyId
+            signs.map(_.keyId) shouldBe ephSignatures.take(2).map(_.keyId)
+        }
+      }
     }
   }
 }
