@@ -42,6 +42,8 @@ public class ConversationHistoryActor extends ModuleActor {
         historyLoaded = preferences().getBool(KEY_LOADED, false);
         if (!preferences().getBool(KEY_LOADED_INIT, false)) {
             self().sendOnce(new LoadMore());
+        } else {
+            context().getMessagesModule().markAsLoaded(peer);
         }
     }
 
@@ -83,6 +85,10 @@ public class ConversationHistoryActor extends ModuleActor {
         preferences().putLong(KEY_LOADED_DATE, maxLoadedDate);
         preferences().putBool(KEY_LOADED, historyLoaded);
         preferences().putBool(KEY_LOADED_INIT, true);
+
+        if (historyLoaded) {
+            context().getMessagesModule().markAsLoaded(peer);
+        }
     }
 
     @Override

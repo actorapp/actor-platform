@@ -69,6 +69,7 @@ import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
 import im.actor.core.viewmodel.DialogSpecVM;
 import im.actor.runtime.Storage;
@@ -105,6 +106,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
     private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<Peer, ActorRef>();
     private final HashMap<Peer, ActorRef> messageShownFilter = new HashMap<Peer, ActorRef>();
+    private final HashMap<Peer, ConversationVM> conversationVms = new HashMap<Peer, ConversationVM>();
 
     private final SyncKeyValue cursorStorage;
 
@@ -948,6 +950,19 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                 });
             }
         };
+    }
+
+    public ConversationVM getConversationVM(Peer peer) {
+        return new ConversationVM(peer, context());
+    }
+
+    public void markAsLoaded(Peer peer) {
+        preferences().putBool("chat.state_" + peer, true);
+        getConversationVM(peer).getIsLoaded().change(true);
+    }
+
+    public boolean isLoaded(Peer peer) {
+        return preferences().getBool("chat.state_" + peer, false);
     }
 
     public void resetModule() {
