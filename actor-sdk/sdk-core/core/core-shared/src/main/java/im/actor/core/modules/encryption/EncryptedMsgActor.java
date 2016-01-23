@@ -1,5 +1,6 @@
 package im.actor.core.modules.encryption;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import im.actor.core.api.ApiEncryptedBox;
@@ -25,27 +26,31 @@ public class EncryptedMsgActor extends ModuleActor {
 
     private void doEncrypt(int uid, ApiMessage message, final Future future) {
         Log.d(TAG, "doEncrypt");
-        ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.EncryptPackage(message.toByteArray()), new AskCallback() {
-            @Override
-            public void onResult(Object obj) {
-                Log.d(TAG, "doEncrypt:onResult");
-                EncryptedBox encryptedBox = (EncryptedBox) obj;
-                ArrayList<ApiEncyptedBoxKey> boxKeys = new ArrayList<ApiEncyptedBoxKey>();
-                for (EncryptedBoxKey b : encryptedBox.getKeys()) {
-                    boxKeys.add(new ApiEncyptedBoxKey(b.getUid(),
-                            b.getKeyGroupId(), "curve25519", b.getEncryptedKey()));
+        try {
+            ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.EncryptPackage(message.buildContainer()), new AskCallback() {
+                @Override
+                public void onResult(Object obj) {
+                    Log.d(TAG, "doEncrypt:onResult");
+                    EncryptedBox encryptedBox = (EncryptedBox) obj;
+                    ArrayList<ApiEncyptedBoxKey> boxKeys = new ArrayList<ApiEncyptedBoxKey>();
+                    for (EncryptedBoxKey b : encryptedBox.getKeys()) {
+                        boxKeys.add(new ApiEncyptedBoxKey(b.getUid(),
+                                b.getKeyGroupId(), "curve25519", b.getEncryptedKey()));
+                    }
+                    ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(boxKeys, "aes-kuznechik", encryptedBox.getEncryptedPackage());
+                    ApiEncryptedMessage apiEncryptedMessage = new ApiEncryptedMessage(apiEncryptedBox);
+                    future.onResult(new EncryptedMessage(apiEncryptedMessage));
                 }
-                ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(boxKeys, "aes-kuznechik", encryptedBox.getEncryptedPackage());
-                ApiEncryptedMessage apiEncryptedMessage = new ApiEncryptedMessage(apiEncryptedBox);
-                future.onResult(new EncryptedMessage(apiEncryptedMessage));
-            }
 
-            @Override
-            public void onError(Exception e) {
-                Log.d(TAG, "doEncrypt:onError");
-                future.onError(e);
-            }
-        });
+                @Override
+                public void onError(Exception e) {
+                    Log.d(TAG, "doEncrypt:onError");
+                    future.onError(e);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onDecrypt(int uid, ApiEncryptedMessage message) {

@@ -58,12 +58,13 @@ public class HKDF {
             hmac.doFinal(result, 0);
 
             int digestSize = baseDigest.getDigestSize();
-            int blockLength = Math.min(outputSize - (index + 1) * digestSize, digestSize);
-            ByteStrings.write(res, index * digestSize, result, 0, blockLength);
+            int blockLength = Math.min(outputSize - offset, digestSize);
+            ByteStrings.write(res, offset, result, 0, blockLength);
 
-            prevHash = res;
+            prevHash = result;
 
             offset += digestSize;
+            index++;
         }
 
         return res;

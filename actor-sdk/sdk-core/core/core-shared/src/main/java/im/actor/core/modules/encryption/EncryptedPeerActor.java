@@ -1,9 +1,11 @@
 package im.actor.core.modules.encryption;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import im.actor.core.api.ApiEncryptionKeyGroup;
+import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestLoadPublicKeyGroups;
 import im.actor.core.api.rpc.ResponsePublicKeyGroups;
@@ -148,15 +150,15 @@ public class EncryptedPeerActor extends ModuleActor {
         future.onResult(encryptedBox);
     }
 
-    private void doDecrypt(EncryptedBox data, final Future future) {
-        int senderKeyGroup = ByteStrings.bytesToInt(ByteStrings.substring(data.getEncryptedPackage(), 0, 4));
-        byte[] encPackage = ByteStrings.substring(data.getEncryptedPackage(), 4, data.getEncryptedPackage().length - 4);
+    private void doDecrypt(final EncryptedBox data, final Future future) {
+        final int senderKeyGroup = ByteStrings.bytesToInt(ByteStrings.substring(data.getEncryptedPackage(), 0, 4));
+        final byte[] encPackage = ByteStrings.substring(data.getEncryptedPackage(), 4, data.getEncryptedPackage().length - 4);
 
         if (sessions.containsKey(senderKeyGroup)) {
             Log.d(TAG, "Decryption with key group #" + senderKeyGroup);
             byte[] encKey = null;
             for (EncryptedBoxKey k : data.getKeys()) {
-                Log.d(TAG, "Key group: #" + k.getKeyGroupId() + " #" + k.getUid());
+                // Log.d(TAG, "Key group: #" + k.getKeyGroupId() + " #" + k.getUid());
                 if (k.getKeyGroupId() == ownKeyGroupId && k.getUid() == myUid()) {
                     encKey = k.getEncryptedKey();
                     break;
@@ -168,14 +170,30 @@ public class EncryptedPeerActor extends ModuleActor {
             }
 
             Log.d(TAG, "EncPackage: " + Hex.toHex(encPackage));
-            for (EncryptedBoxKey k : data.getKeys()) {
-                Log.d(TAG, "Key: " + Hex.toHex(k.getEncryptedKey()));
-            }
+            Log.d(TAG, "EncKey: " + Hex.toHex(encKey));
+//            for (EncryptedBoxKey k : data.getKeys()) {
+//                Log.d(TAG, "Key: " + Hex.toHex(k.getEncryptedKey()));
+//            }
 
             ask(sessions.get(senderKeyGroup), new EncryptedSessionActor.DecryptPackage(encKey), new AskCallback() {
                 @Override
                 public void onResult(Object obj) {
                     Log.d(TAG, "Decryption with key group:onResult");
+                    EncryptedSessionActor.DecryptedPackage decryptedPackage = (EncryptedSessionActor.DecryptedPackage) obj;
+
+                    byte[] encData;
+                    try {
+                        encData = ActorBox.openBox(ByteStrings.intToBytes(senderKeyGroup), encPackage, new ActorBoxKey(decryptedPackage.getData()));
+
+                        ApiMessage message = ApiMessage.fromBytes(encData);
+
+                        Log.d(TAG, "Box open:" + message);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        future.onError(e);
+                        return;
+                    }
+
                     future.onResult();
                 }
 
