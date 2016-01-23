@@ -370,16 +370,19 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     func playVoiceFromPath(path:String,fileId:jlong,position:Float) {
         
         if (self.currentAudioFileId != fileId) {
-            self.currentAudioFileId = fileId
             
             self.voicePlayer?.stop()
             self.voicePlayer?.audioPlayerStopAndFinish()
+            
+            self.voicesCache[self.currentAudioFileId] = 0.0
             
             self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)
             self.voiceContext = self.voicePlayer.inlineMediaContext()
             
             
             self.voicePlayer?.play()
+            
+            self.currentAudioFileId = fileId
             
         } else {
             
