@@ -242,11 +242,27 @@ public class EncryptedSessionActor extends ModuleActor {
                 new RatchetPublicKey(theirIdentityKey.getPublicKey()),
                 new RatchetPublicKey(theirEphermalKey0.getPublicKey()));
         byte[] rootChainKey = RatchetRootChainKey.makeRootChainKey(
-                new RatchetPrivateKey(ownEphermalKey0.getKey()),
-                new RatchetPublicKey(theirEphermalKey0.getPublicKey()),
+                new RatchetPrivateKey(ownEphermalKey.getKey()),
+                new RatchetPublicKey(theirEphermalKey.getPublicKey()),
                 master_secret);
 
-        ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rootChainKey, 0);
+        int messageIndex = outIndex++;
+
+        ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rootChainKey, messageIndex);
+
+        Log.d(TAG, "MS: " + Hex.toHex(master_secret));
+        Log.d(TAG, "MS_11: " + Hex.toHex(Curve25519.keyGenPublic(ownIdentityKey.getKey())));
+        Log.d(TAG, "MS_21: " + Hex.toHex(Curve25519.keyGenPublic(ownEphermalKey0.getKey())));
+        Log.d(TAG, "MS_31: " + Hex.toHex(encryptionKeyGroup.getIdentityKey().getPublicKey()));
+        Log.d(TAG, "MS_41: " + Hex.toHex(theirEphermalKey.getPublicKey()));
+        Log.d(TAG, "RC: " + Hex.toHex(rootChainKey));
+        Log.d(TAG, "RC_1: " + Hex.toHex(Curve25519.keyGenPublic(ownEphermalKey.getKey())));
+        Log.d(TAG, "RC_2: " + Hex.toHex(theirEphermalKey.getPublicKey()));
+
+        Log.d(TAG, "AES: " + Hex.toHex(ratchetMessageKey.getKeyAES()));
+        Log.d(TAG, "AES_MAC: " + Hex.toHex(ratchetMessageKey.getMacAES()));
+        Log.d(TAG, "KUZ: " + Hex.toHex(ratchetMessageKey.getKeyKuz()));
+        Log.d(TAG, "KUZ_MAC: " + Hex.toHex(ratchetMessageKey.getMacKuz()));
 
         byte[] header = ByteStrings.merge(
                 ByteStrings.intToBytes(encryptionKeyGroup.getKeyGroupId()),
@@ -254,7 +270,7 @@ public class EncryptedSessionActor extends ModuleActor {
                 ByteStrings.longToBytes(theirEphermalKey0.getKeyId()), /*Bob Initial Ephermal*/
                 Curve25519.keyGenPublic(ownEphermalKey.getKey()),
                 theirEphermalKey.getPublicKey(),
-                ByteStrings.intToBytes(outIndex++)); /* Message Index */
+                ByteStrings.intToBytes(messageIndex)); /* Message Index */
 
         byte[] encrypted;
         try {
@@ -279,41 +295,39 @@ public class EncryptedSessionActor extends ModuleActor {
         final byte[] theirEphermalKey = ByteStrings.substring(data, 52, 32);
         final int messageIndex = ByteStrings.bytesToInt(data, 84);
 
+//        Log.d(TAG, "onDecrypt: Own " + Hex.toHex(ownEphermalKey));
+//        Log.d(TAG, "onDecrypt: Their " + Hex.toHex(theirEphermalKey));
 
-        Log.d(TAG, "onDecrypt:key group id: " + ownKeyGroupId + ", " + data.length);
-        Log.d(TAG, "onDecrypt:ownEphermalKey0Id: " + ownEphermalKey0Id);
-        Log.d(TAG, "onDecrypt:theirEphermalKey0Id: " + theirEphermalKey0Id);
-        Log.d(TAG, "onDecrypt:messageIndex: " + messageIndex);
+        Log.d(TAG, "ownEphermalKey0Id: " + ownEphermalKey0Id);
+        Log.d(TAG, "theirEphermalKey0Id: " + theirEphermalKey0Id);
 
         ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchEphemeralPrivateKey(theirEphermalKey), new AskCallback() {
             @Override
             public void onResult(Object obj) {
-
-                Log.d(TAG, "onDecrypt:onResultEphermal");
-
-                final KeyManagerActor.FetchEphemeralPrivateKeyRes ownEphermalKey
-                        = (KeyManagerActor.FetchEphemeralPrivateKeyRes) obj;
+                final KeyManagerActor.FetchEphemeralPrivateKeyRes theirEphermalKey = (KeyManagerActor.FetchEphemeralPrivateKeyRes) obj;
 
                 ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchEphemeralPrivateKeyById(theirEphermalKey0Id),
                         new AskCallback() {
                             @Override
                             public void onResult(Object obj) {
 
-                                Log.d(TAG, "onDecrypt:onResultPrivate");
-
-                                final KeyManagerActor.FetchEphemeralPrivateKeyRes ownEphermalKey0
+                                final KeyManagerActor.FetchEphemeralPrivateKeyRes theirEphermalKey0
                                         = (KeyManagerActor.FetchEphemeralPrivateKeyRes) obj;
+
+                                Log.d(TAG, "theirEphermalKey0: " + Hex.toHex(Curve25519.keyGenPublic(theirEphermalKey0.getPrivateKey())));
 
                                 ArrayList<Long> keys = new ArrayList<Long>();
                                 keys.add(ownEphermalKey0Id);
                                 request(new RequestLoadPublicKey(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), encryptionKeyGroup.getKeyGroupId(), keys), new RpcCallback<ResponsePublicKeys>() {
                                     @Override
                                     public void onResult(ResponsePublicKeys response) {
-                                        Log.d(TAG, "onDecrypt:RequestLoadPublicKey");
-                                        onDecrypt(data, ownEphermalKey0.getPrivateKey(),
-                                                ownEphermalKey.getPrivateKey(),
-                                                theirEphermalKey,
-                                                response.getPublicKey().get(0).getKeyMaterial(),
+                                        byte[] ownEphermalKey0 = response.getPublicKey().get(0).getKeyMaterial();
+                                        Log.d(TAG, "ownEphermalKey0: " + Hex.toHex(ownEphermalKey0));
+                                        onDecrypt(data,
+                                                ownEphermalKey0,
+                                                ownEphermalKey,
+                                                theirEphermalKey0.getPrivateKey(),
+                                                theirEphermalKey.getPrivateKey(),
                                                 messageIndex,
                                                 future);
                                     }
@@ -346,10 +360,10 @@ public class EncryptedSessionActor extends ModuleActor {
     }
 
     private void onDecrypt(byte[] data,
-                           byte[] ownEphemeralPrivateKey0,
-                           byte[] ownEphemeralPrivateKey,
                            byte[] theirEphemeralKey0,
                            byte[] theirEphemeralKey,
+                           byte[] ownEphemeralPrivateKey0,
+                           byte[] ownEphemeralPrivateKey,
                            int index,
                            Future future) {
 
@@ -368,8 +382,36 @@ public class EncryptedSessionActor extends ModuleActor {
 
         ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rc, index);
 
+        Log.d(TAG, "MS: " + Hex.toHex(ms));
+        Log.d(TAG, "MS_11: " + Hex.toHex(Curve25519.keyGenPublic(ownIdentityKey.getKey())));
+        Log.d(TAG, "MS_21: " + Hex.toHex(Curve25519.keyGenPublic(ownEphemeralPrivateKey0)));
+        Log.d(TAG, "MS_31: " + Hex.toHex(encryptionKeyGroup.getIdentityKey().getPublicKey()));
+        Log.d(TAG, "MS_41: " + Hex.toHex(theirEphemeralKey0));
 
-        future.onResult();
+        Log.d(TAG, "RC: " + Hex.toHex(rc));
+        Log.d(TAG, "RC_1: " + Hex.toHex(Curve25519.keyGenPublic(ownEphemeralPrivateKey)));
+        Log.d(TAG, "RC_2: " + Hex.toHex(theirEphemeralKey));
+
+        Log.d(TAG, "AES: " + Hex.toHex(ratchetMessageKey.getKeyAES()));
+        Log.d(TAG, "AES_MAC: " + Hex.toHex(ratchetMessageKey.getMacAES()));
+        Log.d(TAG, "KUZ: " + Hex.toHex(ratchetMessageKey.getKeyKuz()));
+        Log.d(TAG, "KUZ_MAC: " + Hex.toHex(ratchetMessageKey.getMacKuz()));
+
+        byte[] header = ByteStrings.substring(data, 0, 88);
+        byte[] pkg = ByteStrings.substring(data, 88, data.length - 88);
+
+        byte[] plainText;
+        try {
+            plainText = ActorBox.openBox(header, pkg, ratchetMessageKey);
+            Log.d(TAG, "Plain Text");
+        } catch (IntegrityException e) {
+            Log.d(TAG, "Plain Text error");
+            e.printStackTrace();
+            future.onError(e);
+            return;
+        }
+
+        future.onResult(new DecryptedPackage(plainText));
     }
 
     @Override
@@ -416,6 +458,19 @@ public class EncryptedSessionActor extends ModuleActor {
         private byte[] data;
 
         public DecryptPackage(byte[] data) {
+            this.data = data;
+        }
+
+        public byte[] getData() {
+            return data;
+        }
+    }
+
+    public static class DecryptedPackage {
+
+        private byte[] data;
+
+        public DecryptedPackage(byte[] data) {
             this.data = data;
         }
 
