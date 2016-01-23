@@ -8,9 +8,9 @@ import com.sksamuel.scrimage.{ Image, ParImage, Position }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.{ model, persist }
+import im.actor.util.ThreadLocalSecureRandom
 import slick.dbio.DBIO
 
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Try, Failure, Success }
 
@@ -62,7 +62,7 @@ object ImageUtils {
     DbExtension(system).db.run(
       scaleAvatar(
         fullFileId,
-        ThreadLocalRandom.current(),
+        ThreadLocalSecureRandom.current(),
         ThumbDescriptor("small-sticker.png", 128, PngWriter()),
         ThumbDescriptor("medium-sticker.png", 256, PngWriter())
       )
@@ -82,11 +82,11 @@ object ImageUtils {
     ec:        ExecutionContext,
     system:    ActorSystem
   ): DBIO[Either[Throwable, Avatar]] =
-    scaleAvatar(fullFileId, ThreadLocalRandom.current())
+    scaleAvatar(fullFileId, ThreadLocalSecureRandom.current())
 
   def scaleAvatar(
     fullFileId: Long,
-    rng:        ThreadLocalRandom
+    rng:        ThreadLocalSecureRandom
   )(implicit system: ActorSystem): DBIO[Either[Throwable, Avatar]] =
     scaleAvatar(
       fullFileId,
@@ -97,7 +97,7 @@ object ImageUtils {
 
   def scaleAvatar(
     fullFileId: Long,
-    rng:        ThreadLocalRandom,
+    rng:        ThreadLocalSecureRandom,
     smallDesc:  ThumbDescriptor,
     largeDesc:  ThumbDescriptor
   )(implicit system: ActorSystem): DBIO[Either[Throwable, Avatar]] = {
