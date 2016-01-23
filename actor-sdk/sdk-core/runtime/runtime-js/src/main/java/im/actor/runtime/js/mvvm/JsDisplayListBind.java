@@ -1,6 +1,7 @@
 package im.actor.runtime.js.mvvm;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,10 @@ public class JsDisplayListBind<T extends JavaScriptObject, V extends BserObject 
      * Subscribers to bind
      */
     private final JsDisplayListCallback<T> callback;
+    /**
+     * Is subscriber inverted
+     */
+    private final boolean isInverted;
 
 
     /**
@@ -70,9 +75,10 @@ public class JsDisplayListBind<T extends JavaScriptObject, V extends BserObject 
      */
     private boolean isForceReconverted = false;
 
-    public JsDisplayListBind(JsDisplayListCallback<T> callback, JsListEngine<V> listEngine, JsEntityConverter<V, T> entityConverter) {
+    public JsDisplayListBind(JsDisplayListCallback<T> callback, boolean isInverted, JsListEngine<V> listEngine, JsEntityConverter<V, T> entityConverter) {
 
         this.callback = callback;
+        this.isInverted = isInverted;
         this.listEngine = listEngine;
         this.entityConverter = entityConverter;
         this.isOverlaysSupported = entityConverter.isSupportOverlays();
@@ -135,10 +141,18 @@ public class JsDisplayListBind<T extends JavaScriptObject, V extends BserObject 
     }
 
     public void notifySubscriber() {
-        if (isOverlaysSupported) {
-            callback.onCollectionChanged(jsValues, jsOverlays);
+        if (isInverted) {
+            if (isOverlaysSupported) {
+                callback.onCollectionChanged(jsValues.reverse(), jsOverlays.reverse());
+            } else {
+                callback.onCollectionChanged(jsValues.reverse(), null);
+            }
         } else {
-            callback.onCollectionChanged(jsValues, null);
+            if (isOverlaysSupported) {
+                callback.onCollectionChanged(jsValues, jsOverlays);
+            } else {
+                callback.onCollectionChanged(jsValues, null);
+            }
         }
     }
 

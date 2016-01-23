@@ -185,7 +185,6 @@ class DialogSection extends Component {
       lastScrolledFromBottom = node.scrollHeight - scrollTop - node.offsetHeight; // was node.scrollHeight - scrollTop
 
       if (node.scrollTop < loadMessagesScrollTop) {
-        DialogActionCreators.onChatEnd(peer);
 
         if (messages.length > messagesToRender.length) {
           renderMessagesCount += renderMessagesStep;
@@ -195,6 +194,8 @@ class DialogSection extends Component {
           }
 
           this.setState(getStateFromStores());
+        } else {
+            DialogActionCreators.onChatEnd(peer);
         }
       }
     }
