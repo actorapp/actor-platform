@@ -25,6 +25,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     
     // Audio notes
     public var voicePlayer : AAModernConversationAudioPlayer!
+    public var voiceContext : AAModernViewInlineMediaContext!
     
     public var currentAudioFileId: jlong = 0
     public var voicesCache: Dictionary<jlong,Float> = Dictionary<jlong,Float>()
@@ -368,22 +369,24 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     
     func playVoiceFromPath(path:String,fileId:jlong,position:Float) {
         
-        if (self.voicePlayer == nil) {
-            self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)
-        }
-        
         if (self.currentAudioFileId != fileId) {
-            self.voicePlayer?.pause()
-            
             self.currentAudioFileId = fileId
-            self.voicePlayer?.play(position)
+            
+            self.voicePlayer?.stop()
+            self.voicePlayer?.audioPlayerStopAndFinish()
+            
+            self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)
+            self.voiceContext = self.voicePlayer.inlineMediaContext()
+            
+            
+            self.voicePlayer?.play()
             
         } else {
             
             if self.voicePlayer?.isPaused() == false {
                 self.voicePlayer?.pause()
             } else {
-                self.voicePlayer?.play(position)
+                self.voicePlayer?.play()
             }
             
         }

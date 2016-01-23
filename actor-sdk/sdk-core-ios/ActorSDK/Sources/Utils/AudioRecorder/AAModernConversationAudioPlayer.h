@@ -27,6 +27,8 @@
 - (void)pause;
 - (void)stop;
 
+- (void)audioPlayerStopAndFinish;
+
 - (float)playbackPosition;
 - (float)playbackPositionSync:(bool)sync;
 - (NSTimeInterval)duration;
