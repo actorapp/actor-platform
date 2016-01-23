@@ -32,11 +32,11 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
         this.entityConverter = entityConverter;
     }
 
-    public JsDisplayListBind<T, V> subscribe(JsDisplayListCallback<T> callback) {
+    public JsDisplayListBind<T, V> subscribe(JsDisplayListCallback<T> callback, boolean isInverted) {
         if (binds.containsKey(callback)) {
             binds.remove(callback).dispose();
         }
-        JsDisplayListBind<T, V> b = new JsDisplayListBind<T, V>(callback, listEngine, entityConverter);
+        JsDisplayListBind<T, V> b = new JsDisplayListBind<T, V>(callback, isInverted, listEngine, entityConverter);
         b.initAll();
         binds.put(callback, b);
         return b;

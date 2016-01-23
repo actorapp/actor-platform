@@ -344,7 +344,7 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        messenger.getSharedDialogList().subscribe(callback);
+        messenger.getSharedDialogList().subscribe(callback, false);
     }
 
     public void unbindDialogs(JsDisplayListCallback<JsDialog> callback) {
@@ -376,7 +376,7 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        messenger.getSharedContactList().subscribe(callback);
+        messenger.getSharedContactList().subscribe(callback, true);
     }
 
     public void unbindContacts(JsDisplayListCallback<JsContact> callback) {
@@ -392,7 +392,7 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        messenger.getSharedSearchList().subscribe(callback);
+        messenger.getSharedSearchList().subscribe(callback, false);
     }
 
     public void unbindSearch(JsDisplayListCallback<JsSearchEntity> callback) {
@@ -408,15 +408,13 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        // TODO: Fix inverted
-        messenger.getSharedChatList(peer.convert()).subscribe(callback);
+        messenger.getSharedChatList(peer.convert()).subscribe(callback, true);
     }
 
     public void unbindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
         if (callback == null) {
             return;
         }
-        // TODO: Fix inverted
         messenger.getSharedChatList(peer.convert()).unsubscribe(callback);
     }
 
