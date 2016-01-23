@@ -635,6 +635,11 @@ public class JsFacade implements Exportable {
         messenger.sendClipboardPhoto(peer.convert(), blob);
     }
 
+    public void sendVoiceMessage(final JsPeer peer, int duration, final JsBlob blob) {
+        String descriptor = provider.registerUploadFile(blob);
+        messenger.sendAudio(peer.convert(), "voice.opus", duration, descriptor);
+    }
+
     // Drafts
 
     public void saveDraft(JsPeer peer, String text) {
