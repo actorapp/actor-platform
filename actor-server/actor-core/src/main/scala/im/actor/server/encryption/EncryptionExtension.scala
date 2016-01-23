@@ -165,6 +165,16 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
     } yield ekeys)
   }
 
+  def fetchEphermalKeys(
+    userId:     Int,
+    keyGroupId: Int,
+    keyIds:     Set[Long]
+  ): Future[Seq[EphermalPublicKey]] = {
+    db.run(for {
+      ekeys ← EphermalPublicKeyRepo.fetch(userId, keyGroupId, keyIds)
+    } yield ekeys)
+  }
+
   def fetchApiEphermalKeys(
     userId:     Int,
     keyGroupId: Int
@@ -172,6 +182,20 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
     val actionT =
       for {
         ekeys ← XorT.right[Future, Exception, Seq[EphermalPublicKey]](fetchEphermalKeys(userId, keyGroupId))
+        apiEKeys ← XorT.fromXor[Future](toApi(ekeys.toVector): Xor[Exception, ApiEphermalPublicKeys])
+      } yield apiEKeys
+
+    actionT.value map (_.valueOr(throw _))
+  }
+
+  def fetchApiEphermalKeys(
+    userId:     Int,
+    keyGroupId: Int,
+    keyIds:     Set[Long]
+  ): Future[(Vector[ApiEncryptionKey], Vector[ApiEncryptionKeySignature])] = {
+    val actionT =
+      for {
+        ekeys ← XorT.right[Future, Exception, Seq[EphermalPublicKey]](fetchEphermalKeys(userId, keyGroupId, keyIds))
         apiEKeys ← XorT.fromXor[Future](toApi(ekeys.toVector): Xor[Exception, ApiEphermalPublicKeys])
       } yield apiEKeys
 
