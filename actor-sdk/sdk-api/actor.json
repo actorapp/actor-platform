@@ -5469,7 +5469,7 @@
         {
           "type": "struct",
           "content": {
-            "name": "HistoryMessage",
+            "name": "MessageContainer",
             "doc": [
               "Message from history",
               {
@@ -5590,7 +5590,7 @@
                     "type": "list",
                     "childType": {
                       "type": "struct",
-                      "childType": "HistoryMessage"
+                      "childType": "MessageContainer"
                     }
                   },
                   "id": 1,
@@ -13794,26 +13794,11 @@
           }
         },
         {
-          "type": "rpc",
-          "content": {
-            "name": "GetState",
-            "header": 9,
-            "response": {
-              "type": "reference",
-              "name": "Seq"
-            },
-            "doc": [
-              "Get main sequence state"
-            ],
-            "attributes": []
-          }
-        },
-        {
           "type": "struct",
           "content": {
-            "name": "DifferenceUpdate",
+            "name": "UpdateContainer",
             "doc": [
-              "Update from GetDifference",
+              "Update container",
               {
                 "type": "reference",
                 "argument": "updateHeader",
@@ -13824,7 +13809,7 @@
                 "type": "reference",
                 "argument": "update",
                 "category": "compact",
-                "description": "  The update"
+                "description": "  The updatre"
               }
             ],
             "attributes": [
@@ -13837,6 +13822,179 @@
                 "type": "bytes",
                 "id": 2,
                 "name": "update"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update_box",
+          "content": {
+            "name": "CombinedUpdate",
+            "header": 2625,
+            "doc": [
+              "Combined update",
+              {
+                "type": "reference",
+                "argument": "seqStart",
+                "category": "full",
+                "description": "  Sequence number start"
+              },
+              {
+                "type": "reference",
+                "argument": "seqEnd",
+                "category": "full",
+                "description": "  Sequence number end"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "category": "full",
+                "description": "  Sequence state"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "compact",
+                "description": "  Update's users"
+              },
+              {
+                "type": "reference",
+                "argument": "groups",
+                "category": "compact",
+                "description": "  Update's groups"
+              },
+              {
+                "type": "reference",
+                "argument": "updates",
+                "category": "full",
+                "description": "  Updates (can be empty)"
+              },
+              {
+                "type": "reference",
+                "argument": "messages",
+                "category": "full",
+                "description": "  New messages"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "seqStart"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "seqEnd"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
+                "id": 3,
+                "name": "state"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "User"
+                  }
+                },
+                "id": 4,
+                "name": "users"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Group"
+                  }
+                },
+                "id": 5,
+                "name": "groups"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UpdateContainer"
+                  }
+                },
+                "id": 6,
+                "name": "updates"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageContainer"
+                  }
+                },
+                "id": 7,
+                "name": "messages"
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "UpdateOptimization",
+            "values": [
+              {
+                "name": "NONE",
+                "id": 1
+              },
+              {
+                "name": "STRIP_ENTITIES",
+                "id": 2
+              },
+              {
+                "name": "ENABLE_COMBINED",
+                "id": 3
+              },
+              {
+                "name": "FASTER_MESSAGES",
+                "id": 4
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetState",
+            "header": 9,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Get main sequence state",
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 1,
+                "name": "optimizations"
               }
             ]
           }
@@ -13885,6 +14043,18 @@
                   "argument": "needMore",
                   "category": "full",
                   "description": "  Need to perform other difference"
+                },
+                {
+                  "type": "reference",
+                  "argument": "usersRefs",
+                  "category": "full",
+                  "description": "  Direct references of users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groupsRefs",
+                  "category": "full",
+                  "description": "  Direct References of groups"
                 }
               ],
               "attributes": [
@@ -13928,16 +14098,49 @@
                     "type": "list",
                     "childType": {
                       "type": "struct",
-                      "childType": "DifferenceUpdate"
+                      "childType": "UpdateContainer"
                     }
                   },
                   "id": 4,
                   "name": "updates"
                 },
                 {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "MessageContainer"
+                    }
+                  },
+                  "id": 7,
+                  "name": "messages"
+                },
+                {
                   "type": "bool",
                   "id": 5,
                   "name": "needMore"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 8,
+                  "name": "usersRefs"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 9,
+                  "name": "groupsRefs"
                 }
               ]
             },
@@ -13954,6 +14157,12 @@
                 "argument": "state",
                 "category": "compact",
                 "description": "Sequence state"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -13969,6 +14178,105 @@
                 },
                 "id": 2,
                 "name": "state"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetReferencedEntitites",
+            "header": 2628,
+            "response": {
+              "type": "anonymous",
+              "header": 2629,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Loaded users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "compact",
+                  "description": "  Loaded groups"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 1,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 2,
+                  "name": "groups"
+                }
+              ]
+            },
+            "doc": [
+              "Loading referenced entities",
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "compact",
+                "description": "Users to load"
+              },
+              {
+                "type": "reference",
+                "argument": "groups",
+                "category": "compact",
+                "description": "Groups to load. Also returns all members of a group."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 1,
+                "name": "users"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "GroupOutPeer"
+                  }
+                },
+                "id": 2,
+                "name": "groups"
               }
             ]
           }
@@ -14008,6 +14316,17 @@
                 "name": "bytes"
               }
             ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "EmptyUpdate",
+            "header": 85,
+            "doc": [
+              "Empty update"
+            ],
+            "attributes": []
           }
         },
         {

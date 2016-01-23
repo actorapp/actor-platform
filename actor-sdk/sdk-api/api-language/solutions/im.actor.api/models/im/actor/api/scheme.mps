@@ -4953,7 +4953,7 @@
         </node>
       </node>
       <node concept="2m5naR" id="gbd4oSj4vy" role="2m5mJr">
-        <property role="TrG5h" value="HistoryMessage" />
+        <property role="TrG5h" value="MessageContainer" />
         <node concept="NXeRC" id="gbd4oSj4vz" role="NXodf">
           <property role="NXePf" value="Message from history" />
         </node>
@@ -5072,7 +5072,7 @@
             <property role="TrG5h" value="history" />
             <node concept="2m5nlk" id="gbd4oSj4w0" role="2m7DVh">
               <node concept="2m5mGg" id="gbd4oSj4w1" role="3GJlyp">
-                <ref role="2m5mJy" node="gbd4oSj4vy" resolve="HistoryMessage" />
+                <ref role="2m5mJy" node="gbd4oSj4vy" resolve="MessageContainer" />
               </node>
             </node>
           </node>
@@ -11885,8 +11885,159 @@
           <property role="Nu42W" value="19" />
         </node>
       </node>
+      <node concept="2m5naR" id="4fp6Gpc5n7o" role="2m5mJr">
+        <property role="TrG5h" value="UpdateContainer" />
+        <node concept="2m7Kf5" id="4fp6Gpc5n9Y" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="updateHeader" />
+          <node concept="2m5ndE" id="4fp6Gpc5na2" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="4fp6Gpc5na5" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="update" />
+          <node concept="2m61tm" id="4fp6Gpc5nab" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="4fp6Gpc5nae" role="NXodf">
+          <property role="NXePf" value="Update container" />
+        </node>
+        <node concept="NX1gA" id="4fp6Gpc5o51" role="NXodf">
+          <property role="NX6R2" value="Header of update" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4fp6Gpc5n9Y" resolve="updateHeader" />
+        </node>
+        <node concept="NX1gA" id="4fp6Gpc5oZS" role="NXodf">
+          <property role="NX6R2" value="The updatre" />
+          <property role="1GSvIU" value="compact" />
+          <ref role="NX6Kv" node="4fp6Gpc5na5" resolve="update" />
+        </node>
+      </node>
+      <node concept="3GIgwz" id="4fp6Gpc58D4" role="2m5mJr">
+        <property role="TrG5h" value="CombinedUpdate" />
+        <node concept="2m7Kf5" id="4fp6Gpc5kaI" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="seqStart" />
+          <node concept="2m5ndE" id="4fp6Gpc5kaM" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="4fp6Gpc5kaP" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="seqEnd" />
+          <node concept="2m5ndE" id="4fp6Gpc5kaV" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="4fp6Gpc5kaY" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="state" />
+          <node concept="wb0Ql" id="4fp6Gpc5kb6" role="2m7DVh">
+            <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4fp6Gpc5l5L" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="users" />
+          <node concept="2m5nlk" id="4fp6Gpc5l5V" role="2m7DVh">
+            <node concept="2m5mGg" id="4fp6Gpc5l61" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4fp6Gpc5l64" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="groups" />
+          <node concept="2m5nlk" id="4fp6Gpc5l6h" role="2m7DVh">
+            <node concept="2m5mGg" id="4fp6Gpc5l6n" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4fp6Gpc5mWP" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="updates" />
+          <node concept="2m5nlk" id="4fp6Gpc5pXb" role="2m7DVh">
+            <node concept="2m5mGg" id="4fp6Gpc5pXh" role="3GJlyp">
+              <ref role="2m5mJy" node="4fp6Gpc5n7o" resolve="UpdateContainer" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4fp6Gpc5FTn" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="messages" />
+          <node concept="2m5nlk" id="4fp6Gpc5FTo" role="2m7DVh">
+            <node concept="2m5mGg" id="4fp6Gpc5FTp" role="3GJlyp">
+              <ref role="2m5mJy" node="gbd4oSj4vy" resolve="MessageContainer" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="4fp6Gpc58D5" role="NuuwV">
+          <property role="Nu42W" value="A41" />
+        </node>
+        <node concept="NXeRC" id="4fp6Gpc5qRX" role="NXpPy">
+          <property role="NXePf" value="Combined update" />
+        </node>
+        <node concept="NX1gA" id="4fp6Gpc5rMG" role="NXpPy">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Sequence number start" />
+          <ref role="NX6Kv" node="4fp6Gpc5kaI" resolve="seqStart" />
+        </node>
+        <node concept="NX1gA" id="4fp6Gpc5rMO" role="NXpPy">
+          <property role="NX6R2" value="Sequence number end" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4fp6Gpc5kaP" resolve="seqEnd" />
+        </node>
+        <node concept="NX1gA" id="4fp6Gpc5rMY" role="NXpPy">
+          <property role="NX6R2" value="Sequence state" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4fp6Gpc5kaY" resolve="state" />
+        </node>
+        <node concept="NX1gA" id="4fp6Gpc5rNa" role="NXpPy">
+          <property role="NX6R2" value="Update's users" />
+          <property role="1GSvIU" value="compact" />
+          <ref role="NX6Kv" node="4fp6Gpc5l5L" resolve="users" />
+        </node>
+        <node concept="NX1gA" id="4fp6Gpc5rNo" role="NXpPy">
+          <property role="NX6R2" value="Update's groups" />
+          <property role="1GSvIU" value="compact" />
+          <ref role="NX6Kv" node="4fp6Gpc5l64" resolve="groups" />
+        </node>
+        <node concept="NX1gA" id="4fp6Gpc5rNC" role="NXpPy">
+          <property role="NX6R2" value="Updates (can be empty)" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4fp6Gpc5mWP" resolve="updates" />
+        </node>
+        <node concept="NX1gA" id="4fp6Gpc5FU9" role="NXpPy">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="New messages" />
+          <ref role="NX6Kv" node="4fp6Gpc5FTn" resolve="messages" />
+        </node>
+      </node>
+      <node concept="2m488m" id="4fp6Gpc4YV7" role="2m5mJr">
+        <property role="TrG5h" value="UpdateOptimization" />
+        <node concept="2m7y0F" id="4fp6Gpc4YV9" role="2m7ymf">
+          <property role="TrG5h" value="NONE" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="4fp6Gpc4YXp" role="2m7ymf">
+          <property role="TrG5h" value="STRIP_ENTITIES" />
+          <property role="2m7y0m" value="2" />
+        </node>
+        <node concept="2m7y0F" id="4fp6Gpc5sIx" role="2m7ymf">
+          <property role="TrG5h" value="ENABLE_COMBINED" />
+          <property role="2m7y0m" value="3" />
+        </node>
+        <node concept="2m7y0F" id="4fp6Gpc5GPi" role="2m7ymf">
+          <property role="TrG5h" value="FASTER_MESSAGES" />
+          <property role="2m7y0m" value="4" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="GBscvBBAdf" role="2m5mJr">
         <property role="TrG5h" value="GetState" />
+        <node concept="2m7Kf5" id="4fp6Gpc5tDm" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="optimizations" />
+          <node concept="2m5nlk" id="4fp6Gpc5tDq" role="2m7DVh">
+            <node concept="3GJkcs" id="4fp6Gpc5tDw" role="3GJlyp">
+              <ref role="3GJkik" node="4fp6Gpc4YV7" resolve="UpdateOptimization" />
+            </node>
+          </node>
+        </node>
         <node concept="Nu42z" id="GBscvBBAdg" role="NuuwV">
           <property role="Nu42W" value="09" />
         </node>
@@ -11896,31 +12047,10 @@
         <node concept="NXeRC" id="2EAJ7H6foAE" role="1GBnQ6">
           <property role="NXePf" value="Get main sequence state" />
         </node>
-      </node>
-      <node concept="2m5naR" id="GBscvBB_GO" role="2m5mJr">
-        <property role="TrG5h" value="DifferenceUpdate" />
-        <node concept="NXeRC" id="7UKSaUukmem" role="NXodf">
-          <property role="NXePf" value="Update from GetDifference" />
-        </node>
-        <node concept="NX1gA" id="7UKSaUukmes" role="NXodf">
-          <property role="NX6R2" value="Header of update" />
+        <node concept="NX1gA" id="4fp6Gpc5tDA" role="1GBnQ6">
           <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB_GY" resolve="updateHeader" />
-        </node>
-        <node concept="NX1gA" id="7UKSaUukme$" role="NXodf">
-          <property role="NX6R2" value="The update" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="GBscvBB_H5" resolve="update" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB_GY" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="updateHeader" />
-          <node concept="2m5ndE" id="GBscvBB_H2" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB_H5" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="update" />
-          <node concept="2m61tm" id="GBscvBB_Hb" role="2m7DVh" />
+          <property role="NX6R2" value="Enabled optimizations" />
+          <ref role="NX6Kv" node="4fp6Gpc5tDm" resolve="optimizations" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBB_Gl" role="2m5mJr">
@@ -11938,6 +12068,11 @@
           <property role="1GSvIU" value="compact" />
           <ref role="NX6Kv" node="GBscvBB_Gy" resolve="state" />
         </node>
+        <node concept="NX1gA" id="4fp6Gpc56Lx" role="1GBnQ6">
+          <property role="NX6R2" value="Enabled optimizations" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4fp6Gpc540T" resolve="optimizations" />
+        </node>
         <node concept="2m7Kf5" id="GBscvBB_Gr" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="seq" />
@@ -11948,6 +12083,15 @@
           <property role="TrG5h" value="state" />
           <node concept="wb0Ql" id="55bmeIQ7BbF" role="2m7DVh">
             <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4fp6Gpc540T" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="optimizations" />
+          <node concept="2m5nlk" id="4fp6Gpc56Lj" role="2m7DVh">
+            <node concept="3GJkcs" id="4fp6Gpc56Lp" role="3GJlyp">
+              <ref role="3GJkik" node="4fp6Gpc4YV7" resolve="UpdateOptimization" />
+            </node>
           </node>
         </node>
         <node concept="Nu42z" id="GBscvBB_Gm" role="NuuwV">
@@ -11984,6 +12128,16 @@
             <property role="1GSvIU" value="full" />
             <ref role="NX6Kv" node="GBscvBB_Xm" resolve="needMore" />
           </node>
+          <node concept="NX1gA" id="4fp6Gpc5U0W" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Direct references of users" />
+            <ref role="NX6Kv" node="4fp6Gpc5TZN" resolve="usersRefs" />
+          </node>
+          <node concept="NX1gA" id="4fp6Gpc5U1e" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Direct References of groups" />
+            <ref role="NX6Kv" node="4fp6Gpc5U0i" resolve="groupsRefs" />
+          </node>
           <node concept="2m7Kf5" id="GBscvBB_Wa" role="2m0hLx">
             <property role="2m7DUN" value="1" />
             <property role="TrG5h" value="seq" />
@@ -12018,8 +12172,17 @@
             <property role="2m7DUN" value="4" />
             <property role="TrG5h" value="updates" />
             <node concept="2m5nlk" id="GBscvBB_Xd" role="2m7DVh">
-              <node concept="2m5mGg" id="GBscvBB_Xj" role="3GJlyp">
-                <ref role="2m5mJy" node="GBscvBB_GO" resolve="DifferenceUpdate" />
+              <node concept="2m5mGg" id="4fp6Gpc5oZX" role="3GJlyp">
+                <ref role="2m5mJy" node="4fp6Gpc5n7o" resolve="UpdateContainer" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="4fp6Gpc5EXx" role="2m0hLx">
+            <property role="2m7DUN" value="7" />
+            <property role="TrG5h" value="messages" />
+            <node concept="2m5nlk" id="4fp6Gpc5EXO" role="2m7DVh">
+              <node concept="2m5mGg" id="4fp6Gpc5EXU" role="3GJlyp">
+                <ref role="2m5mJy" node="gbd4oSj4vy" resolve="MessageContainer" />
               </node>
             </node>
           </node>
@@ -12028,9 +12191,97 @@
             <property role="TrG5h" value="needMore" />
             <node concept="2m5ndN" id="GBscvBB_XB" role="2m7DVh" />
           </node>
+          <node concept="2m7Kf5" id="4fp6Gpc5TZN" role="2m0hLx">
+            <property role="2m7DUN" value="8" />
+            <property role="TrG5h" value="usersRefs" />
+            <node concept="2m5nlk" id="4fp6Gpc5U09" role="2m7DVh">
+              <node concept="2m5mGg" id="4fp6Gpc5U0f" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="4fp6Gpc5U0i" role="2m0hLx">
+            <property role="2m7DUN" value="9" />
+            <property role="TrG5h" value="groupsRefs" />
+            <node concept="2m5nlk" id="4fp6Gpc5U0F" role="2m7DVh">
+              <node concept="2m5mGg" id="4fp6Gpc5U0L" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+              </node>
+            </node>
+          </node>
           <node concept="Nu42z" id="GBscvBB_W6" role="NuuwV">
             <property role="Nu42W" value="0C" />
           </node>
+        </node>
+      </node>
+      <node concept="2m6fVq" id="4fp6Gpc5Ra_" role="2m5mJr">
+        <property role="TrG5h" value="GetReferencedEntitites" />
+        <node concept="2m7Kf5" id="4fp6Gpc5S8r" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="users" />
+          <node concept="2m5nlk" id="4fp6Gpc5S8v" role="2m7DVh">
+            <node concept="2m5mGg" id="4fp6Gpc5S8_" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4fp6Gpc5S8C" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="groups" />
+          <node concept="2m5nlk" id="4fp6Gpc5S8J" role="2m7DVh">
+            <node concept="2m5mGg" id="4fp6Gpc5S8P" role="3GJlyp">
+              <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="4fp6Gpc5RaA" role="NuuwV">
+          <property role="Nu42W" value="A44" />
+        </node>
+        <node concept="2m1R6W" id="4fp6Gpc5S8S" role="2m6efq">
+          <node concept="2m7Kf5" id="4fp6Gpc5S8X" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="4fp6Gpc5S91" role="2m7DVh">
+              <node concept="2m5mGg" id="4fp6Gpc5S97" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="4fp6Gpc5S9a" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="groups" />
+            <node concept="2m5nlk" id="4fp6Gpc5S9h" role="2m7DVh">
+              <node concept="2m5mGg" id="4fp6Gpc5S9n" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="4fp6Gpc5S8T" role="NuuwV">
+            <property role="Nu42W" value="A45" />
+          </node>
+          <node concept="NX1gA" id="4fp6Gpc5UWz" role="1y2DgH">
+            <property role="NX6R2" value="Loaded users" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="4fp6Gpc5S8X" resolve="users" />
+          </node>
+          <node concept="NX1gA" id="4fp6Gpc5UWC" role="1y2DgH">
+            <property role="NX6R2" value="Loaded groups" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="4fp6Gpc5S9a" resolve="groups" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="4fp6Gpc5S9q" role="1GBnQ6">
+          <property role="NXePf" value="Loading referenced entities" />
+        </node>
+        <node concept="NX1gA" id="4fp6Gpc5S9v" role="1GBnQ6">
+          <property role="1GSvIU" value="compact" />
+          <property role="NX6R2" value="Users to load" />
+          <ref role="NX6Kv" node="4fp6Gpc5S8r" resolve="users" />
+        </node>
+        <node concept="NX1gA" id="4fp6Gpc5T4D" role="1GBnQ6">
+          <property role="1GSvIU" value="compact" />
+          <property role="NX6R2" value="Groups to load. Also returns all members of a group." />
+          <ref role="NX6Kv" node="4fp6Gpc5S8C" resolve="groups" />
         </node>
       </node>
       <node concept="NpBTk" id="1GlYFhnbv9G" role="2m5mJr">
@@ -12062,6 +12313,15 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Raw data" />
           <ref role="NX6Kv" node="1GlYFhnbvbN" resolve="bytes" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="4fp6Gpc5wsV" role="2m5mJr">
+        <property role="TrG5h" value="EmptyUpdate" />
+        <node concept="Nu42z" id="4fp6Gpc5wsW" role="NuuwV">
+          <property role="Nu42W" value="55" />
+        </node>
+        <node concept="NXeRC" id="4fp6Gpc5wvK" role="NXp_2">
+          <property role="NXePf" value="Empty update" />
         </node>
       </node>
       <node concept="NvyAe" id="GBscvBBAXl" role="2m5mJr" />
