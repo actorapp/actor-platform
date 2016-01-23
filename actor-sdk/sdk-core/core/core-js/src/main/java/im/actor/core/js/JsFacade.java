@@ -418,6 +418,15 @@ public class JsFacade implements Exportable {
         messenger.getSharedChatList(peer.convert()).unsubscribe(callback);
     }
 
+    public JsMessagesBind bindMessages(JsPeer peer, JsMessagesBindClosure callback) {
+        if (callback == null) {
+            return null;
+        }
+        Peer peerC = peer.convert();
+
+        return new JsMessagesBind(callback, messenger.getSharedChatList(peerC), messenger.getConversationVM(peerC));
+    }
+
     public void onMessageShown(JsPeer peer, JsMessage message) {
         if (message.isOnServer()) {
             messenger.onMessageShown(peer.convert(), Long.parseLong(message.getSortKey()));

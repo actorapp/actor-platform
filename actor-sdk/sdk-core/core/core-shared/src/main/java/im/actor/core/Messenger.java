@@ -48,6 +48,7 @@ import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
 import im.actor.core.viewmodel.AppStateVM;
 import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileVM;
@@ -582,6 +583,16 @@ public class Messenger {
     //////////////////////////////////////
 
     /**
+     * Getting Conversation VM
+     *
+     * @param peer peer
+     * @return Conversation VM
+     */
+    public ConversationVM getConversationVM(Peer peer) {
+        return modules.getMessagesModule().getConversationVM(peer);
+    }
+
+    /**
      * Send Markdown Message with mentions
      *
      * @param peer         destination peer
@@ -747,7 +758,7 @@ public class Messenger {
     /**
      * Send json message
      *
-     * @param peer destination peer
+     * @param peer    destination peer
      * @param content json content
      */
     @ObjectiveCName("sendJsonWithPeer:withJson:")
