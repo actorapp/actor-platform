@@ -153,13 +153,18 @@ public class EncryptedPeerActor extends ModuleActor {
         byte[] encPackage = ByteStrings.substring(data.getEncryptedPackage(), 4, data.getEncryptedPackage().length - 4);
 
         if (sessions.containsKey(senderKeyGroup)) {
-            Log.d(TAG, "Decryption with key group");
+            Log.d(TAG, "Decryption with key group #" + senderKeyGroup);
             byte[] encKey = null;
             for (EncryptedBoxKey k : data.getKeys()) {
+                Log.d(TAG, "Key group: #" + k.getKeyGroupId() + " #" + k.getUid());
                 if (k.getKeyGroupId() == ownKeyGroupId && k.getUid() == myUid()) {
                     encKey = k.getEncryptedKey();
                     break;
                 }
+            }
+            if (encKey == null) {
+                Log.d(TAG, "Unable to find encryption key in key group");
+                return;
             }
 
             Log.d(TAG, "EncPackage: " + Hex.toHex(encPackage));
