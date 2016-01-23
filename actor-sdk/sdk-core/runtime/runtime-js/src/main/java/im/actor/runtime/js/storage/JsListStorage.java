@@ -186,6 +186,34 @@ public class JsListStorage implements ListStorage {
         return res;
     }
 
+    public long[] getPrevIdsInclusive(long sortKey) {
+        ArrayList<Long> res = new ArrayList<Long>();
+        for (Index i : index) {
+            if (i.getSortKey() <= sortKey) {
+                res.add(i.getId());
+            }
+        }
+        long[] res2 = new long[res.size()];
+        for (int i = 0; i < res2.length; i++) {
+            res2[i] = res.get(i);
+        }
+        return res2;
+    }
+
+    public long[] getPrevIdsExclusive(long sortKey) {
+        ArrayList<Long> res = new ArrayList<Long>();
+        for (Index i : index) {
+            if (i.getSortKey() < sortKey) {
+                res.add(i.getId());
+            }
+        }
+        long[] res2 = new long[res.size()];
+        for (int i = 0; i < res2.length; i++) {
+            res2[i] = res.get(i);
+        }
+        return res2;
+    }
+
     private String getId(long id) {
         return "list_" + prefix + "_" + id;
     }
