@@ -45,6 +45,7 @@ import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserTypingVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.js.mvvm.JsDisplayList;
+import im.actor.runtime.js.mvvm.JsDisplayListBind;
 import im.actor.runtime.mvvm.ModelChangedListener;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
@@ -159,14 +160,6 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                 }
             }, false);
 
-            // Sign for presence separately
-//            userVM.getPresence().subscribe(new ValueChangedListener<UserPresence>() {
-//                @Override
-//                public void onChanged(UserPresence val, Value<UserPresence> valueModel) {
-//                    value.changeValue(JsUser.fromUserVM(userVM, messenger));
-//                }
-//            }, false);
-
             // Sign for contact separately
             userVM.isContact().subscribe(new ValueChangedListener<Boolean>() {
                 @Override
@@ -218,13 +211,6 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                 }
             }, false);
 
-            // Sign for presence separately
-//            groupVM.getPresence().subscribe(new ValueChangedListener<Integer>() {
-//                @Override
-//                public void onChanged(Integer val, Value<Integer> valueModel) {
-//                    value.changeValue(JsGroup.fromGroupVM(groupVM, messenger));
-//                }
-//            }, false);
             groups.put(gid, value);
         }
         return groups.get(gid);
@@ -365,110 +351,116 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     @Override
     public void onFileLoaded(HashSet<Long> fileId) {
 
-//        //
-//        // Dialogs List
-//        //
-//
-//        if (dialogsList != null) {
-//            dialogsList.startReconverting();
-//            for (Dialog dialog : dialogsList.getRawItems()) {
-//                if (checkAvatar(dialog.getDialogAvatar(), fileId)) {
-//                    dialogsList.forceReconvert(dialog.getEngineId());
-//                }
-//            }
-//            dialogsList.stopReconverting();
-//        }
-//
-//        //
-//        // Grouped Dialogs
-//        //
-//
-//        if (dialogsGroupedList != null) {
-//            ArrayList<DialogGroup> groups = context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().get();
-//            if (groups != null) {
-//                outer:
-//                for (DialogGroup g : groups) {
-//                    for (DialogSmall ds : g.getDialogs()) {
-//                        if (checkAvatar(ds.getAvatar(), fileId)) {
-//                            context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().forceNotify();
-//                            break outer;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        //
-//        // Contacts List
-//        //
-//
-//        if (contactsList != null) {
-//            contactsList.startReconverting();
-//            for (Contact contact : contactsList.getRawItems()) {
-//                if (checkAvatar(contact.getAvatar(), fileId)) {
-//                    contactsList.forceReconvert(contact.getEngineId());
-//                }
-//            }
-//            contactsList.stopReconverting();
-//        }
-//
-//        //
-//        // Message Contents
-//        //
-//
-//        for (JsDisplayList<JsMessage, Message> messageList : messageLists.values()) {
-//            messageList.startReconverting();
-//            for (Message message : messageList.getRawItems()) {
-//                UserVM user = context().getUsersModule().getUsers().get(message.getSenderId());
-//                if (checkAvatar(user.getAvatar().get(), fileId)) {
-//                    messageList.forceReconvert(message.getEngineId());
-//                    continue;
-//                }
-//                if (message.getContent() instanceof DocumentContent) {
-//                    DocumentContent doc = (DocumentContent) message.getContent();
-//                    if (doc.getSource() instanceof FileRemoteSource) {
-//                        if (fileId.contains(((FileRemoteSource) doc.getSource()).getFileReference().getFileId())) {
-//                            messageList.forceReconvert(message.getEngineId());
-//                        }
-//                    }
-//                }
-//                if (message.getContent() instanceof StickerContent) {
-//                    StickerContent content = (StickerContent) message.getContent();
-//                    if (content.getSticker().getApiImageLocation512() != null) {
-//                        long stickerFileId =
-//                                content.getSticker().getApiImageLocation512().getFileLocation().getFileId();
-//                        if (fileId.contains(stickerFileId)) {
-//                            messageList.forceReconvert(message.getEngineId());
-//                        }
-//                    }
-//                }
-//            }
-//            messageList.stopReconverting();
-//        }
-//
-//        //
-//        // Users
-//        //
-//
-//        for (JsBindedValue<JsUser> u : users.values()) {
-//            int uid = u.get().getUid();
-//            UserVM userVM = context().getUsersModule().getUsers().get(uid);
-//            if (checkAvatar(userVM.getAvatar().get(), fileId)) {
-//                u.changeValue(JsUser.fromUserVM(userVM, messenger));
-//            }
-//        }
-//
-//        //
-//        // Groups
-//        //
-//
-//        for (JsBindedValue<JsGroup> g : groups.values()) {
-//            int gid = g.get().getGid();
-//            GroupVM groupVM = context().getGroupsModule().getGroupsCollection().get(gid);
-//            if (checkAvatar(groupVM.getAvatar().get(), fileId)) {
-//                g.changeValue(JsGroup.fromGroupVM(groupVM, messenger));
-//            }
-//        }
+        //
+        // Dialogs List
+        //
+
+        if (dialogsList != null) {
+            for (JsDisplayListBind<JsDialog, Dialog> b : dialogsList.getActiveBinds()) {
+                b.startReconverting();
+                for (Dialog dialog : b.getRawItems()) {
+                    if (checkAvatar(dialog.getDialogAvatar(), fileId)) {
+                        b.forceReconvert(dialog.getEngineId());
+                    }
+                }
+                b.stopReconverting();
+            }
+        }
+
+        //
+        // Grouped Dialogs
+        //
+
+        if (dialogsGroupedList != null) {
+            ArrayList<DialogGroup> groups = context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().get();
+            if (groups != null) {
+                outer:
+                for (DialogGroup g : groups) {
+                    for (DialogSmall ds : g.getDialogs()) {
+                        if (checkAvatar(ds.getAvatar(), fileId)) {
+                            context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().forceNotify();
+                            break outer;
+                        }
+                    }
+                }
+            }
+        }
+
+        //
+        // Contacts List
+        //
+
+        if (contactsList != null) {
+            for (JsDisplayListBind<JsContact, Contact> b : contactsList.getActiveBinds()) {
+                b.startReconverting();
+                for (Contact contact : b.getRawItems()) {
+                    if (checkAvatar(contact.getAvatar(), fileId)) {
+                        b.forceReconvert(contact.getEngineId());
+                    }
+                }
+                b.stopReconverting();
+            }
+        }
+
+        //
+        // Message Contents
+        //
+
+        for (JsDisplayList<JsMessage, Message> messageList : messageLists.values()) {
+            for(JsDisplayListBind<JsMessage,Message> b : messageList.getActiveBinds()){
+                b.startReconverting();
+                for (Message message : b.getRawItems()) {
+                    UserVM user = context().getUsersModule().getUsers().get(message.getSenderId());
+                    if (checkAvatar(user.getAvatar().get(), fileId)) {
+                        b.forceReconvert(message.getEngineId());
+                        continue;
+                    }
+                    if (message.getContent() instanceof DocumentContent) {
+                        DocumentContent doc = (DocumentContent) message.getContent();
+                        if (doc.getSource() instanceof FileRemoteSource) {
+                            if (fileId.contains(((FileRemoteSource) doc.getSource()).getFileReference().getFileId())) {
+                                b.forceReconvert(message.getEngineId());
+                            }
+                        }
+                    }
+                    if (message.getContent() instanceof StickerContent) {
+                        StickerContent content = (StickerContent) message.getContent();
+                        if (content.getSticker().getApiImageLocation512() != null) {
+                            long stickerFileId =
+                                    content.getSticker().getApiImageLocation512().getFileLocation().getFileId();
+                            if (fileId.contains(stickerFileId)) {
+                                b.forceReconvert(message.getEngineId());
+                            }
+                        }
+                    }
+                }
+                b.stopReconverting();
+            }
+        }
+
+        //
+        // Users
+        //
+
+        for (JsBindedValue<JsUser> u : users.values()) {
+            int uid = u.get().getUid();
+            UserVM userVM = context().getUsersModule().getUsers().get(uid);
+            if (checkAvatar(userVM.getAvatar().get(), fileId)) {
+                u.changeValue(JsUser.fromUserVM(userVM, messenger));
+            }
+        }
+
+        //
+        // Groups
+        //
+
+        for (JsBindedValue<JsGroup> g : groups.values()) {
+            int gid = g.get().getGid();
+            GroupVM groupVM = context().getGroupsModule().getGroupsCollection().get(gid);
+            if (checkAvatar(groupVM.getAvatar().get(), fileId)) {
+                g.changeValue(JsGroup.fromGroupVM(groupVM, messenger));
+            }
+        }
     }
 
     protected boolean checkAvatar(Avatar avatar, HashSet<Long> fileIds) {
