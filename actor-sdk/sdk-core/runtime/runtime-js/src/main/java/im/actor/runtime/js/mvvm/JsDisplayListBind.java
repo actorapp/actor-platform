@@ -64,6 +64,14 @@ public class JsDisplayListBind<T extends JavaScriptObject, V extends BserObject 
      * If all messages loaded from bottom of the list
      */
     private boolean isOpenBottom;
+    /**
+     * Current window top limit
+     */
+    private long windowTop;
+    /**
+     * Current window bottom limit
+     */
+    private long windowBottom;
 
     /**
      * If list is inited and ready to receive list updates
@@ -130,8 +138,81 @@ public class JsDisplayListBind<T extends JavaScriptObject, V extends BserObject 
         processDirtyOverlays();
 
         isInited = true;
-        isOpenBottom = true;
+        windowTop = 0;
         isOpenTop = true;
+        windowBottom = 0;
+        isOpenBottom = true;
+
+        notifySubscriber();
+    }
+
+    public void initTop(int limit) {
+        clearState();
+
+        long[] rids = listEngine.getOrderedIds();
+        for (int i = 0; i < rids.length && i < limit; i++) {
+            V item = listEngine.getValue(rids[i]);
+            if (item == null) {
+                Log.w("JsDisplayList", "Unable to find item #" + rids[i]);
+                continue;
+            }
+            values.add(item);
+            jsValues.push(entityConverter.convert(item));
+
+            if (isOverlaysSupported) {
+                jsOverlays.push(null);
+                isOverlayDirty.add(true);
+            }
+        }
+
+        processDirtyOverlays();
+
+        isInited = true;
+        windowTop = 0;
+        isOpenTop = true;
+        if (rids.length > 0) {
+            windowBottom = rids[rids.length - 1];
+            isOpenBottom = false;
+        } else {
+            windowBottom = 0;
+            isOpenBottom = true;
+        }
+
+        notifySubscriber();
+    }
+
+    public void loadBottom(int limit) {
+        if (!isInited) {
+            return;
+        }
+        if (isOpenBottom) {
+            return;
+        }
+        long[] rids = listEngine.getPrevIdsExclusive(windowBottom);
+        for (int i = 0; i < rids.length && i < limit; i++) {
+            V item = listEngine.getValue(rids[i]);
+            if (item == null) {
+                Log.w("JsDisplayList", "Unable to find item #" + rids[i]);
+                continue;
+            }
+            values.add(item);
+            jsValues.push(entityConverter.convert(item));
+
+            if (isOverlaysSupported) {
+                jsOverlays.push(null);
+                isOverlayDirty.add(true);
+            }
+        }
+
+        processDirtyOverlays();
+
+        if (rids.length > 0) {
+            windowBottom = rids[rids.length - 1];
+            isOpenBottom = false;
+        } else {
+            windowBottom = 0;
+            isOpenBottom = true;
+        }
 
         notifySubscriber();
     }
@@ -159,6 +240,16 @@ public class JsDisplayListBind<T extends JavaScriptObject, V extends BserObject 
     private void addItemOrUpdateImpl(V item) {
         long id = item.getEngineId();
         long sortKey = item.getEngineSort();
+
+        if (!isOpenTop && windowTop > sortKey) {
+            // Doesn't fit in top window limit
+            return;
+        }
+        if (!isOpenBottom && windowBottom < sortKey) {
+            // Doesn't fit in bottom window limit
+            return;
+        }
+
         for (int i = 0; i < values.size(); i++) {
             if (values.get(i).getEngineId() == id) {
                 values.remove(i);
