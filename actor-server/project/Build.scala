@@ -21,7 +21,8 @@ object Build extends sbt.Build with Versioning with Releasing {
         organization := "im.actor.server",
         organizationHomepage := Some(url("https://actor.im")),
         resolvers ++= Resolvers.seq,
-        scalacOptions ++= Seq("-Yopt-warnings")
+        scalacOptions ++= Seq("-Yopt-warnings"),
+        parallelExecution := false
       ) ++ Sonatype.sonatypeSettings
 
   lazy val pomExtraXml =
