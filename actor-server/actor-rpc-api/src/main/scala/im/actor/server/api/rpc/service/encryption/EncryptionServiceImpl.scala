@@ -59,9 +59,12 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
   ): Future[HandlerResult[ResponsePublicKeys]] =
     authorized(clientData) { implicit client ⇒
       withUserOutPeerF(userPeer) {
+        val keyIdsSet = keyIds.toSet
+
         for {
-          (kgs, signs) ← encExt.fetchApiKeys(userPeer.userId, keyGroupId, keyIds.toSet)
-        } yield Ok(ResponsePublicKeys(kgs, signs))
+          (ks, signs) ← encExt.fetchApiKeys(userPeer.userId, keyGroupId, keyIdsSet)
+          (eks, esigns) ← encExt.fetchApiEphermalKeys(userPeer.userId, keyGroupId, keyIdsSet)
+        } yield Ok(ResponsePublicKeys(ks ++ eks, signs ++ esigns))
       }
     }
 

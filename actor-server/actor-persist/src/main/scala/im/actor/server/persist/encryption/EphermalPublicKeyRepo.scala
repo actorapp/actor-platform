@@ -41,4 +41,7 @@ object EphermalPublicKeyRepo {
   def fetch(userId: Int) = byUserIdC(userId)
 
   def fetch(userId: Int, keyGroupId: Int) = byUserIdKeyGroupC(userId → keyGroupId).result
+
+  def fetch(userId: Int, keyGroupId: Int, keyIds: Set[Long]) =
+    byUserIdKeyGroupC.applied(userId → keyGroupId).filter(_.keyId inSet keyIds).result
 }
