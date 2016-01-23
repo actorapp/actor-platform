@@ -96,8 +96,10 @@ public class JsDisplayListBind<T extends JavaScriptObject, V extends BserObject 
     private void clearState() {
         values.clear();
         jsValues.clear();
-        jsOverlays.clear();
-        isOverlayDirty.clear();
+        if (isOverlaysSupported) {
+            jsOverlays.clear();
+            isOverlayDirty.clear();
+        }
     }
 
     public void initAll() {
@@ -124,6 +126,12 @@ public class JsDisplayListBind<T extends JavaScriptObject, V extends BserObject 
         isInited = true;
         isOpenBottom = true;
         isOpenTop = true;
+
+        notifySubscriber();
+    }
+
+    public void dispose() {
+        listEngine.removeListener(this);
     }
 
     public void notifySubscriber() {
