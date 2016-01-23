@@ -1,6 +1,7 @@
 package im.actor.core.modules.encryption.entity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.modules.encryption.Configuration;
@@ -77,7 +78,13 @@ public class OwnKeys extends BserObject {
     }
 
     public OwnPrivateKeyUploadable pickRandomEphemeralKey() {
-        return ephemeralKeys[RandomUtils.randomId(ephemeralKeys.length)];
+        ArrayList<OwnPrivateKeyUploadable> uploadedKeys = new ArrayList<OwnPrivateKeyUploadable>();
+        for (OwnPrivateKeyUploadable u : ephemeralKeys) {
+            if (u.isUploaded()) {
+                uploadedKeys.add(u);
+            }
+        }
+        return uploadedKeys.get(RandomUtils.randomId(uploadedKeys.size()));
     }
 
     @Override
