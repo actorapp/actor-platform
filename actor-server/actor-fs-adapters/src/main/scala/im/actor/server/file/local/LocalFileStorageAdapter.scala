@@ -15,8 +15,8 @@ import im.actor.server.db.DbExtension
 import im.actor.server.file._
 import im.actor.server.file.local.http.FilesHttpHandler
 import im.actor.server.{ model, persist }
+import im.actor.util.ThreadLocalSecureRandom
 
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success, Try }
 
@@ -77,7 +77,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
   val baseUri = Uri(httpConfig.baseUri)
 
   override def uploadFile(name: UnsafeFileName, data: Array[Byte]): DBIO[FileLocation] = {
-    val rng = ThreadLocalRandom.current()
+    val rng = ThreadLocalSecureRandom.current()
     val id = ACLFiles.randomLong(rng)
     val accessSalt = ACLFiles.nextAccessSalt(rng)
 
