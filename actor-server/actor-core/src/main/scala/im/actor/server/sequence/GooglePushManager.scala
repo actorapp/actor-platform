@@ -170,7 +170,7 @@ private final class GooglePushDelivery extends ActorPublisher[(HttpRequest, Goog
       method = HttpMethods.POST,
       uri = uri,
       headers = List(headers.Authorization(headers.GenericHttpCredentials(s"key=${d.key}", Map.empty[String, String]))),
-      entity = HttpEntity(ContentTypes.`application/json`, d.m.asJson.toString())
+      entity = HttpEntity(ContentTypes.`application/json`, d.m.asJson.noSpaces)
     ) → d
   }
 }
