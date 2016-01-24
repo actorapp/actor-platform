@@ -347,7 +347,7 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
             
             self.playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
             self.soundProgressSlider.value = 0.0
-            self.controller.voicesCache[(self.bindedMessage?.rid)!] = 0.0
+            self.controller.voicesCache[self.controller.currentAudioFileId] = 0.0
             
         }
         
