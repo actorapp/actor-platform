@@ -538,6 +538,8 @@ public class ConversationActor extends ModuleActor {
         ArrayList<Message> updated = new ArrayList<Message>();
         ArrayList<Message> updatedDocs = new ArrayList<Message>();
 
+        long maxReadMessage = 0;
+
         // Processing all new messages
         for (Message historyMessage : history) {
             // Ignore already present messages
@@ -548,6 +550,10 @@ public class ConversationActor extends ModuleActor {
             updated.add(historyMessage);
             if (historyMessage.getContent() instanceof DocumentContent) {
                 updatedDocs.add(historyMessage);
+            }
+
+            if (historyMessage.getSenderId() != myUid()) {
+                maxReadMessage = Math.max(maxReadMessage, historyMessage.getSortDate());
             }
         }
 
@@ -560,9 +566,12 @@ public class ConversationActor extends ModuleActor {
             docs.addOrUpdateItems(updatedDocs);
         }
 
-        // TODO: Implement intial message read state
+        inReadStateNew = Math.max(inReadStateNew, maxReadMessage);
+        preferences().putLong(IN_READ_STATE_NEW_PREF, inReadStateNew);
 
-        // No need to update dialogs: all history messages are always too old
+        if (isConversationAutoRead()) {
+            checkReadState(true);
+        }
     }
 
     // Messages
