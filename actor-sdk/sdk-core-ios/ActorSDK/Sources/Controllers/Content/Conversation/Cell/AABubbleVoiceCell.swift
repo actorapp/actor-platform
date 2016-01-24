@@ -292,15 +292,7 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
                         
                         let fileID = fileSource.getFileReference().getFileId()
                         
-                        if let progressVoice = self.controller.voicesCache[fileID] {
-                            if progressVoice > 0.0 {
-                                self.controller.playVoiceFromPath(path,fileId: fileID,position:progressVoice)
-                            } else {
-                                self.controller.playVoiceFromPath(path,fileId: fileID,position:0.0)
-                            }
-                        } else {
-                            self.controller.playVoiceFromPath(path,fileId: fileID,position:0.0)
-                        }
+                        self.controller.playVoiceFromPath(path,fileId: fileID,position:self.soundProgressSlider.value)
                         
                         self.playPauseButton.setImage(UIImage.bundled("aa_pauserecordbutton"), forState: UIControlState.Normal)
                         
@@ -328,16 +320,7 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
                         if let fileSource = content.getSource() as? ACFileRemoteSource {
                             let fileID = fileSource.getFileReference().getFileId()
                             
-                            if let progressVoice = self.controller.voicesCache[fileID] {
-                                if progressVoice > 0.0 {
-                                    self.controller.playVoiceFromPath(path,fileId: fileID,position:progressVoice)
-                                } else {
-                                    self.controller.playVoiceFromPath(path,fileId: fileID,position:0.0)
-                                }
-                            } else {
-                                self.controller.playVoiceFromPath(path,fileId: fileID,position:0.0)
-                            }
-                            
+                            self.controller.playVoiceFromPath(path,fileId: fileID,position:self.soundProgressSlider.value)
                             
                             self.playPauseButton.setImage(UIImage.bundled("aa_pauserecordbutton"), forState: UIControlState.Normal)
                             
