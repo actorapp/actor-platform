@@ -24,5 +24,5 @@ message ActorPushCredentials {
     option (scalapb.message).extends = "im.actor.server.model.push.PushCredentials";
 
     int64 auth_id = 1;
-    string topic = 2;
+    string endpoint = 2;
 }
