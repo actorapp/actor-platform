@@ -23,6 +23,7 @@ object Dependencies {
   object Compile {
     val actorConcurrent         = "im.actor"                      %% "actor-concurrent"              % V.actorCommons
     val actorUtil               = "im.actor"                      %% "actor-util"                    % V.actorCommons
+    val actorCatsSlick          = "im.actor"                      %% "actor-cats-slick"              % V.actorCommons
     val actorBotkit             = "im.actor"                      %  "actor-botkit"                  % V.actorBotkit
     val shardakka               = "im.actor"                      %% "shardakka"                     % V.shardakka
     val scalapbSer              = "im.actor"                      %% "akka-scalapb-serialization"    % V.scalapbSer
@@ -193,7 +194,7 @@ object Dependencies {
 
   val sessionMessages = Seq(akkaActor)
 
-  val persist = shared ++ Seq(akkaActor, akkaStream, apacheCommonsCodec, guava, postgresJdbc, slick, slickHikaricp, slickJoda, slickPg, slickPgDate2, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
+  val persist = shared ++ Seq(akkaActor, akkaStream, actorCatsSlick, apacheCommonsCodec, guava, postgresJdbc, slick, slickHikaricp, slickJoda, slickPg, slickPgDate2, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val presences = shared :+ akkaClusterSharding
 
