@@ -63,7 +63,7 @@ class AttachmentStore extends Store {
       case ActionTypes.ATTACHMENT_MODAL_SHOW:
         _isOpen = true;
         _attachments = map(action.attachments, (file) => {
-          if (file instanceof Blob) {
+          if (file instanceof File == false) {
             file = blobToFile(file);
           }
 
