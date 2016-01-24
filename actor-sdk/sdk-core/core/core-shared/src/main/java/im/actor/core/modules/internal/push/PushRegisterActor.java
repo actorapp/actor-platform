@@ -4,6 +4,10 @@
 
 package im.actor.core.modules.internal.push;
 
+import java.util.ArrayList;
+
+import im.actor.core.api.ApiEncryptionKey;
+import im.actor.core.api.rpc.RequestRegisterActorPush;
 import im.actor.core.api.rpc.RequestRegisterApplePush;
 import im.actor.core.api.rpc.RequestRegisterGooglePush;
 import im.actor.core.api.rpc.ResponseVoid;
@@ -32,6 +36,12 @@ public class PushRegisterActor extends ModuleActor {
                 int apnsId = preferences().getInt("push.apple.id", 0);
                 String token = preferences().getString("push.apple.token");
                 registerApplePush(apnsId, token);
+            }
+        }
+        if (preferences().getBool("push.actor", false)) {
+            if (!preferences().getBool("push.actor.registered", false)) {
+                String endpoint = preferences().getString("push.actor.endpoint");
+                registerActorPush(endpoint);
             }
         }
     }
@@ -74,6 +84,24 @@ public class PushRegisterActor extends ModuleActor {
         });
     }
 
+    private void registerActorPush(String endpoint) {
+        preferences().putBool("push.actor", true);
+        preferences().putBool("push.actor.registered", false);
+        preferences().putString("push.actor.endpoint", endpoint);
+
+        request(new RequestRegisterActorPush(endpoint, new ArrayList<ApiEncryptionKey>()), new RpcCallback<ResponseVoid>() {
+            @Override
+            public void onResult(ResponseVoid response) {
+                preferences().putBool("push.actor.registered", true);
+            }
+
+            @Override
+            public void onError(RpcException e) {
+
+            }
+        });
+    }
+
     private void resendPush() {
         if (preferences().getBool("push.google", false)) {
             preferences().putBool("push.google.registered", false);
@@ -100,6 +128,9 @@ public class PushRegisterActor extends ModuleActor {
         } else if (message instanceof RegisterApplePush) {
             RegisterApplePush applePush = (RegisterApplePush) message;
             registerApplePush(applePush.getApnsKey(), applePush.getToken());
+        } else if (message instanceof RegisterActorPush) {
+            RegisterActorPush actorPush = (RegisterActorPush) message;
+            registerActorPush(actorPush.getEndpoint());
         } else if (message instanceof ResendPush) {
             resendPush();
         } else {
@@ -140,6 +171,18 @@ public class PushRegisterActor extends ModuleActor {
 
         public String getToken() {
             return token;
+        }
+    }
+
+    public static class RegisterActorPush {
+        private String endpoint;
+
+        public RegisterActorPush(String endpoint) {
+            this.endpoint = endpoint;
+        }
+
+        public String getEndpoint() {
+            return endpoint;
         }
     }
 
