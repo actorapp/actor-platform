@@ -229,6 +229,7 @@ public class ActorPushService extends Service implements MqttCallback {
 
     private synchronized void onConnected(int attempt, MqttClient mqttClient) {
         if (this.attemptIndex == attempt) {
+            this.isConnecting = false;
             this.mqttClient = mqttClient;
         } else {
             // Incorrect attempt
