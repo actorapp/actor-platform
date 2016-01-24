@@ -2,94 +2,52 @@ package im.actor.server.push.actor
 
 import akka.actor._
 import akka.event.Logging
-import com.rabbitmq.client.{ Consumer, TopologyRecoveryException, Channel, Connection }
-import com.rabbitmq.client.impl.DefaultExceptionHandler
-import com.spingo.op_rabbit._
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model._
+import akka.parboiled2.ParserInput
+import akka.stream.{ ActorMaterializer, OverflowStrategy }
+import akka.stream.scaladsl.{ Sink, Source }
 import im.actor.server.model.push.ActorPushCredentials
+import io.circe.{ Json, JsonObject }
 import io.circe.generic.auto._
 import io.circe.syntax._
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{ Failure, Success }
 
-final case class ActorPushMessage(data: Map[String, String])
+final case class ActorPushMessage(data: JsonObject)
 
-final class ActorPush(system: ActorSystem) extends Extension {
+private final case class ActorPushDelivery(creds: ActorPushCredentials, message: ActorPushMessage)
+
+final class ActorPush(_system: ActorSystem) extends Extension {
+  private implicit val system = _system
   private val log = Logging(system, getClass)
+  private val maxQueue = system.settings.config.getInt("services.actor.push.max-queue")
+  private val token = system.settings.config.getString("services.actor.push.token")
+  private implicit val mat = ActorMaterializer()
 
-  val rabbitControl =
-    Try(ConnectionParams.fromConfig(system.settings.config.getConfig("services.rabbitmq"))) match {
-      case Success(config) ⇒
-        system.actorOf(Props(new RabbitControl(config.copy(exceptionHandler = new ExceptionHandler(system)))), "rabbit-control")
-      case Failure(e) ⇒
-        log.error(e, "Failed to parse rabbitmq configuration")
-        system.deadLetters
-    }
+  private val sourceRef =
+    Source
+      .actorRef(maxQueue, OverflowStrategy.dropHead)
+      .via(Http(system).superPool[ActorPushDelivery]())
+      .to(Sink foreach {
+        case (Success(_), _) ⇒
+        case (Failure(e), d) ⇒ log.error(e, "Failed to deliver, endpoint: {}", d.creds.endpoint)
+      })
+      .run()
 
-  def deliver(seq: Int, creds: ActorPushCredentials): Unit =
-    rabbitControl ! Message.topic(
-      ActorPushMessage(data = Map(
-        "seq" → seq.toString
-      )).asJson.toString(),
-      routingKey = creds.topic
-    )
-}
+  private val pushHeaders = List(headers.Authorization(headers.OAuth2BearerToken(token)))
 
-private final class ExceptionHandler(system: ActorSystem) extends DefaultExceptionHandler {
-  private val log = Logging(system, getClass)
+  def deliver(seq: Int, creds: ActorPushCredentials): Unit = {
+    val m = ActorPushMessage(JsonObject.singleton("seq", Json.int(seq)))
+    val uri = Uri.parseAbsolute(ParserInput(creds.endpoint))
 
-  override def handleUnexpectedConnectionDriverException(conn: Connection, exception: Throwable): Unit = {
-    log.error(exception, "Unexpected connection driver")
-    super.handleUnexpectedConnectionDriverException(conn, exception)
-  }
-
-  override def handleConsumerException(channel: Channel, exception: Throwable, consumer: Consumer, consumerTag: String, methodName: String): Unit = {
-    log.error(exception, "Consumer exception, consumer: {}, consumerTag: {}, methodName: {}", consumer, consumerTag, methodName)
-    super.handleConsumerException(channel, exception, consumer, consumerTag, methodName)
-  }
-
-  override def handleBlockedListenerException(connection: Connection, exception: Throwable): Unit = {
-    log.error(exception, "Blocked listener")
-    super.handleBlockedListenerException(connection, exception)
-  }
-
-  override def handleChannelRecoveryException(ch: Channel, exception: Throwable): Unit = {
-    log.error(exception, "Channel recovery error")
-    super.handleChannelRecoveryException(ch, exception)
-  }
-
-  override def handleFlowListenerException(channel: Channel, exception: Throwable): Unit = {
-    log.error(exception, "Flow listener error")
-    super.handleFlowListenerException(channel, exception)
-  }
-
-  override def handleChannelKiller(channel: Channel, exception: Throwable, what: String): Unit = {
-    log.error(exception, "Channel killer, what: {}", what)
-    super.handleChannelKiller(channel, exception, what)
-  }
-
-  override def handleReturnListenerException(channel: Channel, exception: Throwable): Unit = {
-    log.error(exception, "Return listener error")
-    super.handleReturnListenerException(channel, exception)
-  }
-
-  override def handleConnectionKiller(connection: Connection, exception: Throwable, what: String): Unit = {
-    log.error(exception, "Connection killer, what: {}", what)
-    super.handleConnectionKiller(connection, exception, what)
-  }
-
-  override def handleTopologyRecoveryException(conn: Connection, ch: Channel, exception: TopologyRecoveryException): Unit = {
-    log.error(exception, "Topology recovery error, channel: {}", ch)
-    super.handleTopologyRecoveryException(conn, ch, exception)
-  }
-
-  override def handleConfirmListenerException(channel: Channel, exception: Throwable): Unit = {
-    log.error(exception, "Confirm listener error")
-    super.handleConfirmListenerException(channel, exception)
-  }
-
-  override def handleConnectionRecoveryException(conn: Connection, exception: Throwable): Unit = {
-    log.error(exception, "Connection recovery error")
-    super.handleConnectionRecoveryException(conn, exception)
+    sourceRef !
+      HttpRequest(
+        method = HttpMethods.POST,
+        uri = uri,
+        headers = pushHeaders,
+        entity = HttpEntity(ContentTypes.`application/json`, m.asJson.toString)
+      ) → ActorPushDelivery(creds, m)
   }
 }
 
