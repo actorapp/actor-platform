@@ -137,6 +137,7 @@ private final class GooglePushDelivery extends ActorPublisher[(HttpRequest, Goog
   import GooglePushDelivery._
 
   private[this] var buf = Vector.empty[(HttpRequest, Delivery)]
+  private val uri = Uri("/gcm/send")
 
   def receive = {
     case d: Delivery if buf.size == MaxQueue ⇒
@@ -167,7 +168,7 @@ private final class GooglePushDelivery extends ActorPublisher[(HttpRequest, Goog
   private def mkJob(d: Delivery): (HttpRequest, Delivery) = {
     HttpRequest(
       method = HttpMethods.POST,
-      uri = Uri("/gcm/send"),
+      uri = uri,
       headers = List(headers.Authorization(headers.GenericHttpCredentials(s"key=${d.key}", Map.empty[String, String]))),
       entity = HttpEntity(ContentTypes.`application/json`, d.m.asJson.toString())
     ) → d
