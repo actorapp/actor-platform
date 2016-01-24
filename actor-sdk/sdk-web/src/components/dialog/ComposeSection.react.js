@@ -174,7 +174,7 @@ class ComposeSection extends Component {
     const { peer, text } = this.state;
 
     ComposeActionCreators.insertMention(peer, text, this.getCaretPosition(), mention);
-    React.findDOMNode(this.refs.area).focus();
+    this.setFocus();
   };
 
   onMentionClose = () => {
@@ -189,7 +189,7 @@ class ComposeSection extends Component {
 
   handleEmojiSelect = (emoji) => {
     EmojiActionCreators.insertEmoji(this.state.text, this.getCaretPosition(), emoji);
-    React.findDOMNode(this.refs.area).focus();
+    this.setFocus();
   };
 
   setFocus = () => {
@@ -226,8 +226,9 @@ class ComposeSection extends Component {
     this.resetAttachmentForm();
   };
 
-  sendVoiceRecord = (record) => {
-    console.debug('sendVoiceRecord: ', record)
+  sendVoiceRecord = (duration, record) => {
+    const { peer } = this.state;
+    MessageActionCreators.sendVoiceMessage(peer, duration, record);
   };
 
   render() {

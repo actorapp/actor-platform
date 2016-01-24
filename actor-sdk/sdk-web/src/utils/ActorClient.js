@@ -394,6 +394,10 @@ export default {
     return window.messenger.removeLike(peer, rid);
   },
 
+  sendVoiceMessage(peer, duration, voice) {
+    window.messenger.sendVoiceMessage(peer, duration, voice);
+  },
+
   // Search
 
   bindSearch(callback) {
