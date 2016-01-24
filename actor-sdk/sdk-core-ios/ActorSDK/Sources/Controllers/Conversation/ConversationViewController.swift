@@ -34,7 +34,6 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     private var audioButton: UIButton = UIButton()
     private var actionSheet: AAConvActionSheet!
     private var voiceRecorderView : AAVoiceRecorderView!
-    private var voiceButton : UIButton!
     
     // Stickers
     
@@ -742,8 +741,15 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     func onAudioRecordingStarted() {
         print("onAudioRecordingStarted\n")
         stopAudioRecording()
+        
+        // stop voice player when start recording
+        if (self.voicePlayer?.playbackPosition() != 0.0) {
+            self.voicePlayer?.audioPlayerStopAndFinish()
+        }
+        
         audioRecorder.delegate = self
         audioRecorder.start()
+        
         
     }
     
