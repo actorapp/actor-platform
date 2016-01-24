@@ -46,7 +46,7 @@ final class ActorPush(_system: ActorSystem) extends Extension {
         method = HttpMethods.POST,
         uri = uri,
         headers = pushHeaders,
-        entity = HttpEntity(ContentTypes.`application/json`, m.asJson.toString)
+        entity = HttpEntity(ContentTypes.`application/json`, m.asJson.noSpaces)
       ) → ActorPushDelivery(creds, m)
   }
 }
