@@ -37,6 +37,10 @@ export default {
     ActorClient.sendClipboardPhotoMessage(peer, photo);
   },
 
+  sendVoiceMessage(peer, duration, voice) {
+    ActorClient.sendVoiceMessage(peer, duration, voice);
+  },
+
   deleteMessage(peer, rid) {
     ActorClient.deleteMessage(peer, rid);
     dispatch(ActionTypes.MESSAGE_DELETE, { peer, rid });
