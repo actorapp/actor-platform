@@ -106,6 +106,10 @@ public class ActorSDK {
      */
     private long pushId = 0;
     /**
+     * Actor Push Endpoint
+     */
+    private String actorPushEndpoint = "https://push.actor.im/apps/31337/subscriptions";
+    /**
      * Is Keeping app alive enabled
      */
     private boolean isKeepAliveEnabled = false;
@@ -243,13 +247,15 @@ public class ActorSDK {
         // Actor Push
         //
 
-        ActorPushRegister.registerForPush(application, new ActorPushRegister.Callback() {
-            @Override
-            public void onRegistered(String endpoint) {
-                Log.d(TAG, "On Actor push registered: " + endpoint);
-                messenger.registerActorPush(endpoint);
-            }
-        });
+        if (actorPushEndpoint != null) {
+            ActorPushRegister.registerForPush(application, actorPushEndpoint, new ActorPushRegister.Callback() {
+                @Override
+                public void onRegistered(String endpoint) {
+                    Log.d(TAG, "On Actor push registered: " + endpoint);
+                    messenger.registerActorPush(endpoint);
+                }
+            });
+        }
 
         //
         // GCM
@@ -453,6 +459,24 @@ public class ActorSDK {
      */
     public void setPushId(long pushId) {
         this.pushId = pushId;
+    }
+
+    /**
+     * Getting Actor Push notification service endpoint
+     *
+     * @return endpoint
+     */
+    public String getActorPushEndpoint() {
+        return actorPushEndpoint;
+    }
+
+    /**
+     * Setting Actor push notification service endpoint
+     *
+     * @param actorPushEndpoint endpoint
+     */
+    public void setActorPushEndpoint(String actorPushEndpoint) {
+        this.actorPushEndpoint = actorPushEndpoint;
     }
 
     public String getHelpPhone() {
