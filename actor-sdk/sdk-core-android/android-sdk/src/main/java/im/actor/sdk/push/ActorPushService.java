@@ -315,7 +315,7 @@ public class ActorPushService extends Service implements MqttCallback {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.hasExtra("mqtt_urls")
+        if (intent != null && intent.hasExtra("mqtt_urls")
                 && intent.hasExtra("mqtt_topic")
                 && intent.hasExtra("mqtt_username")
                 && intent.hasExtra("mqtt_password")) {
