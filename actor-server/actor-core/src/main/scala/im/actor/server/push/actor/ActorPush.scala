@@ -27,10 +27,10 @@ final class ActorPush(_system: ActorSystem) extends Extension {
 
   private val sourceRef =
     Source
-      .actorRef(maxQueue, OverflowStrategy.dropHead)
+      .actorRef[(HttpRequest, ActorPushDelivery)](maxQueue, OverflowStrategy.dropHead)
       .via(Http(system).superPool[ActorPushDelivery]())
       .to(Sink foreach {
-        case (Success(_), _) ⇒
+        case (Success(_), d) ⇒
         case (Failure(e), d) ⇒ log.error(e, "Failed to deliver, endpoint: {}", d.creds.endpoint)
       })
       .run()
