@@ -22,6 +22,8 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import im.actor.core.util.ExponentialBackoff;
+
 /**
  * Actor Push service based on MQTT
  */
@@ -51,6 +53,8 @@ public class ActorPushService extends Service implements MqttCallback {
     private boolean isConnecting = false;
 
     private Random random = new Random();
+
+    private ExponentialBackoff exponentialBackoff = new ExponentialBackoff(1000, 5 * 60000, 15);
 
     public ActorPushService() {
 
@@ -181,6 +185,13 @@ public class ActorPushService extends Service implements MqttCallback {
         }
         mqttClient = null;
 
+        try {
+            Thread.sleep(exponentialBackoff.exponentialWait());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return;
+        }
+
         // Setting credentials
         connectOptions.setUserName(mqttUsername);
         connectOptions.setPassword(mqttPassword.toCharArray());
@@ -231,6 +242,7 @@ public class ActorPushService extends Service implements MqttCallback {
         if (this.attemptIndex == attempt) {
             this.isConnecting = false;
             this.mqttClient = mqttClient;
+            exponentialBackoff.onSuccess();
         } else {
             // Incorrect attempt
             try {
@@ -255,6 +267,7 @@ public class ActorPushService extends Service implements MqttCallback {
         // Trying to recreate connection
         //
         isConnecting = false;
+        exponentialBackoff.onFailure();
         tryConnect();
     }
 
@@ -280,6 +293,8 @@ public class ActorPushService extends Service implements MqttCallback {
             }
         }
         this.mqttClient = null;
+
+        exponentialBackoff.onFailure();
 
         //
         // Trying to recreate connection
