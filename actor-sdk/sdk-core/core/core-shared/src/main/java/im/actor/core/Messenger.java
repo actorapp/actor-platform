@@ -1976,6 +1976,16 @@ public class Messenger {
     }
 
     /**
+     * Register actor push
+     *
+     * @param endpoint push endpoint
+     */
+    @ObjectiveCName("registerActorPushWithEndpoint:")
+    public void registerActorPush(String endpoint) {
+        modules.getPushesModule().registerActorPush(endpoint);
+    }
+
+    /**
      * Get preferences storage
      *
      * @return the Preferences
