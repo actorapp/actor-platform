@@ -16,8 +16,7 @@ class AASettingsWallpapersController: AATableViewController {
     init() {
         
         super.init(style: UITableViewStyle.Grouped)
-        title = "Wallpapers"
-        
+        title = AALocalized("WallpapersTitle")
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -88,7 +87,7 @@ class AASettingsWallpapersController: AATableViewController {
     private func photosLibrary(indexPath: NSIndexPath) -> AACommonCell {
         let cell = AACommonCell()
         
-        cell.textLabel?.text = "Photo Library"
+        cell.textLabel?.text = AALocalized("WallpapersPhoto")
         cell.style = .Navigation
         
         return cell

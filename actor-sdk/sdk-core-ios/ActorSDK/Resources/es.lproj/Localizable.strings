@@ -56,7 +56,7 @@
 
 "SettingsSecurity" = "Seguridad";
 
-"SettingsWallpapers" = "Fondos";
+"SettingsWallpapers" = "Fondos de chats";
 
 "SettingsNotifications" = "Notificaciones y Sonidos";
 
@@ -288,9 +288,9 @@
 
 "PrivacyTerminateHint" = "Registrar todos los dispositivos excepto para éste.";
 
-"WallpapersTitle" = "Fondos";
+"WallpapersTitle" = "Fondos de chats";
 
-"WallpapersPhoto" = "Csrrete de fotos";
+"WallpapersPhoto" = "Fotos de carrete";
 
 "ChatPlaceholder" = "Escribir mensaje...";
 
@@ -460,3 +460,11 @@
  */
 
 "LocationTitle" = "Ubicación";
+
+/*
+ * Network
+ */
+
+"StatusConnecting" = "Estado conectando...";
+
+"StatusSyncing" = "Estado sincronizando...";
