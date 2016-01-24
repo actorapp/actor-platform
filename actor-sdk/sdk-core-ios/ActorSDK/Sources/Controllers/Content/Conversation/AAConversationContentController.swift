@@ -379,17 +379,28 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)
             self.voiceContext = self.voicePlayer.inlineMediaContext()
             
-            
             self.voicePlayer?.play()
             
             self.currentAudioFileId = fileId
             
         } else {
             
-            if self.voicePlayer?.isPaused() == false {
-                self.voicePlayer?.pause()
-            } else {
+            
+            if (position == 0.0  || position == 0) {
+                
+                self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)
+                self.voiceContext = self.voicePlayer.inlineMediaContext()
+                
                 self.voicePlayer?.play()
+                
+            } else {
+                
+                if self.voicePlayer?.isPaused() == false {
+                    self.voicePlayer?.pause()
+                } else {
+                    self.voicePlayer?.play()
+                }
+                
             }
             
         }
