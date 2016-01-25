@@ -37,7 +37,7 @@ class VoiceRecorder extends Component {
     const { onFinish } = this.props;
     const { duration } = this.state;
 
-    onFinish && onFinish(duration, event.detail);
+    onFinish && onFinish(duration * 1000, event.detail); //Duration must be in ms
   };
 
   handleStreamReady = () => {
