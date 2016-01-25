@@ -253,6 +253,26 @@
     right: 0;
     bottom: 50px;
     left: 0;
+    &__empty {
+      font-size: 14px;
+      font-weight: 500;
+
+      height: 200px;
+      padding: 16px;
+
+      color: rgba(white, .8);
+
+      @include no-select();
+      p {
+        margin: 0;
+        padding-bottom: 8px;
+      }
+      a {
+        cursor: pointer;
+
+        color: $dark-sky-blue;
+      }
+    }
   }
 
   &__quick-search {
