@@ -22,7 +22,7 @@
 
 "ContactsAddHint" = "请输入电话号码";
 
-"ContactsActionInvite" = "把Actor告诉朋友";
+"ContactsActionInvite" = "告诉朋友";
 
 "ContactsActionAdd" = "添加朋友";
 
@@ -31,10 +31,6 @@
  */
 
 "DialogsHint" = "向左滑动查看更多选项";
-
-/*
- * Discover
- */
 
 /*
  * Settings
@@ -68,9 +64,11 @@
 
 "SettingsChangeAboutHint" = "Tell people anything you want about yourself";
 
+
 "SettingsSecurity" = "安全";
 
 "SettingsWallpapers" = "Wallpapers";
+
 
 "SettingsNotifications" = "通知和声音";
 
@@ -81,6 +79,21 @@
 "SettingsAbout" = "App Homepage";
 
 "SettingsVersion" = "版本 {version}";
+
+
+"SettingsAllSessions" = "所有会议";
+
+"SettingsLastSeen" = "最后一次露面";
+
+"SettingsLastSeenHint" = "更改谁可以看到您最后查看的时间。";
+
+
+"SettingsLastSeenEverybody" = "每个人都";
+
+"SettingsLastSeenContacts"  = "我的联系方式";
+
+"SettingsLastSeenNone"    = "没人";
+
 
 "SettingsMobilePhone"    = "手機";
 
@@ -108,13 +121,13 @@
 
 "ProfileRenameAction" = "改名";
 
-"ProfileAbout" = "about";
+"ProfileAbout" = "关于";
 
-"ProfilePhone" = "phone";
+"ProfilePhone" = "电话";
 
-"ProfileUsername" = "username";
+"ProfileUsername" = "用户名";
 
-"ProfileTitle" = "Info";
+"ProfileTitle" = "信息";
 
 "CallNumber" = "拨打这个电话";
 
@@ -300,6 +313,8 @@
 
 "ChatNoGroupAccess" = "你不是群成员";
 
+"ChatNewMessages" = "新消息";
+
 /*
  * Find
  */
@@ -350,11 +365,19 @@
  * Auth
  */
 
+"AuthMoreInfo" = "免费，快速，安全的消息.";
+
+"AuthStarButton" = "家庭通信";
+
 "AuthPhoneTitle" = "你的电话";
 
 "AuthPhoneNumberHint" = "你的电话号码";
 
 "AuthPhoneHint" = "请选择你的国家并输入你的电话号码。";
+
+"AuthTermsOfServiceFull" = "By signing up, you agree to the Terms of Service.";
+
+"AuthTermsOfService" = "Terms of Service";
 
 "AuthPhoneTooShort" = "电话号码太短";
 
@@ -404,9 +427,13 @@
 
 "SendDocument" = "文档";
 
-"ShareLocation" = "Location";
+"ShareLocation" = "位置";
 
-"ShareContact" = "Contact";
+"ShareContact" = "联系";
+
+/*
+ *  Navigation
+ */
 
 "NavigationEdit" = "编辑";
 
@@ -420,7 +447,11 @@
 
 "NavigationSave" = "保存";
 
-"NavigationFind" = "Find";
+"NavigationFind" = "发现";
+
+/*
+ *  Alerts
+ */
 
 "AlertCancel" = "取消";
 
@@ -444,6 +475,10 @@
 
 "UnsupportedContent" = "这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。";
 
+/*
+ * Actions
+ */
+
 "ActionCopyLink" = "复制链接";
 
 "ActionRevokeLink" = "废除链接";
@@ -451,6 +486,10 @@
 "ActionShareLink" = "分享链接";
 
 "AlertLinkCopied" = "链接已经被复制到剪贴板。";
+
+/*
+ * Network
+ */
 
 "StatusConnecting" = "Connecting...";
 
