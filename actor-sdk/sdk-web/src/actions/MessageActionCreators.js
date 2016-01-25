@@ -39,6 +39,7 @@ export default {
 
   sendVoiceMessage(peer, duration, voice) {
     ActorClient.sendVoiceMessage(peer, duration, voice);
+    dispatch(ActionTypes.MESSAGE_SEND_VOICE, { peer, duration, voice });
   },
 
   deleteMessage(peer, rid) {
