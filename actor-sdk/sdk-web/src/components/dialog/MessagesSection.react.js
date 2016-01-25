@@ -37,55 +37,58 @@ class MessagesSection extends Component {
     peer: PropTypes.object.isRequired,
     onScroll: PropTypes.func.isRequired
   };
-  
+
+  static getStores() {
+    return [MessageStore, VisibilityStore]
+  }
+
+  static calculateState() {
+    return {
+      selectedMessages: MessageStore.getSelected(),
+      isAppVisible: VisibilityStore.isAppVisible()
+    }
+  }
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      selectedMessages: MessageStore.getSelected()
-    };
   }
 
   getMessagesListItem = (message, index) => {
     const { selectedMessages } = this.state;
-    const { overlay } = this.props;
+    const { peer, overlay } = this.props;
 
     const dateDivider = (overlay[index] && overlay[index].dateDivider)
       ? <li className="date-divider">{overlay[index].dateDivider}</li>
       : null;
-
-    const isShortMessage = (overlay[index] && overlay[index].useShort)
-      ? overlay[index].useShort
-      : false;
 
     const isSelected = selectedMessages.has(message.rid);
 
     const messageItem = (
       <MessageItem key={message.sortKey}
                    message={message}
-                   isShortMessage={isShortMessage}
+                   overlay={overlay[index]}
                    onSelect={this.handleMessageSelect}
                    isSelected={isSelected}
                    onVisibilityChange={this.onMessageVisibilityChange}
-                   peer={this.props.peer}/>
+                   peer={peer}/>
     );
 
-    // return [dateDivider, messageItem];
-    return messageItem;
+    return dateDivider ? [dateDivider, messageItem] : messageItem;
   };
 
-  onAppVisibilityChange = () => {
-    if (VisibilityStore.isAppVisible()) {
+  componentDidUpdate() {
+    const { isAppVisible } = this.state;
+    if (isAppVisible) {
       flushDelayed();
     }
   };
 
-  onMessagesChange = () => this.setState({selectedMessages: MessageStore.getSelected()});
-  
-  shouldComponentUpdate(nextProps, nextState) {
-      // console.warn('messagesSection:shouldComponentUpdate')
-      return true
-  }
+  //onMessagesChange = () => this.setState({selectedMessages: MessageStore.getSelected()});
+
+  //shouldComponentUpdate(nextProps, nextState) {
+  //    // console.warn('messagesSection:shouldComponentUpdate')
+  //    return true
+  //}
 
   handleMessageSelect = (rid) => {
     const { selectedMessages } = this.state;
@@ -135,4 +138,4 @@ class MessagesSection extends Component {
   }
 }
 
-export default MessagesSection;
+export default Container.create(MessagesSection, {pure: false, withProps: true});
