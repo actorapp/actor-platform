@@ -15,7 +15,6 @@ import CreateGroupStore from '../../../stores/CreateGroupStore';
 
 import CreateGroupForm from './Form.react';
 
-
 class CreateGroup extends Component {
   constructor(props) {
     super(props);
