@@ -235,6 +235,22 @@ export default {
     'preferencesSessionsCurrentSession': 'Current session',
     'preferencesSessionsAuthTime': 'Auth time',
     'preferencesSessionsTerminate': 'Kill',
-    'preferencesSessionsTerminateAll': 'Terminate all sessions'
+    'preferencesSessionsTerminateAll': 'Terminate all sessions',
+
+    // Sidebar
+    'sidebar': {
+      'recents': {
+        'empty': {
+          'first': 'You don\'t have any conversations at this moment.',
+          'second': {
+            'start': 'You can ',
+            'or': ' or ',
+            'end': '.'
+          }
+        },
+        'newDialog': 'create new dialog',
+        'addPeople': 'add people'
+      }
+    }
   }
 };
