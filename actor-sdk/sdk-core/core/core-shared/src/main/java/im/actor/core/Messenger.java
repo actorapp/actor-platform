@@ -12,9 +12,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiRawValue;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.rpc.ResponseDoCall;
+import im.actor.core.api.rpc.ResponseRawRequest;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.MentionFilterResult;
@@ -1937,6 +1939,24 @@ public class Messenger {
     public Command<Boolean> completeWebAction(final String actionHash, final String url) {
         return modules.getExternalModule().completeWebAction(actionHash, url);
     }
+
+    //////////////////////////////////////
+    //              Raw api
+    //////////////////////////////////////
+
+    /**
+     * Command for raw api request
+     *
+     * @param service service name
+     * @param method  method name
+     * @param params  request params
+     * @return Command for execution
+     */
+    @ObjectiveCName("rawRequestCommandWithService:withMethod:WithParams:")
+    public Command<ResponseRawRequest> rawRequestCommand(String service, String method, ApiRawValue params) {
+        return modules.getExternalModule().rawRequest(service, method, params);
+    }
+
 
     //////////////////////////////////////
     //        Tools and Tech
