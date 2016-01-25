@@ -10,8 +10,6 @@ import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import { CreateGroupSteps } from '../../../constants/ActorAppConstants';
 
-import { Styles, TextField, FlatButton } from 'material-ui';
-
 import CreateGroupActionCreators from '../../../actions/CreateGroupActionCreators';
 
 import ContactStore from '../../../stores/PeopleStore';
@@ -19,21 +17,15 @@ import CreateGroupStore from '../../../stores/CreateGroupStore';
 
 import ContactItem from './ContactItem.react';
 
-import ActorTheme from '../../../constants/ActorTheme';
-
-const ThemeManager = new Styles.ThemeManager();
+import TextField from '../../common/TextField.react';
 
 class CreateGroupForm extends Component {
   constructor(props) {
     super(props);
   }
 
-  static childContextTypes = {
-    muiTheme: PropTypes.object
-  };
-
   static getStores() {
-    return [CreateGroupStore];
+    return [ContactStore, CreateGroupStore];
   }
 
   static calculateState() {
@@ -45,29 +37,9 @@ class CreateGroupForm extends Component {
     }
   }
 
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  }
-
-  componentWillMount() {
-    ThemeManager.setTheme(ActorTheme);
-    ThemeManager.setComponentThemes({
-      textField: {
-        textColor: 'rgba(0,0,0,.87)',
-        focusColor: '#68a3e7',
-        backgroundColor: 'transparent',
-        borderColor: '#68a3e7'
-      }
-    });
-  }
-
   componentDidMount() {
     if (this.state.step === CreateGroupSteps.NAME_INPUT) {
-      setTimeout(() => {
-        this.refs.groupName.focus();
-      }, 10);
+      this.refs.groupName.focus();
     }
   }
 
@@ -114,9 +86,8 @@ class CreateGroupForm extends Component {
         stepForm = (
           <form className="group-name">
             <div className="modal-new__body">
-              <TextField className="login__form__input"
-                         floatingLabelText={this.getIntlMessage('modal.createGroup.groupName')}
-                         fullWidth
+              <TextField className="input__material--wide"
+                         floatingLabel={this.getIntlMessage('modal.createGroup.groupName')}
                          ref="groupName"
                          onChange={this.handleNameChange}
                          value={name}/>
