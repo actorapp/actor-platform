@@ -101,7 +101,6 @@ class AddContact extends Component {
         </header>
 
         <div className="modal-new__body">
-
           <TextField className="input__material--wide"
                      floatingLabel={this.getIntlMessage('modal.addContact.query')}
                      onChange={this.handleQueryChange}

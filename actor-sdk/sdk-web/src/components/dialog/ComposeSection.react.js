@@ -48,9 +48,9 @@ class ComposeSection extends Component {
     };
   }
 
-  static contextTypes = {
-    isExperimental: PropTypes.bool
-  };
+  //static contextTypes = {
+  //  isExperimental: PropTypes.bool
+  //};
 
   constructor(props) {
     super(props);
@@ -246,11 +246,7 @@ class ComposeSection extends Component {
 
         <EmojiDropdown onSelect={this.handleEmojiSelect}/>
 
-        {
-          isExperimental
-            ? <VoiceRecorder onFinish={this.sendVoiceRecord}/>
-            : null
-        }
+        <VoiceRecorder onFinish={this.sendVoiceRecord}/>
 
         <div className={markdownHintClassName}>
           <b>*{this.getIntlMessage('compose.markdown.bold')}*</b>
