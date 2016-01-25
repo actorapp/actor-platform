@@ -375,6 +375,36 @@ public class KeyManagerActor extends ModuleActor {
 //            });
     }
 
+    private void fetchUserEphemeralKey(final int uid, int keyGroupId, final Future future) {
+        request(new RequestLoadEphermalPublicKeys(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), keyGroupId), new RpcCallback<ResponsePublicKeys>() {
+            @Override
+            public void onResult(ResponsePublicKeys response) {
+                if (response.getPublicKey().size() == 0) {
+                    Log.w(TAG, "Public key error");
+                    future.onError(new RuntimeException());
+                    return;
+                }
+                ApiEncryptionKey key = response.getPublicKey().get(0);
+
+                // TODO: Verify signature
+
+                UserPublicKey pkey = new UserPublicKey(key.getKeyId(), key.getKeyAlg(), key.getKeyMaterial());
+//                UserKeysGroup userKeysGroup = finalKeysGroup.addUserKeyGroup(pkey);
+//                cacheUserKeys(keys.removeUserKeyGroup(userKeysGroup.getKeyGroupId())
+//                        .addUserKeyGroup(userKeysGroup));
+
+                future.onResult(new FetchUserEphemeralKeyResponse(pkey));
+            }
+
+            @Override
+            public void onError(RpcException e) {
+                Log.w(TAG, "Public key error");
+                Log.e(TAG, e);
+                future.onError(e);
+            }
+        });
+    }
+
     private void onPublicKeysGroupAdded(int uid, ApiEncryptionKeyGroup keyGroup) {
         UserKeys userKeys = getCachedUserKeys(uid);
         if (userKeys == null) {
@@ -514,6 +544,9 @@ public class KeyManagerActor extends ModuleActor {
         } else if (message instanceof FetchUserEphemeralKey) {
             fetchUserEphemeralKey(((FetchUserEphemeralKey) message).getUid(), ((FetchUserEphemeralKey) message).getKeyGroup(), ((FetchUserEphemeralKey) message).getKeyId(), future);
             return false;
+        } else if (message instanceof FetchUserEphemeralKeyRandom) {
+            fetchUserEphemeralKey(((FetchUserEphemeralKeyRandom) message).getUid(), ((FetchUserEphemeralKeyRandom) message).getKeyGroup(), future);
+            return false;
         }
         return super.onAsk(message, future);
     }
@@ -632,6 +665,25 @@ public class KeyManagerActor extends ModuleActor {
 
         public long getKeyId() {
             return keyId;
+        }
+
+        public int getKeyGroup() {
+            return keyGroup;
+        }
+    }
+
+    public static class FetchUserEphemeralKeyRandom {
+
+        private int uid;
+        private int keyGroup;
+
+        public FetchUserEphemeralKeyRandom(int uid, int keyGroup) {
+            this.keyGroup = keyGroup;
+            this.uid = uid;
+        }
+
+        public int getUid() {
+            return uid;
         }
 
         public int getKeyGroup() {
