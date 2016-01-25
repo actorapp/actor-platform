@@ -755,6 +755,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     
     func onAudioRecordingFinished() {
         print("onAudioRecordingFinished\n")
+        
         audioRecorder.finish({ (path: String!, duration: NSTimeInterval) -> Void in
             
             if (nil == path) {
@@ -766,12 +767,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             let range = path.rangeOfString("/tmp", options: NSStringCompareOptions(), range: nil, locale: nil)
             let descriptor = path.substringFromIndex(range!.startIndex)
             NSLog("Audio Recording file: \(descriptor)")
-            
 
-            Actor.sendAudioWithPeer(self.peer, withName: NSString.localizedStringWithFormat("%.0fms.ogg", duration*1000) as String,
+            Actor.sendAudioWithPeer(self.peer, withName: NSString.localizedStringWithFormat("%@.ogg", NSUUID().UUIDString) as String,
                 withDuration: jint(duration*1000), withDescriptor: descriptor)
             
         })
+        
     }
     
     func audioRecorderDidStartRecording() {
