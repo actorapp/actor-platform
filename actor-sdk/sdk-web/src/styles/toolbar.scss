@@ -28,7 +28,7 @@
       display: inline-block;
 
       width: 100%;
-      padding-top: 12px;
+      margin-top: 12px;
 
       @include text-elipsis();
       .emoji-outer {
@@ -43,8 +43,6 @@
       line-height: 16px;
 
       display: block;
-
-      margin-top: 3px;
 
       color: $toolbar-secodary-text-color;
     }
@@ -61,6 +59,11 @@
         }
       }
     }
+  }
+
+  .avatar {
+    margin-top: 10px;
+    margin-right: 16px;
   }
 }
 
