@@ -82,6 +82,7 @@
 
 "SettingsVersion" = "Version {version}";
 
+
 "SettingsAllSessions" = "All sessions";
 
 "SettingsLastSeen" = "Last seen";
@@ -95,8 +96,8 @@
 
 "SettingsLastSeenNone"    = "Nobody";
 
-"SettingsMobilePhone"    = "Mobile Phone";
 
+"SettingsMobilePhone"    = "Mobile Phone";
 
 /*
  * Profile
