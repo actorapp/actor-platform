@@ -54,6 +54,7 @@ export const ActionTypes = keymirror({
   MESSAGE_SEND_TEXT: null,
   MESSAGE_SEND_FILE: null,
   MESSAGE_SEND_PHOTO: null,
+  MESSAGE_SEND_VOICE: null,
   MESSAGE_DELETE: null,
   MESSAGE_LIKE_ADD: null,
   MESSAGE_LIKE_REMOVE: null,
