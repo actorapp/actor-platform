@@ -1009,6 +1009,14 @@ public class Messenger {
     //             Calls
     //////////////////////////////////////
 
+    /**
+     * Command for doing call
+     *
+     * @param uid          user you want to call
+     * @param callCallback ui callback
+     * @return command to execute
+     */
+    @ObjectiveCName("doCallWithUid:withCallback")
     public Command<ResponseDoCall> doCall(int uid, CallsModule.CallCallback callCallback) {
         return modules.getCallsModule().makeCall(uid, callCallback);
     }
@@ -1017,10 +1025,23 @@ public class Messenger {
         modules.getCallsModule().endCall(callId);
     }
 
-    public void answerCall(long callId, CallsModule.CallCallback callback) {
+    /**
+     * Handle call in ui - <b>should<b/> be called, when receiving IncomingCallEvent
+     * @param callId
+     * @param callback
+     */
+    @ObjectiveCName("handleCallWithCallId:withCallback:")
+    public void handleCall(long callId, CallsModule.CallCallback callback) {
         modules.getCallsModule().handleCall(callId, callback);
     }
 
+    /**
+     * Send call signaling
+     *
+     * @param callId call id
+     * @param data   signal object to send
+     */
+    @ObjectiveCName("sendCallSignalWithCallId:withData:")
     public void sendCallSignal(long callId, AbsSignal data) {
         modules.getCallsModule().sendSignal(callId, data);
     }
