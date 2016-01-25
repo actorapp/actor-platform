@@ -2,13 +2,9 @@
 //  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
-"AuthMoreInfo" = "Mensajería gratis, segura y veloz.";
-
-"AuthStarButton" = "Empieza a chatear";
-
-"AuthTermsOfServiceFull" = "Al inscribirte,aceptas las Condiciones del servicio.";
-
-"AuthTermsOfService" = "Condiciones del servicio";
+/*
+ * Main Screen
+ */
 
 "TabMessages" = "Mensajes";
 
@@ -18,6 +14,10 @@
 
 "TabDiscover" = "Descubre";
 
+/*
+ * Contacts
+ */
+
 "ContactsAddHeader" = "Añadir contacto";
 
 "ContactsAddHint" = "Por favor, especifica el número de teléfono";
@@ -26,19 +26,30 @@
 
 "ContactsActionAdd" = "Añadir amigo";
 
+/*
+ * Dialogs
+ */
+
 "DialogsHint" = "Tocar para más opciones";
 
+/*
+ * Settings
+ */
+
 "SettingsEdit" = "Editar";
+
 
 "SettingsSetPhoto" = "Establece foto de perfil";
 
 "SettingsChangeName" = "Cambia tu nombre";
+
 
 "SettingsEditHeader" = "Tu nombre";
 
 "SettingsEditHint" = "Por favor, introduce tu nombre real para ayudar a la gente a entender mejor quién eres.";
 
 "SettingsEditFieldHint" = "Introduce tu nombre";
+
 
 "SettingsUsernameNotSet" = "Establece nombre de usuario";
 
@@ -48,15 +59,18 @@
 
 "SettingsUsernameHint" = "Puedes elegir un nombre de usuario en {appname}. Si lo haces, otras personas podrán encontrarte por este nombre de usuario y te contactaran sin compartir tu número de teléfono.\n\nPuede utilizar desde a-z, 0-9 y guiones bajos. Longitud mínima es de 5 caracteres.\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
 
+
 "SettingsAboutNotSet" = "Modificar estado";
 
 "SettingsChangeAboutTitle" = "Estado";
 
 "SettingsChangeAboutHint" = "Modifica tu estado";
 
+
 "SettingsSecurity" = "Seguridad";
 
 "SettingsWallpapers" = "Fondos de chats";
+
 
 "SettingsNotifications" = "Notificaciones y Sonidos";
 
@@ -74,6 +88,7 @@
 
 "SettingsLastSeenHint" = "Elige quién puede ver tu última conexión";
 
+
 "SettingsLastSeenEverybody" = "Todos";
 
 "SettingsLastSeenContacts"  = "Mis contactos";
@@ -82,9 +97,10 @@
 
 "SettingsMobilePhone"    = "Móvil";
 
-"ShareLocation" = "Ubicación";
 
-"ShareContact" = "Contacto";
+/*
+ * Profile
+ */
 
 "ProfileEditHeader" = "Cambiar nombre";
 
@@ -120,6 +136,10 @@
 
 "NumberCopied" = "Número copiado al portapapeles";
 
+/*
+ * Publics
+ */
+
 "JoinAlertMessage" = "¿Quieres formar parte de este grupo?";
 
 /*
@@ -144,7 +164,7 @@
 
 "GroupIntegrations" = "Integraciones";
 
-"GroupMembers" = "MIEMBROS";
+"GroupMembers" = "{0} MIEMBROS";
 
 "GroupMemberAdmin" = "admin";
 
@@ -206,6 +226,10 @@
 
 "GroupJoinAction" = "Únete";
 
+/*
+ * Compose
+ */
+
 "ComposeTitle" = "Nuevo mensaje";
 
 "CreateGroup" = "Crear grupo";
@@ -220,27 +244,11 @@
 
 "CreateGroupMembersPlaceholders" = "Introduce Nombres";
 
-"ChatNewMessages" = "Nuevos mensajes";
-
 /*
- * Voice
+ * Location
  */
 
-"ChatVoiceMessage" = "Mensaje de voz";
-
-"ChatHoldToTalk" = "Pulsar para grabar";
-
-"ChatReleaseToSend" = "Dejar de pulsar para enviar";
-
-"ChatSlideUpToCancel" = "Deslizar para cancelar";
-
-/*
- * Chat attachment menu
- */
-
-"AttachmentsSendPhoto" = "Enviar {count} Foto";
-
-"AttachmentsSendPhotos" = "Enviar {count} Fotos";
+"LocationTitle" = "Ubicación";
 
 /*
  * Notifications
@@ -278,6 +286,10 @@
 
 "NotificationsOnlyMentionsHint" = "Puedes activar las notificaciones sólo para mensajes que contiene la mención";
 
+/*
+ * Privacy
+ */
+
 "SecurityTitle" = "Seguridad";
 
 "PrivacyTerminate" = "Terminar todas las demás sesiones";
@@ -288,15 +300,45 @@
 
 "PrivacyTerminateHint" = "Registrar todos los dispositivos excepto para éste.";
 
+/*
+ * Wallpapers
+ */
+
 "WallpapersTitle" = "Fondos de chats";
 
 "WallpapersPhoto" = "Fotos de carrete";
+
+/*
+ * Chat
+ */
 
 "ChatPlaceholder" = "Escribir mensaje...";
 
 "ChatSend" = "Enviar";
 
 "ChatNoGroupAccess" = "No eres miembro";
+
+"ChatNewMessages" = "Nuevos mensajes";
+
+"ChatVoiceMessage" = "Mensaje de voz";
+
+"ChatHoldToTalk" = "Pulsar para grabar";
+
+"ChatReleaseToSend" = "Dejar de pulsar para enviar";
+
+"ChatSlideUpToCancel" = "Deslizar para cancelar";
+
+/*
+ * Chat attachment menu
+ */
+
+"AttachmentsSendPhoto" = "Enviar {count} Foto";
+
+"AttachmentsSendPhotos" = "Enviar {count} Fotos";
+
+/*
+ * Find
+ */
 
 "FindTitle" = "Buscar personas";
 
@@ -307,7 +349,7 @@
 "FindNotFound" = "Lo sentimos, pero no somos capaces de encontrar la persona para esta consulta de búsqueda";
 
 /*
- *  Placeholder
+ * Placeholders
  */
 
 "Placeholder_Empty_Title" = "Invita a tus amigos";
@@ -341,8 +383,18 @@
 "Placeholder_Group_Message" = "Desafortunadamente, no eres miembro de este grupo.";
 
 /*
- *  Auth
+ * Auth
  */
+
+"AuthMoreInfo" = "Mensajería gratis, segura y veloz.";
+
+"AuthStarButton" = "Empieza a chatear";
+
+
+"AuthTermsOfServiceFull" = "Al inscribirte,aceptas las Condiciones del servicio.";
+
+"AuthTermsOfService" = "Condiciones del servicio";
+
 
 "AuthPhoneTitle" = "Registrarse";
 
@@ -372,9 +424,14 @@
 
 "AuthProfileHint" = "Escribe tu nombre y añade una imagen de perfil";
 
+
 "AuthTerms" = "By signing up to {app_name}, you agree not to: \n\n - use our service to send spam and scam users.\n\n- promote violence on publicly viewable {app_name} bots or channels.\n\nWe reserve the right to update these Terms of Service later.";
 
-"CurrentLocale" = "En";
+/*
+ * Common Elements
+ */
+
+"CurrentLocale" = "Es";
 
 "InviteText" = "¡Hola! , ¡prueba {appname} mensajería! {link}";
 
@@ -388,6 +445,10 @@
 
 "SendDocument" = "Documentos";
 
+"ShareLocation" = "Ubicación";
+
+"ShareContact" = "Contacto";
+
 /*
  *  Navigation
  */
@@ -395,6 +456,8 @@
 "NavigationEdit" = "Editar";
 
 "NavigationDone" = "Hecho";
+
+"NavigationBack" = "";
 
 "NavigationCancel" = "Cancelar";
 
@@ -442,9 +505,16 @@
 
 "AlertLinkCopied" = "Enlace copiado al portapapeles.";
 
+/*
+ * Network
+ */
+
+"StatusConnecting" = "Estado conectando...";
+
+"StatusSyncing" = "Estado sincronizando...";
 
 /*
- * Erros
+ * Errors
  */
 
 "ErrorPhoneIncorrect" = "Número de móvil introducido no es válido. Por favor, vuelve a intentarlo.";
@@ -454,17 +524,3 @@
 "ErrorAlreadyJoined" = "Ya eres miembro del grupo";
 
 "ErrorUnableToJoin" = "Unable to join to group";
-
-/*
- * Location
- */
-
-"LocationTitle" = "Ubicación";
-
-/*
- * Network
- */
-
-"StatusConnecting" = "Estado conectando...";
-
-"StatusSyncing" = "Estado sincronizando...";
