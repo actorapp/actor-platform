@@ -1,12 +1,12 @@
 package im.actor.api.rpc
 
+import cats.data.Xor._
+import cats.data.{ Xor, XorT }
 import cats.std.{ EitherInstances, FutureInstances }
+import cats.syntax.all._
 
 import scala.concurrent.{ ExecutionContext, Future }
-import cats._, cats.data.{ XorT, Xor }, data.Xor._, syntax.all._
-
-import scala.language.implicitConversions
-import scalaz.{ \/-, -\/, \/ }
+import scalaz.{ -\/, \/, \/- }
 
 object FutureResultRpcCats extends FutureInstances with EitherInstances {
   type Result[A] = XorT[Future, RpcError, A]

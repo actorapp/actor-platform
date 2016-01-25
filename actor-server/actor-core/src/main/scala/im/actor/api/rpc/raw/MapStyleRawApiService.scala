@@ -1,9 +1,9 @@
-package im.actor.rpc.raw
+package im.actor.api.rpc.raw
 
 import akka.actor.ActorSystem
 import cats.data.Xor
-import im.actor.api.rpc.{ RpcError, AuthorizedClientData }
 import im.actor.api.rpc.collections._
+import im.actor.api.rpc.{ AuthorizedClientData, RpcError }
 import play.api.libs.json._
 
 import scala.concurrent.Future
@@ -14,6 +14,7 @@ trait ProductImplicits {
    * Implicit conversion for case classes and case objects.
    * Allows to represent case class as ApiMap.
    * Case classes with 0 fields and case objects are converted to empty ApiMap
+   *
    * @param product case class or case object
    */
   implicit class Foo(product: Product) {
