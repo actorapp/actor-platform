@@ -1,4 +1,4 @@
-package im.actor.rpc.raw
+package im.actor.api.rpc.raw
 
 import akka.actor.ActorSystem
 import cats.data.Xor

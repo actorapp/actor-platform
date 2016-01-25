@@ -1,8 +1,7 @@
 package im.actor.api.rpc
 
 import scala.concurrent.{ ExecutionContext, Future }
-import scalaz.Scalaz._
-import scalaz._
+import scalaz._, Scalaz._
 
 object FutureResultRpc {
   type Result[A] = EitherT[Future, RpcError, A]

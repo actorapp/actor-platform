@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.sequence
 import akka.event.Logging
 import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.users.ApiUser
+import im.actor.api.rpc.sequence._
 import im.actor.server.model.SeqUpdate
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -14,7 +15,6 @@ import akka.stream.Materializer
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
-import im.actor.api.rpc.sequence.{ ApiDifferenceUpdate, ResponseGetDifference, SequenceService }
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
 import im.actor.server.sequence.SeqUpdatesExtension
@@ -42,7 +42,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
       .withSubscribeToSeq(SubscribeToSeq())
   }
 
-  override def jhandleGetState(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def jhandleGetState(optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       subscribeToSeq()
       for {
@@ -53,7 +53,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleGetDifference(seq: Int, state: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
+  override def jhandleGetDifference(seq: Int, state: Array[Byte], optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
     authorized(clientData) { implicit client ⇒
       subscribeToSeq()
 
@@ -82,11 +82,17 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
           updates = diffUpdates,
           needMore = needMore,
           users = users.toVector,
-          groups = groups.toVector
+          groups = groups.toVector,
+          messages = Vector.empty,
+          usersRefs = Vector.empty,
+          groupsRefs = Vector.empty
         ))
       }
     }
   }
+
+  override def jhandleGetReferencedEntitites(users: IndexedSeq[ApiUserOutPeer], groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseGetReferencedEntitites]] =
+    Future.failed(new RuntimeException("Not implemented"))
 
   override def jhandleSubscribeToOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
@@ -149,12 +155,12 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   private def getSeq(authId: Long)(implicit ec: ExecutionContext) =
     sql"""SELECT seq FROM seq_updates_ngen WHERE auth_id = $authId ORDER BY timestamp DESC LIMIT 1""".as[Int].headOption map (_ getOrElse 0)
 
-  private def extractDiff(updates: IndexedSeq[SeqUpdate])(implicit client: AuthorizedClientData): (IndexedSeq[ApiDifferenceUpdate], Set[Int], Set[Int]) = {
-    updates.foldLeft[(Vector[ApiDifferenceUpdate], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {
+  private def extractDiff(updates: IndexedSeq[SeqUpdate])(implicit client: AuthorizedClientData): (IndexedSeq[ApiUpdateContainer], Set[Int], Set[Int]) = {
+    updates.foldLeft[(Vector[ApiUpdateContainer], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {
       case ((updates, userIds, groupIds), update) ⇒
         val upd = update.getMapping.custom.getOrElse(client.authSid, update.getMapping.getDefault)
 
-        (updates :+ ApiDifferenceUpdate(upd.header, upd.body.toByteArray),
+        (updates :+ ApiUpdateContainer(upd.header, upd.body.toByteArray),
           userIds ++ upd.userIds,
           groupIds ++ upd.groupIds)
     }

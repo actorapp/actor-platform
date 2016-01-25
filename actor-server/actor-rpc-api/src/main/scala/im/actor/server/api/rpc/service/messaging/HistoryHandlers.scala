@@ -138,7 +138,7 @@ trait HistoryHandlers {
 
                 val (messages, userIds) = messageModels.view
                   .map(_.ofUser(client.userId))
-                  .foldLeft(Vector.empty[ApiHistoryMessage], Set.empty[Int]) {
+                  .foldLeft(Vector.empty[ApiMessageContainer], Set.empty[Int]) {
                     case ((msgs, userIds), message) ⇒
                       val messageStruct = message.asStruct(lastReceivedAt, lastReadAt, reactions.getOrElse(message.randomId, Vector.empty))
                       val newMsgs = msgs :+ messageStruct
