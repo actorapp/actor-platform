@@ -1016,7 +1016,7 @@ public class Messenger {
      * @param callCallback ui callback
      * @return command to execute
      */
-    @ObjectiveCName("doCallWithUid:withCallback")
+    @ObjectiveCName("doCallWithUid:withCallback:")
     public Command<ResponseDoCall> doCall(int uid, CallsModule.CallCallback callCallback) {
         return modules.getCallsModule().makeCall(uid, callCallback);
     }
