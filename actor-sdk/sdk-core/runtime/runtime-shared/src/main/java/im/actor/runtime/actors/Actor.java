@@ -201,6 +201,14 @@ public class Actor {
         reply(new DeadLetter(message));
     }
 
+    public void halt(String message) {
+        halt(message, null);
+    }
+
+    public void halt(String message, Exception e) {
+        throw new ActorHalterException(message, e);
+    }
+
     public void ask(ActorRef dest, Object message) {
         ask(dest, message, null);
     }
