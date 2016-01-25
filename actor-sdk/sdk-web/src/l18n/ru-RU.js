@@ -45,7 +45,8 @@ export default {
       'createGroup': 'Создать группу',
       'addMembers': 'Добавить пользователей',
       'quickSearch': 'Быстрый поиск',
-      'close': 'Закрыть'
+      'close': 'Закрыть',
+      'save': 'Сохранить'
     },
 
     // Messages
