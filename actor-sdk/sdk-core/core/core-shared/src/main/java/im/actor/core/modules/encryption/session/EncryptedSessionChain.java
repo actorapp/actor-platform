@@ -2,6 +2,9 @@ package im.actor.core.modules.encryption.session;
 
 import java.util.HashSet;
 
+import im.actor.runtime.Crypto;
+import im.actor.runtime.Log;
+import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.box.ActorBox;
 import im.actor.runtime.crypto.box.ActorBoxKey;
@@ -89,5 +92,23 @@ public class EncryptedSessionChain {
         byte[] header = ByteStrings.substring(data, 0, 88);
         byte[] message = ByteStrings.substring(data, 88, data.length - 88);
         return ActorBox.openBox(header, message, ratchetMessageKey);
+    }
+
+    public byte[] encrypt(byte[] data) throws IntegrityException {
+        int messageIndex = sentCounter++;
+        ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rootChainKey, messageIndex);
+
+        byte[] header = ByteStrings.merge(
+                ByteStrings.intToBytes(session.getPeerKeyGroupId()),
+                ByteStrings.longToBytes(session.getOwnPreKey().getKeyId()), /*Alice Initial Ephermal*/
+                ByteStrings.longToBytes(session.getTheirPreKey().getKeyId()), /*Bob Initial Ephermal*/
+                Curve25519.keyGenPublic(ownPrivateKey),
+                theirPublicKey,
+                ByteStrings.intToBytes(messageIndex)); /* Message Index */
+
+        Log.d("EncryptedSessionChain", "Own Pre Key: " + session.getOwnPreKey().getKeyId());
+        Log.d("EncryptedSessionChain", "Their Pre Key: " + session.getTheirPreKey().getKeyId());
+
+        return ByteStrings.merge(header, ActorBox.closeBox(header, data, Crypto.randomBytes(32), ratchetMessageKey));
     }
 }
