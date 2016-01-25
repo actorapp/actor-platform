@@ -132,13 +132,13 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
     init(frame: CGRect,convContrller:ConversationViewController) {
         
         // one item size
-        let widthHightItem = frame.width/4-20;
+        let widthHightItem = frame.width/4-15;
         
         // layout for collection view
         let layoutCV = UICollectionViewFlowLayout()
         layoutCV.scrollDirection = .Vertical
         layoutCV.itemSize = CGSizeMake(widthHightItem, widthHightItem)
-        layoutCV.sectionInset = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
+        layoutCV.sectionInset = UIEdgeInsets(top: 5, left: 0, bottom: 10, right: 0)
         
         // init collection view
         self.collectionView = UICollectionView(frame: frame, collectionViewLayout: layoutCV)
@@ -156,11 +156,11 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
-        self.collectionView.backgroundColor = UIColor.clearColor()
+        self.collectionView.backgroundColor = UIColor(red: 0.7728, green: 0.8874, blue: 0.9365, alpha: 1.0)
         
         self.collectionView.registerClass(AAStickersViewCell.self, forCellWithReuseIdentifier: "AAStickersViewCell")
         
-        self.collectionView.contentInset = UIEdgeInsetsMake(15, 10, 15, 10)
+        self.collectionView.contentInset = UIEdgeInsetsMake(10, 5, 10, 5)
         
         self.collectionView.preservesSuperviewLayoutMargins = false
         self.collectionView.layoutMargins = UIEdgeInsetsZero
