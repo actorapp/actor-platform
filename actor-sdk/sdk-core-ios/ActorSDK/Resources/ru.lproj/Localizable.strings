@@ -123,11 +123,11 @@
 
 "ProfileRenameAction" = "Переименовать";
 
-"ProfileAbout" = "о себе";
+"ProfileAbout" = "О себе";
 
-"ProfilePhone" = "телефон";
+"ProfilePhone" = "Телефон";
 
-"ProfileUsername" = "ник";
+"ProfileUsername" = "Ник";
 
 "ProfileTitle" = "Информация";
 
@@ -391,7 +391,7 @@
 
 "AuthPhoneHint" = "Пожалуйста, укажите Вашу страну и номер телефона.";
 
-"AuthTermsOfServiceFull" = "Зарегистрировавшись, вы соглашаетесь с Условиями предоставления услуг."
+"AuthTermsOfServiceFull" = "Зарегистрировавшись, вы соглашаетесь с Условиями предоставления услуг.";
 
 "AuthTermsOfService" = "Условиями предоставления услуг";
 
