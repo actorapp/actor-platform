@@ -3,12 +3,10 @@ package im.actor.core.modules.encryption;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import im.actor.core.api.ApiEncryptionKey;
 import im.actor.core.api.ApiEncryptionKeyGroup;
 import im.actor.core.api.ApiEncryptionKeySignature;
-import im.actor.core.api.ApiEncryptionPublicKeyGroup;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateNewKeyGroup;
 import im.actor.core.api.rpc.RequestLoadEphermalPublicKeys;
@@ -36,10 +34,7 @@ import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.Future;
 import im.actor.runtime.actors.ask.AskRequest;
-import im.actor.runtime.bser.BserWriter;
-import im.actor.runtime.bser.DataOutput;
 import im.actor.runtime.crypto.Curve25519;
-import im.actor.runtime.crypto.primitives.digest.SHA256;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.crypto.ratchet.RatchetKeySignature;
 import im.actor.runtime.storage.KeyValueStorage;
@@ -245,6 +240,7 @@ public class KeyManagerActor extends ModuleActor {
     }
 
     private void fetchEphemeralKey(long keyId, Future future) {
+        Log.d(TAG, "fetchEphemeralKey: " + keyId);
         for (OwnPrivateKey k : ownKeys.getEphemeralKeys()) {
             if (k.getKeyId() == keyId) {
                 future.onResult(new FetchEphemeralPrivateKeyRes(k.getKey()));
@@ -252,6 +248,13 @@ public class KeyManagerActor extends ModuleActor {
             }
         }
         future.onError(new RuntimeException("Unable to find ephemeral key"));
+    }
+
+    private void fetchOwnEphemeralKey(Future future) {
+        Log.d(TAG, "fetchOwnEphemeralKey");
+        OwnPrivateKeyUploadable ownEphemeralKey = ownKeys.pickRandomEphemeralKey();
+        future.onResult(new FetchOwnEphemeralKeyResult(ownEphemeralKey.getKeyId(),
+                ownEphemeralKey.getKey()));
     }
 
     private void fetchUserGroups(final int uid, final Future future) {
@@ -352,27 +355,6 @@ public class KeyManagerActor extends ModuleActor {
                 future.onError(e);
             }
         });
-
-        //            request(new RequestLoadEphermalPublicKeys(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), encryptionKeyGroup.getKeyGroupId()), new RpcCallback<ResponsePublicKeys>() {
-//                @Override
-//                public void onResult(ResponsePublicKeys response) {
-//                    if (response.getPublicKey().size() == 0) {
-//                        Log.w(TAG, "No ephemeral keys found");
-//                        return;
-//                    }
-//
-//                    ApiEncryptionKey encryptionKey = response.getPublicKey().get(RandomUtils.randomId(response.getPublicKey().size()));
-//                    theirEphermalKey0 = new UserPublicKey(encryptionKey.getKeyId(), encryptionKey.getKeyAlg(), encryptionKey.getKeyMaterial());
-//                    onTheirReady0();
-//                }
-//
-//                @Override
-//                public void onError(RpcException e) {
-//                    // Nothing to do
-//                    Log.w(TAG, "Their ephemeral error");
-//                    Log.e(TAG, e);
-//                }
-//            });
     }
 
     private void fetchUserEphemeralKey(final int uid, int keyGroupId, final Future future) {
@@ -389,10 +371,7 @@ public class KeyManagerActor extends ModuleActor {
                 // TODO: Verify signature
 
                 UserPublicKey pkey = new UserPublicKey(key.getKeyId(), key.getKeyAlg(), key.getKeyMaterial());
-//                UserKeysGroup userKeysGroup = finalKeysGroup.addUserKeyGroup(pkey);
-//                cacheUserKeys(keys.removeUserKeyGroup(userKeysGroup.getKeyGroupId())
-//                        .addUserKeyGroup(userKeysGroup));
-
+                // Do not store all ephemeral key as it is not required
                 future.onResult(new FetchUserEphemeralKeyResponse(pkey));
             }
 
@@ -547,6 +526,9 @@ public class KeyManagerActor extends ModuleActor {
         } else if (message instanceof FetchUserEphemeralKeyRandom) {
             fetchUserEphemeralKey(((FetchUserEphemeralKeyRandom) message).getUid(), ((FetchUserEphemeralKeyRandom) message).getKeyGroup(), future);
             return false;
+        } else if (message instanceof FetchOwnEphemeralKey) {
+            fetchOwnEphemeralKey(future);
+            return false;
         }
         return super.onAsk(message, future);
     }
@@ -565,6 +547,29 @@ public class KeyManagerActor extends ModuleActor {
 
         public OwnPrivateKey getIdentityKey() {
             return identityKey;
+        }
+    }
+
+    public static class FetchOwnEphemeralKey {
+
+    }
+
+    public static class FetchOwnEphemeralKeyResult {
+
+        private long id;
+        private byte[] privateKey;
+
+        public FetchOwnEphemeralKeyResult(long id, byte[] privateKey) {
+            this.id = id;
+            this.privateKey = privateKey;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public byte[] getPrivateKey() {
+            return privateKey;
         }
     }
 
