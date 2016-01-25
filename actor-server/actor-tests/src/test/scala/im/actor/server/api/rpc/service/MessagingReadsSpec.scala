@@ -69,7 +69,7 @@ class MessagingReadsSpec
       dialog.lastReadAt shouldEqual new DateTime(0)
       dialog.ownerLastReadAt shouldEqual new DateTime(0)
 
-      val seq = whenReady(sequenceService.handleGetState()) {
+      val seq = whenReady(sequenceService.handleGetState(Vector.empty)) {
         _.toOption.get.seq
       }
 
@@ -127,7 +127,7 @@ class MessagingReadsSpec
       dialog.lastReadAt shouldEqual new DateTime(0)
       dialog.ownerLastReadAt shouldEqual new DateTime(0)
 
-      val currentSeq = whenReady(sequenceService.handleGetState()) { _.toOption.get.seq }
+      val currentSeq = whenReady(sequenceService.handleGetState(Vector.empty)) { _.toOption.get.seq }
 
       whenReady(service.handleMessageRead(user2OutPeer, messageDate))(identity)
 

@@ -171,7 +171,7 @@ final class SessionSpec extends BaseSessionSpec {
       val authSession = Await.result(db.run(AuthSessionRepo.findByAuthId(authId)), 5.seconds).get
       implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id, authSession.id)
 
-      val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState)).require
+      val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState(Vector.empty))).require
 
       val thirdMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, ProtoRpcRequest(encodedGetSeqRequest))
@@ -193,7 +193,7 @@ final class SessionSpec extends BaseSessionSpec {
 
       implicit val clientData = AuthorizedClientData(authId, sessionId, user.id, authSid)
 
-      val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState)).require
+      val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState(Vector.empty))).require
 
       val thirdMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, ProtoRpcRequest(encodedGetSeqRequest))
