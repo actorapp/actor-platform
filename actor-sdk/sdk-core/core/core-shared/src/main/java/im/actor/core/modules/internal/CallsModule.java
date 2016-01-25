@@ -95,6 +95,8 @@ public class CallsModule extends AbsModule {
         ActorRef call = calls.get(callId);
         if (call != null) {
             call.send(new CallActor.EndCall());
+        } else {
+            onCallEnded(callId);
         }
     }
 
