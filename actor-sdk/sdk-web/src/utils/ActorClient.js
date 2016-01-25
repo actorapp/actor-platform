@@ -132,6 +132,10 @@ export default {
     window.messenger.unbindGroupOnline(gid, callback);
   },
 
+  bindMessages(peer, callback) {
+    return window.messenger.bindMessages(peer, callback);
+  },
+
   getUser(uid) {
     return window.messenger.getUser(uid);
   },
