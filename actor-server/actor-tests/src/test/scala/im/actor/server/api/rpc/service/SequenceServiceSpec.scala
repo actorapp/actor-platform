@@ -6,7 +6,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.{ ApiTextMessage, UpdateMessageContentChanged }
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.api.rpc.sequence.{ ApiDifferenceUpdate, ResponseGetDifference }
+import im.actor.api.rpc.sequence.{ ApiUpdateContainer, ApiDifferenceUpdate, ResponseGetDifference }
 import im.actor.server._
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
 import im.actor.server.sequence.SeqUpdatesExtension
@@ -41,7 +41,7 @@ final class SequenceServiceSpec extends BaseAppSuite({
     val sessionId = createSessionId()
     implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
-    whenReady(service.handleGetState()) { res ⇒
+    whenReady(service.handleGetState(Vector.empty)) { res ⇒
       res should matchPattern { case Ok(ResponseSeq(0, _)) ⇒ }
     }
   }
@@ -69,12 +69,12 @@ final class SequenceServiceSpec extends BaseAppSuite({
       seqUpdExt.deliverSingleUpdate(user.id, update)
     }), 10.seconds)
 
-    var totalUpdates: Seq[ApiDifferenceUpdate] = Seq.empty
+    var totalUpdates: Seq[ApiUpdateContainer] = Seq.empty
 
-    val (seq1, state1) = whenReady(service.handleGetDifference(0, Array.empty)) { res ⇒
+    val (seq1, state1) = whenReady(service.handleGetDifference(0, Array.empty, Vector.empty)) { res ⇒
       val diff = res.toOption.get
       inside(res) {
-        case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups)) ⇒
+        case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups, _, _, _)) ⇒
           println(user2.id)
           println(updates.map(_.update.length))
           updates.map(_.toByteArray.length).sum should be <= withError(config.maxDifferenceSize)
@@ -85,10 +85,10 @@ final class SequenceServiceSpec extends BaseAppSuite({
       (diff.seq, diff.state)
     }
 
-    val (seq2, state2) = whenReady(service.handleGetDifference(seq1, state1)) { res ⇒
+    val (seq2, state2) = whenReady(service.handleGetDifference(seq1, state1, Vector.empty)) { res ⇒
       val diff = res.toOption.get
       inside(res) {
-        case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups)) ⇒
+        case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups, _, _, _)) ⇒
           (updates.map(_.toByteArray.length).sum <= withError(config.maxDifferenceSize)) shouldEqual true
           needMore shouldEqual true
           totalUpdates ++= updates
@@ -97,10 +97,10 @@ final class SequenceServiceSpec extends BaseAppSuite({
       (diff.seq, diff.state)
     }
 
-    val finalSeq = whenReady(service.handleGetDifference(seq2, state2)) { res ⇒
+    val finalSeq = whenReady(service.handleGetDifference(seq2, state2, Vector.empty)) { res ⇒
       val diff = res.toOption.get
       inside(res) {
-        case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups)) ⇒
+        case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups, _, _, _)) ⇒
           (updates.map(_.toByteArray.length).sum <= withError(config.maxDifferenceSize)) shouldEqual true
           needMore shouldEqual false
           totalUpdates ++= updates
@@ -142,9 +142,9 @@ final class SequenceServiceSpec extends BaseAppSuite({
     whenReady(seqUpdExt.deliverSingleUpdate(user.id, bigUpdate))(identity)
 
     // expect first small update and needMore == true
-    val (seq1, state1) = whenReady(service.handleGetDifference(0, Array.empty)) { res ⇒
+    val (seq1, state1) = whenReady(service.handleGetDifference(0, Array.empty, Vector.empty)) { res ⇒
       inside(res) {
-        case Ok(ResponseGetDifference(_, _, _, updates, true, _)) ⇒
+        case Ok(ResponseGetDifference(_, _, _, updates, true, _, _, _, _)) ⇒
           updates.size shouldEqual 1
       }
 
@@ -153,9 +153,9 @@ final class SequenceServiceSpec extends BaseAppSuite({
     }
 
     // expect first big update and needMore == true
-    val (seq2, state2) = whenReady(service.handleGetDifference(seq1, state1)) { res ⇒
+    val (seq2, state2) = whenReady(service.handleGetDifference(seq1, state1, Vector.empty)) { res ⇒
       inside(res) {
-        case Ok(ResponseGetDifference(_, _, _, updates, true, _)) ⇒
+        case Ok(ResponseGetDifference(_, _, _, updates, true, _, _, _, _)) ⇒
           updates.size shouldEqual 1
       }
 
@@ -164,9 +164,9 @@ final class SequenceServiceSpec extends BaseAppSuite({
     }
 
     // expect second big update and needMore == false
-    whenReady(service.handleGetDifference(seq2, state2)) { res ⇒
+    whenReady(service.handleGetDifference(seq2, state2, Vector.empty)) { res ⇒
       inside(res) {
-        case Ok(ResponseGetDifference(_, _, _, updates, false, _)) ⇒
+        case Ok(ResponseGetDifference(_, _, _, updates, false, _, _, _, _)) ⇒
           updates.size shouldEqual 1
       }
     }

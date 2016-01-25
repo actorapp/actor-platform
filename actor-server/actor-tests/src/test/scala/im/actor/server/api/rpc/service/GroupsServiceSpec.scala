@@ -1020,8 +1020,8 @@ final class GroupsServiceSpec
       }
     }
 
-    val user1Seq = whenReady(sequenceService.jhandleGetState(clientData1))(_.toOption.get.seq)
-    val user2Seq = whenReady(sequenceService.jhandleGetState(clientData2))(_.toOption.get.seq)
+    val user1Seq = whenReady(sequenceService.jhandleGetState(Vector.empty, clientData1))(_.toOption.get.seq)
+    val user2Seq = whenReady(sequenceService.jhandleGetState(Vector.empty, clientData2))(_.toOption.get.seq)
 
     {
       implicit val clientData = clientData2

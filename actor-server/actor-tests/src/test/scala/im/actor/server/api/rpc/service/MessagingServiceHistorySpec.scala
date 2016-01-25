@@ -381,7 +381,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
           Thread.sleep(300)
 
           val ResponseSeq(seq, state) = {
-            whenReady(sequenceService.handleGetState()) { resp ⇒
+            whenReady(sequenceService.handleGetState(Vector.empty)) { resp ⇒
               resp.toOption.get
             }
           }

@@ -280,7 +280,7 @@ final class SessionResendSpec extends BaseSessionSpec(
   }
 
   private def subscribeToSeq(authId: Long, sessionId: Long, userId: Int)(implicit probe: TestProbe): Unit = {
-    val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState)).require
+    val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState(Vector.empty))).require
 
     val getSeqMessageId = Random.nextLong()
     sendMessageBox(authId, sessionId, sessionRegion.ref, getSeqMessageId, ProtoRpcRequest(encodedGetSeqRequest))

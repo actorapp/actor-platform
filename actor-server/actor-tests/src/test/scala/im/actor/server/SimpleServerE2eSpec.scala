@@ -104,7 +104,7 @@ final class SimpleServerE2eSpec extends ActorSuite(
 
       val messageId = Random.nextLong()
 
-      val requestBytes = RequestCodec.encode(Request(RequestGetDifference(999, Array()))).require
+      val requestBytes = RequestCodec.encode(Request(RequestGetDifference(999, Array(), Vector.empty))).require
       val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
       val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
