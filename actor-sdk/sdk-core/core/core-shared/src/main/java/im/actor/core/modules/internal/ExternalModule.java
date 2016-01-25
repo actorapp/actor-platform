@@ -10,10 +10,13 @@ import java.util.ArrayList;
 
 import im.actor.core.api.ApiMapValue;
 import im.actor.core.api.ApiMapValueItem;
+import im.actor.core.api.ApiRawValue;
 import im.actor.core.api.rpc.RequestCompleteWebaction;
 import im.actor.core.api.rpc.RequestInitWebaction;
+import im.actor.core.api.rpc.RequestRawRequest;
 import im.actor.core.api.rpc.ResponseCompleteWebaction;
 import im.actor.core.api.rpc.ResponseInitWebaction;
+import im.actor.core.api.rpc.ResponseRawRequest;
 import im.actor.core.entity.WebActionDescriptor;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
@@ -82,6 +85,25 @@ public class ExternalModule extends AbsModule {
                     @Override
                     public void onResult(ResponseCompleteWebaction response) {
                         callback.onResult(true);
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        callback.onError(e);
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<ResponseRawRequest> rawRequest(final String service, final String method, final ApiRawValue params) {
+        return new Command<ResponseRawRequest>() {
+            @Override
+            public void start(final CommandCallback<ResponseRawRequest> callback) {
+                request(new RequestRawRequest(service, method, params), new RpcCallback<ResponseRawRequest>() {
+                    @Override
+                    public void onResult(ResponseRawRequest response) {
+                        callback.onResult(response);
                     }
 
                     @Override
