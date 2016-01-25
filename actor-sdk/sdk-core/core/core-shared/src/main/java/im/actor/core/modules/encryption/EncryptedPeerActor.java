@@ -56,6 +56,7 @@ public class EncryptedPeerActor extends ModuleActor {
         ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchUserKeyGroups(uid), new AskCallback() {
             @Override
             public void onResult(Object obj) {
+                Log.d(TAG, "Groups loaded...");
                 KeyManagerActor.FetchUserKeyGroupsResponse response = (KeyManagerActor.FetchUserKeyGroupsResponse) obj;
                 userKeys = response.getUserKeys();
                 onGroupsReady();
