@@ -141,8 +141,11 @@ class DialogSection extends Component {
 
     return (
       <section className="main">
-        <ToolbarSection/>
-
+        {
+          peer
+            ? <ToolbarSection/>
+            : null
+        }
         <div className="flexrow">
           {
             peer
