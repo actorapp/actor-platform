@@ -6,7 +6,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.{ ApiTextMessage, UpdateMessageContentChanged }
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.api.rpc.sequence.{ ApiUpdateContainer, ApiDifferenceUpdate, ResponseGetDifference }
+import im.actor.api.rpc.sequence.{ ApiUpdateContainer, ResponseGetDifference }
 import im.actor.server._
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
 import im.actor.server.sequence.SeqUpdatesExtension
