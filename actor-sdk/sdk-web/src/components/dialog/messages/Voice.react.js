@@ -113,7 +113,7 @@ class Voice extends Component {
     const voiceClassName = classnames(className, 'row');
 
     const current = this.humanTime(currentTime * 1000);
-    const total = this.humanTime(duration * 1000);
+    const total = this.humanTime(duration);
     const progress = (currentTime / duration) * 100;
 
     return (
