@@ -4,8 +4,8 @@ import akka.actor._
 import cats.data.Xor
 import im.actor.api.rpc.collections.ApiRawValue
 import im.actor.api.rpc.FutureResultRpcCats
+import im.actor.api.rpc.raw.RawApiService
 import im.actor.api.rpc.{ AuthorizedClientData, CommonErrors, RpcError }
-import im.actor.rpc.raw.RawApiService
 
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.Future
