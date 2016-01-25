@@ -1,6 +1,7 @@
 package im.actor.core.modules.encryption.entity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.runtime.bser.BserObject;
@@ -27,6 +28,25 @@ public class UserKeys extends BserObject {
 
     public UserKeysGroup[] getUserKeysGroups() {
         return userKeysGroups;
+    }
+
+    public UserKeys addUserKeyGroup(UserKeysGroup keysGroup) {
+        ArrayList<UserKeysGroup> userKeysGroups = new ArrayList<UserKeysGroup>();
+        for (UserKeysGroup g : userKeysGroups) {
+            userKeysGroups.add(g);
+        }
+        userKeysGroups.add(keysGroup);
+        return new UserKeys(uid, userKeysGroups.toArray(new UserKeysGroup[userKeysGroups.size()]));
+    }
+
+    public UserKeys removeUserKeyGroup(int keyGroupId) {
+        ArrayList<UserKeysGroup> userKeysGroups = new ArrayList<UserKeysGroup>();
+        for (UserKeysGroup g : userKeysGroups) {
+            if (g.getKeyGroupId() != keyGroupId) {
+                userKeysGroups.add(g);
+            }
+        }
+        return new UserKeys(uid, userKeysGroups.toArray(new UserKeysGroup[userKeysGroups.size()]));
     }
 
     @Override
