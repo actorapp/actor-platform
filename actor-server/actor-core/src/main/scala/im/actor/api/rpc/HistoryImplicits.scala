@@ -1,8 +1,8 @@
 package im.actor.api.rpc
 
 import com.google.protobuf.CodedInputStream
-import im.actor.api.rpc.messaging.{ ApiMessageReaction, ApiHistoryMessage, ApiMessage, ApiMessageState }
-import im.actor.server.model.{ MessageReaction, HistoryMessage }
+import im.actor.api.rpc.messaging.{ ApiMessage, ApiMessageContainer, ApiMessageReaction, ApiMessageState }
+import im.actor.server.model.{ HistoryMessage, MessageReaction }
 import org.joda.time.DateTime
 
 trait HistoryImplicits {
@@ -25,7 +25,7 @@ trait HistoryImplicits {
               None // for incoming
             }
 
-            ApiHistoryMessage(
+            ApiMessageContainer(
               senderUserId = model.senderUserId,
               randomId = model.randomId,
               date = model.date.getMillis,
