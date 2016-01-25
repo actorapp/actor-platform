@@ -15,8 +15,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -25,11 +23,9 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
-import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.events.IncomingCall;
 import im.actor.core.modules.internal.CallsModule;
 import im.actor.runtime.Log;
-import im.actor.runtime.actors.ActorContext;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
@@ -37,7 +33,6 @@ import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.fragment.auth.AuthActivity;
-import im.actor.sdk.controllers.fragment.dialogs.DialogHolder;
 import im.actor.sdk.controllers.fragment.settings.MyProfileActivity;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
@@ -253,7 +248,7 @@ public class ActorSDK {
         // Actor Push
         //
 
-        if (actorPushEndpoint != null) {
+        if (actorPushEndpoint != null && delegate.useActorPush()) {
             ActorPushRegister.registerForPush(application, actorPushEndpoint, new ActorPushRegister.Callback() {
                 @Override
                 public void onRegistered(String endpoint) {
@@ -268,8 +263,8 @@ public class ActorSDK {
         //
 
         try {
-            final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
-            if (pushId != 0) {
+            if (pushId != 0 && !delegate.useActorPush()) {
+                final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
                 pushManager.registerPush(application);
             }
         } catch (Exception e) {
