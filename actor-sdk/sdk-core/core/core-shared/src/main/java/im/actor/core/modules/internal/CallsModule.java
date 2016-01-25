@@ -130,7 +130,7 @@ public class CallsModule extends AbsModule {
 
     //on end call update
     public void onEndCall(long callId) {
-        Log.d(TAG, "end call update");
+        Log.d(TAG, "end call update: " + callId);
         ActorRef call = calls.get(callId);
         if (call != null) {
             Log.d(TAG, "call exist - end it");
@@ -143,7 +143,7 @@ public class CallsModule extends AbsModule {
 
     //after end call update processed by CallActor
     public void onCallEnded(long callId) {
-        Log.d(TAG, "on callActor ended call");
+        Log.d(TAG, "on callActor ended call: " + callId);
         calls.remove(callId);
     }
 
