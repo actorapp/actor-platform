@@ -33,6 +33,7 @@ public class CallActor extends ModuleActor {
     public void preStart() {
         super.preStart();
         self().send(new SendCallInProgress());
+        self().send(new CheckCallIsHandled(), 1500);
     }
 
     @Override
@@ -49,6 +50,25 @@ public class CallActor extends ModuleActor {
             onSignal(((Signal) message).getData());
         } else if (message instanceof HandleCall) {
             onHandleCall(((HandleCall) message).getCallback());
+        } else if (message instanceof CheckCallIsHandled) {
+            checkCallHandled();
+        }
+    }
+
+    private void checkCallHandled() {
+        if (callback == null) {
+            //don't want to wait for fragment forever
+            callback = new CallsModule.CallCallback() {
+                @Override
+                public void onCallEnd() {
+
+                }
+
+                @Override
+                public void onSignal(byte[] data) {
+
+                }
+            };
         }
     }
 
@@ -62,6 +82,7 @@ public class CallActor extends ModuleActor {
 
     public void onEndCall() {
         if (callback == null) {
+            //fragment not yet created?
             self().send(new EndCall(), 500);
             return;
         }
@@ -151,6 +172,10 @@ public class CallActor extends ModuleActor {
     }
 
     private static class SendCallInProgress {
+
+    }
+
+    private static class CheckCallIsHandled {
 
     }
 }
