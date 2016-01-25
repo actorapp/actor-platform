@@ -102,7 +102,7 @@ class DialogSection extends Component {
       activity.push(<DefaultActivitySection/>);
     }
 
-    const mainScreen = (
+    const mainScreen = peer ? (
       <section className="dialog">
         <ConnectionState/>
         <div className="messages">
@@ -124,7 +124,8 @@ class DialogSection extends Component {
               </footer>
         }
       </section>
-    );
+    ) : null;
+
     const emptyScreen = (
       <section className="dialog dialog--empty row center-xs middle-xs">
         <ConnectionState/>
