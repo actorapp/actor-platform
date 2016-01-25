@@ -82,6 +82,21 @@
 
 "SettingsVersion" = "Версия {version}";
 
+
+"SettingsAllSessions" = "Все сессии";
+
+"SettingsLastSeen" = "Последняя активность";
+
+"SettingsLastSeenHint" = "Измените, кто может видеть вашу последнюю активность.";
+
+
+"SettingsLastSeenEverybody" = "Все";
+
+"SettingsLastSeenContacts"  = "Контакты";
+
+"SettingsLastSeenNone"    = "Никто";
+
+
 "SettingsMobilePhone"  = "Мобильный телефон";
 
 /*
@@ -366,11 +381,19 @@
  * Auth
  */
 
+"AuthMoreInfo" = "Бесплатный, быстрый и безопасный.";
+
+"AuthStarButton" = "Начать общение";
+
 "AuthPhoneTitle" = "Ваш Телефон";
 
 "AuthPhoneNumberHint" = "Ваш номер телефона";
 
 "AuthPhoneHint" = "Пожалуйста, укажите Вашу страну и номер телефона.";
+
+"AuthTermsOfServiceFull" = "Зарегистрировавшись, вы соглашаетесь с Условиями предоставления услуг."
+
+"AuthTermsOfService" = "Условиями предоставления услуг";
 
 "AuthPhoneTooShort" = "Номер телефона слишком короткий";
 
@@ -418,6 +441,10 @@
 
 "ShareContact" = "Контакт";
 
+/*
+ *  Navigation
+ */
+
 "NavigationEdit" = "Изменить";
 
 "NavigationDone" = "Готово";
@@ -431,6 +458,10 @@
 "NavigationSave" = "Сохранить";
 
 "NavigationFind" = "Найти";
+
+/*
+ *  Alerts
+ */
 
 "AlertCancel" = "Отмена";
 
@@ -454,6 +485,10 @@
 
 "UnsupportedContent" = "Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновление приложения что бы увидеть его.";
 
+/*
+ * Actions
+ */
+
 "ActionCopyLink" = "Скопировать ссылку";
 
 "ActionRevokeLink" = "Сбросить ссылку";
@@ -461,6 +496,10 @@
 "ActionShareLink" = "Поделиться ссылкой";
 
 "AlertLinkCopied" = "Ссылка скопирована в буфер обмена.";
+
+/*
+ * Network
+ */
 
 "StatusConnecting" = "Подключение...";
 
