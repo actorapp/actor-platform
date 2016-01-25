@@ -145,4 +145,8 @@
       height: $avatar-huge-size - 2px;
     }
   }
+
+  &--without-shadow {
+    box-shadow: none !important;
+  }
 }
