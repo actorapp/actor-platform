@@ -32,11 +32,12 @@ public class CallsModule extends AbsModule {
 
 
     public static final int CALL_TIMEOUT = 10;
-    public boolean callsEnabled = true;
+    public static boolean CALLS_ENABLED = false;
+    public static boolean MULTIPLE_CALLS_ENABLED = false;
     HashMap<Long, ActorRef> calls = new HashMap<Long, ActorRef>();
 
     public void run() {
-        if (callsEnabled) {
+        if (CALLS_ENABLED) {
             request(new RequestSubscribeToCalls());
         }
     }
@@ -79,6 +80,9 @@ public class CallsModule extends AbsModule {
         ActorRef call = calls.get(callId);
         if (call != null) {
             call.send(new CallActor.HandleCall(callback));
+        } else {
+            //can't find call - close fragment
+            callback.onCallEnd();
         }
     }
 
@@ -92,6 +96,7 @@ public class CallsModule extends AbsModule {
     }
 
     public void onIncomingCall(final long callId, int uid) {
+
         if (!calls.keySet().contains(callId)) {
             calls.put(callId,
                     ActorSystem.system().actorOf(Props.create(CallActor.class, new ActorCreator<CallActor>() {
@@ -100,8 +105,13 @@ public class CallsModule extends AbsModule {
                             return new CallActor(callId, context());
                         }
                     }), "actor/call"));
-            context().getEvents().post(new IncomingCall(callId, uid));
+            if (!MULTIPLE_CALLS_ENABLED & calls.keySet().size() > 0) {
+                calls.get(callId).send(new CallActor.EndCall());
+            } else {
+                context().getEvents().post(new IncomingCall(callId, uid));
+            }
         }
+
     }
 
     //on end call update

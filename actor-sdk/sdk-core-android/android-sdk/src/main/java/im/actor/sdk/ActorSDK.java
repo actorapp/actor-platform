@@ -27,6 +27,7 @@ import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.events.IncomingCall;
+import im.actor.core.modules.internal.CallsModule;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorContext;
 import im.actor.runtime.android.view.BindedViewHolder;
@@ -144,6 +145,11 @@ public class ActorSDK {
      * ActivityManager
      */
     private ActivityManager activityManager = new ActivityManager();
+
+    /**
+     * Call enabled
+     */
+    private boolean callsEnabled = false;
 
     private ActorSDK() {
         endpoints = new String[]{
@@ -501,6 +507,15 @@ public class ActorSDK {
 
     public void setTwitter(String twitter) {
         this.twitter = twitter;
+    }
+
+    public void setCallsEnabled(boolean callsEnabled) {
+        this.callsEnabled = callsEnabled;
+        CallsModule.CALLS_ENABLED = callsEnabled;
+    }
+
+    public boolean isCallsEnabled() {
+        return callsEnabled;
     }
 
     /**
