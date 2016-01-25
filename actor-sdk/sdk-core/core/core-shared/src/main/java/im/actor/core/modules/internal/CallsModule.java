@@ -26,6 +26,9 @@ import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
 
 public class CallsModule extends AbsModule {
+
+    public static final int MAX_CALLS_COUNT = 1;
+
     public CallsModule(ModuleContext context) {
         super(context);
     }
@@ -105,7 +108,7 @@ public class CallsModule extends AbsModule {
                             return new CallActor(callId, context());
                         }
                     }), "actor/call"));
-            if (!MULTIPLE_CALLS_ENABLED & calls.keySet().size() > 0) {
+            if (!MULTIPLE_CALLS_ENABLED & calls.keySet().size() > MAX_CALLS_COUNT) {
                 calls.get(callId).send(new CallActor.EndCall());
             } else {
                 context().getEvents().post(new IncomingCall(callId, uid));
