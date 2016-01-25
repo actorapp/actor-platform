@@ -32,9 +32,6 @@
 
 "DialogsHint" = "Deslise para mais opções";
 
-/*
- * Discover
- */
 
 /*
  * Settings
@@ -74,6 +71,7 @@
 
 "SettingsWallpapers" = "Wallpapers";
 
+
 "SettingsNotifications" = "Alertas e Sons";
 
 "SettingsAskQuestion" = "Fazer uma pergunta";
@@ -83,6 +81,21 @@
 "SettingsAbout" = "App Homepage";
 
 "SettingsVersion" = "Versão {version}";
+
+
+"SettingsAllSessions" = "Todas as sessões";
+
+"SettingsLastSeen" = "Visto pela ultima vez";
+
+"SettingsLastSeenHint" = "Alterar quem pode ver o seu tempo Última atividade.";
+
+
+"SettingsLastSeenEverybody" = "Todo mundo";
+
+"SettingsLastSeenContacts"  = "Meus contatos";
+
+"SettingsLastSeenNone"    = "Ninguém";
+
 
 "SettingsMobilePhone"  = "Telefone Móvel";
 
@@ -231,6 +244,12 @@
 "CreateGroupMembersPlaceholders" = "Enter Names";
 
 /*
+ * Location
+ */
+
+"LocationTitle" = "Localização";
+
+/*
  * Notifications
  */
 
@@ -348,11 +367,19 @@
  * Auth
  */
 
+"AuthMoreInfo" = "Messaging gratuito, rápido e seguro.";
+
+"AuthStarButton" = "Iniciar Messaging";
+
 "AuthPhoneTitle" = "Seu Telefone";
 
 "AuthPhoneNumberHint" = "Seu número de telefone";
 
 "AuthPhoneHint" = "Por favor informe o código do país e em seguida seu número de telefone.";
+
+"AuthTermsOfServiceFull" = "Ao inscrever-se, você concorda com os Termos de Serviço.";
+
+"AuthTermsOfService" = "Termos de Serviço";
 
 "AuthPhoneTooShort" = "Número de telefone muito curto";
 
@@ -394,9 +421,15 @@
 
 "PhotoLibrary" = "Biblioteca de Midias";
 
-"ShareLocation" = "Location";
+"ShareLocation" = "Localização";
+
+"ShareContact" = "Compartilhar contato";
 
 "SendDocument" = "Documento";
+
+/*
+ *  Navigation
+ */
 
 "NavigationEdit" = "Editar";
 
@@ -411,6 +444,10 @@
 "NavigationSave" = "Salvar";
 
 "NavigationFind" = "Find";
+
+/*
+ *  Alerts
+ */
 
 "AlertCancel" = "Cancelar";
 
@@ -434,6 +471,10 @@
 
 "UnsupportedContent" = "Mensagem não suportada nesta versão. Por favor espere por uma atualização para ver esta mensagem.";
 
+/*
+ * Actions
+ */
+
 "ActionCopyLink" = "Copiar Link";
 
 "ActionRevokeLink" = "Remover Link";
@@ -442,9 +483,13 @@
 
 "AlertLinkCopied" = "Link copiado para a área de transferência.";
 
-"StatusConnecting" = "Connecting...";
+/*
+ * Network
+ */
 
-"StatusSyncing" = "Syncing...";
+"StatusConnecting" = "Conectar...";
+
+"StatusSyncing" = "Sincronizando...";
 
 /*
  * Errors
