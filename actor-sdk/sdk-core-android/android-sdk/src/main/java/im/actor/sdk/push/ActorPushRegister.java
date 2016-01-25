@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -26,7 +25,7 @@ public final class ActorPushRegister {
 
     private static OkHttpClient client = new OkHttpClient();
 
-    public static void registerForPush(final Context context, final Callback callback) {
+    public static void registerForPush(final Context context, String endpoint, final Callback callback) {
 
         final SharedPreferences sharedPreferences = context.getSharedPreferences("actor_push_register", Context.MODE_PRIVATE);
         String registrationEndpoint = sharedPreferences.getString("registration_endpoint", null);
@@ -44,7 +43,7 @@ public final class ActorPushRegister {
         }
 
         final Request request = new Request.Builder()
-                .url("https://push.actor.im/apps/31337/subscriptions")
+                .url(endpoint)
                 .method("POST", RequestBody.create(MediaType.parse("application/json"), "{}"))
                 .build();
 
@@ -74,15 +73,6 @@ public final class ActorPushRegister {
                 }
             }
         });
-
-//        topic = UUID.randomUUID().toString();
-//        sharedPreferences.edit().putString("topic", topic).commit();
-//
-//        context.startService(new Intent(context, ActorPushService.class)
-//                .putExtra("mqtt_url", "tcp://lab2.81port.com:1883")
-//                .putExtra("mqtt_topic", topic));
-//
-//        return topic;
     }
 
     private static void startService(JSONObject config, Context context) {
