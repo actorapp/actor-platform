@@ -9,19 +9,12 @@ import im.actor.core.modules.encryption.entity.UserPublicKey;
 import im.actor.core.modules.encryption.session.EncryptedSession;
 import im.actor.core.modules.encryption.session.EncryptedSessionChain;
 import im.actor.core.util.ModuleActor;
-import im.actor.core.util.RandomUtils;
 import im.actor.runtime.*;
-import im.actor.runtime.actors.ActorCreator;
-import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Future;
-import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.ask.AskCallback;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
-import im.actor.runtime.crypto.ratchet.RatchetMasterSecret;
-import im.actor.runtime.crypto.ratchet.RatchetPrivateKey;
-import im.actor.runtime.crypto.ratchet.RatchetPublicKey;
 
 public class EncryptedSessionActor extends ModuleActor {
 
@@ -138,6 +131,7 @@ public class EncryptedSessionActor extends ModuleActor {
     }
 
     private void loadTheirKey0() {
+        Log.w(TAG, "loadTheirKey0");
         ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchUserEphemeralKey(uid, theirKeyGroup, theirKey0), new AskCallback() {
             @Override
             public void onResult(Object obj) {
@@ -166,105 +160,35 @@ public class EncryptedSessionActor extends ModuleActor {
             return;
         }
 
-//        if (theirEphemeralKey == null) {
-//            ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchUserEphemeralKeyRandom(uid, theirKeyGroup), new AskCallback() {
-//                @Override
-//                public void onResult(Object obj) {
-//                    if (theirEphemeralKey != null) {
-//                        KeyManagerActor.FetchUserEphemeralKeyResponse response = (KeyManagerActor.FetchUserEphemeralKeyResponse) obj;
-//                        theirEphemeralKey = response.getEphemeralKey().getPublicKey();
-//                    }
-//                    onEncrypt(data, future);
-//                }
-//
-//                @Override
-//                public void onError(Exception e) {
-//                    future.onError(e);
-//                }
-//            });
-//            return;
-//        }
-//
-//        if (chains.size() == 0) {
-//            spawnChain(Curve25519.keyGenPrivate(Crypto.randomBytes(32)));
-//        }
-//
-//        chains.get(0).getChain().send(new EncryptedSessionChainActor.EncryptMessage(data,
-//                theirEphemeralKey, 0));
+        if (theirEphemeralKey == null) {
+            ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchUserEphemeralKeyRandom(uid, theirKeyGroup), new AskCallback() {
+                @Override
+                public void onResult(Object obj) {
+                    KeyManagerActor.FetchUserEphemeralKeyResponse response = (KeyManagerActor.FetchUserEphemeralKeyResponse) obj;
+                    if (theirEphemeralKey == null) {
+                        theirEphemeralKey = response.getEphemeralKey().getPublicKey();
+                    }
+                    onEncrypt(data, future);
+                }
 
-//        if (!assumeEnabled(new Runnable() {
-//            @Override
-//            public void run() {
-//                onEncrypt(data, future);
-//            }
-//        })) {
-//            return;
-//        }
-//
-//        onEncrypt(data,
-//                ownEphermalKey0,
-//                currentOwnKey,
-//                theirEphermalKey0,
-//                currentTheirKey,
-//                future);
-    }
+                @Override
+                public void onError(Exception e) {
+                    future.onError(e);
+                }
+            });
+            return;
+        }
 
-    private void onEncrypt(byte[] data,
-                           OwnPrivateKey ownEphermalKey0,
-                           OwnPrivateKey ownEphermalKey,
-                           UserPublicKey theirEphermalKey0,
-                           UserPublicKey theirEphermalKey,
-                           Future future) {
+        if (chains.size() == 0) {
+            spawnChain(Curve25519.keyGenPrivate(Crypto.randomBytes(32)), theirEphemeralKey);
+        }
 
-//        Log.w(TAG, "Encrypting with: OwnKey0: " + ownEphermalKey0.getKeyId());
-//        Log.w(TAG, "Encrypting with: TheirKey0: " + theirEphermalKey0.getKeyId());
-//
-//        byte[] master_secret = RatchetMasterSecret.calculateMasterSecret(
-//                new RatchetPrivateKey(ownIdentityKey.getKey()),
-//                new RatchetPrivateKey(ownEphermalKey0.getKey()),
-//                new RatchetPublicKey(theirIdentityKey.getPublicKey()),
-//                new RatchetPublicKey(theirEphermalKey0.getPublicKey()));
-//        byte[] rootChainKey = RatchetRootChainKey.makeRootChainKey(
-//                new RatchetPrivateKey(ownEphermalKey.getKey()),
-//                new RatchetPublicKey(theirEphermalKey.getPublicKey()),
-//                master_secret);
-//
-//        int messageIndex = outIndex++;
-//
-//        ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rootChainKey, messageIndex);
-//
-//        Log.d(TAG, "MS: " + Hex.toHex(master_secret));
-//        Log.d(TAG, "MS_11: " + Hex.toHex(Curve25519.keyGenPublic(ownIdentityKey.getKey())));
-//        Log.d(TAG, "MS_21: " + Hex.toHex(Curve25519.keyGenPublic(ownEphermalKey0.getKey())));
-//        Log.d(TAG, "MS_31: " + Hex.toHex(encryptionKeyGroup.getIdentityKey().getPublicKey()));
-//        Log.d(TAG, "MS_41: " + Hex.toHex(theirEphermalKey.getPublicKey()));
-//        Log.d(TAG, "RC: " + Hex.toHex(rootChainKey));
-//        Log.d(TAG, "RC_1: " + Hex.toHex(Curve25519.keyGenPublic(ownEphermalKey.getKey())));
-//        Log.d(TAG, "RC_2: " + Hex.toHex(theirEphermalKey.getPublicKey()));
-//
-//        Log.d(TAG, "AES: " + Hex.toHex(ratchetMessageKey.getKeyAES()));
-//        Log.d(TAG, "AES_MAC: " + Hex.toHex(ratchetMessageKey.getMacAES()));
-//        Log.d(TAG, "KUZ: " + Hex.toHex(ratchetMessageKey.getKeyKuz()));
-//        Log.d(TAG, "KUZ_MAC: " + Hex.toHex(ratchetMessageKey.getMacKuz()));
-//
-//        byte[] header = ByteStrings.merge(
-//                ByteStrings.intToBytes(encryptionKeyGroup.getKeyGroupId()),
-//                ByteStrings.longToBytes(ownEphermalKey0.getKeyId()), /*Alice Initial Ephermal*/
-//                ByteStrings.longToBytes(theirEphermalKey0.getKeyId()), /*Bob Initial Ephermal*/
-//                Curve25519.keyGenPublic(ownEphermalKey.getKey()),
-//                theirEphermalKey.getPublicKey(),
-//                ByteStrings.intToBytes(messageIndex)); /* Message Index */
-//
-//        byte[] encrypted;
-//        try {
-//            encrypted = ActorBox.closeBox(header, data, Crypto.randomBytes(32), ratchetMessageKey);
-//        } catch (IntegrityException e) {
-//            e.printStackTrace();
-//            future.onError(e);
-//            return;
-//        }
-//
-//        future.onResult(new EncryptedPackageRes(ByteStrings.merge(header, encrypted)));
+        try {
+            future.onResult(new EncryptedPackageRes(chains.get(0).encrypt(data)));
+        } catch (IntegrityException e) {
+            e.printStackTrace();
+            future.onError(e);
+        }
     }
 
     private void onDecrypt(final byte[] data, final Future future) {
@@ -307,28 +231,13 @@ public class EncryptedSessionActor extends ModuleActor {
         }
 
         try {
-            future.onResult(new DecryptedPackage(pickedChain.decrypt(data)));
+            byte[] decrypted = pickedChain.decrypt(data);
+            theirEphemeralKey = senderEphemeralKey;
+            future.onResult(new DecryptedPackage(decrypted));
         } catch (IntegrityException e) {
             e.printStackTrace();
             future.onError(e);
         }
-
-//        ask(pickedChain.getChain(), new EncryptedSessionChainActor.DecryptMessage(
-//                ByteStrings.substring(data, 0, 88),
-//                ByteStrings.substring(data, 88, data.length - 88),
-//                senderEphemeralKey, messageIndex), new AskCallback() {
-//            @Override
-//            public void onResult(Object obj) {
-//                // Updating ephemeral key
-//                theirEphemeralKey = senderEphemeralKey;
-//                future.onResult();
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                future.onError(e);
-//            }
-//        });
     }
 
     private EncryptedSessionChain spawnChain(final byte[] privateKey, final byte[] publicKey) {
