@@ -12,7 +12,8 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.entity.EncryptedBox;
 import im.actor.core.modules.encryption.entity.EncryptedBoxKey;
 import im.actor.core.util.ModuleActor;
-import im.actor.runtime.Log;
+import im.actor.runtime.*;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Future;
 import im.actor.runtime.actors.ask.AskCallback;
 
@@ -55,6 +56,7 @@ public class EncryptedMsgActor extends ModuleActor {
 
     public void onDecrypt(int uid, ApiEncryptedMessage message) {
         Log.d(TAG, "onDecrypt:" + uid);
+        final long start = im.actor.runtime.Runtime.getActorTime();
         ArrayList<EncryptedBoxKey> encryptedBoxKeys = new ArrayList<EncryptedBoxKey>();
         for (ApiEncyptedBoxKey key : message.getBox().getKeys()) {
             if (key.getUsersId() == myUid()) {
@@ -66,7 +68,7 @@ public class EncryptedMsgActor extends ModuleActor {
         ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.DecryptPackage(encryptedBox), new AskCallback() {
             @Override
             public void onResult(Object obj) {
-                Log.d(TAG, "onDecrypt:onResult");
+                Log.d(TAG, "onDecrypt:onResult in " + (Runtime.getActorTime() - start) + " ms");
             }
 
             @Override
