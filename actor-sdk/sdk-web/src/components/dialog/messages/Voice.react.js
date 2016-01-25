@@ -43,7 +43,6 @@ class Voice extends Component {
   }
 
   componentWillUnmount() {
-    this.audio.stop();
     this.audio.removeEventListener('loadeddata', this.handleLoading);
     this.audio.removeEventListener('timeupdate', this.handleTimeUpdate);
     this.audio.removeEventListener('ended', this.handlePlayEnding);
