@@ -449,6 +449,10 @@
 
 "ShareContact" = "Share Contact";
 
+/*
+ *  Navigation
+ */
+
 "NavigationEdit" = "Edit";
 
 "NavigationDone" = "Done";
@@ -462,6 +466,10 @@
 "NavigationSave" = "Save";
 
 "NavigationFind" = "Find";
+
+/*
+ *  Alerts
+ */
 
 "AlertCancel" = "Cancel";
 
@@ -485,6 +493,10 @@
 
 "UnsupportedContent" = "Message is unsupported in this version. Please, wait for application update to see message.";
 
+/*
+ * Actions
+ */
+
 "ActionCopyLink" = "Copy Link";
 
 "ActionRevokeLink" = "Revoke Link";
@@ -492,6 +504,10 @@
 "ActionShareLink" = "Share Link";
 
 "AlertLinkCopied" = "Link copied to clipboard.";
+
+/*
+ *  Network
+ */
 
 "StatusConnecting" = "Connecting...";
 
