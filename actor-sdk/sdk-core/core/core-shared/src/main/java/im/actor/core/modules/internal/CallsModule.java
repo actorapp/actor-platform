@@ -20,6 +20,7 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
@@ -28,6 +29,7 @@ import im.actor.runtime.actors.Props;
 public class CallsModule extends AbsModule {
 
     public static final int MAX_CALLS_COUNT = 1;
+    private static final String TAG = "CALLS";
 
     public CallsModule(ModuleContext context) {
         super(context);
@@ -55,6 +57,7 @@ public class CallsModule extends AbsModule {
                     public void onResult(final ResponseDoCall response) {
                         callback.onResult(response);
 
+                        Log.d(TAG, "make call " + response.getCallId());
                         calls.put(response.getCallId(),
                                 ActorSystem.system().actorOf(Props.create(CallActor.class, new ActorCreator<CallActor>() {
                                     @Override
@@ -91,16 +94,22 @@ public class CallsModule extends AbsModule {
 
     //do end call
     public void endCall(long callId) {
+        Log.d(TAG, "do end call" + callId);
+
         request(new RequestEndCall(callId));
         ActorRef call = calls.get(callId);
         if (call != null) {
+            Log.d(TAG, "call exist - end it");
+
             call.send(new CallActor.EndCall());
         } else {
+            Log.d(TAG, "call not exist - remove it");
             onCallEnded(callId);
         }
     }
 
     public void onIncomingCall(final long callId, int uid) {
+        Log.d(TAG, "incoming call " + callId);
 
         if (!calls.keySet().contains(callId)) {
             calls.put(callId,
@@ -121,14 +130,20 @@ public class CallsModule extends AbsModule {
 
     //on end call update
     public void onEndCall(long callId) {
+        Log.d(TAG, "end call update");
         ActorRef call = calls.get(callId);
         if (call != null) {
+            Log.d(TAG, "call exist - end it");
             call.send(new CallActor.EndCall());
+        } else {
+            Log.d(TAG, "call not exist - remove it");
+            calls.remove(callId);
         }
     }
 
     //after end call update processed by CallActor
     public void onCallEnded(long callId) {
+        Log.d(TAG, "on callActor ended call");
         calls.remove(callId);
     }
 
