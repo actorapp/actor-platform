@@ -7,7 +7,7 @@ import classnames from 'classnames';
 
 import { lightbox } from '../../../utils/ImageUtils';
 
-let cache = {};
+let cache = [];
 
 /**
  * Class that represents a component for display photo message content
