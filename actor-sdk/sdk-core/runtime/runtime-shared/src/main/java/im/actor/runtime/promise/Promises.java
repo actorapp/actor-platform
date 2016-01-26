@@ -7,7 +7,7 @@ import java.util.Collection;
 
 import im.actor.runtime.function.ArrayFunction;
 import im.actor.runtime.function.Map;
-import im.actor.runtime.function.Supplier;
+import im.actor.runtime.function.Consumer;
 
 public class Promises {
 
@@ -77,7 +77,7 @@ public class Promises {
                 final Promise self = this;
                 for (int i = 0; i < res.length; i++) {
                     final int finalI = i;
-                    promises[i].then(new Supplier<T>() {
+                    promises[i].then(new Consumer<T>() {
                         @Override
                         public void apply(T t) {
                             if (self.isFinished()) {
@@ -94,7 +94,7 @@ public class Promises {
 
                             executor.result(res);
                         }
-                    }).failure(new Supplier<Exception>() {
+                    }).failure(new Consumer<Exception>() {
                         @Override
                         public void apply(Exception e) {
                             if (self.isFinished()) {

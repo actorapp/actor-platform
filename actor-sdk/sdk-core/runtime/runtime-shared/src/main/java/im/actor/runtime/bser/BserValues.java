@@ -126,7 +126,7 @@ public class BserValues {
     }
 
     @NotNull
-    public byte[] getBytes(int id, @NotNull byte[] defValue) throws IOException {
+    public byte[] getBytes(int id, @Nullable byte[] defValue) throws IOException {
         // TODO: Check defValue == null?
         if (fields.containsKey(id)) {
             touched.put(id, true);

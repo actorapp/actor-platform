@@ -28,7 +28,7 @@ space := ${null} ${null}
 J2OBJC_DISTRIBUTION = $(PODS_ROOT)/J2ObjC-Framework/Distributive
 J2OBJC = $(J2OBJC_DISTRIBUTION)/j2objc
 J2OBJCC = $(J2OBJC_DISTRIBUTION)/j2objcc
-J2OBJC_ARGS = -use-arc --generate-deprecated --doc-comments -g --static-accessor-methods -source 8 -Xforce-incomplete-java8
+J2OBJC_ARGS = --swift-friendly -use-arc --generate-deprecated --doc-comments -g -source 8 -Xforce-incomplete-java8 --nullability --strip-reflection 
 J2OBJCC_ARGS = -ObjC -fobjc-arc -fembed-bitcode-marker -Wobjc-designated-initializers -g $(ARCHFLAGS) $(SDKFLAGS) -I$(J2OBJC_DISTRIBUTION)/include
 
 LIBRARY_NAME = libactor.so
@@ -40,9 +40,11 @@ SOURCE_ROOTS = \
 	$(SDK_ROOT)/sdk-core/core/core-shared/src/main/java \
 	$(SDK_ROOT)/sdk-core/core/core-cocoa/src/main/java
 
-EXCLUDED_CLASSES = \
-	com.google.j2objc.annotations.ObjectiveCName \
-    com.google.j2objc.annotations.Propery
+EXCLUDED_CLASSES =
+
+#EXCLUDED_CLASSES = \
+#	com.google.j2objc.annotations.ObjectiveCName \
+#    com.google.j2objc.annotations.Propery
 
 PREFIXES = \
     --prefixes $(SDK_ROOT)/sdk-core/runtime/runtime-cocoa/src/main/prefixes.properties \
