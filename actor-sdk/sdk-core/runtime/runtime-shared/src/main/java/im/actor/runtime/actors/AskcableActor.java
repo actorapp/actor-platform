@@ -1,22 +1,19 @@
 package im.actor.runtime.actors;
 
-import im.actor.runtime.actors.ask.AskRequest;
-import im.actor.runtime.actors.future.Future;
-import im.actor.runtime.actors.messages.Void;
-import im.actor.runtime.actors.promise.Promise;
-import im.actor.runtime.actors.promise.PromiseExecutor;
+import im.actor.runtime.actors.ask.AskIntRequest;
+import im.actor.runtime.actors.promise.PromiseResolver;
 
 public class AskcableActor extends Actor {
 
-    public void onAsk(Object message, PromiseExecutor future) {
+    public void onAsk(Object message, PromiseResolver future) {
         future.error(new RuntimeException("Not implemented"));
         drop(message);
     }
 
     @Override
     public void onReceive(Object message) {
-        if (message instanceof AskRequest) {
-            AskRequest askRequest = (AskRequest) message;
+        if (message instanceof AskIntRequest) {
+            AskIntRequest askRequest = (AskIntRequest) message;
             onAsk(askRequest.getMessage(), askRequest.getFuture());
         } else {
             super.onReceive(message);

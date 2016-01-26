@@ -14,9 +14,8 @@ import im.actor.core.modules.encryption.entity.EncryptedBoxKey;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
-import im.actor.runtime.actors.future.Future;
 import im.actor.runtime.actors.ask.AskCallback;
-import im.actor.runtime.actors.promise.PromiseExecutor;
+import im.actor.runtime.actors.promise.PromiseResolver;
 
 public class EncryptedMsgActor extends ModuleActor {
 
@@ -26,7 +25,7 @@ public class EncryptedMsgActor extends ModuleActor {
         super(context);
     }
 
-    private void doEncrypt(int uid, ApiMessage message, final PromiseExecutor future) {
+    private void doEncrypt(int uid, ApiMessage message, final PromiseResolver future) {
         Log.d(TAG, "doEncrypt");
         try {
             ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.EncryptPackage(message.buildContainer()), new AskCallback() {
@@ -80,7 +79,7 @@ public class EncryptedMsgActor extends ModuleActor {
     }
 
     @Override
-    public void onAsk(Object message, PromiseExecutor future) {
+    public void onAsk(Object message, PromiseResolver future) {
         if (message instanceof EncryptMessage) {
             doEncrypt(((EncryptMessage) message).getUid(), ((EncryptMessage) message).getMessage(),
                     future);
