@@ -14,8 +14,9 @@ import im.actor.core.modules.encryption.entity.EncryptedBoxKey;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
-import im.actor.runtime.actors.Future;
+import im.actor.runtime.actors.future.Future;
 import im.actor.runtime.actors.ask.AskCallback;
+import im.actor.runtime.actors.promise.PromiseExecutor;
 
 public class EncryptedMsgActor extends ModuleActor {
 
@@ -25,7 +26,7 @@ public class EncryptedMsgActor extends ModuleActor {
         super(context);
     }
 
-    private void doEncrypt(int uid, ApiMessage message, final Future future) {
+    private void doEncrypt(int uid, ApiMessage message, final PromiseExecutor future) {
         Log.d(TAG, "doEncrypt");
         try {
             ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.EncryptPackage(message.buildContainer()), new AskCallback() {
@@ -40,13 +41,13 @@ public class EncryptedMsgActor extends ModuleActor {
                     }
                     ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(boxKeys, "aes-kuznechik", encryptedBox.getEncryptedPackage());
                     ApiEncryptedMessage apiEncryptedMessage = new ApiEncryptedMessage(apiEncryptedBox);
-                    future.onResult(new EncryptedMessage(apiEncryptedMessage));
+                    future.result(new EncryptedMessage(apiEncryptedMessage));
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.d(TAG, "doEncrypt:onError");
-                    future.onError(e);
+                    future.error(e);
                 }
             });
         } catch (IOException e) {
@@ -79,13 +80,13 @@ public class EncryptedMsgActor extends ModuleActor {
     }
 
     @Override
-    public boolean onAsk(Object message, Future future) {
+    public void onAsk(Object message, PromiseExecutor future) {
         if (message instanceof EncryptMessage) {
             doEncrypt(((EncryptMessage) message).getUid(), ((EncryptMessage) message).getMessage(),
                     future);
-            return false;
+        } else {
+            super.onAsk(message, future);
         }
-        return super.onAsk(message, future);
     }
 
     @Override

@@ -10,8 +10,9 @@ import im.actor.core.modules.encryption.session.EncryptedSession;
 import im.actor.core.modules.encryption.session.EncryptedSessionChain;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.*;
-import im.actor.runtime.actors.Future;
+import im.actor.runtime.actors.future.Future;
 import im.actor.runtime.actors.ask.AskCallback;
+import im.actor.runtime.actors.promise.PromiseExecutor;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
@@ -38,8 +39,6 @@ public class EncryptedSessionActor extends ModuleActor {
     private UserPublicKey theirIdentityKey;
     private UserPublicKey theirPreKey;
     private EncryptedSession session;
-    // True if it is unable to load key
-    private boolean isUnavailable = false;
 
     //
     // Temp encryption chains
@@ -76,7 +75,6 @@ public class EncryptedSessionActor extends ModuleActor {
             public void onError(Exception e) {
                 Log.w(TAG, "Own identity error");
                 Log.e(TAG, e);
-                isUnavailable = true;
             }
         });
     }
@@ -94,7 +92,6 @@ public class EncryptedSessionActor extends ModuleActor {
             public void onError(Exception e) {
                 Log.w(TAG, "Own pre key error");
                 Log.e(TAG, e);
-                isUnavailable = true;
             }
         });
     }
@@ -113,7 +110,6 @@ public class EncryptedSessionActor extends ModuleActor {
                 }
                 if (keysGroup == null) {
                     Log.w(TAG, "Their key group not found");
-                    isUnavailable = true;
                     return;
                 }
 
@@ -125,7 +121,6 @@ public class EncryptedSessionActor extends ModuleActor {
             public void onError(Exception e) {
                 Log.w(TAG, "Their key groups error");
                 Log.e(TAG, e);
-                isUnavailable = true;
             }
         });
     }
@@ -144,7 +139,6 @@ public class EncryptedSessionActor extends ModuleActor {
             public void onError(Exception e) {
                 Log.w(TAG, "Their pre key error");
                 Log.e(TAG, e);
-                isUnavailable = true;
             }
         });
     }
@@ -154,9 +148,9 @@ public class EncryptedSessionActor extends ModuleActor {
                 theirIdentityKey, theirPreKey, theirKeyGroup);
     }
 
-    private void onEncrypt(final byte[] data, final Future future) {
-        if (isUnavailable) {
-            future.onError(new RuntimeException("Encryption session is unavailable"));
+    private void onEncrypt(final byte[] data, final PromiseExecutor future) {
+        if (session == null) {
+            future.error(new RuntimeException("Encryption session is unavailable"));
             return;
         }
 
@@ -173,7 +167,7 @@ public class EncryptedSessionActor extends ModuleActor {
 
                 @Override
                 public void onError(Exception e) {
-                    future.onError(e);
+                    future.error(e);
                 }
             });
             return;
@@ -184,16 +178,16 @@ public class EncryptedSessionActor extends ModuleActor {
         }
 
         try {
-            future.onResult(new EncryptedPackageRes(chains.get(0).encrypt(data)));
+            future.result(new EncryptedPackageRes(chains.get(0).encrypt(data)));
         } catch (IntegrityException e) {
             e.printStackTrace();
-            future.onError(e);
+            future.error(e);
         }
     }
 
-    private void onDecrypt(final byte[] data, final Future future) {
-        if (isUnavailable) {
-            future.onError(new RuntimeException("Encryption session is unavailable"));
+    private void onDecrypt(final byte[] data, final PromiseExecutor future) {
+        if (session == null) {
+            future.error(new RuntimeException("Encryption session is unavailable"));
             return;
         }
 
@@ -224,7 +218,7 @@ public class EncryptedSessionActor extends ModuleActor {
 
                 @Override
                 public void onError(Exception e) {
-                    future.onError(e);
+                    future.error(e);
                 }
             });
             return;
@@ -233,10 +227,10 @@ public class EncryptedSessionActor extends ModuleActor {
         try {
             byte[] decrypted = pickedChain.decrypt(data);
             theirEphemeralKey = senderEphemeralKey;
-            future.onResult(new DecryptedPackage(decrypted));
+            future.result(new DecryptedPackage(decrypted));
         } catch (IntegrityException e) {
             e.printStackTrace();
-            future.onError(e);
+            future.error(e);
         }
     }
 
@@ -247,17 +241,15 @@ public class EncryptedSessionActor extends ModuleActor {
     }
 
     @Override
-    public boolean onAsk(Object message, Future future) {
+    public void onAsk(Object message, PromiseExecutor future) {
         Log.d(TAG, "onAsk");
         if (message instanceof EncryptPackage) {
             onEncrypt(((EncryptPackage) message).getData(), future);
-            return false;
         } else if (message instanceof DecryptPackage) {
             DecryptPackage decryptPackage = (DecryptPackage) message;
             onDecrypt(decryptPackage.getData(), future);
-            return false;
         } else {
-            return super.onAsk(message, future);
+            super.onAsk(message, future);
         }
     }
 
