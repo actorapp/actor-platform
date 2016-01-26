@@ -118,7 +118,7 @@ public extension UIImage {
         return image;
     }
     
-    func imageWithColor(color1: UIColor) -> UIImage {
+    public func aa_imageWithColor(color1: UIColor) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
         
         let context  = UIGraphicsGetCurrentContext()

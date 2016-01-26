@@ -5,6 +5,7 @@
 import UIKit
 import VBFPopFlatButton
 import AVFoundation
+import YYKit
 
 public class AABubbleVideoCell: AABubbleBaseFileCell {
     
@@ -129,15 +130,6 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
         }
     }
     
-    func applyBlurEffect(image: UIImage)-> UIImage {
-        let imageToBlur = CIImage(image: image)
-        let blurfilter = CIFilter(name: "CIGaussianBlur")
-        blurfilter!.setValue(5, forKey: kCIInputRadiusKey)
-        blurfilter!.setValue(imageToBlur, forKey: "inputImage")
-        let resultImage = blurfilter!.valueForKey("outputImage") as! CIImage
-        return UIImage(CIImage: resultImage)
-    }
-    
     // File state binding
     
     public override func fileUploadPaused(reference: String, selfGeneration: Int) {
@@ -208,7 +200,7 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
             let loadedThumb = UIImage(data: bindedLayout.fastThumb!)?
                 .roundCorners(bindedLayout.screenSize.width,
                     h: bindedLayout.screenSize.height,
-                    roundSize: 14)
+                    roundSize: 14).imageByBlurSuperLight()
             
             runOnUiThread(selfGeneration,closure: { ()->() in
                 self.setPreviewImage(loadedThumb!, fast: true)
