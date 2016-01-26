@@ -268,7 +268,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
     }
     
     public func alertView(alertView: UIAlertView, willDismissWithButtonIndex buttonIndex: Int) {
-        if (Actor.getAuthState() != ACAuthState.SIGN_UP.rawValue) {
+        if (Actor.getAuthState().ordinal() != ACAuthState.SIGN_UP().ordinal()) {
             navigateBack()
         }
     }
