@@ -17,12 +17,12 @@ import im.actor.server.mtproto.transport._
 import im.actor.server.persist
 import im.actor.server.persist.{ AuthIdRepo, MasterKeyRepo }
 import im.actor.util.misc.IdUtils
+import im.actor.util.ThreadLocalSecureRandom
 import scodec.bits.BitVector
 
 import scala.annotation.tailrec
 import scala.collection.JavaConversions._
 import scala.concurrent.Future
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.{ Failure, Success, Try }
 
 object ServerKey {
@@ -129,7 +129,7 @@ final class AuthorizationManager(serverKeys: Seq[ServerKey], sessionClient: Acto
     def handleRequestAuthId(): Unit = {
       val f =
         if (authId == 0L) {
-          authId = IdUtils.nextAuthId(ThreadLocalRandom.current())
+          authId = IdUtils.nextAuthId(ThreadLocalSecureRandom.current())
           db.run(persist.AuthIdRepo.create(authId, None, None))
         } else Future.successful(())
 

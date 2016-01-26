@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -30,7 +30,7 @@ public class AASettingsSessionsController: AAContentTableController {
                 r.selectAction = { () -> Bool in
                     self.confirmDangerSheetUser("PrivacyTerminateAlert", tapYes: { [unowned self] () -> () in
                         // Terminating all sessions and reload list
-                        self.executeSafe(Actor.terminateAllSessionsCommand(), successBlock: { (val) -> Void in
+                        self.executeSafe(Actor.terminateAllSessionsCommand()!, successBlock: { (val) -> Void in
                             self.loadSessions()
                         })
                         }, tapNo: nil)
@@ -42,7 +42,7 @@ public class AASettingsSessionsController: AAContentTableController {
         section { (s) -> () in
             self.sessionsCell = s.arrays() { (r: AAManagedArrayRows<ARApiAuthSession, AACommonCell>) -> () in
                 r.bindData = { (c: AACommonCell, d: ARApiAuthSession) -> () in
-                    if d.getAuthHolder().ordinal() != jint(ARApiAuthHolder.THISDEVICE.rawValue) {
+                    if d.getAuthHolder().ordinal() != ARApiAuthHolder.THISDEVICE().ordinal() {
                         c.style = .Normal
                         c.setContent(d.getDeviceTitle())
                     } else {
@@ -52,10 +52,10 @@ public class AASettingsSessionsController: AAContentTableController {
                 }
                 
                 r.selectAction = { (d) -> Bool in
-                    if d.getAuthHolder().ordinal() != jint(ARApiAuthHolder.THISDEVICE.rawValue) {
+                    if d.getAuthHolder().ordinal() != ARApiAuthHolder.THISDEVICE().ordinal() {
                         self.confirmDangerSheetUser("PrivacyTerminateAlertSingle", tapYes: { [unowned self] () -> () in
                             // Terminating session and reload list
-                            self.executeSafe(Actor.terminateSessionCommandWithId(d.getId()), successBlock: { [unowned self] (val) -> Void in
+                            self.executeSafe(Actor.terminateSessionCommandWithId(d.getId())!, successBlock: { [unowned self] (val) -> Void in
                                 self.loadSessions()
                                 })
                             }, tapNo: nil)
@@ -71,7 +71,7 @@ public class AASettingsSessionsController: AAContentTableController {
     }
     
     private func loadSessions() {
-        execute(Actor.loadSessionsCommand(), successBlock: { [unowned self] (val) -> Void in
+        execute(Actor.loadSessionsCommand()!, successBlock: { [unowned self] (val) -> Void in
             self.sessionsCell!.data = (val as! JavaUtilList).toArray().toSwiftArray()
             self.managedTable.tableView.reloadData()
             }, failureBlock: nil)

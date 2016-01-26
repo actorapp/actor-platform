@@ -1,10 +1,11 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
 import UIKit
 import TTTAttributedLabel
+import YYKit
 
 public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
@@ -24,13 +25,13 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     let messageText = TTTAttributedLabel(frame: CGRectZero)
     let statusView = UIImageView();
-    let senderNameLabel = UILabel();
+    let senderNameLabel = AttributedLabel();
     var needRelayout = true
     var isClanchTop:Bool = false
     var isClanchBottom:Bool = false
     
-    private let dateText = UILabel()
-    private var messageState: UInt = ACMessageState.UNKNOWN.rawValue
+    private let dateText = AttributedLabel()
+    private var messageState = ACMessageState.UNKNOWN().ordinal()
     private var cellLayout: TextCellLayout!
     
     public init(frame: CGRect) {
@@ -49,11 +50,12 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             kCTUnderlineStyleAttributeName: NSNumber(bool: false)]
         messageText.verticalAlignment = TTTAttributedLabelVerticalAlignment.Center
         
+        
         dateText.font = AABubbleTextCell.dateFont
         dateText.lineBreakMode = .ByClipping
         dateText.numberOfLines = 1
         dateText.contentMode = UIViewContentMode.TopLeft
-        dateText.textAlignment = NSTextAlignment.Right
+        dateText.contentAlignment = .Right
         
         statusView.contentMode = UIViewContentMode.Center
         
@@ -96,20 +98,20 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             // Setting sender name if needed
             if isGroup && !isOut {
 
-                if let user = Actor.getUserWithUid(message.senderId) {
+                let user = Actor.getUserWithUid(message.senderId)
                     
-                    let colors = ActorSDK.sharedActor().style.nameColors
+                let colors = ActorSDK.sharedActor().style.nameColors
                     
-                    if user.isBot() && user.getNameModel().get() == "Bot" {
-                        if let group = Actor.getGroupWithGid(self.peer.peerId) {
-                            senderNameLabel.text = group.getNameModel().get()
-                            senderNameLabel.textColor = colors[Int(abs(group.getId())) % colors.count]
-                        }
-                    } else {
-                        senderNameLabel.text = user.getNameModel().get()
-                        senderNameLabel.textColor = colors[Int(abs(user.getId())) % colors.count]
-                    }
+                if user.isBot() && user.getNameModel().get() == "Bot" {
+                    let group = Actor.getGroupWithGid(self.peer.peerId)
+                    senderNameLabel.text = group.getNameModel().get()
+                    senderNameLabel.textColor = colors[Int(abs(group.getId())) % colors.count]
+                
+                } else {
+                    senderNameLabel.text = user.getNameModel().get()
+                    senderNameLabel.textColor = colors[Int(abs(user.getId())) % colors.count]
                 }
+                
                 contentView.addSubview(senderNameLabel)
             } else {
                 senderNameLabel.removeFromSuperview()
@@ -150,27 +152,27 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         
         // Always update date and state
         dateText.text = cellLayout.date
-        messageState = UInt(message.messageState.ordinal());
+        messageState = message.messageState.ordinal();
         
         if (isOut) {
             switch(self.messageState) {
-            case ACMessageState.PENDING.rawValue:
+            case ACMessageState.PENDING().ordinal():
                 self.statusView.image = appStyle.chatIconClock;
                 self.statusView.tintColor = appStyle.chatStatusSending
                 break;
-            case ACMessageState.SENT.rawValue:
+            case ACMessageState.SENT().ordinal():
                 self.statusView.image = appStyle.chatIconCheck1;
                 self.statusView.tintColor = appStyle.chatStatusSent
                 break;
-            case ACMessageState.RECEIVED.rawValue:
+            case ACMessageState.RECEIVED().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2;
                 self.statusView.tintColor = appStyle.chatStatusReceived
                 break;
-            case ACMessageState.READ.rawValue:
+            case ACMessageState.READ().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2;
                 self.statusView.tintColor = appStyle.chatStatusRead
                 break;
-            case ACMessageState.ERROR.rawValue:
+            case ACMessageState.ERROR().ordinal():
                 self.statusView.image = appStyle.chatIconError;
                 self.statusView.tintColor = appStyle.chatStatusError
                 break

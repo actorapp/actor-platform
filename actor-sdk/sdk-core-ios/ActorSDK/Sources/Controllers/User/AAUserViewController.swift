@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -40,7 +40,7 @@ class AAUserViewController: AAContentTableController {
                     
                     if !self.isBot {
                         r.subtitle = presenceText
-                        if presence!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
+                        if presence!.state.ordinal() == ACUserPresence_State.ONLINE().ordinal() {
                             r.subtitleColor = self.appStyle.userOnlineColor
                         } else {
                             r.subtitleColor = self.appStyle.userOfflineColor
@@ -176,9 +176,9 @@ class AAUserViewController: AAContentTableController {
                 }
                 r.selectAction = { () -> Bool in
                     if (self.user.isContactModel().get().booleanValue()) {
-                        self.execute(Actor.removeContactCommandWithUid(jint(self.uid)))
+                        self.execute(Actor.removeContactCommandWithUid(jint(self.uid))!)
                     } else {
-                        self.execute(Actor.addContactCommandWithUid(jint(self.uid)))
+                        self.execute(Actor.addContactCommandWithUid(jint(self.uid))!)
                     }
                     return true
                 }
@@ -201,7 +201,7 @@ class AAUserViewController: AAContentTableController {
                                         return
                                     }
                                     
-                                    c.executeSafeOnlySuccess(Actor.editNameCommandWithUid(jint(self.uid), withName: d), successBlock: { (val) -> Void in
+                                    c.executeSafeOnlySuccess(Actor.editNameCommandWithUid(jint(self.uid), withName: d)!, successBlock: { (val) -> Void in
                                         c.dismiss()
                                     })
                                 }

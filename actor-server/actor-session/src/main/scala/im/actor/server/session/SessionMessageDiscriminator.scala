@@ -39,7 +39,7 @@ private[session] final class SessionMessageDiscriminator extends GraphStage[Sess
         val msg = grab(in)
 
         msg match {
-          case SessionStreamMessage.HandleMessageBox(MessageBox(messageId, RpcRequestBox(bodyBytes)), clientData) ⇒
+          case SessionStreamMessage.HandleMessageBox(MessageBox(messageId, ProtoRpcRequest(bodyBytes)), clientData) ⇒
             emit(outRpc, HandleRpcRequest(messageId, bodyBytes, clientData), pullIn)
           case SessionStreamMessage.HandleMessageBox(MessageBox(messageId, m: MessageAck), clientData) ⇒
             emit(outIncomingAck, m, pullIn)

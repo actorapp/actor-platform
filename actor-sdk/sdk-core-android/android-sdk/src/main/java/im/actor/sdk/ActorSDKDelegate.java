@@ -117,4 +117,6 @@ public interface ActorSDKDelegate {
     ActorSettingsCategory[] getAfterSettingsCategories();
 
     MessageHolder getCustomMessageViewHolder(int id, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
+
+    boolean useActorPush();
 }

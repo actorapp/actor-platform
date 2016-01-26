@@ -4270,6 +4270,74 @@
         {
           "type": "struct",
           "content": {
+            "name": "BinaryMessage",
+            "doc": [
+              "Binary Message. Useful for implementing your own content types",
+              {
+                "type": "reference",
+                "argument": "contentTag",
+                "category": "full",
+                "description": "  Content Tag"
+              },
+              {
+                "type": "reference",
+                "argument": "msg",
+                "category": "compact",
+                "description": "  Message contents"
+              }
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 7
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "contentTag"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "msg"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedMessage",
+            "doc": [
+              "Encrypted Message",
+              {
+                "type": "reference",
+                "argument": "box",
+                "category": "full",
+                "description": "  Encrypted box"
+              }
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 8
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "EncryptedBox"
+                },
+                "id": 1,
+                "name": "box"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "DialogShort",
             "doc": [
               "Short Dialog from grouped conversation list",
@@ -5401,7 +5469,7 @@
         {
           "type": "struct",
           "content": {
-            "name": "HistoryMessage",
+            "name": "MessageContainer",
             "doc": [
               "Message from history",
               {
@@ -5522,7 +5590,7 @@
                     "type": "list",
                     "childType": {
                       "type": "struct",
-                      "childType": "HistoryMessage"
+                      "childType": "MessageContainer"
                     }
                   },
                   "id": 1,
@@ -12258,9 +12326,9 @@
               },
               {
                 "type": "reference",
-                "argument": "publicKeys",
+                "argument": "encryptionKeys",
                 "category": "full",
-                "description": "Optional public keys for receiving push notifications"
+                "description": "Push Encryption keys"
               }
             ],
             "attributes": [
@@ -12278,7 +12346,7 @@
                   }
                 },
                 "id": 2,
-                "name": "publicKeys"
+                "name": "encryptionKeys"
               }
             ]
           }
@@ -12310,7 +12378,10 @@
         "* rsa-2048",
         "* rsa-4096",
         "* aes-128",
-        "* kuznechik-128"
+        "* kuznechik-128",
+        "",
+        "Signature alg types:",
+        "* Ed25519 - used curve25519 conveted to Ed255519 for signing and validataion"
       ],
       "items": [
         {
@@ -12320,7 +12391,7 @@
         {
           "type": "struct",
           "content": {
-            "name": "EncryptionPublicKeyGroup",
+            "name": "EncryptionKeyGroup",
             "doc": [
               "Encryption Key Group",
               {
@@ -12331,9 +12402,27 @@
               },
               {
                 "type": "reference",
-                "argument": "publicKeys",
-                "category": "hidden",
-                "description": "  Public keys of Key Group"
+                "argument": "identityKey",
+                "category": "full",
+                "description": "  Key that is used as identity and for validation of Key Group changes"
+              },
+              {
+                "type": "reference",
+                "argument": "supportedEncryption",
+                "category": "full",
+                "description": "  Supported encryption methods by this key group"
+              },
+              {
+                "type": "reference",
+                "argument": "keys",
+                "category": "compact",
+                "description": "  keys of Key Group"
+              },
+              {
+                "type": "reference",
+                "argument": "signatures",
+                "category": "compact",
+                "description": "  Signatures of keys"
               }
             ],
             "expandable": "true",
@@ -12349,13 +12438,40 @@
               {
                 "type": {
                   "type": "list",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "supportedEncryption"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "EncryptionKey"
+                },
+                "id": 3,
+                "name": "identityKey"
+              },
+              {
+                "type": {
+                  "type": "list",
                   "childType": {
                     "type": "struct",
-                    "childType": "EncryptionPublicKey"
+                    "childType": "EncryptionKey"
                   }
                 },
                 "id": 4,
-                "name": "publicKeys"
+                "name": "keys"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKeySignature"
+                  }
+                },
+                "id": 5,
+                "name": "signatures"
               }
             ]
           }
@@ -12363,9 +12479,53 @@
         {
           "type": "struct",
           "content": {
-            "name": "EncryptionPublicKey",
+            "name": "EncryptionKeySignature",
             "doc": [
-              "Encryption Public Key",
+              "Signed Key. Usually used for public keys.",
+              {
+                "type": "reference",
+                "argument": "keyId",
+                "category": "full",
+                "description": "  Key Id used for signature"
+              },
+              {
+                "type": "reference",
+                "argument": "signatureAlg",
+                "category": "full",
+                "description": "  Signature algorithm"
+              },
+              {
+                "type": "reference",
+                "argument": "signature",
+                "category": "full",
+                "description": "  Signature value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "keyId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "signatureAlg"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "signature"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptionKey",
+            "doc": [
+              "Encryption Key",
               {
                 "type": "reference",
                 "argument": "keyId",
@@ -12383,6 +12543,12 @@
                 "argument": "keyMaterial",
                 "category": "compact",
                 "description": "  Public key material. Can be null, but always not null for LoadPublicKey"
+              },
+              {
+                "type": "reference",
+                "argument": "keyHash",
+                "category": "hidden",
+                "description": "  If keyMaterial is null, pass keyHash - SHA256 of key"
               }
             ],
             "expandable": "true",
@@ -12428,6 +12594,12 @@
                 "argument": "publicKey",
                 "category": "full",
                 "description": "  Public keys"
+              },
+              {
+                "type": "reference",
+                "argument": "signatures",
+                "category": "full",
+                "description": "  Signatures of public keys"
               }
             ],
             "attributes": [
@@ -12436,11 +12608,22 @@
                   "type": "list",
                   "childType": {
                     "type": "struct",
-                    "childType": "EncryptionPublicKey"
+                    "childType": "EncryptionKey"
                   }
                 },
                 "id": 1,
                 "name": "publicKey"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKeySignature"
+                  }
+                },
+                "id": 2,
+                "name": "signatures"
               }
             ]
           }
@@ -12459,7 +12642,7 @@
                   "type": "list",
                   "childType": {
                     "type": "struct",
-                    "childType": "EncryptionPublicKeyGroup"
+                    "childType": "EncryptionKeyGroup"
                   }
                 },
                 "id": 1,
@@ -12538,7 +12721,7 @@
                 "name": "userPeer"
               },
               {
-                "type": "int64",
+                "type": "int32",
                 "id": 2,
                 "name": "keyGroupId"
               },
@@ -12563,7 +12746,7 @@
               "name": "PublicKeys"
             },
             "doc": [
-              "Loading ephermal public keys",
+              "Loading SOME of ephermal public keys",
               {
                 "type": "reference",
                 "argument": "userPeer",
@@ -12587,7 +12770,7 @@
                 "name": "userPeer"
               },
               {
-                "type": "int64",
+                "type": "int32",
                 "id": 2,
                 "name": "keyGroupId"
               }
@@ -12626,10 +12809,138 @@
               {
                 "type": {
                   "type": "struct",
-                  "childType": "EncryptionPublicKeyGroup"
+                  "childType": "EncryptionKeyGroup"
                 },
                 "id": 2,
                 "name": "keyGroup"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "KeysAdded",
+            "header": 112,
+            "doc": [
+              "Update about keys added to Key Group",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "  Key Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "keys",
+                "category": "compact",
+                "description": "  Added keys"
+              },
+              {
+                "type": "reference",
+                "argument": "signatures",
+                "category": "compact",
+                "description": "  Signatures of a public key"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 2,
+                "name": "keyGroupId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKey"
+                  }
+                },
+                "id": 3,
+                "name": "keys"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKeySignature"
+                  }
+                },
+                "id": 4,
+                "name": "signatures"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "KeysRemoved",
+            "header": 113,
+            "doc": [
+              "Update about keys removed from Key Group",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "  Key Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyIds",
+                "category": "full",
+                "description": "  Removed keys"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 2,
+                "name": "keyGroupId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int64"
+                },
+                "id": 3,
+                "name": "keyIds"
               }
             ]
           }
@@ -12666,7 +12977,7 @@
               {
                 "type": {
                   "type": "struct",
-                  "childType": "EncryptionPublicKeyGroup"
+                  "childType": "EncryptionKeyGroup"
                 },
                 "id": 2,
                 "name": "keyGroup"
@@ -12690,7 +13001,7 @@
               {
                 "type": "reference",
                 "argument": "keyGroupId",
-                "category": "hidden",
+                "category": "full",
                 "description": "  Removed Key Group Id"
               }
             ],
@@ -12719,239 +13030,67 @@
           "content": "Device Side"
         },
         {
-          "type": "struct",
-          "content": {
-            "name": "EncryptionDevice",
-            "doc": [
-              "Encryption Device",
-              {
-                "type": "reference",
-                "argument": "deviceId",
-                "category": "full",
-                "description": "  Device's unique ID"
-              },
-              {
-                "type": "reference",
-                "argument": "keys",
-                "category": "full",
-                "description": "  Device's encryption keys"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int64",
-                "id": 1,
-                "name": "deviceId"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "EncryptionKey"
-                  }
-                },
-                "id": 2,
-                "name": "keys"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "EncryptionKey",
-            "doc": [
-              "Encryption Public Key",
-              {
-                "type": "reference",
-                "argument": "keyId",
-                "category": "full",
-                "description": "  Unique key Id"
-              },
-              {
-                "type": "reference",
-                "argument": "keyType",
-                "category": "full",
-                "description": "  Type of the key: private, public or secret"
-              },
-              {
-                "type": "reference",
-                "argument": "keyAlg",
-                "category": "full",
-                "description": "  Key algorithm"
-              },
-              {
-                "type": "reference",
-                "argument": "keyMaterial",
-                "category": "compact",
-                "description": "  Optional raw key data"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "string",
-                "id": 1,
-                "name": "keyId"
-              },
-              {
-                "type": "string",
-                "id": 2,
-                "name": "keyType"
-              },
-              {
-                "type": "string",
-                "id": 3,
-                "name": "keyAlg"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bytes"
-                },
-                "id": 4,
-                "name": "keyMaterial"
-              }
-            ]
-          }
-        },
-        {
           "type": "rpc",
           "content": {
-            "name": "UploadDeviceKeys",
-            "header": 2576,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
-            "doc": [
-              "Uploading device keys",
-              {
-                "type": "reference",
-                "argument": "keys",
-                "category": "full",
-                "description": "Public keys for upload"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "EncryptionKey"
-                  }
-                },
-                "id": 1,
-                "name": "keys"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "GetUserDevices",
-            "header": 2577,
+            "name": "CreateNewKeyGroup",
+            "header": 2609,
             "response": {
               "type": "anonymous",
-              "header": 2578,
+              "header": 2610,
               "doc": [
                 {
                   "type": "reference",
-                  "argument": "devices",
+                  "argument": "keyGroupId",
                   "category": "full",
-                  "description": "  Encryption devices"
+                  "description": "  Created Key Group id"
                 }
               ],
               "attributes": [
                 {
                   "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "EncryptionDevice"
-                    }
+                    "type": "alias",
+                    "childType": "keyGroupId"
                   },
                   "id": 1,
-                  "name": "devices"
+                  "name": "keyGroupId"
                 }
               ]
             },
             "doc": [
-              "Get all user's device and it's key ids (without key material) (Can return 100-s of keys)",
+              "Creation of a new Key Group",
               {
                 "type": "reference",
-                "argument": "userPeer",
+                "argument": "identityKey",
                 "category": "full",
-                "description": "User's peer"
+                "description": "Identity Key of a new group"
+              },
+              {
+                "type": "reference",
+                "argument": "supportedEncryptions",
+                "category": "full",
+                "description": "Supported encryption methods"
+              },
+              {
+                "type": "reference",
+                "argument": "keys",
+                "category": "full",
+                "description": "keys of current group"
+              },
+              {
+                "type": "reference",
+                "argument": "signatures",
+                "category": "full",
+                "description": "signatures of keys"
               }
             ],
             "attributes": [
               {
                 "type": {
                   "type": "struct",
-                  "childType": "UserOutPeer"
+                  "childType": "EncryptionKey"
                 },
                 "id": 1,
-                "name": "userPeer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "DownloadUserKeys",
-            "header": 2579,
-            "response": {
-              "type": "anonymous",
-              "header": 2580,
-              "doc": [
-                {
-                  "type": "reference",
-                  "argument": "keys",
-                  "category": "full",
-                  "description": "  Loaded keys"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "EncryptionKey"
-                    }
-                  },
-                  "id": 1,
-                  "name": "keys"
-                }
-              ]
-            },
-            "doc": [
-              "Get key material",
-              {
-                "type": "reference",
-                "argument": "userPeer",
-                "category": "full",
-                "description": "User's peer"
-              },
-              {
-                "type": "reference",
-                "argument": "keyIds",
-                "category": "full",
-                "description": "Key Ids to load (max size = 50)"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "UserOutPeer"
-                },
-                "id": 1,
-                "name": "userPeer"
+                "name": "identityKey"
               },
               {
                 "type": {
@@ -12959,7 +13098,292 @@
                   "childType": "string"
                 },
                 "id": 2,
-                "name": "keyIds"
+                "name": "supportedEncryptions"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKey"
+                  }
+                },
+                "id": 3,
+                "name": "keys"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKeySignature"
+                  }
+                },
+                "id": 4,
+                "name": "signatures"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DeleteKeyGroup",
+            "header": 2611,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Deletion of a Key Group",
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "Key Group Id for deletion"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 1,
+                "name": "keyGroupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DisconnectKeyGroup",
+            "header": 2613,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Disconnect Key Group from device",
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "Key Group Id for disconnection"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 1,
+                "name": "keyGroupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ConnectKeyGroup",
+            "header": 2614,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Connectiong Key Group to device",
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "Key Group Id for connection"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 1,
+                "name": "keyGroupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UploadEphermalKey",
+            "header": 2612,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Uploading Ephermal Keys",
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "Key Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "keys",
+                "category": "compact",
+                "description": "Encryprion keys"
+              },
+              {
+                "type": "reference",
+                "argument": "signatures",
+                "category": "compact",
+                "description": "Key signatures"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 1,
+                "name": "keyGroupId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKey"
+                  }
+                },
+                "id": 2,
+                "name": "keys"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptionKeySignature"
+                  }
+                },
+                "id": 3,
+                "name": "signatures"
+              }
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": "Encrypted Packages"
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedBox",
+            "doc": [
+              "Encrypted package that is encrypted for multiple keys",
+              {
+                "type": "reference",
+                "argument": "keys",
+                "category": "full",
+                "description": "  Encrypted encryption keys"
+              },
+              {
+                "type": "reference",
+                "argument": "algType",
+                "category": "full",
+                "description": "  Package encryption type"
+              },
+              {
+                "type": "reference",
+                "argument": "encPackage",
+                "category": "full",
+                "description": "  Encrypted package"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncyptedBoxKey"
+                  }
+                },
+                "id": 1,
+                "name": "keys"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "algType"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "encPackage"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncyptedBoxKey",
+            "doc": [
+              "Encrypted package encryption key",
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "full",
+                "description": "  Key Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "algType",
+                "category": "full",
+                "description": "  Key encryption algorithm"
+              },
+              {
+                "type": "reference",
+                "argument": "encryptedKey",
+                "category": "hidden",
+                "description": "  Encrypted encryption key"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "usersId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 2,
+                "name": "keyGroupId"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "algType"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "encryptedKey"
               }
             ]
           }
@@ -13370,26 +13794,11 @@
           }
         },
         {
-          "type": "rpc",
-          "content": {
-            "name": "GetState",
-            "header": 9,
-            "response": {
-              "type": "reference",
-              "name": "Seq"
-            },
-            "doc": [
-              "Get main sequence state"
-            ],
-            "attributes": []
-          }
-        },
-        {
           "type": "struct",
           "content": {
-            "name": "DifferenceUpdate",
+            "name": "UpdateContainer",
             "doc": [
-              "Update from GetDifference",
+              "Update container",
               {
                 "type": "reference",
                 "argument": "updateHeader",
@@ -13400,7 +13809,7 @@
                 "type": "reference",
                 "argument": "update",
                 "category": "compact",
-                "description": "  The update"
+                "description": "  The updatre"
               }
             ],
             "attributes": [
@@ -13413,6 +13822,179 @@
                 "type": "bytes",
                 "id": 2,
                 "name": "update"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update_box",
+          "content": {
+            "name": "CombinedUpdate",
+            "header": 2625,
+            "doc": [
+              "Combined update",
+              {
+                "type": "reference",
+                "argument": "seqStart",
+                "category": "full",
+                "description": "  Sequence number start"
+              },
+              {
+                "type": "reference",
+                "argument": "seqEnd",
+                "category": "full",
+                "description": "  Sequence number end"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "category": "full",
+                "description": "  Sequence state"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "compact",
+                "description": "  Update's users"
+              },
+              {
+                "type": "reference",
+                "argument": "groups",
+                "category": "compact",
+                "description": "  Update's groups"
+              },
+              {
+                "type": "reference",
+                "argument": "updates",
+                "category": "full",
+                "description": "  Updates (can be empty)"
+              },
+              {
+                "type": "reference",
+                "argument": "messages",
+                "category": "full",
+                "description": "  New messages"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "seqStart"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "seqEnd"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
+                "id": 3,
+                "name": "state"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "User"
+                  }
+                },
+                "id": 4,
+                "name": "users"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Group"
+                  }
+                },
+                "id": 5,
+                "name": "groups"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UpdateContainer"
+                  }
+                },
+                "id": 6,
+                "name": "updates"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageContainer"
+                  }
+                },
+                "id": 7,
+                "name": "messages"
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "UpdateOptimization",
+            "values": [
+              {
+                "name": "NONE",
+                "id": 1
+              },
+              {
+                "name": "STRIP_ENTITIES",
+                "id": 2
+              },
+              {
+                "name": "ENABLE_COMBINED",
+                "id": 3
+              },
+              {
+                "name": "FASTER_MESSAGES",
+                "id": 4
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetState",
+            "header": 9,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Get main sequence state",
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 1,
+                "name": "optimizations"
               }
             ]
           }
@@ -13461,6 +14043,18 @@
                   "argument": "needMore",
                   "category": "full",
                   "description": "  Need to perform other difference"
+                },
+                {
+                  "type": "reference",
+                  "argument": "usersRefs",
+                  "category": "full",
+                  "description": "  Direct references of users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groupsRefs",
+                  "category": "full",
+                  "description": "  Direct References of groups"
                 }
               ],
               "attributes": [
@@ -13504,16 +14098,49 @@
                     "type": "list",
                     "childType": {
                       "type": "struct",
-                      "childType": "DifferenceUpdate"
+                      "childType": "UpdateContainer"
                     }
                   },
                   "id": 4,
                   "name": "updates"
                 },
                 {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "MessageContainer"
+                    }
+                  },
+                  "id": 7,
+                  "name": "messages"
+                },
+                {
                   "type": "bool",
                   "id": 5,
                   "name": "needMore"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 8,
+                  "name": "usersRefs"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 9,
+                  "name": "groupsRefs"
                 }
               ]
             },
@@ -13530,6 +14157,12 @@
                 "argument": "state",
                 "category": "compact",
                 "description": "Sequence state"
+              },
+              {
+                "type": "reference",
+                "argument": "optimizations",
+                "category": "full",
+                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -13545,6 +14178,105 @@
                 },
                 "id": 2,
                 "name": "state"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "UpdateOptimization"
+                  }
+                },
+                "id": 3,
+                "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetReferencedEntitites",
+            "header": 2628,
+            "response": {
+              "type": "anonymous",
+              "header": 2629,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Loaded users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "compact",
+                  "description": "  Loaded groups"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 1,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 2,
+                  "name": "groups"
+                }
+              ]
+            },
+            "doc": [
+              "Loading referenced entities",
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "compact",
+                "description": "Users to load"
+              },
+              {
+                "type": "reference",
+                "argument": "groups",
+                "category": "compact",
+                "description": "Groups to load. Also returns all members of a group."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 1,
+                "name": "users"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "GroupOutPeer"
+                  }
+                },
+                "id": 2,
+                "name": "groups"
               }
             ]
           }
@@ -13584,6 +14316,17 @@
                 "name": "bytes"
               }
             ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "EmptyUpdate",
+            "header": 85,
+            "doc": [
+              "Empty update"
+            ],
+            "attributes": []
           }
         },
         {

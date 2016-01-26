@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -48,7 +48,7 @@ public class AAAddParticipantViewController: AAContactsListContentController, AA
     public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
         
         if !isAlreadyMember(contact.uid) {
-            self.executeSafeOnlySuccess(Actor.inviteMemberCommandWithGid(jint(gid), withUid: jint(contact.uid))) { (val) -> () in
+            self.executeSafeOnlySuccess(Actor.inviteMemberCommandWithGid(jint(gid), withUid: jint(contact.uid))!) { (val) -> () in
                 self.dismiss()
             }
         }

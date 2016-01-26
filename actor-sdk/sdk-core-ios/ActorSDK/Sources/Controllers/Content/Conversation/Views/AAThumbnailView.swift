@@ -1,9 +1,5 @@
 //
-//  AAThumbnailView.swift
-//  ActorSDK
-//
-//  Created by kioshimafx on 1/13/16.
-//  Copyright © 2016 Steve Kite. All rights reserved.
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -23,7 +19,7 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     
     private var assets = [PHAsset]()
     var selectedAssets = [PHAsset]()
-    private var imageManager = PHCachingImageManager()
+    private var imageManager : PHCachingImageManager!
     
     private let minimumPreviewHeight: CGFloat = 90
     private var maximumPreviewHeight: CGFloat = 90
@@ -54,21 +50,32 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     
     func open() {
         
-        if PHPhotoLibrary.authorizationStatus() == .Authorized {
-            fetchAssets()
-            self.collectionView.reloadData()
-        } else if PHPhotoLibrary.authorizationStatus() == .NotDetermined {
-            PHPhotoLibrary.requestAuthorization() { status in
-                if status == .Authorized {
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.imageManager = PHCachingImageManager()
-                        self.fetchAssets()
-                        self.collectionView.reloadData()
+        dispatchBackground { () -> Void in
+            self.imageManager = PHCachingImageManager()
+            
+            if PHPhotoLibrary.authorizationStatus() == .Authorized {
+                
+                self.fetchAssets()
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.collectionView.reloadData()
+                }
+                
+            } else if PHPhotoLibrary.authorizationStatus() == .NotDetermined {
+                
+                PHPhotoLibrary.requestAuthorization() { status in
+                    if status == .Authorized {
+                        dispatch_async(dispatch_get_main_queue()) {
+                            self.imageManager = PHCachingImageManager()
+                            self.fetchAssets()
+                            self.collectionView.reloadData()
+                        }
                     }
                 }
+
             }
+            
         }
-        
+
     }
     
     private func fetchAssets() {
@@ -95,7 +102,7 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
         
         let result = PHAsset.fetchAssetsWithOptions(options)
         let requestOptions = PHImageRequestOptions()
-        requestOptions.synchronous = true
+        requestOptions.synchronous = false
         requestOptions.deliveryMode = .FastFormat
         
         result.enumerateObjectsUsingBlock { asset, _, stop in
@@ -161,8 +168,6 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("ASSSEEETS === \(self.assets.count)")
-        
         return self.assets.count
     }
     
@@ -204,34 +209,6 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
             
             
         }
-        
-        
-//        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-//        dispatch_async(dispatch_get_global_queue(priority, 0)) {
-//        // do some task
-//        
-//        self.requestOptions.synchronous = true
-//        
-//        self.imageManagerForOrig.requestImageDataForAsset(photoModel, options: self.requestOptions, resultHandler: { (data, _, _, _) -> Void in
-//        if data != nil {
-//        
-//        let imageFromAsset = UIImage(data: data!)!
-//        var complitedImage : UIImage!
-//        
-//        if imageFromAsset.size.width > imageFromAsset.size.height {
-//        complitedImage = self.imageByCroppingImage(imageFromAsset, toSize: CGSizeMake(imageFromAsset.size.height,imageFromAsset.size.height))
-//        } else {
-//        complitedImage = self.imageByCroppingImage(imageFromAsset, toSize: CGSizeMake(imageFromAsset.size.width,imageFromAsset.size.width))
-//        }
-//        
-//        dispatch_async(dispatch_get_main_queue()) {
-//        // update some UI
-//        cell.imgThumbnails.image = complitedImage
-//        }
-//        }
-//        })
-//        
-//        }
         
         
         return cell

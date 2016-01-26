@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -65,7 +65,7 @@ public class AAGroupMemberCell: AATableViewCell {
             if value != nil {
                 self.onlineLabel.showView()
                 self.onlineLabel.text = Actor.getFormatter().formatPresence(value!, withSex: user.getSex())
-                if value!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
+                if value!.state.ordinal() == ACUserPresence_State.ONLINE().ordinal() {
                     self.onlineLabel.textColor = self.appStyle.userOnlineColor
                 } else {
                     self.onlineLabel.textColor = self.appStyle.userOfflineColor

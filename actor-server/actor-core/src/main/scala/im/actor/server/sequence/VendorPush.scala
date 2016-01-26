@@ -3,11 +3,12 @@ package im.actor.server.sequence
 import akka.actor._
 import akka.pattern.pipe
 import im.actor.server.db.DbExtension
-import im.actor.server.model.push.{ ApplePushCredentials, GooglePushCredentials, PushCredentials }
+import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, GooglePushCredentials, PushCredentials }
 import im.actor.server.model.{ DeviceType, Peer, PeerType }
 import im.actor.server.persist.AuthSessionRepo
 import im.actor.server.persist.configs.ParameterRepo
-import im.actor.server.persist.push.{ ApplePushCredentialsRepo, GooglePushCredentialsRepo }
+import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, GooglePushCredentialsRepo }
+import im.actor.server.push.actor.ActorPush
 import im.actor.server.sequence.UserSequenceCommands.ReloadSettings
 import slick.dbio.DBIO
 
@@ -165,6 +166,8 @@ private[sequence] final class VendorPush(
       register(r.getApple)
     case r: RegisterPushCredentials if r.creds.isGoogle ⇒
       register(r.getGoogle)
+    case r: RegisterPushCredentials if r.creds.isActor ⇒
+      register(r.getActor)
     case UnregisterPushCredentials(authId) ⇒
       unregister(authId)
     case DeliverPush(seq, rules) ⇒
@@ -185,13 +188,16 @@ private[sequence] final class VendorPush(
     db.run(for {
       googleCreds ← GooglePushCredentialsRepo.findByUser(userId)
       appleCreds ← ApplePushCredentialsRepo.findByUser(userId)
+      actorCreds ← ActorPushCredentialsRepo.findByUser(userId)
       google ← DBIO.sequence(googleCreds map withInfo) map (_.flatten)
       apple ← DBIO.sequence(appleCreds map withInfo) map (_.flatten)
-    } yield Initialized(apple ++ google)) pipeTo self
+      actor ← DBIO.sequence(actorCreds map withInfo) map (_.flatten)
+    } yield Initialized(apple ++ google ++ actor)) pipeTo self
   }
 
   /**
    * Delivers a push to all credentials according to push rules
+   *
    * @param seq
    * @param rules
    */
@@ -203,6 +209,7 @@ private[sequence] final class VendorPush(
 
   /**
    * Delivers to a specific creds according to push rules
+   *
    * @param seq
    * @param rules
    * @param creds
@@ -264,6 +271,7 @@ private[sequence] final class VendorPush(
 
   /**
    * Delivers an invisible push with seq and contentAvailable
+   *
    * @param seq
    * @param creds
    */
@@ -273,11 +281,14 @@ private[sequence] final class VendorPush(
         googlePushProvider.deliverInvisible(seq, c)
       case c: ApplePushCredentials ⇒
         applePushProvider.deliverInvisible(seq, c)
+      case c: ActorPushCredentials ⇒
+        ActorPush(context.system).deliver(seq = seq, c)
     }
   }
 
   /**
    * Delivers a visible push with seq and (optionally) text, sound, vibration
+   *
    * @param seq
    * @param creds
    * @param data
@@ -306,6 +317,8 @@ private[sequence] final class VendorPush(
           isSoundEnabled = isSoundEnabled,
           isVibrationEnabled = isVibrationEnabled
         )
+      case c: ActorPushCredentials ⇒
+        ActorPush(context.system).deliver(seq = seq, c)
     }
   }
 
@@ -314,6 +327,7 @@ private[sequence] final class VendorPush(
       _ ← creds match {
         case c: GooglePushCredentials ⇒ GooglePushCredentialsRepo.createOrUpdate(c)
         case c: ApplePushCredentials  ⇒ ApplePushCredentialsRepo.createOrUpdate(c)
+        case c: ActorPushCredentials  ⇒ ActorPushCredentialsRepo.createOrUpdate(c)
       }
       appIdCredsOpt ← withInfo(creds)
     } yield {
@@ -336,6 +350,7 @@ private[sequence] final class VendorPush(
       db.run(creds match {
         case c: GooglePushCredentials ⇒ GooglePushCredentialsRepo.delete(c.authId)
         case c: ApplePushCredentials  ⇒ ApplePushCredentialsRepo.delete(c.authId)
+        case c: ActorPushCredentials  ⇒ ActorPushCredentialsRepo.delete(c.authId)
       }) onFailure {
         case e ⇒ log.error("Failed to unregister creds")
       }

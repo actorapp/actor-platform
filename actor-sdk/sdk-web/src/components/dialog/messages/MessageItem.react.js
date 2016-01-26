@@ -6,7 +6,7 @@ import { escape } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl'
-import addons from 'react/addons';
+import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
 import PeerUtils from '../../../utils/PeerUtils';
@@ -36,12 +36,19 @@ import DefaultLocation from './Location.react.js';
 import DefaultModern from './Modern.react.js';
 import DefaultSticker from './Sticker.react.js';
 
-const {addons: { PureRenderMixin }} = addons;
-
 class MessageItem extends Component {
+  static getStores = () => [DropdownStore];
+
+  static calculateState(prevState, props) {
+    return {
+      isHighlighted: props && props.message ? DropdownStore.isOpen(props.message.rid) : false
+    }
+  }
+
   static propTypes = {
     peer: PropTypes.object.isRequired,
     message: PropTypes.object.isRequired,
+    overlay: PropTypes.object.isRequired,
     isShortMessage: PropTypes.bool,
     isSelected: PropTypes.bool,
     onSelect: PropTypes.func
@@ -54,33 +61,10 @@ class MessageItem extends Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      isHighlighted: DropdownStore.isOpen(props.message.rid)
-    };
-
-    this.dropdownToken = DropdownStore.addListener(this.onMessagesChange);
   }
-  
-  onMessagesChange = () => {
-    const { message } = this.props;
-    this.setState({isHighlighted: DropdownStore.isOpen(message.rid)});
-  };
-  
-  componentWillUnmount() {
-      // console.warn('messageItem:onComponentUnmount')
-      this.dropdownToken.remove();
-  }
-  
+
   shouldComponentUpdate(nextProps, nextState) {
-      if (this.props.message != nextProps.message) {
-          return true
-      }
-      if (this.props.isShortMessage != nextProps.isShortMessage) {
-          return true
-      }
-      // console.warn('messageItem:shouldComponentUpdate')
-      return false
+    return (this.props.message !== nextProps.message || this.props.isShortMessage != nextProps.isShortMessage);
   }
 
   onClick = () => {
@@ -104,9 +88,10 @@ class MessageItem extends Component {
   };
 
   render() {
-    const { message, isShortMessage, peer, isSelected } = this.props;
+    const { message, overlay, peer, isSelected } = this.props;
     const { isHighlighted } = this.state;
     const { delegate, isExperimental } = this.context;
+    const isShortMessage = overlay.useShort;
 
     let Service, Text, Modern, Photo, Document, Voice, Contact, Location, Sticker;
     if (delegate.components.dialog !== null && delegate.components.dialog.messages) {
@@ -193,8 +178,8 @@ class MessageItem extends Component {
         messageContent = <Text {...message.content} className="message__content message__content--text"/>;
         break;
       case MessageContentTypes.PHOTO:
-        messageContent = <Photo content={message.content} className="message__content message__content--photo"
-                                loadedClassName="message__content--photo--loaded"/>;
+        messageContent = (<Photo content={message.content} className="message__content message__content--photo"
+                                loadedClassName="message__content--photo--loaded"/>);
         break;
       case MessageContentTypes.DOCUMENT:
         messageContent = <Document content={message.content} className="message__content message__content--document"/>;
@@ -247,6 +232,5 @@ class MessageItem extends Component {
 }
 
 ReactMixin.onClass(MessageItem, IntlMixin);
-// ReactMixin.onClass(MessageItem, PureRenderMixin);
 
-export default MessageItem;
+export default Container.create(MessageItem, {withProps: true});

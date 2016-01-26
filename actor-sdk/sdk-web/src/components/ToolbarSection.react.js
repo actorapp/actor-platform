@@ -9,6 +9,8 @@ import { escapeWithEmoji } from '../utils/EmojiUtils';
 
 import ActivityActionCreators from '../actions/ActivityActionCreators';
 
+import AvatarItem from '../components/common/AvatarItem.react';
+
 import DialogInfoStore from '../stores/DialogInfoStore';
 import OnlineStore from '../stores/OnlineStore';
 import ActivityStore from '../stores/ActivityStore';
@@ -46,6 +48,12 @@ class ToolbarSection extends Component {
     if (dialogInfo !== null) {
       return (
         <header className="toolbar row">
+          <AvatarItem image={dialogInfo.avatar}
+                      placeholder={dialogInfo.placeholder}
+                      size="medium"
+                      title={dialogInfo.name}/>
+
+
           <div className="toolbar__peer col-xs">
             <span className="toolbar__peer__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialogInfo.name)}}/>
             <span className="toolbar__peer__message">{message}</span>

@@ -8,7 +8,7 @@ import ContactActionCreators from './ContactActionCreators';
 import DialogActionCreators from './DialogActionCreators';
 
 export default {
-  open: () => {
+  open() {
     ActorClient.findUsers(Support.phone)
       .then(users => {
         if (users.length > 0) {

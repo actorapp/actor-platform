@@ -6,7 +6,7 @@ import akka.stream.actor._
 import im.actor.api.rpc.RpcInternalError
 import im.actor.server.api.rpc.RpcApiService.RpcResponse
 import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService, RpcResultCodec }
-import im.actor.server.mtproto.protocol.{ ProtoMessage, RpcResponseBox }
+import im.actor.server.mtproto.protocol.{ ProtoMessage, ProtoRpcResponse }
 import im.actor.util.cache.CacheHelpers._
 import scodec.bits._
 
@@ -128,11 +128,11 @@ private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[Pr
       log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
 
       requestQueue -= messageId
-      enqueueProtoMessage(RpcResponseBox(messageId, responseBytes))
+      enqueueProtoMessage(ProtoRpcResponse(messageId, responseBytes))
     case CachedResponse(rsp) ⇒
       log.debug("Got cached RpcResponse for messageId: {}, publishing", rsp.messageId)
 
-      enqueueProtoMessage(RpcResponseBox(rsp.messageId, rsp.responseBytes))
+      enqueueProtoMessage(ProtoRpcResponse(rsp.messageId, rsp.responseBytes))
     case Request(_) ⇒
       deliverBuf()
     case Cancel ⇒

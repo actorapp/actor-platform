@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -236,7 +236,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
                 UIImageJPEGRepresentation(thumb!, 0.8)!.writeToFile(avatarFilePath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
             }
             
-            execute(Actor.signUpCommandWithName(username, withSex: ACSexEnum.values().objectAtIndex(ACSex.UNKNOWN.rawValue) as! ACSexEnum, withAvatar: avatarPath), successBlock: { (val) -> Void in
+            execute(Actor.signUpCommandWithName(username, withSex: ACSex.UNKNOWN(), withAvatar: avatarPath), successBlock: { (val) -> Void in
                 self.onAuthenticated()
                 }, failureBlock: { (val) -> Void in
                     
@@ -268,7 +268,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
     }
     
     public func alertView(alertView: UIAlertView, willDismissWithButtonIndex buttonIndex: Int) {
-        if (Actor.getAuthState() != ACAuthState.SIGN_UP.rawValue) {
+        if (Actor.getAuthState().ordinal() != ACAuthState.SIGN_UP().ordinal()) {
             navigateBack()
         }
     }

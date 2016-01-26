@@ -7,6 +7,8 @@ import classnames from 'classnames';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
 
+let cache = [];
+
 /**
  * Class that represents a component for display voice message content
  */
@@ -18,29 +20,62 @@ class Voice extends Component {
 
   constructor(props) {
     super(props);
+    const { content } = props;
+
+    if (content.fileUrl) {
+      this.createAudioElement(content.fileUrl);
+    }
 
     this.state = {
-      isLoaded: false,
+      isLoaded: this.isCached(),
       isPlaying: false,
       currentTime: 0,
-      duration: props.content.duration / 1000
+      duration: props.content.duration
     };
+  }
 
-    this.audio = new Audio(props.content.fileUrl);
-    this.audio.volume = 1;
-    this.audio.addEventListener('timeupdate', this.handleTimeUpdate);
-    this.audio.addEventListener('ended', this.handlePlayEnding);
-    this.audio.addEventListener('canplaythrough', this.handleLoading);
+  componentDidUpdate(prevProps, prevState) {
+    const { content } = this.props;
+
+    if (content.fileUrl && !this.isCached()) {
+      this.createAudioElement(content.fileUrl);
+    }
   }
 
   componentWillUnmount() {
-    this.audio.removeEventListener('timeupdate', this.handleTimeUpdate);
-    this.audio.removeEventListener('ended', this.handlePlayEnding);
+    if (this.audio) {
+      this.audio.removeEventListener('loadeddata', this.handleLoading);
+      this.audio.removeEventListener('timeupdate', this.handleTimeUpdate);
+      this.audio.removeEventListener('ended', this.handlePlayEnding);
+      this.audio.removeEventListener('canplaythrough', this.handleLoading);
+    }
+  }
+
+  createAudioElement(fileUrl) {
+    this.audio = new Audio(fileUrl);
+    this.audio.volume = 1;
+    this.audio.addEventListener('loadeddata', this.handleLoading);
+    this.audio.addEventListener('timeupdate', this.handleTimeUpdate);
+    this.audio.addEventListener('ended', this.handlePlayEnding);
+    this.audio.addEventListener('canplaythrough', this.handleLoading);
+    this.setCached();
+  }
+
+  isCached() {
+    const { content } = this.props;
+    return cache[content.fileUrl] === true;
+  }
+
+  setCached() {
+    const { content } = this.props;
+    cache[content.fileUrl] = true;
+    this.setState({isLoaded: cache[content.fileUrl]});
   }
 
   humanTime = (millis) => {
     const minutes = Math.floor(millis / 60000);
     const seconds = ((millis % 60000) / 1000).toFixed(0);
+
     return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
   };
 
@@ -61,7 +96,9 @@ class Voice extends Component {
     this.handlePlayEnding();
   };
 
-  handlePlayEnding = () => this.setState({isPlaying: false});
+  handlePlayEnding = () => {
+    this.setState({isPlaying: false});
+  };
 
   handleRewind = (event) => {
     const rewindRect = React.findDOMNode(this.refs.rewind).getBoundingClientRect();
@@ -70,9 +107,7 @@ class Voice extends Component {
     this.audio.currentTime = this.audio.duration * rewindPosition;
   };
 
-  handleLoading = () => {
-    this.setState({isLoaded: true});
-  };
+  handleLoading = () => this.setCached();
 
   render() {
     const { className } = this.props;
@@ -80,7 +115,7 @@ class Voice extends Component {
     const voiceClassName = classnames(className, 'row');
 
     const current = this.humanTime(currentTime * 1000);
-    const total = this.humanTime(duration * 1000);
+    const total = this.humanTime(duration);
     const progress = (currentTime / duration) * 100;
 
     return (
@@ -113,7 +148,7 @@ class Voice extends Component {
             }
           </div>
         </div>
-        <div className="col-xs"></div>
+        <div className="col-xs"/>
       </div>
     );
   }

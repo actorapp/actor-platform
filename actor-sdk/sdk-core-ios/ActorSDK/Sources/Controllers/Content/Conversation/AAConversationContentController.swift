@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -23,9 +23,12 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     private var prevCount: Int = 0
     private var unreadMessageId: jlong = 0
     
-    ///
-    
+    // Audio notes
     public var voicePlayer : AAModernConversationAudioPlayer!
+    public var voiceContext : AAModernViewInlineMediaContext!
+    
+    public var currentAudioFileId: jlong = 0
+    public var voicesCache: Dictionary<jlong,Float> = Dictionary<jlong,Float>()
     
     public init(peer: ACPeer) {
         self.peer = peer
@@ -79,8 +82,11 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             }
             
             self.isStarted = true
-            UIView.animateWithDuration(0.15, animations: { () -> Void in
+            
+            UIView.animateWithDuration(0.6, animations: { () -> Void in
                 self.collectionView.alpha = 1
+                }, completion: { (comp) -> Void in
+                    self.navigationController?.view.layer.speed = 1
             })
             
             self.willUpdate()
@@ -356,19 +362,48 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         })
     }
     
+    ///////////////////////
+    // MARK: - audio play
+    ///////////////////////
     
-    // audio play
     
-    func playVoiceFromPath(path:String) {
+    func playVoiceFromPath(path:String,fileId:jlong,position:Float) {
         
-        if (self.voicePlayer != nil) {
+        if (self.currentAudioFileId != fileId) {
             
-            self.voicePlayer.stop()
+            self.voicePlayer?.stop()
+            self.voicePlayer?.audioPlayerStopAndFinish()
+            
+            self.voicesCache[self.currentAudioFileId] = 0.0
+            
+            self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)
+            self.voiceContext = self.voicePlayer.inlineMediaContext()
+            
+            self.voicePlayer?.play()
+            
+            self.currentAudioFileId = fileId
+            
+        } else {
+            
+            
+            if (position == 0.0  || position == 0) {
+                
+                self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)
+                self.voiceContext = self.voicePlayer.inlineMediaContext()
+                
+                self.voicePlayer?.play()
+                
+            } else {
+                
+                if self.voicePlayer?.isPaused() == false {
+                    self.voicePlayer?.pause()
+                } else {
+                    self.voicePlayer?.play()
+                }
+                
+            }
             
         }
-        
-        self.voicePlayer = AAModernConversationAudioPlayer(filePath:path)
-        self.voicePlayer.play(0)
         
     }
     

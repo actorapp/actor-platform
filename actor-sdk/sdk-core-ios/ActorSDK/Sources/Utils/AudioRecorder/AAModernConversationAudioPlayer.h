@@ -1,4 +1,7 @@
 #import <Foundation/Foundation.h>
+#import "AAModernConversationAudioPlayerContext.h"
+#import "AAModernConversationAudioPlayer.h"
+
 
 @class AAModernConversationAudioPlayer;
 @class AAModernViewInlineMediaContext;
@@ -23,6 +26,8 @@
 - (void)play:(float)playbackPosition;
 - (void)pause;
 - (void)stop;
+
+- (void)audioPlayerStopAndFinish;
 
 - (float)playbackPosition;
 - (float)playbackPositionSync:(bool)sync;

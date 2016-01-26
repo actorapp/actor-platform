@@ -66,6 +66,8 @@ trait ApiToBotConversions {
       case ApiStickerMessage(stickerId, fastPreview, image512, image256, stickerCollectionId, stickerCollectionAccessHash) ⇒
         StickerMessage(stickerId, fastPreview, image512, image256, stickerCollectionId, stickerCollectionAccessHash)
       case _: ApiUnsupportedMessage ⇒ UnsupportedMessage
+      case _: ApiEncryptedMessage   ⇒ UnsupportedMessage
+      case _: ApiBinaryMessage      ⇒ UnsupportedMessage
     }
 
   implicit def toTextModernAttach(ma: ApiTextModernAttach): TextModernAttach =

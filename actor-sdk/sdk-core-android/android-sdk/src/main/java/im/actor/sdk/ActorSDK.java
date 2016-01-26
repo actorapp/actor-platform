@@ -23,7 +23,8 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
-import im.actor.core.events.IncomingCall;
+import im.actor.core.modules.events.IncomingCall;
+import im.actor.core.modules.internal.CallsModule;
 import im.actor.runtime.Log;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.runtime.eventbus.BusSubscriber;
@@ -40,6 +41,7 @@ import im.actor.sdk.intents.ActivityManager;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentActivity;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
+import im.actor.sdk.push.ActorPushRegister;
 import im.actor.sdk.services.KeepAliveService;
 import im.actor.sdk.util.Devices;
 import im.actor.sdk.view.emoji.SmileProcessor;
@@ -100,6 +102,10 @@ public class ActorSDK {
      */
     private long pushId = 0;
     /**
+     * Actor Push Endpoint
+     */
+    private String actorPushEndpoint = "https://push.actor.im/apps/31337/subscriptions";
+    /**
      * Is Keeping app alive enabled
      */
     private boolean isKeepAliveEnabled = false;
@@ -134,6 +140,11 @@ public class ActorSDK {
      * ActivityManager
      */
     private ActivityManager activityManager = new ActivityManager();
+
+    /**
+     * Call enabled
+     */
+    private boolean callsEnabled = false;
 
     private ActorSDK() {
         endpoints = new String[]{
@@ -234,16 +245,35 @@ public class ActorSDK {
         }
 
         //
-        //GCM
+        // Actor Push
         //
+
+        if (actorPushEndpoint != null && delegate.useActorPush()) {
+            ActorPushRegister.registerForPush(application, actorPushEndpoint, new ActorPushRegister.Callback() {
+                @Override
+                public void onRegistered(String endpoint) {
+                    Log.d(TAG, "On Actor push registered: " + endpoint);
+                    messenger.registerActorPush(endpoint);
+                }
+            });
+        }
+
+        //
+        // GCM
+        //
+
         try {
-            final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
-            if (pushId != 0) {
+            if (pushId != 0 && !delegate.useActorPush()) {
+                final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
                 pushManager.registerPush(application);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //
+        // Calls subscribing
+        //
 
         messenger.getEvents().subscribe(new BusSubscriber() {
             @Override
@@ -432,6 +462,24 @@ public class ActorSDK {
         this.pushId = pushId;
     }
 
+    /**
+     * Getting Actor Push notification service endpoint
+     *
+     * @return endpoint
+     */
+    public String getActorPushEndpoint() {
+        return actorPushEndpoint;
+    }
+
+    /**
+     * Setting Actor push notification service endpoint
+     *
+     * @param actorPushEndpoint endpoint
+     */
+    public void setActorPushEndpoint(String actorPushEndpoint) {
+        this.actorPushEndpoint = actorPushEndpoint;
+    }
+
     public String getHelpPhone() {
         return helpPhone;
     }
@@ -454,6 +502,15 @@ public class ActorSDK {
 
     public void setTwitter(String twitter) {
         this.twitter = twitter;
+    }
+
+    public void setCallsEnabled(boolean callsEnabled) {
+        this.callsEnabled = callsEnabled;
+        CallsModule.CALLS_ENABLED = callsEnabled;
+    }
+
+    public boolean isCallsEnabled() {
+        return callsEnabled;
     }
 
     /**

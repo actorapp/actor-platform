@@ -1,9 +1,5 @@
 //
-//  AAConvActionSheet.swift
-//  ActorSDK
-//
-//  Created by kioshimafx on 1/13/16.
-//  Copyright © 2016 Steve Kite. All rights reserved.
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -15,6 +11,7 @@ let screenHeigth = UIScreen.mainScreen().bounds.size.height
 class AAConvActionSheet: UIView {
     
     var sheetView:UIView!
+    var backgroundView:UIView!
     
     var btnCamera:UIButton!
     var btnLibrary:UIButton!
@@ -23,14 +20,16 @@ class AAConvActionSheet: UIView {
     var btnContact:UIButton!
     var btnCancel:UIButton!
     
-    var thumbnailView = AAThumbnailView()
+    var thumbnailView: AAThumbnailView!
     
     weak var weakSuper : ConversationViewController!
+    
+    var superWidth : CGFloat!
     
     init(maxSelected:Int,weakSuperIn:ConversationViewController) {
         super.init(frame: CGRectZero)
         
-        
+        superWidth = weakSuperIn.view.frame.size.width
         self.setupAllViews()
         self.configUI()
         self.weakSuper = weakSuperIn
@@ -47,11 +46,7 @@ class AAConvActionSheet: UIView {
         
         self.alpha = 0
         self.frame = CGRectMake(0, 0, screenWidth, screenHeigth)
-        self.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
-        
-        
-        
-        //make photo
+        self.backgroundColor = UIColor.clearColor()
         
     }
     
@@ -59,26 +54,43 @@ class AAConvActionSheet: UIView {
     deinit {
         
         self.weakSuper = nil
-
         
     }
     
     
     func showAnimation() {
         
+        self.alpha = 1
+        self.backgroundView.alpha = 0
+        
         var frame = self.sheetView.frame
         frame.origin.y = screenHeigth - 400
         
         self.weakSuper.navigationController!.interactivePopGestureRecognizer!.enabled = false
         
-        UIView.animateWithDuration(0.25) { () -> Void in
-            self.sheetView.frame = frame
-            self.alpha = 1
+        if (self.thumbnailView == nil) {
             
-            self.thumbnailView.open()
-            self.thumbnailView.reloadView()
+            self.thumbnailView = AAThumbnailView()
+            self.sheetView.addSubview(self.thumbnailView)
+            self.thumbnailView.frame    = CGRectMake(0, 5, superWidth, 90)
+            self.thumbnailView.bindedConvSheet = self
             
         }
+        
+        self.thumbnailView.open()
+        
+        UIView.animateWithDuration(0.4, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.6, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+            
+            self.sheetView.frame = frame
+            self.backgroundView.alpha = 1
+            
+            
+            }, completion: { (complite) -> Void in
+                
+                // animation complite
+                
+        })
+        
         
     }
     
@@ -88,17 +100,24 @@ class AAConvActionSheet: UIView {
         var frame = self.sheetView.frame
         frame.origin.y = screenHeigth
         
-        
+        self.weakSuper.rightButton.layoutIfNeeded()
         UIView.animateWithDuration(0.25, animations: { () -> Void in
+            self.weakSuper.rightButton.layoutIfNeeded()
             self.sheetView.frame = frame
-            self.alpha = 0
+            
+            self.backgroundView.alpha = 0
+            
             }) { (bool) -> Void in
                 
                 self.weakSuper.navigationController!.interactivePopGestureRecognizer!.enabled = true
                 
+                self.alpha = 0
+                
                 self.thumbnailView.selectedAssets = [PHAsset]()
                 self.thumbnailView.reloadView()
                 self.updateSelectedPhotos()
+                
+                
         }
         
     }
@@ -111,36 +130,44 @@ class AAConvActionSheet: UIView {
         
         
         // sheet view
-        let frame = CGRectMake(0, screenHeigth, screenWidth, 400)
+        
+        self.backgroundView = UIView()
+        self.backgroundView.frame = CGRectMake(0, 0, screenWidth, screenHeigth)
+        self.backgroundView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
+        self.backgroundView.alpha = 0
+        
+        self.addSubview(self.backgroundView)
+        
+        let frame = CGRectMake(0, screenHeigth, screenWidth, 1000)
         self.sheetView = UIView(frame: frame)
         self.sheetView.backgroundColor = UIColor.whiteColor()
         
         self.addSubview(self.sheetView)
         
-        self.btnCamera = UIButton(type: UIButtonType.System)
-        self.btnLibrary = UIButton(type: UIButtonType.System)
-        self.btnDocuments = UIButton(type: UIButtonType.System)
-        self.btnLocation = UIButton(type: UIButtonType.System)
-        self.btnContact = UIButton(type: UIButtonType.System)
-        self.btnCancel = UIButton(type: UIButtonType.System)
+        self.btnCamera      = UIButton(type: UIButtonType.System)
+        self.btnLibrary     = UIButton(type: UIButtonType.System)
+        self.btnDocuments   = UIButton(type: UIButtonType.System)
+        self.btnLocation    = UIButton(type: UIButtonType.System)
+        self.btnContact     = UIButton(type: UIButtonType.System)
+        self.btnCancel      = UIButton(type: UIButtonType.System)
         
         // color
         
-        self.btnCamera.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnLibrary.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnDocuments.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnLocation.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnContact.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
-        self.btnCancel.tintColor = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnCamera.tintColor        = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnLibrary.tintColor       = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnDocuments.tintColor     = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnLocation.tintColor      = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnContact.tintColor       = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
+        self.btnCancel.tintColor        = UIColor(red: 5.0/255.0, green: 124.0/255.0, blue: 226.0/255.0, alpha: 1)
         
         // font size
         
-        self.btnCamera.titleLabel?.font = UIFont.systemFontOfSize(17)
-        self.btnLibrary.titleLabel?.font = UIFont.systemFontOfSize(17)
-        self.btnDocuments.titleLabel?.font = UIFont.systemFontOfSize(17)
-        self.btnLocation.titleLabel?.font = UIFont.systemFontOfSize(17)
-        self.btnContact.titleLabel?.font = UIFont.systemFontOfSize(17)
-        self.btnCancel.titleLabel?.font = UIFont.systemFontOfSize(17)
+        self.btnCamera.titleLabel?.font         = UIFont.systemFontOfSize(17)
+        self.btnLibrary.titleLabel?.font        = UIFont.systemFontOfSize(17)
+        self.btnDocuments.titleLabel?.font      = UIFont.systemFontOfSize(17)
+        self.btnLocation.titleLabel?.font       = UIFont.systemFontOfSize(17)
+        self.btnContact.titleLabel?.font        = UIFont.systemFontOfSize(17)
+        self.btnCancel.titleLabel?.font         = UIFont.systemFontOfSize(17)
         
         // add buttons as subivews
         
@@ -150,15 +177,15 @@ class AAConvActionSheet: UIView {
         self.sheetView.addSubview(self.btnLocation)
         self.sheetView.addSubview(self.btnContact)
         self.sheetView.addSubview(self.btnCancel)
-        self.sheetView.addSubview(self.thumbnailView)
+        //self.sheetView.addSubview(self.thumbnailView)
         
-        self.thumbnailView.frame = CGRectMake(0, 5, screenWidth, 90)
-        self.btnCamera.frame = CGRectMake(0, 100, screenWidth, 50)
-        self.btnLibrary.frame = CGRectMake(0, 150, screenWidth, 50)
-        self.btnDocuments.frame = CGRectMake(0, 200, screenWidth, 50)
-        self.btnLocation.frame = CGRectMake(0, 250, screenWidth, 50)
-        self.btnContact.frame = CGRectMake(0, 300, screenWidth, 50)
-        self.btnCancel.frame = CGRectMake(0, 350, screenWidth, 50)
+        //self.thumbnailView.frame    = CGRectMake(0, 5, screenWidth, 90)
+        self.btnCamera.frame        = CGRectMake(0, 100, superWidth, 50)
+        self.btnLibrary.frame       = CGRectMake(0, 150, superWidth, 50)
+        self.btnDocuments.frame     = CGRectMake(0, 200, superWidth, 50)
+        self.btnLocation.frame      = CGRectMake(0, 250, superWidth, 50)
+        self.btnContact.frame       = CGRectMake(0, 300, superWidth, 50)
+        self.btnCancel.frame        = CGRectMake(0, 350, superWidth, 50)
         
         // separators
         
@@ -204,7 +231,7 @@ class AAConvActionSheet: UIView {
         
         // bineded self
         
-        self.thumbnailView.bindedConvSheet = self
+        //self.thumbnailView.bindedConvSheet = self
     
     }
     

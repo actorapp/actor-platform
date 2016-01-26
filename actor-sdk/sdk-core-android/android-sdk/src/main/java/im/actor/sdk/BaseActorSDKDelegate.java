@@ -162,5 +162,10 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
         return null;
     }
 
+    @Override
+    public boolean useActorPush() {
+        return true;
+    }
+
 
 }

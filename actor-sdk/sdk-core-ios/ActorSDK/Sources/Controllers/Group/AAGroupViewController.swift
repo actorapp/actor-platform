@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -108,7 +108,7 @@ public class AAGroupViewController: AAContentTableController {
                                 return
                             }
 
-                            c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t), successBlock: { (val) -> Void in
+                            c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t)!, successBlock: { (val) -> Void in
                                 c.dismiss()
                             })
                         }
@@ -171,63 +171,62 @@ public class AAGroupViewController: AAContentTableController {
                 r.data.sortInPlace(self.membersSort)
                 
                 r.bindData = { (c, d) -> () in
-                    if let user = Actor.getUserWithUid(d.uid) {
-                        c.bind(user, isAdmin: d.isAdministrator)
+                    let user = Actor.getUserWithUid(d.uid)
+                    c.bind(user, isAdmin: d.isAdministrator)
                         
-                        // Notify to request onlines
-                        Actor.onUserVisibleWithUid(d.uid)
-                    }
+                    // Notify to request onlines
+                    Actor.onUserVisibleWithUid(d.uid)
                 }
                 
                 r.selectAction = { (d) -> Bool in
-                    if let user = Actor.getUserWithUid(d.uid) {
-                        if (user.getId() == Actor.myUid()) {
-                            return true
+                    let user = Actor.getUserWithUid(d.uid)
+                    if (user.getId() == Actor.myUid()) {
+                        return true
+                    }
+                        
+                    let name = user.getNameModel().get()
+                        
+                    self.alertSheet { (a: AAAlertSetting) -> () in
+                            
+                        a.cancel = "AlertCancel"
+                            
+                        a.action("GroupMemberInfo") { () -> () in
+                            var controller: AAViewController! = ActorSDK.sharedActor().delegate.actorControllerForUser(Int(user.getId()))
+                            if controller == nil {
+                                controller = AAUserViewController(uid: Int(user.getId()))
+                            }
+                            self.navigateNext(controller, removeCurrent: false)
                         }
-                        
-                        let name = user.getNameModel().get()
-                        
-                        self.alertSheet { (a: AAAlertSetting) -> () in
-                            
-                            a.cancel = "AlertCancel"
-                            
-                            a.action("GroupMemberInfo") { () -> () in
-                                var controller: AAViewController! = ActorSDK.sharedActor().delegate.actorControllerForUser(Int(user.getId()))
-                                if controller == nil {
-                                    controller = AAUserViewController(uid: Int(user.getId()))
-                                }
-                                self.navigateNext(controller, removeCurrent: false)
-                            }
                          
-                            a.action("GroupMemberWrite") { () -> () in
-                                self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
-                                self.popover?.dismissPopoverAnimated(true)
-                            }
+                        a.action("GroupMemberWrite") { () -> () in
+                            self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
+                            self.popover?.dismissPopoverAnimated(true)
+                        }
                             
-                            a.action("GroupMemberCall", closure: { () -> () in
-                                let phones = user.getPhonesModel().get()
-                                if phones.size() == 0 {
-                                    self.alertUser("GroupMemberCallNoPhones")
-                                } else if phones.size() == 1 {
-                                    let number = phones.getWithInt(0)
-                                    ActorSDK.sharedActor().openUrl("telprompt://+\(number.phone)")
-                                } else {
+                        a.action("GroupMemberCall", closure: { () -> () in
+                            let phones = user.getPhonesModel().get()
+                            if phones.size() == 0 {
+                                self.alertUser("GroupMemberCallNoPhones")
+                            } else if phones.size() == 1 {
+                                let number = phones.getWithInt(0)
+                                ActorSDK.sharedActor().openUrl("telprompt://+\(number.phone)")
+                            } else {
                                     
-                                    var numbers = [String]()
-                                    for i in 0..<phones.size() {
-                                        let p = phones.getWithInt(i)
-                                        numbers.append("\(p.title): +\(p.phone)")
-                                    }
-                                    self.showActionSheet(numbers,
-                                        cancelButton: "AlertCancel",
-                                        destructButton: nil,
-                                        sourceView: self.view,
-                                        sourceRect: self.view.bounds,
-                                        tapClosure: { (index) -> () in
-                                            if (index >= 0) {
-                                                let number = phones.getWithInt(jint(index))
-                                                ActorSDK.sharedActor().openUrl("telprompt://+\(number.phone)")
-                                            }
+                                var numbers = [String]()
+                                for i in 0..<phones.size() {
+                                    let p = phones.getWithInt(i)
+                                    numbers.append("\(p.title): +\(p.phone)")
+                                }
+                                self.showActionSheet(numbers,
+                                    cancelButton: "AlertCancel",
+                                    destructButton: nil,
+                                    sourceView: self.view,
+                                    sourceRect: self.view.bounds,
+                                    tapClosure: { (index) -> () in
+                                        if (index >= 0) {
+                                            let number = phones.getWithInt(jint(index))
+                                            ActorSDK.sharedActor().openUrl("telprompt://+\(number.phone)")
+                                        }
                                     })
                                 }
                             })
@@ -251,7 +250,7 @@ public class AAGroupViewController: AAContentTableController {
                                     
                                     self.confirmDestructive(AALocalized("GroupMemberMakeMessage").replace("{name}", dest: name), action: AALocalized("GroupMemberMakeAction")) {
 
-                                        self.executeSafe(Actor.makeAdminCommandWithGid(jint(self.gid), withUid: jint(user.getId())))
+                                        self.executeSafe(Actor.makeAdminCommandWithGid(jint(self.gid), withUid: jint(user.getId()))!)
                                     }
                                 }
                             }
@@ -264,12 +263,11 @@ public class AAGroupViewController: AAContentTableController {
                                     self.confirmDestructive(AALocalized("GroupMemberKickMessage")
                                         .replace("{name}", dest: name), action: AALocalized("GroupMemberKickAction")) {
 
-                                        self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId()))
+                                        self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId())!)
                                     }
                                 }
                             }
                         }
-                    }
                     
                     return true
                 }
@@ -284,7 +282,7 @@ public class AAGroupViewController: AAContentTableController {
                 r.selectAction = { () -> Bool in
                     
                     self.confirmDestructive(AALocalized("GroupLeaveConfirm"), action: AALocalized("GroupLeaveConfirmAction"), yes: { () -> () in
-                        self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid)))
+                        self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid))!)
                     })
                     
                     return true
@@ -297,7 +295,7 @@ public class AAGroupViewController: AAContentTableController {
         
         // Bind group info
         
-        binder.bind(group.getNameModel()!) { (value: String?) -> () in
+        binder.bind(group.getNameModel()) { (value: String?) -> () in
             self.headerRow.reload()
         }
         
@@ -312,6 +310,7 @@ public class AAGroupViewController: AAContentTableController {
                 self.memberRows.data = v.toArray().toSwiftArray()
                 self.memberRows.data.sortInPlace(self.membersSort)
                 self.memberRows.reload()
+                
             }
         }
         

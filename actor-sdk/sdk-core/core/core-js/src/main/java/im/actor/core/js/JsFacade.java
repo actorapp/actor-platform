@@ -344,7 +344,7 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        messenger.getSharedDialogList().subscribe(callback);
+        messenger.getSharedDialogList().subscribe(callback, false);
     }
 
     public void unbindDialogs(JsDisplayListCallback<JsDialog> callback) {
@@ -376,7 +376,7 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        messenger.getSharedContactList().subscribe(callback);
+        messenger.getSharedContactList().subscribe(callback, true);
     }
 
     public void unbindContacts(JsDisplayListCallback<JsContact> callback) {
@@ -392,7 +392,7 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        messenger.getSharedSearchList().subscribe(callback);
+        messenger.getSharedSearchList().subscribe(callback, false);
     }
 
     public void unbindSearch(JsDisplayListCallback<JsSearchEntity> callback) {
@@ -408,14 +408,23 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        messenger.getSharedChatList(peer.convert()).subscribeInverted(callback);
+        messenger.getSharedChatList(peer.convert()).subscribe(callback, true);
     }
 
     public void unbindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
         if (callback == null) {
             return;
         }
-        messenger.getSharedChatList(peer.convert()).unsubscribeInverted(callback);
+        messenger.getSharedChatList(peer.convert()).unsubscribe(callback);
+    }
+
+    public JsMessagesBind bindMessages(JsPeer peer, JsMessagesBindClosure callback) {
+        if (callback == null) {
+            return null;
+        }
+        Peer peerC = peer.convert();
+
+        return new JsMessagesBind(callback, messenger.getSharedChatList(peerC), messenger.getConversationVM(peerC));
     }
 
     public void onMessageShown(JsPeer peer, JsMessage message) {
@@ -633,6 +642,11 @@ public class JsFacade implements Exportable {
 
     public void sendClipboardPhoto(final JsPeer peer, final JsBlob blob) {
         messenger.sendClipboardPhoto(peer.convert(), blob);
+    }
+
+    public void sendVoiceMessage(final JsPeer peer, int duration, final JsBlob blob) {
+        String descriptor = provider.registerUploadFile(blob);
+        messenger.sendAudio(peer.convert(), "voice.opus", duration, descriptor);
     }
 
     // Drafts

@@ -19,3 +19,10 @@ message ApplePushCredentials {
     int32 apns_key = 2;
     bytes token = 3;
 }
+
+message ActorPushCredentials {
+    option (scalapb.message).extends = "im.actor.server.model.push.PushCredentials";
+
+    int64 auth_id = 1;
+    string endpoint = 2;
+}

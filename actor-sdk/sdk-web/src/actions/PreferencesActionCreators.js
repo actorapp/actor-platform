@@ -5,15 +5,18 @@
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
+import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 export default {
   show() {
     dispatch(ActionTypes.PREFERENCES_MODAL_SHOW);
     this.loadSessions();
+    ComposeActionCreators.toggleAutoFocus(false);
   },
 
   hide() {
     dispatch(ActionTypes.PREFERENCES_MODAL_HIDE);
+    ComposeActionCreators.toggleAutoFocus(true);
   },
 
   save(preferences) {

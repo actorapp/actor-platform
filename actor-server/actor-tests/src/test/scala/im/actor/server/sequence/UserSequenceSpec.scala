@@ -3,10 +3,12 @@ package im.actor.server.sequence
 import akka.pattern.ask
 import akka.testkit._
 import com.google.protobuf.ByteString
+import com.google.protobuf.wrappers.StringValue
 import com.typesafe.config._
-import im.actor.api.rpc.contacts.UpdateContactsAdded
+import im.actor.api.rpc.contacts.{ UpdateContactRegistered, UpdateContactsAdded }
 import im.actor.server._
 import im.actor.server.model.{ SerializedUpdate, UpdateMapping }
+import im.actor.server.persist.sequence.UserSequenceRepo
 import im.actor.server.sequence.UserSequenceCommands.{ DeliverUpdate, Envelope }
 import org.scalatest.time.{ Seconds, Span }
 
@@ -22,6 +24,8 @@ final class UserSequenceSpec extends BaseAppSuite(
   it should "increment seq on update push" in e1
 
   it should "not reply with seq of the ongoing update (concurrency problem)" in e2
+
+  it should "reduce updates" in reduceUpdates
 
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(10, Seconds))
@@ -103,6 +107,51 @@ final class UserSequenceSpec extends BaseAppSuite(
         whenReady(f) { seqstate ⇒
           seqstate.seq shouldEqual expectedSeq
         }
+    }
+  }
+
+  def reduceUpdates() = {
+    val (user, _, _, _) = createUser()
+
+    val update = UpdateContactsAdded(Vector(1, 2, 3))
+    val deliverUpd = DeliverUpdate(
+      mapping = Some(UpdateMapping(Some(SerializedUpdate(
+        header = update.header,
+        body = ByteString.copyFrom(update.toByteArray),
+        userIds = update._relatedUserIds,
+        groupIds = update._relatedGroupIds
+      ))))
+    )
+
+    val updateSame = UpdateContactRegistered(1, isSilent = false, 0L, 0L)
+    val deliverUpdSame = DeliverUpdate(
+      reduceKey = Some(StringValue("same")),
+      mapping = Some(UpdateMapping(Some(SerializedUpdate(
+        header = updateSame.header,
+        body = ByteString.copyFrom(updateSame.toByteArray),
+        userIds = update._relatedUserIds,
+        groupIds = update._relatedGroupIds
+      ))))
+    )
+
+    whenReady(region.ref ? Envelope(user.id).withDeliverUpdate(deliverUpd))(identity)
+    whenReady(region.ref ? Envelope(user.id).withDeliverUpdate(deliverUpd))(identity)
+
+    whenReady(region.ref ? Envelope(user.id).withDeliverUpdate(deliverUpdSame))(identity)
+    whenReady(region.ref ? Envelope(user.id).withDeliverUpdate(deliverUpdSame))(identity)
+    whenReady(region.ref ? Envelope(user.id).withDeliverUpdate(deliverUpdSame))(identity)
+
+    whenReady(region.ref ? Envelope(user.id).withDeliverUpdate(deliverUpd))(identity)
+
+    whenReady(region.ref ? Envelope(user.id).withDeliverUpdate(deliverUpdSame))(identity)
+
+    whenReady(db.run(UserSequenceRepo.fetchAfterSeq(user.id, 0, 100L))) { updates ⇒
+      updates.map(_.mapping.get.default.get.header) shouldBe Seq(
+        UpdateContactsAdded.header,
+        UpdateContactsAdded.header,
+        UpdateContactsAdded.header,
+        UpdateContactRegistered.header
+      )
     }
   }
 }

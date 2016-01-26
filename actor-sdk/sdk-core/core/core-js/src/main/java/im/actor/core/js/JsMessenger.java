@@ -43,6 +43,7 @@ import im.actor.core.js.providers.electron.JsElectronListener;
 import im.actor.core.js.providers.notification.JsChromePush;
 import im.actor.core.js.providers.notification.JsSafariPush;
 import im.actor.core.js.providers.notification.PushSubscribeResult;
+import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
@@ -235,6 +236,8 @@ public class JsMessenger extends Messenger {
     public JsBindedValue<JsArray<JsDialogGroup>> getDialogsGroupedList() {
         return jsBindingModule.getDialogsGroupedList();
     }
+
+
 
     private String getSmallAvatarUrl(Avatar avatar) {
         if (avatar != null && avatar.getSmallImage() != null) {

@@ -9,6 +9,7 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 
 let _messages = [];
 let _overlay = [];
+let _isLoaded = false;
 let _selectedMessages = new Immutable.Set();
 
 /**
@@ -33,6 +34,10 @@ class MessageStore extends Store {
     return _overlay;
   }
 
+  isLoaded() {
+    return _isLoaded;
+  }
+
   /**
    * @returns {Array} Selected messages
    */
@@ -50,6 +55,7 @@ class MessageStore extends Store {
       case ActionTypes.MESSAGES_CHANGED:
         _messages = action.messages;
         _overlay = action.overlay;
+        _isLoaded = action.isLoaded;
         this.__emitChange();
         break;
 

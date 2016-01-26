@@ -1,24 +1,25 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
 import VBFPopFlatButton
+import YYKit
 
-public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPlayerDelegate {
+public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPlayerDelegate,AAModernViewInlineMediaContextDelegate {
 
     // Views
     
-    let progress = AAProgressView(size: CGSizeMake(48, 48))
-    let timeLabel = UILabel()
-    let voiceTimeLabel = UILabel()
-    let playPauseButton = UIButton()
-    let soundProgress = UIProgressView()
-    let statusView = UIImageView()
+    private let progress = AAProgressView(size: CGSizeMake(44, 44))
+    private let timeLabel = AttributedLabel()
+    private let voiceTimeLabel = AttributedLabel()
+    private let playPauseButton = UIButton()
+    private let soundProgressSlider = UISlider()
+    private let statusView = UIImageView()
     
 
-    private let sizeLabel = UILabel()
-    private let titleLabel = UILabel()
+    private let durationLabel = AttributedLabel()
+    private let titleLabel = AttributedLabel()
     
     // Binded data
     
@@ -29,39 +30,72 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
     // Constructors
     
     public init(frame: CGRect) {
+        
         super.init(frame: frame, isFullSize: false)
         
+        ////////////////////////////////////////////////////
         
         timeLabel.font = UIFont.italicSystemFontOfSize(11)
         timeLabel.textColor = appStyle.chatTextDateOutColor
         
+        ////////////////////////////////////////////////////
+        
         statusView.contentMode = UIViewContentMode.Center
+        
+        ////////////////////////////////////////////////////
+        
+        soundProgressSlider.tintColor = appStyle.chatStatusSending
+        
+        soundProgressSlider.userInteractionEnabled = false
+        
+        //soundProgressSlider.addTarget(self, action: "seekToNewAudioValue", forControlEvents: UIControlEvents.ValueChanged)
+        
+        let insets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        
+        let trackLeftImage = UIImage.tinted("aa_voiceplaybackground", color: UIColor(red: 0.0, green: 0.761, blue: 0.9964, alpha: 1.0 ))
+        let trackLeftResizable = trackLeftImage.resizableImageWithCapInsets(insets)
+        soundProgressSlider.setMinimumTrackImage(trackLeftResizable, forState: .Normal)
+        
+        let trackRightImage = UIImage.tinted("aa_voiceplaybackground", color: UIColor(red: 0.0, green: 0.5856, blue: 0.9985, alpha: 1.0 ))
+        let trackRightResizable = trackRightImage.resizableImageWithCapInsets(insets)
+        soundProgressSlider.setMaximumTrackImage(trackRightResizable, forState: .Normal)
+        
+        let thumbImageNormal = UIImage.bundled("aa_thumbvoiceslider")
+        soundProgressSlider.setThumbImage(thumbImageNormal, forState: .Normal)
+        
+        ////////////////////////////////////////////////////
         
         voiceTimeLabel.font = UIFont.italicSystemFontOfSize(11)
         voiceTimeLabel.textColor = appStyle.chatTextDateOutColor
+        
+        ////////////////////////////////////////////////////
 
-        sizeLabel.font = UIFont.systemFontOfSize(13.0)
-        sizeLabel.textColor = appStyle.chatTextOutColor
-        sizeLabel.text = " "
-        sizeLabel.sizeToFit()
+        durationLabel.font = UIFont.systemFontOfSize(11.0)
+        durationLabel.textColor = appStyle.chatTextDateOutColor
+        durationLabel.text = " "
+        durationLabel.sizeToFit()
         
-        titleLabel.font = UIFont.systemFontOfSize(16.0)
-        titleLabel.textColor = appStyle.chatTextOutColor
-        titleLabel.text = " "
-        titleLabel.sizeToFit()
-        titleLabel.lineBreakMode = NSLineBreakMode.ByTruncatingTail
+        ////////////////////////////////////////////////////
         
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(sizeLabel)
+        durationLabel.layer.drawsAsynchronously         = true
+        progress.layer.drawsAsynchronously              = true
+        playPauseButton.layer.drawsAsynchronously       = true
+        soundProgressSlider.layer.drawsAsynchronously   = true
+        voiceTimeLabel.layer.drawsAsynchronously        = true
+        timeLabel.layer.drawsAsynchronously             = true
+        statusView.layer.drawsAsynchronously            = true
         
+        ////////////////////////////////////////////////////
         
+        contentView.addSubview(durationLabel)
         contentView.addSubview(progress)
-        
         contentView.addSubview(playPauseButton)
-        contentView.addSubview(soundProgress)
+        contentView.addSubview(soundProgressSlider)
         contentView.addSubview(voiceTimeLabel)
         contentView.addSubview(timeLabel)
         contentView.addSubview(statusView)
+        
+        ////////////////////////////////////////////////////
         
         playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
         playPauseButton.addTarget(self, action: "mediaDidTap", forControlEvents: UIControlEvents.TouchUpInside)
@@ -74,7 +108,7 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
         fatalError("init(coder:) has not been implemented")
     }
     
-    // Binding
+    // MARK: - Binding
     
     public override func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         self.bindedLayout = cellLayout as! VoiceMessageCellLayout
@@ -87,6 +121,7 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
             bottom: setting.clenchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom,
             right: 10 + (AADevice.isiPad ? 16 : 0))
         
+        
         if (!reuse) {
             
             // Bind bubble
@@ -97,20 +132,53 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
             }
             
             titleLabel.text = AALocalized("ChatVoiceMessage")
-            sizeLabel.text = bindedLayout.voiceDuration
+            durationLabel.text = bindedLayout.voiceDuration
             
             // Reset progress
             self.progress.hideButton()
             UIView.animateWithDuration(0, animations: { () -> Void in
-                self.progress.alpha = 0
+                self.progress.hidden = true
             })
             
             // Bind file
             fileBind(message, autoDownload: document.getSource().getSize() < 1024 * 1025 * 1024)
-            
-            
-           
+        
         }
+        
+        dispatchOnUi { () -> Void in
+            
+            //let content = bindedMessage!.content as! ACDocumentContent
+            
+            let content = self.bindedMessage!.content as! ACDocumentContent
+            if let fileSource = content.getSource() as? ACFileRemoteSource {
+                let fileID = fileSource.getFileReference().getFileId()
+                
+                if self.controller.currentAudioFileId != fileID {
+                    self.soundProgressSlider.value = 0.0
+                    self.playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
+                    self.controller.voiceContext?.removeDelegate(self)
+                } else {
+                    self.controller.voiceContext?.delegate = self
+                    self.controller.voicePlayer?.delegate = self
+                    
+                    if self.controller.voicePlayer?.isPaused() == false {
+                        self.playPauseButton.setImage(UIImage.bundled("aa_pauserecordbutton"), forState: UIControlState.Normal)
+                    } else {
+                        self.playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
+                    }
+                    
+                }
+                
+                if let progressVoice = self.controller.voicesCache[fileID] {
+                    if progressVoice > 0.0 {
+                        self.soundProgressSlider.value = progressVoice
+                    }
+                }
+                
+            }
+            
+        }
+        
         
         // Update time
         timeLabel.text = cellLayout.date
@@ -118,24 +186,24 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
         // Update status
         if (isOut) {
             statusView.hidden = false
-            switch(UInt(message.messageState.ordinal())) {
-            case ACMessageState.PENDING.rawValue:
+            switch(message.messageState.ordinal()) {
+            case ACMessageState.PENDING().ordinal():
                 self.statusView.image = appStyle.chatIconClock
                 self.statusView.tintColor = appStyle.chatStatusSending
                 break
-            case ACMessageState.SENT.rawValue:
+            case ACMessageState.SENT().ordinal():
                 self.statusView.image = appStyle.chatIconCheck1
                 self.statusView.tintColor = appStyle.chatStatusSent
                 break
-            case ACMessageState.RECEIVED.rawValue:
+            case ACMessageState.RECEIVED().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2
                 self.statusView.tintColor = appStyle.chatStatusReceived
                 break
-            case ACMessageState.READ.rawValue:
+            case ACMessageState.READ().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2
                 self.statusView.tintColor = appStyle.chatStatusRead
                 break
-            case ACMessageState.ERROR.rawValue:
+            case ACMessageState.ERROR().ordinal():
                 self.statusView.image = appStyle.chatIconError
                 self.statusView.tintColor = appStyle.chatStatusError
                 break
@@ -149,7 +217,8 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
         }
     }
     
-    // File state binding
+    
+    //MARK: - File state binding
     
     public override func fileUploadPaused(reference: String, selfGeneration: Int) {
         
@@ -206,7 +275,7 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
     }
     
     
-    // Media Action
+    //MARK: - Media Action
     
     public func mediaDidTap() {
         let content = bindedMessage!.content as! ACDocumentContent
@@ -218,14 +287,21 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
                     Actor.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
                 }, onDownloaded: { (reference) -> () in
                     
-                    
-                    print("paaaaath ==== \(CocoaFiles.pathFromDescriptor(reference))")
-                    self.playPauseButton.setImage(UIImage.bundled("aa_pauserecordbutton"), forState: UIControlState.Normal)
-                    self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(reference))
-                    
-                    self.controller.voicePlayer.delegate = self
-                    
-                    
+                    dispatchOnUi({ () -> Void in
+                        
+                        let path = CocoaFiles.pathFromDescriptor(reference)
+                        
+                        let fileID = fileSource.getFileReference().getFileId()
+                        
+                        self.controller.playVoiceFromPath(path,fileId: fileID,position:self.soundProgressSlider.value)
+                        
+                        self.playPauseButton.setImage(UIImage.bundled("aa_pauserecordbutton"), forState: UIControlState.Normal)
+                        
+                        self.controller.voicePlayer.delegate = self
+                        self.controller.voiceContext.delegate = self
+                        
+                    })
+
             }))
             
         } else if let fileSource = content.getSource() as? ACFileLocalSource {
@@ -237,36 +313,78 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
                     Actor.pauseUploadWithRid(rid)
                 }, onUploadedClosure: { () -> () in
                     
+                    dispatchOnUi({ () -> Void in
+                        
+                        let path = CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor())
+                        
+                        let content = self.bindedMessage!.content as! ACDocumentContent
+                        if let fileSource = content.getSource() as? ACFileRemoteSource {
+                            let fileID = fileSource.getFileReference().getFileId()
+                            
+                            self.controller.playVoiceFromPath(path,fileId: fileID,position:self.soundProgressSlider.value)
+                            
+                            self.playPauseButton.setImage(UIImage.bundled("aa_pauserecordbutton"), forState: UIControlState.Normal)
+                            
+                            self.controller.voicePlayer.delegate = self
+                            self.controller.voiceContext.delegate = self
+                        }
+                        
+
+                    })
                     
-                    print("paaaaath2 ==== \(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))")
-                    self.playPauseButton.setImage(UIImage.bundled("aa_pauserecordbutton"), forState: UIControlState.Normal)
-                    self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
-                    
-                    self.controller.voicePlayer.delegate = self
                     
             }))
             
         }
     }
     
-    public func audioPlayerDidFinish() {
-        playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
+    public func seekToNewAudioValue() {
+        
     }
     
-    // Layouting
+    public func audioPlayerDidFinish() {
+        
+        dispatchOnUi { () -> Void in
+            
+            self.playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
+            self.soundProgressSlider.value = 0.0
+            self.controller.voicesCache[self.controller.currentAudioFileId] = 0.0
+            
+        }
+        
+    }
+    
+    public func inlineMediaPlaybackStateUpdated(isPaused: Bool, playbackPosition: Float, timestamp: NSTimeInterval, preciseDuration: NSTimeInterval) {
+        
+        dispatchOnUi({ () -> Void in
+        
+            self.soundProgressSlider.value = playbackPosition
+            
+            if (isPaused == true) {
+                self.playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
+            }
+            
+            self.controller.voicesCache[self.controller.currentAudioFileId] = playbackPosition
+        
+            
+        })
+        
+    }
+    
+    //MARK: - Layouting
     
     public override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
         let insets = fullContentInsets
         let contentWidth = self.contentView.frame.width
         
-        layoutBubble(200, contentHeight: 66)
+        layoutBubble(200, contentHeight: 55)
         
         let contentLeft = self.isOut ? contentWidth - 200 - insets.right - contentInsets.left : insets.left
         
         let top = insets.top - 2
         
         // Progress state
-        let progressRect = CGRectMake(contentLeft + 8, 12 + top, 48, 48)
+        let progressRect = CGRectMake(contentLeft + 7.5, 7.5 + top, 44, 44)
         self.progress.frame = progressRect
         self.playPauseButton.frame = progressRect
         
@@ -274,13 +392,12 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
         timeLabel.sizeToFit()
         
         // Content
-        self.titleLabel.frame = CGRectMake(contentLeft + 62, 16 + top, 200 - 64, 22)
-        self.sizeLabel.frame = CGRectMake(contentLeft + 62, 16 + 22 + top, 200 - 64, 22)
-    
+        self.soundProgressSlider.frame = CGRectMake(contentLeft + 62, 16 + top, 200 - 70, 22)
+        self.durationLabel.frame = CGRectMake(contentLeft + 62, 10 + 25 + top, 200 - 64, 22)
         
         // Message state
         if (self.isOut) {
-            self.timeLabel.frame = CGRectMake(self.bubble.frame.maxX - 70 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
+            self.timeLabel.frame = CGRectMake(self.bubble.frame.maxX - 55 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
             self.statusView.frame = CGRectMake(self.bubble.frame.maxX - 24 - self.bubblePadding, self.bubble.frame.maxY - 24, 20, 26)
             self.statusView.hidden = false
         } else {
@@ -312,13 +429,13 @@ public class VoiceMessageCellLayout: AACellLayout {
     public init(fileName: String, fileExt: String, fileSize: Int,id: Int64, date: Int64, autoDownload: Bool,duration:jint) {
         
         // Saving content size
-        self.contentSize = CGSizeMake(200, 66)
+        self.contentSize = CGSizeMake(200, 55)
         
         // Saving autodownload flag
         self.autoDownload = autoDownload
         
         // Calculating bubble screen size
-        self.screenSize = CGSize(width: 200, height: 66)
+        self.screenSize = CGSize(width: 200, height: 55)
         
         self.fileName = fileName
         self.fileExt = fileExt.lowercaseString
@@ -358,7 +475,7 @@ public class VoiceMessageCellLayout: AACellLayout {
     public convenience init(id: Int64, voiceContent: ACVoiceContent, date: Int64) {
         
         
-        self.init(fileName: voiceContent.getName(), fileExt: voiceContent.getExt(), fileSize: Int(voiceContent.getSource().getSize()),id: id, date: date, autoDownload: true,duration:voiceContent.getDuration())
+        self.init(fileName: voiceContent.getName(), fileExt: voiceContent.getExt(), fileSize: Int(voiceContent.getSource().getSize()),id: id, date: date, autoDownload: true,duration:jint(voiceContent.getDuration()/1000))
     }
     
     

@@ -18,9 +18,9 @@ import im.actor.server.file.FileUtils._
 import im.actor.server.file._
 import im.actor.server.{ model, persist }
 import im.actor.server.db.ActorPostgresDriver.api._
+import im.actor.util.ThreadLocalSecureRandom
 
 import scala.concurrent.duration._
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
 final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
@@ -83,9 +83,9 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   }
 
   private def uploadFile(bucketName: String, name: UnsafeFileName, data: Array[Byte]): DBIO[FileLocation] = {
-    val rnd = ThreadLocalRandom.current()
-    val id = rnd.nextLong()
-    val accessSalt = ACLFiles.nextAccessSalt(rnd)
+    val rng = ThreadLocalSecureRandom.current()
+    val id = rng.nextLong()
+    val accessSalt = ACLFiles.nextAccessSalt(rng)
     val size = data.length
 
     for {

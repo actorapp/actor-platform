@@ -12,9 +12,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiRawValue;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.rpc.ResponseDoCall;
+import im.actor.core.api.rpc.ResponseRawRequest;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.MentionFilterResult;
@@ -29,6 +31,7 @@ import im.actor.core.entity.WebActionDescriptor;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.entity.signals.AbsSignal;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Modules;
@@ -47,6 +50,7 @@ import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
 import im.actor.core.viewmodel.AppStateVM;
 import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileVM;
@@ -581,6 +585,16 @@ public class Messenger {
     //////////////////////////////////////
 
     /**
+     * Getting Conversation VM
+     *
+     * @param peer peer
+     * @return Conversation VM
+     */
+    public ConversationVM getConversationVM(Peer peer) {
+        return modules.getMessagesModule().getConversationVM(peer);
+    }
+
+    /**
      * Send Markdown Message with mentions
      *
      * @param peer         destination peer
@@ -746,7 +760,7 @@ public class Messenger {
     /**
      * Send json message
      *
-     * @param peer destination peer
+     * @param peer    destination peer
      * @param content json content
      */
     @ObjectiveCName("sendJsonWithPeer:withJson:")
@@ -995,6 +1009,14 @@ public class Messenger {
     //             Calls
     //////////////////////////////////////
 
+    /**
+     * Command for doing call
+     *
+     * @param uid          user you want to call
+     * @param callCallback ui callback
+     * @return command to execute
+     */
+    @ObjectiveCName("doCallWithUid:withCallback:")
     public Command<ResponseDoCall> doCall(int uid, CallsModule.CallCallback callCallback) {
         return modules.getCallsModule().makeCall(uid, callCallback);
     }
@@ -1003,11 +1025,24 @@ public class Messenger {
         modules.getCallsModule().endCall(callId);
     }
 
-    public void answerCall(long callId, CallsModule.CallCallback callback) {
-        modules.getCallsModule().answerCall(callId, callback);
+    /**
+     * Handle call in ui - <b>should<b/> be called, when receiving IncomingCallEvent
+     * @param callId
+     * @param callback
+     */
+    @ObjectiveCName("handleCallWithCallId:withCallback:")
+    public void handleCall(long callId, CallsModule.CallCallback callback) {
+        modules.getCallsModule().handleCall(callId, callback);
     }
 
-    public void sendCallSignal(long callId, byte[] data) {
+    /**
+     * Send call signaling
+     *
+     * @param callId call id
+     * @param data   signal object to send
+     */
+    @ObjectiveCName("sendCallSignalWithCallId:withData:")
+    public void sendCallSignal(long callId, AbsSignal data) {
         modules.getCallsModule().sendSignal(callId, data);
     }
 
@@ -1927,6 +1962,24 @@ public class Messenger {
     }
 
     //////////////////////////////////////
+    //              Raw api
+    //////////////////////////////////////
+
+    /**
+     * Command for raw api request
+     *
+     * @param service service name
+     * @param method  method name
+     * @param params  request params
+     * @return Command for execution
+     */
+    @ObjectiveCName("rawRequestCommandWithService:withMethod:WithParams:")
+    public Command<ResponseRawRequest> rawRequestCommand(String service, String method, ApiRawValue params) {
+        return modules.getExternalModule().rawRequest(service, method, params);
+    }
+
+
+    //////////////////////////////////////
     //        Tools and Tech
     //////////////////////////////////////
 
@@ -1961,6 +2014,16 @@ public class Messenger {
     @ObjectiveCName("registerApplePushWithApnsId:withToken:")
     public void registerApplePush(int apnsId, String token) {
         modules.getPushesModule().registerApplePush(apnsId, token);
+    }
+
+    /**
+     * Register actor push
+     *
+     * @param endpoint push endpoint
+     */
+    @ObjectiveCName("registerActorPushWithEndpoint:")
+    public void registerActorPush(String endpoint) {
+        modules.getPushesModule().registerActorPush(endpoint);
     }
 
     /**
