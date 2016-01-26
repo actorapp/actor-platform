@@ -1,11 +1,24 @@
-package im.actor.runtime.actors.promise;
+package im.actor.runtime.promise;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import im.actor.runtime.function.ArrayFunction;
+import im.actor.runtime.function.Map;
 import im.actor.runtime.function.Supplier;
 
 public class Promises {
+
+    public static <T> Promise<T> success(final T val) {
+        return new Promise<T>() {
+            @Override
+            protected void exec(@NotNull PromiseResolver<T> executor) {
+                executor.result(val);
+            }
+        };
+    }
 
     /**
      * Zip promise of array to single object
@@ -97,5 +110,21 @@ public class Promises {
                 }
             }
         };
+    }
+
+    public static <T, C> Promise<T>[] map(Collection<C> items, Map<C, Promise<T>> map) {
+        ArrayList<Promise<T>> res = new ArrayList<Promise<T>>();
+        for (C c : items) {
+            res.add(map.map(c));
+        }
+        return res.toArray(new Promise[0]);
+    }
+
+    public static <T, C> Promise<T>[] map(C[] items, Map<C, Promise<T>> map) {
+        ArrayList<Promise<T>> res = new ArrayList<Promise<T>>();
+        for (C c : items) {
+            res.add(map.map(c));
+        }
+        return res.toArray(new Promise[0]);
     }
 }

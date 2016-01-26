@@ -13,9 +13,9 @@ import im.actor.runtime.*;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ask.AskCallback;
 import im.actor.runtime.actors.ask.AskMessage;
-import im.actor.runtime.actors.promise.Promise;
-import im.actor.runtime.actors.promise.PromiseResolver;
-import im.actor.runtime.actors.promise.Promises;
+import im.actor.runtime.actors.ask.AskResult;
+import im.actor.runtime.promise.PromiseResolver;
+import im.actor.runtime.promise.Promises;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
@@ -26,7 +26,7 @@ import im.actor.runtime.function.Supplier;
 public class EncryptedSessionActor extends ModuleActor {
 
     private final String TAG;
-    private ActorRef keyManager;
+
     //
     // Key References
     //
@@ -37,13 +37,9 @@ public class EncryptedSessionActor extends ModuleActor {
     private final int theirKeyGroup;
 
     //
-    // Loaded Keys
+    // Loaded Session
     //
 
-    //    private OwnPrivateKey ownIdentityKey;
-//    private OwnPrivateKey ownPreKey;
-//    private UserPublicKey theirIdentityKey;
-//    private UserPublicKey theirPreKey;
     private EncryptedSession session;
 
     //
@@ -66,13 +62,13 @@ public class EncryptedSessionActor extends ModuleActor {
     @Override
     public void preStart() {
         Log.d(TAG, "preStart");
-        keyManager = context().getEncryption().getKeyManager();
-        Promises.sequence(
+        ActorRef keyManager = context().getEncryption().getKeyManager();
+        Promises.zip(Promises.sequence(
                 ask(keyManager, new FetchOwnKey()).cast(),
                 ask(keyManager, new FetchEphemeralPrivateKeyById(ownKey0)).cast(),
                 ask(keyManager, new FetchUserEphemeralKey(uid, theirKeyGroup, theirKey0)).cast(),
                 ask(keyManager, new FetchUserKeyGroups(uid)).cast()
-        ).cast().zip(new ArrayFunction<Object, EncryptedSession>() {
+        ), new ArrayFunction<Object, EncryptedSession>() {
             @Override
             public EncryptedSession apply(Object[] objects) {
                 OwnPrivateKey ownIdentityKey = ((FetchOwnKeyResult) objects[0]).getIdentityKey();
@@ -111,7 +107,7 @@ public class EncryptedSessionActor extends ModuleActor {
         }).dispatch(self()).done();
     }
 
-    private void onEncrypt(final byte[] data, final PromiseResolver future) {
+    private void onEncrypt(final byte[] data, final PromiseResolver<EncryptedPackageRes> future) {
         if (session == null) {
             stash();
             return;
@@ -141,14 +137,14 @@ public class EncryptedSessionActor extends ModuleActor {
         }
 
         try {
-            future.result(new EncryptedPackageRes(chains.get(0).encrypt(data)));
+            future.result(new EncryptedPackageRes(chains.get(0).encrypt(data), theirKeyGroup));
         } catch (IntegrityException e) {
             e.printStackTrace();
             future.error(e);
         }
     }
 
-    private void onDecrypt(final byte[] data, final PromiseResolver future) {
+    private void onDecrypt(final byte[] data, final PromiseResolver<DecryptedPackage> future) {
         if (session == null) {
             stash();
             return;
@@ -216,7 +212,7 @@ public class EncryptedSessionActor extends ModuleActor {
         }
     }
 
-    public static class EncryptPackage {
+    public static class EncryptPackage extends AskMessage<EncryptedPackageRes> {
         private byte[] data;
 
         public EncryptPackage(byte[] data) {
@@ -228,16 +224,22 @@ public class EncryptedSessionActor extends ModuleActor {
         }
     }
 
-    public static class EncryptedPackageRes {
+    public static class EncryptedPackageRes extends AskResult {
 
         private byte[] data;
+        private int keyGroupId;
 
-        public EncryptedPackageRes(byte[] data) {
+        public EncryptedPackageRes(byte[] data, int keyGroupId) {
             this.data = data;
+            this.keyGroupId = keyGroupId;
         }
 
         public byte[] getData() {
             return data;
+        }
+
+        public int getKeyGroupId() {
+            return keyGroupId;
         }
     }
 
@@ -266,5 +268,4 @@ public class EncryptedSessionActor extends ModuleActor {
             return data;
         }
     }
-
 }

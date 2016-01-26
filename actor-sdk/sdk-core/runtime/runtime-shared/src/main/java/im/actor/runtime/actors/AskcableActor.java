@@ -1,7 +1,7 @@
 package im.actor.runtime.actors;
 
 import im.actor.runtime.actors.ask.AskIntRequest;
-import im.actor.runtime.actors.promise.PromiseResolver;
+import im.actor.runtime.promise.PromiseResolver;
 
 public class AskcableActor extends Actor {
 
