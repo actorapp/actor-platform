@@ -18,9 +18,10 @@ import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.Future;
+import im.actor.runtime.actors.future.Future;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.ask.AskCallback;
+import im.actor.runtime.actors.promise.PromiseExecutor;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.box.ActorBox;
 import im.actor.runtime.crypto.box.ActorBoxKey;
@@ -65,7 +66,7 @@ public class EncryptedPeerActor extends ModuleActor {
         });
     }
 
-    private void doEncrypt(final byte[] data, final Future future) {
+    private void doEncrypt(final byte[] data, final PromiseExecutor future) {
 
         Log.d(TAG, "doEncrypt");
         ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchUserKeyGroups(uid), new AskCallback() {
@@ -116,7 +117,7 @@ public class EncryptedPeerActor extends ModuleActor {
                                 @Override
                                 public void onError(Exception e) {
                                     Log.d(TAG, "doEncrypt:#" + g.getKeyGroupId() + " Own key error");
-                                    future.onError(e);
+                                    future.error(e);
                                 }
                             });
                         }
@@ -124,7 +125,7 @@ public class EncryptedPeerActor extends ModuleActor {
                         @Override
                         public void onError(Exception e) {
                             Log.d(TAG, "doEncrypt:#" + g.getKeyGroupId() + " Their key error");
-                            future.onError(e);
+                            future.error(e);
                         }
                     });
                     return;
@@ -135,7 +136,7 @@ public class EncryptedPeerActor extends ModuleActor {
 
             @Override
             public void onError(Exception e) {
-                future.onError(e);
+                future.error(e);
             }
         });
 
@@ -156,20 +157,20 @@ public class EncryptedPeerActor extends ModuleActor {
 
                 @Override
                 public void onError(Exception e) {
-                    future.onError(e);
+                    future.error(e);
                 }
             });
         }
     }
 
-    private void doEncrypt(byte[] encKey, byte[] data, ArrayList<EncryptedBoxKey> encryptedKeys, Future future) {
+    private void doEncrypt(byte[] encKey, byte[] data, ArrayList<EncryptedBoxKey> encryptedKeys, PromiseExecutor future) {
         Log.d(TAG, "doEncrypt2");
         byte[] encData;
         try {
             encData = ActorBox.closeBox(ByteStrings.intToBytes(ownKeyGroupId), data, Crypto.randomBytes(32), new ActorBoxKey(encKey));
         } catch (IntegrityException e) {
             e.printStackTrace();
-            future.onError(e);
+            future.error(e);
             return;
         }
 
@@ -182,10 +183,10 @@ public class EncryptedPeerActor extends ModuleActor {
             Log.d(TAG, "Key: " + Hex.toHex(k.getEncryptedKey()));
         }
 
-        future.onResult(encryptedBox);
+        future.result(encryptedBox);
     }
 
-    private void doDecrypt(final EncryptedBox data, final Future future) {
+    private void doDecrypt(final EncryptedBox data, final PromiseExecutor future) {
 
         final int senderKeyGroup = ByteStrings.bytesToInt(ByteStrings.substring(data.getEncryptedPackage(), 0, 4));
         final byte[] encPackage = ByteStrings.substring(data.getEncryptedPackage(), 4, data.getEncryptedPackage().length - 4);
@@ -260,7 +261,7 @@ public class EncryptedPeerActor extends ModuleActor {
 
         if (pickedSession == null) {
             Log.d(TAG, "Unable to create session");
-            future.onError(new RuntimeException("Unable to find approriate session"));
+            future.error(new RuntimeException("Unable to find approriate session"));
             return;
         }
 
@@ -283,31 +284,29 @@ public class EncryptedPeerActor extends ModuleActor {
                     Log.d(TAG, "Box open:" + message);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    future.onError(e);
+                    future.error(e);
                     return;
                 }
 
-                future.onResult();
+                future.result(null);
             }
 
             @Override
             public void onError(Exception e) {
                 Log.d(TAG, "Decryption with key group:onError");
-                future.onError(e);
+                future.error(e);
             }
         });
     }
 
     @Override
-    public boolean onAsk(Object message, Future future) {
+    public void onAsk(Object message, PromiseExecutor future) {
         if (message instanceof EncryptPackage) {
             doEncrypt(((EncryptPackage) message).getData(), future);
-            return false;
         } else if (message instanceof DecryptPackage) {
             doDecrypt(((DecryptPackage) message).getEncryptedBox(), future);
-            return false;
         } else {
-            return super.onAsk(message, future);
+            super.onAsk(message, future);
         }
     }
 
