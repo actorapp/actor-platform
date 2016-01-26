@@ -71,109 +71,80 @@ public class EncryptedPeerActor extends ModuleActor {
         sequence(
                 ask(keyManager, new FetchOwnKeyGroup()).cast(),
                 ask(keyManager, new FetchUserKeyGroups(uid)).cast()
-        ).then(new Supplier<Object[]>() {
-            @Override
-            public void apply(Object[] objects) {
-                ownKeyGroupId = ((FetchOwnKeyGroupResult) objects[0]).getKeyGroupId();
-                theirKeys = ((FetchUserKeyGroupsResponse) objects[1]).getUserKeys();
-                isReady = true;
-                unstashAll();
-            }
-        }).failure(new Supplier<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                Log.w(TAG, "Unable to fetch initial parameters");
-                Log.e(TAG, e);
-            }
-        }).dispatch(self()).done();
+        ).then(objects -> {
+            ownKeyGroupId = ((FetchOwnKeyGroupResult) objects[0]).getKeyGroupId();
+            theirKeys = ((FetchUserKeyGroupsResponse) objects[1]).getUserKeys();
+            isReady = true;
+            unstashAll();
+        }).failure(e -> {
+            Log.w(TAG, "Unable to fetch initial parameters");
+            Log.e(TAG, e);
+        }).done(self());
     }
 
     private void doEncrypt(final byte[] data, final PromiseResolver<EncryptBoxResponse> future) {
         Log.d(TAG, "doEncrypt");
-        sequence(map(theirKeys.getUserKeysGroups(), new Map<UserKeysGroup, Promise<ActorRef>>() {
-            @Override
-            public Promise<ActorRef> map(final UserKeysGroup src) {
-                Log.d(TAG, "doEncrypt:map");
-                for (SessionId sessionId : activeSessions.keySet()) {
-                    if (sessionId.getTheirKeyGroupId() == src.getKeyGroupId()) {
-                        return success(activeSessions.get(sessionId));
-                    }
+        sequence(map(theirKeys.getUserKeysGroups(), src -> {
+            Log.d(TAG, "doEncrypt:map");
+            for (SessionId sessionId : activeSessions.keySet()) {
+                if (sessionId.getTheirKeyGroupId() == src.getKeyGroupId()) {
+                    return success(activeSessions.get(sessionId));
+                }
+            }
+
+            Log.d(TAG, "doEncrypt:not_found");
+            final UserKeysGroup srcFinal = src;
+            return zip(sequence(
+                    ask(keyManager, new FetchUserEphemeralKeyRandom(uid, src.getKeyGroupId())).cast(),
+                    ask(keyManager, new FetchOwnEphemeralKey()).cast()
+            ), t -> {
+
+                Log.d(TAG, "doEncrypt:not_found:apply");
+
+                final UserPublicKey theirEphemeral = ((FetchUserEphemeralKeyResponse) t[0]).getEphemeralKey();
+                final long ownEphemeral = ((FetchOwnEphemeralKeyResult) t[1]).getId();
+
+                SessionId sessionId = new SessionId(ownKeyGroupId, ownEphemeral,
+                        src.getKeyGroupId(), theirEphemeral.getKeyId());
+                ActorRef res = system().actorOf(Props.create(EncryptedSessionActor.class, () -> new EncryptedSessionActor(context(), uid,
+                        ownEphemeral, theirEphemeral.getKeyId(), srcFinal.getKeyGroupId())), getPath() + "/k_" + RandomUtils.nextRid());
+                activeSessions.put(sessionId, res);
+                return res;
+            });
+        })).then(actorRefs -> {
+
+            Log.d(TAG, "doEncrypt:enc");
+
+            final byte[] encKey = Crypto.randomBytes(128);
+
+            sequence(Promises.map(actorRefs, src -> {
+                return ask(src, new EncryptPackage(encKey));
+            })).then(encryptedPackageRes -> {
+                ArrayList<EncryptedBoxKey> encryptedKeys = new ArrayList<>();
+                for (EncryptedPackageRes r : encryptedPackageRes) {
+                    encryptedKeys.add(new EncryptedBoxKey(uid, r.getKeyGroupId(), r.getData()));
                 }
 
-                Log.d(TAG, "doEncrypt:not_found");
+                byte[] encData;
+                try {
+                    encData = ActorBox.closeBox(ByteStrings.intToBytes(ownKeyGroupId), data, Crypto.randomBytes(32), new ActorBoxKey(encKey));
+                } catch (IntegrityException e) {
+                    e.printStackTrace();
+                    future.error(e);
+                    return;
+                }
 
-                return zip(sequence(
-                        ask(keyManager, new FetchUserEphemeralKeyRandom(uid, src.getKeyGroupId())).cast(),
-                        ask(keyManager, new FetchOwnEphemeralKey()).cast()
-                ), new ArrayFunction<Object, ActorRef>() {
-                    @Override
-                    public ActorRef apply(Object[] t) {
+                EncryptedBox encryptedBox = new EncryptedBox(
+                        encryptedKeys.toArray(new EncryptedBoxKey[encryptedKeys.size()]),
+                        ByteStrings.merge(ByteStrings.intToBytes(ownKeyGroupId), encData));
 
-                        Log.d(TAG, "doEncrypt:not_found:apply");
-
-                        final UserPublicKey theirEphemeral = ((FetchUserEphemeralKeyResponse) t[0]).getEphemeralKey();
-                        final long ownEphemeral = ((FetchOwnEphemeralKeyResult) t[1]).getId();
-
-                        SessionId sessionId = new SessionId(ownKeyGroupId, ownEphemeral,
-                                src.getKeyGroupId(), theirEphemeral.getKeyId());
-                        ActorRef res = system().actorOf(Props.create(EncryptedSessionActor.class, new ActorCreator<EncryptedSessionActor>() {
-                            @Override
-                            public EncryptedSessionActor create() {
-                                return new EncryptedSessionActor(context(), uid,
-                                        ownEphemeral, theirEphemeral.getKeyId(), src.getKeyGroupId());
-                            }
-                        }), getPath() + "/k_" + RandomUtils.nextRid());
-                        activeSessions.put(sessionId, res);
-                        return res;
-                    }
-                }).dispatch(self());
-            }
-        })).then(new Supplier<ActorRef[]>() {
-            @Override
-            public void apply(ActorRef[] actorRefs) {
-
-                Log.d(TAG, "doEncrypt:enc");
-
-                final byte[] encKey = Crypto.randomBytes(128);
-
-                sequence(Promises.map(actorRefs, new Map<ActorRef, Promise<EncryptedPackageRes>>() {
-                    @Override
-                    public Promise<EncryptedPackageRes> map(ActorRef src) {
-                        return ask(src, new EncryptPackage(encKey));
-                    }
-                })).then(new Supplier<EncryptedPackageRes[]>() {
-                    @Override
-                    public void apply(EncryptedPackageRes[] encryptedPackageRes) {
-                        ArrayList<EncryptedBoxKey> encryptedKeys = new ArrayList<EncryptedBoxKey>();
-                        for (EncryptedPackageRes r : encryptedPackageRes) {
-                            encryptedKeys.add(new EncryptedBoxKey(uid, r.getKeyGroupId(), r.getData()));
-                        }
-
-                        byte[] encData;
-                        try {
-                            encData = ActorBox.closeBox(ByteStrings.intToBytes(ownKeyGroupId), data, Crypto.randomBytes(32), new ActorBoxKey(encKey));
-                        } catch (IntegrityException e) {
-                            e.printStackTrace();
-                            future.error(e);
-                            return;
-                        }
-
-                        EncryptedBox encryptedBox = new EncryptedBox(
-                                encryptedKeys.toArray(new EncryptedBoxKey[encryptedKeys.size()]),
-                                ByteStrings.merge(ByteStrings.intToBytes(ownKeyGroupId), encData));
-
-                        future.result(new EncryptBoxResponse(encryptedBox));
-                    }
-                }).failure(new Supplier<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        Log.d(TAG, "Unable to encrypt all receivers");
-                        Log.e(TAG, e);
-                        future.error(e);
-                    }
-                }).dispatch(self()).done();
-            }
-        }).dispatch(self()).done();
+                future.result(new EncryptBoxResponse(encryptedBox));
+            }).failure(e -> {
+                Log.d(TAG, "Unable to encrypt all receivers");
+                Log.e(TAG, e);
+                future.error(e);
+            }).done(self());
+        }).done(self());
     }
 
     private void doDecrypt(final EncryptedBox data, final PromiseResolver<DecryptBoxResponse> future) {
