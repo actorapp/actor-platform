@@ -8,14 +8,14 @@ import org.jetbrains.annotations.Nullable;
  *
  * @param <T>
  */
-public class PromiseExecutor<T> {
+public class PromiseResolver<T> {
 
     private Promise<T> promise;
 
-    PromiseExecutor(Promise<T> promise) {
+    PromiseResolver(Promise<T> promise) {
         this.promise = promise;
     }
-    
+
     /**
      * Call this to complete promise
      *

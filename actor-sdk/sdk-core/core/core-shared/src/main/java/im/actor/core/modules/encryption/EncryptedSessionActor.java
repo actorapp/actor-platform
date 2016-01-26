@@ -10,17 +10,23 @@ import im.actor.core.modules.encryption.session.EncryptedSession;
 import im.actor.core.modules.encryption.session.EncryptedSessionChain;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.*;
-import im.actor.runtime.actors.future.Future;
+import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ask.AskCallback;
-import im.actor.runtime.actors.promise.PromiseExecutor;
+import im.actor.runtime.actors.ask.AskMessage;
+import im.actor.runtime.actors.promise.Promise;
+import im.actor.runtime.actors.promise.PromiseResolver;
+import im.actor.runtime.actors.promise.Promises;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
+import im.actor.core.modules.encryption.KeyManagerActor.*;
+import im.actor.runtime.function.ArrayFunction;
+import im.actor.runtime.function.Supplier;
 
 public class EncryptedSessionActor extends ModuleActor {
 
     private final String TAG;
-
+    private ActorRef keyManager;
     //
     // Key References
     //
@@ -34,10 +40,10 @@ public class EncryptedSessionActor extends ModuleActor {
     // Loaded Keys
     //
 
-    private OwnPrivateKey ownIdentityKey;
-    private OwnPrivateKey ownPreKey;
-    private UserPublicKey theirIdentityKey;
-    private UserPublicKey theirPreKey;
+    //    private OwnPrivateKey ownIdentityKey;
+//    private OwnPrivateKey ownPreKey;
+//    private UserPublicKey theirIdentityKey;
+//    private UserPublicKey theirPreKey;
     private EncryptedSession session;
 
     //
@@ -60,47 +66,21 @@ public class EncryptedSessionActor extends ModuleActor {
     @Override
     public void preStart() {
         Log.d(TAG, "preStart");
-        loadOwnIdentity();
-    }
-
-    private void loadOwnIdentity() {
-        ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchOwnKey(), new AskCallback() {
+        keyManager = context().getEncryption().getKeyManager();
+        Promises.sequence(
+                ask(keyManager, new FetchOwnKey()).cast(),
+                ask(keyManager, new FetchEphemeralPrivateKeyById(ownKey0)).cast(),
+                ask(keyManager, new FetchUserEphemeralKey(uid, theirKeyGroup, theirKey0)).cast(),
+                ask(keyManager, new FetchUserKeyGroups(uid)).cast()
+        ).cast().zip(new ArrayFunction<Object, EncryptedSession>() {
             @Override
-            public void onResult(Object obj) {
-                ownIdentityKey = ((KeyManagerActor.FetchOwnKeyResult) obj).getIdentityKey();
-                loadOwnPreKey();
-            }
+            public EncryptedSession apply(Object[] objects) {
+                OwnPrivateKey ownIdentityKey = ((FetchOwnKeyResult) objects[0]).getIdentityKey();
+                OwnPrivateKey ownPreKey = new OwnPrivateKey(ownKey0, "curve25519",
+                        ((FetchEphemeralPrivateKeyRes) objects[1]).getPrivateKey());
+                UserPublicKey theirPreKey = ((FetchUserEphemeralKeyResponse) objects[2]).getEphemeralKey();
 
-            @Override
-            public void onError(Exception e) {
-                Log.w(TAG, "Own identity error");
-                Log.e(TAG, e);
-            }
-        });
-    }
-
-    private void loadOwnPreKey() {
-        ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchEphemeralPrivateKeyById(ownKey0), new AskCallback() {
-            @Override
-            public void onResult(Object obj) {
-                KeyManagerActor.FetchEphemeralPrivateKeyRes keyRes = (KeyManagerActor.FetchEphemeralPrivateKeyRes) obj;
-                ownPreKey = new OwnPrivateKey(ownKey0, "curve25519", keyRes.getPrivateKey());
-                loadTheirIdentity();
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.w(TAG, "Own pre key error");
-                Log.e(TAG, e);
-            }
-        });
-    }
-
-    private void loadTheirIdentity() {
-        ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchUserKeyGroups(uid), new AskCallback() {
-            @Override
-            public void onResult(Object obj) {
-                KeyManagerActor.FetchUserKeyGroupsResponse keyGroups = (KeyManagerActor.FetchUserKeyGroupsResponse) obj;
+                FetchUserKeyGroupsResponse keyGroups = (FetchUserKeyGroupsResponse) objects[3];
                 UserKeysGroup keysGroup = null;
                 for (UserKeysGroup g : keyGroups.getUserKeys().getUserKeysGroups()) {
                     if (g.getKeyGroupId() == theirKeyGroup) {
@@ -110,47 +90,30 @@ public class EncryptedSessionActor extends ModuleActor {
                 }
                 if (keysGroup == null) {
                     Log.w(TAG, "Their key group not found");
-                    return;
+                    throw new RuntimeException("Their key group not found");
                 }
+                UserPublicKey theirIdentityKey = keysGroup.getIdentityKey();
 
-                theirIdentityKey = keysGroup.getIdentityKey();
-                loadTheirKey0();
+                return new EncryptedSession(ownIdentityKey, ownPreKey, theirIdentityKey, theirPreKey, theirKeyGroup);
             }
-
+        }).dispatch(self()).then(new Supplier<EncryptedSession>() {
             @Override
-            public void onError(Exception e) {
-                Log.w(TAG, "Their key groups error");
+            public void apply(EncryptedSession encryptedSession) {
+                EncryptedSessionActor.this.session = encryptedSession;
+                unstashAll();
+            }
+        }).failure(new Supplier<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                Log.w(TAG, "Session load error");
                 Log.e(TAG, e);
             }
-        });
+        }).dispatch(self()).done();
     }
 
-    private void loadTheirKey0() {
-        Log.w(TAG, "loadTheirKey0");
-        ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchUserEphemeralKey(uid, theirKeyGroup, theirKey0), new AskCallback() {
-            @Override
-            public void onResult(Object obj) {
-                KeyManagerActor.FetchUserEphemeralKeyResponse r = (KeyManagerActor.FetchUserEphemeralKeyResponse) obj;
-                theirPreKey = r.getEphemeralKey();
-                loadMasterKey();
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.w(TAG, "Their pre key error");
-                Log.e(TAG, e);
-            }
-        });
-    }
-
-    private void loadMasterKey() {
-        session = new EncryptedSession(ownIdentityKey, ownPreKey,
-                theirIdentityKey, theirPreKey, theirKeyGroup);
-    }
-
-    private void onEncrypt(final byte[] data, final PromiseExecutor future) {
+    private void onEncrypt(final byte[] data, final PromiseResolver future) {
         if (session == null) {
-            future.error(new RuntimeException("Encryption session is unavailable"));
+            stash();
             return;
         }
 
@@ -185,9 +148,9 @@ public class EncryptedSessionActor extends ModuleActor {
         }
     }
 
-    private void onDecrypt(final byte[] data, final PromiseExecutor future) {
+    private void onDecrypt(final byte[] data, final PromiseResolver future) {
         if (session == null) {
-            future.error(new RuntimeException("Encryption session is unavailable"));
+            stash();
             return;
         }
 
@@ -241,7 +204,7 @@ public class EncryptedSessionActor extends ModuleActor {
     }
 
     @Override
-    public void onAsk(Object message, PromiseExecutor future) {
+    public void onAsk(Object message, PromiseResolver future) {
         Log.d(TAG, "onAsk");
         if (message instanceof EncryptPackage) {
             onEncrypt(((EncryptPackage) message).getData(), future);

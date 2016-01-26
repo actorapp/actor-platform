@@ -1,11 +1,11 @@
 package im.actor.runtime.actors.ask;
 
-public class AskError {
+public class AskIntError {
 
     private Exception exception;
     private long id;
 
-    public AskError(long id, Exception exception) {
+    public AskIntError(long id, Exception exception) {
         this.exception = exception;
         this.id = id;
     }

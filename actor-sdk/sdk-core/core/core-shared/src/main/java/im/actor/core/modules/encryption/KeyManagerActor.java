@@ -32,9 +32,10 @@ import im.actor.core.network.RpcException;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
-import im.actor.runtime.actors.future.Future;
-import im.actor.runtime.actors.ask.AskRequest;
-import im.actor.runtime.actors.promise.PromiseExecutor;
+import im.actor.runtime.actors.ask.AskIntRequest;
+import im.actor.runtime.actors.ask.AskMessage;
+import im.actor.runtime.actors.ask.AskResult;
+import im.actor.runtime.actors.promise.PromiseResolver;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.crypto.ratchet.RatchetKeySignature;
@@ -220,17 +221,17 @@ public class KeyManagerActor extends ModuleActor {
         unstashAll();
     }
 
-    private void fetchOwnKey(PromiseExecutor future) {
+    private void fetchOwnKey(PromiseResolver future) {
         Log.d(TAG, "fetchOwnKey");
         future.result(new FetchOwnKeyResult(ownKeys.getIdentityKey()));
     }
 
-    private void fetchKeyGroup(PromiseExecutor future) {
+    private void fetchKeyGroup(PromiseResolver future) {
         Log.d(TAG, "fetchKeyGroup");
         future.result(new FetchOwnKeyGroupResult(ownKeys.getKeyGroupId()));
     }
 
-    private void fetchEphemeralKey(byte[] publicKey, PromiseExecutor future) {
+    private void fetchEphemeralKey(byte[] publicKey, PromiseResolver future) {
         for (OwnPrivateKey k : ownKeys.getEphemeralKeys()) {
             if (ByteStrings.isEquals(Curve25519.keyGenPublic(k.getKey()), publicKey)) {
                 future.result(new FetchEphemeralPrivateKeyRes(k.getKey()));
@@ -240,7 +241,7 @@ public class KeyManagerActor extends ModuleActor {
         future.error(new RuntimeException("Unable to find ephemeral key"));
     }
 
-    private void fetchEphemeralKey(long keyId, PromiseExecutor future) {
+    private void fetchEphemeralKey(long keyId, PromiseResolver future) {
         Log.d(TAG, "fetchEphemeralKey: " + keyId);
         for (OwnPrivateKey k : ownKeys.getEphemeralKeys()) {
             if (k.getKeyId() == keyId) {
@@ -251,14 +252,14 @@ public class KeyManagerActor extends ModuleActor {
         future.error(new RuntimeException("Unable to find ephemeral key"));
     }
 
-    private void fetchOwnEphemeralKey(PromiseExecutor future) {
+    private void fetchOwnEphemeralKey(PromiseResolver future) {
         Log.d(TAG, "fetchOwnEphemeralKey");
         OwnPrivateKeyUploadable ownEphemeralKey = ownKeys.pickRandomEphemeralKey();
         future.result(new FetchOwnEphemeralKeyResult(ownEphemeralKey.getKeyId(),
                 ownEphemeralKey.getKey()));
     }
 
-    private void fetchUserGroups(final int uid, final PromiseExecutor future) {
+    private void fetchUserGroups(final int uid, final PromiseResolver future) {
         Log.d(TAG, "fetchUserGroups");
         final UserKeys userKeys = getCachedUserKeys(uid);
         if (userKeys != null) {
@@ -295,7 +296,7 @@ public class KeyManagerActor extends ModuleActor {
         });
     }
 
-    private void fetchUserEphemeralKey(final int uid, final int keyGroupId, final long keyId, final PromiseExecutor future) {
+    private void fetchUserEphemeralKey(final int uid, final int keyGroupId, final long keyId, final PromiseResolver future) {
 
         //
         // Searching for group
@@ -358,7 +359,7 @@ public class KeyManagerActor extends ModuleActor {
         });
     }
 
-    private void fetchUserEphemeralKey(final int uid, int keyGroupId, final PromiseExecutor future) {
+    private void fetchUserEphemeralKey(final int uid, int keyGroupId, final PromiseResolver future) {
         request(new RequestLoadEphermalPublicKeys(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), keyGroupId), new RpcCallback<ResponsePublicKeys>() {
             @Override
             public void onResult(ResponsePublicKeys response) {
@@ -487,7 +488,7 @@ public class KeyManagerActor extends ModuleActor {
     @Override
     public void onReceive(Object message) {
         if (!isReady
-                && (message instanceof AskRequest
+                && (message instanceof AskIntRequest
                 || message instanceof PublicKeysGroupAdded
                 || message instanceof PublicKeysGroupRemoved)) {
             stash();
@@ -505,7 +506,7 @@ public class KeyManagerActor extends ModuleActor {
     }
 
     @Override
-    public void onAsk(Object message, PromiseExecutor future) {
+    public void onAsk(Object message, PromiseResolver future) {
         if (message instanceof FetchOwnKey) {
             fetchOwnKey(future);
         } else if (message instanceof FetchOwnKeyGroup) {
@@ -527,11 +528,11 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchOwnKey {
+    public static class FetchOwnKey extends AskMessage<FetchOwnKeyResult> {
 
     }
 
-    public static class FetchOwnKeyResult {
+    public static class FetchOwnKeyResult extends AskResult {
 
         private OwnPrivateKey identityKey;
 
@@ -544,11 +545,11 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchOwnEphemeralKey {
+    public static class FetchOwnEphemeralKey extends AskMessage<FetchOwnEphemeralKeyResult> {
 
     }
 
-    public static class FetchOwnEphemeralKeyResult {
+    public static class FetchOwnEphemeralKeyResult extends AskResult {
 
         private long id;
         private byte[] privateKey;
@@ -567,11 +568,11 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchOwnKeyGroup {
+    public static class FetchOwnKeyGroup extends AskMessage<FetchOwnKeyGroupResult> {
 
     }
 
-    public static class FetchOwnKeyGroupResult {
+    public static class FetchOwnKeyGroupResult extends AskResult {
         private int keyGroupId;
 
         public FetchOwnKeyGroupResult(int keyGroupId) {
@@ -583,7 +584,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchEphemeralPrivateKey {
+    public static class FetchEphemeralPrivateKey extends AskMessage<FetchEphemeralPrivateKeyRes> {
 
         private byte[] publicKey;
 
@@ -596,7 +597,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchEphemeralPrivateKeyById {
+    public static class FetchEphemeralPrivateKeyById extends AskMessage<FetchEphemeralPrivateKeyRes> {
 
         private long keyId;
 
@@ -609,7 +610,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchEphemeralPrivateKeyRes {
+    public static class FetchEphemeralPrivateKeyRes extends AskResult {
         private byte[] privateKey;
 
         public FetchEphemeralPrivateKeyRes(byte[] privateKey) {
@@ -621,7 +622,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchUserKeyGroups {
+    public static class FetchUserKeyGroups extends AskMessage<FetchUserKeyGroupsResponse> {
         private int uid;
 
         public FetchUserKeyGroups(int uid) {
@@ -633,7 +634,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchUserKeyGroupsResponse {
+    public static class FetchUserKeyGroupsResponse extends AskResult {
 
         private UserKeys userKeys;
 
@@ -646,7 +647,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchUserEphemeralKey {
+    public static class FetchUserEphemeralKey extends AskMessage<FetchUserEphemeralKeyResponse> {
 
         private int uid;
         private int keyGroup;
@@ -671,7 +672,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchUserEphemeralKeyRandom {
+    public static class FetchUserEphemeralKeyRandom extends AskMessage<FetchUserEphemeralKeyResponse> {
 
         private int uid;
         private int keyGroup;
@@ -690,7 +691,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchUserEphemeralKeyResponse {
+    public static class FetchUserEphemeralKeyResponse extends AskResult {
         private UserPublicKey ephemeralKey;
 
         public FetchUserEphemeralKeyResponse(UserPublicKey ephemeralKey) {
