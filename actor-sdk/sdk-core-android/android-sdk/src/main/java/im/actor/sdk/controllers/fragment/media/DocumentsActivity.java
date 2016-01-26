@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.view.ActionMode;
 
 import im.actor.core.entity.Peer;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 
 public class DocumentsActivity extends BaseFragmentActivity {
@@ -24,7 +25,7 @@ public class DocumentsActivity extends BaseFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         peer = Peer.fromUniqueId(getIntent().getExtras().getLong(EXTRA_CHAT_PEER));
-        getSupportActionBar().setTitle("Documents");
+        getSupportActionBar().setTitle(getString(R.string.documents_title));
 
         if (savedInstanceState == null) {
             showFragment(new DocumentsFragment(peer), false, false);

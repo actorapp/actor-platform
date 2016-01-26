@@ -1,0 +1,2 @@
+* :bug: Use secure random generator
+* :shipit: Integration with new Actor Push server

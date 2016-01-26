@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -13,6 +13,11 @@ public extension UIViewController {
             detail.viewControllers = [controller]
             split.viewControllers = [master, detail]
         } else {
+            
+            if controller.isKindOfClass(ConversationViewController.self) {
+                navigationController?.view.layer.speed = 1.5
+            }
+            
             controller.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(controller, animated: true);
         }

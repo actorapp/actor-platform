@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -37,7 +37,7 @@ public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewCon
             if p.file != nil  {
                 let desc = Actor.findDownloadedDescriptorWithFileId(p.file!.getFileId())
                 if desc != nil {
-                    let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc))
+                    let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc!))
                     if img != nil {
                         converted.append(AAPhoto(image: img))
                         continue
@@ -48,7 +48,7 @@ public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewCon
             if p.previewFile != nil {
                 let desc = Actor.findDownloadedDescriptorWithFileId(p.previewFile!.getFileId())
                 if desc != nil {
-                    var img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc))
+                    var img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc!))
                     if img != nil {
                         // img = img!.applyBlur(4)
                         if p.size != nil {

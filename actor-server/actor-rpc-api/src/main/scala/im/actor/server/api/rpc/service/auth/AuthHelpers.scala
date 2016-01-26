@@ -22,11 +22,11 @@ import im.actor.util.misc.EmailUtils.isTestEmail
 import im.actor.util.misc.IdUtils._
 import im.actor.util.misc.PhoneNumberUtils._
 import im.actor.util.misc.StringUtils.validName
+import im.actor.util.ThreadLocalSecureRandom
 import org.joda.time.DateTime
 import slick.dbio._
 
 import scala.concurrent.Future
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.Try
 import scalaz.{ -\/, \/, \/- }
 
@@ -191,11 +191,11 @@ trait AuthHelpers extends Helpers {
       _ ← persist.AuthSessionRepo.create(newSession)
     } yield ()
 
-  protected def authorize(userId: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[AuthorizeUserAck] = {
+  protected def authorize(userId: Int, authSid: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[AuthorizeUserAck] = {
     for {
       _ ← userExt.auth(userId, clientData.authId)
       ack ← sessionRegion.ref
-        .ask(SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(userId)))
+        .ask(SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(userId, authSid)))
         .mapTo[AuthorizeUserAck]
     } yield ack
   }
@@ -215,7 +215,7 @@ trait AuthHelpers extends Helpers {
       //refresh session data
       authSession = model.AuthSession(
         userId = userId,
-        id = nextIntId(ThreadLocalRandom.current()),
+        id = nextIntId(),
         authId = clientData.authId,
         appId = transaction.appId,
         appTitle = model.AuthSession.appTitleOf(transaction.appId),
@@ -228,7 +228,7 @@ trait AuthHelpers extends Helpers {
       )
       _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
       _ ← fromDBIO(persist.auth.AuthTransactionRepo.delete(transaction.transactionHash))
-      _ ← fromFuture(authorize(userId, clientData))
+      _ ← fromFuture(authorize(userId, authSession.id, clientData))
     } yield userStruct
   }
 
@@ -247,7 +247,7 @@ trait AuthHelpers extends Helpers {
     emailSender.send(Some(transactionHash), EmailCode(email, code))
   }
 
-  protected def genSmsHash() = ThreadLocalRandom.current.nextLong().toString
+  protected def genSmsHash() = ThreadLocalSecureRandom.current.nextLong().toString
 
   protected def genEmailCode(email: String): String =
     if (isTestEmail(email)) genTestCode(email) else genCode()
@@ -258,7 +258,7 @@ trait AuthHelpers extends Helpers {
   }
 
   protected def newUser(name: String, countryCode: String, optSex: Option[ApiSex], username: Option[String]): Result[\/-[User]] = {
-    val rng = ThreadLocalRandom.current()
+    val rng = ThreadLocalSecureRandom.current()
     val sex = optSex.map(s ⇒ model.Sex.fromInt(s.id)).getOrElse(model.NoSex)
     for {
       validName ← fromEither(validName(name).leftMap(validationFailed("NAME_INVALID", _)))
@@ -277,7 +277,7 @@ trait AuthHelpers extends Helpers {
   }
 
   protected def newUser(name: String): Result[User] = {
-    val rng = ThreadLocalRandom.current()
+    val rng = ThreadLocalSecureRandom.current()
     val user = model.User(
       id = nextIntId(rng),
       accessSalt = ACLUtils.nextAccessSalt(rng),
@@ -302,6 +302,6 @@ trait AuthHelpers extends Helpers {
   private def genTestCode(email: String): String =
     (email replaceAll (""".*acme""", "")) replaceAll (".com", "")
 
-  private def genCode() = ThreadLocalRandom.current.nextLong().toString.dropWhile(c ⇒ c == '0' || c == '-').take(5)
+  private def genCode() = ThreadLocalSecureRandom.current.nextLong().toString.dropWhile(c ⇒ c == '0' || c == '-').take(5)
 
 }

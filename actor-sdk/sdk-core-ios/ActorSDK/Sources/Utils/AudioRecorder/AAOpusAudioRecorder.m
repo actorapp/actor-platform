@@ -114,7 +114,7 @@ static dispatch_semaphore_t playSoundSemaphore = nil;
                 OSStatus status = noErr;
                 status = AudioComponentInstanceDispose(globalRecorderContext.audioUnit);
                 if (status != noErr)
-                    NSLog(@"[TGOpusAudioRecorder#%lx AudioComponentInstanceDispose failed: %d]", objectId, (int)status);
+                    NSLog(@"[AAOpusAudioRecorder#%lx AudioComponentInstanceDispose failed: %d]", objectId, (int)status);
                 
                 globalRecorderContext.audioUnit = NULL;
             }
@@ -131,11 +131,11 @@ static dispatch_semaphore_t playSoundSemaphore = nil;
         __autoreleasing NSError *error = nil;
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
         if (![audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:&error])
-            NSLog(@"[TGAudioRecorder audio session set category failed: %@]", error);
+            NSLog(@"[AAAudioRecorder audio session set category failed: %@]", error);
         if (begin)
         {
             if (![audioSession setActive:true error:&error])
-                NSLog(@"[TGAudioRecorder audio session activation failed: %@]", error);
+                NSLog(@"[AAAudioRecorder audio session activation failed: %@]", error);
         }
     }];
 }
@@ -147,9 +147,9 @@ static dispatch_semaphore_t playSoundSemaphore = nil;
         __autoreleasing NSError *error = nil;
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
         if (![audioSession setCategory:AVAudioSessionCategoryPlayback error:&error])
-            NSLog(@"[TGAudioRecorder audio session set category failed: %@]", error);
+            NSLog(@"[AAAudioRecorder audio session set category failed: %@]", error);
         if (![audioSession setActive:false error:&error])
-            NSLog(@"[TGAudioRecorder audio session deactivation failed: %@]", error);
+            NSLog(@"[AAAudioRecorder audio session deactivation failed: %@]", error);
     }];
 }
 
@@ -174,7 +174,7 @@ static dispatch_semaphore_t playSoundSemaphore = nil;
         status = AudioUnitSetProperty(globalRecorderContext.audioUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, 1, &one, sizeof(one));
         if (status != noErr)
         {
-            NSLog(@"[TGOpusAudioRecorder#%@ AudioUnitSetProperty kAudioOutputUnitProperty_EnableIO failed: %d]", self, (int)status);
+            NSLog(@"[AAOpusAudioRecorder#%@ AudioUnitSetProperty kAudioOutputUnitProperty_EnableIO failed: %d]", self, (int)status);
             [self cleanup];
             
             return;

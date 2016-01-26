@@ -1,7 +1,7 @@
 package im.actor.api.rpc
 
-import im.actor.api.rpc.peers._
-import im.actor.server.model.{ PeerType, Peer }
+import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiOutPeer, ApiPeer, ApiPeerType }
+import im.actor.server.model.{ Peer, PeerType }
 
 trait PeersImplicits {
 

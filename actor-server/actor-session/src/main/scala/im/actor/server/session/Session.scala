@@ -26,6 +26,7 @@ import slick.driver.PostgresDriver.api._
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.util.{ Success, Try }
 
 final case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig)
 
@@ -42,9 +43,9 @@ object Session {
 
   private[this] val extractEntityId: ShardRegion.ExtractEntityId = {
     case env @ SessionEnvelope(authId, sessionId, payload) ⇒
-      env.getField(SessionEnvelope.descriptor.findFieldByNumber(payload.number)) match {
-        case Some(any) ⇒ s"${authId}_$sessionId" → any
-        case None      ⇒ throw new RuntimeException(s"Empty payload $env")
+      Try(env.getField(SessionEnvelope.descriptor.findFieldByNumber(payload.number))) match {
+        case Success(any) ⇒ s"${authId}_$sessionId" → any
+        case _            ⇒ throw new RuntimeException(s"Empty payload $env")
       }
   }
 
@@ -81,12 +82,18 @@ object Session {
   private case object AuthIdInvalid
 }
 
-final private class Session(implicit config: SessionConfig, materializer: Materializer) extends Actor with ActorLogging with MessageIdHelper with Stash {
+final private class Session(implicit config: SessionConfig, materializer: Materializer)
+  extends Actor
+  with ActorLogging
+  with MessageIdHelper
+  with Stash {
 
   implicit val ec: ExecutionContext = context.dispatcher
 
   private val pubSubExt = PubSubExtension(context.system)
   private val db: Database = DbExtension(context.system).db
+
+  private val idleControl = IdleControl(config.idleTimeout)
 
   private[this] var authData: Option[AuthData] = None
   private[this] var clients = immutable.Set.empty[ActorRef]
@@ -98,8 +105,6 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
       log.error(e, e.getMessage)
       throw e
   }
-
-  context.setReceiveTimeout(config.idleTimeout)
 
   db.run(AuthIdRepo.find(authId) flatMap {
     case Some(_) ⇒
@@ -158,6 +163,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
   def anonymous: Receive = {
     case HandleMessageBox(messageBoxBytes) ⇒
+      idleControl.keepAlive()
       recordClient(sender())
 
       withValidMessageBox(messageBoxBytes.toByteArray) { mb ⇒
@@ -198,12 +204,14 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
   def resolved(publisher: ActorRef, reSender: ActorRef): Receive = {
     case HandleMessageBox(messageBoxBytes) ⇒
+      idleControl.keepAlive()
       recordClient(sender())
 
       withValidMessageBox(messageBoxBytes.toByteArray) { mb ⇒
         publisher ! Tuple2(mb, ClientData(authId, sessionId, authData))
       }
     case cmd: SubscribeCommand ⇒
+      idleControl.keepAlive()
       publisher ! cmd
     case AuthorizeUser(userId, authSid) ⇒ authorize(userId, authSid, Some(sender()))
     case internal                       ⇒ handleInternal(internal, stashUnmatched = false)
@@ -282,5 +290,4 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
     log.error(reason, "Session failed")
   }
-
 }

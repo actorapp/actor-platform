@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import cats.data.Xor
 import im.actor.api.rpc._
 import im.actor.api.rpc.collections._
-import im.actor.rpc.raw.{ MapStyleRawApiService, RawApiService }
+import im.actor.api.rpc.raw.{ RawApiService, MapStyleRawApiService }
 import im.actor.server.api.rpc.RawApiExtension
 import im.actor.server.api.rpc.service.raw.RawServiceImpl
 import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegion }

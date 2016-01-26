@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -59,7 +59,7 @@ import Foundation
         db.beginTransaction()
         for i in 0..<values.size() {
             let record = values.getWithInt(i) as! ARKeyValueRecord
-            db.executeUpdate(queryAdd, record.getId().toNSNumber(),record.getData()!.toNSData())
+            db.executeUpdate(queryAdd, record.getId().toNSNumber(),record.getData().toNSData())
         }
         db.commit()
     }

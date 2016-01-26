@@ -138,7 +138,7 @@ trait HistoryHandlers {
 
                 val (messages, userIds) = messageModels.view
                   .map(_.ofUser(client.userId))
-                  .foldLeft(Vector.empty[ApiHistoryMessage], Set.empty[Int]) {
+                  .foldLeft(Vector.empty[ApiMessageContainer], Set.empty[Int]) {
                     case ((msgs, userIds), message) ⇒
                       val messageStruct = message.asStruct(lastReceivedAt, lastReadAt, reactions.getOrElse(message.randomId, Vector.empty))
                       val newMsgs = msgs :+ messageStruct
@@ -266,6 +266,8 @@ trait HistoryHandlers {
       case _: ApiDocumentMessage          ⇒ Set.empty
       case _: ApiStickerMessage           ⇒ Set.empty
       case _: ApiUnsupportedMessage       ⇒ Set.empty
+      case _: ApiBinaryMessage            ⇒ Set.empty
+      case _: ApiEncryptedMessage         ⇒ Set.empty
     }
   }
 

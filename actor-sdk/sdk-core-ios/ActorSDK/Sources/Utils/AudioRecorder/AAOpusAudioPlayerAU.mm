@@ -40,7 +40,7 @@ static volatile OSSpinLock audioPositionLock = OS_SPINLOCK_INIT;
     OggOpusFile *_opusFile;
     AudioComponentInstance _audioUnit;
     
-    TGAudioBuffer *_filledAudioBuffers[TGOpusAudioPlayerBufferCount];
+    AAAudioBuffer *_filledAudioBuffers[TGOpusAudioPlayerBufferCount];
     int _filledAudioBufferCount;
     int _filledAudioBufferPosition;
     
@@ -83,7 +83,7 @@ static volatile OSSpinLock audioPositionLock = OS_SPINLOCK_INIT;
             _fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil][NSFileSize] integerValue];
             if (_fileSize == 0)
             {
-                NSLog(@"[TGOpusAudioPlayer#%p invalid file]", self);
+                NSLog(@"[AAOpusAudioPlayer#%p invalid file]", self);
                 [self cleanupAndReportError];
             }
         }];
@@ -111,7 +111,7 @@ static volatile OSSpinLock audioPositionLock = OS_SPINLOCK_INIT;
     {
         if (_filledAudioBuffers[i] != NULL)
         {
-            TGAudioBufferDispose(_filledAudioBuffers[i]);
+            AAAudioBufferDispose(_filledAudioBuffers[i]);
             _filledAudioBuffers[i] = NULL;
         }
     }
@@ -135,11 +135,11 @@ static volatile OSSpinLock audioPositionLock = OS_SPINLOCK_INIT;
             OSStatus status = noErr;
             status = AudioOutputUnitStop(audioUnit);
             if (status != noErr)
-                NSLog(@"[TGOpusAudioPlayer#%lx AudioOutputUnitStop failed: %d]", objectId, (int)status);
+                NSLog(@"[AAOpusAudioPlayer#%lx AudioOutputUnitStop failed: %d]", objectId, (int)status);
             
             status = AudioComponentInstanceDispose(audioUnit);
             if (status != noErr)
-                NSLog(@"[TGOpusAudioRecorder#%lx AudioComponentInstanceDispose failed: %d]", objectId, (int)status);
+                NSLog(@"[AAOpusAudioRecorder#%lx AudioComponentInstanceDispose failed: %d]", objectId, (int)status);
         }
         
         if (opusFile != NULL)
@@ -162,7 +162,7 @@ static OSStatus TGOpusAudioPlayerCallback(void *inRefCon, __unused AudioUnitRend
     
     if (self != nil)
     {
-        TGAudioBuffer **freedAudioBuffers = NULL;
+        AAAudioBuffer **freedAudioBuffers = NULL;
         int freedAudioBufferCount = 0;
         
         for (int i = 0; i < (int)ioData->mNumberBuffers; i++)
@@ -191,7 +191,7 @@ static OSStatus TGOpusAudioPlayerCallback(void *inRefCon, __unused AudioUnitRend
                 if (self->_filledAudioBufferPosition + takenBytes >= (int)self->_filledAudioBuffers[0]->size)
                 {
                     if (freedAudioBuffers == NULL)
-                        freedAudioBuffers = (TGAudioBuffer **)malloc(sizeof(TGAudioBuffer *) * TGOpusAudioPlayerBufferCount);
+                        freedAudioBuffers = (AAAudioBuffer **)malloc(sizeof(AAAudioBuffer *) * TGOpusAudioPlayerBufferCount);
                     freedAudioBuffers[freedAudioBufferCount] = self->_filledAudioBuffers[0];
                     freedAudioBufferCount++;
                     
@@ -280,7 +280,7 @@ static OSStatus TGOpusAudioPlayerCallback(void *inRefCon, __unused AudioUnitRend
             status = AudioUnitSetProperty(_audioUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, kOutputBus, &one, sizeof(one));
             if (status != noErr)
             {
-                NSLog(@"[TGOpusAudioPlayer#%@ AudioUnitSetProperty kAudioOutputUnitProperty_EnableIO failed: %d]", self, (int)status);
+                NSLog(@"[AAOpusAudioPlayer#%@ AudioUnitSetProperty kAudioOutputUnitProperty_EnableIO failed: %d]", self, (int)status);
                 [self cleanupAndReportError];
                 
                 return;
@@ -298,7 +298,7 @@ static OSStatus TGOpusAudioPlayerCallback(void *inRefCon, __unused AudioUnitRend
             status = AudioUnitSetProperty(_audioUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, kOutputBus, &outputAudioFormat, sizeof(outputAudioFormat));
             if (status != noErr)
             {
-                NSLog(@"[TGOpusAudioPlayer#%@ AudioUnitSetProperty kAudioUnitProperty_StreamFormat failed: %d]", self, (int)status);
+                NSLog(@"[AAOpusAudioPlayer#%@ AudioUnitSetProperty kAudioUnitProperty_StreamFormat failed: %d]", self, (int)status);
                 [self cleanupAndReportError];
                 
                 return;
@@ -309,7 +309,7 @@ static OSStatus TGOpusAudioPlayerCallback(void *inRefCon, __unused AudioUnitRend
             callbackStruct.inputProcRefCon = (void *)_playerId;
             if (AudioUnitSetProperty(_audioUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Global, kOutputBus, &callbackStruct, sizeof(callbackStruct)) != noErr)
             {
-                NSLog(@"[TGOpusAudioPlayer#%@ AudioUnitSetProperty kAudioUnitProperty_SetRenderCallback failed]", self);
+                NSLog(@"[AAOpusAudioPlayer#%@ AudioUnitSetProperty kAudioUnitProperty_SetRenderCallback failed]", self);
                 [self cleanupAndReportError];
                 
                 return;
@@ -318,7 +318,7 @@ static OSStatus TGOpusAudioPlayerCallback(void *inRefCon, __unused AudioUnitRend
             status = AudioUnitInitialize(_audioUnit);
             if (status != noErr)
             {
-                NSLog(@"[TGOpusAudioRecorder#%@ AudioUnitInitialize failed: %d]", self, (int)status);
+                NSLog(@"[AAOpusAudioRecorder#%@ AudioUnitInitialize failed: %d]", self, (int)status);
                 [self cleanup];
                 
                 return;
@@ -331,7 +331,7 @@ static OSStatus TGOpusAudioPlayerCallback(void *inRefCon, __unused AudioUnitRend
             NSUInteger bufferByteSize = [self bufferByteSize];
             for (int i = 0; i < TGOpusAudioPlayerBufferCount; i++)
             {
-                _filledAudioBuffers[i] = TGAudioBufferWithCapacity(bufferByteSize);
+                _filledAudioBuffers[i] = AAAudioBufferWithCapacity(bufferByteSize);
             }
             _filledAudioBufferCount = TGOpusAudioPlayerBufferCount;
             _filledAudioBufferPosition = 0;
@@ -344,7 +344,7 @@ static OSStatus TGOpusAudioPlayerCallback(void *inRefCon, __unused AudioUnitRend
             status = AudioOutputUnitStart(_audioUnit);
             if (status != noErr)
             {
-                NSLog(@"[TGOpusAudioRecorder#%@ AudioOutputUnitStart failed: %d]", self, (int)status);
+                NSLog(@"[AAOpusAudioRecorder#%@ AudioOutputUnitStart failed: %d]", self, (int)status);
                 [self cleanupAndReportError];
             }
         }
@@ -356,7 +356,7 @@ static OSStatus TGOpusAudioPlayerCallback(void *inRefCon, __unused AudioUnitRend
             {
                 int result = op_pcm_seek(_opusFile, (ogg_int64_t)(position * TGOpusAudioPlayerSampleRate));
                 if (result != OPUS_OK)
-                    NSLog(@"[TGOpusAudioPlayer#%p op_pcm_seek failed: %d]", self, result);
+                    NSLog(@"[AAOpusAudioPlayer#%p op_pcm_seek failed: %d]", self, result);
                 
                 ogg_int64_t pcmPosition = op_pcm_tell(_opusFile);
                 _currentPcmOffset = pcmPosition;
@@ -379,7 +379,7 @@ static OSStatus TGOpusAudioPlayerCallback(void *inRefCon, __unused AudioUnitRend
     }];
 }
 
-- (void)fillBuffer:(TGAudioBuffer *)audioBuffer
+- (void)fillBuffer:(AAAudioBuffer *)audioBuffer
 {
     if (_opusFile != NULL)
     {
@@ -424,7 +424,7 @@ static OSStatus TGOpusAudioPlayerCallback(void *inRefCon, __unused AudioUnitRend
                     else
                     {
                         if (readSamples < 0)
-                            NSLog(@"[TGOpusAudioPlayer#%p op_read failed: %d]", self, readSamples);
+                            NSLog(@"[AAOpusAudioPlayer#%p op_read failed: %d]", self, readSamples);
                         
                         endOfFileReached = true;
                         

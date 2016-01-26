@@ -4,7 +4,7 @@ import sbt._
 
 object Dependencies {
   object V {
-    val actorCommons = "0.0.9"
+    val actorCommons = "0.0.12"
     val actorBotkit = "1.0.66"
     val akka = "2.4.0"
     val akkaExperimental = "2.0.2"
@@ -17,11 +17,13 @@ object Dependencies {
     val slickPg = "0.10.2"
     val scalatest = "2.2.4"
     val shardakka = "0.1.20"
-    val scalapbSer = "0.1.6"
+    val scalapbSer = "0.1.11"
   }
 
   object Compile {
     val actorConcurrent         = "im.actor"                      %% "actor-concurrent"              % V.actorCommons
+    val actorUtil               = "im.actor"                      %% "actor-util"                    % V.actorCommons
+    val actorCatsSlick          = "im.actor"                      %% "actor-cats-slick"              % V.actorCommons
     val actorBotkit             = "im.actor"                      %  "actor-botkit"                  % V.actorBotkit
     val shardakka               = "im.actor"                      %% "shardakka"                     % V.shardakka
     val scalapbSer              = "im.actor"                      %% "akka-scalapb-serialization"    % V.scalapbSer
@@ -88,8 +90,6 @@ object Dependencies {
 
     val libPhoneNumber          = "com.googlecode.libphonenumber" % "libphonenumber"                 % "7.0.+"
 
-    val protobuf                = "com.google.protobuf"           %  "protobuf-java"                 % "3.0.0-beta-1"
-
     val scodecBits              = "org.scodec"                    %% "scodec-bits"                   % "1.0.9"
     val scodecCore              = "org.scodec"                    %% "scodec-core"                   % "1.8.1"
 
@@ -134,6 +134,7 @@ object Dependencies {
 
   val shared = Seq(
     configs,
+    actorUtil,
     javaCompat,
     logbackClassic,
     scalaLogging,
@@ -191,7 +192,7 @@ object Dependencies {
 
   val sessionMessages = Seq(akkaActor)
 
-  val persist = shared ++ Seq(akkaActor, akkaStream, apacheCommonsCodec, guava, postgresJdbc, slick, slickHikaricp, slickJoda, slickPg, slickPgDate2, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
+  val persist = shared ++ Seq(akkaActor, akkaStream, actorCatsSlick, apacheCommonsCodec, guava, postgresJdbc, slick, slickHikaricp, slickJoda, slickPg, slickPgDate2, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val presences = shared :+ akkaClusterSharding
 

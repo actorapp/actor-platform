@@ -24,7 +24,7 @@ private[user] trait UserQueriesHandlers {
         userExt.getLocalName(clientUserId, state.id)
     } yield GetApiStructResponse(ApiUser(
       id = userId,
-      accessHash = ACLUtils.userAccessHash(clientAuthId, userId, state.accessSalt),
+      accessHash = ACLUtils.userAccessHash(clientAuthId, userId, state.accessSalt, aclMD),
       name = state.name,
       localName = UserUtils.normalizeLocalName(localName),
       sex = Some(state.sex),

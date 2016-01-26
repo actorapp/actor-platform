@@ -1,0 +1,2 @@
+* :bug: Fixed idle sessions killing
+* :bug: Load aphermal keys in LoadPublicKeys

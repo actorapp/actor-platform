@@ -25,11 +25,11 @@ import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
 import im.actor.server.{ model, persist ⇒ p }
 import im.actor.util.misc.StringUtils
+import im.actor.util.ThreadLocalSecureRandom
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.Failure
 import scala.util.control.NoStackTrace
 
@@ -163,7 +163,7 @@ private[user] trait UserCommandHandlers {
 
   protected def addPhone(user: User, phone: Long): Unit =
     persistReply(TSEvent(now(), UserEvents.PhoneAdded(phone)), user) { _ ⇒
-      val rng = ThreadLocalRandom.current()
+      val rng = ThreadLocalSecureRandom.current()
       db.run(for {
         _ ← p.UserPhoneRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone")
         _ ← DBIO.from(markContactRegistered(user, phone, false))
@@ -176,7 +176,7 @@ private[user] trait UserCommandHandlers {
 
   protected def addEmail(user: User, email: String): Unit =
     persistReply(TSEvent(now(), UserEvents.EmailAdded(email)), user) { event ⇒
-      val rng = ThreadLocalRandom.current()
+      val rng = ThreadLocalSecureRandom.current()
       db.run(for {
         _ ← p.UserEmailRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
         _ ← DBIO.from(markContactRegistered(user, email, false))
@@ -292,7 +292,7 @@ private[user] trait UserCommandHandlers {
   protected def notifyDialogsChanged(user: User): Unit = {
     (for {
       shortDialogs ← dialogExt.getGroupedDialogs(user.id)
-      seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, UpdateChatGroupsChanged(shortDialogs))
+      seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, UpdateChatGroupsChanged(shortDialogs), reduceKey = Some("chat_groups_changed"))
     } yield seqstate) pipeTo sender()
   }
 
@@ -347,15 +347,15 @@ private[user] trait UserCommandHandlers {
       contacts ← db.run(p.contact.UnregisteredPhoneContactRepo.find(phoneNumber))
       _ = log.debug(s"Unregistered $phoneNumber is in contacts of users: $contacts")
       _ ← Future.sequence(contacts map { contact ⇒
-        val randomId = ThreadLocalRandom.current().nextLong()
+        val randomId = ThreadLocalSecureRandom.current().nextLong()
         val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
         val updateContactsAdded = UpdateContactsAdded(Vector(user.id))
         val localName = contact.name
         val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
         for {
           _ ← userExt.addContact(contact.ownerUserId, user.id, localName, Some(phoneNumber), None)
-          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None)
-          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, deliveryId = None)
+          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, reduceKey = None, deliveryId = None)
+          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, reduceKey = None, deliveryId = None)
           _ ← dialogExt.writeMessageSelf(
             contact.ownerUserId,
             ApiPeer(ApiPeerType.Private, user.id),
@@ -379,15 +379,15 @@ private[user] trait UserCommandHandlers {
       contacts ← db.run(p.contact.UnregisteredEmailContactRepo.find(email))
       _ = log.debug(s"Unregistered $email is in contacts of users: $contacts")
       _ ← Future.sequence(contacts.map { contact ⇒
-        val randomId = ThreadLocalRandom.current().nextLong()
+        val randomId = ThreadLocalSecureRandom.current().nextLong()
         val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
         val updateContactsAdded = UpdateContactsAdded(Vector(user.id))
         val localName = contact.name
         val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
         for {
           _ ← userExt.addContact(contact.ownerUserId, user.id, localName, None, Some(email))
-          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(serviceMessage.text), isFat = true, deliveryId = None)
-          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, deliveryId = None)
+          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(serviceMessage.text), isFat = true, reduceKey = None, deliveryId = None)
+          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, reduceKey = None, deliveryId = None)
           _ ← dialogExt.writeMessageSelf(
             contact.ownerUserId,
             ApiPeer(ApiPeerType.Private, user.id),

@@ -2,7 +2,7 @@ package im.actor.server.session
 
 import akka.actor.{ Stash, ActorRef, ActorLogging, Props }
 import akka.stream.actor._
-import im.actor.server.mtproto.protocol.UpdateBox
+import im.actor.server.mtproto.protocol.ProtoPush
 import im.actor.server.sequence._
 
 import scala.annotation.tailrec
@@ -16,7 +16,7 @@ private[session] object UpdatesHandler {
 }
 
 private[session] class UpdatesHandler(authId: Long)
-  extends ActorSubscriber with ActorPublisher[(UpdateBox, Option[String])] with ActorLogging with Stash {
+  extends ActorSubscriber with ActorPublisher[(ProtoPush, Option[String])] with ActorLogging with Stash {
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
@@ -63,7 +63,7 @@ private[session] class UpdatesHandler(authId: Long)
   override val requestStrategy = WatermarkRequestStrategy(10) // TODO: configurable
 
   // Publisher-related
-  private[this] var messageQueue = immutable.Queue.empty[(UpdateBox, Option[String])]
+  private[this] var messageQueue = immutable.Queue.empty[(ProtoPush, Option[String])]
 
   def publisher: Receive = {
     case NewUpdate(ub, reduceKey) ⇒ enqueueProtoMessage(ub, reduceKey)
@@ -71,7 +71,7 @@ private[session] class UpdatesHandler(authId: Long)
     case Cancel                   ⇒ context.stop(self)
   }
 
-  private def enqueueProtoMessage(message: UpdateBox, reduceKey: Option[String]): Unit = {
+  private def enqueueProtoMessage(message: ProtoPush, reduceKey: Option[String]): Unit = {
     if (messageQueue.isEmpty && totalDemand > 0) {
       onNext(message → reduceKey)
     } else {

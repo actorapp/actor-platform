@@ -1,8 +1,9 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
+import YYKit
 
 public class ActorStyle {
     
@@ -601,7 +602,7 @@ public class ActorStyle {
         get {
             if (_statusBackgroundIcon == nil){
 
-                let statusImage:UIImage = (UIImage.bundled("bubble_service_bg")?.imageWithColor(UIColor.blackColor().colorWithAlphaComponent(0.7)).imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal))!
+                let statusImage:UIImage = UIImage.bundled("bubble_service_bg")!.aa_imageWithColor(UIColor.blackColor().colorWithAlphaComponent(0.7)).imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
                 
                 let center:CGPoint = CGPointMake(statusImage.size.width / 2.0, statusImage.size.height / 2.0);
                 let capInsets:UIEdgeInsets = UIEdgeInsetsMake(center.y, center.x, center.y, center.x);
