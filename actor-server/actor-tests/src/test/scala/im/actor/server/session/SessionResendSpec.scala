@@ -114,7 +114,6 @@ final class SessionResendSpec extends BaseSessionSpec(
         expectRpcResult(authId, sessionId) should matchPattern {
           case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
         }
-
         expectMessageAck(messageId)
 
         probe.expectNoMsg(6.seconds)

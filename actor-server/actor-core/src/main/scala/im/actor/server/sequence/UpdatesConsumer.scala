@@ -24,7 +24,7 @@ import slick.dbio.DBIO
 import scala.concurrent._
 import scala.concurrent.duration._
 
-final case class NewUpdate(ub: ProtoPush, reduceKey: Option[String])
+final case class NewUpdate(ub: ProtoUpdateBox, reduceKey: Option[String])
 
 sealed trait UpdatesConsumerMessage
 
@@ -238,7 +238,7 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
   }
 
   private def sendUpdateBox(updateBox: ProtoUpdateBox, reduceKey: Option[String]): Unit =
-    subscriber ! NewUpdate(ProtoPush(UpdateBoxCodec.encode(updateBox).require), reduceKey)
+    subscriber ! NewUpdate(updateBox, reduceKey)
 
   private def getFatData(
     userId:      Int,
@@ -247,7 +247,7 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
   )(implicit ec: ExecutionContext): Future[(Seq[ApiUser], Seq[ApiGroup])] = {
     for {
       groups ← Future.sequence(fatGroupIds map (GroupExtension(system).getApiStruct(_, userId)))
-      groupMemberIds = groups.view.map(_.members.map(_.userId)).flatten
+      groupMemberIds = groups.view.flatMap(_.members.map(_.userId))
       users ← Future.sequence((fatUserIds ++ groupMemberIds).distinct map (UserExtension(system).getApiStruct(_, userId, authId)))
     } yield (users, groups)
   }

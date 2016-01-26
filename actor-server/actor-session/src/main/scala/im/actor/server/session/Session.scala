@@ -7,10 +7,11 @@ import akka.cluster.pubsub.DistributedPubSubMediator.{ SubscribeAck, Subscribe }
 import akka.cluster.sharding.ShardRegion.Passivate
 import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding, ShardRegion }
 import akka.pattern.pipe
-import akka.stream.{ ClosedShape, Materializer }
+import akka.stream.{ OverflowStrategy, ClosedShape, Materializer }
 import akka.stream.actor._
 import akka.stream.scaladsl._
 import com.typesafe.config.Config
+import im.actor.api.rpc.sequence.ApiUpdateOptimization
 import im.actor.api.rpc.{ AuthData, ClientData }
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
@@ -97,6 +98,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
   private[this] var authData: Option[AuthData] = None
   private[this] var clients = immutable.Set.empty[ActorRef]
+  private[this] var updateUptimizations = immutable.Set.empty[Int]
 
   private val (authId, sessionId) = self.path.name.split("_").toList match {
     case a :: s :: Nil ⇒ (a.toLong, s.toLong)
@@ -116,7 +118,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
   }) pipeTo self
 
   private val updatesHandler = context.actorOf(UpdatesHandler.props(authId), "updatesHandler")
-  val reSender = context.actorOf(ReSender.props(authId, sessionId)(config.reSendConfig), "reSender")
+
   val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props(), "messagePublisher")
   val rpcHandler = context.actorOf(RpcHandler.props, "rpcHandler")
 
@@ -164,9 +166,10 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
   def anonymous: Receive = {
     case HandleMessageBox(messageBoxBytes) ⇒
       idleControl.keepAlive()
-      recordClient(sender())
 
       withValidMessageBox(messageBoxBytes.toByteArray) { mb ⇒
+        val reSender = context.actorOf(ReSender.props(authId, sessionId, mb.messageId)(config.reSendConfig), "reSender")
+        recordClient(sender(), reSender)
         val graph = SessionStream.graph(authId, sessionId, rpcHandler, updatesHandler, reSender)
 
         RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
@@ -192,7 +195,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
           ClosedShape
         }).run()
 
-        sessionMessagePublisher ! SessionStreamMessage.SendProtoMessage(NewSession(sessionId, mb.messageId))
+        // sessionMessagePublisher ! SessionStreamMessage.SendProtoMessage(NewSession(sessionId, mb.messageId))
         sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, authData))
 
         unstashAll()
@@ -205,14 +208,22 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
   def resolved(publisher: ActorRef, reSender: ActorRef): Receive = {
     case HandleMessageBox(messageBoxBytes) ⇒
       idleControl.keepAlive()
-      recordClient(sender())
+      recordClient(sender(), reSender)
 
       withValidMessageBox(messageBoxBytes.toByteArray) { mb ⇒
         publisher ! Tuple2(mb, ClientData(authId, sessionId, authData))
       }
     case cmd: SubscribeCommand ⇒
       idleControl.keepAlive()
+
+      cmd match {
+        case SubscribeToSeq(opts) ⇒ this.updateUptimizations = opts.toSet
+        case _                    ⇒
+      }
+
       publisher ! cmd
+    case GetUpdateOptimizations() ⇒
+      sender() ! GetUpdateOptimizationsAck(updateUptimizations.toSeq)
     case AuthorizeUser(userId, authSid) ⇒ authorize(userId, authSid, Some(sender()))
     case internal                       ⇒ handleInternal(internal, stashUnmatched = false)
   }
@@ -227,7 +238,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
     ackTo foreach (_ ! AuthorizeUserAck())
   }
 
-  private def recordClient(client: ActorRef): Unit = {
+  private def recordClient(client: ActorRef, reSender: ActorRef): Unit = {
     if (!clients.contains(client)) {
       log.debug("New client: {}", client)
       clients += client
@@ -239,7 +250,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
   private def withValidMessageBox(messageBoxBytes: Array[Byte])(f: MessageBox ⇒ Unit): Unit =
     decodeMessageBox(messageBoxBytes) match {
       case Some(mb) ⇒ f(mb)
-      case None     ⇒ sendDropAndStop("Failed to parse MessageBox")
+      case None     ⇒ sendDropAndStop("Failed to parse MessageBox", Some(sender()))
     }
 
   private def decodeMessageBox(messageBoxBytes: Array[Byte]): Option[MessageBox] = {
@@ -278,10 +289,10 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
     self ! PoisonPill
   }
 
-  private def sendDropAndStop(message: String): Unit = {
+  private def sendDropAndStop(message: String, client: Option[ActorRef]): Unit = {
     log.warning("Sending Drop and dying: {}", message)
     val drop = Drop(0, 0, message)
-    clients foreach (_ ! drop)
+    (clients ++ client.map(Set(_)).getOrElse(Set.empty)) foreach (_ ! drop)
     self ! PoisonPill
   }
 
