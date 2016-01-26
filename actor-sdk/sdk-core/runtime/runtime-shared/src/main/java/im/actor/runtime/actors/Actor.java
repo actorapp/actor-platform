@@ -4,16 +4,22 @@
 
 package im.actor.runtime.actors;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 import im.actor.core.util.RandomUtils;
 import im.actor.runtime.actors.ask.AskCallback;
 import im.actor.runtime.actors.ask.AskError;
-import im.actor.runtime.actors.ask.AskFuture;
 import im.actor.runtime.actors.ask.AskRequest;
 import im.actor.runtime.actors.ask.AskResult;
+import im.actor.runtime.actors.future.Future;
+import im.actor.runtime.actors.future.FutureCallback;
 import im.actor.runtime.actors.mailbox.Mailbox;
 import im.actor.runtime.actors.messages.DeadLetter;
+import im.actor.runtime.actors.promise.Promise;
+import im.actor.runtime.actors.promise.PromiseExecutor;
+import im.actor.runtime.function.Supplier;
 
 /**
  * Actor object
@@ -213,42 +219,73 @@ public class Actor {
         ask(dest, message, null);
     }
 
-    public void ask(ActorRef dest, Object message, final AskCallback callback) {
+    public void ask(final ActorRef dest, final Object message, final AskCallback callback) {
+//
+//        final Future res = new Future();
+//        res.subscribe(new FutureCallback() {
+//
+//            @Override
+//            public void onResult(Object res) {
+//                self().send(new AskResult(id, res));
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                self().send(new AskError(id, e));
+//            }
+//        });
+//        dest.send(new AskRequest(message, res));
+
         final long id = RandomUtils.nextRid();
-        become(new Receiver() {
+        new Promise<Object>() {
             @Override
-            public void onReceive(Object message) {
-                if (message instanceof AskResult) {
-                    AskResult askResult = ((AskResult) message);
-                    if (askResult.getId() != id) {
-                        stash();
-                        return;
-                    }
+            protected void exec(@NotNull PromiseExecutor<Object> executor) {
+                become(new Receiver() {
+                    @Override
+                    public void onReceive(Object message) {
+                        if (message instanceof AskResult) {
+                            AskResult askResult = ((AskResult) message);
+                            if (askResult.getId() != id) {
+                                stash();
+                                return;
+                            }
 
-                    unbecome();
-                    unstashAll();
+                            unbecome();
+                            unstashAll();
 
-                    if (callback != null) {
-                        callback.onResult(askResult.getResult());
-                    }
-                } else if (message instanceof AskError) {
-                    AskError error = ((AskError) message);
-                    if (error.getId() != id) {
-                        stash();
-                        return;
-                    }
+                            if (callback != null) {
+                                callback.onResult(askResult.getResult());
+                            }
+                        } else if (message instanceof AskError) {
+                            AskError error = ((AskError) message);
+                            if (error.getId() != id) {
+                                stash();
+                                return;
+                            }
 
-                    unbecome();
-                    unstashAll();
+                            unbecome();
+                            unstashAll();
 
-                    if (callback != null) {
-                        callback.onError(error.getException());
+                            if (callback != null) {
+                                callback.onError(error.getException());
+                            }
+                        } else {
+                            stash();
+                        }
                     }
-                } else {
-                    stash();
-                }
+                });
+                dest.send(new AskRequest(message, executor));
             }
-        });
-        dest.send(new AskRequest(message, new AskFuture(id, self())));
+        }.then(new Supplier<Object>() {
+            @Override
+            public void apply(Object o) {
+                self().send(new AskResult(id, o));
+            }
+        }).failure(new Supplier<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                self().send(new AskError(id, e));
+            }
+        }).done();
     }
 }

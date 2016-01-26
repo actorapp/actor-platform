@@ -11,7 +11,8 @@ import im.actor.core.modules.updates.UpdateProcessor;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.Log;
-import im.actor.runtime.actors.Future;
+import im.actor.runtime.actors.future.Future;
+import im.actor.runtime.actors.promise.PromiseExecutor;
 
 public class SequenceHandlerActor extends ModuleActor {
 
@@ -31,7 +32,7 @@ public class SequenceHandlerActor extends ModuleActor {
     }
 
     private void onSeqUpdate(int type, byte[] body, List<ApiUser> users,
-                             List<ApiGroup> groups, Future future) {
+                             List<ApiGroup> groups, PromiseExecutor future) {
 
         Update update;
         try {
@@ -39,14 +40,14 @@ public class SequenceHandlerActor extends ModuleActor {
         } catch (IOException e) {
             Log.w(TAG, "Unable to parse update: ignoring");
             Log.e(TAG, e);
-            future.onResult();
+            future.result(null);
             return;
         }
 
         if (groups == null || users == null) {
             if (processor.isCausesInvalidation(update)) {
                 Log.w(TAG, "Difference is required");
-                future.onError(new RuntimeException("Difference is required"));
+                future.error(new RuntimeException("Difference is required"));
                 return;
             }
         }
@@ -65,22 +66,21 @@ public class SequenceHandlerActor extends ModuleActor {
         }
 
         Log.d(TAG, "Processing update success");
-        future.onResult();
+        future.result(null);
     }
 
     @Override
-    public boolean onAsk(Object message, Future future) {
+    public void onAsk(Object message, PromiseExecutor future) {
         if (message instanceof WeakUpdate) {
             WeakUpdate weakUpdate = (WeakUpdate) message;
             onWeakUpdateReceived(weakUpdate.getUpdate(), weakUpdate.getDate());
-            return true;
+            future.result(null);
         } else if (message instanceof SeqUpdate) {
             SeqUpdate seqUpdate = (SeqUpdate) message;
             onSeqUpdate(seqUpdate.type, seqUpdate.body,
                     seqUpdate.users, seqUpdate.groups, future);
-            return false;
         } else {
-            return super.onAsk(message, future);
+            super.onAsk(message, future);
         }
     }
 
