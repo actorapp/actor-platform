@@ -52,7 +52,7 @@ public class Promises {
                         executor.error(e);
                     }
                 });
-                promises.done();
+                promises.done(promises.getDispatchActor());
             }
         };
     }
@@ -106,7 +106,7 @@ public class Promises {
                     });
                 }
                 for (Promise<T> p : promises) {
-                    p.done();
+                    p.done(self.getDispatchActor());
                 }
             }
         };

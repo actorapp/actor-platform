@@ -92,7 +92,7 @@ public class EncryptedSessionActor extends ModuleActor {
 
                 return new EncryptedSession(ownIdentityKey, ownPreKey, theirIdentityKey, theirPreKey, theirKeyGroup);
             }
-        }).dispatch(self()).then(new Supplier<EncryptedSession>() {
+        }).then(new Supplier<EncryptedSession>() {
             @Override
             public void apply(EncryptedSession encryptedSession) {
                 EncryptedSessionActor.this.session = encryptedSession;
@@ -104,7 +104,7 @@ public class EncryptedSessionActor extends ModuleActor {
                 Log.w(TAG, "Session load error");
                 Log.e(TAG, e);
             }
-        }).dispatch(self()).done();
+        }).done(self());
     }
 
     private void onEncrypt(final byte[] data, final PromiseResolver<EncryptedPackageRes> future) {
