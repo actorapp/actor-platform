@@ -198,9 +198,10 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
         
         if (bindedLayout.fastThumb != nil) {
             let loadedThumb = UIImage(data: bindedLayout.fastThumb!)?
+                .imageByBlurLight()
                 .roundCorners(bindedLayout.screenSize.width,
                     h: bindedLayout.screenSize.height,
-                    roundSize: 14).imageByBlurSuperLight()
+                    roundSize: 14)
             
             runOnUiThread(selfGeneration,closure: { ()->() in
                 self.setPreviewImage(loadedThumb!, fast: true)

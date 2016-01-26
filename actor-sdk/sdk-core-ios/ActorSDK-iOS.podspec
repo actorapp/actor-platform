@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   s.dependency 'SZTextView'
   s.dependency 'RSKImageCropper'
   s.dependency 'JDStatusBarNotification'
-  s.dependency 'YYKit', :git => 'https://github.com/kioshimafx/YYKit.git'
+  s.dependency 'YYKit'
 
   s.dependency 'BlockAlertsAnd-ActionSheets'
   s.dependency 'RMUniversalAlert'
