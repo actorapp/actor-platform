@@ -2,8 +2,7 @@ package im.actor.core.modules.users;
 
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.util.ModuleActor;
-import im.actor.runtime.actors.future.Future;
-import im.actor.runtime.actors.promise.PromiseExecutor;
+import im.actor.runtime.actors.promise.PromiseResolver;
 
 class UsersUpdatesActor extends ModuleActor {
 
@@ -16,7 +15,7 @@ class UsersUpdatesActor extends ModuleActor {
         // context().getUpdatesModule().
     }
 
-    private void checkUsers(Integer[] uids, PromiseExecutor future) {
+    private void checkUsers(Integer[] uids, PromiseResolver future) {
         for (int uid : uids) {
             if (users().getValue(uid) == null) {
                 future.result(false);
@@ -28,7 +27,7 @@ class UsersUpdatesActor extends ModuleActor {
     }
 
     @Override
-    public void onAsk(Object message, PromiseExecutor future) {
+    public void onAsk(Object message, PromiseResolver future) {
         if (message instanceof CheckUsers) {
             checkUsers(((CheckUsers) message).uids, future);
         } else {

@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.function.ArrayFunction;
 import im.actor.runtime.function.Supplier;
 
 /**
@@ -17,6 +19,7 @@ public abstract class Promise<T> {
 
     private final ArrayList<PromiseCallback<T>> callbacks = new ArrayList<PromiseCallback<T>>();
 
+    private PromiseDispatcher dispatcher = PromiseDispatcher.DEFAULT;
     private volatile T result;
     private volatile Exception exception;
     private volatile boolean isFinished;
@@ -38,7 +41,7 @@ public abstract class Promise<T> {
     public synchronized Promise<T> then(final Supplier<T> then) {
         if (isFinished) {
             if (exception == null) {
-                im.actor.runtime.Runtime.dispatch(new Runnable() {
+                dispatcher.dispatch(new Runnable() {
                     @Override
                     public void run() {
                         then.apply(result);
@@ -70,7 +73,7 @@ public abstract class Promise<T> {
     public synchronized Promise<T> failure(final Supplier<Exception> failure) {
         if (isFinished) {
             if (exception != null) {
-                im.actor.runtime.Runtime.dispatch(new Runnable() {
+                dispatcher.dispatch(new Runnable() {
                     @Override
                     public void run() {
                         failure.apply(exception);
@@ -102,7 +105,7 @@ public abstract class Promise<T> {
     public synchronized Promise<T> complete(final PromiseCallback<T> callback) {
         if (isFinished) {
 
-            im.actor.runtime.Runtime.dispatch(new Runnable() {
+            dispatcher.dispatch(new Runnable() {
                 @Override
                 public void run() {
                     if (exception != null) {
@@ -119,22 +122,89 @@ public abstract class Promise<T> {
     }
 
     /**
+     * Binding result dispatching to actor
+     *
+     * @param ref dest actor
+     * @return this
+     */
+    public Promise<T> dispatch(ActorRef ref) {
+        dispatcher = PromiseDispatcher.forActor(ref);
+        return this;
+    }
+
+    /**
      * Call this method to start promise execution
      */
-    public void done() {
+    public Promise<T> done() {
         if (isStarted) {
             throw new RuntimeException("Promise already started");
         }
         isStarted = true;
-        exec(new PromiseExecutor<T>(this));
+        exec(new PromiseResolver<T>(this));
+        return this;
     }
+
+    public <R> Promise<R> cast() {
+        return (Promise<R>) this;
+    }
+
+    public <R> Promise<R> zip(ArrayFunction<T, R> zip) {
+        return Promises.zip((Promise<T[]>) this, zip);
+    }
+
+    /**
+     * Getting current dispatcher for promise
+     *
+     * @return current dispatcher
+     */
+    public PromiseDispatcher getDispatcher() {
+        return dispatcher;
+    }
+
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public Exception getException() {
+        return exception;
+    }
+
+    public T getResult() {
+        return result;
+    }
+
+    //    public Promise<T> bind(final ActorRef actorRef) {
+//        final Promise<T> self = this;
+//        return new Promise<T>() {
+//            @Override
+//            protected void exec(@NotNull final PromiseExecutor<T> executor) {
+//                self.done();
+//                self.complete(new PromiseCallback<T>() {
+//                    @Override
+//                    public void onResult(T t) {
+//                        actorRef.send(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                executor.result();
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//
+//                    }
+//                })
+//            }
+//        };
+//    }
 
     /**
      * Subclasses need to implement exec method for starting execution
      *
      * @param executor object that is used for result delivering
      */
-    protected abstract void exec(@NotNull PromiseExecutor<T> executor);
+    protected abstract void exec(@NotNull PromiseResolver<T> executor);
 
     /**
      * Delivering result
@@ -188,62 +258,5 @@ public abstract class Promise<T> {
         isFinished = true;
         result = res;
         deliverResult();
-    }
-
-
-    /**
-     * Combining sequence of promises to one single promise
-     *
-     * @param promises source promises
-     * @param <T>      type of arguments
-     * @return result promise
-     */
-    @SafeVarargs
-    public static <T> Promise<T[]> sequence(final Promise<T>... promises) {
-        if (promises.length == 0) {
-            throw new RuntimeException("Promises array must not be empty");
-        }
-        return new Promise<T[]>() {
-            @Override
-            protected void exec(@NotNull final PromiseExecutor<T[]> executor) {
-                final T[] res = (T[]) new Object[promises.length];
-                final boolean[] isSet = new boolean[promises.length];
-                final Promise self = this;
-                for (int i = 0; i < res.length; i++) {
-                    promises[i].done();
-                    final int finalI = i;
-                    promises[i].then(new Supplier<T>() {
-                        @Override
-                        public void apply(T t) {
-                            if (self.isFinished) {
-                                return;
-                            }
-
-                            res[finalI] = t;
-                            isSet[finalI] = true;
-                            for (int i = 0; i < promises.length; i++) {
-                                if (!isSet[i]) {
-                                    return;
-                                }
-                            }
-
-                            executor.result(res);
-                        }
-                    }).failure(new Supplier<Exception>() {
-                        @Override
-                        public void apply(Exception e) {
-                            if (self.isFinished) {
-                                return;
-                            }
-
-                            executor.error(e);
-                        }
-                    });
-                }
-                for (Promise<T> p : promises) {
-                    p.done();
-                }
-            }
-        };
     }
 }

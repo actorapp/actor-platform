@@ -18,10 +18,9 @@ import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.future.Future;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.ask.AskCallback;
-import im.actor.runtime.actors.promise.PromiseExecutor;
+import im.actor.runtime.actors.promise.PromiseResolver;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.box.ActorBox;
 import im.actor.runtime.crypto.box.ActorBoxKey;
@@ -66,7 +65,7 @@ public class EncryptedPeerActor extends ModuleActor {
         });
     }
 
-    private void doEncrypt(final byte[] data, final PromiseExecutor future) {
+    private void doEncrypt(final byte[] data, final PromiseResolver future) {
 
         Log.d(TAG, "doEncrypt");
         ask(context().getEncryption().getKeyManager(), new KeyManagerActor.FetchUserKeyGroups(uid), new AskCallback() {
@@ -163,7 +162,7 @@ public class EncryptedPeerActor extends ModuleActor {
         }
     }
 
-    private void doEncrypt(byte[] encKey, byte[] data, ArrayList<EncryptedBoxKey> encryptedKeys, PromiseExecutor future) {
+    private void doEncrypt(byte[] encKey, byte[] data, ArrayList<EncryptedBoxKey> encryptedKeys, PromiseResolver future) {
         Log.d(TAG, "doEncrypt2");
         byte[] encData;
         try {
@@ -186,7 +185,7 @@ public class EncryptedPeerActor extends ModuleActor {
         future.result(encryptedBox);
     }
 
-    private void doDecrypt(final EncryptedBox data, final PromiseExecutor future) {
+    private void doDecrypt(final EncryptedBox data, final PromiseResolver future) {
 
         final int senderKeyGroup = ByteStrings.bytesToInt(ByteStrings.substring(data.getEncryptedPackage(), 0, 4));
         final byte[] encPackage = ByteStrings.substring(data.getEncryptedPackage(), 4, data.getEncryptedPackage().length - 4);
@@ -300,7 +299,7 @@ public class EncryptedPeerActor extends ModuleActor {
     }
 
     @Override
-    public void onAsk(Object message, PromiseExecutor future) {
+    public void onAsk(Object message, PromiseResolver future) {
         if (message instanceof EncryptPackage) {
             doEncrypt(((EncryptPackage) message).getData(), future);
         } else if (message instanceof DecryptPackage) {
