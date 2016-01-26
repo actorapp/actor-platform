@@ -7,7 +7,8 @@ import javax.crypto.spec.PBEKeySpec
 import akka.actor.ActorSystem
 import com.google.protobuf.ByteString
 import im.actor.acl.{ ACLBase, ACLFiles }
-import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType, ApiUserOutPeer }
+import im.actor.api.rpc.peers._
+import im.actor.concurrent.FutureExt
 import im.actor.server.group.GroupExtension
 import im.actor.server.model
 import im.actor.server.model.UserPassword
@@ -70,6 +71,23 @@ object ACLUtils extends ACLBase with ACLFiles {
     }
   }
 
+  def checkOutPeers(
+    outPeers:     Seq[ApiUserOutPeer],
+    clientAuthId: Long
+  )(implicit system: ActorSystem): Future[Boolean] = {
+    implicit val ec = system.dispatcher
+    FutureExt
+      .ftraverse(outPeers)(peer ⇒ UserExtension(system).checkAccessHash(peer.userId, clientAuthId, peer.accessHash))
+      .map(!_.contains(false))
+  }
+
+  def checkOutPeers(outPeers: Seq[ApiGroupOutPeer])(implicit system: ActorSystem): Future[Boolean] = {
+    implicit val ec = system.dispatcher
+    FutureExt
+      .ftraverse(outPeers)(peer ⇒ GroupExtension(system).checkAccessHash(peer.groupId, peer.accessHash))
+      .map(!_.contains(false))
+  }
+
   def getOutPeer(peer: ApiPeer, clientAuthId: Long)(implicit s: ActorSystem): Future[ApiOutPeer] = {
     implicit val ec: ExecutionContext = s.dispatcher
     peer.`type` match {
@@ -83,6 +101,11 @@ object ACLUtils extends ACLBase with ACLFiles {
   def getUserOutPeer(userId: Int, clientAuthId: Long)(implicit s: ActorSystem): Future[ApiUserOutPeer] = {
     import s.dispatcher
     UserExtension(s).getAccessHash(userId, clientAuthId) map (ApiUserOutPeer(userId, _))
+  }
+
+  def getGroupOutPeer(userId: Int)(implicit s: ActorSystem): Future[ApiGroupOutPeer] = {
+    import s.dispatcher
+    GroupExtension(s).getAccessHash(userId) map (ApiGroupOutPeer(userId, _))
   }
 
   def isPasswordValid(password: String) = password.length > PasswordMinLength && password.length < PasswordMaxLength
