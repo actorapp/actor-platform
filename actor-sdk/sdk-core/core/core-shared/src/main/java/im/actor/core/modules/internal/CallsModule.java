@@ -15,6 +15,7 @@ import im.actor.core.entity.signals.AbsSignal;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.events.IncomingCall;
+import im.actor.core.modules.events.NewSessionCreated;
 import im.actor.core.modules.internal.calls.CallActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -25,6 +26,8 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.eventbus.BusSubscriber;
+import im.actor.runtime.eventbus.Event;
 
 public class CallsModule extends AbsModule {
 
@@ -44,6 +47,12 @@ public class CallsModule extends AbsModule {
     public void run() {
         if (CALLS_ENABLED) {
             request(new RequestSubscribeToCalls());
+            context().getEvents().subscribe(new BusSubscriber() {
+                @Override
+                public void onBusEvent(Event event) {
+                    request(new RequestSubscribeToCalls());
+                }
+            }, NewSessionCreated.EVENT);
         }
     }
 
