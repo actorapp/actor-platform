@@ -70,6 +70,7 @@ private[user] final class UserContactsActor(userId: Int) extends Processor[UserC
           UpdateUserLocalNameChanged(contactUserId, nameOpt),
           pushText = None,
           isFat = false,
+          reduceKey = None,
           deliveryId = None
         ))
     }

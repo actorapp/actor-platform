@@ -1,15 +1,13 @@
 package im.actor.api
 
+import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.group.GroupErrors.GroupNotFound
 import im.actor.server.office.EntityNotFoundError
 import im.actor.server.user.UserErrors.UserNotFound
-import slick.dbio.{ DBIO, DBIOAction }
-import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.reflect._
-import scalaz.Scalaz._
-import scalaz._
+import scala.reflect.ClassTag
+import scalaz._, Scalaz._
 
 package object rpc extends {
 

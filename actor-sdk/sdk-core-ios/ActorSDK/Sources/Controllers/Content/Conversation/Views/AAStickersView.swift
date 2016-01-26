@@ -1,9 +1,9 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
-import SDWebImage
+import YYKit
 
 public struct AAStickersPack {
     
@@ -15,14 +15,14 @@ public struct AAStickersPack {
 
 public class AAStickersViewCell : UICollectionViewCell {
     
-    let stickerImage : UIImageView!
+    let stickerImage : YYAnimatedImageView!
     private var callback: AAFileCallback? = nil
     private static var stickerCache = Dictionary<Int, AASwiftlyLRU<Int64, UIImage>>()
     private static let cacheSize = 30
     
     override init(frame: CGRect) {
         
-        self.stickerImage = UIImageView()
+        self.stickerImage = YYAnimatedImageView()
         self.stickerImage.backgroundColor = UIColor.clearColor()
         self.stickerImage.contentMode = .ScaleAspectFit
         
@@ -73,7 +73,7 @@ public class AAStickersViewCell : UICollectionViewCell {
             }
             
             var image:UIImage!
-            image = UIImage.sd_imageWithWebPData(data)
+            image = YYImage(data: data!)
             
             if (image == nil) {
                 return
@@ -124,7 +124,6 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
 
     private let collectionView  : UICollectionView!
     private weak var conv       : ConversationViewController!
-    private var visualEffectView : UIVisualEffectView!
     
     private var stickersPacks   = Array<AAStickersPack>()
     
@@ -133,13 +132,13 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
     init(frame: CGRect,convContrller:ConversationViewController) {
         
         // one item size
-        let widthHightItem = frame.width/4-20;
+        let widthHightItem = frame.width/4-15;
         
         // layout for collection view
         let layoutCV = UICollectionViewFlowLayout()
         layoutCV.scrollDirection = .Vertical
         layoutCV.itemSize = CGSizeMake(widthHightItem, widthHightItem)
-        layoutCV.sectionInset = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0)
+        layoutCV.sectionInset = UIEdgeInsets(top: 5, left: 0, bottom: 10, right: 0)
         
         // init collection view
         self.collectionView = UICollectionView(frame: frame, collectionViewLayout: layoutCV)
@@ -149,32 +148,28 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         super.init(frame: frame)
         
         // bind convController
+        
         self.conv = convContrller
-        
-        self.visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .Light))
-        
-        visualEffectView.frame = frame
-        
-        self.addSubview(visualEffectView)
         
         // delegate/datasource
         
         
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
-        self.collectionView.backgroundColor = UIColor.clearColor()
+        self.collectionView.backgroundColor = UIColor(red: 0.7728, green: 0.8874, blue: 0.9365, alpha: 1.0)
         
         self.collectionView.registerClass(AAStickersViewCell.self, forCellWithReuseIdentifier: "AAStickersViewCell")
         
-        self.collectionView.contentInset = UIEdgeInsetsMake(15, 10, 15, 10)
+        self.collectionView.contentInset = UIEdgeInsetsMake(10, 5, 10, 5)
+        
+        self.collectionView.preservesSuperviewLayoutMargins = false
+        self.collectionView.layoutMargins = UIEdgeInsetsZero
         
         
         // add collection view as subview
-        self.visualEffectView.addSubview(self.collectionView)
+        self.addSubview(self.collectionView)
         
         self.backgroundColor = UIColor.clearColor()
-        
-        self.loadStickers()
         
     }
     
@@ -186,10 +181,9 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         super.layoutSubviews()
         
         self.collectionView.frame = self.frame
-        self.visualEffectView.frame = self.frame
         
     }
-    
+
     
     /// collectionView
     
@@ -212,6 +206,7 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         stickerCell.stickerImage.backgroundColor = UIColor.clearColor()
         stickerCell.bind(sickerPack.stickers[indexPath.row], clearPrev: true)
         
+        
         return stickerCell;
         
     }
@@ -222,6 +217,13 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         let stickerModel = sickerPack.stickers[indexPath.row]
         
         self.conv.sendSticker(stickerModel)
+        
+    }
+    
+    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+        
+        
+        
         
     }
     
@@ -256,8 +258,6 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
                         if (parsedStickerPack.stickers.count > 0) {
                             self.stickersPacks.append(parsedStickerPack)
                         }
-                        
-                        print("stickers list === \(sickers)")
                         
                     }
                     

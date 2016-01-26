@@ -57,9 +57,17 @@ final class PushServiceImpl(
   }
 
   override def jhandleRegisterActorPush(
-    endpoint:   String,
+    topic:      String,
     publicKeys: IndexedSeq[ApiEncryptionKey],
     clientData: ClientData
-  ): Future[HandlerResult[ResponseVoid]] =
-    Future.failed(new RuntimeException("Not implemented"))
+  ): Future[HandlerResult[ResponseVoid]] = {
+    val creds = model.push.ActorPushCredentials(clientData.authId, topic)
+
+    db.run(for {
+      _ ← persist.push.ActorPushCredentialsRepo.deleteByTopic(topic)
+      _ ← persist.push.ActorPushCredentialsRepo.createOrUpdate(clientData.authId, topic)
+      _ = seqUpdExt.registerActorPushCredentials(creds)
+    } yield Ok(ResponseVoid))
+  }
+
 }

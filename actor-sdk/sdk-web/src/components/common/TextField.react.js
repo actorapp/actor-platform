@@ -29,12 +29,13 @@ class TextField extends Component {
   }
 
   render() {
-    const { className, floatingLabel, type, value, ref } = this.props;
+    const { className, floatingLabel, type, value, ref, disabled } = this.props;
     const { isFocused, inputId } = this.state;
 
     const inputClassName = classnames('input input__material', className, {
       'input__material--focus': isFocused,
-      'input__material--filled': value && value.length > 0
+      'input__material--filled': value && value.length > 0,
+      'input__material--disabled': disabled
     });
 
     const inputProps = {
@@ -43,7 +44,8 @@ class TextField extends Component {
       onChange: this.handleChange,
       onFocus: this.handleFocus,
       onBlur: this.handleBlur,
-      value: value,
+      value,
+      disabled,
       ref: ref ? ref : 'input'
     };
 

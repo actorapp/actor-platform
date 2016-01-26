@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -106,6 +106,16 @@ public extension String {
             res += self
         }
         return res
+    }
+    
+    public var ns: NSString {
+        return self as NSString
+    }
+    public var pathExtension: String? {
+        return ns.pathExtension
+    }
+    public var lastPathComponent: String? {
+        return ns.lastPathComponent
     }
     
     public var asNS: NSString { return (self as NSString) }

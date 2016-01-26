@@ -21,9 +21,9 @@ package object protocol {
   val ResponseGetServerKeyCodec = (int64 :: bytes).as[ResponseGetServerKey]
   val RequestDHCodec = (int64 :: int64 :: bytes :: bytes).as[RequestDH]
   val ResponseDoDHCodec = (int64 :: bytes :: bytes).as[ResponseDoDH]
-  val RpcRequestBoxCodec = bytes.as[RpcRequestBox]
-  val RpcResponseBoxCodec = (int64 :: bytes).as[RpcResponseBox]
+  val ProtoRpcRequestCodec = bytes.as[ProtoRpcRequest]
+  val ProtoRpcResponseCodec = (int64 :: bytes).as[ProtoRpcResponse]
   val UnsentMessageCodec = (int64 :: int32).as[UnsentMessage]
   val UnsentResponseCodec = (int64 :: int64 :: int32).as[UnsentResponse]
-  val UpdateBoxCodec = bytes.as[UpdateBox]
+  val ProtoPushCodec = bytes.as[ProtoPush]
 }

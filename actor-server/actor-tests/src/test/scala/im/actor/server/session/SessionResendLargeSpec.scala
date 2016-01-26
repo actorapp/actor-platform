@@ -6,7 +6,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.server.ActorSpecification
-import im.actor.server.mtproto.protocol.{ RequestResend, RpcRequestBox, UnsentResponse }
+import im.actor.server.mtproto.protocol.{ RequestResend, ProtoRpcRequest, UnsentResponse }
 
 import scala.concurrent.duration._
 import scala.util.Random
@@ -38,7 +38,7 @@ final class SessionResendLargeSpec extends BaseSessionSpec(
       val requestMessageId = Random.nextLong()
 
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
-      sendMessageBox(authId, sessionId, sessionRegion.ref, requestMessageId, RpcRequestBox(encodedRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, requestMessageId, ProtoRpcRequest(encodedRequest))
 
       expectNewSession(authId, sessionId, requestMessageId)
       expectMessageAck(requestMessageId)
@@ -76,7 +76,7 @@ final class SessionResendLargeSpec extends BaseSessionSpec(
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
 
       for (_ ← 1 to 100)
-        TestProbe().send(session, handleMessageBox(Random.nextLong(), RpcRequestBox(encodedRequest)))
+        TestProbe().send(session, handleMessageBox(Random.nextLong(), ProtoRpcRequest(encodedRequest)))
 
       watchProbe.expectTerminated(session)
     }

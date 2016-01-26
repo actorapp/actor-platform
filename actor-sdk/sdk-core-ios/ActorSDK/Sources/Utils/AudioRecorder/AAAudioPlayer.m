@@ -5,8 +5,6 @@
 #import "AAOpusAudioPlayerAU.h"
 #import "AANativeAudioPlayer.h"
 
-//#import "TGObserverProxy.h"
-//#import "TGAppDelegate.h"
 
 #import <AVFoundation/AVFoundation.h>
 
@@ -14,8 +12,6 @@
 {
     bool _audioSessionIsActive;
     bool _proximityState;
-//    TGObserverProxy *_proximityChangedNotification;
-//    TGHolder *_proximityChangeHolder;
 }
 
 @end
@@ -38,17 +34,12 @@
     self = [super init];
     if (self != nil)
     {
-//        _proximityState = TGAppDelegateInstance.deviceProximityState;
-//        _proximityChangedNotification = [[TGObserverProxy alloc] initWithTarget:self targetSelector:@selector(proximityChanged:) name:TGDeviceProximityStateChangedNotification object:nil];
-//        _proximityChangeHolder = [[TGHolder alloc] init];
-//        [TGAppDelegateInstance.deviceProximityListeners addHolder:_proximityChangeHolder];
     }
     return self;
 }
 
 - (void)dealloc
 {
-//    [TGAppDelegateInstance.deviceProximityListeners removeHolder:_proximityChangeHolder];
 }
 
 - (void)play

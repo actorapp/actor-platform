@@ -1,0 +1,2 @@
+* :shipit: configurable Google Cloud Messaging connections count
+* :bug: enable EcryptionService by default

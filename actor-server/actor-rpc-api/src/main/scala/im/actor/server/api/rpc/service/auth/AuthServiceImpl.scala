@@ -31,6 +31,7 @@ import im.actor.server.{ model, persist }
 import im.actor.util.log.AnyRefLogSource
 import im.actor.util.misc.PhoneNumberUtils._
 import im.actor.util.misc._
+import im.actor.util.ThreadLocalSecureRandom
 import org.joda.time.DateTime
 import shapeless._
 import slick.dbio.DBIO
@@ -38,7 +39,6 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent._
 import scala.concurrent.duration._
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.language.postfixOps
 import scalaz._
 
@@ -134,7 +134,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
         //refresh session data
         authSession = model.AuthSession(
           userId = user.id,
-          id = nextIntId(ThreadLocalRandom.current()),
+          id = nextIntId(),
           authId = clientData.authId,
           appId = transaction.appId,
           appTitle = model.AuthSession.appTitleOf(transaction.appId),
@@ -147,7 +147,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
         )
         _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
         _ ← fromDBIO(persist.auth.AuthTransactionRepo.delete(transactionHash))
-        ack ← fromFuture(authorize(user.id, clientData))
+        ack ← fromFuture(authorize(user.id, authSession.id, clientData))
       } yield ResponseAuth(userStruct, misc.ApiConfig(maxGroupSize))
     db.run(action.run)
   }
@@ -488,7 +488,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
             val smsCode = genSmsCode(normPhoneNumber)
             for (
               _ ← persist.AuthSmsCodeObsoleteRepo.create(
-                id = ThreadLocalRandom.current().nextLong(),
+                id = ThreadLocalSecureRandom.current().nextLong(),
                 phoneNumber = normPhoneNumber,
                 smsHash = smsHash,
                 smsCode = smsCode
@@ -576,12 +576,12 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
                       optPhone match {
                         // Phone does not exist, register the user
                         case None ⇒ withValidName(rawName) { name ⇒
-                          val rnd = ThreadLocalRandom.current()
-                          val userId = nextIntId(rnd)
+                          val rng = ThreadLocalSecureRandom.current()
+                          val userId = nextIntId(rng)
                           //todo: move this to UserOffice
                           val user = model.User(
                             id = userId,
-                            accessSalt = ACLUtils.nextAccessSalt(rnd),
+                            accessSalt = ACLUtils.nextAccessSalt(rng),
                             name = name,
                             countryCode = countryCode,
                             sex = model.NoSex,
@@ -614,10 +614,9 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
                 }
             }.flatMap {
               case \/-(user :: HNil) ⇒
-                val rnd = ThreadLocalRandom.current()
                 val authSession = model.AuthSession(
                   userId = user.id,
-                  id = nextIntId(rnd),
+                  id = nextIntId(),
                   authId = clientData.authId,
                   appId = appId,
                   appTitle = model.AuthSession.appTitleOf(appId),

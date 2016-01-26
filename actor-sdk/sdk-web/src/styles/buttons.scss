@@ -15,7 +15,6 @@
   display: inline-block;
 
   box-sizing: border-box;
-  //min-width: 100px;
   height: 36px;
   padding: 8px 16px;
 
@@ -23,7 +22,6 @@
   transition: box-shadow 200ms, background 200ms;
   text-align: center;
   vertical-align: middle;
-  //letter-spacing: .5px;
   text-transform: uppercase;
 
   color: rgba(0, 0, 0, .5);
@@ -32,6 +30,7 @@
   outline: none;
   background-color: transparent;
 
+  @include no-select();
   apperance: none;
   i {
     line-height: 20px;
@@ -60,8 +59,8 @@
       background-color: lighten(rgba($dark-sky-blue, .15), 15);
     }
     &[disabled] {
-      background-color: transparent !important;
       color: $dark-sky-blue !important;
+      background-color: transparent !important;
     }
   }
   &--rised {
@@ -121,7 +120,8 @@
   }
 
   &[disabled] {
-    opacity: .55;
     cursor: not-allowed;
+
+    opacity: .55;
   }
 }

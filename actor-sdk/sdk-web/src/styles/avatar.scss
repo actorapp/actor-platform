@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 .avatar {
@@ -35,10 +35,9 @@
   &__placeholder {
     font-size: 15px;
     font-weight: 700;
-    line-height: $default-avatar-size - 2px;
+    line-height: $default-avatar-size;
 
     display: block;
-    box-shadow: 0 0 1px rgba(0, 0, 0, .1);
 
     width: $default-avatar-size - 2px;
     height: $default-avatar-size - 2px;
@@ -49,6 +48,7 @@
 
     color: rgb(255, 255, 255);
     border-radius: 100%;
+    box-shadow: 0 0 1px rgba(0, 0, 0, .1);
     text-shadow: 0 -1px 5px rgba(0, 0, 0, .17);
 
     // Placeholder colors
@@ -83,7 +83,7 @@
     height: $avatar-tiny-size;
     .avatar__placeholder {
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 500;
       line-height: $avatar-tiny-size - 2px;
 
       width: $avatar-tiny-size - 2px;
@@ -106,7 +106,7 @@
     height: $avatar-medium-size;
     .avatar__placeholder {
       font-size: 16px;
-      line-height: $avatar-medium-size - 2px;
+      line-height: $avatar-medium-size;
 
       width: $avatar-medium-size - 2px;
       height: $avatar-medium-size - 2px;
@@ -117,7 +117,7 @@
     height: $avatar-large-size;
     .avatar__placeholder {
       font-size: 20px;
-      line-height: $avatar-large-size - 2px;
+      line-height: $avatar-large-size;
 
       width: $avatar-large-size - 2px;
       height: $avatar-large-size - 2px;
@@ -128,7 +128,7 @@
     height: $avatar-big-size;
     .avatar__placeholder {
       font-size: 32px;
-      line-height: $avatar-big-size - 2px;
+      line-height: $avatar-big-size;
 
       width: $avatar-big-size - 2px;
       height: $avatar-big-size - 2px;
@@ -139,10 +139,14 @@
     height: $avatar-huge-size;
     .avatar__placeholder {
       font-size: 64px;
-      line-height: $avatar-huge-size - 2px;
+      line-height: $avatar-huge-size;
 
       width: $avatar-huge-size - 2px;
       height: $avatar-huge-size - 2px;
     }
+  }
+
+  &--without-shadow {
+    box-shadow: none !important;
   }
 }

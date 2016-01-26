@@ -34,5 +34,9 @@ export default {
 
     DraftActionCreators.saveDraft(text);
     dispatch(ActionTypes.COMPOSE_TYPING, { peer, text, caretPosition });
+  },
+
+  toggleAutoFocus(isEnable) {
+    dispatch(ActionTypes.COMPOSE_TOGGLE_AUTO_FOCUS, { isEnable });
   }
 };

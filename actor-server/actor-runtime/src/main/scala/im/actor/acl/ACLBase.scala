@@ -4,29 +4,30 @@ import java.nio.ByteBuffer
 import java.security.MessageDigest
 
 import akka.actor.ActorSystem
-
-import scala.concurrent.forkjoin.ThreadLocalRandom
+import im.actor.util.ThreadLocalSecureRandom
 
 trait ACLBase {
+
+  def getMDInstance() = MessageDigest.getInstance("MD5")
 
   def secretKey()(implicit s: ActorSystem) =
     s.settings.config.getString("secret")
 
-  def hash(s: String): Long =
-    ByteBuffer.wrap(MessageDigest.getInstance("MD5").digest(s.getBytes)).getLong
+  def hash(s: String, md: MessageDigest = getMDInstance()): Long =
+    ByteBuffer.wrap(md.digest(s.getBytes)).getLong
 
-  def randomLong(): Long = randomLong(ThreadLocalRandom.current())
+  def randomLong(): Long = randomLong(ThreadLocalSecureRandom.current())
 
-  def randomLong(rng: ThreadLocalRandom): Long = rng.nextLong()
+  def randomLong(rng: ThreadLocalSecureRandom): Long = rng.nextLong()
 
-  def randomString(): String = randomString(ThreadLocalRandom.current())
+  def randomString(): String = randomString(ThreadLocalSecureRandom.current())
 
-  def randomString(rng: ThreadLocalRandom): String = rng.nextLong().toString
+  def randomString(rng: ThreadLocalSecureRandom): String = rng.nextLong().toString
 
-  def nextAccessSalt(rng: ThreadLocalRandom): String = randomString(rng)
+  def nextAccessSalt(rng: ThreadLocalSecureRandom): String = randomString(rng)
 
   def nextAccessSalt(): String = {
-    nextAccessSalt(ThreadLocalRandom.current())
+    nextAccessSalt(ThreadLocalSecureRandom.current())
   }
 
 }

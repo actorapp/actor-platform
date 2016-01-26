@@ -13,6 +13,7 @@ import im.actor.server.persist
 import im.actor.server.sequence.{ SequenceErrors, SeqState }
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user._
+import im.actor.util.ThreadLocalSecureRandom
 import im.actor.util.misc.StringUtils
 import slick.driver.PostgresDriver.api._
 
@@ -48,7 +49,7 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
 
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withFileLocation(fileLocation, AvatarSizeLimit) {
-        scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()) flatMap {
+        scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()) flatMap {
           case Right(avatar) ⇒
             for {
               UserCommands.UpdateAvatarAck(avatar, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, Some(avatar)))

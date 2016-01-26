@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 /*
@@ -82,6 +82,7 @@
 
 "SettingsVersion" = "Version {version}";
 
+
 "SettingsAllSessions" = "All sessions";
 
 "SettingsLastSeen" = "Last seen";
@@ -95,8 +96,8 @@
 
 "SettingsLastSeenNone"    = "Nobody";
 
-"SettingsMobilePhone"    = "Mobile Phone";
 
+"SettingsMobilePhone"    = "Mobile Phone";
 
 /*
  * Profile
@@ -448,6 +449,10 @@
 
 "ShareContact" = "Share Contact";
 
+/*
+ *  Navigation
+ */
+
 "NavigationEdit" = "Edit";
 
 "NavigationDone" = "Done";
@@ -461,6 +466,10 @@
 "NavigationSave" = "Save";
 
 "NavigationFind" = "Find";
+
+/*
+ *  Alerts
+ */
 
 "AlertCancel" = "Cancel";
 
@@ -484,6 +493,10 @@
 
 "UnsupportedContent" = "Message is unsupported in this version. Please, wait for application update to see message.";
 
+/*
+ * Actions
+ */
+
 "ActionCopyLink" = "Copy Link";
 
 "ActionRevokeLink" = "Revoke Link";
@@ -491,6 +504,10 @@
 "ActionShareLink" = "Share Link";
 
 "AlertLinkCopied" = "Link copied to clipboard.";
+
+/*
+ *  Network
+ */
 
 "StatusConnecting" = "Connecting...";
 

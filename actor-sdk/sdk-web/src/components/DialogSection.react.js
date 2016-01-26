@@ -102,14 +102,14 @@ class DialogSection extends Component {
       activity.push(<DefaultActivitySection/>);
     }
 
-    const mainScreen = (
+    const mainScreen = peer ? (
       <section className="dialog">
         <ConnectionState/>
         <div className="messages">
           <MessagesSection messages={messagesToRender}
                            overlay={overlayToRender}
                            peer={peer}
-                           ref="MessagesSection"
+                           ref="messagesSection"
                            onScroll={this.loadMessagesByScroll}/>
 
         </div>
@@ -117,14 +117,15 @@ class DialogSection extends Component {
           isMember
             ? <footer className="dialog__footer">
                 <TypingSection/>
-                <ComposeSection peer={peer}/>
+                <ComposeSection/>
               </footer>
             : <footer className="dialog__footer dialog__footer--disabled row center-xs middle-xs ">
                 <h3>You are not a member</h3>
               </footer>
         }
       </section>
-    );
+    ) : null;
+
     const emptyScreen = (
       <section className="dialog dialog--empty row center-xs middle-xs">
         <ConnectionState/>
@@ -141,8 +142,11 @@ class DialogSection extends Component {
 
     return (
       <section className="main">
-        <ToolbarSection/>
-
+        {
+          peer
+            ? <ToolbarSection/>
+            : null
+        }
         <div className="flexrow">
           {
             peer
@@ -160,7 +164,8 @@ class DialogSection extends Component {
   };
 
   fixScroll = () => {
-    const node = React.findDOMNode(this.refs.MessagesSection);
+    const scrollNode = React.findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
+    const node = scrollNode.getElementsByClassName('ss-content')[0];
     if (node) {
       node.scrollTop = node.scrollHeight - lastScrolledFromBottom - node.offsetHeight;
     }
@@ -180,12 +185,12 @@ class DialogSection extends Component {
     const { peer, messages, messagesToRender } = this.state;
 
     if (peer) {
-      let node = React.findDOMNode(this.refs.MessagesSection);
+      const scrollNode = React.findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
+      const node = scrollNode.getElementsByClassName('ss-content')[0];
       let scrollTop = node.scrollTop;
       lastScrolledFromBottom = node.scrollHeight - scrollTop - node.offsetHeight; // was node.scrollHeight - scrollTop
 
       if (node.scrollTop < loadMessagesScrollTop) {
-        DialogActionCreators.onChatEnd(peer);
 
         if (messages.length > messagesToRender.length) {
           renderMessagesCount += renderMessagesStep;
@@ -195,6 +200,8 @@ class DialogSection extends Component {
           }
 
           this.setState(getStateFromStores());
+        } else {
+            DialogActionCreators.onChatEnd(peer);
         }
       }
     }

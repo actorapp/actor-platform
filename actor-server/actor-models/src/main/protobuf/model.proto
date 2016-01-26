@@ -3,6 +3,7 @@ syntax = 'proto3';
 package im.actor.server;
 
 import "scalapb/scalapb.proto";
+import "google/protobuf/wrappers.proto";
 
 option (scalapb.options) = {
     import: "im.actor.server.model.ModelTypeMappers._"
@@ -24,6 +25,7 @@ message SeqUpdate {
     int32 user_id = 1;
     int32 seq = 2;
     int64 timestamp = 3;
+    google.protobuf.StringValue reduce_key = 5;
     UpdateMapping mapping = 4;
 }
 

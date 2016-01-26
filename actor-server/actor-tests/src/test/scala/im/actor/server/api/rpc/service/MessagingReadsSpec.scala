@@ -57,9 +57,9 @@ class MessagingReadsSpec
       }
 
       expectUpdates(classOf[UpdateCountersChanged]) {
-        case counters @ Seq(c1: UpdateCountersChanged, c2: UpdateCountersChanged, c3: UpdateCountersChanged) ⇒
-          val cs = List(c1, c2, c3) flatMap (_.counters.globalCounter)
-          cs should contain theSameElementsAs List(1, 2, 3)
+        case counters @ Seq(c3: UpdateCountersChanged) ⇒
+          val cs = List(c3) flatMap (_.counters.globalCounter)
+          cs should contain theSameElementsAs List(3)
         case _ ⇒ fail("Unmatched UpdateCountersChanged updates")
       }
 
@@ -69,7 +69,7 @@ class MessagingReadsSpec
       dialog.lastReadAt shouldEqual new DateTime(0)
       dialog.ownerLastReadAt shouldEqual new DateTime(0)
 
-      val seq = whenReady(sequenceService.handleGetState()) {
+      val seq = whenReady(sequenceService.handleGetState(Vector.empty)) {
         _.toOption.get.seq
       }
 
@@ -127,7 +127,7 @@ class MessagingReadsSpec
       dialog.lastReadAt shouldEqual new DateTime(0)
       dialog.ownerLastReadAt shouldEqual new DateTime(0)
 
-      val currentSeq = whenReady(sequenceService.handleGetState()) { _.toOption.get.seq }
+      val currentSeq = whenReady(sequenceService.handleGetState(Vector.empty)) { _.toOption.get.seq }
 
       whenReady(service.handleMessageRead(user2OutPeer, messageDate))(identity)
 

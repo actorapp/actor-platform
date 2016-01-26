@@ -8,6 +8,7 @@ option (scalapb.options) = {
 };
 
 import "scalapb/scalapb.proto";
+import "google/protobuf/wrappers.proto";
 import "model/push.proto";
 import "model.proto";
 
@@ -27,6 +28,7 @@ message UserSequenceEvents {
     message NewUpdate {
         SeqUpdate seq_update = 1;
         PushRules push_rules = 2;
+        google.protobuf.StringValue reduce_key = 4;
         bytes state = 3;
     }
 }
@@ -47,6 +49,7 @@ message UserSequenceCommands {
     message DeliverUpdate {
         UpdateMapping mapping = 1;
         PushRules push_rules = 2;
+        google.protobuf.StringValue reduce_key = 5;
         string delivery_id = 4;
     }
 
@@ -63,6 +66,7 @@ message UserSequenceCommands {
         oneof creds {
             GooglePushCredentials google = 1;
             ApplePushCredentials apple = 2;
+            ActorPushCredentials actor = 3;
         }
     }
 

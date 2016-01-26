@@ -189,15 +189,10 @@
     }
 
     .name,
-    .nick {
-      font-size: 18px;
-
-      margin-bottom: 6px;
-
-      color: $modal-text-color;
-      .login__form__input {
-        margin-bottom: 0;
-      }
+    .nick,
+    .phone,
+    .email {
+      margin-bottom: 14px;
     }
     .about {
       label {
@@ -262,7 +257,7 @@
       }
     }
     .modal-new__body {
-      padding: 0 16px;
+      padding: 18px;
     }
     .login__form__input {
       margin-bottom: 16px;

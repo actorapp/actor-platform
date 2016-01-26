@@ -14,7 +14,6 @@ import shardakka.ShardakkaExtension
 import shardakka.keyvalue.SimpleKeyValue
 
 import scala.concurrent.Future
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.Try
 
 object FutureResultHttp extends FutureResultCats[(StatusCode, String)]
@@ -81,7 +80,7 @@ trait OutgoingHooks extends ReverseHookUnmarshaler with PlayJsonSupport {
       registeredUrs ← fromFuture(getHooks(token))
       _ ← fromBoolean(Conflict → OutgoingHooksErrors.AlreadyRegistered)(!registeredUrs.map(_._2).contains(strUri))
 
-      id = IdUtils.nextIntId(ThreadLocalRandom.current())
+      id = IdUtils.nextIntId()
       _ ← fromFuture(getTokenKv(token).upsert(id.toString, strUri))
     } yield id).value
   }

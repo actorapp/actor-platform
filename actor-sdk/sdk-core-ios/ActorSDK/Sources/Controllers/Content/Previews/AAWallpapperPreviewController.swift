@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -85,12 +85,13 @@ public class AAWallpapperPreviewController: AAViewController {
             
         } else {
             dispatchBackground({ () -> Void in
-                let descriptor = "/tmp/"+NSUUID().UUIDString
-                let path = CocoaFiles.pathFromDescriptor(descriptor);
+                
+                let descriptor = "/tmp/customWallpaperImage"
+                let path = CocoaFiles.pathFromDescriptor(descriptor)
                 
                 UIImageJPEGRepresentation(self.selectedImage, 1.00)!.writeToFile(path, atomically: true)
                 
-                Actor.changeSelectedWallpaper("file:\(path)")
+                Actor.changeSelectedWallpaper("file:\(descriptor)")
             })
             
         }

@@ -6,7 +6,7 @@ import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.auth.{ ResponseSendAuthCodeObsolete, AuthService }
-import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
+import im.actor.api.rpc.peers.{ ApiUserOutPeer, ApiOutPeer, ApiPeerType }
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.api.rpc.RpcApiExtension
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
@@ -119,6 +119,11 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
   def getOutPeer(userId: Int, clientAuthId: Long): ApiOutPeer = {
     val accessHash = Await.result(UserExtension(system).getAccessHash(userId, clientAuthId), 5.seconds)
     ApiOutPeer(ApiPeerType.Private, userId, accessHash)
+  }
+
+  def getUserOutPeer(userId: Int, clientAuthId: Long): ApiUserOutPeer = {
+    val outPeer = getOutPeer(userId, clientAuthId)
+    ApiUserOutPeer(outPeer.id, outPeer.accessHash)
   }
 
   //TODO: make same method to work with email

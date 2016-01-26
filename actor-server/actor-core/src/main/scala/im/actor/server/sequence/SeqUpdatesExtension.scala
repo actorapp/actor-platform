@@ -7,11 +7,12 @@ import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.google.protobuf.ByteString
+import com.google.protobuf.wrappers.StringValue
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.server.db.DbExtension
 import im.actor.server.model._
-import im.actor.server.model.push.{ ApplePushCredentials ⇒ ApplePushCredentialsModel, GooglePushCredentials ⇒ GooglePushCredentialsModel, PushCredentials }
+import im.actor.server.model.push.{ ApplePushCredentials ⇒ ApplePushCredentialsModel, GooglePushCredentials ⇒ GooglePushCredentialsModel, ActorPushCredentials ⇒ ActorPushCredentialsModel, PushCredentials }
 import im.actor.server.persist.AuthSessionRepo
 import im.actor.server.persist.push.ApplePushCredentialsRepo
 import im.actor.server.persist.sequence.UserSequenceRepo
@@ -59,32 +60,36 @@ final class SeqUpdatesExtension(
   def deliverUpdate(
     userId:     Int,
     mapping:    UpdateMapping,
-    pushRules:  PushRules     = PushRules(),
-    deliveryId: String        = ""
+    pushRules:  PushRules      = PushRules(),
+    reduceKey:  Option[String] = None,
+    deliveryId: String         = ""
   ): Future[SeqState] =
-    deliverUpdate(userId, buildDeliver(mapping, pushRules, deliveryId))
+    deliverUpdate(userId, buildDeliver(mapping, pushRules, reduceKey, deliveryId))
 
   def deliverSingleUpdate(
     userId:     Int,
     update:     Update,
-    pushRules:  PushRules = PushRules(),
-    deliveryId: String    = ""
+    pushRules:  PushRules      = PushRules(),
+    reduceKey:  Option[String] = None,
+    deliveryId: String         = ""
   ): Future[SeqState] =
     deliverUpdate(
       userId,
       UpdateMapping(default = Some(serializedUpdate(update))),
       pushRules,
+      reduceKey,
       deliveryId
     )
 
   def broadcastSingleUpdate(
     userIds:    Set[Int],
     update:     Update,
-    pushRules:  PushRules = PushRules(),
-    deliveryId: String    = ""
+    pushRules:  PushRules      = PushRules(),
+    reduceKey:  Option[String] = None,
+    deliveryId: String         = ""
   ): Future[Seq[SeqState]] = {
     val mapping = UpdateMapping(default = Some(serializedUpdate(update)))
-    val deliver = buildDeliver(mapping, pushRules, deliveryId)
+    val deliver = buildDeliver(mapping, pushRules, reduceKey, deliveryId)
     broadcastSingleUpdate(userIds, deliver)
   }
 
@@ -98,11 +103,12 @@ final class SeqUpdatesExtension(
     userId:       Int,
     bcastUserIds: Set[Int],
     update:       Update,
-    pushRules:    PushRules = PushRules(),
-    deliveryId:   String    = ""
+    pushRules:    PushRules      = PushRules(),
+    reduceKey:    Option[String] = None,
+    deliveryId:   String         = ""
   ): Future[(SeqState, Seq[SeqState])] = {
     val mapping = UpdateMapping(default = Some(serializedUpdate(update)))
-    val deliver = buildDeliver(mapping, pushRules, deliveryId)
+    val deliver = buildDeliver(mapping, pushRules, reduceKey, deliveryId)
     for {
       seqstate ← deliverUpdate(userId, deliver)
       seqstates ← broadcastSingleUpdate(bcastUserIds, deliver)
@@ -166,10 +172,11 @@ final class SeqUpdatesExtension(
     run(updates, updateAcc, currentSize)
   }
 
-  private def buildDeliver(mapping: UpdateMapping, pushRules: PushRules, deliveryId: String): DeliverUpdate =
+  private def buildDeliver(mapping: UpdateMapping, pushRules: PushRules, reduceKey: Option[String], deliveryId: String): DeliverUpdate =
     DeliverUpdate(
       mapping = Some(mapping),
       pushRules = Some(pushRules),
+      reduceKey map (StringValue(_)),
       deliveryId = deliveryId
     )
 
@@ -177,12 +184,15 @@ final class SeqUpdatesExtension(
 
   def registerApplePushCredentials(creds: ApplePushCredentialsModel) = registerPushCredentials(creds)
 
+  def registerActorPushCredentials(creds: ActorPushCredentialsModel) = registerPushCredentials(creds)
+
   // TODO: real future
   def registerPushCredentials(creds: PushCredentials) =
     withAuthSession(creds.authId) { session ⇒
       val register = creds match {
         case c: GooglePushCredentialsModel ⇒ RegisterPushCredentials().withGoogle(c)
         case c: ApplePushCredentialsModel  ⇒ RegisterPushCredentials().withApple(c)
+        case c: ActorPushCredentialsModel  ⇒ RegisterPushCredentials().withActor(c)
       }
       region.ref ! Envelope(session.userId).withRegisterPushCredentials(register)
       Future.successful(())

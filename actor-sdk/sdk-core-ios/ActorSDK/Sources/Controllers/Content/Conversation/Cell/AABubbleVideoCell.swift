@@ -5,6 +5,7 @@
 import UIKit
 import VBFPopFlatButton
 import AVFoundation
+import YYKit
 
 public class AABubbleVideoCell: AABubbleBaseFileCell {
     
@@ -83,10 +84,10 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
             
             // Reset progress
             self.progress.hideButton()
-            UIView.animateWithDuration(0, animations: { () -> Void in
-                self.progress.alpha = 0
-                self.preview.alpha = 0
-            })
+            //UIView.animateWithDuration(0, animations: { () -> Void in
+                self.progress.hidden = true
+                self.preview.hidden = true
+            //})
             
             // Bind file
             fileBind(message, autoDownload: bindedLayout.autoDownload)
@@ -98,24 +99,24 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
         // Update status
         if (isOut) {
             statusView.hidden = false
-            switch(UInt(message.messageState.ordinal())) {
-            case ACMessageState.PENDING.rawValue:
+            switch(message.messageState.ordinal()) {
+            case ACMessageState.PENDING().ordinal():
                 self.statusView.image = appStyle.chatIconClock;
                 self.statusView.tintColor = appStyle.chatStatusMediaSending
                 break;
-            case ACMessageState.SENT.rawValue:
+            case ACMessageState.SENT().ordinal():
                 self.statusView.image = appStyle.chatIconCheck1;
                 self.statusView.tintColor = appStyle.chatStatusMediaSent
                 break;
-            case ACMessageState.RECEIVED.rawValue:
+            case ACMessageState.RECEIVED().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2;
                 self.statusView.tintColor = appStyle.chatStatusMediaReceived
                 break;
-            case ACMessageState.READ.rawValue:
+            case ACMessageState.READ().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2;
                 self.statusView.tintColor = appStyle.chatStatusMediaRead
                 break;
-            case ACMessageState.ERROR.rawValue:
+            case ACMessageState.ERROR().ordinal():
                 self.statusView.image = appStyle.chatIconError;
                 self.statusView.tintColor = appStyle.chatStatusMediaError
                 break
@@ -127,15 +128,6 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
         } else {
             statusView.hidden = true
         }
-    }
-    
-    func applyBlurEffect(image: UIImage)-> UIImage {
-        let imageToBlur = CIImage(image: image)
-        let blurfilter = CIFilter(name: "CIGaussianBlur")
-        blurfilter!.setValue(5, forKey: kCIInputRadiusKey)
-        blurfilter!.setValue(imageToBlur, forKey: "inputImage")
-        let resultImage = blurfilter!.valueForKey("outputImage") as! CIImage
-        return UIImage(CIImage: resultImage)
     }
     
     // File state binding
@@ -206,6 +198,7 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
         
         if (bindedLayout.fastThumb != nil) {
             let loadedThumb = UIImage(data: bindedLayout.fastThumb!)?
+                .imageByBlurLight()
                 .roundCorners(bindedLayout.screenSize.width,
                     h: bindedLayout.screenSize.height,
                     roundSize: 14)

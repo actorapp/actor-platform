@@ -19,9 +19,11 @@ const LoginActionCreators = {
   changeLogin(login) {
     dispatch(ActionTypes.AUTH_CHANGE_LOGIN, { login })
   },
+
   changeCode(code) {
     dispatch(ActionTypes.AUTH_CHANGE_CODE, { code })
   },
+
   changeName(name) {
     dispatch(ActionTypes.AUTH_CHANGE_NAME, { name })
   },
@@ -33,6 +35,7 @@ const LoginActionCreators = {
       failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
     }, { phone });
   },
+
   sendCode(code) {
     const sendCodePromise = () => dispatchAsync(ActorClient.sendCode(code), {
       request: ActionTypes.AUTH_CODE_SEND,
@@ -60,6 +63,7 @@ const LoginActionCreators = {
   startSignup() {
     dispatch(ActionTypes.AUTH_SIGNUP_START);
   },
+
   sendSignup(name) {
     const signUpPromise = () => dispatchAsync(ActorClient.signUp(name), {
       request: ActionTypes.AUTH_SIGNUP,
@@ -73,7 +77,7 @@ const LoginActionCreators = {
       .then(setLoggedIn)
   },
 
-  setLoggedIn: (opts = {}) => {
+  setLoggedIn(opts = {}) {
     const delegate = DelegateContainer.get();
 
     if (delegate.actions.setLoggedIn) {
@@ -98,7 +102,8 @@ const LoginActionCreators = {
       ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon);
     }
   },
-  setLoggedOut: () => {
+
+  setLoggedOut() {
     const delegate = DelegateContainer.get();
 
     if (delegate.actions.setLoggedOut) {
@@ -113,7 +118,9 @@ const LoginActionCreators = {
     }
   },
 
-  restartAuth: () => dispatch(ActionTypes.AUTH_RESTART)
+  restartAuth() {
+    dispatch(ActionTypes.AUTH_RESTART)
+  }
 };
 
 export default LoginActionCreators;

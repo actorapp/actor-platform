@@ -9,6 +9,6 @@ const ConnectionStateActionCreators = {
   setState(state) {
     dispatch(ActionTypes.CONNECTION_STATE_CHANGED, { state });
   }
-}
+};
 
 export default ConnectionStateActionCreators;

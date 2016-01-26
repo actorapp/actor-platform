@@ -132,6 +132,10 @@ export default {
     window.messenger.unbindGroupOnline(gid, callback);
   },
 
+  bindMessages(peer, callback) {
+    return window.messenger.bindMessages(peer, callback);
+  },
+
   getUser(uid) {
     return window.messenger.getUser(uid);
   },
@@ -392,6 +396,10 @@ export default {
 
   removeLike(peer, rid) {
     return window.messenger.removeLike(peer, rid);
+  },
+
+  sendVoiceMessage(peer, duration, voice) {
+    window.messenger.sendVoiceMessage(peer, duration, voice);
   },
 
   // Search

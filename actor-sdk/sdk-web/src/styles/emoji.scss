@@ -41,31 +41,38 @@ $stem-size: $default-stem-size;
   color: rgba($greyish-brown, .6);
 
   &__wrapper {
+    position: absolute;
+    right: -3px;
+    bottom: 6px;
+
     display: none;
+
+    border-radius: 3px;
+    background-color: white;
+    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
     @mixin stem() {
       position: absolute;
-      content: '';
+      right: $stem-size;
       bottom: - $stem-size / 2;
+
       width: $stem-size;
       height: $stem-size;
-      background-color: white;
-      right: $stem-size;
+
+      content: '';
       transform: rotate(45deg);
+
+      background-color: white;
     }
-    position: absolute;
-    bottom: 6px;
-    right: -3px;
-    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
-    background-color: white;
-    border-radius: 3px;
 
     &:before {
       @include stem();
     }
     &:after {
-      @include stem();
       z-index: -1;
+
       box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .1);
+
+      @include stem();
     }
   }
   &__header {
@@ -73,8 +80,8 @@ $stem-size: $default-stem-size;
     line-height: 20px;
 
     padding: 0;
-    border-radius: 3px 3px 0 0;
 
+    border-radius: 3px 3px 0 0;
     background-color: white;
     box-shadow: inset 0 -1px 0 0 #ebebeb;
 
@@ -130,14 +137,15 @@ $stem-size: $default-stem-size;
     }
   }
   &__body {
+    position: relative;
+    z-index: 16;
+
     overflow-x: hidden;
     overflow-y: auto;
 
     box-sizing: border-box;
     width: $emoji-dropdown-width;
     height: 200px;
-    z-index: 16;
-    position: relative;
 
     @include clearfix();
     div {
@@ -169,8 +177,8 @@ $stem-size: $default-stem-size;
 
         border-radius: 2px;
         .emoji-outer {
-          pointer-events: none;
           transform-origin: 50% 50%;
+          pointer-events: none;
         }
         &:hover {
           .emoji-outer {
@@ -202,23 +210,29 @@ $stem-size: $default-stem-size;
 
     opacity: .8;
     color: $greyish;
+
+    @include no-select();
     &--active,
     &:hover {
       transform: scale(1);
-      color: $dark-sky-blue;
+
       opacity: 1;
+      color: $dark-sky-blue;
     }
 
     &--with-dot {
       &:after {
-        content: '';
-        background-color: $coral;
+        position: absolute;
         top: 0;
         right: 1px;
+
         width: 8px;
         height: 8px;
+
+        content: '';
+
         border-radius: 50%;
-        position: absolute;
+        background-color: $coral;
       }
     }
   }

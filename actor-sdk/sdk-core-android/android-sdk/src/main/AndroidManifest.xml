@@ -276,6 +276,21 @@
             android:enabled="true"
             android:exported="true" />
 
+        <service
+            android:name="im.actor.sdk.push.ActorPushService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":actor_push" />
+
+        <receiver
+            android:name="im.actor.sdk.receivers.SDKPushReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="im.actor.push.intent.RECEIVE" />
+                <category android:name="${applicationId}" />
+            </intent-filter>
+        </receiver>
 
     </application>
 </manifest>

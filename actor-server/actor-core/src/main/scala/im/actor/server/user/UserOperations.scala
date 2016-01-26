@@ -2,6 +2,7 @@ package im.actor.server.user
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.cluster.pubsub.DistributedPubSub
+import akka.event.{ LoggingAdapter, Logging }
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.protobuf.ByteString
@@ -121,6 +122,7 @@ private[user] sealed trait Commands extends AuthCommands {
     update:     Update,
     pushText:   Option[String],
     isFat:      Boolean,
+    reduceKey:  Option[String],
     deliveryId: Option[String]
   ): Future[SeqState] = {
     val header = update.header
@@ -128,7 +130,7 @@ private[user] sealed trait Commands extends AuthCommands {
 
     val originPeer = seqUpdExt.getOriginPeer(update)
 
-    broadcastUserUpdate(userId, header, serializedData, update._relatedUserIds, update._relatedGroupIds, pushText, originPeer, isFat, deliveryId)
+    broadcastUserUpdate(userId, header, serializedData, update._relatedUserIds, update._relatedGroupIds, pushText, originPeer, isFat, reduceKey, deliveryId)
   }
 
   def broadcastUserUpdate(
@@ -140,12 +142,14 @@ private[user] sealed trait Commands extends AuthCommands {
     pushText:       Option[String],
     originPeer:     Option[Peer],
     isFat:          Boolean,
+    reduceKey:      Option[String],
     deliveryId:     Option[String]
   ): Future[SeqState] =
     seqUpdExt.deliverUpdate(
       userId = userId,
       mapping = UpdateMapping(default = Some(SerializedUpdate(header, ByteString.copyFrom(serializedData), userIds = userIds, groupIds = groupIds))),
       pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse(""))),
+      reduceKey = reduceKey,
       deliveryId = deliveryId.getOrElse("")
     )
 
@@ -230,6 +234,7 @@ private[user] sealed trait Queries {
   val viewRegion: UserViewRegion
   implicit val system: ActorSystem
   import system.dispatcher
+  val log: LoggingAdapter
 
   implicit val timeout: Timeout
 
@@ -307,7 +312,7 @@ private[user] sealed trait AuthCommands {
   }
 
   def logout(session: model.AuthSession)(implicit db: Database): Future[Unit] = {
-    system.log.warning(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
+    log.warning(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
     for {
       _ ← removeAuth(session.userId, session.authId)
       _ ← SeqUpdatesExtension(system).deletePushCredentials(session.authId)

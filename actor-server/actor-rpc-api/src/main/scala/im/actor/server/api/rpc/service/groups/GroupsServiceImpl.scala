@@ -18,6 +18,7 @@ import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.{ UserUtils, UserExtension }
 import im.actor.server.{ model, persist }
 import im.actor.util.misc.IdUtils
+import im.actor.util.ThreadLocalSecureRandom
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
@@ -43,7 +44,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withFileLocation(fileLocation, AvatarSizeLimit) {
-          scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()) flatMap {
+          scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()) flatMap {
             case Right(avatar) ⇒
               for {
                 UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(groupExt.updateAvatar(fullGroup.id, client.userId, Some(avatar), randomId))
@@ -146,7 +147,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withUserOutPeers(users) {
         withValidGroupTitle(title) { validTitle ⇒
-          val groupId = nextIntId(ThreadLocalRandom.current())
+          val groupId = nextIntId(ThreadLocalSecureRandom.current())
           val userIds = users.map(_.userId).toSet
           val groupUserIds = userIds + client.userId
 
@@ -206,7 +207,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           token ← persist.GroupInviteTokenRepo.find(fullGroup.id, client.userId).headOption.flatMap {
             case Some(invToken) ⇒ DBIO.successful(invToken.token)
             case None ⇒
-              val token = accessToken(ThreadLocalRandom.current())
+              val token = accessToken(ThreadLocalSecureRandom.current())
               val inviteToken = model.GroupInviteToken(fullGroup.id, client.userId, token)
               for (_ ← persist.GroupInviteTokenRepo.create(inviteToken)) yield token
           }
@@ -263,7 +264,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   override def jhandleRevokeInviteUrl(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupPeer, client.userId) { fullGroup ⇒
-        val token = accessToken(ThreadLocalRandom.current())
+        val token = accessToken(ThreadLocalSecureRandom.current())
         val inviteToken = model.GroupInviteToken(fullGroup.id, client.userId, token)
 
         for {
