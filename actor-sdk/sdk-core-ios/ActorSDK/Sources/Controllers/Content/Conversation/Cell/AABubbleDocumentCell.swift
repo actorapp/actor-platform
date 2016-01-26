@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -91,8 +91,8 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
             // Reset progress
             self.progress.hideButton()
             UIView.animateWithDuration(0, animations: { () -> Void in
-                self.progress.alpha = 0
-                self.fileIcon.alpha = 0
+                self.progress.hidden = true
+                self.fileIcon.hidden = true
             })
             
             // Bind file
@@ -104,24 +104,24 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
         
         // Setting message status
         if (isOut) {
-            switch(UInt(message.messageState.ordinal())) {
-            case ACMessageState.PENDING.rawValue:
+            switch(message.messageState.ordinal()) {
+            case ACMessageState.PENDING().ordinal():
                 self.statusView.image = appStyle.chatIconClock
                 self.statusView.tintColor = appStyle.chatStatusSending
                 break
-            case ACMessageState.SENT.rawValue:
+            case ACMessageState.SENT().ordinal():
                 self.statusView.image = appStyle.chatIconCheck1
                 self.statusView.tintColor = appStyle.chatStatusSent
                 break
-            case ACMessageState.RECEIVED.rawValue:
+            case ACMessageState.RECEIVED().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2
                 self.statusView.tintColor = appStyle.chatStatusReceived
                 break
-            case ACMessageState.READ.rawValue:
+            case ACMessageState.READ().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2
                 self.statusView.tintColor = appStyle.chatStatusRead
                 break
-            case ACMessageState.ERROR.rawValue:
+            case ACMessageState.ERROR().ordinal():
                 self.statusView.image = appStyle.chatIconError
                 self.statusView.tintColor = appStyle.chatStatusError
                 break
@@ -154,7 +154,7 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
                     if (content.getName().hasSuffix(".ogg")) {
                         
                         print("paaaaath ==== \(CocoaFiles.pathFromDescriptor(reference))")
-                        self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(reference))
+                        //self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(reference))
                         
                         return
                     }
@@ -180,7 +180,7 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
                     if (content.getName().hasSuffix(".ogg")) {
                         
                         print("paaaaath2 ==== \(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))")
-                        self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
+                        //self.controller.playVoiceFromPath(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
                         
                         return
                     }
@@ -365,7 +365,7 @@ public class DocumentCellLayout: AACellLayout {
     }
     
     public convenience init(document: ACDocumentContent, date: Int64) {
-        self.init(fileName: document.getName(), fileExt: document.getExt(), fileSize: Int(document.getSource().getSize()), fastThumb: document.getFastThumb(), date: date, autoDownload: (document.getSource().getSize() < 1024 * 1025 * 1024))
+        self.init(fileName: document.getName(), fileExt: document.getExt(), fileSize: Int(document.getSource().getSize()), fastThumb: document.getFastThumb(), date: date, autoDownload: false)
     }
     
     public convenience init(message: ACMessage) {

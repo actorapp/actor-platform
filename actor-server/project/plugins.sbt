@@ -18,7 +18,7 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.3")
 
 addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.7.4")
 
-addSbtPlugin("com.trueaccord.scalapb" % "sbt-scalapb" % "0.5.17")
+addSbtPlugin("com.trueaccord.scalapb" % "sbt-scalapb" % "0.5.21")
 
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.0")
 
@@ -37,5 +37,5 @@ addSbtPlugin("im.actor" % "actor-sbt-houserules" % "0.1.9")
 addSbtPlugin("com.typesafe.sbt" % "sbt-multi-jvm" % "0.3.8")
 
 libraryDependencies ++= Seq(
-  "com.github.os72" % "protoc-jar" % "3.0.0-b1"
+  "com.github.os72" % "protoc-jar" % "3.0.0-b2"
 )

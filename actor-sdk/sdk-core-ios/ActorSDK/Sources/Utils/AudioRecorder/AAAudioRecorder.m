@@ -33,7 +33,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^
     {
-        queue = [[ASQueue alloc] initWithName:"org.telegram.audioRecorderQueue"];
+        queue = [[ASQueue alloc] initWithName:"org.actor.audioRecorderQueue"];
     });
     return queue;
 }
@@ -65,7 +65,7 @@ static void playSoundCompleted(__unused SystemSoundID ssID, __unused void *clien
 
 - (void)start
 {
-    NSLog(@"[TGAudioRecorder start]");
+    NSLog(@"[AAAudioRecorder start]");
     
     [[AAAudioRecorder audioRecorderQueue] dispatchOnQueue:^
     {
@@ -141,8 +141,7 @@ static void playSoundCompleted(__unused SystemSoundID ssID, __unused void *clien
     dispatch_async(dispatch_get_main_queue(), ^
     {
         id<AAAudioRecorderDelegate> delegate = _delegate;
-        if ([delegate respondsToSelector:@selector(audioRecorderDidStartRecording:)])
-            [delegate audioRecorderDidStartRecording:self];
+        [_delegate audioRecorderDidStartRecording];
     });
 }
 

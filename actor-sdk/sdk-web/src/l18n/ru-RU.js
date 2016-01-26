@@ -45,7 +45,8 @@ export default {
       'createGroup': 'Создать группу',
       'addMembers': 'Добавить пользователей',
       'quickSearch': 'Быстрый поиск',
-      'close': 'Закрыть'
+      'close': 'Закрыть',
+      'save': 'Сохранить'
     },
 
     // Messages
@@ -235,6 +236,22 @@ export default {
     'preferencesSessionsCurrentSession': 'Текущий сеанс',
     'preferencesSessionsAuthTime': 'Авторизовано',
     'preferencesSessionsTerminate': 'Завершить',
-    'preferencesSessionsTerminateAll': 'Завершить все сеансы'
+    'preferencesSessionsTerminateAll': 'Завершить все сеансы',
+
+    // Sidebar
+    'sidebar': {
+      'recents': {
+        'empty': {
+          'first': 'В данный момент у вас нет открытых диалогов.',
+          'second': {
+            'start': 'Вы можете',
+            'or': ' или ',
+            'end': '.'
+          }
+        },
+        'newDialog': 'создать диалог',
+        'addPeople': 'добавить контакт'
+      }
+    }
   }
 };

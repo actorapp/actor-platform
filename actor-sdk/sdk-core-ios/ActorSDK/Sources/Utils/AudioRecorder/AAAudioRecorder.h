@@ -4,9 +4,9 @@
 
 @protocol AAAudioRecorderDelegate <NSObject>
 
-@optional
+@required
 
-- (void)audioRecorderDidStartRecording:(AAAudioRecorder *)audioRecorder;
+- (void)audioRecorderDidStartRecording;
 
 @end
 

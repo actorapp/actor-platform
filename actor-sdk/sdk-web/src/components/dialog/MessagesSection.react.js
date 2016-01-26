@@ -5,21 +5,21 @@
 import { forEach, map, debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
+import { Container } from 'flux/utils';
 import ActorClient from '../../utils/ActorClient';
-
+import Scrollbar from '../common/Scrollbar.react';
 import { MessageContentTypes, PeerTypes } from '../../constants/ActorAppConstants';
 
 import MessageActionCreators from '../../actions/MessageActionCreators';
 
 import VisibilityStore from '../../stores/VisibilityStore';
-import GroupStore from '../../stores/GroupStore';
+//import GroupStore from '../../stores/GroupStore';
 import DialogStore from '../../stores/DialogStore';
 import MessageStore from '../../stores/MessageStore';
 
 import MessageItem from './messages/MessageItem.react';
 import Welcome from './messages/Welcome.react';
 import Loading from './messages/Loading.react';
-import {Container} from 'flux/utils';
 
 let _delayed = [];
 
@@ -37,55 +37,52 @@ class MessagesSection extends Component {
     peer: PropTypes.object.isRequired,
     onScroll: PropTypes.func.isRequired
   };
-  
+
+  static getStores() {
+    return [MessageStore, VisibilityStore]
+  }
+
+  static calculateState() {
+    return {
+      selectedMessages: MessageStore.getSelected(),
+      isAllMessagesLoaded: MessageStore.isLoaded(),
+      isAppVisible: VisibilityStore.isAppVisible()
+    }
+  }
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      selectedMessages: MessageStore.getSelected()
-    };
   }
 
   getMessagesListItem = (message, index) => {
     const { selectedMessages } = this.state;
-    const { overlay } = this.props;
+    const { peer, overlay } = this.props;
 
     const dateDivider = (overlay[index] && overlay[index].dateDivider)
       ? <li className="date-divider">{overlay[index].dateDivider}</li>
       : null;
-
-    const isShortMessage = (overlay[index] && overlay[index].useShort)
-      ? overlay[index].useShort
-      : false;
 
     const isSelected = selectedMessages.has(message.rid);
 
     const messageItem = (
       <MessageItem key={message.sortKey}
                    message={message}
-                   isShortMessage={isShortMessage}
+                   overlay={overlay[index]}
                    onSelect={this.handleMessageSelect}
                    isSelected={isSelected}
                    onVisibilityChange={this.onMessageVisibilityChange}
-                   peer={this.props.peer}/>
+                   peer={peer}/>
     );
 
-    // return [dateDivider, messageItem];
-    return messageItem;
+    return dateDivider ? [dateDivider, messageItem] : messageItem;
   };
 
-  onAppVisibilityChange = () => {
-    if (VisibilityStore.isAppVisible()) {
+  componentDidUpdate() {
+    const { isAppVisible } = this.state;
+    if (isAppVisible) {
       flushDelayed();
     }
   };
-
-  onMessagesChange = () => this.setState({selectedMessages: MessageStore.getSelected()});
-  
-  shouldComponentUpdate(nextProps, nextState) {
-      // console.warn('messagesSection:shouldComponentUpdate')
-      return true
-  }
 
   handleMessageSelect = (rid) => {
     const { selectedMessages } = this.state;
@@ -114,25 +111,28 @@ class MessagesSection extends Component {
 
   render() {
     const { messages, peer } = this.props;
-    const messagesList = map(messages, this.getMessagesListItem);
+    const { isAllMessagesLoaded } = this.state;
     const isMember = DialogStore.isMember();
+    const messagesList = map(messages, this.getMessagesListItem);
 
     return (
-      <ul className="messages__list" onScroll={this.handleScroll}>
-        {
-          isMember && messagesList.length < 30
-            ? <Welcome peer={peer}/>
-            : null
-        }
-        {
-          messagesList.length >= 30
-            ? <Loading/>
-            : null
-        }
-        {messagesList}
-      </ul>
+      <Scrollbar onScroll={this.handleScroll} ref="messagesScroll">
+        <ul className="messages__list">
+          {
+            (isMember && isAllMessagesLoaded) || (isMember && messagesList.length < 30)
+              ? <Welcome peer={peer}/>
+              : null
+          }
+          {
+            !isAllMessagesLoaded && messagesList.length >= 30
+              ? <Loading/>
+              : null
+          }
+          {messagesList}
+        </ul>
+      </Scrollbar>
     );
   }
 }
 
-export default MessagesSection;
+export default Container.create(MessagesSection, {pure: false, withProps: true});

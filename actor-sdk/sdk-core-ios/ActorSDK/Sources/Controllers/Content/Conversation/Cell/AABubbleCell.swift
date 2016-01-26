@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -180,6 +180,8 @@ public class AABubbleCell: UICollectionViewCell {
         
         self.layer.shouldRasterize = true
         self.layer.rasterizationScale = UIScreen.mainScreen().scale
+        self.layer.drawsAsynchronously = true
+        self.contentView.layer.drawsAsynchronously = true
     }
     
     public required init(coder aDecoder: NSCoder) {
@@ -218,8 +220,6 @@ public class AABubbleCell: UICollectionViewCell {
     }
     
     public func performBind(message: ACMessage, setting: AACellSetting, isShowNewMessages: Bool, layout: AACellLayout) {
-        self.clipsToBounds = false
-        self.contentView.clipsToBounds = false
         
         var reuse = false
         if (bindedMessage != nil && bindedMessage?.rid == message.rid) {
@@ -231,31 +231,29 @@ public class AABubbleCell: UICollectionViewCell {
         if (!reuse) {
             if (!isFullSize) {
                 if (!isOut && isGroup) {
-                    if let user = Actor.getUserWithUid(message.senderId) {
+                    let user = Actor.getUserWithUid(message.senderId)
                         
-                        // Small hack for replacing senter name and title
-                        // with current group title
-                        if user.isBot() && user.getNameModel().get() == "Bot" {
-                            if let group = Actor.getGroupWithGid(self.peer.peerId) {
-                                let avatar: ACAvatar? = group.getAvatarModel().get()
-                                let name = group.getNameModel().get()
-                                avatarView.bind(name, id: user.getId(), avatar: avatar)
-                            }
-                        } else {
-                            let avatar: ACAvatar? = user.getAvatarModel().get()
-                            let name = user.getNameModel().get()
-                            avatarView.bind(name, id: user.getId(), avatar: avatar)
-                        }
+                    // Small hack for replacing senter name and title
+                    // with current group title
+                    if user.isBot() && user.getNameModel().get() == "Bot" {
+                        let group = Actor.getGroupWithGid(self.peer.peerId)
+                        let avatar: ACAvatar? = group.getAvatarModel().get()
+                        let name = group.getNameModel().get()
+                        avatarView.bind(name, id: user.getId(), avatar: avatar)
+                    } else {
+                        let avatar: ACAvatar? = user.getAvatarModel().get()
+                        let name = user.getNameModel().get()
+                        avatarView.bind(name, id: user.getId(), avatar: avatar)
                     }
-                    if !avatarAdded {
-                        contentView.addSubview(avatarView)
-                        avatarAdded = true
-                    }
-                } else {
-                    if avatarAdded {
-                        avatarView.removeFromSuperview()
-                        avatarAdded = false
-                    }
+                }
+                if !avatarAdded {
+                    contentView.addSubview(avatarView)
+                    avatarAdded = true
+                }
+            } else {
+                if avatarAdded {
+                    avatarView.removeFromSuperview()
+                    avatarAdded = false
                 }
             }
         }

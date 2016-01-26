@@ -31,7 +31,8 @@ export default class AvatarItem extends React.Component {
       'avatar--medium': size === 'medium',
       'avatar--large': size === 'large',
       'avatar--big': size === 'big',
-      'avatar--huge': size === 'huge'
+      'avatar--huge': size === 'huge',
+      'avatar--without-shadow': !image
     }, className);
 
     const avatar = image ? <img alt={title} className="avatar__image" src={image}/> : null;

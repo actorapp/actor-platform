@@ -1,6 +1,6 @@
 package im.actor.server.acl
 
-import java.security.SecureRandom
+import java.security.{ MessageDigest, SecureRandom }
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
@@ -13,11 +13,11 @@ import im.actor.server.model
 import im.actor.server.model.UserPassword
 import im.actor.server.persist.UserPasswordRepo
 import im.actor.server.user.UserExtension
+import im.actor.util.ThreadLocalSecureRandom
 import org.apache.commons.codec.digest.DigestUtils
 import scodec.bits.BitVector
 import slick.dbio.DBIO
 
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
 object ACLUtils extends ACLBase with ACLFiles {
@@ -27,8 +27,8 @@ object ACLUtils extends ACLBase with ACLFiles {
   type Hash = Array[Byte]
   type Salt = Array[Byte]
 
-  def userAccessHash(authId: Long, userId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
-    hash(s"$authId:$userId:$accessSalt:${secretKey()}")
+  def userAccessHash(authId: Long, userId: Int, accessSalt: String, md: MessageDigest = getMDInstance())(implicit s: ActorSystem): Long =
+    hash(s"$authId:$userId:$accessSalt:${secretKey()}", md)
 
   def userAccessHash(authId: Long, u: model.User)(implicit s: ActorSystem): Long =
     userAccessHash(authId, u.id, u.accessSalt)
@@ -57,9 +57,9 @@ object ACLUtils extends ACLBase with ACLFiles {
   def randomHash()(implicit s: ActorSystem): String =
     DigestUtils.sha1Hex(s"${randomString()}:${secretKey()}")
 
-  def accessToken(): String = accessToken(ThreadLocalRandom.current())
+  def accessToken(): String = accessToken(ThreadLocalSecureRandom.current())
 
-  def accessToken(rng: ThreadLocalRandom): String = DigestUtils.sha256Hex(rng.nextLong().toString)
+  def accessToken(rng: ThreadLocalSecureRandom): String = DigestUtils.sha256Hex(rng.nextLong().toString)
 
   def checkOutPeer(outPeer: ApiOutPeer, clientAuthId: Long)(implicit s: ActorSystem): Future[Boolean] = {
     outPeer.`type` match {

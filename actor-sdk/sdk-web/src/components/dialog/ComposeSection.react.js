@@ -6,10 +6,8 @@ import { assign, forEach } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import ReactMixin from 'react-mixin';
-import addons from 'react/addons';
 import { IntlMixin } from 'react-intl';
-
-const {addons: { PureRenderMixin }} = addons;
+import { Container } from 'flux/utils';
 
 import ActorClient from '../../utils/ActorClient';
 import Inputs from '../../utils/Inputs';
@@ -25,6 +23,7 @@ import GroupStore from '../../stores/GroupStore';
 import PreferencesStore from '../../stores/PreferencesStore';
 import ComposeStore from '../../stores/ComposeStore';
 import AttachmentStore from '../../stores/AttachmentStore';
+import DialogStore from '../../stores/DialogStore';
 
 import AvatarItem from '../common/AvatarItem.react';
 import MentionDropdown from '../common/MentionDropdown.react';
@@ -33,64 +32,83 @@ import VoiceRecorder from '../common/VoiceRecorder.react';
 import DropZone from '../common/DropZone.react';
 import SendAttachment from '../modals/SendAttachment';
 
-let getStateFromStores = () => {
-  return {
-    text: ComposeStore.getText(),
-    profile: ActorClient.getUser(ActorClient.getUid()),
-    sendByEnter: PreferencesStore.isSendByEnterEnabled(),
-    mentions: ComposeStore.getMentions(),
-    isSendAttachmentOpen: AttachmentStore.isOpen()
-  };
-};
-
 class ComposeSection extends Component {
-  static propTypes = {
-    peer: PropTypes.object.isRequired
-  };
+  static getStores = () => [DialogStore, GroupStore, PreferencesStore, AttachmentStore, ComposeStore];
 
-  static contextTypes = {
-    isExperimental: PropTypes.bool
-  };
+  static calculateState(prevState) {
+    return {
+      peer: DialogStore.getCurrentPeer(),
+      text: ComposeStore.getText(),
+      profile: ActorClient.getUser(ActorClient.getUid()),
+      sendByEnter: PreferencesStore.isSendByEnterEnabled(),
+      mentions: ComposeStore.getMentions(),
+      isSendAttachmentOpen: AttachmentStore.isOpen(),
+      isMarkdownHintShow: prevState ? prevState.isMarkdownHintShow || false : false,
+      isAutoFocusEnabled: ComposeStore.isAutoFocusEnabled()
+    };
+  }
+
+  //static contextTypes = {
+  //  isExperimental: PropTypes.bool
+  //};
 
   constructor(props) {
     super(props);
 
-    this.state = assign({
-      isMardownHintShow: false
-    }, getStateFromStores());
-
-    ComposeStore.addChangeListener(this.onChange);
-    GroupStore.addListener(this.onChange);
-    PreferencesStore.addListener(this.onChange);
-    AttachmentStore.addListener(this.onChange);
-
-    window.addEventListener('focus', this.setFocus);
+    this.setListeners();
   }
 
   componentWillUnmount() {
-    ComposeStore.removeChangeListener(this.onChange);
+    this.setBlur();
+    this.clearListeners();
+  }
 
+  componentDidMount() {
+    this.setFocus();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { isAutoFocusEnabled } = this.state;
+
+    if (isAutoFocusEnabled) {
+      if (prevState.isAutoFocusEnabled !== true) {
+        this.setListeners();
+      }
+      this.setFocus();
+    } else {
+      if (prevState.isAutoFocusEnabled !== false) {
+        this.clearListeners();
+      }
+    }
+  }
+
+  setListeners() {
+    window.addEventListener('focus', this.setFocus);
+    document.addEventListener('keydown', this.handleKeyDown, false);
+  }
+
+  clearListeners() {
     window.removeEventListener('focus', this.setFocus);
+    document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  componentWillReceiveProps() {
-    this.setFocus();
-    this.setState({isMardownHintShow: false})
-  }
-
-  onChange = () => {
-    this.setState(getStateFromStores());
-    this.setFocus();
+  handleKeyDown = (event) => {
+    const { isAutoFocusEnabled } = this.state;
+    if (isAutoFocusEnabled) {
+      if (!event.metaKey && !event.altKey && !event.ctrlKey && !event.shiftKey) {
+        this.setFocus();
+      }
+    }
   };
 
-  onMessageChange = event => {
+  onMessageChange = (event) => {
     const text = event.target.value;
-    const { peer } = this.props;
+    const { peer } = this.state;
 
     if (text.length >= 3) {
-      this.setState({isMardownHintShow: true})
+      this.setState({isMarkdownHintShow: true})
     } else {
-      this.setState({isMardownHintShow: false})
+      this.setState({isMarkdownHintShow: false})
     }
 
     ComposeActionCreators.onTyping(peer, text, this.getCaretPosition());
@@ -102,7 +120,7 @@ class ComposeSection extends Component {
     const send = () => {
       event.preventDefault();
       this.sendTextMessage();
-      this.setState({isMardownHintShow: false})
+      this.setState({isMarkdownHintShow: false})
     };
 
     if (mentions === null) {
@@ -119,8 +137,7 @@ class ComposeSection extends Component {
   };
 
   sendTextMessage = () => {
-    const { text } = this.state;
-    const { peer } = this.props;
+    const { peer, text } = this.state;
 
     if (text.trim().length !== 0) {
       MessageActionCreators.sendTextMessage(peer, text);
@@ -135,13 +152,18 @@ class ComposeSection extends Component {
 
   onPaste = event => {
     let preventDefault = false;
+    let attachments = [];
 
     forEach(event.clipboardData.items, (item) => {
       if (item.type.indexOf('image') !== -1) {
         preventDefault = true;
-        MessageActionCreators.sendClipboardPhotoMessage(this.props.peer, item.getAsFile());
+        attachments.push(item.getAsFile());
       }
     }, this);
+
+    if (attachments.length > 0) {
+      AttachmentsActionCreators.show(attachments);
+    }
 
     if (preventDefault) {
       event.preventDefault();
@@ -149,11 +171,10 @@ class ComposeSection extends Component {
   };
 
   onMentionSelect = (mention) => {
-    const { peer } = this.props;
-    const { text } = this.state;
+    const { peer, text } = this.state;
 
     ComposeActionCreators.insertMention(peer, text, this.getCaretPosition(), mention);
-    React.findDOMNode(this.refs.area).focus();
+    this.setFocus();
   };
 
   onMentionClose = () => {
@@ -168,10 +189,16 @@ class ComposeSection extends Component {
 
   handleEmojiSelect = (emoji) => {
     EmojiActionCreators.insertEmoji(this.state.text, this.getCaretPosition(), emoji);
-    React.findDOMNode(this.refs.area).focus()
+    this.setFocus();
   };
 
-  setFocus = () => React.findDOMNode(this.refs.area).focus();
+  setFocus = () => {
+    React.findDOMNode(this.refs.area).focus();
+  };
+
+  setBlur = () => {
+    React.findDOMNode(this.refs.area).blur();
+  };
 
   handleDrop = (files) => {
     let attachments = [];
@@ -199,15 +226,16 @@ class ComposeSection extends Component {
     this.resetAttachmentForm();
   };
 
-  sendVoiceRecord = (record) => {
-    console.debug('sendVoiceRecord: ', record)
+  sendVoiceRecord = (duration, record) => {
+    const { peer } = this.state;
+    MessageActionCreators.sendVoiceMessage(peer, duration, record);
   };
 
   render() {
-    const { text, profile, mentions, isMardownHintShow, isSendAttachmentOpen } = this.state;
+    const { text, profile, mentions, isMarkdownHintShow, isSendAttachmentOpen } = this.state;
     const { isExperimental } = this.context;
     const markdownHintClassName = classnames('compose__markdown-hint', {
-      'compose__markdown-hint--active': isMardownHintShow
+      'compose__markdown-hint--active': isMarkdownHintShow
     });
 
     return (
@@ -218,11 +246,7 @@ class ComposeSection extends Component {
 
         <EmojiDropdown onSelect={this.handleEmojiSelect}/>
 
-        {
-          isExperimental
-            ? <VoiceRecorder onFinish={this.sendVoiceRecord}/>
-            : null
-        }
+        <VoiceRecorder onFinish={this.sendVoiceRecord}/>
 
         <div className={markdownHintClassName}>
           <b>*{this.getIntlMessage('compose.markdown.bold')}*</b>
@@ -269,6 +293,5 @@ class ComposeSection extends Component {
 }
 
 ReactMixin.onClass(ComposeSection, IntlMixin);
-ReactMixin.onClass(ComposeSection, PureRenderMixin);
 
-export default ComposeSection;
+export default Container.create(ComposeSection, {pure: false});

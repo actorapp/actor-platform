@@ -2,6 +2,7 @@ package im.actor.server.db
 
 import com.github.tminglei.slickpg._
 import com.google.protobuf.ByteString
+import com.google.protobuf.wrappers.StringValue
 
 trait ByteStringImplicits {
 
@@ -13,6 +14,15 @@ trait ByteStringImplicits {
   )
 }
 
+trait ProtoWrappersImplicits {
+  import slick.driver.PostgresDriver.api._
+
+  implicit val stringValueColumnType = MappedColumnType.base[StringValue, String](
+    { sv ⇒ sv.value },
+    { s ⇒ StringValue(s) }
+  )
+}
+
 trait ActorPostgresDriver extends ExPostgresDriver
   with PgDateSupport
   with PgDate2Support
@@ -20,7 +30,7 @@ trait ActorPostgresDriver extends ExPostgresDriver
   with PgLTreeSupport {
 
   override val api =
-    new API with ArrayImplicits with LTreeImplicits with DateTimeImplicits with ByteStringImplicits
+    new API with ArrayImplicits with LTreeImplicits with DateTimeImplicits with ByteStringImplicits with ProtoWrappersImplicits
 }
 
 object ActorPostgresDriver extends ActorPostgresDriver

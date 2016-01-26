@@ -1,0 +1,1 @@
+* :rocket: Much faster accessHash checking, should increase difference and messages sending performance

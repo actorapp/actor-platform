@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -19,5 +19,6 @@ class AAActorRuntime {
         ARCocoaFileSystemProxyProvider.setFileSystemRuntime(CocoaFileSystemRuntime())
         ARCocoaNetworkProxyProvider.setNetworkRuntime(CocoaNetworkRuntime())
         ARCocoaAssetsProxyProvider.setAssetsRuntimeWithARAssetsRuntime(CocoaAssetsRuntime())
+        
     }
 }

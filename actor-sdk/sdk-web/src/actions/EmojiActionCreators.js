@@ -5,14 +5,17 @@
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
+import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 export default {
   open() {
     dispatch(ActionTypes.EMOJI_SHOW);
+    ComposeActionCreators.toggleAutoFocus(false);
   },
 
   close()  {
-    dispatch(ActionTypes.EMOJI_CLOSE)
+    dispatch(ActionTypes.EMOJI_CLOSE);
+    ComposeActionCreators.toggleAutoFocus(true);
   },
 
   insertEmoji(text, caretPosition, emoji) {

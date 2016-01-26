@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -16,8 +16,7 @@ class AASettingsWallpapersController: AATableViewController {
     init() {
         
         super.init(style: UITableViewStyle.Grouped)
-        title = "Wallpapers"
-        
+        title = AALocalized("WallpapersTitle")
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -45,43 +44,6 @@ class AASettingsWallpapersController: AATableViewController {
         return 1
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return nil
-    }
-    
-    func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return nil
-    }
-    
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if indexPath.section == 0 {
-            return 40
-        } else {
-            return 180
-        }
-    }
-    
-    private func photosLibrary(indexPath: NSIndexPath) -> AACommonCell {
-        let cell = AACommonCell()
-        
-        cell.textLabel?.text = "Photo Library"
-        cell.style = .Navigation
-        
-        return cell
-    }
-    
-    private func wallpapersCell(indexPath: NSIndexPath) -> AAWallpapersCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AAWallpapersCell
-        
-        cell.selectionStyle = UITableViewCellSelectionStyle.None
-        cell.wallpapperDidTap = { [unowned self] (name) -> () in
-            self.presentViewController(AAWallpapperPreviewController(imageName: name), animated: true, completion: nil)
-        }
-        
-        return cell
-    }
-    
-    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             return photosLibrary(indexPath)
@@ -99,8 +61,51 @@ class AASettingsWallpapersController: AATableViewController {
             self.pickImage(.PhotoLibrary)
             
         }
-    
+        
     }
+    
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return nil
+    }
+    
+    func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return nil
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if indexPath.section == 0 {
+            return 40
+        } else {
+            return 180
+        }
+    }
+    
+    // MARK: -
+    // MARK: Create cells
+    
+    private func photosLibrary(indexPath: NSIndexPath) -> AACommonCell {
+        let cell = AACommonCell()
+        
+        cell.textLabel?.text = AALocalized("WallpapersPhoto")
+        cell.style = .Navigation
+        
+        return cell
+    }
+    
+    private func wallpapersCell(indexPath: NSIndexPath) -> AAWallpapersCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AAWallpapersCell
+        
+        cell.selectionStyle = UITableViewCellSelectionStyle.None
+        cell.wallpapperDidTap = { [unowned self] (name) -> () in
+            self.presentViewController(AAWallpapperPreviewController(imageName: name), animated: true, completion: nil)
+        }
+        
+        return cell
+    }
+    
+    // MARK: -
+    // MARK: Picker delegate
     
     override func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         
@@ -120,7 +125,8 @@ class AASettingsWallpapersController: AATableViewController {
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    // Image picking
+    // MARK: -
+    // MARK: Image picking
     
     func pickImage(source: UIImagePickerControllerSourceType) {
         let pickerController = AAImagePickerController()

@@ -1,15 +1,16 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
 import VBFPopFlatButton
+import YYKit
 
 public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate {
     
     // Views
     
-    let preview = UIImageView()
+    var preview = YYAnimatedImageView()
     let progress = AAProgressView(size: CGSizeMake(64, 64))
     let timeBg = UIImageView()
     let timeLabel = UILabel()
@@ -25,8 +26,6 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     
     public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
-        
-//        timeBg.image = Imaging.imageWithColor(appStyle.chatMediaDateBgColor, size: CGSize(width: 1, height: 1))
         
         timeBg.image = ActorSDK.sharedActor().style.statusBackgroundImage
         
@@ -79,10 +78,10 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
             
             // Reset progress
             self.progress.hideButton()
-            UIView.animateWithDuration(0, animations: { () -> Void in
-                self.progress.alpha = 0
-                self.preview.alpha = 0
-            })
+            //UIView.animateWithDuration(0, animations: { () -> Void in
+                self.progress.hidden = true
+                self.preview.hidden = true
+            //})
 
             // Bind file
             fileBind(message, autoDownload: bindedLayout.autoDownload)
@@ -94,24 +93,24 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         // Update status
         if (isOut) {
             statusView.hidden = false
-            switch(UInt(message.messageState.ordinal())) {
-            case ACMessageState.PENDING.rawValue:
+            switch(message.messageState.ordinal()) {
+            case ACMessageState.PENDING().ordinal():
                 self.statusView.image = appStyle.chatIconClock;
                 self.statusView.tintColor = appStyle.chatStatusMediaSending
                 break;
-            case ACMessageState.SENT.rawValue:
+            case ACMessageState.SENT().ordinal():
                 self.statusView.image = appStyle.chatIconCheck1;
                 self.statusView.tintColor = appStyle.chatStatusMediaSent
                 break;
-            case ACMessageState.RECEIVED.rawValue:
+            case ACMessageState.RECEIVED().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2;
                 self.statusView.tintColor = appStyle.chatStatusMediaReceived
                 break;
-            case ACMessageState.READ.rawValue:
+            case ACMessageState.READ().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2;
                 self.statusView.tintColor = appStyle.chatStatusMediaRead
                 break;
-            case ACMessageState.ERROR.rawValue:
+            case ACMessageState.ERROR().ordinal():
                 self.statusView.image = appStyle.chatIconError;
                 self.statusView.tintColor = appStyle.chatStatusMediaError
                 break
@@ -168,6 +167,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     }
     
     public override func fileReady(reference: String, selfGeneration: Int) {
+        bgLoadThumb(selfGeneration)
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
@@ -183,10 +183,18 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         thumbLoaded = true
         
         if (bindedLayout.fastThumb != nil) {
-            let loadedThumb = UIImage(data: bindedLayout.fastThumb!)?
-                .roundCorners(bindedLayout.screenSize.width,
+            let preloadedThumb:YYImage = YYImage(data: bindedLayout.fastThumb!)!
+            
+            let loadedThumb:UIImage!
+            if (preloadedThumb.animatedImageType == YYImageType.WebP) {
+                loadedThumb = preloadedThumb.roundCorners(bindedLayout.screenSize.width,
+                                    h: bindedLayout.screenSize.height,
+                                    roundSize: 14)
+            } else {
+                loadedThumb = preloadedThumb.imageByBlurLight().roundCorners(bindedLayout.screenSize.width,
                     h: bindedLayout.screenSize.height,
                     roundSize: 14)
+            }
             
             runOnUiThread(selfGeneration,closure: { ()->() in
                 self.setPreviewImage(loadedThumb!, fast: true)
@@ -200,7 +208,13 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         }
         contentLoaded = true
         
-        let loadedContent = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
+        var loadedContent : UIImage!
+        
+        if CocoaFiles.pathFromDescriptor(reference).pathExtension! == "webp" {
+            loadedContent = YYImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
+        } else {
+            loadedContent = YYImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
+        }
         
         if (loadedContent == nil) {
             return
@@ -209,6 +223,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         runOnUiThread(selfGeneration, closure: { () -> () in
             self.setPreviewImage(loadedContent!, fast: false)
         })
+        
     }
     
     public func setPreviewImage(img: UIImage, fast: Bool){

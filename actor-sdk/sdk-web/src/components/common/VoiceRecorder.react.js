@@ -30,19 +30,18 @@ class VoiceRecorder extends Component {
 
   handleStopRecord = () => {
     this.recorder.stop();
-    this.setState({
-      isRecording: false,
-      duration: '0:00'
-    });
+    this.setState({isRecording: false});
   };
 
   handleSendRecord = (event) => {
     const { onFinish } = this.props;
-    onFinish && onFinish(event.detail);
+    const { duration } = this.state;
+
+    onFinish && onFinish(duration * 1000, event.detail); //Duration must be in ms
   };
 
   handleStreamReady = () => {
-    this.recorder.start()
+    this.recorder.start();
     this.setState({isRecording: true});
   };
 

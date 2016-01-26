@@ -1,6 +1,7 @@
 package im.actor.server.stickers
 
 import akka.actor._
+import akka.event.Logging
 import cats.data.Xor
 import im.actor.api.rpc.stickers.{ ApiStickerCollection, UpdateOwnStickersChanged, UpdateStickerCollectionsChanged }
 import im.actor.concurrent.{ FutureExt, FutureResultCats }
@@ -12,10 +13,10 @@ import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sticker.Sticker
 import im.actor.server.user.UserExtension
 import im.actor.util.misc.IdUtils
+import im.actor.util.ThreadLocalSecureRandom
 import slick.dbio.DBIO
 
 import scala.concurrent.Future
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.control.NoStackTrace
 
 abstract class StickerError(message: String) extends RuntimeException(message) with NoStackTrace
@@ -46,12 +47,13 @@ final class StickersExtensionImpl(_system: ActorSystem)
   implicit val system: ActorSystem = _system
   import system.dispatcher
 
+  private val log = Logging(system, getClass)
   private val db = DbExtension(system).db
   private val userExt = UserExtension(system)
   private val seqExt = SeqUpdatesExtension(system)
 
   def createPack(creatorUserId: Int, isDefault: Boolean): Future[Int] = {
-    val rng = ThreadLocalRandom.current()
+    val rng = ThreadLocalSecureRandom.current()
     val packId = IdUtils.nextIntId(rng)
     val accessSalt = ACLUtils.nextAccessSalt(rng)
     db.run(for {
@@ -137,10 +139,10 @@ final class StickersExtensionImpl(_system: ActorSystem)
   private def toggleDefault(userId: Int, packId: Int, toggleTo: Boolean): Future[StickerError Xor Unit] =
     (for {
       isAdmin ← fromFuture(userExt.isAdmin(userId))
-      _ = system.log.debug("user: {} is admin: {}", userId, isAdmin)
+      _ = log.debug("user: {} is admin: {}", userId, isAdmin)
       _ ← fromBoolean(NotAdmin)(isAdmin)
       pack ← fromFutureOption(NotFound)(db.run(StickerPackRepo.find(packId)))
-      _ = system.log.debug("sticker pack: {}", pack)
+      _ = log.debug("sticker pack: {}", pack)
       _ ← fromBoolean(isDefaultError(toggleTo))(pack.isDefault != toggleTo)
       _ ← fromFuture(db.run(StickerPackRepo.setDefault(packId, isDefault = toggleTo)))
       _ = broadcastOwnStickersChanged()

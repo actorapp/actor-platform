@@ -20,24 +20,15 @@ import CropAvatarStore from '../../stores/CropAvatarStore';
 import AvatarItem from '../common/AvatarItem.react';
 import CropAvatarModal from './CropAvatar.react';
 
-import { Styles, TextField } from 'material-ui';
-import ActorTheme from '../../constants/ActorTheme';
+import TextField from '../common/TextField.react';
 
-const ThemeManager = new Styles.ThemeManager();
+let currentName = '',
+    currentNick = '',
+    currentAbout = '';
 
 class MyProfile extends Component {
   constructor(props) {
     super(props);
-  }
-
-  static childContextTypes = {
-    muiTheme: React.PropTypes.object
-  };
-
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
   }
 
   static getStores = () => [MyProfileStore, CropAvatarStore];
@@ -54,16 +45,12 @@ class MyProfile extends Component {
   }
 
   componentWillMount() {
-    ThemeManager.setTheme(ActorTheme);
-    ThemeManager.setComponentThemes({
-      textField: {
-        textColor: 'rgba(0,0,0,.87)',
-        focusColor: '#68a3e7',
-        backgroundColor: 'transparent',
-        borderColor: '#68a3e7',
-        disabledTextColor: 'rgba(0,0,0,.4)'
-      }
-    });
+    const { name, nick, about } = this.state;
+
+    currentName = name;
+    currentNick = nick;
+    currentAbout = about;
+
     this.setListeners();
   }
 
@@ -84,26 +71,32 @@ class MyProfile extends Component {
   setListeners = () => document.addEventListener('keydown', this.onKeyDown, false);
   removeListeners = () => document.removeEventListener('keydown', this.onKeyDown, false);
 
-  onClose = () => MyProfileActions.hide();
+  handleClose = () => MyProfileActions.hide();
 
   onKeyDown = event => {
     if (event.keyCode === KeyCodes.ESC) {
       event.preventDefault();
-      this.onClose();
+      this.handleClose();
     }
   };
 
-  onNameChange = event => this.setState({name: event.target.value});
-  onNicknameChange = event => this.setState({nick: event.target.value});
-  onAboutChange = event => this.setState({about: event.target.value});
+  handleNameChange = event => this.setState({name: event.target.value});
+  handleNicknameChange = event => this.setState({nick: event.target.value});
+  handleAboutChange = event => this.setState({about: event.target.value});
 
-  onSave = () => {
+  isProfileChanged = () => {
+    const { name, nick, about } = this.state;
+    return name !== currentName || nick !== currentNick || about !== currentAbout
+  };
+
+  handleSave = () => {
     const { nick, name, about } = this.state;
 
-    MyProfileActions.saveName(name);
-    MyProfileActions.saveNickname(nick);
-    MyProfileActions.editMyAbout(about);
-    this.onClose();
+    if (name !== currentName) MyProfileActions.saveName(name);
+    if (nick !== currentNick) MyProfileActions.saveNickname(nick);
+    if (about !== currentAbout) MyProfileActions.editMyAbout(about);
+
+    this.handleClose();
   };
 
   onProfilePictureInputChange = () => {
@@ -119,7 +112,7 @@ class MyProfile extends Component {
     reader.readAsDataURL(file);
   };
 
-  onChangeAvatarClick = () => {
+  handleChangeAvatarClick = () => {
     const imageInput = React.findDOMNode(this.refs.imageInput);
     imageInput.click()
   };
@@ -130,6 +123,7 @@ class MyProfile extends Component {
 
   render() {
     const { isOpen, isCropModalOpen, profile, nick, name, about } = this.state;
+    const isProfileChanged = this.isProfileChanged();
 
     const cropAvatar = isCropModalOpen ? <CropAvatarModal onCropFinish={this.changeMyAvatar}/> : null;
 
@@ -144,34 +138,35 @@ class MyProfile extends Component {
             <a className="modal-new__header__icon material-icons">person</a>
             <h3 className="modal-new__header__title">{this.getIntlMessage('modal.profile.title')}</h3>
             <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onSave}>{this.getIntlMessage('button.done')}</button>
+              {
+                isProfileChanged
+                  ? <button className="button button--lightblue" onClick={this.handleSave}>{this.getIntlMessage('button.save')}</button>
+                  : <button className="button" onClick={this.handleClose}>{this.getIntlMessage('button.close')}</button>
+              }
             </div>
           </header>
           <div className="modal-new__body row">
             <div className="col-xs">
               <div className="name">
-                <TextField className="login__form__input"
-                           floatingLabelText={this.getIntlMessage('modal.profile.name')}
-                           fullWidth
-                           onChange={this.onNameChange}
+                <TextField className="input__material--wide"
+                           floatingLabel={this.getIntlMessage('modal.profile.name')}
+                           onChange={this.handleNameChange}
                            type="text"
                            value={name}/>
               </div>
               <div className="nick">
-                <TextField className="login__form__input"
-                           floatingLabelText={this.getIntlMessage('modal.profile.nick')}
-                           fullWidth
-                           onChange={this.onNicknameChange}
+                <TextField className="input__material--wide"
+                           floatingLabel={this.getIntlMessage('modal.profile.nick')}
+                           onChange={this.handleNicknameChange}
                            type="text"
                            value={nick}/>
               </div>
               {
                 profile.phones[0]
                   ? <div className="phone">
-                      <TextField className="login__form__input"
+                      <TextField className="input__material--wide"
+                                 floatingLabel={this.getIntlMessage('modal.profile.phone')}
                                  disabled
-                                 floatingLabelText={this.getIntlMessage('modal.profile.phone')}
-                                 fullWidth
                                  type="tel"
                                  value={(profile.phones[0] || {}).number}/>
                     </div>
@@ -180,10 +175,9 @@ class MyProfile extends Component {
               {
                 profile.emails[0]
                   ? <div className="phone">
-                      <TextField className="login__form__input"
+                      <TextField className="input__material--wide"
+                                 floatingLabel={this.getIntlMessage('modal.profile.email')}
                                  disabled
-                                 floatingLabelText={this.getIntlMessage('modal.profile.email')}
-                                 fullWidth
                                  type="email"
                                  value={(profile.emails[0] || {}).email}/>
                     </div>
@@ -193,7 +187,7 @@ class MyProfile extends Component {
                 <label htmlFor="about">{this.getIntlMessage('modal.profile.about')}</label>
                 <textarea className="textarea"
                           id="about"
-                          onChange={this.onAboutChange}
+                          onChange={this.handleAboutChange}
                           value={about}/>
               </div>
             </div>
@@ -203,15 +197,17 @@ class MyProfile extends Component {
                             placeholder={profile.placeholder}
                             size="big"
                             title={profile.name}/>
-                <a onClick={this.onChangeAvatarClick}>
-                  <span>
-                    {this.getIntlMessage('modal.profile.avatarChange')}
-                  </span>
+                <a onClick={this.handleChangeAvatarClick}>
+                  <span>{this.getIntlMessage('modal.profile.avatarChange')}</span>
                 </a>
               </div>
-              <div className="profile-picture__controls">
-                <a onClick={this.onProfilePictureRemove}>{this.getIntlMessage('modal.profile.avatarRemove')}</a>
-              </div>
+              {
+                profile.bigAvatar
+                  ? <div className="profile-picture__controls">
+                      <a onClick={this.onProfilePictureRemove}>{this.getIntlMessage('modal.profile.avatarRemove')}</a>
+                    </div>
+                  : null
+              }
               <form className="hide" ref="imageForm">
                 <input onChange={this.onProfilePictureInputChange} ref="imageInput" type="file"/>
               </form>

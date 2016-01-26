@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -205,17 +205,17 @@ public class AAAuthCodeViewController: AAAuthViewController, UIAlertViewDelegate
             
             executeSafe(Actor.validateCodeCommand(code), ignore: ["PHONE_CODE_INVALID"]) { (val) -> Void in
                 
-                let state = UInt(Actor.getAuthState().ordinal())
+                let state = Actor.getAuthState().ordinal()
                 
-                if state == ACAuthState.LOGGED_IN.rawValue {
+                if state == ACAuthState.LOGGED_IN().ordinal() {
                     
                     // If logged in state: end authentication
                     self.onAuthenticated()
-                } else if state == ACAuthState.SIGN_UP.rawValue {
+                } else if state == ACAuthState.SIGN_UP().ordinal() {
                     
                     // Is signup go to signup controller
                     self.navigateNext(AAAuthRegisterViewController(), removeCurrent: true)
-                } else if state != ACAuthState.CODE_VALIDATION_PHONE.rawValue {
+                } else if state != ACAuthState.CODE_VALIDATION_PHONE().ordinal() {
                     
                     // If state not for the current state: start from scratch
                     self.navigateBack()

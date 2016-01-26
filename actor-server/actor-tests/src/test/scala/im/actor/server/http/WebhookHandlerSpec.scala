@@ -85,7 +85,7 @@ class WebhookHandlerSpec
         expectUpdate(initSeq, classOf[UpdateCountersChanged])(identity)
       }
 
-      val (seq1, state1) = whenReady(sequenceService.handleGetState()) { resp ⇒
+      val (seq1, state1) = whenReady(sequenceService.handleGetState(Vector.empty)) { resp ⇒
         val ResponseSeq(seq, state) = resp.toOption.get
         (seq, state)
       }

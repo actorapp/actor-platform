@@ -21,9 +21,8 @@ import im.actor.server.api.rpc.service.messaging
 import im.actor.server.file.{ UnsafeFileName, FileStorageExtension, ImageUtils }
 import im.actor.server.webhooks.WebhooksExtension
 import im.actor.server.webhooks.http.routes.OutgoingHooksErrors
+import im.actor.util.ThreadLocalSecureRandom
 import play.api.libs.json._
-
-import scala.concurrent.forkjoin.ThreadLocalRandom
 
 final class HttpApiFrontendSpec
   extends BaseAppSuite
@@ -311,7 +310,7 @@ final class HttpApiFrontendSpec
     }
 
     def groupInvitesOk() = {
-      val token = ACLUtils.accessToken(ThreadLocalRandom.current())
+      val token = ACLUtils.accessToken(ThreadLocalSecureRandom.current())
       val inviteToken = im.actor.server.model.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
       whenReady(db.run(persist.GroupInviteTokenRepo.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
@@ -332,13 +331,13 @@ final class HttpApiFrontendSpec
       val avatarData = Files.readAllBytes(Paths.get(getClass.getResource("/valid-avatar.jpg").toURI))
       val fileLocation = whenReady(db.run(fsAdapter.uploadFile(UnsafeFileName("avatar"), avatarData)))(identity)
 
-      whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()))) { result ⇒
+      whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
         val avatar = ImageUtils.getAvatarData(im.actor.server.model.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
         whenReady(db.run(persist.AvatarDataRepo.createOrUpdate(avatar)))(_ ⇒ ())
       }
 
-      val token = ACLUtils.accessToken(ThreadLocalRandom.current())
+      val token = ACLUtils.accessToken(ThreadLocalSecureRandom.current())
       val inviteToken = im.actor.server.model.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
 
       whenReady(db.run(persist.GroupInviteTokenRepo.create(inviteToken))) { _ ⇒
@@ -372,7 +371,7 @@ final class HttpApiFrontendSpec
     def groupInvitesAvatars2() = {
       val avatarData = Files.readAllBytes(Paths.get(getClass.getResource("/valid-avatar.jpg").toURI))
       val fileLocation = whenReady(db.run(fsAdapter.uploadFile(UnsafeFileName("avatar"), avatarData)))(identity)
-      whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()))) { result ⇒
+      whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
         val avatar =
           ImageUtils.getAvatarData(im.actor.server.model.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
@@ -380,7 +379,7 @@ final class HttpApiFrontendSpec
         whenReady(db.run(persist.AvatarDataRepo.createOrUpdate(avatar)))(_ ⇒ ())
       }
 
-      val token = ACLUtils.accessToken(ThreadLocalRandom.current())
+      val token = ACLUtils.accessToken(ThreadLocalSecureRandom.current())
       val inviteToken = im.actor.server.model.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
       whenReady(db.run(persist.GroupInviteTokenRepo.create(inviteToken))) { _ ⇒
         val request = HttpRequest(

@@ -16,6 +16,8 @@ import OnlineActionCreators from './OnlineActionCreators';
 
 import DialogStore from '../stores/DialogStore';
 
+let messagesBinding = null;
+
 const DialogActionCreators = {
   setDialogs(dialogs) {
     dispatch(ActionTypes.DIALOGS_CHANGED, { dialogs });
@@ -28,7 +30,8 @@ const DialogActionCreators = {
     // Unbind from previous peer
     if (currentPeer !== null) {
       this.onConversationClosed(currentPeer);
-      ActorClient.unbindChat(currentPeer, MessageActionCreators.setMessages);
+      //ActorClient.unbindChat(currentPeer, MessageActionCreators.setMessages);
+      messagesBinding.unbind();
       ActorClient.unbindTyping(currentPeer, TypingActionCreators.setTyping);
 
       switch (currentPeer.type) {
@@ -47,7 +50,8 @@ const DialogActionCreators = {
     dispatch(ActionTypes.SELECT_DIALOG_PEER, { peer });
 
     this.onConversationOpen(peer);
-    ActorClient.bindChat(peer, MessageActionCreators.setMessages);
+    //ActorClient.bindChat(peer, MessageActionCreators.setMessages);
+    messagesBinding = ActorClient.bindMessages(peer, MessageActionCreators.setMessages);
     ActorClient.bindTyping(peer, TypingActionCreators.setTyping);
     switch(peer.type) {
       case PeerTypes.USER:

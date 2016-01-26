@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -9,7 +9,7 @@ extension ARListEngineRecord {
         if (self.getQuery() == nil) {
             return NSNull()
         } else {
-            return self.getQuery().lowercaseString
+            return self.getQuery()!.lowercaseString
         }
     }
 }

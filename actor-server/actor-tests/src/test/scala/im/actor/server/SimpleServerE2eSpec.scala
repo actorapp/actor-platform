@@ -28,7 +28,7 @@ import kamon.Kamon
 import scala.concurrent.ExecutionContext
 import scala.util.Random
 
-class SimpleServerE2eSpec extends ActorSuite(
+final class SimpleServerE2eSpec extends ActorSuite(
   ActorSpecification.createSystem(ConfigFactory.parseString(
     """
       |session {
@@ -45,7 +45,7 @@ class SimpleServerE2eSpec extends ActorSuite(
 
   it should "respond to big RPC requests" in Server.bigRequests
 
-  it should "notify about lost session" in Server.e3
+  it should "notify about lost session" in Server.sessionLost
 
   it should "throw AuthIdInvalid if sending wrong AuthId" in Server.authIdInvalid
 
@@ -60,7 +60,7 @@ class SimpleServerE2eSpec extends ActorSuite(
     val serverConfig = system.settings.config
 
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-    val sequenceConfig = SequenceServiceConfig.load.toOption.get
+    val sequenceConfig = SequenceServiceConfig.load().toOption.get
 
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
     Session.startRegion(Session.props)
@@ -104,8 +104,8 @@ class SimpleServerE2eSpec extends ActorSuite(
 
       val messageId = Random.nextLong()
 
-      val requestBytes = RequestCodec.encode(Request(RequestGetDifference(999, Array()))).require
-      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+      val requestBytes = RequestCodec.encode(Request(RequestGetDifference(999, Array(), Vector.empty))).require
+      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
       val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
       client.send(mtPackage)
@@ -132,7 +132,7 @@ class SimpleServerE2eSpec extends ActorSuite(
       val messageId = Random.nextLong()
 
       val requestBytes = RequestCodec.encode(Request(RequestEditParameter(s"very l${"o" * 100}ng key", Some(s"very lo${"n" * 100}g value")))).require
-      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
       val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
       client.send(mtPackage, slowly = true)
@@ -145,7 +145,7 @@ class SimpleServerE2eSpec extends ActorSuite(
       client.close()
     }
 
-    def e3() = {
+    def sessionLost() = {
       implicit val client = MTProtoClient()
 
       client.connectAndHandshake(remote)
@@ -162,7 +162,7 @@ class SimpleServerE2eSpec extends ActorSuite(
         expectMessageAck(helloMessageId)
       }
 
-      Thread.sleep(3000)
+      Thread.sleep(5000)
       expectSessionLost()
 
       {
@@ -213,7 +213,7 @@ class SimpleServerE2eSpec extends ActorSuite(
         implicit val client = client2
         signUp(authId2, sessionId2, phoneNumber)
         val requestBits = RequestCodec.encode(Request(RequestTerminateAllSessions)).require
-        client.send(MTPackage(authId2, Random.nextLong(), MessageBoxCodec.encode(MessageBox(Random.nextLong, RpcRequestBox(requestBits))).require))
+        client.send(MTPackage(authId2, Random.nextLong(), MessageBoxCodec.encode(MessageBox(Random.nextLong, ProtoRpcRequest(requestBits))).require))
       }
 
       {
@@ -244,7 +244,7 @@ class SimpleServerE2eSpec extends ActorSuite(
         val messageId = Random.nextLong()
 
         val requestBytes = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
-        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
         val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
         client.send(mtPackage)
@@ -273,7 +273,7 @@ class SimpleServerE2eSpec extends ActorSuite(
           appKey = "appKey",
           isSilent = false
         ))).require
-        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
         val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
         client.send(mtPackage)
@@ -333,9 +333,9 @@ class SimpleServerE2eSpec extends ActorSuite(
 
     private def receiveRpcResult(messageId: Long)(implicit client: MTProtoClient): RpcResult = {
       val mb = receiveMessageBox()
-      mb.body shouldBe an[RpcResponseBox]
+      mb.body shouldBe an[ProtoRpcResponse]
 
-      val rspBox = mb.body.asInstanceOf[RpcResponseBox]
+      val rspBox = mb.body.asInstanceOf[ProtoRpcResponse]
       rspBox.messageId should ===(messageId)
 
       RpcResultCodec.decode(rspBox.bodyBytes).require.value

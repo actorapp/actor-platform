@@ -1,6 +1,6 @@
 package im.actor.server.user
 
-import akka.actor.{ Actor, ActorRef, Props }
+import akka.actor.{ ActorLogging, Actor, ActorRef, Props }
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.server.dialog.{ DirectDialogCommand, DialogProcessor, DialogCommand }
@@ -10,7 +10,7 @@ private[user] object UserPeer {
   def props(userId: Int, extensions: Seq[ApiExtension]) = Props(classOf[UserPeer], userId, extensions)
 }
 
-private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) extends Actor with PeersImplicits {
+private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) extends Actor with ActorLogging with PeersImplicits {
 
   private val selfPeer = Peer.privat(userId)
 
@@ -19,7 +19,7 @@ private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) e
     case dc: DirectDialogCommand ⇒ dialogRef(dc) forward dc
     // Forward to a dest user dialog
     case dc: DialogCommand       ⇒ dialogRef(dc.dest) forward dc
-    case other                   ⇒ context.system.log.debug("Unmatched message: {}", other)
+    case other                   ⇒ log.debug("Unmatched message: {}", other)
   }
 
   private def dialogRef(dc: DirectDialogCommand): ActorRef = {

@@ -62,8 +62,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
   override def sendCountersUpdate(userId: Int): Future[Unit] =
     for {
       counterUpdate ← db.run(getUpdateCountersChanged(userId))
-      _ ← seqUpdatesExt.deliverSingleUpdate(userId, counterUpdate)
-
+      _ ← seqUpdatesExt.deliverSingleUpdate(userId, counterUpdate, reduceKey = Some("counters_changed"))
     } yield ()
 
   override def senderDelivery(
@@ -97,14 +96,22 @@ final class ActorDelivery()(implicit val system: ActorSystem)
 
   override def notifyReceive(userId: Int, peer: Peer, date: Long, now: Long): Future[Unit] = {
     val update = UpdateMessageReceived(peer.asStruct, date, now)
-    userExt.broadcastUserUpdate(userId, update, None, isFat = false, deliveryId = None) map (_ ⇒ ())
+    userExt.broadcastUserUpdate(
+      userId,
+      update,
+      None,
+      isFat = false,
+      reduceKey = Some(s"receive_${peer.toString}"),
+      deliveryId = None
+    ) map (_ ⇒ ())
   }
 
   override def notifyRead(userId: Int, peer: Peer, date: Long, now: Long): Future[Unit] = {
     val update = UpdateMessageRead(peer.asStruct, date, now)
     seqUpdatesExt.deliverSingleUpdate(
       userId = userId,
-      update = update
+      update = update,
+      reduceKey = Some(s"read_${peer.toString}")
     ) map (_ ⇒ ())
   }
 
@@ -113,7 +120,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       _ ← seqUpdatesExt.deliverSingleUpdate(
         userId = readerUserId,
         update = UpdateMessageReadByMe(peer.asStruct, date),
-        pushRules = PushRules()
+        pushRules = PushRules(),
+        reduceKey = Some(s"read_by_me_${peer.toString}")
       )
     } yield ()
 

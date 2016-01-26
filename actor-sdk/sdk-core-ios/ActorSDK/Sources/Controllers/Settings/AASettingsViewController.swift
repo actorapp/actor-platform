@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -40,7 +40,7 @@ public class AASettingsViewController: AAContentTableController {
 
                 r.bindAction = { [unowned self] (r) -> () in
                     
-                    let upload = Actor.getOwnAvatarVM().uploadState.get() as? ACAvatarUploadState
+                    let upload = Actor.getOwnAvatarVM()!.uploadState.get() as? ACAvatarUploadState
                     let avatar = self.user.getAvatarModel().get()
                     let presence = self.user.getPresenceModel().get()
                     let presenceText = Actor.getFormatter().formatPresence(presence, withSex: self.user.getSex())
@@ -61,7 +61,7 @@ public class AASettingsViewController: AAContentTableController {
                     
                     if presenceText != nil {
                         r.subtitle = presenceText
-                        if presence!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
+                        if presence!.state.ordinal() == ACUserPresence_State.ONLINE().ordinal() {
                             r.subtitleColor = ActorSDK.sharedActor().style.userOnlineColor
                         } else {
                             r.subtitleColor = ActorSDK.sharedActor().style.userOfflineColor
@@ -134,7 +134,7 @@ public class AASettingsViewController: AAContentTableController {
                                 return
                             }
                             
-                            c.executeSafeOnlySuccess(Actor.editMyNameCommandWithName(t)) { (val) -> Void in
+                            c.executeSafeOnlySuccess(Actor.editMyNameCommandWithName(t)!) { (val) -> Void in
                                 c.dismiss()
                             }
                         }
@@ -219,7 +219,7 @@ public class AASettingsViewController: AAContentTableController {
                             if nNick?.length == 0 {
                                 nNick = nil
                             }
-                            c.executeSafeOnlySuccess(Actor.editMyNickCommandWithNick(nNick), successBlock: { (val) -> Void in
+                            c.executeSafeOnlySuccess(Actor.editMyNickCommandWithNick(nNick)!, successBlock: { (val) -> Void in
                                 c.dismiss()
                             })
                         }
@@ -260,7 +260,7 @@ public class AASettingsViewController: AAContentTableController {
                             if updatedText?.length == 0 {
                                 updatedText = nil
                             }
-                            controller.executeSafeOnlySuccess(Actor.editMyAboutCommandWithNick(updatedText), successBlock: { (val) -> Void in
+                            controller.executeSafeOnlySuccess(Actor.editMyAboutCommandWithNick(updatedText)!, successBlock: { (val) -> Void in
                                 controller.dismiss()
                             })
                         }
@@ -367,7 +367,7 @@ public class AASettingsViewController: AAContentTableController {
         
         // Header
         
-        binder.bind(user.getNameModel()!) { [unowned self] (value: String?) -> () in
+        binder.bind(user.getNameModel()) { [unowned self] (value: String?) -> () in
             self.headerCell.reload()
         }
         
@@ -375,7 +375,7 @@ public class AASettingsViewController: AAContentTableController {
             self.headerCell.reload()
         }
         
-        binder.bind(Actor.getOwnAvatarVM().uploadState) { [unowned self] (value: ACAvatarUploadState?) -> () in
+        binder.bind(Actor.getOwnAvatarVM()!.uploadState) { [unowned self] (value: ACAvatarUploadState?) -> () in
             self.headerCell.reload()
         }
         

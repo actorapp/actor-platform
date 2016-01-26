@@ -325,11 +325,11 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
           expectUpdates(
             classOf[UpdateChatGroupsChanged],
             classOf[UpdateMessage],
-            classOf[UpdateCountersChanged],
+            //classOf[UpdateCountersChanged],
             classOf[UpdateMessage],
-            classOf[UpdateCountersChanged],
+            //classOf[UpdateCountersChanged],
             classOf[UpdateMessage],
-            classOf[UpdateCountersChanged],
+            //classOf[UpdateCountersChanged],
             classOf[UpdateMessageReadByMe],
             classOf[UpdateCountersChanged]
           )(emptyCheck)
@@ -341,11 +341,11 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
           expectUpdates(
             classOf[UpdateChatGroupsChanged],
             classOf[UpdateMessage],
-            classOf[UpdateCountersChanged],
+            //classOf[UpdateCountersChanged],
             classOf[UpdateMessage],
-            classOf[UpdateCountersChanged],
+            //classOf[UpdateCountersChanged],
             classOf[UpdateMessage],
-            classOf[UpdateCountersChanged],
+            //classOf[UpdateCountersChanged],
             classOf[UpdateMessageReadByMe],
             classOf[UpdateCountersChanged]
           )(emptyCheck)
@@ -381,7 +381,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
           Thread.sleep(300)
 
           val ResponseSeq(seq, state) = {
-            whenReady(sequenceService.handleGetState()) { resp ⇒
+            whenReady(sequenceService.handleGetState(Vector.empty)) { resp ⇒
               resp.toOption.get
             }
           }

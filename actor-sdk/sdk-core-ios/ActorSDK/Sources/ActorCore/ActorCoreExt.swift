@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -161,13 +161,13 @@ public extension ACPeer {
     
     public var isGroup: Bool {
         get {
-            return UInt(self.peerType.ordinal()) == ACPeerType.GROUP.rawValue
+            return self.peerType.ordinal() == ACPeerType.GROUP().ordinal()
         }
     }
     
     public var isPrivate: Bool {
         get {
-            return UInt(self.peerType.ordinal()) == ACPeerType.PRIVATE.rawValue
+            return self.peerType.ordinal() == ACPeerType.PRIVATE().ordinal()
         }
     }
 }
@@ -220,7 +220,7 @@ class AAUploadFileCallback : NSObject, ACUploadFileCallback {
     }
     
     func onNotUploading() {
-        self.notUploaded?();
+        self.notUploaded?()
     }
     
     func onUploaded() {
@@ -262,6 +262,7 @@ class AAFileCallback : NSObject, ACFileCallback {
         self.onDownloaded?(fileName: reference!.getDescriptor());
     }
 }
+
 
 //
 // Markdown

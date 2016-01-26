@@ -1,10 +1,10 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
 import VBFPopFlatButton
-import SDWebImage
+import YYKit
 
 public class AABubbleStickerCell: AABubbleBaseFileCell {
 
@@ -84,7 +84,7 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
             self.callback = AAFileCallback(onDownloaded: { (reference) -> () in
                 
                 let data = NSFileManager.defaultManager().contentsAtPath(CocoaFiles.pathFromDescriptor(reference))
-                let image = UIImage.sd_imageWithWebPData(data)
+                let image = YYImage(data: data!)
                 
                 if (image == nil) {
                     return
@@ -108,24 +108,24 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         // Update status
         if (isOut) {
             statusView.hidden = false
-            switch(UInt(message.messageState.ordinal())) {
-            case ACMessageState.PENDING.rawValue:
+            switch(message.messageState.ordinal()) {
+            case ACMessageState.PENDING().ordinal():
                 self.statusView.image = appStyle.chatIconClock;
                 self.statusView.tintColor = appStyle.chatStatusMediaSending
                 break;
-            case ACMessageState.SENT.rawValue:
+            case ACMessageState.SENT().ordinal():
                 self.statusView.image = appStyle.chatIconCheck1;
                 self.statusView.tintColor = appStyle.chatStatusMediaSent
                 break;
-            case ACMessageState.RECEIVED.rawValue:
+            case ACMessageState.RECEIVED().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2;
                 self.statusView.tintColor = appStyle.chatStatusMediaReceived
                 break;
-            case ACMessageState.READ.rawValue:
+            case ACMessageState.READ().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2;
                 self.statusView.tintColor = appStyle.chatStatusMediaRead
                 break;
-            case ACMessageState.ERROR.rawValue:
+            case ACMessageState.ERROR().ordinal():
                 self.statusView.image = appStyle.chatIconError;
                 self.statusView.tintColor = appStyle.chatStatusMediaError
                 break

@@ -7,14 +7,17 @@ import ActorClient from '../utils/ActorClient';
 
 import { ActionTypes } from '../constants/ActorAppConstants';
 import DialogActionCreators from './DialogActionCreators';
+import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 const CreateGroupActionCreators = {
   open() {
-    dispatch(ActionTypes.GROUP_CREATE_MODAL_OPEN)
+    dispatch(ActionTypes.GROUP_CREATE_MODAL_OPEN);
+    ComposeActionCreators.toggleAutoFocus(false);
   },
 
   close() {
     dispatch(ActionTypes.GROUP_CREATE_MODAL_CLOSE);
+    ComposeActionCreators.toggleAutoFocus(true);
   },
 
   setGroupName(name) {

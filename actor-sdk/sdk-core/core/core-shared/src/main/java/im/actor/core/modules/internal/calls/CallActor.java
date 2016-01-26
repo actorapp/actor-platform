@@ -33,6 +33,7 @@ public class CallActor extends ModuleActor {
     public void preStart() {
         super.preStart();
         self().send(new SendCallInProgress());
+        self().send(new CheckCallIsHandled(), 1500);
     }
 
     @Override
@@ -47,8 +48,27 @@ public class CallActor extends ModuleActor {
             onEndCall();
         } else if (message instanceof Signal) {
             onSignal(((Signal) message).getData());
-        } else if (message instanceof AnswerCall) {
-            onAnswerCall(((AnswerCall) message).getCallback());
+        } else if (message instanceof HandleCall) {
+            onHandleCall(((HandleCall) message).getCallback());
+        } else if (message instanceof CheckCallIsHandled) {
+            checkCallHandled();
+        }
+    }
+
+    private void checkCallHandled() {
+        if (callback == null) {
+            //don't want to wait for fragment forever
+            callback = new CallsModule.CallCallback() {
+                @Override
+                public void onCallEnd() {
+
+                }
+
+                @Override
+                public void onSignal(byte[] data) {
+
+                }
+            };
         }
     }
 
@@ -62,6 +82,7 @@ public class CallActor extends ModuleActor {
 
     public void onEndCall() {
         if (callback == null) {
+            //fragment not yet created?
             self().send(new EndCall(), 500);
             return;
         }
@@ -97,7 +118,7 @@ public class CallActor extends ModuleActor {
         }
     }
 
-    private void onAnswerCall(CallsModule.CallCallback callCallback) {
+    private void onHandleCall(CallsModule.CallCallback callCallback) {
         this.callback = callCallback;
         for (byte[] s : signals) {
             callback.onSignal(s);
@@ -134,10 +155,10 @@ public class CallActor extends ModuleActor {
 
     }
 
-    public static class AnswerCall {
+    public static class HandleCall {
         CallsModule.CallCallback callback;
 
-        public AnswerCall(CallsModule.CallCallback callback) {
+        public HandleCall(CallsModule.CallCallback callback) {
             this.callback = callback;
         }
 
@@ -151,6 +172,10 @@ public class CallActor extends ModuleActor {
     }
 
     private static class SendCallInProgress {
+
+    }
+
+    private static class CheckCallIsHandled {
 
     }
 }

@@ -1,6 +1,7 @@
 package im.actor.server.user
 
 import akka.actor._
+import akka.event.Logging
 import akka.util.Timeout
 import im.actor.hook._
 import im.actor.server.sequence.SeqUpdatesExtension
@@ -21,6 +22,7 @@ final class UserExtensionImpl(actorSystem: ActorSystem) extends UserExtension wi
   implicit val system = actorSystem
 
   import system.dispatcher
+  val log = Logging(system, getClass)
 
   lazy val processorRegion: UserProcessorRegion = UserProcessorRegion.start()(system)
   lazy val viewRegion: UserViewRegion = UserViewRegion(processorRegion.ref)

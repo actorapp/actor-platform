@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -48,24 +48,26 @@ private class ClosureTarget {
 public extension UIView {
     
     public func hideView() {
-        UIView.animateWithDuration(0.2, animations: { () -> Void in
-            self.alpha = 0
-        })
+        self.hidden = true
+//        UIView.animateWithDuration(0.2, animations: { () -> Void in
+//            self.alpha = 0
+//        })
     }
     
     public func showView() {
-        UIView.animateWithDuration(0.2, animations: { () -> Void in
-            self.alpha = 1
-        })
+        self.hidden = false
+//        UIView.animateWithDuration(0.2, animations: { () -> Void in
+//            self.alpha = 1
+//        })
     }
     
-    public var height: CGFloat { get { return bounds.height } }
-    public var width: CGFloat { get { return bounds.width } }
-    
-    public var left: CGFloat { get { return frame.minX } }
-    public var right: CGFloat { get { return frame.maxX } }
-    public var top: CGFloat { get { return frame.minY } }
-    public var bottom: CGFloat { get { return frame.maxY } }
+//    public var height: CGFloat { get { return bounds.height } }
+//    public var width: CGFloat { get { return bounds.width } }
+//    
+//    public var left: CGFloat { get { return frame.minX } }
+//    public var right: CGFloat { get { return frame.maxX } }
+//    public var top: CGFloat { get { return frame.minY } }
+//    public var bottom: CGFloat { get { return frame.maxY } }
     
     public func centerIn(rect: CGRect) {
         self.frame = CGRectMake((rect.width - self.bounds.width) / 2, (rect.height - self.bounds.height) / 2,

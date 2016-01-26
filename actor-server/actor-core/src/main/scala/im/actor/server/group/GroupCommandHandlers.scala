@@ -22,6 +22,7 @@ import im.actor.server.file.{ ImageUtils, Avatar }
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
 import im.actor.server.sequence.{ PushData, PushRules, SeqState, SeqStateDate }
+import im.actor.util.ThreadLocalSecureRandom
 import ACLUtils._
 import im.actor.util.misc.IdUtils._
 import ImageUtils._
@@ -29,7 +30,6 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
-import scala.concurrent.forkjoin.ThreadLocalRandom
 
 private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupCommandHelpers {
   this: GroupProcessor ⇒
@@ -47,7 +47,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     persist(TSEvent(date, created)) { _ ⇒
       context become working(state)
 
-      val rng = ThreadLocalRandom.current()
+      val rng = ThreadLocalSecureRandom.current()
 
       // FIXME: invite other members
 
@@ -56,7 +56,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       db.run(for {
         _ ← createInDb(state, rng.nextLong())
         _ ← p.GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
-        _ ← DBIO.from(userExt.broadcastUserUpdate(creatorUserId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${groupId}_${update.randomId}")))
+        _ ← DBIO.from(userExt.broadcastUserUpdate(creatorUserId, update, pushText = None, isFat = true, reduceKey = None, deliveryId = Some(s"creategroup_${groupId}_${update.randomId}")))
       } yield CreateInternalAck(accessHash)) pipeTo sender() onFailure {
         case e ⇒
           log.error(e, "Failed to create group internally")
@@ -67,7 +67,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   protected def create(groupId: Int, typ: GroupType, creatorUserId: Int, title: String, randomId: Long, userIds: Set[Int]): Unit = {
     val accessHash = genAccessHash()
 
-    val rng = ThreadLocalRandom.current()
+    val rng = ThreadLocalSecureRandom.current()
     userIds.filterNot(_ == creatorUserId) foreach { userId ⇒
       val randomId = rng.nextLong()
       context.parent ! Invite(groupId, userId, creatorUserId, randomId)
@@ -104,7 +104,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           _ ← p.GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
           _ ← DBIO.from(dialogExt.writeMessage(ApiPeer(ApiPeerType.Group, state.id), creatorUserId, date, randomId, serviceMessage))
           seqstate ← if (isBot(state, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
-          else DBIO.from(seqUpdExt.deliverSingleUpdate(creatorUserId, update, PushRules(isFat = true), s"creategroup_${groupId}_$randomId"))
+          else DBIO.from(seqUpdExt.deliverSingleUpdate(creatorUserId, update, PushRules(isFat = true), reduceKey = None, deliveryId = s"creategroup_${groupId}_$randomId"))
         } yield CreateAck(state.accessHash, seqstate, date.getMillis)
       ) pipeTo sender() onFailure {
           case e ⇒
@@ -120,7 +120,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       context become working(updatedState(tsEvt, state))
 
       (for {
-        _ ← userExt.create(botUserId, nextAccessSalt(ThreadLocalRandom.current()), None, "Bot", "US", ApiSex.Unknown, isBot = true)
+        _ ← userExt.create(botUserId, nextAccessSalt(ThreadLocalSecureRandom.current()), None, "Bot", "US", ApiSex.Unknown, isBot = true)
         _ ← db.run(p.GroupBotRepo.create(groupId, botUserId, botToken))
         _ ← integrationTokensKv.upsert(botToken, groupId)
       } yield ()) onFailure {
@@ -141,10 +141,10 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
     for {
       _ ← db.run(p.GroupUserRepo.create(groupId, userId, inviterUserId, date, None, isAdmin = false))
-      _ ← userExt.broadcastUserUpdate(userId, inviteeUpdate, pushText = Some(PushTexts.Invited), isFat = true, deliveryId = Some(s"invite_${groupId}_${randomId}"))
+      _ ← userExt.broadcastUserUpdate(userId, inviteeUpdate, pushText = Some(PushTexts.Invited), isFat = true, reduceKey = None, deliveryId = Some(s"invite_${groupId}_${randomId}"))
       // TODO: #perf the following broadcasts do update serializing per each user
-      _ ← Future.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(userExt.broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true, deliveryId = Some(s"useradded_${groupId}_${randomId}")))) // use broadcastUsersUpdate maybe?
-      seqstate ← seqUpdExt.deliverSingleUpdate(inviterUserId, userAddedUpdate, PushRules(isFat = true), s"useradded_${groupId}_$randomId")
+      _ ← Future.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(userExt.broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true, reduceKey = None, deliveryId = Some(s"useradded_${groupId}_${randomId}")))) // use broadcastUsersUpdate maybe?
+      seqstate ← seqUpdExt.deliverSingleUpdate(inviterUserId, userAddedUpdate, PushRules(isFat = true), reduceKey = None, deliveryId = s"useradded_${groupId}_$randomId")
       // TODO: Move to a History Writing subsystem
       _ ← dialogExt.writeMessage(
         ApiPeer(ApiPeerType.Group, groupId),
@@ -171,7 +171,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           for {
             updates ← {
               val date = new DateTime
-              val randomId = ThreadLocalRandom.current().nextLong()
+              val randomId = ThreadLocalSecureRandom.current().nextLong()
               for {
                 exists ← p.GroupUserRepo.exists(groupId, joiningUserId)
                 _ ← if (exists) DBIO.successful(()) else p.GroupUserRepo.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
@@ -379,7 +379,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   protected def revokeIntegrationToken(group: Group, userId: Int): Unit = {
     withGroupAdmin(group, userId) {
       val oldToken = group.bot.map(_.token)
-      val newToken = accessToken(ThreadLocalRandom.current())
+      val newToken = accessToken(ThreadLocalSecureRandom.current())
       persistStashingReply(TSEvent(now(), IntegrationTokenRevoked(newToken)), group) { _ ⇒
         for {
           _ ← db.run(p.GroupBotRepo.updateToken(groupId, newToken))
@@ -418,7 +418,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   }
 
   private def genAccessHash(): Long =
-    ThreadLocalRandom.current().nextLong()
+    ThreadLocalSecureRandom.current().nextLong()
 
   private def createInDb(state: Group, randomId: Long) =
     p.GroupRepo.create(

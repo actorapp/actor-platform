@@ -82,7 +82,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   protected def expectUpdateBox[T <: im.actor.api.rpc.UpdateBox](clazz: Class[T], authId: Long, sessionId: Long, sendAckAt: Option[Duration])(implicit probe: TestProbe, m: Manifest[T]): T = {
     val mb = expectMessageBox()
 
-    val update = UpdateBoxCodec.decode(mb.body.asInstanceOf[UpdateBox].bodyBytes).require.value
+    val update = UpdateBoxCodec.decode(mb.body.asInstanceOf[ProtoPush].bodyBytes).require.value
 
     sendAckAt map { delay ⇒
       Future {
@@ -117,7 +117,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
       ackIds shouldEqual expectAckFor
 
       rest match {
-        case Vector((messageId, RpcResponseBox(_, rpcResultBytes))) ⇒
+        case Vector((messageId, ProtoRpcResponse(_, rpcResultBytes))) ⇒
           sendAckAt map { delay ⇒
             Future {
               blocking {
@@ -204,7 +204,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   }
 
   protected def sendRequest(authId: Long, sessionId: Long, session: ActorRef, messageId: Long, request: RpcRequest)(implicit probe: TestProbe): Unit = {
-    val rqBox = RpcRequestBox(RequestCodec.encode(Request(request)).require)
+    val rqBox = ProtoRpcRequest(RequestCodec.encode(Request(request)).require)
     sendMessageBox(authId, sessionId, session, messageId, rqBox)
   }
 
