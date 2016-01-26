@@ -4,10 +4,8 @@ import akka.actor.{ ActorLogging, Props, Stash }
 import akka.stream.actor.ActorPublisher
 import akka.stream.scaladsl.Source
 import im.actor.api.rpc.Update
-import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.api.rpc.sequence.{ UpdateRawUpdate, FatSeqUpdate, SeqUpdate }
-import im.actor.server.mtproto.protocol.ProtoPush
 import im.actor.server.sequence.{ UpdatesConsumerMessage, UpdatesConsumer }
 
 import scala.annotation.tailrec
@@ -32,8 +30,8 @@ private class UpdatesSource(userId: Int, authId: Long, authSid: Int) extends Act
   private var buf = Vector.empty[(Int, Update)]
 
   def receive: Receive = {
-    case NewUpdate(ProtoPush(bodyBytes), _) ⇒
-      (UpdateBoxCodec.decode(bodyBytes).require.value match {
+    case NewUpdate(ub, _) ⇒
+      (ub match {
         case SeqUpdate(seq, _, header, body)          ⇒ Some((seq, header, body))
         case FatSeqUpdate(seq, _, header, body, _, _) ⇒ Some((seq, header, body))
         case _                                        ⇒ None

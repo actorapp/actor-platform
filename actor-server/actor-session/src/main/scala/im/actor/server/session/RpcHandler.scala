@@ -3,10 +3,9 @@ package im.actor.server.session
 import akka.actor._
 import akka.pattern.pipe
 import akka.stream.actor._
-import im.actor.api.rpc.RpcInternalError
+import im.actor.api.rpc.{ RpcResult, RpcInternalError }
 import im.actor.server.api.rpc.RpcApiService.RpcResponse
-import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService, RpcResultCodec }
-import im.actor.server.mtproto.protocol.{ ProtoMessage, ProtoRpcResponse }
+import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService }
 import im.actor.util.cache.CacheHelpers._
 import scodec.bits._
 
@@ -51,7 +50,7 @@ private[session] class RequestHandler(
     case rsp: RpcApiService.RpcResponse ⇒ complete(Success(rsp))
     case ReceiveTimeout ⇒
       log.error("Request timed out")
-      val rsp = RpcResponse(request.messageId, RpcResultCodec.encode(RpcInternalError(true, 1)).require)
+      val rsp = RpcResponse(request.messageId, RpcInternalError(true, 1))
       complete(Success(rsp))
     case unexpected ⇒
       log.error("Unexpected message {}", unexpected)
@@ -64,7 +63,7 @@ private[session] class RequestHandler(
   }
 }
 
-private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[ProtoMessage] with ActorLogging {
+private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[(RpcResult, Long)] with ActorLogging {
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
@@ -84,7 +83,7 @@ private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[Pr
   private[this] val MaxRequestQueueSize = 10
   private[this] var requestQueue = Map.empty[Long, BitVector]
 
-  private[this] var protoMessageQueue = immutable.Queue.empty[ProtoMessage]
+  private[this] var protoMessageQueue = immutable.Queue.empty[(RpcResult, Long)]
   private[this] val responseCache = createCache[java.lang.Long, Future[RpcApiService.RpcResponse]](MaxCacheSize)
 
   def subscriber: Receive = {
@@ -124,26 +123,27 @@ private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[Pr
   }
 
   def publisher: Receive = {
-    case RpcApiService.RpcResponse(messageId, responseBytes) ⇒
+    case RpcApiService.RpcResponse(messageId, result) ⇒
       log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
 
       requestQueue -= messageId
-      enqueueProtoMessage(ProtoRpcResponse(messageId, responseBytes))
+      enqueue(result, messageId)
     case CachedResponse(rsp) ⇒
       log.debug("Got cached RpcResponse for messageId: {}, publishing", rsp.messageId)
-
-      enqueueProtoMessage(ProtoRpcResponse(rsp.messageId, rsp.responseBytes))
+      enqueue(rsp.result, rsp.messageId)
     case Request(_) ⇒
       deliverBuf()
     case Cancel ⇒
       context.stop(self)
   }
 
-  private def enqueueProtoMessage(message: ProtoMessage): Unit = {
+  private def enqueue(res: RpcResult, requestMessageId: Long): Unit = {
+    val item = res → requestMessageId
+
     if (protoMessageQueue.isEmpty && totalDemand > 0) {
-      onNext(message)
+      onNext(item)
     } else {
-      protoMessageQueue = protoMessageQueue.enqueue(message)
+      protoMessageQueue = protoMessageQueue.enqueue(item)
       deliverBuf()
     }
   }
