@@ -101,7 +101,7 @@ class ComposeSection extends Component {
     }
   };
 
-  onMessageChange = event => {
+  onMessageChange = (event) => {
     const text = event.target.value;
     const { peer } = this.state;
 
