@@ -3,7 +3,7 @@
 //
 
 import UIKit
-import SDWebImage
+import YYKit
 
 public struct AAStickersPack {
     
@@ -15,14 +15,14 @@ public struct AAStickersPack {
 
 public class AAStickersViewCell : UICollectionViewCell {
     
-    let stickerImage : UIImageView!
+    let stickerImage : YYAnimatedImageView!
     private var callback: AAFileCallback? = nil
     private static var stickerCache = Dictionary<Int, AASwiftlyLRU<Int64, UIImage>>()
     private static let cacheSize = 30
     
     override init(frame: CGRect) {
         
-        self.stickerImage = UIImageView()
+        self.stickerImage = YYAnimatedImageView()
         self.stickerImage.backgroundColor = UIColor.clearColor()
         self.stickerImage.contentMode = .ScaleAspectFit
         
@@ -73,7 +73,7 @@ public class AAStickersViewCell : UICollectionViewCell {
             }
             
             var image:UIImage!
-            image = UIImage.sd_imageWithWebPData(data)
+            image = YYImage(data: data!)
             
             if (image == nil) {
                 return
