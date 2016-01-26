@@ -57,8 +57,8 @@ export default {
     dispatch(ActionTypes.MESSAGE_LIKE_REMOVE, { peer, rid });
   },
 
-  setMessages(messages, overlay) {
-    dispatch(ActionTypes.MESSAGES_CHANGED, { messages, overlay });
+  setMessages(messages, overlay, isLoaded) {
+    dispatch(ActionTypes.MESSAGES_CHANGED, { messages, overlay, isLoaded });
   },
 
   setSelected(selectedMesages) {

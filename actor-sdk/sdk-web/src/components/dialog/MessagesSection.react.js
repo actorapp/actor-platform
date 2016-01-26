@@ -45,6 +45,7 @@ class MessagesSection extends Component {
   static calculateState() {
     return {
       selectedMessages: MessageStore.getSelected(),
+      isAllMessagesLoaded: MessageStore.isLoaded(),
       isAppVisible: VisibilityStore.isAppVisible()
     }
   }
@@ -83,13 +84,6 @@ class MessagesSection extends Component {
     }
   };
 
-  //onMessagesChange = () => this.setState({selectedMessages: MessageStore.getSelected()});
-
-  //shouldComponentUpdate(nextProps, nextState) {
-  //    // console.warn('messagesSection:shouldComponentUpdate')
-  //    return true
-  //}
-
   handleMessageSelect = (rid) => {
     const { selectedMessages } = this.state;
     if (selectedMessages.has(rid)) {
@@ -117,18 +111,19 @@ class MessagesSection extends Component {
 
   render() {
     const { messages, peer } = this.props;
-    const messagesList = map(messages, this.getMessagesListItem);
+    const { isAllMessagesLoaded } = this.state;
     const isMember = DialogStore.isMember();
+    const messagesList = map(messages, this.getMessagesListItem);
 
     return (
       <ul className="messages__list" onScroll={this.handleScroll}>
         {
-          isMember && messagesList.length < 30
+          (isMember && isAllMessagesLoaded) || (isMember && messagesList.length < 30)
             ? <Welcome peer={peer}/>
             : null
         }
         {
-          messagesList.length >= 30
+          !isAllMessagesLoaded && messagesList.length >= 30
             ? <Loading/>
             : null
         }
