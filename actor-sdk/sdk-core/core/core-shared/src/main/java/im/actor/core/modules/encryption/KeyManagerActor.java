@@ -35,10 +35,11 @@ import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ask.AskIntRequest;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
-import im.actor.runtime.actors.promise.PromiseResolver;
+import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.crypto.ratchet.RatchetKeySignature;
+import im.actor.runtime.function.Supplier;
 import im.actor.runtime.storage.KeyValueStorage;
 
 public class KeyManagerActor extends ModuleActor {
@@ -121,16 +122,16 @@ public class KeyManagerActor extends ModuleActor {
                                 signature));
             }
 
-            request(new RequestCreateNewKeyGroup(apiEncryptionKey, encryption, keys, keySignatures), new RpcCallback<ResponseCreateNewKeyGroup>() {
+            api(new RequestCreateNewKeyGroup(apiEncryptionKey, encryption, keys, keySignatures)).then(new Supplier<ResponseCreateNewKeyGroup>() {
                 @Override
-                public void onResult(ResponseCreateNewKeyGroup response) {
+                public void apply(ResponseCreateNewKeyGroup response) {
                     ownKeys = ownKeys.setGroupId(response.getKeyGroupId());
                     encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
                     onMainKeysReady();
                 }
-
+            }).failure(new Supplier<Exception>() {
                 @Override
-                public void onError(RpcException e) {
+                public void apply(Exception e) {
                     Log.w(TAG, "Keys upload error");
                     Log.e(TAG, e);
 

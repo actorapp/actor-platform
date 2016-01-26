@@ -1,4 +1,4 @@
-package im.actor.runtime.actors.promise;
+package im.actor.runtime.promise;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.function.ArrayFunction;
 import im.actor.runtime.function.Supplier;
 
 /**
@@ -148,9 +147,9 @@ public abstract class Promise<T> {
         return (Promise<R>) this;
     }
 
-    public <R> Promise<R> zip(ArrayFunction<T, R> zip) {
-        return Promises.zip((Promise<T[]>) this, zip);
-    }
+//    public <R> Promise<R> zip(ArrayFunction<T, R> zip) {
+//        return Promises.zip((Promise<T[]>) this, zip);
+//    }
 
     /**
      * Getting current dispatcher for promise
@@ -172,32 +171,6 @@ public abstract class Promise<T> {
     public T getResult() {
         return result;
     }
-
-    //    public Promise<T> bind(final ActorRef actorRef) {
-//        final Promise<T> self = this;
-//        return new Promise<T>() {
-//            @Override
-//            protected void exec(@NotNull final PromiseExecutor<T> executor) {
-//                self.done();
-//                self.complete(new PromiseCallback<T>() {
-//                    @Override
-//                    public void onResult(T t) {
-//                        actorRef.send(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                executor.result();
-//                            }
-//                        });
-//                    }
-//
-//                    @Override
-//                    public void onError(Exception e) {
-//
-//                    }
-//                })
-//            }
-//        };
-//    }
 
     /**
      * Subclasses need to implement exec method for starting execution

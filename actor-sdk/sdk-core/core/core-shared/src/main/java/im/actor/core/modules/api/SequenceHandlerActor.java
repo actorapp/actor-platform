@@ -11,7 +11,7 @@ import im.actor.core.modules.updates.UpdateProcessor;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.Log;
-import im.actor.runtime.actors.promise.PromiseResolver;
+import im.actor.runtime.promise.PromiseResolver;
 
 public class SequenceHandlerActor extends ModuleActor {
 

@@ -1,6 +1,6 @@
 package im.actor.runtime.actors.ask;
 
-import im.actor.runtime.actors.promise.PromiseResolver;
+import im.actor.runtime.promise.PromiseResolver;
 
 public class AskIntRequest {
     private final Object message;
