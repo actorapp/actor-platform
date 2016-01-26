@@ -4,21 +4,22 @@
 
 import UIKit
 import VBFPopFlatButton
+import YYKit
 
 public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPlayerDelegate,AAModernViewInlineMediaContextDelegate {
 
     // Views
     
     private let progress = AAProgressView(size: CGSizeMake(44, 44))
-    private let timeLabel = UILabel()
-    private let voiceTimeLabel = UILabel()
+    private let timeLabel = AttributedLabel()
+    private let voiceTimeLabel = AttributedLabel()
     private let playPauseButton = UIButton()
     private let soundProgressSlider = UISlider()
     private let statusView = UIImageView()
     
 
-    private let durationLabel = UILabel()
-    private let titleLabel = UILabel()
+    private let durationLabel = AttributedLabel()
+    private let titleLabel = AttributedLabel()
     
     // Binded data
     

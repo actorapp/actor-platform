@@ -61,13 +61,13 @@ public extension UIView {
 //        })
     }
     
-    public var height: CGFloat { get { return bounds.height } }
-    public var width: CGFloat { get { return bounds.width } }
-    
-    public var left: CGFloat { get { return frame.minX } }
-    public var right: CGFloat { get { return frame.maxX } }
-    public var top: CGFloat { get { return frame.minY } }
-    public var bottom: CGFloat { get { return frame.maxY } }
+//    public var height: CGFloat { get { return bounds.height } }
+//    public var width: CGFloat { get { return bounds.width } }
+//    
+//    public var left: CGFloat { get { return frame.minX } }
+//    public var right: CGFloat { get { return frame.maxX } }
+//    public var top: CGFloat { get { return frame.minY } }
+//    public var bottom: CGFloat { get { return frame.maxY } }
     
     public func centerIn(rect: CGRect) {
         self.frame = CGRectMake((rect.width - self.bounds.width) / 2, (rect.height - self.bounds.height) / 2,

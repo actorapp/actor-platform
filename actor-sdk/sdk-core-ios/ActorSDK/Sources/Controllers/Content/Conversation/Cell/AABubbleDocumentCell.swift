@@ -365,7 +365,7 @@ public class DocumentCellLayout: AACellLayout {
     }
     
     public convenience init(document: ACDocumentContent, date: Int64) {
-        self.init(fileName: document.getName(), fileExt: document.getExt(), fileSize: Int(document.getSource().getSize()), fastThumb: document.getFastThumb(), date: date, autoDownload: (document.getSource().getSize() < 1024 * 1025 * 1024))
+        self.init(fileName: document.getName(), fileExt: document.getExt(), fileSize: Int(document.getSource().getSize()), fastThumb: document.getFastThumb(), date: date, autoDownload: false)
     }
     
     public convenience init(message: ACMessage) {

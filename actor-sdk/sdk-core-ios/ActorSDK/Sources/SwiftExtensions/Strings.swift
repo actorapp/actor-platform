@@ -108,6 +108,16 @@ public extension String {
         return res
     }
     
+    public var ns: NSString {
+        return self as NSString
+    }
+    public var pathExtension: String? {
+        return ns.pathExtension
+    }
+    public var lastPathComponent: String? {
+        return ns.lastPathComponent
+    }
+    
     public var asNS: NSString { return (self as NSString) }
 }
 

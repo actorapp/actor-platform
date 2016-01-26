@@ -21,7 +21,7 @@ target 'ActorApp' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'SDWebImage/WebP'
+    pod 'YYKit', :git => 'https://github.com/kioshimafx/YYKit.git'
 
     # Main UI
     pod 'TTTAttributedLabel'
@@ -54,7 +54,7 @@ target 'ActorSDK' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'SDWebImage/WebP'
+    pod 'YYKit', :git => 'https://github.com/kioshimafx/YYKit.git'
 
     # Main UI
     pod 'TTTAttributedLabel'

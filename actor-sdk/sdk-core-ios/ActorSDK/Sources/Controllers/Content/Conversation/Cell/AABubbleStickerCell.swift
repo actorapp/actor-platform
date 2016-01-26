@@ -4,7 +4,7 @@
 
 import UIKit
 import VBFPopFlatButton
-import SDWebImage
+import YYKit
 
 public class AABubbleStickerCell: AABubbleBaseFileCell {
 
@@ -84,7 +84,7 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
             self.callback = AAFileCallback(onDownloaded: { (reference) -> () in
                 
                 let data = NSFileManager.defaultManager().contentsAtPath(CocoaFiles.pathFromDescriptor(reference))
-                let image = UIImage.sd_imageWithWebPData(data)
+                let image = YYImage(data: data!)
                 
                 if (image == nil) {
                     return

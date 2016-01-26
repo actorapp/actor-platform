@@ -5,6 +5,7 @@
 import Foundation
 import UIKit
 import TTTAttributedLabel
+import YYKit
 
 public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
@@ -24,12 +25,12 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     let messageText = TTTAttributedLabel(frame: CGRectZero)
     let statusView = UIImageView();
-    let senderNameLabel = UILabel();
+    let senderNameLabel = AttributedLabel();
     var needRelayout = true
     var isClanchTop:Bool = false
     var isClanchBottom:Bool = false
     
-    private let dateText = UILabel()
+    private let dateText = AttributedLabel()
     private var messageState: UInt = ACMessageState.UNKNOWN.rawValue
     private var cellLayout: TextCellLayout!
     
@@ -49,19 +50,14 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             kCTUnderlineStyleAttributeName: NSNumber(bool: false)]
         messageText.verticalAlignment = TTTAttributedLabelVerticalAlignment.Center
         
-        messageText.layer.drawsAsynchronously = true
         
         dateText.font = AABubbleTextCell.dateFont
         dateText.lineBreakMode = .ByClipping
         dateText.numberOfLines = 1
         dateText.contentMode = UIViewContentMode.TopLeft
-        dateText.textAlignment = NSTextAlignment.Right
-        
-        dateText.layer.drawsAsynchronously = true
+        dateText.contentAlignment = .Right
         
         statusView.contentMode = UIViewContentMode.Center
-        
-        dateText.layer.drawsAsynchronously = true
         
         contentView.addSubview(messageText)
         contentView.addSubview(dateText)

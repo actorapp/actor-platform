@@ -4,12 +4,13 @@
 
 import Foundation
 import VBFPopFlatButton
+import YYKit
 
 public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate {
     
     // Views
     
-    let preview = UIImageView()
+    var preview = YYAnimatedImageView()
     let progress = AAProgressView(size: CGSizeMake(64, 64))
     let timeBg = UIImageView()
     let timeLabel = UILabel()
@@ -25,8 +26,6 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     
     public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
-        
-//        timeBg.image = Imaging.imageWithColor(appStyle.chatMediaDateBgColor, size: CGSize(width: 1, height: 1))
         
         timeBg.image = ActorSDK.sharedActor().style.statusBackgroundImage
         
@@ -168,6 +167,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
     }
     
     public override func fileReady(reference: String, selfGeneration: Int) {
+        bgLoadThumb(selfGeneration)
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
@@ -183,10 +183,18 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         thumbLoaded = true
         
         if (bindedLayout.fastThumb != nil) {
-            let loadedThumb = UIImage(data: bindedLayout.fastThumb!)?
-                .roundCorners(bindedLayout.screenSize.width,
+            let preloadedThumb:YYImage = YYImage(data: bindedLayout.fastThumb!)!
+            
+            let loadedThumb:UIImage!
+            if (preloadedThumb.animatedImageType == YYImageType.WebP) {
+                loadedThumb = preloadedThumb.roundCorners(bindedLayout.screenSize.width,
+                                    h: bindedLayout.screenSize.height,
+                                    roundSize: 14)
+            } else {
+                loadedThumb = preloadedThumb.imageByBlurSuperLight().roundCorners(bindedLayout.screenSize.width,
                     h: bindedLayout.screenSize.height,
                     roundSize: 14)
+            }
             
             runOnUiThread(selfGeneration,closure: { ()->() in
                 self.setPreviewImage(loadedThumb!, fast: true)
@@ -200,7 +208,13 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         }
         contentLoaded = true
         
-        let loadedContent = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
+        var loadedContent : UIImage!
+        
+        if CocoaFiles.pathFromDescriptor(reference).pathExtension! == "webp" {
+            loadedContent = YYImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
+        } else {
+            loadedContent = YYImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
+        }
         
         if (loadedContent == nil) {
             return
@@ -209,6 +223,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         runOnUiThread(selfGeneration, closure: { () -> () in
             self.setPreviewImage(loadedContent!, fast: false)
         })
+        
     }
     
     public func setPreviewImage(img: UIImage, fast: Bool){
