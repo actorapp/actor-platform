@@ -4,6 +4,7 @@ import akka.event.Logging
 import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.users.ApiUser
 import im.actor.api.rpc.sequence._
+import im.actor.server.acl.ACLUtils
 import im.actor.server.model.SeqUpdate
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -14,12 +15,12 @@ import akka.stream.Materializer
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
-import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType, ApiGroupOutPeer, ApiUserOutPeer }
 import im.actor.server.db.DbExtension
-import im.actor.server.group.GroupExtension
+import im.actor.server.group.{ GroupUtils, GroupExtension }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.session._
-import im.actor.server.user.UserUtils
+import im.actor.server.user.{ UserExtension, UserUtils }
 import im.actor.server.db.ActorPostgresDriver.api._
 
 final class SequenceServiceImpl(config: SequenceServiceConfig)(
@@ -28,6 +29,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   actorSystem:   ActorSystem,
   materializer:  Materializer
 ) extends SequenceService {
+  import FutureResultRpcCats._
 
   protected override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
@@ -69,7 +71,21 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
         // FIXME: would new updates between getSeqState and getDifference break client state?
         (updates, needMore) ← seqUpdExt.getDifference(client.userId, seq + seqDelta, client.authSid, maxDifferenceSize)
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
-        (users, groups) ← getUsersGroups(userIds, groupIds)
+        (users, groups) ← if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES))
+          Future.successful((Seq.empty, Seq.empty))
+        else
+          getUsersGroups(userIds, groupIds)
+        (userRefs, groupRefs) ← if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES))
+          for {
+            us ← Future.sequence(
+              userIds.toVector map (id ⇒ ACLUtils.getUserOutPeer(id, client.authId))
+            )
+            gs ← Future.sequence(
+              groupIds.toVector map (id ⇒ ACLUtils.getGroupOutPeer(id))
+            )
+          } yield (us, gs)
+        else
+          Future.successful((Vector.empty, Vector.empty))
       } yield {
         val newSeq = updates.lastOption match {
           case Some(upd) ⇒ upd.seq
@@ -84,15 +100,31 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
           users = users.toVector,
           groups = groups.toVector,
           messages = Vector.empty,
-          usersRefs = Vector.empty,
-          groupsRefs = Vector.empty
+          usersRefs = userRefs,
+          groupsRefs = groupRefs
         ))
       }
     }
   }
 
-  override def jhandleGetReferencedEntitites(users: IndexedSeq[ApiUserOutPeer], groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseGetReferencedEntitites]] =
-    Future.failed(new RuntimeException("Not implemented"))
+  override def jhandleGetReferencedEntitites(
+    users:      IndexedSeq[ApiUserOutPeer],
+    groups:     IndexedSeq[ApiGroupOutPeer],
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseGetReferencedEntitites]] =
+    authorized(clientData) { client ⇒
+      (for {
+        _ ← fromFutureBoolean(CommonErrors.InvalidAccessHash)(ACLUtils.checkOutPeers(users, client.authId))
+        _ ← fromFutureBoolean(CommonErrors.InvalidAccessHash)(ACLUtils.checkOutPeers(groups))
+        res ← fromFuture(GroupUtils.getGroupsUsers(
+          groups map (_.groupId),
+          users map (_.userId), client.userId, client.authId
+        ))
+      } yield {
+        val (groupStructs, userStructs) = res
+        ResponseGetReferencedEntitites(userStructs.toVector, groupStructs.toVector)
+      }).value map (_.toScalaz)
+    }
 
   override def jhandleSubscribeToOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
