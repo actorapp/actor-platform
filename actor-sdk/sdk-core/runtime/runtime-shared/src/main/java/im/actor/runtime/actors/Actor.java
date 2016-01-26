@@ -10,15 +10,15 @@ import java.util.ArrayList;
 
 import im.actor.core.util.RandomUtils;
 import im.actor.runtime.actors.ask.AskCallback;
-import im.actor.runtime.actors.ask.AskError;
-import im.actor.runtime.actors.ask.AskRequest;
+import im.actor.runtime.actors.ask.AskIntError;
+import im.actor.runtime.actors.ask.AskIntRequest;
+import im.actor.runtime.actors.ask.AskIntResult;
+import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
-import im.actor.runtime.actors.future.Future;
-import im.actor.runtime.actors.future.FutureCallback;
 import im.actor.runtime.actors.mailbox.Mailbox;
 import im.actor.runtime.actors.messages.DeadLetter;
 import im.actor.runtime.actors.promise.Promise;
-import im.actor.runtime.actors.promise.PromiseExecutor;
+import im.actor.runtime.actors.promise.PromiseResolver;
 import im.actor.runtime.function.Supplier;
 
 /**
@@ -215,6 +215,15 @@ public class Actor {
         throw new ActorHalterException(message, e);
     }
 
+    public <T extends AskResult> Promise<T> ask(final ActorRef dest, final AskMessage<T> msg) {
+        return new Promise<T>() {
+            @Override
+            protected void exec(@NotNull PromiseResolver<T> executor) {
+                dest.send(new AskIntRequest(msg, executor));
+            }
+        }.dispatch(self());
+    }
+
     public void ask(ActorRef dest, Object message) {
         ask(dest, message, null);
     }
@@ -239,12 +248,12 @@ public class Actor {
         final long id = RandomUtils.nextRid();
         new Promise<Object>() {
             @Override
-            protected void exec(@NotNull PromiseExecutor<Object> executor) {
+            protected void exec(@NotNull PromiseResolver<Object> executor) {
                 become(new Receiver() {
                     @Override
                     public void onReceive(Object message) {
-                        if (message instanceof AskResult) {
-                            AskResult askResult = ((AskResult) message);
+                        if (message instanceof AskIntResult) {
+                            AskIntResult askResult = ((AskIntResult) message);
                             if (askResult.getId() != id) {
                                 stash();
                                 return;
@@ -256,8 +265,8 @@ public class Actor {
                             if (callback != null) {
                                 callback.onResult(askResult.getResult());
                             }
-                        } else if (message instanceof AskError) {
-                            AskError error = ((AskError) message);
+                        } else if (message instanceof AskIntError) {
+                            AskIntError error = ((AskIntError) message);
                             if (error.getId() != id) {
                                 stash();
                                 return;
@@ -274,17 +283,17 @@ public class Actor {
                         }
                     }
                 });
-                dest.send(new AskRequest(message, executor));
+                dest.send(new AskIntRequest(message, executor));
             }
         }.then(new Supplier<Object>() {
             @Override
             public void apply(Object o) {
-                self().send(new AskResult(id, o));
+                self().send(new AskIntResult(id, o));
             }
         }).failure(new Supplier<Exception>() {
             @Override
             public void apply(Exception e) {
-                self().send(new AskError(id, e));
+                self().send(new AskIntError(id, e));
             }
         }).done();
     }

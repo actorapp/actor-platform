@@ -11,8 +11,7 @@ import im.actor.core.modules.updates.UpdateProcessor;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.Log;
-import im.actor.runtime.actors.future.Future;
-import im.actor.runtime.actors.promise.PromiseExecutor;
+import im.actor.runtime.actors.promise.PromiseResolver;
 
 public class SequenceHandlerActor extends ModuleActor {
 
@@ -32,7 +31,7 @@ public class SequenceHandlerActor extends ModuleActor {
     }
 
     private void onSeqUpdate(int type, byte[] body, List<ApiUser> users,
-                             List<ApiGroup> groups, PromiseExecutor future) {
+                             List<ApiGroup> groups, PromiseResolver future) {
 
         Update update;
         try {
@@ -70,7 +69,7 @@ public class SequenceHandlerActor extends ModuleActor {
     }
 
     @Override
-    public void onAsk(Object message, PromiseExecutor future) {
+    public void onAsk(Object message, PromiseResolver future) {
         if (message instanceof WeakUpdate) {
             WeakUpdate weakUpdate = (WeakUpdate) message;
             onWeakUpdateReceived(weakUpdate.getUpdate(), weakUpdate.getDate());

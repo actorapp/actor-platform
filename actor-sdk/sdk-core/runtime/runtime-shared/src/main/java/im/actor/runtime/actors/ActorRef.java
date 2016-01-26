@@ -4,8 +4,15 @@
 
 package im.actor.runtime.actors;
 
+import org.jetbrains.annotations.NotNull;
+
+import im.actor.runtime.actors.ask.AskIntRequest;
+import im.actor.runtime.actors.ask.AskMessage;
+import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.actors.mailbox.ActorDispatcher;
 import im.actor.runtime.actors.mailbox.ActorEndpoint;
+import im.actor.runtime.actors.promise.Promise;
+import im.actor.runtime.actors.promise.PromiseResolver;
 
 /**
  * Reference to Actor that allows to send messages to real Actor
