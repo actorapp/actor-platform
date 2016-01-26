@@ -191,7 +191,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
                                     h: bindedLayout.screenSize.height,
                                     roundSize: 14)
             } else {
-                loadedThumb = preloadedThumb.imageByBlurSuperLight().roundCorners(bindedLayout.screenSize.width,
+                loadedThumb = preloadedThumb.imageByBlurLight().roundCorners(bindedLayout.screenSize.width,
                     h: bindedLayout.screenSize.height,
                     roundSize: 14)
             }
