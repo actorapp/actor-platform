@@ -161,13 +161,13 @@ public extension ACPeer {
     
     public var isGroup: Bool {
         get {
-            return UInt(self.peerType.ordinal()) == ACPeerType.GROUP.rawValue
+            return self.peerType.ordinal() == ACPeerType.GROUP().ordinal()
         }
     }
     
     public var isPrivate: Bool {
         get {
-            return UInt(self.peerType.ordinal()) == ACPeerType.PRIVATE.rawValue
+            return self.peerType.ordinal() == ACPeerType.PRIVATE().ordinal()
         }
     }
 }

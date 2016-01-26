@@ -79,7 +79,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         self.titleView.text = item.dialogTitle
         
         self.messageView.text = Actor.getFormatter().formatDialogText(item)
-        if item.messageType.ordinal() != jint(ACContentType.TEXT.rawValue) {
+        if item.messageType.ordinal() != ACContentType.TEXT().ordinal() {
             self.messageView.textColor = appStyle.dialogTextActiveColor
         } else {
             self.messageView.textColor = appStyle.dialogTextColor
@@ -101,25 +101,25 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             self.counterViewBg.hidden = true
         }
         
-        let messageState = UInt(item.status.ordinal())
+        let messageState = item.status.ordinal()
         
-        if (messageState == ACMessageState.PENDING.rawValue) {
+        if (messageState == ACMessageState.PENDING().ordinal()) {
             self.statusView.tintColor = appStyle.dialogStatusSending
             self.statusView.image = appStyle.chatIconClock
             self.statusView.hidden = false
-        } else if (messageState == ACMessageState.READ.rawValue) {
+        } else if (messageState == ACMessageState.READ().ordinal()) {
             self.statusView.tintColor = appStyle.dialogStatusRead
             self.statusView.image = appStyle.chatIconCheck2
             self.statusView.hidden = false
-        } else if (messageState == ACMessageState.RECEIVED.rawValue) {
+        } else if (messageState == ACMessageState.RECEIVED().ordinal()) {
             self.statusView.tintColor = appStyle.dialogStatusReceived
             self.statusView.image = appStyle.chatIconCheck2
             self.statusView.hidden = false
-        } else if (messageState == ACMessageState.SENT.rawValue) {
+        } else if (messageState == ACMessageState.SENT().ordinal()) {
             self.statusView.tintColor = appStyle.dialogStatusSent
             self.statusView.image = appStyle.chatIconCheck1
             self.statusView.hidden = false
-        } else if (messageState == ACMessageState.ERROR.rawValue) {
+        } else if (messageState == ACMessageState.ERROR().ordinal()) {
             self.statusView.tintColor = appStyle.dialogStatusError
             self.statusView.image = appStyle.chatIconError
             self.statusView.hidden = false

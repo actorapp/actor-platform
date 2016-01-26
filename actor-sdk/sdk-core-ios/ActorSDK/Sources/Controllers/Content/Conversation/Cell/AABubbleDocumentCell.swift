@@ -104,24 +104,24 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
         
         // Setting message status
         if (isOut) {
-            switch(UInt(message.messageState.ordinal())) {
-            case ACMessageState.PENDING.rawValue:
+            switch(message.messageState.ordinal()) {
+            case ACMessageState.PENDING().ordinal():
                 self.statusView.image = appStyle.chatIconClock
                 self.statusView.tintColor = appStyle.chatStatusSending
                 break
-            case ACMessageState.SENT.rawValue:
+            case ACMessageState.SENT().ordinal():
                 self.statusView.image = appStyle.chatIconCheck1
                 self.statusView.tintColor = appStyle.chatStatusSent
                 break
-            case ACMessageState.RECEIVED.rawValue:
+            case ACMessageState.RECEIVED().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2
                 self.statusView.tintColor = appStyle.chatStatusReceived
                 break
-            case ACMessageState.READ.rawValue:
+            case ACMessageState.READ().ordinal():
                 self.statusView.image = appStyle.chatIconCheck2
                 self.statusView.tintColor = appStyle.chatStatusRead
                 break
-            case ACMessageState.ERROR.rawValue:
+            case ACMessageState.ERROR().ordinal():
                 self.statusView.image = appStyle.chatIconError
                 self.statusView.tintColor = appStyle.chatStatusError
                 break

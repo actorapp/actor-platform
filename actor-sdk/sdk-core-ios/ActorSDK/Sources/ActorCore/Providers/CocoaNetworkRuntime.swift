@@ -52,7 +52,7 @@ class CocoaTcpConnection: ARAsyncConnection, GCDAsyncSocketDelegate {
     
     // Affer successful connection
     func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
-        if (UInt(self.getEndpoint().getType().ordinal()) == ARConnectionEndpoint_Type.TCP_TLS.rawValue) {
+        if (self.getEndpoint().getType().ordinal() == ARConnectionEndpoint_Type.TCP_TLS().ordinal()) {
             //            NSLog("\(TAG) Starring TLS Session...")
             sock.startTLS(nil)
         } else {

@@ -166,7 +166,7 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
                         }
                     }
                     if user != nil {
-                        self.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> () in
+                        self.execute(Actor.addContactCommandWithUid(user!.getId())!, successBlock: { (val) -> () in
                             // DO Nothing
                             }, failureBlock: { (val) -> () in
                                 self.showSmsInvitation(textField.text)
