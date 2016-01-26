@@ -198,7 +198,7 @@ public class ModuleActor extends AskcableActor implements BusSubscriber {
                     }
                 });
             }
-        }.dispatch(self());
+        }.done(self());
     }
 
     public void cancelRequest(long rid) {
