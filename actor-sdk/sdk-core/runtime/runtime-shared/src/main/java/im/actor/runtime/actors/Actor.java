@@ -221,7 +221,7 @@ public class Actor {
             protected void exec(@NotNull PromiseResolver<T> executor) {
                 dest.send(new AskIntRequest(msg, executor));
             }
-        }.dispatch(self());
+        };
     }
 
     public void ask(ActorRef dest, Object message) {
@@ -295,6 +295,6 @@ public class Actor {
             public void apply(Exception e) {
                 self().send(new AskIntError(id, e));
             }
-        }).done();
+        }).done(self());
     }
 }

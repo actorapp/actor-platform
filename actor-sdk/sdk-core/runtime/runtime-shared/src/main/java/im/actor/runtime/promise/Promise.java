@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.function.Supplier;
 
@@ -18,7 +19,7 @@ public abstract class Promise<T> {
 
     private final ArrayList<PromiseCallback<T>> callbacks = new ArrayList<PromiseCallback<T>>();
 
-    private PromiseDispatcher dispatcher = PromiseDispatcher.DEFAULT;
+    private ActorRef dispatchActor;
     private volatile T result;
     private volatile Exception exception;
     private volatile boolean isFinished;
@@ -40,7 +41,7 @@ public abstract class Promise<T> {
     public synchronized Promise<T> then(final Supplier<T> then) {
         if (isFinished) {
             if (exception == null) {
-                dispatcher.dispatch(new Runnable() {
+                dispatchActor.send(new Runnable() {
                     @Override
                     public void run() {
                         then.apply(result);
@@ -72,7 +73,7 @@ public abstract class Promise<T> {
     public synchronized Promise<T> failure(final Supplier<Exception> failure) {
         if (isFinished) {
             if (exception != null) {
-                dispatcher.dispatch(new Runnable() {
+                dispatchActor.send(new Runnable() {
                     @Override
                     public void run() {
                         failure.apply(exception);
@@ -104,7 +105,7 @@ public abstract class Promise<T> {
     public synchronized Promise<T> complete(final PromiseCallback<T> callback) {
         if (isFinished) {
 
-            dispatcher.dispatch(new Runnable() {
+            dispatchActor.send(new Runnable() {
                 @Override
                 public void run() {
                     if (exception != null) {
@@ -120,25 +121,26 @@ public abstract class Promise<T> {
         return this;
     }
 
-    /**
-     * Binding result dispatching to actor
-     *
-     * @param ref dest actor
-     * @return this
-     */
-    public Promise<T> dispatch(ActorRef ref) {
-        dispatcher = PromiseDispatcher.forActor(ref);
-        return this;
-    }
+//    /**
+//     * Binding result dispatching to actor
+//     *
+//     * @param ref dest actor
+//     * @return this
+//     */
+//    public Promise<T> dispatch(ActorRef ref) {
+//        dispatcher = PromiseDispatcher.forActor(ref);
+//        return this;
+//    }
 
     /**
      * Call this method to start promise execution
      */
-    public Promise<T> done() {
+    public Promise<T> done(ActorRef ref) {
         if (isStarted) {
             throw new RuntimeException("Promise already started");
         }
         isStarted = true;
+        dispatchActor = ref;
         exec(new PromiseResolver<T>(this));
         return this;
     }
@@ -147,18 +149,22 @@ public abstract class Promise<T> {
         return (Promise<R>) this;
     }
 
-//    public <R> Promise<R> zip(ArrayFunction<T, R> zip) {
+    public ActorRef getDispatchActor() {
+        return dispatchActor;
+    }
+
+    //    public <R> Promise<R> zip(ArrayFunction<T, R> zip) {
 //        return Promises.zip((Promise<T[]>) this, zip);
 //    }
 
-    /**
-     * Getting current dispatcher for promise
-     *
-     * @return current dispatcher
-     */
-    public PromiseDispatcher getDispatcher() {
-        return dispatcher;
-    }
+//    /**
+//     * Getting current dispatcher for promise
+//     *
+//     * @return current dispatcher
+//     */
+//    public PromiseDispatcher getDispatcher() {
+//        return dispatcher;
+//    }
 
     public boolean isFinished() {
         return isFinished;
