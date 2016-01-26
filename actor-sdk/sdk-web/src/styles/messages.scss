@@ -614,6 +614,7 @@ $sticker-max-size: 180px;
   }
   .text {
     font-size: 15px;
+    line-height: 22px;
 
     margin: 0;
 
@@ -663,6 +664,16 @@ $sticker-max-size: 180px;
     pre,
     samp {
       margin: 0 0 7px;
+    }
+
+    .emoji-outer {
+      line-height: 22px;
+
+      width: 22px;
+      height: 22px;
+      padding: 0;
+
+      vertical-align: top;
     }
   }
   .photo {
