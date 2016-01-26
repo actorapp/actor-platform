@@ -71,21 +71,9 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
         // FIXME: would new updates between getSeqState and getDifference break client state?
         (updates, needMore) ← seqUpdExt.getDifference(client.userId, seq + seqDelta, client.authSid, maxDifferenceSize)
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
-        (users, groups) ← if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES))
-          Future.successful((Seq.empty, Seq.empty))
-        else
-          getUsersGroups(userIds, groupIds)
-        (userRefs, groupRefs) ← if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES))
-          for {
-            us ← Future.sequence(
-              userIds.toVector map (id ⇒ ACLUtils.getUserOutPeer(id, client.authId))
-            )
-            gs ← Future.sequence(
-              groupIds.toVector map (id ⇒ ACLUtils.getGroupOutPeer(id))
-            )
-          } yield (us, gs)
-        else
-          Future.successful((Vector.empty, Vector.empty))
+        (users, groups) ← getUsersGroups(userIds, groupIds, optimizations)
+
+        (userRefs, groupRefs) ← getRefs(userIds, groupIds, optimizations, client)
       } yield {
         val newSeq = updates.lastOption match {
           case Some(upd) ⇒ upd.seq
@@ -198,12 +186,38 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  private def getUsersGroups(userIds: Set[Int], groupIds: Set[Int])(implicit client: AuthorizedClientData): Future[(Set[ApiUser], Set[ApiGroup])] = {
-    for {
-      groups ← Future.sequence(groupIds map (GroupExtension(actorSystem).getApiStruct(_, client.userId)))
-      // TODO: #perf optimize collection operations
-      allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) ⇒ ids ++ g.members.flatMap(m ⇒ Seq(m.userId, m.inviterUserId)) + g.creatorUserId }
-      users ← Future.sequence(allUserIds map (UserUtils.safeGetUser(_, client.userId, client.authId))) map (_.flatten)
-    } yield (users, groups)
+  private def getUsersGroups(
+    userIds:       Set[Int],
+    groupIds:      Set[Int],
+    optimizations: Seq[ApiUpdateOptimization.Value]
+  )(implicit client: AuthorizedClientData): Future[(Vector[ApiUser], Vector[ApiGroup])] = {
+    if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES))
+      Future.successful((Vector.empty, Vector.empty))
+    else
+      for {
+        groups ← Future.sequence(groupIds.toVector map (GroupExtension(actorSystem).getApiStruct(_, client.userId)))
+        // TODO: #perf optimize collection operations
+        allUserIds = userIds ++ groups.foldLeft(Vector.empty[Int]) { (ids, g) ⇒ ids ++ g.members.flatMap(m ⇒ Vector(m.userId, m.inviterUserId)) :+ g.creatorUserId }
+        users ← Future.sequence(allUserIds.toVector map (UserUtils.safeGetUser(_, client.userId, client.authId))) map (_.flatten)
+      } yield (users, groups)
+  }
+
+  private def getRefs(
+    userIds:       Set[Int],
+    groupIds:      Set[Int],
+    optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization],
+    client:        AuthorizedClientData
+  ): Future[(Vector[ApiUserOutPeer], Vector[ApiGroupOutPeer])] = {
+    if (optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES))
+      for {
+        us ← Future.sequence(
+          userIds.toVector map (id ⇒ ACLUtils.getUserOutPeer(id, client.authId))
+        )
+        gs ← Future.sequence(
+          groupIds.toVector map (id ⇒ ACLUtils.getGroupOutPeer(id))
+        )
+      } yield (us, gs)
+    else
+      Future.successful((Vector.empty, Vector.empty))
   }
 }
