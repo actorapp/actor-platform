@@ -15,7 +15,7 @@ import im.actor.core.util.ModuleActor;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ask.AskCallback;
-import im.actor.runtime.actors.promise.PromiseResolver;
+import im.actor.runtime.promise.PromiseResolver;
 
 public class EncryptedMsgActor extends ModuleActor {
 
@@ -28,17 +28,17 @@ public class EncryptedMsgActor extends ModuleActor {
     private void doEncrypt(int uid, ApiMessage message, final PromiseResolver future) {
         Log.d(TAG, "doEncrypt");
         try {
-            ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.EncryptPackage(message.buildContainer()), new AskCallback() {
+            ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.EncryptBox(message.buildContainer()), new AskCallback() {
                 @Override
                 public void onResult(Object obj) {
                     Log.d(TAG, "doEncrypt:onResult");
-                    EncryptedBox encryptedBox = (EncryptedBox) obj;
+                    EncryptedPeerActor.EncryptBoxResponse encryptedBox = (EncryptedPeerActor.EncryptBoxResponse) obj;
                     ArrayList<ApiEncyptedBoxKey> boxKeys = new ArrayList<ApiEncyptedBoxKey>();
-                    for (EncryptedBoxKey b : encryptedBox.getKeys()) {
+                    for (EncryptedBoxKey b : encryptedBox.getBox().getKeys()) {
                         boxKeys.add(new ApiEncyptedBoxKey(b.getUid(),
                                 b.getKeyGroupId(), "curve25519", b.getEncryptedKey()));
                     }
-                    ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(boxKeys, "aes-kuznechik", encryptedBox.getEncryptedPackage());
+                    ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(boxKeys, "aes-kuznechik", encryptedBox.getBox().getEncryptedPackage());
                     ApiEncryptedMessage apiEncryptedMessage = new ApiEncryptedMessage(apiEncryptedBox);
                     future.result(new EncryptedMessage(apiEncryptedMessage));
                 }
@@ -65,7 +65,7 @@ public class EncryptedMsgActor extends ModuleActor {
             }
         }
         EncryptedBox encryptedBox = new EncryptedBox(encryptedBoxKeys.toArray(new EncryptedBoxKey[0]), message.getBox().getEncPackage());
-        ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.DecryptPackage(encryptedBox), new AskCallback() {
+        ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.DecryptBox(encryptedBox), new AskCallback() {
             @Override
             public void onResult(Object obj) {
                 Log.d(TAG, "onDecrypt:onResult in " + (Runtime.getActorTime() - start) + " ms");

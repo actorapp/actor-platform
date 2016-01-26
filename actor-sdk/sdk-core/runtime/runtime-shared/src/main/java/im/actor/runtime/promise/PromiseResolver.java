@@ -1,4 +1,4 @@
-package im.actor.runtime.actors.promise;
+package im.actor.runtime.promise;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

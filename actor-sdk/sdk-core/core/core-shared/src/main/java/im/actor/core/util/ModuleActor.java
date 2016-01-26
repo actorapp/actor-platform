@@ -4,6 +4,8 @@
 
 package im.actor.core.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import im.actor.core.Configuration;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
@@ -20,8 +22,9 @@ import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
-import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.AskcableActor;
+import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.storage.KeyValueEngine;
@@ -177,6 +180,25 @@ public class ModuleActor extends AskcableActor implements BusSubscriber {
                 });
             }
         });
+    }
+
+    public <T extends Response> Promise<T> api(final Request<T> request) {
+        return new Promise<T>() {
+            @Override
+            protected void exec(@NotNull final PromiseResolver<T> executor) {
+                context.getActorApi().request(request, new RpcCallback<T>() {
+                    @Override
+                    public void onResult(T response) {
+                        executor.result(response);
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        executor.error(e);
+                    }
+                });
+            }
+        }.dispatch(self());
     }
 
     public void cancelRequest(long rid) {

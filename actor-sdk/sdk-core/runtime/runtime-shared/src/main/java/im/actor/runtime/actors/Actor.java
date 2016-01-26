@@ -17,8 +17,8 @@ import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.actors.mailbox.Mailbox;
 import im.actor.runtime.actors.messages.DeadLetter;
-import im.actor.runtime.actors.promise.Promise;
-import im.actor.runtime.actors.promise.PromiseResolver;
+import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.function.Supplier;
 
 /**
