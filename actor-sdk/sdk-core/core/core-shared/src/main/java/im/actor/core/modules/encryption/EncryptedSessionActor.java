@@ -21,7 +21,7 @@ import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.core.modules.encryption.KeyManagerActor.*;
 import im.actor.runtime.function.ArrayFunction;
-import im.actor.runtime.function.Supplier;
+import im.actor.runtime.function.Consumer;
 
 public class EncryptedSessionActor extends ModuleActor {
 
@@ -92,13 +92,13 @@ public class EncryptedSessionActor extends ModuleActor {
 
                 return new EncryptedSession(ownIdentityKey, ownPreKey, theirIdentityKey, theirPreKey, theirKeyGroup);
             }
-        }).then(new Supplier<EncryptedSession>() {
+        }).then(new Consumer<EncryptedSession>() {
             @Override
             public void apply(EncryptedSession encryptedSession) {
                 EncryptedSessionActor.this.session = encryptedSession;
                 unstashAll();
             }
-        }).failure(new Supplier<Exception>() {
+        }).failure(new Consumer<Exception>() {
             @Override
             public void apply(Exception e) {
                 Log.w(TAG, "Session load error");
