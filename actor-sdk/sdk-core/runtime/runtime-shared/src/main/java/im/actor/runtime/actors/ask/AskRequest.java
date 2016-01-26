@@ -1,12 +1,12 @@
 package im.actor.runtime.actors.ask;
 
-import im.actor.runtime.actors.Future;
+import im.actor.runtime.actors.promise.PromiseExecutor;
 
 public class AskRequest {
     private final Object message;
-    private final Future future;
+    private final PromiseExecutor future;
 
-    public AskRequest(Object message, Future future) {
+    public AskRequest(Object message, PromiseExecutor future) {
         this.message = message;
         this.future = future;
     }
@@ -15,7 +15,7 @@ public class AskRequest {
         return message;
     }
 
-    public Future getFuture() {
+    public PromiseExecutor getFuture() {
         return future;
     }
 }
