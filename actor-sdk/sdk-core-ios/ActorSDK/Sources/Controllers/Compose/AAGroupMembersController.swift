@@ -76,7 +76,7 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
             res.replaceIntAtIndex(UInt(i), withInt: selected[i].contact.uid)
         }
         
-        executeSafeOnlySuccess(Actor.createGroupCommandWithTitle(groupTitle, withAvatar: nil, withUids: res)) { (val) -> Void in
+        executeSafeOnlySuccess(Actor.createGroupCommandWithTitle(groupTitle, withAvatar: nil, withUids: res)!) { (val) -> Void in
             let gid = (val as! JavaLangInteger).intValue
             if self.groupImage != nil {
                 Actor.changeGroupAvatar(gid, image: self.groupImage!)

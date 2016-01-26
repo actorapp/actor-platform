@@ -9,7 +9,7 @@ extension ARListEngineRecord {
         if (self.getQuery() == nil) {
             return NSNull()
         } else {
-            return self.getQuery().lowercaseString
+            return self.getQuery()!.lowercaseString
         }
     }
 }

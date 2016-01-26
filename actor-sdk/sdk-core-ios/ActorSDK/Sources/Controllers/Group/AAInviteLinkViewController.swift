@@ -71,7 +71,7 @@ public class AAInviteLinkViewController: AAContentTableController {
             }
         }
         
-        executeSafe(Actor.requestInviteLinkCommandWithGid(jint(gid))) { (val) -> Void in
+        executeSafe(Actor.requestInviteLinkCommandWithGid(jint(gid))!) { (val) -> Void in
             self.currentUrl = val as? String
             self.urlRow.reload()
             self.tableView.hidden = false
@@ -79,7 +79,7 @@ public class AAInviteLinkViewController: AAContentTableController {
     }
     
     public func reloadLink() {
-        executeSafe(Actor.requestRevokeLinkCommandWithGid(jint(gid))) { (val) -> Void in
+        executeSafe(Actor.requestRevokeLinkCommandWithGid(jint(gid))!) { (val) -> Void in
             self.currentUrl = val as? String
             self.urlRow.reload()
             self.tableView.hidden = false

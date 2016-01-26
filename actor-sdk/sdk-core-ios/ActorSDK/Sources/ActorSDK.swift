@@ -174,8 +174,8 @@ public class ActorSDK {
         builder.setNotificationProvider(iOSNotificationProvider())
         
         // Stats
-        builder.setPlatformType(ACPlatformTypeEnum.values().objectAtIndex(ACPlatformType.IOS.rawValue) as! ACPlatformTypeEnum)
-        builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
+        builder.setPlatformType(ACPlatformType.IOS())
+        builder.setDeviceCategory(ACDeviceCategory.MOBILE())
         
         // Locale
         for lang in NSLocale.preferredLanguages() {
@@ -450,7 +450,7 @@ public class ActorSDK {
             let alert = UIAlertController(title: nil, message: AALocalized("GroupJoinMessage"), preferredStyle: .Alert)
             alert.addAction(UIAlertAction(title: AALocalized("AlertNo"), style: .Cancel, handler: nil))
             alert.addAction(UIAlertAction(title: AALocalized("GroupJoinAction"), style: .Default){ (action) -> Void in
-                AAExecutions.execute(Actor.joinGroupViaLinkCommandWithUrl(token), type: .Safe, ignore: [], successBlock: { (val) -> Void in
+                AAExecutions.execute(Actor.joinGroupViaLinkCommandWithUrl(token)!, type: .Safe, ignore: [], successBlock: { (val) -> Void in
                     
                     // TODO: Fix for iPad
                     let groupId = val as! JavaLangInteger
