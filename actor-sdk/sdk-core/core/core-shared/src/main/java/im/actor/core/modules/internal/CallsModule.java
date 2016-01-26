@@ -64,7 +64,7 @@ public class CallsModule extends AbsModule {
                                     public CallActor create() {
                                         return new CallActor(response.getCallId(), callCallback, context());
                                     }
-                                }), "actor/call"));
+                                }), "actor/call_" + response.getCallId()));
 
 
                     }
@@ -118,7 +118,7 @@ public class CallsModule extends AbsModule {
                         public CallActor create() {
                             return new CallActor(callId, context());
                         }
-                    }), "actor/call"));
+                    }), "actor/call_" + callId));
             if (!MULTIPLE_CALLS_ENABLED & calls.keySet().size() > MAX_CALLS_COUNT) {
                 calls.get(callId).send(new CallActor.EndCall());
             } else {
