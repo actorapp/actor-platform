@@ -19,7 +19,7 @@ import im.actor.runtime.actors.mailbox.Mailbox;
 import im.actor.runtime.actors.messages.DeadLetter;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseResolver;
-import im.actor.runtime.function.Supplier;
+import im.actor.runtime.function.Consumer;
 
 /**
  * Actor object
@@ -285,12 +285,12 @@ public class Actor {
                 });
                 dest.send(new AskIntRequest(message, executor));
             }
-        }.then(new Supplier<Object>() {
+        }.then(new Consumer<Object>() {
             @Override
             public void apply(Object o) {
                 self().send(new AskIntResult(id, o));
             }
-        }).failure(new Supplier<Exception>() {
+        }).failure(new Consumer<Exception>() {
             @Override
             public void apply(Exception e) {
                 self().send(new AskIntError(id, e));

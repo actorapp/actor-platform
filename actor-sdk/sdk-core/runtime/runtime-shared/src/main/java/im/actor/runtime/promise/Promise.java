@@ -5,9 +5,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.function.Supplier;
+import im.actor.runtime.function.Consumer;
 
 /**
  * Promise support implementations. It is much more like js promises than traditional
@@ -38,7 +37,7 @@ public abstract class Promise<T> {
      * @param then supplier for result
      * @return this
      */
-    public synchronized Promise<T> then(final Supplier<T> then) {
+    public synchronized Promise<T> then(final Consumer<T> then) {
         if (isFinished) {
             if (exception == null) {
                 dispatchActor.send(new Runnable() {
@@ -70,7 +69,7 @@ public abstract class Promise<T> {
      * @param failure supplier for exception
      * @return this
      */
-    public synchronized Promise<T> failure(final Supplier<Exception> failure) {
+    public synchronized Promise<T> failure(final Consumer<Exception> failure) {
         if (isFinished) {
             if (exception != null) {
                 dispatchActor.send(new Runnable() {

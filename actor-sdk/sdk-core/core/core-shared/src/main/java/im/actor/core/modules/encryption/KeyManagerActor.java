@@ -39,7 +39,7 @@ import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.crypto.ratchet.RatchetKeySignature;
-import im.actor.runtime.function.Supplier;
+import im.actor.runtime.function.Consumer;
 import im.actor.runtime.storage.KeyValueStorage;
 
 public class KeyManagerActor extends ModuleActor {
@@ -122,14 +122,14 @@ public class KeyManagerActor extends ModuleActor {
                                 signature));
             }
 
-            api(new RequestCreateNewKeyGroup(apiEncryptionKey, encryption, keys, keySignatures)).then(new Supplier<ResponseCreateNewKeyGroup>() {
+            api(new RequestCreateNewKeyGroup(apiEncryptionKey, encryption, keys, keySignatures)).then(new Consumer<ResponseCreateNewKeyGroup>() {
                 @Override
                 public void apply(ResponseCreateNewKeyGroup response) {
                     ownKeys = ownKeys.setGroupId(response.getKeyGroupId());
                     encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
                     onMainKeysReady();
                 }
-            }).failure(new Supplier<Exception>() {
+            }).failure(new Consumer<Exception>() {
                 @Override
                 public void apply(Exception e) {
                     Log.w(TAG, "Keys upload error");
