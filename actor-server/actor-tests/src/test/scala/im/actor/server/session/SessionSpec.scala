@@ -76,7 +76,6 @@ final class SessionSpec extends BaseSessionSpec {
 
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333334L, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
-
       expectNewSession(authId, sessionId, messageId)
       expectMessageAck(messageId)
 

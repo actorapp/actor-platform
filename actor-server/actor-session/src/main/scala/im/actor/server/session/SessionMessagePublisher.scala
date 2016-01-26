@@ -29,7 +29,7 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
       // TODO: tail-recursive function for container unpacking
       mb.body match {
         case Container(bodies) ⇒
-          val ackMessage = SendProtoMessage(MessageAck.outgoing(bodies.view.filterNot(_.body.isInstanceOf[MessageAck]).map(_.messageId) :+ mb.messageId))
+          val ackMessage = HandleOutgoingAck(bodies.view.filterNot(_.body.isInstanceOf[MessageAck]).map(_.messageId) :+ mb.messageId)
           val handleMessages = bodies.map(HandleMessageBox(_, clientData)).toList
           publishMessages(ackMessage :: handleMessages)
         case _ ⇒
@@ -37,11 +37,9 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
 
           mb.body match {
             case _: MessageAck ⇒ publishMessage(handleMessage)
-            case _             ⇒ publishMessages(List(SendProtoMessage(MessageAck.outgoing(Seq(mb.messageId))), handleMessage))
+            case _             ⇒ publishMessages(List(HandleOutgoingAck(Seq(mb.messageId)), handleMessage))
           }
       }
-    case msg: SendProtoMessage ⇒
-      publishMessage(msg)
     case command: SubscribeCommand ⇒
       publishMessage(HandleSubscribe(command))
     case Request(_) ⇒
