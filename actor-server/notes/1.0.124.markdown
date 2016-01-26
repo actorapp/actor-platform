@@ -1,0 +1,2 @@
+* :rocket: STRIP_ENTITIES difference optimization
+* :rocket: session resend prioritizing based on client-side importance
