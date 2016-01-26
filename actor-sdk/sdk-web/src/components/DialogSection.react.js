@@ -109,7 +109,7 @@ class DialogSection extends Component {
           <MessagesSection messages={messagesToRender}
                            overlay={overlayToRender}
                            peer={peer}
-                           ref="MessagesSection"
+                           ref="messagesSection"
                            onScroll={this.loadMessagesByScroll}/>
 
         </div>
@@ -164,7 +164,8 @@ class DialogSection extends Component {
   };
 
   fixScroll = () => {
-    const node = React.findDOMNode(this.refs.MessagesSection);
+    const scrollNode = React.findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
+    const node = scrollNode.getElementsByClassName('ss-content')[0];
     if (node) {
       node.scrollTop = node.scrollHeight - lastScrolledFromBottom - node.offsetHeight;
     }
@@ -184,7 +185,8 @@ class DialogSection extends Component {
     const { peer, messages, messagesToRender } = this.state;
 
     if (peer) {
-      let node = React.findDOMNode(this.refs.MessagesSection);
+      const scrollNode = React.findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
+      const node = scrollNode.getElementsByClassName('ss-content')[0];
       let scrollTop = node.scrollTop;
       lastScrolledFromBottom = node.scrollHeight - scrollTop - node.offsetHeight; // was node.scrollHeight - scrollTop
 
