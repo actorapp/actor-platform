@@ -5,21 +5,21 @@
 import { forEach, map, debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
+import { Container } from 'flux/utils';
 import ActorClient from '../../utils/ActorClient';
-
+import Scrollbar from '../common/Scrollbar.react';
 import { MessageContentTypes, PeerTypes } from '../../constants/ActorAppConstants';
 
 import MessageActionCreators from '../../actions/MessageActionCreators';
 
 import VisibilityStore from '../../stores/VisibilityStore';
-import GroupStore from '../../stores/GroupStore';
+//import GroupStore from '../../stores/GroupStore';
 import DialogStore from '../../stores/DialogStore';
 import MessageStore from '../../stores/MessageStore';
 
 import MessageItem from './messages/MessageItem.react';
 import Welcome from './messages/Welcome.react';
 import Loading from './messages/Loading.react';
-import {Container} from 'flux/utils';
 
 let _delayed = [];
 
@@ -116,19 +116,21 @@ class MessagesSection extends Component {
     const messagesList = map(messages, this.getMessagesListItem);
 
     return (
-      <ul className="messages__list" onScroll={this.handleScroll}>
-        {
-          (isMember && isAllMessagesLoaded) || (isMember && messagesList.length < 30)
-            ? <Welcome peer={peer}/>
-            : null
-        }
-        {
-          !isAllMessagesLoaded && messagesList.length >= 30
-            ? <Loading/>
-            : null
-        }
-        {messagesList}
-      </ul>
+      <Scrollbar onScroll={this.handleScroll} ref="messagesScroll">
+        <ul className="messages__list">
+          {
+            (isMember && isAllMessagesLoaded) || (isMember && messagesList.length < 30)
+              ? <Welcome peer={peer}/>
+              : null
+          }
+          {
+            !isAllMessagesLoaded && messagesList.length >= 30
+              ? <Loading/>
+              : null
+          }
+          {messagesList}
+        </ul>
+      </Scrollbar>
     );
   }
 }
