@@ -1,5 +1,5 @@
 package im.actor.runtime.function;
 
-public interface Supplier<T> {
+public interface Consumer<T> {
     void apply(T t);
 }
