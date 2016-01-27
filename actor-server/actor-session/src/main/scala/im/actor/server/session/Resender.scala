@@ -64,12 +64,6 @@ private[session] object ReSender {
     lazy val body = UpdateBoxCodec.encode(ub).require
     override lazy val size = body.size
   }
-  /*private final case class WeakPushItem(ub: UpdateBox, reduceKeyOpt: Option[String]) extends NonResendableItem {
-    require(ub.isInstanceOf[WeakUpdate])
-
-    lazy val body = UpdateBoxCodec.encode(ub).require
-    override lazy val size = body.size
-  }*/
   private final case class NewSessionItem(newSession: NewSession) extends ResendableItem {
     override val size = 0L
   }
@@ -113,12 +107,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   private val MaxBufferSize = config.maxBufferSize
   private val MaxResendSize = config.maxResendSize
 
-  def receive = waitingForFirstClient
-
-  def waitingForFirstClient: Receive = subscriber.orElse(publisher).orElse {
-    case NewClient(_) ⇒
-      context.become(resendingToNewClients)
-  }
+  def receive = resendingToNewClients
 
   def resendingToNewClients: Receive = subscriber.orElse(publisher).orElse {
     case NewClient(_) ⇒
@@ -163,6 +152,11 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
     enqueueNewSession(NewSessionItem(NewSession(sessionId, firstMessageId)))
   }
 
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    log.error(reason, "An error occured while processing message: {}", message)
+    super.preRestart(reason, message)
+  }
+
   // Subscriber-related
 
   def subscriber: Receive = {
@@ -172,7 +166,8 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
       messageIds foreach { messageId ⇒
         getResendableItem(messageId) foreach {
           case (item, scheduledResend) ⇒
-            resendBufferSize -= item.size
+            if (item.size <= MaxResendSize)
+              resendBufferSize -= item.size
             scheduledResend.cancel()
 
             item match {
@@ -219,7 +214,9 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
     case ScheduledResend(messageId, item) ⇒
       log.debug("Scheduled resend for messageId: {}, item: {}", messageId, item)
 
-      resendBufferSize -= item.size
+      if (item.size <= MaxResendSize)
+        resendBufferSize -= item.size
+
       item match {
         case ni: NewSessionItem ⇒ enqueueNewSession(ni)
         case pi: PushItem       ⇒ enqueuePush(pi, Some(messageId))
@@ -285,7 +282,11 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   private def scheduleResend(item: ResendableItem, messageId: Long) = {
     log.debug("Scheduling resend of messageId: {}, timeout: {}", messageId, AckTimeout)
 
-    this.resendBufferSize += item.size
+    if (item.size <= MaxResendSize)
+      this.resendBufferSize += item.size
+
+    // FIXME: increase resendBufferSize by real Unsent
+
     if (resendBufferSize <= MaxBufferSize) {
       val delay = calcScheduleDelay()
       val scheduled = context.system.scheduler.scheduleOnce(delay, self, ScheduledResend(messageId, item))
@@ -298,7 +299,8 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
               (ritem, resend) ← pushBuffer.get(msgId)
             } yield {
               this.pushBuffer -= msgId
-              resendBufferSize -= ritem.size
+              if (ritem.size <= MaxResendSize)
+                resendBufferSize -= ritem.size
               resend.cancel()
             }
 
