@@ -110,7 +110,7 @@ static void playSoundCompleted(__unused SystemSoundID ssID, __unused void *clien
             }
             else
             {
-                [[[AAAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Conversation.MicrophoneAccessDisabled", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"Common.OK",nil) otherButtonTitles:nil] show];
+                [[[AAAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Chat.MicrophoneAccessDisabled", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"AlertOk",nil) otherButtonTitles:nil] show];
             }
         };
         
