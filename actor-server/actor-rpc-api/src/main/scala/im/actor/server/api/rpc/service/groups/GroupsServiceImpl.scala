@@ -149,14 +149,12 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
         withValidGroupTitle(title) { validTitle ⇒
           val groupId = nextIntId(ThreadLocalSecureRandom.current())
           val userIds = users.map(_.userId).toSet
-          val groupUserIds = userIds + client.userId
-
           val f = for (res ← groupExt.create(groupId, title, randomId, userIds)) yield {
             Ok(ResponseCreateGroupObsolete(
               groupPeer = ApiGroupOutPeer(groupId, res.accessHash),
               seq = res.seqstate.seq,
               state = res.seqstate.state.toByteArray,
-              users = groupUserIds.toVector,
+              users = (userIds + client.userId).toVector,
               date = res.date
             ))
           }
