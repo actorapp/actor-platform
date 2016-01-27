@@ -25,31 +25,35 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   import DialogCommands._
   import DialogEvents._
 
-  protected def sendMessage(state: DialogState, sm: SendMessage): Unit = {
-    becomeStashing(replyTo ⇒ ({
-      case seq: SeqStateDate ⇒
-        replyTo ! seq
-        if (state.isHidden) { self.tell(Show(peer), ActorRef.noSender) }
-        updateMessageDate(state, sm.date)
-        unstashAll()
-      case fail: Status.Failure ⇒
-        replyTo forward fail
-        unstashAll()
-    }: Receive) orElse reactions(isHidden = state.isHidden))
+  protected def sendMessage(s: DialogState, sm: SendMessage): Unit = {
+    withCreated(s) { state ⇒
+      becomeStashing(replyTo ⇒ ({
+        case seq: SeqStateDate ⇒
+          replyTo ! seq
+          if (state.isHidden) {
+            self.tell(Show(peer), ActorRef.noSender)
+          }
+          updateMessageDate(state, sm.date)
+          unstashAll()
+        case fail: Status.Failure ⇒
+          replyTo forward fail
+          unstashAll()
+      }: Receive) orElse reactions(state), discardOld = true)
 
-    withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
-      (for {
-        _ ← dialogExt.ackSendMessage(peer, sm)
-        message = sm.message
-        _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sm.date), sm.randomId, message.header, message.toByteArray))
-        _ ← dialogExt.updateCounters(peer, userId)
-        SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sm.date, message, sm.isFat)
-      } yield SeqStateDate(seq, state, sm.date)) recover {
-        case e ⇒
-          log.error(e, "Failed to send message")
-          throw e
-      }
-    } pipeTo self
+      withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
+        (for {
+          _ ← dialogExt.ackSendMessage(peer, sm)
+          message = sm.message
+          _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sm.date), sm.randomId, message.header, message.toByteArray))
+          _ ← dialogExt.updateCounters(peer, userId)
+          SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sm.date, message, sm.isFat)
+        } yield SeqStateDate(seq, state, sm.date)) recover {
+          case e ⇒
+            log.error(e, "Failed to send message")
+            throw e
+        }
+      } pipeTo self
+    }
   }
 
   protected def updateCountersChanged(): Unit = {
@@ -58,55 +62,60 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       .pipeTo(sender())
   }
 
-  protected def ackSendMessage(isHidden: Boolean, sm: SendMessage): Unit = {
-    if (peer.typ == PeerType.Private) {
-      SocialManager.recordRelation(sm.origin.id, userId)
-      SocialManager.recordRelation(userId, sm.origin.id)
+  protected def ackSendMessage(s: DialogState, sm: SendMessage): Unit =
+    withCreated(s) { state ⇒
+      if (peer.typ == PeerType.Private) {
+        SocialManager.recordRelation(sm.origin.id, userId)
+        SocialManager.recordRelation(userId, sm.origin.id)
+      }
+
+      deliveryExt
+        .receiverDelivery(userId, sm.origin.id, peer, sm.randomId, sm.date, sm.message, sm.isFat)
+        .map(_ ⇒ SendMessageAck())
+        .pipeTo(sender()) onSuccess {
+          case _ ⇒
+            if (state.isHidden) { self.tell(Show(peer), ActorRef.noSender) }
+        }
     }
 
-    deliveryExt
-      .receiverDelivery(userId, sm.origin.id, peer, sm.randomId, sm.date, sm.message, sm.isFat)
-      .map(_ ⇒ SendMessageAck())
-      .pipeTo(sender()) onSuccess {
-        case _ ⇒
-          if (isHidden) { self.tell(Show(peer), ActorRef.noSender) }
-      }
-  }
-
   protected def writeMessage(
+    s:          DialogState,
     dateMillis: Long,
     randomId:   Long,
     message:    ApiMessage
-  ): Unit = {
-    val date = new DateTime(dateMillis)
+  ): Unit =
+    withCreated(s) { _ ⇒
+      val date = new DateTime(dateMillis)
 
-    db.run(writeHistoryMessage(
-      selfPeer,
-      peer,
-      date,
-      randomId,
-      message.header,
-      message.toByteArray
-    )) map (_ ⇒ WriteMessageAck()) pipeTo sender()
-  }
+      db.run(writeHistoryMessage(
+        selfPeer,
+        peer,
+        date,
+        randomId,
+        message.header,
+        message.toByteArray
+      )) map (_ ⇒ WriteMessageAck()) pipeTo sender()
+    }
 
   protected def writeMessageSelf(
+    s:            DialogState,
     senderUserId: Int,
     dateMillis:   Long,
     randomId:     Long,
     message:      ApiMessage
-  ): Unit = {
-    val date = new DateTime(dateMillis)
+  ): Unit =
+    withCreated(s) { _ ⇒
+      val date = new DateTime(dateMillis)
 
-    val result =
-      if (peer.`type` == PeerType.Private && peer.id != senderUserId && userId != senderUserId) {
-        Future.failed(new RuntimeException(s"writeMessageSelf with senderUserId ${senderUserId} in dialog of user ${userId} with user ${peer.id}"))
-      } else {
-        db.run(writeHistoryMessageSelf(userId, peer, senderUserId, date, randomId, message.header, message.toByteArray))
-      }
+      val result =
+        if (peer.`type` == PeerType.Private && peer.id != senderUserId && userId != senderUserId) {
+          Future.failed(new RuntimeException(s"writeMessageSelf with senderUserId $senderUserId in dialog of user $userId with user ${peer.id}"))
+        } else {
+          db.run(writeHistoryMessageSelf(userId, peer, senderUserId, date, randomId, message.header, message.toByteArray))
+        }
 
-    result map (_ ⇒ WriteMessageSelfAck()) pipeTo sender()
-  }
+      result map (_ ⇒ WriteMessageSelfAck()) pipeTo sender()
+    }
 
   protected def messageReceived(state: DialogState, mr: MessageReceived): Unit = {
     val mustReceive = mustMakeReceive(state, mr)
