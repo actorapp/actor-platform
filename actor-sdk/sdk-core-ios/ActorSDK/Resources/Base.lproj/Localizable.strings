@@ -331,6 +331,8 @@
 
 "ChatSlideUpToCancel" = "Slide up to cancel";
 
+"Chat.MicrophoneAccessDisabled"  = "We needs access to your microphone for voice messages. Please go to Settings — Privacy — Microphone and set to ON";
+
 /*
  * Chat attachment menu
  */
