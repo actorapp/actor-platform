@@ -105,13 +105,11 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     message:      ApiMessage
   ): Unit =
     withCreated(s) { _ ⇒
-      val date = new DateTime(dateMillis)
-
       val result =
         if (peer.`type` == PeerType.Private && peer.id != senderUserId && userId != senderUserId) {
           Future.failed(new RuntimeException(s"writeMessageSelf with senderUserId $senderUserId in dialog of user $userId with user ${peer.id}"))
         } else {
-          db.run(writeHistoryMessageSelf(userId, peer, senderUserId, date, randomId, message.header, message.toByteArray))
+          db.run(writeHistoryMessageSelf(userId, peer, senderUserId, new DateTime(dateMillis), randomId, message.header, message.toByteArray))
         }
 
       result map (_ ⇒ WriteMessageSelfAck()) pipeTo sender()
