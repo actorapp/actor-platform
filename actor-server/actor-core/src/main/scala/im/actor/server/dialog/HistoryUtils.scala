@@ -101,7 +101,11 @@ object HistoryUtils {
         messageContentData = messageContentData,
         deletedAt = None
       ))
-      _ ← DialogRepo.updateLastMessageDatePrivate(userId, toPeer, date)
+      _ ← toPeer.`type` match {
+        case PeerType.Private ⇒ DialogRepo.updateLastMessageDatePrivate(userId, toPeer, date)
+        case PeerType.Group   ⇒ DialogRepo.updateLastMessageDateGroup(toPeer, date)
+        case _                ⇒ throw new RuntimeException(s"Unknown peer type ${toPeer.typ}")
+      }
     } yield ()
   }
 
