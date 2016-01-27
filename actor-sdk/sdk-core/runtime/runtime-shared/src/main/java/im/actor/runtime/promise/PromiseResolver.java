@@ -9,14 +9,16 @@ import im.actor.runtime.actors.ActorRef;
 /**
  * Object for completing promises
  *
- * @param <T>
+ * @param <T> type of resolver
  */
 public class PromiseResolver<T> {
 
     private Promise<T> promise;
+    private ActorRef dispatcher;
 
-    PromiseResolver(Promise<T> promise) {
+    PromiseResolver(Promise<T> promise, ActorRef dispatcher) {
         this.promise = promise;
+        this.dispatcher = dispatcher;
     }
 
     /**
@@ -28,8 +30,13 @@ public class PromiseResolver<T> {
         return promise;
     }
 
+    /**
+     * Get Resolver's dispatcher
+     *
+     * @return dispatcher actor
+     */
     public ActorRef getDispatcher() {
-        return promise.getDispatchActor();
+        return dispatcher;
     }
 
     /**
@@ -38,7 +45,6 @@ public class PromiseResolver<T> {
      * @param res result of promise
      */
     public void result(@Nullable T res) {
-        Log.d("Promise", "Result: " + promise);
         promise.result(res);
     }
 

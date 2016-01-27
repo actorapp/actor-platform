@@ -224,7 +224,7 @@ public class EncryptedSessionActor extends ModuleActor {
         return Promises.success(pickedChain)
                 .mapPromise(src -> {
                     if (src != null) {
-                        return Promises.successNotNull(src);
+                        return Promises.success(src);
                     }
 
                     return ask(context().getEncryption().getKeyManager(), new FetchEphemeralPrivateKey(ephemeralKey))
