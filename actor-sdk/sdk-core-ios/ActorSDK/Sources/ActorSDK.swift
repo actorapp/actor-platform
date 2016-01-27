@@ -279,10 +279,8 @@ public class ActorSDK {
         }
         if controller == nil {
             let tab = AARootTabViewController()
-            tab.viewControllers = [
-                AANavigationController(rootViewController: AAContactsViewController()),
-                AANavigationController(rootViewController: AARecentViewController()),
-                AANavigationController(rootViewController: AASettingsViewController())]
+            
+            tab.viewControllers = self.getMainNavigations()
             tab.selectedIndex = 0
             tab.selectedIndex = 1
             
@@ -319,6 +317,48 @@ public class ActorSDK {
         UIApplication.sharedApplication().registerUserNotificationSettings(settings)
         UIApplication.sharedApplication().registerForRemoteNotifications()
     }
+    
+    /// Get main navigations with check in delegate for customize from SDK
+    
+    private func getMainNavigations() -> [AANavigationController] {
+    
+        
+        var mainNavigations = [AANavigationController]()
+        
+        ////////////////////////////////////
+        // contacts
+        ////////////////////////////////////
+        
+        if let contactsController = self.delegate.actorControllerForContacts() {
+            mainNavigations.append(AANavigationController(rootViewController: contactsController))
+        } else {
+            mainNavigations.append(AANavigationController(rootViewController: AAContactsViewController()))
+        }
+        
+        ////////////////////////////////////
+        // recent dialogs
+        ////////////////////////////////////
+        
+        if let recentDialogs = self.delegate.actorControllerForDialogs() {
+            mainNavigations.append(AANavigationController(rootViewController: recentDialogs))
+        } else {
+            mainNavigations.append(AANavigationController(rootViewController: AARecentViewController()))
+        }
+        
+        ////////////////////////////////////
+        // settings
+        ////////////////////////////////////
+        
+        if let settingsController = self.delegate.actorControllerForSettings() {
+            mainNavigations.append(AANavigationController(rootViewController: settingsController))
+        } else {
+            mainNavigations.append(AANavigationController(rootViewController: AASettingsViewController()))
+        }
+        
+    
+        return mainNavigations;
+        
+    }
 
     
     //
@@ -341,10 +381,7 @@ public class ActorSDK {
             var controller: UIViewController! = delegate.actorControllerForStart()
             if controller == nil {
                 let tab = AARootTabViewController()
-                tab.viewControllers = [
-                    AANavigationController(rootViewController: AAContactsViewController()),
-                    AANavigationController(rootViewController: AARecentViewController()),
-                    AANavigationController(rootViewController: AASettingsViewController())]
+                tab.viewControllers = self.getMainNavigations()
                 tab.selectedIndex = 0
                 tab.selectedIndex = 1
                 

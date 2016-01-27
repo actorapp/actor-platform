@@ -25,6 +25,15 @@ public protocol ActorSDKDelegate {
     /// Conversation controller
     func actorControllerForConversation(peer: ACPeer) -> UIViewController?
     
+    /// Contacts controller
+    func actorControllerForContacts() -> AAViewController?
+    
+    /// Dialogs controller
+    func actorControllerForDialogs() -> AAViewController?
+    
+    /// Settings controller
+    func actorControllerForSettings() -> AAViewController?
+    
     /// Configuration of bubble cells
     func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter]
     
@@ -64,6 +73,18 @@ public class ActorSDKDelegateDefault: NSObject, ActorSDKDelegate {
     }
     
     public func actorControllerForConversation(peer: ACPeer) -> UIViewController? {
+        return nil
+    }
+    
+    public func actorControllerForContacts() -> AAViewController? {
+        return nil
+    }
+    
+    public func actorControllerForDialogs() -> AAViewController? {
+        return nil
+    }
+    
+    public func actorControllerForSettings() -> AAViewController? {
         return nil
     }
     
