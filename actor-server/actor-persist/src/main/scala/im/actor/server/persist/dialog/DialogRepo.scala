@@ -19,30 +19,26 @@ final class DialogCommonTable(tag: Tag) extends Table[DialogCommon](tag, "dialog
 
   def lastReadAt = column[DateTime]("last_read_at")
 
-  def createdAt = column[DateTime]("created_at")
+  def * = (dialogId, lastMessageDate, lastReceivedAt, lastReadAt) <> (applyDialogCommon.tupled, unapplyDialogCommon)
 
-  def * = (dialogId, lastMessageDate, lastReceivedAt, lastReadAt, createdAt) <> (applyDialogCommon.tupled, unapplyDialogCommon)
-
-  def applyDialogCommon: (String, DateTime, DateTime, DateTime, DateTime) ⇒ DialogCommon = {
+  def applyDialogCommon: (String, DateTime, DateTime, DateTime) ⇒ DialogCommon = {
     case (
       dialogId,
       lastMessageDate,
       lastReceivedAt,
-      lastReadAt,
-      createdAt) ⇒
+      lastReadAt) ⇒
       DialogCommon(
         dialogId = dialogId,
         lastMessageDate = lastMessageDate,
         lastReceivedAt = lastReceivedAt,
-        lastReadAt = lastReadAt,
-        createdAt = createdAt
+        lastReadAt = lastReadAt
       )
   }
 
-  def unapplyDialogCommon: DialogCommon ⇒ Option[(String, DateTime, DateTime, DateTime, DateTime)] = { dc ⇒
+  def unapplyDialogCommon: DialogCommon ⇒ Option[(String, DateTime, DateTime, DateTime)] = { dc ⇒
     DialogCommon.unapply(dc).map {
-      case (dialogId, lastMessageDate, lastReceivedAt, lastReadAt, createdAt) ⇒
-        (dialogId, lastMessageDate, lastReceivedAt, lastReadAt, createdAt)
+      case (dialogId, lastMessageDate, lastReceivedAt, lastReadAt) ⇒
+        (dialogId, lastMessageDate, lastReceivedAt, lastReadAt)
     }
   }
 }
@@ -59,6 +55,8 @@ final class UserDialogTable(tag: Tag) extends Table[UserDialog](tag, "user_dialo
 
   def ownerLastReadAt = column[DateTime]("owner_last_read_at")
 
+  def createdAt = column[DateTime]("created_at")
+
   def shownAt = column[Option[DateTime]]("shown_at")
 
   def isFavourite = column[Boolean]("is_favourite")
@@ -71,18 +69,20 @@ final class UserDialogTable(tag: Tag) extends Table[UserDialog](tag, "user_dialo
     peerId,
     ownerLastReceivedAt,
     ownerLastReadAt,
+    createdAt,
     shownAt,
     isFavourite,
     isArchived
   ) <> (applyUserDialog.tupled, unapplyUserDialog)
 
-  def applyUserDialog: (Int, Int, Int, DateTime, DateTime, Option[DateTime], Boolean, Boolean) ⇒ UserDialog = {
+  def applyUserDialog: (Int, Int, Int, DateTime, DateTime, DateTime, Option[DateTime], Boolean, Boolean) ⇒ UserDialog = {
     case (
       userId,
       peerType,
       peerId,
       ownerLastReceivedAt,
       ownerLastReadAt,
+      createdAt,
       shownAt,
       isFavourite,
       isArchived) ⇒
@@ -91,16 +91,17 @@ final class UserDialogTable(tag: Tag) extends Table[UserDialog](tag, "user_dialo
         peer = Peer(PeerType.fromValue(peerType), peerId),
         ownerLastReceivedAt = ownerLastReceivedAt,
         ownerLastReadAt = ownerLastReadAt,
+        createdAt = createdAt,
         shownAt = shownAt,
         isFavourite = isFavourite,
         isArchived = isArchived
       )
   }
 
-  def unapplyUserDialog: UserDialog ⇒ Option[(Int, Int, Int, DateTime, DateTime, Option[DateTime], Boolean, Boolean)] = { du ⇒
+  def unapplyUserDialog: UserDialog ⇒ Option[(Int, Int, Int, DateTime, DateTime, DateTime, Option[DateTime], Boolean, Boolean)] = { du ⇒
     UserDialog.unapply(du).map {
-      case (userId, peer, ownerLastReceivedAt, ownerLastReadAt, shownAt, isFavourite, isArchived) ⇒
-        (userId, peer.typ.value, peer.id, ownerLastReceivedAt, ownerLastReadAt, shownAt, isFavourite, isArchived)
+      case (userId, peer, ownerLastReceivedAt, ownerLastReadAt, createdAt, shownAt, isFavourite, isArchived) ⇒
+        (userId, peer.typ.value, peer.id, ownerLastReceivedAt, ownerLastReadAt, createdAt, shownAt, isFavourite, isArchived)
     }
   }
 }
@@ -130,8 +131,7 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
       dialogId = dialogId,
       lastMessageDate = dialog.lastMessageDate,
       lastReceivedAt = dialog.lastReceivedAt,
-      lastReadAt = dialog.lastReadAt,
-      createdAt = dialog.createdAt
+      lastReadAt = dialog.lastReadAt
     )
 
     val user = UserDialog(
@@ -139,6 +139,7 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
       peer = dialog.peer,
       ownerLastReceivedAt = dialog.ownerLastReceivedAt,
       ownerLastReadAt = dialog.ownerLastReadAt,
+      createdAt = dialog.createdAt,
       shownAt = dialog.shownAt,
       isFavourite = dialog.isFavourite,
       isArchived = dialog.isArchived
