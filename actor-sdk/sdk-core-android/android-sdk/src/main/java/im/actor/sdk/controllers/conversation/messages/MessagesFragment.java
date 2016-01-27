@@ -38,6 +38,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.activity.ShortcutActivity;
 import im.actor.sdk.controllers.fragment.DisplayListFragment;
 import im.actor.sdk.controllers.conversation.ChatActivity;
 import im.actor.sdk.util.Screen;
@@ -252,7 +253,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         return false;
     }
 
-    public boolean onLongClick(Message message, final boolean hasMyReaction) {
+    public boolean onLongClick(final Message message, final boolean hasMyReaction) {
         if (actionMode == null) {
             messagesAdapter.clearSelection();
             messagesAdapter.setSelected(message, true);
@@ -283,12 +284,31 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                     menu.findItem(R.id.quote).setVisible(isAllText);
                     menu.findItem(R.id.forward).setVisible(selected.length == 1 || isAllText);
                     menu.findItem(R.id.like).setVisible(selected.length == 1);
+                    menu.findItem(R.id.shortcut).setVisible(selected.length == 1 && isAllText && users().get(peer.getPeerId()).isBot());
                     return false;
                 }
 
                 @Override
                 public boolean onActionItemClicked(final ActionMode actionMode, MenuItem menuItem) {
-                    if (menuItem.getItemId() == R.id.delete) {
+                    if (menuItem.getItemId() == R.id.shortcut) {
+                        Intent shortcutIntent = new Intent(getContext(), ShortcutActivity.class);
+                        shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+                        shortcutIntent.setAction("im.actor.action.botMessageShortcut");
+                        shortcutIntent.putExtra("peer", peer.getUnuqueId());
+                        String text = messenger().getFormatter().formatMessagesExport(messagesAdapter.getSelected());
+                        shortcutIntent.putExtra("text", text);
+                        Intent addIntent = new Intent();
+                        addIntent
+                                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+                        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, text + "->" + users().get(peer.getPeerId()).getNick().get());
+                        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                                Intent.ShortcutIconResource.fromContext(getContext(),
+                                        R.drawable.ic_message_white_24dp));
+
+                        addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+                        getContext().getApplicationContext().sendBroadcast(addIntent);
+                        actionMode.finish();
+                    } else if (menuItem.getItemId() == R.id.delete) {
                         Message[] selected = messagesAdapter.getSelected();
                         final long[] rids = new long[selected.length];
                         for (int i = 0; i < rids.length; i++) {
