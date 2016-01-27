@@ -4,22 +4,17 @@
 
 package im.actor.runtime.actors;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
-import im.actor.core.util.RandomUtils;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.ask.AskCallback;
-import im.actor.runtime.actors.ask.AskIntError;
 import im.actor.runtime.actors.ask.AskIntRequest;
-import im.actor.runtime.actors.ask.AskIntResult;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.actors.mailbox.Mailbox;
 import im.actor.runtime.actors.messages.DeadLetter;
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.PromiseResolver;
-import im.actor.runtime.function.Consumer;
+import im.actor.runtime.promise.PromiseDispatch;
 
 /**
  * Actor object
@@ -216,12 +211,10 @@ public class Actor {
     }
 
     public <T extends AskResult> Promise<T> ask(final ActorRef dest, final AskMessage<T> msg) {
-        return new Promise<T>() {
-            @Override
-            protected void exec(@NotNull PromiseResolver<T> executor) {
-                dest.send(new AskIntRequest(msg, executor));
-            }
-        };
+        return new Promise<>(executor -> {
+            Log.d("Actor", "executor");
+            dest.send(new AskIntRequest(msg, executor));
+        });
     }
 
     public void ask(ActorRef dest, Object message) {
@@ -229,71 +222,33 @@ public class Actor {
     }
 
     public void ask(final ActorRef dest, final Object message, final AskCallback callback) {
-//
-//        final Future res = new Future();
-//        res.subscribe(new FutureCallback() {
-//
-//            @Override
-//            public void onResult(Object res) {
-//                self().send(new AskResult(id, res));
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                self().send(new AskError(id, e));
-//            }
-//        });
-//        dest.send(new AskRequest(message, res));
-
-        final long id = RandomUtils.nextRid();
-        new Promise<Object>() {
-            @Override
-            protected void exec(@NotNull PromiseResolver<Object> executor) {
-                become(new Receiver() {
-                    @Override
-                    public void onReceive(Object message) {
-                        if (message instanceof AskIntResult) {
-                            AskIntResult askResult = ((AskIntResult) message);
-                            if (askResult.getId() != id) {
-                                stash();
-                                return;
-                            }
-
-                            unbecome();
-                            unstashAll();
-
-                            if (callback != null) {
-                                callback.onResult(askResult.getResult());
-                            }
-                        } else if (message instanceof AskIntError) {
-                            AskIntError error = ((AskIntError) message);
-                            if (error.getId() != id) {
-                                stash();
-                                return;
-                            }
-
-                            unbecome();
-                            unstashAll();
-
-                            if (callback != null) {
-                                callback.onError(error.getException());
-                            }
-                        } else {
-                            stash();
-                        }
+        new Promise<>(executor -> {
+            become(message1 -> {
+                if (message1 instanceof PromiseDispatch) {
+                    PromiseDispatch dispatch = (PromiseDispatch) message1;
+                    if (dispatch.getPromise() == executor.getPromise()) {
+                        dispatch.run();
+                    } else {
+                        stash();
                     }
-                });
-                dest.send(new AskIntRequest(message, executor));
+                } else {
+                    stash();
+                }
+            });
+            dest.send(new AskIntRequest(message, executor));
+        }).then(o -> {
+            unbecome();
+            unstashAll();
+
+            if (callback != null) {
+                callback.onResult(o);
             }
-        }.then(new Consumer<Object>() {
-            @Override
-            public void apply(Object o) {
-                self().send(new AskIntResult(id, o));
-            }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                self().send(new AskIntError(id, e));
+        }).failure(e -> {
+            unbecome();
+            unstashAll();
+
+            if (callback != null) {
+                callback.onError(e);
             }
         }).done(self());
     }

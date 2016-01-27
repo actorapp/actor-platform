@@ -7,6 +7,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.EncryptedPeerActor;
 import im.actor.core.modules.encryption.KeyManagerActor;
 import im.actor.core.modules.encryption.EncryptedMsgActor;
+import im.actor.core.modules.encryption.KeyManagerInt;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
@@ -16,6 +17,7 @@ import static im.actor.runtime.actors.ActorSystem.system;
 public class EncryptionModule extends AbsModule {
 
     private ActorRef keyManager;
+    private KeyManagerInt keyManagerInt;
     private ActorRef messageEncryptor;
     private HashMap<Integer, ActorRef> encryptedStates = new HashMap<Integer, ActorRef>();
 
@@ -25,19 +27,10 @@ public class EncryptionModule extends AbsModule {
 
     public void run() {
         keyManager = system().actorOf(Props.create(KeyManagerActor.class,
-                new ActorCreator<KeyManagerActor>() {
-                    @Override
-                    public KeyManagerActor create() {
-                        return new KeyManagerActor(context());
-                    }
-                }), "encryption/keys");
+                () -> new KeyManagerActor(context())), "encryption/keys");
         messageEncryptor = system().actorOf(Props.create(EncryptedMsgActor.class,
-                new ActorCreator<EncryptedMsgActor>() {
-                    @Override
-                    public EncryptedMsgActor create() {
-                        return new EncryptedMsgActor(context());
-                    }
-                }), "encryption/messaging");
+                () -> new EncryptedMsgActor(context())), "encryption/messaging");
+        keyManagerInt = new KeyManagerInt(keyManager);
     }
 
     public ActorRef getMessageEncryptor() {
@@ -46,6 +39,10 @@ public class EncryptionModule extends AbsModule {
 
     public ActorRef getKeyManager() {
         return keyManager;
+    }
+
+    public KeyManagerInt getKeyManagerInt() {
+        return keyManagerInt;
     }
 
     public ActorRef getEncryptedChatManager(final int uid) {
