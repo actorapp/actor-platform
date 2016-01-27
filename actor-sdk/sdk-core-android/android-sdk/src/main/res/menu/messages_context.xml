@@ -31,6 +31,10 @@
         android:id="@+id/like"
         android:title="@string/messages_action_like" />
 
+    <item
+        android:id="@+id/shortcut"
+        android:title="Create shortcut" />
+
     <!--<item-->
     <!--android:id="@+id/forward"-->
     <!--android:icon="@drawable/ic_forward_white_36dp"-->
