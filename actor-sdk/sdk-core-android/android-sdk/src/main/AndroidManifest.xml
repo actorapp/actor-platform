@@ -273,7 +273,7 @@
 
         <activity
             android:name=".controllers.activity.ShortcutActivity"
-            android:theme="@android:style/Theme.NoDisplay"
+            android:theme="@style/AppcompatNoDisplay"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="im.actor.action.botMessageShortcut" />
