@@ -30,7 +30,7 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
-import scala.util.Failure
+import scala.util.{ Failure, Success }
 import scala.util.control.NoStackTrace
 
 abstract class UserError(message: String) extends RuntimeException(message) with NoStackTrace
@@ -102,8 +102,9 @@ private[user] trait UserCommandHandlers {
           )
           db.run(for {
             _ ← p.UserRepo.create(user)
-            _ ← DBIO.from(userExt.hooks.afterCreate.runAll(user.id))
-          } yield CreateAck())
+          } yield CreateAck()) andThen {
+            case Success(_) => userExt.hooks.afterCreate.runAll(user.id)
+          }
         }
       } else {
         replyTo ! Status.Failure(UserErrors.NicknameTaken)
