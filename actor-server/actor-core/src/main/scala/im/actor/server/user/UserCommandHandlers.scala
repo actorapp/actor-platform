@@ -102,7 +102,7 @@ private[user] trait UserCommandHandlers {
           )
           db.run(for {
             _ ← p.UserRepo.create(user)
-            _ ← userExt.hooks.afterCreate.runAll(user.id)
+            _ ← DBIO.from(userExt.hooks.afterCreate.runAll(user.id))
           } yield CreateAck())
         }
       } else {
