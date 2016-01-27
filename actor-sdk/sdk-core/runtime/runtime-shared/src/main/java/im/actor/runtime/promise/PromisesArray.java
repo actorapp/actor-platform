@@ -1,15 +1,73 @@
 package im.actor.runtime.promise;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-import im.actor.runtime.Log;
 import im.actor.runtime.function.ArrayFunction;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 
+/**
+ * Array of Promises. Allows you to invoke map, mapPromise and other useful methods
+ * for manipulating data.
+ *
+ * @param <T> type of array
+ */
 public class PromisesArray<T> {
+
+    /**
+     * Create PromisesArray from collection
+     *
+     * @param collection Source collection
+     * @param <T>        type of array
+     * @return array
+     */
+    public static <T> PromisesArray<T> of(Collection<T> collection) {
+        ArrayList<Promise<T>> res = new ArrayList<>();
+        for (T t : collection) {
+            res.add(Promises.success(t));
+        }
+        Promise[] promises = (Promise[]) res.toArray();
+        return new PromisesArray<>(executor -> executor.result(promises));
+    }
+
+    /**
+     * Create PromisesArray from values
+     *
+     * @param items elements
+     * @param <T>   type of array
+     * @return array
+     */
+    @SafeVarargs
+    public static <T> PromisesArray<T> of(T... items) {
+        ArrayList<Promise<T>> res = new ArrayList<>();
+        for (T t : items) {
+            res.add(Promises.success(t));
+        }
+        Promise[] promises = (Promise[]) res.toArray();
+        return new PromisesArray<>(executor -> executor.result(promises));
+    }
+
+    /**
+     * Create PromisesArray from multiple Promise
+     *
+     * @param items promises
+     * @param <T>   type of array
+     * @return array
+     */
+    @SafeVarargs
+    public static <T> PromisesArray<T> ofPromises(Promise<T>... items) {
+        ArrayList<Promise<T>> res = new ArrayList<>();
+        Collections.addAll(res, items);
+        Promise[] promises = (Promise[]) res.toArray();
+        return new PromisesArray<>(executor -> executor.result(promises));
+    }
+
+
+    //
+    // Constructors and methods
+    //
 
     private Promise<Promise<T>[]> promises;
 
@@ -21,58 +79,119 @@ public class PromisesArray<T> {
         this(new Promise<>(executor));
     }
 
+    /**
+     * Map promises results to new promises
+     *
+     * @param fun mapping function
+     * @param <R> type of result promises
+     * @return PromisesArray
+     */
     public <R> PromisesArray<R> map(Function<T, Promise<R>> fun) {
         return new PromisesArray<>(executor -> {
+
+            //
+            // Handling source results
+            //
+
             promises.then(sourcePromises -> {
-                Log.d("PromisesArray", "1");
-                // Starting source promises
-                for (int i = 0; i < sourcePromises.length; i++) {
-                    sourcePromises[i].done(executor.getDispatcher());
-                }
+
+                //
                 // Building mapped promises
+                //
+
                 final Promise<R>[] mappedPromises = new Promise[sourcePromises.length];
+
                 for (int i = 0; i < mappedPromises.length; i++) {
                     final int finalI = i;
                     final Function<T, Promise<R>> fun2 = fun;
+
                     mappedPromises[finalI] = new Promise<R>() {
                         @Override
                         void exec(PromiseResolver<R> resolver) {
+
+                            //
+                            // Handling results from source PromisesArray
+                            //
+
                             sourcePromises[finalI].then(new Consumer<T>() {
                                 @Override
                                 public void apply(T t) {
-                                    fun2.apply(t)
-                                            .then(new Consumer<R>() {
-                                                @Override
-                                                public void apply(R r) {
-                                                    resolver.result(r);
-                                                }
-                                            })
-                                            .failure(new Consumer<Exception>() {
-                                                @Override
-                                                public void apply(Exception e) {
-                                                    resolver.error(e);
-                                                }
-                                            }).done(resolver.getDispatcher());
-                                    ;
+
+                                    //
+                                    // Mapping value to promise
+                                    //
+                                    Promise<R> mapped = fun2.apply(t);
+
+                                    //
+                                    // Handling results
+                                    //
+                                    mapped.then(new Consumer<R>() {
+                                        @Override
+                                        public void apply(R r) {
+                                            resolver.result(r);
+                                        }
+                                    }).failure(new Consumer<Exception>() {
+                                        @Override
+                                        public void apply(Exception e) {
+                                            resolver.error(e);
+                                        }
+                                    }).done(resolver.getDispatcher());
                                 }
                             });
-                            sourcePromises[finalI].failure(e -> {
-                                resolver.error(e);
+
+                            //
+                            // Handling failures
+                            //
+
+                            sourcePromises[finalI].failure(new Consumer<Exception>() {
+                                @Override
+                                public void apply(Exception e) {
+                                    resolver.error(e);
+                                }
                             });
+
+                            //
+                            // Starting source promise
+                            //
+
+                            sourcePromises[finalI].done(resolver.getDispatcher());
                         }
                     };
                 }
+
+                //
+                // Returning mapped promises
+                //
+
                 executor.result(mappedPromises);
-                Log.d("PromisesArray", "5");
             });
-            Log.d("PromisesArray", "map:executor:1");
-            promises.failure(e -> executor.error(e));
-            Log.d("PromisesArray", "map:executor:2");
+
+            //
+            // Handling failure
+            //
+
+            promises.failure(new Consumer<Exception>() {
+                @Override
+                public void apply(Exception e) {
+                    executor.error(e);
+                }
+            });
+
+            //
+            // Starting source promises
+            //
+
             promises.done(executor.getDispatcher());
-            Log.d("PromisesArray", "map:executor:3");
         });
     }
 
+    /**
+     * Zip array to single promise
+     *
+     * @param fuc zipping function
+     * @param <R> type of result
+     * @return promise
+     */
     public <R> Promise<R> zipPromise(ArrayFunction<T, Promise<R>> fuc) {
         return new Promise<R>() {
             @Override
@@ -113,24 +232,6 @@ public class PromisesArray<T> {
                                     promise.done(resolver.getDispatcher());
                                 }
                             });
-//                        promises1[i].then(t -> {
-//
-//                            res[finalI] = t;
-//                            ended[finalI] = true;
-//
-//                            for (int i1 = 0; i1 < promises1.length; i1++) {
-//                                if (ended[i1] == null || !ended[i1]) {
-//                                    return;
-//                                }
-//                            }
-//
-////                            Promise<R> promise = fuc.apply((T[]) res);
-////                            promise.then(r -> resolver.result(r));
-////                            promise.failure(e -> resolver.error(e));
-////                            promise.done(resolver.getDispatcher());
-//                        });
-//                        promises1[i].failure(e -> resolver.error(e));
-//                        promises1[i].done(resolver.getDispatcher());
                             promises1[i].failure(new Consumer<Exception>() {
                                 @Override
                                 public void apply(Exception e) {
@@ -149,12 +250,15 @@ public class PromisesArray<T> {
                 });
 
                 promises.done(resolver.getDispatcher());
-//                promises.failure(e -> resolver.error(e));
-//                promises.done(resolver.getDispatcher());
             }
         };
     }
 
+    /**
+     * Zipping array of promises to single promise of array
+     *
+     * @return promise
+     */
     public Promise<T[]> zip() {
         return zipPromise(new ArrayFunction<T, Promise<T[]>>() {
             @Override
@@ -162,32 +266,5 @@ public class PromisesArray<T> {
                 return Promises.success(t);
             }
         });
-    }
-
-    public static <T> PromisesArray<T> of(List<T> list) {
-        ArrayList<Promise<T>> res = new ArrayList<>();
-        for (T t : list) {
-            res.add(Promises.success(t));
-        }
-        Promise[] promises = (Promise[]) res.toArray();
-        return new PromisesArray<>(executor -> executor.result(promises));
-    }
-
-    @SafeVarargs
-    public static <T> PromisesArray<T> of(T... items) {
-        ArrayList<Promise<T>> res = new ArrayList<>();
-        for (T t : items) {
-            res.add(Promises.success(t));
-        }
-        Promise[] promises = (Promise[]) res.toArray();
-        return new PromisesArray<>(executor -> executor.result(promises));
-    }
-
-    @SafeVarargs
-    public static <T> PromisesArray<T> ofPromises(Promise<T>... items) {
-        ArrayList<Promise<T>> res = new ArrayList<>();
-        Collections.addAll(res, items);
-        Promise[] promises = (Promise[]) res.toArray();
-        return new PromisesArray<>(executor -> executor.result(promises));
     }
 }
