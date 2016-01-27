@@ -10,11 +10,13 @@ import scala.concurrent.ExecutionContext
 object DialogCommonRepo {
   val dialogCommon = TableQuery[DialogCommonTable]
 
-  private def byPK(dialogId: Rep[String]) = {
+  private def byPK(dialogId: Rep[String]) =
     dialogCommon.filter(_.dialogId === dialogId)
-  }
+
+  private def exists(dialogId: Rep[String]) = byPK(dialogId).exists
 
   val byPKC = Compiled(byPK _)
+  val existsC = Compiled(exists _)
 }
 
 trait DialogCommonOperations extends DialogId {
@@ -23,8 +25,7 @@ trait DialogCommonOperations extends DialogId {
   def findCommon(userId: Option[Int], peer: Peer): DBIO[Option[DialogCommon]] =
     byPKC.applied(getDialogId(userId, peer)).result.headOption
 
-  def commonExists(dialogId: String) =
-    byPKC.applied(dialogId).exists.result
+  def commonExists(dialogId: String) = existsC(dialogId).result
 
   def updateLastMessageDatePrivate(userId: Int, peer: Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
     requirePrivate(peer)

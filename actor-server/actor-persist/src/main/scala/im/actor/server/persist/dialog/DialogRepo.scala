@@ -8,6 +8,7 @@ import org.joda.time.DateTime
 import slick.lifted.ColumnOrdered
 
 import scala.concurrent.ExecutionContext
+import scala.util.{ Success, Failure }
 
 final class DialogCommonTable(tag: Tag) extends Table[DialogCommon](tag, "dialog_commons") {
 
@@ -151,7 +152,16 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
         UserDialogRepo.userDialogs += user
       } else {
         for {
-          c ← DialogCommonRepo.dialogCommon += common
+          c ← (DialogCommonRepo.dialogCommon += common)
+            .asTry
+            .flatMap {
+              case Failure(e) ⇒
+                commonExists(common.dialogId) flatMap {
+                  case true  ⇒ DBIO.successful(1)
+                  case false ⇒ DBIO.failed(e)
+                }
+              case Success(res) ⇒ DBIO.successful(res)
+            }
           _ ← UserDialogRepo.userDialogs += user
         } yield c
       }
