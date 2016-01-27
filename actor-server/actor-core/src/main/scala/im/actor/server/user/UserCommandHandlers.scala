@@ -100,7 +100,10 @@ private[user] trait UserCommandHandlers {
             external = external,
             isBot = isBot
           )
-          db.run(for (_ ← p.UserRepo.create(user)) yield CreateAck())
+          db.run(for {
+            _ ← p.UserRepo.create(user)
+            _ ← userExt.hooks.afterCreate.runAll(user.id)
+          } yield CreateAck())
         }
       } else {
         replyTo ! Status.Failure(UserErrors.NicknameTaken)
