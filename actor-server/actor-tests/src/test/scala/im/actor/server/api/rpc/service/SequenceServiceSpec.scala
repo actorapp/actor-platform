@@ -28,7 +28,6 @@ final class SequenceServiceSpec extends BaseAppSuite({
 
   it should "get state" in getState
   it should "get difference" in getDifference
-  it should "get difference with STRIP_ENTITIES" in getDifferenceStripEntities
   it should "not produce empty difference if there is one update bigger than difference size limit" in bigUpdate
 
   private val config = SequenceServiceConfig.load().get
