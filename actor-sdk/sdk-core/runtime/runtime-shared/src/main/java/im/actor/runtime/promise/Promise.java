@@ -18,10 +18,18 @@ import im.actor.runtime.function.Map;
  */
 public class Promise<T> {
 
+    //
+    // Dispatching parameters
+    //
+
     private final ArrayList<PromiseCallback<T>> callbacks = new ArrayList<PromiseCallback<T>>();
     private final PromiseFunc<T> executor;
-
     private ActorRef dispatchActor;
+
+    //
+    // State of Promise
+    //
+
     private volatile T result;
     private volatile Exception exception;
     private volatile boolean isFinished;
@@ -34,6 +42,9 @@ public class Promise<T> {
         this.executor = executor;
     }
 
+    /**
+     * Internal constructor to work-around lambda support issueses
+     */
     Promise() {
         this.executor = null;
     }
@@ -152,64 +163,83 @@ public class Promise<T> {
 
     /**
      * Call this method to start promise execution
+     *
+     * @param ref Scheduling actor
      */
     public Promise<T> done(ActorRef ref) {
-        Log.d("PromisesArray", "done " + this + " (" + ref.getPath() + ")");
         if (isStarted) {
-            throw new RuntimeException("Promise already started");
+            throw new RuntimeException("Promise already started!");
         }
         isStarted = true;
         dispatchActor = ref;
         dispatchActor.send(new PromiseDispatch(this) {
             @Override
             public void run() {
-                exec(new PromiseResolver<T>(Promise.this));
+                exec(new PromiseResolver<T>(Promise.this, dispatchActor));
             }
         });
         return this;
     }
 
+    /**
+     * Main execution method
+     *
+     * @param resolver resolver
+     */
     void exec(PromiseResolver<T> resolver) {
         executor.exec(resolver);
     }
 
-    public boolean isStarted() {
-        return isStarted;
-    }
-
+    /**
+     * Cast promise to different type
+     *
+     * @param <R> destination type
+     * @return casted promise
+     */
     public <R> Promise<R> cast() {
         return (Promise<R>) this;
     }
 
-    public ActorRef getDispatchActor() {
-        return dispatchActor;
+    /**
+     * Getting result if finished
+     *
+     * @return result
+     */
+    public T getResult() {
+        if (!isFinished) {
+            throw new RuntimeException("Promise is not finished!");
+        }
+        return result;
     }
 
-    //    public <R> Promise<R> zip(ArrayFunction<T, R> zip) {
-//        return Promises.zip((Promise<T[]>) this, zip);
-//    }
-
-//    /**
-//     * Getting current dispatcher for promise
-//     *
-//     * @return current dispatcher
-//     */
-//    public PromiseDispatcher getDispatcher() {
-//        return dispatcher;
-//    }
-
+    /**
+     * Is promise finished
+     *
+     * @return result
+     */
     public boolean isFinished() {
         return isFinished;
     }
 
+    /**
+     * Exception if promise finished with error
+     *
+     * @return exception
+     */
     public Exception getException() {
+        if (!isFinished) {
+            throw new RuntimeException("Promise is not finished!");
+        }
         return exception;
     }
 
-    public T getResult() {
-        return result;
-    }
-
+    /**
+     * Mapping result value of promise to another value
+     *
+     * @param res mapping function
+     * @param <R> destination type
+     * @return promise
+     */
     public <R> Promise<R> map(Map<T, R> res) {
         final Promise<T> self = this;
         return new Promise<R>() {
@@ -238,22 +268,15 @@ public class Promise<T> {
                 self.done(resolver.getDispatcher());
             }
         };
-//        return new Promise<>(executor1 -> {
-//            self.then(t -> {
-//                R r;
-//                try {
-//                    r = res.map(t);
-//                } catch (Exception e) {
-//                    executor1.tryError(e);
-//                    return;
-//                }
-//                executor1.tryResult(r);
-//            });
-//            self.failure(e -> executor1.error(e));
-//            self.done(executor1.getDispatcher());
-//        });
     }
 
+    /**
+     * Map result of promise to promise of value
+     *
+     * @param res mapping function
+     * @param <R> destination type
+     * @return promise
+     */
     public <R> Promise<R> mapPromise(Map<T, Promise<R>> res) {
         final Promise<T> self = this;
         return new Promise<R>() {
@@ -301,33 +324,24 @@ public class Promise<T> {
      * Delivering result
      */
     private void deliverResult() {
-        Log.d("Promise", "result:4");
         if (callbacks.size() > 0) {
-            Log.d("Promise", "result:5");
             dispatchActor.send(new PromiseDispatch(this) {
                 @Override
                 public void run() {
-                    Log.d("Promise", "result:6");
                     if (exception != null) {
-                        Log.d("Promise", "result:7");
                         for (PromiseCallback<T> callback : callbacks) {
                             try {
-                                Log.d("Promise", "result:callback:" + callback);
                                 callback.onError(exception);
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Log.d("Promise", "result:callback_error");
                             }
                         }
                     } else {
-                        Log.d("Promise", "result:8");
                         for (PromiseCallback<T> callback : callbacks) {
                             try {
-                                Log.d("Promise", "result:callback:" + callback);
                                 callback.onResult(result);
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Log.d("Promise", "result:callback_error2");
                             }
                         }
                     }
@@ -377,9 +391,7 @@ public class Promise<T> {
         }
         isFinished = true;
         result = res;
-        Log.d("Promise", "result:1");
         deliverResult();
-        Log.d("Promise", "result:2");
     }
 
     /**
