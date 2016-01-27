@@ -32,7 +32,7 @@ object Dialog {
     shownAt = u.shownAt,
     isFavourite = u.isFavourite,
     isArchived = u.isArchived,
-    createdAt = c.createdAt
+    createdAt = u.createdAt
   )
 
 }
@@ -55,8 +55,7 @@ case class DialogCommon(
   dialogId:        String,
   lastMessageDate: DateTime,
   lastReceivedAt:  DateTime,
-  lastReadAt:      DateTime,
-  createdAt:       DateTime
+  lastReadAt:      DateTime
 )
 
 case class UserDialog(
@@ -64,6 +63,7 @@ case class UserDialog(
   peer:                Peer,
   ownerLastReceivedAt: DateTime,
   ownerLastReadAt:     DateTime,
+  createdAt:           DateTime,
   shownAt:             Option[DateTime],
   isFavourite:         Boolean,
   isArchived:          Boolean
