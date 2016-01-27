@@ -120,10 +120,10 @@ object HistoryMessageRepo {
       .map(m ⇒ (m.messageContentHeader, m.messageContentData))
       .update((messageContentHeader, messageContentData))
 
-  def getUnreadCount(userId: Int, peer: Peer, lastReadAt: DateTime, noServiceMessages: Boolean = false): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
+  def getUnreadCount(historyOwner: Int, clientUserId: Int, peer: Peer, lastReadAt: DateTime, noServiceMessages: Boolean = false): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
     (if (noServiceMessages) withoutServiceMessages else notDeletedMessages)
-      .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.value && m.peerId === peer.id)
-      .filter(m ⇒ m.date > lastReadAt && m.senderUserId =!= userId)
+      .filter(m ⇒ m.userId === historyOwner && m.peerType === peer.typ.value && m.peerId === peer.id)
+      .filter(m ⇒ m.date > lastReadAt && m.senderUserId =!= clientUserId)
       .length
       .result
 
