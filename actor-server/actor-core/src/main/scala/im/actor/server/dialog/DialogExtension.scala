@@ -229,10 +229,10 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     if (isSharedUser(historyOwner)) {
       for {
         isMember ← DBIO.from(groupExt.getMemberIds(peer.id) map { case (memberIds, _, _) ⇒ memberIds contains clientUserId })
-        result ← if (isMember) HistoryMessageRepo.getUnreadCount(historyOwner, peer, ownerLastReadAt) else DBIO.successful(0)
+        result ← if (isMember) HistoryMessageRepo.getUnreadCount(historyOwner, clientUserId, peer, ownerLastReadAt) else DBIO.successful(0)
       } yield result
     } else {
-      HistoryMessageRepo.getUnreadCount(historyOwner, peer, ownerLastReadAt)
+      HistoryMessageRepo.getUnreadCount(historyOwner, clientUserId, peer, ownerLastReadAt)
     }
   }
 
