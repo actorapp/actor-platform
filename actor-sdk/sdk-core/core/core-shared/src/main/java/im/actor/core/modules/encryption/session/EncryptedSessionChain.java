@@ -1,7 +1,9 @@
 package im.actor.core.modules.encryption.session;
 
 import java.util.HashSet;
+import java.util.Random;
 
+import im.actor.core.util.RandomUtils;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.crypto.Curve25519;
@@ -110,5 +112,19 @@ public class EncryptedSessionChain {
         Log.d("EncryptedSessionChain", "Their Pre Key: " + session.getTheirPreKey().getKeyId());
 
         return ByteStrings.merge(header, ActorBox.closeBox(header, data, Crypto.randomBytes(32), ratchetMessageKey));
+    }
+
+    public void safeErase() {
+        for (int i = 0; i < ownPrivateKey.length; i++) {
+            ownPrivateKey[i] = (byte) RandomUtils.randomId(255);
+        }
+        for (int i = 0; i < theirPublicKey.length; i++) {
+            theirPublicKey[i] = (byte) RandomUtils.randomId(255);
+        }
+        for (int i = 0; i < rootChainKey.length; i++) {
+            rootChainKey[i] = (byte) RandomUtils.randomId(255);
+        }
+        receivedCounters.clear();
+        sentCounter = 0;
     }
 }
