@@ -36,17 +36,11 @@ public class KeyManagerInt extends ActorInterface {
                     @Override
                     public Promise<byte[]> map(byte[] src) {
                         if (src != null) {
-                            Log.d("getEphemeralKey", "stored");
-                            return Promises.successNotNull(src);
+                            return Promises.success(src);
                         }
 
                         return getUserRandomPreKey(uid, keyGroupId)
-                                .map(src1 -> src1.getEphemeralKey().getPublicKey()).then(new Consumer<byte[]>() {
-                                    @Override
-                                    public void apply(byte[] bytes) {
-                                        Log.d("getEphemeralKey", "loaded: " + bytes);
-                                    }
-                                });
+                                .map(src1 -> src1.getEphemeralKey().getPublicKey());
                     }
                 });
     }
