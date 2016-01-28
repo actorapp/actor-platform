@@ -10750,11 +10750,11 @@
         </node>
         <node concept="NX1gA" id="5_CDdZ2qgM2" role="NXodf">
           <property role="NX6R2" value="keys of Key Group" />
-          <property role="1GSvIU" value="compact" />
+          <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="5_CDdZ2jJbB" resolve="keys" />
         </node>
         <node concept="NX1gA" id="5_CDdZ2qzHm" role="NXodf">
-          <property role="1GSvIU" value="compact" />
+          <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Signatures of keys" />
           <ref role="NX6Kv" node="5_CDdZ2qzGT" resolve="signatures" />
         </node>
