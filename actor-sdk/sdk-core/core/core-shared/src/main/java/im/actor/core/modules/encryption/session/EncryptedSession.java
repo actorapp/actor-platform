@@ -1,20 +1,20 @@
 package im.actor.core.modules.encryption.session;
 
-import im.actor.core.modules.encryption.entity.OwnPrivateKey;
-import im.actor.core.modules.encryption.entity.UserPublicKey;
+import im.actor.core.modules.encryption.entity.PrivateKey;
+import im.actor.core.modules.encryption.entity.PublicKey;
 import im.actor.runtime.crypto.ratchet.RatchetMasterSecret;
 import im.actor.runtime.crypto.ratchet.RatchetPrivateKey;
 import im.actor.runtime.crypto.ratchet.RatchetPublicKey;
 
 public class EncryptedSession {
-    private OwnPrivateKey ownIdentityKey;
-    private OwnPrivateKey ownPreKey;
-    private UserPublicKey theirIdentityKey;
-    private UserPublicKey theirPreKey;
+    private PrivateKey ownIdentityKey;
+    private PrivateKey ownPreKey;
+    private PublicKey theirIdentityKey;
+    private PublicKey theirPreKey;
     private int peerKeyGroupId;
     private byte[] masterKey;
 
-    public EncryptedSession(OwnPrivateKey ownIdentityKey, OwnPrivateKey ownPreKey, UserPublicKey theirIdentityKey, UserPublicKey theirPreKey, int peerKeyGroupId) {
+    public EncryptedSession(PrivateKey ownIdentityKey, PrivateKey ownPreKey, PublicKey theirIdentityKey, PublicKey theirPreKey, int peerKeyGroupId) {
         this.ownIdentityKey = ownIdentityKey;
         this.ownPreKey = ownPreKey;
         this.theirIdentityKey = theirIdentityKey;
@@ -27,19 +27,19 @@ public class EncryptedSession {
                 new RatchetPublicKey(theirPreKey.getPublicKey()));
     }
 
-    public OwnPrivateKey getOwnIdentityKey() {
+    public PrivateKey getOwnIdentityKey() {
         return ownIdentityKey;
     }
 
-    public OwnPrivateKey getOwnPreKey() {
+    public PrivateKey getOwnPreKey() {
         return ownPreKey;
     }
 
-    public UserPublicKey getTheirIdentityKey() {
+    public PublicKey getTheirIdentityKey() {
         return theirIdentityKey;
     }
 
-    public UserPublicKey getTheirPreKey() {
+    public PublicKey getTheirPreKey() {
         return theirPreKey;
     }
 

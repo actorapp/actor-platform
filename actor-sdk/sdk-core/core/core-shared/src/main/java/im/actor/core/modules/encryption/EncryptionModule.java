@@ -1,4 +1,4 @@
-package im.actor.core.modules.internal;
+package im.actor.core.modules.encryption;
 
 import java.util.HashMap;
 
@@ -18,6 +18,9 @@ public class EncryptionModule extends AbsModule {
 
     private ActorRef keyManager;
     private KeyManagerInt keyManagerInt;
+    private ActorRef sessionManager;
+    private SessionManagerInt sessionManagerInt;
+
     private ActorRef messageEncryptor;
     private HashMap<Integer, ActorRef> encryptedStates = new HashMap<Integer, ActorRef>();
 
@@ -26,11 +29,30 @@ public class EncryptionModule extends AbsModule {
     }
 
     public void run() {
-        keyManager = system().actorOf(Props.create(KeyManagerActor.class,
-                () -> new KeyManagerActor(context())), "encryption/keys");
-        messageEncryptor = system().actorOf(Props.create(EncryptedMsgActor.class,
-                () -> new EncryptedMsgActor(context())), "encryption/messaging");
+        keyManager = system().actorOf(Props.create(KeyManagerActor.class, new ActorCreator<KeyManagerActor>() {
+            @Override
+            public KeyManagerActor create() {
+                return new KeyManagerActor(context());
+            }
+        }), "encryption/keys");
         keyManagerInt = new KeyManagerInt(keyManager);
+        sessionManager = system().actorOf(Props.create(SessionManagerActor.class, new ActorCreator<SessionManagerActor>() {
+            @Override
+            public SessionManagerActor create() {
+                return new SessionManagerActor(context());
+            }
+        }), "encryption/sessions");
+        sessionManagerInt = new SessionManagerInt(sessionManager);
+        messageEncryptor = system().actorOf(Props.create(EncryptedMsgActor.class, new ActorCreator<EncryptedMsgActor>() {
+            @Override
+            public EncryptedMsgActor create() {
+                return new EncryptedMsgActor(context());
+            }
+        }), "encryption/messaging");
+    }
+
+    public SessionManagerInt getSessionManagerInt() {
+        return sessionManagerInt;
     }
 
     public ActorRef getMessageEncryptor() {
