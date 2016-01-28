@@ -1,8 +1,8 @@
 package im.actor.server.persist
 
-import com.github.tototoshi.slick.PostgresJodaSupport._
-import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
+import java.time.Instant
+
+import im.actor.server.db.ActorPostgresDriver.api._
 
 import im.actor.server.model
 
@@ -17,7 +17,7 @@ final class FullGroupTable(tag: Tag) extends Table[model.FullGroup](tag, "groups
 
   def isPublic = column[Boolean]("is_public")
 
-  def createdAt = column[DateTime]("created_at")
+  def createdAt = column[Instant]("created_at")
 
   def about = column[Option[String]]("about")
 
@@ -25,13 +25,13 @@ final class FullGroupTable(tag: Tag) extends Table[model.FullGroup](tag, "groups
 
   def titleChangerUserId = column[Int]("title_changer_user_id")
 
-  def titleChangedAt = column[DateTime]("title_changed_at")
+  def titleChangedAt = column[Instant]("title_changed_at")
 
   def titleChangeRandomId = column[Long]("title_change_random_id")
 
   def avatarChangerUserId = column[Int]("avatar_changer_user_id")
 
-  def avatarChangedAt = column[DateTime]("avatar_changed_at")
+  def avatarChangedAt = column[Instant]("avatar_changed_at")
 
   def avatarChangeRandomId = column[Long]("avatar_change_random_id")
 
@@ -107,7 +107,7 @@ object GroupRepo {
   def findFull(id: Int) =
     byIdC(id).result.headOption
 
-  def updateTitle(id: Int, title: String, changerUserId: Int, randomId: Long, date: DateTime) =
+  def updateTitle(id: Int, title: String, changerUserId: Int, randomId: Long, date: Instant) =
     byIdC.applied(id)
       .map(g ⇒ (g.title, g.titleChangerUserId, g.titleChangedAt, g.titleChangeRandomId))
       .update((title, changerUserId, date, randomId))
