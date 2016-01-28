@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiHistoryMessage extends BserObject {
+public class ApiMessageContainer extends BserObject {
 
     private int senderUid;
     private long rid;
@@ -23,7 +23,7 @@ public class ApiHistoryMessage extends BserObject {
     private ApiMessageState state;
     private List<ApiMessageReaction> reactions;
 
-    public ApiHistoryMessage(int senderUid, long rid, long date, @NotNull ApiMessage message, @Nullable ApiMessageState state, @NotNull List<ApiMessageReaction> reactions) {
+    public ApiMessageContainer(int senderUid, long rid, long date, @NotNull ApiMessage message, @Nullable ApiMessageState state, @NotNull List<ApiMessageReaction> reactions) {
         this.senderUid = senderUid;
         this.rid = rid;
         this.date = date;
@@ -32,7 +32,7 @@ public class ApiHistoryMessage extends BserObject {
         this.reactions = reactions;
     }
 
-    public ApiHistoryMessage() {
+    public ApiMessageContainer() {
 
     }
 
@@ -98,7 +98,7 @@ public class ApiHistoryMessage extends BserObject {
 
     @Override
     public String toString() {
-        String res = "struct HistoryMessage{";
+        String res = "struct MessageContainer{";
         res += "senderUid=" + this.senderUid;
         res += ", rid=" + this.rid;
         res += ", date=" + this.date;

@@ -134,6 +134,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 2612: return RequestUploadEphermalKey.fromBytes(payload);
             case 9: return RequestGetState.fromBytes(payload);
             case 11: return RequestGetDifference.fromBytes(payload);
+            case 2628: return RequestGetReferencedEntitites.fromBytes(payload);
             case 32: return RequestSubscribeToOnline.fromBytes(payload);
             case 33: return RequestSubscribeFromOnline.fromBytes(payload);
             case 74: return RequestSubscribeToGroupOnline.fromBytes(payload);
@@ -187,6 +188,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 2604: return ResponsePublicKeyGroups.fromBytes(payload);
             case 2610: return ResponseCreateNewKeyGroup.fromBytes(payload);
             case 12: return ResponseGetDifference.fromBytes(payload);
+            case 2629: return ResponseGetReferencedEntitites.fromBytes(payload);
             case 50: return ResponseVoid.fromBytes(payload);
             case 72: return ResponseSeq.fromBytes(payload);
             case 102: return ResponseSeqDate.fromBytes(payload);
@@ -197,6 +199,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 73: return FatSeqUpdate.fromBytes(payload);
             case 26: return WeakUpdate.fromBytes(payload);
             case 25: return SeqUpdateTooLong.fromBytes(payload);
+            case 2625: return CombinedUpdate.fromBytes(payload);
         }
         throw new IOException();
     }

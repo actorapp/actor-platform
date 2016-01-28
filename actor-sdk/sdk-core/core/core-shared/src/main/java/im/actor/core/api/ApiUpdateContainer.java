@@ -14,17 +14,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiDifferenceUpdate extends BserObject {
+public class ApiUpdateContainer extends BserObject {
 
     private int updateHeader;
     private byte[] update;
 
-    public ApiDifferenceUpdate(int updateHeader, @NotNull byte[] update) {
+    public ApiUpdateContainer(int updateHeader, @NotNull byte[] update) {
         this.updateHeader = updateHeader;
         this.update = update;
     }
 
-    public ApiDifferenceUpdate() {
+    public ApiUpdateContainer() {
 
     }
 
@@ -54,7 +54,7 @@ public class ApiDifferenceUpdate extends BserObject {
 
     @Override
     public String toString() {
-        String res = "struct DifferenceUpdate{";
+        String res = "struct UpdateContainer{";
         res += "updateHeader=" + this.updateHeader;
         res += ", update=" + byteArrayToStringCompact(this.update);
         res += "}";

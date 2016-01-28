@@ -26,16 +26,22 @@ public class ResponseGetDifference extends Response {
     private byte[] state;
     private List<ApiUser> users;
     private List<ApiGroup> groups;
-    private List<ApiDifferenceUpdate> updates;
+    private List<ApiUpdateContainer> updates;
+    private List<ApiMessageContainer> messages;
     private boolean needMore;
+    private List<ApiUserOutPeer> usersRefs;
+    private List<ApiGroupOutPeer> groupsRefs;
 
-    public ResponseGetDifference(int seq, @NotNull byte[] state, @NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups, @NotNull List<ApiDifferenceUpdate> updates, boolean needMore) {
+    public ResponseGetDifference(int seq, @NotNull byte[] state, @NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups, @NotNull List<ApiUpdateContainer> updates, @NotNull List<ApiMessageContainer> messages, boolean needMore, @NotNull List<ApiUserOutPeer> usersRefs, @NotNull List<ApiGroupOutPeer> groupsRefs) {
         this.seq = seq;
         this.state = state;
         this.users = users;
         this.groups = groups;
         this.updates = updates;
+        this.messages = messages;
         this.needMore = needMore;
+        this.usersRefs = usersRefs;
+        this.groupsRefs = groupsRefs;
     }
 
     public ResponseGetDifference() {
@@ -62,12 +68,27 @@ public class ResponseGetDifference extends Response {
     }
 
     @NotNull
-    public List<ApiDifferenceUpdate> getUpdates() {
+    public List<ApiUpdateContainer> getUpdates() {
         return this.updates;
+    }
+
+    @NotNull
+    public List<ApiMessageContainer> getMessages() {
+        return this.messages;
     }
 
     public boolean needMore() {
         return this.needMore;
+    }
+
+    @NotNull
+    public List<ApiUserOutPeer> getUsersRefs() {
+        return this.usersRefs;
+    }
+
+    @NotNull
+    public List<ApiGroupOutPeer> getGroupsRefs() {
+        return this.groupsRefs;
     }
 
     @Override
@@ -84,12 +105,27 @@ public class ResponseGetDifference extends Response {
             _groups.add(new ApiGroup());
         }
         this.groups = values.getRepeatedObj(6, _groups);
-        List<ApiDifferenceUpdate> _updates = new ArrayList<ApiDifferenceUpdate>();
+        List<ApiUpdateContainer> _updates = new ArrayList<ApiUpdateContainer>();
         for (int i = 0; i < values.getRepeatedCount(4); i ++) {
-            _updates.add(new ApiDifferenceUpdate());
+            _updates.add(new ApiUpdateContainer());
         }
         this.updates = values.getRepeatedObj(4, _updates);
+        List<ApiMessageContainer> _messages = new ArrayList<ApiMessageContainer>();
+        for (int i = 0; i < values.getRepeatedCount(7); i ++) {
+            _messages.add(new ApiMessageContainer());
+        }
+        this.messages = values.getRepeatedObj(7, _messages);
         this.needMore = values.getBool(5);
+        List<ApiUserOutPeer> _usersRefs = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(8); i ++) {
+            _usersRefs.add(new ApiUserOutPeer());
+        }
+        this.usersRefs = values.getRepeatedObj(8, _usersRefs);
+        List<ApiGroupOutPeer> _groupsRefs = new ArrayList<ApiGroupOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(9); i ++) {
+            _groupsRefs.add(new ApiGroupOutPeer());
+        }
+        this.groupsRefs = values.getRepeatedObj(9, _groupsRefs);
     }
 
     @Override
@@ -102,7 +138,10 @@ public class ResponseGetDifference extends Response {
         writer.writeRepeatedObj(3, this.users);
         writer.writeRepeatedObj(6, this.groups);
         writer.writeRepeatedObj(4, this.updates);
+        writer.writeRepeatedObj(7, this.messages);
         writer.writeBool(5, this.needMore);
+        writer.writeRepeatedObj(8, this.usersRefs);
+        writer.writeRepeatedObj(9, this.groupsRefs);
     }
 
     @Override

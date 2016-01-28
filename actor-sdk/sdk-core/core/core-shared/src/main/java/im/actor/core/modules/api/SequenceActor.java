@@ -4,14 +4,13 @@
 
 package im.actor.core.modules.api;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import im.actor.core.api.ApiDifferenceUpdate;
 import im.actor.core.api.ApiGroup;
+import im.actor.core.api.ApiUpdateContainer;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
@@ -265,7 +264,7 @@ public class SequenceActor extends ModuleActor {
 
                     long parseStart = im.actor.runtime.Runtime.getCurrentTime();
                     ArrayList<Update> updates = new ArrayList<Update>();
-                    for (ApiDifferenceUpdate u : response.getUpdates()) {
+                    for (ApiUpdateContainer u : response.getUpdates()) {
                         try {
                             updates.add(parser.read(u.getUpdateHeader(), u.getUpdate()));
                         } catch (IOException e) {

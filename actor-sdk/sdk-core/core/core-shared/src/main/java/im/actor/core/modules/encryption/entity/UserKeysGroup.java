@@ -38,9 +38,9 @@ public class UserKeysGroup extends BserObject {
         return ephemeralKeys;
     }
 
-    public UserKeysGroup addUserKeyGroup(PublicKey publicKey) {
+    public UserKeysGroup addPublicKey(PublicKey publicKey) {
         ArrayList<PublicKey> nEphemeralKeys = new ArrayList<PublicKey>();
-        for (PublicKey p : ephemeralKeys) {
+        for (PublicKey p : this.ephemeralKeys) {
             if (p.getKeyId() != publicKey.getKeyId()) {
                 nEphemeralKeys.add(p);
             }
