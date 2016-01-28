@@ -2,9 +2,9 @@ package im.actor.server.sequence
 
 import akka.actor._
 import akka.event.Logging
-import akka.http.ConnectionPoolSettings
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
+import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.stream.Materializer
 import akka.stream.actor.ActorPublisher
 import akka.stream.scaladsl.Source
@@ -125,9 +125,9 @@ private object GooglePushDelivery {
     val maxConnections = system.settings.config.getInt("services.google.push.max-connections")
 
     Http(system)
-      .cachedHostConnectionPoolTls[GooglePushDelivery.Delivery](
+      .cachedHostConnectionPoolHttps[GooglePushDelivery.Delivery](
         "gcm-http.googleapis.com",
-        settings = ConnectionPoolSettings(system).copy(maxConnections = maxConnections)
+        settings = ConnectionPoolSettings(system).withMaxConnections(maxConnections)
       )
   }
 }
