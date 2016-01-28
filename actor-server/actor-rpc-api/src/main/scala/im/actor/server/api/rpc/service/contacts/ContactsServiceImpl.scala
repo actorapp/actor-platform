@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.contacts
 import java.security.MessageDigest
 
 import akka.event.Logging
+import im.actor.api.rpc.peers.ApiUserOutPeer
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
 import im.actor.server.user.UserCommands.ContactToAdd
@@ -35,10 +36,8 @@ import scalaz.EitherT
 class ContactsServiceImpl(implicit actorSystem: ActorSystem)
   extends ContactsService {
 
-  import ContactsUtils._
   import SocialManager._
-
-  private val log = Logging(actorSystem, getClass)
+  import PeerHelpers._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   implicit val timeout = Timeout(5.seconds)
@@ -105,27 +104,14 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
   }
 
   override def jhandleRemoveContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      persist.contact.UserContactRepo.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
-        case Some(contact) ⇒
-          DBIO.from(userExt.getAccessHash(userId, clientData.authId)) flatMap { contactAccessHash ⇒
-            if (accessHash == contactAccessHash) {
-              for {
-                _ ← deleteContact(client.userId, userId)
-                _ ← DBIO.from(userExt.broadcastClientUpdate(UpdateUserLocalNameChanged(userId, None), None, isFat = false))
-                seqstate ← DBIO.from(userExt.broadcastClientUpdate(UpdateContactsRemoved(Vector(userId)), None, isFat = false))
-              } yield {
-                Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
-              }
-            } else {
-              DBIO.successful(Error(CommonErrors.InvalidAccessHash))
-            }
-          }
-        case None ⇒ DBIO.successful(Error(Errors.ContactNotFound))
+    authorized(clientData) { implicit client ⇒
+      withUserOutPeerF(ApiUserOutPeer(userId, accessHash)) {
+        for (seqstate ← userExt.removeContact(client.userId, userId))
+          yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
       }
+    } recover {
+      case UserErrors.ContactNotFound ⇒ Error(Errors.ContactNotFound)
     }
-
-    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleAddContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {

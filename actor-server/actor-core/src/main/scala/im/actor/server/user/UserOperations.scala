@@ -111,6 +111,9 @@ private[user] sealed trait Commands extends AuthCommands {
     else
       seqUpdExt.getSeqState(userId)
 
+  def removeContact(userId: Int, contactUserId: Int): Future[SeqState] =
+    (processorRegion.ref ? RemoveContact(userId, contactUserId)).mapTo[SeqState]
+
   def editLocalName(userId: Int, contactUserId: Int, localName: Option[String], supressUpdate: Boolean = false): Future[SeqState] =
     (processorRegion.ref ? EditLocalName(userId, contactUserId, localName, supressUpdate)).mapTo[SeqState]
 
