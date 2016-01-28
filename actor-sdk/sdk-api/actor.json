@@ -12541,13 +12541,13 @@
               {
                 "type": "reference",
                 "argument": "keyMaterial",
-                "category": "compact",
+                "category": "full",
                 "description": "  Public key material. Can be null, but always not null for LoadPublicKey"
               },
               {
                 "type": "reference",
                 "argument": "keyHash",
-                "category": "hidden",
+                "category": "full",
                 "description": "  If keyMaterial is null, pass keyHash - SHA256 of key"
               }
             ],
@@ -13976,27 +13976,9 @@
               "name": "Seq"
             },
             "doc": [
-              "Get main sequence state",
-              {
-                "type": "reference",
-                "argument": "optimizations",
-                "category": "full",
-                "description": "Enabled optimizations"
-              }
+              "Get main sequence state"
             ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "enum",
-                    "childType": "UpdateOptimization"
-                  }
-                },
-                "id": 1,
-                "name": "optimizations"
-              }
-            ]
+            "attributes": []
           }
         },
         {
@@ -14157,12 +14139,6 @@
                 "argument": "state",
                 "category": "compact",
                 "description": "Sequence state"
-              },
-              {
-                "type": "reference",
-                "argument": "optimizations",
-                "category": "full",
-                "description": "Enabled optimizations"
               }
             ],
             "attributes": [
@@ -14178,17 +14154,6 @@
                 },
                 "id": 2,
                 "name": "state"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "enum",
-                    "childType": "UpdateOptimization"
-                  }
-                },
-                "id": 3,
-                "name": "optimizations"
               }
             ]
           }

@@ -155,7 +155,7 @@ public class EncryptedSessionActor extends ModuleActor {
         if (session == null) {
             if (isFailured) {
                 future.error(new RuntimeException("Session is not available"));
-            }else {
+            } else {
                 stash();
             }
             return;
@@ -195,7 +195,7 @@ public class EncryptedSessionActor extends ModuleActor {
         if (session == null) {
             if (isFailured) {
                 future.error(new RuntimeException("Session is not available"));
-            }else {
+            } else {
                 stash();
             }
             return;
@@ -215,6 +215,7 @@ public class EncryptedSessionActor extends ModuleActor {
         // final long theirEphemeralKey0Id = ByteStrings.bytesToLong(data, 12);
         final byte[] senderEphemeralKey = ByteStrings.substring(data, 20, 32);
         final byte[] receiverEphemeralKey = ByteStrings.substring(data, 52, 32);
+        Log.d(TAG, "Receiver Ephemeral " + Crypto.keyHash(receiverEphemeralKey));
 
         pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
                 .map(new Function<EncryptedSessionChain, DecryptedPackage>() {

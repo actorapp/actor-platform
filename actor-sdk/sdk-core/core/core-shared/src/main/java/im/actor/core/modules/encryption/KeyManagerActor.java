@@ -242,11 +242,16 @@ public class KeyManagerActor extends ModuleActor {
                 return;
             }
         }
+
+        Log.d(TAG, "No key found: " + Crypto.keyHash(publicKey));
+        for (PrivateKey k : ownKeys.getPreKeys()) {
+            Log.d(TAG, "Have: " + Crypto.keyHash(Curve25519.keyGenPublic(k.getKey())));
+        }
+
         future.error(new RuntimeException("Unable to find ephemeral key"));
     }
 
     private void fetchEphemeralKey(long keyId, PromiseResolver future) {
-        Log.d(TAG, "fetchEphemeralKey: " + keyId);
         for (PrivateKey k : ownKeys.getPreKeys()) {
             if (k.getKeyId() == keyId) {
                 future.result(new FetchEphemeralPrivateKeyRes(k.getKey()));
@@ -257,21 +262,20 @@ public class KeyManagerActor extends ModuleActor {
     }
 
     private void fetchOwnEphemeralKey(PromiseResolver future) {
-        Log.d(TAG, "fetchOwnEphemeralKey");
         PrivateKey ownEphemeralKey = ownKeys.pickRandomPreKey();
         future.result(new FetchOwnEphemeralKeyResult(ownEphemeralKey.getKeyId(),
                 ownEphemeralKey.getKey()));
     }
 
     private void fetchUserGroups(final int uid, final PromiseResolver future) {
-        Log.d(TAG, "fetchUserGroups");
         final UserKeys userKeys = getCachedUserKeys(uid);
         if (userKeys != null) {
-            Log.d(TAG, "fetchUserGroups:cached");
+            for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
+                Log.d(TAG, "Group (uid: " + uid + ") " + g.getKeyGroupId());
+            }
             future.result(new FetchUserKeyGroupsResponse(userKeys));
             return;
         }
-        Log.d(TAG, "fetchUserGroups:loading");
         User user = users().getValue(uid);
         request(new RequestLoadPublicKeyGroups(new ApiUserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponsePublicKeyGroups>() {
             @Override
@@ -348,10 +352,11 @@ public class KeyManagerActor extends ModuleActor {
                 // TODO: Verify signature
 
                 PublicKey pkey = new PublicKey(keyId, key.getKeyAlg(), key.getKeyMaterial());
-                UserKeysGroup userKeysGroup = finalKeysGroup.addUserKeyGroup(pkey);
+                UserKeysGroup userKeysGroup = finalKeysGroup.addPublicKey(pkey);
                 cacheUserKeys(keys.removeUserKeyGroup(userKeysGroup.getKeyGroupId())
                         .addUserKeyGroup(userKeysGroup));
 
+                Log.d(TAG, "(uid: " + uid + ") Fetched PreKey " + Crypto.keyHash(key.getKeyMaterial()));
                 future.result(new FetchUserEphemeralKeyResponse(pkey));
             }
 
@@ -379,6 +384,8 @@ public class KeyManagerActor extends ModuleActor {
 
                 PublicKey pkey = new PublicKey(key.getKeyId(), key.getKeyAlg(), key.getKeyMaterial());
                 // Do not store all ephemeral key as it is not required
+
+                Log.d(TAG, "(uid: " + uid + ") Fetched ephemeral " + Crypto.keyHash(key.getKeyMaterial()));
                 future.result(new FetchUserEphemeralKeyResponse(pkey));
             }
 
@@ -477,6 +484,10 @@ public class KeyManagerActor extends ModuleActor {
             if (cached != null) {
                 try {
                     userKeys = new UserKeys(cached);
+                    Log.d(TAG, "Loaded (uid: " + uid + "): " + Crypto.hex(cached));
+                    for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
+                        Log.d(TAG, "Loaded (uid: " + uid + "): " + g.getKeyGroupId());
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -486,6 +497,18 @@ public class KeyManagerActor extends ModuleActor {
     }
 
     private void cacheUserKeys(UserKeys userKeys) {
+        for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
+            Log.d(TAG, "Cache (uid: " + userKeys.getUid() + "): " + g.getKeyGroupId());
+        }
+        try {
+            UserKeys upd = new UserKeys(userKeys.toByteArray());
+            Log.d(TAG, "Cache2 (uid: " + userKeys.getUid() + "): " + Crypto.hex(userKeys.toByteArray()));
+            for (UserKeysGroup g : upd.getUserKeysGroups()) {
+                Log.d(TAG, "Cache2 (uid: " + userKeys.getUid() + "): " + g.getKeyGroupId());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         encryptionKeysStorage.addOrUpdateItem(userKeys.getUid(), userKeys.toByteArray());
         cachedUserKeys.put(userKeys.getUid(), userKeys);
     }
