@@ -1,12 +1,11 @@
 package im.actor.server.persist
 
+import im.actor.server.model.FilePart
 import slick.dbio.Effect.{ Read, Write }
 import slick.driver.PostgresDriver.api._
 import slick.profile.{ FixedSqlStreamingAction, FixedSqlAction }
 
-import im.actor.server.model
-
-final class FilePartTable(tag: Tag) extends Table[model.FilePart](tag, "file_parts") {
+final class FilePartTable(tag: Tag) extends Table[FilePart](tag, "file_parts") {
   def fileId = column[Long]("file_id", O.PrimaryKey)
 
   def number = column[Int]("number", O.PrimaryKey)
@@ -15,15 +14,15 @@ final class FilePartTable(tag: Tag) extends Table[model.FilePart](tag, "file_par
 
   def uploadKey = column[String]("upload_key")
 
-  def * = (fileId, number, size, uploadKey) <> (model.FilePart.tupled, model.FilePart.unapply)
+  def * = (fileId, number, size, uploadKey) <> (FilePart.tupled, FilePart.unapply)
 }
 
 object FilePartRepo {
   val parts = TableQuery[FilePartTable]
 
   def createOrUpdate(fileId: Long, number: Int, size: Int, uploadKey: String): FixedSqlAction[Int, NoStream, Write] =
-    parts.insertOrUpdate(model.FilePart(fileId, number, size, uploadKey))
+    parts.insertOrUpdate(FilePart(fileId, number, size, uploadKey))
 
-  def findByFileId(fileId: Long): FixedSqlStreamingAction[Seq[model.FilePart], model.FilePart, Read] =
+  def findByFileId(fileId: Long): FixedSqlStreamingAction[Seq[FilePart], FilePart, Read] =
     parts.filter(_.fileId === fileId).sortBy(_.number).result
 }

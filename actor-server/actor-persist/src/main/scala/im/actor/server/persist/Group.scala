@@ -3,10 +3,9 @@ package im.actor.server.persist
 import java.time.Instant
 
 import im.actor.server.db.ActorPostgresDriver.api._
+import im.actor.server.model.{ FullGroup, Group }
 
-import im.actor.server.model
-
-final class FullGroupTable(tag: Tag) extends Table[model.FullGroup](tag, "groups") {
+final class FullGroupTable(tag: Tag) extends Table[FullGroup](tag, "groups") {
   def id = column[Int]("id", O.PrimaryKey)
 
   def creatorUserId = column[Int]("creator_user_id")
@@ -54,9 +53,9 @@ final class FullGroupTable(tag: Tag) extends Table[model.FullGroup](tag, "groups
       avatarChangedAt,
       avatarChangeRandomId,
       isHidden
-    ) <> (model.FullGroup.tupled, model.FullGroup.unapply)
+    ) <> (FullGroup.tupled, FullGroup.unapply)
 
-  def asGroup = (id, creatorUserId, accessHash, title, isPublic, createdAt, about, topic) <> ((model.Group.apply _).tupled, model.Group.unapply)
+  def asGroup = (id, creatorUserId, accessHash, title, isPublic, createdAt, about, topic) <> ((Group.apply _).tupled, Group.unapply)
 }
 
 object GroupRepo {
@@ -73,8 +72,8 @@ object GroupRepo {
 
   val allIds = groups.map(_.id)
 
-  def create(group: model.Group, randomId: Long, isHidden: Boolean) = {
-    groups += model.FullGroup(
+  def create(group: Group, randomId: Long, isHidden: Boolean) = {
+    groups += FullGroup(
       id = group.id,
       creatorUserId = group.creatorUserId,
       accessHash = group.accessHash,
