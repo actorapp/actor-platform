@@ -201,6 +201,13 @@ message UserCommands {
         repeated ContactToAdd contacts_to_add = 3;
     }
 
+    message RemoveContact {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
+        required int32 user_id = 1;
+        required int32 contact_user_id = 2;
+    }
+
     message NotifyDialogsChanged {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
