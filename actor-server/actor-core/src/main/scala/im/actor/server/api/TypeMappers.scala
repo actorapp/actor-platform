@@ -1,5 +1,7 @@
 package im.actor.server.api
 
+import java.time.Instant
+
 import akka.actor.{ ExtendedActorSystem, ActorSystem, ActorRef }
 import akka.serialization.Serialization
 import com.google.protobuf.{ ByteString, CodedInputStream }
@@ -79,6 +81,10 @@ private[api] trait MessageMapper {
 
   private def unapplyDateTime(dt: DateTime): Long = dt.getMillis
 
+  private def applyInstant(millis: Long): Instant = Instant.ofEpochMilli(millis)
+
+  private def unapplyInstant(dt: Instant): Long = dt.toEpochMilli
+
   private def applyAvatar(buf: ByteString): ApiAvatar =
     get(ApiAvatar.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())))
 
@@ -141,6 +147,8 @@ private[api] trait MessageMapper {
   implicit val peerMapper: TypeMapper[ByteString, ApiPeer] = TypeMapper(applyPeer)(unapplyPeer)
 
   implicit val dateTimeMapper: TypeMapper[Long, DateTime] = TypeMapper(applyDateTime)(unapplyDateTime)
+
+  implicit val instantMapper: TypeMapper[Long, Instant] = TypeMapper(applyInstant)(unapplyInstant)
 
   implicit val avatarMapper: TypeMapper[ByteString, ApiAvatar] = TypeMapper(applyAvatar)(unapplyAvatar)
 

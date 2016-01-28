@@ -1,8 +1,7 @@
 package im.actor.server.persist
 
-import java.time.{ LocalDateTime, ZonedDateTime }
+import java.time.{ Instant, LocalDateTime, ZonedDateTime }
 
-import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 import slick.dbio.Effect.Write
 import slick.profile.FixedSqlAction
@@ -17,7 +16,7 @@ final class GroupUsersTable(tag: Tag) extends Table[model.GroupUser](tag, "group
 
   def inviterUserId = column[Int]("inviter_user_id")
 
-  def invitedAt = column[DateTime]("invited_at")
+  def invitedAt = column[Instant]("invited_at")
 
   def joinedAt = column[Option[LocalDateTime]]("joined_at")
 
@@ -45,10 +44,10 @@ object GroupUserRepo {
   val userIdByGroupIdC = Compiled(userIdByGroupId _)
   val joinedAtByPKC = Compiled(joinedAtByPK _)
 
-  def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: DateTime, joinedAt: Option[LocalDateTime], isAdmin: Boolean) =
+  def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: Instant, joinedAt: Option[LocalDateTime], isAdmin: Boolean) =
     groupUsersC += model.GroupUser(groupId, userId, inviterUserId, invitedAt, joinedAt, isAdmin)
 
-  def create(groupId: Int, userIds: Set[Int], inviterUserId: Int, invitedAt: DateTime, joinedAt: Option[LocalDateTime]) =
+  def create(groupId: Int, userIds: Set[Int], inviterUserId: Int, invitedAt: Instant, joinedAt: Option[LocalDateTime]) =
     groupUsersC ++= userIds.map(model.GroupUser(groupId, _, inviterUserId, invitedAt, joinedAt, isAdmin = false))
 
   def find(groupId: Int) =
