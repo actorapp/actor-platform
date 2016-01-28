@@ -1,10 +1,9 @@
 package im.actor.server.persist.contact
 
+import im.actor.server.model.contact.UserContact
 import slick.dbio.Effect.Write
 import im.actor.server.db.ActorPostgresDriver.api._
 import slick.profile.FixedSqlAction
-
-import im.actor.server.model
 
 private[contact] abstract class UserContactBase[T](tag: Tag, tname: String) extends Table[T](tag, tname) {
   def ownerUserId = column[Int]("owner_user_id", O.PrimaryKey)
@@ -15,8 +14,8 @@ private[contact] abstract class UserContactBase[T](tag: Tag, tname: String) exte
   def idx = index("idx_user_contacts_owner_user_id_is_deleted", (ownerUserId, isDeleted))
 }
 
-final class UserContactTable(tag: Tag) extends UserContactBase[model.contact.UserContact](tag, "user_contacts") {
-  def * = (ownerUserId, contactUserId, name, isDeleted) <> (model.contact.UserContact.tupled, model.contact.UserContact.unapply)
+final class UserContactTable(tag: Tag) extends UserContactBase[UserContact](tag, "user_contacts") {
+  def * = (ownerUserId, contactUserId, name, isDeleted) <> (UserContact.tupled, UserContact.unapply)
 }
 
 object UserContactRepo {
@@ -78,6 +77,6 @@ object UserContactRepo {
   def delete(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).map(_.isDeleted).update(true)
 
-  def insertOrUpdate(contact: model.contact.UserContact) =
+  def insertOrUpdate(contact: UserContact) =
     contacts.insertOrUpdate(contact)
 }

@@ -1,26 +1,25 @@
 package im.actor.server.persist.voximplant
 
+import im.actor.server.model.voximplant.{ VoxUser ⇒ VoxUserModel }
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.model
-
-class VoxUserTable(tag: Tag) extends Table[model.voximplant.VoxUser](tag, "vox_users") {
+class VoxUserTable(tag: Tag) extends Table[VoxUserModel](tag, "vox_users") {
   def userId = column[Int]("user_id", O.PrimaryKey)
   def voxUserId = column[Long]("vox_user_id")
   def userName = column[String]("user_name")
   def displayName = column[String]("display_name")
   def salt = column[String]("salt")
 
-  def * = (userId, voxUserId, userName, displayName, salt) <> (model.voximplant.VoxUser.tupled, model.voximplant.VoxUser.unapply)
+  def * = (userId, voxUserId, userName, displayName, salt) <> (VoxUserModel.tupled, VoxUserModel.unapply)
 }
 
 object VoxUser {
   val users = TableQuery[VoxUserTable]
 
-  def create(user: model.voximplant.VoxUser) =
+  def create(user: VoxUserModel) =
     users += user
 
-  def createOrReplace(user: model.voximplant.VoxUser) =
+  def createOrReplace(user: VoxUserModel) =
     users.insertOrUpdate(user)
 
   def findByUserId(userId: Int) =
