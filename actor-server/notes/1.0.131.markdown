@@ -1,0 +1,1 @@
+* :bug: initialize dialog for all group users on group creation
