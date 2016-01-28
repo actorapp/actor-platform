@@ -3,9 +3,9 @@ package im.actor.core.modules.encryption;
 import java.util.ArrayList;
 
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.entity.OwnPrivateKey;
+import im.actor.core.modules.encryption.entity.PrivateKey;
 import im.actor.core.modules.encryption.entity.UserKeysGroup;
-import im.actor.core.modules.encryption.entity.UserPublicKey;
+import im.actor.core.modules.encryption.entity.PublicKey;
 import im.actor.core.modules.encryption.session.EncryptedSession;
 import im.actor.core.modules.encryption.session.EncryptedSessionChain;
 import im.actor.core.util.ModuleActor;
@@ -14,6 +14,7 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.promise.Promises;
@@ -21,6 +22,7 @@ import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.core.modules.encryption.KeyManagerActor.*;
+import im.actor.runtime.promise.Tuple4;
 
 /**
  * Axolotl Ratchet encryption session
@@ -65,6 +67,7 @@ public class EncryptedSessionActor extends ModuleActor {
     //
 
     private EncryptedSession session;
+    private boolean isFailured = false;
 
     //
     // Temp encryption chains
@@ -100,34 +103,45 @@ public class EncryptedSessionActor extends ModuleActor {
                 ask(keyManager, new FetchEphemeralPrivateKeyById(ownKey0)),
                 ask(keyManager, new FetchUserEphemeralKey(uid, theirKeyGroup, theirKey0)),
                 ask(keyManager, new FetchUserKeyGroups(uid)))
-                .map(src -> {
-                    OwnPrivateKey ownIdentityKey = src.getT1().getIdentityKey();
-                    OwnPrivateKey ownPreKey = new OwnPrivateKey(ownKey0, "curve25519", src.getT2().getPrivateKey());
-                    UserPublicKey theirPreKey = src.getT3().getEphemeralKey();
-                    FetchUserKeyGroupsResponse keyGroups = src.getT4();
-                    UserKeysGroup keysGroup = null;
-                    for (UserKeysGroup g : keyGroups.getUserKeys().getUserKeysGroups()) {
-                        if (g.getKeyGroupId() == theirKeyGroup) {
-                            keysGroup = g;
-                            break;
+                .map(new Function<Tuple4<FetchOwnKeyResult, FetchEphemeralPrivateKeyRes, FetchUserEphemeralKeyResponse, FetchUserKeyGroupsResponse>, EncryptedSession>() {
+                    @Override
+                    public EncryptedSession apply(Tuple4<FetchOwnKeyResult, FetchEphemeralPrivateKeyRes, FetchUserEphemeralKeyResponse, FetchUserKeyGroupsResponse> res) {
+                        PrivateKey ownIdentityKey = res.getT1().getIdentityKey();
+                        PrivateKey ownPreKey = new PrivateKey(ownKey0, "curve25519", res.getT2().getPrivateKey());
+                        PublicKey theirPreKey = res.getT3().getEphemeralKey();
+                        FetchUserKeyGroupsResponse keyGroups = res.getT4();
+                        UserKeysGroup keysGroup = null;
+                        for (UserKeysGroup g : keyGroups.getUserKeys().getUserKeysGroups()) {
+                            if (g.getKeyGroupId() == theirKeyGroup) {
+                                keysGroup = g;
+                                break;
+                            }
                         }
-                    }
-                    if (keysGroup == null) {
-                        Log.w(TAG, "Their key group not found");
-                        throw new RuntimeException("Their key group not found");
-                    }
-                    UserPublicKey theirIdentityKey = keysGroup.getIdentityKey();
+                        if (keysGroup == null) {
+                            Log.w(TAG, "Their key group not found");
+                            throw new RuntimeException("Their key group not found");
+                        }
+                        PublicKey theirIdentityKey = keysGroup.getIdentityKey();
 
-                    return new EncryptedSession(ownIdentityKey, ownPreKey, theirIdentityKey, theirPreKey, theirKeyGroup);
+                        return new EncryptedSession(ownIdentityKey, ownPreKey, theirIdentityKey, theirPreKey, theirKeyGroup);
+                    }
                 })
-                .then(encryptedSession -> {
-                    Log.d(TAG, "Loaded");
-                    EncryptedSessionActor.this.session = encryptedSession;
-                    unstashAll();
+                .then(new Consumer<EncryptedSession>() {
+                    @Override
+                    public void apply(EncryptedSession encryptedSession) {
+                        Log.d(TAG, "Loaded");
+                        EncryptedSessionActor.this.session = encryptedSession;
+                        unstashAll();
+                    }
                 })
-                .failure(e -> {
-                    Log.w(TAG, "Session load error");
-                    Log.e(TAG, e);
+                .failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
+                        Log.w(TAG, "Session load error");
+                        Log.e(TAG, e);
+                        isFailured = true;
+                        unstashAll();
+                    }
                 })
                 .done(self());
     }
@@ -139,7 +153,11 @@ public class EncryptedSessionActor extends ModuleActor {
         //
 
         if (session == null) {
-            stash();
+            if (isFailured) {
+                future.error(new RuntimeException("Session is not available"));
+            }else {
+                stash();
+            }
             return;
         }
 
@@ -152,8 +170,18 @@ public class EncryptedSessionActor extends ModuleActor {
         //
 
         keyManager.getEphemeralKey(latestTheirEphemeralKey, uid, theirKeyGroup)
-                .map(chain -> this.pickEncryptChain(chain))
-                .map(src -> encrypt(src, data))
+                .map(new Function<byte[], EncryptedSessionChain>() {
+                    @Override
+                    public EncryptedSessionChain apply(byte[] bytes) {
+                        return pickEncryptChain(bytes);
+                    }
+                })
+                .map(new Function<EncryptedSessionChain, EncryptedPackageRes>() {
+                    @Override
+                    public EncryptedPackageRes apply(EncryptedSessionChain encryptedSessionChain) {
+                        return encrypt(encryptedSessionChain, data);
+                    }
+                })
                 .pipeTo(future)
                 .done(self());
     }
@@ -165,7 +193,11 @@ public class EncryptedSessionActor extends ModuleActor {
         //
 
         if (session == null) {
-            stash();
+            if (isFailured) {
+                future.error(new RuntimeException("Session is not available"));
+            }else {
+                stash();
+            }
             return;
         }
 
@@ -185,14 +217,29 @@ public class EncryptedSessionActor extends ModuleActor {
         final byte[] receiverEphemeralKey = ByteStrings.substring(data, 52, 32);
 
         pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
-                .map(src -> decrypt(src, data))
+                .map(new Function<EncryptedSessionChain, DecryptedPackage>() {
+                    @Override
+                    public DecryptedPackage apply(EncryptedSessionChain encryptedSessionChain) {
+                        return decrypt(encryptedSessionChain, data);
+                    }
+                })
                 .pipeTo(future)
-                .then(decryptedPackage -> latestTheirEphemeralKey = senderEphemeralKey)
+                .then(new Consumer<DecryptedPackage>() {
+                    @Override
+                    public void apply(DecryptedPackage decryptedPackage) {
+                        latestTheirEphemeralKey = senderEphemeralKey;
+                    }
+                })
                 .done(self());
     }
 
     private EncryptedSessionChain pickEncryptChain(byte[] ephemeralKey) {
         Log.d(TAG, "pickEncryptChain: " + ephemeralKey);
+
+        if (latestTheirEphemeralKey == null) {
+            latestTheirEphemeralKey = ephemeralKey;
+        }
+
         if (encryptionChains.size() > 0) {
             return encryptionChains.get(0);
         }
@@ -213,7 +260,7 @@ public class EncryptedSessionActor extends ModuleActor {
         return new EncryptedPackageRes(encrypted, theirKeyGroup);
     }
 
-    private Promise<EncryptedSessionChain> pickDecryptChain(byte[] theirEphemeralKey, byte[] ephemeralKey) {
+    private Promise<EncryptedSessionChain> pickDecryptChain(final byte[] theirEphemeralKey, final byte[] ephemeralKey) {
         EncryptedSessionChain pickedChain = null;
         for (EncryptedSessionChain c : decryptionChains) {
             if (ByteStrings.isEquals(Curve25519.keyGenPublic(c.getOwnPrivateKey()), ephemeralKey)) {
@@ -222,21 +269,27 @@ public class EncryptedSessionActor extends ModuleActor {
             }
         }
         return Promises.success(pickedChain)
-                .mapPromise(src -> {
-                    if (src != null) {
-                        return Promises.success(src);
-                    }
+                .mapPromise(new Function<EncryptedSessionChain, Promise<EncryptedSessionChain>>() {
+                    @Override
+                    public Promise<EncryptedSessionChain> apply(EncryptedSessionChain src) {
+                        if (src != null) {
+                            return Promises.success(src);
+                        }
 
-                    return ask(context().getEncryption().getKeyManager(), new FetchEphemeralPrivateKey(ephemeralKey))
-                            .map(src1 -> {
-                                EncryptedSessionChain chain = new EncryptedSessionChain(session, src1.getPrivateKey(), theirEphemeralKey);
-                                decryptionChains.add(0, chain);
-                                if (decryptionChains.size() > MAX_DECRYPT_CHAINS) {
-                                    decryptionChains.remove(MAX_DECRYPT_CHAINS)
-                                            .safeErase();
-                                }
-                                return chain;
-                            });
+                        return ask(context().getEncryption().getKeyManager(), new FetchEphemeralPrivateKey(ephemeralKey))
+                                .map(new Function<FetchEphemeralPrivateKeyRes, EncryptedSessionChain>() {
+                                    @Override
+                                    public EncryptedSessionChain apply(FetchEphemeralPrivateKeyRes src) {
+                                        EncryptedSessionChain chain = new EncryptedSessionChain(session, src.getPrivateKey(), theirEphemeralKey);
+                                        decryptionChains.add(0, chain);
+                                        if (decryptionChains.size() > MAX_DECRYPT_CHAINS) {
+                                            decryptionChains.remove(MAX_DECRYPT_CHAINS)
+                                                    .safeErase();
+                                        }
+                                        return chain;
+                                    }
+                                });
+                    }
                 });
     }
 
@@ -298,7 +351,7 @@ public class EncryptedSessionActor extends ModuleActor {
         }
     }
 
-    public static class DecryptPackage {
+    public static class DecryptPackage extends AskMessage<DecryptedPackage> {
 
         private byte[] data;
 
@@ -311,7 +364,7 @@ public class EncryptedSessionActor extends ModuleActor {
         }
     }
 
-    public static class DecryptedPackage {
+    public static class DecryptedPackage extends AskResult {
 
         private byte[] data;
 

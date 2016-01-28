@@ -15,6 +15,7 @@ import im.actor.core.network.mtp.entity.EncryptedPackage;
 import im.actor.core.network.mtp.entity.ProtoMessage;
 import im.actor.core.util.ExponentialBackoff;
 import im.actor.runtime.*;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
@@ -328,11 +329,14 @@ public class ManagerActor extends Actor {
                     throw new IOException("Expected " + inSeq + ", got: " + seq);
                 }
                 inSeq++;
-
+                long start = Runtime.getActorTime();
                 EncryptedCBCPackage usEncryptedPackage = new EncryptedCBCPackage(new DataInput(encryptedPackage.getEncryptedPackage()));
                 byte[] ruPackage = serverUSDecryptor.decryptPackage(ByteStrings.longToBytes(seq), usEncryptedPackage.getIv(), usEncryptedPackage.getEncryptedContent());
                 EncryptedCBCPackage ruEncryptedPackage = new EncryptedCBCPackage(new DataInput(ruPackage));
                 byte[] plainText = serverRUDecryptor.decryptPackage(ByteStrings.longToBytes(seq), ruEncryptedPackage.getIv(), ruEncryptedPackage.getEncryptedContent());
+
+                Log.d(TAG, "Package decrypted in " + (Runtime.getActorTime() - start) + " ms");
+
                 DataInput ptInput = new DataInput(plainText);
                 long messageId = ptInput.readLong();
                 byte[] ptPayload = ptInput.readProtoBytes();

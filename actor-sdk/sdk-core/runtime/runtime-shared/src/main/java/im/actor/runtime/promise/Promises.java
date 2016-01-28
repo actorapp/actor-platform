@@ -1,6 +1,8 @@
 package im.actor.runtime.promise;
 
-import im.actor.runtime.function.Map;
+import im.actor.runtime.Log;
+import im.actor.runtime.function.Consumer;
+import im.actor.runtime.function.Function;
 
 /**
  * Various methods for creating promises.
@@ -39,6 +41,29 @@ public class Promises {
         };
     }
 
+    public static <T> Promise<T> log(final String TAG, final PromiseResolver<T> resolver, final PromiseFunc<T> func) {
+        return new Promise<T>() {
+            @Override
+            void exec(PromiseResolver<T> resolver) {
+                func.exec(resolver);
+            }
+        }.then(new Consumer<T>() {
+            @Override
+            public void apply(T t) {
+                Log.d(TAG, "Result: " + t);
+                resolver.result(t);
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                Log.d(TAG, "Error: " + e);
+                Log.e(TAG, e);
+                e.printStackTrace();
+                resolver.error(e);
+            }
+        });
+    }
+
     /**
      * Combines two promises to one with different data types
      *
@@ -52,9 +77,9 @@ public class Promises {
 
         return PromisesArray.ofPromises(t1.cast(), t2.cast())
                 .zip()
-                .map(new Map<Object[], Tuple2<T1, T2>>() {
+                .map(new Function<Object[], Tuple2<T1,T2>>() {
                     @Override
-                    public Tuple2<T1, T2> map(Object[] src) {
+                    public Tuple2<T1, T2> apply(Object[] src) {
                         return new Tuple2<T1, T2>((T1) src[0], (T2) src[1]);
                     }
                 });
@@ -74,9 +99,9 @@ public class Promises {
     public static <T1, T2, T3> Promise<Tuple3<T1, T2, T3>> tuple(Promise<T1> t1, Promise<T2> t2, Promise<T3> t3) {
         return PromisesArray.ofPromises(t1.cast(), t2.cast(), t3.cast())
                 .zip()
-                .map(new Map<Object[], Tuple3<T1, T2, T3>>() {
+                .map(new Function<Object[], Tuple3<T1, T2, T3>>() {
                     @Override
-                    public Tuple3<T1, T2, T3> map(Object[] src) {
+                    public Tuple3<T1, T2, T3> apply(Object[] src) {
                         return new Tuple3<T1, T2, T3>((T1) src[0], (T2) src[1], (T3) src[2]);
                     }
                 });
@@ -102,9 +127,9 @@ public class Promises {
 
         return PromisesArray.ofPromises(t1.cast(), t2.cast(), t3.cast(), t4.cast())
                 .zip()
-                .map(new Map<Object[], Tuple4<T1, T2, T3, T4>>() {
+                .map(new Function<Object[], Tuple4<T1,T2,T3,T4>>() {
                     @Override
-                    public Tuple4<T1, T2, T3, T4> map(Object[] src) {
+                    public Tuple4<T1, T2, T3, T4> apply(Object[] src) {
                         return new Tuple4<T1, T2, T3, T4>((T1) src[0], (T2) src[1], (T3) src[2], (T4) src[3]);
                     }
                 });

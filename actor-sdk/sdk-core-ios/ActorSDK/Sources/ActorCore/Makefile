@@ -28,7 +28,7 @@ space := ${null} ${null}
 J2OBJC_DISTRIBUTION = $(PODS_ROOT)/J2ObjC-Framework/Distributive
 J2OBJC = $(J2OBJC_DISTRIBUTION)/j2objc
 J2OBJCC = $(J2OBJC_DISTRIBUTION)/j2objcc
-J2OBJC_ARGS = -use-arc --generate-deprecated --doc-comments -g --swift-friendly -source 8 -Xforce-incomplete-java8 --nullability --strip-reflection
+J2OBJC_ARGS = -use-arc --generate-deprecated --doc-comments -g --swift-friendly -source 7 --nullability --strip-reflection
 J2OBJCC_ARGS = -ObjC -fobjc-arc -fembed-bitcode-marker -Wobjc-designated-initializers -g $(ARCHFLAGS) $(SDKFLAGS) -I$(J2OBJC_DISTRIBUTION)/include
 
 LIBRARY_NAME = libactor.so
@@ -103,7 +103,7 @@ $(foreach root,$(SOURCE_ROOTS),$(eval $(call SOURCE_ROOT_RULE,$(root))))
 # $(call max_args,@ar crv $(OBJ_DIR)/$(LIBRARY_NAME),2,$(OBJECT_FILES))
 build: $(OBJ_DIR) $(OBJECT_FILES)
 	@rm -f $(OBJ_DIR)/$(LIBRARY_NAME)
-	@$(call max_args,ar rcs $(OBJ_DIR)/$(LIBRARY_NAME),1000,$(OBJECT_FILES))
+	@$(call max_args,ar rcs $(OBJ_DIR)/$(LIBRARY_NAME),600,$(OBJECT_FILES))
 	@ranlib $(OBJ_DIR)/$(LIBRARY_NAME)
 
 $(OBJ_DIR)/%.o: $(SOURCES_DIR)/%.m

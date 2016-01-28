@@ -10,6 +10,7 @@ public final class Log {
 
     public static void e(String tag, Throwable throwable) {
         logRuntime.e(tag, throwable);
+        throwable.printStackTrace();
     }
 
     public static void d(String tag, String message) {

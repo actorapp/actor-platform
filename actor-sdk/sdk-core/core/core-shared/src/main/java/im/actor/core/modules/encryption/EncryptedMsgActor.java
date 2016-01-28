@@ -61,7 +61,7 @@ public class EncryptedMsgActor extends ModuleActor {
         for (ApiEncyptedBoxKey key : message.getBox().getKeys()) {
             if (key.getUsersId() == myUid()) {
                 encryptedBoxKeys.add(new EncryptedBoxKey(key.getUsersId(), key.getKeyGroupId(),
-                        key.getEncryptedKey()));
+                        key.getAlgType(), key.getEncryptedKey()));
             }
         }
         EncryptedBox encryptedBox = new EncryptedBox(encryptedBoxKeys.toArray(new EncryptedBoxKey[0]), message.getBox().getEncPackage());
