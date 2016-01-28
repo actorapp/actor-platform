@@ -338,7 +338,7 @@ private[user] trait UserCommandHandlers {
   }
 
   protected def removeContact(
-    user:          User,
+    user:          UserState,
     contactUserId: Int
   ): Unit = {
     val updLocalName = UpdateUserLocalNameChanged(contactUserId, None)
