@@ -15,28 +15,23 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class ResponseLoadHistory extends Response {
+public class ResponseGetReferencedEntitites extends Response {
 
-    public static final int HEADER = 0x77;
-    public static ResponseLoadHistory fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ResponseLoadHistory(), data);
+    public static final int HEADER = 0xa45;
+    public static ResponseGetReferencedEntitites fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseGetReferencedEntitites(), data);
     }
 
-    private List<ApiMessageContainer> history;
     private List<ApiUser> users;
+    private List<ApiGroup> groups;
 
-    public ResponseLoadHistory(@NotNull List<ApiMessageContainer> history, @NotNull List<ApiUser> users) {
-        this.history = history;
+    public ResponseGetReferencedEntitites(@NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups) {
         this.users = users;
+        this.groups = groups;
     }
 
-    public ResponseLoadHistory() {
+    public ResponseGetReferencedEntitites() {
 
-    }
-
-    @NotNull
-    public List<ApiMessageContainer> getHistory() {
-        return this.history;
     }
 
     @NotNull
@@ -44,29 +39,34 @@ public class ResponseLoadHistory extends Response {
         return this.users;
     }
 
+    @NotNull
+    public List<ApiGroup> getGroups() {
+        return this.groups;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
-        List<ApiMessageContainer> _history = new ArrayList<ApiMessageContainer>();
-        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _history.add(new ApiMessageContainer());
-        }
-        this.history = values.getRepeatedObj(1, _history);
         List<ApiUser> _users = new ArrayList<ApiUser>();
-        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
             _users.add(new ApiUser());
         }
-        this.users = values.getRepeatedObj(2, _users);
+        this.users = values.getRepeatedObj(1, _users);
+        List<ApiGroup> _groups = new ArrayList<ApiGroup>();
+        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+            _groups.add(new ApiGroup());
+        }
+        this.groups = values.getRepeatedObj(2, _groups);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeRepeatedObj(1, this.history);
-        writer.writeRepeatedObj(2, this.users);
+        writer.writeRepeatedObj(1, this.users);
+        writer.writeRepeatedObj(2, this.groups);
     }
 
     @Override
     public String toString() {
-        String res = "tuple LoadHistory{";
+        String res = "tuple GetReferencedEntitites{";
         res += "}";
         return res;
     }

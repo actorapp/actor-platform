@@ -71,6 +71,7 @@ public class UpdatesParser extends BaseParser<Update> {
             case 104: return UpdatePublicKeyGroupAdded.fromBytes(payload);
             case 105: return UpdatePublicKeyGroupRemoved.fromBytes(payload);
             case 80: return UpdateRawUpdate.fromBytes(payload);
+            case 85: return UpdateEmptyUpdate.fromBytes(payload);
             case 215: return UpdateCountersChanged.fromBytes(payload);
             case 42: return UpdateConfig.fromBytes(payload);
         }
