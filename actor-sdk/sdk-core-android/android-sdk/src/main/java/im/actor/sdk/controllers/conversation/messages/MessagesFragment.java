@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +30,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import im.actor.core.entity.Message;
@@ -59,6 +63,9 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MessagesFragment extends DisplayListFragment<Message, MessageHolder> {
+
+    private static final int REQUEST_GALLERY = 198;
+    private String shortcutText;
 
     public static MessagesFragment create(Peer peer) {
         return new MessagesFragment(peer);
@@ -298,58 +305,12 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                 @Override
                 public boolean onActionItemClicked(final ActionMode actionMode, MenuItem menuItem) {
                     if (menuItem.getItemId() == R.id.shortcut) {
-                        final String text = messenger().getFormatter().formatMessagesExport(messagesAdapter.getSelected());
+                        shortcutText = messenger().getFormatter().formatMessagesExport(messagesAdapter.getSelected());
 
-                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity(), R.style.AlertDialogStyle);
-                        builder.setTitle(menuItem.getTitle());
+                        Drawable shortCutDrawable = getResources().getDrawable(R.drawable.ic_message_white_24dp);
 
-                        final LinearLayout ll = new LinearLayout(getActivity());
-                        ll.setPadding(Screen.dp(20), 0, Screen.dp(20), 0);
-
-                        final EditText input = new EditText(getActivity());
-                        input.setTextColor(Color.BLACK);
-                        input.setText(text);
-                        ll.addView(input, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        builder.setView(ll);
-
-                        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent shortcutIntent = new Intent(getContext(), ShortcutActivity.class);
-                                shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                                shortcutIntent.setAction("im.actor.action.botMessageShortcut");
-                                shortcutIntent.putExtra("peer", peer.getUnuqueId());
-                                shortcutIntent.putExtra("text", input.getText().toString());
-                                Intent addIntent = new Intent();
-                                addIntent
-                                        .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-                                addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, input.getText().toString() + "->" + users().get(peer.getPeerId()).getNick().get());
-                                addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                                        Intent.ShortcutIconResource.fromContext(getContext(),
-                                                R.drawable.ic_message_white_24dp));
-
-                                addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-                                getContext().getApplicationContext().sendBroadcast(addIntent);
-                                actionMode.finish();
-                            }
-                        });
-                        builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-
-                        android.support.v7.app.AlertDialog ad = builder.create();
-                        ad.setOnShowListener(new DialogInterface.OnShowListener() {
-                            @Override
-                            public void onShow(DialogInterface dialog) {
-                                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(FragmentActivity.INPUT_METHOD_SERVICE);
-                                input.requestFocus();
-                                inputMethodManager.showSoftInput(input, 0);
-                            }
-                        });
-                        ad.show();
+                        createShortcutDialog(menuItem.getTitle().toString(), shortCutDrawable);
+                        actionMode.finish();
 
 
                     } else if (menuItem.getItemId() == R.id.delete) {
@@ -510,6 +471,85 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
             }
         }
         return true;
+    }
+
+    public void createShortcutDialog(String title, final Drawable shortCutDrawable) {
+        final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity(), R.style.AlertDialogStyle);
+        builder.setTitle(title);
+
+        final LinearLayout ll = new LinearLayout(getActivity());
+        ll.setPadding(Screen.dp(20), 0, Screen.dp(20), 0);
+
+        final EditText shortcutInput = new EditText(getActivity());
+        shortcutInput.setTextColor(Color.BLACK);
+        shortcutInput.setText(shortcutText);
+        shortcutInput.setCompoundDrawablesWithIntrinsicBounds(shortCutDrawable, null, null, null);
+        ll.addView(shortcutInput, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        builder.setView(ll);
+
+        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent shortcutIntent = new Intent(getContext(), ShortcutActivity.class);
+                shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                shortcutIntent.setAction("im.actor.action.botMessageShortcut");
+                shortcutIntent.putExtra("peer", peer.getUnuqueId());
+                shortcutIntent.putExtra("text", shortcutInput.getText().toString());
+                Intent addIntent = new Intent();
+                addIntent
+                        .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+                addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, shortcutInput.getText().toString() + "->" + users().get(peer.getPeerId()).getNick().get());
+//                                addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+//                                        Intent.ShortcutIconResource.fromContext(getContext(),
+//                                                R.drawable.ic_message_white_24dp));
+
+                BitmapDrawable bd = (BitmapDrawable) shortCutDrawable;
+                addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, bd.getBitmap());
+
+                addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+                getContext().getApplicationContext().sendBroadcast(addIntent);
+            }
+        });
+        builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.setNeutralButton("Icon", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.setType("image/*");
+                startActivityForResult(intent, REQUEST_GALLERY);
+            }
+        });
+
+        android.support.v7.app.AlertDialog ad = builder.create();
+        ad.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(FragmentActivity.INPUT_METHOD_SERVICE);
+                shortcutInput.requestFocus();
+                inputMethodManager.showSoftInput(shortcutInput, 0);
+            }
+        });
+        ad.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_GALLERY) {
+                try {
+                    createShortcutDialog("Create shortcut", Drawable.createFromStream(getActivity().getContentResolver().openInputStream(data.getData()), null));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
