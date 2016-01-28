@@ -1,14 +1,12 @@
 package im.actor.config
 
 import java.io.File
-
-import akka.actor.ActorSystem
-
-import scala.collection.JavaConversions._
-import scala.concurrent.duration._
 import java.util.concurrent.TimeUnit
 
+import akka.actor.ActorSystem
 import com.typesafe.config.{ ConfigException, Config, ConfigFactory }
+import scala.collection.JavaConversions._
+import scala.concurrent.duration._
 
 import scala.util.{ Failure, Success, Try }
 
@@ -25,14 +23,6 @@ object ActorConfig {
         |akka {
         |  actor {
         |    provider: "akka.cluster.ClusterActorRefProvider"
-        |
-        |    serializers {
-        |      actor = "im.actor.serialization.ActorSerializer"
-        |    }
-        |
-        |    serialization-bindings {
-        |      "com.trueaccord.scalapb.GeneratedMessage" = actor
-        |    }
         |  }
         |
         |  extensions: ["im.actor.server.db.DbExtension", "akka.cluster.client.ClusterClientReceptionist"] $${akka.extensions}
@@ -55,11 +45,6 @@ object ActorConfig {
         |}
         |
         |akka-persistence-jdbc {
-        |  slick {
-        |    db {
-        |      jndiName = "DefaultDataSource"
-        |    }
-        |  }
         |  tables {
         |    journal {
         |      tableName = "persistence_journal"
@@ -71,11 +56,6 @@ object ActorConfig {
         |      tableName = "persistence_snapshot"
         |    }
         |  }
-        |}
-        |
-        |jdbc-connection {
-        |  jndiPath: "/"
-        |  dataSourceName: "DefaultDataSource"
         |}
       """.stripMargin
     ))

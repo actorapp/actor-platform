@@ -1,12 +1,8 @@
 package im.actor.server.group
 
-import java.time.Instant
-
 import akka.actor.{ ActorSystem, ActorLogging, Actor, Props }
-import im.actor.concurrent.ActorFutures
 import im.actor.server.cqrs.ProcessorState
-import im.actor.server.dialog.{ DialogExtension, ActorDelivery, DialogCommands }
-import im.actor.server.model.Peer
+import im.actor.server.dialog.{ DialogExtension, DialogCommands }
 
 import scala.concurrent.ExecutionContext
 
@@ -18,17 +14,18 @@ private[group] case class GroupPeerState(
   lastSenderId:    Int,
   lastReceiveDate: Long,
   lastReadDate:    Long
-) extends ProcessorState[GroupPeerState] {
+) extends ProcessorState[GroupPeerState, GroupPeerEvent] {
   import GroupPeerEvents._
-  override def updated(e: AnyRef, ts: Instant): GroupPeerState = e match {
+  override def updated(e: GroupPeerEvent): GroupPeerState = e match {
     case LastSenderIdChanged(id)      ⇒ this.copy(lastSenderId = id)
     case LastReceiveDateChanged(date) ⇒ this.copy(lastReceiveDate = date)
     case LastReadDateChanged(date)    ⇒ this.copy(lastReadDate = date)
   }
 }
 
+private[group] sealed trait GroupPeerEvent
+
 object GroupPeerEvents {
-  private[group] sealed trait GroupPeerEvent
   private[group] case class LastSenderIdChanged(id: Int) extends GroupPeerEvent
   private[group] case class LastReceiveDateChanged(date: Long) extends GroupPeerEvent
   private[group] case class LastReadDateChanged(date: Long) extends GroupPeerEvent

@@ -3,11 +3,10 @@ package im.actor.server.api.rpc.service
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.{ ApiTextMessage, ResponseLoadDialogs }
 import im.actor.api.rpc.peers.{ ApiPeerType, ApiOutPeer }
+import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.{ ImplicitSessionRegion, ImplicitAuthService, BaseAppSuite }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.group.{ GroupType, GroupExtension }
-import org.scalatest.Inside._
-import im.actor.server.persist
 
 import scala.util.Random
 
@@ -32,7 +31,7 @@ final class HiddenGroupsSpec extends BaseAppSuite with ImplicitAuthService with 
           case Ok(ResponseLoadDialogs(dialogs, _, _)) ⇒
             dialogs.length shouldBe (0)
 
-            db.run(persist.HistoryMessageRepo.getUnreadTotal(user.id))
+            db.run(HistoryMessageRepo.getUnreadTotal(user.id))
         }
       }
     }

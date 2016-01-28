@@ -1,7 +1,5 @@
 package im.actor.server.dialog
 
-import java.time.Instant
-
 import akka.actor._
 import akka.pattern.pipe
 import akka.util.Timeout
@@ -25,9 +23,9 @@ import slick.driver.PostgresDriver.api.Database
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
-object DialogEvents {
+private[dialog] sealed trait DialogEvent
 
-  private[dialog] sealed trait DialogEvent
+object DialogEvents {
 
   private[dialog] final case class LastMessageDate(date: Long) extends DialogEvent
 
@@ -71,9 +69,9 @@ private[dialog] final case class DialogState(
   isHidden:        Boolean,
   isFavourite:     Boolean,
   isCreated:       Boolean
-) extends ProcessorState[DialogState] {
+) extends ProcessorState[DialogState, DialogEvent] {
   import DialogEvents._
-  override def updated(e: AnyRef, ts: Instant): DialogState = e match {
+  override def updated(e: DialogEvent): DialogState = e match {
     case LastMessageDate(date) if date > this.lastMessageDate ⇒ this.copy(lastMessageDate = date)
     case LastReceiveDate(date) if date > this.lastReceiveDate ⇒ this.copy(lastReceiveDate = date)
     case LastReadDate(date) if date > this.lastReadDate ⇒ this.copy(lastReadDate = date)
