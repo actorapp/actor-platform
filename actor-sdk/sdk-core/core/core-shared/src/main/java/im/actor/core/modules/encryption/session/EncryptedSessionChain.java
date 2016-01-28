@@ -108,8 +108,8 @@ public class EncryptedSessionChain {
                 theirPublicKey,
                 ByteStrings.intToBytes(messageIndex)); /* Message Index */
 
-        Log.d("EncryptedSessionChain", "Own ephemeral Key: " + Crypto.keyHash(Curve25519.keyGenPublic(ownPrivateKey)));
-        Log.d("EncryptedSessionChain", "Their ephemeral Key: " + Crypto.keyHash(theirPublicKey));
+        Log.d("EncryptedSessionChain#" + session.getPeerKeyGroupId(), "Own ephemeral Key: " + Crypto.keyHash(Curve25519.keyGenPublic(ownPrivateKey)));
+        Log.d("EncryptedSessionChain#" + session.getPeerKeyGroupId(), "Their ephemeral Key: " + Crypto.keyHash(theirPublicKey));
 
         return ByteStrings.merge(header, ActorBox.closeBox(header, data, Crypto.randomBytes(32), ratchetMessageKey));
     }
