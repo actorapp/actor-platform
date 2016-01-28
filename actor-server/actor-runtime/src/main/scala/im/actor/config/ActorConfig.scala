@@ -54,12 +54,23 @@ object ActorConfig {
         |  }
         |}
         |
-        |jdbc-journal {
-        |  class = "akka.persistence.jdbc.journal.PostgresqlSyncWriteJournal"
-        |}
-        |
-        |jdbc-snapshot-store {
-        |  class = "akka.persistence.jdbc.snapshot.PostgresqlSyncSnapshotStore"
+        |akka-persistence-jdbc {
+        |  slick {
+        |    db {
+        |      jndiName = "DefaultDataSource"
+        |    }
+        |  }
+        |  tables {
+        |    journal {
+        |      tableName = "persistence_journal"
+        |    }
+        |    deletedTo {
+        |      tableName = "persistence_deleted_to"
+        |    }
+        |    snapshot {
+        |      tableName = "persistence_snapshot"
+        |    }
+        |  }
         |}
         |
         |jdbc-connection {

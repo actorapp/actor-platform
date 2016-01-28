@@ -9,6 +9,7 @@ import akka.stream.scaladsl.{ FileIO, Source }
 import akka.util.ByteString
 
 import scala.concurrent.{ ExecutionContext, Future, blocking }
+import scala.util.{ Failure, Success }
 
 object FileUtils {
 
@@ -48,8 +49,13 @@ object FileUtils {
   def writeBytes(bytes: ByteString)(implicit system: ActorSystem, materializer: Materializer, ec: ExecutionContext): Future[(Path, Long)] = {
     for {
       file ← createTempFile
-      size ← Source.single(bytes).runWith(FileIO.toFile(file.toFile))
-    } yield (file, size)
+      ioRes ← Source.single(bytes).runWith(FileIO.toFile(file.toFile))
+    } yield {
+      ioRes.status match {
+        case Success(_)     ⇒ (file, ioRes.count)
+        case Failure(cause) ⇒ throw cause
+      }
+    }
   }
 
   def concatFiles(dir: File, fileNames: Seq[String])(implicit ec: ExecutionContext): Future[File] = {

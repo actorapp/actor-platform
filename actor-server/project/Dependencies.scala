@@ -6,9 +6,8 @@ object Dependencies {
   object V {
     val actorCommons = "0.0.12"
     val actorBotkit = "1.0.66"
-    val akka = "2.4.1"
-    val akkaExperimental = "2.0.3"
-    val akkaHttpJson = "1.4.1"
+    val akka = "2.4.2-RC1"
+    val akkaHttpJson = "1.5.0"
     val cats = "0.3.0"
     val circe = "0.2.1"
     val kamon = "0.5.2"
@@ -33,9 +32,9 @@ object Dependencies {
     val akkaDdata               = "com.typesafe.akka"             %% "akka-distributed-data-experimental" % V.akka
     val akkaClusterTools        = "com.typesafe.akka"             %% "akka-cluster-tools"            % V.akka
     val akkaClusterSharding     = "com.typesafe.akka"             %% "akka-cluster-sharding"         % V.akka
-    val akkaStream              = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
-    val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
-    val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
+    val akkaStream              = "com.typesafe.akka"             %% "akka-stream"                   % V.akka
+    val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akka
+    val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akka
     val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % V.akkaHttpJson
     val akkaHttpCirce           = "de.heikoseeberger"             %% "akka-http-circe"               % V.akkaHttpJson
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
@@ -45,7 +44,7 @@ object Dependencies {
     val sprayClient             = "io.spray"                      %% "spray-client"                  % "1.3.3"
     val sprayWebsocket          = "com.wandoulabs.akka"           %% "spray-websocket"               % "0.1.4"
 
-    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.2.1"
+    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "2.2.1"
     val apacheEmail             = "org.apache.commons"            %  "commons-email"                 % "1.4"
 
     val betterFiles             = "com.github.pathikrit"          %% "better-files"                  % "2.13.0"
