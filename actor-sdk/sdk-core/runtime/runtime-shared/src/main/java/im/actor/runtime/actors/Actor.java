@@ -13,8 +13,11 @@ import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.actors.mailbox.Mailbox;
 import im.actor.runtime.actors.messages.DeadLetter;
+import im.actor.runtime.function.Consumer;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseDispatch;
+import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.PromiseResolver;
 
 /**
  * Actor object
@@ -211,9 +214,11 @@ public class Actor {
     }
 
     public <T extends AskResult> Promise<T> ask(final ActorRef dest, final AskMessage<T> msg) {
-        return new Promise<>(executor -> {
-            Log.d("Actor", "executor");
-            dest.send(new AskIntRequest(msg, executor));
+        return new Promise<T>(new PromiseFunc<T>() {
+            @Override
+            public void exec(PromiseResolver<T> executor) {
+                dest.send(new AskIntRequest(msg, executor));
+            }
         });
     }
 
@@ -222,33 +227,45 @@ public class Actor {
     }
 
     public void ask(final ActorRef dest, final Object message, final AskCallback callback) {
-        new Promise<>(executor -> {
-            become(message1 -> {
-                if (message1 instanceof PromiseDispatch) {
-                    PromiseDispatch dispatch = (PromiseDispatch) message1;
-                    if (dispatch.getPromise() == executor.getPromise()) {
-                        dispatch.run();
-                    } else {
-                        stash();
+        new Promise<Object>(new PromiseFunc<Object>() {
+            @Override
+            public void exec(final PromiseResolver<Object> executor) {
+                become(new Receiver() {
+                    @Override
+                    public void onReceive(Object message) {
+                        if (message instanceof PromiseDispatch) {
+                            PromiseDispatch dispatch = (PromiseDispatch) message;
+                            if (dispatch.getPromise() == executor.getPromise()) {
+                                dispatch.run();
+                            } else {
+                                stash();
+                            }
+                        } else {
+                            stash();
+                        }
                     }
-                } else {
-                    stash();
-                }
-            });
-            dest.send(new AskIntRequest(message, executor));
-        }).then(o -> {
-            unbecome();
-            unstashAll();
-
-            if (callback != null) {
-                callback.onResult(o);
+                });
+                dest.send(new AskIntRequest(message, executor));
             }
-        }).failure(e -> {
-            unbecome();
-            unstashAll();
+        }).then(new Consumer<Object>() {
+            @Override
+            public void apply(Object o) {
+                unbecome();
+                unstashAll();
 
-            if (callback != null) {
-                callback.onError(e);
+                if (callback != null) {
+                    callback.onResult(o);
+                }
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                unbecome();
+                unstashAll();
+
+                if (callback != null) {
+                    callback.onError(e);
+                }
             }
         }).done(self());
     }

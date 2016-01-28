@@ -11,11 +11,11 @@ import im.actor.runtime.bser.BserWriter;
 public class UserKeysGroup extends BserObject {
 
     private int keyGroupId;
-    private UserPublicKey identityKey;
-    private UserPublicKey[] keys;
-    private UserPublicKey[] ephemeralKeys;
+    private PublicKey identityKey;
+    private PublicKey[] keys;
+    private PublicKey[] ephemeralKeys;
 
-    public UserKeysGroup(int keyGroupId, UserPublicKey identityKey, UserPublicKey[] keys, UserPublicKey[] ephemeralKeys) {
+    public UserKeysGroup(int keyGroupId, PublicKey identityKey, PublicKey[] keys, PublicKey[] ephemeralKeys) {
         this.keyGroupId = keyGroupId;
         this.identityKey = identityKey;
         this.keys = keys;
@@ -26,27 +26,27 @@ public class UserKeysGroup extends BserObject {
         return keyGroupId;
     }
 
-    public UserPublicKey getIdentityKey() {
+    public PublicKey getIdentityKey() {
         return identityKey;
     }
 
-    public UserPublicKey[] getKeys() {
+    public PublicKey[] getKeys() {
         return keys;
     }
 
-    public UserPublicKey[] getEphemeralKeys() {
+    public PublicKey[] getEphemeralKeys() {
         return ephemeralKeys;
     }
 
-    public UserKeysGroup addUserKeyGroup(UserPublicKey publicKey) {
-        ArrayList<UserPublicKey> nEphemeralKeys = new ArrayList<UserPublicKey>();
-        for (UserPublicKey p : ephemeralKeys) {
+    public UserKeysGroup addUserKeyGroup(PublicKey publicKey) {
+        ArrayList<PublicKey> nEphemeralKeys = new ArrayList<PublicKey>();
+        for (PublicKey p : ephemeralKeys) {
             if (p.getKeyId() != publicKey.getKeyId()) {
                 nEphemeralKeys.add(p);
             }
         }
         nEphemeralKeys.add(publicKey);
-        return new UserKeysGroup(keyGroupId, identityKey, keys, nEphemeralKeys.toArray(new UserPublicKey[nEphemeralKeys.size()]));
+        return new UserKeysGroup(keyGroupId, identityKey, keys, nEphemeralKeys.toArray(new PublicKey[nEphemeralKeys.size()]));
     }
 
     public UserKeysGroup(byte[] data) throws IOException {
@@ -56,16 +56,16 @@ public class UserKeysGroup extends BserObject {
     @Override
     public void parse(BserValues values) throws IOException {
         keyGroupId = values.getInt(1);
-        identityKey = new UserPublicKey(values.getBytes(2));
+        identityKey = new PublicKey(values.getBytes(2));
         List<byte[]> r = values.getRepeatedBytes(3);
-        keys = new UserPublicKey[r.size()];
+        keys = new PublicKey[r.size()];
         for (int i = 0; i < keys.length; i++) {
-            keys[i] = new UserPublicKey(r.get(i));
+            keys[i] = new PublicKey(r.get(i));
         }
         r = values.getRepeatedBytes(4);
-        ephemeralKeys = new UserPublicKey[r.size()];
+        ephemeralKeys = new PublicKey[r.size()];
         for (int i = 0; i < ephemeralKeys.length; i++) {
-            ephemeralKeys[i] = new UserPublicKey(r.get(i));
+            ephemeralKeys[i] = new PublicKey(r.get(i));
         }
     }
 
@@ -73,10 +73,10 @@ public class UserKeysGroup extends BserObject {
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, keyGroupId);
         writer.writeBytes(2, identityKey.toByteArray());
-        for (UserPublicKey k : keys) {
+        for (PublicKey k : keys) {
             writer.writeBytes(3, k.toByteArray());
         }
-        for (UserPublicKey k : ephemeralKeys) {
+        for (PublicKey k : ephemeralKeys) {
             writer.writeBytes(4, k.toByteArray());
         }
     }
