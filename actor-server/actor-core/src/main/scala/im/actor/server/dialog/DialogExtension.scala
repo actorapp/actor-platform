@@ -79,10 +79,9 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   def sendMessage(peer: ApiPeer, senderUserId: Int, senderAuthSid: Int, randomId: Long, message: ApiMessage, isFat: Boolean = false): Future[SeqStateDate] =
     withValidPeer(peer.asModel, senderUserId, Future.successful(SeqStateDate())) {
-      val date = Instant.now().toEpochMilli
       val sender = Peer.privat(senderUserId)
-      val sendMessage = SendMessage(sender, peer.asModel, senderAuthSid, date, randomId, message, isFat)
-      PubSubExtension(system).publish(PeerMessage(Peer.privat(senderUserId), peer.asModel, randomId, date, message))
+      // we don't set date here, cause actual date set inside dialog processor
+      val sendMessage = SendMessage(sender, peer.asModel, senderAuthSid, date = None, randomId, message, isFat)
       (userExt.processorRegion.ref ? Envelope(sender).withSendMessage(sendMessage)).mapTo[SeqStateDate]
     }
 
