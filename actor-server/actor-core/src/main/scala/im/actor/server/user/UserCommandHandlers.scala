@@ -103,7 +103,7 @@ private[user] trait UserCommandHandlers {
           db.run(for {
             _ ← p.UserRepo.create(user)
           } yield CreateAck()) andThen {
-            case Success(_) => userExt.hooks.afterCreate.runAll(user.id)
+            case Success(_) ⇒ userExt.hooks.afterCreate.runAll(user.id)
           }
         }
       } else {
