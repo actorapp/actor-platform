@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.function.Consumer;
-import im.actor.runtime.function.Map;
+import im.actor.runtime.function.Function;
 
 /**
  * Promise support implementations. It is much more like js promises than traditional
@@ -146,7 +146,7 @@ public class Promise<T> {
      * @param resolver destination resolver
      * @return this
      */
-    public synchronized Promise<T> pipeTo(PromiseResolver<T> resolver) {
+    public synchronized Promise<T> pipeTo(final PromiseResolver<T> resolver) {
         complete(new PromiseCallback<T>() {
             @Override
             public void onResult(T t) {
@@ -179,6 +179,22 @@ public class Promise<T> {
             }
         });
         return this;
+    }
+
+    public Promise<T> log(final String TAG) {
+        return complete(new PromiseCallback<T>() {
+            @Override
+            public void onResult(T t) {
+                Log.d(TAG, "Result: " + t);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.w(TAG, "Error: " + e);
+                Log.e(TAG, e);
+                e.printStackTrace();
+            }
+        });
     }
 
     /**
@@ -240,17 +256,17 @@ public class Promise<T> {
      * @param <R> destination type
      * @return promise
      */
-    public <R> Promise<R> map(Map<T, R> res) {
+    public <R> Promise<R> map(final Function<T, R> res) {
         final Promise<T> self = this;
         return new Promise<R>() {
             @Override
-            void exec(PromiseResolver<R> resolver) {
+            void exec(final PromiseResolver<R> resolver) {
                 self.then(new Consumer<T>() {
                     @Override
                     public void apply(T t) {
                         R r;
                         try {
-                            r = res.map(t);
+                            r = res.apply(t);
                         } catch (Exception e) {
                             e.printStackTrace();
                             resolver.tryError(e);
@@ -277,7 +293,7 @@ public class Promise<T> {
      * @param <R> destination type
      * @return promise
      */
-    public <R> Promise<R> mapPromise(Map<T, Promise<R>> res) {
+    public <R> Promise<R> mapPromise(final Function<T, Promise<R>> res) {
         final Promise<T> self = this;
         return new Promise<R>() {
             @Override
@@ -287,7 +303,7 @@ public class Promise<T> {
                     public void apply(T t) {
                         Promise<R> promise;
                         try {
-                            promise = res.map(t);
+                            promise = res.apply(t);
                         } catch (Exception e) {
                             e.printStackTrace();
                             resolver.tryError(e);

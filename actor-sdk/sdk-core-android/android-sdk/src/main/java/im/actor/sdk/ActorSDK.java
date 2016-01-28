@@ -23,7 +23,7 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
-import im.actor.core.modules.events.IncomingCall;
+import im.actor.core.events.IncomingCall;
 import im.actor.core.modules.internal.CallsModule;
 import im.actor.runtime.Log;
 import im.actor.runtime.android.view.BindedViewHolder;

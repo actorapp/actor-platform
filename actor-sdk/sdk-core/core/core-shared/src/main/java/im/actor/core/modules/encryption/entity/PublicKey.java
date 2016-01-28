@@ -7,19 +7,19 @@ import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 import im.actor.runtime.crypto.Curve25519KeyPair;
 
-public class UserPublicKey extends BserObject {
+public class PublicKey extends BserObject {
 
     private long keyId;
     private String keyAlg;
     private byte[] publicKey;
 
-    public UserPublicKey(long keyId, String keyAlg, byte[] publicKey) {
+    public PublicKey(long keyId, String keyAlg, byte[] publicKey) {
         this.keyId = keyId;
         this.keyAlg = keyAlg;
         this.publicKey = publicKey;
     }
 
-    public UserPublicKey(byte[] data) throws IOException {
+    public PublicKey(byte[] data) throws IOException {
         load(data);
     }
 

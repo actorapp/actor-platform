@@ -10,7 +10,7 @@ import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.modules.internal.ContactsModule;
 import im.actor.core.modules.internal.DeviceInfoModule;
 import im.actor.core.modules.internal.DisplayLists;
-import im.actor.core.modules.internal.EncryptionModule;
+import im.actor.core.modules.encryption.EncryptionModule;
 import im.actor.core.modules.internal.ExternalModule;
 import im.actor.core.modules.internal.FilesModule;
 import im.actor.core.modules.internal.GroupsModule;
