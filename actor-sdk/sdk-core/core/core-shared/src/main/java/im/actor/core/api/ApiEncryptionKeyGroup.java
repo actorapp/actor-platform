@@ -103,8 +103,8 @@ public class ApiEncryptionKeyGroup extends BserObject {
         res += "keyGroupId=" + this.keyGroupId;
         res += ", supportedEncryption=" + this.supportedEncryption;
         res += ", identityKey=" + this.identityKey;
-        res += ", keys=" + this.keys.size();
-        res += ", signatures=" + this.signatures.size();
+        res += ", keys=" + this.keys;
+        res += ", signatures=" + this.signatures;
         res += "}";
         return res;
     }

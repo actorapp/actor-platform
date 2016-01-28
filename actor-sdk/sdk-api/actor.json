@@ -12415,13 +12415,13 @@
               {
                 "type": "reference",
                 "argument": "keys",
-                "category": "compact",
+                "category": "full",
                 "description": "  keys of Key Group"
               },
               {
                 "type": "reference",
                 "argument": "signatures",
-                "category": "compact",
+                "category": "full",
                 "description": "  Signatures of keys"
               }
             ],
