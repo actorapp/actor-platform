@@ -4,7 +4,7 @@
 
 import React from 'react';
 import ReactMixin from 'react-mixin';
-import addons from 'react/addons';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classnames from 'classnames';
 
 import InviteUserStore from '../../../stores/InviteUserStore';
@@ -15,8 +15,6 @@ import AvatarItem from '../../common/AvatarItem.react';
 import Stateful from '../../common/Stateful';
 
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
-
-const {addons: { PureRenderMixin }} = addons;
 
 const getStateFromStore = (props) => {
   const { contact } = props;

@@ -74,6 +74,8 @@
     "opus-recorder": "github:actorapp/Recorderjs.git",
     "pace": "github:hubspot/pace",
     "react": "0.14.6",
+    "react-addons-css-transition-group": "0.14.6",
+    "react-addons-pure-render-mixin": "0.14.6",
     "react-dom": "0.14.6",
     "react-intl": "1.2.2",
     "react-mixin": "3.0.3",
