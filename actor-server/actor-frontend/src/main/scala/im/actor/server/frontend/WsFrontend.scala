@@ -2,10 +2,10 @@ package im.actor.server.frontend
 
 import akka.actor.ActorSystem
 import akka.event.Logging
-import akka.http.ServerSettings
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.ws.{ BinaryMessage, Message }
 import akka.http.scaladsl.server.{ Directives, Route }
+import akka.http.scaladsl.settings.ServerSettings
 import akka.stream.Materializer
 import akka.stream.scaladsl._
 import akka.stream.stage.{ Context, PushStage, SyncDirective, TerminationDirective }
@@ -36,8 +36,8 @@ object WsFrontend extends Frontend("ws") {
     val connections = Http().bind(
       host,
       port,
-      httpsContext = tlsContext map (_.asHttpsContext),
-      settings = defaultSettings.copy(timeouts = defaultSettings.timeouts.copy(idleTimeout = IdleTimeout))
+      connectionContext = tlsContext map (_.asHttpsContext) getOrElse Http().defaultServerHttpContext,
+      settings = defaultSettings.withTimeouts(defaultSettings.timeouts.withIdleTimeout(IdleTimeout))
     )
 
     connections runForeach { conn ⇒
@@ -47,7 +47,7 @@ object WsFrontend extends Frontend("ws") {
     }
   }
 
-  def route(flow: Flow[ByteString, ByteString, Unit])(
+  def route(flow: Flow[ByteString, ByteString, akka.NotUsed])(
     implicit
     db:     Database,
     system: ActorSystem,
@@ -55,16 +55,16 @@ object WsFrontend extends Frontend("ws") {
   ): Route = {
     get {
       pathSingleSlash {
-        handleWebsocketMessages(websocket(flow))
+        handleWebSocketMessages(websocket(flow))
       }
     }
   }
 
-  def websocket(mtProtoFlow: Flow[ByteString, ByteString, Unit])(
+  def websocket(mtProtoFlow: Flow[ByteString, ByteString, akka.NotUsed])(
     implicit
     system: ActorSystem,
     mat:    Materializer
-  ): Flow[Message, Message, Unit] = {
+  ): Flow[Message, Message, akka.NotUsed] = {
     Flow[Message]
       .collect {
         case msg: BinaryMessage ⇒ msg
@@ -79,7 +79,7 @@ object WsFrontend extends Frontend("ws") {
       .via(completionFlow(System.currentTimeMillis()))
   }
 
-  def completionFlow[T](connStartTime: Long)(implicit system: ActorSystem): Flow[T, T, Unit] =
+  def completionFlow[T](connStartTime: Long)(implicit system: ActorSystem): Flow[T, T, akka.NotUsed] =
     Flow[T]
       .transform(() ⇒ new PushStage[T, T] {
         def onPush(elem: T, ctx: Context[T]): SyncDirective = ctx.push(elem)
