@@ -16,7 +16,7 @@ object Dependencies {
     val slickPg = "0.10.2"
     val scalatest = "2.2.4"
     val shardakka = "0.1.20"
-    val scalapbSer = "0.1.11"
+    val scalapbSer = "0.1.13"
   }
 
   object Compile {
@@ -44,7 +44,7 @@ object Dependencies {
     val sprayClient             = "io.spray"                      %% "spray-client"                  % "1.3.3"
     val sprayWebsocket          = "com.wandoulabs.akka"           %% "spray-websocket"               % "0.1.4"
 
-    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "2.2.1"
+    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "2.2.2"
     val apacheEmail             = "org.apache.commons"            %  "commons-email"                 % "1.4"
 
     val betterFiles             = "com.github.pathikrit"          %% "better-files"                  % "2.13.0"

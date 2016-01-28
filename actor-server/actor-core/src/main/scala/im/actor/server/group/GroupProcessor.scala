@@ -1,22 +1,22 @@
 package im.actor.server.group
 
+import java.time.Instant
+
 import akka.actor._
 import akka.cluster.sharding.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
-import im.actor.api.rpc.collections.{ ApiMapValueItem, ApiMapValue }
-import im.actor.api.rpc.misc.ApiExtension
+import im.actor.api.rpc.collections.ApiMapValue
 import im.actor.serialization.ActorSerializer
 import im.actor.server.KeyValueMappings
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DirectDialogCommand, DialogExtension }
-import im.actor.server.event.TSEvent
 import im.actor.server.file.{ FileStorageExtension, FileStorageAdapter, Avatar }
+import im.actor.server.model.Group
 import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
-import im.actor.server.user.{ UserExtension, UserProcessorRegion, UserViewRegion }
-import org.joda.time.DateTime
+import im.actor.server.user.UserExtension
 import shardakka.{ IntCodec, ShardakkaExtension }
 import slick.driver.PostgresDriver.api._
 
@@ -26,7 +26,7 @@ import scala.concurrent.duration._
 private[group] case class Member(
   userId:        Int,
   inviterUserId: Int,
-  invitedAt:     DateTime,
+  invitedAt:     Instant,
   isAdmin:       Boolean
 )
 
@@ -35,12 +35,12 @@ private[group] case class Bot(
   token:  String
 )
 
-private[group] case class Group(
+private[group] case class GroupState(
   id:              Int,
   typ:             GroupType,
   accessHash:      Long,
   creatorUserId:   Int,
-  createdAt:       DateTime,
+  createdAt:       Instant,
   members:         Map[Int, Member],
   invitedUserIds:  Set[Int],
   title:           String,
@@ -57,7 +57,9 @@ trait GroupCommand {
   val groupId: Int
 }
 
-trait GroupEvent
+trait GroupEvent {
+  val ts: Instant
+}
 
 trait GroupQuery {
   val groupId: Int
@@ -121,7 +123,7 @@ object GroupProcessor {
 }
 
 private[group] final class GroupProcessor
-  extends PeerProcessor[Group, TSEvent]
+  extends PeerProcessor[GroupState, GroupEvent]
   with GroupCommandHandlers
   with GroupQueryHandlers
   with ActorLogging
@@ -150,42 +152,42 @@ private[group] final class GroupProcessor
 
   context.setReceiveTimeout(5.hours)
 
-  def updatedState(evt: TSEvent, state: Group): Group = {
+  def updatedState(evt: GroupEvent, state: GroupState): GroupState = {
     evt match {
-      case TSEvent(_, GroupEvents.BotAdded(userId, token)) ⇒
+      case GroupEvents.BotAdded(_, userId, token) ⇒
         state.copy(bot = Some(Bot(userId, token)))
-      case TSEvent(ts, GroupEvents.UserInvited(userId, inviterUserId)) ⇒
+      case GroupEvents.UserInvited(ts, userId, inviterUserId) ⇒
         state.copy(
           members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = userId == state.creatorUserId)),
           invitedUserIds = state.invitedUserIds + userId
         )
-      case TSEvent(ts, GroupEvents.UserJoined(userId, inviterUserId)) ⇒
+      case GroupEvents.UserJoined(ts, userId, inviterUserId) ⇒
         state.copy(
           members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = userId == state.creatorUserId)),
           invitedUserIds = state.invitedUserIds - userId
         )
-      case TSEvent(_, GroupEvents.UserKicked(userId, kickerUserId, _)) ⇒
+      case GroupEvents.UserKicked(_, userId, kickerUserId) ⇒
         state.copy(members = state.members - userId)
-      case TSEvent(_, GroupEvents.UserLeft(userId, _)) ⇒
+      case GroupEvents.UserLeft(_, userId) ⇒
         state.copy(members = state.members - userId)
-      case TSEvent(_, GroupEvents.AvatarUpdated(avatar)) ⇒
+      case GroupEvents.AvatarUpdated(_, avatar) ⇒
         state.copy(avatar = avatar)
-      case TSEvent(_, GroupEvents.TitleUpdated(title)) ⇒
+      case GroupEvents.TitleUpdated(_, title) ⇒
         state.copy(title = title)
-      case TSEvent(_, GroupEvents.BecamePublic()) ⇒
+      case GroupEvents.BecamePublic(_) ⇒
         state.copy(typ = GroupType.Public, isHistoryShared = true)
-      case TSEvent(_, GroupEvents.AboutUpdated(about)) ⇒
+      case GroupEvents.AboutUpdated(_, about) ⇒
         state.copy(about = about)
-      case TSEvent(_, GroupEvents.TopicUpdated(topic)) ⇒
+      case GroupEvents.TopicUpdated(_, topic) ⇒
         state.copy(topic = topic)
-      case TSEvent(_, GroupEvents.UserBecameAdmin(userId, _)) ⇒
+      case GroupEvents.UserBecameAdmin(_, userId, _) ⇒
         state.copy(members = state.members.updated(userId, state.members(userId).copy(isAdmin = true)))
-      case TSEvent(_, GroupEvents.IntegrationTokenRevoked(token)) ⇒
+      case GroupEvents.IntegrationTokenRevoked(_, token) ⇒
         state.copy(bot = state.bot.map(_.copy(token = token)))
     }
   }
 
-  override def handleQuery(state: Group): Receive = {
+  override def handleQuery(state: GroupState): Receive = {
     case GroupQueries.GetIntegrationToken(_, userId) ⇒ getIntegrationToken(state, userId)
     case GroupQueries.GetIntegrationTokenInternal(_) ⇒ getIntegrationToken(state)
     case GroupQueries.GetApiStruct(_, userId)        ⇒ getApiStruct(state, userId)
@@ -203,10 +205,10 @@ private[group] final class GroupProcessor
       createInternal(typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions)
   }
 
-  override def handleCommand(state: Group): Receive = {
+  override def handleCommand(state: GroupState): Receive = {
     case Invite(_, inviteeUserId, inviterUserId, randomId) ⇒
       if (!hasMember(state, inviteeUserId)) {
-        persist(TSEvent(now(), GroupEvents.UserInvited(inviteeUserId, inviterUserId))) { evt ⇒
+        persist(GroupEvents.UserInvited(now(), inviteeUserId, inviterUserId)) { evt ⇒
           context become working(updatedState(evt, state))
 
           val replyTo = sender()
@@ -244,12 +246,12 @@ private[group] final class GroupProcessor
     case dc: DirectDialogCommand ⇒ groupPeer forward dc
   }
 
-  private[this] var groupStateMaybe: Option[Group] = None
+  private[this] var groupStateMaybe: Option[GroupState] = None
 
   override def receiveRecover = {
-    case TSEvent(ts, created: GroupEvents.Created) ⇒
-      groupStateMaybe = Some(initState(ts, created))
-    case evt: TSEvent ⇒
+    case created: GroupEvents.Created ⇒
+      groupStateMaybe = Some(initState(created))
+    case evt: GroupEvent ⇒
       groupStateMaybe = groupStateMaybe map (updatedState(evt, _))
     case RecoveryCompleted ⇒
       groupStateMaybe match {
@@ -260,16 +262,16 @@ private[group] final class GroupProcessor
       log.error("Unmatched recovery event {}", unmatched)
   }
 
-  protected def initState(ts: DateTime, evt: GroupEvents.Created): Group = {
-    Group(
+  protected def initState(evt: GroupEvents.Created): GroupState = {
+    GroupState(
       id = groupId,
       typ = evt.typ.getOrElse(GroupType.General),
       accessHash = evt.accessHash,
       title = evt.title,
       about = None,
       creatorUserId = evt.creatorUserId,
-      createdAt = ts,
-      members = (evt.userIds map (userId ⇒ userId → Member(userId, evt.creatorUserId, ts, isAdmin = (userId == evt.creatorUserId)))).toMap,
+      createdAt = evt.ts,
+      members = (evt.userIds map (userId ⇒ userId → Member(userId, evt.creatorUserId, evt.ts, isAdmin = userId == evt.creatorUserId))).toMap,
       bot = None,
       invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
       avatar = None,
@@ -285,11 +287,11 @@ private[group] final class GroupProcessor
     context.child(groupPeer).getOrElse(context.actorOf(GroupPeer.props(groupId), groupPeer))
   }
 
-  protected def hasMember(group: Group, userId: Int): Boolean = group.members.keySet.contains(userId)
+  protected def hasMember(group: GroupState, userId: Int): Boolean = group.members.keySet.contains(userId)
 
-  protected def isInvited(group: Group, userId: Int): Boolean = group.invitedUserIds.contains(userId)
+  protected def isInvited(group: GroupState, userId: Int): Boolean = group.invitedUserIds.contains(userId)
 
-  protected def isBot(group: Group, userId: Int): Boolean = userId == 0 || (group.bot exists (_.userId == userId))
+  protected def isBot(group: GroupState, userId: Int): Boolean = userId == 0 || (group.bot exists (_.userId == userId))
 
-  protected def isAdmin(group: Group, userId: Int): Boolean = group.members.get(userId) exists (_.isAdmin)
+  protected def isAdmin(group: GroupState, userId: Int): Boolean = group.members.get(userId) exists (_.isAdmin)
 }

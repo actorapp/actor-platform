@@ -1,10 +1,11 @@
 package im.actor.server.migrations
 
-import akka.actor.{ ActorLogging, Actor, Props, ActorSystem }
-import akka.persistence.{ RecoveryCompleted, PersistentActor }
+import java.time.Instant
+
+import akka.actor.{ Props, ActorSystem }
+import akka.persistence.RecoveryCompleted
 import im.actor.server.event.TSEvent
 import im.actor.server.group.{ GroupEvents, GroupOffice }
-import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 import im.actor.server.persist
 
@@ -52,11 +53,11 @@ private final class GroupCreatorMemberMigrator(promise: Promise[Unit], groupId: 
       creatorUserIdOpt = Some(e.creatorUserId)
       originalCreatorUserId = e.creatorUserId
     case TSEvent(_, e: UserLeft) ⇒
-      if (creatorUserIdOpt.exists(_ == e.userId)) {
+      if (creatorUserIdOpt.contains(e.userId)) {
         creatorUserIdOpt = None
       }
     case TSEvent(_, e: UserKicked) ⇒
-      if (creatorUserIdOpt.exists(_ == e.userId)) {
+      if (creatorUserIdOpt.contains(e.userId)) {
         creatorUserIdOpt = None
       }
     case RecoveryCompleted ⇒
@@ -73,8 +74,8 @@ private final class GroupCreatorMemberMigrator(promise: Promise[Unit], groupId: 
     creatorUserIdOpt match {
       case Some(creatorUserId) ⇒
         log.warning("Adding member {}", creatorUserId)
-        persist(TSEvent(new DateTime(), UserInvited(creatorUserId, creatorUserId)))(identity)
-        persist(TSEvent(new DateTime(), UserJoined(creatorUserId, creatorUserId))) { _ ⇒
+        persist(UserInvited(Instant.now(), creatorUserId, creatorUserId))(identity)
+        persist(UserJoined(Instant.now(), creatorUserId, creatorUserId)) { _ ⇒
           log.warning("Migrated")
           promise.success(())
           context stop self
