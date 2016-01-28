@@ -58,6 +58,8 @@ public class KeyManagerActor extends ModuleActor {
     @Override
     public void preStart() {
 
+        Log.d(TAG, "Starting KeyManager...");
+
         encryptionKeysStorage = Storage.createKeyValue("encryption_keys");
 
         ownKeys = null;
@@ -120,6 +122,7 @@ public class KeyManagerActor extends ModuleActor {
                                 signature));
             }
 
+            Log.d(TAG, "Creation of new key group");
             api(new RequestCreateNewKeyGroup(apiEncryptionKey, encryption, keys, keySignatures)).then(new Consumer<ResponseCreateNewKeyGroup>() {
                 @Override
                 public void apply(ResponseCreateNewKeyGroup response) {
@@ -135,7 +138,7 @@ public class KeyManagerActor extends ModuleActor {
 
                     // Just ignore
                 }
-            });
+            }).done(self());
         } else {
             onMainKeysReady();
         }
@@ -192,29 +195,31 @@ public class KeyManagerActor extends ModuleActor {
                                 signature));
             }
 
-            request(new RequestUploadEphermalKey(ownKeys.getKeyGroupId(), uploadingKeys, uploadingSignatures), new RpcCallback<ResponseVoid>() {
-                @Override
-                public void onResult(ResponseVoid response) {
-                    ownKeys = ownKeys.markAsUploaded(pendingEphermalKeys.toArray(new PrivateKey[pendingEphermalKeys.size()]));
-                    encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
-                    onAllKeysReady();
-                }
+            api(new RequestUploadEphermalKey(ownKeys.getKeyGroupId(), uploadingKeys, uploadingSignatures))
+                    .then(new Consumer<ResponseVoid>() {
+                        @Override
+                        public void apply(ResponseVoid responseVoid) {
+                            ownKeys = ownKeys.markAsUploaded(pendingEphermalKeys.toArray(new PrivateKey[pendingEphermalKeys.size()]));
+                            encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
+                            onAllKeysReady();
+                        }
+                    })
+                    .failure(new Consumer<Exception>() {
+                        @Override
+                        public void apply(Exception e) {
+                            Log.w(TAG, "Ephemeral keys upload error");
+                            Log.e(TAG, e);
 
-                @Override
-                public void onError(RpcException e) {
-                    Log.w(TAG, "Ephemeral keys upload error");
-                    Log.e(TAG, e);
-
-                    // Ignore
-                }
-            });
+                            // Ignore. This will freeze all encryption operations.
+                        }
+                    }).done(self());
         } else {
             onAllKeysReady();
         }
     }
 
     private void onAllKeysReady() {
-        Log.d(TAG, "All Keys are ready");
+        Log.d(TAG, "Key Manager started");
         // Now we can start receiving or sending encrypted messages
         isReady = true;
         unstashAll();
