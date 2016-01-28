@@ -86,6 +86,7 @@ object UserProcessor {
       10035 → classOf[UserCommands.ChangePreferredLanguages],
       10036 → classOf[UserCommands.ChangeTimeZone],
       10037 → classOf[UserCommands.EditLocalName],
+      10038 → classOf[UserCommands.RemoveContact],
 
       11001 → classOf[UserQueries.GetAuthIds],
       11002 → classOf[UserQueries.GetAuthIdsResponse],
@@ -215,6 +216,7 @@ private[user] final class UserProcessor
     case ChangeAbout(_, about)              ⇒ changeAbout(state, about)
     case UpdateAvatar(_, avatarOpt)         ⇒ updateAvatar(state, avatarOpt)
     case AddContacts(_, contactsToAdd)      ⇒ addContacts(state, contactsToAdd)
+    case RemoveContact(_, contactUserId)    ⇒ removeContact(state, contactUserId)
     case UpdateIsAdmin(_, isAdmin)          ⇒ updateIsAdmin(state, isAdmin)
     case NotifyDialogsChanged(_)            ⇒ notifyDialogsChanged(state)
     case ChangeTimeZone(_, timeZone)        ⇒ changeTimeZone(state, timeZone)

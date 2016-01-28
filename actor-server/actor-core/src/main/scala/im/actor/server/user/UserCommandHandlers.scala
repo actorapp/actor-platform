@@ -5,7 +5,7 @@ import java.util.TimeZone
 
 import akka.actor.{ ActorSystem, Status }
 import akka.pattern.pipe
-import im.actor.api.rpc.contacts.{ UpdateContactRegistered, UpdateContactsAdded }
+import im.actor.api.rpc.contacts.{ UpdateContactsRemoved, UpdateContactRegistered, UpdateContactsAdded }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
@@ -50,6 +50,8 @@ object UserErrors {
   final case class InvalidLocale(locale: String) extends UserError(s"Invalid locale: $locale")
 
   case object EmptyLocalesList extends UserError("Empty locale list")
+
+  final case object ContactNotFound extends UserError("Contact not found")
 
 }
 
@@ -335,6 +337,24 @@ private[user] trait UserCommandHandlers {
       update = UpdateContactsAdded(idsLocalNames.keys.toVector)
       seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, update, PushRules(isFat = true))
     } yield seqstate) pipeTo sender()
+  }
+
+  protected def removeContact(
+    user:          User,
+    contactUserId: Int
+  ): Unit = {
+    val updLocalName = UpdateUserLocalNameChanged(contactUserId, None)
+    val updContact = UpdateContactsRemoved(Vector(contactUserId))
+
+    (db.run(UserContactRepo.find(user.id, contactUserId)) flatMap {
+      case Some(_) ⇒
+        for {
+          _ ← db.run(UserContactRepo.delete(user.id, contactUserId))
+          _ ← seqUpdatesExt.deliverSingleUpdate(user.id, updLocalName)
+          seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, updContact)
+        } yield seqstate
+      case None ⇒ Future.failed(UserErrors.ContactNotFound)
+    }) pipeTo sender()
   }
 
   private def checkNicknameExists(nicknameOpt: Option[String]): Future[Boolean] = {
