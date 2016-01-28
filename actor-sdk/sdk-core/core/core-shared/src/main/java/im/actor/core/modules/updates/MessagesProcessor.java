@@ -12,10 +12,10 @@ import im.actor.core.api.ApiDialog;
 import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiEncryptedMessage;
 import im.actor.core.api.ApiMessage;
+import im.actor.core.api.ApiMessageContainer;
 import im.actor.core.api.ApiMessageReaction;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiAppCounters;
-import im.actor.core.api.ApiHistoryMessage;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.api.rpc.ResponseLoadHistory;
 import im.actor.core.api.updates.UpdateMessage;
@@ -343,7 +343,7 @@ public class MessagesProcessor extends AbsModule {
     public void onMessagesLoaded(Peer peer, ResponseLoadHistory historyResponse) {
         ArrayList<Message> messages = new ArrayList<Message>();
         long maxLoadedDate = Long.MAX_VALUE;
-        for (ApiHistoryMessage historyMessage : historyResponse.getHistory()) {
+        for (ApiMessageContainer historyMessage : historyResponse.getHistory()) {
 
             maxLoadedDate = Math.min(historyMessage.getDate(), maxLoadedDate);
 

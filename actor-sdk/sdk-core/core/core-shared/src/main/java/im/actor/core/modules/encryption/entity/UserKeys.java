@@ -32,7 +32,7 @@ public class UserKeys extends BserObject {
 
     public UserKeys addUserKeyGroup(UserKeysGroup keysGroup) {
         ArrayList<UserKeysGroup> userKeysGroups = new ArrayList<UserKeysGroup>();
-        for (UserKeysGroup g : userKeysGroups) {
+        for (UserKeysGroup g : this.userKeysGroups) {
             userKeysGroups.add(g);
         }
         userKeysGroups.add(keysGroup);
@@ -41,7 +41,7 @@ public class UserKeys extends BserObject {
 
     public UserKeys removeUserKeyGroup(int keyGroupId) {
         ArrayList<UserKeysGroup> userKeysGroups = new ArrayList<UserKeysGroup>();
-        for (UserKeysGroup g : userKeysGroups) {
+        for (UserKeysGroup g : this.userKeysGroups) {
             if (g.getKeyGroupId() != keyGroupId) {
                 userKeysGroups.add(g);
             }
@@ -63,7 +63,7 @@ public class UserKeys extends BserObject {
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, uid);
         for (UserKeysGroup ukg : userKeysGroups) {
-            writer.writeBytes(2, ukg.toByteArray());
+            writer.writeObject(2, ukg);
         }
     }
 }

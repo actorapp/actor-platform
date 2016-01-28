@@ -10836,12 +10836,13 @@
           <ref role="NX6Kv" node="5_CDdZ2jG_5" resolve="keyAlg" />
         </node>
         <node concept="NX1gA" id="5_CDdZ2jIkm" role="NXodf">
-          <property role="1GSvIU" value="compact" />
+          <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Public key material. Can be null, but always not null for LoadPublicKey" />
           <ref role="NX6Kv" node="5_CDdZ2jG_e" resolve="keyMaterial" />
         </node>
         <node concept="NX1gA" id="5_CDdZ2q_vh" role="NXodf">
           <property role="NX6R2" value="If keyMaterial is null, pass keyHash - SHA256 of key" />
+          <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="5_CDdZ2qhEj" resolve="keyHash" />
         </node>
       </node>
@@ -12029,15 +12030,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBBAdf" role="2m5mJr">
         <property role="TrG5h" value="GetState" />
-        <node concept="2m7Kf5" id="4fp6Gpc5tDm" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="optimizations" />
-          <node concept="2m5nlk" id="4fp6Gpc5tDq" role="2m7DVh">
-            <node concept="3GJkcs" id="4fp6Gpc5tDw" role="3GJlyp">
-              <ref role="3GJkik" node="4fp6Gpc4YV7" resolve="UpdateOptimization" />
-            </node>
-          </node>
-        </node>
         <node concept="Nu42z" id="GBscvBBAdg" role="NuuwV">
           <property role="Nu42W" value="09" />
         </node>
@@ -12046,11 +12038,6 @@
         </node>
         <node concept="NXeRC" id="2EAJ7H6foAE" role="1GBnQ6">
           <property role="NXePf" value="Get main sequence state" />
-        </node>
-        <node concept="NX1gA" id="4fp6Gpc5tDA" role="1GBnQ6">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Enabled optimizations" />
-          <ref role="NX6Kv" node="4fp6Gpc5tDm" resolve="optimizations" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBB_Gl" role="2m5mJr">
@@ -12068,11 +12055,6 @@
           <property role="1GSvIU" value="compact" />
           <ref role="NX6Kv" node="GBscvBB_Gy" resolve="state" />
         </node>
-        <node concept="NX1gA" id="4fp6Gpc56Lx" role="1GBnQ6">
-          <property role="NX6R2" value="Enabled optimizations" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="4fp6Gpc540T" resolve="optimizations" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBB_Gr" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="seq" />
@@ -12083,15 +12065,6 @@
           <property role="TrG5h" value="state" />
           <node concept="wb0Ql" id="55bmeIQ7BbF" role="2m7DVh">
             <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="4fp6Gpc540T" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="optimizations" />
-          <node concept="2m5nlk" id="4fp6Gpc56Lj" role="2m7DVh">
-            <node concept="3GJkcs" id="4fp6Gpc56Lp" role="3GJlyp">
-              <ref role="3GJkik" node="4fp6Gpc4YV7" resolve="UpdateOptimization" />
-            </node>
           </node>
         </node>
         <node concept="Nu42z" id="GBscvBB_Gm" role="NuuwV">

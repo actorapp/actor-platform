@@ -102,10 +102,12 @@ public class EncryptedPeerActor extends ModuleActor {
 
         final byte[] encKey = Crypto.randomBytes(128);
         Log.d(TAG, "doEncrypt");
+        final long start = Runtime.getActorTime();
         PromisesArray.of(theirKeys.getUserKeysGroups())
                 .map(new Function<UserKeysGroup, Promise<SessionActor>>() {
                     @Override
                     public Promise<SessionActor> apply(UserKeysGroup keysGroup) {
+                        Log.d(TAG, "Key Group " + keysGroup.getKeyGroupId());
                         if (activeSessions.containsKey(keysGroup.getKeyGroupId())) {
                             return success(activeSessions.get(keysGroup.getKeyGroupId()).getSessions().get(0));
                         }
@@ -131,10 +133,12 @@ public class EncryptedPeerActor extends ModuleActor {
                 .map(new Function<EncryptedSessionActor.EncryptedPackageRes[], EncryptBoxResponse>() {
                     @Override
                     public EncryptBoxResponse apply(EncryptedSessionActor.EncryptedPackageRes[] src) {
-                        Log.d(TAG, "map 3");
+
+                        Log.d(TAG, "Keys Encrypted in " + (Runtime.getActorTime() - start) + " ms");
+
                         ArrayList<EncryptedBoxKey> encryptedKeys = new ArrayList<>();
                         for (EncryptedSessionActor.EncryptedPackageRes r : src) {
-                            Log.d(TAG, "KeyGroup (uid: " + uid + "): " + r.getKeyGroupId());
+                            Log.d(TAG, "Keys: " + r.getKeyGroupId());
                             encryptedKeys.add(new EncryptedBoxKey(uid, r.getKeyGroupId(), "curve25519", r.getData()));
                         }
 
@@ -145,6 +149,8 @@ public class EncryptedPeerActor extends ModuleActor {
                             e.printStackTrace();
                             throw new RuntimeException(e);
                         }
+
+                        Log.d(TAG, "All Encrypted in " + (Runtime.getActorTime() - start) + " ms");
 
                         return new EncryptBoxResponse(new EncryptedBox(
                                 encryptedKeys.toArray(new EncryptedBoxKey[encryptedKeys.size()]),
@@ -182,7 +188,7 @@ public class EncryptedPeerActor extends ModuleActor {
                         final long receiverEphermalKey0Id = ByteStrings.bytesToLong(boxKey.getEncryptedKey(), 12);
 
                         if (activeSessions.containsKey(boxKey.getKeyGroupId())) {
-                            for (SessionActor s : activeSessions.get(boxKey.getKeyGroupId()).getSessions()) {
+                            for (SessionActor s : activeSessions.get(senderKeyGroup).getSessions()) {
                                 if (s.getOwnKeyId() == receiverEphermalKey0Id &&
                                         s.getTheirKeyId() == senderEphermalKey0Id) {
                                     return success(s);
@@ -190,7 +196,7 @@ public class EncryptedPeerActor extends ModuleActor {
                             }
                         }
                         return context().getEncryption().getSessionManagerInt()
-                                .pickSession(uid, boxKey.getKeyGroupId(), receiverEphermalKey0Id, senderEphermalKey0Id)
+                                .pickSession(uid, senderKeyGroup, receiverEphermalKey0Id, senderEphermalKey0Id)
                                 .map(new Function<PeerSession, SessionActor>() {
                                     @Override
                                     public SessionActor apply(PeerSession src) {
@@ -227,6 +233,7 @@ public class EncryptedPeerActor extends ModuleActor {
                 .failure(new Consumer<Exception>() {
                     @Override
                     public void apply(Exception e) {
+                        e.printStackTrace();
                         resolver.error(e);
                     }
                 })
