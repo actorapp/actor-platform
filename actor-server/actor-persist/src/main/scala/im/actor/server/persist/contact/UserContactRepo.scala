@@ -36,6 +36,9 @@ object UserContactRepo {
       byPKNotDeleted(ownerUserId, contactUserId) map (_.name)
   )
 
+  def byContactUserId(contactUserId: Rep[Int]) = active.filter(_.contactUserId === contactUserId)
+  val byContactUserIdC = Compiled(byContactUserId _)
+
   def byPKDeleted(ownerUserId: Int, contactUserId: Int) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === true)
 
@@ -53,6 +56,8 @@ object UserContactRepo {
 
   def findIds(ownerUserId: Int, contactUserIds: Set[Int]) =
     byOwnerUserIdNotDeleted(ownerUserId).filter(_.contactUserId inSet contactUserIds).map(_.contactUserId).result
+
+  def findOwners(contactUserId: Int) = byContactUserIdC(contactUserId).result
 
   def findNotDeletedIds(ownerUserId: Int) =
     byOwnerUserIdNotDeleted(ownerUserId).map(_.contactUserId).result
