@@ -6,11 +6,9 @@ import _ from 'lodash';
 
 import React from 'react';
 import ReactMixin from 'react-mixin';
-import addons from 'react/addons';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import GroupMember from '../activity/GroupMember.react';
-
-const {addons: { PureRenderMixin }} = addons;
 
 class GroupProfileMembers extends React.Component {
   static propTypes = {

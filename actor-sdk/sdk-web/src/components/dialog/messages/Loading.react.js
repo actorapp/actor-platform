@@ -5,8 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
-import addons from 'react/addons';
-const {addons: { PureRenderMixin }} = addons;
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 class Loading extends Component {
   constructor(props) {

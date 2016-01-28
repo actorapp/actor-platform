@@ -5,13 +5,11 @@
 import React from 'react';
 import classnames from 'classnames';
 import ReactMixin from 'react-mixin';
-import addons from 'react/addons';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import AvatarItem from './AvatarItem.react';
-
-const {addons: { PureRenderMixin }} = addons;
 
 const DROPDOWN_ITEM_HEIGHT = 38;
 let scrollIndex = 0;
