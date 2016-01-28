@@ -28,7 +28,7 @@ final class BotServerBlueprint(system: ActorSystem) {
 
   private val log = Logging(system, getClass)
 
-  def flow(botUserId: Int, botAuthId: Long, botAuthSid: Int): Flow[BotRequest, BotMessageOut, Unit] = {
+  def flow(botUserId: Int, botAuthId: Long, botAuthSid: Int): Flow[BotRequest, BotMessageOut, akka.NotUsed] = {
     val updBuilder = new BotUpdateBuilder(botUserId, botAuthId, system)
 
     val updSource =
