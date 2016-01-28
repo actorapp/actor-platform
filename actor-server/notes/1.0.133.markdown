@@ -1,0 +1,1 @@
+* :bug: guarantee unique send message date in dialog
