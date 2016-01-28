@@ -5,7 +5,7 @@
 import { assign } from 'lodash';
 import React from 'react';
 import Modal from 'react-modal';
-import addons from 'react/addons';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import { escapeWithEmoji } from '../../../utils/EmojiUtils'
@@ -19,8 +19,6 @@ import InviteUserStore from '../../../stores/InviteUserStore';
 
 const appElement = document.getElementById('actor-web-app');
 Modal.setAppElement(appElement);
-
-const {addons: { PureRenderMixin }} = addons;
 
 const getStateFromStores = () => {
   return {

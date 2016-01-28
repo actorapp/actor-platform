@@ -5,7 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedHTMLMessage } from 'react-intl'
-import addons from 'react/addons';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import { PeerTypes } from '../../../constants/ActorAppConstants';
 
@@ -13,8 +13,6 @@ import InviteUserActions from '../../../actions/InviteUserActions';
 
 import UserStore from '../../../stores/UserStore';
 import GroupStore from '../../../stores/GroupStore';
-
-const {addons: { PureRenderMixin }} = addons;
 
 class Welcome extends Component {
   constructor(props) {
