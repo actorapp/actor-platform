@@ -219,7 +219,7 @@ public class KeyManagerActor extends ModuleActor {
     }
 
     private void onAllKeysReady() {
-        Log.d(TAG, "Key Manager started");
+        Log.d(TAG, "Key Manager started with key group #" + ownKeys.getKeyGroupId());
         // Now we can start receiving or sending encrypted messages
         isReady = true;
         unstashAll();
@@ -243,9 +243,9 @@ public class KeyManagerActor extends ModuleActor {
             }
         }
 
-        Log.d(TAG, "No key found: " + Crypto.keyHash(publicKey));
+        Log.d(TAG, "No key found: " + Crypto.hex(publicKey));
         for (PrivateKey k : ownKeys.getPreKeys()) {
-            Log.d(TAG, "Have: " + Crypto.keyHash(Curve25519.keyGenPublic(k.getKey())));
+            Log.d(TAG, "Have: " + Crypto.hex(Curve25519.keyGenPublic(k.getKey())));
         }
 
         future.error(new RuntimeException("Unable to find ephemeral key"));
@@ -312,7 +312,7 @@ public class KeyManagerActor extends ModuleActor {
         final UserKeys keys = getCachedUserKeys(uid);
         UserKeysGroup keysGroup = null;
         for (UserKeysGroup g : keys.getUserKeysGroups()) {
-            Log.d(TAG, "KeyGroup (uid: " + uid + "): " + g.getKeyGroupId());
+            // Log.d(TAG, "KeyGroup (uid: " + uid + "): " + g.getKeyGroupId());
             if (g.getKeyGroupId() == keyGroupId) {
                 keysGroup = g;
             }
@@ -356,7 +356,7 @@ public class KeyManagerActor extends ModuleActor {
                 cacheUserKeys(keys.removeUserKeyGroup(userKeysGroup.getKeyGroupId())
                         .addUserKeyGroup(userKeysGroup));
 
-                Log.d(TAG, "(uid: " + uid + ") Fetched PreKey " + Crypto.keyHash(key.getKeyMaterial()));
+                // Log.d(TAG, "(uid: " + uid + ") Fetched PreKey " + Crypto.keyHash(key.getKeyMaterial()));
                 future.result(new FetchUserEphemeralKeyResponse(pkey));
             }
 
@@ -385,7 +385,7 @@ public class KeyManagerActor extends ModuleActor {
                 PublicKey pkey = new PublicKey(key.getKeyId(), key.getKeyAlg(), key.getKeyMaterial());
                 // Do not store all ephemeral key as it is not required
 
-                Log.d(TAG, "(uid: " + uid + ") Fetched ephemeral " + Crypto.keyHash(key.getKeyMaterial()));
+                // Log.d(TAG, "(uid: " + uid + ") Fetched ephemeral " + Crypto.keyHash(key.getKeyMaterial()));
                 future.result(new FetchUserEphemeralKeyResponse(pkey));
             }
 
@@ -484,10 +484,6 @@ public class KeyManagerActor extends ModuleActor {
             if (cached != null) {
                 try {
                     userKeys = new UserKeys(cached);
-                    Log.d(TAG, "Loaded (uid: " + uid + "): " + Crypto.hex(cached));
-                    for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
-                        Log.d(TAG, "Loaded (uid: " + uid + "): " + g.getKeyGroupId());
-                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -497,18 +493,6 @@ public class KeyManagerActor extends ModuleActor {
     }
 
     private void cacheUserKeys(UserKeys userKeys) {
-        for (UserKeysGroup g : userKeys.getUserKeysGroups()) {
-            Log.d(TAG, "Cache (uid: " + userKeys.getUid() + "): " + g.getKeyGroupId());
-        }
-        try {
-            UserKeys upd = new UserKeys(userKeys.toByteArray());
-            Log.d(TAG, "Cache2 (uid: " + userKeys.getUid() + "): " + Crypto.hex(userKeys.toByteArray()));
-            for (UserKeysGroup g : upd.getUserKeysGroups()) {
-                Log.d(TAG, "Cache2 (uid: " + userKeys.getUid() + "): " + g.getKeyGroupId());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         encryptionKeysStorage.addOrUpdateItem(userKeys.getUid(), userKeys.toByteArray());
         cachedUserKeys.put(userKeys.getUid(), userKeys);
     }

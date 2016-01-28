@@ -210,12 +210,15 @@ public class EncryptedSessionActor extends ModuleActor {
         // Stage 4: Saving their ephemeral key
         //
 
+        Log.d(TAG, "Decrypt " + Crypto.hex(data));
+
         // final int ownKeyGroupId = ByteStrings.bytesToInt(data, 0);
         // final long ownEphemeralKey0Id = ByteStrings.bytesToLong(data, 4);
         // final long theirEphemeralKey0Id = ByteStrings.bytesToLong(data, 12);
         final byte[] senderEphemeralKey = ByteStrings.substring(data, 20, 32);
         final byte[] receiverEphemeralKey = ByteStrings.substring(data, 52, 32);
-        Log.d(TAG, "Receiver Ephemeral " + Crypto.keyHash(receiverEphemeralKey));
+        Log.d(TAG, "Sender Ephemeral " + Crypto.hex(senderEphemeralKey));
+        Log.d(TAG, "Receiver Ephemeral " + Crypto.hex(receiverEphemeralKey));
 
         pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
                 .map(new Function<EncryptedSessionChain, DecryptedPackage>() {
@@ -251,6 +254,7 @@ public class EncryptedSessionActor extends ModuleActor {
     }
 
     private EncryptedPackageRes encrypt(EncryptedSessionChain chain, byte[] data) {
+
         byte[] encrypted;
         try {
             encrypted = chain.encrypt(data);
@@ -258,6 +262,7 @@ public class EncryptedSessionActor extends ModuleActor {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+        Log.d(TAG, "Encrypt " + Crypto.hex(encrypted));
         return new EncryptedPackageRes(encrypted, theirKeyGroup);
     }
 

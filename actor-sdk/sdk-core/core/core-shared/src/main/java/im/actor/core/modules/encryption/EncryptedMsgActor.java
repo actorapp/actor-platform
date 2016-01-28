@@ -46,6 +46,7 @@ public class EncryptedMsgActor extends ModuleActor {
                 @Override
                 public void onError(Exception e) {
                     Log.d(TAG, "doEncrypt:onError");
+                    e.printStackTrace();
                     future.error(e);
                 }
             });
@@ -74,6 +75,7 @@ public class EncryptedMsgActor extends ModuleActor {
             @Override
             public void onError(Exception e) {
                 Log.d(TAG, "onDecrypt:onError");
+                e.printStackTrace();
             }
         });
     }
