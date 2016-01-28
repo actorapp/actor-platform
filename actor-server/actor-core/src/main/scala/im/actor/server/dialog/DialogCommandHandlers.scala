@@ -305,48 +305,48 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   }
 
   /**
-    * Yields unique message date in current dialog.
-    * When `candidate` date is same as last message date, we increment `candidate` value by 1,
-    * thus resulting date can possibly be in future
-    * @param state current dialog state
-    * @return unique message date in current dialog
-    */
+   * Yields unique message date in current dialog.
+   * When `candidate` date is same as last message date, we increment `candidate` value by 1,
+   * thus resulting date can possibly be in future
+   * @param state current dialog state
+   * @return unique message date in current dialog
+   */
   private def calcSendDate(state: DialogState): Long = {
     val candidate = Instant.now.toEpochMilli
     if (state.lastMessageDate == candidate) state.lastMessageDate + 1 else candidate
   }
 
   /**
-    *
-    * For performance purposes, we have to avoid processing duplicated receive requests(requests with same `date`)
-    * We also must validate receive date - it should not be in future - otherwise it will break processing of
-    * subsequent receive requests with correct `date`
-    *
-    * Valid receive date must be:
-    * • greater than current last receive date
-    * • less or equal than current date(`now`), or less or equal than last message date.
-    *
-    * @param state current dialog state
-    * @param mr message received request from client
-    * @return `true` if we must process message received request and `false` otherwise
-    */
+   *
+   * For performance purposes, we have to avoid processing duplicated receive requests(requests with same `date`)
+   * We also must validate receive date - it should not be in future - otherwise it will break processing of
+   * subsequent receive requests with correct `date`
+   *
+   * Valid receive date must be:
+   * • greater than current last receive date
+   * • less or equal than current date(`now`), or less or equal than last message date.
+   *
+   * @param state current dialog state
+   * @param mr message received request from client
+   * @return `true` if we must process message received request and `false` otherwise
+   */
   private def mustMakeReceive(state: DialogState, mr: MessageReceived): Boolean =
     (mr.date > state.lastReceiveDate) && (mr.date <= mr.now || mr.date <= state.lastMessageDate)
 
   /**
-    *
-    * For performance purposes, we have to avoid processing duplicated read requests(requests with same `date`)
-    * We also must validate read date - it should not be in future - otherwise it will break processing of
-    * subsequent read requests with correct `date`
-    *
-    * Valid read date must be:
-    * • greater than current last read date
-    * • less or equal than current date(`now`), or less or equal than last message date.
-    *
-    * @param state current dialog state
-    * @param mr message received request from client
-    * @return `true` if we must process message received request and `false` otherwise
-    */
+   *
+   * For performance purposes, we have to avoid processing duplicated read requests(requests with same `date`)
+   * We also must validate read date - it should not be in future - otherwise it will break processing of
+   * subsequent read requests with correct `date`
+   *
+   * Valid read date must be:
+   * • greater than current last read date
+   * • less or equal than current date(`now`), or less or equal than last message date.
+   *
+   * @param state current dialog state
+   * @param mr message received request from client
+   * @return `true` if we must process message received request and `false` otherwise
+   */
   private def mustMakeRead(state: DialogState, mr: MessageRead): Boolean =
     (mr.date > state.lastReadDate) && (mr.date <= mr.now || mr.date <= state.lastMessageDate)
 

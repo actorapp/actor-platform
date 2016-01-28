@@ -101,7 +101,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           )
           _ ← GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
           _ ← DBIO.from(Future.sequence((userIds + creatorUserId) map { uid ⇒
-            dialogExt.writeMessageSelf(uid, ApiPeer(ApiPeerType.Group, state.id), creatorUserId, date, randomId, serviceMessage)
+            dialogExt.writeMessageSelf(uid, ApiPeer(ApiPeerType.Group, state.id), creatorUserId, new DateTime(date.toEpochMilli), randomId, serviceMessage)
           }))
           seqstate ← if (isBot(state, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
           else DBIO.from(seqUpdExt.deliverSingleUpdate(creatorUserId, update, PushRules(isFat = true), reduceKey = None, deliveryId = s"creategroup_${groupId}_$randomId"))

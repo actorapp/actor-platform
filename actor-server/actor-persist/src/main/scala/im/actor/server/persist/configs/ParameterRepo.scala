@@ -1,26 +1,25 @@
 package im.actor.server.persist.configs
 
-import im.actor.server.model
 import im.actor.server.model.{ PeerType, Peer }
 import im.actor.server.model.configs.Parameter
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext
 
-final class ParameterTable(tag: Tag) extends Table[model.configs.Parameter](tag, "config_parameters") {
+final class ParameterTable(tag: Tag) extends Table[Parameter](tag, "config_parameters") {
   def userId = column[Int]("user_id", O.PrimaryKey)
 
   def key = column[String]("key", O.PrimaryKey)
 
   def value = column[Option[String]]("value")
 
-  def * = (userId, key, value) <> ((model.configs.Parameter.apply _).tupled, model.configs.Parameter.unapply)
+  def * = (userId, key, value) <> ((Parameter.apply _).tupled, Parameter.unapply)
 }
 
 object ParameterRepo {
   val parameters = TableQuery[ParameterTable]
 
-  def createOrUpdate(parameter: model.configs.Parameter) =
+  def createOrUpdate(parameter: Parameter) =
     parameters.insertOrUpdate(parameter)
 
   def find(userId: Int) =
