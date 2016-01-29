@@ -1,8 +1,10 @@
 package im.actor.core.modules.encryption;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import im.actor.core.api.ApiMessage;
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.entity.EncryptedBox;
@@ -21,6 +23,7 @@ import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Predicate;
 import im.actor.runtime.function.Predicates;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseResolver;
@@ -118,12 +121,7 @@ public class EncryptedPeerActor extends ModuleActor {
                                 .log(TAG + ":session#" + keysGroup.getKeyGroupId());
                     }
                 })
-                .mapOptional(new Function<SessionActor, Promise<EncryptedSessionActor.EncryptedPackageRes>>() {
-                    @Override
-                    public Promise<EncryptedSessionActor.EncryptedPackageRes> apply(SessionActor sessionActor) {
-                        return ask(sessionActor.getActorRef(), new EncryptedSessionActor.EncryptPackage(encKey));
-                    }
-                })
+                .mapOptional(encrypt(encKey))
                 .zip()
                 .map(new Function<EncryptedSessionActor.EncryptedPackageRes[], EncryptBoxResponse>() {
                     @Override
@@ -168,6 +166,59 @@ public class EncryptedPeerActor extends ModuleActor {
         //
         // Picking session
         //
+
+        PromisesArray.of(data.getKeys())
+                .filter(EncryptedBoxKey.FILTER(myUid(), ownKeyGroupId))
+                .first()
+                .mapPromise(new Function<EncryptedBoxKey, Promise<Tuple2<SessionActor, EncryptedBoxKey>>>() {
+                    @Override
+                    public Promise<Tuple2<SessionActor, EncryptedBoxKey>> apply(final EncryptedBoxKey boxKey) {
+                        final long senderPreKeyId = ByteStrings.bytesToLong(boxKey.getEncryptedKey(), 4);
+                        final long receiverPreKeyId = ByteStrings.bytesToLong(boxKey.getEncryptedKey(), 12);
+
+                        if (activeSessions.containsKey(boxKey.getKeyGroupId())) {
+                            for (SessionActor s : activeSessions.get(senderKeyGroup).getSessions()) {
+                                if (s.getSession().getOwnPreKeyId() == receiverPreKeyId &&
+                                        s.getSession().getTheirPreKeyId() == senderPreKeyId) {
+                                    return success(new Tuple2<>(s, boxKey));
+                                }
+                            }
+                        }
+                        return context().getEncryption().getSessionManagerInt()
+                                .pickSession(uid, senderKeyGroup, receiverPreKeyId, senderPreKeyId)
+                                .map(new Function<PeerSession, Tuple2<SessionActor, EncryptedBoxKey>>() {
+                                    @Override
+                                    public Tuple2<SessionActor, EncryptedBoxKey> apply(PeerSession src) {
+                                        return new Tuple2<>(spawnSession(src), boxKey);
+                                    }
+                                });
+                    }
+                })
+                .mapPromise(new Function<Tuple2<SessionActor, EncryptedBoxKey>, Promise<EncryptedSessionActor.DecryptedPackage>>() {
+                    @Override
+                    public Promise<EncryptedSessionActor.DecryptedPackage> apply(Tuple2<SessionActor, EncryptedBoxKey> src) {
+                        return ask(src.getT1().getActorRef(), new EncryptedSessionActor.DecryptPackage(src.getT2().getEncryptedKey()));
+                    }
+                })
+                .map(new Function<EncryptedSessionActor.DecryptedPackage, DecryptBoxResponse>() {
+                    @Override
+                    public DecryptBoxResponse apply(EncryptedSessionActor.DecryptedPackage decryptedPackage) {
+                        byte[] encData;
+                        try {
+                            encData = ActorBox.openBox(ByteStrings.intToBytes(senderKeyGroup), encPackage, new ActorBoxKey(decryptedPackage.getData()));
+
+                            ApiMessage message = ApiMessage.fromBytes(encData);
+
+                            Log.d(TAG, "Box open:" + message);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            throw new RuntimeException(e);
+                        }
+                        return new DecryptBoxResponse(encData);
+                    }
+                })
+                .pipeTo(resolver)
+                .done(self());
 
 //        PromisesArray.of(data.getKeys())
 //                // Searching for compatable key
@@ -361,6 +412,15 @@ public class EncryptedPeerActor extends ModuleActor {
             activeSessions.put(session.getTheirKeyGroupId(), new SessionHolder(session.getTheirKeyGroupId(), l));
         }
         return cont;
+    }
+
+    private Function<SessionActor, Promise<EncryptedSessionActor.EncryptedPackageRes>> encrypt(final byte[] encKey) {
+        return new Function<SessionActor, Promise<EncryptedSessionActor.EncryptedPackageRes>>() {
+            @Override
+            public Promise<EncryptedSessionActor.EncryptedPackageRes> apply(SessionActor sessionActor) {
+                return ask(sessionActor.getActorRef(), new EncryptedSessionActor.EncryptPackage(encKey));
+            }
+        };
     }
 
     //

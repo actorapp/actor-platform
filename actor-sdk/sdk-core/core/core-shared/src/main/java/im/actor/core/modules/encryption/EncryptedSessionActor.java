@@ -54,22 +54,13 @@ public class EncryptedSessionActor extends ModuleActor {
     //
 
     private final int uid;
-    private final long ownKey0;
-    private final long theirKey0;
-    private final int theirKeyGroup;
+    private final PeerSession session;
 
     //
     // Key Manager reference
     //
 
     private KeyManagerInt keyManager;
-
-    //
-    // Loaded Session
-    //
-
-    private EncryptedSession session;
-    private boolean isUnavailable = false;
 
     //
     // Temp encryption chains
@@ -87,80 +78,16 @@ public class EncryptedSessionActor extends ModuleActor {
         super(context);
         this.TAG = "EncryptionSessionActor#" + session.getUid() + "_" + session.getTheirKeyGroupId();
         this.uid = session.getUid();
-        this.ownKey0 = session.getOwnPreKeyId();
-        this.theirKey0 = session.getTheirPreKeyId();
-        this.theirKeyGroup = session.getTheirKeyGroupId();
+        this.session = session;
     }
 
     @Override
     public void preStart() {
-        this.keyManager = context().getEncryption().getKeyManagerInt();
-
-        ActorRef keyManager = context().getEncryption().getKeyManager();
-        Log.d(TAG, "preStart");
-
-        Promises.tuple(
-                ask(keyManager, new FetchOwnKey()),
-                ask(keyManager, new FetchOwnPreKeyById(ownKey0)),
-                ask(keyManager, new FetchUserPreKey(uid, theirKeyGroup, theirKey0)),
-                ask(keyManager, new FetchUserKeys(uid)))
-                .map(new Function<Tuple4<OwnIdentity, PrivateKey, PublicKey, UserKeys>, EncryptedSession>() {
-                    @Override
-                    public EncryptedSession apply(Tuple4<OwnIdentity, PrivateKey, PublicKey, UserKeys> res) {
-                        PrivateKey ownIdentityKey = res.getT1().getIdentityKey();
-                        PrivateKey ownPreKey = res.getT2();
-                        PublicKey theirPreKey = res.getT3();
-                        UserKeys keyGroups = res.getT4();
-                        UserKeysGroup keysGroup = null;
-                        for (UserKeysGroup g : keyGroups.getUserKeysGroups()) {
-                            if (g.getKeyGroupId() == theirKeyGroup) {
-                                keysGroup = g;
-                                break;
-                            }
-                        }
-                        if (keysGroup == null) {
-                            Log.w(TAG, "Their key group not found");
-                            throw new RuntimeException("Their key group not found");
-                        }
-                        PublicKey theirIdentityKey = keysGroup.getIdentityKey();
-
-                        return new EncryptedSession(ownIdentityKey, ownPreKey, theirIdentityKey, theirPreKey, theirKeyGroup);
-                    }
-                })
-                .then(new Consumer<EncryptedSession>() {
-                    @Override
-                    public void apply(EncryptedSession encryptedSession) {
-                        Log.d(TAG, "Loaded");
-                        EncryptedSessionActor.this.session = encryptedSession;
-                        unstashAll();
-                    }
-                })
-                .failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        Log.w(TAG, "Session load error");
-                        Log.e(TAG, e);
-                        isUnavailable = true;
-                        unstashAll();
-                    }
-                })
-                .done(self());
+        super.preStart();
+        keyManager = context().getEncryption().getKeyManagerInt();
     }
 
     private void onEncrypt(final byte[] data, final PromiseResolver<EncryptedPackageRes> future) {
-
-        //
-        // If not ready: stash encryption request
-        //
-
-        if (session == null) {
-            if (isUnavailable) {
-                future.error(new RuntimeException("Session is not available"));
-            } else {
-                stash();
-            }
-            return;
-        }
 
         //
         // Stage 1: Pick Their Ephemeral key. Use already received or pick random pre key.
@@ -169,7 +96,7 @@ public class EncryptedSessionActor extends ModuleActor {
         //
 
         Promises.success(latestTheirEphemeralKey)
-                .mapIfNullPromise(keyManager.supplyUserPreKey(uid, theirKeyGroup))
+                .mapIfNullPromise(keyManager.supplyUserPreKey(uid, session.getTheirKeyGroupId()))
                 .map(new Function<byte[], EncryptedSessionChain>() {
                     @Override
                     public EncryptedSessionChain apply(byte[] publicKey) {
@@ -187,19 +114,6 @@ public class EncryptedSessionActor extends ModuleActor {
     }
 
     private void onDecrypt(final byte[] data, final PromiseResolver<DecryptedPackage> future) {
-
-        //
-        // If not ready: stash decryption request
-        //
-
-        if (session == null) {
-            if (isUnavailable) {
-                future.error(new RuntimeException("Session is not available"));
-            } else {
-                stash();
-            }
-            return;
-        }
 
         //
         // Stage 1: Parsing message header
@@ -257,7 +171,7 @@ public class EncryptedSessionActor extends ModuleActor {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        return new EncryptedPackageRes(encrypted, theirKeyGroup);
+        return new EncryptedPackageRes(encrypted, session.getTheirKeyGroupId());
     }
 
     private Promise<EncryptedSessionChain> pickDecryptChain(final byte[] theirEphemeralKey, final byte[] ephemeralKey) {
