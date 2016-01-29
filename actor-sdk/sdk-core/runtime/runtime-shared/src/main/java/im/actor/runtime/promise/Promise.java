@@ -192,8 +192,6 @@ public class Promise<T> {
             @Override
             public void onError(Exception e) {
                 Log.w(TAG, "Error: " + e);
-                Log.e(TAG, e);
-                e.printStackTrace();
             }
         });
     }
@@ -300,8 +298,8 @@ public class Promise<T> {
                             }
                             promise.then(new Consumer<T>() {
                                 @Override
-                                public void apply(T t) {
-                                    resolver.result(t);
+                                public void apply(T t1) {
+                                    resolver.result(t1);
                                 }
                             });
                             promise.failure(new Consumer<Exception>() {

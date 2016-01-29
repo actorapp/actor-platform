@@ -88,6 +88,7 @@ public class PeerSession extends BserObject {
         theirKeyGroupId = values.getInt(4);
         ownPreKeyId = values.getLong(5);
         theirPreKeyId = values.getLong(6);
+        masterKey = values.getBytes(7);
     }
 
     @Override
@@ -98,5 +99,6 @@ public class PeerSession extends BserObject {
         writer.writeInt(4, theirKeyGroupId);
         writer.writeLong(5, ownPreKeyId);
         writer.writeLong(6, theirPreKeyId);
+        writer.writeBytes(7, masterKey);
     }
 }
