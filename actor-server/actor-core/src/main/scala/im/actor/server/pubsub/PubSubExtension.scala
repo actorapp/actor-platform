@@ -6,11 +6,11 @@ import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.messaging.ApiMessage
 import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
-import im.actor.server.model
+import im.actor.server.model.{ PeerType, Peer }
 
 sealed trait PubSubExtension extends Extension
 
-final case class PeerMessage(fromPeer: model.Peer, toPeer: model.Peer, randomId: Long, date: Long, message: ApiMessage)
+final case class PeerMessage(fromPeer: Peer, toPeer: Peer, randomId: Long, date: Long, message: ApiMessage)
 
 final class PubSubExtensionImpl(system: ActorSystem) extends PubSubExtension with PeersImplicits {
 
@@ -19,11 +19,11 @@ final class PubSubExtensionImpl(system: ActorSystem) extends PubSubExtension wit
 
   private val mediator = DistributedPubSub(system).mediator
 
-  def messagesTopic(peer: model.Peer): String = {
+  def messagesTopic(peer: Peer): String = {
     val strType = peer.typ match {
-      case model.PeerType.Private ⇒ "private"
-      case model.PeerType.Group   ⇒ "group"
-      case _                      ⇒ throw new RuntimeException(s"Unknown peer type ${peer.typ}")
+      case PeerType.Private ⇒ "private"
+      case PeerType.Group   ⇒ "group"
+      case _                ⇒ throw new RuntimeException(s"Unknown peer type ${peer.typ}")
     }
 
     s"messaging.messages.$strType.${peer.id}"
@@ -39,14 +39,14 @@ final class PubSubExtensionImpl(system: ActorSystem) extends PubSubExtension wit
 
   def publish(message: PeerMessage): Unit = {
     message.toPeer.typ match {
-      case model.PeerType.Private ⇒
+      case PeerType.Private ⇒
         val senderTopic = messagesTopic(ApiPeer(ApiPeerType.Private, message.fromPeer.id))
         val receiverTopic = messagesTopic(message.toPeer)
 
         mediator ! DistributedPubSubMediator.Publish(privateMessagesTopic, message, sendOneMessageToEachGroup = true)
         mediator ! DistributedPubSubMediator.Publish(senderTopic, message, sendOneMessageToEachGroup = true)
         mediator ! DistributedPubSubMediator.Publish(receiverTopic, message, sendOneMessageToEachGroup = true)
-      case model.PeerType.Group ⇒
+      case PeerType.Group ⇒
         val topic = messagesTopic(message.toPeer)
 
         mediator ! DistributedPubSubMediator.Publish(groupMessagesTopic, message, sendOneMessageToEachGroup = false)

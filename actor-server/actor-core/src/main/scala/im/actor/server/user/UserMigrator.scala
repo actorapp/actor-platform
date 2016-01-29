@@ -1,6 +1,6 @@
 package im.actor.server.user
 
-import java.time.ZoneOffset
+import java.time.{ Instant, ZoneOffset }
 
 import akka.actor.{ ActorSystem, Props }
 import akka.pattern.pipe
@@ -23,7 +23,7 @@ private final case class Migrate(
   countryCode: String,
   sex:         model.Sex,
   isBot:       Boolean,
-  createdAt:   DateTime,
+  createdAt:   Instant,
   authIds:     Seq[Long],
   phones:      Seq[model.UserPhone],
   emails:      Seq[model.UserEmail],
@@ -72,7 +72,7 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
           user.countryCode,
           user.sex,
           user.isBot,
-          new DateTime(user.createdAt.toInstant(ZoneOffset.UTC).getEpochSecond() * 1000),
+          user.createdAt.toInstant(ZoneOffset.UTC),
           authIds,
           phones,
           emails,
@@ -95,25 +95,25 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
   def receiveCommand: Receive = {
     case m @ Migrate(accessSalt, name, countryCode, sex, isBot, createdAt, authIds, phones, emails, avatarOpt) ⇒
       log.info("Migrate: {}", m)
-      val created = TSEvent(createdAt, Created(userId, accessSalt, None, name, countryCode, ApiSex(sex.toInt), isBot))
-      val authAdded = authIds map (a ⇒ TSEvent(createdAt, AuthAdded(a)))
-      val phoneAdded = phones map (p ⇒ TSEvent(createdAt, PhoneAdded(p.number)))
-      val emailAdded = emails map (e ⇒ TSEvent(createdAt, EmailAdded(e.email)))
+      val created = Created(createdAt, userId, accessSalt, None, name, countryCode, ApiSex(sex.toInt), isBot)
+      val authAdded = authIds map (a ⇒ AuthAdded(createdAt, a))
+      val phoneAdded = phones map (p ⇒ PhoneAdded(createdAt, p.number))
+      val emailAdded = emails map (e ⇒ EmailAdded(createdAt, e.email))
       val avatarUpdated = avatarOpt match {
         case Some(model.AvatarData(_, _,
           Some(smallFileId), Some(smallFileHash), Some(smallFileSize),
           Some(largeFileId), Some(largeFileHash), Some(largeFileSize),
           Some(fullFileId), Some(fullFileHash), Some(fullFileSize),
           Some(fullWidth), Some(fullHeight))) ⇒
-          Vector(TSEvent(createdAt, AvatarUpdated(Some(Avatar(
+          Vector(AvatarUpdated(createdAt, Some(Avatar(
             Some(AvatarImage(FileLocation(smallFileId, smallFileHash), 100, 100, smallFileSize.toLong)),
             Some(AvatarImage(FileLocation(largeFileId, largeFileHash), 200, 200, largeFileSize.toLong)),
             Some(AvatarImage(FileLocation(fullFileId, fullFileHash), fullWidth, fullHeight, fullFileSize.toLong))
-          )))))
+          ))))
         case _ ⇒ Vector.empty
       }
 
-      val events: Vector[TSEvent] = (created +: (authAdded ++ phoneAdded ++ emailAdded ++ avatarUpdated)).toVector
+      val events: Vector[UserEvent] = (created +: (authAdded ++ phoneAdded ++ emailAdded ++ avatarUpdated)).toVector
 
       persistAllAsync(events)(identity)
 

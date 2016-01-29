@@ -9,7 +9,7 @@ import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ FileStorageExtension, FileErrors, FileStorageAdapter, ImageUtils }
-import im.actor.server.persist
+import im.actor.server.persist.UserRepo
 import im.actor.server.sequence.{ SequenceErrors, SeqState }
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user._
@@ -103,7 +103,7 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
     authorized(clientData) { implicit client ⇒
       (for {
         _ ← fromBoolean(ProfileErrors.NicknameInvalid)(StringUtils.validUsername(nickname))
-        exists ← fromFuture(db.run(persist.UserRepo.nicknameExists(nickname.trim)))
+        exists ← fromFuture(db.run(UserRepo.nicknameExists(nickname.trim)))
       } yield ResponseBool(!exists)).run
     }
   }

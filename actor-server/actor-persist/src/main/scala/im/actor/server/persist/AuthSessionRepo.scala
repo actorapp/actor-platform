@@ -1,12 +1,11 @@
 package im.actor.server.persist
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
+import im.actor.server.model.AuthSession
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.model
-
-final class AuthSessionTable(tag: Tag) extends Table[model.AuthSession](tag, "auth_sessions") {
+final class AuthSessionTable(tag: Tag) extends Table[AuthSession](tag, "auth_sessions") {
   def userId = column[Int]("user_id", O.PrimaryKey)
 
   def id = column[Int]("id", O.PrimaryKey)
@@ -33,7 +32,7 @@ final class AuthSessionTable(tag: Tag) extends Table[model.AuthSession](tag, "au
 
   def * =
     (userId, id, authId, appId, appTitle, deviceTitle, deviceHash, authTime, authLocation, latitude, longitude) <>
-      ((model.AuthSession.apply _).tupled, model.AuthSession.unapply)
+      ((AuthSession.apply _).tupled, AuthSession.unapply)
 }
 
 object AuthSessionRepo {
@@ -61,7 +60,7 @@ object AuthSessionRepo {
     activeSessions.filter(_.userId === userId)
   }
 
-  def create(session: model.AuthSession) =
+  def create(session: AuthSession) =
     sessions += session
 
   def find(userId: Int, id: Int) =

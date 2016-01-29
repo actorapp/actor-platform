@@ -1,11 +1,10 @@
 package im.actor.server.persist.auth
 
 import im.actor.server.db.ActorPostgresDriver.api._
-
-import im.actor.server.model
+import im.actor.server.model.AuthEmailTransaction
 
 final class AuthEmailTransactionTable(tag: Tag)
-  extends AuthTransactionRepoBase[model.AuthEmailTransaction](tag, "auth_email_transactions")
+  extends AuthTransactionRepoBase[AuthEmailTransaction](tag, "auth_email_transactions")
   with InheritingTable {
   def email = column[String]("email")
   def redirectUri = column[Option[String]]("redirect_uri")
@@ -23,7 +22,7 @@ final class AuthEmailTransactionTable(tag: Tag)
     deviceInfo,
     isChecked,
     deletedAt
-  ) <> (model.AuthEmailTransaction.tupled, model.AuthEmailTransaction.unapply)
+  ) <> (AuthEmailTransaction.tupled, AuthEmailTransaction.unapply)
 }
 
 object AuthEmailTransactionRepo {
@@ -39,7 +38,7 @@ object AuthEmailTransactionRepo {
     active.filter(t ⇒ t.email === email && t.deviceHash === deviceHash)
   }
 
-  def create(transaction: model.AuthEmailTransaction) =
+  def create(transaction: AuthEmailTransaction) =
     emailTransactions += transaction
 
   def find(transactionHash: String) =

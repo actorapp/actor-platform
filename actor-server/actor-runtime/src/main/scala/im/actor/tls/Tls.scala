@@ -6,7 +6,7 @@ import javax.net.ssl._
 
 import scala.collection.immutable
 
-import akka.http.scaladsl.HttpsContext
+import akka.http.scaladsl.HttpsConnectionContext
 import akka.stream.io._
 import akka.stream.scaladsl.{ BidiFlow, Flow, Keep }
 import akka.util.ByteString
@@ -20,8 +20,8 @@ case class TlsContext(
   clientAuth:          Option[ClientAuth]            = None,
   sslParameters:       Option[SSLParameters]         = None
 ) {
-  def asHttpsContext: HttpsContext =
-    HttpsContext(
+  def asHttpsContext: HttpsConnectionContext =
+    new HttpsConnectionContext(
       sslContext,
       enabledCipherSuites,
       enabledProtocols,
@@ -73,16 +73,17 @@ object TlsContext {
 }
 
 object Tls {
-  type Connection = Flow[ByteString, ByteString, Unit]
-  type TlsLayer = BidiFlow[ByteString, ByteString, ByteString, ByteString, Unit]
+  type Connection = Flow[ByteString, ByteString, akka.NotUsed]
+  type TlsLayer = BidiFlow[ByteString, ByteString, ByteString, ByteString, akka.NotUsed]
 
-  private type WrapLayer = BidiFlow[ByteString, SslTlsInbound, SslTlsOutbound, ByteString, Unit]
+  private type WrapLayer = BidiFlow[ByteString, SslTlsInbound, SslTlsOutbound, ByteString, akka.NotUsed]
 
-  private val unwrapTls: Flow[SslTlsInbound, ByteString, Unit] = Flow[SslTlsInbound] collect { case x: SessionBytes ⇒ x.bytes }
+  private val unwrapTls: Flow[SslTlsInbound, ByteString, akka.NotUsed] = Flow[SslTlsInbound] collect { case x: SessionBytes ⇒ x.bytes }
 
-  private val wrapTls: Flow[ByteString, SslTlsOutbound, Unit] = Flow[ByteString].map[SslTlsOutbound](SendBytes)
+  private val wrapTls: Flow[ByteString, SslTlsOutbound, akka.NotUsed] = Flow[ByteString].map[SslTlsOutbound](SendBytes)
 
-  private val wrapLayer: BidiFlow[ByteString, SslTlsOutbound, SslTlsInbound, ByteString, Unit] = BidiFlow.fromFlowsMat(wrapTls, unwrapTls)(Keep.right)
+  private val wrapLayer: BidiFlow[ByteString, SslTlsOutbound, SslTlsInbound, ByteString, akka.NotUsed] =
+    BidiFlow.fromFlowsMat(wrapTls, unwrapTls)(Keep.right)
 
   /**
    * Generate TlsLayer
@@ -99,7 +100,7 @@ object Tls {
    */
   def layer(flow: SslTls.ScalaFlow): TlsLayer = wrapLayer atop flow
 
-  def connection(context: TlsContext, connFlow: Flow[ByteString, ByteString, Unit]): Connection = {
+  def connection(context: TlsContext, connFlow: Flow[ByteString, ByteString, akka.NotUsed]): Connection = {
     val sslTls = SslTls(
       context.sslContext,
       NegotiateNewSession.apply(
