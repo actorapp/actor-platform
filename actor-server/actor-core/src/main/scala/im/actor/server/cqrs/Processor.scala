@@ -1,27 +1,20 @@
 package im.actor.server.cqrs
 
-import java.time.Instant
-
 import akka.actor.ActorLogging
 import akka.pattern.pipe
 import akka.persistence.{ PersistentActor, RecoveryCompleted }
-import im.actor.server.event.TSEvent
-import org.joda.time.DateTime
 
 import scala.concurrent.Future
+import scala.reflect.ClassTag
 import scala.util.control.NoStackTrace
 
-trait ProcessorState[S] {
-  def updated(e: AnyRef, ts: Instant): S
-
-  final def updated(e: TSEvent): S = updated(e.payload, Instant.ofEpochMilli(e.ts.getMillis))
-
-  final def updated(e: AnyRef): S = updated(e, Instant.now)
+trait ProcessorState[S, E] {
+  def updated(e: E): S
 }
 
 abstract class ProcessorError(msg: String) extends RuntimeException(msg) with NoStackTrace
 
-trait Processor[S <: ProcessorState[S]] extends PersistentActor with ActorLogging {
+abstract class Processor[S <: ProcessorState[S, E], E: ClassTag] extends PersistentActor with ActorLogging {
 
   import context.dispatcher
 
@@ -34,16 +27,6 @@ trait Processor[S <: ProcessorState[S]] extends PersistentActor with ActorLoggin
 
   protected final def state: S = _state
 
-  protected def persistTS[E <: AnyRef](e: E)(handler: (E, Instant) ⇒ Unit): Unit = {
-    val instant = Instant.now()
-    val dt = new DateTime(instant.toEpochMilli)
-    val tsEv = TSEvent(dt, e)
-
-    persist(tsEv) { _ ⇒
-      handler(e, instant)
-    }
-  }
-
   override def receiveCommand = handleCommand orElse (handleQuery andThen (_ pipeTo sender()))
 
   override def unhandled(message: Any): Unit = {
@@ -52,7 +35,7 @@ trait Processor[S <: ProcessorState[S]] extends PersistentActor with ActorLoggin
   }
 
   override final def receiveRecover = {
-    case e: TSEvent ⇒
+    case e: E ⇒
       _state = _state.updated(e)
     case RecoveryCompleted ⇒ onRecoveryCompleted()
   }
@@ -63,12 +46,10 @@ trait Processor[S <: ProcessorState[S]] extends PersistentActor with ActorLoggin
 
   protected def onRecoveryCompleted() = {}
 
-  protected def commit(e: AnyRef, ts: Instant): S = {
-    _state = _state.updated(e, ts)
+  protected def commit(e: E): S = {
+    _state = _state.updated(e)
     state
   }
-
-  protected def commit(e: TSEvent): Unit = commit(e.payload, Instant.ofEpochMilli(e.ts.getMillis))
 
   protected def reply(msg: AnyRef): Unit = sender() ! msg
 

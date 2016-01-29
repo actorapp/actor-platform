@@ -1,7 +1,5 @@
 package im.actor.server.model
 
-import java.time.LocalDateTime
+import java.time.{ Instant, LocalDateTime }
 
-import org.joda.time.DateTime
-
-case class GroupUser(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: DateTime, joinedAt: Option[LocalDateTime], isAdmin: Boolean)
+case class GroupUser(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: Instant, joinedAt: Option[LocalDateTime], isAdmin: Boolean)

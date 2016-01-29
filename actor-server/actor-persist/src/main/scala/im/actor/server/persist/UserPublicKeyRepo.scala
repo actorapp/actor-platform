@@ -1,18 +1,17 @@
 package im.actor.server.persist
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
+import im.actor.server.model.UserPublicKey
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.model
-
-final class UserPublicKeyTable(tag: Tag) extends Table[model.UserPublicKey](tag, "public_keys") {
+final class UserPublicKeyTable(tag: Tag) extends Table[UserPublicKey](tag, "public_keys") {
   def userId = column[Int]("user_id", O.PrimaryKey)
   def hash = column[Long]("hash", O.PrimaryKey)
   def data = column[Array[Byte]]("data")
   def deletedAt = column[Option[DateTime]]("deleted_at")
 
-  def * = (userId, hash, data) <> (model.UserPublicKey.tupled, model.UserPublicKey.unapply)
+  def * = (userId, hash, data) <> (UserPublicKey.tupled, UserPublicKey.unapply)
 }
 
 object UserPublicKeyRepo {
@@ -24,7 +23,7 @@ object UserPublicKeyRepo {
   private def activeByUserId(userId: Int) =
     active.filter(p ⇒ p.userId === userId && p.deletedAt.isEmpty)
 
-  def create(pk: model.UserPublicKey) =
+  def create(pk: UserPublicKey) =
     pkeys += pk
 
   def delete(userId: Int, hash: Long) =

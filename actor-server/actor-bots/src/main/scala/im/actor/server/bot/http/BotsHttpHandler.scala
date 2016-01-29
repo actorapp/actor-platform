@@ -100,7 +100,7 @@ private[bot] final class BotsHttpHandler(botExt: BotExtension)(implicit system: 
 
         onSuccess(flowFuture) {
           case flow ⇒
-            handleWebsocketMessages(flow)
+            handleWebSocketMessages(flow)
         }
       }
     }

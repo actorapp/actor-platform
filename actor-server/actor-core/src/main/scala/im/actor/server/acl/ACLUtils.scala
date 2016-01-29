@@ -10,8 +10,7 @@ import im.actor.acl.{ ACLBase, ACLFiles }
 import im.actor.api.rpc.peers._
 import im.actor.concurrent.FutureExt
 import im.actor.server.group.GroupExtension
-import im.actor.server.model
-import im.actor.server.model.UserPassword
+import im.actor.server.model._
 import im.actor.server.persist.UserPasswordRepo
 import im.actor.server.user.UserExtension
 import im.actor.util.ThreadLocalSecureRandom
@@ -31,25 +30,25 @@ object ACLUtils extends ACLBase with ACLFiles {
   def userAccessHash(authId: Long, userId: Int, accessSalt: String, md: MessageDigest = getMDInstance())(implicit s: ActorSystem): Long =
     hash(s"$authId:$userId:$accessSalt:${secretKey()}", md)
 
-  def userAccessHash(authId: Long, u: model.User)(implicit s: ActorSystem): Long =
+  def userAccessHash(authId: Long, u: User)(implicit s: ActorSystem): Long =
     userAccessHash(authId, u.id, u.accessSalt)
 
   def phoneAccessHash(authId: Long, userId: Int, phoneId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
     hash(s"$authId:$userId:$phoneId:$accessSalt:${secretKey()}")
 
-  def phoneAccessHash(authId: Long, p: model.UserPhone)(implicit s: ActorSystem): Long =
+  def phoneAccessHash(authId: Long, p: UserPhone)(implicit s: ActorSystem): Long =
     phoneAccessHash(authId, p.userId, p.id, p.accessSalt)
 
   def emailAccessHash(authId: Long, userId: Int, emailId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
     hash(s"$authId:$userId:$emailId:$accessSalt:${secretKey()}")
 
-  def emailAccessHash(authId: Long, e: model.UserEmail)(implicit s: ActorSystem): Long =
+  def emailAccessHash(authId: Long, e: UserEmail)(implicit s: ActorSystem): Long =
     emailAccessHash(authId, e.userId, e.id, e.accessSalt)
 
   def stickerPackAccessHash(id: Int, ownerUserId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
     hash(s"$id:$ownerUserId:$accessSalt:${secretKey()}")
 
-  def stickerPackAccessHash(pack: model.StickerPack)(implicit s: ActorSystem): Long =
+  def stickerPackAccessHash(pack: StickerPack)(implicit s: ActorSystem): Long =
     stickerPackAccessHash(pack.id, pack.ownerUserId, pack.accessSalt)
 
   def authTransactionHash(accessSalt: String)(implicit s: ActorSystem): String =
