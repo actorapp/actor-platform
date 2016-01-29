@@ -2,6 +2,8 @@ package im.actor.sdk.controllers.fragment.settings;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public class ActorSettingsField implements IActorSettingsField {
@@ -97,6 +99,16 @@ public class ActorSettingsField implements IActorSettingsField {
     @Override
     public View getRightView() {
         return rightView;
+    }
+
+    @Override
+    public int getRightViewWidth() {
+        return ViewGroup.LayoutParams.WRAP_CONTENT;
+    }
+
+    @Override
+    public int getRightViewHeight() {
+        return ViewGroup.LayoutParams.WRAP_CONTENT;
     }
 
 
