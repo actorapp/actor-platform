@@ -86,7 +86,7 @@
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
-    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert" />
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Dialog.Alert" />
 
     <style name="AppcompatNoDisplay" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@null</item>
