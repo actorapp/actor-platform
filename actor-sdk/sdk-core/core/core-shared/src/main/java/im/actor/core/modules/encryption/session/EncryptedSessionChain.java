@@ -3,6 +3,7 @@ package im.actor.core.modules.encryption.session;
 import java.util.HashSet;
 import java.util.Random;
 
+import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.util.RandomUtils;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
@@ -18,14 +19,14 @@ import im.actor.runtime.crypto.ratchet.RatchetRootChainKey;
 
 public class EncryptedSessionChain {
 
-    private EncryptedSession session;
+    private PeerSession session;
     private byte[] ownPrivateKey;
     private byte[] theirPublicKey;
     private HashSet<Integer> receivedCounters;
     private int sentCounter;
     private byte[] rootChainKey;
 
-    public EncryptedSessionChain(EncryptedSession session, byte[] ownPrivateKey, byte[] theirPublicKey) {
+    public EncryptedSessionChain(PeerSession session, byte[] ownPrivateKey, byte[] theirPublicKey) {
         this.session = session;
         this.ownPrivateKey = ownPrivateKey;
         this.theirPublicKey = theirPublicKey;
@@ -37,7 +38,7 @@ public class EncryptedSessionChain {
                 session.getMasterKey());
     }
 
-    public EncryptedSession getSession() {
+    public PeerSession getSession() {
         return session;
     }
 
@@ -101,15 +102,15 @@ public class EncryptedSessionChain {
         ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rootChainKey, messageIndex);
 
         byte[] header = ByteStrings.merge(
-                ByteStrings.intToBytes(session.getPeerKeyGroupId()),
-                ByteStrings.longToBytes(session.getOwnPreKey().getKeyId()), /*Alice Initial Ephermal*/
-                ByteStrings.longToBytes(session.getTheirPreKey().getKeyId()), /*Bob Initial Ephermal*/
+                ByteStrings.intToBytes(session.getOwnKeyGroupId()),
+                ByteStrings.longToBytes(session.getOwnPreKeyId()), /*Alice Initial Ephermal*/
+                ByteStrings.longToBytes(session.getTheirPreKeyId()), /*Bob Initial Ephermal*/
                 Curve25519.keyGenPublic(ownPrivateKey),
                 theirPublicKey,
                 ByteStrings.intToBytes(messageIndex)); /* Message Index */
 
-        Log.d("EncryptedSessionChain#" + session.getPeerKeyGroupId(), "Own ephemeral Key: " + Crypto.keyHash(Curve25519.keyGenPublic(ownPrivateKey)));
-        Log.d("EncryptedSessionChain#" + session.getPeerKeyGroupId(), "Their ephemeral Key: " + Crypto.keyHash(theirPublicKey));
+//        Log.d("EncryptedSessionChain#" + session.getPeerKeyGroupId(), "Own ephemeral Key: " + Crypto.keyHash(Curve25519.keyGenPublic(ownPrivateKey)));
+//        Log.d("EncryptedSessionChain#" + session.getPeerKeyGroupId(), "Their ephemeral Key: " + Crypto.keyHash(theirPublicKey));
 
         return ByteStrings.merge(header, ActorBox.closeBox(header, data, Crypto.randomBytes(32), ratchetMessageKey));
     }

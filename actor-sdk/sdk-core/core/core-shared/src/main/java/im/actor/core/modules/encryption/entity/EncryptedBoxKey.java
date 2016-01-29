@@ -1,6 +1,17 @@
 package im.actor.core.modules.encryption.entity;
 
+import im.actor.runtime.function.Predicate;
+
 public class EncryptedBoxKey {
+
+    public static Predicate<EncryptedBoxKey> FILTER(final int myUid, final int keyGroupId) {
+        return new Predicate<EncryptedBoxKey>() {
+            @Override
+            public boolean apply(EncryptedBoxKey boxKey) {
+                return boxKey.getUid() == myUid && boxKey.getKeyGroupId() == keyGroupId;
+            }
+        };
+    }
 
     private final int uid;
     private final int keyGroupId;
