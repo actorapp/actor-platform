@@ -10141,6 +10141,46 @@
           }
         },
         {
+          "type": "enum",
+          "content": {
+            "name": "DeviceType",
+            "values": [
+              {
+                "name": "GENERIC",
+                "id": 1
+              },
+              {
+                "name": "PC",
+                "id": 2
+              },
+              {
+                "name": "MOBILE",
+                "id": 3
+              },
+              {
+                "name": "TABLET",
+                "id": 4
+              },
+              {
+                "name": "WATCH",
+                "id": 5
+              },
+              {
+                "name": "MIRROR",
+                "id": 6
+              },
+              {
+                "name": "CAR",
+                "id": 7
+              },
+              {
+                "name": "TABLE",
+                "id": 8
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SetOnline",
@@ -10162,6 +10202,18 @@
                 "argument": "timeout",
                 "category": "full",
                 "description": "timeout of online state in milliseconds"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceType",
+                "category": "full",
+                "description": "Optional device type"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceCategory",
+                "category": "full",
+                "description": "Optional device category, for example android or ios"
               }
             ],
             "attributes": [
@@ -10177,8 +10229,109 @@
                 },
                 "id": 2,
                 "name": "timeout"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "DeviceType"
+                  }
+                },
+                "id": 3,
+                "name": "deviceType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "deviceCategory"
               }
             ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "PauseNotifications",
+            "header": 166,
+            "doc": [
+              "Update about pausing notifications",
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "full",
+                "description": "  Timeout for notifications resume"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 1,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "RestoreNotifications",
+            "header": 167,
+            "doc": [
+              "Update about restoring notifications"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "PauseNotifications",
+            "header": 2641,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Pause notifications",
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "hidden",
+                "description": "Timeout of pause"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 1,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RestoreNotifications",
+            "header": 2642,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Restoring notifications"
+            ],
+            "attributes": []
           }
         },
         {
@@ -10314,6 +10467,25 @@
                 },
                 "id": 1,
                 "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "DeviceType"
+                  }
+                },
+                "id": 2,
+                "name": "deviceType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "deviceCategory"
               }
             ]
           }
@@ -10340,6 +10512,25 @@
                 },
                 "id": 1,
                 "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "DeviceType"
+                  }
+                },
+                "id": 2,
+                "name": "deviceType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "deviceCategory"
               }
             ]
           }
@@ -10380,6 +10571,25 @@
                 },
                 "id": 2,
                 "name": "date"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "DeviceType"
+                  }
+                },
+                "id": 3,
+                "name": "deviceType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "deviceCategory"
               }
             ]
           }
