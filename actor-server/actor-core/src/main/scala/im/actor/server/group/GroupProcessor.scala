@@ -10,6 +10,7 @@ import akka.util.Timeout
 import im.actor.api.rpc.collections.ApiMapValue
 import im.actor.serialization.ActorSerializer
 import im.actor.server.KeyValueMappings
+import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DirectDialogCommand, DialogExtension }
 import im.actor.server.file.{ FileStorageExtension, FileStorageAdapter, Avatar }
@@ -57,8 +58,10 @@ trait GroupCommand {
   val groupId: Int
 }
 
-trait GroupEvent {
+trait GroupEvent extends TaggedEvent {
   val ts: Instant
+
+  override def tags: Set[String] = Set("group")
 }
 
 trait GroupQuery {
