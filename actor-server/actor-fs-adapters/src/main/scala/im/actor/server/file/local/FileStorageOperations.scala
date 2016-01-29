@@ -11,6 +11,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.persist.FileRepo
 
 import scala.concurrent.{ ExecutionContext, Future, blocking }
+import scala.util.{ Failure, Success }
 
 trait FileStorageOperations extends LocalUploadKeyImplicits {
 
@@ -26,8 +27,12 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
     for {
       dir ← getOrCreateFileDir(fileId)
       file = dir / name
-      _ ← Source(List(ByteString(data))).runWith(FileIO.toFile(file.toJava)) map (_ ⇒ ())
-    } yield ()
+      _ ← Future { blocking { file.createIfNotExists() } }
+      ioRes ← Source(List(ByteString(data))).runWith(FileIO.toFile(file.toJava))
+    } yield ioRes.status match {
+      case Success(_)     ⇒ ()
+      case Failure(cause) ⇒ throw cause
+    }
   }
 
   protected def prepareForPartWrite(fileId: Long, partNumber: Int): Future[Unit] = {

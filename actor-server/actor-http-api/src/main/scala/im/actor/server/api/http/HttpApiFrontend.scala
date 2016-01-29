@@ -1,11 +1,11 @@
 package im.actor.server.api.http
 
 import akka.actor._
-import akka.http.ServerSettings
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.Credentials
+import akka.http.scaladsl.settings.ServerSettings
 import akka.stream.{ ActorMaterializer, Materializer }
 import com.typesafe.config.Config
 import im.actor.server.api.http.app.AppFilesHttpHandler
@@ -94,8 +94,8 @@ private object HttpApiFrontend {
     Http().bind(
       config.interface,
       config.port,
-      httpsContext = tlsContext map (_.asHttpsContext),
-      settings = defaultSettings.copy(timeouts = defaultSettings.timeouts.copy(idleTimeout = IdleTimeout))
+      connectionContext = tlsContext map (_.asHttpsContext) getOrElse Http().defaultServerHttpContext,
+      settings = defaultSettings.withTimeouts(defaultSettings.timeouts.withIdleTimeout(IdleTimeout))
     )
       .runForeach { conn ⇒
         conn handleWith routes
