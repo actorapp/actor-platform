@@ -8836,6 +8836,41 @@
           <ref role="NX6Kv" node="4NJj1GT1MGk" resolve="typingType" />
         </node>
       </node>
+      <node concept="2m488m" id="1iu4pgORHO5" role="2m5mJr">
+        <property role="TrG5h" value="DeviceType" />
+        <node concept="2m7y0F" id="1iu4pgORHO7" role="2m7ymf">
+          <property role="TrG5h" value="GENERIC" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="1iu4pgORHPF" role="2m7ymf">
+          <property role="TrG5h" value="PC" />
+          <property role="2m7y0m" value="2" />
+        </node>
+        <node concept="2m7y0F" id="1iu4pgORHPI" role="2m7ymf">
+          <property role="TrG5h" value="MOBILE" />
+          <property role="2m7y0m" value="3" />
+        </node>
+        <node concept="2m7y0F" id="1iu4pgORHPM" role="2m7ymf">
+          <property role="TrG5h" value="TABLET" />
+          <property role="2m7y0m" value="4" />
+        </node>
+        <node concept="2m7y0F" id="1iu4pgORILi" role="2m7ymf">
+          <property role="TrG5h" value="WATCH" />
+          <property role="2m7y0m" value="5" />
+        </node>
+        <node concept="2m7y0F" id="1iu4pgORQrg" role="2m7ymf">
+          <property role="TrG5h" value="MIRROR" />
+          <property role="2m7y0m" value="6" />
+        </node>
+        <node concept="2m7y0F" id="1iu4pgORQrn" role="2m7ymf">
+          <property role="TrG5h" value="CAR" />
+          <property role="2m7y0m" value="7" />
+        </node>
+        <node concept="2m7y0F" id="1iu4pgORQrv" role="2m7ymf">
+          <property role="TrG5h" value="TABLE" />
+          <property role="2m7y0m" value="8" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="GBscvBBuyg" role="2m5mJr">
         <property role="TrG5h" value="SetOnline" />
         <node concept="2m7Kf5" id="GBscvBBuyv" role="2m0hLx">
@@ -8848,6 +8883,22 @@
           <property role="TrG5h" value="timeout" />
           <node concept="wb0Ql" id="6u8NlnzqdYy" role="2m7DVh">
             <ref role="wb18D" node="6u8Nlnzqdrd" resolve="msec" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1iu4pgORHKg" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="deviceType" />
+          <node concept="2m5nlT" id="1iu4pgORHKo" role="2m7DVh">
+            <node concept="3GJkcs" id="1iu4pgORILo" role="3GH5xg">
+              <ref role="3GJkik" node="1iu4pgORHO5" resolve="DeviceType" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1iu4pgORJGR" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="deviceCategory" />
+          <node concept="2m5nlT" id="1iu4pgORJH2" role="2m7DVh">
+            <node concept="2m5ndX" id="1iu4pgORJH8" role="3GH5xg" />
           </node>
         </node>
         <node concept="Nu42z" id="GBscvBBuyh" role="NuuwV">
@@ -8868,6 +8919,81 @@
           <property role="NX6R2" value="timeout of online state in milliseconds" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBuyA" resolve="timeout" />
+        </node>
+        <node concept="NX1gA" id="1iu4pgORJHg" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional device type" />
+          <ref role="NX6Kv" node="1iu4pgORHKg" resolve="deviceType" />
+        </node>
+        <node concept="NX1gA" id="1iu4pgORJHs" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional device category, for example android or ios" />
+          <ref role="NX6Kv" node="1iu4pgORJGR" resolve="deviceCategory" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="1iu4pgORGHm" role="2m5mJr">
+        <property role="TrG5h" value="PauseNotifications" />
+        <node concept="2m7Kf5" id="1iu4pgORMAM" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="timeout" />
+          <node concept="wb0Ql" id="1iu4pgORMAQ" role="2m7DVh">
+            <ref role="wb18D" node="6u8Nlnzqdrq" resolve="sec" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="1iu4pgORGHn" role="NuuwV">
+          <property role="Nu42W" value="A6" />
+        </node>
+        <node concept="NXeRC" id="1iu4pgORGLF" role="NXp_2">
+          <property role="NXePf" value="Update about pausing notifications" />
+        </node>
+        <node concept="NX1gA" id="1iu4pgORNBf" role="NXp_2">
+          <property role="NX6R2" value="Timeout for notifications resume" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="1iu4pgORMAM" resolve="timeout" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="1iu4pgORGKd" role="2m5mJr">
+        <property role="TrG5h" value="RestoreNotifications" />
+        <node concept="Nu42z" id="1iu4pgORGKe" role="NuuwV">
+          <property role="Nu42W" value="A7" />
+        </node>
+        <node concept="NXeRC" id="1iu4pgORGLH" role="NXp_2">
+          <property role="NXePf" value="Update about restoring notifications" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="1iu4pgORM$z" role="2m5mJr">
+        <property role="TrG5h" value="PauseNotifications" />
+        <node concept="2m7Kf5" id="1iu4pgORMAC" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="timeout" />
+          <node concept="wb0Ql" id="1iu4pgORMAG" role="2m7DVh">
+            <ref role="wb18D" node="6u8Nlnzqdrq" resolve="sec" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="1iu4pgORM$$" role="NuuwV">
+          <property role="Nu42W" value="A51" />
+        </node>
+        <node concept="2m1Rp1" id="1iu4pgORMAJ" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="1iu4pgORPvf" role="1GBnQ6">
+          <property role="NXePf" value="Pause notifications" />
+        </node>
+        <node concept="NX1gA" id="1iu4pgORRnJ" role="1GBnQ6">
+          <property role="NX6R2" value="Timeout of pause" />
+          <ref role="NX6Kv" node="1iu4pgORMAC" resolve="timeout" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="1iu4pgORN$T" role="2m5mJr">
+        <property role="TrG5h" value="RestoreNotifications" />
+        <node concept="Nu42z" id="1iu4pgORN$U" role="NuuwV">
+          <property role="Nu42W" value="A52" />
+        </node>
+        <node concept="2m1Rp1" id="1iu4pgORNB9" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="1iu4pgORRnN" role="1GBnQ6">
+          <property role="NXePf" value="Restoring notifications" />
         </node>
       </node>
       <node concept="NvyAe" id="GBscvBBxyf" role="2m5mJr" />
@@ -8977,6 +9103,22 @@
             <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
           </node>
         </node>
+        <node concept="2m7Kf5" id="1iu4pgORJHz" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="deviceType" />
+          <node concept="2m5nlT" id="1iu4pgORJHD" role="2m7DVh">
+            <node concept="3GJkcs" id="1iu4pgORJHJ" role="3GH5xg">
+              <ref role="3GJkik" node="1iu4pgORHO5" resolve="DeviceType" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1iu4pgORL_T" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="deviceCategory" />
+          <node concept="2m5nlT" id="1iu4pgORLA2" role="2m7DVh">
+            <node concept="2m5ndX" id="1iu4pgORLA8" role="3GH5xg" />
+          </node>
+        </node>
         <node concept="Nu42z" id="GBscvBBxKL" role="NuuwV">
           <property role="Nu42W" value="07" />
         </node>
@@ -8996,6 +9138,22 @@
           <property role="TrG5h" value="uid" />
           <node concept="wb0Ql" id="5qm50Y0eSAM" role="2m7DVh">
             <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1iu4pgORJHM" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="deviceType" />
+          <node concept="2m5nlT" id="1iu4pgORJHS" role="2m7DVh">
+            <node concept="3GJkcs" id="1iu4pgORJHY" role="3GH5xg">
+              <ref role="3GJkik" node="1iu4pgORHO5" resolve="DeviceType" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1iu4pgORLAb" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="deviceCategory" />
+          <node concept="2m5nlT" id="1iu4pgORLAk" role="2m7DVh">
+            <node concept="2m5ndX" id="1iu4pgORLAq" role="3GH5xg" />
           </node>
         </node>
         <node concept="Nu42z" id="GBscvBBxLL" role="NuuwV">
@@ -9029,6 +9187,22 @@
           <property role="TrG5h" value="date" />
           <node concept="wb0Ql" id="2vxDjotoh82" role="2m7DVh">
             <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1iu4pgORKDW" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="deviceType" />
+          <node concept="2m5nlT" id="1iu4pgORKDX" role="2m7DVh">
+            <node concept="3GJkcs" id="1iu4pgORKDY" role="3GH5xg">
+              <ref role="3GJkik" node="1iu4pgORHO5" resolve="DeviceType" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1iu4pgORLAt" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="deviceCategory" />
+          <node concept="2m5nlT" id="1iu4pgORLAC" role="2m7DVh">
+            <node concept="2m5ndX" id="1iu4pgORLAI" role="3GH5xg" />
           </node>
         </node>
         <node concept="Nu42z" id="GBscvBBy08" role="NuuwV">
