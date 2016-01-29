@@ -20,7 +20,7 @@
     </style>
 
     <style name="MainActivityTheme" parent="AppToolbarTheme">
-        <item name="android:windowBackground">@color/bg_main</item>
+        <item name="android:windowBackground">@android:color/white</item>
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

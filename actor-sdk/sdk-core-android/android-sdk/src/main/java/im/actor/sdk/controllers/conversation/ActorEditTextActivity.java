@@ -147,6 +147,7 @@ public abstract class ActorEditTextActivity extends BaseActivity {
 
         // Kick panel
         removedFromGroup = findViewById(R.id.kickedFromChat);
+        removedFromGroup.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         ((TextView) removedFromGroup.findViewById(R.id.kicked_text)).setTextColor(style.getMainColor());
 
         // Emoji keyboard

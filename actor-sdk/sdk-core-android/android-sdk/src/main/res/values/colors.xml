@@ -28,8 +28,8 @@
     <color name="secondary_selected">#33999999</color>
     <color name="secondary_pressed">#66999999</color>
 
-    <color name="bg_main">#ffffff</color>
-    <color name="bg_backyard">#eeeeee</color>
+    <!--<color name="bg_main">#ffffff</color>-->
+    <!--<color name="bg_backyard">#eeeeee</color>-->
 
     <!-- Root text colors -->
 

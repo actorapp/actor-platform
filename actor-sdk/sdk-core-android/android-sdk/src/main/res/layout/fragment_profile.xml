@@ -100,8 +100,7 @@
                     <FrameLayout
                         android:id="@+id/phoneDivider"
                         android:layout_width="match_parent"
-                        android:layout_height="16dp"
-                        android:background="@color/bg_backyard">
+                        android:layout_height="16dp">
 
                         <View
                             android:layout_width="match_parent"
@@ -201,8 +200,7 @@
                         <FrameLayout
                             android:id="@+id/after_shared_divider"
                             android:layout_width="match_parent"
-                            android:layout_height="16dp"
-                            android:background="@color/bg_backyard">
+                            android:layout_height="16dp">
 
                             <View
                                 android:layout_width="match_parent"
@@ -258,8 +256,7 @@
                     <FrameLayout
                         android:id="@+id/bottom_divider"
                         android:layout_width="match_parent"
-                        android:layout_height="16dp"
-                        android:background="@color/bg_backyard">
+                        android:layout_height="16dp">
 
                         <View
                             android:layout_width="match_parent"
