@@ -634,7 +634,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                 }
                 //Right view
                 if (rightView != null) {
-                    fieldLayout.addView(rightView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    fieldLayout.addView(rightView, field.getRightViewWidth(), field.getRightViewHeight());
                 }
                 //Click
                 if (field.getOnclickListener() != null) {
