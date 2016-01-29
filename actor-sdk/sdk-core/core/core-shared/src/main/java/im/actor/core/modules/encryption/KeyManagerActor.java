@@ -223,11 +223,20 @@ public class KeyManagerActor extends ModuleActor {
      * @param resolver  resolver for result
      */
     private void fetchPreKey(byte[] publicKey, PromiseResolver<PrivateKey> resolver) {
-        PromisesArray.of(ownKeys.getPreKeys())
-                .filter(PrivateKey.PRE_KEY_EQUALS(publicKey))
-                .first()
-                .pipeTo(resolver)
-                .done(self());
+        PrivateKey privateKey;
+        try {
+            privateKey = ManagedList.of(ownKeys.getPreKeys())
+                    .filter(PrivateKey.PRE_KEY_EQUALS(publicKey))
+                    .first();
+        } catch (Exception e) {
+            Log.d(TAG, "Unable to find own pre key " + Crypto.keyHash(publicKey));
+            for (PrivateKey p : ownKeys.getPreKeys()) {
+                Log.d(TAG, "Have: " + Crypto.keyHash(p.getPublicKey()));
+            }
+            resolver.error(e);
+            return;
+        }
+        resolver.result(privateKey);
     }
 
     /**
@@ -237,11 +246,17 @@ public class KeyManagerActor extends ModuleActor {
      * @param resolver resolver for result
      */
     private void fetchPreKey(long keyId, PromiseResolver<PrivateKey> resolver) {
-        PromisesArray.of(ownKeys.getPreKeys())
-                .filter(PrivateKey.PRE_KEY_EQUALS_ID(keyId))
-                .first()
-                .pipeTo(resolver)
-                .done(self());
+        PrivateKey privateKey;
+        try {
+            privateKey = ManagedList.of(ownKeys.getPreKeys())
+                    .filter(PrivateKey.PRE_KEY_EQUALS_ID(keyId))
+                    .first();
+        } catch (Exception e) {
+            Log.d(TAG, "Unable to find own pre key #" + keyId);
+            resolver.error(e);
+            return;
+        }
+        resolver.result(privateKey);
     }
 
     /**

@@ -30,7 +30,7 @@ public class EncryptedSessionChain {
         this.session = session;
         this.ownPrivateKey = ownPrivateKey;
         this.theirPublicKey = theirPublicKey;
-        this.receivedCounters = new HashSet<Integer>();
+        this.receivedCounters = new HashSet<>();
         this.sentCounter = 0;
         this.rootChainKey = RatchetRootChainKey.makeRootChainKey(
                 new RatchetPrivateKey(ownPrivateKey),
