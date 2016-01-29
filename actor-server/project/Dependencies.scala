@@ -89,6 +89,7 @@ object Dependencies {
     val kamonDatadog            = "io.kamon"                      %% "kamon-datadog"                 % V.kamon
 
     val libPhoneNumber          = "com.googlecode.libphonenumber" % "libphonenumber"                 % "7.0.+"
+    val icu4j                   = "com.ibm.icu"                   % "icu4j"                          % "56.1"
 
     val scodecBits              = "org.scodec"                    %% "scodec-bits"                   % "1.0.9"
     val scodecCore              = "org.scodec"                    %% "scodec-core"                   % "1.8.1"
@@ -217,7 +218,7 @@ object Dependencies {
 
   val sdk = Seq(aspectj)
 
-  val runtime = shared ++ Seq(akkaActor, actorConcurrent, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, libPhoneNumber, scalapbSer, scalazCore, akkaTestkit % "test", scalatest % "test")
+  val runtime = shared ++ Seq(akkaActor, actorConcurrent, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, icu4j, libPhoneNumber, scalapbSer, scalazCore, akkaTestkit % "test", scalatest % "test")
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 

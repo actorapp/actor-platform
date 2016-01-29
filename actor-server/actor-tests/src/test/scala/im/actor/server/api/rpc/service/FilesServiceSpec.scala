@@ -111,7 +111,7 @@ final class FilesServiceSpec
       resp.toOption.get.url
     }
 
-    urlStr should include("The.Fil%C3%AB%2500+%E2%80%93+'Fear+and+Loathing+in+Las+Vegas'?")
+    urlStr should include("the.file%2500_-_'fear_and_loathing_in_las_vegas")
     urlStr shouldNot include("//The")
     urlStr shouldNot include("etc")
     urlStr shouldNot include("passwd")
