@@ -9,6 +9,7 @@ import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Supplier;
 
 /**
  * Promise support implementations. It is much more like js promises than traditional
@@ -249,6 +250,83 @@ public class Promise<T> {
         return exception;
     }
 
+    public Promise<T> mapIfNull(final Supplier<T> producer) {
+        final Promise<T> self = this;
+        return new Promise<T>(new PromiseFunc<T>() {
+            @Override
+            public void exec(final PromiseResolver<T> resolver) {
+                self.then(new Consumer<T>() {
+                    @Override
+                    public void apply(T t) {
+                        if (t == null) {
+                            try {
+                                t = producer.get();
+                            } catch (Exception e) {
+                                resolver.error(e);
+                                return;
+                            }
+                            resolver.result(t);
+                        } else {
+                            resolver.result(t);
+                        }
+                    }
+                });
+                self.failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
+                        resolver.error(e);
+                    }
+                });
+                self.done(resolver.getDispatcher());
+            }
+        });
+    }
+
+    public Promise<T> mapIfNullPromise(final Supplier<Promise<T>> producer) {
+        final Promise<T> self = this;
+        return new Promise<T>(new PromiseFunc<T>() {
+            @Override
+            public void exec(final PromiseResolver<T> resolver) {
+                self.then(new Consumer<T>() {
+                    @Override
+                    public void apply(T t) {
+                        if (t == null) {
+                            Promise<T> promise;
+                            try {
+                                promise = producer.get();
+                            } catch (Exception e) {
+                                resolver.error(e);
+                                return;
+                            }
+                            promise.then(new Consumer<T>() {
+                                @Override
+                                public void apply(T t) {
+                                    resolver.result(t);
+                                }
+                            });
+                            promise.failure(new Consumer<Exception>() {
+                                @Override
+                                public void apply(Exception e) {
+                                    resolver.error(e);
+                                }
+                            });
+                            promise.done(resolver.getDispatcher());
+                        } else {
+                            resolver.result(t);
+                        }
+                    }
+                });
+                self.failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
+                        resolver.error(e);
+                    }
+                });
+                self.done(resolver.getDispatcher());
+            }
+        });
+    }
+
     /**
      * Mapping result value of promise to another value
      *
@@ -334,6 +412,76 @@ public class Promise<T> {
                 self.done(resolver.getDispatcher());
             }
         };
+    }
+
+    public Promise<T> fallback(final Function<Exception, Promise<T>> catchThen) {
+        final Promise<T> self = this;
+        return new Promise<T>(new PromiseFunc<T>() {
+            @Override
+            public void exec(final PromiseResolver<T> resolver) {
+                self.then(new Consumer<T>() {
+                    @Override
+                    public void apply(T t) {
+                        resolver.result(t);
+                    }
+                });
+                self.failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
+                        Promise<T> res = catchThen.apply(e);
+                        res.then(new Consumer<T>() {
+                            @Override
+                            public void apply(T t) {
+                                resolver.result(t);
+                            }
+                        });
+                        res.failure(new Consumer<Exception>() {
+                            @Override
+                            public void apply(Exception e) {
+                                resolver.error(e);
+                            }
+                        });
+                        res.done(resolver.getDispatcher());
+                    }
+                });
+                self.done(resolver.getDispatcher());
+            }
+        });
+    }
+
+    public <R> Promise<R> afterVoid(final Supplier<Promise<R>> promiseSupplier) {
+        final Promise<T> self = this;
+        return new Promise<R>(new PromiseFunc<R>() {
+            @Override
+            public void exec(final PromiseResolver<R> resolver) {
+                self.then(new Consumer<T>() {
+                    @Override
+                    public void apply(T t) {
+                        Promise<R> promise = promiseSupplier.get();
+                        promise.then(new Consumer<R>() {
+                            @Override
+                            public void apply(R r) {
+                                resolver.result(r);
+                            }
+                        });
+                        promise.failure(new Consumer<Exception>() {
+                            @Override
+                            public void apply(Exception e) {
+                                resolver.error(e);
+                            }
+                        });
+                        promise.done(resolver.getDispatcher());
+                    }
+                });
+                self.failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
+                        resolver.error(e);
+                    }
+                });
+                self.done(resolver.getDispatcher());
+            }
+        });
     }
 
     /**

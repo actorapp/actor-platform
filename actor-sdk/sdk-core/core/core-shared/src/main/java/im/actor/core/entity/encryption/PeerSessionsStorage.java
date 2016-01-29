@@ -7,9 +7,20 @@ import java.util.List;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
+import im.actor.runtime.function.Function;
 import im.actor.runtime.storage.KeyValueItem;
 
 public class PeerSessionsStorage extends BserObject implements KeyValueItem {
+
+    public static Function<PeerSessionsStorage, PeerSession[]> SESSIONS = new Function<PeerSessionsStorage, PeerSession[]>() {
+        @Override
+        public PeerSession[] apply(PeerSessionsStorage peerSessionsStorage) {
+            if (peerSessionsStorage == null) {
+                return new PeerSession[0];
+            }
+            return peerSessionsStorage.getSessions();
+        }
+    };
 
     private int uid;
     private ArrayList<PeerSession> sessions;

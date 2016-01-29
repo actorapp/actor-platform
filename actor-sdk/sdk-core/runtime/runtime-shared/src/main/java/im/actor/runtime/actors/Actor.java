@@ -213,7 +213,7 @@ public class Actor {
         throw new ActorHalterException(message, e);
     }
 
-    public <T extends AskResult> Promise<T> ask(final ActorRef dest, final AskMessage<T> msg) {
+    public <T> Promise<T> ask(final ActorRef dest, final AskMessage<T> msg) {
         return new Promise<T>(new PromiseFunc<T>() {
             @Override
             public void exec(PromiseResolver<T> executor) {

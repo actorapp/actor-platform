@@ -5,8 +5,29 @@ import java.io.IOException;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
+import im.actor.runtime.function.Predicate;
 
 public class PeerSession extends BserObject {
+
+    public static Predicate<PeerSession> BY_THEIR_GROUP(final int theirKeyGroupId) {
+        return new Predicate<PeerSession>() {
+            @Override
+            public boolean apply(PeerSession session) {
+                return session.getTheirKeyGroupId() == theirKeyGroupId;
+            }
+        };
+    }
+
+    public static Predicate<PeerSession> BY_IDS(final int theirKeyGroupId, final long ownPreKeyId, final long theirPreKeyId) {
+        return new Predicate<PeerSession>() {
+            @Override
+            public boolean apply(PeerSession session) {
+                return session.getTheirKeyGroupId() == theirKeyGroupId &&
+                        session.getOwnPreKeyId() == ownPreKeyId &&
+                        session.getTheirPreKeyId() == theirPreKeyId;
+            }
+        };
+    }
 
     private long sid;
     private int uid;
@@ -14,19 +35,25 @@ public class PeerSession extends BserObject {
     private int theirKeyGroupId;
     private long ownPreKeyId;
     private long theirPreKeyId;
+    private byte[] masterKey;
 
     public PeerSession(long sid, int uid, int ownKeyGroupId, int theirKeyGroupId,
-                       long ownPreKeyId, long theirPreKeyId) {
+                       long ownPreKeyId, long theirPreKeyId, byte[] masterKey) {
         this.sid = sid;
         this.uid = uid;
         this.ownKeyGroupId = ownKeyGroupId;
         this.theirKeyGroupId = theirKeyGroupId;
         this.ownPreKeyId = ownPreKeyId;
         this.theirPreKeyId = theirPreKeyId;
+        this.masterKey = masterKey;
     }
 
     public PeerSession(byte[] data) throws IOException {
         load(data);
+    }
+
+    public byte[] getMasterKey() {
+        return masterKey;
     }
 
     public long getSid() {

@@ -7,8 +7,18 @@ import java.util.List;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
+import im.actor.runtime.function.Predicate;
 
 public class UserKeysGroup extends BserObject {
+
+    public static Predicate<UserKeysGroup> BY_KEY_GROUP(final int keyGroupId) {
+        return new Predicate<UserKeysGroup>() {
+            @Override
+            public boolean apply(UserKeysGroup keysGroup) {
+                return keysGroup.getKeyGroupId() == keyGroupId;
+            }
+        };
+    }
 
     private int keyGroupId;
     private PublicKey identityKey;
