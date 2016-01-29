@@ -127,8 +127,8 @@ public class EncryptedSessionActor extends ModuleActor {
         // final long theirEphemeralKey0Id = ByteStrings.bytesToLong(data, 12);
         final byte[] senderEphemeralKey = ByteStrings.substring(data, 20, 32);
         final byte[] receiverEphemeralKey = ByteStrings.substring(data, 52, 32);
-        Log.d(TAG, "Sender Ephemeral " + Crypto.hex(senderEphemeralKey));
-        Log.d(TAG, "Receiver Ephemeral " + Crypto.hex(receiverEphemeralKey));
+        Log.d(TAG, "Sender Ephemeral " + Crypto.keyHash(senderEphemeralKey));
+        Log.d(TAG, "Receiver Ephemeral " + Crypto.keyHash(receiverEphemeralKey));
 
         pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
                 .map(new Function<EncryptedSessionChain, DecryptedPackage>() {
@@ -137,13 +137,20 @@ public class EncryptedSessionActor extends ModuleActor {
                         return decrypt(encryptedSessionChain, data);
                     }
                 })
-                .pipeTo(future)
                 .then(new Consumer<DecryptedPackage>() {
                     @Override
                     public void apply(DecryptedPackage decryptedPackage) {
+                        Log.d(TAG, "onDecrypted");
                         latestTheirEphemeralKey = senderEphemeralKey;
                     }
                 })
+                .failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
+                        Log.d(TAG, "onError");
+                    }
+                })
+                .pipeTo(future)
                 .done(self());
     }
 
@@ -157,8 +164,10 @@ public class EncryptedSessionActor extends ModuleActor {
             return encryptionChains.get(0);
         }
 
+
         EncryptedSessionChain chain = new EncryptedSessionChain(session, Curve25519.keyGenPrivate(Crypto.randomBytes(32)), ephemeralKey);
         encryptionChains.add(0, chain);
+
         return chain;
     }
 
@@ -171,6 +180,10 @@ public class EncryptedSessionActor extends ModuleActor {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+
+        Log.d(TAG, "!Sender Ephemeral " + Crypto.keyHash(Curve25519.keyGenPublic(chain.getOwnPrivateKey())));
+        Log.d(TAG, "!Receiver Ephemeral " + Crypto.keyHash(chain.getTheirPublicKey()));
+
         return new EncryptedPackageRes(encrypted, session.getTheirKeyGroupId());
     }
 
