@@ -47,7 +47,7 @@ object UserSequenceRepo {
         notReduced.reduceKey.isEmpty ||
           notReduced.seq.in(
             byUser(userId)
-              .filter(u ⇒ u.seq >= seq && u.reduceKey === notReduced.reduceKey)
+              .filter(u ⇒ u.seq >= notReduced.seq && u.reduceKey === notReduced.reduceKey)
               .groupBy(_.reduceKey)
               .map(_._2.map(_.seq).max)
           )

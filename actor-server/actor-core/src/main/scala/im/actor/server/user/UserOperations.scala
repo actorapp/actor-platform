@@ -262,8 +262,8 @@ private[user] sealed trait Queries {
       name ← localNameOpt map Future.successful getOrElse getName(userId)
     } yield name
 
-  def getUser(userId: Int): Future[User] =
-    (viewRegion.ref ? GetUser(userId)).mapTo[User]
+  def getUser(userId: Int): Future[UserState] =
+    (viewRegion.ref ? GetUser(userId)).mapTo[UserState]
 
   def getContactRecords(userId: Int): Future[(Seq[Long], Seq[String])] =
     (viewRegion.ref ? GetContactRecords(userId)).mapTo[GetContactRecordsResponse] map (r ⇒ (r.phones, r.emails))

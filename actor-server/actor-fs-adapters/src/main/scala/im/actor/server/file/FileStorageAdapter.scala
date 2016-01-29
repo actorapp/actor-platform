@@ -2,7 +2,7 @@ package im.actor.server.file
 
 import java.io.File
 
-import im.actor.server.model
+import im.actor.server.model.{ File ⇒ FileModel }
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.util.misc.StringUtils.{ isAsciiString, transliterate, toAsciiString }
 
@@ -40,7 +40,7 @@ private[file] trait UploadKeyParsing {
 }
 
 private[file] trait DownloadActions {
-  def getFileDownloadUrl(file: model.File, accessHash: Long): Future[Option[String]]
+  def getFileDownloadUrl(file: FileModel, accessHash: Long): Future[Option[String]]
 
   def downloadFile(id: Long): DBIO[Option[Array[Byte]]]
 

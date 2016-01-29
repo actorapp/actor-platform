@@ -1,10 +1,9 @@
 package im.actor.server.persist.auth
 
 import im.actor.server.db.ActorPostgresDriver.api._
+import im.actor.server.model.AuthPhoneTransaction
 
-import im.actor.server.model
-
-class AuthPhoneTransactionTable(tag: Tag) extends AuthTransactionRepoBase[model.AuthPhoneTransaction](tag, "auth_phone_transactions") with InheritingTable {
+class AuthPhoneTransactionTable(tag: Tag) extends AuthTransactionRepoBase[AuthPhoneTransaction](tag, "auth_phone_transactions") with InheritingTable {
   def phoneNumber = column[Long]("phone_number")
 
   val inherited = AuthTransactionRepo.transactions.baseTableRow
@@ -19,7 +18,7 @@ class AuthPhoneTransactionTable(tag: Tag) extends AuthTransactionRepoBase[model.
     deviceInfo,
     isChecked,
     deletedAt
-  ) <> (model.AuthPhoneTransaction.tupled, model.AuthPhoneTransaction.unapply)
+  ) <> (AuthPhoneTransaction.tupled, AuthPhoneTransaction.unapply)
 }
 
 object AuthPhoneTransactionRepo {
@@ -35,7 +34,7 @@ object AuthPhoneTransactionRepo {
     active.filter(t ⇒ t.phoneNumber === phone && t.deviceHash === deviceHash)
   }
 
-  def create(transaction: model.AuthPhoneTransaction) =
+  def create(transaction: AuthPhoneTransaction) =
     phoneTransactions += transaction
 
   def find(transactionHash: String) =
