@@ -1,10 +1,12 @@
 package im.actor.core.entity.encryption;
 
 import java.io.IOException;
+import java.util.Comparator;
 
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
+import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.function.Predicate;
 
 public class PeerSession extends BserObject {
@@ -28,6 +30,13 @@ public class PeerSession extends BserObject {
             }
         };
     }
+
+    public static final Comparator<PeerSession> COMPARATOR = new Comparator<PeerSession>() {
+        @Override
+        public int compare(PeerSession lhs, PeerSession rhs) {
+            return ByteStrings.compare(lhs.getMasterKey(), rhs.getMasterKey());
+        }
+    };
 
     private long sid;
     private int uid;

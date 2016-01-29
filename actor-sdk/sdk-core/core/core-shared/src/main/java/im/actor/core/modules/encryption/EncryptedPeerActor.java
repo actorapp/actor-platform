@@ -23,8 +23,6 @@ import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
-import im.actor.runtime.function.Predicate;
-import im.actor.runtime.function.Predicates;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.crypto.box.ActorBox;

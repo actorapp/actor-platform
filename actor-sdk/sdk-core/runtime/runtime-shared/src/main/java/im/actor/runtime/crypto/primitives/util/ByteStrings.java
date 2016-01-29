@@ -108,4 +108,24 @@ public class ByteStrings {
         }
         return result == 0;
     }
+
+
+    public static int compare(byte[] a, byte[] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Arguments can't be null");
+        }
+        if (a.length > b.length) {
+            return 1;
+        }
+        for (int i = 0; i < a.length; i++) {
+            int ai = a[i] & 0xFF;
+            int bi = b[i] & 0xFF;
+            if (ai > bi) {
+                return 1;
+            } else if (ai < bi) {
+                return -1;
+            }
+        }
+        return 0;
+    }
 }
