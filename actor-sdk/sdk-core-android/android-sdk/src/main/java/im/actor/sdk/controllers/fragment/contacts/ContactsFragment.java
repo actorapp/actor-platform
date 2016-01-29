@@ -26,6 +26,9 @@ public class ContactsFragment extends BaseContactFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View res = onCreateContactsView(R.layout.fragment_contacts, inflater, container, savedInstanceState);
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        res.findViewById(R.id.emptyCollection).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+
         res.findViewById(R.id.inviteButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

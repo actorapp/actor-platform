@@ -6,14 +6,12 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_main">
+    android:layout_height="match_parent">
 
     <ListView
         android:id="@+id/docsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_backyard"
         android:divider="@null"
         android:dividerHeight="0dp"
         android:listSelector="@drawable/selector" />
@@ -22,7 +20,6 @@
         android:id="@+id/noDocs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_main"
         android:clickable="true"
         android:gravity="center"
         android:orientation="vertical">
