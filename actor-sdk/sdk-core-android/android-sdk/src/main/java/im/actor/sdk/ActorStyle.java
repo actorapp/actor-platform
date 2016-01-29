@@ -66,6 +66,7 @@ public class ActorStyle {
     private int textPrimaryInvColor = Color.parseColor("#DEffffff");
     private int textPrimaryColor = Color.parseColor("#DE000000");
     private int textSecondaryColor = Color.parseColor("#7A000000");
+    private int textSecondaryAccentColor = 0;
     private int textHintColor = Color.parseColor("#42000000");
     private int textSubHeaderColor = Color.parseColor("#6F000000");
     private int textSecondaryInvColor = Color.parseColor("#8Affffff");
@@ -476,6 +477,18 @@ public class ActorStyle {
 
     public void setTextSecondaryColor(int textSecondaryColor) {
         this.textSecondaryColor = textSecondaryColor;
+    }
+
+    public int getTextSecondaryAccentColor() {
+        if (textSecondaryAccentColor != 0) {
+            return getTextSecondaryColor();
+        } else {
+            return textSecondaryAccentColor;
+        }
+    }
+
+    public void setTextSecondaryAccentColor(int textSecondaryAccentColor) {
+        this.textSecondaryAccentColor = textSecondaryAccentColor;
     }
 
     public int getTextHintColor() {
