@@ -3,12 +3,14 @@
 //
 
 import Foundation
+import UIKit
+import MobileCoreServices
 
 public class AASettingsWallpapper: AACollectionViewController, UICollectionViewDelegateFlowLayout {
     
     let padding: CGFloat = 8
     
-    init() {
+    public init() {
         super.init(collectionLayout: UICollectionViewFlowLayout())
         
         navigationItem.title = AALocalized("WallpapersTitle")
@@ -19,7 +21,7 @@ public class AASettingsWallpapper: AACollectionViewController, UICollectionViewD
         view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
     }
 
-    required public init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
