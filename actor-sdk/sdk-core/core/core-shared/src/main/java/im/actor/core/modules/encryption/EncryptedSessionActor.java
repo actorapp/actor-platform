@@ -2,8 +2,10 @@ package im.actor.core.modules.encryption;
 
 import java.util.ArrayList;
 
+import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.entity.PrivateKey;
+import im.actor.core.modules.encryption.entity.UserKeys;
 import im.actor.core.modules.encryption.entity.UserKeysGroup;
 import im.actor.core.modules.encryption.entity.PublicKey;
 import im.actor.core.modules.encryption.session.EncryptedSession;
@@ -67,7 +69,7 @@ public class EncryptedSessionActor extends ModuleActor {
     //
 
     private EncryptedSession session;
-    private boolean isFailured = false;
+    private boolean isUnavailable = false;
 
     //
     // Temp encryption chains
@@ -81,14 +83,13 @@ public class EncryptedSessionActor extends ModuleActor {
     // Constructors and Methods
     //
 
-    public EncryptedSessionActor(ModuleContext context, int uid, long ownKey0, long theirKey0,
-                                 int theirKeyGroup) {
+    public EncryptedSessionActor(ModuleContext context, PeerSession session) {
         super(context);
-        this.TAG = "EncryptionSessionActor#" + uid + "_" + theirKeyGroup;
-        this.uid = uid;
-        this.ownKey0 = ownKey0;
-        this.theirKey0 = theirKey0;
-        this.theirKeyGroup = theirKeyGroup;
+        this.TAG = "EncryptionSessionActor#" + session.getUid() + "_" + session.getTheirKeyGroupId();
+        this.uid = session.getUid();
+        this.ownKey0 = session.getOwnPreKeyId();
+        this.theirKey0 = session.getTheirPreKeyId();
+        this.theirKeyGroup = session.getTheirKeyGroupId();
     }
 
     @Override
@@ -100,18 +101,18 @@ public class EncryptedSessionActor extends ModuleActor {
 
         Promises.tuple(
                 ask(keyManager, new FetchOwnKey()),
-                ask(keyManager, new FetchEphemeralPrivateKeyById(ownKey0)),
-                ask(keyManager, new FetchUserEphemeralKey(uid, theirKeyGroup, theirKey0)),
-                ask(keyManager, new FetchUserKeyGroups(uid)))
-                .map(new Function<Tuple4<FetchOwnKeyResult, FetchEphemeralPrivateKeyRes, FetchUserEphemeralKeyResponse, FetchUserKeyGroupsResponse>, EncryptedSession>() {
+                ask(keyManager, new FetchOwnPreKeyById(ownKey0)),
+                ask(keyManager, new FetchUserPreKey(uid, theirKeyGroup, theirKey0)),
+                ask(keyManager, new FetchUserKeys(uid)))
+                .map(new Function<Tuple4<OwnIdentity, PrivateKey, PublicKey, UserKeys>, EncryptedSession>() {
                     @Override
-                    public EncryptedSession apply(Tuple4<FetchOwnKeyResult, FetchEphemeralPrivateKeyRes, FetchUserEphemeralKeyResponse, FetchUserKeyGroupsResponse> res) {
+                    public EncryptedSession apply(Tuple4<OwnIdentity, PrivateKey, PublicKey, UserKeys> res) {
                         PrivateKey ownIdentityKey = res.getT1().getIdentityKey();
-                        PrivateKey ownPreKey = new PrivateKey(ownKey0, "curve25519", res.getT2().getPrivateKey());
-                        PublicKey theirPreKey = res.getT3().getEphemeralKey();
-                        FetchUserKeyGroupsResponse keyGroups = res.getT4();
+                        PrivateKey ownPreKey = res.getT2();
+                        PublicKey theirPreKey = res.getT3();
+                        UserKeys keyGroups = res.getT4();
                         UserKeysGroup keysGroup = null;
-                        for (UserKeysGroup g : keyGroups.getUserKeys().getUserKeysGroups()) {
+                        for (UserKeysGroup g : keyGroups.getUserKeysGroups()) {
                             if (g.getKeyGroupId() == theirKeyGroup) {
                                 keysGroup = g;
                                 break;
@@ -139,7 +140,7 @@ public class EncryptedSessionActor extends ModuleActor {
                     public void apply(Exception e) {
                         Log.w(TAG, "Session load error");
                         Log.e(TAG, e);
-                        isFailured = true;
+                        isUnavailable = true;
                         unstashAll();
                     }
                 })
@@ -153,7 +154,7 @@ public class EncryptedSessionActor extends ModuleActor {
         //
 
         if (session == null) {
-            if (isFailured) {
+            if (isUnavailable) {
                 future.error(new RuntimeException("Session is not available"));
             } else {
                 stash();
@@ -161,19 +162,18 @@ public class EncryptedSessionActor extends ModuleActor {
             return;
         }
 
-        Log.w(TAG, "onEncrypt");
-
         //
         // Stage 1: Pick Their Ephemeral key. Use already received or pick random pre key.
         // Stage 2: Pick Encryption Chain
         // Stage 3: Decrypt
         //
 
-        keyManager.getEphemeralKey(latestTheirEphemeralKey, uid, theirKeyGroup)
+        Promises.success(latestTheirEphemeralKey)
+                .mapIfNullPromise(keyManager.supplyUserPreKey(uid, theirKeyGroup))
                 .map(new Function<byte[], EncryptedSessionChain>() {
                     @Override
-                    public EncryptedSessionChain apply(byte[] bytes) {
-                        return pickEncryptChain(bytes);
+                    public EncryptedSessionChain apply(byte[] publicKey) {
+                        return pickEncryptChain(publicKey);
                     }
                 })
                 .map(new Function<EncryptedSessionChain, EncryptedPackageRes>() {
@@ -193,7 +193,7 @@ public class EncryptedSessionActor extends ModuleActor {
         //
 
         if (session == null) {
-            if (isFailured) {
+            if (isUnavailable) {
                 future.error(new RuntimeException("Session is not available"));
             } else {
                 stash();
@@ -201,16 +201,12 @@ public class EncryptedSessionActor extends ModuleActor {
             return;
         }
 
-        Log.w(TAG, "onDecrypt");
-
         //
         // Stage 1: Parsing message header
         // Stage 2: Picking decryption chain
         // Stage 3: Decryption of message
         // Stage 4: Saving their ephemeral key
         //
-
-        Log.d(TAG, "Decrypt " + Crypto.hex(data));
 
         // final int ownKeyGroupId = ByteStrings.bytesToInt(data, 0);
         // final long ownEphemeralKey0Id = ByteStrings.bytesToLong(data, 4);
@@ -238,7 +234,6 @@ public class EncryptedSessionActor extends ModuleActor {
     }
 
     private EncryptedSessionChain pickEncryptChain(byte[] ephemeralKey) {
-        Log.d(TAG, "pickEncryptChain: " + ephemeralKey);
 
         if (latestTheirEphemeralKey == null) {
             latestTheirEphemeralKey = ephemeralKey;
@@ -262,7 +257,6 @@ public class EncryptedSessionActor extends ModuleActor {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        Log.d(TAG, "Encrypt " + Crypto.hex(encrypted));
         return new EncryptedPackageRes(encrypted, theirKeyGroup);
     }
 
@@ -282,11 +276,11 @@ public class EncryptedSessionActor extends ModuleActor {
                             return Promises.success(src);
                         }
 
-                        return ask(context().getEncryption().getKeyManager(), new FetchEphemeralPrivateKey(ephemeralKey))
-                                .map(new Function<FetchEphemeralPrivateKeyRes, EncryptedSessionChain>() {
+                        return ask(context().getEncryption().getKeyManager(), new FetchOwnPreKeyByPublic(ephemeralKey))
+                                .map(new Function<PrivateKey, EncryptedSessionChain>() {
                                     @Override
-                                    public EncryptedSessionChain apply(FetchEphemeralPrivateKeyRes src) {
-                                        EncryptedSessionChain chain = new EncryptedSessionChain(session, src.getPrivateKey(), theirEphemeralKey);
+                                    public EncryptedSessionChain apply(PrivateKey src) {
+                                        EncryptedSessionChain chain = new EncryptedSessionChain(session, src.getKey(), theirEphemeralKey);
                                         decryptionChains.add(0, chain);
                                         if (decryptionChains.size() > MAX_DECRYPT_CHAINS) {
                                             decryptionChains.remove(MAX_DECRYPT_CHAINS)

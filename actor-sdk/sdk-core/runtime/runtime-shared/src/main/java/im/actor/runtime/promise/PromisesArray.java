@@ -6,11 +6,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
+import im.actor.core.util.RandomUtils;
 import im.actor.runtime.Log;
 import im.actor.runtime.function.ArrayFunction;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.Predicate;
+import im.actor.runtime.function.Predicates;
 
 /**
  * Array of Promises. Allows you to invoke map, mapPromise and other useful methods
@@ -106,11 +108,107 @@ public class PromisesArray<T> {
      * @return PromisesArray
      */
     public <R> PromisesArray<R> map(final Function<T, Promise<R>> fun) {
+        return mapSourcePromises(new Function<Promise<T>, Promise<R>>() {
+            @Override
+            public Promise<R> apply(final Promise<T> srcPromise) {
+
+                return new Promise<R>() {
+                    @Override
+                    void exec(final PromiseResolver<R> resolver) {
+
+                        //                        //
+                        // Handling results from source PromisesArray
+                        //
+
+                        srcPromise.then(new Consumer<T>() {
+                            @Override
+                            public void apply(T t) {
+
+                                //
+                                // Mapping value to promise
+                                //
+                                Promise<R> mapped = fun.apply(t);
+
+                                //
+                                // Handling results
+                                //
+                                mapped.then(new Consumer<R>() {
+                                    @Override
+                                    public void apply(R r) {
+                                        resolver.result(r);
+                                    }
+                                }).failure(new Consumer<Exception>() {
+                                    @Override
+                                    public void apply(Exception e) {
+                                        resolver.error(e);
+                                    }
+                                }).done(resolver.getDispatcher());
+                            }
+                        });
+
+                        //
+                        // Handling failures
+                        //
+
+                        srcPromise.failure(new Consumer<Exception>() {
+                            @Override
+                            public void apply(Exception e) {
+                                resolver.error(e);
+                            }
+                        });
+
+                        //
+                        // Starting source promise
+                        //
+
+                        srcPromise.done(resolver.getDispatcher());
+                    }
+                };
+            }
+        });
+    }
+
+    public <R> PromisesArray<R> mapOptional(final Function<T, Promise<R>> fun) {
+        return map(fun)
+                .ignoreFailed()
+                .filterNull();
+    }
+
+    public PromisesArray<T> ignoreFailed() {
+        return mapSourcePromises(new Function<Promise<T>, Promise<T>>() {
+            @Override
+            public Promise<T> apply(final Promise<T> tPromise) {
+                return new Promise<T>(new PromiseFunc<T>() {
+                    @Override
+                    public void exec(final PromiseResolver<T> resolver) {
+                        tPromise.then(new Consumer<T>() {
+                            @Override
+                            public void apply(T t) {
+                                resolver.result(t);
+                            }
+                        });
+                        tPromise.failure(new Consumer<Exception>() {
+                            @Override
+                            public void apply(Exception e) {
+                                resolver.result(null);
+                            }
+                        });
+                        tPromise.done(resolver.getDispatcher());
+                    }
+                });
+            }
+        });
+    }
+
+    public PromisesArray<T> filterNull() {
+        return filter(Predicates.NOT_NULL);
+    }
+
+    private <R> PromisesArray<R> mapSourcePromises(final Function<Promise<T>, Promise<R>> fun) {
 
         return new PromisesArray<R>(new PromiseFunc<Promise<R>[]>() {
             @Override
             public void exec(final PromiseResolver<Promise<R>[]> executor) {
-
 
                 //
                 // Handling source results
@@ -120,7 +218,6 @@ public class PromisesArray<T> {
                     @Override
                     public void apply(final Promise<T>[] sourcePromises) {
 
-
                         //
                         // Building mapped promises
                         //
@@ -129,62 +226,7 @@ public class PromisesArray<T> {
 
                         for (int i = 0; i < mappedPromises.length; i++) {
 
-                            final int finalI = i;
-
-                            mappedPromises[finalI] = new Promise<R>() {
-                                @Override
-                                void exec(final PromiseResolver<R> resolver) {
-
-                                    //
-                                    // Handling results from source PromisesArray
-                                    //
-
-                                    sourcePromises[finalI].then(new Consumer<T>() {
-                                        @Override
-                                        public void apply(T t) {
-
-                                            //
-                                            // Mapping value to promise
-                                            //
-                                            Promise<R> mapped = fun.apply(t);
-
-                                            //
-                                            // Handling results
-                                            //
-                                            mapped.then(new Consumer<R>() {
-                                                @Override
-                                                public void apply(R r) {
-                                                    resolver.result(r);
-                                                }
-                                            }).failure(new Consumer<Exception>() {
-                                                @Override
-                                                public void apply(Exception e) {
-                                                    resolver.error(e);
-                                                }
-                                            }).done(resolver.getDispatcher());
-                                        }
-                                    });
-
-                                    //
-                                    // Handling failures
-                                    //
-
-                                    sourcePromises[finalI].failure(new Consumer<Exception>() {
-                                        @Override
-                                        public void apply(Exception e) {
-                                            resolver.error(e);
-                                        }
-                                    });
-
-                                    //
-                                    // Starting source promise
-                                    //
-
-                                    sourcePromises[finalI].done(resolver.getDispatcher());
-                                }
-
-
-                            };
+                            mappedPromises[i] = fun.apply(sourcePromises[i]);
                         }
 
                         //
@@ -264,6 +306,18 @@ public class PromisesArray<T> {
                         return src[0];
                     }
                 });
+    }
+
+    public Promise<T> random() {
+        return flatMapAll(new Function<T[], T[]>() {
+            @Override
+            public T[] apply(T[] ts) {
+                if (ts.length == 0) {
+                    throw new RuntimeException("Array is empty");
+                }
+                return (T[]) new Object[]{ts[RandomUtils.randomId(ts.length)]};
+            }
+        }).first();
     }
 
     public <R> PromisesArray<R> flatMapAll(final Function<T[], R[]> fuc) {
