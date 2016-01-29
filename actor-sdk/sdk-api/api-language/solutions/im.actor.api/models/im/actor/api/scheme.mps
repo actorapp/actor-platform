@@ -10972,7 +10972,7 @@
         </node>
       </node>
       <node concept="2m6fVq" id="5_CDdZ2jMNJ" role="2m5mJr">
-        <property role="TrG5h" value="LoadEphermalPublicKeys" />
+        <property role="TrG5h" value="LoadPreKeys" />
         <node concept="2uC4CA" id="5_CDdZ2jQvA" role="2uC9gA">
           <property role="2uC4DK" value="400" />
           <property role="2uC4Qe" value="NO_GROUP_FOUND" />
@@ -11369,7 +11369,7 @@
         </node>
       </node>
       <node concept="2m6fVq" id="5_CDdZ2qOwz" role="2m5mJr">
-        <property role="TrG5h" value="UploadEphermalKey" />
+        <property role="TrG5h" value="UploadPreKey" />
         <node concept="2m7Kf5" id="5_CDdZ2qOzv" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="keyGroupId" />
@@ -11402,7 +11402,7 @@
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
         <node concept="NXeRC" id="5_CDdZ2qPs$" role="1GBnQ6">
-          <property role="NXePf" value="Uploading Ephermal Keys" />
+          <property role="NXePf" value="Uploading Pre Keys" />
         </node>
         <node concept="NX1gA" id="5_CDdZ2qQm9" role="1GBnQ6">
           <property role="NX6R2" value="Key Group Id" />
@@ -11425,12 +11425,28 @@
       </node>
       <node concept="2m5naR" id="5_CDdZ2r0S4" role="2m5mJr">
         <property role="TrG5h" value="EncryptedBox" />
+        <node concept="2m7Kf5" id="1iu4pgORmss" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="senderKeyGroupId" />
+          <node concept="wb0Ql" id="1iu4pgORyRX" role="2m7DVh">
+            <ref role="wb18D" node="5_CDdZ2q76m" resolve="keyGroupId" />
+          </node>
+        </node>
         <node concept="2m7Kf5" id="5_CDdZ2r6rJ" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="keys" />
           <node concept="2m5nlk" id="5_CDdZ2r6rQ" role="2m7DVh">
             <node concept="2m5mGg" id="5_CDdZ2r6rW" role="3GJlyp">
               <ref role="2m5mJy" node="5_CDdZ2r0YU" resolve="EncyptedBoxKey" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1iu4pgORzN8" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="ignoredKeyGroups" />
+          <node concept="2m5nlk" id="1iu4pgORzNl" role="2m7DVh">
+            <node concept="wb0Ql" id="1iu4pgORzNr" role="3GJlyp">
+              <ref role="wb18D" node="5_CDdZ2q76m" resolve="keyGroupId" />
             </node>
           </node>
         </node>
@@ -11447,10 +11463,20 @@
         <node concept="NXeRC" id="5_CDdZ2r6s9" role="NXodf">
           <property role="NXePf" value="Encrypted package that is encrypted for multiple keys" />
         </node>
+        <node concept="NX1gA" id="1iu4pgORmtV" role="NXodf">
+          <property role="NX6R2" value="Sender key group id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="1iu4pgORmss" resolve="senderKeyGroupId" />
+        </node>
         <node concept="NX1gA" id="5_CDdZ2r6se" role="NXodf">
           <property role="NX6R2" value="Encrypted encryption keys" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="5_CDdZ2r6rJ" resolve="keys" />
+        </node>
+        <node concept="NX1gA" id="1iu4pgORzN_" role="NXodf">
+          <property role="NX6R2" value="Explictly ignored key groups" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="1iu4pgORzN8" resolve="ignoredKeyGroups" />
         </node>
         <node concept="NX1gA" id="5_CDdZ2rxAe" role="NXodf">
           <property role="1GSvIU" value="full" />
@@ -11505,6 +11531,28 @@
         <node concept="NX1gA" id="5_CDdZ2r8g8" role="NXodf">
           <property role="NX6R2" value="Encrypted encryption key" />
           <ref role="NX6Kv" node="5_CDdZ2r2Pn" resolve="encryptedKey" />
+        </node>
+      </node>
+      <node concept="w93zz" id="1iu4pgORDAA" role="2m5mJr">
+        <property role="1FaRnq" value="true" />
+        <property role="TrG5h" value="EncryptedContainer" />
+      </node>
+      <node concept="2m5naR" id="1iu4pgORDIq" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedPrivateMessage" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="1iu4pgORDAA" resolve="EncryptedContainer" />
+        <node concept="Nu42z" id="1iu4pgORDMl" role="3BtCOu">
+          <property role="Nu42W" value="01" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="1iu4pgORDQj" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedGroupMessage" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="1iu4pgORDAA" resolve="EncryptedContainer" />
+        <node concept="Nu42z" id="1iu4pgORDUg" role="3BtCOu">
+          <property role="Nu42W" value="02" />
         </node>
       </node>
       <node concept="1Dx9M1" id="7ZzLuuoIXYH" role="1Dx9rD">
