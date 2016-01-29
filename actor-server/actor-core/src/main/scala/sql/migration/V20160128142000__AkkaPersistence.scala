@@ -55,13 +55,13 @@ final class V20160128142000__AkkaPersistence extends JdbcMigration {
         case (obsEvent, evTs) ⇒
           val payload =
             obsEvent.payload match {
-              case TSEvent(ts, ue: UserEvent)  ⇒
+              case TSEvent(ts, ue: UserEvent) ⇒
                 val e = convert(ts, ue)
                 Tagged(e, e.tags)
               case TSEvent(ts, ge: GroupEvent) ⇒
                 val e = convert(ts, ge)
                 Tagged(e, e.tags)
-              case other                      ⇒ other
+              case other ⇒ other
             }
           (obsEvent.withPayload(payload).withManifest("V1"), evTs)
       }
