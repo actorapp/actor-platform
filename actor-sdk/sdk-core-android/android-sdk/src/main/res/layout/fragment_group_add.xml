@@ -41,8 +41,7 @@
     <FrameLayout
         android:id="@+id/bottom_divider"
         android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:background="@color/bg_backyard">
+        android:layout_height="16dp">
 
         <View
             android:layout_width="match_parent"

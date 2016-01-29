@@ -53,7 +53,6 @@
             android:id="@+id/searchCont"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/bg_main"
             android:clickable="true"
             android:orientation="vertical"
             android:visibility="gone">
@@ -86,7 +85,6 @@
             android:id="@+id/syncInProgress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/bg_main"
             android:clickable="true">
 
             <View
@@ -139,9 +137,9 @@
             android:fillViewport="true">
 
             <FrameLayout
+                android:id="@+id/emptyContactsFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/bg_main"
                 android:clickable="true">
 
                 <View
