@@ -34,6 +34,10 @@ import im.actor.runtime.promise.Tuple3;
 import im.actor.runtime.promise.Tuple4;
 import im.actor.runtime.storage.KeyValueEngine;
 
+/**
+ * Stores and manages encrypted sessions between peers.
+ * Can be asked to pick session parameters for specific peer.
+ */
 public class SessionManagerActor extends ModuleActor {
 
     private static final String TAG = "SessionManagerActor";
@@ -68,15 +72,18 @@ public class SessionManagerActor extends ModuleActor {
         };
     }
 
+    /**
+     * Pick session
+     *
+     * @param uid        User's id
+     * @param keyGroupId User's key group
+     * @param resolver   Resolver for result
+     */
     public void pickSession(final int uid,
                             final int keyGroupId,
                             final PromiseResolver<PeerSession> resolver) {
 
-        //
-        // Searching for available session
-        //
-
-        pickSession(uid, keyGroupId)
+        pickCachedSession(uid, keyGroupId)
                 .fallback(new Function<Exception, Promise<PeerSession>>() {
                     @Override
                     public Promise<PeerSession> apply(Exception e) {
@@ -112,20 +119,29 @@ public class SessionManagerActor extends ModuleActor {
                 .afterVoid(new Supplier<Promise<PeerSession>>() {
                     @Override
                     public Promise<PeerSession> get() {
-                        return pickSession(uid, keyGroupId);
+                        return pickCachedSession(uid, keyGroupId);
                     }
                 })
                 .pipeTo(resolver)
                 .done(self());
     }
 
+    /**
+     * Pick session for specific keys
+     *
+     * @param uid         User's id
+     * @param keyGroupId  User's key group
+     * @param ownKeyId    Own Pre Key id
+     * @param theirKeyId  Their Pre Key id
+     * @param srcResolver resolver for value
+     */
     public void pickSession(final int uid,
                             final int keyGroupId,
                             final long ownKeyId,
                             final long theirKeyId,
                             final PromiseResolver<PeerSession> srcResolver) {
 
-        pickSession(uid, keyGroupId, ownKeyId, theirKeyId)
+        pickCachedSession(uid, keyGroupId, ownKeyId, theirKeyId)
                 .fallback(new Function<Exception, Promise<PeerSession>>() {
                     @Override
                     public Promise<PeerSession> apply(Exception e) {
@@ -157,6 +173,18 @@ public class SessionManagerActor extends ModuleActor {
                 .done(self());
     }
 
+    /**
+     * Spawn new session
+     *
+     * @param uid           user's id
+     * @param ownKeyGroup   own key group id
+     * @param theirKeyGroup their key group Id
+     * @param ownIdentity   own identity private key
+     * @param theirIdentity their identity public key
+     * @param ownPreKey     own pre key
+     * @param theirPreKey   their pre key
+     * @return spawned session
+     */
     private PeerSession spawnSession(int uid,
                                      int ownKeyGroup,
                                      int theirKeyGroup,
@@ -202,31 +230,53 @@ public class SessionManagerActor extends ModuleActor {
         return peerSession;
     }
 
-    private Promise<PeerSession> pickSession(int uid, final int keyGroupId) {
+    /**
+     * Picking cached session
+     *
+     * @param uid        User's id
+     * @param keyGroupId Key Group Id
+     * @return promise of session
+     */
+    private Promise<PeerSession> pickCachedSession(int uid, final int keyGroupId) {
         return ManagedList.of(peerSessions.getValue(uid))
                 .flatMap(PeerSessionsStorage.SESSIONS)
                 .filter(PeerSession.BY_THEIR_GROUP(keyGroupId))
+                .sorted(PeerSession.COMPARATOR)
                 .firstPromise();
     }
 
-    private Promise<PeerSession> pickSession(int uid, final int keyGroupId, final long ownKeyId, final long theirKeyId) {
+    /**
+     * Pick cached session for specific keys
+     *
+     * @param uid        User's id
+     * @param keyGroupId Key Group Id
+     * @param ownKeyId   Own Pre key id
+     * @param theirKeyId Their Pre key id
+     * @return promise of session
+     */
+    private Promise<PeerSession> pickCachedSession(int uid, final int keyGroupId, final long ownKeyId, final long theirKeyId) {
         return ManagedList.of(peerSessions.getValue(uid))
                 .flatMap(PeerSessionsStorage.SESSIONS)
                 .filter(PeerSession.BY_IDS(keyGroupId, ownKeyId, theirKeyId))
+                .sorted(PeerSession.COMPARATOR)
                 .firstPromise();
     }
 
+    //
+    // Messages
+    //
+
     @Override
-    public void onAsk(Object message, PromiseResolver future) {
+    public void onAsk(Object message, PromiseResolver resolver) {
         if (message instanceof PickSessionForEncrypt) {
             PickSessionForEncrypt encrypt = (PickSessionForEncrypt) message;
-            pickSession(encrypt.getUid(), encrypt.getKeyGroupId(), future);
+            pickSession(encrypt.getUid(), encrypt.getKeyGroupId(), resolver);
         } else if (message instanceof PickSessionForDecrypt) {
             PickSessionForDecrypt decrypt = (PickSessionForDecrypt) message;
             pickSession(decrypt.getUid(), decrypt.getKeyGroupId(), decrypt.getOwnPreKey(), decrypt.getTheirPreKey(),
-                    future);
+                    resolver);
         } else {
-            super.onAsk(message, future);
+            super.onAsk(message, resolver);
         }
     }
 

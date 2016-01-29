@@ -16,12 +16,16 @@ import java.util.ArrayList;
 
 public class ApiEncryptedBox extends BserObject {
 
+    private int senderKeyGroupId;
     private List<ApiEncyptedBoxKey> keys;
+    private List<Integer> ignoredKeyGroups;
     private String algType;
     private byte[] encPackage;
 
-    public ApiEncryptedBox(@NotNull List<ApiEncyptedBoxKey> keys, @NotNull String algType, @NotNull byte[] encPackage) {
+    public ApiEncryptedBox(int senderKeyGroupId, @NotNull List<ApiEncyptedBoxKey> keys, @NotNull List<Integer> ignoredKeyGroups, @NotNull String algType, @NotNull byte[] encPackage) {
+        this.senderKeyGroupId = senderKeyGroupId;
         this.keys = keys;
+        this.ignoredKeyGroups = ignoredKeyGroups;
         this.algType = algType;
         this.encPackage = encPackage;
     }
@@ -30,9 +34,18 @@ public class ApiEncryptedBox extends BserObject {
 
     }
 
+    public int getSenderKeyGroupId() {
+        return this.senderKeyGroupId;
+    }
+
     @NotNull
     public List<ApiEncyptedBoxKey> getKeys() {
         return this.keys;
+    }
+
+    @NotNull
+    public List<Integer> getIgnoredKeyGroups() {
+        return this.ignoredKeyGroups;
     }
 
     @NotNull
@@ -47,18 +60,22 @@ public class ApiEncryptedBox extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
+        this.senderKeyGroupId = values.getInt(4);
         List<ApiEncyptedBoxKey> _keys = new ArrayList<ApiEncyptedBoxKey>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
             _keys.add(new ApiEncyptedBoxKey());
         }
         this.keys = values.getRepeatedObj(1, _keys);
+        this.ignoredKeyGroups = values.getRepeatedInt(5);
         this.algType = values.getString(2);
         this.encPackage = values.getBytes(3);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
+        writer.writeInt(4, this.senderKeyGroupId);
         writer.writeRepeatedObj(1, this.keys);
+        writer.writeRepeatedInt(5, this.ignoredKeyGroups);
         if (this.algType == null) {
             throw new IOException();
         }
@@ -72,7 +89,9 @@ public class ApiEncryptedBox extends BserObject {
     @Override
     public String toString() {
         String res = "struct EncryptedBox{";
-        res += "keys=" + this.keys;
+        res += "senderKeyGroupId=" + this.senderKeyGroupId;
+        res += ", keys=" + this.keys;
+        res += ", ignoredKeyGroups=" + this.ignoredKeyGroups;
         res += ", algType=" + this.algType;
         res += ", encPackage=" + byteArrayToString(this.encPackage);
         res += "}";

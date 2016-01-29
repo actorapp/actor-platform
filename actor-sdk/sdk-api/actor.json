@@ -13291,9 +13291,21 @@
               "Encrypted package that is encrypted for multiple keys",
               {
                 "type": "reference",
+                "argument": "senderKeyGroupId",
+                "category": "full",
+                "description": "  Sender key group id"
+              },
+              {
+                "type": "reference",
                 "argument": "keys",
                 "category": "full",
                 "description": "  Encrypted encryption keys"
+              },
+              {
+                "type": "reference",
+                "argument": "ignoredKeyGroups",
+                "category": "full",
+                "description": "  Explictly ignored key groups"
               },
               {
                 "type": "reference",
@@ -13311,6 +13323,14 @@
             "attributes": [
               {
                 "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 4,
+                "name": "senderKeyGroupId"
+              },
+              {
+                "type": {
                   "type": "list",
                   "childType": {
                     "type": "struct",
@@ -13319,6 +13339,17 @@
                 },
                 "id": 1,
                 "name": "keys"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "keyGroupId"
+                  }
+                },
+                "id": 5,
+                "name": "ignoredKeyGroups"
               },
               {
                 "type": "string",
