@@ -1,14 +1,16 @@
-package im.actor.server.persist
+package im.actor.server.cqrs
 
 import akka.actor.ExtendedActorSystem
-import akka.persistence.journal.{ EventSeq, EventAdapter }
+import akka.persistence.journal.{ Tagged, EventSeq, EventAdapter }
 
 final class ActorEventAdapter(system: ExtendedActorSystem) extends EventAdapter {
-  override def manifest(event: Any): String = ""
+  override def manifest(event: Any): String = "V1"
 
   override def toJournal(event: Any): Any = {
-    println("=== toJournal")
-    event
+    event match {
+      case e: TaggedEvent ⇒ Tagged(e, e.tags)
+      case _              ⇒ event
+    }
   }
 
   override def fromJournal(event: Any, manifest: String): EventSeq =

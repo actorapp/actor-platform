@@ -9,6 +9,7 @@ import akka.util.Timeout
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
 import im.actor.server.acl.ACLUtils
+import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogCommand, DialogExtension }
 import im.actor.server.office.{ PeerProcessor, StopOffice }
@@ -20,8 +21,10 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
-trait UserEvent {
+trait UserEvent extends TaggedEvent {
   val ts: Instant
+
+  def tags: Set[String] = Set("user")
 }
 
 trait UserCommand {
