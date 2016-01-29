@@ -2,6 +2,8 @@ package im.actor.runtime.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.Predicate;
@@ -78,6 +80,12 @@ public class ManagedList<T> extends ArrayList<T> {
         for (int i = 0; i < count; i++) {
             res.add(supplier.get());
         }
+        return res;
+    }
+
+    public ManagedList<T> sorted(Comparator<T> comparator) {
+        ManagedList<T> res = new ManagedList<>(this);
+        Collections.sort(res, comparator);
         return res;
     }
 

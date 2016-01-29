@@ -1,5 +1,7 @@
 package im.actor.core.modules.encryption;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -358,10 +360,6 @@ public class KeyManagerActor extends ModuleActor {
                         }
 
                         //
-                        // Downloading
-                        //
-
-                        //
                         // Downloading pre key
                         //
 
@@ -552,13 +550,12 @@ public class KeyManagerActor extends ModuleActor {
                     key.getKeyMaterial()));
         }
 
-        if (keys.size() > 0) {
-            return new UserKeysGroup(keyGroup.getKeyGroupId(), identity, keys.toArray(new PublicKey[keys.size()]),
-                    new PublicKey[0]);
-        } else {
+        if (keys.size() == 0) {
             Log.w(TAG, "(uid:" + uid + ") No valid keys in key group #" + keyGroup.getKeyGroupId());
-            return null;
         }
+
+        return new UserKeysGroup(keyGroup.getKeyGroupId(), identity, keys.toArray(new PublicKey[keys.size()]),
+                new PublicKey[0]);
     }
 
     private Promise<Tuple2<UserKeysGroup, UserKeys>> pickUserGroup(int uid, final int keyGroupId) {

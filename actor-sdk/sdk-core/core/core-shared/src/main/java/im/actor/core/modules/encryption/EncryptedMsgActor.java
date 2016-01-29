@@ -38,7 +38,8 @@ public class EncryptedMsgActor extends ModuleActor {
                         boxKeys.add(new ApiEncyptedBoxKey(b.getUid(),
                                 b.getKeyGroupId(), "curve25519", b.getEncryptedKey()));
                     }
-                    ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(boxKeys, "aes-kuznechik", encryptedBox.getBox().getEncryptedPackage());
+                    ArrayList<Integer> ignored = new ArrayList<Integer>();
+                    ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(0, boxKeys, ignored, "aes-kuznechik", encryptedBox.getBox().getEncryptedPackage());
                     ApiEncryptedMessage apiEncryptedMessage = new ApiEncryptedMessage(apiEncryptedBox);
                     future.result(new EncryptedMessage(apiEncryptedMessage));
                 }
