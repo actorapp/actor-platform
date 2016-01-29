@@ -301,7 +301,7 @@ public class PromisesArray<T> {
                     @Override
                     public T apply(T[] src) {
                         if (src.length == 0) {
-                            throw new RuntimeException("Array is empty");
+                            throw new RuntimeException("Array is empty (first)");
                         }
                         return src[0];
                     }

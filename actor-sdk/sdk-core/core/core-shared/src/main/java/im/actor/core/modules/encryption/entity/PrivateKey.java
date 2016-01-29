@@ -18,11 +18,11 @@ import im.actor.runtime.function.Supplier;
 
 public class PrivateKey extends BserObject {
 
-    public static final Predicate<PrivateKey> PRE_KEY_EQUALS(byte[] publicKey) {
+    public static final Predicate<PrivateKey> PRE_KEY_EQUALS(final byte[] publicKey) {
         return new Predicate<PrivateKey>() {
             @Override
             public boolean apply(PrivateKey privateKey) {
-                return ByteStrings.isEquals(privateKey.publicKey, privateKey.getKey());
+                return ByteStrings.isEquals(publicKey, privateKey.getPublicKey());
             }
         };
     }
