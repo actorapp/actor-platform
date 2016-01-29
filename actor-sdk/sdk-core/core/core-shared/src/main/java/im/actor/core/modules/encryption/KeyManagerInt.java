@@ -1,9 +1,12 @@
 package im.actor.core.modules.encryption;
 
+import im.actor.core.modules.encryption.entity.PrivateKey;
 import im.actor.core.modules.encryption.entity.PublicKey;
+import im.actor.core.modules.encryption.entity.UserKeys;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Supplier;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.Promises;
 
@@ -13,45 +16,43 @@ public class KeyManagerInt extends ActorInterface {
         super(dest);
     }
 
-    public Promise<KeyManagerActor.FetchOwnKeyGroupResult> getOwnGroup() {
-        return ask(new KeyManagerActor.FetchOwnKeyGroup());
+    public Promise<KeyManagerActor.OwnIdentity> getOwnIdentity() {
+        return ask(new KeyManagerActor.FetchOwnKey());
     }
 
-    public Promise<KeyManagerActor.FetchUserKeyGroupsResponse> getUserKeyGroups(int uid) {
-        return ask(new KeyManagerActor.FetchUserKeyGroups(uid));
+    public Promise<UserKeys> getUserKeyGroups(int uid) {
+        return ask(new KeyManagerActor.FetchUserKeys(uid));
     }
 
     public Promise<PublicKey> getUserRandomPreKey(int uid, int keyGroupId) {
-        return ask(new KeyManagerActor.FetchUserEphemeralKeyRandom(uid, keyGroupId))
-                .map(new Function<KeyManagerActor.FetchUserEphemeralKeyResponse, PublicKey>() {
-                    @Override
-                    public PublicKey apply(KeyManagerActor.FetchUserEphemeralKeyResponse fetchUserEphemeralKeyResponse) {
-                        return fetchUserEphemeralKeyResponse.getEphemeralKey();
-                    }
-                });
+        return ask(new KeyManagerActor.FetchUserPreKeyRandom(uid, keyGroupId));
     }
 
-    public Promise<KeyManagerActor.FetchOwnEphemeralKeyResult> getOwnRandomPreKey() {
-        return ask(new KeyManagerActor.FetchOwnEphemeralKey());
+    public Promise<PublicKey> getUserPreKey(int uid, int keyGroupId, long preKeyId) {
+        return ask(new KeyManagerActor.FetchUserPreKey(uid, keyGroupId, preKeyId));
     }
 
-    public Promise<byte[]> getEphemeralKey(byte[] defaultVal, final int uid, final int keyGroupId) {
-        return Promises.success(defaultVal)
-                .mapPromise(new Function<byte[], Promise<byte[]>>() {
-                    @Override
-                    public Promise<byte[]> apply(byte[] src) {
-                        if (src != null) {
-                            return Promises.success(src);
-                        }
+    public Promise<PrivateKey> getOwnRandomPreKey() {
+        return ask(new KeyManagerActor.FetchOwnRandomPreKey());
+    }
 
-                        return getUserRandomPreKey(uid, keyGroupId)
-                                .map(new Function<PublicKey, byte[]>() {
-                                    @Override
-                                    public byte[] apply(PublicKey publicKey) {
-                                        return publicKey.getPublicKey();
-                                    }
-                                });
-                    }
-                });
+    public Promise<PrivateKey> getOwnPreKey(long id) {
+        return ask(new KeyManagerActor.FetchOwnPreKeyById(id));
+    }
+
+
+    public Supplier<Promise<byte[]>> supplyUserPreKey(final int uid, final int keyGroupId) {
+        return new Supplier<Promise<byte[]>>() {
+            @Override
+            public Promise<byte[]> get() {
+                return getUserRandomPreKey(uid, keyGroupId)
+                        .map(new Function<PublicKey, byte[]>() {
+                            @Override
+                            public byte[] apply(PublicKey publicKey) {
+                                return publicKey.getPublicKey();
+                            }
+                        });
+            }
+        };
     }
 }

@@ -19,7 +19,7 @@ public class ActorInterface {
         dest.send(message);
     }
 
-    protected <T extends AskResult> Promise<T> ask(final AskMessage<T> message) {
+    protected <T> Promise<T> ask(final AskMessage<T> message) {
         return new Promise<T>(new PromiseFunc<T>() {
             @Override
             public void exec(PromiseResolver<T> executor) {
