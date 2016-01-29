@@ -43,11 +43,11 @@ public class PrivateKey extends BserObject {
         }
     };
 
-    public static final Function<PrivateKey, ApiEncryptionKeySignature> SIGN(PrivateKey identity) {
+    public static final Function<PrivateKey, ApiEncryptionKeySignature> SIGN(final PrivateKey identity) {
         return new Function<PrivateKey, ApiEncryptionKeySignature>() {
             @Override
             public ApiEncryptionKeySignature apply(PrivateKey privateKey) {
-                byte[] signature = Curve25519.calculateSignature(Crypto.randomBytes(64), privateKey.getKey(),
+                byte[] signature = Curve25519.calculateSignature(Crypto.randomBytes(64), identity.getKey(),
                         RatchetKeySignature.hashForSignature(privateKey.getKeyId(),
                                 privateKey.getKeyAlg(), privateKey.getPublicKey()));
                 return new ApiEncryptionKeySignature(privateKey.getKeyId(), "Ed25519", signature);
