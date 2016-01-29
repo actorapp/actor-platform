@@ -6,25 +6,25 @@ import Foundation
 import UIKit
 import MobileCoreServices
 
-class AASettingsWallpapersController: AATableViewController {
+public class AASettingsWallpapersController: AATableViewController {
     
     // MARK: -
     // MARK: Constructors
     
     private let CellIdentifier = "CellIdentifier"
     
-    init() {
+    public init() {
         
         super.init(style: UITableViewStyle.Grouped)
         title = AALocalized("WallpapersTitle")
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.registerClass(AAWallpapersCell.self, forCellReuseIdentifier: CellIdentifier)
@@ -36,15 +36,15 @@ class AASettingsWallpapersController: AATableViewController {
     // MARK: -
     // MARK: UITableView Data Source
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             return photosLibrary(indexPath)
         } else {
@@ -107,13 +107,13 @@ class AASettingsWallpapersController: AATableViewController {
     // MARK: -
     // MARK: Picker delegate
     
-    override func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+    override public func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         
         picker.navigationController?.pushViewController(AAWallpapperPreviewController(selectedImage: image), animated: true)
         
     }
     
-    override func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    override public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             picker.pushViewController(AAWallpapperPreviewController(selectedImage: image), animated: true)
@@ -121,7 +121,7 @@ class AASettingsWallpapersController: AATableViewController {
         
     }
     
-    override func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    override public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
     
