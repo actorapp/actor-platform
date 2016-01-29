@@ -61,7 +61,7 @@ object ParameterRepo {
     for (rows ← byUserIdAndKeyLikeC((userId, s"$prefix%_%.%")).result) yield {
       rows flatMap {
         case Parameter(_, key, value) ⇒
-          key.drop(prefix.length).split(".").toList match {
+          key.drop(prefix.length).split("\\.").toList match {
             case peerStr :: "enabled" :: Nil ⇒
               peerStr.split("_").toList match {
                 case "GROUP" :: id :: Nil ⇒
