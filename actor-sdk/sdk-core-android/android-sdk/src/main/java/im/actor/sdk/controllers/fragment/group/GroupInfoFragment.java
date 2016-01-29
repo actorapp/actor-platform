@@ -69,6 +69,7 @@ public class GroupInfoFragment extends BaseFragment {
     private CoverAvatarView avatarView;
     private View notMemberView;
     protected View header;
+    private boolean isAdmin;
 
     public static GroupInfoFragment create(int chatId) {
         Bundle args = new Bundle();
@@ -86,8 +87,9 @@ public class GroupInfoFragment extends BaseFragment {
         groupInfo = groups().get(chatId);
 
         View res = inflater.inflate(R.layout.fragment_group, container, false);
-
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         notMemberView = res.findViewById(R.id.notMember);
+        notMemberView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         ActorStyle style = ActorSDK.sharedActor().style;
         ((TextView) notMemberView.findViewById(R.id.not_member_text)).setTextColor(style.getTextPrimaryColor());
         bind(groupInfo.isMember(), new ValueChangedListener<Boolean>() {
@@ -127,7 +129,7 @@ public class GroupInfoFragment extends BaseFragment {
         bind(title, groupInfo.getName());
 
         // Created by
-        boolean isAdmin = false;
+        isAdmin = false;
         final TextView createdBy = (TextView) header.findViewById(R.id.createdBy);
         createdBy.setTextColor(style.getProfileSubtitleColor());
         if (groupInfo.getCreatorId() == myUid()) {
@@ -399,7 +401,7 @@ public class GroupInfoFragment extends BaseFragment {
         boolean aboutVis = about[0] != null && !about[0].isEmpty();
 
         descriptionContainer.setVisibility((aboutVis || themeVis || finalIsAdmin) ? View.VISIBLE : View.GONE);
-        themeDivider.setVisibility((themeVis && aboutVis) ? View.VISIBLE : View.GONE);
+        themeDivider.setVisibility(((themeVis && aboutVis) || isAdmin) ? View.VISIBLE : View.GONE);
 
     }
 

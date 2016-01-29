@@ -47,7 +47,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_sign_phone, container, false);
-
+        v.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         TextView buttonContinue = (TextView) v.findViewById(R.id.button_continue_text);
         StateListDrawable states = SelectorFactory.get(ActorSDK.sharedActor().style.getMainColor(), getActivity());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

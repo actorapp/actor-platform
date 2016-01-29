@@ -82,7 +82,9 @@ public class IntegrationTokenFragment extends BaseFragment {
         final ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 
         View res = inflater.inflate(R.layout.fragment_list, container, false);
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
         listView = (ListView) res.findViewById(R.id.listView);
+        listView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         emptyView = (TextView) res.findViewById(R.id.emptyView);
         emptyView.setText(getString(R.string.integration_token_empty_view));
         emptyView.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
@@ -155,6 +157,7 @@ public class IntegrationTokenFragment extends BaseFragment {
         });
 
         View footer = inflater.inflate(R.layout.fragment_link_item_footer, listView, false);
+        footer.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
         listView.addFooterView(footer, null, false);
 
 
@@ -235,7 +238,7 @@ public class IntegrationTokenFragment extends BaseFragment {
 
             //Hint styling
             if (position == 1) {
-                container.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_backyard));
+                container.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
                 topShadow.setVisibility(View.VISIBLE);
                 botShadow.setVisibility(View.VISIBLE);
                 divider.setVisibility(View.INVISIBLE);

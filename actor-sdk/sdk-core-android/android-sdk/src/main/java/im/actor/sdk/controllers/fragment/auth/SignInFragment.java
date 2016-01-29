@@ -43,7 +43,7 @@ public class SignInFragment extends BaseAuthFragment {
         authType = getArguments().getString("authType");
         keyboardHelper = new KeyboardHelper(getActivity());
         View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
-
+        v.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         TextView buttonConfirm = (TextView) v.findViewById(R.id.button_confirm_sms_code_text);
         buttonConfirm.setTypeface(Fonts.medium());
         buttonConfirm.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
