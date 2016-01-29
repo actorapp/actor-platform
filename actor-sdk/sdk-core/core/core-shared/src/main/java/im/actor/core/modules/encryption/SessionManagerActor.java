@@ -153,7 +153,8 @@ public class SessionManagerActor extends ModuleActor {
                                 });
                     }
                 })
-                .pipeTo(srcResolver);
+                .pipeTo(srcResolver)
+                .done(self());
     }
 
     private PeerSession spawnSession(int uid,
