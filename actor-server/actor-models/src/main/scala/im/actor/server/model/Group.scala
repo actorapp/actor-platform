@@ -1,6 +1,6 @@
 package im.actor.server.model
 
-import org.joda.time.DateTime
+import java.time.Instant
 
 case class Group(
   id:            Int,
@@ -8,7 +8,7 @@ case class Group(
   accessHash:    Long,
   title:         String,
   isPublic:      Boolean,
-  createdAt:     DateTime,
+  createdAt:     Instant,
   about:         Option[String],
   topic:         Option[String]
 )
@@ -33,14 +33,14 @@ case class FullGroup(
   accessHash:           Long,
   title:                String,
   isPublic:             Boolean,
-  createdAt:            DateTime,
+  createdAt:            Instant,
   about:                Option[String],
   topic:                Option[String],
   titleChangerUserId:   Int,
-  titleChangedAt:       DateTime,
+  titleChangedAt:       Instant,
   titleChangeRandomId:  Long,
   avatarChangerUserId:  Int,
-  avatarChangedAt:      DateTime,
+  avatarChangedAt:      Instant,
   avatarChangeRandomId: Long,
   isHidden:             Boolean
 )

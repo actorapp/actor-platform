@@ -7,7 +7,8 @@ import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, UsersService }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
-import im.actor.server.persist
+import im.actor.server.persist.UserRepo
+import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.user.UserExtension
 import im.actor.util.misc.StringUtils
 import slick.driver.PostgresDriver.api._
@@ -32,10 +33,10 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
     authorized(clientData) { implicit client ⇒
       StringUtils.validName(name) match {
         case \/-(validName) ⇒
-          db.run(persist.UserRepo.find(userId)) flatMap {
+          db.run(UserRepo.find(userId)) flatMap {
             case Some(user) ⇒
               if (accessHash == ACLUtils.userAccessHash(client.authId, user)) {
-                val seqstateF = db.run(persist.contact.UserContactRepo.find(client.userId, userId)) flatMap {
+                val seqstateF = db.run(UserContactRepo.find(client.userId, userId)) flatMap {
                   case Some(contact) ⇒
                     userExt.editLocalName(client.userId, userId, Some(validName))
                   case None ⇒

@@ -13,6 +13,7 @@ trait FlywayInit {
     flyway.setDataSource(ds)
     flyway.setLocations("sql.migration")
     flyway.setCallbacks(new BeforeCleanCallback())
+    flyway.setBaselineOnMigrate(true)
     flyway
   }
 }

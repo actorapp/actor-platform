@@ -1,0 +1,1 @@
+* :bug: Allow Accept-Ranges CORS header
