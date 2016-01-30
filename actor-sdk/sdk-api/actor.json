@@ -12949,7 +12949,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "LoadEphermalPublicKeys",
+            "name": "LoadPrePublicKeys",
             "header": 2603,
             "response": {
               "type": "reference",
@@ -13428,7 +13428,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "UploadEphermalKey",
+            "name": "UploadPreKey",
             "header": 2612,
             "response": {
               "type": "reference",
@@ -13516,9 +13516,24 @@
                 "argument": "encPackage",
                 "category": "full",
                 "description": "  Encrypted package"
+              },
+              {
+                "type": "reference",
+                "argument": "senderKeyGroupId",
+                "category": "full",
+                "description": "  Sender key group"
               }
             ],
+            "expandable": "true",
             "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 4,
+                "name": "senderKeyGroupId"
+              },
               {
                 "type": {
                   "type": "list",
@@ -13539,6 +13554,50 @@
                 "type": "bytes",
                 "id": 3,
                 "name": "encPackage"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EncryptedBoxSignature"
+                  }
+                },
+                "id": 5,
+                "name": "signatures"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedBoxSignature",
+            "doc": [
+              "Signature for encrypted package",
+              {
+                "type": "reference",
+                "argument": "algType",
+                "category": "full",
+                "description": "  Alg Type"
+              },
+              {
+                "type": "reference",
+                "argument": "signature",
+                "category": "full",
+                "description": "  Signature of encrypted package"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "algType"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "signature"
               }
             ]
           }
@@ -13568,6 +13627,7 @@
                 "description": "  Encrypted encryption key"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": {
@@ -13594,6 +13654,381 @@
                 "type": "bytes",
                 "id": 4,
                 "name": "encryptedKey"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "KeyGroupId",
+            "doc": [
+              "References to key groups",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "keyGroupId",
+                "category": "hidden",
+                "description": "  Key Group Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "keyGroupId"
+                },
+                "id": 2,
+                "name": "keyGroupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SendEncryptedPackage",
+            "header": 2657,
+            "response": {
+              "type": "anonymous",
+              "header": 2664,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "int32"
+                  },
+                  "id": 1,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": {
+                      "type": "alias",
+                      "childType": "seq_state"
+                    }
+                  },
+                  "id": 2,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": {
+                      "type": "alias",
+                      "childType": "date"
+                    }
+                  },
+                  "id": 3,
+                  "name": "date"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "KeyGroupId"
+                    }
+                  },
+                  "id": 4,
+                  "name": "obsoleteKeyGroups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "KeyGroupId"
+                    }
+                  },
+                  "id": 5,
+                  "name": "missedKeyGroups"
+                }
+              ]
+            },
+            "doc": [
+              "Sending encrypted package",
+              {
+                "type": "reference",
+                "argument": "randomId",
+                "category": "hidden",
+                "description": "Random id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "randomId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 2,
+                "name": "destPeers"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "KeyGroupId"
+                  }
+                },
+                "id": 3,
+                "name": "ignoredKeyGroups"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "EncryptedBox"
+                },
+                "id": 4,
+                "name": "encryptedBox"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "EncryptedPackage",
+            "header": 177,
+            "doc": [
+              "Update about encrypted package",
+              {
+                "type": "reference",
+                "argument": "randomId",
+                "category": "full",
+                "description": "  Random Id of package"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Sending date of package"
+              },
+              {
+                "type": "reference",
+                "argument": "senderId",
+                "category": "full",
+                "description": "  Sender id of package"
+              },
+              {
+                "type": "reference",
+                "argument": "encryptedBox",
+                "category": "full",
+                "description": "  Encrypted box"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "randomId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 2,
+                "name": "date"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 3,
+                "name": "senderId"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "EncryptedBox"
+                },
+                "id": 4,
+                "name": "encryptedBox"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Storage",
+      "package": "storage",
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UploadSharedBlob",
+            "header": 2660,
+            "response": {
+              "type": "anonymous",
+              "header": 2661,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "sharedObjectId",
+                  "category": "full",
+                  "description": "  Id of shared object"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "int32",
+                  "id": 1,
+                  "name": "sharedObjectId"
+                }
+              ]
+            },
+            "doc": [
+              "Upload shared blob with user",
+              {
+                "type": "reference",
+                "argument": "destPeer",
+                "category": "full",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "bucket",
+                "category": "full",
+                "description": "Bucked name"
+              },
+              {
+                "type": "reference",
+                "argument": "blob",
+                "category": "full",
+                "description": "Blob data"
+              },
+              {
+                "type": "reference",
+                "argument": "randomId",
+                "category": "full",
+                "description": "Random id for protecting from double upload"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "destPeer"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "bucket"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "blob"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "randomId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DownloadSharedBlob",
+            "header": 2662,
+            "response": {
+              "type": "anonymous",
+              "header": 2663,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "blob",
+                  "category": "full",
+                  "description": "  Blob contents"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "bytes",
+                  "id": 1,
+                  "name": "blob"
+                }
+              ]
+            },
+            "doc": [
+              "Download shared blob",
+              {
+                "type": "reference",
+                "argument": "destPeer",
+                "category": "full",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "bucket",
+                "category": "full",
+                "description": "Bucket name"
+              },
+              {
+                "type": "reference",
+                "argument": "objectId",
+                "category": "full",
+                "description": "Object Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "destPeer"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "bucket"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "objectId"
               }
             ]
           }
