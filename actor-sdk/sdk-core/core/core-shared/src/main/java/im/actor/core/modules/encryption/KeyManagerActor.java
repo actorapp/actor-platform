@@ -477,7 +477,10 @@ public class KeyManagerActor extends ModuleActor {
         }
         UserKeysGroup validatedKeysGroup = validateUserKeysGroup(uid, keyGroup);
         if (validatedKeysGroup != null) {
-            cacheUserKeys(userKeys.addUserKeyGroup(validatedKeysGroup));
+            UserKeys updatedUserKeys = userKeys.addUserKeyGroup(validatedKeysGroup);
+            cacheUserKeys(updatedUserKeys);
+            context().getEncryption().getEncryptedChatManager(uid)
+                    .send(new EncryptedPeerActor.KeyGroupUpdated(userKeys));
         }
     }
 
@@ -492,7 +495,11 @@ public class KeyManagerActor extends ModuleActor {
         if (userKeys == null) {
             return;
         }
-        cacheUserKeys(userKeys.removeUserKeyGroup(keyGroupId));
+        
+        UserKeys updatedUserKeys = userKeys.removeUserKeyGroup(keyGroupId);
+        cacheUserKeys(updatedUserKeys);
+        context().getEncryption().getEncryptedChatManager(uid)
+                .send(new EncryptedPeerActor.KeyGroupUpdated(userKeys));
     }
 
     //
