@@ -1,0 +1,1 @@
+* :bug: Attempt to work-around akka/akka#19623 
