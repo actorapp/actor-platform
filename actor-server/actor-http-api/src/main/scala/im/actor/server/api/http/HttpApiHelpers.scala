@@ -10,7 +10,8 @@ trait HttpApiHelpers {
   val corsHeaders = List(
     headers.RawHeader("Access-Control-Allow-Origin", "*"),
     headers.RawHeader("Access-Control-Allow-Methods", "GET, POST, PUT"),
-    headers.RawHeader("Access-Control-Allow-Credentials", "true")
+    headers.RawHeader("Access-Control-Allow-Credentials", "true"),
+    headers.RawHeader("Access-Control-Allow-Headers", "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Accept")
   )
 
   //todo: find better solution with Directive
