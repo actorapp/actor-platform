@@ -1,5 +1,7 @@
 package im.actor.server.file.local
 
+import java.util.concurrent.Executors
+
 import akka.actor.ActorSystem
 import akka.event.Logging
 import akka.http.scaladsl.util.FastFuture
@@ -19,6 +21,9 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
   protected implicit val ec: ExecutionContext
   protected implicit val mat: Materializer
   protected val storageLocation: String
+
+  private lazy val poolSize = system.settings.config.getInt("services.file-storage.thread-pool-size")
+  private lazy val ecPool = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(poolSize))
 
   private lazy val log = Logging(system, getClass)
   private lazy val db = DbExtension(system).db
@@ -50,7 +55,8 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
       dir ← getOrCreateFileDir(fileId)
       partFile ← Future { blocking { dir.createChild(LocalUploadKey.partKey(fileId, partNumber).key) } }
       _ = log.debug("Appending bytes to part number: {}, fileId: {}, target file: {}", partNumber, fileId, partFile)
-      _ ← bs.runWith(FileIO.toFile(partFile.toJava, append = true))
+      bytes ← bs.runFold(ByteString.empty)(_ ++ _)
+      _ ← Future({ partFile.write(bytes.toArray) })(ecPool)
     } yield ()
   }
 
