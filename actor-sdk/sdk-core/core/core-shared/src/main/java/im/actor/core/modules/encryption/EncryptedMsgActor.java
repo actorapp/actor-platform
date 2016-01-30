@@ -66,7 +66,7 @@ public class EncryptedMsgActor extends ModuleActor {
                         key.getAlgType(), key.getEncryptedKey()));
             }
         }
-        EncryptedBox encryptedBox = new EncryptedBox(encryptedBoxKeys.toArray(new EncryptedBoxKey[0]), message.getBox().getEncPackage());
+        final EncryptedBox encryptedBox = new EncryptedBox(encryptedBoxKeys.toArray(new EncryptedBoxKey[0]), message.getBox().getEncPackage());
         ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.DecryptBox(encryptedBox), new AskCallback() {
             @Override
             public void onResult(Object obj) {
