@@ -3,13 +3,12 @@ package im.actor.server.persist
 import java.time.{ ZoneOffset, LocalDateTime }
 
 import im.actor.server.db.ActorPostgresDriver.api._
-
-import im.actor.server.model
+import im.actor.server.model.{ Sex, UserState, User }
 import im.actor.util.misc.PhoneNumberUtils
 
 import scala.concurrent.ExecutionContext
 
-final class UserTable(tag: Tag) extends Table[model.User](tag, "users") {
+final class UserTable(tag: Tag) extends Table[User](tag, "users") {
   import SexColumnType._
   import UserStateColumnType._
 
@@ -17,8 +16,8 @@ final class UserTable(tag: Tag) extends Table[model.User](tag, "users") {
   def accessSalt = column[String]("access_salt")
   def name = column[String]("name")
   def countryCode = column[String]("country_code")
-  def sex = column[model.Sex]("sex")
-  def state = column[model.UserState]("state")
+  def sex = column[Sex]("sex")
+  def state = column[UserState]("state")
   def createdAt = column[LocalDateTime]("created_at")
   def nickname = column[Option[String]]("nickname")
   def about = column[Option[String]]("about")
@@ -26,7 +25,7 @@ final class UserTable(tag: Tag) extends Table[model.User](tag, "users") {
   def isBot = column[Boolean]("is_bot")
   def external = column[Option[String]]("external")
 
-  def * = (id, accessSalt, name, countryCode, sex, state, createdAt, nickname, about, deletedAt, isBot, external) <> (model.User.tupled, model.User.unapply)
+  def * = (id, accessSalt, name, countryCode, sex, state, createdAt, nickname, about, deletedAt, isBot, external) <> (User.tupled, User.unapply)
 }
 
 object UserRepo {
@@ -62,7 +61,7 @@ object UserRepo {
   val activeHumanUsers =
     users.filter(u ⇒ u.deletedAt.isEmpty && !u.isBot)
 
-  def create(user: model.User) =
+  def create(user: User) =
     users += user
 
   def setCountryCode(userId: Int, countryCode: String) =

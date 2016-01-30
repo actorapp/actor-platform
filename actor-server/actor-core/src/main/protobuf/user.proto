@@ -12,7 +12,7 @@ import "scalapb/scalapb.proto";
 import "sequence.proto";
 import "file.proto";
 
-message User {
+message UserState {
     option (scalapb.message).extends = "im.actor.server.office.ProcessorState";
 
     required int32 id = 1;
@@ -315,18 +315,21 @@ message UserEvents {
     message AuthAdded {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         required int64 auth_id = 1;
     }
 
     message AuthRemoved {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         required int64 auth_id = 1;
     }
 
     message Created {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 12 [(scalapb.field).type = "java.time.Instant"];
         required int32 user_id = 7;
 
         required string access_salt = 1;
@@ -341,76 +344,92 @@ message UserEvents {
     }
 
     message IsAdminUpdated {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         optional bool is_admin = 1;
     }
 
     message PhoneAdded {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         required int64 phone = 1;
     }
 
     message EmailAdded {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         required string email = 1;
     }
 
     message SocialContactAdded {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         required SocialContact contact = 1;
     }
 
     message CountryCodeChanged {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         required string country_code = 1;
     }
 
     message NameChanged {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         required string name = 1;
     }
 
     message Deleted {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
     }
 
     message NicknameChanged {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         optional string nickname = 1;
     }
 
     message AboutChanged {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         optional string about = 1;
     }
 
     message AvatarUpdated {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         optional Avatar avatar = 1;
     }
 
     message PreferredLanguagesChanged {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         repeated string preferred_languages = 1;
     }
 
     message TimeZoneChanged {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         optional string time_zone = 1;
     }
 
     message LocalNameChanged {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
+        required int64 ts = 3 [(scalapb.field).type = "java.time.Instant"];
         required int32 contact_user_id = 1;
         optional string local_name = 2;
     }

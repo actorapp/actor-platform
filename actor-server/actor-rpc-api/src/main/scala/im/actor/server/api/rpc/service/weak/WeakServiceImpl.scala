@@ -8,7 +8,6 @@ import im.actor.api.rpc.weak.{ UpdateTypingStop, ApiTypingType, UpdateTyping, We
 import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
-import im.actor.server.persist
 import im.actor.server.presences.PresenceExtension
 import im.actor.server.sequence.WeakUpdatesExtension
 import slick.driver.PostgresDriver.api._

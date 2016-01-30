@@ -1,12 +1,11 @@
 package im.actor.server.persist
 
+import im.actor.server.model.File
 import slick.dbio.Effect.{ Read, Write }
 import slick.driver.PostgresDriver.api._
 import slick.profile.{ SqlAction, FixedSqlAction }
 
-import im.actor.server.model
-
-final class FileTable(tag: Tag) extends Table[model.File](tag, "files") {
+final class FileTable(tag: Tag) extends Table[File](tag, "files") {
   def id = column[Long]("id", O.PrimaryKey)
 
   def accessSalt = column[String]("access_salt")
@@ -19,16 +18,16 @@ final class FileTable(tag: Tag) extends Table[model.File](tag, "files") {
 
   def name = column[String]("name")
 
-  def * = (id, accessSalt, uploadKey, isUploaded, size, name) <> (model.File.tupled, model.File.unapply)
+  def * = (id, accessSalt, uploadKey, isUploaded, size, name) <> (File.tupled, File.unapply)
 }
 
 object FileRepo {
   val files = TableQuery[FileTable]
 
   def create(id: Long, expectedSize: Long, accessSalt: String, uploadKey: String): FixedSqlAction[Int, NoStream, Write] =
-    files += model.File(id, accessSalt, uploadKey, isUploaded = false, size = expectedSize, name = "")
+    files += File(id, accessSalt, uploadKey, isUploaded = false, size = expectedSize, name = "")
 
-  def find(id: Long): SqlAction[Option[model.File], NoStream, Read] =
+  def find(id: Long): SqlAction[Option[File], NoStream, Read] =
     files.filter(_.id === id).result.headOption
 
   def fetch(ids: Set[Long]) =

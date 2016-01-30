@@ -1,9 +1,9 @@
 package im.actor.server.persist
 
+import im.actor.server.model.UserState
 import slick.driver.PostgresDriver.api._
-import im.actor.server.model
 
 object UserStateColumnType {
   implicit val userStateColumnType =
-    MappedColumnType.base[model.UserState, Int](_.toInt, model.UserState.fromInt)
+    MappedColumnType.base[UserState, Int](_.toInt, UserState.fromInt)
 }

@@ -9,6 +9,7 @@ import org.flywaydb.core.Flyway
 import slick.driver.PostgresDriver.api.Database
 import slick.jdbc.hikaricp.HikariCPJdbcDataSource
 import slick.jdbc.JdbcDataSource
+import slick.util.AsyncExecutor
 
 import scala.util.{ Failure, Success, Try }
 
@@ -34,8 +35,9 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
     val log = Logging(system, getClass)
 
     val sqlConfig = system.settings.config.getConfig("services.postgresql")
+    val queueSize = sqlConfig.getInt("queueSize")
     val ds = initDs(sqlConfig).get
-    val db = initDb(ds)
+    val db = initDb(ds, queueSize)
 
     system.registerOnTermination {
       db.close()
@@ -66,8 +68,8 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
     )).resolve(), null, "main", getClass.getClassLoader)
   }
 
-  private def initDb(ds: HikariCPJdbcDataSource): Database = {
+  private def initDb(ds: HikariCPJdbcDataSource, queueSize: Int): Database = {
     JNDI.initialContext.rebind(JndiPath, ds.ds)
-    Database.forSource(ds)
+    Database.forSource(ds, executor = AsyncExecutor("AsyncExecutor.actor", 20, queueSize))
   }
 }

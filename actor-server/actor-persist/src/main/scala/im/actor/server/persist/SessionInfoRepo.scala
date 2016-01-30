@@ -1,29 +1,28 @@
 package im.actor.server.persist
 
+import im.actor.server.model.SessionInfo
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.model
-
-final class SessionInfoTable(tag: Tag) extends Table[model.SessionInfo](tag, "session_infos") {
+final class SessionInfoTable(tag: Tag) extends Table[SessionInfo](tag, "session_infos") {
   def authId = column[Long]("auth_id", O.PrimaryKey)
 
   def sessionId = column[Long]("session_id", O.PrimaryKey)
 
   def optUserId = column[Option[Int]]("user_id")
 
-  def * = (authId, sessionId, optUserId) <> (model.SessionInfo.tupled, model.SessionInfo.unapply)
+  def * = (authId, sessionId, optUserId) <> (SessionInfo.tupled, SessionInfo.unapply)
 }
 
 object SessionInfoRepo {
   val infos = TableQuery[SessionInfoTable]
 
   def create(authId: Long, sessionId: Long, optUserId: Option[Int]) =
-    infos += model.SessionInfo(authId, sessionId, optUserId)
+    infos += SessionInfo(authId, sessionId, optUserId)
 
-  def create(info: model.SessionInfo) =
+  def create(info: SessionInfo) =
     infos += info
 
-  def createOrUpdate(info: model.SessionInfo) =
+  def createOrUpdate(info: SessionInfo) =
     infos.insertOrUpdate(info)
 
   def find(authId: Long, sessionId: Long) =
