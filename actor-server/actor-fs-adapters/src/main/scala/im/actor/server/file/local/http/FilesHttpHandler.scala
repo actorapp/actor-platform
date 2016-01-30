@@ -1,6 +1,7 @@
 package im.actor.server.file.local.http
 
 import java.time.{ Duration, Instant }
+import java.util.concurrent.Executors
 
 import akka.actor.ActorSystem
 import akka.event.Logging
@@ -13,7 +14,7 @@ import im.actor.server.api.http.HttpHandler
 import im.actor.server.file.local.{ FileStorageOperations, LocalFileStorageConfig, RequestSigning }
 import im.actor.util.log.AnyRefLogSource
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ Future, ExecutionContext }
 import scala.util.{ Failure, Success }
 
 private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfig)(implicit val system: ActorSystem)
