@@ -1,0 +1,1 @@
+* :bug: work-around for CORS akka bug

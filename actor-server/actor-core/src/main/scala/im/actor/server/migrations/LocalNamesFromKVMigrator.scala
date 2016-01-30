@@ -1,5 +1,7 @@
 package im.actor.server.migrations
 
+import java.time.Instant
+
 import akka.actor.{ ActorSystem, Props }
 import akka.persistence.{ PersistentActor, RecoveryCompleted }
 import akka.util.Timeout
@@ -59,7 +61,7 @@ private final class LocalNamesFromKVMigrator(promise: Promise[Unit], ownerUserId
 
   override def receiveCommand = {
     case Migrate ⇒
-      persist(TSEvent(new DateTime, LocalNameChanged(contactUserId, Some(localName)))) { _ ⇒
+      persist(LocalNameChanged(Instant.now(), contactUserId, Some(localName))) { _ ⇒
         promise.success(())
         context stop self
       }

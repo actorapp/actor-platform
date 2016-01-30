@@ -1,14 +1,14 @@
 package im.actor.server.persist
 
+import im.actor.server.model.AuthId
+
 import scala.concurrent.ExecutionContext
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.model
-
-final class AuthIdTable(tag: Tag) extends Table[model.AuthId](tag, "auth_ids") {
+final class AuthIdTable(tag: Tag) extends Table[AuthId](tag, "auth_ids") {
   def id = column[Long]("id", O.PrimaryKey)
 
   def userId = column[Option[Int]]("user_id")
@@ -17,7 +17,7 @@ final class AuthIdTable(tag: Tag) extends Table[model.AuthId](tag, "auth_ids") {
 
   def deletedAt = column[Option[DateTime]]("deleted_at")
 
-  def * = (id, userId, publicKeyHash) <> (model.AuthId.tupled, model.AuthId.unapply)
+  def * = (id, userId, publicKeyHash) <> (AuthId.tupled, AuthId.unapply)
 }
 
 object AuthIdRepo {
@@ -27,9 +27,9 @@ object AuthIdRepo {
   val activeAuthIdsCompiled = Compiled(activeAuthIds)
 
   def create(authId: Long, userId: Option[Int], publicKeyHash: Option[Long]) =
-    authIds += model.AuthId(authId, userId, publicKeyHash)
+    authIds += AuthId(authId, userId, publicKeyHash)
 
-  def create(authId: Long) = authIds += model.AuthId(authId, None, None)
+  def create(authId: Long) = authIds += AuthId(authId, None, None)
 
   def byAuthIdNotDeleted(authId: Rep[Long]) =
     activeAuthIds.filter(a ⇒ a.id === authId)
