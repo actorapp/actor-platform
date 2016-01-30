@@ -1,0 +1,1 @@
+* :shipit: configurable slick queue size
