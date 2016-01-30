@@ -71,6 +71,13 @@ public class EncryptedMsgActor extends ModuleActor {
             @Override
             public void onResult(Object obj) {
                 Log.d(TAG, "onDecrypt:onResult in " + (Runtime.getActorTime() - start) + " ms");
+                EncryptedPeerActor.DecryptBoxResponse re = (EncryptedPeerActor.DecryptBoxResponse) obj;
+                try {
+                    ApiMessage message = ApiMessage.fromBytes(re.getData());
+                    Log.d(TAG, "onDecrypt:onResult " + message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
