@@ -158,6 +158,11 @@ public class EncryptedPeerActor extends ModuleActor {
 
     private void doDecrypt(final EncryptedBox data, final PromiseResolver<DecryptBoxResponse> resolver) {
 
+        if (!isReady) {
+            stash();
+            return;
+        }
+
         final int senderKeyGroup = ByteStrings.bytesToInt(ByteStrings.substring(data.getEncryptedPackage(), 0, 4));
         final byte[] encPackage = ByteStrings.substring(data.getEncryptedPackage(), 4, data.getEncryptedPackage().length - 4);
 
@@ -217,178 +222,15 @@ public class EncryptedPeerActor extends ModuleActor {
                 })
                 .pipeTo(resolver)
                 .done(self());
+    }
 
-//        PromisesArray.of(data.getKeys())
-//                // Searching for compatable key
-//                .filter(new Predicate<EncryptedBoxKey>() {
-//                    @Override
-//                    public boolean apply(EncryptedBoxKey boxKey) {
-//                        return boxKey.getUid() == myUid()
-//                                && boxKey.getKeyGroupId() == ownKeyGroupId
-//                                && "curve25519".equals(boxKey.getKeyAlg());
-//                    }
-//                })
-//                .first()
-//                .mapPromise(new Function<EncryptedBoxKey, Promise<Tuple2<SessionActor, EncryptedBoxKey>>>() {
-//                    @Override
-//                    public Promise<Tuple2<SessionActor, EncryptedBoxKey>> apply(final EncryptedBoxKey boxKey) {
-//                        final long senderEphermalKey0Id = ByteStrings.bytesToLong(boxKey.getEncryptedKey(), 4);
-//                        final long receiverEphermalKey0Id = ByteStrings.bytesToLong(boxKey.getEncryptedKey(), 12);
-//
-//                        if (activeSessions.containsKey(boxKey.getKeyGroupId())) {
-//                            for (SessionActor s : activeSessions.get(senderKeyGroup).getSessions()) {
-//                                if (s.getOwnKeyId() == receiverEphermalKey0Id &&
-//                                        s.getTheirKeyId() == senderEphermalKey0Id) {
-//                                    return success(new Tuple2<>(s, boxKey));
-//                                }
-//                            }
-//                        }
-//                        return context().getEncryption().getSessionManagerInt()
-//                                .pickSession(uid, senderKeyGroup, receiverEphermalKey0Id, senderEphermalKey0Id)
-//                                .map(new Function<PeerSession, Tuple2<SessionActor, EncryptedBoxKey>>() {
-//                                    @Override
-//                                    public Tuple2<SessionActor, EncryptedBoxKey> apply(PeerSession src) {
-//                                        return new Tuple2<>(spawnSession(src.getTheirKeyGroupId(), src.getTheirPreKeyId(),
-//                                                src.getOwnPreKeyId()), boxKey);
-//                                    }
-//                                });
-//                    }
-//                })
-//                .mapPromise(new Function<Tuple2<SessionActor, EncryptedBoxKey>, Promise<EncryptedSessionActor.DecryptedPackage>>() {
-//                    @Override
-//                    public Promise<EncryptedSessionActor.DecryptedPackage> apply(Tuple2<SessionActor, EncryptedBoxKey> src) {
-//                        return ask(src.getT1().getActorRef(), new EncryptedSessionActor.DecryptPackage(src.getT2().getEncryptedKey()));
-//                    }
-//                })
-//                .map(new Function<EncryptedSessionActor.DecryptedPackage, byte[]>() {
-//                    @Override
-//                    public byte[] apply(EncryptedSessionActor.DecryptedPackage decryptedPackage) {
-//                        byte[] encData;
-//                        try {
-//                            encData = ActorBox.openBox(ByteStrings.intToBytes(senderKeyGroup), encPackage, new ActorBoxKey(decryptedPackage.getData()));
-//
-//                            ApiMessage message = ApiMessage.fromBytes(encData);
-//
-//                            Log.d(TAG, "Box open:" + message);
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                            //future.error(e);
-//                            // return;
-//                        }
-//                        return null;
-//                    }
-//                })
-//                .failure(new Consumer<Exception>() {
-//                    @Override
-//                    public void apply(Exception e) {
-//                        e.printStackTrace();
-//                        resolver.error(e);
-//                    }
-//                })
-//                .done(self());
+    private void onKeysUpdated(UserKeys userKeys) {
+        if (!isReady) {
+            stash();
+            return;
+        }
 
-//        Log.d(TAG, "Picking session");
-//        SessionId pickedSession = null;
-//        byte[] pickedMessage = null;
-//        outer:
-//        for (SessionId s : activeSessions.keySet()) {
-//            if (s.getTheirKeyGroupId() != senderKeyGroup) {
-//                continue;
-//            }
-//
-//            for (EncryptedBoxKey k : data.getKeys()) {
-//                if (k.getKeyGroupId() == ownKeyGroupId && k.getUid() == myUid()) {
-//
-//                    byte[] encKey = k.getEncryptedKey();
-//
-//                    // final int senderKeyGroupId = ByteStrings.bytesToInt(encKey, 0);
-//                    final long senderEphermalKey0Id = ByteStrings.bytesToLong(encKey, 4);
-//                    final long receiverEphermalKey0Id = ByteStrings.bytesToLong(encKey, 12);
-//                    // final byte[] senderEphermalKey = ByteStrings.substring(encKey, 20, 32);
-//                    // final byte[] receiverEphermalKey = ByteStrings.substring(encKey, 52, 32);
-//                    // final int messageIndex = ByteStrings.bytesToInt(encKey, 84);
-//
-//                    if (s.getOwnKeyId0() == receiverEphermalKey0Id
-//                            && s.getTheirKeyId0() == senderEphermalKey0Id
-//                            && s.getOwnKeyGroupId() == ownKeyGroupId
-//                            && s.getTheirKeyGroupId() == senderKeyGroup) {
-//
-//                        pickedSession = s;
-//                        pickedMessage = encKey;
-//                        continue outer;
-//                    }
-//                }
-//            }
-//        }
-//
-//        if (pickedSession == null) {
-//            Log.d(TAG, "Creation session");
-//            // Picking first encryption key for key group for known key group
-//            byte[] encKey = null;
-//            for (EncryptedBoxKey k : data.getKeys()) {
-//                if (k.getKeyGroupId() == ownKeyGroupId && k.getUid() == myUid()) {
-//                    encKey = k.getEncryptedKey();
-//                    break;
-//                }
-//            }
-//            if (encKey != null) {
-//                final long senderEphermalKey0Id = ByteStrings.bytesToLong(encKey, 4);
-//                final long receiverEphermalKey0Id = ByteStrings.bytesToLong(encKey, 12);
-//
-//                pickedSession = new SessionId(ownKeyGroupId, receiverEphermalKey0Id,
-//                        senderKeyGroup, senderEphermalKey0Id);
-//
-//                Log.d(TAG, "Creation of session:" + pickedSession);
-//
-//                activeSessions.put(pickedSession, system().actorOf(Props.create(EncryptedSessionActor.class, new ActorCreator<EncryptedSessionActor>() {
-//                    @Override
-//                    public EncryptedSessionActor create() {
-//                        return new EncryptedSessionActor(context(), uid, receiverEphermalKey0Id,
-//                                senderEphermalKey0Id, senderKeyGroup);
-//                    }
-//                }), getPath() + "/k_" + senderKeyGroup + "_" + senderEphermalKey0Id + "_" + receiverEphermalKey0Id));
-//                pickedMessage = encKey;
-//            }
-//        }
-//
-//        if (pickedSession == null) {
-//            Log.d(TAG, "Unable to create session");
-//            future.error(new RuntimeException("Unable to find approriate session"));
-//            return;
-//        }
-//
-//        ActorRef session = activeSessions.get(pickedSession);
-//
-//        final long start = im.actor.runtime.Runtime.getActorTime();
-//        ask(session, new EncryptedSessionActor.DecryptPackage(pickedMessage), new AskCallback() {
-//
-//            @Override
-//            public void onResult(Object obj) {
-//                Log.d(TAG, "Decryption with key group:onResult " + (im.actor.runtime.Runtime.getActorTime() - start) + " ms");
-//                EncryptedSessionActor.DecryptedPackage decryptedPackage = (EncryptedSessionActor.DecryptedPackage) obj;
-//
-//                byte[] encData;
-//                try {
-//                    encData = ActorBox.openBox(ByteStrings.intToBytes(senderKeyGroup), encPackage, new ActorBoxKey(decryptedPackage.getData()));
-//
-//                    ApiMessage message = ApiMessage.fromBytes(encData);
-//
-//                    Log.d(TAG, "Box open:" + message);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    future.error(e);
-//                    return;
-//                }
-//
-//                future.result(null);
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                Log.d(TAG, "Decryption with key group:onError");
-//                future.error(e);
-//            }
-//        });
+        this.theirKeys = userKeys;
     }
 
     private SessionActor spawnSession(final PeerSession session) {
@@ -441,6 +283,15 @@ public class EncryptedPeerActor extends ModuleActor {
             doDecrypt(((DecryptBox) message).getEncryptedBox(), future);
         } else {
             super.onAsk(message, future);
+        }
+    }
+
+    @Override
+    public void onReceive(Object message) {
+        if (message instanceof KeyGroupUpdated) {
+            onKeysUpdated(((KeyGroupUpdated) message).getUserKeys());
+        } else {
+            super.onReceive(message);
         }
     }
 
@@ -530,6 +381,19 @@ public class EncryptedPeerActor extends ModuleActor {
 
         public PeerSession getSession() {
             return session;
+        }
+    }
+
+    public static class KeyGroupUpdated {
+
+        private UserKeys userKeys;
+
+        public KeyGroupUpdated(UserKeys userKeys) {
+            this.userKeys = userKeys;
+        }
+
+        public UserKeys getUserKeys() {
+            return userKeys;
         }
     }
 }
