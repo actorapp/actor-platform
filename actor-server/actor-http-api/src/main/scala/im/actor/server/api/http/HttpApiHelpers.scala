@@ -10,7 +10,6 @@ trait HttpApiHelpers {
   val corsHeaders = List(
     headers.RawHeader("Access-Control-Allow-Origin", "*"),
     headers.RawHeader("Access-Control-Allow-Methods", "GET, POST, PUT"),
-    headers.RawHeader("Access-Control-Allow-Headers", "*"),
     headers.RawHeader("Access-Control-Allow-Credentials", "true")
   )
 
