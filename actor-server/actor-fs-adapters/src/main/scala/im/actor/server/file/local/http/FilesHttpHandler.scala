@@ -13,7 +13,7 @@ import im.actor.server.api.http.HttpHandler
 import im.actor.server.file.local.{ FileStorageOperations, LocalFileStorageConfig, RequestSigning }
 import im.actor.util.log.AnyRefLogSource
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{Future, ExecutionContext}
 import scala.util.{ Failure, Success }
 
 private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfig)(implicit val system: ActorSystem)
@@ -73,6 +73,7 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
                   val writeFu = for {
                     _ <- prepareForPartWrite(fileId, partNumber)
                     _ <- appendPartBytes(req.entity.dataBytes, fileId, partNumber)
+                    _ <- Future {}
                   } yield ()
                   onComplete(writeFu) {
                     case Success(_) =>
