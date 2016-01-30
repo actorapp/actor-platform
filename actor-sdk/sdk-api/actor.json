@@ -13705,6 +13705,38 @@
             "response": {
               "type": "anonymous",
               "header": 2664,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  seq"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "full",
+                  "description": "  state"
+                },
+                {
+                  "type": "reference",
+                  "argument": "date",
+                  "category": "full",
+                  "description": "  date"
+                },
+                {
+                  "type": "reference",
+                  "argument": "obsoleteKeyGroups",
+                  "category": "full",
+                  "description": "  obsolete key groups"
+                },
+                {
+                  "type": "reference",
+                  "argument": "missedKeyGroups",
+                  "category": "full",
+                  "description": "  missed key groups"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
