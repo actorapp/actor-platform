@@ -3,6 +3,7 @@ package im.actor.core.modules.encryption;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import im.actor.core.api.ApiMessage;
 import im.actor.core.entity.encryption.PeerSession;
@@ -17,12 +18,19 @@ import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.ActorTime;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
+import im.actor.runtime.crypto.Cryptos;
 import im.actor.runtime.crypto.IntegrityException;
+import im.actor.runtime.crypto.primitives.digest.CombinedHash;
+import im.actor.runtime.crypto.primitives.digest.SHA512;
+import im.actor.runtime.crypto.primitives.kdf.HKDF;
+import im.actor.runtime.crypto.primitives.prf.PRF;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Predicate;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.crypto.box.ActorBox;
@@ -44,9 +52,12 @@ public class EncryptedPeerActor extends ModuleActor {
     private UserKeys theirKeys;
 
     private HashMap<Integer, SessionHolder> activeSessions = new HashMap<>();
+    private HashSet<Integer> ignoredKeyGroups = new HashSet<>();
 
     private boolean isReady = false;
     private KeyManagerInt keyManager;
+
+    private final PRF keyPrf = Cryptos.PRF_SHA_STREEBOG_256();
 
     public EncryptedPeerActor(int uid, ModuleContext context) {
         super(context);
@@ -96,30 +107,40 @@ public class EncryptedPeerActor extends ModuleActor {
         // Stage 3: Encrypt box_key int session
         // Stage 4: Encrypt box
         //
-
-        final byte[] encKey = Crypto.randomBytes(128);
+        final byte[] encKey = Crypto.randomBytes(32);
+        final byte[] encKeyExtended = keyPrf.calculate(encKey, "ActorPackage", 128);
         Log.d(TAG, "doEncrypt");
         final long start = Runtime.getActorTime();
         PromisesArray.of(theirKeys.getUserKeysGroups())
+                .filter(new Predicate<UserKeysGroup>() {
+                    @Override
+                    public boolean apply(UserKeysGroup keysGroup) {
+                        return !ignoredKeyGroups.contains(keysGroup.getKeyGroupId());
+                    }
+                })
                 .mapOptional(new Function<UserKeysGroup, Promise<SessionActor>>() {
                     @Override
-                    public Promise<SessionActor> apply(UserKeysGroup keysGroup) {
-                        Log.d(TAG, "Key Group " + keysGroup.getKeyGroupId());
+                    public Promise<SessionActor> apply(final UserKeysGroup keysGroup) {
                         if (activeSessions.containsKey(keysGroup.getKeyGroupId())) {
                             return success(activeSessions.get(keysGroup.getKeyGroupId()).getSessions().get(0));
                         }
                         return context().getEncryption().getSessionManagerInt()
                                 .pickSession(uid, keysGroup.getKeyGroupId())
+                                .failure(new Consumer<Exception>() {
+                                    @Override
+                                    public void apply(Exception e) {
+                                        ignoredKeyGroups.add(keysGroup.getKeyGroupId());
+                                    }
+                                })
                                 .map(new Function<PeerSession, SessionActor>() {
                                     @Override
                                     public SessionActor apply(PeerSession src) {
                                         return spawnSession(src);
                                     }
-                                })
-                                .log(TAG + ":session#" + keysGroup.getKeyGroupId());
+                                });
                     }
                 })
-                .mapOptional(encrypt(encKey))
+                .mapOptional(encrypt(encKeyExtended))
                 .zip()
                 .map(new Function<EncryptedSessionActor.EncryptedPackageRes[], EncryptBoxResponse>() {
                     @Override
@@ -139,7 +160,7 @@ public class EncryptedPeerActor extends ModuleActor {
 
                         byte[] encData;
                         try {
-                            encData = ActorBox.closeBox(ByteStrings.intToBytes(ownKeyGroupId), data, Crypto.randomBytes(32), new ActorBoxKey(encKey));
+                            encData = ActorBox.closeBox(ByteStrings.intToBytes(ownKeyGroupId), data, Crypto.randomBytes(32), new ActorBoxKey(encKeyExtended));
                         } catch (IntegrityException e) {
                             e.printStackTrace();
                             throw new RuntimeException(e);
@@ -169,6 +190,11 @@ public class EncryptedPeerActor extends ModuleActor {
         //
         // Picking session
         //
+
+        if (ignoredKeyGroups.contains(senderKeyGroup)) {
+            resolver.error(new RuntimeException("This key group is ignored"));
+            return;
+        }
 
         PromisesArray.of(data.getKeys())
                 .filter(EncryptedBoxKey.FILTER(myUid(), ownKeyGroupId))
@@ -200,6 +226,7 @@ public class EncryptedPeerActor extends ModuleActor {
                 .mapPromise(new Function<Tuple2<SessionActor, EncryptedBoxKey>, Promise<EncryptedSessionActor.DecryptedPackage>>() {
                     @Override
                     public Promise<EncryptedSessionActor.DecryptedPackage> apply(Tuple2<SessionActor, EncryptedBoxKey> src) {
+                        Log.d(TAG, "Key size:" + src.getT2().getEncryptedKey().length);
                         return ask(src.getT1().getActorRef(), new EncryptedSessionActor.DecryptPackage(src.getT2().getEncryptedKey()));
                     }
                 })
@@ -208,11 +235,12 @@ public class EncryptedPeerActor extends ModuleActor {
                     public DecryptBoxResponse apply(EncryptedSessionActor.DecryptedPackage decryptedPackage) {
                         byte[] encData;
                         try {
-                            encData = ActorBox.openBox(ByteStrings.intToBytes(senderKeyGroup), encPackage, new ActorBoxKey(decryptedPackage.getData()));
-
+                            byte[] encKeyExtended = decryptedPackage.getData().length == 128
+                                    ? decryptedPackage.getData()
+                                    : keyPrf.calculate(decryptedPackage.getData(), "ActorPackage", 128);
+                            encData = ActorBox.openBox(ByteStrings.intToBytes(senderKeyGroup), encPackage, new ActorBoxKey(encKeyExtended));
                             ApiMessage message = ApiMessage.fromBytes(encData);
-
-                            Log.d(TAG, "Box open:" + message);
+                            Log.d(TAG, "Box open:" + message + ", size: " + encData.length);
                         } catch (IOException e) {
                             e.printStackTrace();
                             throw new RuntimeException(e);
