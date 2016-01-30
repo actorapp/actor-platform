@@ -12,6 +12,10 @@ public class PRF {
         this.digest = digest;
     }
 
+    public byte[] calculate(byte[] secret, String label, int length) {
+        return calculate(secret, label, new byte[0], length);
+    }
+
     public byte[] calculate(byte[] secret, String label, byte[] seed, int length) {
 
         HMAC hmac = new HMAC(secret, digest);
