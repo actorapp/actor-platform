@@ -253,6 +253,7 @@ message GroupEvents {
     message Created {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
+        required int64 ts = 10 [(scalapb.field).type = "java.time.Instant"];
         required int32 group_id = 1;
         optional GroupType typ = 5 [default = General];
         required int32 creator_user_id = 2;
@@ -267,6 +268,7 @@ message GroupEvents {
     message UserInvited {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
+        required int64 ts = 3 [(scalapb.field).type = "java.time.Instant"];
         required int32 user_id = 1;
         required int32 inviter_user_id = 2;
     }
@@ -274,6 +276,7 @@ message GroupEvents {
     message UserJoined {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
+        required int64 ts = 3 [(scalapb.field).type = "java.time.Instant"];
         required int32 user_id = 1;
         required int32 inviter_user_id = 2;
     }
@@ -281,21 +284,22 @@ message GroupEvents {
     message UserKicked {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
+        required int64 ts = 3 [(scalapb.field).type = "java.time.Instant"];
         required int32 user_id = 1;
         required int32 kicker_user_id = 2;
-        required int64 date = 3;
     }
 
     message UserLeft {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         required int32 user_id = 1;
-        required int64 date = 2;
     }
 
     message BotAdded {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
+        required int64 ts = 3 [(scalapb.field).type = "java.time.Instant"];
         required int32 user_id = 1;
         required string token = 2;
     }
@@ -303,34 +307,41 @@ message GroupEvents {
     message AvatarUpdated {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         optional Avatar avatar = 1;
     }
 
     message TitleUpdated {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         required string title = 1;
     }
 
     message BecamePublic {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
     }
 
     message AboutUpdated {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         optional string description = 1;
     }
 
     message TopicUpdated {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         optional string topic = 1;
     }
 
     message UserBecameAdmin {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
+        required int64 ts = 3 [(scalapb.field).type = "java.time.Instant"];
         required int32 user_id = 1;
         required int32 promoter_user_id = 2;
     }
@@ -338,6 +349,7 @@ message GroupEvents {
     message IntegrationTokenRevoked {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
+        required int64 ts = 2 [(scalapb.field).type = "java.time.Instant"];
         required string token = 1;
     }
 }

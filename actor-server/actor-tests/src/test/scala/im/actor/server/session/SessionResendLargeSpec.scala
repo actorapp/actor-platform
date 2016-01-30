@@ -17,7 +17,7 @@ final class SessionResendLargeSpec extends BaseSessionSpec(
       |session {
       |  resend {
       |    ack-timeout = 5 seconds
-      |    max-resend-size = 0 KiB
+      |    max-resend-size = 1 KiB
       |    max-buffer-size = 1 KiB
       |  }
       |}

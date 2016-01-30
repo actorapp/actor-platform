@@ -1,5 +1,7 @@
 package sql.migration
 
+import java.sql.SQLException
+
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import akka.stream.scaladsl._
@@ -10,13 +12,11 @@ import im.actor.server.model.{ SerializedUpdate, UpdateMapping }
 import im.actor.server.persist.{ AuthIdRepo, UserRepo }
 import org.slf4j.LoggerFactory
 import slick.driver.PostgresDriver.api._
-import slick.jdbc.{ ResultSetConcurrency, ResultSetType, GetResult, SetParameter }
+import slick.jdbc.{ GetResult, ResultSetConcurrency, ResultSetType, SetParameter }
 
-import scala.concurrent.{ ExecutionContext, Future, Await }
 import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.language.postfixOps
-
-import java.sql.SQLException
 
 object V20151108011300__FillUserSequence {
   final case class Obsolete(authId: Long, timestamp: Long, seq: Int, header: Int, data: Array[Byte], userIds: String, groupIds: String)

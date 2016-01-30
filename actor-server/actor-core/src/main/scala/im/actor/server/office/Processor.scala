@@ -1,5 +1,6 @@
 package im.actor.server.office
 
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 
 import akka.actor.{ ActorRef, Status }
@@ -7,8 +8,6 @@ import akka.cluster.sharding.ShardRegion.Passivate
 import akka.pattern.pipe
 import akka.persistence.PersistentActor
 import im.actor.concurrent.ActorFutures
-import im.actor.server.event.TSEvent
-import org.joda.time.DateTime
 
 import scala.collection.immutable
 import scala.concurrent.Future
@@ -197,7 +196,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
 
   private final def unstashAndWorkBatch(es: immutable.Seq[Event], state: State): Unit = self ! UnstashAndWorkBatch(es, state)
 
-  def now(): DateTime = new DateTime()
+  def now(): Instant = Instant.now
 
   if (passivationIntervalMs > 0) {
     log.warning("Passivating in {} ms", passivationIntervalMs)

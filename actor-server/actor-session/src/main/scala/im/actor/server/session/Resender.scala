@@ -86,19 +86,19 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   }
   object Priority {
     object NewSession extends Priority {
-      override val id = -2
+      override val id = 2
     }
     object Ack extends Priority {
-      override val id = -1
+      override val id = 1
     }
     object RPC extends Priority {
       override val id = 0
     }
     object SeqPush extends Priority {
-      override val id = 1
+      override val id = -1
     }
     object WeakPush extends Priority {
-      override val id = 2
+      override val id = -2
     }
   }
 

@@ -14,11 +14,11 @@ import im.actor.server.user.UserCommands.EditLocalName
 
 import scala.concurrent.Future
 
-private final case class UserContactsState(localNames: Map[Int, String] = Map.empty) extends ProcessorState[UserContactsState] {
+private final case class UserContactsState(localNames: Map[Int, String] = Map.empty) extends ProcessorState[UserContactsState, UserEvent] {
   import UserEvents._
 
-  override def updated(e: AnyRef, ts: Instant): UserContactsState = e match {
-    case LocalNameChanged(contactUserId, localNameOpt) ⇒
+  override def updated(e: UserEvent): UserContactsState = e match {
+    case LocalNameChanged(_, contactUserId, localNameOpt) ⇒
       localNameOpt match {
         case None ⇒ this
         case Some(localName) ⇒
@@ -34,7 +34,7 @@ private[user] final class UserContacts(userId: Int)(implicit factory: ActorRefFa
     (ref ? EditLocalName(userId, contactUserId, nameOpt, supressUpdate)).mapTo[SeqState]
 }
 
-private[user] final class UserContactsActor(userId: Int) extends Processor[UserContactsState] {
+private[user] final class UserContactsActor(userId: Int) extends Processor[UserContactsState, UserEvent] {
   import UserCommands._
   import UserQueries._
   import UserEvents._
@@ -57,8 +57,8 @@ private[user] final class UserContactsActor(userId: Int) extends Processor[UserC
   }
 
   private def editLocalName(contactUserId: Int, nameOpt: Option[String], supressUpdate: Boolean): Unit = {
-    persistTS(LocalNameChanged(contactUserId, nameOpt)) { (e, ts) ⇒
-      commit(e, ts)
+    persist(LocalNameChanged(Instant.now(), contactUserId, nameOpt)) { e ⇒
+      commit(e)
 
       db.run(UserContactRepo.updateName(userId, contactUserId, nameOpt))
 
