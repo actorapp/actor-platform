@@ -235,12 +235,11 @@ public class EncryptedPeerActor extends ModuleActor {
                     public DecryptBoxResponse apply(EncryptedSessionActor.DecryptedPackage decryptedPackage) {
                         byte[] encData;
                         try {
-                            byte[] encKeyExtended = decryptedPackage.getData().length == 128
+                            byte[] encKeyExtended = decryptedPackage.getData().length >= 128
                                     ? decryptedPackage.getData()
                                     : keyPrf.calculate(decryptedPackage.getData(), "ActorPackage", 128);
                             encData = ActorBox.openBox(ByteStrings.intToBytes(senderKeyGroup), encPackage, new ActorBoxKey(encKeyExtended));
-                            ApiMessage message = ApiMessage.fromBytes(encData);
-                            Log.d(TAG, "Box open:" + message + ", size: " + encData.length);
+                            Log.d(TAG, "Box size: " + encData.length);
                         } catch (IOException e) {
                             e.printStackTrace();
                             throw new RuntimeException(e);
