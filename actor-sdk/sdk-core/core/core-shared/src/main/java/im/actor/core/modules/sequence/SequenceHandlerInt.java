@@ -1,4 +1,4 @@
-package im.actor.core.modules.api;
+package im.actor.core.modules.sequence;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -11,7 +11,7 @@ import im.actor.core.modules.updates.internal.InternalUpdate;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.promise.Promise;
-import im.actor.core.modules.api.SequenceHandlerActor.*;
+import im.actor.core.modules.sequence.SequenceHandlerActor.*;
 
 public class SequenceHandlerInt extends ActorInterface {
 
