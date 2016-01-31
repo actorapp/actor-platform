@@ -44,7 +44,7 @@ public class UsersModule extends AbsModule {
         this.collection = Storage.createKeyValue(STORAGE_USERS, UserVM.CREATOR(context()), User.CREATOR);
         this.users = collection.getEngine();
 
-        usersUpdatesActor = system().actorOf(Props.create(UsersUpdatesActor.class, new ActorCreator<UsersUpdatesActor>() {
+        usersUpdatesActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public UsersUpdatesActor create() {
                 return new UsersUpdatesActor(context);

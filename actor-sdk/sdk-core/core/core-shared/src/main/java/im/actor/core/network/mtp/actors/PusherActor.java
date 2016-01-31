@@ -28,7 +28,7 @@ public class PusherActor extends Actor {
     private static final String TAG = "ProtoSender";
 
     public static ActorRef senderActor(final MTProto proto) {
-        return ActorSystem.system().actorOf(new ActorSelection(Props.create(PusherActor.class, new ActorCreator<PusherActor>() {
+        return ActorSystem.system().actorOf(new ActorSelection(Props.create(new ActorCreator() {
             @Override
             public PusherActor create() {
                 return new PusherActor(proto);

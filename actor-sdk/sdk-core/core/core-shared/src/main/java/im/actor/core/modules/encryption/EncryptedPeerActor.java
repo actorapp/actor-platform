@@ -262,7 +262,7 @@ public class EncryptedPeerActor extends ModuleActor {
 
     private SessionActor spawnSession(final PeerSession session) {
 
-        ActorRef res = system().actorOf(Props.create(EncryptedSessionActor.class, new ActorCreator<EncryptedSessionActor>() {
+        ActorRef res = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public EncryptedSessionActor create() {
                 return new EncryptedSessionActor(context(), session);

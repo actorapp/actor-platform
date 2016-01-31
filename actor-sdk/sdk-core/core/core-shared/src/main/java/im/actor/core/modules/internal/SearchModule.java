@@ -58,7 +58,7 @@ public class SearchModule extends AbsModule {
     }
 
     public void run() {
-        actorRef = system().actorOf(Props.create(SearchActor.class, new ActorCreator<SearchActor>() {
+        actorRef = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public SearchActor create() {
                 return new SearchActor(context());

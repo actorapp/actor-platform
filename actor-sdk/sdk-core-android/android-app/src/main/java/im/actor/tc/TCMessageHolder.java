@@ -56,7 +56,7 @@ public class TCMessageHolder extends BaseJsonHolder {
             }
             final String usr = data.getString("url");
             if (tcActor == null) {
-                tcActor = ActorSystem.system().actorOf(Props.create(TCActor.class, new ActorCreator<TCActor>() {
+                tcActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
                     @Override
                     public TCActor create() {
                         return new TCActor(usr);

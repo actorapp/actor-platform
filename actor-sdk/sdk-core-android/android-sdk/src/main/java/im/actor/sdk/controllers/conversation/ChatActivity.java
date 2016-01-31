@@ -506,7 +506,7 @@ public class ChatActivity extends ActorEditTextActivity {
 
         emojiKeyboard.setPeer(peer);
 
-        voiceRecordActor = ActorSystem.system().actorOf(Props.create(VoiceCaptureActor.class, new ActorCreator<VoiceCaptureActor>() {
+        voiceRecordActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
             @Override
             public VoiceCaptureActor create() {
                 return new VoiceCaptureActor(ChatActivity.this, new VoiceCaptureActor.VoiceCaptureCallback() {

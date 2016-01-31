@@ -12,19 +12,15 @@ import im.actor.runtime.actors.mailbox.MailboxesQueue;
  * thus freely shareable recipe for creating an actor including associated dispatcher information.</p>
  * For more information you may read about <a href="http://doc.akka.io/docs/akka/2.3.5/java/untyped-actors.html">Akka Props</a>.
  */
-public final class Props<T extends Actor> {
+public final class Props {
 
-    private final Class<T> aClass;
-    private final Object[] args;
-    private final ActorCreator<T> creator;
+    private final ActorCreator creator;
     private final MailboxCreator mailboxCreator;
 
     private final String dispatcher;
 
-    private Props(Class<T> aClass, Object[] args, String dispatcher, ActorCreator<T> creator,
+    private Props(String dispatcher, ActorCreator creator,
                   MailboxCreator mailboxCreator) {
-        this.aClass = aClass;
-        this.args = args;
         this.creator = creator;
         this.mailboxCreator = mailboxCreator;
         this.dispatcher = dispatcher;
@@ -36,7 +32,7 @@ public final class Props<T extends Actor> {
      * @return Actor
      * @throws Exception
      */
-    public T create() throws Exception {
+    public Actor create() throws Exception {
         return creator.create();
     }
 
@@ -69,31 +65,27 @@ public final class Props<T extends Actor> {
      * @param dispatcher dispatcher id
      * @return this
      */
-    public Props<T> changeDispatcher(String dispatcher) {
-        return new Props<T>(aClass, args, dispatcher, creator, mailboxCreator);
+    public Props changeDispatcher(String dispatcher) {
+        return new Props(dispatcher, creator, mailboxCreator);
     }
 
     /**
      * Create props from Actor creator
      *
-     * @param clazz   Actor class
      * @param creator Actor creator class
-     * @param <T>     Actor class
      * @return Props object
      */
-    public static <T extends Actor> Props<T> create(Class<T> clazz, ActorCreator<T> creator) {
-        return new Props<T>(clazz, null, null, creator, null);
+    public static Props create(ActorCreator creator) {
+        return new Props(null, creator, null);
     }
 
     /**
      * Create props from Actor creator with custom mailbox
      *
-     * @param clazz   Actor class
      * @param creator Actor creator class
-     * @param <T>     Actor class
      * @return Props object
      */
-    public static <T extends Actor> Props<T> create(Class<T> clazz, ActorCreator<T> creator, MailboxCreator mailboxCreator) {
-        return new Props<T>(clazz, null, null, creator, mailboxCreator);
+    public static Props create(ActorCreator creator, MailboxCreator mailboxCreator) {
+        return new Props(null, creator, mailboxCreator);
     }
 }

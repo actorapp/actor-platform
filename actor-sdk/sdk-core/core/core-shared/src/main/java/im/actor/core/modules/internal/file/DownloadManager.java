@@ -380,7 +380,7 @@ public class DownloadManager extends ModuleActor {
         pendingQueue.isStarted = true;
 
         final QueueItem finalPendingQueue = pendingQueue;
-        pendingQueue.taskRef = system().actorOf(Props.create(DownloadTask.class, new ActorCreator<DownloadTask>() {
+        pendingQueue.taskRef = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public DownloadTask create() {
                 return new DownloadTask(finalPendingQueue.fileReference, self(), context());

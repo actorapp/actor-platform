@@ -18,7 +18,7 @@ public class DeviceInfoModule extends AbsModule {
     }
 
     public void run() {
-        actorRef = system().actorOf(Props.create(DeviceInfoActor.class, new ActorCreator<DeviceInfoActor>() {
+        actorRef = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public DeviceInfoActor create() {
                 return new DeviceInfoActor(context());

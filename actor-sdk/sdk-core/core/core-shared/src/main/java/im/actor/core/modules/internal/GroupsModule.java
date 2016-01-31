@@ -89,7 +89,7 @@ public class GroupsModule extends AbsModule {
         groups = collection.getEngine();
 
         avatarVMs = new HashMap<Integer, GroupAvatarVM>();
-        avatarChangeActor = system().actorOf(Props.create(GroupAvatarChangeActor.class, new ActorCreator<GroupAvatarChangeActor>() {
+        avatarChangeActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public GroupAvatarChangeActor create() {
                 return new GroupAvatarChangeActor(context);

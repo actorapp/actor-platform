@@ -51,7 +51,7 @@ public class VoiceCaptureActor extends Actor {
         audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 16000, AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT, bufferSize);
         audioRecord.startRecording();
-        opusActor = system().actorOf(Props.create(OpusEncoderActor.class, new ActorCreator<OpusEncoderActor>() {
+        opusActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public OpusEncoderActor create() {
                 return new OpusEncoderActor();
