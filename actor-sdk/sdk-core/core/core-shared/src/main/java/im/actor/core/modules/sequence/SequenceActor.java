@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.modules.api;
+package im.actor.core.modules.sequence;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,7 +124,7 @@ public class SequenceActor extends ModuleActor {
             return;
         }
 
-        if (!isValidSeq(seq)) {
+        if (seq != this.seq + 1) {
             further.put(seq, u);
 
             if (seq - this.seq > INVALIDATE_MAX_SEC_HOLE) {
@@ -150,9 +150,11 @@ public class SequenceActor extends ModuleActor {
             users = ((FatSeqUpdate) u).getUsers();
             groups = ((FatSeqUpdate) u).getGroups();
         }
+        Log.d(TAG, "Handling update #" + seq);
         handler.onSeqUpdate(type, body, users, groups).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
             @Override
             public void apply(SequenceHandlerActor.UpdateProcessed updateProcessed) {
+                Log.d(TAG, "Update handled #" + seq);
                 finishedSeq = seq;
                 preferences().putInt(KEY_SEQ, finishedSeq);
                 preferences().putBytes(KEY_STATE, state);
@@ -174,10 +176,6 @@ public class SequenceActor extends ModuleActor {
         // Faaaaaar away
         isTimerStarted = false;
         self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
-    }
-
-    private boolean isValidSeq(final int seq) {
-        return this.seq <= 0 || seq == this.seq + 1;
     }
 
     private void invalidate() {
@@ -246,10 +244,7 @@ public class SequenceActor extends ModuleActor {
                     handler.onDifferenceUpdate(response).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
                         @Override
                         public void apply(SequenceHandlerActor.UpdateProcessed updateProcessed) {
-                            finishedSeq = response.getSeq();
-                            preferences().putInt(KEY_SEQ, seq);
-                            preferences().putBytes(KEY_STATE, state);
-                            checkRunnables();
+                            onUpdatesApplied(response.getSeq(), response.getState());
                         }
                     }).failure(new Consumer<Exception>() {
                         @Override
@@ -286,12 +281,11 @@ public class SequenceActor extends ModuleActor {
         }
     }
 
-    private void onUpdateStarted() {
-        context().getAppStateModule().getAppStateVM().getIsSyncing().change(true);
-    }
-
-    private void onUpdateEnded() {
-        context().getAppStateModule().getAppStateVM().getIsSyncing().change(false);
+    private void onUpdatesApplied(int seq, byte[] state) {
+        finishedSeq = seq;
+        preferences().putInt(KEY_SEQ, seq);
+        preferences().putBytes(KEY_STATE, state);
+        checkRunnables();
     }
 
     private void checkFuture() {
@@ -318,6 +312,18 @@ public class SequenceActor extends ModuleActor {
                 }
             }
         }
+    }
+
+    //
+    // UI Notifications
+    //
+
+    private void onUpdateStarted() {
+        context().getAppStateModule().getAppStateVM().getIsSyncing().change(true);
+    }
+
+    private void onUpdateEnded() {
+        context().getAppStateModule().getAppStateVM().getIsSyncing().change(false);
     }
 
     //
