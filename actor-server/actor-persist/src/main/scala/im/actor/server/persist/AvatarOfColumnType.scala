@@ -1,9 +1,9 @@
 package im.actor.server.persist
 
+import im.actor.server.model.AvatarData
 import slick.driver.PostgresDriver.api._
-import im.actor.server.model
 
 object AvatarOfColumnType {
   implicit val avatarOfTypeMapper =
-    MappedColumnType.base[model.AvatarData.TypeVal, Int](_.toInt, model.AvatarData.TypeVal.fromInt)
+    MappedColumnType.base[AvatarData.TypeVal, Int](_.toInt, AvatarData.TypeVal.fromInt)
 }

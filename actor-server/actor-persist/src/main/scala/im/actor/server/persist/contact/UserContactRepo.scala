@@ -1,10 +1,9 @@
 package im.actor.server.persist.contact
 
+import im.actor.server.model.contact.UserContact
 import slick.dbio.Effect.Write
 import im.actor.server.db.ActorPostgresDriver.api._
 import slick.profile.FixedSqlAction
-
-import im.actor.server.model
 
 private[contact] abstract class UserContactBase[T](tag: Tag, tname: String) extends Table[T](tag, tname) {
   def ownerUserId = column[Int]("owner_user_id", O.PrimaryKey)
@@ -15,8 +14,8 @@ private[contact] abstract class UserContactBase[T](tag: Tag, tname: String) exte
   def idx = index("idx_user_contacts_owner_user_id_is_deleted", (ownerUserId, isDeleted))
 }
 
-final class UserContactTable(tag: Tag) extends UserContactBase[model.contact.UserContact](tag, "user_contacts") {
-  def * = (ownerUserId, contactUserId, name, isDeleted) <> (model.contact.UserContact.tupled, model.contact.UserContact.unapply)
+final class UserContactTable(tag: Tag) extends UserContactBase[UserContact](tag, "user_contacts") {
+  def * = (ownerUserId, contactUserId, name, isDeleted) <> (UserContact.tupled, UserContact.unapply)
 }
 
 object UserContactRepo {
@@ -36,6 +35,9 @@ object UserContactRepo {
       byPKNotDeleted(ownerUserId, contactUserId) map (_.name)
   )
 
+  def byContactUserId(contactUserId: Rep[Int]) = active.filter(_.contactUserId === contactUserId)
+  val byContactUserIdC = Compiled(byContactUserId _)
+
   def byPKDeleted(ownerUserId: Int, contactUserId: Int) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === true)
 
@@ -53,6 +55,8 @@ object UserContactRepo {
 
   def findIds(ownerUserId: Int, contactUserIds: Set[Int]) =
     byOwnerUserIdNotDeleted(ownerUserId).filter(_.contactUserId inSet contactUserIds).map(_.contactUserId).result
+
+  def findOwners(contactUserId: Int) = byContactUserIdC(contactUserId).result
 
   def findNotDeletedIds(ownerUserId: Int) =
     byOwnerUserIdNotDeleted(ownerUserId).map(_.contactUserId).result
@@ -73,6 +77,6 @@ object UserContactRepo {
   def delete(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).map(_.isDeleted).update(true)
 
-  def insertOrUpdate(contact: model.contact.UserContact) =
+  def insertOrUpdate(contact: UserContact) =
     contacts.insertOrUpdate(contact)
 }

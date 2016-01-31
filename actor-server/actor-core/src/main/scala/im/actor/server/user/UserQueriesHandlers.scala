@@ -13,10 +13,10 @@ private[user] trait UserQueriesHandlers {
 
   import UserQueries._
 
-  protected def getAuthIds(state: User): Unit =
+  protected def getAuthIds(state: UserState): Unit =
     sender() ! GetAuthIdsResponse(state.authIds)
 
-  protected def getApiStruct(state: User, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Unit = {
+  protected def getApiStruct(state: UserState, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Unit = {
     (for {
       localName ← if (clientUserId == state.id || clientUserId == 0)
         Future.successful(None)
@@ -40,18 +40,18 @@ private[user] trait UserQueriesHandlers {
     ))) pipeTo sender()
   }
 
-  protected def getContactRecords(state: User): Unit =
+  protected def getContactRecords(state: UserState): Unit =
     sender() ! GetContactRecordsResponse(state.phones, state.emails)
 
-  protected def checkAccessHash(state: User, senderAuthId: Long, accessHash: Long): Unit =
+  protected def checkAccessHash(state: UserState, senderAuthId: Long, accessHash: Long): Unit =
     sender() ! CheckAccessHashResponse(isCorrect = accessHash == ACLUtils.userAccessHash(senderAuthId, userId, state.accessSalt))
 
-  protected def getAccessHash(state: User, clientAuthId: Long): Unit =
+  protected def getAccessHash(state: UserState, clientAuthId: Long): Unit =
     sender() ! GetAccessHashResponse(ACLUtils.userAccessHash(clientAuthId, userId, state.accessSalt))
 
-  protected def getUser(state: User): Unit = sender() ! state
+  protected def getUser(state: UserState): Unit = sender() ! state
 
-  protected def isAdmin(state: User): Unit = sender() ! IsAdminResponse(state.isAdmin.getOrElse(false))
+  protected def isAdmin(state: UserState): Unit = sender() ! IsAdminResponse(state.isAdmin.getOrElse(false))
 
-  protected def getName(state: User): Unit = sender() ! GetNameResponse(state.name)
+  protected def getName(state: UserState): Unit = sender() ! GetNameResponse(state.name)
 }

@@ -1,5 +1,7 @@
 package im.actor.server.user
 
+import java.time.Instant
+
 import akka.actor._
 import akka.cluster.sharding.ShardRegion
 import akka.persistence.RecoveryCompleted
@@ -7,9 +9,9 @@ import akka.util.Timeout
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
 import im.actor.server.acl.ACLUtils
+import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogCommand, DialogExtension }
-import im.actor.server.event.TSEvent
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
@@ -19,7 +21,11 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
-trait UserEvent
+trait UserEvent extends TaggedEvent {
+  val ts: Instant
+
+  def tags: Set[String] = Set("user")
+}
 
 trait UserCommand {
   val userId: Int
@@ -30,8 +36,8 @@ trait UserQuery {
 }
 
 private[user] object UserBuilder {
-  def apply(ts: DateTime, e: UserEvents.Created): User =
-    User(
+  def apply(e: UserEvents.Created): UserState =
+    UserState(
       id = e.userId,
       accessSalt = e.accessSalt,
       name = e.name,
@@ -45,7 +51,7 @@ private[user] object UserBuilder {
       nickname = e.nickname,
       about = None,
       avatar = None,
-      createdAt = ts.getMillis,
+      createdAt = e.ts.toEpochMilli,
       internalExtensions = e.extensions,
       external = e.external,
       isAdmin = e.isAdmin,
@@ -86,6 +92,7 @@ object UserProcessor {
       10035 → classOf[UserCommands.ChangePreferredLanguages],
       10036 → classOf[UserCommands.ChangeTimeZone],
       10037 → classOf[UserCommands.EditLocalName],
+      10038 → classOf[UserCommands.RemoveContact],
 
       11001 → classOf[UserQueries.GetAuthIds],
       11002 → classOf[UserQueries.GetAuthIdsResponse],
@@ -122,7 +129,7 @@ object UserProcessor {
       12018 → classOf[UserEvents.TimeZoneChanged],
       12019 → classOf[UserEvents.LocalNameChanged],
 
-      13000 → classOf[User],
+      13000 → classOf[UserState],
       13001 → classOf[SocialContact]
     )
 
@@ -131,7 +138,7 @@ object UserProcessor {
 }
 
 private[user] final class UserProcessor
-  extends PeerProcessor[User, TSEvent]
+  extends PeerProcessor[UserState, UserEvent]
   with UserCommandHandlers
   with UserQueriesHandlers
   with ActorLogging {
@@ -162,38 +169,38 @@ private[user] final class UserProcessor
 
   context.setReceiveTimeout(1.hour)
 
-  override def updatedState(evt: TSEvent, state: User): User = {
+  override def updatedState(evt: UserEvent, state: UserState): UserState = {
     evt match {
-      case TSEvent(_, UserEvents.AuthAdded(authId)) ⇒
+      case UserEvents.AuthAdded(_, authId) ⇒
         val updAuthIds = if (state.authIds contains authId) state.authIds else state.authIds :+ authId
         state.copy(authIds = updAuthIds)
-      case TSEvent(_, UserEvents.AuthRemoved(authId)) ⇒
+      case UserEvents.AuthRemoved(_, authId) ⇒
         state.copy(authIds = state.authIds filterNot (_ == authId))
-      case TSEvent(_, UserEvents.CountryCodeChanged(countryCode)) ⇒
+      case UserEvents.CountryCodeChanged(_, countryCode) ⇒
         state.copy(countryCode = countryCode)
-      case TSEvent(_, UserEvents.NameChanged(name)) ⇒
+      case UserEvents.NameChanged(_, name) ⇒
         state.copy(name = name)
-      case TSEvent(_, UserEvents.PhoneAdded(phone)) ⇒
+      case UserEvents.PhoneAdded(_, phone) ⇒
         state.copy(phones = state.phones :+ phone)
-      case TSEvent(_, UserEvents.EmailAdded(email)) ⇒
+      case UserEvents.EmailAdded(_, email) ⇒
         state.copy(emails = state.emails :+ email)
-      case TSEvent(_, UserEvents.SocialContactAdded(contact)) ⇒
+      case UserEvents.SocialContactAdded(_, contact) ⇒
         state.copy(socialContacts = state.socialContacts :+ contact)
-      case TSEvent(_, UserEvents.Deleted()) ⇒
+      case UserEvents.Deleted(_) ⇒
         state.copy(isDeleted = true)
-      case TSEvent(_, UserEvents.NicknameChanged(nickname)) ⇒
+      case UserEvents.NicknameChanged(_, nickname) ⇒
         state.copy(nickname = nickname)
-      case TSEvent(_, UserEvents.AboutChanged(about)) ⇒
+      case UserEvents.AboutChanged(_, about) ⇒
         state.copy(about = about)
-      case TSEvent(_, UserEvents.AvatarUpdated(avatar)) ⇒
+      case UserEvents.AvatarUpdated(_, avatar) ⇒
         state.copy(avatar = avatar)
-      case TSEvent(_, UserEvents.IsAdminUpdated(isAdmin)) ⇒
+      case UserEvents.IsAdminUpdated(_, isAdmin) ⇒
         state.copy(isAdmin = isAdmin)
-      case TSEvent(_, UserEvents.TimeZoneChanged(timeZone)) ⇒
+      case UserEvents.TimeZoneChanged(_, timeZone) ⇒
         state.copy(timeZone = timeZone)
-      case TSEvent(_, UserEvents.PreferredLanguagesChanged(preferredLanguages)) ⇒
+      case UserEvents.PreferredLanguagesChanged(_, preferredLanguages) ⇒
         state.copy(preferredLanguages = preferredLanguages)
-      case TSEvent(_, _: UserEvents.Created) ⇒ state
+      case _: UserEvents.Created ⇒ state
     }
   }
 
@@ -202,7 +209,7 @@ private[user] final class UserProcessor
       create(accessSalt, nickName, name, countryCode, sex, isBot, isAdmin.getOrElse(false), extensions, external)
   }
 
-  override protected def handleCommand(state: User): Receive = {
+  override protected def handleCommand(state: UserState): Receive = {
     case NewAuth(_, authId)                 ⇒ addAuth(state, authId)
     case RemoveAuth(_, authId)              ⇒ removeAuth(state, authId)
     case ChangeCountryCode(_, countryCode)  ⇒ changeCountryCode(state, countryCode)
@@ -215,6 +222,7 @@ private[user] final class UserProcessor
     case ChangeAbout(_, about)              ⇒ changeAbout(state, about)
     case UpdateAvatar(_, avatarOpt)         ⇒ updateAvatar(state, avatarOpt)
     case AddContacts(_, contactsToAdd)      ⇒ addContacts(state, contactsToAdd)
+    case RemoveContact(_, contactUserId)    ⇒ removeContact(state, contactUserId)
     case UpdateIsAdmin(_, isAdmin)          ⇒ updateIsAdmin(state, isAdmin)
     case NotifyDialogsChanged(_)            ⇒ notifyDialogsChanged(state)
     case ChangeTimeZone(_, timeZone)        ⇒ changeTimeZone(state, timeZone)
@@ -226,7 +234,7 @@ private[user] final class UserProcessor
     case dc: DialogCommand                  ⇒ userPeer(state.internalExtensions) forward dc
   }
 
-  override protected def handleQuery(state: User): Receive = {
+  override protected def handleQuery(state: UserState): Receive = {
     case GetAuthIds(_)                                ⇒ getAuthIds(state)
     case GetApiStruct(_, clientUserId, clientAuthId)  ⇒ getApiStruct(state, clientUserId, clientAuthId)
     case GetContactRecords(_)                         ⇒ getContactRecords(state)
@@ -242,12 +250,12 @@ private[user] final class UserProcessor
     context.child(userPeer).getOrElse(context.actorOf(UserPeer.props(userId, extensions), userPeer))
   }
 
-  protected[this] var userStateMaybe: Option[User] = None
+  protected[this] var userStateMaybe: Option[UserState] = None
 
   override def receiveRecover: Receive = {
-    case TSEvent(ts, evt: UserEvents.Created) ⇒
-      userStateMaybe = Some(UserBuilder(ts, evt))
-    case evt: TSEvent ⇒
+    case evt: UserEvents.Created ⇒
+      userStateMaybe = Some(UserBuilder(evt))
+    case evt: UserEvent ⇒
       userStateMaybe = userStateMaybe map (updatedState(evt, _))
     case RecoveryCompleted ⇒
       userStateMaybe match {

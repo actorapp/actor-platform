@@ -1,16 +1,17 @@
 package im.actor.server.persist
 
-import im.actor.server.model
+import im.actor.server.model.AvatarData
+
 import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
 import slick.driver.PostgresDriver.api._
 import shapeless._, syntax.std.tuple._
 
-final class AvatarDataTable(tag: Tag) extends Table[model.AvatarData](tag, "avatar_datas") {
+final class AvatarDataTable(tag: Tag) extends Table[AvatarData](tag, "avatar_datas") {
   import AvatarOfColumnType._
 
   def entityId = column[Long]("entity_id", O.PrimaryKey)
-  def entityType = column[model.AvatarData.TypeVal]("entity_type", O.PrimaryKey)
+  def entityType = column[AvatarData.TypeVal]("entity_type", O.PrimaryKey)
   def smallAvatarFileId = column[Option[Long]]("small_avatar_file_id")
   def smallAvatarFileHash = column[Option[Long]]("small_avatar_file_hash")
   def smallAvatarFileSize = column[Option[Long]]("small_avatar_file_size")
@@ -30,7 +31,7 @@ final class AvatarDataTable(tag: Tag) extends Table[model.AvatarData](tag, "avat
     fullAvatarWidth, fullAvatarHeight
   )
 
-  def * = (entityType, entityId) ++ adReps <> (model.AvatarData.apply _ tupled, model.AvatarData.unapply)
+  def * = (entityType, entityId) ++ adReps <> (AvatarData.apply _ tupled, AvatarData.unapply)
 }
 
 object AvatarDataRepo {
@@ -38,30 +39,30 @@ object AvatarDataRepo {
 
   val adatas = TableQuery[AvatarDataTable]
 
-  def create(data: model.AvatarData) =
+  def create(data: AvatarData) =
     adatas += data
 
-  def createOrUpdate(data: model.AvatarData) =
+  def createOrUpdate(data: AvatarData) =
     adatas.insertOrUpdate(data)
 
-  def byType(typ: model.AvatarData.TypeVal) =
+  def byType(typ: AvatarData.TypeVal) =
     adatas.filter(d ⇒ d.entityType === typ)
 
-  def byTypeAndId(typ: model.AvatarData.TypeVal, id: Long) =
+  def byTypeAndId(typ: AvatarData.TypeVal, id: Long) =
     byType(typ).filter(d ⇒ d.entityId === id)
 
-  def find(typ: model.AvatarData.TypeVal, id: Long) =
+  def find(typ: AvatarData.TypeVal, id: Long) =
     byTypeAndId(typ, id).result
 
   def findByUserId(userId: Int) =
-    byTypeAndId(model.AvatarData.OfUser, userId.toLong).result
+    byTypeAndId(AvatarData.OfUser, userId.toLong).result
 
   def findByGroupId(groupId: Int) =
-    byTypeAndId(model.AvatarData.OfGroup, groupId.toLong).result.headOption
+    byTypeAndId(AvatarData.OfGroup, groupId.toLong).result.headOption
 
   def findByUserIds(userIds: Set[Int]) =
-    byType(model.AvatarData.OfUser).filter(d ⇒ d.entityId inSet userIds.map(_.toLong)).result
+    byType(AvatarData.OfUser).filter(d ⇒ d.entityId inSet userIds.map(_.toLong)).result
 
   def findByGroupIds(groupIds: Set[Int]) =
-    byType(model.AvatarData.OfGroup).filter(d ⇒ d.entityId inSet groupIds.map(_.toLong)).result
+    byType(AvatarData.OfGroup).filter(d ⇒ d.entityId inSet groupIds.map(_.toLong)).result
 }

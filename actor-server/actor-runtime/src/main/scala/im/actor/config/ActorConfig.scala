@@ -1,14 +1,12 @@
 package im.actor.config
 
 import java.io.File
-
-import akka.actor.ActorSystem
-
-import scala.collection.JavaConversions._
-import scala.concurrent.duration._
 import java.util.concurrent.TimeUnit
 
+import akka.actor.ActorSystem
 import com.typesafe.config.{ ConfigException, Config, ConfigFactory }
+import scala.collection.JavaConversions._
+import scala.concurrent.duration._
 
 import scala.util.{ Failure, Success, Try }
 
@@ -25,14 +23,6 @@ object ActorConfig {
         |akka {
         |  actor {
         |    provider: "akka.cluster.ClusterActorRefProvider"
-        |
-        |    serializers {
-        |      actor = "im.actor.serialization.ActorSerializer"
-        |    }
-        |
-        |    serialization-bindings {
-        |      "com.trueaccord.scalapb.GeneratedMessage" = actor
-        |    }
         |  }
         |
         |  extensions: ["im.actor.server.db.DbExtension", "akka.cluster.client.ClusterClientReceptionist"] $${akka.extensions}
@@ -54,17 +44,18 @@ object ActorConfig {
         |  }
         |}
         |
-        |jdbc-journal {
-        |  class = "akka.persistence.jdbc.journal.PostgresqlSyncWriteJournal"
-        |}
-        |
-        |jdbc-snapshot-store {
-        |  class = "akka.persistence.jdbc.snapshot.PostgresqlSyncSnapshotStore"
-        |}
-        |
-        |jdbc-connection {
-        |  jndiPath: "/"
-        |  dataSourceName: "DefaultDataSource"
+        |akka-persistence-jdbc {
+        |  tables {
+        |    journal {
+        |      tableName = "persistence_journal"
+        |    }
+        |    deletedTo {
+        |      tableName = "persistence_deleted_to"
+        |    }
+        |    snapshot {
+        |      tableName = "persistence_snapshot"
+        |    }
+        |  }
         |}
       """.stripMargin
     ))

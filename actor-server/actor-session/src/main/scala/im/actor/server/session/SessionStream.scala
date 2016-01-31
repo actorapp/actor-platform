@@ -6,7 +6,7 @@ import akka.stream.scaladsl._
 import akka.stream.{ FlowShape, OverflowStrategy }
 import scodec.bits._
 
-import im.actor.api.rpc.ClientData
+import im.actor.api.rpc.{ UpdateBox, RpcResult, ClientData }
 import im.actor.server.mtproto.protocol._
 
 sealed trait SessionStreamMessage
@@ -22,7 +22,7 @@ object SessionStreamMessage {
   final case class HandleSubscribe(command: SubscribeCommand) extends SessionStreamMessage
 
   @SerialVersionUID(1L)
-  final case class SendProtoMessage(message: ProtoMessage with OutgoingProtoMessage) extends SessionStreamMessage
+  final case class HandleOutgoingAck(messageIds: Seq[Long]) extends SessionStreamMessage
 }
 
 private[session] object SessionStream {
@@ -48,36 +48,32 @@ private[session] object SessionStream {
       val rpc = discr.out1.buffer(100, OverflowStrategy.backpressure)
       val subscribe = discr.out2.buffer(100, OverflowStrategy.backpressure)
       val incomingAck = discr.out4.buffer(100, OverflowStrategy.backpressure).map(in)
-      val outProtoMessages = discr.out0.buffer(100, OverflowStrategy.backpressure).map(out)
+      val outOutgoingAcks = discr.out0.buffer(100, OverflowStrategy.backpressure).map(out)
       val outRequestResend = discr.out3.buffer(100, OverflowStrategy.backpressure).map(in)
-      val unmatched = discr.out5.buffer(100, OverflowStrategy.backpressure)
+      val outResender = discr.out5.buffer(100, OverflowStrategy.backpressure)
 
       val rpcRequestSubscriber = builder.add(Sink.fromSubscriber(ActorSubscriber[HandleRpcRequest](rpcHandler)))
-      val rpcResponsePublisher = builder.add(Source.fromPublisher(ActorPublisher[ProtoMessage](rpcHandler)).map(out))
+      val rpcResponsePublisher = builder.add(Source.fromPublisher(ActorPublisher[(RpcResult, Long)](rpcHandler)).map(out))
 
       val updatesSubscriber = builder.add(Sink.fromSubscriber(ActorSubscriber[SubscribeCommand](updatesHandler)))
-      val updatesPublisher = builder.add(Source.fromPublisher(ActorPublisher[OutProtoMessage](updatesHandler)).map(out))
+      val updatesPublisher = builder.add(Source.fromPublisher(ActorPublisher[(UpdateBox, Option[String])](updatesHandler)).map(out))
 
       val reSendSubscriber = builder.add(Sink.fromSubscriber(ActorSubscriber[ReSenderMessage](reSender)))
       val reSendPublisher = builder.add(Source.fromPublisher(ActorPublisher[MessageBox](reSender)))
 
-      val mergeProto = builder.add(MergePreferred[ReSenderMessage](3))
-      val mergeProtoPriority = builder.add(MergePreferred[ReSenderMessage](1))
-
-      val logging = akka.event.Logging(context.system, s"SessionStream-$authId-$sessionId")
-
-      val log = Sink.foreach[SessionStreamMessage](logging.warning("Unmatched {}", _))
+      val merge = builder.add(MergePreferred[ReSenderMessage](4))
+      val mergePriority = builder.add(MergePreferred[ReSenderMessage](1))
 
       // @format: OFF
 
-      incomingAck      ~> mergeProtoPriority.preferred
-      outProtoMessages ~> mergeProtoPriority   ~> mergeProto.preferred
-                          outRequestResend     ~> mergeProto ~> reSendSubscriber
+      incomingAck      ~> mergePriority.preferred
+      outOutgoingAcks  ~> mergePriority        ~> merge.preferred
+                          outRequestResend     ~> merge ~> reSendSubscriber
       rpc              ~> rpcRequestSubscriber
-                          rpcResponsePublisher ~> mergeProto
+                          rpcResponsePublisher ~> merge
       subscribe        ~> updatesSubscriber
-                          updatesPublisher     ~> mergeProto
-      unmatched        ~> log
+                          updatesPublisher     ~> merge
+                          outResender          ~> merge
 
       // @format: ON
 
@@ -85,12 +81,10 @@ private[session] object SessionStream {
     }
   }
 
-  import ReSenderMessage._
+  private def in(m: MessageAck): ReSenderMessage = ReSenderMessage.IncomingAck(m.messageIds)
+  private def in(m: RequestResend): ReSenderMessage = ReSenderMessage.IncomingRequestResend(m.messageId)
 
-  private def in(m: MessageAck): ReSenderMessage = IncomingAck(m.messageIds)
-  private def in(m: RequestResend): ReSenderMessage = IncomingRequestResend(m.messageId)
-
-  private def out(m: ProtoMessage): ReSenderMessage = out(m, None)
-  private def out(msg: ProtoMessage, reduceKey: ReduceKey) = OutgoingMessage(msg, reduceKey)
-  private def out(tup: (ProtoMessage, ReduceKey)) = (OutgoingMessage.apply _).tupled(tup)
+  private def out(r: (RpcResult, Long)) = ReSenderMessage.RpcResult(r._1, r._2)
+  private def out(u: (UpdateBox, Option[String])) = ReSenderMessage.Push(u._1, u._2)
+  private def out(messageIds: Set[Long]) = ReSenderMessage.OutgoingAck(messageIds.toSeq)
 }

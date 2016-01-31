@@ -18,7 +18,7 @@ object MTProtoBlueprint {
 
   import akka.stream.stage._
 
-  type MTProtoFlow = Flow[ByteString, ByteString, Unit]
+  type MTProtoFlow = Flow[ByteString, ByteString, akka.NotUsed]
 
   val protoVersions: Set[Byte] = Set(1, 2, 3)
   val apiMajorVersions: Set[Byte] = Set(1)
@@ -34,7 +34,7 @@ object MTProtoBlueprint {
       .transform(() ⇒ new PackageCheckStage)
       .via(new PackageHandleStage(protoVersions, apiMajorVersions, authManager, sessionClient))
 
-    val mapRespFlow: Flow[MTProto, ByteString, Unit] = Flow[MTProto]
+    val mapRespFlow: Flow[MTProto, ByteString, akka.NotUsed] = Flow[MTProto]
       .transform(() ⇒ mapResponse(system))
 
     val connStartTime = System.currentTimeMillis()

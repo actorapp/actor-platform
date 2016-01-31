@@ -7,14 +7,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_main"
     android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/headerCont"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/bg_backyard">
+        android:layout_height="48dp">
 
         <TextView
             android:id="@+id/header"

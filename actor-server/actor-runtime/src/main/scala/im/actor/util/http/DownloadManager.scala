@@ -11,6 +11,8 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpRequest
 import akka.stream.Materializer
 
+import scala.util.{ Success, Failure }
+
 class DownloadManager(implicit system: ActorSystem, materializer: Materializer) {
   implicit val ec: ExecutionContext = system.dispatcher
 
@@ -23,8 +25,13 @@ class DownloadManager(implicit system: ActorSystem, materializer: Materializer) 
     for {
       filePath ← tempFileFuture
       response ← responseFuture
-      size ← response.entity.dataBytes.runWith(FileIO.toFile(filePath.toFile))
-    } yield (filePath, size)
+      ioRes ← response.entity.dataBytes.runWith(FileIO.toFile(filePath.toFile))
+    } yield {
+      ioRes.status match {
+        case Success(_)     ⇒ (filePath, ioRes.count)
+        case Failure(cause) ⇒ throw cause
+      }
+    }
   }
 
   // FIXME: dispatcher for this

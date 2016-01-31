@@ -1,5 +1,9 @@
 package im.actor.server.api
 
+import java.time.Instant
+
+import akka.actor.{ ExtendedActorSystem, ActorSystem, ActorRef }
+import akka.serialization.Serialization
 import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
 import im.actor.api.rpc.files.ApiAvatar
@@ -12,6 +16,8 @@ import im.actor.api.rpc.users.ApiSex.ApiSex
 import im.actor.api.rpc.users.{ ApiSex ⇒ S, ApiUser }
 import im.actor.serialization.ActorSerializer
 import org.joda.time.DateTime
+
+abstract class ActorSystemMapper[BaseType, CustomType](implicit val system: ActorSystem) extends TypeMapper[BaseType, CustomType]
 
 object TypeMappers extends MessageMapper
 
@@ -74,6 +80,10 @@ private[api] trait MessageMapper {
   private def applyDateTime(millis: Long): DateTime = new DateTime(millis)
 
   private def unapplyDateTime(dt: DateTime): Long = dt.getMillis
+
+  private def applyInstant(millis: Long): Instant = Instant.ofEpochMilli(millis)
+
+  private def unapplyInstant(dt: Instant): Long = dt.toEpochMilli
 
   private def applyAvatar(buf: ByteString): ApiAvatar =
     get(ApiAvatar.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())))
@@ -138,10 +148,20 @@ private[api] trait MessageMapper {
 
   implicit val dateTimeMapper: TypeMapper[Long, DateTime] = TypeMapper(applyDateTime)(unapplyDateTime)
 
+  implicit val instantMapper: TypeMapper[Long, Instant] = TypeMapper(applyInstant)(unapplyInstant)
+
   implicit val avatarMapper: TypeMapper[ByteString, ApiAvatar] = TypeMapper(applyAvatar)(unapplyAvatar)
 
   implicit val sexMapper: TypeMapper[Int, ApiSex] = TypeMapper(applySex)(unapplySex)
 
   implicit val extensionMapper: TypeMapper[ByteString, ApiExtension] = TypeMapper(applyExtension)(unapplyExtension)
+
+  implicit def actorRefMapper(implicit system: ActorSystem): TypeMapper[String, ActorRef] =
+    new ActorSystemMapper[String, ActorRef]() {
+      override def toCustom(base: String): ActorRef =
+        system.asInstanceOf[ExtendedActorSystem].provider.resolveActorRef(base)
+
+      override def toBase(custom: ActorRef): String = Serialization.serializedActorPath(custom)
+    }
 }
 

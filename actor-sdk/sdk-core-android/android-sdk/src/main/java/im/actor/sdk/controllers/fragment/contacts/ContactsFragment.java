@@ -26,6 +26,9 @@ public class ContactsFragment extends BaseContactFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View res = onCreateContactsView(R.layout.fragment_contacts, inflater, container, savedInstanceState);
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        res.findViewById(R.id.emptyCollection).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+
         res.findViewById(R.id.inviteButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,9 +39,9 @@ public class ContactsFragment extends BaseContactFragment {
                 startActivity(sendIntent);
             }
         });
-        ((TextView) res.findViewById(R.id.no_contacts_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        ((TextView) res.findViewById(R.id.no_contacts_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryAccentColor());
         ((TextView) res.findViewById(R.id.no_contacts_text)).setText(getString(R.string.contacts_empty_invite_hint).replace("{appName}", ActorSDK.sharedActor().getAppName()));
-        ((TextView) res.findViewById(R.id.add_contact_hint_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        ((TextView) res.findViewById(R.id.add_contact_hint_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryAccentColor());
         return res;
     }
 
