@@ -280,7 +280,7 @@ public class SessionManagerActor extends ModuleActor {
         }
     }
 
-    public static class PickSessionForDecrypt extends AskMessage<PeerSession> {
+    public static class PickSessionForDecrypt implements AskMessage<PeerSession> {
 
         private int uid;
         private int keyGroupId;
@@ -311,7 +311,7 @@ public class SessionManagerActor extends ModuleActor {
         }
     }
 
-    public static class PickSessionForEncrypt extends AskMessage<PeerSession> {
+    public static class PickSessionForEncrypt implements AskMessage<PeerSession> {
 
         private int uid;
         private int keyGroupId;

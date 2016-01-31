@@ -322,7 +322,7 @@ public class EncryptedPeerActor extends ModuleActor {
         }
     }
 
-    public static class EncryptBox extends AskMessage<EncryptBoxResponse> {
+    public static class EncryptBox implements AskMessage<EncryptBoxResponse> {
         private byte[] data;
 
         public EncryptBox(byte[] data) {
@@ -347,7 +347,7 @@ public class EncryptedPeerActor extends ModuleActor {
         }
     }
 
-    public static class DecryptBox extends AskMessage<DecryptBoxResponse> {
+    public static class DecryptBox implements AskMessage<DecryptBoxResponse> {
 
         private EncryptedBox encryptedBox;
 

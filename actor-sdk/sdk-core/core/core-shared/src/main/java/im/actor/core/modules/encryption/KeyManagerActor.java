@@ -648,7 +648,7 @@ public class KeyManagerActor extends ModuleActor {
     // Own Keys
     //
 
-    public static class FetchOwnKey extends AskMessage<OwnIdentity> {
+    public static class FetchOwnKey implements AskMessage<OwnIdentity> {
 
     }
 
@@ -671,11 +671,11 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchOwnRandomPreKey extends AskMessage<PrivateKey> {
+    public static class FetchOwnRandomPreKey implements AskMessage<PrivateKey> {
 
     }
 
-    public static class FetchOwnPreKeyByPublic extends AskMessage<PrivateKey> {
+    public static class FetchOwnPreKeyByPublic implements AskMessage<PrivateKey> {
 
         private byte[] publicKey;
 
@@ -688,7 +688,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchOwnPreKeyById extends AskMessage<PrivateKey> {
+    public static class FetchOwnPreKeyById implements AskMessage<PrivateKey> {
 
         private long keyId;
 
@@ -705,7 +705,7 @@ public class KeyManagerActor extends ModuleActor {
     // Users Keys
     //
 
-    public static class FetchUserKeys extends AskMessage<UserKeys> {
+    public static class FetchUserKeys implements AskMessage<UserKeys> {
         private int uid;
 
         public FetchUserKeys(int uid) {
@@ -717,7 +717,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchUserPreKey extends AskMessage<PublicKey> {
+    public static class FetchUserPreKey implements AskMessage<PublicKey> {
 
         private int uid;
         private int keyGroup;
@@ -742,7 +742,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchUserPreKeyRandom extends AskMessage<PublicKey> {
+    public static class FetchUserPreKeyRandom implements AskMessage<PublicKey> {
 
         private int uid;
         private int keyGroup;
