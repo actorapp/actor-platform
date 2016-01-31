@@ -4,8 +4,6 @@
 
 package im.actor.core.util;
 
-import org.jetbrains.annotations.NotNull;
-
 import im.actor.core.Configuration;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
@@ -15,7 +13,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.api.Updates;
+import im.actor.core.modules.sequence.Updates;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.parser.Request;

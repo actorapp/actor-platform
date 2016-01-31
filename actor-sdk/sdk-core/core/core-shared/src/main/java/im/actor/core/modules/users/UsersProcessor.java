@@ -14,7 +14,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.api.Processor;
+import im.actor.core.modules.sequence.Processor;
 import im.actor.core.modules.internal.contacts.ContactsSyncActor;
 import im.actor.core.modules.internal.messages.DialogsActor;
 import im.actor.core.modules.internal.messages.GroupedDialogsActor;
