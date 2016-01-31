@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import im.actor.core.api.ApiDifferenceUpdate;
+import im.actor.core.api.ApiUpdateContainer;
+import im.actor.core.api.ApiUpdateOptimization;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.base.SeqUpdateTooLong;
@@ -229,7 +231,7 @@ public class SequenceActor extends ModuleActor {
 
         if (seq < 0) {
             Log.d(TAG, "Loading fresh state...");
-            request(new RequestGetState(), new RpcCallback<ResponseSeq>() {
+            request(new RequestGetState(new ArrayList<ApiUpdateOptimization>()), new RpcCallback<ResponseSeq>() {
                 @Override
                 public void onResult(ResponseSeq response) {
                     if (isValidated) {
@@ -268,7 +270,7 @@ public class SequenceActor extends ModuleActor {
             Log.d(TAG, "Loading difference...");
             onUpdateStarted();
             final long loadStart = im.actor.runtime.Runtime.getCurrentTime();
-            request(new RequestGetDifference(seq, state), new RpcCallback<ResponseGetDifference>() {
+            request(new RequestGetDifference(seq, state, new ArrayList<ApiUpdateOptimization>()), new RpcCallback<ResponseGetDifference>() {
                 @Override
                 public void onResult(ResponseGetDifference response) {
                     if (isValidated) {
@@ -280,7 +282,7 @@ public class SequenceActor extends ModuleActor {
 
                     long parseStart = im.actor.runtime.Runtime.getCurrentTime();
                     ArrayList<Update> updates = new ArrayList<Update>();
-                    for (ApiDifferenceUpdate u : response.getUpdates()) {
+                    for (ApiUpdateContainer u : response.getUpdates()) {
                         try {
                             updates.add(parser.read(u.getUpdateHeader(), u.getUpdate()));
                         } catch (IOException e) {
