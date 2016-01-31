@@ -45,7 +45,7 @@ public class ApiBroker extends Actor {
                                final int maxDelay,
                                final int maxFailureCount,
                                final ApiParserConfig parserConfig) {
-        return ActorSystem.system().actorOf(Props.create(ApiBroker.class, new ActorCreator<ApiBroker>() {
+        return ActorSystem.system().actorOf(Props.create(new ActorCreator() {
             @Override
             public ApiBroker create() {
                 return new ApiBroker(endpoints, keyStorage, callback, isEnableLog, minDelay,
@@ -94,7 +94,7 @@ public class ApiBroker extends Actor {
     public void preStart() {
         this.currentAuthId = keyStorage.getAuthKey();
 
-        this.keyManager = system().actorOf(Props.create(AuthKeyActor.class, new ActorCreator<AuthKeyActor>() {
+        this.keyManager = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public AuthKeyActor create() {
                 return new AuthKeyActor();

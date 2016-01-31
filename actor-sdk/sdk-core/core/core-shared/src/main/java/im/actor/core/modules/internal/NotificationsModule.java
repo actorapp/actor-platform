@@ -24,7 +24,7 @@ public class NotificationsModule extends AbsModule {
     }
 
     public void run() {
-        this.notificationsActor = system().actorOf(Props.create(NotificationsActor.class, new ActorCreator<NotificationsActor>() {
+        this.notificationsActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public NotificationsActor create() {
                 return new NotificationsActor(context());

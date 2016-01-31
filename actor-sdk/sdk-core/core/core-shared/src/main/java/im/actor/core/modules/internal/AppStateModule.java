@@ -25,12 +25,12 @@ public class AppStateModule extends AbsModule {
     }
 
     public void run() {
-        listStatesActor = system().actorOf(Props.create(ListsStatesActor.class, new ActorCreator<ListsStatesActor>() {
+        listStatesActor = system().actorOf("actor/app/state", new ActorCreator() {
             @Override
             public ListsStatesActor create() {
                 return new ListsStatesActor(context());
             }
-        }), "actor/app/state");
+        });
     }
 
     public void onDialogsUpdate(boolean isEmpty) {

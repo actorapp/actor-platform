@@ -52,13 +52,13 @@ public class FilesModule extends AbsModule {
     }
 
     public void run() {
-        downloadManager = system().actorOf(Props.create(DownloadManager.class, new ActorCreator<DownloadManager>() {
+        downloadManager = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public DownloadManager create() {
                 return new DownloadManager(context());
             }
         }).changeDispatcher("heavy"), "actor/download/manager");
-        uploadManager = system().actorOf(Props.create(UploadManager.class, new ActorCreator<UploadManager>() {
+        uploadManager = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public UploadManager create() {
                 return new UploadManager(context());

@@ -22,6 +22,7 @@ import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
@@ -68,9 +69,9 @@ public class CallsModule extends AbsModule {
 
                         Log.d(TAG, "make call " + response.getCallId());
                         calls.put(response.getCallId(),
-                                ActorSystem.system().actorOf(Props.create(CallActor.class, new ActorCreator<CallActor>() {
+                                ActorSystem.system().actorOf(Props.create(new ActorCreator() {
                                     @Override
-                                    public CallActor create() {
+                                    public Actor create() {
                                         return new CallActor(response.getCallId(), callCallback, context());
                                     }
                                 }), "actor/call_" + response.getCallId()));
@@ -122,12 +123,12 @@ public class CallsModule extends AbsModule {
 
         if (!calls.keySet().contains(callId)) {
             calls.put(callId,
-                    ActorSystem.system().actorOf(Props.create(CallActor.class, new ActorCreator<CallActor>() {
+                    ActorSystem.system().actorOf("actor/call_" + callId, new ActorCreator() {
                         @Override
-                        public CallActor create() {
+                        public Actor create() {
                             return new CallActor(callId, context());
                         }
-                    }), "actor/call_" + callId));
+                    }));
             if (!MULTIPLE_CALLS_ENABLED & calls.keySet().size() > MAX_CALLS_COUNT) {
                 calls.get(callId).send(new CallActor.EndCall());
             } else {

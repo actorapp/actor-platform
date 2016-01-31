@@ -22,7 +22,7 @@ import im.actor.runtime.annotations.Verified;
 public class OwnTypingActor extends ModuleActor {
 
     public static ActorRef get(final ModuleContext context) {
-        return ActorSystem.system().actorOf(Props.create(OwnTypingActor.class, new ActorCreator<OwnTypingActor>() {
+        return ActorSystem.system().actorOf(Props.create(new ActorCreator() {
             @Override
             public OwnTypingActor create() {
                 return new OwnTypingActor(context);
