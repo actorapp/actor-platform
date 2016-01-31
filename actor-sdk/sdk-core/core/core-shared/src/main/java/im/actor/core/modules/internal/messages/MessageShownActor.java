@@ -2,7 +2,7 @@ package im.actor.core.modules.internal.messages;
 
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.messages.entity.MessageShownEvent;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 
 public class MessageShownActor extends ModuleActor {
 

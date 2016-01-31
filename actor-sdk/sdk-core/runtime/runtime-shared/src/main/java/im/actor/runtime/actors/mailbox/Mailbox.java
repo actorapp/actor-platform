@@ -45,6 +45,19 @@ public class Mailbox {
     }
 
     /**
+     * Send envelope first
+     *
+     * @param envelope envelope
+     */
+    public void scheduleFirst(Envelope envelope) {
+        if (envelope.getMailbox() != this) {
+            throw new RuntimeException("envelope.mailbox != this mailbox");
+        }
+
+        envelopes.putEnvelopeFirst(envelope);
+    }
+
+    /**
      * Send envelope once at time
      *
      * @param envelope envelope

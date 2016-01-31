@@ -42,6 +42,8 @@ import im.actor.core.api.updates.UpdateMessageReceived;
 import im.actor.core.api.updates.UpdateMessageSent;
 import im.actor.core.api.updates.UpdateOwnStickersChanged;
 import im.actor.core.api.updates.UpdateParameterChanged;
+import im.actor.core.api.updates.UpdatePublicKeyGroupAdded;
+import im.actor.core.api.updates.UpdatePublicKeyGroupRemoved;
 import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.api.updates.UpdateStickerCollectionsChanged;
 import im.actor.core.api.updates.UpdateTyping;
@@ -53,6 +55,7 @@ import im.actor.core.api.updates.UpdateUserOnline;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.KeyManagerActor;
 import im.actor.core.modules.internal.contacts.ContactsSyncActor;
 import im.actor.core.modules.internal.messages.OwnReadActor;
 import im.actor.core.modules.updates.internal.ChangeContent;
@@ -67,6 +70,7 @@ import im.actor.core.modules.updates.internal.MessagesHistoryLoaded;
 import im.actor.core.modules.updates.internal.RelatedResponse;
 import im.actor.core.modules.updates.internal.StickersLoaded;
 import im.actor.core.modules.updates.internal.UsersFounded;
+import im.actor.core.modules.users.UsersProcessor;
 import im.actor.core.network.parser.Update;
 import im.actor.core.viewmodel.UserVM;
 
@@ -345,6 +349,16 @@ public class UpdateProcessor extends AbsModule {
             callsProcessor.onSignal((UpdateCallSignal) update);
         } else if (update instanceof UpdateCallEnded) {
             callsProcessor.onCallEnd((UpdateCallEnded) update);
+        } else if (update instanceof UpdatePublicKeyGroupAdded) {
+            context().getEncryption().getKeyManager().send(new KeyManagerActor.PublicKeysGroupAdded(
+                    ((UpdatePublicKeyGroupAdded) update).getUid(),
+                    ((UpdatePublicKeyGroupAdded) update).getKeyGroup()
+            ));
+        } else if (update instanceof UpdatePublicKeyGroupRemoved) {
+            context().getEncryption().getKeyManager().send(new KeyManagerActor.PublicKeysGroupRemoved(
+                    ((UpdatePublicKeyGroupRemoved) update).getUid(),
+                    ((UpdatePublicKeyGroupRemoved) update).getKeyGroupId()
+            ));
         }
     }
 

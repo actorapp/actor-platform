@@ -18,7 +18,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.messages.entity.Delete;
 import im.actor.core.modules.internal.messages.entity.DeleteStorage;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.storage.SyncKeyValue;

@@ -31,8 +31,8 @@ import Foundation
             "\"BYTES\" BLOB NOT NULL, " +
             "PRIMARY KEY (\"ID\"));"
         self.queryItem = "SELECT \"BYTES\" FROM " + tableName + " WHERE \"ID\" = ?;"
-        self.queryItems = "SELECT (\"ID\", \"BYTES\") FROM " + tableName + " WHERE \"ID\" in ?;"
-        self.queryAll = "SELECT (\"ID\", \"BYTES\") FROM " + tableName + ";"
+        self.queryItems = "SELECT \"ID\", \"BYTES\" FROM " + tableName + " WHERE \"ID\" in ?;"
+        self.queryAll = "SELECT \"ID\", \"BYTES\" FROM " + tableName + ";"
         self.queryAdd = "REPLACE INTO " + tableName + " (\"ID\", \"BYTES\") VALUES (?, ?);"
         self.queryDelete = "DELETE FROM " + tableName + " WHERE \"ID\" = ?;"
         self.queryDeleteAll = "DELETE FROM " + tableName + ";"

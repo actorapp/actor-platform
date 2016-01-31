@@ -6,6 +6,8 @@ package im.actor.runtime;
 
 import java.math.BigInteger;
 
+import im.actor.core.util.Hex;
+import im.actor.runtime.crypto.primitives.digest.KeyDigest;
 import im.actor.runtime.crypto.primitives.digest.SHA256;
 
 public class Crypto {
@@ -17,6 +19,14 @@ public class Crypto {
 
     public static byte[] MD5(byte[] data) {
         return provider.MD5(data);
+    }
+
+    public static String keyHash(byte[] publicKey) {
+        KeyDigest keyDigest = new KeyDigest();
+        keyDigest.update(publicKey, 0, publicKey.length);
+        byte[] res = new byte[8];
+        keyDigest.doFinal(res, 0);
+        return Hex.toHex(res);
     }
 
     /**

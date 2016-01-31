@@ -49,6 +49,23 @@ public class ActorContext {
         return actorScope.getSender();
     }
 
+    public Object message() {
+        return actorScope.getMessage();
+    }
+
+    /**
+     * Setting sender
+     *
+     * @param ref sender's ActorRef
+     */
+    public void setSender(ActorRef ref) {
+        actorScope.setSender(ref);
+    }
+
+    public void setMessage(Object message) {
+        actorScope.setMessage(message);
+    }
+
     /**
      * Stopping actor
      */
