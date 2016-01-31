@@ -30,7 +30,6 @@ import im.actor.core.entity.content.ServiceGroupUserKicked;
 import im.actor.core.entity.content.ServiceGroupUserLeave;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.entity.content.TextContent;
-import im.actor.core.modules.Errors;
 import im.actor.core.modules.Modules;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.JavaUtil;

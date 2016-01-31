@@ -9,7 +9,7 @@ import im.actor.core.api.rpc.RequestGetFileUrl;
 import im.actor.core.api.rpc.ResponseGetFileUrl;
 import im.actor.core.entity.FileReference;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.HTTP;

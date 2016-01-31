@@ -13,6 +13,9 @@ public class SHA256 implements Digest {
 
     @Override
     public void update(byte[] src, int offset, int length) {
+        if (length + offset > src.length) {
+            throw new RuntimeException("Incorrect length");
+        }
         sha256Digest.update(src, offset, length);
     }
 

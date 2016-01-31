@@ -1,14 +1,16 @@
 package im.actor.core.modules;
 
 import im.actor.core.Configuration;
-import im.actor.core.Extension;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
+import im.actor.core.modules.api.ApiModule;
+import im.actor.core.modules.api.Updates;
 import im.actor.core.modules.internal.AppStateModule;
 import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.modules.internal.ContactsModule;
 import im.actor.core.modules.internal.DeviceInfoModule;
 import im.actor.core.modules.internal.DisplayLists;
+import im.actor.core.modules.encryption.EncryptionModule;
 import im.actor.core.modules.internal.ExternalModule;
 import im.actor.core.modules.internal.FilesModule;
 import im.actor.core.modules.internal.GroupsModule;
@@ -23,7 +25,7 @@ import im.actor.core.modules.internal.SecurityModule;
 import im.actor.core.modules.internal.SettingsModule;
 import im.actor.core.modules.internal.StickersModule;
 import im.actor.core.modules.internal.TypingModule;
-import im.actor.core.modules.internal.UsersModule;
+import im.actor.core.modules.users.UsersModule;
 import im.actor.core.network.ActorApi;
 import im.actor.runtime.eventbus.EventBus;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -93,5 +95,5 @@ public interface ModuleContext {
 
     DeviceInfoModule getDeviceInfoModule();
 
-    Extensions getExtensions();
+    EncryptionModule getEncryption();
 }

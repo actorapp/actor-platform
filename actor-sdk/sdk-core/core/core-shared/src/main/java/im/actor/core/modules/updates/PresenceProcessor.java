@@ -12,6 +12,7 @@ import im.actor.runtime.annotations.Verified;
 
 @Verified
 public class PresenceProcessor extends AbsModule {
+
     private ActorRef presenceActor;
 
     @Verified

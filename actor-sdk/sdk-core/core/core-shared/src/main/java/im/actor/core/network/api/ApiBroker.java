@@ -15,7 +15,7 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Props;
-import im.actor.core.modules.utils.RandomUtils;
+import im.actor.core.util.RandomUtils;
 import im.actor.core.network.ActorApiCallback;
 import im.actor.core.network.AuthKeyStorage;
 import im.actor.core.network.Endpoints;
