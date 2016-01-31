@@ -89,7 +89,8 @@ public class ApiEncryptionKey extends BserObject {
         String res = "struct EncryptionKey{";
         res += "keyId=" + this.keyId;
         res += ", keyAlg=" + this.keyAlg;
-        res += ", keyMaterial=" + byteArrayToStringCompact(this.keyMaterial);
+        res += ", keyMaterial=" + this.keyMaterial;
+        res += ", keyHash=" + this.keyHash;
         res += "}";
         return res;
     }

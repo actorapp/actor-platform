@@ -5,14 +5,16 @@
 package im.actor.core.modules;
 
 import im.actor.core.Configuration;
-import im.actor.core.ConfigurationExtension;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
+import im.actor.core.modules.api.ApiModule;
+import im.actor.core.modules.api.Updates;
 import im.actor.core.modules.internal.AppStateModule;
 import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.modules.internal.ContactsModule;
 import im.actor.core.modules.internal.DeviceInfoModule;
 import im.actor.core.modules.internal.DisplayLists;
+import im.actor.core.modules.encryption.EncryptionModule;
 import im.actor.core.modules.internal.ExternalModule;
 import im.actor.core.modules.internal.FilesModule;
 import im.actor.core.modules.internal.GroupsModule;
@@ -27,7 +29,7 @@ import im.actor.core.modules.internal.SecurityModule;
 import im.actor.core.modules.internal.SettingsModule;
 import im.actor.core.modules.internal.StickersModule;
 import im.actor.core.modules.internal.TypingModule;
-import im.actor.core.modules.internal.UsersModule;
+import im.actor.core.modules.users.UsersModule;
 import im.actor.core.network.ActorApi;
 import im.actor.core.util.Timing;
 import im.actor.runtime.Storage;
@@ -52,7 +54,6 @@ public class Modules implements ModuleContext {
     private final AppStateModule appStateModule;
     private final ExternalModule external;
     private final Authentication authentication;
-    private final Extensions extensions;
 
     // Modules for authenticated users
     private volatile Updates updates;
@@ -73,6 +74,7 @@ public class Modules implements ModuleContext {
     private volatile SecurityModule security;
     private volatile DisplayLists displayLists;
     private volatile MentionsModule mentions;
+    private volatile EncryptionModule encryptionModule;
     private volatile DeviceInfoModule deviceInfoModule;
 
     public Modules(Messenger messenger, Configuration configuration) {
@@ -93,9 +95,6 @@ public class Modules implements ModuleContext {
         timing.section("API");
         this.api = new ApiModule(this);
 
-        timing.section("Extensions");
-        this.extensions = new Extensions(this);
-
         timing.section("App State");
         this.appStateModule = new AppStateModule(this);
 
@@ -104,12 +103,6 @@ public class Modules implements ModuleContext {
 
         timing.section("Pushes");
         this.pushes = new PushesModule(this);
-
-        timing.section("Extensions");
-        for (ConfigurationExtension e : configuration.getExtensions()) {
-            this.extensions.registerExtension(e.getKey(), e.getExtension());
-        }
-        this.extensions.registerExtensions();
 
         timing.section("Auth");
         this.authentication = new Authentication(this);
@@ -151,6 +144,8 @@ public class Modules implements ModuleContext {
         profile = new ProfileModule(this);
         timing.section("Mentions");
         mentions = new MentionsModule(this);
+        timing.section("Encryption");
+        encryptionModule = new EncryptionModule(this);
         timing.section("DisplayLists");
         displayLists = new DisplayLists(this);
         timing.section("DeviceInfo");
@@ -171,6 +166,8 @@ public class Modules implements ModuleContext {
         notifications.run();
         timing.section("AppState");
         appStateModule.run();
+        timing.section("Encryption");
+        encryptionModule.run();
         timing.section("Contacts");
         contacts.run();
         timing.section("Messages");
@@ -179,8 +176,6 @@ public class Modules implements ModuleContext {
         updates.run();
         timing.section("Calls");
         calls.run();
-        timing.section("Extensions");
-        extensions.runExtensions();
         timing.end();
 
         messenger.onLoggedIn();
@@ -312,8 +307,8 @@ public class Modules implements ModuleContext {
     }
 
     @Override
-    public Extensions getExtensions() {
-        return extensions;
+    public EncryptionModule getEncryption() {
+        return encryptionModule;
     }
 
     public EventBus getEvents() {

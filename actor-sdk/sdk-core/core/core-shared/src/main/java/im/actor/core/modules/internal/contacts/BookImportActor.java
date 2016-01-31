@@ -22,7 +22,7 @@ import im.actor.core.entity.PhoneBookEmail;
 import im.actor.core.entity.PhoneBookPhone;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.contacts.entity.BookImportStorage;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Log;

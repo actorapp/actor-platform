@@ -114,6 +114,12 @@ public abstract class ActorDispatcher {
         }
     }
 
+    public final void sendMessageFirst(ActorEndpoint endpoint, Object message, ActorRef sender) {
+        if (!isDisconnected(endpoint, message, sender)) {
+            endpoint.getMailbox().scheduleFirst(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender));
+        }
+    }
+
     public final void sendMessageOnceAtTime(ActorEndpoint endpoint, Object message, long time, ActorRef sender) {
         if (!isDisconnected(endpoint, message, sender)) {
             endpoint.getMailbox().scheduleOnce(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), time);
@@ -194,12 +200,7 @@ public abstract class ActorDispatcher {
                     dispatcher.getQueue().disconnectMailbox(scope.getMailbox());
                 }
             } else {
-                scope.setSender(envelope.getSender());
-                if (envelope.getMessage() instanceof Runnable) {
-                    ((Runnable) envelope.getMessage()).run();
-                    return;
-                }
-                scope.getActor().onReceive(envelope.getMessage());
+                scope.getActor().handleMessage(envelope.getMessage(), envelope.getSender());
             }
         } catch (Exception e) {
             if (actorSystem.getTraceInterface() != null) {
