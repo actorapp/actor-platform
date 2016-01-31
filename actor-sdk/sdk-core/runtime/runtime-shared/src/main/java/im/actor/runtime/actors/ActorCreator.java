@@ -7,11 +7,11 @@ package im.actor.runtime.actors;
 /**
  * Creator of custom actors
  */
-public interface ActorCreator<T extends Actor> {
+public interface ActorCreator {
     /**
      * Create actor
      *
      * @return Actor
      */
-    T create();
+    Actor create();
 }

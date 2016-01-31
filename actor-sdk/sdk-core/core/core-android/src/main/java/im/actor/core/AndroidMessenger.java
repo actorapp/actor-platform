@@ -38,6 +38,7 @@ import im.actor.core.utils.IOUtils;
 import im.actor.core.utils.ImageHelper;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
@@ -66,7 +67,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
 
         this.context = context;
 
-        this.appStateActor = system().actorOf(Props.create(AppStateActor.class, new ActorCreator<AppStateActor>() {
+        this.appStateActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public AppStateActor create() {
                 return new AppStateActor(AndroidMessenger.this);
@@ -439,19 +440,6 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     public BindedDisplayList<Message> getMessageDisplayList(final Peer peer) {
         if (!messagesLists.containsKey(peer)) {
             BindedDisplayList<Message> list = (BindedDisplayList<Message>) modules.getDisplayListsModule().getMessagesSharedList(peer);
-            list.setBindHook(new BindedDisplayList.BindHook<Message>() {
-                @Override
-                public void onScrolledToEnd() {
-                    modules.getMessagesModule().loadMoreHistory(peer);
-                }
-
-                @Override
-                public void onItemTouched(Message item) {
-                    if (item.isOnServer()) {
-                        modules.getMessagesModule().onMessageShown(peer, item.getSenderId(), item.getSortDate());
-                    }
-                }
-            });
             messagesLists.put(peer, list);
         }
 
@@ -461,19 +449,6 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     public BindedDisplayList<Message> getDocsDisplayList(final Peer peer) {
         if (!docsLists.containsKey(peer)) {
             BindedDisplayList<Message> list = (BindedDisplayList<Message>) modules.getDisplayListsModule().getDocsSharedList(peer);
-            list.setBindHook(new BindedDisplayList.BindHook<Message>() {
-                @Override
-                public void onScrolledToEnd() {
-                    modules.getMessagesModule().loadMoreHistory(peer);
-                }
-
-                @Override
-                public void onItemTouched(Message item) {
-                    if (item.isOnServer()) {
-                        modules.getMessagesModule().onMessageShown(peer, item.getSenderId(), item.getSortDate());
-                    }
-                }
-            });
             docsLists.put(peer, list);
         }
 

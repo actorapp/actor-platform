@@ -16,6 +16,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.updates.internal.ExecuteAfter;
 import im.actor.core.modules.updates.internal.RelatedResponse;
 import im.actor.core.network.parser.Update;
+import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
@@ -33,9 +34,9 @@ public class Updates extends AbsModule implements BusSubscriber {
     }
 
     public void run() {
-        this.updateActor = system().actorOf(Props.create(SequenceActor.class, new ActorCreator<SequenceActor>() {
+        this.updateActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
-            public SequenceActor create() {
+            public Actor create() {
                 return new SequenceActor(context());
             }
         }).changeDispatcher("updates"), "actor/updates");

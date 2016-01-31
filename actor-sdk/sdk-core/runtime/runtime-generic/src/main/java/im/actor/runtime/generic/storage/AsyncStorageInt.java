@@ -25,7 +25,7 @@ class AsyncStorageInt<T extends BserObject & ListEngineItem> {
     private ActorRef storageActor;
 
     public AsyncStorageInt(final ListStorageDisplayEx storage, final BserCreator<T> creator) {
-        storageActor = system().actorOf(Props.create(AsyncStorageActor.class, new ActorCreator<AsyncStorageActor>() {
+        storageActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public AsyncStorageActor<T> create() {
                 return new AsyncStorageActor<T>(storage, creator);

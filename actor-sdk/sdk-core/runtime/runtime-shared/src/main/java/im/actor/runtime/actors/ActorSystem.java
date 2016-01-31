@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.mailbox.ActorDispatcher;
+import im.actor.runtime.promise.Promise;
 
 /**
  * Entry point for Actor Model, creates all actors and dispatchers
@@ -119,6 +120,10 @@ public class ActorSystem {
         }
 
         return mailboxesDispatcher.referenceActor(path, props);
+    }
+
+    public ActorRef actorOf(String path, ActorCreator creator) {
+        return actorOf(Props.create(creator), path);
     }
 
     /**

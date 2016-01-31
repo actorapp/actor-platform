@@ -35,7 +35,7 @@ public class ReceiverActor extends Actor {
     private static final String TAG = "ProtoReceiver";
 
     public static ActorRef receiver(final MTProto proto) {
-        return ActorSystem.system().actorOf(new ActorSelection(Props.create(ReceiverActor.class, new ActorCreator<ReceiverActor>() {
+        return ActorSystem.system().actorOf(new ActorSelection(Props.create(new ActorCreator() {
             @Override
             public ReceiverActor create() {
                 return new ReceiverActor(proto);

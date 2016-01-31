@@ -39,7 +39,7 @@ public class TCActor extends Actor {
     public void preStart() {
 
         ids = new HashSet<Integer>();
-        check = ActorSystem.system().actorOf(Props.create(TCCheckActor.class, new ActorCreator<TCCheckActor>() {
+        check = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
             @Override
             public TCCheckActor create() {
                 return new TCCheckActor(url, self());

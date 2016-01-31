@@ -12,7 +12,7 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 public class TimerCompat extends AbsTimerCompat {
 
-    private static final ActorRef TIMER_ACTOR = system().actorOf(Props.create(TimerActor.class, new ActorCreator<TimerActor>() {
+    private static final ActorRef TIMER_ACTOR = system().actorOf(Props.create(new ActorCreator() {
         @Override
         public TimerActor create() {
             return new TimerActor();
