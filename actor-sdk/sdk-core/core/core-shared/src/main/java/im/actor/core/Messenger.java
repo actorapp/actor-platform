@@ -42,7 +42,6 @@ import im.actor.core.events.PeerChatClosed;
 import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerInfoClosed;
 import im.actor.core.events.PeerInfoOpened;
-import im.actor.core.events.UserIDLEChanged;
 import im.actor.core.events.UserVisible;
 import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.network.NetworkState;
@@ -448,22 +447,6 @@ public class Messenger {
     @ObjectiveCName("onAppHidden")
     public void onAppHidden() {
         modules.getEvents().postSticky(new AppVisibleChanged(false));
-    }
-
-    /**
-     * Can be called to indicate that user is active
-     */
-    @ObjectiveCName("onUserActive")
-    public void onUserActive() {
-        modules.getEvents().postSticky(new UserIDLEChanged(false));
-    }
-
-    /**
-     * Can be called to indicate that user became idle
-     */
-    @ObjectiveCName("onUserIDLE")
-    public void onUserIDLE() {
-        modules.getEvents().postSticky(new UserIDLEChanged(true));
     }
 
     /**
