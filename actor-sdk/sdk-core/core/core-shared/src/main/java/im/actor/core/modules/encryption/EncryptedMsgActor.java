@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import im.actor.core.api.ApiEncryptedBox;
+import im.actor.core.api.ApiEncryptedBoxSignature;
 import im.actor.core.api.ApiEncryptedMessage;
 import im.actor.core.api.ApiEncyptedBoxKey;
 import im.actor.core.api.ApiMessage;
@@ -38,8 +39,8 @@ public class EncryptedMsgActor extends ModuleActor {
                         boxKeys.add(new ApiEncyptedBoxKey(b.getUid(),
                                 b.getKeyGroupId(), "curve25519", b.getEncryptedKey()));
                     }
-                    ArrayList<Integer> ignored = new ArrayList<Integer>();
-                    ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(0, boxKeys, ignored, "aes-kuznechik", encryptedBox.getBox().getEncryptedPackage());
+                    ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(0, boxKeys, "aes-kuznechik", encryptedBox.getBox().getEncryptedPackage(),
+                            new ArrayList<ApiEncryptedBoxSignature>());
                     ApiEncryptedMessage apiEncryptedMessage = new ApiEncryptedMessage(apiEncryptedBox);
                     future.result(new EncryptedMessage(apiEncryptedMessage));
                 }
