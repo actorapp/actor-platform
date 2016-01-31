@@ -32,6 +32,8 @@ public class SecuritySettingsFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View res = inflater.inflate(R.layout.fr_settings_encryption, container, false);
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        res.findViewById(R.id.big_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
         ((TextView) res.findViewById(R.id.security_settings_title)).setTextColor(ActorSDK.sharedActor().style.getSettingsMainTitleColor());
         loading = (TextView) res.findViewById(R.id.loading);
         loading.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());

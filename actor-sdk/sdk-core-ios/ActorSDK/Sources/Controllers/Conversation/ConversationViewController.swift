@@ -9,7 +9,7 @@ import AddressBook
 import AddressBookUI
 import SVProgressHUD
 
-class ConversationViewController: AAConversationContentController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AALocationPickerControllerDelegate,
+public class ConversationViewController: AAConversationContentController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AALocationPickerControllerDelegate,
     ABPeoplePickerNavigationControllerDelegate,AAAudioRecorderDelegate {
     
     // Data binder
@@ -184,14 +184,14 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.navigationItem.rightBarButtonItem = barItem
     }
     
-    required init(coder aDecoder: NSCoder!) {
+    required public init(coder aDecoder: NSCoder!) {
         fatalError("init(coder:) has not been implemented")
     }
     
     ////////////////////////////////////////////////////////////
     // MARK: - Lifecycle
     ////////////////////////////////////////////////////////////
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
         self.voiceRecorderView = AAVoiceRecorderView(frame: CGRectMake(0,0,self.view.frame.size.width-30,44))
@@ -211,11 +211,11 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             name: SLKKeyboardWillHideNotification,
             object: nil)
         
-        navigationController?.view.layer.speed = 1.5
+        //navigationController?.view.layer.speed = 1.5
         
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override public func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         // Installing bindings
@@ -309,7 +309,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
     }
     
-    override func viewWillLayoutSubviews() {
+    override public func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         backgroundView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height)
         
@@ -317,7 +317,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         subtitleView.frame = CGRectMake(0, 22, (navigationView.frame.width - 0), 20)
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override public func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
         //navigationController?.view.layer.speed = 1
@@ -338,10 +338,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.navigationController?.view.addSubview(self.actionSheet)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override public func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        navigationController?.view.layer.speed = 1.5
+        //navigationController?.view.layer.speed = 1.5
         
         Actor.onConversationClosedWithPeer(peer)
         ActorSDK.sharedActor().trackPageHidden(content)
@@ -354,9 +354,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.textView.resignFirstResponder()
     }
 
-    override func viewDidDisappear(animated: Bool) {
+    override public func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        navigationController?.view.layer.speed = 1
+        //navigationController?.view.layer.speed = 1
         
         Actor.saveDraftWithPeer(peer, withDraft: textView.text)
         
@@ -405,7 +405,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     // MARK: - Text bar actions
     ////////////////////////////////////////////////////////////
     
-    override func textWillUpdate() {
+    override public func textWillUpdate() {
         super.textWillUpdate();
 
         Actor.onTypingWithPeer(peer);
@@ -413,7 +413,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     
     
     
-    override func textDidUpdate(animated: Bool) {
+    override public func textDidUpdate(animated: Bool) {
         super.textDidUpdate(animated)
         
         self.checkTextInTextView()
@@ -476,7 +476,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     // MARK: - Right/Left button pressed
     ////////////////////////////////////////////////////////////
     
-    override func didPressRightButton(sender: AnyObject!) {
+    override public func didPressRightButton(sender: AnyObject!) {
         
         if !self.textView.text.isEmpty {
             
@@ -487,7 +487,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
 
     }
     
-    override func didPressLeftButton(sender: AnyObject!) {
+    override public func didPressLeftButton(sender: AnyObject!) {
         super.didPressLeftButton(sender)
         
         self.textInputbar.textView.resignFirstResponder()
@@ -501,7 +501,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     // MARK: - Completition
     ////////////////////////////////////////////////////////////
     
-    override func didChangeAutoCompletionPrefix(prefix: String!, andWord word: String!) {
+    override public func didChangeAutoCompletionPrefix(prefix: String!, andWord word: String!) {
         if self.peer.peerType.ordinal() == ACPeerType.GROUP().ordinal() {
             if prefix == "@" {
                 
@@ -533,17 +533,17 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     // MARK: - TableView for completition
     ////////////////////////////////////////////////////////////
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredMembers.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let res = AAAutoCompleteCell(style: UITableViewCellStyle.Default, reuseIdentifier: "user_name")
         res.bindData(filteredMembers[indexPath.row], highlightWord: foundWord)
         return res
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let user = filteredMembers[indexPath.row]
 
         var postfix = " "
@@ -554,12 +554,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         acceptAutoCompletionWithString(user.mentionString + postfix, keepPrefix: !user.isNickname)
     }
     
-    override func heightForAutoCompletionView() -> CGFloat {
+    override public func heightForAutoCompletionView() -> CGFloat {
         let cellHeight: CGFloat = 44.0;
         return cellHeight * CGFloat(filteredMembers.count)
     }
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    override public func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         cell.separatorInset = UIEdgeInsetsZero
         cell.preservesSuperviewLayoutMargins = false
         cell.layoutMargins = UIEdgeInsetsZero
@@ -576,12 +576,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.presentViewController(documentPicker, animated: true, completion: nil)
     }
     
-    func documentMenu(documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
+    public func documentMenu(documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
         documentPicker.delegate = self
         self.presentViewController(documentPicker, animated: true, completion: nil)
     }
     
-    func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
+    public func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
         
         // Loading path and file name
         let path = url.path!
@@ -628,12 +628,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.presentViewController(pickerController, animated: true, completion: nil)
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+    public func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         picker.dismissViewControllerAnimated(true, completion: nil)
         Actor.sendUIImage(image, peer: peer)
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         picker.dismissViewControllerAnimated(true, completion: nil)
         
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
@@ -645,7 +645,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
     }
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -663,11 +663,11 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.presentViewController(AANavigationController(rootViewController:pickerController), animated: true, completion: nil)
     }
     
-    func locationPickerDidCancelled(controller: AALocationPickerController) {
+    public func locationPickerDidCancelled(controller: AALocationPickerController) {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func locationPickerDidPicked(controller: AALocationPickerController, latitude: Double, longitude: Double) {
+    public func locationPickerDidPicked(controller: AALocationPickerController, latitude: Double, longitude: Double) {
         Actor.sendLocationWithPeer(self.peer, withLongitude: JavaLangDouble(double: longitude), withLatitude: JavaLangDouble(double: latitude), withStreet: nil, withPlace: nil)
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -682,7 +682,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.presentViewController(pickerController, animated: true, completion: nil)
     }
     
-    func peoplePickerNavigationController(peoplePicker: ABPeoplePickerNavigationController, didSelectPerson person: ABRecord) {
+    public func peoplePickerNavigationController(peoplePicker: ABPeoplePickerNavigationController, didSelectPerson person: ABRecord) {
         
         // Dismissing picker
         
@@ -775,7 +775,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
     }
     
-    func audioRecorderDidStartRecording() {
+    public func audioRecorderDidStartRecording() {
         self.voiceRecorderView.recordingStarted()
         
     }

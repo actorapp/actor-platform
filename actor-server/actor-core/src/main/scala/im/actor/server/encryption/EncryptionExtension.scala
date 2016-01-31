@@ -5,6 +5,7 @@ import akka.http.scaladsl.util.FastFuture
 import cats.std.all._
 import cats.syntax.all._
 import cats.data.{ Xor, XorT }
+import com.google.protobuf.wrappers.Int32Value
 import im.actor.api.rpc.encryption._
 import im.actor.cats.dbio._
 import im.actor.server.db.DbExtension
@@ -15,6 +16,7 @@ import im.actor.server.social.SocialExtension
 import im.actor.util.misc.IdUtils
 import im.actor.server.db.ActorPostgresDriver.api._
 
+import scala.collection.immutable.Iterable
 import scala.concurrent.Future
 
 final class EncryptionExtension(system: ActorSystem) extends Extension {
@@ -67,6 +69,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
 
   def createKeyGroup(
     userId:               Int,
+    authSid:              Int,
     supportedEncryptions: Seq[String],
     identityKey:          EncryptionKey,
     keys:                 Seq[EncryptionKey],
@@ -76,6 +79,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
     val keyGroup = EncryptionKeyGroup(
       userId = userId,
       id = id,
+      authSid = Some(Int32Value(authSid)),
       supportedEncryptions = supportedEncryptions,
       identityKey = Some(identityKey),
       keys = keys,
@@ -100,6 +104,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
 
   def createKeyGroup(
     userId:               Int,
+    authSid:              Int,
     supportedEncryptions: Seq[String],
     apiIdentityKey:       ApiEncryptionKey,
     apiKeys:              Seq[ApiEncryptionKey],
@@ -109,7 +114,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
       identityKey ← XorT.fromXor[Future](toModel(apiIdentityKey))
       keys ← XorT.fromXor[Future](apiKeys.toVector.traverseU(toModel))
       signs ← XorT(FastFuture.successful(apiSignatures.toVector.traverseU(toModel)))
-      id ← XorT.right[Future, Exception, Int](createKeyGroup(userId, supportedEncryptions, identityKey, keys, signs))
+      id ← XorT.right[Future, Exception, Int](createKeyGroup(userId, authSid, supportedEncryptions, identityKey, keys, signs))
     } yield id
 
     futureT.value map (_.valueOr(throw _))
@@ -200,6 +205,48 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
       } yield apiEKeys
 
     actionT.value map (_.valueOr(throw _))
+  }
+
+  def checkBox(box: ApiEncryptedBox): Future[Either[(Vector[ApiKeyGroupId], Vector[ApiKeyGroupId]), Map[Int, Vector[(Int, ApiEncryptedBox)]]]] = {
+    val userChecksFu: Iterable[Future[(Seq[ApiKeyGroupId], Seq[ApiKeyGroupId], Seq[EncryptionKeyGroup])]] =
+      box.keys.groupBy(_.usersId) map {
+        case (userId, keys) ⇒
+          db.run(EncryptionKeyGroupRepo.fetch(userId)) map { kgs ⇒
+            // kgs not presented in box
+            val missingKgs = kgs.view
+              .filterNot(kg ⇒ keys.exists(_.keyGroupId == kg.id))
+              .map(kg ⇒ ApiKeyGroupId(userId, kg.id)).force
+
+            // kgs presented in box but deleted by receiver
+            val obsKgs = keys.view
+              .filterNot(kg ⇒ kgs.exists(_.id == kg.keyGroupId))
+              .map(k ⇒ ApiKeyGroupId(userId, k.keyGroupId)).force
+
+            (missingKgs, obsKgs, kgs)
+          }
+      }
+
+    Future.sequence(userChecksFu) map { checks ⇒
+      val (missing, obs, kgs) =
+        checks.foldLeft((Vector.empty[ApiKeyGroupId], Vector.empty[ApiKeyGroupId], Vector.empty[EncryptionKeyGroup])) {
+          case ((macc, oacc, kgacc), (m, o, kg)) ⇒
+            (macc ++ m, oacc ++ o, kgacc ++ kg)
+        }
+
+      if (missing.nonEmpty || obs.nonEmpty) Left(missing → obs)
+      else Right(
+        kgs
+        .groupBy(_.userId)
+        .map {
+          case (userId, ukgs) ⇒
+            (userId,
+              ukgs map { kg ⇒
+                val keys = box.keys.filter(_.keyGroupId == kg.id)
+                (kg.authSid.get.value, box.copy(keys = keys))
+              })
+        }.toMap
+      )
+    }
   }
 }
 

@@ -190,7 +190,8 @@ object Build extends sbt.Build with Versioning with Releasing {
     id = "actor-enrich",
     base = file("actor-enrich"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.enrich
+      libraryDependencies ++= Dependencies.enrich,
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
     )
   )
     .dependsOn(actorRpcApi, actorRuntime)
@@ -264,7 +265,8 @@ object Build extends sbt.Build with Versioning with Releasing {
     id = "actor-frontend",
     base = file("actor-frontend"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.frontend
+      libraryDependencies ++= Dependencies.frontend,
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
     )
   )
     .dependsOn(actorCore, actorSession)

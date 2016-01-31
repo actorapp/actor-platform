@@ -55,7 +55,7 @@ public class GroupUsersFragment extends BaseContactFragment {
 
         View res = onCreateContactsView(R.layout.fragment_create_group_participants, inflater,
                 container, savedInstanceState);
-
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         searchField = (EditText) res.findViewById(R.id.searchField);
         searchField.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         searchField.setHintTextColor(ActorSDK.sharedActor().style.getTextHintColor());

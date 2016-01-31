@@ -101,6 +101,8 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 27: return RequestTyping.fromBytes(payload);
             case 30: return RequestStopTyping.fromBytes(payload);
             case 29: return RequestSetOnline.fromBytes(payload);
+            case 2641: return RequestPauseNotifications.fromBytes(payload);
+            case 2642: return RequestRestoreNotifications.fromBytes(payload);
             case 77: return RequestGetFileUrl.fromBytes(payload);
             case 2573: return RequestGetFileUrls.fromBytes(payload);
             case 97: return RequestGetFileUploadUrl.fromBytes(payload);
@@ -126,12 +128,15 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 52: return RequestUnregisterPush.fromBytes(payload);
             case 2601: return RequestLoadPublicKeyGroups.fromBytes(payload);
             case 2605: return RequestLoadPublicKey.fromBytes(payload);
-            case 2603: return RequestLoadEphermalPublicKeys.fromBytes(payload);
+            case 2603: return RequestLoadPrePublicKeys.fromBytes(payload);
             case 2609: return RequestCreateNewKeyGroup.fromBytes(payload);
             case 2611: return RequestDeleteKeyGroup.fromBytes(payload);
             case 2613: return RequestDisconnectKeyGroup.fromBytes(payload);
             case 2614: return RequestConnectKeyGroup.fromBytes(payload);
-            case 2612: return RequestUploadEphermalKey.fromBytes(payload);
+            case 2612: return RequestUploadPreKey.fromBytes(payload);
+            case 2657: return RequestSendEncryptedPackage.fromBytes(payload);
+            case 2660: return RequestUploadSharedBlob.fromBytes(payload);
+            case 2662: return RequestDownloadSharedBlob.fromBytes(payload);
             case 9: return RequestGetState.fromBytes(payload);
             case 11: return RequestGetDifference.fromBytes(payload);
             case 2628: return RequestGetReferencedEntitites.fromBytes(payload);
@@ -187,6 +192,9 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 2602: return ResponsePublicKeys.fromBytes(payload);
             case 2604: return ResponsePublicKeyGroups.fromBytes(payload);
             case 2610: return ResponseCreateNewKeyGroup.fromBytes(payload);
+            case 2664: return ResponseSendEncryptedPackage.fromBytes(payload);
+            case 2661: return ResponseUploadSharedBlob.fromBytes(payload);
+            case 2663: return ResponseDownloadSharedBlob.fromBytes(payload);
             case 12: return ResponseGetDifference.fromBytes(payload);
             case 2629: return ResponseGetReferencedEntitites.fromBytes(payload);
             case 50: return ResponseVoid.fromBytes(payload);

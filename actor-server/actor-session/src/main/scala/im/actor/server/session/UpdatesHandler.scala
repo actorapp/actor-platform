@@ -2,7 +2,7 @@ package im.actor.server.session
 
 import akka.actor.{ Stash, ActorRef, ActorLogging, Props }
 import akka.stream.actor._
-import im.actor.server.mtproto.protocol.ProtoPush
+import im.actor.api.rpc.UpdateBox
 import im.actor.server.sequence._
 
 import scala.annotation.tailrec
@@ -16,11 +16,10 @@ private[session] object UpdatesHandler {
 }
 
 private[session] class UpdatesHandler(authId: Long)
-  extends ActorSubscriber with ActorPublisher[(ProtoPush, Option[String])] with ActorLogging with Stash {
+  extends ActorSubscriber with ActorPublisher[(UpdateBox, Option[String])] with ActorLogging with Stash {
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
-  //import UpdatesConsumerMessage._
 
   def receive = {
     case UpdatesHandler.Authorize(userId, authSid) ⇒
@@ -47,7 +46,7 @@ private[session] class UpdatesHandler(authId: Long)
           consumer ! UpdatesConsumerMessage.SubscribeToGroupPresences(groupIds.toSet)
         case SubscribeFromGroupOnline(groupIds) ⇒
           consumer ! UpdatesConsumerMessage.UnsubscribeFromGroupPresences(groupIds.toSet)
-        case SubscribeToSeq() ⇒
+        case SubscribeToSeq(optimizations) ⇒
           consumer ! UpdatesConsumerMessage.SubscribeToSeq
         case SubscribeToWeak(Some(group)) ⇒
           consumer ! UpdatesConsumerMessage.SubscribeToWeak(Some(group))
@@ -63,7 +62,7 @@ private[session] class UpdatesHandler(authId: Long)
   override val requestStrategy = WatermarkRequestStrategy(10) // TODO: configurable
 
   // Publisher-related
-  private[this] var messageQueue = immutable.Queue.empty[(ProtoPush, Option[String])]
+  private[this] var messageQueue = immutable.Queue.empty[(UpdateBox, Option[String])]
 
   def publisher: Receive = {
     case NewUpdate(ub, reduceKey) ⇒ enqueueProtoMessage(ub, reduceKey)
@@ -71,11 +70,13 @@ private[session] class UpdatesHandler(authId: Long)
     case Cancel                   ⇒ context.stop(self)
   }
 
-  private def enqueueProtoMessage(message: ProtoPush, reduceKey: Option[String]): Unit = {
+  private def enqueueProtoMessage(message: UpdateBox, reduceKey: Option[String]): Unit = {
+    val el = message → reduceKey
+
     if (messageQueue.isEmpty && totalDemand > 0) {
-      onNext(message → reduceKey)
+      onNext(el)
     } else {
-      messageQueue = messageQueue.enqueue(message → reduceKey)
+      messageQueue = messageQueue.enqueue(el)
       deliverBuf()
     }
   }

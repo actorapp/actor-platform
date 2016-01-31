@@ -24,10 +24,14 @@ public class RequestSetOnline extends Request<ResponseVoid> {
 
     private boolean isOnline;
     private long timeout;
+    private ApiDeviceType deviceType;
+    private String deviceCategory;
 
-    public RequestSetOnline(boolean isOnline, long timeout) {
+    public RequestSetOnline(boolean isOnline, long timeout, @Nullable ApiDeviceType deviceType, @Nullable String deviceCategory) {
         this.isOnline = isOnline;
         this.timeout = timeout;
+        this.deviceType = deviceType;
+        this.deviceCategory = deviceCategory;
     }
 
     public RequestSetOnline() {
@@ -42,16 +46,37 @@ public class RequestSetOnline extends Request<ResponseVoid> {
         return this.timeout;
     }
 
+    @Nullable
+    public ApiDeviceType getDeviceType() {
+        return this.deviceType;
+    }
+
+    @Nullable
+    public String getDeviceCategory() {
+        return this.deviceCategory;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.isOnline = values.getBool(1);
         this.timeout = values.getLong(2);
+        int val_deviceType = values.getInt(3, 0);
+        if (val_deviceType != 0) {
+            this.deviceType = ApiDeviceType.parse(val_deviceType);
+        }
+        this.deviceCategory = values.optString(4);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeBool(1, this.isOnline);
         writer.writeLong(2, this.timeout);
+        if (this.deviceType != null) {
+            writer.writeInt(3, this.deviceType.getValue());
+        }
+        if (this.deviceCategory != null) {
+            writer.writeString(4, this.deviceCategory);
+        }
     }
 
     @Override
@@ -59,6 +84,8 @@ public class RequestSetOnline extends Request<ResponseVoid> {
         String res = "rpc SetOnline{";
         res += "isOnline=" + this.isOnline;
         res += ", timeout=" + this.timeout;
+        res += ", deviceType=" + this.deviceType;
+        res += ", deviceCategory=" + this.deviceCategory;
         res += "}";
         return res;
     }

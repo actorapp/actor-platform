@@ -230,13 +230,13 @@ private[sequence] final class VendorPush(
               case (true, Some(peer)) ⇒
                 settings.peers.get(peer) match {
                   case Some(true) ⇒
-                    log.debug("Notifications for peer {} are enabled, push will be visible")
+                    log.debug("Notifications for peer {} are enabled, push will be visible", peer)
                     true
                   case Some(false) ⇒
-                    log.debug("Notifications for peer {} are disabled, push will be invisible")
+                    log.debug("Notifications for peer {} are disabled, push will be invisible", peer)
                     false
                   case None ⇒
-                    log.debug("Notifications for peer {} are not set, push will be visible")
+                    log.debug("Notifications for peer {} are not set, push will be visible", peer)
                     true
                 }
               case (true, None) ⇒

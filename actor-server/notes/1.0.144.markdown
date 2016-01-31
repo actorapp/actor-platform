@@ -1,0 +1,1 @@
+* :shipit: New encrypted messaging API
