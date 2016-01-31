@@ -24,10 +24,14 @@ public class UpdateUserLastSeen extends Update {
 
     private int uid;
     private long date;
+    private ApiDeviceType deviceType;
+    private String deviceCategory;
 
-    public UpdateUserLastSeen(int uid, long date) {
+    public UpdateUserLastSeen(int uid, long date, @Nullable ApiDeviceType deviceType, @Nullable String deviceCategory) {
         this.uid = uid;
         this.date = date;
+        this.deviceType = deviceType;
+        this.deviceCategory = deviceCategory;
     }
 
     public UpdateUserLastSeen() {
@@ -42,16 +46,37 @@ public class UpdateUserLastSeen extends Update {
         return this.date;
     }
 
+    @Nullable
+    public ApiDeviceType getDeviceType() {
+        return this.deviceType;
+    }
+
+    @Nullable
+    public String getDeviceCategory() {
+        return this.deviceCategory;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.uid = values.getInt(1);
         this.date = values.getLong(2);
+        int val_deviceType = values.getInt(3, 0);
+        if (val_deviceType != 0) {
+            this.deviceType = ApiDeviceType.parse(val_deviceType);
+        }
+        this.deviceCategory = values.optString(4);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.uid);
         writer.writeLong(2, this.date);
+        if (this.deviceType != null) {
+            writer.writeInt(3, this.deviceType.getValue());
+        }
+        if (this.deviceCategory != null) {
+            writer.writeString(4, this.deviceCategory);
+        }
     }
 
     @Override

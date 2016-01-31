@@ -5,34 +5,27 @@ package im.actor.core.api.updates;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
 import static im.actor.runtime.bser.Utils.*;
-
 import im.actor.core.network.parser.*;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-
 import im.actor.core.api.*;
 
 public class UpdatePublicKeyGroupChanged extends Update {
 
     public static final int HEADER = 0x67;
-
     public static UpdatePublicKeyGroupChanged fromBytes(byte[] data) throws IOException {
         return Bser.parse(new UpdatePublicKeyGroupChanged(), data);
     }
 
     private int uid;
-    private ApiEncryptionPublicKeyGroup keyGroup;
+    private ApiEncryptionKeyGroup keyGroup;
 
-    public UpdatePublicKeyGroupChanged(int uid, @NotNull ApiEncryptionPublicKeyGroup keyGroup) {
+    public UpdatePublicKeyGroupChanged(int uid, @NotNull ApiEncryptionKeyGroup keyGroup) {
         this.uid = uid;
         this.keyGroup = keyGroup;
     }
@@ -46,14 +39,14 @@ public class UpdatePublicKeyGroupChanged extends Update {
     }
 
     @NotNull
-    public ApiEncryptionPublicKeyGroup getKeyGroup() {
+    public ApiEncryptionKeyGroup getKeyGroup() {
         return this.keyGroup;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.uid = values.getInt(1);
-        this.keyGroup = values.getObj(2, new ApiEncryptionPublicKeyGroup());
+        this.keyGroup = values.getObj(2, new ApiEncryptionKeyGroup());
     }
 
     @Override

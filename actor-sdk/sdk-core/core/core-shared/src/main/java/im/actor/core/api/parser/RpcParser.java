@@ -101,29 +101,22 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 27: return RequestTyping.fromBytes(payload);
             case 30: return RequestStopTyping.fromBytes(payload);
             case 29: return RequestSetOnline.fromBytes(payload);
+            case 2641: return RequestPauseNotifications.fromBytes(payload);
+            case 2642: return RequestRestoreNotifications.fromBytes(payload);
             case 77: return RequestGetFileUrl.fromBytes(payload);
             case 2573: return RequestGetFileUrls.fromBytes(payload);
             case 97: return RequestGetFileUploadUrl.fromBytes(payload);
             case 122: return RequestCommitFileUpload.fromBytes(payload);
             case 142: return RequestGetFileUploadPartUrl.fromBytes(payload);
-            case 2588:
-                return RequestEnableFeature.fromBytes(payload);
-            case 2589:
-                return RequestDisableFeature.fromBytes(payload);
-            case 2590:
-                return RequestCheckFeatureEnabled.fromBytes(payload);
-            case 2592:
-                return RequestSubscribeToCalls.fromBytes(payload);
-            case 2593:
-                return RequestUnsubscribeToCalls.fromBytes(payload);
-            case 2597:
-                return RequestDoCall.fromBytes(payload);
-            case 2595:
-                return RequestEndCall.fromBytes(payload);
-            case 2596:
-                return RequestCallInProgress.fromBytes(payload);
-            case 2599:
-                return RequestSendCallSignal.fromBytes(payload);
+            case 2588: return RequestEnableFeature.fromBytes(payload);
+            case 2589: return RequestDisableFeature.fromBytes(payload);
+            case 2590: return RequestCheckFeatureEnabled.fromBytes(payload);
+            case 2592: return RequestSubscribeToCalls.fromBytes(payload);
+            case 2593: return RequestUnsubscribeToCalls.fromBytes(payload);
+            case 2597: return RequestDoCall.fromBytes(payload);
+            case 2595: return RequestEndCall.fromBytes(payload);
+            case 2596: return RequestCallInProgress.fromBytes(payload);
+            case 2599: return RequestSendCallSignal.fromBytes(payload);
             case 134: return RequestGetParameters.fromBytes(payload);
             case 128: return RequestEditParameter.fromBytes(payload);
             case 243: return RequestStoreEvents.fromBytes(payload);
@@ -131,23 +124,22 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 241: return RequestLoadWallpappers.fromBytes(payload);
             case 51: return RequestRegisterGooglePush.fromBytes(payload);
             case 76: return RequestRegisterApplePush.fromBytes(payload);
-            case 2575:
-                return RequestRegisterActorPush.fromBytes(payload);
+            case 2575: return RequestRegisterActorPush.fromBytes(payload);
             case 52: return RequestUnregisterPush.fromBytes(payload);
-            case 2601:
-                return RequestLoadPublicKeyGroups.fromBytes(payload);
-            case 2605:
-                return RequestLoadPublicKey.fromBytes(payload);
-            case 2603:
-                return RequestLoadEphermalPublicKeys.fromBytes(payload);
-            case 2576:
-                return RequestUploadDeviceKeys.fromBytes(payload);
-            case 2577:
-                return RequestGetUserDevices.fromBytes(payload);
-            case 2579:
-                return RequestDownloadUserKeys.fromBytes(payload);
+            case 2601: return RequestLoadPublicKeyGroups.fromBytes(payload);
+            case 2605: return RequestLoadPublicKey.fromBytes(payload);
+            case 2603: return RequestLoadPrePublicKeys.fromBytes(payload);
+            case 2609: return RequestCreateNewKeyGroup.fromBytes(payload);
+            case 2611: return RequestDeleteKeyGroup.fromBytes(payload);
+            case 2613: return RequestDisconnectKeyGroup.fromBytes(payload);
+            case 2614: return RequestConnectKeyGroup.fromBytes(payload);
+            case 2612: return RequestUploadPreKey.fromBytes(payload);
+            case 2657: return RequestSendEncryptedPackage.fromBytes(payload);
+            case 2660: return RequestUploadSharedBlob.fromBytes(payload);
+            case 2662: return RequestDownloadSharedBlob.fromBytes(payload);
             case 9: return RequestGetState.fromBytes(payload);
             case 11: return RequestGetDifference.fromBytes(payload);
+            case 2628: return RequestGetReferencedEntitites.fromBytes(payload);
             case 32: return RequestSubscribeToOnline.fromBytes(payload);
             case 33: return RequestSubscribeFromOnline.fromBytes(payload);
             case 74: return RequestSubscribeToGroupOnline.fromBytes(payload);
@@ -193,20 +185,18 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 121: return ResponseGetFileUploadUrl.fromBytes(payload);
             case 138: return ResponseCommitFileUpload.fromBytes(payload);
             case 141: return ResponseGetFileUploadPartUrl.fromBytes(payload);
-            case 2598:
-                return ResponseDoCall.fromBytes(payload);
+            case 2598: return ResponseDoCall.fromBytes(payload);
             case 135: return ResponseGetParameters.fromBytes(payload);
             case 2570: return ResponseRawRequest.fromBytes(payload);
             case 242: return ResponseLoadWallpappers.fromBytes(payload);
-            case 2602:
-                return ResponsePublicKeys.fromBytes(payload);
-            case 2604:
-                return ResponsePublicKeyGroups.fromBytes(payload);
-            case 2578:
-                return ResponseGetUserDevices.fromBytes(payload);
-            case 2580:
-                return ResponseDownloadUserKeys.fromBytes(payload);
+            case 2602: return ResponsePublicKeys.fromBytes(payload);
+            case 2604: return ResponsePublicKeyGroups.fromBytes(payload);
+            case 2610: return ResponseCreateNewKeyGroup.fromBytes(payload);
+            case 2664: return ResponseSendEncryptedPackage.fromBytes(payload);
+            case 2661: return ResponseUploadSharedBlob.fromBytes(payload);
+            case 2663: return ResponseDownloadSharedBlob.fromBytes(payload);
             case 12: return ResponseGetDifference.fromBytes(payload);
+            case 2629: return ResponseGetReferencedEntitites.fromBytes(payload);
             case 50: return ResponseVoid.fromBytes(payload);
             case 72: return ResponseSeq.fromBytes(payload);
             case 102: return ResponseSeqDate.fromBytes(payload);
@@ -217,6 +207,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 73: return FatSeqUpdate.fromBytes(payload);
             case 26: return WeakUpdate.fromBytes(payload);
             case 25: return SeqUpdateTooLong.fromBytes(payload);
+            case 2625: return CombinedUpdate.fromBytes(payload);
         }
         throw new IOException();
     }
