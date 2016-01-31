@@ -2,16 +2,16 @@ package sql.migration
 
 import java.sql.Connection
 
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.forkjoin.ThreadLocalRandom
-
 import com.typesafe.slick.testkit.util.DelegateConnection
 import org.apache.commons.codec.digest.DigestUtils
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.JdbcDataSource
+
+import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import scala.concurrent.forkjoin.ThreadLocalRandom
 
 class V20150520123900__InitGroupsBots extends JdbcMigration {
   def migrate(connection: Connection): Unit = {

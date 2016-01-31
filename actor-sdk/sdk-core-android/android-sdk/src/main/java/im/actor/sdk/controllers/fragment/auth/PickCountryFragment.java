@@ -30,7 +30,7 @@ public class PickCountryFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_country_select, null);
-
+        v.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         countriesListView = (ListView) v.findViewById(R.id.lv_countries);
         countriesListView.setDivider(new ColorDrawable(ActorSDK.sharedActor().style.getDividerColor()));
         countriesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

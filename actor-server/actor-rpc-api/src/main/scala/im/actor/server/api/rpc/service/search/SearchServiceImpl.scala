@@ -10,7 +10,8 @@ import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupExtension, GroupUtils }
 import im.actor.server.persist.contact.UserContactRepo
-import im.actor.server.persist.{ DialogRepo, GroupRepo }
+import im.actor.server.persist.GroupRepo
+import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.user.UserExtension
 
 import scala.concurrent.{ ExecutionContext, Future }

@@ -1,6 +1,9 @@
 package im.actor.util.misc
 
+import com.ibm.icu.text.Transliterator
+
 import java.nio.charset.Charset
+import java.text.Normalizer
 import java.util.regex.Pattern
 
 import scalaz._, Scalaz._
@@ -11,9 +14,15 @@ object StringUtils {
 
   private val usernamePattern = Pattern.compile("""^[0-9a-zA-Z_]{5,32}""", Pattern.UNICODE_CHARACTER_CLASS)
 
+  private val transliterator = Transliterator.getInstance("Latin; Latin-ASCII; Lower")
+
   def utfToHexString(s: String): String = { s.map(ch ⇒ f"${ch.toInt}%04X").mkString }
 
   def isAsciiString(c: CharSequence): Boolean = encoder.canEncode(c)
+
+  def toAsciiString(s: String): String = Normalizer.normalize(s, Normalizer.Form.NFD) filter (_ <= '\u007F')
+
+  def transliterate(s: String): String = transliterator.transliterate(s)
 
   def nonEmptyString(s: String): \/[NonEmptyList[String], String] = {
     val trimmed = s.trim

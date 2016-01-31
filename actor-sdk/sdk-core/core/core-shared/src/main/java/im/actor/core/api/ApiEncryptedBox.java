@@ -18,16 +18,16 @@ public class ApiEncryptedBox extends BserObject {
 
     private int senderKeyGroupId;
     private List<ApiEncyptedBoxKey> keys;
-    private List<Integer> ignoredKeyGroups;
     private String algType;
     private byte[] encPackage;
+    private List<ApiEncryptedBoxSignature> signatures;
 
-    public ApiEncryptedBox(int senderKeyGroupId, @NotNull List<ApiEncyptedBoxKey> keys, @NotNull List<Integer> ignoredKeyGroups, @NotNull String algType, @NotNull byte[] encPackage) {
+    public ApiEncryptedBox(int senderKeyGroupId, @NotNull List<ApiEncyptedBoxKey> keys, @NotNull String algType, @NotNull byte[] encPackage, @NotNull List<ApiEncryptedBoxSignature> signatures) {
         this.senderKeyGroupId = senderKeyGroupId;
         this.keys = keys;
-        this.ignoredKeyGroups = ignoredKeyGroups;
         this.algType = algType;
         this.encPackage = encPackage;
+        this.signatures = signatures;
     }
 
     public ApiEncryptedBox() {
@@ -44,11 +44,6 @@ public class ApiEncryptedBox extends BserObject {
     }
 
     @NotNull
-    public List<Integer> getIgnoredKeyGroups() {
-        return this.ignoredKeyGroups;
-    }
-
-    @NotNull
     public String getAlgType() {
         return this.algType;
     }
@@ -56,6 +51,11 @@ public class ApiEncryptedBox extends BserObject {
     @NotNull
     public byte[] getEncPackage() {
         return this.encPackage;
+    }
+
+    @NotNull
+    public List<ApiEncryptedBoxSignature> getSignatures() {
+        return this.signatures;
     }
 
     @Override
@@ -66,16 +66,22 @@ public class ApiEncryptedBox extends BserObject {
             _keys.add(new ApiEncyptedBoxKey());
         }
         this.keys = values.getRepeatedObj(1, _keys);
-        this.ignoredKeyGroups = values.getRepeatedInt(5);
         this.algType = values.getString(2);
         this.encPackage = values.getBytes(3);
+        List<ApiEncryptedBoxSignature> _signatures = new ArrayList<ApiEncryptedBoxSignature>();
+        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
+            _signatures.add(new ApiEncryptedBoxSignature());
+        }
+        this.signatures = values.getRepeatedObj(5, _signatures);
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(4, this.senderKeyGroupId);
         writer.writeRepeatedObj(1, this.keys);
-        writer.writeRepeatedInt(5, this.ignoredKeyGroups);
         if (this.algType == null) {
             throw new IOException();
         }
@@ -84,6 +90,14 @@ public class ApiEncryptedBox extends BserObject {
             throw new IOException();
         }
         writer.writeBytes(3, this.encPackage);
+        writer.writeRepeatedObj(5, this.signatures);
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
+        }
     }
 
     @Override
@@ -91,7 +105,6 @@ public class ApiEncryptedBox extends BserObject {
         String res = "struct EncryptedBox{";
         res += "senderKeyGroupId=" + this.senderKeyGroupId;
         res += ", keys=" + this.keys;
-        res += ", ignoredKeyGroups=" + this.ignoredKeyGroups;
         res += ", algType=" + this.algType;
         res += ", encPackage=" + byteArrayToString(this.encPackage);
         res += "}";

@@ -172,8 +172,8 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
 
       system.log.debug("Starting RichMessageWorker")
       RichMessageWorker.startWorker(richMessageConfig)
-      system.log.debug("Starting ReverseHooksListener")
-      ReverseHooksListener.startSingleton()
+      // system.log.debug("Starting ReverseHooksListener")
+      // ReverseHooksListener.startSingleton()
 
       system.log.debug("Starting WebhooksExtension")
       val webhooksExt = WebhooksExtension(system)

@@ -6,9 +6,6 @@ import im.actor.generator.scheme.*;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by ex3ndr on 15.11.14.
- */
 public class RequestGenerator {
     public static void generate(SchemeDefinition definition, String path) throws IOException {
         String destFolder = path + "/" + JavaConfig.PATH + "/rpc/";

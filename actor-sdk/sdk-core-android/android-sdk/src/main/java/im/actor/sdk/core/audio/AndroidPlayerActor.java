@@ -19,12 +19,12 @@ public class AndroidPlayerActor extends Actor {
     private static final int STATE_PAUSED = 2;
     private final Context context;
 
-    private int state = STATE_NONE;
+    protected int state = STATE_NONE;
 
-    private MediaPlayer mplayer;
+    protected MediaPlayer mplayer;
 
-    private String currentFileName;
-    private AudioPlayerActor.AudioPlayerCallback callback;
+    protected String currentFileName;
+    protected AudioPlayerActor.AudioPlayerCallback callback;
 
     public AndroidPlayerActor(Context context, AudioPlayerActor.AudioPlayerCallback callback) {
         this.context = context;

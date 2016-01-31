@@ -275,9 +275,11 @@ public class ChatActivity extends ActorEditTextActivity {
 
         // Mentions
         mentionsList = (ListView) findViewById(R.id.mentionsList);
+        mentionsList.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
         //Quote
         quoteContainer = (FrameLayout) findViewById(R.id.quoteContainer);
+        quoteContainer.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         quoteText = (TextView) findViewById(R.id.quote_text);
         findViewById(R.id.ib_close_quote).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -289,6 +291,7 @@ public class ChatActivity extends ActorEditTextActivity {
         });
 
         //share menu
+        findViewById(R.id.share_menu).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         shareMenu = findViewById(R.id.share_container);
         shareMenu.setOnClickListener(new View.OnClickListener() {
             @Override

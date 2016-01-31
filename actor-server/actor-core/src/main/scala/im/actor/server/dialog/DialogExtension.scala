@@ -15,8 +15,9 @@ import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogCommands._
 import im.actor.server.group.GroupExtension
 import im.actor.server.model._
+import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.persist.messaging.ReactionEventRepo
-import im.actor.server.persist.{ DialogRepo, HistoryMessageRepo }
+import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserExtension
@@ -78,10 +79,9 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   def sendMessage(peer: ApiPeer, senderUserId: Int, senderAuthSid: Int, randomId: Long, message: ApiMessage, isFat: Boolean = false): Future[SeqStateDate] =
     withValidPeer(peer.asModel, senderUserId, Future.successful(SeqStateDate())) {
-      val date = Instant.now().toEpochMilli
       val sender = Peer.privat(senderUserId)
-      val sendMessage = SendMessage(sender, peer.asModel, senderAuthSid, date, randomId, message, isFat)
-      PubSubExtension(system).publish(PeerMessage(Peer.privat(senderUserId), peer.asModel, randomId, date, message))
+      // we don't set date here, cause actual date set inside dialog processor
+      val sendMessage = SendMessage(sender, peer.asModel, senderAuthSid, date = None, randomId, message, isFat)
       (userExt.processorRegion.ref ? Envelope(sender).withSendMessage(sendMessage)).mapTo[SeqStateDate]
     }
 
@@ -91,13 +91,13 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   def writeMessage(
     peer:         ApiPeer,
     senderUserId: Int,
-    date:         DateTime,
+    date:         Instant,
     randomId:     Long,
     message:      ApiMessage
   ): Future[Unit] =
     withValidPeer(peer.asModel, senderUserId, Future.successful(())) {
       val sender = Peer.privat(senderUserId)
-      val writeMessage = WriteMessage(sender, peer.asModel, date.getMillis, randomId, message)
+      val writeMessage = WriteMessage(sender, peer.asModel, date.toEpochMilli, randomId, message)
       (userExt.processorRegion.ref ? Envelope(sender).withWriteMessage(writeMessage)).mapTo[WriteMessageAck] map (_ ⇒ ())
     }
 
@@ -228,10 +228,10 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     if (isSharedUser(historyOwner)) {
       for {
         isMember ← DBIO.from(groupExt.getMemberIds(peer.id) map { case (memberIds, _, _) ⇒ memberIds contains clientUserId })
-        result ← if (isMember) HistoryMessageRepo.getUnreadCount(historyOwner, peer, ownerLastReadAt) else DBIO.successful(0)
+        result ← if (isMember) HistoryMessageRepo.getUnreadCount(historyOwner, clientUserId, peer, ownerLastReadAt) else DBIO.successful(0)
       } yield result
     } else {
-      HistoryMessageRepo.getUnreadCount(historyOwner, peer, ownerLastReadAt)
+      HistoryMessageRepo.getUnreadCount(historyOwner, clientUserId, peer, ownerLastReadAt)
     }
   }
 
@@ -242,9 +242,9 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       DialogRepo
         .findNotArchivedSortByLastMessageData(userId, None, Int.MaxValue)
         .map(_ filterNot (dialogWithSelf(userId, _)))
-        .flatMap { Dialogs ⇒
+        .flatMap { dialogs ⇒
           val (groupModels, privateModels, favouriteModels) =
-            Dialogs.foldLeft((Vector.empty[Dialog], Vector.empty[Dialog], Vector.empty[Dialog])) {
+            dialogs.foldLeft((Vector.empty[Dialog], Vector.empty[Dialog], Vector.empty[Dialog])) {
               case ((groupModels, privateModels, favouriteModels), dialog) ⇒
                 if (dialog.isFavourite)
                   (groupModels, privateModels, favouriteModels :+ dialog)
@@ -290,18 +290,16 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }).toSeq
   }
 
-  private def getDialogShort(Dialog: Dialog)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] = {
-    HistoryUtils.withHistoryOwner(Dialog.peer, Dialog.userId) { historyOwner ⇒
-      for {
-        messageOpt ← HistoryMessageRepo.findNewest(historyOwner, Dialog.peer) map (_.map(_.ofUser(Dialog.userId)))
-        unreadCount ← getUnreadCount(Dialog.userId, historyOwner, Dialog.peer, Dialog.ownerLastReadAt)
-      } yield ApiDialogShort(
-        peer = ApiPeer(ApiPeerType(Dialog.peer.typ.value), Dialog.peer.id),
-        counter = unreadCount,
-        date = messageOpt.map(_.date.getMillis).getOrElse(0)
-      )
-    }
-  }
+  private def getDialogShort(dialog: Dialog)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] =
+    for {
+      historyOwner ← DBIO.from(HistoryUtils.getHistoryOwner(dialog.peer, dialog.userId))
+      messageOpt ← HistoryMessageRepo.findNewest(historyOwner, dialog.peer) map (_.map(_.ofUser(dialog.userId)))
+      unreadCount ← getUnreadCount(dialog.userId, historyOwner, dialog.peer, dialog.ownerLastReadAt)
+    } yield ApiDialogShort(
+      peer = ApiPeer(ApiPeerType(dialog.peer.typ.value), dialog.peer.id),
+      counter = unreadCount,
+      date = messageOpt.map(_.date.getMillis).getOrElse(0)
+    )
 
   private def processorRegion(peer: Peer): ActorRef = peer.typ match {
     case PeerType.Private ⇒

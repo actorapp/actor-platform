@@ -41,6 +41,7 @@ object UserExtension extends ExtensionId[UserExtensionImpl] with ExtensionIdProv
 
 final class UserHooksControl(implicit ec: ExecutionContext) extends HooksControl {
   val afterAuth = new HooksStorage3[UserHook.AfterAuthHook, Unit, Int, Int, String]
+  val afterCreate = new HooksStorage1[UserHook.AfterCreateHook, Unit, Int]
   val beforeEmailContactRegistered = new HooksStorage2[UserHook.BeforeEmailContactRegisteredHook, Unit, Int, String]
 }
 
@@ -48,6 +49,10 @@ object UserHook {
 
   abstract class AfterAuthHook(system: ActorSystem) extends Hook3[Unit, Int, Int, String] {
     override def run(userId: Int, appId: Int, deviceTitle: String): Future[Unit]
+  }
+
+  abstract class AfterCreateHook(system: ActorSystem) extends Hook1[Unit, Int] {
+    override def run(userId: Int): Future[Unit]
   }
 
   abstract class BeforeEmailContactRegisteredHook(system: ActorSystem) extends Hook2[Unit, Int, String] {

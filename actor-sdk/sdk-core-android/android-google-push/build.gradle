@@ -46,7 +46,7 @@ dependencies {
     //compile 'im.actor:android-sdk:0.1.30'
     compile project(':actor-sdk:sdk-core-android:android-sdk')
 
-    compile 'com.google.android.gms:play-services-gcm:8.1.0'
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
 }
 
 //

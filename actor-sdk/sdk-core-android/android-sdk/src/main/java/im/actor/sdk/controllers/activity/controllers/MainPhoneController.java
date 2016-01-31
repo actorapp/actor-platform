@@ -135,8 +135,10 @@ public class MainPhoneController extends MainBaseController {
         syncInProgressView = findViewById(R.id.syncInProgress);
         ((TextView) syncInProgressView.findViewById(R.id.wait_text)).setTextColor(style.getTextSecondaryColor());
         ((TextView) syncInProgressView.findViewById(R.id.sync_text)).setTextColor(style.getMainColor());
-        syncInProgressView.findViewById(R.id.sync_background).setBackgroundColor(style.getMainColor());
+        syncInProgressView.findViewById(R.id.sync_background).setBackgroundColor(style.getMainBackgroundColor());
+        syncInProgressView.findViewById(R.id.syncInProgress).setBackgroundColor(style.getMainBackgroundColor());
         emptyContactsView = findViewById(R.id.emptyContacts);
+        findViewById(R.id.emptyContactsFrame).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         ((TextView) emptyContactsView.findViewById(R.id.no_contacts)).setTextColor(style.getTextSecondaryColor());
         ((TextView) emptyContactsView.findViewById(R.id.no_contacts)).setText(getResources().getString(R.string.main_empty_invite_hint).replace("{appName}", ActorSDK.sharedActor().getAppName()));
         ((TextView) emptyContactsView.findViewById(R.id.add_contact_manually_text)).setTextColor(style.getTextSecondaryColor());
@@ -516,7 +518,7 @@ public class MainPhoneController extends MainBaseController {
 
         View header = new View(getActivity());
         header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(0)));
-        header.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_main));
+        header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         recyclerAdapter.addHeaderView(header);
 
         searchList.setAdapter(recyclerAdapter);

@@ -1,12 +1,11 @@
 package im.actor.server.api.rpc.service.messaging
 
 import akka.actor._
-import akka.cluster.pubsub.DistributedPubSub
 import akka.cluster.singleton.{ ClusterSingletonManagerSettings, ClusterSingletonManager }
 import akka.event.Logging
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
-import im.actor.server.persist
+import im.actor.server.persist.GroupRepo
 import im.actor.util.log.AnyRefLogSource
 
 import scala.concurrent.duration._
@@ -69,7 +68,7 @@ private[messaging] final class ReverseHooksListener extends Actor with ActorLogg
   private def fetchGroups(): Unit = {
     log.debug("Fetching groups to subscribe to reverse hooks")
 
-    for (groupIds ← db.run(persist.GroupRepo.findAllIds)) yield {
+    for (groupIds ← db.run(GroupRepo.findAllIds)) yield {
       log.debug("Group ids to subscribe to reverse hooks {}", groupIds)
       self ! SubscribeGroups(groupIds.toSet)
     }

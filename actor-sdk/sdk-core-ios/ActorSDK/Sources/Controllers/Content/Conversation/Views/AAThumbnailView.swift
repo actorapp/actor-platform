@@ -51,10 +51,9 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     func open() {
         
         dispatchBackground { () -> Void in
-            self.imageManager = PHCachingImageManager()
             
             if PHPhotoLibrary.authorizationStatus() == .Authorized {
-                
+                self.imageManager = PHCachingImageManager()
                 self.fetchAssets()
                 dispatch_async(dispatch_get_main_queue()) {
                     self.collectionView.reloadData()

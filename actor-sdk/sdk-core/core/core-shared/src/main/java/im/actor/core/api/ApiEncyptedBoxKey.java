@@ -56,6 +56,9 @@ public class ApiEncyptedBoxKey extends BserObject {
         this.keyGroupId = values.getInt(2);
         this.algType = values.getString(3);
         this.encryptedKey = values.getBytes(4);
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
@@ -70,6 +73,13 @@ public class ApiEncyptedBoxKey extends BserObject {
             throw new IOException();
         }
         writer.writeBytes(4, this.encryptedKey);
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
+        }
     }
 
     @Override
