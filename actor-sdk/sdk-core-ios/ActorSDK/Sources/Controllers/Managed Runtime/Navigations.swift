@@ -15,7 +15,7 @@ public extension UIViewController {
         } else {
             
             if controller.isKindOfClass(ConversationViewController.self) {
-                navigationController?.view.layer.speed = 1.5
+                //navigationController?.view.layer.speed = 1.5
             }
             
             controller.hidesBottomBarWhenPushed = true
