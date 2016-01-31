@@ -54,28 +54,27 @@ public class UpdatesParser extends BaseParser<Update> {
             case 161: return UpdateOwnStickersChanged.fromBytes(payload);
             case 164: return UpdateStickerCollectionsChanged.fromBytes(payload);
             case 165: return UpdateOwnTeamsChanged.fromBytes(payload);
+            case 166: return UpdatePauseNotifications.fromBytes(payload);
+            case 167: return UpdateRestoreNotifications.fromBytes(payload);
             case 6: return UpdateTyping.fromBytes(payload);
             case 81: return UpdateTypingStop.fromBytes(payload);
             case 7: return UpdateUserOnline.fromBytes(payload);
             case 8: return UpdateUserOffline.fromBytes(payload);
             case 9: return UpdateUserLastSeen.fromBytes(payload);
             case 33: return UpdateGroupOnline.fromBytes(payload);
-            case 52:
-                return UpdateIncomingCall.fromBytes(payload);
-            case 53:
-                return UpdateCallEnded.fromBytes(payload);
-            case 56:
-                return UpdateCallSignal.fromBytes(payload);
-            case 57:
-                return UpdateCallInProgress.fromBytes(payload);
+            case 52: return UpdateIncomingCall.fromBytes(payload);
+            case 53: return UpdateCallEnded.fromBytes(payload);
+            case 56: return UpdateCallSignal.fromBytes(payload);
+            case 57: return UpdateCallInProgress.fromBytes(payload);
             case 131: return UpdateParameterChanged.fromBytes(payload);
-            case 103:
-                return UpdatePublicKeyGroupChanged.fromBytes(payload);
-            case 104:
-                return UpdatePublicKeyGroupAdded.fromBytes(payload);
-            case 105:
-                return UpdatePublicKeyGroupRemoved.fromBytes(payload);
+            case 103: return UpdatePublicKeyGroupChanged.fromBytes(payload);
+            case 112: return UpdateKeysAdded.fromBytes(payload);
+            case 113: return UpdateKeysRemoved.fromBytes(payload);
+            case 104: return UpdatePublicKeyGroupAdded.fromBytes(payload);
+            case 105: return UpdatePublicKeyGroupRemoved.fromBytes(payload);
+            case 177: return UpdateEncryptedPackage.fromBytes(payload);
             case 80: return UpdateRawUpdate.fromBytes(payload);
+            case 85: return UpdateEmptyUpdate.fromBytes(payload);
             case 215: return UpdateCountersChanged.fromBytes(payload);
             case 42: return UpdateConfig.fromBytes(payload);
         }
