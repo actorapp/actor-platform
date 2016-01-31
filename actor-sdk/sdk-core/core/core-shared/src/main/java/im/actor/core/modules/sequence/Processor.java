@@ -1,4 +1,4 @@
-package im.actor.core.modules.api;
+package im.actor.core.modules.sequence;
 
 public interface Processor {
     boolean process(Object update);

@@ -1,4 +1,4 @@
-package im.actor.core.modules.api;
+package im.actor.core.modules.sequence;
 
 import org.jetbrains.annotations.Nullable;
 
