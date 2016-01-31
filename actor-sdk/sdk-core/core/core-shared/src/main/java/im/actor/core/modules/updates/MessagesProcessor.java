@@ -57,13 +57,6 @@ public class MessagesProcessor extends AbsModule {
         ArrayList<Message> nMessages = new ArrayList<Message>();
         for (UpdateMessage u : messages) {
 
-            if (u.getMessage() instanceof ApiEncryptedMessage) {
-                // TODO: Proper decrypt message
-                context().getEncryption().getMessageEncryptor().send(new EncryptedMsgActor.InMessage(peer,
-                        u.getDate(), u.getSenderUid(), u.getRid(), (ApiEncryptedMessage) u.getMessage()));
-                continue;
-            }
-
             AbsContent msgContent;
             try {
                 msgContent = AbsContent.fromMessage(u.getMessage());
@@ -110,12 +103,6 @@ public class MessagesProcessor extends AbsModule {
                           ApiMessage content) {
 
         Peer peer = convert(_peer);
-
-        if (content instanceof ApiEncryptedMessage) {
-            // TODO: Proper decrypt message
-            context().getEncryption().getMessageEncryptor().send(new EncryptedMsgActor.InMessage(peer,
-                    date, senderUid, rid, (ApiEncryptedMessage) content));
-        }
 
         AbsContent msgContent;
         try {
