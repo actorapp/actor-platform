@@ -9,14 +9,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
-import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiJsonMessage;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
-import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestClearChat;
 import im.actor.core.api.rpc.RequestDeleteChat;
@@ -31,7 +28,6 @@ import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
-import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateMessageContentChanged;
 import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.entity.Dialog;
@@ -46,9 +42,9 @@ import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.events.AppVisibleChanged;
-import im.actor.core.modules.events.PeerChatClosed;
-import im.actor.core.modules.events.PeerChatOpened;
+import im.actor.core.events.AppVisibleChanged;
+import im.actor.core.events.PeerChatClosed;
+import im.actor.core.events.PeerChatOpened;
 import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.core.modules.internal.messages.ConversationHistoryActor;
 import im.actor.core.modules.internal.messages.CursorReaderActor;
@@ -58,12 +54,9 @@ import im.actor.core.modules.internal.messages.DialogsHistoryActor;
 import im.actor.core.modules.internal.messages.GroupedDialogsActor;
 import im.actor.core.modules.internal.messages.MessageDeleteActor;
 import im.actor.core.modules.internal.messages.MessageShownActor;
-import im.actor.core.modules.internal.messages.MessageShownFilter;
 import im.actor.core.modules.internal.messages.OwnReadActor;
 import im.actor.core.modules.internal.messages.SenderActor;
-import im.actor.core.modules.internal.messages.entity.MessageShownEvent;
 import im.actor.core.modules.updates.internal.ChangeContent;
-import im.actor.core.modules.updates.internal.InternalUpdate;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
@@ -76,11 +69,9 @@ import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
-import im.actor.runtime.actors.tools.BounceFilterActor;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.files.FileSystemReference;
-import im.actor.runtime.json.JSONObject;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.SyncKeyValue;
@@ -230,6 +221,9 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                     }
                 }), "actor/conv_" + peer.getPeerType() + "_" + peer.getPeerId() + "/history"));
             }
+        }
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            context().getEncryption().getEncryptedChatManager(peer.getPeerId());
         }
     }
 

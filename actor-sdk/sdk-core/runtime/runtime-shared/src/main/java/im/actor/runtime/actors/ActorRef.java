@@ -81,6 +81,25 @@ public class ActorRef {
     }
 
     /**
+     * Sending message before all other messages
+     *
+     * @param message message
+     * @param sender  sender
+     */
+    public void sendFirst(Object message, ActorRef sender) {
+        dispatcher.sendMessageFirst(endpoint, message, sender);
+    }
+
+    /**
+     * Sending message before all other messages
+     *
+     * @param message message
+     */
+    public void sendFirst(Object message) {
+        dispatcher.sendMessageFirst(endpoint, message, null);
+    }
+
+    /**
      * Send message once
      *
      * @param message message

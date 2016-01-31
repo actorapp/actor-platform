@@ -12,7 +12,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.file.DownloadManager;
 import im.actor.core.modules.internal.file.UploadManager;
 import im.actor.core.modules.internal.file.entity.Downloaded;
-import im.actor.core.modules.utils.BaseKeyValueEngine;
+import im.actor.core.util.BaseKeyValueEngine;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.runtime.Storage;

@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import im.actor.core.api.ApiDocumentExVoice;
@@ -52,14 +51,16 @@ import im.actor.core.entity.content.VideoContent;
 import im.actor.core.entity.content.VoiceContent;
 import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.EncryptedMsgActor;
 import im.actor.core.modules.internal.file.UploadManager;
 import im.actor.core.modules.internal.messages.entity.PendingMessage;
 import im.actor.core.modules.internal.messages.entity.PendingMessagesStorage;
-import im.actor.core.modules.utils.ModuleActor;
-import im.actor.core.modules.utils.RandomUtils;
+import im.actor.core.util.ModuleActor;
+import im.actor.core.util.RandomUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Storage;
+import im.actor.runtime.actors.ask.AskCallback;
 
 public class SenderActor extends ModuleActor {
 
@@ -369,11 +370,6 @@ public class SenderActor extends ModuleActor {
     // Sending content
 
     private void performSendContent(final Peer peer, final long rid, AbsContent content) {
-        final ApiOutPeer outPeer = buidOutPeer(peer);
-        final ApiPeer apiPeer = buildApiPeer(peer);
-        if (outPeer == null || apiPeer == null) {
-            return;
-        }
 
         ApiMessage message;
         if (content instanceof TextContent) {
@@ -424,6 +420,15 @@ public class SenderActor extends ModuleActor {
             return;
         }
 
+        performSendApiContent(peer, rid, message);
+    }
+
+    private void performSendApiContent(final Peer peer, final long rid, ApiMessage message) {
+        final ApiOutPeer outPeer = buidOutPeer(peer);
+        final ApiPeer apiPeer = buildApiPeer(peer);
+        if (outPeer == null || apiPeer == null) {
+            return;
+        }
         request(new RequestSendMessage(outPeer, rid, message),
                 new RpcCallback<ResponseSeqDate>() {
                     @Override
@@ -902,5 +907,5 @@ public class SenderActor extends ModuleActor {
     }
 
 
-    //endregion
+//endregion
 }

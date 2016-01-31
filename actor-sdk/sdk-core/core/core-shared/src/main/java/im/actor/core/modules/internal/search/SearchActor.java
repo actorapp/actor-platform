@@ -12,7 +12,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.runtime.storage.ListEngine;
 
 public class SearchActor extends ModuleActor {

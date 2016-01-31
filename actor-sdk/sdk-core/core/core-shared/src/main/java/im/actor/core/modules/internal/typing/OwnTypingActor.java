@@ -10,7 +10,7 @@ import im.actor.core.api.rpc.RequestStopTyping;
 import im.actor.core.api.rpc.RequestTyping;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;

@@ -22,7 +22,7 @@ public class ByteStrings {
     }
 
     public static byte[] intToBytes(int v) {
-        byte[] data = new byte[8];
+        byte[] data = new byte[4];
         int offset = 0;
         data[offset++] = (byte) ((v >> 24) & 0xFF);
         data[offset++] = (byte) ((v >> 16) & 0xFF);
@@ -95,5 +95,37 @@ public class ByteStrings {
         for (int i = 0; i < length; i++) {
             dest[destOffset + i] = src[srcOffset + i];
         }
+    }
+
+    public static boolean isEquals(byte[] a, byte[] b) {
+        if (a.length != b.length) {
+            return false;
+        }
+        // To avoid timing attacks
+        int result = 0;
+        for (int i = 0; i < a.length; i++) {
+            result |= a[i] ^ b[i];
+        }
+        return result == 0;
+    }
+
+
+    public static int compare(byte[] a, byte[] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Arguments can't be null");
+        }
+        if (a.length > b.length) {
+            return 1;
+        }
+        for (int i = 0; i < a.length; i++) {
+            int ai = a[i] & 0xFF;
+            int bi = b[i] & 0xFF;
+            if (ai > bi) {
+                return 1;
+            } else if (ai < bi) {
+                return -1;
+            }
+        }
+        return 0;
     }
 }
