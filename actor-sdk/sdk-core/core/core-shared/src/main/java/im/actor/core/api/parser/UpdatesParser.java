@@ -54,6 +54,8 @@ public class UpdatesParser extends BaseParser<Update> {
             case 161: return UpdateOwnStickersChanged.fromBytes(payload);
             case 164: return UpdateStickerCollectionsChanged.fromBytes(payload);
             case 165: return UpdateOwnTeamsChanged.fromBytes(payload);
+            case 166: return UpdatePauseNotifications.fromBytes(payload);
+            case 167: return UpdateRestoreNotifications.fromBytes(payload);
             case 6: return UpdateTyping.fromBytes(payload);
             case 81: return UpdateTypingStop.fromBytes(payload);
             case 7: return UpdateUserOnline.fromBytes(payload);
@@ -70,6 +72,7 @@ public class UpdatesParser extends BaseParser<Update> {
             case 113: return UpdateKeysRemoved.fromBytes(payload);
             case 104: return UpdatePublicKeyGroupAdded.fromBytes(payload);
             case 105: return UpdatePublicKeyGroupRemoved.fromBytes(payload);
+            case 177: return UpdateEncryptedPackage.fromBytes(payload);
             case 80: return UpdateRawUpdate.fromBytes(payload);
             case 85: return UpdateEmptyUpdate.fromBytes(payload);
             case 215: return UpdateCountersChanged.fromBytes(payload);

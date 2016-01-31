@@ -17,7 +17,7 @@ trait ProductImplicits {
    *
    * @param product case class or case object
    */
-  implicit class Foo(product: Product) {
+  implicit class Product2ApiValue(product: Product) {
     def asApiMap: ApiMapValue = {
       //case object or empty case class
       if (product.productArity == 0) {

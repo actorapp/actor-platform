@@ -37,7 +37,7 @@ public class SignUpFragment extends BaseAuthFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_sign_up, container, false);
-
+        v.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         if (savedInstanceState != null) {
             avatarPath = savedInstanceState.getString("avatarPath", null);
         }

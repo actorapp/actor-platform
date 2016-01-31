@@ -54,7 +54,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
     protected View onCreateContactsView(int layoutId, LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View res = inflate(inflater, container, layoutId, messenger().buildContactsDisplayList());
-
+        res.findViewById(R.id.collection).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
         emptyView = res.findViewById(R.id.emptyCollection);
         if (emptyView != null) {
             emptyView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());

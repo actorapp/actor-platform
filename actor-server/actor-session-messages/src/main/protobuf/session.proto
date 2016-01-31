@@ -23,6 +23,7 @@ message SessionEnvelope {
         SubscribeToSeq subscribe_to_seq = 9;
         SubscribeToWeak subscribe_to_weak = 10;
         UnsubscribeFromWeak unsubscribe_from_weak = 11;
+        GetUpdateOptimizations get_update_optimizations = 12;
     }
 }
 
@@ -63,6 +64,14 @@ message SubscribeFromGroupOnline {
 
 message SubscribeToSeq {
     option (scalapb.message).extends = "im.actor.server.session.SubscribeCommand";
+    repeated int32 optimizations = 1;
+}
+
+message GetUpdateOptimizations {}
+
+message GetUpdateOptimizationsAck {
+    option (scalapb.message).extends = "im.actor.server.session.SessionResponse";
+    repeated int32 optimizations = 1;
 }
 
 message SubscribeToWeak {

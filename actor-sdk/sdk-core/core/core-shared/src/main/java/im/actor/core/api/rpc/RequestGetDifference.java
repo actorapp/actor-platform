@@ -24,10 +24,12 @@ public class RequestGetDifference extends Request<ResponseGetDifference> {
 
     private int seq;
     private byte[] state;
+    private List<ApiUpdateOptimization> optimizations;
 
-    public RequestGetDifference(int seq, @NotNull byte[] state) {
+    public RequestGetDifference(int seq, @NotNull byte[] state, @NotNull List<ApiUpdateOptimization> optimizations) {
         this.seq = seq;
         this.state = state;
+        this.optimizations = optimizations;
     }
 
     public RequestGetDifference() {
@@ -43,10 +45,19 @@ public class RequestGetDifference extends Request<ResponseGetDifference> {
         return this.state;
     }
 
+    @NotNull
+    public List<ApiUpdateOptimization> getOptimizations() {
+        return this.optimizations;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.seq = values.getInt(1);
         this.state = values.getBytes(2);
+        this.optimizations = new ArrayList<ApiUpdateOptimization>();
+        for (int b : values.getRepeatedInt(3)) {
+            optimizations.add(ApiUpdateOptimization.parse(b));
+        }
     }
 
     @Override
@@ -56,6 +67,9 @@ public class RequestGetDifference extends Request<ResponseGetDifference> {
             throw new IOException();
         }
         writer.writeBytes(2, this.state);
+        for (ApiUpdateOptimization i : this.optimizations) {
+            writer.writeInt(3, i.getValue());
+        }
     }
 
     @Override
@@ -63,6 +77,7 @@ public class RequestGetDifference extends Request<ResponseGetDifference> {
         String res = "rpc GetDifference{";
         res += "seq=" + this.seq;
         res += ", state=" + byteArrayToStringCompact(this.state);
+        res += ", optimizations=" + this.optimizations;
         res += "}";
         return res;
     }

@@ -9,6 +9,8 @@ import im.actor.api.rpc.{ Request, RpcRequest, RpcResult }
 import im.actor.server
 import im.actor.server._
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
+import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
+import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiExtension, RpcResultCodec }
 import im.actor.server.db.DbExtension
@@ -59,9 +61,11 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   protected implicit val authService = new AuthServiceImpl(new DummyCodeActivation)
   protected val sequenceConfig = SequenceServiceConfig.load().toOption.get
   protected lazy val sequenceService = new SequenceServiceImpl(sequenceConfig)
+  protected lazy val messagingService = MessagingServiceImpl()
+  protected lazy val contactsService = new ContactsServiceImpl()
 
   override def beforeAll = {
-    RpcApiExtension(system).register(Seq(authService, sequenceService))
+    RpcApiExtension(system).register(Seq(authService, sequenceService, messagingService, contactsService))
   }
 
   protected def createAuthId(): Long = {

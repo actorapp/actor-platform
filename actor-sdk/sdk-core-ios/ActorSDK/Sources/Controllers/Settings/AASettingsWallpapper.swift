@@ -4,7 +4,7 @@
 
 import Foundation
 
-class AASettingsWallpapper: AACollectionViewController, UICollectionViewDelegateFlowLayout {
+public class AASettingsWallpapper: AACollectionViewController, UICollectionViewDelegateFlowLayout {
     
     let padding: CGFloat = 8
     
@@ -19,21 +19,21 @@ class AASettingsWallpapper: AACollectionViewController, UICollectionViewDelegate
         view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 100
     }
     
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    override public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let res = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! AAWallpapperPreviewCell
         res.bind(indexPath.item % 3)
         return res
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
         let w = (collectionView.width  - 4 * padding) / 3
         let h = w * (UIScreen.mainScreen().bounds.height / UIScreen.mainScreen().bounds.width)
@@ -41,11 +41,11 @@ class AASettingsWallpapper: AACollectionViewController, UICollectionViewDelegate
         return CGSize(width: w, height: h)
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
+    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
         return padding
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
+    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
         return padding
     }
 }

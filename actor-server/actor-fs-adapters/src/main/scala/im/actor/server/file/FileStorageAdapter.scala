@@ -2,8 +2,9 @@ package im.actor.server.file
 
 import java.io.File
 
-import im.actor.server.model
+import im.actor.server.model.{ File ⇒ FileModel }
 import im.actor.server.db.ActorPostgresDriver.api._
+import im.actor.util.misc.StringUtils.{ isAsciiString, transliterate, toAsciiString }
 
 import scala.concurrent._, duration._
 
@@ -14,7 +15,11 @@ object FileStorageAdapter {
 trait FileStorageAdapter extends UploadActions with DownloadActions with UploadKeyParsing
 
 final case class UnsafeFileName(fileName: String) {
-  lazy val safe: String = new File(fileName.replace("\u0000", "")).toPath.normalize().getFileName.toString
+  lazy val safe: String = {
+    val noWhitespace = fileName.replace("\u0000", "").replaceAll("\\s+", "_")
+    val validName = if (isAsciiString(noWhitespace)) noWhitespace else toAsciiString(transliterate(noWhitespace))
+    new File(validName).toPath.normalize().getFileName.toString
+  }
 }
 
 private[file] trait UploadActions {
@@ -35,7 +40,7 @@ private[file] trait UploadKeyParsing {
 }
 
 private[file] trait DownloadActions {
-  def getFileDownloadUrl(file: model.File, accessHash: Long): Future[Option[String]]
+  def getFileDownloadUrl(file: FileModel, accessHash: Long): Future[Option[String]]
 
   def downloadFile(id: Long): DBIO[Option[Array[Byte]]]
 

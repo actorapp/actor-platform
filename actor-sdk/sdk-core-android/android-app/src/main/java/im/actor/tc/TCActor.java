@@ -30,8 +30,8 @@ public class TCActor extends Actor {
     private String url;
 
     public TCActor(String url) {
-        this.reidMap = new HashMap<>();
-        this.peerMap = new HashMap<>();
+        this.reidMap = new HashMap<Integer, HashSet<Long>>();
+        this.peerMap = new HashMap<Integer, Peer>();
         this.url = url;
     }
 
@@ -55,7 +55,7 @@ public class TCActor extends Actor {
         if (reidMap.get(id) != null) {
             reidMap.get(id).add(rid);
         } else {
-            HashSet<Long> rids = new HashSet<>();
+            HashSet<Long> rids = new HashSet<Long>();
             rids.add(rid);
             reidMap.put(id, rids);
         }

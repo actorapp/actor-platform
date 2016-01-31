@@ -15,7 +15,7 @@ object RpcApiService {
   final case class HandleRpcRequest(messageId: Long, requestBytes: BitVector, clientData: ClientData)
 
   @SerialVersionUID(1L)
-  final case class RpcResponse(messageId: Long, responseBytes: BitVector)
+  final case class RpcResponse(messageId: Long, result: RpcResult)
 
   @SerialVersionUID(1L)
   private[rpc] case object RefreshChain
@@ -66,7 +66,7 @@ private[rpc] final class RpcApiService(services: Seq[Service]) extends Actor wit
                   log.error(e, "Failed to handle messageId: {} rpcRequest: {}", messageId, rpcRequest)
                   RpcInternalError(true, DefaultErrorDelay)
               }
-              .map(result ⇒ RpcResponse(messageId, RpcResultCodec.encode(result).require))
+              .map(result ⇒ RpcResponse(messageId, result))
               .pipeTo(replyTo)
           case _ ⇒
             Future.successful(CommonErrors.UnsupportedRequest)
@@ -74,7 +74,7 @@ private[rpc] final class RpcApiService(services: Seq[Service]) extends Actor wit
       } catch {
         case e: Exception ⇒
           log.error(e, "Failure in RpcApiService while handling messageId: {}", messageId)
-          replyTo ! RpcResponse(messageId, RpcResultCodec.encode(RpcInternalError(true, DefaultErrorDelay)).require) // TODO: configurable delay
+          replyTo ! RpcResponse(messageId, RpcInternalError(true, DefaultErrorDelay)) // TODO: configurable delay
         case e: Throwable ⇒
           log.error(e, "Failed to handle {}", msg)
       }

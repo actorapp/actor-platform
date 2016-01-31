@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.util.KeyboardHelper;
@@ -62,10 +63,14 @@ public abstract class ActorEditTextActivity extends BaseActivity {
         // Setting fragment
         setFragment(savedInstanceState);
 
+        ActorStyle style = ActorSDK.sharedActor().style;
+        // Message container
+        FrameLayout messageContainer = (FrameLayout) findViewById(R.id.fl_send_panel);
+        messageContainer.setBackgroundColor(style.getMainBackgroundColor());
         // Message Body
         messageEditText = (EditText) findViewById(R.id.et_message);
-        messageEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-        messageEditText.setHintTextColor(ActorSDK.sharedActor().style.getTextHintColor());
+        messageEditText.setTextColor(style.getTextPrimaryColor());
+        messageEditText.setHintTextColor(style.getTextHintColor());
         // messageEditText.addTextChangedListener(new TextWatcherImp());
 
         // Handling selection changed
@@ -142,7 +147,8 @@ public abstract class ActorEditTextActivity extends BaseActivity {
 
         // Kick panel
         removedFromGroup = findViewById(R.id.kickedFromChat);
-        ((TextView) removedFromGroup.findViewById(R.id.kicked_text)).setTextColor(ActorSDK.sharedActor().style.getMainColor());
+        removedFromGroup.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        ((TextView) removedFromGroup.findViewById(R.id.kicked_text)).setTextColor(style.getMainColor());
 
         // Emoji keyboard
         emojiButton = (ImageView) findViewById(R.id.ib_emoji);

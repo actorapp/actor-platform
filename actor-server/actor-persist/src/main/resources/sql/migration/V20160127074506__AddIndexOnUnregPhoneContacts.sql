@@ -1,0 +1,1 @@
+CREATE INDEX ON unregistered_phone_contacts(phone_number);

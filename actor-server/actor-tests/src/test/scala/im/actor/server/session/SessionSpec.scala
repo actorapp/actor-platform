@@ -4,10 +4,11 @@ import akka.testkit.TestProbe
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.codecs._
-import im.actor.api.rpc.contacts.UpdateContactRegistered
+import im.actor.api.rpc.contacts.{ RequestGetContacts, UpdateContactRegistered }
+import im.actor.api.rpc.messaging.{ ResponseLoadDialogs, RequestLoadDialogs }
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.ApiUserOutPeer
-import im.actor.api.rpc.sequence.{ RequestSubscribeToOnline, RequestGetState }
+import im.actor.api.rpc.sequence.{ RequestGetDifference, RequestSubscribeToOnline, RequestGetState }
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.weak.UpdateUserOffline
 import im.actor.api.rpc.{ AuthorizedClientData, Request, RpcOk }
@@ -76,7 +77,6 @@ final class SessionSpec extends BaseSessionSpec {
 
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333334L, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
-
       expectNewSession(authId, sessionId, messageId)
       expectMessageAck(messageId)
 
@@ -118,6 +118,23 @@ final class SessionSpec extends BaseSessionSpec {
 
       expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseAuth(_, _)) ⇒
+      }
+
+      {
+        val encodedLoadDialogs = RequestCodec.encode(Request(RequestLoadDialogs(0L, 100))).require
+        val encodedGetDifference = RequestCodec.encode(Request(RequestGetDifference(0, Array(), Vector.empty))).require
+        val encodedGetContacts = RequestCodec.encode(Request(RequestGetContacts(""))).require
+        sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong, ProtoRpcRequest(encodedLoadDialogs))
+        sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong, ProtoRpcRequest(encodedGetDifference))
+        sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong, ProtoRpcRequest(encodedGetContacts))
+
+        expectMessageAck()
+        expectMessageAck()
+        expectMessageAck()
+
+        expectRpcResult(authId, sessionId)
+        expectRpcResult(authId, sessionId)
+        expectRpcResult(authId, sessionId)
       }
 
       val encodedSignOutRequest = RequestCodec.encode(Request(RequestSignOut)).require

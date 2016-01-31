@@ -12,6 +12,7 @@ import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.PeerType
+import im.actor.server.persist.dialog.DialogRepo
 
 import scala.concurrent.Future
 import scala.util.Random
@@ -83,6 +84,14 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
         whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 4", Vector.empty, None)))(_ ⇒ ())
 
         (message1Date, message2Date, message3Date)
+      }
+
+      Thread.sleep(300)
+
+      {
+        implicit val clientData = clientData1
+        // this should not affect `handleLoadHistory` for this user
+        whenReady(service.handleMessageRead(user2Peer, message3Date))(identity)
       }
 
       Thread.sleep(300)
@@ -233,7 +242,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer(PeerType.Private, user2.id)))) { dialogOpt ⇒
+          whenReady(db.run(DialogRepo.findDialog(user1.id, model.Peer(PeerType.Private, user2.id)))) { dialogOpt ⇒
             dialogOpt.get.lastReceivedAt.getMillis should be < startDate + 3000
             dialogOpt.get.lastReceivedAt.getMillis should be > startDate + 1000
           }
@@ -296,7 +305,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer(PeerType.Private, user2.id)))) { optDialog ⇒
+          whenReady(db.run(persist.dialog.DialogRepo.findDialog(user1.id, model.Peer(PeerType.Private, user2.id)))) { optDialog ⇒
             val dialog = optDialog.get
             dialog.lastReadAt.getMillis should be < startDate + 3000
             dialog.lastReadAt.getMillis should be > startDate + 1000
@@ -439,7 +448,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { dialogOpt ⇒
+          whenReady(db.run(persist.dialog.DialogRepo.findDialog(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { dialogOpt ⇒
             dialogOpt.get.lastReceivedAt.getMillis should be < startDate + 3000
             dialogOpt.get.lastReceivedAt.getMillis should be > startDate + 1000
           }
@@ -497,7 +506,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
           Thread.sleep(300)
 
-          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { dialogOpt ⇒
+          whenReady(db.run(persist.dialog.DialogRepo.findDialog(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { dialogOpt ⇒
             dialogOpt.get.lastReadAt.getMillis should be < startDate + 3000
             dialogOpt.get.lastReadAt.getMillis should be > startDate + 1000
           }

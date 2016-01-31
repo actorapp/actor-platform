@@ -33,7 +33,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/mentionsList"
-        android:background="@color/bg_main"
         android:visibility="gone">
 
         <TextView
@@ -70,7 +69,6 @@
         android:layout_height="0dp"
         android:layout_above="@+id/fl_send_panel"
         android:layout_gravity="bottom"
-        android:background="@color/bg_main"
         android:divider="@null"
         android:dividerHeight="0dp"
         android:listSelector="@drawable/selector" />
@@ -97,14 +95,13 @@
             android:src="@drawable/conv_field_shadow" />
 
         <TableLayout
-
+            android:id="@+id/share_menu"
             android:paddingTop="20dp"
             android:layout_gravity="bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:stretchColumns="*"
-            android:background="@color/bg_main">
+            android:stretchColumns="*">
 
             <TableRow>
 
@@ -241,7 +238,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:background="@color/bg_main"
         android:minHeight="56dp">
 
         <EditText
@@ -340,7 +336,6 @@
             android:id="@+id/kickedFromChat"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/bg_backyard"
             android:visibility="gone">
 
             <TextView
