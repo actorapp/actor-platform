@@ -247,7 +247,7 @@ public class EncryptedSessionActor extends ModuleActor {
         }
     }
 
-    public static class EncryptPackage extends AskMessage<EncryptedPackageRes> {
+    public static class EncryptPackage implements AskMessage<EncryptedPackageRes> {
         private byte[] data;
 
         public EncryptPackage(byte[] data) {
@@ -278,7 +278,7 @@ public class EncryptedSessionActor extends ModuleActor {
         }
     }
 
-    public static class DecryptPackage extends AskMessage<DecryptedPackage> {
+    public static class DecryptPackage implements AskMessage<DecryptedPackage> {
 
         private byte[] data;
 
