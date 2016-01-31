@@ -2,14 +2,13 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.modules.updates;
+package im.actor.core.modules.api;
 
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import im.actor.core.api.ApiDifferenceUpdate;
 import im.actor.core.api.ApiUpdateContainer;
 import im.actor.core.api.ApiUpdateOptimization;
 import im.actor.core.api.base.FatSeqUpdate;
@@ -22,12 +21,13 @@ import im.actor.core.api.rpc.RequestGetState;
 import im.actor.core.api.rpc.ResponseGetDifference;
 import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.updates.UpdateProcessor;
 import im.actor.core.modules.updates.internal.ExecuteAfter;
 import im.actor.core.modules.updates.internal.InternalUpdate;
-import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.parser.Update;
+import im.actor.core.util.ModuleActor;
 import im.actor.runtime.Log;
 
 public class SequenceActor extends ModuleActor {
