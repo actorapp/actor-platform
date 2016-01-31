@@ -256,4 +256,16 @@ object PeerHelpers {
       }
     }
   }
+
+  private def renderCheckResultF[R <: RpcResponse](checkOptsActions: Seq[Future[Option[Boolean]]], f: ⇒ Future[RpcError \/ R])(implicit ec: ExecutionContext): Future[RpcError \/ R] = {
+    Future.sequence(checkOptsActions) flatMap { checkOpts ⇒
+      if (checkOpts.contains(None)) {
+        Future.successful(Error(RpcError(404, "PEER_NOT_FOUND", "Peer not found.", false, None)))
+      } else if (checkOpts.flatten.contains(false)) {
+        Future.successful(Error(RpcError(401, "ACCESS_HASH_INVALID", "Invalid access hash.", false, None)))
+      } else {
+        f
+      }
+    }
+  }
 }

@@ -3,6 +3,7 @@ syntax = 'proto3';
 package im.actor.server.model;
 
 import "scalapb/scalapb.proto";
+import "google/protobuf/wrappers.proto";
 
 message EncryptionKey {
     int64 id = 1;
@@ -20,6 +21,7 @@ message EncryptionKeySignature {
 message EncryptionKeyGroup {
     int32 user_id = 1;
     int32 id = 2;
+    google.protobuf.Int32Value auth_sid = 7;
     repeated string supported_encryptions = 6;
     EncryptionKey identity_key = 3;
     repeated EncryptionKey keys = 4;
