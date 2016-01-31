@@ -51,7 +51,7 @@ public class DisplayList<T> {
 
         this.operationMode = operationMode;
 
-        this.executor = system().actorOf(Props.create(ListSwitcher.class, new ActorCreator<ListSwitcher>() {
+        this.executor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public ListSwitcher create() {
                 return new ListSwitcher(DisplayList.this);

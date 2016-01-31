@@ -77,7 +77,7 @@ public class AudioHolder extends MessageHolder {
         errorColor = ActorSDK.sharedActor().style.getConvStateErrorColor();
 
         if (audioActor == null) {
-            audioActor = ActorSystem.system().actorOf(Props.create(AudioPlayerActor.class, new ActorCreator<AudioPlayerActor>() {
+            audioActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
                 @Override
                 public AudioPlayerActor create() {
                     return new AudioPlayerActor(context);

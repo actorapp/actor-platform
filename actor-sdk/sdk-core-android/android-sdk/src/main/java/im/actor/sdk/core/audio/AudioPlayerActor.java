@@ -28,13 +28,13 @@ public class AudioPlayerActor extends Actor {
 
     @Override
     public void preStart() {
-        androidPlayerActor = ActorSystem.system().actorOf(Props.create(AndroidPlayerActor.class, new ActorCreator<AndroidPlayerActor>() {
+        androidPlayerActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
             @Override
             public AndroidPlayerActor create() {
                 return new AndroidPlayerActor(context, callback);
             }
         }), "actor/android_player");
-        opusPlayerActor = ActorSystem.system().actorOf(Props.create(OpusPlayerActor.class, new ActorCreator<OpusPlayerActor>() {
+        opusPlayerActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
             @Override
             public OpusPlayerActor create() {
                 return new OpusPlayerActor(callback);

@@ -20,7 +20,7 @@ public class PushesModule extends AbsModule {
     public PushesModule(ModuleContext modules) {
         super(modules);
 
-        pushRegisterActor = system().actorOf(Props.create(PushRegisterActor.class, new ActorCreator<PushRegisterActor>() {
+        pushRegisterActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public PushRegisterActor create() {
                 return new PushRegisterActor(context());

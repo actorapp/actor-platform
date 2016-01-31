@@ -29,21 +29,21 @@ public class EncryptionModule extends AbsModule {
     }
 
     public void run() {
-        keyManager = system().actorOf(Props.create(KeyManagerActor.class, new ActorCreator<KeyManagerActor>() {
+        keyManager = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public KeyManagerActor create() {
                 return new KeyManagerActor(context());
             }
         }), "encryption/keys");
         keyManagerInt = new KeyManagerInt(keyManager);
-        sessionManager = system().actorOf(Props.create(SessionManagerActor.class, new ActorCreator<SessionManagerActor>() {
+        sessionManager = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public SessionManagerActor create() {
                 return new SessionManagerActor(context());
             }
         }), "encryption/sessions");
         sessionManagerInt = new SessionManagerInt(sessionManager);
-        messageEncryptor = system().actorOf(Props.create(EncryptedMsgActor.class, new ActorCreator<EncryptedMsgActor>() {
+        messageEncryptor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public EncryptedMsgActor create() {
                 return new EncryptedMsgActor(context());
@@ -70,7 +70,7 @@ public class EncryptionModule extends AbsModule {
     public ActorRef getEncryptedChatManager(final int uid) {
         synchronized (encryptedStates) {
             if (!encryptedStates.containsKey(uid)) {
-                encryptedStates.put(uid, system().actorOf(Props.create(EncryptedPeerActor.class, new ActorCreator<EncryptedPeerActor>() {
+                encryptedStates.put(uid, system().actorOf(Props.create(new ActorCreator() {
                     @Override
                     public EncryptedPeerActor create() {
                         return new EncryptedPeerActor(uid, context());

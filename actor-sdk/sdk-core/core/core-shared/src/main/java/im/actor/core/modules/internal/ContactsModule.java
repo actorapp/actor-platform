@@ -51,13 +51,13 @@ public class ContactsModule extends AbsModule {
     }
 
     public void run() {
-        bookImportActor = system().actorOf(Props.create(BookImportActor.class, new ActorCreator<BookImportActor>() {
+        bookImportActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public BookImportActor create() {
                 return new BookImportActor(context());
             }
         }).changeDispatcher("heavy"), "actor/book_import");
-        contactSyncActor = system().actorOf(Props.create(ContactsSyncActor.class, new ActorCreator<ContactsSyncActor>() {
+        contactSyncActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public ContactsSyncActor create() {
                 return new ContactsSyncActor(context());

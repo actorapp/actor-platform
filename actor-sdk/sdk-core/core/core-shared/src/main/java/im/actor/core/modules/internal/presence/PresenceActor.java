@@ -43,7 +43,7 @@ import im.actor.runtime.eventbus.Event;
 public class PresenceActor extends ModuleActor implements BusSubscriber {
 
     public static ActorRef create(final ModuleContext messenger) {
-        return ActorSystem.system().actorOf(Props.create(PresenceActor.class, new ActorCreator<PresenceActor>() {
+        return ActorSystem.system().actorOf(Props.create(new ActorCreator() {
             @Override
             public PresenceActor create() {
                 return new PresenceActor(messenger);

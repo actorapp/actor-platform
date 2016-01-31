@@ -46,7 +46,7 @@ public class ManagerActor extends Actor {
 
     public static ActorRef manager(final MTProto mtProto) {
         return ActorSystem.system().actorOf(
-                new ActorSelection(Props.create(ManagerActor.class, new ActorCreator<ManagerActor>() {
+                new ActorSelection(Props.create(new ActorCreator() {
                     @Override
                     public ManagerActor create() {
                         return new ManagerActor(mtProto);

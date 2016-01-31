@@ -24,7 +24,7 @@ import im.actor.runtime.annotations.Verified;
 public class TypingActor extends ModuleActor {
 
     public static ActorRef get(final ModuleContext messenger) {
-        return ActorSystem.system().actorOf(Props.create(TypingActor.class, new ActorCreator<TypingActor>() {
+        return ActorSystem.system().actorOf(Props.create(new ActorCreator() {
             @Override
             public TypingActor create() {
                 return new TypingActor(messenger);

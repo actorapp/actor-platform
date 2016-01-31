@@ -322,7 +322,7 @@ public class UploadManager extends ModuleActor {
         pendingQueue.isStarted = true;
 
         final QueueItem finalPendingQueue = pendingQueue;
-        pendingQueue.taskRef = system().actorOf(Props.create(UploadTask.class, new ActorCreator<UploadTask>() {
+        pendingQueue.taskRef = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public UploadTask create() {
                 return new UploadTask(finalPendingQueue.rid, finalPendingQueue.fileDescriptor,
