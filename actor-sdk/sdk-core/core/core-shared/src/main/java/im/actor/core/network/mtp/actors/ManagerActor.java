@@ -29,6 +29,7 @@ import im.actor.runtime.crypto.box.CBCHmacBox;
 import im.actor.runtime.crypto.primitives.aes.AESFastEngine;
 import im.actor.runtime.crypto.primitives.digest.SHA256;
 import im.actor.runtime.crypto.primitives.kuznechik.KuznechikCipher;
+import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 import im.actor.runtime.crypto.primitives.streebog.Streebog256;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.mtproto.Connection;
@@ -94,7 +95,7 @@ public class ManagerActor extends Actor {
                     new SHA256(),
                     this.authProtoKey.getServerMacKey());
             this.serverRUDecryptor = new CBCHmacBox(
-                    new KuznechikCipher(this.authProtoKey.getServerRussianKey()),
+                    new KuznechikFastEngine(this.authProtoKey.getServerRussianKey()),
                     new Streebog256(),
                     this.authProtoKey.getServerMacRussianKey());
             this.clientUSEncryptor = new CBCHmacBox(
@@ -102,7 +103,7 @@ public class ManagerActor extends Actor {
                     new SHA256(),
                     this.authProtoKey.getClientMacKey());
             this.clientRUEncryptor = new CBCHmacBox(
-                    new KuznechikCipher(this.authProtoKey.getClientRussianKey()),
+                    new KuznechikFastEngine(this.authProtoKey.getClientRussianKey()),
                     new Streebog256(),
                     this.authProtoKey.getClientMacRussianKey());
         } else {
