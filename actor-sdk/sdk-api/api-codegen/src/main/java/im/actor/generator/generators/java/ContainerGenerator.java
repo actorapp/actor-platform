@@ -5,11 +5,7 @@ import im.actor.generator.scheme.*;
 
 import java.io.IOException;
 
-/**
- * Created by ex3ndr on 15.11.14.
- */
 public class ContainerGenerator {
-
 
     public static void generateFields(FileGenerator generator, SchemeDefinition definition, SchemeContainer container) throws IOException {
         for (SchemeAttribute attribute : container.getFilteredAttributes()) {
@@ -378,6 +374,15 @@ public class ContainerGenerator {
                 generator.appendLn(attributeName + ".add(" + typeName + ".fromBytes(b));");
                 generator.decreaseDepth();
                 generator.appendLn("}");
+            } else if (childType instanceof SchemeEnumType) {
+                SchemeEnumType enumType = (SchemeEnumType) childType;
+                String enumName = JavaConfig.getEnumName(enumType.getName());
+                generator.appendLn("this." + attributeName + " = new ArrayList<" + enumName + ">();");
+                generator.appendLn("for (int b : values.getRepeatedInt(" + attributeId + ")) {");
+                generator.increaseDepth();
+                generator.appendLn(attributeName + ".add(" + enumName + ".parse(b));");
+                generator.decreaseDepth();
+                generator.appendLn("}");
             } else {
                 throw new IOException();
             }
@@ -421,10 +426,6 @@ public class ContainerGenerator {
             generator.decreaseDepth();
             generator.appendLn("}");
         }
-
-//        if (isExpandable) {
-//            generator.appendLn("if (w");
-//        }
 
         generator.decreaseDepth();
         generator.appendLn("}");
@@ -583,6 +584,13 @@ public class ContainerGenerator {
                 generator.appendLn("for (" + traitTypeName + " i : this." + attributeName + ") {");
                 generator.increaseDepth();
                 generator.appendLn("writer.writeBytes(" + attributeId + ", i.buildContainer());");
+                generator.decreaseDepth();
+                generator.appendLn("}");
+            } else if (childType instanceof SchemeEnumType) {
+                String enumName = JavaConfig.getEnumName(((SchemeEnumType) childType).getName());
+                generator.appendLn("for (" + enumName + " i : this." + attributeName + ") {");
+                generator.increaseDepth();
+                generator.appendLn("writer.writeInt(" + attributeId + ", i.getValue());");
                 generator.decreaseDepth();
                 generator.appendLn("}");
             } else {

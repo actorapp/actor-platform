@@ -22,10 +22,10 @@ public class ResponseLoadHistory extends Response {
         return Bser.parse(new ResponseLoadHistory(), data);
     }
 
-    private List<ApiHistoryMessage> history;
+    private List<ApiMessageContainer> history;
     private List<ApiUser> users;
 
-    public ResponseLoadHistory(@NotNull List<ApiHistoryMessage> history, @NotNull List<ApiUser> users) {
+    public ResponseLoadHistory(@NotNull List<ApiMessageContainer> history, @NotNull List<ApiUser> users) {
         this.history = history;
         this.users = users;
     }
@@ -35,7 +35,7 @@ public class ResponseLoadHistory extends Response {
     }
 
     @NotNull
-    public List<ApiHistoryMessage> getHistory() {
+    public List<ApiMessageContainer> getHistory() {
         return this.history;
     }
 
@@ -46,9 +46,9 @@ public class ResponseLoadHistory extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<ApiHistoryMessage> _history = new ArrayList<ApiHistoryMessage>();
+        List<ApiMessageContainer> _history = new ArrayList<ApiMessageContainer>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _history.add(new ApiHistoryMessage());
+            _history.add(new ApiMessageContainer());
         }
         this.history = values.getRepeatedObj(1, _history);
         List<ApiUser> _users = new ArrayList<ApiUser>();
