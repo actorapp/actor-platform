@@ -11,6 +11,7 @@ import java.util.List;
 
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiUpdateContainer;
+import im.actor.core.api.ApiUpdateOptimization;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
@@ -252,7 +253,7 @@ public class SequenceActor extends ModuleActor {
             Log.d(TAG, "Loading difference...");
             onUpdateStarted();
             final long loadStart = im.actor.runtime.Runtime.getCurrentTime();
-            request(new RequestGetDifference(seq, state), new RpcCallback<ResponseGetDifference>() {
+            request(new RequestGetDifference(seq, state, new ArrayList<ApiUpdateOptimization>()), new RpcCallback<ResponseGetDifference>() {
                 @Override
                 public void onResult(ResponseGetDifference response) {
                     if (isValidated) {
