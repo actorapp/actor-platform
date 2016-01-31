@@ -139,6 +139,8 @@ public class JavaConfig {
                     throw new IOException("List item type can't be trait");
                 }
                 return "List<" + getStructName(traitType.getTraitName()) + ">";
+            } else if (childType instanceof SchemeEnumType) {
+                return "List<" + getEnumName(((SchemeEnumType) childType).getName()) + ">";
             } else {
                 throw new IOException("Unsupported list item type: " + type);
             }

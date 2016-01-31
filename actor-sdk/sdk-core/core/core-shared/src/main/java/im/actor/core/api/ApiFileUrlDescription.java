@@ -64,7 +64,7 @@ public class ApiFileUrlDescription extends BserObject {
         this.timeout = values.getInt(3);
         this.unsignedUrl = values.optString(4);
         List<ApiHTTPHeader> _unsignedUrlHeaders = new ArrayList<ApiHTTPHeader>();
-        for (int i = 0; i < values.getRepeatedCount(5); i++) {
+        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
             _unsignedUrlHeaders.add(new ApiHTTPHeader());
         }
         this.unsignedUrlHeaders = values.getRepeatedObj(5, _unsignedUrlHeaders);

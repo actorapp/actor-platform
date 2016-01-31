@@ -5,26 +5,19 @@ package im.actor.core.api.updates;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
 import static im.actor.runtime.bser.Utils.*;
-
 import im.actor.core.network.parser.*;
-
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-
 import im.actor.core.api.*;
 
 public class UpdatePublicKeyGroupRemoved extends Update {
 
     public static final int HEADER = 0x69;
-
     public static UpdatePublicKeyGroupRemoved fromBytes(byte[] data) throws IOException {
         return Bser.parse(new UpdatePublicKeyGroupRemoved(), data);
     }
@@ -65,6 +58,7 @@ public class UpdatePublicKeyGroupRemoved extends Update {
     public String toString() {
         String res = "update PublicKeyGroupRemoved{";
         res += "uid=" + this.uid;
+        res += ", keyGroupId=" + this.keyGroupId;
         res += "}";
         return res;
     }
