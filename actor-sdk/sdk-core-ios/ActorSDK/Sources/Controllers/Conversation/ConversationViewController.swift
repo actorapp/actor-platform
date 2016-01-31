@@ -211,7 +211,7 @@ public class ConversationViewController: AAConversationContentController, UIDocu
             name: SLKKeyboardWillHideNotification,
             object: nil)
         
-        navigationController?.view.layer.speed = 1.5
+        //navigationController?.view.layer.speed = 1.5
         
     }
     
@@ -341,7 +341,7 @@ public class ConversationViewController: AAConversationContentController, UIDocu
     override public func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        navigationController?.view.layer.speed = 1.5
+        //navigationController?.view.layer.speed = 1.5
         
         Actor.onConversationClosedWithPeer(peer)
         ActorSDK.sharedActor().trackPageHidden(content)
@@ -356,7 +356,7 @@ public class ConversationViewController: AAConversationContentController, UIDocu
 
     override public func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        navigationController?.view.layer.speed = 1
+        //navigationController?.view.layer.speed = 1
         
         Actor.saveDraftWithPeer(peer, withDraft: textView.text)
         
