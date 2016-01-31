@@ -420,23 +420,7 @@ public class SenderActor extends ModuleActor {
             return;
         }
 
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            ask(context().getEncryption().getMessageEncryptor(), new EncryptedMsgActor.EncryptMessage(peer.getPeerId(),
-                    message), new AskCallback() {
-                @Override
-                public void onResult(Object obj) {
-                    EncryptedMsgActor.EncryptedMessage encryptedMessage = (EncryptedMsgActor.EncryptedMessage) obj;
-                    performSendApiContent(peer, rid, encryptedMessage.getEncryptedMessage());
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    // Do nothing
-                }
-            });
-        } else {
-            performSendApiContent(peer, rid, message);
-        }
+        performSendApiContent(peer, rid, message);
     }
 
     private void performSendApiContent(final Peer peer, final long rid, ApiMessage message) {
