@@ -14,7 +14,7 @@ object StringUtils {
 
   private val usernamePattern = Pattern.compile("""^[0-9a-zA-Z_]{5,32}""", Pattern.UNICODE_CHARACTER_CLASS)
 
-  private val transliterator = Transliterator.getInstance("Latin; Latin-ASCII; Lower")
+  private val transliterator = Transliterator.getInstance("Latin; Latin-ASCII")
 
   def utfToHexString(s: String): String = { s.map(ch ⇒ f"${ch.toInt}%04X").mkString }
 
