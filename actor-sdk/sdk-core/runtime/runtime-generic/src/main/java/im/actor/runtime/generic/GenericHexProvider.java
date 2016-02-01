@@ -1,7 +1,14 @@
-package im.actor.core.util;
+package im.actor.runtime.generic;
 
-public class Hex {
-    public static byte[] fromHex(String hex) {
+import im.actor.runtime.HexRuntime;
+
+/**
+ * Created by root on 2/1/16.
+ */
+public class GenericHexProvider implements HexRuntime {
+
+    @Override
+    public byte[] fromHex(String hex) {
         byte[] res = new byte[hex.length() / 2];
         for (int j = 0; j < hex.length() / 2; j++) {
             String dg = hex.charAt(j * 2) + "" + hex.charAt(j * 2 + 1);
@@ -10,7 +17,8 @@ public class Hex {
         return res;
     }
 
-    public static byte[] fromHexReverse(String hex) {
+    @Override
+    public byte[] fromHexReverse(String hex) {
         byte[] res = new byte[hex.length() / 2];
         for (int j = 0; j < hex.length() / 2; j++) {
             String dg = hex.charAt(j * 2) + "" + hex.charAt(j * 2 + 1);
@@ -21,7 +29,8 @@ public class Hex {
 
     private static final String HEXES = "0123456789ABCDEF";
 
-    public static String toHex(byte[] raw) {
+    @Override
+    public String toHex(byte[] raw) {
         final StringBuilder hex = new StringBuilder(2 * raw.length);
         for (final byte b : raw) {
             hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
