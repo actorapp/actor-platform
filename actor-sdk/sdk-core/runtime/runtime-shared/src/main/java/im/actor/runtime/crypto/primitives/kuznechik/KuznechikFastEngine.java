@@ -1,5 +1,7 @@
 package im.actor.runtime.crypto.primitives.kuznechik;
 
+import com.google.j2objc.annotations.Weak;
+
 import im.actor.runtime.crypto.primitives.BlockCipher;
 import im.actor.runtime.crypto.primitives.util.Pack;
 
@@ -322,19 +324,19 @@ public class KuznechikFastEngine implements BlockCipher {
     }
 
 
-    static void kuz_l(int[] w, byte[] tmp) {
+    static void kuz_l(@Weak int[] w, @Weak byte[] tmp) {
         Pack.intToBigEndian(w, tmp, 0);
         kuz_l(tmp);
         Pack.bigEndianToInt(tmp, 0, w);
     }
 
-    static void kuz_l_inv(int[] w, byte[] tmp) {
+    static void kuz_l_inv(@Weak int[] w, @Weak byte[] tmp) {
         Pack.intToBigEndian(w, tmp, 0);
         kuz_l_inv(tmp);
         Pack.bigEndianToInt(tmp, 0, w);
     }
 
-    static void kuz_l(byte[] w) {
+    static void kuz_l(@Weak byte[] w) {
         for (int j = 0; j < 16; j++) {
             byte x = w[15];
             w[15] = w[14];
@@ -372,26 +374,77 @@ public class KuznechikFastEngine implements BlockCipher {
     }
 
     // inverse of linear operation l
-    static void kuz_l_inv(byte[] w) {
+    static void kuz_l_inv(@Weak byte[] w) {
+
+        byte t0 = w[0], k0 = kuz_lvec[0];
+        byte t1 = w[1], k1 = kuz_lvec[1];
+        byte t2 = w[2], k2 = kuz_lvec[2];
+        byte t3 = w[3], k3 = kuz_lvec[3];
+        byte t4 = w[4], k4 = kuz_lvec[4];
+        byte t5 = w[5], k5 = kuz_lvec[5];
+        byte t6 = w[6], k6 = kuz_lvec[6];
+        byte t7 = w[7], k7 = kuz_lvec[7];
+        byte t8 = w[8], k8 = kuz_lvec[8];
+        byte t9 = w[9], k9 = kuz_lvec[9];
+        byte t10 = w[10], k10 = kuz_lvec[10];
+        byte t11 = w[11], k11 = kuz_lvec[11];
+        byte t12 = w[12], k12 = kuz_lvec[12];
+        byte t13 = w[13], k13 = kuz_lvec[13];
+        byte t14 = w[14], k14 = kuz_lvec[14];
+        byte t15 = w[15];
 
         // 16 rounds
         for (int j = 0; j < 16; j++) {
-
-            // x = w->b[0];
-            byte x = w[0];
-
-            for (int i = 0; i < 15; i++) {
-
-                // w->b[i] = w->b[i + 1];
-                w[i] = w[i + 1];
-
-                // x ^= kuz_mul_gf256(w->b[i], kuz_lvec[i]);
-                x ^= kuz_mul_gf256_fast(w[i], kuz_lvec[i]);
-            }
-
-            // w->b[15] = x;
-            w[15] = x;
+            byte x = t0;
+            t0 = t1;
+            x ^= kuz_mul_gf256_fast(t0, k0);
+            t1 = t2;
+            x ^= kuz_mul_gf256_fast(t1, k1);
+            t2 = t3;
+            x ^= kuz_mul_gf256_fast(t2, k2);
+            t3 = t4;
+            x ^= kuz_mul_gf256_fast(t3, k3);
+            t4 = t5;
+            x ^= kuz_mul_gf256_fast(t4, k4);
+            t5 = t6;
+            x ^= kuz_mul_gf256_fast(t5, k5);
+            t6 = t7;
+            x ^= kuz_mul_gf256_fast(t6, k6);
+            t7 = t8;
+            x ^= kuz_mul_gf256_fast(t7, k7);
+            t8 = t9;
+            x ^= kuz_mul_gf256_fast(t8, k8);
+            t9 = t10;
+            x ^= kuz_mul_gf256_fast(t9, k9);
+            t10 = t11;
+            x ^= kuz_mul_gf256_fast(t10, k10);
+            t11 = t12;
+            x ^= kuz_mul_gf256_fast(t11, k11);
+            t12 = t13;
+            x ^= kuz_mul_gf256_fast(t12, k12);
+            t13 = t14;
+            x ^= kuz_mul_gf256_fast(t13, k13);
+            t14 = t15;
+            x ^= kuz_mul_gf256_fast(t14, k14);
+            t15 = x;
         }
+
+        w[0] = t0;
+        w[1] = t1;
+        w[2] = t2;
+        w[3] = t3;
+        w[4] = t4;
+        w[5] = t5;
+        w[6] = t6;
+        w[7] = t7;
+        w[8] = t8;
+        w[9] = t9;
+        w[10] = t10;
+        w[11] = t11;
+        w[12] = t12;
+        w[13] = t13;
+        w[14] = t14;
+        w[15] = t15;
     }
 
     // Fast implementation of multiplication in GF(2^8) on x^8 + x^7 + x^6 + x + 1
