@@ -11,7 +11,6 @@ import im.actor.api.rpc.users.ApiUser
 import im.actor.server.acl.ACLUtils
 import im.actor.server.activation.Activation.{ CallCode, EmailCode, SmsCode }
 import im.actor.server.activation._
-import im.actor.server.api.rpc.service.profile.ProfileErrors
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.model._
 import im.actor.server.persist.UserRepo
@@ -291,6 +290,9 @@ trait AuthHelpers extends Helpers {
     )
     point(user)
   }
+
+  protected def forbidDeletedUser(userId: Int): Result[Unit] =
+    fromDBIOBoolean(AuthErrors.UserDeleted)(UserRepo.isDeleted(userId).map(!_))
 
   private def cleanupAndError(transactionHash: String, error: RpcError): Result[Unit] = {
     for {
