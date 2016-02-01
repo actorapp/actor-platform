@@ -6,8 +6,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
-import im.actor.core.util.RandomUtils;
 import im.actor.runtime.Log;
+import im.actor.runtime.RandomRuntime;
+import im.actor.runtime.RandomRuntimeProvider;
 import im.actor.runtime.function.ArrayFunction;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
@@ -21,7 +22,7 @@ import im.actor.runtime.function.Predicates;
  * @param <T> type of array
  */
 public class PromisesArray<T> {
-
+    private static final RandomRuntime rundom = new RandomRuntimeProvider();
     /**
      * Create PromisesArray from collection
      *
@@ -315,7 +316,7 @@ public class PromisesArray<T> {
                 if (ts.length == 0) {
                     throw new RuntimeException("Array is empty");
                 }
-                return (T[]) new Object[]{ts[RandomUtils.randomId(ts.length)]};
+                return (T[]) new Object[]{ts[rundom.randomInt(ts.length)]};
             }
         }).first();
     }
