@@ -35,11 +35,22 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
         return AuthState.AUTH_START;
     }
 
+    /**
+     * Return desired fragment extending BaseAuthFragment for signing
+     *
+     * @return BaseAuthFragment for signing
+     */
     @Override
     public BaseAuthFragment getSignFragment() {
         return new SignPhoneFragment();
     }
 
+    /**
+     * Return non-null to open specific Activity for starting auth.
+     * If null is specified, result AuthActivity is used.
+     *
+     * @return ActorIntent for auth activity
+     */
     @Override
     public ActorIntent getAuthStartIntent() {
         return null;
@@ -71,13 +82,26 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
         return null;
     }
 
+    /**
+     * Return non-null to open specific setting Activity. If null, SDK will launch
+     * standard Settings activity
+     *
+     * @return ActorIntent for settings activity
+     */
     @Override
     public ActorIntentFragmentActivity getSettingsIntent() {
         return null;
     }
 
+    /**
+     * Return non-null to open specific user profile Activity. If null, SDK will launch
+     * standard profile activity
+     *
+     * @param uid user id
+     * @return ActorIntent for profile activity
+     */
     @Override
-    public BaseActorProfileActivity getProfileIntent() {
+    public BaseActorProfileActivity getProfileIntent(int uid) {
         return null;
     }
 
