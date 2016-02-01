@@ -4,6 +4,9 @@
 
 package im.actor.core.network.mtp.actors;
 
+import com.google.j2objc.annotations.AutoreleasePool;
+import com.google.j2objc.annotations.RetainedLocalRef;
+
 import java.io.IOException;
 
 import im.actor.core.network.ActorApi;
@@ -310,6 +313,7 @@ public class ManagerActor extends Actor {
         mtProto.getCallback().onConnectionsCountChanged(currentConnection != null ? 1 : 0);
     }
 
+    @AutoreleasePool
     private void onInMessage(byte[] data, int offset, int len) {
         // Log.d(TAG, "Received package");
 
