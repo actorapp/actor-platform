@@ -98,7 +98,7 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
         signatures = signatures
       ))(_.toOption.get.keyGroupId)
 
-      whenReady(service.handleUploadEphermalKey(
+      whenReady(service.handleUploadPreKey(
         keyGroupId,
         ephKeys,
         ephSignatures
@@ -110,7 +110,7 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
     {
       implicit val clientData = bobClientData
 
-      whenReady(service.handleLoadEphermalPublicKeys(
+      whenReady(service.handleLoadPrePublicKeys(
         getUserOutPeer(alice.id, bobAuthId),
         keyGroupId
       )) { resp ⇒
