@@ -1250,7 +1250,7 @@ public class ChatActivity extends ActorEditTextActivity {
         audioContainer.setAnimation(animation);
         audioContainer.animate();
         audioContainer.setVisibility(View.GONE);
-
+        messageEditText.requestFocus();
 
     }
 
