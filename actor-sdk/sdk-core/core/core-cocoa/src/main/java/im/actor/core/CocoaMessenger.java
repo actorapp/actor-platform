@@ -52,19 +52,6 @@ public class CocoaMessenger extends Messenger {
     public BindedDisplayList<Message> getMessageDisplayList(final Peer peer) {
         if (!messagesLists.containsKey(peer)) {
             BindedDisplayList<Message> list = (BindedDisplayList<Message>) modules.getDisplayListsModule().getMessagesSharedList(peer);
-            list.setBindHook(new BindedDisplayList.BindHook<Message>() {
-                @Override
-                public void onScrolledToEnd() {
-                    modules.getMessagesModule().loadMoreHistory(peer);
-                }
-
-                @Override
-                public void onItemTouched(Message item) {
-                    if (item.isOnServer()) {
-                        modules.getMessagesModule().onMessageShown(peer, item.getSenderId(), item.getSortDate());
-                    }
-                }
-            });
             messagesLists.put(peer, list);
         }
 
