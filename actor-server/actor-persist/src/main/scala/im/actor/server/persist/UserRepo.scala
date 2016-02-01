@@ -144,4 +144,7 @@ object UserRepo {
       drop(offset).
       take(size)
   }
+
+  def isDeleted(userId: Int): DBIO[Boolean] =
+    byIdC.applied(userId).filter(_.deletedAt.nonEmpty).exists.result
 }
