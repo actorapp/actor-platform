@@ -32,6 +32,7 @@ public class AASettingsLastSeenController: AATableViewController {
         
         tableView.registerClass(AACommonCell.self, forCellReuseIdentifier: CellIdentifier)
         tableView.backgroundColor = appStyle.vcBackyardColor
+        tableView.separatorColor = appStyle.vcSeparatorColor
         
         view.backgroundColor = tableView.backgroundColor
     }

@@ -29,6 +29,7 @@ class AASettingsWallpapersController: AATableViewController {
         
         tableView.registerClass(AAWallpapersCell.self, forCellReuseIdentifier: CellIdentifier)
         tableView.backgroundColor = appStyle.vcBackyardColor
+        tableView.separatorColor = appStyle.vcSeparatorColor
         
         view.backgroundColor = tableView.backgroundColor
     }
@@ -89,6 +90,8 @@ class AASettingsWallpapersController: AATableViewController {
         
         cell.textLabel?.text = AALocalized("WallpapersPhoto")
         cell.style = .Navigation
+        cell.textLabel?.textColor = appStyle.cellTextColor
+        
         
         return cell
     }
