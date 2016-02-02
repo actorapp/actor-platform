@@ -55,6 +55,8 @@ class HistoryMessageTable(tag: Tag) extends Table[HistoryMessage](tag, "history_
 }
 
 object HistoryMessageRepo {
+  private val SharedUserId = 0
+
   val messages = TableQuery[HistoryMessageTable]
   val messagesC = Compiled(messages)
 
@@ -151,16 +153,26 @@ object HistoryMessageRepo {
       .as[HistoryMessage]
   }
 
-  private def unreadTotal(userId: Rep[Int]) =
+  /**
+   * Fetch unread messages count
+   * @param userId user to fetch unread messages for
+   * @param historyOwner user owns history(user itself or SharedUserId in case of public groups)
+   * @return Unread messages count
+   */
+  private def unreadTotal(userId: Rep[Int], historyOwner: Rep[Int]) =
     (for {
       ud ← DialogRepo.findUsersVisible(userId)
       m ← notDeletedMessages.filter(_.senderUserId =!= userId)
-      if m.userId === ud.userId && m.peerType === ud.peerType && m.peerId === ud.peerId && m.date > ud.ownerLastReadAt
+      if m.userId === historyOwner && m.peerType === ud.peerType && m.peerId === ud.peerId && m.date > ud.ownerLastReadAt
     } yield m.date).length
 
   private val unreadTotalC = Compiled(unreadTotal _)
 
-  def getUnreadTotal(userId: Int): DBIO[Int] = unreadTotalC(userId).result
+  def getUnreadTotal(userId: Int): DBIO[Int] =
+    (for {
+      sharedTotal ← unreadTotalC((userId, SharedUserId))
+      userTotal ← unreadTotalC((userId, userId))
+    } yield sharedTotal + userTotal).result
 
   def haveMessagesBetween(userId: Int, peer: Peer, minDate: DateTime, maxDate: DateTime) =
     notDeletedMessages
