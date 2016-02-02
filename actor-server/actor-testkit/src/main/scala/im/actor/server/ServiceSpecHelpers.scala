@@ -1,12 +1,12 @@
 package im.actor.server
 
-import akka.actor.{ ActorRef, ActorSystem }
+import akka.actor.ActorSystem
 import akka.stream.Materializer
 import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
 import im.actor.api.rpc.ClientData
-import im.actor.api.rpc.auth.{ ResponseSendAuthCodeObsolete, AuthService }
-import im.actor.api.rpc.peers.{ ApiUserOutPeer, ApiOutPeer, ApiPeerType }
+import im.actor.api.rpc.auth.AuthService
+import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.api.rpc.RpcApiExtension
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
@@ -14,8 +14,8 @@ import im.actor.server.oauth.GoogleProvider
 import im.actor.server.persist.{ AuthCodeRepo, AuthSessionRepo }
 import im.actor.server.session.{ Session, SessionConfig, SessionRegion }
 import im.actor.server.user.UserExtension
-import org.scalatest.{ Inside, Suite }
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.{ Inside, Suite }
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent._
@@ -65,21 +65,22 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
     val authId = scala.util.Random.nextLong()
     Await.result(db.run(persist.AuthIdRepo.create(authId, None, None)), 1.second)
 
+    implicit val clientData = ClientData(authId, scala.util.Random.nextLong(), None)
+
     val phoneNumber = Await.result(db.run(persist.UserPhoneRepo.findByUserId(userId)) map (_.head.number), 1.second)
 
-    val smsCode = getSmsCode(authId, phoneNumber)
-
-    val res = Await.result(service.handleSignUpObsolete(
+    val txHash = whenReady(service.handleStartPhoneAuth(
       phoneNumber = phoneNumber,
-      smsHash = smsCode.smsHash,
-      smsCode = smsCode.smsCode,
-      name = fairy.person().fullName(),
-      deviceHash = scala.util.Random.nextLong.toBinaryString.getBytes(),
-      deviceTitle = "Specs virtual device",
       appId = 42,
-      appKey = "appKey",
-      isSilent = false
-    )(ClientData(authId, scala.util.Random.nextLong(), None)), 5.seconds)
+      apiKey = "appKey",
+      deviceHash = Random.nextLong.toBinaryString.getBytes,
+      deviceTitle = "Specs virtual device",
+      timeZone = None,
+      preferredLanguages = Vector.empty
+    ))(_.toOption.get.transactionHash)
+
+    val code = whenReady(db.run(AuthCodeRepo.findByTransactionHash(txHash)))(_.get.code)
+    val res = Await.result(service.handleValidateCode(txHash, code), 5.seconds)
 
     res match {
       case \/-(rsp) ⇒ rsp
@@ -91,20 +92,6 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
 
   def createSessionId(): Long =
     scala.util.Random.nextLong()
-
-  def getSmsHash(authId: Long, phoneNumber: Long)(implicit service: AuthService, system: ActorSystem): String = withoutLogs {
-    val ResponseSendAuthCodeObsolete(smsHash, _) =
-      Await.result(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")(ClientData(authId, scala.util.Random.nextLong(), None)), 1.second).toOption.get
-
-    smsHash
-  }
-
-  def getSmsCode(authId: Long, phoneNumber: Long)(implicit service: AuthService, system: ActorSystem, db: Database): model.AuthSmsCodeObsolete = withoutLogs {
-    val res = Await.result(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")(ClientData(authId, scala.util.Random.nextLong(), None)), 1.second)
-    res.toOption.get
-
-    Await.result(db.run(persist.AuthSmsCodeObsoleteRepo.findByPhoneNumber(phoneNumber).head), 5.seconds)
-  }
 
   def createUser()(implicit service: AuthService, db: Database, system: ActorSystem): (ApiUser, Long, Int, Long) = {
     val authId = createAuthId()
@@ -165,7 +152,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
     sessionRegion: SessionRegion,
     oauth2Service: GoogleProvider,
     system:        ActorSystem
-  ) = new AuthServiceImpl(new DummyCodeActivation)
+  ) = new AuthServiceImpl
 
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]

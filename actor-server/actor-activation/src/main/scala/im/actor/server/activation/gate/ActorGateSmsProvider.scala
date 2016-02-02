@@ -2,12 +2,13 @@ package im.actor.server.activation.gate
 
 import akka.actor.ActorSystem
 import akka.event.Logging
-import im.actor.server.activation.Activation.Code
+import cats.data.Xor
 import im.actor.server.activation._
+import im.actor.server.activation.common._
+import im.actor.server.db.DbExtension
 import im.actor.server.persist.auth.GateAuthCodeRepo
-import slick.dbio.DBIO
 import spray.client.pipelining._
-import spray.http.HttpMethods.{ POST, GET }
+import spray.http.HttpMethods.{ GET, POST }
 import spray.http._
 import spray.httpx.PlayJsonSupport
 import spray.httpx.marshalling._
@@ -15,17 +16,25 @@ import spray.httpx.unmarshalling._
 
 import scala.concurrent.Future
 import scala.reflect.ClassTag
-import scalaz.{ -\/, \/, \/- }
 
-class GateCodeActivation(config: GateConfig)(implicit system: ActorSystem) extends CodeActivation with JsonFormatters with PlayJsonSupport {
-  import system.dispatcher
+class ActorGateSmsProvider(implicit system: ActorSystem)
+  extends ActivationProvider
+  with JsonFormatters
+  with PlayJsonSupport {
 
   private val log = Logging(system, getClass)
 
+  private val config = GateConfig.load.getOrElse(throw new RuntimeException("Failed to load activation gate config"))
+  private val db = DbExtension(system).db
+  protected implicit val ec = system.dispatcher
+
   val pipeline: HttpRequest ⇒ Future[HttpResponse] = addHeader("X-Auth-Token", config.authToken) ~> sendReceive
 
-  override def send(optTransactionHash: Option[String], code: Code): DBIO[CodeFailure \/ Unit] = {
-    val codeResponse: Future[CodeResponse] = for {
+  // it would be better to have trait SmsProvider with send method for SmsCode only. In this case we won't have require()
+  override def send(txHash: String, code: Code): Future[CodeFailure Xor Unit] = {
+    require(code.isInstanceOf[SmsCode], "ActorGateSmsProvider is only capable of processing sms codes")
+
+    val codeSendRequest: Future[CodeResponse] = for {
       entity ← marshalToEntity(code)
       request = HttpRequest(method = POST, uri = s"${config.uri}/v1/codes/send", entity = entity)
       _ = log.debug("Requesting code send with {}", request)
@@ -34,22 +43,18 @@ class GateCodeActivation(config: GateConfig)(implicit system: ActorSystem) exten
     } yield codeResp
 
     for {
-      codeResponse ← DBIO.from(codeResponse)
+      codeResponse ← codeSendRequest
       result ← codeResponse match {
-        case CodeHash(hash) ⇒
-          optTransactionHash.map { transactionHash ⇒
-            for (_ ← GateAuthCodeRepo.createOrUpdate(transactionHash, hash)) yield \/-(())
-          } getOrElse DBIO.successful(\/-(()))
-        case failure: CodeFailure ⇒
-          DBIO.successful(-\/(failure))
+        case CodeHash(codeHash)   ⇒ for (_ ← db.run(GateAuthCodeRepo.createOrUpdate(txHash, codeHash))) yield Xor.right(())
+        case failure: CodeFailure ⇒ Future.successful(Xor.left(failure))
       }
     } yield result
   }
 
-  override def validate(transactionHash: String, code: String): DBIO[ValidationResponse] = {
+  override def validate(txHash: String, code: String): Future[ValidationResponse] = {
     for {
-      optCodeHash ← GateAuthCodeRepo.find(transactionHash)
-      validationResponse ← DBIO.from(optCodeHash map { codeHash ⇒
+      optCodeHash ← db.run(GateAuthCodeRepo.find(txHash))
+      validationResponse ← optCodeHash map { codeHash ⇒
         val validationUri = Uri(s"${config.uri}/v1/codes/validate/${codeHash.codeHash}").withQuery("code" → code)
         val request = HttpRequest(GET, validationUri)
         log.debug("Requesting code validation with {}", request)
@@ -58,11 +63,11 @@ class GateCodeActivation(config: GateConfig)(implicit system: ActorSystem) exten
           response ← pipeline(request)
           vr ← unmarshal[ValidationResponse](response)
         } yield vr
-      } getOrElse Future.successful(InvalidHash))
+      } getOrElse Future.successful(InvalidHash)
     } yield validationResponse
   }
 
-  override def finish(transactionHash: String): DBIO[Unit] = GateAuthCodeRepo.delete(transactionHash).map(_ ⇒ ())
+  override def cleanup(txHash: String): Future[Unit] = db.run(GateAuthCodeRepo.delete(txHash)).map(_ ⇒ ())
 
   private def marshalToEntity[T: ClassTag](value: T)(implicit marshaller: Marshaller[T]): Future[HttpEntity] =
     marshal[T](value) match {
