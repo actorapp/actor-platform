@@ -94,11 +94,11 @@ public class EncryptedPeerActor extends ModuleActor {
                 .done(self());
     }
 
-    private void doEncrypt(final byte[] data, final PromiseResolver<EncryptBoxResponse> future) {
+    private Promise<EncryptBoxResponse> doEncrypt(final byte[] data) {
 
         if (!isReady) {
             stash();
-            return;
+            return null;
         }
 
         //
@@ -111,7 +111,7 @@ public class EncryptedPeerActor extends ModuleActor {
         final byte[] encKeyExtended = keyPrf.calculate(encKey, "ActorPackage", 128);
         Log.d(TAG, "doEncrypt");
         final long start = Runtime.getActorTime();
-        PromisesArray.of(theirKeys.getUserKeysGroups())
+        return PromisesArray.of(theirKeys.getUserKeysGroups())
                 .filter(new Predicate<UserKeysGroup>() {
                     @Override
                     public boolean apply(UserKeysGroup keysGroup) {
@@ -172,16 +172,14 @@ public class EncryptedPeerActor extends ModuleActor {
                                 encryptedKeys.toArray(new EncryptedBoxKey[encryptedKeys.size()]),
                                 ByteStrings.merge(ByteStrings.intToBytes(ownKeyGroupId), encData)));
                     }
-                })
-                .pipeTo(future)
-                .done(self());
+                });
     }
 
-    private void doDecrypt(final EncryptedBox data, final PromiseResolver<DecryptBoxResponse> resolver) {
+    private Promise<DecryptBoxResponse> doDecrypt(final EncryptedBox data) {
 
         if (!isReady) {
             stash();
-            return;
+            return null;
         }
 
         final int senderKeyGroup = ByteStrings.bytesToInt(ByteStrings.substring(data.getEncryptedPackage(), 0, 4));
@@ -192,11 +190,10 @@ public class EncryptedPeerActor extends ModuleActor {
         //
 
         if (ignoredKeyGroups.contains(senderKeyGroup)) {
-            resolver.error(new RuntimeException("This key group is ignored"));
-            return;
+            throw new RuntimeException("This key group is ignored");
         }
 
-        PromisesArray.of(data.getKeys())
+        return PromisesArray.of(data.getKeys())
                 .filter(EncryptedBoxKey.FILTER(myUid(), ownKeyGroupId))
                 .first()
                 .mapPromise(new Function<EncryptedBoxKey, Promise<Tuple2<SessionActor, EncryptedBoxKey>>>() {
@@ -246,9 +243,7 @@ public class EncryptedPeerActor extends ModuleActor {
                         }
                         return new DecryptBoxResponse(encData);
                     }
-                })
-                .pipeTo(resolver)
-                .done(self());
+                });
     }
 
     private void onKeysUpdated(UserKeys userKeys) {
@@ -295,21 +290,21 @@ public class EncryptedPeerActor extends ModuleActor {
     //
 
     @Override
-    public void onAsk(Object message, PromiseResolver future) {
+    public Promise onAsk(Object message) throws Exception {
         if (message instanceof EncryptBox) {
             if (!isReady) {
                 stash();
-                return;
+                return null;
             }
-            doEncrypt(((EncryptBox) message).getData(), future);
+            return doEncrypt(((EncryptBox) message).getData());
         } else if (message instanceof DecryptBox) {
             if (!isReady) {
                 stash();
-                return;
+                return null;
             }
-            doDecrypt(((DecryptBox) message).getEncryptedBox(), future);
+            return doDecrypt(((DecryptBox) message).getEncryptedBox());
         } else {
-            super.onAsk(message, future);
+            return super.onAsk(message);
         }
     }
 
@@ -322,7 +317,7 @@ public class EncryptedPeerActor extends ModuleActor {
         }
     }
 
-    public static class EncryptBox extends AskMessage<EncryptBoxResponse> {
+    public static class EncryptBox implements AskMessage<EncryptBoxResponse> {
         private byte[] data;
 
         public EncryptBox(byte[] data) {
@@ -347,7 +342,7 @@ public class EncryptedPeerActor extends ModuleActor {
         }
     }
 
-    public static class DecryptBox extends AskMessage<DecryptBoxResponse> {
+    public static class DecryptBox implements AskMessage<DecryptBoxResponse> {
 
         private EncryptedBox encryptedBox;
 
