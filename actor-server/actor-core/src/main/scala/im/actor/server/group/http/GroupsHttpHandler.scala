@@ -10,7 +10,8 @@ import im.actor.server.api.http.json.JsonFormatters.{ errorsFormat, groupInviteI
 import im.actor.server.db.DbExtension
 import im.actor.server.file.ImageUtils.getAvatar
 import im.actor.server.file.{ FileLocation, FileStorageExtension }
-import im.actor.server.{ model, persist }
+import im.actor.server.model.AvatarData
+import im.actor.server.persist._
 import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
 import scala.concurrent.Future
@@ -47,22 +48,22 @@ private[group] final class GroupsHttpHandler()(implicit system: ActorSystem) ext
   private def retrieve(token: String): Future[Either[json.Errors, json.GroupInviteInfo]] =
     db.run {
       for {
-        optToken ← persist.GroupInviteTokenRepo.findByToken(token)
+        optToken ← GroupInviteTokenRepo.findByToken(token)
         result ← optToken.map { token ⇒
           for {
-            groupTitle ← persist.GroupRepo.findTitle(token.groupId)
-            groupAvatar ← persist.AvatarDataRepo.findByGroupId(token.groupId)
+            groupTitle ← GroupRepo.findTitle(token.groupId)
+            groupAvatar ← AvatarDataRepo.findByGroupId(token.groupId)
             groupAvatarUrls ← avatarUrls(groupAvatar)
 
-            inviterName ← persist.UserRepo.findName(token.creatorId)
-            inviterAvatar ← persist.AvatarDataRepo.findByUserId(token.creatorId).headOption
+            inviterName ← UserRepo.findName(token.creatorId)
+            inviterAvatar ← AvatarDataRepo.findByUserId(token.creatorId).headOption
             inviterAvatarUrls ← avatarUrls(inviterAvatar)
           } yield Right(json.GroupInviteInfo(group = json.Group(groupTitle.getOrElse("Group"), groupAvatarUrls), inviter = json.User(inviterName.getOrElse("User"), inviterAvatarUrls)))
         }.getOrElse(DBIO.successful(Left(json.Errors("Expired or invalid token"))))
       } yield result
     }
 
-  private def avatarUrls(optAvatar: Option[model.AvatarData]): DBIO[Option[json.AvatarUrls]] = {
+  private def avatarUrls(optAvatar: Option[AvatarData]): DBIO[Option[json.AvatarUrls]] = {
     optAvatar.map(getAvatar).map { avatar ⇒
       for {
         small ← avatar.smallImage.map(i ⇒ urlOrNone(i.fileLocation)).getOrElse(DBIO.successful(None))
@@ -75,7 +76,7 @@ private[group] final class GroupsHttpHandler()(implicit system: ActorSystem) ext
   private def urlOrNone(location: FileLocation): DBIO[Option[String]] = {
     implicit val timeout = 1.day
     for {
-      fileOpt ← persist.FileRepo.find(location.fileId)
+      fileOpt ← FileRepo.find(location.fileId)
       url ← fileOpt.map { file ⇒
         DBIO.from(fsAdapter.getFileDownloadUrl(file, location.accessHash))
       }.getOrElse(DBIO.successful(None))

@@ -2,6 +2,8 @@ package im.actor.api.rpc
 
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
+import im.actor.server.model._
+import im.actor.server.persist._
 import im.actor.server.user.UserExtension
 
 import scala.collection.immutable
@@ -14,7 +16,6 @@ import slick.dbio.DBIO
 import im.actor.api.rpc.peers._
 import im.actor.server.api.rpc.service.groups.GroupRpcErrors
 import im.actor.util.misc.StringUtils
-import im.actor.server.{ model, persist }
 
 object PeerHelpers {
   def withOutPeerF[R <: RpcResponse](
@@ -37,7 +38,7 @@ object PeerHelpers {
         }
       case ApiPeerType.Group ⇒
         (for {
-          optGroup ← persist.GroupRepo.find(outPeer.id)
+          optGroup ← GroupRepo.find(outPeer.id)
           grouperrOrGroup ← validGroup(optGroup)
           usererrOrGroup ← validateGroupAccess(optGroup, client.userId)(ec)
           hasherrOrGroup ← DBIO.successful(usererrOrGroup.map(validGroupAccessHash(outPeer.accessHash, _)))
@@ -74,18 +75,18 @@ object PeerHelpers {
     renderCheckResult(Seq(checkUserPeer(userOutPeer.userId, userOutPeer.accessHash)), f)
   }
 
-  def withOwnGroupMember[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer, userId: Int)(f: model.FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
+  def withOwnGroupMember[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer, userId: Int)(f: FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
     withGroupOutPeer(groupOutPeer) { group ⇒
-      (for (user ← persist.GroupUserRepo.find(group.id, userId)) yield user).flatMap {
+      (for (user ← GroupUserRepo.find(group.id, userId)) yield user).flatMap {
         case Some(user) ⇒ f(group)
         case None       ⇒ DBIO.successful(Error(CommonErrors.forbidden("You are not a group member.")))
       }
     }
   }
 
-  def withGroupAdmin[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: model.FullGroup ⇒ DBIO[RpcError \/ R])(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIO[RpcError \/ R] = {
+  def withGroupAdmin[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: FullGroup ⇒ DBIO[RpcError \/ R])(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIO[RpcError \/ R] = {
     withOwnGroupMember(groupOutPeer, client.userId) { group ⇒
-      (for (user ← persist.GroupUserRepo.find(group.id, client.userId)) yield user).flatMap {
+      (for (user ← GroupUserRepo.find(group.id, client.userId)) yield user).flatMap {
         case Some(gu) if gu.isAdmin ⇒ f(group)
         case _                      ⇒ DBIO.successful(Error(CommonErrors.forbidden("Only admin can perform this action.")))
       }
@@ -118,7 +119,7 @@ object PeerHelpers {
 
   val InvalidToken = RpcError(403, "INVALID_INVITE_TOKEN", "No correct token provided.", false, None)
 
-  def withValidInviteToken[R <: RpcResponse](baseUrl: String, urlOrToken: String)(f: (model.FullGroup, model.GroupInviteToken) ⇒ DBIO[RpcError \/ R])(
+  def withValidInviteToken[R <: RpcResponse](baseUrl: String, urlOrToken: String)(f: (FullGroup, GroupInviteToken) ⇒ DBIO[RpcError \/ R])(
     implicit
     client:      AuthorizedClientData,
     actorSystem: ActorSystem,
@@ -133,8 +134,8 @@ object PeerHelpers {
 
     extractedToken.isEmpty match {
       case false ⇒ (for {
-        token ← persist.GroupInviteTokenRepo.findByToken(extractedToken)
-        group ← token.map(gt ⇒ persist.GroupRepo.findFull(gt.groupId)).getOrElse(DBIO.successful(None))
+        token ← GroupInviteTokenRepo.findByToken(extractedToken)
+        group ← token.map(gt ⇒ GroupRepo.findFull(gt.groupId)).getOrElse(DBIO.successful(None))
       } yield for (g ← group; t ← token) yield (g, t)).flatMap {
         case Some((g, t)) ⇒ f(g, t)
         case None         ⇒ DBIO.successful(Error(InvalidToken))
@@ -146,15 +147,15 @@ object PeerHelpers {
   def withKickableGroupMember[R <: RpcResponse](
     groupOutPeer:    ApiGroupOutPeer,
     kickUserOutPeer: ApiUserOutPeer
-  )(f: model.FullGroup ⇒ DBIO[RpcError \/ R])(
+  )(f: FullGroup ⇒ DBIO[RpcError \/ R])(
     implicit
     client:      AuthorizedClientData,
     actorSystem: ActorSystem,
     ec:          ExecutionContext
   ): DBIO[RpcError \/ R] = {
     withGroupOutPeer(groupOutPeer) { group ⇒
-      persist.GroupUserRepo.find(group.id, kickUserOutPeer.userId).flatMap {
-        case Some(model.GroupUser(_, _, inviterUserId, _, _, _)) ⇒
+      GroupUserRepo.find(group.id, kickUserOutPeer.userId).flatMap {
+        case Some(GroupUser(_, _, inviterUserId, _, _, _)) ⇒
           if (kickUserOutPeer.userId != client.userId && (inviterUserId == client.userId || group.creatorUserId == client.userId)) {
             f(group)
           } else {
@@ -165,7 +166,7 @@ object PeerHelpers {
     }
   }
 
-  def withPublicGroup[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: model.FullGroup ⇒ DBIO[RpcError \/ R])(
+  def withPublicGroup[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: FullGroup ⇒ DBIO[RpcError \/ R])(
     implicit
     client:      AuthorizedClientData,
     actorSystem: ActorSystem,
@@ -189,18 +190,18 @@ object PeerHelpers {
     ec:          ExecutionContext
   ): DBIO[Option[Boolean]] = {
     for {
-      userOpt ← persist.UserRepo.find(userId)
+      userOpt ← UserRepo.find(userId)
     } yield {
       userOpt map (u ⇒ ACLUtils.userAccessHash(client.authId, u.id, u.accessSalt) == accessHash)
     }
   }
 
-  def validateGroupAccess(optGroup: Option[model.Group], userId: Int)(implicit ec: ExecutionContext) = optGroup match {
+  def validateGroupAccess(optGroup: Option[Group], userId: Int)(implicit ec: ExecutionContext) = optGroup match {
     case Some(group) ⇒
-      (for (user ← persist.GroupUserRepo.find(group.id, userId)) yield user).flatMap {
+      (for (user ← GroupUserRepo.find(group.id, userId)) yield user).flatMap {
         case Some(user) ⇒ DBIO.successful(\/-(group))
         case None ⇒
-          (for (bot ← persist.GroupBotRepo.find(group.id, userId)) yield bot).flatMap {
+          (for (bot ← GroupBotRepo.find(group.id, userId)) yield bot).flatMap {
             case Some(bot) ⇒ DBIO.successful(\/-(group))
             case None      ⇒ DBIO.successful(Error(CommonErrors.forbidden("No access to the group.")))
           }
@@ -208,8 +209,8 @@ object PeerHelpers {
     case None ⇒ DBIO.successful(Error(CommonErrors.GroupNotFound))
   }
 
-  private def withGroupOutPeer[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: model.FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
-    persist.GroupRepo.findFull(groupOutPeer.groupId) flatMap {
+  private def withGroupOutPeer[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
+    GroupRepo.findFull(groupOutPeer.groupId) flatMap {
       case Some(group) ⇒
         if (group.accessHash != groupOutPeer.accessHash) {
           DBIO.successful(Error(CommonErrors.InvalidAccessHash))
@@ -221,7 +222,7 @@ object PeerHelpers {
     }
   }
 
-  private def validGroup(optGroup: Option[model.Group]) = {
+  private def validGroup(optGroup: Option[Group]) = {
     optGroup match {
       case Some(group) ⇒
         DBIO.successful(\/-(group))
@@ -229,7 +230,7 @@ object PeerHelpers {
     }
   }
 
-  private def validUserAccessHash(accessHash: Long, user: model.User)(implicit client: BaseClientData, actorSystem: ActorSystem) = {
+  private def validUserAccessHash(accessHash: Long, user: User)(implicit client: BaseClientData, actorSystem: ActorSystem) = {
     if (accessHash == ACLUtils.userAccessHash(client.authId, user)) {
       \/-(user)
     } else {
@@ -237,7 +238,7 @@ object PeerHelpers {
     }
   }
 
-  private def validGroupAccessHash(accessHash: Long, group: model.Group)(implicit client: BaseClientData, actorSystem: ActorSystem) = {
+  private def validGroupAccessHash(accessHash: Long, group: Group)(implicit client: BaseClientData, actorSystem: ActorSystem) = {
     if (accessHash == group.accessHash) {
       \/-(group)
     } else {

@@ -13,8 +13,9 @@ import im.actor.server.api.http.{ HttpApi, HttpApiConfig }
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.db.DbExtension
 import im.actor.server.file._
+import im.actor.server.model.{ File ⇒ FileModel }
 import im.actor.server.file.local.http.FilesHttpHandler
-import im.actor.server.{ model, persist }
+import im.actor.server.persist.FileRepo
 import im.actor.util.ThreadLocalSecureRandom
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -84,9 +85,9 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
     val size = data.length
 
     for {
-      _ ← persist.FileRepo.create(id, size.toLong, accessSalt, LocalUploadKey.fileKey(id).key)
+      _ ← FileRepo.create(id, size.toLong, accessSalt, LocalUploadKey.fileKey(id).key)
       _ ← DBIO.from(createFile(id, name.safe, data))
-      _ ← persist.FileRepo.setUploaded(id, name.safe)
+      _ ← FileRepo.setUploaded(id, name.safe)
     } yield FileLocation(id, ACLFiles.fileAccessHash(id, accessSalt))
 
   }
@@ -113,7 +114,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
       isComplete ← haveAllParts(fileDir, partNames, fileSize)
       result ← concatFiles(fileDir, partNames, fileName.safe, fileSize)
       _ ← if (isComplete) deleteUploadedParts(fileDir, partNames) else Future.successful(())
-      _ ← db.run(persist.FileRepo.setUploaded(fileId, fileName.safe))
+      _ ← db.run(FileRepo.setUploaded(fileId, fileName.safe))
     } yield ()
   }
 
@@ -131,7 +132,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
    * @param accessHash file access hash
    * @return file download uri
    */
-  override def getFileDownloadUrl(file: model.File, accessHash: Long): Future[Option[String]] = {
+  override def getFileDownloadUrl(file: FileModel, accessHash: Long): Future[Option[String]] = {
     if (ACLFiles.fileAccessHash(file.id, file.accessSalt) == accessHash) {
       val filePart = Option(file.name) filter (_.trim.nonEmpty) map (n ⇒ s"/${URLEncoder.encode(n, "UTF-8")}") getOrElse ""
       val query = baseUri
