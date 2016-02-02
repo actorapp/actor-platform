@@ -6,9 +6,9 @@ package im.actor.runtime;
 
 import java.math.BigInteger;
 
-import im.actor.core.util.Hex;
 import im.actor.runtime.crypto.primitives.digest.KeyDigest;
 import im.actor.runtime.crypto.primitives.digest.SHA256;
+import im.actor.runtime.util.Hex;
 
 public class Crypto {
 

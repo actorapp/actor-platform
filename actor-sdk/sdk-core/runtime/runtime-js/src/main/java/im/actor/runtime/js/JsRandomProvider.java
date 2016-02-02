@@ -31,6 +31,11 @@ public class JsRandomProvider implements RandomRuntime {
     }
 
     @Override
+    public long randomLong() {
+        return random.nextLong();
+    }
+
+    @Override
     public BigInteger generateBigInteger(int numBits) {
         return new BigInteger(numBits, random);
     }

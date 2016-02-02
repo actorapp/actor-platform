@@ -36,6 +36,13 @@ public class GenericRandomProvider implements RandomRuntime {
     }
 
     @Override
+    public long randomLong() {
+        synchronized (random) {
+            return random.nextLong();
+        }
+    }
+
+    @Override
     public BigInteger generateBigInteger(int numBits) {
         return new BigInteger(numBits, random);
     }

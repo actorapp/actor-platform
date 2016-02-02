@@ -188,7 +188,6 @@
 				06FC5E741BAB2DCC0071F153 /* Configure Crashlytics */,
 				16DA98FD27E0766A88C46CBB /* Embed Pods Frameworks */,
 				06230F0D1BC7FF3500A4807B /* Embed Frameworks */,
-				BE06A3DB1C55388E00351436 /* Auto-increment Build version */,
 			);
 			buildRules = (
 			);
@@ -322,20 +321,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		BE06A3DB1C55388E00351436 /* Auto-increment Build version */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Auto-increment Build version";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\"";
 		};
 		E70FC928CCCB317D8650ACE6917F2950 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
