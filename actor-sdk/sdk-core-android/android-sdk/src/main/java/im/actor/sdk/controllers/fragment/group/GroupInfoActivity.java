@@ -23,7 +23,7 @@ public class GroupInfoActivity extends BaseFragmentActivity {
 
         if (savedInstanceState == null) {
             GroupInfoFragment fragment;
-            BaseGroupInfoActivity profileIntent = ActorSDK.sharedActor().getDelegate().getGroupInfoIntent();
+            BaseGroupInfoActivity profileIntent = ActorSDK.sharedActor().getDelegate().getGroupInfoIntent(chatId);
             if (profileIntent != null) {
                 fragment = profileIntent.getGroupInfoFragment(chatId);
             } else {
