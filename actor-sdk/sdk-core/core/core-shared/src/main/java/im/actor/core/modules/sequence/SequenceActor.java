@@ -5,7 +5,6 @@
 package im.actor.core.modules.sequence;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
@@ -45,8 +44,6 @@ public class SequenceActor extends ModuleActor {
     private static final String KEY_SEQ = "updates_seq";
     private static final String KEY_STATE = "updates_state";
 
-    private HashMap<Integer, Object> further = new HashMap<>();
-
     private ArrayList<ExecuteAfter> pendingRunnables = new ArrayList<>();
 
     private boolean isValidated = true;
@@ -54,7 +51,6 @@ public class SequenceActor extends ModuleActor {
 
     private int seq;
     private byte[] state;
-
     private int finishedSeq;
 
     private SequenceHandlerInt handler;
@@ -83,6 +79,7 @@ public class SequenceActor extends ModuleActor {
         }
     }
 
+    @Deprecated
     private void onExecuteAfter(ExecuteAfter after) {
         if (after.getSeq() <= this.seq) {
             after.getRunnable().run();
@@ -91,25 +88,8 @@ public class SequenceActor extends ModuleActor {
         }
     }
 
-    private void onUpdateReceived(Object u) {
-        // Building parameters
-        final int seq;
-        final byte[] state;
-        int type;
-        byte[] body;
-        if (u instanceof SeqUpdate) {
-            seq = ((SeqUpdate) u).getSeq();
-            state = ((SeqUpdate) u).getState();
-            type = ((SeqUpdate) u).getUpdateHeader();
-            body = ((SeqUpdate) u).getUpdate();
-        } else if (u instanceof FatSeqUpdate) {
-            seq = ((FatSeqUpdate) u).getSeq();
-            state = ((FatSeqUpdate) u).getState();
-            type = ((FatSeqUpdate) u).getUpdateHeader();
-            body = ((FatSeqUpdate) u).getUpdate();
-        } else {
-            throw new RuntimeException();
-        }
+    private void onUpdateReceived(final int seq, final byte[] state, int type, byte[] body, List<ApiUser> users,
+                                  List<ApiGroup> groups) {
 
         // Checking sequence
         if (seq <= this.seq) {
@@ -119,47 +99,35 @@ public class SequenceActor extends ModuleActor {
         Log.d(TAG, "SeqUpdate {seq:" + seq + "}");
 
         if (!isValidated) {
-            Log.d(TAG, "Caching in further map");
-            further.put(seq, u);
+            Log.d(TAG, "Stashing update");
+            stash();
             return;
         }
 
         if (seq != this.seq + 1) {
-            further.put(seq, u);
+            stash();
 
             if (seq - this.seq > INVALIDATE_MAX_SEC_HOLE) {
                 Log.w(TAG, "Out of sequence: Too big hole. Force invalidate immediately");
-                self().sendOnce(new ForceInvalidate());
-                return;
+                forceInvalidate();
             }
 
             if (isTimerStarted) {
                 Log.w(TAG, "Out of sequence: timer already started");
             } else {
                 Log.w(TAG, "Out of sequence: starting timer for invalidation");
-                self().sendOnce(new ForceInvalidate(), INVALIDATE_GAP);
-                isTimerStarted = true;
+                startInvalidationTimer();
             }
 
             return;
         }
 
-        List<ApiUser> users = null;
-        List<ApiGroup> groups = null;
-        if (u instanceof FatSeqUpdate) {
-            users = ((FatSeqUpdate) u).getUsers();
-            groups = ((FatSeqUpdate) u).getGroups();
-        }
         Log.d(TAG, "Handling update #" + seq);
         handler.onSeqUpdate(type, body, users, groups).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
             @Override
             public void apply(SequenceHandlerActor.UpdateProcessed updateProcessed) {
+                Log.d(TAG, "Handling update ended #" + seq);
                 onUpdatesApplied(seq, state);
-            }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                // TODO?
             }
         }).done(self());
 
@@ -167,11 +135,9 @@ public class SequenceActor extends ModuleActor {
         this.seq = seq;
         this.state = state;
 
-        checkFuture();
+        unstashAll();
 
-        // Faaaaaar away
-        isTimerStarted = false;
-        self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
+        stopInvalidationTimer();
     }
 
     private void invalidate() {
@@ -189,23 +155,12 @@ public class SequenceActor extends ModuleActor {
                         return;
                     }
 
-                    seq = response.getSeq();
-                    finishedSeq = seq;
-                    state = response.getState();
-
-                    isValidated = true;
-
-                    preferences().putInt(KEY_SEQ, seq);
-                    preferences().putBytes(KEY_STATE, state);
-
                     Log.d(TAG, "State loaded {seq=" + seq + "}");
 
-                    checkRunnables();
-                    checkFuture();
-
-                    // Faaaaaar away
-                    isTimerStarted = false;
-                    self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
+                    seq = response.getSeq();
+                    state = response.getState();
+                    persistState(seq, state);
+                    onBecomeValid(response.getSeq(), response.getState());
                 }
 
                 @Override
@@ -214,7 +169,6 @@ public class SequenceActor extends ModuleActor {
                         return;
                     }
                     isValidated = true;
-
                     invalidate();
                 }
             });
@@ -232,30 +186,14 @@ public class SequenceActor extends ModuleActor {
                     Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "} in "
                             + (im.actor.runtime.Runtime.getCurrentTime() - loadStart) + " ms");
 
-                    // checkRunnables();
-
-                    seq = response.getSeq();
-                    state = response.getState();
-
                     handler.onDifferenceUpdate(response).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
                         @Override
                         public void apply(SequenceHandlerActor.UpdateProcessed updateProcessed) {
                             onUpdatesApplied(response.getSeq(), response.getState());
                         }
-                    }).failure(new Consumer<Exception>() {
-                        @Override
-                        public void apply(Exception e) {
-                            // TODO?
-                        }
                     }).done(self());
 
-                    isValidated = true;
-
-                    checkFuture();
-
-                    // Faaaaaar away
-                    isTimerStarted = false;
-                    self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
+                    onBecomeValid(response.getSeq(), response.getState());
 
                     if (response.needMore()) {
                         invalidate();
@@ -278,25 +216,29 @@ public class SequenceActor extends ModuleActor {
     }
 
     private void onUpdatesApplied(int seq, byte[] state) {
+        if (seq > finishedSeq) {
+            persistState(seq, state);
+            if (this.seq == seq) {
+                Log.d(TAG, "All updates applied {seq:" + seq + "}");
+            } else {
+                Log.d(TAG, "Updates applied {seq:" + seq + ", finishedSeq: " + finishedSeq + "}");
+            }
+            checkRunnables();
+        }
+    }
+
+    private void onBecomeValid(int seq, byte[] state) {
+        isValidated = true;
+        this.seq = seq;
+        this.state = state;
+        unstashAll();
+        stopInvalidationTimer();
+    }
+
+    private void persistState(int seq, byte[] state) {
         finishedSeq = seq;
         preferences().putInt(KEY_SEQ, seq);
         preferences().putBytes(KEY_STATE, state);
-        checkRunnables();
-    }
-
-    private void checkFuture() {
-        for (int i = seq + 1; ; i++) {
-            if (further.containsKey(i)) {
-                onReceive(further.remove(i));
-            } else {
-                break;
-            }
-        }
-        for (Integer key : further.keySet().toArray(new Integer[0])) {
-            if (key <= seq) {
-                further.remove(key);
-            }
-        }
     }
 
     private void checkRunnables() {
@@ -323,6 +265,28 @@ public class SequenceActor extends ModuleActor {
     }
 
     //
+    // Invalidation Timer
+    //
+
+    private void stopInvalidationTimer() {
+        isTimerStarted = false;
+        // Faaaaaar away
+        self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
+    }
+
+    private void startInvalidationTimer() {
+        if (!isTimerStarted) {
+            self().sendOnce(new ForceInvalidate(), INVALIDATE_GAP);
+            isTimerStarted = true;
+        }
+    }
+
+    private void forceInvalidate() {
+        self().sendOnce(new ForceInvalidate());
+        isTimerStarted = false;
+    }
+
+    //
     // Messages
     //
 
@@ -331,12 +295,48 @@ public class SequenceActor extends ModuleActor {
         if (message instanceof Invalidate
                 || message instanceof SeqUpdateTooLong
                 || message instanceof ForceInvalidate) {
+            if (!isValidated) {
+                return;
+            }
             invalidate();
         } else if (message instanceof SeqUpdate || message instanceof FatSeqUpdate) {
-            onUpdateReceived(message);
+            if (!isValidated) {
+                stash();
+                return;
+            }
+
+            int seq;
+            byte[] state;
+            int type;
+            byte[] body;
+            List<ApiUser> users = null;
+            List<ApiGroup> groups = null;
+            if (message instanceof SeqUpdate) {
+                seq = ((SeqUpdate) message).getSeq();
+                state = ((SeqUpdate) message).getState();
+                type = ((SeqUpdate) message).getUpdateHeader();
+                body = ((SeqUpdate) message).getUpdate();
+            } else {
+                seq = ((FatSeqUpdate) message).getSeq();
+                state = ((FatSeqUpdate) message).getState();
+                type = ((FatSeqUpdate) message).getUpdateHeader();
+                body = ((FatSeqUpdate) message).getUpdate();
+                users = ((FatSeqUpdate) message).getUsers();
+                groups = ((FatSeqUpdate) message).getGroups();
+            }
+
+            onUpdateReceived(seq, state, type, body, users, groups);
         } else if (message instanceof ExecuteAfter) {
+            if (!isValidated) {
+                stash();
+                return;
+            }
             onExecuteAfter((ExecuteAfter) message);
         } else if (message instanceof PushSeq) {
+            if (!isValidated) {
+                stash();
+                return;
+            }
             onPushSeqReceived(((PushSeq) message).seq);
         } else {
             drop(message);

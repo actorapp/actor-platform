@@ -77,13 +77,11 @@ public class SessionManagerActor extends ModuleActor {
      *
      * @param uid        User's id
      * @param keyGroupId User's key group
-     * @param resolver   Resolver for result
      */
-    public void pickSession(final int uid,
-                            final int keyGroupId,
-                            final PromiseResolver<PeerSession> resolver) {
+    public Promise<PeerSession> pickSession(final int uid,
+                                            final int keyGroupId) {
 
-        pickCachedSession(uid, keyGroupId)
+        return pickCachedSession(uid, keyGroupId)
                 .fallback(new Function<Exception, Promise<PeerSession>>() {
                     @Override
                     public Promise<PeerSession> apply(Exception e) {
@@ -121,9 +119,7 @@ public class SessionManagerActor extends ModuleActor {
                     public Promise<PeerSession> get() {
                         return pickCachedSession(uid, keyGroupId);
                     }
-                })
-                .pipeTo(resolver)
-                .done(self());
+                });
     }
 
     /**
@@ -133,15 +129,13 @@ public class SessionManagerActor extends ModuleActor {
      * @param keyGroupId  User's key group
      * @param ownKeyId    Own Pre Key id
      * @param theirKeyId  Their Pre Key id
-     * @param srcResolver resolver for value
      */
-    public void pickSession(final int uid,
-                            final int keyGroupId,
-                            final long ownKeyId,
-                            final long theirKeyId,
-                            final PromiseResolver<PeerSession> srcResolver) {
+    public Promise<PeerSession> pickSession(final int uid,
+                                            final int keyGroupId,
+                                            final long ownKeyId,
+                                            final long theirKeyId) {
 
-        pickCachedSession(uid, keyGroupId, ownKeyId, theirKeyId)
+        return pickCachedSession(uid, keyGroupId, ownKeyId, theirKeyId)
                 .fallback(new Function<Exception, Promise<PeerSession>>() {
                     @Override
                     public Promise<PeerSession> apply(Exception e) {
@@ -169,7 +163,6 @@ public class SessionManagerActor extends ModuleActor {
                                 });
                     }
                 })
-                .pipeTo(srcResolver)
                 .done(self());
     }
 
@@ -267,16 +260,15 @@ public class SessionManagerActor extends ModuleActor {
     //
 
     @Override
-    public void onAsk(Object message, PromiseResolver resolver) {
+    public Promise onAsk(Object message) throws Exception {
         if (message instanceof PickSessionForEncrypt) {
             PickSessionForEncrypt encrypt = (PickSessionForEncrypt) message;
-            pickSession(encrypt.getUid(), encrypt.getKeyGroupId(), resolver);
+            return pickSession(encrypt.getUid(), encrypt.getKeyGroupId());
         } else if (message instanceof PickSessionForDecrypt) {
             PickSessionForDecrypt decrypt = (PickSessionForDecrypt) message;
-            pickSession(decrypt.getUid(), decrypt.getKeyGroupId(), decrypt.getOwnPreKey(), decrypt.getTheirPreKey(),
-                    resolver);
+            return pickSession(decrypt.getUid(), decrypt.getKeyGroupId(), decrypt.getOwnPreKey(), decrypt.getTheirPreKey());
         } else {
-            super.onAsk(message, resolver);
+            return super.onAsk(message);
         }
     }
 
