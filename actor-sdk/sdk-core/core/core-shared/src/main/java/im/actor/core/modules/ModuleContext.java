@@ -4,7 +4,7 @@ import im.actor.core.Configuration;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.api.ApiModule;
-import im.actor.core.modules.api.Updates;
+import im.actor.core.modules.sequence.Updates;
 import im.actor.core.modules.internal.AppStateModule;
 import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.modules.internal.ContactsModule;

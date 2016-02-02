@@ -206,66 +206,52 @@ public class KeyManagerActor extends ModuleActor {
 
     /**
      * Fetching Own Identity key and group id
-     *
-     * @param resolver resolver for result
      */
-    private void fetchOwnIdentity(PromiseResolver resolver) {
-        resolver.result(new OwnIdentity(ownKeys.getKeyGroupId(), ownKeys.getIdentityKey()));
+    private Promise<OwnIdentity> fetchOwnIdentity() {
+        return Promises.success(new OwnIdentity(ownKeys.getKeyGroupId(), ownKeys.getIdentityKey()));
     }
 
     /**
      * Fetching own private pre key by public key
      *
      * @param publicKey public key material for search
-     * @param resolver  resolver for result
      */
-    private void fetchPreKey(byte[] publicKey, PromiseResolver<PrivateKey> resolver) {
-        PrivateKey privateKey;
+    private Promise<PrivateKey> fetchPreKey(byte[] publicKey) {
         try {
-            privateKey = ManagedList.of(ownKeys.getPreKeys())
+            return Promises.success(ManagedList.of(ownKeys.getPreKeys())
                     .filter(PrivateKey.PRE_KEY_EQUALS(publicKey))
-                    .first();
+                    .first());
         } catch (Exception e) {
             Log.d(TAG, "Unable to find own pre key " + Crypto.keyHash(publicKey));
             for (PrivateKey p : ownKeys.getPreKeys()) {
                 Log.d(TAG, "Have: " + Crypto.keyHash(p.getPublicKey()));
             }
-            resolver.error(e);
-            return;
+            throw e;
         }
-        resolver.result(privateKey);
     }
 
     /**
      * Fetching own pre key by id
      *
-     * @param keyId    pre key id
-     * @param resolver resolver for result
+     * @param keyId pre key id
      */
-    private void fetchPreKey(long keyId, PromiseResolver<PrivateKey> resolver) {
-        PrivateKey privateKey;
+    private Promise<PrivateKey> fetchPreKey(long keyId) {
         try {
-            privateKey = ManagedList.of(ownKeys.getPreKeys())
+            return Promises.success(ManagedList.of(ownKeys.getPreKeys())
                     .filter(PrivateKey.PRE_KEY_EQUALS_ID(keyId))
-                    .first();
+                    .first());
         } catch (Exception e) {
             Log.d(TAG, "Unable to find own pre key #" + keyId);
-            resolver.error(e);
-            return;
+            throw e;
         }
-        resolver.result(privateKey);
     }
 
     /**
      * Fetching own random pre key
-     *
-     * @param resolve resolver for result
      */
-    private void fetchPreKey(PromiseResolver<PrivateKey> resolve) {
-        PromisesArray.of(ownKeys.getPreKeys())
-                .random()
-                .pipeTo(resolve)
-                .done(self());
+    private Promise<PrivateKey> fetchPreKey() {
+        return PromisesArray.of(ownKeys.getPreKeys())
+                .random();
     }
 
     //
@@ -275,28 +261,25 @@ public class KeyManagerActor extends ModuleActor {
     /**
      * Fetching all user's key groups
      *
-     * @param uid      User's id
-     * @param resolver resolver for result
+     * @param uid User's id
      */
-    private void fetchUserGroups(final int uid, final PromiseResolver<UserKeys> resolver) {
+    private Promise<UserKeys> fetchUserGroups(final int uid) {
 
         User user = users().getValue(uid);
         if (user == null) {
-            resolver.error(new RuntimeException("Unable to find user #" + uid));
-            return;
+            throw new RuntimeException("Unable to find user #" + uid);
         }
 
         final UserKeys userKeys = getCachedUserKeys(uid);
         if (userKeys != null) {
-            resolver.result(userKeys);
-            return;
+            return Promises.success(userKeys);
         }
 
-        api(new RequestLoadPublicKeyGroups(new ApiUserOutPeer(uid, user.getAccessHash())))
+        return api(new RequestLoadPublicKeyGroups(new ApiUserOutPeer(uid, user.getAccessHash())))
                 .map(new Function<ResponsePublicKeyGroups, ArrayList<UserKeysGroup>>() {
                     @Override
                     public ArrayList<UserKeysGroup> apply(ResponsePublicKeyGroups response) {
-                        ArrayList<UserKeysGroup> keysGroups = new ArrayList<UserKeysGroup>();
+                        ArrayList<UserKeysGroup> keysGroups = new ArrayList<>();
                         for (ApiEncryptionKeyGroup keyGroup : response.getPublicKeyGroups()) {
                             UserKeysGroup validatedKeysGroup = validateUserKeysGroup(uid, keyGroup);
                             if (validatedKeysGroup != null) {
@@ -306,21 +289,14 @@ public class KeyManagerActor extends ModuleActor {
                         return keysGroups;
                     }
                 })
-                .then(new Consumer<ArrayList<UserKeysGroup>>() {
+                .map(new Function<ArrayList<UserKeysGroup>, UserKeys>() {
                     @Override
-                    public void apply(ArrayList<UserKeysGroup> userKeysGroups) {
+                    public UserKeys apply(ArrayList<UserKeysGroup> userKeysGroups) {
                         UserKeys userKeys = new UserKeys(uid, userKeysGroups.toArray(new UserKeysGroup[userKeysGroups.size()]));
                         cacheUserKeys(userKeys);
-                        resolver.result(userKeys);
+                        return userKeys;
                     }
-                })
-                .failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        Log.w(TAG, "(uid:" + uid + ") Unable to download keys");
-                        resolver.error(e);
-                    }
-                }).done(self());
+                });
     }
 
     /**
@@ -329,17 +305,15 @@ public class KeyManagerActor extends ModuleActor {
      * @param uid        User's id
      * @param keyGroupId User's key group id
      * @param keyId      Key id
-     * @param resolver   resolver for result
      */
-    private void fetchUserPreKey(final int uid, final int keyGroupId, final long keyId, final PromiseResolver<PublicKey> resolver) {
+    private Promise<PublicKey> fetchUserPreKey(final int uid, final int keyGroupId, final long keyId) {
 
         User user = users().getValue(uid);
         if (user == null) {
-            resolver.error(new RuntimeException("Unable to find user #" + uid));
-            return;
+            throw new RuntimeException("Unable to find user #" + uid);
         }
 
-        pickUserGroup(uid, keyGroupId)
+        return pickUserGroup(uid, keyGroupId)
                 .mapPromise(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
                     @Override
                     public Promise<PublicKey> apply(final Tuple2<UserKeysGroup, UserKeys> keysGroup) {
@@ -399,11 +373,7 @@ public class KeyManagerActor extends ModuleActor {
                                     }
                                 });
                     }
-                })
-                .pipeTo(resolver)
-                .done(self());
-
-
+                });
     }
 
     /**
@@ -411,11 +381,9 @@ public class KeyManagerActor extends ModuleActor {
      *
      * @param uid        User's id
      * @param keyGroupId User's key group id
-     * @param resolver   resolver for result
      */
-    private void fetchUserPreKey(final int uid, final int keyGroupId, final PromiseResolver<PublicKey> resolver) {
-
-        pickUserGroup(uid, keyGroupId)
+    private Promise<PublicKey> fetchUserPreKey(final int uid, final int keyGroupId) {
+        return pickUserGroup(uid, keyGroupId)
                 .mapPromise(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
                     @Override
                     public Promise<PublicKey> apply(final Tuple2<UserKeysGroup, UserKeys> keyGroups) {
@@ -450,9 +418,7 @@ public class KeyManagerActor extends ModuleActor {
                                     }
                                 });
                     }
-                })
-                .pipeTo(resolver)
-                .done(self());
+                });
     }
 
     //
@@ -490,7 +456,7 @@ public class KeyManagerActor extends ModuleActor {
         if (userKeys == null) {
             return;
         }
-        
+
         UserKeys updatedUserKeys = userKeys.removeUserKeyGroup(keyGroupId);
         cacheUserKeys(updatedUserKeys);
         context().getEncryption().getEncryptedChatManager(uid)
@@ -624,23 +590,23 @@ public class KeyManagerActor extends ModuleActor {
     }
 
     @Override
-    public void onAsk(Object message, PromiseResolver resolver) {
+    public Promise onAsk(Object message) throws Exception {
         if (message instanceof FetchOwnKey) {
-            fetchOwnIdentity(resolver);
+            return fetchOwnIdentity();
         } else if (message instanceof FetchOwnPreKeyByPublic) {
-            fetchPreKey(((FetchOwnPreKeyByPublic) message).getPublicKey(), resolver);
+            return fetchPreKey(((FetchOwnPreKeyByPublic) message).getPublicKey());
         } else if (message instanceof FetchOwnPreKeyById) {
-            fetchPreKey(((FetchOwnPreKeyById) message).getKeyId(), resolver);
+            return fetchPreKey(((FetchOwnPreKeyById) message).getKeyId());
         } else if (message instanceof FetchUserKeys) {
-            fetchUserGroups(((FetchUserKeys) message).getUid(), resolver);
+            return fetchUserGroups(((FetchUserKeys) message).getUid());
         } else if (message instanceof FetchUserPreKey) {
-            fetchUserPreKey(((FetchUserPreKey) message).getUid(), ((FetchUserPreKey) message).getKeyGroup(), ((FetchUserPreKey) message).getKeyId(), resolver);
+            return fetchUserPreKey(((FetchUserPreKey) message).getUid(), ((FetchUserPreKey) message).getKeyGroup(), ((FetchUserPreKey) message).getKeyId());
         } else if (message instanceof FetchUserPreKeyRandom) {
-            fetchUserPreKey(((FetchUserPreKeyRandom) message).getUid(), ((FetchUserPreKeyRandom) message).getKeyGroup(), resolver);
+            return fetchUserPreKey(((FetchUserPreKeyRandom) message).getUid(), ((FetchUserPreKeyRandom) message).getKeyGroup());
         } else if (message instanceof FetchOwnRandomPreKey) {
-            fetchPreKey(resolver);
+            return fetchPreKey();
         } else {
-            super.onAsk(message, resolver);
+            return super.onAsk(message);
         }
     }
 
@@ -648,7 +614,7 @@ public class KeyManagerActor extends ModuleActor {
     // Own Keys
     //
 
-    public static class FetchOwnKey extends AskMessage<OwnIdentity> {
+    public static class FetchOwnKey implements AskMessage<OwnIdentity> {
 
     }
 
@@ -671,11 +637,11 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchOwnRandomPreKey extends AskMessage<PrivateKey> {
+    public static class FetchOwnRandomPreKey implements AskMessage<PrivateKey> {
 
     }
 
-    public static class FetchOwnPreKeyByPublic extends AskMessage<PrivateKey> {
+    public static class FetchOwnPreKeyByPublic implements AskMessage<PrivateKey> {
 
         private byte[] publicKey;
 
@@ -688,7 +654,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchOwnPreKeyById extends AskMessage<PrivateKey> {
+    public static class FetchOwnPreKeyById implements AskMessage<PrivateKey> {
 
         private long keyId;
 
@@ -705,7 +671,7 @@ public class KeyManagerActor extends ModuleActor {
     // Users Keys
     //
 
-    public static class FetchUserKeys extends AskMessage<UserKeys> {
+    public static class FetchUserKeys implements AskMessage<UserKeys> {
         private int uid;
 
         public FetchUserKeys(int uid) {
@@ -717,7 +683,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchUserPreKey extends AskMessage<PublicKey> {
+    public static class FetchUserPreKey implements AskMessage<PublicKey> {
 
         private int uid;
         private int keyGroup;
@@ -742,7 +708,7 @@ public class KeyManagerActor extends ModuleActor {
         }
     }
 
-    public static class FetchUserPreKeyRandom extends AskMessage<PublicKey> {
+    public static class FetchUserPreKeyRandom implements AskMessage<PublicKey> {
 
         private int uid;
         private int keyGroup;
