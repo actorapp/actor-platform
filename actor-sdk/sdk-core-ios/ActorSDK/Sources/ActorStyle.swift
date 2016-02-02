@@ -20,6 +20,8 @@ public class ActorStyle {
     public var vcTintColor = UIColor(rgb: 0x5085CB)
     /// Color of desctructive actions. Default is red
     public var vcDestructiveColor = UIColor.redColor()
+    /// Default background color
+    public var vcDefaultBackgroundColor = UIColor.whiteColor()
     /// Main Text color of app
     public var vcTextColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0)
     /// Text Hint colors
@@ -712,6 +714,13 @@ public class ActorStyle {
         set(v) { _vcStarInfoTextColor = v }
     }
     public var _vcStarInfoTextColor : UIColor?
+    
+    /// Welcome tour background color
+    public var vcWelcomeBackgroundColor: UIColor {
+        get { return _vcStarInfoTextColor != nil ? _vcWelcomeBackgroundColor! : vcDefaultBackgroundColor }
+        set(v) { _vcWelcomeBackgroundColor = v }
+    }
+    public var _vcWelcomeBackgroundColor : UIColor?
     
     //
     // Settings VC

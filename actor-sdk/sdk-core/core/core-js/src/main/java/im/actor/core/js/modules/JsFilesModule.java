@@ -19,8 +19,8 @@ import im.actor.core.js.modules.entity.CachedFileUrl;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Modules;
-import im.actor.core.modules.utils.BaseKeyValueEngine;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.BaseKeyValueEngine;
+import im.actor.core.util.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Log;
@@ -46,7 +46,7 @@ public class JsFilesModule extends AbsModule {
     public JsFilesModule(final Modules modules) {
         super(modules);
 
-        urlLoader = system().actorOf(Props.create(FileBinderActor.class, new ActorCreator<FileBinderActor>() {
+        urlLoader = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public FileBinderActor create() {
                 return new FileBinderActor(JsFilesModule.this, modules);

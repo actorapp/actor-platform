@@ -4,6 +4,8 @@
 
 package im.actor.core.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import im.actor.core.Configuration;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;

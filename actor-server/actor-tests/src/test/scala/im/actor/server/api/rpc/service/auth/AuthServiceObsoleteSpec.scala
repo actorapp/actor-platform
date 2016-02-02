@@ -7,6 +7,7 @@ import im.actor.server._
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
+import im.actor.server.user.UserExtension
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -18,6 +19,8 @@ final class AuthServiceObsoleteSpec extends BaseAppSuite with SeqUpdateMatchers 
   "SendAuthCode handler" should "respond ok to a request valid number" in s.sendAuthCode.e1
 
   it should "not fail if number already exists" in (s.sendAuthCode.e1)
+
+  it should "not allow deleted user to log in" in s.sendAuthCode.phoneDeletedUser
 
   "SignUp handler" should "respond ok to a valid request" in (s.signUp().e1)
 
@@ -48,6 +51,21 @@ final class AuthServiceObsoleteSpec extends BaseAppSuite with SeqUpdateMatchers 
         whenReady(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")) { resp ⇒
           resp should matchPattern {
             case Ok(ResponseSendAuthCodeObsolete(_, false)) ⇒
+          }
+        }
+      }
+
+      def phoneDeletedUser() = {
+        val (user, authId, authSid, phoneNumber) = createUser()
+
+        val sessionId = createSessionId()
+        implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+
+        whenReady(UserExtension(system).delete(user.id))(identity)
+
+        whenReady(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")) { resp ⇒
+          inside(resp) {
+            case Error(AuthErrors.UserDeleted) ⇒
           }
         }
       }

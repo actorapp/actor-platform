@@ -9,6 +9,8 @@ public interface RandomRuntime {
 
     void nextBytes(byte[] data);
 
+    long randomLong();
+
     BigInteger generateBigInteger(int numBits);
 
     BigInteger generateBigInteger(int numBits, int certanity);

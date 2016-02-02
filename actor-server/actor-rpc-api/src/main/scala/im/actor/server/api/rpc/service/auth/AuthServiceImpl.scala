@@ -22,7 +22,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.email.{ EmailConfig, SmtpEmailSender }
 import im.actor.server.model.{ AuthAnonymousTransaction, AuthUsernameTransaction }
 import im.actor.server.oauth.GoogleProvider
-import im.actor.server.persist.{ UserPasswordRepo, UserRepo }
+import im.actor.server.persist._
 import im.actor.server.persist.auth.{ AuthUsernameTransactionRepo, AuthTransactionRepo }
 import im.actor.server.session._
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
@@ -84,7 +84,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
   override def jhandleGetAuthSessions(clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       for {
-        sessionModels ← persist.AuthSessionRepo.findByUserId(client.userId)
+        sessionModels ← AuthSessionRepo.findByUserId(client.userId)
       } yield {
         val sessionStructs = sessionModels map { sessionModel ⇒
           val authHolder =
@@ -174,6 +174,8 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
   ): Future[HandlerResult[ResponseStartPhoneAuth]] = {
     val action = for {
       normalizedPhone ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeLong(phoneNumber).headOption)
+      optPhone ← fromDBIO(persist.UserPhoneRepo.findByPhoneNumber(normalizedPhone).headOption)
+      _ ← optPhone map (p ⇒ forbidDeletedUser(p.userId)) getOrElse point(())
       optAuthTransaction ← fromDBIO(persist.auth.AuthPhoneTransactionRepo.findByPhoneAndDeviceHash(normalizedPhone, deviceHash))
       transactionHash ← optAuthTransaction match {
         case Some(transaction) ⇒ point(transaction.transactionHash)
@@ -195,7 +197,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
           } yield transactionHash
       }
       _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), Some(transactionHash)))
-      isRegistered ← fromDBIO(persist.UserPhoneRepo.exists(normalizedPhone))
+      isRegistered = optPhone.isDefined
     } yield ResponseStartPhoneAuth(transactionHash, isRegistered, Some(ApiPhoneActivationType.CODE))
     db.run(action.run)
   }
@@ -214,6 +216,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
       for {
         normUsername ← fromOption(ProfileErrors.NicknameInvalid)(StringUtils.normalizeUsername(username))
         optUser ← fromDBIO(UserRepo.findByNickname(username))
+        _ ← optUser map (u ⇒ forbidDeletedUser(u.id)) getOrElse point(())
         optAuthTransaction ← fromDBIO(AuthUsernameTransactionRepo.find(username, deviceHash))
         transactionHash ← optAuthTransaction match {
           case Some(transaction) ⇒ point(transaction.transactionHash)
@@ -254,7 +257,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
         normUsername ← fromOption(ProfileErrors.NicknameInvalid)(StringUtils.normalizeUsername(username))
         accessSalt = ACLUtils.nextAccessSalt()
         nicknameExists ← fromDBIO(UserRepo.nicknameExists(normUsername))
-        optUser ← fromBoolean(ProfileErrors.NicknameBusy)(!nicknameExists)
+        _ ← fromBoolean(ProfileErrors.NicknameBusy)(!nicknameExists)
         transactionHash = ACLUtils.authTransactionHash(accessSalt)
         transaction = AuthAnonymousTransaction(
           normUsername,
@@ -333,10 +336,12 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
   ): Future[HandlerResult[ResponseStartEmailAuth]] = {
     val action = for {
       validEmail ← fromEither(validEmail(email).leftMap(validationFailed("EMAIL_INVALID", _)))
+      optEmail ← fromDBIO(persist.UserEmailRepo.find(validEmail))
+      _ ← optEmail map (e ⇒ forbidDeletedUser(e.userId)) getOrElse point(())
       //    OAUTH activation is temporary disabled
       //    activationType = if (OAuth2ProvidersDomains.supportsOAuth2(validEmail)) OAUTH2 else CODE
       activationType = CODE
-      isRegistered ← fromDBIO(persist.UserEmailRepo.exists(validEmail))
+      isRegistered = optEmail.isDefined
       optTransaction ← fromDBIO(persist.auth.AuthEmailTransactionRepo.findByEmailAndDeviceHash(validEmail, deviceHash))
       transactionHash ← optTransaction match {
         case Some(trans) ⇒
@@ -412,7 +417,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
 
   override def jhandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData) map { implicit client ⇒
-      persist.AuthSessionRepo.findByAuthId(client.authId) flatMap {
+      AuthSessionRepo.findByAuthId(client.authId) flatMap {
         case Some(session) ⇒
           for (_ ← DBIO.from(userExt.logout(session))) yield Ok(misc.ResponseVoid)
         case None ⇒ throw new Exception(s"Cannot find AuthSession for authId: ${client.authId}")
@@ -425,7 +430,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
   override def jhandleTerminateAllSessions(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       for {
-        sessions ← persist.AuthSessionRepo.findByUserId(client.userId) map (_.filterNot(_.authId == client.authId))
+        sessions ← AuthSessionRepo.findByUserId(client.userId) map (_.filterNot(_.authId == client.authId))
         _ ← DBIO.from(Future.sequence(sessions map userExt.logout))
       } yield {
         Ok(ResponseVoid)
@@ -437,7 +442,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
 
   override def jhandleTerminateSession(id: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
-      persist.AuthSessionRepo.find(client.userId, id).headOption flatMap {
+      AuthSessionRepo.find(client.userId, id).headOption flatMap {
         case Some(session) ⇒
           if (session.authId != clientData.authId) {
             for (_ ← DBIO.from(userExt.logout(session))) yield Ok(ResponseVoid)
@@ -480,14 +485,22 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
       case None ⇒
         Future.successful(Error(AuthErrors.PhoneNumberInvalid))
       case Some(normPhoneNumber) ⇒
-        val action = persist.AuthSmsCodeObsoleteRepo.findByPhoneNumber(normPhoneNumber).headOption.flatMap {
+        val isDeletedAction = for {
+          optPhone ← UserPhoneRepo.findByPhoneNumber(normPhoneNumber).headOption
+          isDeleted ← optPhone match {
+            case Some(phone) ⇒ UserRepo.isDeleted(phone.userId)
+            case None        ⇒ DBIO.successful(false)
+          }
+        } yield isDeleted
+
+        val sendCodeAction = AuthSmsCodeObsoleteRepo.findByPhoneNumber(normPhoneNumber).headOption.flatMap {
           case Some(model.AuthSmsCodeObsolete(_, _, smsHash, smsCode, _)) ⇒
             DBIO.successful(normPhoneNumber :: smsHash :: smsCode :: HNil)
           case None ⇒
             val smsHash = genSmsHash()
             val smsCode = genSmsCode(normPhoneNumber)
             for (
-              _ ← persist.AuthSmsCodeObsoleteRepo.create(
+              _ ← AuthSmsCodeObsoleteRepo.create(
                 id = ThreadLocalSecureRandom.current().nextLong(),
                 phoneNumber = normPhoneNumber,
                 smsHash = smsHash,
@@ -495,13 +508,16 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
               )
             ) yield normPhoneNumber :: smsHash :: smsCode :: HNil
         }.flatMap { res ⇒
-          persist.UserPhoneRepo.exists(normPhoneNumber) map (res :+ _)
+          UserPhoneRepo.exists(normPhoneNumber) map (res :+ _)
         }.map {
           case number :: smsHash :: smsCode :: isRegistered :: HNil ⇒
             sendSmsCode(number, smsCode, None)
             Ok(ResponseSendAuthCodeObsolete(smsHash, isRegistered))
         }
-        db.run(action)
+        db.run(for {
+          isDeleted ← isDeletedAction
+          result ← if (isDeleted) DBIO.successful(Error(AuthErrors.UserDeleted)) else sendCodeAction
+        } yield result)
     }
   }
 
@@ -561,8 +577,8 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
         else {
           val action =
             (for {
-              optCode ← persist.AuthSmsCodeObsoleteRepo.findByPhoneNumber(normPhoneNumber).headOption
-              optPhone ← persist.UserPhoneRepo.findByPhoneNumber(normPhoneNumber).headOption
+              optCode ← AuthSmsCodeObsoleteRepo.findByPhoneNumber(normPhoneNumber).headOption
+              optPhone ← UserPhoneRepo.findByPhoneNumber(normPhoneNumber).headOption
             } yield optCode :: optPhone :: HNil).flatMap {
               case None :: _ :: HNil ⇒ DBIO.successful(Error(AuthErrors.PhoneCodeExpired))
               case Some(smsCodeModel) :: _ :: HNil if smsCodeModel.smsHash != smsHash ⇒
@@ -572,7 +588,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
               case Some(_) :: optPhone :: HNil ⇒
                 signType match {
                   case Up(rawName, isSilent) ⇒
-                    persist.AuthSmsCodeObsoleteRepo.deleteByPhoneNumber(normPhoneNumber).andThen(
+                    AuthSmsCodeObsoleteRepo.deleteByPhoneNumber(normPhoneNumber).andThen(
                       optPhone match {
                         // Phone does not exist, register the user
                         case None ⇒ withValidName(rawName) { name ⇒
@@ -593,7 +609,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
                             _ ← DBIO.from(userExt.create(user.id, user.accessSalt, None, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
                             _ ← DBIO.from(userExt.auth(userId, clientData.authId))
                             _ ← DBIO.from(userExt.addPhone(user.id, normPhoneNumber))
-                            _ ← persist.AvatarDataRepo.create(model.AvatarData.empty(model.AvatarData.OfUser, user.id.toLong))
+                            _ ← AvatarDataRepo.create(model.AvatarData.empty(model.AvatarData.OfUser, user.id.toLong))
                           } yield {
                             \/-(user :: HNil)
                           }
@@ -607,7 +623,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
                     optPhone match {
                       case None ⇒ DBIO.successful(Error(AuthErrors.PhoneNumberUnoccupied))
                       case Some(phone) ⇒
-                        persist.AuthSmsCodeObsoleteRepo.deleteByPhoneNumber(normPhoneNumber).andThen(
+                        AuthSmsCodeObsoleteRepo.deleteByPhoneNumber(normPhoneNumber).andThen(
                           signIn(clientData.authId, phone.userId, countryCode, clientData)
                         )
                     }
@@ -629,9 +645,9 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
                 )
 
                 for {
-                  prevSessions ← persist.AuthSessionRepo.findByDeviceHash(deviceHash)
+                  prevSessions ← AuthSessionRepo.findByDeviceHash(deviceHash)
                   _ ← DBIO.from(Future.sequence(prevSessions map userExt.logout))
-                  _ ← persist.AuthSessionRepo.create(authSession)
+                  _ ← AuthSessionRepo.create(authSession)
                   userStruct ← DBIO.from(userExt.getApiStruct(user.id, user.id, clientData.authId))
                 } yield {
                   sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(userStruct.id, authSession.id))
@@ -652,7 +668,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
   }
 
   private def signIn(authId: Long, userId: Int, countryCode: String, clientData: ClientData) = {
-    persist.UserRepo.find(userId).flatMap {
+    UserRepo.find(userId).flatMap {
       case None ⇒ throw new Exception("Failed to retrieve user")
       case Some(user) ⇒
         for {
