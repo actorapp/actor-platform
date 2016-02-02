@@ -21,6 +21,7 @@ import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.session.{ HandleMessageBox, Session, SessionConfig, SessionEnvelope }
+import im.actor.server.user.UserExtension
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Random
@@ -43,6 +44,8 @@ final class AuthServiceSpec
   it should "respond with same transactionHash when called multiple times" in s.e33
 
   it should "associate authorizations from two different devices with different auth transactions" in s.e34
+
+  it should "not allow deleted user to log in" in s.phoneDeletedUser
 
   "ValidateCode handler" should "respond with error to invalid transactionHash" in s.e4
 
@@ -78,6 +81,8 @@ final class AuthServiceSpec
   it should "respond with same transactionHash when called multiple times" in s.e15
 
   it should "associate authorizations from two different devices with different auth transactions" in s.e155
+
+  it should "not allow deleted user to log in" in s.emailDeletedUser
 
   "GetOAuth2Params handler" should "respond with error when malformed url is passed" in pendingUntilFixed(s.e16)
 
@@ -218,6 +223,21 @@ final class AuthServiceSpec
         resp.toOption.get.transactionHash
       }
       transactionHash1 should not equal transactionHash2
+    }
+
+    def phoneDeletedUser() = {
+      val (user, authId, authSid, phoneNumber) = createUser()
+
+      val sessionId = createSessionId()
+      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+
+      whenReady(UserExtension(system).delete(user.id))(identity)
+
+      whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
+        inside(resp) {
+          case Error(AuthErrors.UserDeleted) ⇒
+        }
+      }
     }
 
     def e4() = {
@@ -674,6 +694,23 @@ final class AuthServiceSpec
         resp.toOption.get.transactionHash
       }
       transactionHash1 should not equal transactionHash2
+    }
+
+    def emailDeletedUser() = {
+      val (user, authId, authSid, _) = createUser()
+      val email = buildEmail(gmail)
+
+      val sessionId = createSessionId()
+      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+
+      whenReady(UserExtension(system).addEmail(user.id, email))(identity)
+      whenReady(UserExtension(system).delete(user.id))(identity)
+
+      whenReady(startEmailAuth(email)) { resp ⇒
+        inside(resp) {
+          case Error(AuthErrors.UserDeleted) ⇒
+        }
+      }
     }
 
     def e16() = {

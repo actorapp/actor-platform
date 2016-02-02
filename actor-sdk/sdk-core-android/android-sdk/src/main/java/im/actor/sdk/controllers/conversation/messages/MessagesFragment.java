@@ -241,7 +241,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     }
 
     public void onAvatarClick(int uid) {
-        startActivity(Intents.openProfile(uid, getActivity()));
+        ActorSDK.sharedActor().startProfileActivity(getActivity(), uid);
     }
 
     public void onAvatarLongClick(int uid) {

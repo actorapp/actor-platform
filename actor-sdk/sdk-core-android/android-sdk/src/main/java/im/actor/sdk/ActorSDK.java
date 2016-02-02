@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -29,10 +28,12 @@ import im.actor.runtime.Log;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
+import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.fragment.auth.AuthActivity;
+import im.actor.sdk.controllers.fragment.profile.ProfileActivity;
 import im.actor.sdk.controllers.fragment.settings.MyProfileActivity;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
@@ -213,20 +214,25 @@ public class ActorSDK {
                 apiAppKey,
                 Devices.getDeviceName(),
                 AndroidContext.getContext().getPackageName() + ":" + Build.SERIAL));
-
+        //
         // Adding Locales
+        //
         Locale defaultLocale = Locale.getDefault();
         Log.d(TAG, "Found Locale: " + defaultLocale.getLanguage() + "-" + defaultLocale.getCountry());
         Log.d(TAG, "Found Locale: " + defaultLocale.getLanguage());
         builder.addPreferredLanguage(defaultLocale.getLanguage() + "-" + defaultLocale.getCountry());
         builder.addPreferredLanguage(defaultLocale.getLanguage());
 
+        //
         // Adding TimeZone
+        //
         String timeZone = TimeZone.getDefault().getID();
         Log.d(TAG, "Found TimeZone: " + timeZone);
         builder.setTimeZone(timeZone);
 
+        //
         // App Name
+        //
         if (customApplicationName != null) {
             builder.setCustomAppName(customApplicationName);
         }
@@ -480,35 +486,75 @@ public class ActorSDK {
         this.actorPushEndpoint = actorPushEndpoint;
     }
 
+    /**
+     * Getting account support phone
+     *
+     * @return account support phone
+     */
     public String getHelpPhone() {
         return helpPhone;
     }
 
+    /**
+     * Setting account support phone
+     *
+     * @param helpPhone account support phone
+     */
     public void setHelpPhone(String helpPhone) {
         this.helpPhone = helpPhone;
     }
 
+    /**
+     * Getting app home page
+     *
+     * @return app home page
+     */
     public String getHomePage() {
         return homePage;
     }
 
+    /**
+     * Setting app home page
+     *
+     * @param homePage app home page
+     */
     public void setHomePage(String homePage) {
         this.homePage = homePage;
     }
 
+    /**
+     * Getting app twitter account
+     *
+     * @return app twitter account
+     */
     public String getTwitterAcc() {
         return twitter;
     }
 
+    /**
+     * Setting app twitter account
+     *
+     * @param twitter app twitter account
+     */
     public void setTwitter(String twitter) {
         this.twitter = twitter;
     }
 
+    /**
+     * Setting is calls enabled - if enabled app will handle calls updates e.g. UpdateIncomingCall/UpdateCallSignal/UpdateCallEnded etc
+     *
+     * @param callsEnabled is calls enabled
+     */
     public void setCallsEnabled(boolean callsEnabled) {
         this.callsEnabled = callsEnabled;
         CallsModule.CALLS_ENABLED = callsEnabled;
     }
 
+    /**
+     * Is calls enabled.
+     *
+     * @return callsEnabled is calls enabled
+     */
     public boolean isCallsEnabled() {
         return callsEnabled;
     }
@@ -521,6 +567,24 @@ public class ActorSDK {
     @NotNull
     public ActorSDKDelegate getDelegate() {
         return delegate;
+    }
+
+    /**
+     * Getting url for invite sharing
+     *
+     * @return invite url
+     */
+    public String getInviteUrl() {
+        return inviteUrl;
+    }
+
+    /**
+     * Setting url for invite sharing
+     *
+     * @param inviteUrl invite url
+     */
+    public void setInviteUrl(String inviteUrl) {
+        this.inviteUrl = inviteUrl;
     }
 
     /**
@@ -537,44 +601,101 @@ public class ActorSDK {
         return activityManager;
     }
 
+    /**
+     * Method is used internally for starting default activity or activity added in delegate
+     *
+     * @param context current context
+     */
     public void startAuthActivity(Context context) {
         startAuthActivity(context, null);
     }
 
-
+    /**
+     * Method is used internally for starting default activity or activity added in delegate
+     *
+     * @param context current context
+     * @param extras  activity extras
+     */
     public void startAuthActivity(Context context, Bundle extras) {
         if (!startDelegateActivity(context, delegate.getAuthStartIntent(), extras)) {
             startActivity(context, extras, AuthActivity.class);
         }
     }
 
+    /**
+     * Method is used internally for starting default activity or activity added in delegate
+     *
+     * @param context current context
+     */
     public void startAfterLoginActivity(Context context) {
         startAfterLoginActivity(context, null);
     }
 
+    /**
+     * Method is used internally for starting default activity or activity added in delegate
+     *
+     * @param context current context
+     * @param extras  activity extras
+     */
     public void startAfterLoginActivity(Context context, Bundle extras) {
         if (!startDelegateActivity(context, delegate.getStartAfterLoginIntent(), extras)) {
             startMessagingActivity(context, extras);
         }
     }
 
+    /**
+     * Method is used internally for starting default activity or activity added in delegate
+     *
+     * @param context current context
+     */
     public void startMessagingActivity(Context context) {
         startMessagingActivity(context, null);
     }
 
+    /**
+     * Method is used internally for starting default activity or activity added in delegate
+     *
+     * @param context current context
+     * @param extras  activity extras
+     */
     public void startMessagingActivity(Context context, Bundle extras) {
         if (!startDelegateActivity(context, delegate.getStartIntent(), extras)) {
             startActivity(context, extras, ActorMainActivity.class);
         }
     }
 
+    /**
+     * Method is used internally for starting default activity or activity added in delegate
+     *
+     * @param context current context
+     */
     public void startSettingActivity(Context context) {
         startSettingActivity(context, null);
     }
 
+    /**
+     * Method is used internally for starting default activity or activity added in delegate
+     *
+     * @param context current context
+     * @param extras  activity extras
+     */
     public void startSettingActivity(Context context, Bundle extras) {
         if (!startDelegateActivity(context, delegate.getSettingsIntent(), extras)) {
             startActivity(context, extras, MyProfileActivity.class);
+        }
+    }
+
+    /**
+     * Method is used internally for starting default activity or activity added in delegate
+     *
+     * @param context current context
+     * @param uid     user id
+     */
+    public void startProfileActivity(Context context, int uid) {
+        Bundle b = new Bundle();
+        b.putInt(Intents.EXTRA_UID, uid);
+        if (!startDelegateActivity(context, delegate.getProfileIntent(uid), b)) {
+            startActivity(context, b, ProfileActivity.class);
         }
     }
 
@@ -605,6 +726,9 @@ public class ActorSDK {
         context.startActivity(intent);
     }
 
+    /**
+     * Method is used internally for getting delegated fragment
+     */
     public <T> T getDelegatedFragment(ActorIntent delegatedIntent, android.support.v4.app.Fragment baseFragment, Class<T> type) {
 
         if (delegatedIntent != null &&
@@ -618,6 +742,9 @@ public class ActorSDK {
 
     }
 
+    /**
+     * Method is used internally for getting delegated list ViewHolder for default messages types
+     */
     public <T extends BindedViewHolder> T getDelegatedViewHolder(Class<T> base, OnDelegateViewHolder<T> callback, Object... args) {
         T delegated = delegate.getViewHolder(base, args);
         if (delegated != null) {
@@ -627,7 +754,10 @@ public class ActorSDK {
         }
     }
 
-    public MessageHolder getDelegatedMessageViewHolder(int id, OnDelegateViewHolder<MessageHolder> callback, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
+    /**
+     * Method is used internally for getting delegated list ViewHolder for custom messages types
+     */
+    public MessageHolder getDelegatedCustomMessageViewHolder(int id, OnDelegateViewHolder<MessageHolder> callback, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
         MessageHolder delegated = delegate.getCustomMessageViewHolder(id, messagesAdapter, viewGroup);
         if (delegated != null) {
             return delegated;
@@ -636,23 +766,11 @@ public class ActorSDK {
         }
     }
 
-    public String getInviteUrl() {
-        return inviteUrl;
-    }
-
-    public void setInviteUrl(String inviteUrl) {
-        this.inviteUrl = inviteUrl;
-    }
-
+    /**
+     * Used for handling delegated ViewHolders
+     */
     public interface OnDelegateViewHolder<T> {
         T onNotDelegated();
 
     }
-
-    public interface OnDeligateMessageHolder {
-        MessageHolder onNotDelegated();
-
-        View getItemView();
-    }
-
 }
