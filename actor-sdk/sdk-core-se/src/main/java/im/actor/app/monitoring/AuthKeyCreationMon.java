@@ -22,7 +22,7 @@ public class AuthKeyCreationMon extends Actor {
                 new ConnectionEndpoint("front1-mtproto-api-rev3.actor.im", 443, ConnectionEndpoint.Type.TCP),
                 new ConnectionEndpoint("front2-mtproto-api-rev3.actor.im", 443, ConnectionEndpoint.Type.TCP)
         }, new TrustedKey[0]);
-        keyCreation = system().actorOf(Props.create(AuthKeyActor.class, new ActorCreator<AuthKeyActor>() {
+        keyCreation = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public AuthKeyActor create() {
                 return new AuthKeyActor();

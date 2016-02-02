@@ -22,6 +22,11 @@ public class RandomRuntimeProvider implements RandomRuntime {
     }
 
     @Override
+    public long randomLong() {
+        throw new RuntimeException("Dumb");
+    }
+
+    @Override
     public BigInteger generateBigInteger(int numBits) {
         throw new RuntimeException("Dumb");
     }
