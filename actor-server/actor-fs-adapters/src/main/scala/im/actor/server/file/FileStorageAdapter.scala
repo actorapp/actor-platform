@@ -16,8 +16,8 @@ trait FileStorageAdapter extends UploadActions with DownloadActions with UploadK
 
 final case class UnsafeFileName(fileName: String) {
   lazy val safe: String = {
-    val noWhitespace = fileName.replace("\u0000", "").replaceAll("\\s+", "_")
-    val validName = if (isAsciiString(noWhitespace)) noWhitespace else toAsciiString(transliterate(noWhitespace))
+    val name = fileName.replace("\u0000", "")
+    val validName = if (isAsciiString(name)) name else toAsciiString(transliterate(name))
     new File(validName).toPath.normalize().getFileName.toString
   }
 }

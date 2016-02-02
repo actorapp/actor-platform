@@ -1,0 +1,1 @@
+* :bug: Don't allow deleted users to log in

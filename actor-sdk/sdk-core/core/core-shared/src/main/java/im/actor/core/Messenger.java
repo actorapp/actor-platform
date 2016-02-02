@@ -91,8 +91,9 @@ public class Messenger {
         // Actor system
         timing.section("Actors");
         ActorSystem.system().setTraceInterface(new ActorTrace());
-        ActorSystem.system().addDispatcher("network");
-        ActorSystem.system().addDispatcher("heavy");
+        ActorSystem.system().addDispatcher("network", 2);
+        ActorSystem.system().addDispatcher("network_manager", 1);
+        ActorSystem.system().addDispatcher("heavy", 2);
         ActorSystem.system().addDispatcher("updates", 1);
 
         timing.section("Modules:Create");
@@ -1010,6 +1011,7 @@ public class Messenger {
 
     /**
      * Handle call in ui - <b>should<b/> be called, when receiving IncomingCallEvent
+     *
      * @param callId
      * @param callback
      */

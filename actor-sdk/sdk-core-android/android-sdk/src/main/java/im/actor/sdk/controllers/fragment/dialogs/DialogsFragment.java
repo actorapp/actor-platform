@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.GroupVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
@@ -33,7 +34,7 @@ public class DialogsFragment extends BaseDialogFragment {
                             if (which == 0) {
 
                                 // View profile
-                                startActivity(Intents.openProfile(dialog.getPeer().getPeerId(), getActivity()));
+                                ActorSDK.sharedActor().startProfileActivity(getActivity(), dialog.getPeer().getPeerId());
 
                             } else if (which == 1) {
 
