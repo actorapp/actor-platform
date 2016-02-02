@@ -7,8 +7,9 @@ import im.actor.api.rpc.encryption.ApiEncryptionKey
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.push.PushService
 import im.actor.server.db.DbExtension
+import im.actor.server.model.push.{ GooglePushCredentials, ApplePushCredentials, ActorPushCredentials }
+import im.actor.server.persist.push.{ GooglePushCredentialsRepo, ApplePushCredentialsRepo, ActorPushCredentialsRepo }
 import im.actor.server.sequence.SeqUpdatesExtension
-import im.actor.server.{ model, persist }
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
 
@@ -32,10 +33,10 @@ final class PushServiceImpl(
   }
 
   override def jhandleRegisterGooglePush(projectId: Long, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val creds = model.push.GooglePushCredentials(clientData.authId, projectId, token)
+    val creds = GooglePushCredentials(clientData.authId, projectId, token)
     for {
-      _ ← db.run(persist.push.GooglePushCredentialsRepo.deleteByToken(token))
-      _ ← db.run(persist.push.GooglePushCredentialsRepo.createOrUpdate(creds))
+      _ ← db.run(GooglePushCredentialsRepo.deleteByToken(token))
+      _ ← db.run(GooglePushCredentialsRepo.createOrUpdate(creds))
       _ = seqUpdExt.registerGooglePushCredentials(creds)
     } yield Ok(ResponseVoid)
   }
@@ -44,10 +45,10 @@ final class PushServiceImpl(
     BitVector.fromHex(token) match {
       case Some(tokenBits) ⇒
         val tokenBytes = tokenBits.toByteArray
-        val creds = model.push.ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes))
+        val creds = ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes))
         val action: DBIO[HandlerResult[ResponseVoid]] = for {
-          _ ← persist.push.ApplePushCredentialsRepo.deleteByToken(tokenBytes)
-          _ ← persist.push.ApplePushCredentialsRepo.createOrUpdate(creds)
+          _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
+          _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
           _ = seqUpdExt.registerApplePushCredentials(creds)
         } yield Ok(ResponseVoid)
         db.run(action)
@@ -61,11 +62,11 @@ final class PushServiceImpl(
     publicKeys: IndexedSeq[ApiEncryptionKey],
     clientData: ClientData
   ): Future[HandlerResult[ResponseVoid]] = {
-    val creds = model.push.ActorPushCredentials(clientData.authId, topic)
+    val creds = ActorPushCredentials(clientData.authId, topic)
 
     db.run(for {
-      _ ← persist.push.ActorPushCredentialsRepo.deleteByTopic(topic)
-      _ ← persist.push.ActorPushCredentialsRepo.createOrUpdate(clientData.authId, topic)
+      _ ← ActorPushCredentialsRepo.deleteByTopic(topic)
+      _ ← ActorPushCredentialsRepo.createOrUpdate(clientData.authId, topic)
       _ = seqUpdExt.registerActorPushCredentials(creds)
     } yield Ok(ResponseVoid))
   }

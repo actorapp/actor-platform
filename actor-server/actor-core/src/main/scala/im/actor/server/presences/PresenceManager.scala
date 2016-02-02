@@ -3,7 +3,8 @@ package im.actor.server.presences
 import akka.actor._
 import akka.cluster.sharding.ShardRegion.Passivate
 import im.actor.server.db.DbExtension
-import im.actor.server.{ model, persist }
+import im.actor.server.model.presences.UserPresence
+import im.actor.server.persist.presences.UserPresenceRepo
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -78,11 +79,11 @@ class PresenceManager extends Actor with ActorLogging with Stash {
   private[this] var state = PresenceState(userId, Offline, None)
 
   private def initialize(userId: Int): Unit = {
-    db.run(persist.presences.UserPresenceRepo.find(userId).map {
+    db.run(UserPresenceRepo.find(userId).map {
       case Some(userPresence) ⇒
         self ! Initialized(userPresence.lastSeenAt)
       case None ⇒
-        db.run(persist.presences.UserPresenceRepo.createOrUpdate(model.presences.UserPresence(userId, None)))
+        db.run(UserPresenceRepo.createOrUpdate(UserPresence(userId, None)))
         self ! Initialized(None)
     }) onFailure {
       case e ⇒
@@ -126,7 +127,7 @@ class PresenceManager extends Actor with ActorLogging with Stash {
 
       if (presence != Offline) {
         this.state = this.state.copy(lastSeenAt = Some((new DateTime).plusMillis(timeout.toInt)))
-        db.run(persist.presences.UserPresenceRepo.createOrUpdate(model.presences.UserPresence(userId, this.state.lastSeenAt)))
+        db.run(UserPresenceRepo.createOrUpdate(UserPresence(userId, this.state.lastSeenAt)))
 
         this.scheduledTimeouts = this.scheduledTimeouts +
           (authId → context.system.scheduler.scheduleOnce(timeout.millis, self, Envelope(userId, UserPresenceChange(Offline, authId, 0))))

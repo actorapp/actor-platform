@@ -7,13 +7,12 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.server.dialog.{ DialogErrors, HistoryUtils }
-import im.actor.server.group.{ GroupExtension, GroupUtils }
-import im.actor.server.model.{ PeerType, Peer }
-import im.actor.server.persist.HistoryMessageRepo
+import im.actor.server.group.GroupUtils
+import im.actor.server.model.{ HistoryMessage, Dialog, PeerType, Peer }
+import im.actor.server.persist.{ GroupUserRepo, HistoryMessageRepo }
 import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.UserUtils
-import im.actor.server.{ model, persist }
 import org.joda.time.DateTime
 import slick.dbio
 import slick.driver.PostgresDriver.api._
@@ -51,7 +50,7 @@ trait HistoryHandlers {
             DBIO.from(groupExt.isHistoryShared(peer.id)) flatMap (isHistoryShared ⇒ DBIO.successful(!isHistoryShared))
           }
         }
-        _ ← fromDBIO(persist.HistoryMessageRepo.deleteAll(client.userId, peer.asModel))
+        _ ← fromDBIO(HistoryMessageRepo.deleteAll(client.userId, peer.asModel))
         seqstate ← fromFuture(userExt.broadcastClientUpdate(update, None, isFat = false))
       } yield ResponseSeq(seqstate.seq, seqstate.state.toByteArray)
     }
@@ -164,15 +163,15 @@ trait HistoryHandlers {
 
         withHistoryOwner(peer, client.userId) { historyOwner ⇒
           if (isSharedUser(historyOwner)) {
-            persist.HistoryMessageRepo.find(historyOwner, peer, randomIds.toSet) flatMap { messages ⇒
+            HistoryMessageRepo.find(historyOwner, peer, randomIds.toSet) flatMap { messages ⇒
               if (messages.exists(_.senderUserId != client.userId)) {
                 DBIO.successful(Error(CommonErrors.forbidden("You can only delete your own messages")))
               } else {
                 val update = UpdateMessageDelete(outPeer.asPeer, randomIds)
 
                 for {
-                  _ ← persist.HistoryMessageRepo.delete(historyOwner, peer, randomIds.toSet)
-                  groupUserIds ← persist.GroupUserRepo.findUserIds(peer.id) map (_.toSet)
+                  _ ← HistoryMessageRepo.delete(historyOwner, peer, randomIds.toSet)
+                  groupUserIds ← GroupUserRepo.findUserIds(peer.id) map (_.toSet)
                   (seqstate, _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(groupUserIds, update, None, false))
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               }
@@ -180,7 +179,7 @@ trait HistoryHandlers {
           } else {
             val update = UpdateMessageDelete(outPeer.asPeer, randomIds)
             for {
-              _ ← persist.HistoryMessageRepo.delete(client.userId, peer, randomIds.toSet)
+              _ ← HistoryMessageRepo.delete(client.userId, peer, randomIds.toSet)
               seqstate ← DBIO.from(userExt.broadcastClientUpdate(update, None, isFat = false))
             } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
           }
@@ -222,16 +221,16 @@ trait HistoryHandlers {
     optDatesAction map { _ getOrElse (ZeroDate → ZeroDate) }
   }
 
-  private def getDialogStruct(dialogModel: model.Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[ApiDialog] = {
+  private def getDialogStruct(dialogModel: Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[ApiDialog] = {
     withHistoryOwner(dialogModel.peer, client.userId) { historyOwner ⇒
       for {
         (lastReceivedAt, lastReadAt) ← getLastReceiveReadDates(dialogModel.peer)
-        messageOpt ← persist.HistoryMessageRepo.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
+        messageOpt ← HistoryMessageRepo.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
         reactions ← messageOpt map (m ⇒ dialogExt.fetchReactions(dialogModel.peer, client.userId, m.randomId)) getOrElse DBIO.successful(Vector.empty)
         unreadCount ← dialogExt.getUnreadCount(client.userId, historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
       } yield {
         val emptyMessageContent = ApiTextMessage(text = "", mentions = Vector.empty, ext = None)
-        val messageModel = messageOpt.getOrElse(model.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
+        val messageModel = messageOpt.getOrElse(HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
         val message = messageModel.asStruct(lastReceivedAt, lastReadAt, reactions)
 
         ApiDialog(

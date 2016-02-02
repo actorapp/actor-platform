@@ -7,7 +7,8 @@ import com.sksamuel.scrimage.nio.{ JpegWriter, ImageWriter, PngWriter }
 import com.sksamuel.scrimage.{ Image, ParImage, Position }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
-import im.actor.server.{ model, persist }
+import im.actor.server.model.AvatarData
+import im.actor.server.persist.FileRepo
 import im.actor.util.ThreadLocalSecureRandom
 import slick.dbio.DBIO
 
@@ -21,7 +22,7 @@ object ImageUtils {
 
   private case class ThumbDescriptor(name: String, side: Int, writer: ImageWriter)
 
-  def avatar(ad: model.AvatarData) =
+  def avatar(ad: AvatarData) =
     (ad.smallOpt, ad.largeOpt, ad.fullOpt) match {
       case (None, None, None) ⇒ None
       case (smallOpt, largeOpt, fullOpt) ⇒
@@ -103,7 +104,7 @@ object ImageUtils {
   )(implicit system: ActorSystem): DBIO[Either[Throwable, Avatar]] = {
     implicit val ec: ExecutionContext = system.dispatcher
     val fsAdapter = FileStorageExtension(system).fsAdapter
-    persist.FileRepo.find(fullFileId) flatMap {
+    FileRepo.find(fullFileId) flatMap {
       case Some(fullFileModel) ⇒
         fsAdapter.downloadFile(fullFileId) flatMap {
           case Some(fullFileData) ⇒
@@ -163,7 +164,7 @@ object ImageUtils {
     }
   }
 
-  def getAvatar(avatarModel: model.AvatarData): Avatar = {
+  def getAvatar(avatarModel: AvatarData): Avatar = {
     val smallImageOpt = avatarModel.smallOpt map {
       case (fileId, fileHash, fileSize) ⇒ AvatarImage(FileLocation(fileId, fileHash), SmallSize, SmallSize, fileSize)
     }
@@ -179,8 +180,8 @@ object ImageUtils {
     Avatar(smallImageOpt, largeImageOpt, fullImageOpt)
   }
 
-  def getAvatarData(entityType: model.AvatarData.TypeVal, entityId: Int, avatar: Avatar): model.AvatarData = {
-    model.AvatarData(
+  def getAvatarData(entityType: AvatarData.TypeVal, entityId: Int, avatar: Avatar): AvatarData = {
+    AvatarData(
       entityType = entityType,
       entityId = entityId.toLong,
       smallAvatarFileId = avatar.smallImage map (_.fileLocation.fileId),
