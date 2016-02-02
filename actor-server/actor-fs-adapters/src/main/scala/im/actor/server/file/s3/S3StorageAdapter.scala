@@ -1,23 +1,24 @@
 package im.actor.server.file.s3
 
-import java.io.{ ByteArrayInputStream, InputStream, File }
+import java.io.ByteArrayInputStream
 
 import akka.actor._
+import akka.stream.scaladsl.FileIO
 import akka.stream.{ ActorMaterializer, Materializer }
-import akka.stream.scaladsl.{ Sink, FileIO }
 import akka.util.ByteString
 import com.amazonaws.HttpMethod
 import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.services.s3.model.{ ObjectMetadata, PutObjectRequest, GeneratePresignedUrlRequest }
+import com.amazonaws.services.s3.model.{ GeneratePresignedUrlRequest, ObjectMetadata }
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
 import im.actor.acl.ACLFiles
+import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.db.DbExtension
 import im.actor.server.file.FileUtils._
 import im.actor.server.file._
-import im.actor.server.{ model, persist }
-import im.actor.server.db.ActorPostgresDriver.api._
+import im.actor.server.model.{ File ⇒ FileModel }
+import im.actor.server.persist.FileRepo
 import im.actor.util.ThreadLocalSecureRandom
 
 import scala.concurrent.duration._
@@ -48,7 +49,7 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
     db.run(uploadFile(name, data))
 
   override def downloadFile(id: Long): DBIO[Option[Array[Byte]]] = {
-    persist.FileRepo.find(id) flatMap {
+    FileRepo.find(id) flatMap {
       case Some(file) ⇒
         downloadFile(bucketName, file.id, file.name) map (Some(_))
       case None ⇒ DBIO.successful(None)
@@ -58,7 +59,7 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   override def downloadFileF(id: Long): Future[Option[Array[Byte]]] =
     db.run(downloadFile(id))
 
-  override def getFileDownloadUrl(file: model.File, accessHash: Long): Future[Option[String]] = {
+  override def getFileDownloadUrl(file: FileModel, accessHash: Long): Future[Option[String]] = {
     val timeout = 1.day
 
     if (ACLFiles.fileAccessHash(file.id, file.accessSalt) == accessHash) {
@@ -89,9 +90,9 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
     val size = data.length
 
     for {
-      _ ← persist.FileRepo.create(id, size.toLong, accessSalt, s3Key(id, name.safe))
+      _ ← FileRepo.create(id, size.toLong, accessSalt, s3Key(id, name.safe))
       _ ← DBIO.from(s3Upload(bucketName, id, name.safe, data))
-      _ ← persist.FileRepo.setUploaded(id, name.safe)
+      _ ← FileRepo.setUploaded(id, name.safe)
     } yield FileLocation(id, ACLFiles.fileAccessHash(id, accessSalt))
   }
 
@@ -136,7 +137,7 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
       _ ← FutureTransfer.listenFor {
         transferManager.upload(bucketName, s3Key(fileId, fileName.safe), concatFile)
       } map (_.waitForCompletion())
-      _ ← db.run(persist.FileRepo.setUploaded(fileId, fileName.safe))
+      _ ← db.run(FileRepo.setUploaded(fileId, fileName.safe))
       _ ← deleteDir(tempDir)
     } yield ()
   }

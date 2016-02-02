@@ -13,10 +13,9 @@ import im.actor.server.activation.Activation.{ CallCode, EmailCode, SmsCode }
 import im.actor.server.activation._
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.model._
-import im.actor.server.persist.UserRepo
+import im.actor.server.persist._
 import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.session._
-import im.actor.server.{ model, persist }
 import im.actor.util.misc.EmailUtils.isTestEmail
 import im.actor.util.misc.IdUtils._
 import im.actor.util.misc.PhoneNumberUtils._
@@ -33,10 +32,10 @@ trait AuthHelpers extends Helpers {
   self: AuthServiceImpl ⇒
 
   //expiration of code won't work
-  protected def newUserPhoneSignUp(transaction: model.AuthPhoneTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) \/ User] = {
+  protected def newUserPhoneSignUp(transaction: AuthPhoneTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) \/ User] = {
     val phone = transaction.phoneNumber
     for {
-      optPhone ← fromDBIO(persist.UserPhoneRepo.findByPhoneNumber(phone).headOption)
+      optPhone ← fromDBIO(UserPhoneRepo.findByPhoneNumber(phone).headOption)
       phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone).headOption)
       (_, countryCode) = phoneAndCode
       result ← optPhone match {
@@ -46,16 +45,16 @@ trait AuthHelpers extends Helpers {
     } yield result
   }
 
-  protected def newUserEmailSignUp(transaction: model.AuthEmailTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) \/ User] = {
+  protected def newUserEmailSignUp(transaction: AuthEmailTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) \/ User] = {
     val email = transaction.email
     for {
-      optEmail ← fromDBIO(persist.UserEmailRepo.find(email))
+      optEmail ← fromDBIO(UserEmailRepo.find(email))
       result ← optEmail match {
         case Some(existingEmail) ⇒ point(-\/((existingEmail.userId, "")))
         case None ⇒
           val userResult: Result[(Int, String) \/ User] =
             for {
-              optToken ← fromDBIO(persist.OAuth2TokenRepo.findByUserId(email))
+              optToken ← fromDBIO(OAuth2TokenRepo.findByUserId(email))
               locale ← optToken.map { token ⇒
                 val locale = oauth2Service.fetchProfile(token.accessToken).map(_.flatMap(_.locale))
                 fromFuture(locale)
@@ -78,18 +77,18 @@ trait AuthHelpers extends Helpers {
     } yield result
   }
 
-  protected def handleUserCreate(user: model.User, transaction: model.AuthTransactionBase, clientData: ClientData): Result[Unit] = {
+  protected def handleUserCreate(user: User, transaction: AuthTransactionBase, clientData: ClientData): Result[Unit] = {
     for {
       _ ← fromFuture(userExt.create(user.id, user.accessSalt, user.nickname, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
-      _ ← fromDBIO(persist.AvatarDataRepo.create(model.AvatarData.empty(model.AvatarData.OfUser, user.id.toLong)))
+      _ ← fromDBIO(AvatarDataRepo.create(AvatarData.empty(AvatarData.OfUser, user.id.toLong)))
       _ ← transaction match {
-        case p: model.AuthPhoneTransaction ⇒
+        case p: AuthPhoneTransaction ⇒
           val phone = p.phoneNumber
           for {
             _ ← fromDBIO(activationContext.finish(p.transactionHash))
             _ ← fromFuture(userExt.addPhone(user.id, phone))
           } yield ()
-        case e: model.AuthEmailTransaction ⇒
+        case e: AuthEmailTransaction ⇒
           for {
             _ ← fromDBIO(activationContext.finish(e.transactionHash))
             _ ← fromFuture(userExt.addEmail(user.id, e.email))
@@ -118,7 +117,7 @@ trait AuthHelpers extends Helpers {
    * Validate phone code and remove `AuthCode` and `AuthTransaction`
    * used for this sign action.
    */
-  protected def validateCode(transaction: model.AuthTransactionBase, code: String): Result[(Int, String)] = {
+  protected def validateCode(transaction: AuthTransactionBase, code: String): Result[(Int, String)] = {
     val transactionHash = transaction.transactionHash
     for {
       _ ← transaction match {
@@ -133,7 +132,7 @@ trait AuthHelpers extends Helpers {
               case InvalidResponse | InternalError ⇒ cleanupAndError(transactionHash, AuthErrors.ActivationServiceError)
               case Validated                       ⇒ point(())
             }
-            _ ← fromDBIO(persist.auth.AuthTransactionRepo.updateSetChecked(transactionHash))
+            _ ← fromDBIO(AuthTransactionRepo.updateSetChecked(transactionHash))
           } yield ()
         case tx: AuthUsernameTransaction ⇒
           tx.userId match {
@@ -159,14 +158,14 @@ trait AuthHelpers extends Helpers {
           val phone = p.phoneNumber
           for {
             //if user is not registered - return error
-            phoneModel ← fromDBIOOption(AuthErrors.PhoneNumberUnoccupied)(persist.UserPhoneRepo.findByPhoneNumber(phone).headOption)
+            phoneModel ← fromDBIOOption(AuthErrors.PhoneNumberUnoccupied)(UserPhoneRepo.findByPhoneNumber(phone).headOption)
             phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone).headOption)
             _ ← fromDBIO(activationContext.finish(transactionHash))
           } yield (phoneModel.userId, phoneAndCode._2)
         case e: AuthEmailTransaction ⇒
           for {
             //if user is not registered - return error
-            emailModel ← fromDBIOOption(AuthErrors.EmailUnoccupied)(persist.UserEmailRepo.find(e.email))
+            emailModel ← fromDBIOOption(AuthErrors.EmailUnoccupied)(UserEmailRepo.find(e.email))
             _ ← fromDBIO(activationContext.finish(transactionHash))
           } yield (emailModel.userId, "")
         case u: AuthUsernameTransaction ⇒
@@ -183,11 +182,11 @@ trait AuthHelpers extends Helpers {
    * Terminate all sessions associated with given `deviceHash`
    * and create new session
    */
-  protected def refreshAuthSession(deviceHash: Array[Byte], newSession: model.AuthSession): DBIO[Unit] =
+  protected def refreshAuthSession(deviceHash: Array[Byte], newSession: AuthSession): DBIO[Unit] =
     for {
       // prevSessions ← persist.AuthSessionRepo.findByDeviceHash(deviceHash)
       //_ ← DBIO.from(Future.sequence(prevSessions map userExt.logout))
-      _ ← persist.AuthSessionRepo.create(newSession)
+      _ ← AuthSessionRepo.create(newSession)
     } yield ()
 
   protected def authorize(userId: Int, authSid: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[AuthorizeUserAck] = {
@@ -209,15 +208,15 @@ trait AuthHelpers extends Helpers {
     for {
       _ ← fromFuture(if (countryCode.nonEmpty) userExt.changeCountryCode(userId, countryCode) else Future.successful(()))
       _ ← fromFuture(userExt.setDeviceInfo(userId, DeviceInfo.parseFrom(transaction.deviceInfo)) recover { case _ ⇒ () })
-      _ ← fromDBIO(persist.AuthIdRepo.setUserData(clientData.authId, userId))
+      _ ← fromDBIO(AuthIdRepo.setUserData(clientData.authId, userId))
       userStruct ← fromFuture(userExt.getApiStruct(userId, userId, clientData.authId))
       //refresh session data
-      authSession = model.AuthSession(
+      authSession = AuthSession(
         userId = userId,
         id = nextIntId(),
         authId = clientData.authId,
         appId = transaction.appId,
-        appTitle = model.AuthSession.appTitleOf(transaction.appId),
+        appTitle = AuthSession.appTitleOf(transaction.appId),
         deviceHash = transaction.deviceHash,
         deviceTitle = transaction.deviceTitle,
         authTime = DateTime.now,
@@ -226,7 +225,7 @@ trait AuthHelpers extends Helpers {
         longitude = None
       )
       _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
-      _ ← fromDBIO(persist.auth.AuthTransactionRepo.delete(transaction.transactionHash))
+      _ ← fromDBIO(AuthTransactionRepo.delete(transaction.transactionHash))
       _ ← fromFuture(authorize(userId, authSession.id, clientData))
     } yield userStruct
   }
@@ -258,16 +257,16 @@ trait AuthHelpers extends Helpers {
 
   protected def newUser(name: String, countryCode: String, optSex: Option[ApiSex], username: Option[String]): Result[\/-[User]] = {
     val rng = ThreadLocalSecureRandom.current()
-    val sex = optSex.map(s ⇒ model.Sex.fromInt(s.id)).getOrElse(model.NoSex)
+    val sex = optSex.map(s ⇒ Sex.fromInt(s.id)).getOrElse(NoSex)
     for {
       validName ← fromEither(validName(name).leftMap(validationFailed("NAME_INVALID", _)))
-      user = model.User(
+      user = User(
         id = nextIntId(rng),
         accessSalt = ACLUtils.nextAccessSalt(rng),
         name = validName,
         countryCode = countryCode,
         sex = sex,
-        state = model.UserState.Registered,
+        state = UserState.Registered,
         createdAt = LocalDateTime.now(ZoneOffset.UTC),
         external = None,
         nickname = username
@@ -277,13 +276,13 @@ trait AuthHelpers extends Helpers {
 
   protected def newUser(name: String): Result[User] = {
     val rng = ThreadLocalSecureRandom.current()
-    val user = model.User(
+    val user = User(
       id = nextIntId(rng),
       accessSalt = ACLUtils.nextAccessSalt(rng),
       name = name,
       countryCode = "",
-      sex = model.NoSex,
-      state = model.UserState.Registered,
+      sex = NoSex,
+      state = UserState.Registered,
       createdAt = LocalDateTime.now(ZoneOffset.UTC),
       external = None,
       nickname = None
@@ -296,7 +295,7 @@ trait AuthHelpers extends Helpers {
 
   private def cleanupAndError(transactionHash: String, error: RpcError): Result[Unit] = {
     for {
-      _ ← fromDBIO(persist.auth.AuthTransactionRepo.delete(transactionHash))
+      _ ← fromDBIO(AuthTransactionRepo.delete(transactionHash))
       _ ← fromEither[Unit](Error(error))
     } yield ()
   }
