@@ -110,8 +110,6 @@ final class SimpleServerE2eSpec extends ActorSuite(
 
       client.send(mtPackage)
 
-      expectMessageAck(messageId)
-
       val result = receiveRpcResult(messageId)
       result shouldBe an[RpcOk]
 
@@ -136,8 +134,6 @@ final class SimpleServerE2eSpec extends ActorSuite(
       val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
       client.send(mtPackage, slowly = true)
-
-      expectMessageAck(messageId)
 
       val result = receiveRpcResult(messageId)
       result shouldBe an[RpcOk]
@@ -249,8 +245,6 @@ final class SimpleServerE2eSpec extends ActorSuite(
 
         client.send(mtPackage)
 
-        expectMessageAck(messageId)
-
         val result = receiveRpcResult(messageId)
         result shouldBe an[RpcOk]
 
@@ -278,8 +272,6 @@ final class SimpleServerE2eSpec extends ActorSuite(
 
         client.send(mtPackage)
 
-        expectMessageAck(messageId)
-
         val result = receiveRpcResult(messageId)
         result shouldBe an[RpcOk]
 
@@ -294,7 +286,7 @@ final class SimpleServerE2eSpec extends ActorSuite(
 
       receiveMessageBox().body match {
         case ResponseAuthId(authId) ⇒ authId
-        case unmatched              ⇒ fail(s"Expected ResponseAuthId, received ${unmatched}")
+        case unmatched              ⇒ fail(s"Expected ResponseAuthId, received $unmatched")
       }
     }
 

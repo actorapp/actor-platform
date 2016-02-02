@@ -1,5 +1,7 @@
 package im.actor.server.session
 
+import java.util.concurrent.TimeUnit
+
 import akka.actor._
 import akka.pattern.pipe
 import akka.stream.actor._
@@ -24,7 +26,9 @@ private[session] object RpcHandler {
   def props = Props(classOf[RpcHandler])
 
   private case class CachedResponse(rsp: RpcApiService.RpcResponse)
+  private case class Ack(messageId: Long)
 
+  type AckOrResult = Either[Long, RpcResult]
 }
 
 private[session] object RequestHandler {
@@ -36,8 +40,7 @@ private[session] class RequestHandler(
   promise: Promise[RpcApiService.RpcResponse],
   service: ActorRef,
   request: RpcApiService.HandleRpcRequest
-)
-  extends Actor with ActorLogging {
+) extends Actor with ActorLogging {
 
   context.setReceiveTimeout(RpcHandler.RequestTimeOut)
 
@@ -63,7 +66,7 @@ private[session] class RequestHandler(
   }
 }
 
-private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[(RpcResult, Long)] with ActorLogging {
+private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[(Option[RpcResult], Long)] with ActorLogging {
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
@@ -74,16 +77,17 @@ private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[(R
 
   private[this] val rpcApiService = RpcApiExtension(context.system).serviceRef
 
-  def receive = subscriber.orElse(publisher).orElse {
+  def receive = subscriber orElse publisher orElse {
     case unmatched ⇒
       log.error("Unmatched msg {}", unmatched)
   }
 
   // TODO: configurable
   private[this] val MaxRequestQueueSize = 10
-  private[this] var requestQueue = Map.empty[Long, BitVector]
+  private[this] val AckDelay = context.system.settings.config.getDuration("session.request-ack-delay", TimeUnit.MILLISECONDS).seconds
+  private[this] var requestQueue = Map.empty[Long, Cancellable]
 
-  private[this] var protoMessageQueue = immutable.Queue.empty[(RpcResult, Long)]
+  private[this] var protoMessageQueue = immutable.Queue.empty[(Option[RpcResult], Long)]
   private[this] val responseCache = createCache[java.lang.Long, Future[RpcApiService.RpcResponse]](MaxCacheSize)
 
   def subscriber: Receive = {
@@ -93,7 +97,8 @@ private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[(R
           log.debug("Publishing cached RpcResponse for messageId: {}", messageId)
           rspFuture map CachedResponse pipeTo self
         case None ⇒
-          requestQueue += (messageId → requestBytes)
+          val scheduledAck = context.system.scheduler.scheduleOnce(AckDelay, self, Ack(messageId))
+          requestQueue += (messageId → scheduledAck)
           assert(requestQueue.size <= MaxRequestQueueSize, s"queued too many: ${requestQueue.size}")
 
           log.debug("Making an rpc request for messageId: {}", messageId)
@@ -126,18 +131,20 @@ private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[(R
     case RpcApiService.RpcResponse(messageId, result) ⇒
       log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
 
+      requestQueue.get(messageId) foreach (_.cancel())
       requestQueue -= messageId
-      enqueue(result, messageId)
+      enqueue(Some(result), messageId)
     case CachedResponse(rsp) ⇒
       log.debug("Got cached RpcResponse for messageId: {}, publishing", rsp.messageId)
-      enqueue(rsp.result, rsp.messageId)
-    case Request(_) ⇒
-      deliverBuf()
-    case Cancel ⇒
-      context.stop(self)
+      enqueue(Some(rsp.result), rsp.messageId)
+    case Ack(messageId) ⇒ enqueueAck(messageId)
+    case Request(_)     ⇒ deliverBuf()
+    case Cancel         ⇒ context.stop(self)
   }
 
-  private def enqueue(res: RpcResult, requestMessageId: Long): Unit = {
+  private def enqueueAck(requestMessageId: Long): Unit = enqueue(None, requestMessageId)
+
+  private def enqueue(res: Option[RpcResult], requestMessageId: Long): Unit = {
     val item = res → requestMessageId
 
     if (protoMessageQueue.isEmpty && totalDemand > 0) {
