@@ -54,9 +54,10 @@ public interface ActorSDKDelegate {
     /**
      * If not null returned, overrides users profile activity intent
      *
+     * @param uid   user id
      * @return Actor Intent
      */
-    BaseActorProfileActivity getProfileIntent();
+    BaseActorProfileActivity getProfileIntent(int uid);
 
     /**
      * If not null returned, overrides group info activity intent

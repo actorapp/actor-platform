@@ -88,7 +88,7 @@ public class Application extends ActorSDKApplication {
         }
 
         @Override
-        public BaseActorProfileActivity getProfileIntent() {
+        public BaseActorProfileActivity getProfileIntent(int uid) {
             return new BaseActorProfileActivity() {
                 @Override
                 public ProfileFragment getProfileFragment(int uid) {
