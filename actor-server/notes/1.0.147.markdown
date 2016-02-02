@@ -1,0 +1,1 @@
+* :rocket: Increased unread messages counter performance
