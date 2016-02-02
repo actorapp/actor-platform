@@ -115,6 +115,9 @@ public class Peer extends BserObject {
             case 3:
                 peerType = PeerType.GROUP;
                 break;
+            case 4:
+                peerType = PeerType.PRIVATE_ENCRYPTED;
+                break;
         }
     }
 
@@ -128,6 +131,9 @@ public class Peer extends BserObject {
                 break;
             case GROUP:
                 writer.writeInt(2, 3);
+                break;
+            case PRIVATE_ENCRYPTED:
+                writer.writeInt(2, 4);
                 break;
         }
     }
