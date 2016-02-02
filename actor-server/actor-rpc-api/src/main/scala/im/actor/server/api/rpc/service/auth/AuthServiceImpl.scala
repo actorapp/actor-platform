@@ -14,8 +14,8 @@ import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.ApiSex.ApiSex
 import im.actor.config.ActorConfig
 import im.actor.server.acl.ACLUtils
-import im.actor.server.activation.internal.{ DummyCallEngine, DummySmsEngine, ActivationConfig, InternalCodeActivation }
-import im.actor.server.activation.{ CodeFailure, CodeActivation }
+import im.actor.server.activation.common.CodeFailure
+import im.actor.server.activation.ActivationContext
 import im.actor.server.api.rpc.service.profile.ProfileErrors
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.db.DbExtension
@@ -41,38 +41,27 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scalaz._
 
-final class AuthServiceImpl(val activationContext: CodeActivation)(
+final class AuthServiceImpl(
   implicit
   val sessionRegion: SessionRegion,
   val actorSystem:   ActorSystem,
   val oauth2Service: GoogleProvider
-) extends AuthService with AuthHelpers with Helpers {
+) extends AuthService
+  with AuthHelpers
+  with Helpers
+  with DeprecatedAuthMethods {
 
   import AnyRefLogSource._
   import IdUtils._
-
-  private trait SignType
-  private case class Up(name: String, isSilent: Boolean) extends SignType
-  private case object In extends SignType
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   protected implicit val db: Database = DbExtension(actorSystem).db
   protected val userExt = UserExtension(actorSystem)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
-  private implicit val mat = ActorMaterializer()
+  protected val activationContext = new ActivationContext
 
-  // this is workaround to use internal mail sender, when using actor-activation option
-  protected val emailSender = ActorConfig.load().getString("services.activation.default-service") match {
-    case "internal" | "telesign" ⇒ activationContext
-    case "actor-activation" ⇒
-      InternalCodeActivation.newContext(
-        ActivationConfig.load.get,
-        new DummySmsEngine(),
-        new DummyCallEngine(),
-        new SmtpEmailSender(EmailConfig.load.get)
-      )
-  }
+  private implicit val mat = ActorMaterializer()
 
   protected val log = Logging(actorSystem, this)
 
@@ -195,7 +184,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
             _ ← fromDBIO(AuthPhoneTransactionRepo.create(phoneAuthTransaction))
           } yield transactionHash
       }
-      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), Some(transactionHash)))
+      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), transactionHash))
       isRegistered = optPhone.isDefined
     } yield ResponseStartPhoneAuth(transactionHash, isRegistered, Some(ApiPhoneActivationType.CODE))
     db.run(action.run)
@@ -284,7 +273,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
       tx ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(AuthPhoneTransactionRepo.find(transactionHash))
       code ← fromDBIO(AuthCodeRepo.findByTransactionHash(tx.transactionHash) map (_ map (_.code) getOrElse (genSmsCode(tx.phoneNumber))))
       lang = PhoneNumberUtils.normalizeWithCountry(tx.phoneNumber).headOption.map(_._2).getOrElse("en")
-      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendCallCode(tx.phoneNumber, genSmsCode(tx.phoneNumber), Some(transactionHash), lang))
+      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendCallCode(tx.phoneNumber, genSmsCode(tx.phoneNumber), transactionHash, lang))
     } yield ResponseVoid
 
     db.run(action.run)
@@ -383,7 +372,6 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
     db.run(action.run)
   }
 
-  //TODO: add email code validation
   def jhandleValidateCode(transactionHash: String, code: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
     val action: Result[ResponseAuth] =
       for {
@@ -459,222 +447,5 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
 
   override def jhandleStartTokenAuth(token: String, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, timeZone: Option[String], preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
     Future.failed(new RuntimeException("Not implemented"))
-
-  //TODO: move deprecated methods to separate trait
-  @deprecated("schema api changes", "2015-06-09")
-  override def jhandleSendAuthCallObsolete(
-    phoneNumber: Long,
-    smsHash:     String,
-    appId:       Int,
-    apiKey:      String,
-    clientData:  ClientData
-  ): Future[HandlerResult[ResponseVoid]] =
-    Future {
-      throw new Exception("Not implemented")
-    }
-
-  @deprecated("schema api changes", "2015-06-09")
-  override def jhandleSendAuthCodeObsolete(
-    rawPhoneNumber: Long,
-    appId:          Int,
-    apiKey:         String,
-    clientData:     ClientData
-  ): Future[HandlerResult[ResponseSendAuthCodeObsolete]] = {
-    PhoneNumberUtils.normalizeLong(rawPhoneNumber).headOption match {
-      case None ⇒
-        Future.successful(Error(AuthErrors.PhoneNumberInvalid))
-      case Some(normPhoneNumber) ⇒
-        val isDeletedAction = for {
-          optPhone ← UserPhoneRepo.findByPhoneNumber(normPhoneNumber).headOption
-          isDeleted ← optPhone match {
-            case Some(phone) ⇒ UserRepo.isDeleted(phone.userId)
-            case None        ⇒ DBIO.successful(false)
-          }
-        } yield isDeleted
-
-        val sendCodeAction = AuthSmsCodeObsoleteRepo.findByPhoneNumber(normPhoneNumber).headOption.flatMap {
-          case Some(AuthSmsCodeObsolete(_, _, smsHash, smsCode, _)) ⇒
-            DBIO.successful(normPhoneNumber :: smsHash :: smsCode :: HNil)
-          case None ⇒
-            val smsHash = genSmsHash()
-            val smsCode = genSmsCode(normPhoneNumber)
-            for (
-              _ ← AuthSmsCodeObsoleteRepo.create(
-                id = ThreadLocalSecureRandom.current().nextLong(),
-                phoneNumber = normPhoneNumber,
-                smsHash = smsHash,
-                smsCode = smsCode
-              )
-            ) yield normPhoneNumber :: smsHash :: smsCode :: HNil
-        }.flatMap { res ⇒
-          UserPhoneRepo.exists(normPhoneNumber) map (res :+ _)
-        }.map {
-          case number :: smsHash :: smsCode :: isRegistered :: HNil ⇒
-            sendSmsCode(number, smsCode, None)
-            Ok(ResponseSendAuthCodeObsolete(smsHash, isRegistered))
-        }
-        db.run(for {
-          isDeleted ← isDeletedAction
-          result ← if (isDeleted) DBIO.successful(Error(AuthErrors.UserDeleted)) else sendCodeAction
-        } yield result)
-    }
-  }
-
-  @deprecated("schema api changes", "2015-06-09")
-  override def jhandleSignInObsolete(
-    rawPhoneNumber: Long,
-    smsHash:        String,
-    smsCode:        String,
-    deviceHash:     Array[Byte],
-    deviceTitle:    String,
-    appId:          Int,
-    appKey:         String,
-    clientData:     ClientData
-  ): Future[HandlerResult[ResponseAuth]] =
-    handleSign(
-      In,
-      rawPhoneNumber, smsHash, smsCode,
-      deviceHash, deviceTitle, appId, appKey,
-      clientData
-    )
-
-  @deprecated("schema api changes", "2015-06-09")
-  override def jhandleSignUpObsolete(
-    rawPhoneNumber: Long,
-    smsHash:        String,
-    smsCode:        String,
-    name:           String,
-    deviceHash:     Array[Byte],
-    deviceTitle:    String,
-    appId:          Int,
-    appKey:         String,
-    isSilent:       Boolean,
-    clientData:     ClientData
-  ): Future[HandlerResult[ResponseAuth]] =
-    handleSign(
-      Up(name, isSilent),
-      rawPhoneNumber, smsHash, smsCode,
-      deviceHash, deviceTitle, appId, appKey,
-      clientData
-    )
-
-  private def handleSign(
-    signType:       SignType,
-    rawPhoneNumber: Long,
-    smsHash:        String,
-    smsCode:        String,
-    deviceHash:     Array[Byte],
-    deviceTitle:    String,
-    appId:          Int,
-    appKey:         String,
-    clientData:     ClientData
-  ): Future[HandlerResult[ResponseAuth]] = {
-    normalizeWithCountry(rawPhoneNumber).headOption match {
-      case None ⇒ Future.successful(Error(AuthErrors.PhoneNumberInvalid))
-      case Some((normPhoneNumber, countryCode)) ⇒
-        if (smsCode.isEmpty) Future.successful(Error(AuthErrors.PhoneCodeEmpty))
-        else {
-          val action =
-            (for {
-              optCode ← AuthSmsCodeObsoleteRepo.findByPhoneNumber(normPhoneNumber).headOption
-              optPhone ← UserPhoneRepo.findByPhoneNumber(normPhoneNumber).headOption
-            } yield optCode :: optPhone :: HNil).flatMap {
-              case None :: _ :: HNil ⇒ DBIO.successful(Error(AuthErrors.PhoneCodeExpired))
-              case Some(smsCodeModel) :: _ :: HNil if smsCodeModel.smsHash != smsHash ⇒
-                DBIO.successful(Error(AuthErrors.PhoneCodeExpired))
-              case Some(smsCodeModel) :: _ :: HNil if smsCodeModel.smsCode != smsCode ⇒
-                DBIO.successful(Error(AuthErrors.PhoneCodeInvalid))
-              case Some(_) :: optPhone :: HNil ⇒
-                signType match {
-                  case Up(rawName, isSilent) ⇒
-                    AuthSmsCodeObsoleteRepo.deleteByPhoneNumber(normPhoneNumber).andThen(
-                      optPhone match {
-                        // Phone does not exist, register the user
-                        case None ⇒ withValidName(rawName) { name ⇒
-                          val rng = ThreadLocalSecureRandom.current()
-                          val userId = nextIntId(rng)
-                          //todo: move this to UserOffice
-                          val user = User(
-                            id = userId,
-                            accessSalt = ACLUtils.nextAccessSalt(rng),
-                            name = name,
-                            countryCode = countryCode,
-                            sex = NoSex,
-                            state = UserState.Registered,
-                            createdAt = LocalDateTime.now(ZoneOffset.UTC),
-                            external = None
-                          )
-                          for {
-                            _ ← DBIO.from(userExt.create(user.id, user.accessSalt, None, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
-                            _ ← DBIO.from(userExt.auth(userId, clientData.authId))
-                            _ ← DBIO.from(userExt.addPhone(user.id, normPhoneNumber))
-                            _ ← AvatarDataRepo.create(AvatarData.empty(AvatarData.OfUser, user.id.toLong))
-                          } yield {
-                            \/-(user :: HNil)
-                          }
-                        }
-                        // Phone already exists, fall back to SignIn
-                        case Some(phone) ⇒
-                          signIn(clientData.authId, phone.userId, countryCode, clientData)
-                      }
-                    )
-                  case In ⇒
-                    optPhone match {
-                      case None ⇒ DBIO.successful(Error(AuthErrors.PhoneNumberUnoccupied))
-                      case Some(phone) ⇒
-                        AuthSmsCodeObsoleteRepo.deleteByPhoneNumber(normPhoneNumber).andThen(
-                          signIn(clientData.authId, phone.userId, countryCode, clientData)
-                        )
-                    }
-                }
-            }.flatMap {
-              case \/-(user :: HNil) ⇒
-                val authSession = AuthSession(
-                  userId = user.id,
-                  id = nextIntId(),
-                  authId = clientData.authId,
-                  appId = appId,
-                  appTitle = AuthSession.appTitleOf(appId),
-                  deviceHash = deviceHash,
-                  deviceTitle = deviceTitle,
-                  authTime = DateTime.now,
-                  authLocation = "",
-                  latitude = None,
-                  longitude = None
-                )
-
-                for {
-                  prevSessions ← AuthSessionRepo.findByDeviceHash(deviceHash)
-                  _ ← DBIO.from(Future.sequence(prevSessions map userExt.logout))
-                  _ ← AuthSessionRepo.create(authSession)
-                  userStruct ← DBIO.from(userExt.getApiStruct(user.id, user.id, clientData.authId))
-                } yield {
-                  sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(userStruct.id, authSession.id))
-                  Ok(
-                    ResponseAuth(
-                      userStruct,
-                      misc.ApiConfig(maxGroupSize)
-                    )
-                  )
-
-                }
-              case error @ -\/(_) ⇒ DBIO.successful(error)
-            }
-
-          db.run(action)
-        }
-    }
-  }
-
-  private def signIn(authId: Long, userId: Int, countryCode: String, clientData: ClientData) = {
-    UserRepo.find(userId).flatMap {
-      case None ⇒ throw new Exception("Failed to retrieve user")
-      case Some(user) ⇒
-        for {
-          _ ← DBIO.from(userExt.changeCountryCode(userId, countryCode))
-          _ ← DBIO.from(userExt.auth(userId, clientData.authId))
-        } yield \/-(user :: HNil)
-    }
-  }
 
 }

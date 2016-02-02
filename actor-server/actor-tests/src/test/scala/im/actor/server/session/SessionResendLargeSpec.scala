@@ -3,10 +3,10 @@ package im.actor.server.session
 import akka.testkit.TestProbe
 import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc._
-import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
+import im.actor.api.rpc.auth.{ RequestStartPhoneAuth, ResponseStartPhoneAuth }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.server.ActorSpecification
-import im.actor.server.mtproto.protocol.{ RequestResend, ProtoRpcRequest, UnsentResponse }
+import im.actor.server.mtproto.protocol._
 
 import scala.concurrent.duration._
 import scala.util.Random
@@ -37,13 +37,21 @@ final class SessionResendLargeSpec extends BaseSessionSpec(
       val sessionId = Random.nextLong()
       val requestMessageId = Random.nextLong()
 
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
+      val encodedRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+        phoneNumber = 75553333333L,
+        appId = 1,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong.toBinaryString.getBytes,
+        deviceTitle = "Specs Has You",
+        timeZone = None,
+        preferredLanguages = Vector.empty
+      ))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, requestMessageId, ProtoRpcRequest(encodedRequest))
 
       expectNewSession(authId, sessionId, requestMessageId)
 
       expectRpcResult(authId, sessionId, sendAckAt = None) should matchPattern {
-        case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
+        case RpcOk(_: ResponseStartPhoneAuth) ⇒
       }
 
       // We didn't send Ack
@@ -58,7 +66,7 @@ final class SessionResendLargeSpec extends BaseSessionSpec(
       sendMessageBox(authId, sessionId, sessionRegion.ref, msgId, RequestResend(messageBox.body.asInstanceOf[UnsentResponse].messageId))
 
       expectRpcResult(authId, sessionId, sendAckAt = None, expectAckFor = Set(msgId)) should matchPattern {
-        case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
+        case RpcOk(_: ResponseStartPhoneAuth) ⇒
       }
 
       expectNoMsg(6.seconds)
@@ -72,7 +80,15 @@ final class SessionResendLargeSpec extends BaseSessionSpec(
       val session = system.actorOf(Session.props, s"${authId}_$sessionId")
       watchProbe watch session
 
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
+      val encodedRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+        phoneNumber = 75553333333L,
+        appId = 1,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong.toBinaryString.getBytes,
+        deviceTitle = "Specs Has You",
+        timeZone = None,
+        preferredLanguages = Vector.empty
+      ))).require
 
       for (_ ← 1 to 100)
         TestProbe().send(session, handleMessageBox(Random.nextLong(), ProtoRpcRequest(encodedRequest)))
