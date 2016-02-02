@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import im.actor.core.AuthState;
-import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
@@ -64,7 +64,7 @@ public interface ActorSDKDelegate {
      *
      * @return Actor Intent
      */
-    BaseGroupInfoActivity getGroupInfoIntent();
+    BaseGroupInfoActivity getGroupInfoIntent(int gid);
 
     /**
      * If not null returned, overrides settings activity intent
@@ -74,7 +74,7 @@ public interface ActorSDKDelegate {
     ActorIntentFragmentActivity getChatSettingsIntent();
 
     /**
-     * If not null returned, overrides settings activity intent
+     * If not null returned, overrides security settings activity intent
      *
      * @return Actor Intent
      */
@@ -84,14 +84,54 @@ public interface ActorSDKDelegate {
      * If not null returned, overrides chat activity intent
      *
      * @return Actor Intent
+     * @param peer      chat peer
+     * @param compose   pop up keyboard at start
      */
-    ActorIntent getChatIntent();
+    ActorIntent getChatIntent(Peer peer, boolean compose);
 
+    /**
+     * Override for handling incoming call
+     *
+     * @param callId call id
+     * @param uid    caller user id
+     */
     void onIncominCall(long callId, int uid);
 
+    /**
+     * Override for hacking default messages view holders
+     *
+     * @param base base view holder class
+     * @param args args passed to view holder
+     * @param <T>  base view holder class
+     * @param <J>  return class
+     * @return hacked view holder
+     */
     <T extends BindedViewHolder, J extends T> J getViewHolder(Class<T> base, Object... args);
 
+    /**
+     * Override for hacking MainPhoneController - activity with chats/contacts
+     *
+     * @param mainActivity main activity
+     * @return hacked MainPhoneController
+     */
     MainPhoneController getMainPhoneController(ActorMainActivity mainActivity);
+
+    /**
+     * Override for hacking custom messages view holders
+     *
+     * @param id                id in same order as added to AbsContent.registerConverter()
+     * @param messagesAdapter   adapter to pass to holder
+     * @param viewGroup         ViewGroup to pass to holder
+     * @return custom view holder
+     */
+    MessageHolder getCustomMessageViewHolder(int id, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
+
+    /**
+     * Is Actor pushes used for this app - added for testing
+     *
+     * @return is Actor push id used
+     */
+    boolean useActorPush();
 
     @Deprecated
     AuthState getAuthStartState();
@@ -116,8 +156,4 @@ public interface ActorSDKDelegate {
 
     @Deprecated
     ActorSettingsCategory[] getAfterSettingsCategories();
-
-    MessageHolder getCustomMessageViewHolder(int id, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
-
-    boolean useActorPush();
 }
