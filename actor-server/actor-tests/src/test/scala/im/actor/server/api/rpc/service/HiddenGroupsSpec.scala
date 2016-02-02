@@ -30,8 +30,6 @@ final class HiddenGroupsSpec extends BaseAppSuite with ImplicitAuthService with 
         inside(resp) {
           case Ok(ResponseLoadDialogs(dialogs, _, _)) ⇒
             dialogs.length shouldBe (0)
-
-            db.run(HistoryMessageRepo.getUnreadTotal(user.id))
         }
       }
     }
