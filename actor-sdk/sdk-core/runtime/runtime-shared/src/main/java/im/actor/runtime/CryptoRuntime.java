@@ -19,10 +19,4 @@ public interface CryptoRuntime {
      */
     @ObjectiveCName("MD5WithData:")
     byte[] MD5(byte[] data);
-
-    byte[] fromHex(String hex);
-
-    byte[] fromHexReverse(String hex);
-
-    String toHex(byte[] raw);
 }
