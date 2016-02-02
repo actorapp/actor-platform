@@ -14,6 +14,7 @@ import im.actor.core.api.rpc.ResponseGetDifference;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.updates.UpdateProcessor;
 import im.actor.core.modules.updates.internal.InternalUpdate;
+import im.actor.core.modules.updates.internal.RelatedResponse;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.Log;
@@ -67,6 +68,11 @@ public class SequenceHandlerActor extends ModuleActor {
 
         Log.d(TAG, "Processing weak update: " + update);
         this.processor.processWeakUpdate(update, date);
+    }
+
+    private void onRelatedResponse(List<ApiUser> relatedUsers, List<ApiGroup> relatedGroups, Runnable afterApply) {
+        processor.applyRelated(relatedUsers, relatedGroups, false);
+        afterApply.run();
     }
 
     private Promise<UpdateProcessed> onSeqUpdate(int type, byte[] body, @Nullable List<ApiUser> users,
@@ -135,6 +141,7 @@ public class SequenceHandlerActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
+        Log.d(TAG, "Processing onReceive: " + message);
         if (message instanceof WeakUpdate) {
             WeakUpdate weakUpdate = (WeakUpdate) message;
             try {
@@ -142,6 +149,9 @@ public class SequenceHandlerActor extends ModuleActor {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else if (message instanceof RelatedResponse) {
+            onRelatedResponse(((RelatedResponse) message).getRelatedUsers(), ((RelatedResponse) message).getRelatedGroups(),
+                    ((RelatedResponse) message).getAfterApply());
         } else if (message instanceof InternalUpdate) {
             onInternalUpdate((InternalUpdate) message);
         } else {

@@ -1,6 +1,5 @@
 package im.actor.core.modules.updates.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
