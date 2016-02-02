@@ -2,9 +2,7 @@ package im.actor.sdk.controllers.conversation;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
-import android.app.ActivityOptions;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,35 +19,27 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
 import android.util.Base64;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
@@ -69,15 +59,11 @@ import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
 import im.actor.sdk.controllers.conversation.messages.AudioHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
-import im.actor.sdk.controllers.fragment.settings.ActorSettingsFragment;
 import im.actor.sdk.controllers.fragment.settings.BaseActorChatActivity;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
 import im.actor.sdk.core.audio.VoiceCaptureActor;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.util.Randoms;
 import im.actor.sdk.util.Screen;
-import im.actor.sdk.util.ViewUtils;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.controllers.conversation.view.TypingDrawable;
 import im.actor.sdk.view.emoji.SmileProcessor;
@@ -442,8 +428,8 @@ public class ChatActivity extends ActorEditTextActivity {
     @Override
     protected Fragment onCreateFragment() {
         MessagesFragment fragment;
-        if (ActorSDK.sharedActor().getDelegate().getChatIntent() != null) {
-            ActorIntent chatIntent = ActorSDK.sharedActor().getDelegate().getChatIntent();
+        if (ActorSDK.sharedActor().getDelegate().getChatIntent(peer, false) != null) {
+            ActorIntent chatIntent = ActorSDK.sharedActor().getDelegate().getChatIntent(peer, false);
             if (chatIntent instanceof BaseActorChatActivity) {
                 return ((BaseActorChatActivity) chatIntent).getChatFragment(peer);
             } else {
@@ -490,7 +476,7 @@ public class ChatActivity extends ActorEditTextActivity {
                 if (peer.getPeerType() == PeerType.PRIVATE) {
                     ActorSDK.sharedActor().startProfileActivity(ChatActivity.this, peer.getPeerId());
                 } else if (peer.getPeerType() == PeerType.GROUP) {
-                    startActivity(Intents.openGroup(peer.getPeerId(), ChatActivity.this));
+                    ActorSDK.sharedActor().startGroupInfoActivity(ChatActivity.this, peer.getPeerId());
                 } else {
                     // Nothing to do
                 }
@@ -1084,7 +1070,7 @@ public class ChatActivity extends ActorEditTextActivity {
             ActorSDK.sharedActor().startProfileActivity(ChatActivity.this, peer.getPeerId());
 
         } else if (i == R.id.groupInfo) {
-            startActivity(Intents.openGroup(peer.getPeerId(), ChatActivity.this));
+            ActorSDK.sharedActor().startGroupInfoActivity(ChatActivity.this, peer.getPeerId());
 
         } else if (i == R.id.files) {// startActivity(Intents.openDocs(chatType, chatId, ChatActivity.this));
 
