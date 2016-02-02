@@ -14,7 +14,6 @@ import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
-import im.actor.server.persist
 import im.actor.server.persist.{ AuthIdRepo, MasterKeyRepo }
 import im.actor.util.misc.IdUtils
 import im.actor.util.ThreadLocalSecureRandom
@@ -130,7 +129,7 @@ final class AuthorizationManager(serverKeys: Seq[ServerKey], sessionClient: Acto
       val f =
         if (authId == 0L) {
           authId = IdUtils.nextAuthId(ThreadLocalSecureRandom.current())
-          db.run(persist.AuthIdRepo.create(authId, None, None))
+          db.run(AuthIdRepo.create(authId, None, None))
         } else Future.successful(())
 
       f onComplete {

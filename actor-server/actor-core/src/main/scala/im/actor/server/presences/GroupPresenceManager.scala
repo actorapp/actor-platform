@@ -5,7 +5,7 @@ import akka.cluster.sharding.ShardRegion.Passivate
 import akka.pattern.pipe
 import akka.util.Timeout
 import im.actor.server.db.DbExtension
-import im.actor.server.persist
+import im.actor.server.persist.GroupUserRepo
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext
@@ -67,7 +67,7 @@ class GroupPresenceManager extends Actor with ActorLogging with Stash {
   def receive = {
     case env @ Envelope(groupId, _) ⇒
       stash()
-      db.run(persist.GroupUserRepo.findUserIds(groupId))
+      db.run(GroupUserRepo.findUserIds(groupId))
         .map(ids ⇒ Initialized(groupId, ids.toSet))
         .pipeTo(self)
         .onFailure {

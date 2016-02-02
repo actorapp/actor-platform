@@ -13,7 +13,7 @@ import im.actor.server.bot.http.BotsHttpHandler
 import im.actor.server.db.DbExtension
 import im.actor.server.model.AuthSession
 import im.actor.server.office.EntityNotFound
-import im.actor.server.persist
+import im.actor.server.persist.{ AuthIdRepo, AuthSessionRepo }
 import im.actor.server.user.UserExtension
 import im.actor.util.misc.IdUtils
 import org.apache.commons.codec.digest.DigestUtils
@@ -192,7 +192,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
     DigestUtils.md5Hex(ThreadLocalRandom.current().nextLong().toString)
 
   private def getOrCreateAuthSession(userId: Int): Future[AuthSession] = {
-    db.run(persist.AuthSessionRepo.findFirstByUserId(userId)) flatMap {
+    db.run(AuthSessionRepo.findFirstByUserId(userId)) flatMap {
       case Some(session) ⇒ Future.successful(session)
       case None ⇒
         for {
@@ -210,20 +210,20 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
             latitude = None,
             longitude = None
           )
-          _ ← db.run(persist.AuthSessionRepo.create(session))
+          _ ← db.run(AuthSessionRepo.create(session))
         } yield session
     }
   }
 
   private def getOrCreateAuthId(userId: Int): DBIO[AuthId] = {
-    persist.AuthIdRepo.findFirstIdByUserId(userId) flatMap {
+    AuthIdRepo.findFirstIdByUserId(userId) flatMap {
       case Some(authId) ⇒
         DBIO.successful(authId)
       case None ⇒
         val authId = ACLUtils.randomLong()
 
         for {
-          _ ← persist.AuthIdRepo.create(authId, None, None)
+          _ ← AuthIdRepo.create(authId, None, None)
           _ ← DBIO.from(userExt.auth(userId, authId))
         } yield authId
     }
