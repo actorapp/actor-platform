@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.event.Logging
 import im.actor.server.activation.Activation.Code
 import im.actor.server.activation._
-import im.actor.server.persist
+import im.actor.server.persist.auth.GateAuthCodeRepo
 import slick.dbio.DBIO
 import spray.client.pipelining._
 import spray.http.HttpMethods.{ POST, GET }
@@ -38,7 +38,7 @@ class GateCodeActivation(config: GateConfig)(implicit system: ActorSystem) exten
       result ← codeResponse match {
         case CodeHash(hash) ⇒
           optTransactionHash.map { transactionHash ⇒
-            for (_ ← persist.auth.GateAuthCodeRepo.createOrUpdate(transactionHash, hash)) yield \/-(())
+            for (_ ← GateAuthCodeRepo.createOrUpdate(transactionHash, hash)) yield \/-(())
           } getOrElse DBIO.successful(\/-(()))
         case failure: CodeFailure ⇒
           DBIO.successful(-\/(failure))
@@ -48,7 +48,7 @@ class GateCodeActivation(config: GateConfig)(implicit system: ActorSystem) exten
 
   override def validate(transactionHash: String, code: String): DBIO[ValidationResponse] = {
     for {
-      optCodeHash ← persist.auth.GateAuthCodeRepo.find(transactionHash)
+      optCodeHash ← GateAuthCodeRepo.find(transactionHash)
       validationResponse ← DBIO.from(optCodeHash map { codeHash ⇒
         val validationUri = Uri(s"${config.uri}/v1/codes/validate/${codeHash.codeHash}").withQuery("code" → code)
         val request = HttpRequest(GET, validationUri)
@@ -62,7 +62,7 @@ class GateCodeActivation(config: GateConfig)(implicit system: ActorSystem) exten
     } yield validationResponse
   }
 
-  override def finish(transactionHash: String): DBIO[Unit] = persist.auth.GateAuthCodeRepo.delete(transactionHash).map(_ ⇒ ())
+  override def finish(transactionHash: String): DBIO[Unit] = GateAuthCodeRepo.delete(transactionHash).map(_ ⇒ ())
 
   private def marshalToEntity[T: ClassTag](value: T)(implicit marshaller: Marshaller[T]): Future[HttpEntity] =
     marshal[T](value) match {

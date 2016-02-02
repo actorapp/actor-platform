@@ -1,6 +1,7 @@
 package im.actor.server.social
 
 import im.actor.config.ActorConfig
+import im.actor.server.persist.social.RelationRepo
 
 import scala.concurrent.Future
 import scala.concurrent._
@@ -14,7 +15,6 @@ import akka.util.Timeout
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.db.DbExtension
-import im.actor.server.persist
 
 sealed trait SocialExtension extends Extension {
   val region: SocialManagerRegion
@@ -118,7 +118,7 @@ class SocialManager(implicit db: Database) extends Actor with ActorLogging with 
     case env @ Envelope(userId, _) ⇒
       stash()
 
-      db.run(persist.social.RelationRepo.find(userId)) onComplete {
+      db.run(RelationRepo.find(userId)) onComplete {
         case Success(userIds) ⇒
           self ! Initiated(userIds.toSet)
         case Failure(e) ⇒
@@ -145,13 +145,13 @@ class SocialManager(implicit db: Database) extends Actor with ActorLogging with 
 
       if (uniqUserIds.nonEmpty) {
         context.become(working(userIds ++ uniqUserIds))
-        db.run(persist.social.RelationRepo.create(userId, uniqUserIds))
+        db.run(RelationRepo.create(userId, uniqUserIds))
       }
     case env @ Envelope(userId, RelationNoted(notedUserId)) ⇒
       if (!userIds.contains(notedUserId) && userId != notedUserId) {
         context.become(working(userIds + notedUserId))
 
-        db.run(persist.social.RelationRepo.create(userId, notedUserId))
+        db.run(RelationRepo.create(userId, notedUserId))
       }
     case env @ Envelope(userId, GetRelations) ⇒
       sender() ! Relations(userIds)

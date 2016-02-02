@@ -12,7 +12,7 @@ import im.actor.server.activation.Activation.{ CallCode, Code, EmailCode, SmsCod
 import im.actor.server.activation._
 import im.actor.server.email.{ EmailSender, Content, Message }
 import im.actor.server.model.AuthCode
-import im.actor.server.persist
+import im.actor.server.persist.AuthCodeRepo
 import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
 import im.actor.util.misc.EmailUtils.isTestEmail
 import im.actor.util.misc.PhoneNumberUtils.isTestPhone
@@ -55,21 +55,21 @@ object InternalCodeActivation {
 
   def validateAction(txHash: String, code: String, attemptsNum: Int, expiration: Long)(implicit ec: ExecutionContext): DBIO[ValidationResponse] =
     for {
-      optCode ← persist.AuthCodeRepo.findByTransactionHash(txHash)
+      optCode ← AuthCodeRepo.findByTransactionHash(txHash)
       result ← optCode map {
         case s if isExpired(s, expiration) ⇒
-          for (_ ← persist.AuthCodeRepo.deleteByTransactionHash(txHash)) yield ExpiredCode
+          for (_ ← AuthCodeRepo.deleteByTransactionHash(txHash)) yield ExpiredCode
         case s if s.code != code ⇒
           if (s.attempts + 1 >= attemptsNum) {
-            for (_ ← persist.AuthCodeRepo.deleteByTransactionHash(txHash)) yield ExpiredCode
+            for (_ ← AuthCodeRepo.deleteByTransactionHash(txHash)) yield ExpiredCode
           } else {
-            for (_ ← persist.AuthCodeRepo.incrementAttempts(txHash, s.attempts)) yield InvalidCode
+            for (_ ← AuthCodeRepo.incrementAttempts(txHash, s.attempts)) yield InvalidCode
           }
         case _ ⇒ DBIO.successful(Validated)
       } getOrElse DBIO.successful(InvalidHash)
     } yield result
 
-  def finishAction(txHash: String)(implicit ec: ExecutionContext): DBIO[Unit] = persist.AuthCodeRepo.deleteByTransactionHash(txHash).map(_ ⇒ ())
+  def finishAction(txHash: String)(implicit ec: ExecutionContext): DBIO[Unit] = AuthCodeRepo.deleteByTransactionHash(txHash).map(_ ⇒ ())
 
   def isExpired(code: AuthCode, expiration: Long): Boolean =
     code.createdAt.plus(expiration, MILLIS).isBefore(LocalDateTime.now(ZoneOffset.UTC))
@@ -83,7 +83,7 @@ private[activation] final class InternalCodeActivation(activationActor: ActorRef
   implicit val timeout: Timeout = Timeout(20.seconds)
 
   def send(transactionHash: Option[String], code: Code): DBIO[CodeFailure \/ Unit] = (transactionHash match {
-    case Some(hash) ⇒ for (_ ← persist.AuthCodeRepo.createOrUpdate(hash, code.code)) yield ()
+    case Some(hash) ⇒ for (_ ← AuthCodeRepo.createOrUpdate(hash, code.code)) yield ()
     case None       ⇒ DBIO.successful(())
   }) flatMap (_ ⇒ DBIO.from(sendCode(code)))
 
