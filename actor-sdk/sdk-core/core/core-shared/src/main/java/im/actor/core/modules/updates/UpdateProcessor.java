@@ -89,6 +89,7 @@ public class UpdateProcessor extends AbsModule {
     private ContactsProcessor contactsProcessor;
     private StickersProcessor stickersProcessor;
     private CallsProcessor callsProcessor;
+    private EncryptedProcessor encryptedProcessor;
 
     public UpdateProcessor(ModuleContext context) {
         super(context);
@@ -101,6 +102,7 @@ public class UpdateProcessor extends AbsModule {
         this.typingProcessor = new TypingProcessor(context);
         this.stickersProcessor = new StickersProcessor(context);
         this.callsProcessor = new CallsProcessor(context);
+        this.encryptedProcessor = new EncryptedProcessor(context);
     }
 
     public void applyRelated(List<ApiUser> users,
@@ -239,6 +241,9 @@ public class UpdateProcessor extends AbsModule {
         if (usersProcessor.process(update)) {
             return;
         }
+        if (encryptedProcessor.process(update)) {
+            return;
+        }
         if (update instanceof UpdateMessage) {
             UpdateMessage message = (UpdateMessage) update;
             messagesProcessor.onMessage(message.getPeer(), message.getSenderUid(), message.getDate(), message.getRid(),
@@ -349,16 +354,6 @@ public class UpdateProcessor extends AbsModule {
             callsProcessor.onSignal((UpdateCallSignal) update);
         } else if (update instanceof UpdateCallEnded) {
             callsProcessor.onCallEnd((UpdateCallEnded) update);
-        } else if (update instanceof UpdatePublicKeyGroupAdded) {
-            context().getEncryption().getKeyManager().send(new KeyManagerActor.PublicKeysGroupAdded(
-                    ((UpdatePublicKeyGroupAdded) update).getUid(),
-                    ((UpdatePublicKeyGroupAdded) update).getKeyGroup()
-            ));
-        } else if (update instanceof UpdatePublicKeyGroupRemoved) {
-            context().getEncryption().getKeyManager().send(new KeyManagerActor.PublicKeysGroupRemoved(
-                    ((UpdatePublicKeyGroupRemoved) update).getUid(),
-                    ((UpdatePublicKeyGroupRemoved) update).getKeyGroupId()
-            ));
         }
     }
 
