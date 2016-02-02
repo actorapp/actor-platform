@@ -15,7 +15,6 @@ public class Crypto {
 
     private static final CryptoRuntime provider = new CryptoRuntimeProvider();
     private static final RandomRuntime random = new RandomRuntimeProvider();
-    private static final HexRuntime hex = new HexRuntimeProvider();
 
     public static byte[] MD5(byte[] data) {
         return provider.MD5(data);
@@ -26,7 +25,7 @@ public class Crypto {
         keyDigest.update(publicKey, 0, publicKey.length);
         byte[] res = new byte[8];
         keyDigest.doFinal(res, 0);
-        return hex.toHex(res);
+        return provider.toHex(res);
     }
 
     /**
