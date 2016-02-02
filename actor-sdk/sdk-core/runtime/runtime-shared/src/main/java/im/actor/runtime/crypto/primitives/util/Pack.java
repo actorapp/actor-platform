@@ -74,6 +74,13 @@ public abstract class Pack {
         return bs;
     }
 
+    public static void longToBigEndian(long[] ns, byte[] bs, int off, int count) {
+        for (int i = 0; i < count; ++i) {
+            longToBigEndian(ns[i], bs, off);
+            off += 8;
+        }
+    }
+
     public static void longToBigEndian(long n, byte[] bs, int off) {
         intToBigEndian((int) (n >>> 32), bs, off);
         intToBigEndian((int) (n & 0xffffffffL), bs, off + 4);
