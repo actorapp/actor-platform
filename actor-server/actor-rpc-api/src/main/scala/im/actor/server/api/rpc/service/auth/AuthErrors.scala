@@ -2,7 +2,7 @@ package im.actor.server.api.rpc.service.auth
 
 import im.actor.api.rpc.{ CommonErrors, RpcError }
 import im.actor.server.acl.ACLUtils
-import im.actor.server.activation.{ BadRequest, SendFailure, CodeFailure }
+import im.actor.server.activation.common.{ BadRequest, SendFailure, CodeFailure }
 
 object AuthErrors {
   val AuthSessionNotFound = RpcError(404, "AUTH_SESSION_NOT_FOUND", "Auth session not found.", false, None)

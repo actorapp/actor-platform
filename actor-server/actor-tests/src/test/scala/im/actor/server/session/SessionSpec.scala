@@ -5,13 +5,14 @@ import com.google.protobuf.ByteString
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.contacts.{ RequestGetContacts, UpdateContactRegistered }
-import im.actor.api.rpc.messaging.{ ResponseLoadDialogs, RequestLoadDialogs }
+import im.actor.api.rpc.messaging.RequestLoadDialogs
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.ApiUserOutPeer
 import im.actor.api.rpc.sequence.{ RequestGetDifference, RequestSubscribeToOnline, RequestGetState }
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.weak.UpdateUserOffline
 import im.actor.api.rpc.{ AuthorizedClientData, Request, RpcOk }
+import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
 import im.actor.server.persist.AuthSessionRepo
@@ -61,7 +62,15 @@ final class SessionSpec extends BaseSessionSpec {
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
+      val encodedRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+        phoneNumber = 75553333333L,
+        appId = 1,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong.toBinaryString.getBytes,
+        deviceTitle = "Specs Has You",
+        timeZone = None,
+        preferredLanguages = Vector.empty
+      ))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
 
       expectNewSession(authId, sessionId, messageId)
@@ -75,12 +84,20 @@ final class SessionSpec extends BaseSessionSpec {
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333334L, 1, "apiKey"))).require
-      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
+      val encodedStartRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+        phoneNumber = 75553333334L,
+        appId = 1,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong.toBinaryString.getBytes,
+        deviceTitle = "Specs Has You",
+        timeZone = None,
+        preferredLanguages = Vector.empty
+      ))).require
+      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedStartRequest))
       expectNewSession(authId, sessionId, messageId)
 
       expectRpcResult(authId, sessionId) should matchPattern {
-        case RpcOk(ResponseSendAuthCodeObsolete(_, false)) ⇒
+        case RpcOk(ResponseStartPhoneAuth(_, false, _)) ⇒
       }
       probe.expectNoMsg(20.seconds)
     }
@@ -89,30 +106,35 @@ final class SessionSpec extends BaseSessionSpec {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
 
-      val firstMessageId = Random.nextLong()
       val phoneNumber = 75550000000L
+      val code = phoneNumber.toString.charAt(4).toString * 4
 
-      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
+      val firstMessageId = Random.nextLong()
+      val encodedCodeRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+        phoneNumber = phoneNumber,
+        appId = 1,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong.toBinaryString.getBytes,
+        deviceTitle = "Specs Has You",
+        timeZone = None,
+        preferredLanguages = Vector.empty
+      ))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, ProtoRpcRequest(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
-
-      val smsHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
-
-      val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUpObsolete(
-        phoneNumber = phoneNumber,
-        smsHash = smsHash,
-        smsCode = "0000",
-        name = "Wayne Brain",
-        deviceHash = Array(4, 5, 6),
-        deviceTitle = "Specs virtual device",
-        appId = 1,
-        appKey = "appKey",
-        isSilent = false
-      ))).require
+      val txHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseStartPhoneAuth].transactionHash
 
       val secondMessageId = Random.nextLong()
-      sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, ProtoRpcRequest(encodedSignUpRequest))
+      val encodedValidateRequest = RequestCodec.encode(Request(RequestValidateCode(txHash, code))).require
+      sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, ProtoRpcRequest(encodedValidateRequest))
+
+      expectRpcResult(authId, sessionId) should matchPattern {
+        case AuthErrors.PhoneNumberUnoccupied ⇒
+      }
+
+      val thirdMessageId = Random.nextLong()
+      val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUp(txHash, "Name", None, None))).require
+      sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, ProtoRpcRequest(encodedSignUpRequest))
 
       expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseAuth(_, _)) ⇒
@@ -133,8 +155,8 @@ final class SessionSpec extends BaseSessionSpec {
 
       val encodedSignOutRequest = RequestCodec.encode(Request(RequestSignOut)).require
 
-      val thirdMessageId = Random.nextLong()
-      sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, ProtoRpcRequest(encodedSignOutRequest))
+      val forthMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, forthMessageId, ProtoRpcRequest(encodedSignOutRequest))
 
       expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseVoid) ⇒
@@ -145,30 +167,27 @@ final class SessionSpec extends BaseSessionSpec {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
 
-      val firstMessageId = Random.nextLong()
       val phoneNumber = 75550000000L
+      val code = phoneNumber.toString.charAt(4).toString * 4
 
-      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
+      val firstMessageId = Random.nextLong()
+      val encodedCodeRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+        phoneNumber = phoneNumber,
+        appId = 1,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong.toBinaryString.getBytes,
+        deviceTitle = "Specs Has You",
+        timeZone = None,
+        preferredLanguages = Vector.empty
+      ))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, ProtoRpcRequest(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
-
-      val smsHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
-
-      val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUpObsolete(
-        phoneNumber = phoneNumber,
-        smsHash = smsHash,
-        smsCode = "0000",
-        name = "Wayne Brain",
-        deviceHash = Array(5, 5, 6),
-        deviceTitle = "Specs virtual device",
-        appId = 1,
-        appKey = "appKey",
-        isSilent = false
-      ))).require
+      val txHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseStartPhoneAuth].transactionHash
 
       val secondMessageId = Random.nextLong()
-      sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, ProtoRpcRequest(encodedSignUpRequest))
+      val encodedValidateRequest = RequestCodec.encode(Request(RequestValidateCode(txHash, code))).require
+      sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, ProtoRpcRequest(encodedValidateRequest))
 
       val authResult = expectRpcResult(authId, sessionId)
       authResult should matchPattern {
@@ -223,30 +242,27 @@ final class SessionSpec extends BaseSessionSpec {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
 
-      val firstMessageId = Random.nextLong()
       val phoneNumber = 75550000000L
+      val code = phoneNumber.toString.charAt(4).toString * 4
 
-      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
+      val firstMessageId = Random.nextLong()
+      val encodedCodeRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+        phoneNumber = phoneNumber,
+        appId = 1,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong.toBinaryString.getBytes,
+        deviceTitle = "Specs Has You",
+        timeZone = None,
+        preferredLanguages = Vector.empty
+      ))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, ProtoRpcRequest(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
-
-      val smsHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
-
-      val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUpObsolete(
-        phoneNumber = phoneNumber,
-        smsHash = smsHash,
-        smsCode = "0000",
-        name = "Wayne Brain",
-        deviceHash = Array(5, 5, 6),
-        deviceTitle = "Specs virtual device",
-        appId = 1,
-        appKey = "appKey",
-        isSilent = false
-      ))).require
+      val txHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseStartPhoneAuth].transactionHash
 
       val secondMessageId = Random.nextLong()
-      sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, ProtoRpcRequest(encodedSignUpRequest))
+      val encodedValidateRequest = RequestCodec.encode(Request(RequestValidateCode(txHash, code))).require
+      sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, ProtoRpcRequest(encodedValidateRequest))
 
       val authResult = expectRpcResult(authId, sessionId)
       authResult should matchPattern {
@@ -265,36 +281,31 @@ final class SessionSpec extends BaseSessionSpec {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
 
-      val firstMessageId = Random.nextLong()
       val phoneNumber = 75550000000L
+      val code = phoneNumber.toString.charAt(4).toString * 4
 
-      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
+      val firstMessageId = Random.nextLong()
+      val encodedCodeRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+        phoneNumber = phoneNumber,
+        appId = 1,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong.toBinaryString.getBytes,
+        deviceTitle = "Specs Has You",
+        timeZone = None,
+        preferredLanguages = Vector.empty
+      ))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, ProtoRpcRequest(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
+      val txHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseStartPhoneAuth].transactionHash
 
-      val smsHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
+      val secondMessageId = Random.nextLong()
+      val encodedValidateRequest = RequestCodec.encode(Request(RequestValidateCode(txHash, code))).require
+      sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, ProtoRpcRequest(encodedValidateRequest))
 
-      {
-        val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUpObsolete(
-          phoneNumber = phoneNumber,
-          smsHash = smsHash,
-          smsCode = "0000",
-          name = "Wayne Brain",
-          deviceHash = Array(5, 5, 6),
-          deviceTitle = "Specs virtual device",
-          appId = 1,
-          appKey = "appKey",
-          isSilent = false
-        ))).require
-
-        val messageId = Random.nextLong()
-        sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedSignUpRequest))
-
-        val authResult = expectRpcResult(authId, sessionId)
-        authResult should matchPattern {
-          case RpcOk(ResponseAuth(_, _)) ⇒
-        }
+      val authResult = expectRpcResult(authId, sessionId)
+      authResult should matchPattern {
+        case RpcOk(ResponseAuth(_, _)) ⇒
       }
 
       {

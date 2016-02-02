@@ -1,4 +1,4 @@
-package im.actor.server.activation
+package im.actor.server.activation.common
 
 trait CodeResponse
 
