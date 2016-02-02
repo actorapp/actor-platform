@@ -1,1 +1,2 @@
 * :rocket: Increased unread messages counter performance
+* :rocket: Delay RPC Requests ACKs as there is no need to send ACK if response came up quickly
