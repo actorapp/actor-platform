@@ -32,7 +32,7 @@ final class ConcurrentSubscriptionsSpec extends BaseSessionSpec with ServiceSpec
       }
     }
 
-    val expectedMessagesNum = UsersNum * 3 + 1 // NewSession + acks + respones + presences
+    val expectedMessagesNum = UsersNum * 2 + 1 // NewSession + acks + respones + presences
 
     probe.receiveN(expectedMessagesNum, 10.seconds)
   }
