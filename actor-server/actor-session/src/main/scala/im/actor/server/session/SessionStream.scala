@@ -53,7 +53,7 @@ private[session] object SessionStream {
       val outResender = discr.out5.buffer(100, OverflowStrategy.backpressure)
 
       val rpcRequestSubscriber = builder.add(Sink.fromSubscriber(ActorSubscriber[HandleRpcRequest](rpcHandler)))
-      val rpcResponsePublisher = builder.add(Source.fromPublisher(ActorPublisher[(RpcResult, Long)](rpcHandler)).map(out))
+      val rpcResponsePublisher = builder.add(Source.fromPublisher(ActorPublisher[(Option[RpcResult], Long)](rpcHandler)).map(out))
 
       val updatesSubscriber = builder.add(Sink.fromSubscriber(ActorSubscriber[SubscribeCommand](updatesHandler)))
       val updatesPublisher = builder.add(Source.fromPublisher(ActorPublisher[(UpdateBox, Option[String])](updatesHandler)).map(out))
@@ -84,7 +84,10 @@ private[session] object SessionStream {
   private def in(m: MessageAck): ReSenderMessage = ReSenderMessage.IncomingAck(m.messageIds)
   private def in(m: RequestResend): ReSenderMessage = ReSenderMessage.IncomingRequestResend(m.messageId)
 
-  private def out(r: (RpcResult, Long)) = ReSenderMessage.RpcResult(r._1, r._2)
+  private def out(r: (Option[RpcResult], Long)) = r match {
+    case (Some(res), messageId) ⇒ ReSenderMessage.RpcResult(res, messageId)
+    case (None, messageId)      ⇒ ReSenderMessage.OutgoingAck(Seq(messageId))
+  }
   private def out(u: (UpdateBox, Option[String])) = ReSenderMessage.Push(u._1, u._2)
   private def out(messageIds: Set[Long]) = ReSenderMessage.OutgoingAck(messageIds.toSeq)
 }

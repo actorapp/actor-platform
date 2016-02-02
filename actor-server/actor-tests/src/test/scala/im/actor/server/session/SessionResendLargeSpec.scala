@@ -41,7 +41,6 @@ final class SessionResendLargeSpec extends BaseSessionSpec(
       sendMessageBox(authId, sessionId, sessionRegion.ref, requestMessageId, ProtoRpcRequest(encodedRequest))
 
       expectNewSession(authId, sessionId, requestMessageId)
-      expectMessageAck(requestMessageId)
 
       expectRpcResult(authId, sessionId, sendAckAt = None) should matchPattern {
         case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
