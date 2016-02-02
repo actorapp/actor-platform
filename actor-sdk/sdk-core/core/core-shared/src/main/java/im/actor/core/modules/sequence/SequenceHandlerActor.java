@@ -160,21 +160,15 @@ public class SequenceHandlerActor extends ModuleActor {
     }
 
     @Override
-    public void onAsk(Object message, PromiseResolver resolver) {
+    public Promise onAsk(Object message) throws Exception {
         if (message instanceof SeqUpdate) {
             SeqUpdate seqUpdate = (SeqUpdate) message;
-            try {
-                onSeqUpdate(seqUpdate.type, seqUpdate.body, seqUpdate.users, seqUpdate.groups)
-                        .pipeTo(resolver);
-            } catch (Exception e) {
-                resolver.tryError(e);
-            }
+            return onSeqUpdate(seqUpdate.type, seqUpdate.body, seqUpdate.users, seqUpdate.groups);
         } else if (message instanceof DifferenceUpdate) {
             DifferenceUpdate differenceUpdate = (DifferenceUpdate) message;
-            onDifferenceUpdate(differenceUpdate.getDifference())
-                    .pipeTo(resolver);
+            return onDifferenceUpdate(differenceUpdate.getDifference());
         } else {
-            super.onAsk(message, resolver);
+            return super.onAsk(message);
         }
     }
 

@@ -65,10 +65,12 @@ public class Actor {
     }
 
     public void unstashAll() {
-        StashedMessage[] msgs = stashed.toArray(new StashedMessage[stashed.size()]);
-        stashed.clear();
-        for (int i = msgs.length - 1; i >= 0; i--) {
-            self().sendFirst(msgs[i].getMessage(), msgs[i].getSender());
+        if (stashed.size() > 0) {
+            StashedMessage[] msgs = stashed.toArray(new StashedMessage[stashed.size()]);
+            stashed.clear();
+            for (int i = msgs.length - 1; i >= 0; i--) {
+                self().sendFirst(msgs[i].getMessage(), msgs[i].getSender());
+            }
         }
     }
 
