@@ -55,7 +55,7 @@ public class ManagerActor extends Actor {
                     public ManagerActor create() {
                         return new ManagerActor(mtProto);
                     }
-                }).changeDispatcher("network"), mtProto.getActorPath() + "/manager"));
+                }).changeDispatcher("network_manager"), mtProto.getActorPath() + "/manager"));
     }
 
     private static final AtomicIntegerCompat NEXT_CONNECTION = im.actor.runtime.Runtime.createAtomicInt(1);

@@ -240,7 +240,7 @@ public class ChatActivity extends ActorEditTextActivity {
         audioTimer = (TextView) findViewById(R.id.audioTimer);
         audioSlide = findViewById(R.id.audioSlide);
         recordPoint = findViewById(R.id.record_point);
-        ActorSystem.system().addDispatcher("voice_capture_dispatcher");
+        ActorSystem.system().addDispatcher("voice_capture_dispatcher", 1);
 
         audioButton = (ImageView) findViewById(R.id.record_btn);
         audioButton.setVisibility(View.VISIBLE);
