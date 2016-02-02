@@ -98,7 +98,7 @@ public class Application extends ActorSDKApplication {
         }
 
         @Override
-        public BaseGroupInfoActivity getGroupInfoIntent() {
+        public BaseGroupInfoActivity getGroupInfoIntent(int gid) {
             return new BaseGroupInfoActivity() {
                 @Override
                 public GroupInfoFragment getGroupInfoFragment(int chatId) {

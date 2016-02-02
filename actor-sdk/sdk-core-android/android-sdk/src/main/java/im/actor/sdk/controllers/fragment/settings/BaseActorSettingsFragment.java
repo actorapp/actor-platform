@@ -356,7 +356,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         view.findViewById(R.id.encryption).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), SecuritySettingsActivity.class));
+                ActorSDK.sharedActor().startSecuritySettingsActivity(getActivity());
             }
         });
 

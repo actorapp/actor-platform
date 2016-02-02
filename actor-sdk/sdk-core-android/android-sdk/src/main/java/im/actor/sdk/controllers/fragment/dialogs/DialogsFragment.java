@@ -74,7 +74,7 @@ public class DialogsFragment extends BaseDialogFragment {
                         @Override
                         public void onClick(DialogInterface d, int which) {
                             if (which == 0) {
-                                startActivity(Intents.openGroup(dialog.getPeer().getPeerId(), getActivity()));
+                                ActorSDK.sharedActor().startGroupInfoActivity(getActivity(), dialog.getPeer().getPeerId());
                             } else if (which == 1) {
                                 startActivity(Intents.editGroupTitle(dialog.getPeer().getPeerId(), getActivity()));
                             } else if (which == 2) {

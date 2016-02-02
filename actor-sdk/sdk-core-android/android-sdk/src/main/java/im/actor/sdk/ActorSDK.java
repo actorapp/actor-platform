@@ -22,6 +22,7 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
+import im.actor.core.entity.Peer;
 import im.actor.core.events.IncomingCall;
 import im.actor.core.modules.internal.CallsModule;
 import im.actor.runtime.Log;
@@ -30,11 +31,14 @@ import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.conversation.ChatActivity;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.fragment.auth.AuthActivity;
+import im.actor.sdk.controllers.fragment.group.GroupInfoActivity;
 import im.actor.sdk.controllers.fragment.profile.ProfileActivity;
 import im.actor.sdk.controllers.fragment.settings.MyProfileActivity;
+import im.actor.sdk.controllers.fragment.settings.SecuritySettingsActivity;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.core.ActorPushManager;
@@ -699,14 +703,62 @@ public class ActorSDK {
         }
     }
 
+    /**
+     * Method is used internally for starting default activity or activity added in delegate
+     *
+     * @param context current context
+     * @param gid     group id
+     */
+    public void startGroupInfoActivity(Context context, int gid) {
+        Bundle b = new Bundle();
+        b.putInt(Intents.EXTRA_GROUP_ID, gid);
+        if (!startDelegateActivity(context, delegate.getGroupInfoIntent(gid), b)) {
+            startActivity(context, b, GroupInfoActivity.class);
+        }
+    }
+
+    /**
+     * Method is used internally for starting default activity or activity added in delegate
+     *
+     * @param context current context
+     */
+    public void startSecuritySettingsActivity(Context context) {
+        if (!startDelegateActivity(context, delegate.getSecuritySettingsIntent(), null)) {
+            startActivity(context, null, SecuritySettingsActivity.class);
+        }
+    }
+
+    /**
+     * Method is used internally for starting default activity or activity added in delegate
+     *
+     * @param context current context
+     */
+    public void startChatActivity(Context context, Peer peer, boolean compose) {
+        Bundle b = new Bundle();
+        b.putLong(Intents.EXTRA_CHAT_PEER, peer.getUnuqueId());
+        b.putBoolean(Intents.EXTRA_CHAT_COMPOSE, compose);
+        if (!startDelegateActivity(context, delegate.getChatIntent(peer, compose), b, new int[]{Intent.FLAG_ACTIVITY_SINGLE_TOP})) {
+            startActivity(context, b, ChatActivity.class);
+        }
+    }
 
     private boolean startDelegateActivity(Context context, ActorIntent intent, Bundle extras) {
+        return startDelegateActivity(context, intent, extras, new int[]{});
+    }
+
+    private boolean startDelegateActivity(Context context, ActorIntent intent, Bundle extras, int[] flags) {
         if (intent != null && intent instanceof ActorIntentActivity) {
             Intent startIntent = ((ActorIntentActivity) intent).getIntent();
-            if (extras != null) {
-                startIntent.putExtras(extras);
-            }
+
             if (startIntent != null) {
+
+                for (int flag : flags) {
+                    startIntent.addFlags(flag);
+                }
+                if (extras != null) {
+                    startIntent.putExtras(extras);
+                }
+
                 context.startActivity(startIntent);
                 return true;
             } else {
@@ -715,7 +767,6 @@ public class ActorSDK {
         } else {
             return false;
         }
-
     }
 
     private void startActivity(Context context, Bundle extras, Class<?> cls) {
