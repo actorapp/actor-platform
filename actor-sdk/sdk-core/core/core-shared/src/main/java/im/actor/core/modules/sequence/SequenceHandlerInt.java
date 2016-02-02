@@ -8,6 +8,7 @@ import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.rpc.ResponseGetDifference;
 import im.actor.core.modules.updates.internal.InternalUpdate;
+import im.actor.core.modules.updates.internal.RelatedResponse;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.promise.Promise;
@@ -35,5 +36,9 @@ public class SequenceHandlerInt extends ActorInterface {
 
     public void onInternalUpdate(InternalUpdate internalUpdate) {
         send(internalUpdate);
+    }
+
+    public void executeRelatedResponse(List<ApiUser> users, List<ApiGroup> groups, Runnable runnable) {
+        send(new RelatedResponse(users, groups, runnable));
     }
 }
