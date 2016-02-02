@@ -87,7 +87,7 @@ public class EncryptedSessionActor extends ModuleActor {
         keyManager = context().getEncryption().getKeyManagerInt();
     }
 
-    private void onEncrypt(final byte[] data, final PromiseResolver<EncryptedPackageRes> future) {
+    private Promise<EncryptedPackageRes> onEncrypt(final byte[] data) {
 
         //
         // Stage 1: Pick Their Ephemeral key. Use already received or pick random pre key.
@@ -95,7 +95,7 @@ public class EncryptedSessionActor extends ModuleActor {
         // Stage 3: Decrypt
         //
 
-        Promises.success(latestTheirEphemeralKey)
+        return Promises.success(latestTheirEphemeralKey)
                 .mapIfNullPromise(keyManager.supplyUserPreKey(uid, session.getTheirKeyGroupId()))
                 .map(new Function<byte[], EncryptedSessionChain>() {
                     @Override
@@ -108,12 +108,10 @@ public class EncryptedSessionActor extends ModuleActor {
                     public EncryptedPackageRes apply(EncryptedSessionChain encryptedSessionChain) {
                         return encrypt(encryptedSessionChain, data);
                     }
-                })
-                .pipeTo(future)
-                .done(self());
+                });
     }
 
-    private void onDecrypt(final byte[] data, final PromiseResolver<DecryptedPackage> future) {
+    private Promise<DecryptedPackage> onDecrypt(final byte[] data) {
 
         //
         // Stage 1: Parsing message header
@@ -130,7 +128,7 @@ public class EncryptedSessionActor extends ModuleActor {
         Log.d(TAG, "Sender Ephemeral " + Crypto.keyHash(senderEphemeralKey));
         Log.d(TAG, "Receiver Ephemeral " + Crypto.keyHash(receiverEphemeralKey));
 
-        pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
+        return pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
                 .map(new Function<EncryptedSessionChain, DecryptedPackage>() {
                     @Override
                     public DecryptedPackage apply(EncryptedSessionChain encryptedSessionChain) {
@@ -149,9 +147,7 @@ public class EncryptedSessionActor extends ModuleActor {
                     public void apply(Exception e) {
                         Log.d(TAG, "onError");
                     }
-                })
-                .pipeTo(future)
-                .done(self());
+                });
     }
 
     private EncryptedSessionChain pickEncryptChain(byte[] ephemeralKey) {
@@ -236,18 +232,18 @@ public class EncryptedSessionActor extends ModuleActor {
     //
 
     @Override
-    public void onAsk(Object message, PromiseResolver resolver) {
+    public Promise onAsk(Object message) throws Exception {
         if (message instanceof EncryptPackage) {
-            onEncrypt(((EncryptPackage) message).getData(), resolver);
+            return onEncrypt(((EncryptPackage) message).getData());
         } else if (message instanceof DecryptPackage) {
             DecryptPackage decryptPackage = (DecryptPackage) message;
-            onDecrypt(decryptPackage.getData(), resolver);
+            return onDecrypt(decryptPackage.getData());
         } else {
-            super.onAsk(message, resolver);
+            return super.onAsk(message);
         }
     }
 
-    public static class EncryptPackage extends AskMessage<EncryptedPackageRes> {
+    public static class EncryptPackage implements AskMessage<EncryptedPackageRes> {
         private byte[] data;
 
         public EncryptPackage(byte[] data) {
@@ -278,7 +274,7 @@ public class EncryptedSessionActor extends ModuleActor {
         }
     }
 
-    public static class DecryptPackage extends AskMessage<DecryptedPackage> {
+    public static class DecryptPackage implements AskMessage<DecryptedPackage> {
 
         private byte[] data;
 

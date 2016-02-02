@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.mailbox.ActorDispatcher;
+import im.actor.runtime.function.Constructor;
 import im.actor.runtime.promise.Promise;
 
 /**
@@ -122,8 +123,34 @@ public class ActorSystem {
         return mailboxesDispatcher.referenceActor(path, props);
     }
 
+    public ActorRef actorOf(String path, Props props) {
+        return actorOf(props, path);
+    }
+
     public ActorRef actorOf(String path, ActorCreator creator) {
         return actorOf(Props.create(creator), path);
+    }
+
+    public ActorRef actorOf(String path, final Constructor<? extends Actor> constructor) {
+        return actorOf(Props.create(new ActorCreator() {
+            @Override
+            public Actor create() {
+                return constructor.create();
+            }
+        }), path);
+    }
+
+    public ActorRef actorOf(String path, String dispatcher, ActorCreator creator) {
+        return actorOf(Props.create(creator).changeDispatcher(dispatcher), path);
+    }
+
+    public ActorRef actorOf(String path, String dispatcher, final Constructor<? extends Actor> constructor) {
+        return actorOf(Props.create(new ActorCreator() {
+            @Override
+            public Actor create() {
+                return constructor.create();
+            }
+        }).changeDispatcher(dispatcher), path);
     }
 
     /**
