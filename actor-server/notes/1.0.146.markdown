@@ -1,0 +1,2 @@
+* :bug: Count messages from public groups in global counter
+* :bug: Don't remove whitespaces from file names
