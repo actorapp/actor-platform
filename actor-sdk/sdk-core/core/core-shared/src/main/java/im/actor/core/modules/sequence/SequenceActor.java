@@ -52,6 +52,7 @@ public class SequenceActor extends ModuleActor {
     private int seq;
     private byte[] state;
     private int finishedSeq;
+    private byte[] finishedState;
 
     private SequenceHandlerInt handler;
 
@@ -129,6 +130,13 @@ public class SequenceActor extends ModuleActor {
                 Log.d(TAG, "Handling update ended #" + seq);
                 onUpdatesApplied(seq, state);
             }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                SequenceActor.this.seq = finishedSeq;
+                SequenceActor.this.state = finishedState;
+                invalidate();
+            }
         }).done(self());
 
         // Saving memory-only state
@@ -148,7 +156,9 @@ public class SequenceActor extends ModuleActor {
 
         if (seq < 0) {
             Log.d(TAG, "Loading fresh state...");
-            request(new RequestGetState(new ArrayList<ApiUpdateOptimization>()), new RpcCallback<ResponseSeq>() {
+            ArrayList<ApiUpdateOptimization> optimizations = new ArrayList<>();
+            optimizations.add(ApiUpdateOptimization.STRIP_ENTITIES);
+            request(new RequestGetState(optimizations), new RpcCallback<ResponseSeq>() {
                 @Override
                 public void onResult(ResponseSeq response) {
                     if (isValidated) {
@@ -176,7 +186,9 @@ public class SequenceActor extends ModuleActor {
             Log.d(TAG, "Loading difference...");
             onUpdateStarted();
             final long loadStart = im.actor.runtime.Runtime.getCurrentTime();
-            request(new RequestGetDifference(seq, state, new ArrayList<ApiUpdateOptimization>()), new RpcCallback<ResponseGetDifference>() {
+            ArrayList<ApiUpdateOptimization> optimizations = new ArrayList<>();
+            optimizations.add(ApiUpdateOptimization.STRIP_ENTITIES);
+            request(new RequestGetDifference(seq, state, optimizations), new RpcCallback<ResponseGetDifference>() {
                 @Override
                 public void onResult(final ResponseGetDifference response) {
                     if (isValidated) {
@@ -237,6 +249,7 @@ public class SequenceActor extends ModuleActor {
 
     private void persistState(int seq, byte[] state) {
         finishedSeq = seq;
+        finishedState = state;
         preferences().putInt(KEY_SEQ, seq);
         preferences().putBytes(KEY_STATE, state);
     }
