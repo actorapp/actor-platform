@@ -10,7 +10,7 @@ import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.configs.RequestEditParameter
 import im.actor.api.rpc.sequence.RequestGetDifference
 import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
-import im.actor.server.api.rpc.service.auth.AuthServiceImpl
+import im.actor.server.api.rpc.service.auth.{ AuthErrors, AuthServiceImpl }
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
@@ -22,6 +22,7 @@ import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
+import im.actor.server.persist.UserPhoneRepo
 import im.actor.server.session.{ Session, SessionConfig }
 import kamon.Kamon
 
@@ -72,7 +73,7 @@ final class SimpleServerE2eSpec extends ActorSuite(
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
 
     val services = Seq(
-      new AuthServiceImpl(new DummyCodeActivation),
+      new AuthServiceImpl,
       new ContactsServiceImpl,
       MessagingServiceImpl(),
       new SequenceServiceImpl(sequenceConfig),
@@ -229,7 +230,7 @@ final class SimpleServerE2eSpec extends ActorSuite(
       require(phoneNumber.toString.startsWith("7555")) // to be able to generate code
       require(phoneNumber.toString.length >= 5)
 
-      val smsHash = {
+      val txHash = {
         val helloMessageId = Random.nextLong()
         val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello)).require
         val helloMtPackage = MTPackage(authId, sessionId, helloMbBytes)
@@ -239,33 +240,14 @@ final class SimpleServerE2eSpec extends ActorSuite(
 
         val messageId = Random.nextLong()
 
-        val requestBytes = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
-        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
-        val mtPackage = MTPackage(authId, sessionId, mbBytes)
-
-        client.send(mtPackage)
-
-        val result = receiveRpcResult(messageId)
-        result shouldBe an[RpcOk]
-
-        result.asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
-      }
-
-      {
-        val messageId = Random.nextLong()
-
-        val code = phoneNumber.toString.charAt(4).toString * 4
-
-        val requestBytes = RequestCodec.encode(Request(RequestSignUpObsolete(
+        val requestBytes = RequestCodec.encode(Request(RequestStartPhoneAuth(
           phoneNumber = phoneNumber,
-          smsHash = smsHash,
-          smsCode = code,
-          name = "Wayne Brain",
-          deviceHash = Array(4, 5, 6),
-          deviceTitle = "Specs virtual device",
           appId = 1,
-          appKey = "appKey",
-          isSilent = false
+          apiKey = "apiKey",
+          deviceHash = Random.nextLong.toBinaryString.getBytes,
+          deviceTitle = "Specs Has You",
+          timeZone = None,
+          preferredLanguages = Vector.empty
         ))).require
         val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
         val mtPackage = MTPackage(authId, sessionId, mbBytes)
@@ -275,7 +257,49 @@ final class SimpleServerE2eSpec extends ActorSuite(
         val result = receiveRpcResult(messageId)
         result shouldBe an[RpcOk]
 
-        result.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id
+        result.asInstanceOf[RpcOk].response.asInstanceOf[ResponseStartPhoneAuth].transactionHash
+      }
+
+      def validate() = {
+        val messageId = Random.nextLong()
+
+        val code = phoneNumber.toString.charAt(4).toString * 4
+
+        val requestBytes = RequestCodec.encode(Request(RequestValidateCode(txHash, code))).require
+        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
+        val mtPackage = MTPackage(authId, sessionId, mbBytes)
+
+        client.send(mtPackage)
+
+        receiveRpcResult(messageId)
+      }
+
+      val phoneExists = whenReady(DbExtension(system).db.run(UserPhoneRepo.exists(phoneNumber)))(identity)
+
+      // when user registered, RequestValidateCode will log in user,
+      // otherwise he will get PhoneNumberUnoccupied error and log in manually via RequestSignUp
+      if (phoneExists) {
+        val validateResult = validate()
+        validateResult shouldBe an[RpcOk]
+        validateResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id
+      } else {
+        validate() shouldEqual AuthErrors.PhoneNumberUnoccupied
+
+        {
+          val messageId = Random.nextLong()
+
+          val requestBytes = RequestCodec.encode(Request(RequestSignUp(txHash, "Name", None, None))).require
+          val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, ProtoRpcRequest(requestBytes))).require
+          val mtPackage = MTPackage(authId, sessionId, mbBytes)
+
+          client.send(mtPackage)
+
+          val result = receiveRpcResult(messageId)
+          result shouldBe an[RpcOk]
+
+          result.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id
+        }
+
       }
     }
 

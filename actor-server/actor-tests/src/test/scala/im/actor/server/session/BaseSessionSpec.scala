@@ -58,7 +58,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
 
   protected val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   protected implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  protected implicit val authService = new AuthServiceImpl(new DummyCodeActivation)
+  protected implicit val authService = new AuthServiceImpl
   protected val sequenceConfig = SequenceServiceConfig.load().toOption.get
   protected lazy val sequenceService = new SequenceServiceImpl(sequenceConfig)
   protected lazy val messagingService = MessagingServiceImpl()

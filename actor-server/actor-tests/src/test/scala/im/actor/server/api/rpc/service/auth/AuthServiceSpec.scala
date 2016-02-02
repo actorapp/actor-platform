@@ -11,10 +11,9 @@ import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.users.{ ApiContactRecord, ApiContactType, ApiSex }
 import im.actor.concurrent.FutureExt
 import im.actor.server._
-import im.actor.server.activation.internal.{ ActivationConfig, DummyCallEngine, DummySmsEngine, InternalCodeActivation }
+import im.actor.server.activation.common.ActivationConfig
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
-import im.actor.server.email.DummyEmailSender
 import im.actor.server.model.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
@@ -116,8 +115,7 @@ final class AuthServiceSpec
     val oauthGoogleConfig = DummyOAuth2Server.config
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     val activationConfig = ActivationConfig.load.get
-    val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, new DummyCallEngine, new DummyEmailSender)
-    implicit val service = new AuthServiceImpl(activationContext)
+    implicit val service = new AuthServiceImpl
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     implicit val contactService = new ContactsServiceImpl
 
