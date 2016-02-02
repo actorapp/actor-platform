@@ -3,7 +3,6 @@
  */
 
 package im.actor.core.util;
-
 import org.jetbrains.annotations.NotNull;
 
 import im.actor.core.Configuration;
