@@ -7,10 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
+import im.actor.core.api.ApiGroupOutPeer;
+import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiUpdateContainer;
 import im.actor.core.api.ApiUser;
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.parser.UpdatesParser;
+import im.actor.core.api.rpc.RequestGetReferencedEntitites;
+import im.actor.core.api.rpc.RequestLoadEphermalPublicKeys;
 import im.actor.core.api.rpc.ResponseGetDifference;
+import im.actor.core.api.rpc.ResponseGetReferencedEntitites;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.updates.UpdateProcessor;
 import im.actor.core.modules.updates.internal.InternalUpdate;
@@ -20,7 +26,10 @@ import im.actor.core.network.parser.Update;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.function.Constructor;
+import im.actor.runtime.function.Consumer;
+import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.promise.Promises;
 
@@ -39,6 +48,7 @@ public class SequenceHandlerActor extends ModuleActor {
 
     private UpdateProcessor processor;
     private UpdatesParser updatesParser;
+    private boolean isUpdating;
 
     public SequenceHandlerActor(ModuleContext context) {
         super(context);
@@ -75,7 +85,8 @@ public class SequenceHandlerActor extends ModuleActor {
         afterApply.run();
     }
 
-    private Promise<UpdateProcessed> onSeqUpdate(int type, byte[] body, @Nullable List<ApiUser> users,
+    private Promise<UpdateProcessed> onSeqUpdate(int type, byte[] body,
+                                                 @Nullable List<ApiUser> users,
                                                  @Nullable List<ApiGroup> groups) throws Exception {
 
         Update update;
@@ -87,13 +98,12 @@ public class SequenceHandlerActor extends ModuleActor {
             return Promises.success(new UpdateProcessed());
         }
 
-        // TODO: Implement
-//        if (groups == null || users == null) {
-//            if (processor.isCausesInvalidation(update)) {
-//                Log.w(TAG, "Difference is required");
-//                throw new RuntimeException();
-//            }
-//        }
+        if (groups == null || users == null) {
+            if (processor.isCausesInvalidation(update)) {
+                Log.w(TAG, "Difference is required");
+                throw new RuntimeException("Difference is required");
+            }
+        }
 
         // Processing update
         Log.d(TAG, "Processing update: " + update);
@@ -112,9 +122,9 @@ public class SequenceHandlerActor extends ModuleActor {
         return Promises.success(new UpdateProcessed());
     }
 
-    private Promise<UpdateProcessed> onDifferenceUpdate(ResponseGetDifference difference) {
+    private Promise<UpdateProcessed> onDifferenceUpdate(final ResponseGetDifference difference) {
         long parseStart = im.actor.runtime.Runtime.getCurrentTime();
-        ArrayList<Update> updates = new ArrayList<Update>();
+        final ArrayList<Update> updates = new ArrayList<Update>();
         for (ApiUpdateContainer u : difference.getUpdates()) {
             try {
                 updates.add(updatesParser.read(u.getUpdateHeader(), u.getUpdate()));
@@ -133,10 +143,58 @@ public class SequenceHandlerActor extends ModuleActor {
             Log.d(TAG, command);
         }
 
-        long applyStart = im.actor.runtime.Runtime.getCurrentTime();
-        processor.applyDifferenceUpdate(difference.getUsers(), difference.getGroups(), updates);
-        Log.d(TAG, "Difference applied in " + (im.actor.runtime.Runtime.getCurrentTime() - applyStart) + " ms");
-        return Promises.success(new UpdateProcessed());
+        final ArrayList<ApiUserOutPeer> pendingUserPeers = new ArrayList<>();
+        final ArrayList<ApiGroupOutPeer> pendingGroupPeers = new ArrayList<>();
+        for (ApiUserOutPeer refPeer : difference.getUsersRefs()) {
+            if (getUser(refPeer.getUid()) != null) {
+                continue;
+            }
+            pendingUserPeers.add(refPeer);
+        }
+        for (ApiGroupOutPeer refPeer : difference.getGroupsRefs()) {
+            if (getGroup(refPeer.getGroupId()) != null) {
+                continue;
+            }
+            pendingGroupPeers.add(refPeer);
+        }
+
+        if (pendingGroupPeers.size() > 0 || pendingUserPeers.size() > 0) {
+            Log.d(TAG, "Downloading pending peers (users: " + pendingUserPeers.size() + ", groups: " + pendingGroupPeers.size() + ")");
+            isUpdating = true;
+            return new Promise<>(new PromiseFunc<UpdateProcessed>() {
+                @Override
+                public void exec(final PromiseResolver<UpdateProcessed> resolver) {
+                    api(new RequestGetReferencedEntitites(pendingUserPeers, pendingGroupPeers))
+                            .then(new Consumer<ResponseGetReferencedEntitites>() {
+                                @Override
+                                public void apply(ResponseGetReferencedEntitites responseGetReferencedEntitites) {
+                                    Log.d(TAG, "Pending peers downloaded");
+                                    processor.applyRelated(responseGetReferencedEntitites.getUsers(),
+                                            responseGetReferencedEntitites.getGroups(), false);
+                                    long applyStart = im.actor.runtime.Runtime.getCurrentTime();
+                                    processor.applyDifferenceUpdate(difference.getUsers(), difference.getGroups(), updates);
+                                    Log.d(TAG, "Difference applied in " + (im.actor.runtime.Runtime.getCurrentTime() - applyStart) + " ms");
+                                    resolver.result(new UpdateProcessed());
+                                    unstashAll();
+                                    isUpdating = false;
+                                }
+                            })
+                            .failure(new Consumer<Exception>() {
+                                @Override
+                                public void apply(Exception e) {
+                                    resolver.error(e);
+                                    unstashAll();
+                                    isUpdating = false;
+                                }
+                            });
+                }
+            });
+        } else {
+            long applyStart = im.actor.runtime.Runtime.getCurrentTime();
+            processor.applyDifferenceUpdate(difference.getUsers(), difference.getGroups(), updates);
+            Log.d(TAG, "Difference applied in " + (im.actor.runtime.Runtime.getCurrentTime() - applyStart) + " ms");
+            return Promises.success(new UpdateProcessed());
+        }
     }
 
     @Override
@@ -150,9 +208,17 @@ public class SequenceHandlerActor extends ModuleActor {
                 e.printStackTrace();
             }
         } else if (message instanceof RelatedResponse) {
+            if (isUpdating) {
+                stash();
+                return;
+            }
             onRelatedResponse(((RelatedResponse) message).getRelatedUsers(), ((RelatedResponse) message).getRelatedGroups(),
                     ((RelatedResponse) message).getAfterApply());
         } else if (message instanceof InternalUpdate) {
+            if (isUpdating) {
+                stash();
+                return;
+            }
             onInternalUpdate((InternalUpdate) message);
         } else {
             super.onReceive(message);
@@ -163,9 +229,17 @@ public class SequenceHandlerActor extends ModuleActor {
     public Promise onAsk(Object message) throws Exception {
         if (message instanceof SeqUpdate) {
             SeqUpdate seqUpdate = (SeqUpdate) message;
+            if (isUpdating) {
+                stash();
+                return null;
+            }
             return onSeqUpdate(seqUpdate.type, seqUpdate.body, seqUpdate.users, seqUpdate.groups);
         } else if (message instanceof DifferenceUpdate) {
             DifferenceUpdate differenceUpdate = (DifferenceUpdate) message;
+            if (isUpdating) {
+                stash();
+                return null;
+            }
             return onDifferenceUpdate(differenceUpdate.getDifference());
         } else {
             return super.onAsk(message);
