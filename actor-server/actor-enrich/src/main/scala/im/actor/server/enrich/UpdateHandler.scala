@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageContentChanged }
 import im.actor.server.model.{ Peer, PeerType }
-import im.actor.server.persist
+import im.actor.server.persist.{ GroupUserRepo, HistoryMessageRepo }
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.UserExtension
 import slick.dbio._
@@ -42,7 +42,7 @@ class PrivateHandler(fromPeer: Peer, toPeer: Peer, randomId: Long)(implicit syst
       )
     } yield Seq(fromUpdate, toUpdate))
 
-  def handleDbUpdate(message: ApiMessage): DBIO[Int] = persist.HistoryMessageRepo.updateContentAll(
+  def handleDbUpdate(message: ApiMessage): DBIO[Int] = HistoryMessageRepo.updateContentAll(
     userIds = Set(fromPeer.id, toPeer.id),
     randomId = randomId,
     peerType = PeerType.Private,
@@ -60,15 +60,15 @@ class GroupHandler(groupPeer: Peer, randomId: Long)(implicit system: ActorSystem
   def handleUpdate(message: ApiMessage): DBIO[Seq[SeqState]] = {
     val update = UpdateMessageContentChanged(groupPeer.asStruct, randomId, message)
     for {
-      usersIds ← persist.GroupUserRepo.findUserIds(groupPeer.id)
+      usersIds ← GroupUserRepo.findUserIds(groupPeer.id)
       seqstate ← DBIO.from(UserExtension(system).broadcastUsersUpdate(usersIds.toSet, update, None, false, deliveryId = Some(s"msgcontent_${randomId}")))
     } yield seqstate
   }
 
   def handleDbUpdate(message: ApiMessage): DBIO[Int] =
     for {
-      usersIds ← persist.GroupUserRepo.findUserIds(groupPeer.id)
-      result ← persist.HistoryMessageRepo.updateContentAll(
+      usersIds ← GroupUserRepo.findUserIds(groupPeer.id)
+      result ← HistoryMessageRepo.updateContentAll(
         userIds = usersIds.toSet,
         randomId = randomId,
         peerType = PeerType.Group,
