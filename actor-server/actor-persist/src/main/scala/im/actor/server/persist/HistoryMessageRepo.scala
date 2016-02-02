@@ -159,20 +159,18 @@ object HistoryMessageRepo {
    * @param historyOwner user owns history(user itself or SharedUserId in case of public groups)
    * @return Unread messages count
    */
-  private def unreadTotal(userId: Rep[Int], historyOwner: Rep[Int]) =
+  private def unreadTotalOwner(userId: Rep[Int], historyOwner: Rep[Int]) =
     (for {
       ud ← DialogRepo.findUsersVisible(userId)
       m ← notDeletedMessages.filter(_.senderUserId =!= userId)
       if m.userId === historyOwner && m.peerType === ud.peerType && m.peerId === ud.peerId && m.date > ud.ownerLastReadAt
     } yield m.date).length
 
-  private val unreadTotalC = Compiled(unreadTotal _)
+  private val unreadTotalC = Compiled { (userId: Rep[Int]) ⇒
+    unreadTotalOwner(userId, SharedUserId) + unreadTotalOwner(userId, userId)
+  }
 
-  def getUnreadTotal(userId: Int): DBIO[Int] =
-    (for {
-      sharedTotal ← unreadTotalC((userId, SharedUserId))
-      userTotal ← unreadTotalC((userId, userId))
-    } yield sharedTotal + userTotal).result
+  def getUnreadTotal(userId: Int): DBIO[Int] = unreadTotalC(userId).result
 
   def haveMessagesBetween(userId: Int, peer: Peer, minDate: DateTime, maxDate: DateTime) =
     notDeletedMessages
