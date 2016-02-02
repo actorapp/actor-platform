@@ -3,7 +3,7 @@ package im.actor.server.session
 import akka.testkit.TestProbe
 import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc._
-import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
+import im.actor.api.rpc.auth.{ ResponseStartPhoneAuth, RequestStartPhoneAuth }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.contacts.{ UpdateContactsAdded, UpdateContactRegistered }
 import im.actor.api.rpc.misc.ResponseSeq
@@ -48,33 +48,41 @@ final class SessionResendSpec extends BaseSessionSpec(
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
+      val encodedRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+        phoneNumber = 75553333333L,
+        appId = 1,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong.toBinaryString.getBytes,
+        deviceTitle = "Specs Has You",
+        timeZone = None,
+        preferredLanguages = Vector.empty
+      ))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
       ignoreNewSession()
 
       expectRpcResult(authId, sessionId, sendAckAt = None) should matchPattern {
-        case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
+        case RpcOk(_: ResponseStartPhoneAuth) ⇒
       }
 
       // We didn't send Ack
       Thread.sleep(5000)
 
       expectRpcResult(authId, sessionId, sendAckAt = None) should matchPattern {
-        case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
+        case RpcOk(_: ResponseStartPhoneAuth) ⇒
       }
 
       // Still no ack
       Thread.sleep(5000)
 
       expectRpcResult(authId, sessionId, sendAckAt = None) should matchPattern {
-        case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
+        case RpcOk(_: ResponseStartPhoneAuth) ⇒
       }
 
       // Still no ack
       Thread.sleep(5000)
 
       expectRpcResult(authId, sessionId) should matchPattern {
-        case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
+        case RpcOk(_: ResponseStartPhoneAuth) ⇒
       }
 
       probe.expectNoMsg(5.seconds)
@@ -88,13 +96,21 @@ final class SessionResendSpec extends BaseSessionSpec(
       {
         implicit val probe = TestProbe()
 
-        val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
+        val encodedRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+          phoneNumber = 75553333333L,
+          appId = 1,
+          apiKey = "apiKey",
+          deviceHash = Random.nextLong.toBinaryString.getBytes,
+          deviceTitle = "Specs Has You",
+          timeZone = None,
+          preferredLanguages = Vector.empty
+        ))).require
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
 
         expectNewSession(authId, sessionId, messageId)
 
         expectRpcResult(authId, sessionId, sendAckAt = None) should matchPattern {
-          case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
+          case RpcOk(_: ResponseStartPhoneAuth) ⇒
         }
       }
 
@@ -108,7 +124,7 @@ final class SessionResendSpec extends BaseSessionSpec(
 
         // response to previous request
         expectRpcResult(authId, sessionId) should matchPattern {
-          case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
+          case RpcOk(_: ResponseStartPhoneAuth) ⇒
         }
         expectMessageAck(messageId)
 
@@ -127,7 +143,15 @@ final class SessionResendSpec extends BaseSessionSpec(
       // Single ack
       {
         val messageId = Random.nextLong()
-        val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
+        val encodedRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+          phoneNumber = 75553333333L,
+          appId = 1,
+          apiKey = "apiKey",
+          deviceHash = Random.nextLong.toBinaryString.getBytes,
+          deviceTitle = "Specs Has You",
+          timeZone = None,
+          preferredLanguages = Vector.empty
+        ))).require
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
         val mb = expectMessageBox()
         sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong(), MessageAck(Vector(mb.messageId)))
@@ -137,7 +161,15 @@ final class SessionResendSpec extends BaseSessionSpec(
       // Ack inside Container
       {
         val messageId = Random.nextLong()
-        val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
+        val encodedRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+          phoneNumber = 75553333333L,
+          appId = 1,
+          apiKey = "apiKey",
+          deviceHash = Random.nextLong.toBinaryString.getBytes,
+          deviceTitle = "Specs Has You",
+          timeZone = None,
+          preferredLanguages = Vector.empty
+        ))).require
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
         val mb = expectMessageBox()
 

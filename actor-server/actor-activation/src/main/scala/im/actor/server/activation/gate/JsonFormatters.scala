@@ -1,7 +1,6 @@
 package im.actor.server.activation.gate
 
-import im.actor.server.activation.Activation.{ CallCode, Code, EmailCode, SmsCode }
-import im.actor.server.activation._
+import im.actor.server.activation.common._
 import play.api.libs.json._
 
 trait JsonFormatters {
