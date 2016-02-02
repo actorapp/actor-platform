@@ -2,7 +2,8 @@ package im.actor.server.migrations
 
 import akka.actor._
 import akka.util.Timeout
-import im.actor.server.persist
+import im.actor.server.persist.UserRepo
+import im.actor.server.persist.contact.{ UserContactRepo, UserPhoneContactRepo, UserEmailContactRepo }
 import im.actor.server.user.UserExtension
 import slick.driver.PostgresDriver.api._
 
@@ -23,8 +24,8 @@ object LocalNamesMigrator extends Migration {
     system.log.warning("Migrating local names")
 
     val actions = DBIO.sequence(Seq(
-      persist.contact.UserEmailContactRepo.econtacts.filter(!_.isDeleted).map(c ⇒ (c.ownerUserId, c.contactUserId, Email)).result,
-      persist.contact.UserPhoneContactRepo.pcontacts.filter(!_.isDeleted).map(c ⇒ (c.ownerUserId, c.contactUserId, Phone)).result
+      UserEmailContactRepo.econtacts.filter(!_.isDeleted).map(c ⇒ (c.ownerUserId, c.contactUserId, Email)).result,
+      UserPhoneContactRepo.pcontacts.filter(!_.isDeleted).map(c ⇒ (c.ownerUserId, c.contactUserId, Phone)).result
     ))
 
     db.run(actions) flatMap (contacts ⇒ Future.sequence(contacts.flatten map migrateSingle)) map (_ ⇒ ())
@@ -52,12 +53,12 @@ private final class LocalNamesMigrator(promise: Promise[Unit], ownerUserId: Int,
   override def receive: Receive = Actor.emptyBehavior
 
   db.run(for {
-    contact ← persist.contact.UserContactRepo.find(ownerUserId, contactUserId)
-    user ← persist.UserRepo.find(contactUserId)
+    contact ← UserContactRepo.find(ownerUserId, contactUserId)
+    user ← UserRepo.find(contactUserId)
   } yield (contact, user)) foreach {
     case (Some(contact), Some(user)) ⇒
       (if (contact.name.contains(user.name)) {
-        db.run(persist.contact.UserContactRepo.updateName(ownerUserId, contactUserId, None))
+        db.run(UserContactRepo.updateName(ownerUserId, contactUserId, None))
       } else {
         contact.name map (_ ⇒ userExt.editLocalName(ownerUserId, contactUserId, contact.name, supressUpdate = true)) getOrElse Future.successful(())
       }) onComplete {
