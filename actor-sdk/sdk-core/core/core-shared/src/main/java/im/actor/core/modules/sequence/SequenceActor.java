@@ -154,18 +154,14 @@ public class SequenceActor extends ModuleActor {
         handler.onSeqUpdate(type, body, users, groups).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
             @Override
             public void apply(SequenceHandlerActor.UpdateProcessed updateProcessed) {
-                Log.d(TAG, "Update handled #" + seq);
-                finishedSeq = seq;
-                preferences().putInt(KEY_SEQ, finishedSeq);
-                preferences().putBytes(KEY_STATE, state);
-                checkRunnables();
+                onUpdatesApplied(seq, state);
             }
         }).failure(new Consumer<Exception>() {
             @Override
             public void apply(Exception e) {
                 // TODO?
             }
-        });
+        }).done(self());
 
         // Saving memory-only state
         this.seq = seq;
@@ -251,7 +247,7 @@ public class SequenceActor extends ModuleActor {
                         public void apply(Exception e) {
                             // TODO?
                         }
-                    });
+                    }).done(self());
 
                     isValidated = true;
 

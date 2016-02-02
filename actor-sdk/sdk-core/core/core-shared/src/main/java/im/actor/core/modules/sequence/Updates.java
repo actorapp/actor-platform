@@ -87,16 +87,16 @@ public class Updates extends AbsModule implements BusSubscriber {
     }
 
     public void executeRelatedResponse(List<ApiUser> users, List<ApiGroup> groups, Runnable runnable) {
-        updateActor.send(new RelatedResponse(users, groups, runnable));
+        updateHandlerInt.executeRelatedResponse(users, groups, runnable);
     }
 
     public void executeRelatedResponse(List<ApiUser> users, List<ApiGroup> groups, final ActorRef ref, final Runnable runnable) {
-        updateActor.send(new RelatedResponse(users, groups, new Runnable() {
+        executeRelatedResponse(users, groups, new Runnable() {
             @Override
             public void run() {
                 ref.send(runnable);
             }
-        }));
+        });
     }
 
     public void resetModule() {
