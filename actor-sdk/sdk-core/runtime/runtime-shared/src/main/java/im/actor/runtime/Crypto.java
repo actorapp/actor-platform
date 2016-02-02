@@ -8,6 +8,7 @@ import java.math.BigInteger;
 
 import im.actor.runtime.crypto.primitives.digest.KeyDigest;
 import im.actor.runtime.crypto.primitives.digest.SHA256;
+import im.actor.runtime.util.Hex;
 
 public class Crypto {
 
@@ -25,7 +26,7 @@ public class Crypto {
         keyDigest.update(publicKey, 0, publicKey.length);
         byte[] res = new byte[8];
         keyDigest.doFinal(res, 0);
-        return provider.toHex(res);
+        return Hex.toHex(res);
     }
 
     /**
