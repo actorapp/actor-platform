@@ -78,12 +78,14 @@ ReactMixin.onClass(App, IntlMixin);
 class ActorSDK {
   /**
    * @constructor
-   * @param {object} options - Object contains custom components, actions and localisation strings.
+   * @param {object} options - Object contains custom components, actions, localisation strings and etc.
    */
   constructor(options = {}) {
 
     this.endpoints = (options.endpoints && options.endpoints.length > 0) ? options.endpoints : endpoints;
     this.isExperimental = options.isExperimental ? options.isExperimental : false;
+
+    this.rootElement = options.rootElement ? options.rootElement : 'actor-web-app';
 
     this.delegate = options.delegate ? options.delegate : new SDKDelegate();
     DelegateContainer.set(this.delegate);
@@ -93,7 +95,7 @@ class ActorSDK {
     }
   }
 
-  _starter() {
+  _starter = () => {
     const ActorInitEvent = 'concurrentActorInit';
 
     if (crosstab.supported) {
@@ -105,7 +107,7 @@ class ActorSDK {
       });
     }
 
-    const appRootElemet = document.getElementById('actor-web-app');
+    const appRootElemet = document.getElementById(this.rootElement);
 
     if (window.location.hash !== '#/deactivated') {
       if (crosstab.supported) {
@@ -154,7 +156,7 @@ class ActorSDK {
     if (window.isJsAppLoaded) {
       this._starter();
     } else {
-      window.jsAppLoaded = this._starter.bind(this);
+      window.jsAppLoaded = this._starter;
     }
   }
 }
