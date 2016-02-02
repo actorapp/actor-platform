@@ -119,7 +119,8 @@ public class JsMessenger extends Messenger {
 
     public void onMessageShown(Peer peer, Long sortKey) {
         // TODO: Implement uid
-        modules.getMessagesModule().onMessageShown(peer, 0, sortKey);
+//        it's deleted from MessagesModule
+//        modules.getMessagesModule().onMessageShown(peer, 0, sortKey);
     }
 
     public void sendPhoto(final Peer peer, final String fileName, final JsBlob blob) {

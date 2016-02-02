@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ActorRef actor = ActorSystem.system().actorOf(Props.create(AuthKeyCreationMon.class, new ActorCreator<AuthKeyCreationMon>() {
+        ActorRef actor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
             @Override
             public AuthKeyCreationMon create() {
                 return new AuthKeyCreationMon();
