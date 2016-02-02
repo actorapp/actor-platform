@@ -186,7 +186,7 @@ public class SequenceHandlerActor extends ModuleActor {
                                     unstashAll();
                                     isUpdating = false;
                                 }
-                            });
+                            }).done(self());
                 }
             });
         } else {
