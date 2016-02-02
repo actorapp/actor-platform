@@ -6,5 +6,4 @@ public class CryptoRuntimeProvider implements CryptoRuntime {
     public byte[] MD5(byte[] data) {
         throw new RuntimeException("Dumb");
     }
-
 }

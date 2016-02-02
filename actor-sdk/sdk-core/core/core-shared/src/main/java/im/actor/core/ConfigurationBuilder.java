@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import im.actor.core.network.TrustedKey;
-import im.actor.core.util.Hex;
+import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
 
@@ -19,7 +19,6 @@ import im.actor.runtime.mtproto.ConnectionEndpoint;
  * Configuration builder for starting up messenger object
  */
 public class ConfigurationBuilder {
-
     private ArrayList<TrustedKey> trustedKeys = new ArrayList<TrustedKey>();
     private ArrayList<ConfigurationExtension> extensions = new ArrayList<ConfigurationExtension>();
     private ArrayList<ConnectionEndpoint> endpoints = new ArrayList<ConnectionEndpoint>();
@@ -71,7 +70,7 @@ public class ConfigurationBuilder {
     @NotNull
     @ObjectiveCName("addTrustedKey:")
     public ConfigurationBuilder addTrustedKey(String trustedKey) {
-        trustedKeys.add(new TrustedKey(Hex.fromHex(trustedKey)));
+        trustedKeys.add(new TrustedKey(Crypto.fromHex(trustedKey)));
         return this;
     }
 

@@ -1,6 +1,7 @@
-package im.actor.core.util;
+package im.actor.runtime.util;
 
 public class Hex {
+
     public static byte[] fromHex(String hex) {
         byte[] res = new byte[hex.length() / 2];
         for (int j = 0; j < hex.length() / 2; j++) {
