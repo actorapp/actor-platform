@@ -196,7 +196,9 @@ public class SequenceActor extends ModuleActor {
                     }
 
                     Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "} in "
-                            + (im.actor.runtime.Runtime.getCurrentTime() - loadStart) + " ms");
+                            + (im.actor.runtime.Runtime.getCurrentTime() - loadStart) + " ms, " +
+                            "userRefs: " + response.getUsersRefs().size() + ", " +
+                            "groupRefs: " + response.getGroupsRefs().size());
 
                     handler.onDifferenceUpdate(response).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
                         @Override
