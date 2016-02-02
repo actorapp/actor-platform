@@ -126,10 +126,6 @@ public class Intents {
         return openDialog(Peer.group(chatId), compose, context);
     }
 
-    public static Intent openProfile(int uid, Context context) {
-        return new Intent(context, ProfileActivity.class).putExtra(EXTRA_UID, uid);
-    }
-
     public static Intent call(long phone) {
         return call(phone + "");
     }

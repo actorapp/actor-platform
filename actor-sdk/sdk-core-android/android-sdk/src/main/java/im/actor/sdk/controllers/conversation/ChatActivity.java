@@ -488,7 +488,7 @@ public class ChatActivity extends ActorEditTextActivity {
             @Override
             public void onClick(View v) {
                 if (peer.getPeerType() == PeerType.PRIVATE) {
-                    startActivity(Intents.openProfile(peer.getPeerId(), ChatActivity.this));
+                    ActorSDK.sharedActor().startProfileActivity(ChatActivity.this, peer.getPeerId());
                 } else if (peer.getPeerType() == PeerType.GROUP) {
                     startActivity(Intents.openGroup(peer.getPeerId(), ChatActivity.this));
                 } else {
@@ -1081,7 +1081,7 @@ public class ChatActivity extends ActorEditTextActivity {
                     .setCanceledOnTouchOutside(true);
 
         } else if (i == R.id.contact) {
-            startActivity(Intents.openProfile(peer.getPeerId(), ChatActivity.this));
+            ActorSDK.sharedActor().startProfileActivity(ChatActivity.this, peer.getPeerId());
 
         } else if (i == R.id.groupInfo) {
             startActivity(Intents.openGroup(peer.getPeerId(), ChatActivity.this));
@@ -1250,7 +1250,7 @@ public class ChatActivity extends ActorEditTextActivity {
         audioContainer.setAnimation(animation);
         audioContainer.animate();
         audioContainer.setVisibility(View.GONE);
-
+        messageEditText.requestFocus();
 
     }
 

@@ -308,7 +308,7 @@ public class GroupInfoFragment extends BaseFragment {
                                                     .setCanceledOnTouchOutside(true);
                                         }
                                     } else if (which == 2) {
-                                        startActivity(Intents.openProfile(userVM.getId(), getActivity()));
+                                        ActorSDK.sharedActor().startProfileActivity(getActivity(), userVM.getId());
                                     } else if (which == 3) {
                                         new AlertDialog.Builder(getActivity())
                                                 .setMessage(getString(R.string.alert_group_remove_text).replace("{0}", userVM.getName().get()))

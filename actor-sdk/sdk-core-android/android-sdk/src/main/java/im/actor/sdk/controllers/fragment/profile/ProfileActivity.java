@@ -51,7 +51,7 @@ public class ProfileActivity extends BaseFragmentActivity {
 
         if (savedInstanceState == null) {
             ProfileFragment fragment;
-            BaseActorProfileActivity profileIntent = ActorSDK.sharedActor().getDelegate().getProfileIntent();
+            BaseActorProfileActivity profileIntent = ActorSDK.sharedActor().getDelegate().getProfileIntent(uid);
             if (profileIntent != null) {
                 fragment = profileIntent.getProfileFragment(uid);
             } else {
