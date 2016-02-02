@@ -440,6 +440,17 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     public BindedDisplayList<Message> getMessageDisplayList(final Peer peer) {
         if (!messagesLists.containsKey(peer)) {
             BindedDisplayList<Message> list = (BindedDisplayList<Message>) modules.getDisplayListsModule().getMessagesSharedList(peer);
+            list.setBindHook(new BindedDisplayList.BindHook<Message>() {
+                @Override
+                public void onScrolledToEnd() {
+                    modules.getMessagesModule().loadMoreHistory(peer);
+                }
+
+                @Override
+                public void onItemTouched(Message item) {
+
+                }
+            });
             messagesLists.put(peer, list);
         }
 

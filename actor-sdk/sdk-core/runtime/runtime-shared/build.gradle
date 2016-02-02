@@ -12,7 +12,6 @@ sourceSets {
                        'src/template/java']
         }
     }
-
     generic {
         java {
             srcDirs = ['src/main/java',

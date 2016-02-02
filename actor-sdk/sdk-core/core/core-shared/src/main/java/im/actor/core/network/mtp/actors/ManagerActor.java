@@ -4,6 +4,9 @@
 
 package im.actor.core.network.mtp.actors;
 
+import com.google.j2objc.annotations.AutoreleasePool;
+import com.google.j2objc.annotations.RetainedLocalRef;
+
 import java.io.IOException;
 
 import im.actor.core.network.ActorApi;
@@ -29,6 +32,7 @@ import im.actor.runtime.crypto.box.CBCHmacBox;
 import im.actor.runtime.crypto.primitives.aes.AESFastEngine;
 import im.actor.runtime.crypto.primitives.digest.SHA256;
 import im.actor.runtime.crypto.primitives.kuznechik.KuznechikCipher;
+import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 import im.actor.runtime.crypto.primitives.streebog.Streebog256;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.mtproto.Connection;
@@ -51,7 +55,7 @@ public class ManagerActor extends Actor {
                     public ManagerActor create() {
                         return new ManagerActor(mtProto);
                     }
-                }).changeDispatcher("network"), mtProto.getActorPath() + "/manager"));
+                }).changeDispatcher("network_manager"), mtProto.getActorPath() + "/manager"));
     }
 
     private static final AtomicIntegerCompat NEXT_CONNECTION = im.actor.runtime.Runtime.createAtomicInt(1);
@@ -94,7 +98,7 @@ public class ManagerActor extends Actor {
                     new SHA256(),
                     this.authProtoKey.getServerMacKey());
             this.serverRUDecryptor = new CBCHmacBox(
-                    new KuznechikCipher(this.authProtoKey.getServerRussianKey()),
+                    new KuznechikFastEngine(this.authProtoKey.getServerRussianKey()),
                     new Streebog256(),
                     this.authProtoKey.getServerMacRussianKey());
             this.clientUSEncryptor = new CBCHmacBox(
@@ -102,7 +106,7 @@ public class ManagerActor extends Actor {
                     new SHA256(),
                     this.authProtoKey.getClientMacKey());
             this.clientRUEncryptor = new CBCHmacBox(
-                    new KuznechikCipher(this.authProtoKey.getClientRussianKey()),
+                    new KuznechikFastEngine(this.authProtoKey.getClientRussianKey()),
                     new Streebog256(),
                     this.authProtoKey.getClientMacRussianKey());
         } else {
@@ -309,6 +313,7 @@ public class ManagerActor extends Actor {
         mtProto.getCallback().onConnectionsCountChanged(currentConnection != null ? 1 : 0);
     }
 
+    @AutoreleasePool
     private void onInMessage(byte[] data, int offset, int len) {
         // Log.d(TAG, "Received package");
 
@@ -335,7 +340,7 @@ public class ManagerActor extends Actor {
                 EncryptedCBCPackage ruEncryptedPackage = new EncryptedCBCPackage(new DataInput(ruPackage));
                 byte[] plainText = serverRUDecryptor.decryptPackage(ByteStrings.longToBytes(seq), ruEncryptedPackage.getIv(), ruEncryptedPackage.getEncryptedContent());
 
-                Log.d(TAG, "Package decrypted in " + (Runtime.getActorTime() - start) + " ms");
+                Log.d(TAG, "Package decrypted in " + (Runtime.getActorTime() - start) + " ms, size: " + plainText.length);
 
                 DataInput ptInput = new DataInput(plainText);
                 long messageId = ptInput.readLong();
