@@ -7,4 +7,19 @@ public class CryptoRuntimeProvider implements CryptoRuntime {
         throw new RuntimeException("Dumb");
     }
 
+    @Override
+    public byte[] fromHex(String hex) {
+        throw new RuntimeException("Dumb");
+    }
+
+    @Override
+    public byte[] fromHexReverse(String hex) {
+        throw new RuntimeException("Dumb");
+    }
+
+    @Override
+    public String toHex(byte[] raw) {
+        throw new RuntimeException("Dumb");
+    }
+
 }

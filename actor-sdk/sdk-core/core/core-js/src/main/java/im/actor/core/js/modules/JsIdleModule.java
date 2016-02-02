@@ -3,7 +3,7 @@ package im.actor.core.js.modules;
 import im.actor.core.js.JsMessenger;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
@@ -25,7 +25,7 @@ public class JsIdleModule extends AbsModule {
 
         this.messenger.onAppVisible();
 
-        idleActor = system().actorOf(Props.create(IdleActor.class, new ActorCreator<IdleActor>() {
+        idleActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public IdleActor create() {
                 return new IdleActor(messenger, context);
