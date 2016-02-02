@@ -16,6 +16,8 @@ import im.actor.core.util.ModuleActor;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ask.AskCallback;
+import im.actor.runtime.function.Function;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseResolver;
 
 public class EncryptedMsgActor extends ModuleActor {
@@ -26,35 +28,25 @@ public class EncryptedMsgActor extends ModuleActor {
         super(context);
     }
 
-    private void doEncrypt(int uid, ApiMessage message, final PromiseResolver future) {
+    private Promise doEncrypt(int uid, ApiMessage message) throws IOException {
         Log.d(TAG, "doEncrypt");
-        try {
-            ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.EncryptBox(message.buildContainer()), new AskCallback() {
-                @Override
-                public void onResult(Object obj) {
-                    Log.d(TAG, "doEncrypt:onResult");
-                    EncryptedPeerActor.EncryptBoxResponse encryptedBox = (EncryptedPeerActor.EncryptBoxResponse) obj;
-                    ArrayList<ApiEncyptedBoxKey> boxKeys = new ArrayList<ApiEncyptedBoxKey>();
-                    for (EncryptedBoxKey b : encryptedBox.getBox().getKeys()) {
-                        boxKeys.add(new ApiEncyptedBoxKey(b.getUid(),
-                                b.getKeyGroupId(), "curve25519", b.getEncryptedKey()));
-                    }
-                    ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(0, boxKeys, "aes-kuznechik", encryptedBox.getBox().getEncryptedPackage(),
-                            new ArrayList<ApiEncryptedBoxSignature>());
-                    ApiEncryptedMessage apiEncryptedMessage = new ApiEncryptedMessage(apiEncryptedBox);
-                    future.result(new EncryptedMessage(apiEncryptedMessage));
-                }
 
-                @Override
-                public void onError(Exception e) {
-                    Log.d(TAG, "doEncrypt:onError");
-                    e.printStackTrace();
-                    future.error(e);
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.EncryptBox(message.buildContainer()))
+                .map(new Function<EncryptedPeerActor.EncryptBoxResponse, EncryptedMessage>() {
+                    @Override
+                    public EncryptedMessage apply(EncryptedPeerActor.EncryptBoxResponse encryptBoxResponse) {
+                        Log.d(TAG, "doEncrypt:onResult");
+                        ArrayList<ApiEncyptedBoxKey> boxKeys = new ArrayList<ApiEncyptedBoxKey>();
+                        for (EncryptedBoxKey b : encryptBoxResponse.getBox().getKeys()) {
+                            boxKeys.add(new ApiEncyptedBoxKey(b.getUid(),
+                                    b.getKeyGroupId(), "curve25519", b.getEncryptedKey()));
+                        }
+                        ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(0, boxKeys, "aes-kuznechik", encryptBoxResponse.getBox().getEncryptedPackage(),
+                                new ArrayList<ApiEncryptedBoxSignature>());
+                        ApiEncryptedMessage apiEncryptedMessage = new ApiEncryptedMessage(apiEncryptedBox);
+                        return new EncryptedMessage(apiEncryptedMessage);
+                    }
+                });
     }
 
     public void onDecrypt(int uid, ApiEncryptedMessage message) {
@@ -90,12 +82,11 @@ public class EncryptedMsgActor extends ModuleActor {
     }
 
     @Override
-    public void onAsk(Object message, PromiseResolver future) {
+    public Promise onAsk(Object message) throws Exception {
         if (message instanceof EncryptMessage) {
-            doEncrypt(((EncryptMessage) message).getUid(), ((EncryptMessage) message).getMessage(),
-                    future);
+            return doEncrypt(((EncryptMessage) message).getUid(), ((EncryptMessage) message).getMessage());
         } else {
-            super.onAsk(message, future);
+            return super.onAsk(message);
         }
     }
 
