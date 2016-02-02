@@ -6,7 +6,7 @@ public class Streebog256 implements Digest {
 
     private static final int DIGEST_SIZE = 32;
 
-    private StreebogDigest streebogDigest = new StreebogDigest(DIGEST_SIZE);
+    private StreebogFastDigest streebogDigest = new StreebogFastDigest(DIGEST_SIZE);
 
     @Override
     public void reset() {
