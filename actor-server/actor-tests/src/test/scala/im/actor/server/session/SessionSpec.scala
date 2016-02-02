@@ -78,11 +78,11 @@ final class SessionSpec extends BaseSessionSpec {
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333334L, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
       expectNewSession(authId, sessionId, messageId)
-      expectMessageAck(messageId)
 
       expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseSendAuthCodeObsolete(_, false)) ⇒
       }
+      probe.expectNoMsg(20.seconds)
     }
 
     def auth() = {
@@ -96,7 +96,6 @@ final class SessionSpec extends BaseSessionSpec {
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, ProtoRpcRequest(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
-      expectMessageAck(firstMessageId)
 
       val smsHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
 
@@ -114,7 +113,6 @@ final class SessionSpec extends BaseSessionSpec {
 
       val secondMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, ProtoRpcRequest(encodedSignUpRequest))
-      expectMessageAck(secondMessageId)
 
       expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseAuth(_, _)) ⇒
@@ -128,10 +126,6 @@ final class SessionSpec extends BaseSessionSpec {
         sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong, ProtoRpcRequest(encodedGetDifference))
         sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong, ProtoRpcRequest(encodedGetContacts))
 
-        expectMessageAck()
-        expectMessageAck()
-        expectMessageAck()
-
         expectRpcResult(authId, sessionId)
         expectRpcResult(authId, sessionId)
         expectRpcResult(authId, sessionId)
@@ -142,7 +136,6 @@ final class SessionSpec extends BaseSessionSpec {
       val thirdMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, ProtoRpcRequest(encodedSignOutRequest))
 
-      expectMessageAck(thirdMessageId)
       expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseVoid) ⇒
       }
@@ -159,7 +152,6 @@ final class SessionSpec extends BaseSessionSpec {
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, ProtoRpcRequest(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
-      expectMessageAck(firstMessageId)
 
       val smsHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
 
@@ -178,8 +170,6 @@ final class SessionSpec extends BaseSessionSpec {
       val secondMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, ProtoRpcRequest(encodedSignUpRequest))
 
-      expectMessageAck(secondMessageId)
-
       val authResult = expectRpcResult(authId, sessionId)
       authResult should matchPattern {
         case RpcOk(ResponseAuth(_, _)) ⇒
@@ -193,7 +183,6 @@ final class SessionSpec extends BaseSessionSpec {
       val thirdMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, ProtoRpcRequest(encodedGetSeqRequest))
 
-      expectMessageAck(thirdMessageId)
       expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseSeq(_, _)) ⇒
       }
@@ -216,7 +205,6 @@ final class SessionSpec extends BaseSessionSpec {
       sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, ProtoRpcRequest(encodedGetSeqRequest))
 
       ignoreNewSession()
-      expectMessageAck(thirdMessageId)
       expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseSeq(_, _)) ⇒
       }
@@ -242,7 +230,6 @@ final class SessionSpec extends BaseSessionSpec {
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, ProtoRpcRequest(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
-      expectMessageAck(firstMessageId)
 
       val smsHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
 
@@ -260,8 +247,6 @@ final class SessionSpec extends BaseSessionSpec {
 
       val secondMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, ProtoRpcRequest(encodedSignUpRequest))
-
-      expectMessageAck(secondMessageId)
 
       val authResult = expectRpcResult(authId, sessionId)
       authResult should matchPattern {
@@ -287,7 +272,6 @@ final class SessionSpec extends BaseSessionSpec {
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, ProtoRpcRequest(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
-      expectMessageAck(firstMessageId)
 
       val smsHash = expectRpcResult(authId, sessionId).asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
 
@@ -307,8 +291,6 @@ final class SessionSpec extends BaseSessionSpec {
         val messageId = Random.nextLong()
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedSignUpRequest))
 
-        expectMessageAck(messageId)
-
         val authResult = expectRpcResult(authId, sessionId)
         authResult should matchPattern {
           case RpcOk(ResponseAuth(_, _)) ⇒
@@ -324,8 +306,6 @@ final class SessionSpec extends BaseSessionSpec {
         val messageId = Random.nextLong()
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedSubscribeRequest))
 
-        expectMessageAck(messageId)
-
         val subscribeResult = expectRpcResult(authId, sessionId)
         subscribeResult should matchPattern {
           case RpcOk(ResponseVoid) ⇒
@@ -338,7 +318,7 @@ final class SessionSpec extends BaseSessionSpec {
     }
 
     def hello() = {
-      val (user, authId, _, _) = createUser()
+      val (_, authId, _, _) = createUser()
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
