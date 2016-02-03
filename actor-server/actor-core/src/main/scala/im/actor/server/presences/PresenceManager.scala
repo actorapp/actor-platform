@@ -14,7 +14,7 @@ import scala.concurrent.duration._
 sealed trait Presence
 
 @SerialVersionUID(1L)
-case class PresenceState(userId: Int, presence: Presence, lastSeenAt: Option[DateTime])
+final case class PresenceState(userId: Int, presence: Presence, lastSeenAt: Option[DateTime])
 
 object Presences {
 
@@ -85,7 +85,6 @@ class PresenceManager extends Actor with ActorLogging with Stash {
       case Some(userPresence) ⇒
         self ! Initialized(userPresence.lastSeenAt)
       case None ⇒
-        db.run(UserPresenceRepo.createOrUpdate(UserPresence(userId, None)))
         self ! Initialized(None)
     }) onFailure {
       case e ⇒
@@ -126,7 +125,7 @@ class PresenceManager extends Actor with ActorLogging with Stash {
 
       if (presence != Offline) {
         this.state = this.state.copy(lastSeenAt = Some((new DateTime).plusMillis(timeout.toInt)))
-        db.run(UserPresenceRepo.createOrUpdate(UserPresence(userId, this.state.lastSeenAt)))
+        db.run(UserPresenceRepo.createOrUpdate(UserPresence(userId, authId, this.state.lastSeenAt)))
 
         this.scheduledTimeouts = this.scheduledTimeouts +
           (authId → context.system.scheduler.scheduleOnce(timeout.millis, self, UserPresenceChange(Offline, authId, 0)))
@@ -152,6 +151,7 @@ class PresenceManager extends Actor with ActorLogging with Stash {
         deliverState()
 
       scheduleDeliverState()
+    case ReceiveTimeout ⇒ context.parent ! Passivate(stopMessage = PoisonPill)
   }
 
   private def scheduleDeliverState(): Unit =
