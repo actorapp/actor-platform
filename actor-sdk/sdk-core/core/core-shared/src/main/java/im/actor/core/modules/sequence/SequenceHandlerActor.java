@@ -20,6 +20,7 @@ import im.actor.core.api.rpc.ResponseGetReferencedEntitites;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.updates.UpdateProcessor;
 import im.actor.core.modules.updates.internal.InternalUpdate;
+import im.actor.core.modules.updates.internal.LoggedIn;
 import im.actor.core.modules.updates.internal.RelatedResponse;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.network.parser.Update;
