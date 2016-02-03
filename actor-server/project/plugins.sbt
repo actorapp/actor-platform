@@ -14,8 +14,6 @@ addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.2")
 
 addSbtPlugin("org.flywaydb" % "flyway-sbt" % "3.1")
 
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.3")
-
 addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.7.4")
 
 addSbtPlugin("com.trueaccord.scalapb" % "sbt-scalapb" % "0.5.21")
