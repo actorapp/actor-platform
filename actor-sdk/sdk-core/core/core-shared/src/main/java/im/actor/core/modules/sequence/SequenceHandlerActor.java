@@ -112,7 +112,7 @@ public class SequenceHandlerActor extends ModuleActor {
             processor.applyRelated(users, groups, false);
         }
 
-        processor.processUpdate(update);
+        processor.processUpdate(self(), update);
 
         if (groups != null && users != null) {
             processor.applyRelated(users, groups, true);
@@ -172,7 +172,7 @@ public class SequenceHandlerActor extends ModuleActor {
                                     processor.applyRelated(responseGetReferencedEntitites.getUsers(),
                                             responseGetReferencedEntitites.getGroups(), false);
                                     long applyStart = im.actor.runtime.Runtime.getCurrentTime();
-                                    processor.applyDifferenceUpdate(difference.getUsers(), difference.getGroups(), updates);
+                                    processor.applyDifferenceUpdate(self(), difference.getUsers(), difference.getGroups(), updates);
                                     Log.d(TAG, "Difference applied in " + (im.actor.runtime.Runtime.getCurrentTime() - applyStart) + " ms");
                                     resolver.result(new UpdateProcessed());
                                     unstashAll();
@@ -191,7 +191,7 @@ public class SequenceHandlerActor extends ModuleActor {
             });
         } else {
             long applyStart = im.actor.runtime.Runtime.getCurrentTime();
-            processor.applyDifferenceUpdate(difference.getUsers(), difference.getGroups(), updates);
+            processor.applyDifferenceUpdate(self(), difference.getUsers(), difference.getGroups(), updates);
             Log.d(TAG, "Difference applied in " + (im.actor.runtime.Runtime.getCurrentTime() - applyStart) + " ms");
             return Promises.success(new UpdateProcessed());
         }

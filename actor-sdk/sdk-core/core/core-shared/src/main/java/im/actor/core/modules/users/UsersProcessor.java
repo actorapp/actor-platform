@@ -18,6 +18,7 @@ import im.actor.core.modules.sequence.Processor;
 import im.actor.core.modules.internal.contacts.ContactsSyncActor;
 import im.actor.core.modules.internal.messages.DialogsActor;
 import im.actor.core.modules.internal.messages.GroupedDialogsActor;
+import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.annotations.Verified;
 
 import static im.actor.core.util.JavaUtil.equalsE;
@@ -165,7 +166,7 @@ public class UsersProcessor extends AbsModule implements Processor {
     }
 
     @Override
-    public boolean process(Object update) {
+    public boolean process(ActorRef ref, Object update) {
         if (update instanceof UpdateUserNameChanged) {
             UpdateUserNameChanged userNameChanged = (UpdateUserNameChanged) update;
             onUserNameChanged(userNameChanged.getUid(), userNameChanged.getName());

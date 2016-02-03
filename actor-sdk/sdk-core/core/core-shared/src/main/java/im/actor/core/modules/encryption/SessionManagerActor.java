@@ -21,6 +21,7 @@ import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.crypto.ratchet.RatchetMasterSecret;
 import im.actor.runtime.crypto.ratchet.RatchetPrivateKey;
 import im.actor.runtime.crypto.ratchet.RatchetPublicKey;
+import im.actor.runtime.function.Constructor;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.FunctionTupled4;
@@ -39,6 +40,15 @@ import im.actor.runtime.storage.KeyValueEngine;
  * Can be asked to pick session parameters for specific peer.
  */
 public class SessionManagerActor extends ModuleActor {
+
+    public static Constructor<SessionManagerActor> CONSTRUCTOR(final ModuleContext context) {
+        return new Constructor<SessionManagerActor>() {
+            @Override
+            public SessionManagerActor create() {
+                return new SessionManagerActor(context);
+            }
+        };
+    }
 
     private static final String TAG = "SessionManagerActor";
 
@@ -125,10 +135,10 @@ public class SessionManagerActor extends ModuleActor {
     /**
      * Pick session for specific keys
      *
-     * @param uid         User's id
-     * @param keyGroupId  User's key group
-     * @param ownKeyId    Own Pre Key id
-     * @param theirKeyId  Their Pre Key id
+     * @param uid        User's id
+     * @param keyGroupId User's key group
+     * @param ownKeyId   Own Pre Key id
+     * @param theirKeyId Their Pre Key id
      */
     public Promise<PeerSession> pickSession(final int uid,
                                             final int keyGroupId,

@@ -14,6 +14,7 @@ import java.util.List;
 import im.actor.core.api.ApiDocumentExVoice;
 import im.actor.core.api.ApiFastThumb;
 import im.actor.core.api.ApiJsonMessage;
+import im.actor.core.api.ApiKeyGroupId;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiDocumentEx;
@@ -23,8 +24,11 @@ import im.actor.core.api.ApiDocumentMessage;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiStickerMessage;
 import im.actor.core.api.ApiTextMessage;
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.base.SeqUpdate;
+import im.actor.core.api.rpc.RequestSendEncryptedPackage;
 import im.actor.core.api.rpc.RequestSendMessage;
+import im.actor.core.api.rpc.ResponseSendEncryptedPackage;
 import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateMessageSent;
 import im.actor.core.entity.FileReference;
@@ -51,7 +55,7 @@ import im.actor.core.entity.content.VideoContent;
 import im.actor.core.entity.content.VoiceContent;
 import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.EncryptedMsgActor;
+import im.actor.core.modules.encryption.EncryptedActor;
 import im.actor.core.modules.internal.file.UploadManager;
 import im.actor.core.modules.internal.messages.entity.PendingMessage;
 import im.actor.core.modules.internal.messages.entity.PendingMessagesStorage;
@@ -60,7 +64,7 @@ import im.actor.core.util.RandomUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Storage;
-import im.actor.runtime.actors.ask.AskCallback;
+import im.actor.runtime.function.Consumer;
 
 public class SenderActor extends ModuleActor {
 
@@ -424,27 +428,59 @@ public class SenderActor extends ModuleActor {
     }
 
     private void performSendApiContent(final Peer peer, final long rid, ApiMessage message) {
-        final ApiOutPeer outPeer = buidOutPeer(peer);
-        final ApiPeer apiPeer = buildApiPeer(peer);
-        if (outPeer == null || apiPeer == null) {
-            return;
-        }
-        request(new RequestSendMessage(outPeer, rid, message),
-                new RpcCallback<ResponseSeqDate>() {
-                    @Override
-                    public void onResult(ResponseSeqDate response) {
-                        self().send(new MessageSent(peer, rid));
-                        updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
-                                response.getState(),
-                                UpdateMessageSent.HEADER,
-                                new UpdateMessageSent(apiPeer, rid, response.getDate()).toByteArray()));
-                    }
 
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            User u = getUser(peer.getPeerId());
+            final ArrayList<ApiUserOutPeer> outPeers = new ArrayList<>();
+            outPeers.add(new ApiUserOutPeer(u.getUid(), u.getAccessHash()));
+            try {
+                context().getEncryption().getEncrypted().doEncrypt(peer.getPeerId(), message.buildContainer()).then(new Consumer<EncryptedActor.CipherTextPackage>() {
                     @Override
-                    public void onError(RpcException e) {
+                    public void apply(EncryptedActor.CipherTextPackage cipherTextPackage) {
+                        api(new RequestSendEncryptedPackage(rid, outPeers, new ArrayList<ApiKeyGroupId>(), cipherTextPackage.getApiEncryptedBox())).then(new Consumer<ResponseSendEncryptedPackage>() {
+                            @Override
+                            public void apply(ResponseSendEncryptedPackage responseSendEncryptedPackage) {
+                                self().send(new MessageSent(peer, rid));
+                            }
+                        }).failure(new Consumer<Exception>() {
+                            @Override
+                            public void apply(Exception e) {
+                                self().send(new MessageError(peer, rid));
+                            }
+                        }).done(self());
+                    }
+                }).failure(new Consumer<Exception>() {
+                    @Override
+                    public void apply(Exception e) {
                         self().send(new MessageError(peer, rid));
                     }
-                });
+                }).done(self());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            final ApiOutPeer outPeer = buidOutPeer(peer);
+            final ApiPeer apiPeer = buildApiPeer(peer);
+            if (outPeer == null || apiPeer == null) {
+                return;
+            }
+            request(new RequestSendMessage(outPeer, rid, message),
+                    new RpcCallback<ResponseSeqDate>() {
+                        @Override
+                        public void onResult(ResponseSeqDate response) {
+                            self().send(new MessageSent(peer, rid));
+                            updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
+                                    response.getState(),
+                                    UpdateMessageSent.HEADER,
+                                    new UpdateMessageSent(apiPeer, rid, response.getDate()).toByteArray()));
+                        }
+
+                        @Override
+                        public void onError(RpcException e) {
+                            self().send(new MessageError(peer, rid));
+                        }
+                    });
+        }
     }
 
     private void onSent(Peer peer, long rid) {

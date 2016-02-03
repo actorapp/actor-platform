@@ -10,7 +10,6 @@ import java.util.List;
 
 import im.actor.core.api.ApiDialog;
 import im.actor.core.api.ApiDialogGroup;
-import im.actor.core.api.ApiEncryptedMessage;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiMessageContainer;
 import im.actor.core.api.ApiMessageReaction;
@@ -27,7 +26,6 @@ import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.EncryptedMsgActor;
 import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.core.modules.internal.messages.ConversationHistoryActor;
 import im.actor.core.modules.internal.messages.CursorReceiverActor;

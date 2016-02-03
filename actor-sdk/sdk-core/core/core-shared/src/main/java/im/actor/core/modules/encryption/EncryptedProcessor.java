@@ -1,14 +1,14 @@
-package im.actor.core.modules.updates;
+package im.actor.core.modules.encryption;
 
 import im.actor.core.api.updates.UpdateEncryptedPackage;
 import im.actor.core.api.updates.UpdatePublicKeyGroupAdded;
-import im.actor.core.api.updates.UpdatePublicKeyGroupChanged;
 import im.actor.core.api.updates.UpdatePublicKeyGroupRemoved;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.EncryptedMsgActor;
 import im.actor.core.modules.encryption.KeyManagerActor;
 import im.actor.core.modules.sequence.Processor;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.function.Consumer;
 
 public class EncryptedProcessor extends AbsModule implements Processor {
 
@@ -17,7 +17,7 @@ public class EncryptedProcessor extends AbsModule implements Processor {
     }
 
     @Override
-    public boolean process(Object update) {
+    public boolean process(ActorRef ref,Object update) {
         if (update instanceof UpdatePublicKeyGroupAdded) {
             context().getEncryption().getKeyManager().send(new KeyManagerActor.PublicKeysGroupAdded(
                     ((UpdatePublicKeyGroupAdded) update).getUid(),
@@ -31,8 +31,19 @@ public class EncryptedProcessor extends AbsModule implements Processor {
             ));
             return true;
         } else if (update instanceof UpdateEncryptedPackage) {
-            
+            context().getEncryption().getEncrypted().doDecrypt(((UpdateEncryptedPackage) update).getSenderId(),
+                    ((UpdateEncryptedPackage) update).getEncryptedBox()).then(new Consumer<EncryptedActor.PlainTextPackage>() {
+                @Override
+                public void apply(EncryptedActor.PlainTextPackage plainTextPackage) {
+
+                }
+            }).failure(new Consumer<Exception>() {
+                @Override
+                public void apply(Exception e) {
+
+                }
+            }).done(ref);
         }
-        return false;
+        return true;
     }
 }

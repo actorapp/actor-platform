@@ -7,6 +7,7 @@ package im.actor.core.modules.internal.messages;
 import im.actor.core.api.rpc.RequestLoadHistory;
 import im.actor.core.api.rpc.ResponseLoadHistory;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.updates.internal.MessagesHistoryLoaded;
 import im.actor.core.util.ModuleActor;
@@ -40,6 +41,13 @@ public class ConversationHistoryActor extends ModuleActor {
         super.preStart();
         historyMaxDate = preferences().getLong(KEY_LOADED_DATE, Long.MAX_VALUE);
         historyLoaded = preferences().getBool(KEY_LOADED, false);
+
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            historyLoaded = true;
+            historyMaxDate = Long.MAX_VALUE;
+            preferences().putBool(KEY_LOADED_INIT, true);
+        }
+
         if (!preferences().getBool(KEY_LOADED_INIT, false)) {
             self().sendOnce(new LoadMore());
         } else {

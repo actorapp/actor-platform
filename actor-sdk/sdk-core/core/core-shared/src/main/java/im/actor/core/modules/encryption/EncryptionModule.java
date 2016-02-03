@@ -4,10 +4,6 @@ import java.util.HashMap;
 
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.EncryptedPeerActor;
-import im.actor.core.modules.encryption.KeyManagerActor;
-import im.actor.core.modules.encryption.EncryptedMsgActor;
-import im.actor.core.modules.encryption.KeyManagerInt;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
@@ -21,7 +17,8 @@ public class EncryptionModule extends AbsModule {
     private ActorRef sessionManager;
     private SessionManagerInt sessionManagerInt;
 
-    private ActorRef messageEncryptor;
+    private ActorRef encrypted;
+    private EncryptedInt encryptedInt;
     private HashMap<Integer, ActorRef> encryptedStates = new HashMap<Integer, ActorRef>();
 
     public EncryptionModule(ModuleContext context) {
@@ -29,34 +26,26 @@ public class EncryptionModule extends AbsModule {
     }
 
     public void run() {
-        keyManager = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public KeyManagerActor create() {
-                return new KeyManagerActor(context());
-            }
-        }), "encryption/keys");
+
+        keyManager = system().actorOf("encryption/keys",
+                KeyManagerActor.CONSTRUCTOR(context()));
         keyManagerInt = new KeyManagerInt(keyManager);
-        sessionManager = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public SessionManagerActor create() {
-                return new SessionManagerActor(context());
-            }
-        }), "encryption/sessions");
+
+        sessionManager = system().actorOf("encryption/sessions",
+                SessionManagerActor.CONSTRUCTOR(context()));
         sessionManagerInt = new SessionManagerInt(sessionManager);
-        messageEncryptor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public EncryptedMsgActor create() {
-                return new EncryptedMsgActor(context());
-            }
-        }), "encryption/messaging");
+
+        encrypted = system().actorOf("encryption/messaging",
+                EncryptedActor.CONSTRUCTOR(context()));
+        encryptedInt = new EncryptedInt(encrypted);
     }
 
     public SessionManagerInt getSessionManagerInt() {
         return sessionManagerInt;
     }
 
-    public ActorRef getMessageEncryptor() {
-        return messageEncryptor;
+    public EncryptedInt getEncrypted() {
+        return encryptedInt;
     }
 
     public ActorRef getKeyManager() {

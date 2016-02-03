@@ -42,8 +42,6 @@ import im.actor.core.api.updates.UpdateMessageReceived;
 import im.actor.core.api.updates.UpdateMessageSent;
 import im.actor.core.api.updates.UpdateOwnStickersChanged;
 import im.actor.core.api.updates.UpdateParameterChanged;
-import im.actor.core.api.updates.UpdatePublicKeyGroupAdded;
-import im.actor.core.api.updates.UpdatePublicKeyGroupRemoved;
 import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.api.updates.UpdateStickerCollectionsChanged;
 import im.actor.core.api.updates.UpdateTyping;
@@ -55,7 +53,7 @@ import im.actor.core.api.updates.UpdateUserOnline;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.KeyManagerActor;
+import im.actor.core.modules.encryption.EncryptedProcessor;
 import im.actor.core.modules.internal.contacts.ContactsSyncActor;
 import im.actor.core.modules.internal.messages.OwnReadActor;
 import im.actor.core.modules.updates.internal.ChangeContent;
@@ -73,6 +71,8 @@ import im.actor.core.modules.updates.internal.UsersFounded;
 import im.actor.core.modules.users.UsersProcessor;
 import im.actor.core.network.parser.Update;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.actors.Actor;
+import im.actor.runtime.actors.ActorRef;
 
 import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
 
@@ -168,7 +168,7 @@ public class UpdateProcessor extends AbsModule {
         }
     }
 
-    public void applyDifferenceUpdate(List<ApiUser> users, List<ApiGroup> groups, List<Update> updates) {
+    public void applyDifferenceUpdate(ActorRef ref, List<ApiUser> users, List<ApiGroup> groups, List<Update> updates) {
 
         applyRelated(users, groups, false);
         context().getMessagesModule().getOwnReadActor().send(new OwnReadActor.StartGetDifference());
@@ -195,7 +195,7 @@ public class UpdateProcessor extends AbsModule {
         }
 
         for (Update u : combinedDifference.getOtherUpdates()) {
-            processUpdate(u);
+            processUpdate(ref, u);
         }
 
         if (combinedDifference.getCounters() != null) {
@@ -236,12 +236,12 @@ public class UpdateProcessor extends AbsModule {
         }
     }
 
-    public void processUpdate(Update update) {
+    public void processUpdate(ActorRef ref, Update update) {
         // Log.d(TAG, update + "");
-        if (usersProcessor.process(update)) {
+        if (usersProcessor.process(ref, update)) {
             return;
         }
-        if (encryptedProcessor.process(update)) {
+        if (encryptedProcessor.process(ref, update)) {
             return;
         }
         if (update instanceof UpdateMessage) {

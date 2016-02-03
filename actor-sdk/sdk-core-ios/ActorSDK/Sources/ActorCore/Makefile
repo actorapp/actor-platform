@@ -104,7 +104,7 @@ $(foreach root,$(SOURCE_ROOTS),$(eval $(call SOURCE_ROOT_RULE,$(root))))
 # @$(call max_args,ar rcs $(OBJ_DIR)/$(LIBRARY_NAME),1100,$(OBJECT_FILES))
 build: $(OBJ_DIR) $(OBJECT_FILES)
 	@rm -f $(OBJ_DIR)/$(LIBRARY_NAME)
-	@ar rcs $(OBJ_DIR)/$(LIBRARY_NAME) $(OBJECT_FILES)
+	@$(call max_args,ar rcs $(OBJ_DIR)/$(LIBRARY_NAME),700,$(OBJECT_FILES))
 	@ranlib $(OBJ_DIR)/$(LIBRARY_NAME)
 
 $(OBJ_DIR)/%.o: $(SOURCES_DIR)/%.m

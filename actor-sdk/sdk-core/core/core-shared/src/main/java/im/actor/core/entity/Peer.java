@@ -4,6 +4,7 @@
 
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.ObjectiveCName;
 import com.google.j2objc.annotations.Property;
 
 import java.io.IOException;
@@ -46,6 +47,11 @@ public class Peer extends BserObject {
 
     public static Peer group(int gid) {
         return new Peer(PeerType.GROUP, gid);
+    }
+
+    @ObjectiveCName("userEncryptedWithUid:")
+    public static Peer userEncrypted(int uid) {
+        return new Peer(PeerType.PRIVATE_ENCRYPTED, uid);
     }
 
     @Property("readonly, nonatomic")

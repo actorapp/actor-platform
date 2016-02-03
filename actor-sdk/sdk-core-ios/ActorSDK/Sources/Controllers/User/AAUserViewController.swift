@@ -72,6 +72,15 @@ class AAUserViewController: AAContentTableController {
                     return false
                 }
             }
+            
+            // Profile: Send messages
+            s.action("Send Secure") { (r) -> () in
+                r.selectAction = { () -> Bool in
+                    self.navigateDetail(ConversationViewController(peer: ACPeer.userEncryptedWithUid(jint(self.uid))))
+                    self.popover?.dismissPopoverAnimated(true)
+                    return false
+                }
+            }
         }
         
         let nick = self.user.getNickModel().get()
