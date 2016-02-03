@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
@@ -11,7 +11,7 @@ let cache = [];
 
 /**
  * Class that represents a component for display photo message content
- * @todo move info about cache to store;
+ * @todo move cache to store;
  */
 class Photo extends Component {
   static propTypes = {
@@ -28,9 +28,7 @@ class Photo extends Component {
     };
   }
 
-  openLightBox = () => {
-    lightbox.open(this.props.content.fileUrl, 'message');
-  };
+  openLightBox = () => lightbox.open(this.props.content.fileUrl, 'message');
 
   onLoad = () => {
     this.setCached();

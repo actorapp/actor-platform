@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { escape } from 'lodash';
@@ -13,9 +13,7 @@ import PeerUtils from '../../../utils/PeerUtils';
 import { MessageContentTypes } from '../../../constants/ActorAppConstants';
 
 import DialogActionCreators from '../../../actions/DialogActionCreators';
-import MessageActionCreators from '../../../actions/MessageActionCreators';
 import ActivityActionCreators from '../../../actions/ActivityActionCreators';
-import ComposeActionCreators from '../../../actions/ComposeActionCreators';
 import DropdownActionCreators from '../../../actions/DropdownActionCreators';
 
 import UserStore from '../../../stores/UserStore';
@@ -94,7 +92,7 @@ class MessageItem extends Component {
     const isShortMessage = overlay.useShort;
 
     let Service, Text, Modern, Photo, Document, Voice, Contact, Location, Sticker;
-    if (delegate.components.dialog !== null && delegate.components.dialog.messages) {
+    if (delegate.components.dialog && delegate.components.dialog.messages && delegate.components.dialog.messages.message !== null && typeof delegate.components.messages.message !== 'function') {
       Service = delegate.components.dialog.messages.service || DefaultService;
       Text = delegate.components.dialog.messages.text || DefaultText;
       Modern = delegate.components.dialog.messages.modern || DefaultModern;

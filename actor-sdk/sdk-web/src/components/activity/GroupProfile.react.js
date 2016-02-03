@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { assign } from 'lodash';
@@ -16,12 +16,10 @@ import confirm from '../../utils/confirm'
 import { escapeWithEmoji } from '../../utils/EmojiUtils'
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
-import GroupProfileActionCreators from '../../actions/GroupProfileActionCreators';
 import InviteUserActions from '../../actions/InviteUserActions';
 import EditGroupActionCreators from '../../actions/EditGroupActionCreators';
 import NotificationsActionCreators from '../../actions/NotificationsActionCreators';
 
-import PeerStore from '../../stores/PeerStore';
 import DialogStore from '../../stores/DialogStore';
 import NotificationsStore from '../../stores/NotificationsStore';
 import GroupStore from '../../stores/GroupStore';

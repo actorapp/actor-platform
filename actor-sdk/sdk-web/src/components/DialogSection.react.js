@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
@@ -7,9 +7,7 @@ import { debounce, forEach } from 'lodash';
 
 import { PeerTypes } from '../constants/ActorAppConstants';
 
-import PeerUtils from '../utils/PeerUtils';
-
-import MessagesSection from './dialog/MessagesSection.react';
+import DefaultMessagesSection from './dialog/MessagesSection.react';
 import DefaultTypingSection from './dialog/TypingSection.react';
 import DefaultComposeSection from './dialog/ComposeSection.react';
 import DefaultToolbarSection from './ToolbarSection.react';
@@ -19,7 +17,6 @@ import ConnectionState from './common/ConnectionState.react';
 import ActivityStore from '../stores/ActivityStore';
 import DialogStore from '../stores/DialogStore';
 import MessageStore from '../stores/MessageStore';
-import GroupStore from '../stores/GroupStore';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
 
@@ -83,10 +80,12 @@ class DialogSection extends Component {
     let activity = [],
         ToolbarSection,
         TypingSection,
-        ComposeSection;
+        ComposeSection,
+        MessagesSection;
 
     if (delegate.components.dialog !== null && typeof delegate.components.dialog !== 'function') {
       ToolbarSection = delegate.components.dialog.toolbar || DefaultToolbarSection;
+      MessagesSection = (typeof delegate.components.dialog.messages == 'function') ? delegate.components.dialog.messages : DefaultMessagesSection;
       TypingSection = delegate.components.dialog.typing || DefaultTypingSection;
       ComposeSection = delegate.components.dialog.compose || DefaultComposeSection;
 
@@ -97,6 +96,7 @@ class DialogSection extends Component {
       }
     } else {
       ToolbarSection = DefaultToolbarSection;
+      MessagesSection = DefaultMessagesSection;
       TypingSection = DefaultTypingSection;
       ComposeSection = DefaultComposeSection;
       activity.push(<DefaultActivitySection/>);
