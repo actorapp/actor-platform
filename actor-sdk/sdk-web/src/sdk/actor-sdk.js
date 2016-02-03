@@ -19,6 +19,7 @@ import Actor from 'actor-js';
 
 import { IntlMixin } from 'react-intl';
 import crosstab from 'crosstab';
+import { lightbox } from '../utils/ImageUtils'
 
 import LoginActionCreators from '../actions/LoginActionCreators';
 
@@ -38,6 +39,11 @@ Pace.start({
   ajax: false,
   restartOnRequestAfter: false,
   restartOnPushState: false
+});
+
+lightbox.load({
+  animation: false,
+  controlClose: '<i class="material-icons">close</i>'
 });
 
 window.isJsAppLoaded = false;
