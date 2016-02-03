@@ -11951,6 +11951,66 @@
           <ref role="NX6Kv" node="1HaN6CbG8Ea" resolve="encryptedBox" />
         </node>
       </node>
+      <node concept="w93zz" id="3j6TuknCrsa" role="2m5mJr">
+        <property role="1FaRnq" value="true" />
+        <property role="TrG5h" value="EncryptedData" />
+      </node>
+      <node concept="2m5naR" id="3j6TuknCrA8" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedDataMessage" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="3j6TuknCrsa" resolve="EncryptedData" />
+        <node concept="2m7Kf5" id="3j6TuknCrFh" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="message" />
+          <node concept="3BlaRf" id="3j6TuknCrFl" role="2m7DVh">
+            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="3j6TuknCrF8" role="3BtCOu">
+          <property role="Nu42W" value="01" />
+        </node>
+        <node concept="NXeRC" id="3j6TuknCsDj" role="NXodf">
+          <property role="NXePf" value="Encrypted Message" />
+        </node>
+        <node concept="NX1gA" id="3j6TuknCsDo" role="NXodf">
+          <property role="NX6R2" value="Message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3j6TuknCrFh" resolve="message" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="3j6TuknCsIx" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedDataCommon" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="3j6TuknCrsa" resolve="EncryptedData" />
+        <node concept="2m7Kf5" id="3j6TuknCsND" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="3j6TuknCsNH" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3j6TuknCtLU" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="data" />
+          <node concept="2m61tm" id="3j6TuknCtM0" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3j6TuknCsNB" role="3BtCOu">
+          <property role="Nu42W" value="02" />
+        </node>
+        <node concept="NXeRC" id="3j6TuknCtLL" role="NXodf">
+          <property role="NXePf" value="Common encrypted data. Useful for external integrations." />
+        </node>
+        <node concept="NX1gA" id="3j6TuknCtLQ" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Unique name for each vendor in reverse dns format: im.actor.signaling or org.example " />
+          <ref role="NX6Kv" node="3j6TuknCsND" resolve="name" />
+        </node>
+        <node concept="NX1gA" id="3j6TuknCtM7" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Plain text data" />
+          <ref role="NX6Kv" node="3j6TuknCtLU" resolve="data" />
+        </node>
+      </node>
       <node concept="1Dx9M1" id="7ZzLuuoIXYH" role="1Dx9rD">
         <property role="1Dx9K7" value="Package that include encryption support" />
       </node>

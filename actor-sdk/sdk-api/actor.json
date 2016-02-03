@@ -13928,6 +13928,82 @@
               }
             ]
           }
+        },
+        {
+          "type": "trait",
+          "content": {
+            "isContainer": "true",
+            "name": "EncryptedData",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedDataMessage",
+            "doc": [
+              "Encrypted Message",
+              {
+                "type": "reference",
+                "argument": "message",
+                "category": "full",
+                "description": "  Message"
+              }
+            ],
+            "trait": {
+              "name": "EncryptedData",
+              "key": 1
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
+                "id": 1,
+                "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedDataCommon",
+            "doc": [
+              "Common encrypted data. Useful for external integrations.",
+              {
+                "type": "reference",
+                "argument": "name",
+                "category": "full",
+                "description": "  Unique name for each vendor in reverse dns format: im.actor.signaling or org.example"
+              },
+              {
+                "type": "reference",
+                "argument": "data",
+                "category": "full",
+                "description": "  Plain text data"
+              }
+            ],
+            "trait": {
+              "name": "EncryptedData",
+              "key": 2
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "name"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "data"
+              }
+            ]
+          }
         }
       ]
     },

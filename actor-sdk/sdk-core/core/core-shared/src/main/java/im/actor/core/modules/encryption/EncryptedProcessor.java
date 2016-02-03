@@ -35,7 +35,7 @@ public class EncryptedProcessor extends AbsModule implements Processor {
                     ((UpdateEncryptedPackage) update).getEncryptedBox()).then(new Consumer<EncryptedActor.PlainTextPackage>() {
                 @Override
                 public void apply(EncryptedActor.PlainTextPackage plainTextPackage) {
-
+                    
                 }
             }).failure(new Consumer<Exception>() {
                 @Override
