@@ -12,10 +12,12 @@ public class UserKeys extends BserObject {
 
     private int uid;
     private UserKeysGroup[] userKeysGroups;
+    private int[] invalidGroups;
 
-    public UserKeys(int uid, UserKeysGroup[] userKeysGroups) {
+    public UserKeys(int uid, UserKeysGroup[] userKeysGroups, int[] invalidGroups) {
         this.uid = uid;
         this.userKeysGroups = userKeysGroups;
+        this.invalidGroups = invalidGroups;
     }
 
     public UserKeys(byte[] data) throws IOException {
@@ -30,13 +32,17 @@ public class UserKeys extends BserObject {
         return userKeysGroups;
     }
 
+    public int[] getInvalidGroups() {
+        return invalidGroups;
+    }
+
     public UserKeys addUserKeyGroup(UserKeysGroup keysGroup) {
         ArrayList<UserKeysGroup> userKeysGroups = new ArrayList<UserKeysGroup>();
         for (UserKeysGroup g : this.userKeysGroups) {
             userKeysGroups.add(g);
         }
         userKeysGroups.add(keysGroup);
-        return new UserKeys(uid, userKeysGroups.toArray(new UserKeysGroup[userKeysGroups.size()]));
+        return new UserKeys(uid, userKeysGroups.toArray(new UserKeysGroup[userKeysGroups.size()]), invalidGroups);
     }
 
     public UserKeys removeUserKeyGroup(int keyGroupId) {
@@ -46,7 +52,7 @@ public class UserKeys extends BserObject {
                 userKeysGroups.add(g);
             }
         }
-        return new UserKeys(uid, userKeysGroups.toArray(new UserKeysGroup[userKeysGroups.size()]));
+        return new UserKeys(uid, userKeysGroups.toArray(new UserKeysGroup[userKeysGroups.size()]), invalidGroups);
     }
 
     @Override
@@ -57,6 +63,11 @@ public class UserKeys extends BserObject {
         for (int i = 0; i < userKeysGroups.length; i++) {
             userKeysGroups[i] = new UserKeysGroup(g.get(i));
         }
+        List<Integer> g2 = values.getRepeatedInt(3);
+        invalidGroups = new int[g2.size()];
+        for (int i = 0; i < invalidGroups.length; i++) {
+            invalidGroups[i] = g2.get(i);
+        }
     }
 
     @Override
@@ -64,6 +75,9 @@ public class UserKeys extends BserObject {
         writer.writeInt(1, uid);
         for (UserKeysGroup ukg : userKeysGroups) {
             writer.writeObject(2, ukg);
+        }
+        for (int id : invalidGroups) {
+            writer.writeInt(3, id);
         }
     }
 }

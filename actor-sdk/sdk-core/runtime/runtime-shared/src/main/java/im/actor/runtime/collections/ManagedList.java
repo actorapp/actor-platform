@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
+import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.Predicate;
 import im.actor.runtime.function.Supplier;
@@ -56,6 +57,20 @@ public class ManagedList<T> extends ArrayList<T> {
         return res;
     }
 
+    public ManagedList<T> unique(Comparator<T> comparator) {
+        ManagedList<T> res = new ManagedList<>();
+        outer:
+        for (T t : this) {
+            for (T t2 : res) {
+                if (comparator.compare(t, t2) == 0) {
+                    continue outer;
+                }
+            }
+            res.add(t);
+        }
+        return res;
+    }
+
     public <R> ManagedList<R> map(Function<T, R> map) {
         ManagedList<R> res = new ManagedList<>();
         for (T t : this) {
@@ -87,6 +102,13 @@ public class ManagedList<T> extends ArrayList<T> {
         ManagedList<T> res = new ManagedList<>(this);
         Collections.sort(res, comparator);
         return res;
+    }
+
+    public ManagedList<T> forEach(Consumer<T> consumer) {
+        for (T t : this) {
+            consumer.apply(t);
+        }
+        return this;
     }
 
     public T first() {

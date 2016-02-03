@@ -7,6 +7,7 @@ import im.actor.core.api.ApiEncryptedBox;
 import im.actor.core.api.ApiEncryptedBoxSignature;
 import im.actor.core.api.ApiEncryptedMessage;
 import im.actor.core.api.ApiEncyptedBoxKey;
+import im.actor.core.api.ApiKeyGroupId;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
@@ -41,7 +42,7 @@ public class EncryptedActor extends ModuleActor {
         super(context);
     }
 
-    private Promise<CipherTextPackage> doEncrypt(int uid, byte[] message) throws IOException {
+    private Promise<CipherTextPackage> doEncrypt(final int uid, byte[] message) throws IOException {
         Log.d(TAG, "doEncrypt");
 
         return ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.EncryptBox(message))
@@ -50,13 +51,18 @@ public class EncryptedActor extends ModuleActor {
                     public CipherTextPackage apply(EncryptedPeerActor.EncryptBoxResponse encryptBoxResponse) {
                         Log.d(TAG, "doEncrypt:onResult");
                         ArrayList<ApiEncyptedBoxKey> boxKeys = new ArrayList<ApiEncyptedBoxKey>();
+                        ArrayList<ApiKeyGroupId> ignored = new ArrayList<>();
                         for (EncryptedBoxKey b : encryptBoxResponse.getBox().getKeys()) {
                             boxKeys.add(new ApiEncyptedBoxKey(b.getUid(),
                                     b.getKeyGroupId(), "curve25519", b.getEncryptedKey()));
                         }
+                        ;
+                        for (int kgid : encryptBoxResponse.getIgnored()) {
+                            ignored.add(new ApiKeyGroupId(uid, kgid));
+                        }
                         ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(0, boxKeys, "aes-kuznechik", encryptBoxResponse.getBox().getEncryptedPackage(),
                                 new ArrayList<ApiEncryptedBoxSignature>());
-                        return new CipherTextPackage(apiEncryptedBox);
+                        return new CipherTextPackage(apiEncryptedBox, ignored);
                     }
                 });
     }
@@ -155,10 +161,17 @@ public class EncryptedActor extends ModuleActor {
     }
 
     public static class CipherTextPackage {
-        private ApiEncryptedBox apiEncryptedBox;
 
-        public CipherTextPackage(ApiEncryptedBox apiEncryptedBox) {
+        private ApiEncryptedBox apiEncryptedBox;
+        private ArrayList<ApiKeyGroupId> ignoredKeyGroups;
+
+        public CipherTextPackage(ApiEncryptedBox apiEncryptedBox, ArrayList<ApiKeyGroupId> ignoredKeyGroups) {
             this.apiEncryptedBox = apiEncryptedBox;
+            this.ignoredKeyGroups = ignoredKeyGroups;
+        }
+
+        public ArrayList<ApiKeyGroupId> getIgnoredKeyGroups() {
+            return ignoredKeyGroups;
         }
 
         public ApiEncryptedBox getApiEncryptedBox() {

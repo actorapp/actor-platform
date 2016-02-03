@@ -168,9 +168,24 @@ public class EncryptedPeerActor extends ModuleActor {
 
                         Log.d(TAG, "All Encrypted in " + (Runtime.getActorTime() - start) + " ms");
 
+                        ArrayList<Integer> ignoredKeys = new ArrayList<>();
+
+                        outer:
+                        for (UserKeysGroup g : theirKeys.getUserKeysGroups()) {
+                            for (EncryptedBoxKey k : encryptedKeys) {
+                                if (k.getKeyGroupId() == g.getKeyGroupId()) {
+                                    continue outer;
+                                }
+                            }
+                            ignoredKeys.add(g.getKeyGroupId());
+                        }
+                        for(int kgid : theirKeys.getInvalidGroups()){
+                            ignoredKeys.add(kgid);
+                        }
+
                         return new EncryptBoxResponse(new EncryptedBox(
                                 encryptedKeys.toArray(new EncryptedBoxKey[encryptedKeys.size()]),
-                                ByteStrings.merge(ByteStrings.intToBytes(ownKeyGroupId), encData)));
+                                ByteStrings.merge(ByteStrings.intToBytes(ownKeyGroupId), encData)), ignoredKeys);
                     }
                 });
     }
@@ -332,9 +347,15 @@ public class EncryptedPeerActor extends ModuleActor {
     public static class EncryptBoxResponse extends AskResult {
 
         private EncryptedBox box;
+        private ArrayList<Integer> ignored;
 
-        public EncryptBoxResponse(EncryptedBox box) {
+        public EncryptBoxResponse(EncryptedBox box, ArrayList<Integer> ignored) {
             this.box = box;
+            this.ignored = ignored;
+        }
+
+        public ArrayList<Integer> getIgnored() {
+            return ignored;
         }
 
         public EncryptedBox getBox() {

@@ -438,7 +438,7 @@ public class SenderActor extends ModuleActor {
                 context().getEncryption().getEncrypted().doEncrypt(peer.getPeerId(), message.buildContainer()).then(new Consumer<EncryptedActor.CipherTextPackage>() {
                     @Override
                     public void apply(EncryptedActor.CipherTextPackage cipherTextPackage) {
-                        api(new RequestSendEncryptedPackage(rid, outPeers, new ArrayList<ApiKeyGroupId>(), cipherTextPackage.getApiEncryptedBox())).then(new Consumer<ResponseSendEncryptedPackage>() {
+                        api(new RequestSendEncryptedPackage(rid, outPeers, cipherTextPackage.getIgnoredKeyGroups(), cipherTextPackage.getApiEncryptedBox())).then(new Consumer<ResponseSendEncryptedPackage>() {
                             @Override
                             public void apply(ResponseSendEncryptedPackage responseSendEncryptedPackage) {
                                 if (responseSendEncryptedPackage.getSeq() != null && responseSendEncryptedPackage.getState() != null) {

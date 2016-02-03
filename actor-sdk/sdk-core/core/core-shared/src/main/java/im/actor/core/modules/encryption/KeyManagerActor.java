@@ -2,11 +2,13 @@ package im.actor.core.modules.encryption;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import im.actor.core.api.ApiEncryptionKey;
 import im.actor.core.api.ApiEncryptionKeyGroup;
 import im.actor.core.api.ApiEncryptionKeySignature;
+import im.actor.core.api.ApiKeyGroupId;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateNewKeyGroup;
 import im.actor.core.api.rpc.RequestLoadEphermalPublicKeys;
@@ -35,6 +37,7 @@ import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.function.Constructor;
 import im.actor.runtime.function.Function;
+import im.actor.runtime.function.Predicate;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.crypto.Curve25519;
@@ -286,25 +289,32 @@ public class KeyManagerActor extends ModuleActor {
         }
 
         return api(new RequestLoadPublicKeyGroups(new ApiUserOutPeer(uid, user.getAccessHash())))
-                .map(new Function<ResponsePublicKeyGroups, ArrayList<UserKeysGroup>>() {
+                .map(new Function<ResponsePublicKeyGroups, UserKeys>() {
                     @Override
-                    public ArrayList<UserKeysGroup> apply(ResponsePublicKeyGroups response) {
+                    public UserKeys apply(ResponsePublicKeyGroups response) {
                         ArrayList<UserKeysGroup> keysGroups = new ArrayList<>();
+                        ArrayList<Integer> ignoredKeyGroups = new ArrayList<>();
                         for (ApiEncryptionKeyGroup keyGroup : response.getPublicKeyGroups()) {
                             UserKeysGroup validatedKeysGroup = validateUserKeysGroup(uid, keyGroup);
                             if (validatedKeysGroup != null) {
                                 keysGroups.add(validatedKeysGroup);
+                            } else {
+                                ignoredKeyGroups.add(keyGroup.getKeyGroupId());
                             }
                         }
-                        return keysGroups;
+                        int[] ignored = new int[ignoredKeyGroups.size()];
+                        for (int i = 0; i < ignored.length; i++) {
+                            ignored[i] = ignoredKeyGroups.get(i);
+                        }
+                        return new UserKeys(uid, keysGroups.toArray(new UserKeysGroup[keysGroups.size()]),
+                                ignored);
                     }
                 })
-                .map(new Function<ArrayList<UserKeysGroup>, UserKeys>() {
+                .map(new Function<UserKeys, UserKeys>() {
                     @Override
-                    public UserKeys apply(ArrayList<UserKeysGroup> userKeysGroups) {
-                        UserKeys userKeys = new UserKeys(uid, userKeysGroups.toArray(new UserKeysGroup[userKeysGroups.size()]));
-                        cacheUserKeys(userKeys);
-                        return userKeys;
+                    public UserKeys apply(UserKeys userKeysGroups) {
+                        cacheUserKeys(userKeysGroups);
+                        return userKeysGroups;
                     }
                 });
     }
@@ -384,6 +394,112 @@ public class KeyManagerActor extends ModuleActor {
                                 });
                     }
                 });
+    }
+
+    private Promise<KeyGroupsUpdated> updateUserKeyGroups(final ArrayList<ApiKeyGroupId> obsoleteKeyGroups, final ArrayList<ApiKeyGroupId> missingKeyGroups) {
+
+        //
+        // Stripping out old key groups
+        //
+        ManagedList.of(cachedUserKeys.values()).filter(new Predicate<UserKeys>() {
+            @Override
+            public boolean apply(UserKeys userKeys) {
+                for (ApiKeyGroupId apiKeyGroupId : obsoleteKeyGroups) {
+                    if (apiKeyGroupId.getUid() == userKeys.getUid()) {
+                        return true;
+                    }
+                }
+                for (ApiKeyGroupId apiKeyGroupId : missingKeyGroups) {
+                    if (apiKeyGroupId.getUid() == userKeys.getUid()) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }).map(new Function<UserKeys, UserKeys>() {
+            @Override
+            public UserKeys apply(UserKeys userKeys) {
+                UserKeys updated = null;
+                for (ApiKeyGroupId apiKeyGroupId : obsoleteKeyGroups) {
+                    if (apiKeyGroupId.getUid() == userKeys.getUid()) {
+                        if (updated == null) {
+                            updated = userKeys;
+                        }
+                        updated = updated.removeUserKeyGroup(apiKeyGroupId.getKeyGroupId());
+                    }
+                }
+                return updated;
+            }
+        }).forEach(new Consumer<UserKeys>() {
+            @Override
+            public void apply(UserKeys userKeys) {
+                cacheUserKeys(userKeys);
+                context().getEncryption().getEncryptedChatManager(userKeys.getUid())
+                        .send(new EncryptedPeerActor.KeyGroupUpdated(userKeys));
+            }
+        });
+
+        //
+        // Downloading required key groups
+        //
+        Integer[] uids = (Integer[]) ManagedList.of(missingKeyGroups).unique(new Comparator<ApiKeyGroupId>() {
+            @Override
+            public int compare(ApiKeyGroupId lhs, ApiKeyGroupId rhs) {
+                return lhs.getUid() < rhs.getUid() ? -1 : (lhs.getUid() == rhs.getUid() ? 0 : 1);
+            }
+        }).map(new Function<ApiKeyGroupId, Integer>() {
+            @Override
+            public Integer apply(ApiKeyGroupId apiKeyGroupId) {
+                return apiKeyGroupId.getUid();
+            }
+        }).toArray();
+
+        if (uids.length == 0) {
+            return Promises.success(new KeyGroupsUpdated());
+        }
+
+        return PromisesArray.of(uids).map(new Function<Integer, Promise<UserKeys>>() {
+            @Override
+            public Promise<UserKeys> apply(final Integer uid) {
+                User user = users().getValue(uid);
+                if (user == null) {
+                    throw new RuntimeException("Unable to find user #" + uid);
+                }
+
+                return api(new RequestLoadPublicKeyGroups(new ApiUserOutPeer(uid, user.getAccessHash())))
+                        .map(new Function<ResponsePublicKeyGroups, UserKeys>() {
+                            @Override
+                            public UserKeys apply(ResponsePublicKeyGroups responsePublicKeyGroups) {
+                                ArrayList<UserKeysGroup> keysGroups = new ArrayList<>();
+                                ArrayList<Integer> ignoredKeyGroups = new ArrayList<>();
+                                for (ApiEncryptionKeyGroup keyGroup : responsePublicKeyGroups.getPublicKeyGroups()) {
+                                    UserKeysGroup validatedKeysGroup = validateUserKeysGroup(uid, keyGroup);
+                                    if (validatedKeysGroup != null) {
+                                        keysGroups.add(validatedKeysGroup);
+                                    } else {
+                                        ignoredKeyGroups.add(keyGroup.getKeyGroupId());
+                                    }
+                                }
+                                int[] ignored = new int[ignoredKeyGroups.size()];
+                                for (int i = 0; i < ignored.length; i++) {
+                                    ignored[i] = ignoredKeyGroups.get(i);
+                                }
+                                return new UserKeys(uid, keysGroups.toArray(new UserKeysGroup[keysGroups.size()]),
+                                        ignored);
+                            }
+                        });
+            }
+        }).zip().map(new Function<UserKeys[], KeyGroupsUpdated>() {
+            @Override
+            public KeyGroupsUpdated apply(UserKeys[] userKeyses) {
+                for (UserKeys ul : userKeyses) {
+                    cacheUserKeys(ul);
+                    context().getEncryption().getEncryptedChatManager(ul.getUid())
+                            .send(new EncryptedPeerActor.KeyGroupUpdated(ul));
+                }
+                return new KeyGroupsUpdated();
+            }
+        });
     }
 
     /**
@@ -735,6 +851,29 @@ public class KeyManagerActor extends ModuleActor {
         public int getKeyGroup() {
             return keyGroup;
         }
+    }
+
+    public static class KeyGroupsPatch implements AskMessage<KeyGroupsUpdated> {
+
+        private ArrayList<ApiKeyGroupId> obsoleteKeyGroups;
+        private ArrayList<ApiKeyGroupId> missingKeyGroups;
+
+        public KeyGroupsPatch(ArrayList<ApiKeyGroupId> obsoleteKeyGroups, ArrayList<ApiKeyGroupId> missingKeyGroups) {
+            this.obsoleteKeyGroups = obsoleteKeyGroups;
+            this.missingKeyGroups = missingKeyGroups;
+        }
+
+        public ArrayList<ApiKeyGroupId> getObsoleteKeyGroups() {
+            return obsoleteKeyGroups;
+        }
+
+        public ArrayList<ApiKeyGroupId> getMissingKeyGroups() {
+            return missingKeyGroups;
+        }
+    }
+
+    public static class KeyGroupsUpdated {
+
     }
 
     //
