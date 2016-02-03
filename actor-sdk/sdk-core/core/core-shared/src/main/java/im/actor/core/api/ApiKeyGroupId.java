@@ -52,6 +52,7 @@ public class ApiKeyGroupId extends BserObject {
     public String toString() {
         String res = "struct KeyGroupId{";
         res += "uid=" + this.uid;
+        res += ", keyGroupId=" + this.keyGroupId;
         res += "}";
         return res;
     }

@@ -13623,7 +13623,7 @@
               {
                 "type": "reference",
                 "argument": "encryptedKey",
-                "category": "hidden",
+                "category": "compact",
                 "description": "  Encrypted encryption key"
               }
             ],
@@ -13673,7 +13673,7 @@
               {
                 "type": "reference",
                 "argument": "keyGroupId",
-                "category": "hidden",
+                "category": "full",
                 "description": "  Key Group Id"
               }
             ],
@@ -13797,8 +13797,26 @@
               {
                 "type": "reference",
                 "argument": "randomId",
-                "category": "hidden",
+                "category": "full",
                 "description": "Random id"
+              },
+              {
+                "type": "reference",
+                "argument": "destPeers",
+                "category": "full",
+                "description": "Destination peers"
+              },
+              {
+                "type": "reference",
+                "argument": "ignoredKeyGroups",
+                "category": "full",
+                "description": "Ignored key groups"
+              },
+              {
+                "type": "reference",
+                "argument": "encryptedBox",
+                "category": "full",
+                "description": "EncryptedBox for sending"
               }
             ],
             "attributes": [

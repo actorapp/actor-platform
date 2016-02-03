@@ -87,6 +87,7 @@ public class ApiEncyptedBoxKey extends BserObject {
         String res = "struct EncyptedBoxKey{";
         res += "keyGroupId=" + this.keyGroupId;
         res += ", algType=" + this.algType;
+        res += ", encryptedKey=" + byteArrayToStringCompact(this.encryptedKey);
         res += "}";
         return res;
     }

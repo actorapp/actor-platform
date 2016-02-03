@@ -73,12 +73,14 @@ class AAUserViewController: AAContentTableController {
                 }
             }
             
-            // Profile: Send messages
-            s.action("Send Secure") { (r) -> () in
-                r.selectAction = { () -> Bool in
-                    self.navigateDetail(ConversationViewController(peer: ACPeer.userEncryptedWithUid(jint(self.uid))))
-                    self.popover?.dismissPopoverAnimated(true)
-                    return false
+            if (ActorSDK.sharedActor().enableExperimentalFeatures) {
+                // Profile: Send messages
+                s.action("Send Secure") { (r) -> () in
+                    r.selectAction = { () -> Bool in
+                        self.navigateDetail(ConversationViewController(peer: ACPeer.userEncryptedWithUid(jint(self.uid))))
+                        self.popover?.dismissPopoverAnimated(true)
+                        return false
+                    }
                 }
             }
         }

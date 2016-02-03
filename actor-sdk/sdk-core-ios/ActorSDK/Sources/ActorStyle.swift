@@ -71,6 +71,8 @@ public class ActorStyle {
     }
     private var _navigationSubtitleActiveColor: UIColor?
 
+    public var navigationEncryptedTitleColor: UIColor = UIColor(rgb: 0x69a179)
+    
     //
     // Token Field. Used at entering members of new group.
     //

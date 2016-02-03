@@ -11726,6 +11726,7 @@
         </node>
         <node concept="NX1gA" id="5_CDdZ2r8g8" role="NXodf">
           <property role="NX6R2" value="Encrypted encryption key" />
+          <property role="1GSvIU" value="compact" />
           <ref role="NX6Kv" node="5_CDdZ2r2Pn" resolve="encryptedKey" />
         </node>
       </node>
@@ -11755,6 +11756,7 @@
         </node>
         <node concept="NX1gA" id="1HaN6CbG4IW" role="NXodf">
           <property role="NX6R2" value="Key Group Id" />
+          <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="1HaN6CbG4IA" resolve="keyGroupId" />
         </node>
       </node>
@@ -11800,7 +11802,23 @@
         </node>
         <node concept="NX1gA" id="1HaN6CbG8Es" role="1GBnQ6">
           <property role="NX6R2" value="Random id" />
+          <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="1HaN6CbG2tq" resolve="randomId" />
+        </node>
+        <node concept="NX1gA" id="698VgrU0ieE" role="1GBnQ6">
+          <property role="NX6R2" value="Destination peers" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="1HaN6CbG2td" resolve="destPeers" />
+        </node>
+        <node concept="NX1gA" id="698VgrU0ieO" role="1GBnQ6">
+          <property role="NX6R2" value="Ignored key groups" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="1HaN6CbG4J1" resolve="ignoredKeyGroups" />
+        </node>
+        <node concept="NX1gA" id="698VgrU0if0" role="1GBnQ6">
+          <property role="NX6R2" value="EncryptedBox for sending" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="1HaN6CbG2t$" resolve="encryptedBox" />
         </node>
         <node concept="2m1R6W" id="1HaN6CbGoUb" role="2m6efq">
           <node concept="2m7Kf5" id="1HaN6CbGoUg" role="2m0hLx">

@@ -103,9 +103,9 @@ public class SenderActor extends ModuleActor {
                     if (Storage.isFsPersistent()) {
                         performUploadFile(pending.getRid(),
                                 ((FileLocalSource) documentContent.getSource()).getFileDescriptor(),
-                                ((FileLocalSource) documentContent.getSource()).getFileName());
+                                documentContent.getSource().getFileName());
                     } else {
-                        List<Long> rids = new ArrayList<Long>();
+                        List<Long> rids = new ArrayList<>();
                         rids.add(pending.getRid());
                         context().getMessagesModule().getConversationActor(pending.getPeer()).send(new ConversationActor.MessagesDeleted(rids));
                         pendingMessages.getPendingMessages().remove(pending);
@@ -145,7 +145,7 @@ public class SenderActor extends ModuleActor {
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
 
         if (autoDetect) {
-            mentions = new ArrayList<Integer>();
+            mentions = new ArrayList<>();
             if (peer.getPeerType() == PeerType.GROUP) {
                 Group group = getGroup(peer.getPeerId());
                 String lowText = text.toLowerCase();

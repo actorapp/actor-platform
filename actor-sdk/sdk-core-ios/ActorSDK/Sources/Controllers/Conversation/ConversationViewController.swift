@@ -218,8 +218,16 @@ public class ConversationViewController: AAConversationContentController, UIDocu
     override public func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        if (peer.peerType.ordinal() == ACPeerType.PRIVATE_ENCRYPTED().ordinal()) {
+            self.titleView.textColor = appStyle.navigationEncryptedTitleColor
+        } else {
+            self.titleView.textColor = appStyle.navigationTitleColor
+        }
+        
         // Installing bindings
-        if (peer.peerType.ordinal() == ACPeerType.PRIVATE().ordinal()) {
+        if (peer.peerType.ordinal() == ACPeerType.PRIVATE().ordinal() ||
+                peer.peerType.ordinal() == ACPeerType.PRIVATE_ENCRYPTED().ordinal()) {
+                    
             let user = Actor.getUserWithUid(peer.peerId)
             let nameModel = user.getNameModel();
             
@@ -374,7 +382,8 @@ public class ConversationViewController: AAConversationContentController, UIDocu
     func onAvatarTap() {
         let id = Int(peer.peerId)
         var controller: AAViewController!
-        if (peer.peerType.ordinal() == ACPeerType.PRIVATE().ordinal()) {
+        if (peer.peerType.ordinal() == ACPeerType.PRIVATE().ordinal() ||
+                peer.peerType.ordinal() == ACPeerType.PRIVATE_ENCRYPTED().ordinal()) {
             controller = ActorSDK.sharedActor().delegate.actorControllerForUser(id)
             if controller == nil {
                 controller = AAUserViewController(uid: id)

@@ -87,6 +87,10 @@ public class RequestSendEncryptedPackage extends Request<ResponseSendEncryptedPa
     @Override
     public String toString() {
         String res = "rpc SendEncryptedPackage{";
+        res += "randomId=" + this.randomId;
+        res += ", destPeers=" + this.destPeers;
+        res += ", ignoredKeyGroups=" + this.ignoredKeyGroups;
+        res += ", encryptedBox=" + this.encryptedBox;
         res += "}";
         return res;
     }
