@@ -17,6 +17,7 @@ public class DialogBuilder {
     private int senderId;
     private long time;
     private int relatedUid = 0;
+    private boolean isSecure;
 
     public DialogBuilder() {
 
@@ -35,10 +36,16 @@ public class DialogBuilder {
         senderId = dialog.getSenderId();
         time = dialog.getDate();
         relatedUid = dialog.getRelatedUid();
+        isSecure = dialog.isSecure();
     }
 
     public DialogBuilder setPeer(Peer peer) {
         this.peer = peer;
+        return this;
+    }
+
+    public DialogBuilder setIsSecure(boolean isSecure) {
+        this.isSecure = isSecure;
         return this;
     }
 
@@ -98,6 +105,7 @@ public class DialogBuilder {
     }
 
     public Dialog createDialog() {
-        return new Dialog(peer, sortKey, dialogTitle, dialogAvatar, unreadCount, rid, messageType, text, status, senderId, time, relatedUid);
+        return new Dialog(peer, sortKey, dialogTitle, dialogAvatar, unreadCount, rid, messageType,
+                text, status, senderId, time, relatedUid, isSecure);
     }
 }

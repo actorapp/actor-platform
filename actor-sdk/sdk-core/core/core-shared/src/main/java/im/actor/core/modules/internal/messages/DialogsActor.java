@@ -16,6 +16,7 @@ import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.ModuleContext;
@@ -64,8 +65,6 @@ public class DialogsActor extends ModuleActor {
             // Else perform chat clear
             onChatClear(peer);
         } else {
-            Dialog dialog = dialogs.getValue(peer.getUnuqueId());
-
             ContentDescription contentDescription = ContentDescription.fromContent(message.getContent());
 
             DialogBuilder builder = new DialogBuilder()
@@ -76,13 +75,13 @@ public class DialogsActor extends ModuleActor {
                     .setRelatedUid(contentDescription.getRelatedUser())
                     .setStatus(message.getMessageState())
                     .setSenderId(message.getSenderId());
-
             if (counter >= 0) {
                 builder.setUnreadCount(counter);
             }
 
             boolean forceUpdate = false;
 
+            Dialog dialog = dialogs.getValue(peer.getUnuqueId());
             if (dialog != null) {
                 // Ignore old messages if no force
                 if (!forceWrite && dialog.getSortDate() > message.getSortDate()) {
@@ -93,6 +92,7 @@ public class DialogsActor extends ModuleActor {
                 builder.setPeer(dialog.getPeer())
                         .setDialogTitle(dialog.getDialogTitle())
                         .setDialogAvatar(dialog.getDialogAvatar())
+                        .setIsSecure(dialog.isSecure())
                         .setSortKey(dialog.getSortDate());
 
                 // Do not push up dialogs for silent messages
@@ -110,6 +110,7 @@ public class DialogsActor extends ModuleActor {
                 builder.setPeer(peer)
                         .setDialogTitle(peerDesc.getTitle())
                         .setDialogAvatar(peerDesc.getAvatar())
+                        .setIsSecure(peerDesc.isSecure())
                         .setSortKey(message.getSortDate());
 
                 forceUpdate = true;
@@ -125,18 +126,25 @@ public class DialogsActor extends ModuleActor {
     @Verified
     private void onUserChanged(User user) {
         Dialog dialog = dialogs.getValue(user.peer().getUnuqueId());
+        ArrayList<Dialog> updated = new ArrayList<>();
         if (dialog != null) {
-            // Ignore if nothing changed
-            if (dialog.getDialogTitle().equals(user.getName())
-                    && equalsE(dialog.getDialogAvatar(), user.getAvatar())) {
-                return;
+            if (!dialog.getDialogTitle().equals(user.getName())
+                    || !equalsE(dialog.getDialogAvatar(), user.getAvatar())) {
+                // Update dialog peer info
+                updated.add(dialog.editPeerInfo(user.getName(), user.getAvatar()));
             }
-
-            // Update dialog peer info
-            Dialog updated = dialog.editPeerInfo(user.getName(), user.getAvatar());
-            addOrUpdateItem(updated);
-            updateSearch(updated);
         }
+        dialog = dialogs.getValue(Peer.userEncrypted(user.getUid()).getUnuqueId());
+        if (dialog != null) {
+            if (!dialog.getDialogTitle().equals(user.getName())
+                    || !equalsE(dialog.getDialogAvatar(), user.getAvatar())) {
+                // Update dialog peer info
+                updated.add(dialog.editPeerInfo(user.getName(), user.getAvatar()));
+            }
+        }
+
+        addOrUpdateItems(updated);
+        updateSearch(updated);
     }
 
     @Verified
@@ -254,7 +262,7 @@ public class DialogsActor extends ModuleActor {
                     dialogHistory.getSortDate(), peerDesc.getTitle(), peerDesc.getAvatar(),
                     dialogHistory.getUnreadCount(),
                     dialogHistory.getRid(), description.getContentType(), description.getText(), dialogHistory.getStatus(),
-                    dialogHistory.getSenderId(), dialogHistory.getDate(), description.getRelatedUser()));
+                    dialogHistory.getSenderId(), dialogHistory.getDate(), description.getRelatedUser(), false));
         }
         addOrUpdateItems(updated);
         updateSearch(updated);
@@ -297,11 +305,12 @@ public class DialogsActor extends ModuleActor {
     private PeerDesc buildPeerDesc(Peer peer) {
         switch (peer.getPeerType()) {
             case PRIVATE:
+            case PRIVATE_ENCRYPTED:
                 User u = getUser(peer.getPeerId());
-                return new PeerDesc(u.getName(), u.getAvatar());
+                return new PeerDesc(u.getName(), u.getAvatar(), peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED);
             case GROUP:
                 Group g = getGroup(peer.getPeerId());
-                return new PeerDesc(g.getTitle(), g.getAvatar());
+                return new PeerDesc(g.getTitle(), g.getAvatar(), false);
             default:
                 return null;
         }
@@ -311,10 +320,16 @@ public class DialogsActor extends ModuleActor {
 
         private String title;
         private Avatar avatar;
+        private boolean isSecure;
 
-        private PeerDesc(String title, Avatar avatar) {
+        private PeerDesc(String title, Avatar avatar, boolean isSecure) {
             this.title = title;
             this.avatar = avatar;
+            this.isSecure = isSecure;
+        }
+
+        public boolean isSecure() {
+            return isSecure;
         }
 
         public String getTitle() {

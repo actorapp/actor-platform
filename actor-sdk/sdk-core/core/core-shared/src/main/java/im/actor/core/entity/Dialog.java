@@ -68,6 +68,8 @@ public class Dialog extends BserObject implements ListEngineItem {
     private Avatar dialogAvatar;
     @Property("readonly, nonatomic")
     private int relatedUid;
+    @Property("readonly, nonatomic")
+    private boolean isSecure;
 
     public Dialog(@NotNull Peer peer,
                   long sortKey,
@@ -80,7 +82,8 @@ public class Dialog extends BserObject implements ListEngineItem {
                   @NotNull MessageState status,
                   int senderId,
                   long date,
-                  int relatedUid) {
+                  int relatedUid,
+                  boolean isSecure) {
         this.peer = peer;
         this.dialogTitle = dialogTitle;
         this.dialogAvatar = dialogAvatar;
@@ -93,6 +96,7 @@ public class Dialog extends BserObject implements ListEngineItem {
         this.text = text;
         this.status = status;
         this.relatedUid = relatedUid;
+        this.isSecure = isSecure;
     }
 
     private Dialog() {
@@ -129,6 +133,10 @@ public class Dialog extends BserObject implements ListEngineItem {
         return date;
     }
 
+    public boolean isSecure() {
+        return isSecure;
+    }
+
     @NotNull
     public ContentType getMessageType() {
         return messageType;
@@ -155,7 +163,7 @@ public class Dialog extends BserObject implements ListEngineItem {
 
     public Dialog editPeerInfo(String title, Avatar dialogAvatar) {
         return new Dialog(peer, sortDate, title, dialogAvatar, unreadCount, rid, messageType, text, status, senderId,
-                date, relatedUid);
+                date, relatedUid, isSecure);
     }
 
     @Override
@@ -178,6 +186,7 @@ public class Dialog extends BserObject implements ListEngineItem {
         text = values.getString(10);
         status = MessageState.fromValue(values.getInt(11));
         relatedUid = values.getInt(12);
+        isSecure = values.getBool(13, false);
     }
 
     @Override
@@ -196,6 +205,7 @@ public class Dialog extends BserObject implements ListEngineItem {
         writer.writeString(10, text);
         writer.writeInt(11, status.getValue());
         writer.writeInt(12, relatedUid);
+        writer.writeBool(13, isSecure);
     }
 
     @Override

@@ -63,6 +63,7 @@ import im.actor.core.util.ModuleActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
+import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.function.Consumer;
 
@@ -440,12 +441,20 @@ public class SenderActor extends ModuleActor {
                         api(new RequestSendEncryptedPackage(rid, outPeers, new ArrayList<ApiKeyGroupId>(), cipherTextPackage.getApiEncryptedBox())).then(new Consumer<ResponseSendEncryptedPackage>() {
                             @Override
                             public void apply(ResponseSendEncryptedPackage responseSendEncryptedPackage) {
-                                self().send(new MessageSent(peer, rid));
+                                if (responseSendEncryptedPackage.getSeq() != null && responseSendEncryptedPackage.getState() != null) {
+                                    self().send(new MessageSent(peer, rid));
+                                    context().getMessagesModule().getConversationActor(peer)
+                                            .send(new ConversationActor.MessageSent(rid, responseSendEncryptedPackage.getDate()));
+                                } else {
+                                    self().send(new MessageError(peer, rid));
+                                    context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageError(rid));
+                                }
                             }
                         }).failure(new Consumer<Exception>() {
                             @Override
                             public void apply(Exception e) {
                                 self().send(new MessageError(peer, rid));
+                                context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageError(rid));
                             }
                         }).done(self());
                     }
@@ -453,6 +462,7 @@ public class SenderActor extends ModuleActor {
                     @Override
                     public void apply(Exception e) {
                         self().send(new MessageError(peer, rid));
+                        context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageError(rid));
                     }
                 }).done(self());
             } catch (IOException e) {
@@ -464,10 +474,12 @@ public class SenderActor extends ModuleActor {
             if (outPeer == null || apiPeer == null) {
                 return;
             }
+            Log.d("SenderActor", "Sending..");
             request(new RequestSendMessage(outPeer, rid, message),
                     new RpcCallback<ResponseSeqDate>() {
                         @Override
                         public void onResult(ResponseSeqDate response) {
+                            Log.d("SenderActor", "On Sent..");
                             self().send(new MessageSent(peer, rid));
                             updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
                                     response.getState(),

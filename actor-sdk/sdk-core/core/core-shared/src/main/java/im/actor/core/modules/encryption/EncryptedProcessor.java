@@ -17,7 +17,7 @@ public class EncryptedProcessor extends AbsModule implements Processor {
     }
 
     @Override
-    public boolean process(ActorRef ref,Object update) {
+    public boolean process(ActorRef ref, Object update) {
         if (update instanceof UpdatePublicKeyGroupAdded) {
             context().getEncryption().getKeyManager().send(new KeyManagerActor.PublicKeysGroupAdded(
                     ((UpdatePublicKeyGroupAdded) update).getUid(),
@@ -43,7 +43,8 @@ public class EncryptedProcessor extends AbsModule implements Processor {
 
                 }
             }).done(ref);
+            return true;
         }
-        return true;
+        return false;
     }
 }

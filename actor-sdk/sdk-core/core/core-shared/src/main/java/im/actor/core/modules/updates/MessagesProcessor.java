@@ -36,6 +36,7 @@ import im.actor.core.modules.internal.messages.OwnReadActor;
 import im.actor.core.modules.internal.messages.SenderActor;
 import im.actor.core.modules.internal.messages.entity.DialogHistory;
 import im.actor.core.modules.internal.messages.entity.EntityConverter;
+import im.actor.runtime.Log;
 import im.actor.runtime.annotations.Verified;
 
 import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
@@ -180,10 +181,12 @@ public class MessagesProcessor extends AbsModule {
 
     @Verified
     public void onMessageSent(ApiPeer _peer, long rid, long date) {
+        Log.d("Processor", "onMessageSent");
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
         if (!isValidPeer(peer)) {
+            Log.d("Processor", "onMessageSent:invalid");
             return;
         }
 
