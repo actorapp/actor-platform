@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import im.actor.core.api.ApiEncryptedData;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
@@ -179,7 +180,7 @@ public class EncryptedPeerActor extends ModuleActor {
                             }
                             ignoredKeys.add(g.getKeyGroupId());
                         }
-                        for(int kgid : theirKeys.getInvalidGroups()){
+                        for (int kgid : theirKeys.getInvalidGroups()) {
                             ignoredKeys.add(kgid);
                         }
 
@@ -251,12 +252,11 @@ public class EncryptedPeerActor extends ModuleActor {
                                     ? decryptedPackage.getData()
                                     : keyPrf.calculate(decryptedPackage.getData(), "ActorPackage", 128);
                             encData = ActorBox.openBox(ByteStrings.intToBytes(senderKeyGroup), encPackage, new ActorBoxKey(encKeyExtended));
-                            Log.d(TAG, "Box size: " + encData.length);
+                            return new DecryptBoxResponse(ApiEncryptedData.fromBytes(encData));
                         } catch (IOException e) {
                             e.printStackTrace();
                             throw new RuntimeException(e);
                         }
-                        return new DecryptBoxResponse(encData);
                     }
                 });
     }
@@ -311,7 +311,7 @@ public class EncryptedPeerActor extends ModuleActor {
                 stash();
                 return null;
             }
-            return doEncrypt(((EncryptBox) message).getData());
+            return doEncrypt(((EncryptBox) message).getData().buildContainer());
         } else if (message instanceof DecryptBox) {
             if (!isReady) {
                 stash();
@@ -333,13 +333,13 @@ public class EncryptedPeerActor extends ModuleActor {
     }
 
     public static class EncryptBox implements AskMessage<EncryptBoxResponse> {
-        private byte[] data;
+        private ApiEncryptedData data;
 
-        public EncryptBox(byte[] data) {
+        public EncryptBox(ApiEncryptedData data) {
             this.data = data;
         }
 
-        public byte[] getData() {
+        public ApiEncryptedData getData() {
             return data;
         }
     }
@@ -378,16 +378,17 @@ public class EncryptedPeerActor extends ModuleActor {
 
     public static class DecryptBoxResponse extends AskResult {
 
-        private byte[] data;
+        private ApiEncryptedData data;
 
-        public DecryptBoxResponse(byte[] data) {
+        public DecryptBoxResponse(ApiEncryptedData data) {
             this.data = data;
         }
 
-        public byte[] getData() {
+        public ApiEncryptedData getData() {
             return data;
         }
     }
+
 
     private class SessionHolder {
 

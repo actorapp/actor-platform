@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import im.actor.core.api.ApiEncryptedBox;
 import im.actor.core.api.ApiEncryptedBoxSignature;
+import im.actor.core.api.ApiEncryptedData;
 import im.actor.core.api.ApiEncryptedMessage;
 import im.actor.core.api.ApiEncyptedBoxKey;
 import im.actor.core.api.ApiKeyGroupId;
@@ -42,7 +43,7 @@ public class EncryptedActor extends ModuleActor {
         super(context);
     }
 
-    private Promise<CipherTextPackage> doEncrypt(final int uid, byte[] message) throws IOException {
+    private Promise<CipherTextPackage> doEncrypt(final int uid, ApiEncryptedData message) throws IOException {
         Log.d(TAG, "doEncrypt");
 
         return ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.EncryptBox(message))
@@ -130,13 +131,13 @@ public class EncryptedActor extends ModuleActor {
 
     public static class PlainTextPackage {
 
-        private byte[] data;
+        private ApiEncryptedData data;
 
-        public PlainTextPackage(byte[] data) {
+        public PlainTextPackage(ApiEncryptedData data) {
             this.data = data;
         }
 
-        public byte[] getData() {
+        public ApiEncryptedData getData() {
             return data;
         }
     }
@@ -144,9 +145,9 @@ public class EncryptedActor extends ModuleActor {
     public static class DoEncryptPackage implements AskMessage<CipherTextPackage> {
 
         private int receiverUid;
-        private byte[] data;
+        private ApiEncryptedData data;
 
-        public DoEncryptPackage(int receiverUid, byte[] data) {
+        public DoEncryptPackage(int receiverUid, ApiEncryptedData data) {
             this.receiverUid = receiverUid;
             this.data = data;
         }
@@ -155,7 +156,7 @@ public class EncryptedActor extends ModuleActor {
             return receiverUid;
         }
 
-        public byte[] getData() {
+        public ApiEncryptedData getData() {
             return data;
         }
     }

@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiDocumentExVoice;
+import im.actor.core.api.ApiEncryptedData;
+import im.actor.core.api.ApiEncryptedDataMessage;
 import im.actor.core.api.ApiFastThumb;
 import im.actor.core.api.ApiJsonMessage;
 import im.actor.core.api.ApiKeyGroupId;
@@ -435,44 +437,41 @@ public class SenderActor extends ModuleActor {
             User u = getUser(peer.getPeerId());
             final ArrayList<ApiUserOutPeer> outPeers = new ArrayList<>();
             outPeers.add(new ApiUserOutPeer(u.getUid(), u.getAccessHash()));
-            try {
-                context().getEncryption().getEncrypted().doEncrypt(peer.getPeerId(), message.buildContainer()).then(new Consumer<EncryptedActor.CipherTextPackage>() {
-                    @Override
-                    public void apply(EncryptedActor.CipherTextPackage cipherTextPackage) {
-                        api(new RequestSendEncryptedPackage(rid, outPeers, cipherTextPackage.getIgnoredKeyGroups(), cipherTextPackage.getApiEncryptedBox())).then(new Consumer<ResponseSendEncryptedPackage>() {
-                            @Override
-                            public void apply(ResponseSendEncryptedPackage responseSendEncryptedPackage) {
-                                if (responseSendEncryptedPackage.getSeq() != null && responseSendEncryptedPackage.getState() != null) {
+            ApiEncryptedData encryptedData = new ApiEncryptedDataMessage(message);
+            context().getEncryption().getEncrypted().doEncrypt(peer.getPeerId(), encryptedData).then(new Consumer<EncryptedActor.CipherTextPackage>() {
+                @Override
+                public void apply(EncryptedActor.CipherTextPackage cipherTextPackage) {
+                    api(new RequestSendEncryptedPackage(rid, outPeers, cipherTextPackage.getIgnoredKeyGroups(), cipherTextPackage.getApiEncryptedBox())).then(new Consumer<ResponseSendEncryptedPackage>() {
+                        @Override
+                        public void apply(ResponseSendEncryptedPackage responseSendEncryptedPackage) {
+                            if (responseSendEncryptedPackage.getSeq() != null && responseSendEncryptedPackage.getState() != null) {
 
-                                    self().send(new MessageSent(peer, rid));
-                                    context().getMessagesModule().getConversationActor(peer)
-                                            .send(new ConversationActor.MessageSent(rid, responseSendEncryptedPackage.getDate()));
-                                } else {
-                                    Log.d("SenderActor", "Missed: " +
-                                            Utils.toString(responseSendEncryptedPackage.getMissedKeyGroups()) + ", Obsolete: " +
-                                            Utils.toString(responseSendEncryptedPackage.getObsoleteKeyGroups()));
-                                    self().send(new MessageError(peer, rid));
-                                    context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageError(rid));
-                                }
-                            }
-                        }).failure(new Consumer<Exception>() {
-                            @Override
-                            public void apply(Exception e) {
+                                self().send(new MessageSent(peer, rid));
+                                context().getMessagesModule().getConversationActor(peer)
+                                        .send(new ConversationActor.MessageSent(rid, responseSendEncryptedPackage.getDate()));
+                            } else {
+                                Log.d("SenderActor", "Missed: " +
+                                        Utils.toString(responseSendEncryptedPackage.getMissedKeyGroups()) + ", Obsolete: " +
+                                        Utils.toString(responseSendEncryptedPackage.getObsoleteKeyGroups()));
                                 self().send(new MessageError(peer, rid));
                                 context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageError(rid));
                             }
-                        }).done(self());
-                    }
-                }).failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        self().send(new MessageError(peer, rid));
-                        context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageError(rid));
-                    }
-                }).done(self());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                        }
+                    }).failure(new Consumer<Exception>() {
+                        @Override
+                        public void apply(Exception e) {
+                            self().send(new MessageError(peer, rid));
+                            context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageError(rid));
+                        }
+                    }).done(self());
+                }
+            }).failure(new Consumer<Exception>() {
+                @Override
+                public void apply(Exception e) {
+                    self().send(new MessageError(peer, rid));
+                    context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageError(rid));
+                }
+            }).done(self());
         } else {
             final ApiOutPeer outPeer = buidOutPeer(peer);
             final ApiPeer apiPeer = buildApiPeer(peer);

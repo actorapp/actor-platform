@@ -1,6 +1,7 @@
 package im.actor.core.modules.encryption;
 
 import im.actor.core.api.ApiEncryptedBox;
+import im.actor.core.api.ApiEncryptedData;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.promise.Promise;
@@ -15,7 +16,7 @@ public class EncryptedInt extends ActorInterface {
         return ask(new EncryptedActor.DoDecryptPackage(uid, box));
     }
 
-    public Promise<EncryptedActor.CipherTextPackage> doEncrypt(int uid, byte[] data) {
+    public Promise<EncryptedActor.CipherTextPackage> doEncrypt(int uid, ApiEncryptedData data) {
         return ask(new EncryptedActor.DoEncryptPackage(uid, data));
     }
 }
