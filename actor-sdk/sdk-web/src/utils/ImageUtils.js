@@ -1,13 +1,9 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 import Lightbox from 'jsonlylightbox';
 
 const lightbox = new Lightbox();
-lightbox.load({
-  animation: false,
-  controlClose: '<i class="material-icons">close</i>'
-});
 
 const dataURItoBlob = (dataURI) => {
   const byteString = atob(dataURI.split(',')[1]);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 /**
@@ -17,7 +17,7 @@ class ActorSDKDelegate {
       login: components.login || null,
       install: components.install || null,
       deactivated: components.deactivated || null,
-      joinGroup: components.joinGroup || null,
+      join: components.join || null,
 
       sidebar: components.sidebar || null,
       dialog: components.dialog || null
