@@ -133,8 +133,9 @@ public class AuthActivity extends BaseFragmentActivity {
         command.start(new CommandCallback<AuthState>() {
             @Override
             public void onResult(final AuthState res) {
-                dismissProgress();
-                updateState(res);
+                if(dismissProgress()){
+                    updateState(res);
+                }
             }
 
             @Override
@@ -228,11 +229,13 @@ public class AuthActivity extends BaseFragmentActivity {
         dismissAlert();
     }
 
-    private void dismissProgress() {
+    private boolean dismissProgress() {
         if (progressDialog != null) {
             progressDialog.dismiss();
             progressDialog = null;
+            return true;
         }
+        return false;
     }
 
     private void dismissAlert() {
