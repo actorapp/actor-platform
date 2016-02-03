@@ -78,9 +78,9 @@ public class Updates extends AbsModule implements BusSubscriber {
         }
     }
 
-    public void onUpdateReceived(Object update, Long delay) {
-        updateActor.send(update, delay);
-    }
+//    public void onUpdateReceived(Object update, Long delay) {
+//        updateActor.send(update, delay);
+//    }
 
     public void executeAfter(int seq, Runnable runnable) {
         updateActor.send(new ExecuteAfter(seq, runnable));
