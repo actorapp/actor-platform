@@ -10,7 +10,7 @@ import slick.driver.PostgresDriver.api._
 import slick.jdbc.GetResult
 import slick.profile.{ SqlStreamingAction, SqlAction, FixedSqlStreamingAction, FixedSqlAction }
 
-class HistoryMessageTable(tag: Tag) extends Table[HistoryMessage](tag, "history_messages") {
+final class HistoryMessageTable(tag: Tag) extends Table[HistoryMessage](tag, "history_messages") {
   def userId = column[Int]("user_id", O.PrimaryKey)
 
   def peerType = column[Int]("peer_type", O.PrimaryKey)
