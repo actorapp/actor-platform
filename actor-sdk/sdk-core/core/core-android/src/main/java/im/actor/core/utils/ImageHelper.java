@@ -120,12 +120,14 @@ public class ImageHelper {
 
     private static int getScaleFactor(BitmapSize size, int maxPixels) {
         int scale = 1;
-        int scaledW = size.getWidth();
-        int scaledH = size.getHeight();
-        while (scaledW * scaledH > maxPixels) {
-            scale *= 2;
-            scaledH /= 2;
-            scaledW /= 2;
+        if(size!=null){
+            int scaledW = size.getWidth();
+            int scaledH = size.getHeight();
+            while (scaledW * scaledH > maxPixels) {
+                scale *= 2;
+                scaledH /= 2;
+                scaledW /= 2;
+            }
         }
         return scale;
     }
