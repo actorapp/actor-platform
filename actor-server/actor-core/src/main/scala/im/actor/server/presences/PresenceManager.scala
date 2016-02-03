@@ -78,7 +78,9 @@ class PresenceManager extends Actor with ActorLogging with Stash {
   private[this] var consumers = Set.empty[ActorRef]
   private[this] var state = PresenceState(userId, Offline, None)
 
-  private def initialize(userId: Int): Unit = {
+  initialize()
+
+  private def initialize(): Unit = {
     db.run(UserPresenceRepo.find(userId).map {
       case Some(userPresence) ⇒
         self ! Initialized(userPresence.lastSeenAt)
@@ -90,15 +92,12 @@ class PresenceManager extends Actor with ActorLogging with Stash {
         log.error(e, "Failed to recover PresenceManager state. Retry in {}", InitRetryTimeout)
 
         context.system.scheduler.scheduleOnce(InitRetryTimeout) {
-          initialize(userId)
+          initialize()
         }
     }
   }
 
   def receive = {
-    case Envelope(userId, _) ⇒
-      stash()
-      initialize(userId)
     case Initialized(lastSeenAt: Option[DateTime]) ⇒
       unstashAll()
       this.state = this.state.copy(lastSeenAt = lastSeenAt)
@@ -108,7 +107,7 @@ class PresenceManager extends Actor with ActorLogging with Stash {
   }
 
   def working: Receive = {
-    case Envelope(userId, Subscribe(consumer)) ⇒
+    case Subscribe(consumer) ⇒
       if (!consumers.contains(consumer)) {
         context.watch(consumer)
         consumers += consumer
@@ -116,13 +115,13 @@ class PresenceManager extends Actor with ActorLogging with Stash {
 
       sender ! SubscribeAck(consumer)
       deliverState(consumer)
-    case Envelope(userId, Unsubscribe(consumer)) ⇒
+    case Unsubscribe(consumer) ⇒
       consumers -= consumer
       context.unwatch(consumer)
       sender ! UnsubscribeAck(consumer)
     case Terminated(consumer) if consumers.contains(consumer) ⇒
       consumers -= consumer
-    case Envelope(userId, change @ UserPresenceChange(presence, authId, timeout)) ⇒
+    case change @ UserPresenceChange(presence, authId, timeout) ⇒
       scheduledTimeouts.get(authId) foreach (_.cancel())
 
       if (presence != Offline) {
@@ -130,7 +129,7 @@ class PresenceManager extends Actor with ActorLogging with Stash {
         db.run(UserPresenceRepo.createOrUpdate(UserPresence(userId, this.state.lastSeenAt)))
 
         this.scheduledTimeouts = this.scheduledTimeouts +
-          (authId → context.system.scheduler.scheduleOnce(timeout.millis, self, Envelope(userId, UserPresenceChange(Offline, authId, 0))))
+          (authId → context.system.scheduler.scheduleOnce(timeout.millis, self, UserPresenceChange(Offline, authId, 0)))
       }
 
       this.devicePresences = this.devicePresences + (authId → presence)
