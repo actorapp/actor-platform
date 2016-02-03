@@ -124,7 +124,7 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
       db.run {
         withUserOutPeers(destPeers) {
           DBIO.from {
-            encExt.checkBox(encryptedBox) flatMap {
+            encExt.checkBox(encryptedBox, ignoredKeyGroups.groupBy(_.userId).mapValues(_.map(_.keyGroupId).toSet)) flatMap {
               case Left((missing, obs)) ⇒
                 FastFuture.successful(Ok(ResponseSendEncryptedPackage(
                   seq = None,

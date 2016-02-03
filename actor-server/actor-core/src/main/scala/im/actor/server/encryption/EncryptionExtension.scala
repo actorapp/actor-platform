@@ -207,15 +207,23 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
     actionT.value map (_.valueOr(throw _))
   }
 
-  def checkBox(box: ApiEncryptedBox): Future[Either[(Vector[ApiKeyGroupId], Vector[ApiKeyGroupId]), Map[Int, Vector[(Int, ApiEncryptedBox)]]]] = {
+  def checkBox(
+    box:              ApiEncryptedBox,
+    ignoredKeyGroups: Map[Int, Set[Int]]
+  ): Future[Either[(Vector[ApiKeyGroupId], Vector[ApiKeyGroupId]), Map[Int, Vector[(Int, ApiEncryptedBox)]]]] = {
     val userChecksFu: Iterable[Future[(Seq[ApiKeyGroupId], Seq[ApiKeyGroupId], Seq[EncryptionKeyGroup])]] =
       box.keys.groupBy(_.usersId) map {
         case (userId, keys) ⇒
           db.run(EncryptionKeyGroupRepo.fetch(userId)) map { kgs ⇒
             // kgs not presented in box
+
+            val ignored = ignoredKeyGroups.getOrElse(userId, Set.empty)
+
             val missingKgs = kgs.view
               .filterNot(kg ⇒ keys.exists(_.keyGroupId == kg.id))
-              .map(kg ⇒ ApiKeyGroupId(userId, kg.id)).force
+              .filterNot(kg ⇒ ignored.contains(kg.id))
+              .map(kg ⇒ ApiKeyGroupId(userId, kg.id))
+              .force
 
             // kgs presented in box but deleted by receiver
             val obsKgs = keys.view
@@ -236,15 +244,15 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
       if (missing.nonEmpty || obs.nonEmpty) Left(missing → obs)
       else Right(
         kgs
-        .groupBy(_.userId)
-        .map {
-          case (userId, ukgs) ⇒
-            (userId,
-              ukgs map { kg ⇒
-                val keys = box.keys.filter(_.keyGroupId == kg.id)
-                (kg.authSid.get.value, box.copy(keys = keys))
-              })
-        }.toMap
+          .groupBy(_.userId)
+          .map {
+            case (userId, ukgs) ⇒
+              (userId,
+                ukgs map { kg ⇒
+                  val keys = box.keys.filter(_.keyGroupId == kg.id)
+                  (kg.authSid.get.value, box.copy(keys = keys))
+                })
+          }
       )
     }
   }
