@@ -6,7 +6,7 @@ import im.actor.server.presences.PresenceManager.Envelope
 
 object PresenceManagerRegion {
   private val extractEntityId: ShardRegion.ExtractEntityId = {
-    case env @ Envelope(userId, payload) ⇒ (userId.toString, env)
+    case env @ Envelope(userId, payload) ⇒ (userId.toString, payload)
   }
 
   private val extractShardId: ShardRegion.ExtractShardId = msg ⇒ msg match {
