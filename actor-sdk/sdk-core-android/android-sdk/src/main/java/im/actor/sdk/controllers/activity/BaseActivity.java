@@ -183,13 +183,13 @@ public class BaseActivity extends AppCompatActivity {
         cmd.start(new CommandCallback<T>() {
             @Override
             public void onResult(T res) {
-                progressDialog.dismiss();
+                dismissDiaog(progressDialog);
                 callback.onResult(res);
             }
 
             @Override
             public void onError(Exception e) {
-                progressDialog.dismiss();
+                dismissDiaog(progressDialog);
                 callback.onError(e);
             }
         });
@@ -208,17 +208,21 @@ public class BaseActivity extends AppCompatActivity {
         cmd.start(new CommandCallback<T>() {
             @Override
             public void onResult(T res) {
-                progressDialog.dismiss();
+                dismissDiaog(progressDialog);
             }
 
             @Override
             public void onError(Exception e) {
-                try {
-                    progressDialog.dismiss();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                dismissDiaog(progressDialog);
             }
         });
+    }
+
+    public void dismissDiaog(ProgressDialog progressDialog) {
+        try {
+            progressDialog.dismiss();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
