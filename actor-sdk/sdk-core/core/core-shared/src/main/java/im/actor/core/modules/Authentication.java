@@ -523,6 +523,7 @@ public class Authentication {
         modules.getPreferences().putBool(KEY_AUTH, true);
         modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
         modules.onLoggedIn();
+        modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(response.getUser()));
         modules.getUpdatesModule().onUpdateReceived(new LoggedIn(response, new Runnable() {
             @Override
             public void run() {
@@ -540,7 +541,7 @@ public class Authentication {
                     }
                 }
             }
-        }), 500L);
+        }));
     }
 
     private <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
