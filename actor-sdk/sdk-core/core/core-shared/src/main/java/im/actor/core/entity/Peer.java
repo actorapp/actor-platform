@@ -78,6 +78,9 @@ public class Peer extends BserObject {
             case GROUP:
                 type = 1;
                 break;
+            case PRIVATE_ENCRYPTED:
+                type = 2;
+                break;
         }
         return ((long) peerId & 0xFFFFFFFFL) + (((long) type & 0xFFFFFFFFL) << 32);
     }
