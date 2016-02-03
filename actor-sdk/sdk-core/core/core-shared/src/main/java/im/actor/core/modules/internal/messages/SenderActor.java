@@ -66,6 +66,7 @@ import im.actor.core.network.RpcException;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.util.Utils;
 
 public class SenderActor extends ModuleActor {
 
@@ -442,10 +443,14 @@ public class SenderActor extends ModuleActor {
                             @Override
                             public void apply(ResponseSendEncryptedPackage responseSendEncryptedPackage) {
                                 if (responseSendEncryptedPackage.getSeq() != null && responseSendEncryptedPackage.getState() != null) {
+
                                     self().send(new MessageSent(peer, rid));
                                     context().getMessagesModule().getConversationActor(peer)
                                             .send(new ConversationActor.MessageSent(rid, responseSendEncryptedPackage.getDate()));
                                 } else {
+                                    Log.d("SenderActor", "Missed: " +
+                                            Utils.toString(responseSendEncryptedPackage.getMissedKeyGroups()) + ", Obsolete: " +
+                                            Utils.toString(responseSendEncryptedPackage.getObsoleteKeyGroups()));
                                     self().send(new MessageError(peer, rid));
                                     context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageError(rid));
                                 }
