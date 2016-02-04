@@ -97,6 +97,25 @@
       background-color: rgba($dark-sky-blue, .15) !important;
     }
   }
+  &--green {
+    color: $apple;
+    background-color: rgba($apple, .15);
+    &:hover,
+    &:focus {
+      background-color: lighten(rgba($apple, .15), 5);
+      box-shadow: 0 1px 1px 0 rgba($apple, .35);
+    }
+    &:active {
+      background-color: lighten(rgba($apple, .15), 15);
+      box-shadow: 0 2px 2px 0 rgba($apple, .35);
+    }
+    &[disabled] {
+      color: $apple !important;
+      background-color: rgba($apple, .15) !important;
+    }
+
+  }
+
   &--icon {
     line-height: 1px;
 
