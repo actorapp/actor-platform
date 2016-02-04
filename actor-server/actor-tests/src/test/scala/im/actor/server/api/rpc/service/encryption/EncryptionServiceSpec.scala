@@ -170,8 +170,6 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
           case Ok(resp: ResponseSendEncryptedPackage) ⇒
             resp.missedKeyGroups shouldBe empty
             resp.obsoleteKeyGroups shouldBe empty
-            resp.seq shouldBe None
-            resp.state shouldBe None
         }
       }
     }
