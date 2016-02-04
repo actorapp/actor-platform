@@ -19,6 +19,7 @@ public class EncryptedSessionChain {
 
     private PeerSession session;
     private byte[] ownPrivateKey;
+    private byte[] ownPublicKey;
     private byte[] theirPublicKey;
     private HashSet<Integer> receivedCounters;
     private int sentCounter;
@@ -27,6 +28,7 @@ public class EncryptedSessionChain {
     public EncryptedSessionChain(PeerSession session, byte[] ownPrivateKey, byte[] theirPublicKey) {
         this.session = session;
         this.ownPrivateKey = ownPrivateKey;
+        this.ownPublicKey = Curve25519.keyGenPublic(ownPrivateKey);
         this.theirPublicKey = theirPublicKey;
         this.receivedCounters = new HashSet<>();
         this.sentCounter = 0;
@@ -42,6 +44,10 @@ public class EncryptedSessionChain {
 
     public byte[] getOwnPrivateKey() {
         return ownPrivateKey;
+    }
+
+    public byte[] getOwnPublicKey() {
+        return ownPublicKey;
     }
 
     public byte[] getTheirPublicKey() {

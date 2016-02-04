@@ -12,10 +12,12 @@ public class SessionInternalState extends BserObject {
 
     private List<byte[]> ownPrivateKeys = new ArrayList<>();
     private byte[] theirLastPublicKey;
+    private boolean isRatcheting;
 
-    public SessionInternalState(List<byte[]> ownPrivateKeys, byte[] theirLastPublicKey) {
+    public SessionInternalState(boolean isRatcheting, List<byte[]> ownPrivateKeys, byte[] theirLastPublicKey) {
         this.ownPrivateKeys = ownPrivateKeys;
         this.theirLastPublicKey = theirLastPublicKey;
+        this.isRatcheting = isRatcheting;
     }
 
     public SessionInternalState(byte[] state) throws IOException {
@@ -30,10 +32,15 @@ public class SessionInternalState extends BserObject {
         return theirLastPublicKey;
     }
 
+    public boolean isRatcheting() {
+        return isRatcheting;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.ownPrivateKeys = values.getRepeatedBytes(1);
         this.theirLastPublicKey = values.optBytes(2);
+        this.isRatcheting = values.getBool(3);
     }
 
     @Override
@@ -44,5 +51,6 @@ public class SessionInternalState extends BserObject {
         if (theirLastPublicKey != null) {
             writer.writeBytes(2, theirLastPublicKey);
         }
+        writer.writeBool(3, isRatcheting);
     }
 }

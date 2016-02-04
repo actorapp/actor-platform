@@ -13,6 +13,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.EncryptionModule;
 import im.actor.core.modules.sequence.Updates;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -131,6 +132,10 @@ public class ModuleActor extends AskcableActor implements BusSubscriber {
 
     public ModuleContext context() {
         return context;
+    }
+
+    public EncryptionModule encryption() {
+        return context.getEncryption();
     }
 
     public <T extends Response> long request(Request<T> request) {

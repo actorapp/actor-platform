@@ -1,7 +1,10 @@
 package im.actor.core.modules.encryption;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import im.actor.core.modules.encryption.entity.EphemeralKey;
 import im.actor.core.modules.encryption.entity.PeerSession;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.entity.PrivateKey;
@@ -18,7 +21,6 @@ import im.actor.runtime.promise.Promises;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
-import im.actor.core.modules.encryption.KeyManagerActor.*;
 
 /**
  * Axolotl Ratchet encryption session
@@ -61,9 +63,11 @@ public class EncryptedSessionActor extends ModuleActor {
     //
 
     private byte[] latestTheirEphemeralKey;
-    private ArrayList<byte[]> ownLatestKeys;
-    private ArrayList<EncryptedSessionChain> encryptionChains = new ArrayList<>();
-    private ArrayList<EncryptedSessionChain> decryptionChains = new ArrayList<>();
+    private boolean isRatcheting = true;
+    private EncryptedSessionChain encryptionChain = null;
+    private ArrayList<EphemeralKey> lastOwnKeys = new ArrayList<>();
+    private HashMap<EphemeralKey, EphemeralDecryptionChains> decryptionChains = new HashMap<>();
+    private EphemeralDecryptionChains preKeyDecryptionChain = null;
 
     //
     // Constructors and Methods
@@ -79,7 +83,20 @@ public class EncryptedSessionActor extends ModuleActor {
     @Override
     public void preStart() {
         super.preStart();
-        keyManager = context().getEncryption().getKeyManagerInt();
+        keyManager = encryption().getKeyManagerInt();
+        byte[] data = encryption().getSessionStorage().loadItem(session.getUid());
+        if (data != null) {
+            try {
+                SessionInternalState internalState = new SessionInternalState(data);
+                latestTheirEphemeralKey = internalState.getTheirLastPublicKey();
+                isRatcheting = internalState.isRatcheting();
+                for (byte[] b : internalState.getOwnPrivateKeys()) {
+                    lastOwnKeys.add(new EphemeralKey(b));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private Promise<EncryptedPackageRes> onEncrypt(final byte[] data) {
@@ -90,20 +107,37 @@ public class EncryptedSessionActor extends ModuleActor {
         // Stage 3: Decrypt
         //
 
+        //
+        // Doing outgoing key ratcheting if needed
+        // Stage 1: Generation New Key
+        // Stage 2: Safely erase old key
+        // Stage 3: Safely erase old encryption chain
+        // Stage 4: Save session state
+        //
+        if (isRatcheting) {
+            Log.d(TAG, "Ratcheting...");
+            EphemeralKey nkey = new EphemeralKey(Curve25519.keyGenPrivate(Crypto.randomBytes(64)));
+            Log.d(TAG, "New key " + Crypto.keyHash(nkey.getPublicKey()));
+            lastOwnKeys.add(nkey);
+            decryptionChains.put(nkey, new EphemeralDecryptionChains(nkey));
+            while (lastOwnKeys.size() > 2) {
+                EphemeralKey oldKey = lastOwnKeys.remove(lastOwnKeys.size() - 1);
+                Log.d(TAG, "Erasing key " + Crypto.keyHash(oldKey.getPublicKey()));
+                decryptionChains.remove(oldKey).safeErase();
+                oldKey.safeErase();
+            }
+            if (encryptionChain != null) {
+                encryptionChain.safeErase();
+                encryptionChain = null;
+            }
+            isRatcheting = false;
+            saveSessionState();
+        }
+
         return Promises.success(latestTheirEphemeralKey)
                 .mapIfNullPromise(keyManager.supplyUserPreKey(uid, session.getTheirKeyGroupId()))
-                .map(new Function<byte[], EncryptedSessionChain>() {
-                    @Override
-                    public EncryptedSessionChain apply(byte[] publicKey) {
-                        return pickEncryptChain(publicKey);
-                    }
-                })
-                .map(new Function<EncryptedSessionChain, EncryptedPackageRes>() {
-                    @Override
-                    public EncryptedPackageRes apply(EncryptedSessionChain encryptedSessionChain) {
-                        return encrypt(encryptedSessionChain, data);
-                    }
-                });
+                .map(pickEncryptChain())
+                .map(encrypt(data));
     }
 
     private Promise<DecryptedPackage> onDecrypt(final byte[] data) {
@@ -131,74 +165,110 @@ public class EncryptedSessionActor extends ModuleActor {
                 .then(new Consumer<DecryptedPackage>() {
                     @Override
                     public void apply(DecryptedPackage decryptedPackage) {
-                        latestTheirEphemeralKey = senderEphemeralKey;
-                        saveSessionState();
+                        if (latestTheirEphemeralKey == null || !ByteStrings.isEquals(latestTheirEphemeralKey, senderEphemeralKey)) {
+                            isRatcheting = true;
+                            latestTheirEphemeralKey = senderEphemeralKey;
+                            saveSessionState();
+                        }
                     }
                 });
     }
 
-    private EncryptedSessionChain pickEncryptChain(byte[] ephemeralKey) {
+    private Function<byte[], EncryptedSessionChain> pickEncryptChain() {
+        return new Function<byte[], EncryptedSessionChain>() {
+            @Override
+            public EncryptedSessionChain apply(byte[] ephemeralKey) {
+                if (latestTheirEphemeralKey == null) {
+                    latestTheirEphemeralKey = ephemeralKey;
+                    saveSessionState();
+                }
 
-        if (latestTheirEphemeralKey == null) {
-            latestTheirEphemeralKey = ephemeralKey;
-        }
+                if (encryptionChain == null) {
+                    encryptionChain = new EncryptedSessionChain(session, lastOwnKeys.get(0).getPrivateKey(), latestTheirEphemeralKey);
+                }
 
-        if (encryptionChains.size() > 0) {
-            return encryptionChains.get(0);
-        }
-
-
-        EncryptedSessionChain chain = new EncryptedSessionChain(session, Curve25519.keyGenPrivate(Crypto.randomBytes(32)), ephemeralKey);
-        encryptionChains.add(0, chain);
-
-        return chain;
+                return encryptionChain;
+            }
+        };
     }
 
-    private EncryptedPackageRes encrypt(EncryptedSessionChain chain, byte[] data) {
+    private Function<EncryptedSessionChain, EncryptedPackageRes> encrypt(final byte[] data) {
+        return new Function<EncryptedSessionChain, EncryptedPackageRes>() {
+            @Override
+            public EncryptedPackageRes apply(EncryptedSessionChain encryptedSessionChain) {
+                byte[] encrypted;
+                try {
+                    encrypted = encryptedSessionChain.encrypt(data);
+                } catch (IntegrityException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
 
-        byte[] encrypted;
-        try {
-            encrypted = chain.encrypt(data);
-        } catch (IntegrityException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+                Log.d(TAG, "!Sender Ephemeral " + Crypto.keyHash(Curve25519.keyGenPublic(encryptedSessionChain.getOwnPrivateKey())));
+                Log.d(TAG, "!Receiver Ephemeral " + Crypto.keyHash(encryptedSessionChain.getTheirPublicKey()));
 
-        Log.d(TAG, "!Sender Ephemeral " + Crypto.keyHash(Curve25519.keyGenPublic(chain.getOwnPrivateKey())));
-        Log.d(TAG, "!Receiver Ephemeral " + Crypto.keyHash(chain.getTheirPublicKey()));
-
-        return new EncryptedPackageRes(encrypted, session.getTheirKeyGroupId());
+                return new EncryptedPackageRes(encrypted, session.getTheirKeyGroupId());
+            }
+        };
     }
 
     private Promise<EncryptedSessionChain> pickDecryptChain(final byte[] theirEphemeralKey, final byte[] ephemeralKey) {
-        EncryptedSessionChain pickedChain = null;
-        for (EncryptedSessionChain c : decryptionChains) {
-            if (ByteStrings.isEquals(Curve25519.keyGenPublic(c.getOwnPrivateKey()), ephemeralKey)) {
-                pickedChain = c;
-                break;
+
+        //
+        // Checking pre key-based chain
+        //
+
+        if (preKeyDecryptionChain != null) {
+            if (ByteStrings.isEquals(preKeyDecryptionChain.getEphemeralKey().getPublicKey(), ephemeralKey)) {
+                for (EncryptedSessionChain chain : preKeyDecryptionChain.getChains()) {
+                    if (ByteStrings.isEquals(chain.getTheirPublicKey(), theirEphemeralKey)) {
+                        return Promises.success(chain);
+                    }
+                }
+
+                EncryptedSessionChain sessionChain = new EncryptedSessionChain(session,
+                        preKeyDecryptionChain.getEphemeralKey().getPrivateKey(),
+                        theirEphemeralKey);
+                preKeyDecryptionChain.spawnNewChain(sessionChain);
+                return Promises.success(sessionChain);
             }
         }
-        return Promises.success(pickedChain)
-                .mapPromise(new Function<EncryptedSessionChain, Promise<EncryptedSessionChain>>() {
+        preKeyDecryptionChain = null;
+
+        //
+        // Checking ephemeral key based chains
+        //
+
+        for (EphemeralKey e : decryptionChains.keySet()) {
+            if (ByteStrings.isEquals(e.getPublicKey(), ephemeralKey)) {
+                EphemeralDecryptionChains chains = decryptionChains.get(e);
+                for (EncryptedSessionChain chain : chains.getChains()) {
+                    if (ByteStrings.isEquals(chain.getTheirPublicKey(), theirEphemeralKey)) {
+                        return Promises.success(chain);
+                    }
+                }
+                EncryptedSessionChain sessionChain = new EncryptedSessionChain(session,
+                        e.getPrivateKey(),
+                        theirEphemeralKey);
+                chains.spawnNewChain(sessionChain);
+                return Promises.success(sessionChain);
+            }
+        }
+
+        //
+        // Final call to find own pre key
+        //
+
+        return context().getEncryption().getKeyManagerInt().getOwnPreKey(ephemeralKey)
+                .map(new Function<PrivateKey, EncryptedSessionChain>() {
                     @Override
-                    public Promise<EncryptedSessionChain> apply(EncryptedSessionChain src) {
-                        if (src != null) {
-                            return Promises.success(src);
-                        }
-                        
-                        return context().getEncryption().getKeyManagerInt().getOwnPreKey(ephemeralKey)
-                                .map(new Function<PrivateKey, EncryptedSessionChain>() {
-                                    @Override
-                                    public EncryptedSessionChain apply(PrivateKey src) {
-                                        EncryptedSessionChain chain = new EncryptedSessionChain(session, src.getKey(), theirEphemeralKey);
-                                        decryptionChains.add(0, chain);
-                                        if (decryptionChains.size() > MAX_DECRYPT_CHAINS) {
-                                            decryptionChains.remove(MAX_DECRYPT_CHAINS)
-                                                    .safeErase();
-                                        }
-                                        return chain;
-                                    }
-                                });
+                    public EncryptedSessionChain apply(PrivateKey src) {
+                        EncryptedSessionChain chain = new EncryptedSessionChain(session,
+                                src.getKey(), theirEphemeralKey);
+                        preKeyDecryptionChain = new EphemeralDecryptionChains(new EphemeralKey(src.getKey()));
+                        preKeyDecryptionChain.spawnNewChain(chain);
+                        // TODO: What if already created?
+                        return chain;
                     }
                 });
     }
@@ -215,7 +285,13 @@ public class EncryptedSessionActor extends ModuleActor {
     }
 
     private void saveSessionState() {
-        byte[] state = new SessionInternalState(ownLatestKeys, latestTheirEphemeralKey).toByteArray();
+        ArrayList<byte[]> ownKeys = new ArrayList<>();
+        for (EphemeralKey e : lastOwnKeys) {
+            ownKeys.add(e.getPrivateKey());
+        }
+        byte[] state = new SessionInternalState(isRatcheting, ownKeys, latestTheirEphemeralKey)
+                .toByteArray();
+        encryption().getSessionStorage().addOrUpdateItem(session.getUid(), state);
     }
 
     //
@@ -288,6 +364,41 @@ public class EncryptedSessionActor extends ModuleActor {
 
         public byte[] getData() {
             return data;
+        }
+    }
+
+    private static class EphemeralDecryptionChains {
+
+        private EphemeralKey ephemeralKey;
+        private ArrayList<EncryptedSessionChain> chains;
+
+        public EphemeralDecryptionChains(EphemeralKey ephemeralKey) {
+            this.ephemeralKey = ephemeralKey;
+            this.chains = new ArrayList<>();
+        }
+
+        public EphemeralDecryptionChains(EphemeralKey ephemeralKey, ArrayList<EncryptedSessionChain> chains) {
+            this.ephemeralKey = ephemeralKey;
+            this.chains = chains;
+        }
+
+        public EphemeralKey getEphemeralKey() {
+            return ephemeralKey;
+        }
+
+        public ArrayList<EncryptedSessionChain> getChains() {
+            return chains;
+        }
+
+        public void safeErase() {
+
+        }
+
+        public void spawnNewChain(EncryptedSessionChain chain) {
+            chains.add(0, chain);
+            while (chains.size() > 2) {
+                chains.remove(chains.size() - 1).safeErase();
+            }
         }
     }
 }

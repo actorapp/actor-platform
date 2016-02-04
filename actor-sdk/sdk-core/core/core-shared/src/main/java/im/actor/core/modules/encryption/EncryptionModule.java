@@ -4,9 +4,11 @@ import java.util.HashMap;
 
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.storage.KeyValueStorage;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -14,21 +16,23 @@ public class EncryptionModule extends AbsModule {
 
     private KeyManagerInt keyManagerInt;
     private SessionManagerInt sessionManagerInt;
-
-    private ActorRef encrypted;
     private EncryptedInt encryptedInt;
     private HashMap<Integer, ActorRef> encryptedStates = new HashMap<>();
+    private KeyValueStorage sessionStorage;
 
     public EncryptionModule(ModuleContext context) {
         super(context);
     }
 
     public void run() {
+        sessionStorage = Storage.createKeyValue("encryption_session_int");
         keyManagerInt = new KeyManagerInt(context());
         sessionManagerInt = new SessionManagerInt(context());
-        encrypted = system().actorOf("encryption/messaging",
-                EncryptedActor.CONSTRUCTOR(context()));
-        encryptedInt = new EncryptedInt(encrypted);
+        encryptedInt = new EncryptedInt(context());
+    }
+
+    public KeyValueStorage getSessionStorage() {
+        return sessionStorage;
     }
 
     public SessionManagerInt getSessionManagerInt() {
