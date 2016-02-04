@@ -1,30 +1,39 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import ActorClient from '../utils/ActorClient';
-import { Support } from '../constants/ActorAppConstants';
+import { helpPhone } from '../constants/ActorAppConstants';
+import SharedContainer from '../utils/SharedContainer';
 import ContactActionCreators from './ContactActionCreators';
 import DialogActionCreators from './DialogActionCreators';
 
 export default {
   open() {
-    ActorClient.findUsers(Support.phone)
-      .then(users => {
-        if (users.length > 0) {
-          const user = users[0];
-          const uid = user.id;
-          const userPeer = ActorClient.getUserPeer(uid);
+    const SharedActor = SharedContainer.get();
+    const phone = SharedActor.helpPhone ? SharedActor.helpPhone : helpPhone;
 
-          if (user.isContact) {
-            DialogActionCreators.selectDialogPeer(userPeer);
-          } else {
-            ContactActionCreators.addContact(uid);
-            DialogActionCreators.selectDialogPeer(userPeer);
-          }
+    const handleFind = users => {
+      if (users.length > 0) {
+        const user = users[0].id;
+        const uid = user;
+        const userPeer = ActorClient.getUserPeer(uid);
+
+        if (user.isContact) {
+          DialogActionCreators.selectDialogPeer(userPeer);
+        } else {
+          ContactActionCreators.addContact(uid);
+          DialogActionCreators.selectDialogPeer(userPeer);
         }
-      }).catch(error => {
-        throw new Error(error);
+      } else {
+        console.warn('Support user not found.')
+      }
+    };
+
+    ActorClient.findUsers(phone)
+      .then(handleFind, handleFind)
+      .catch(error => {
+        throw new Error(error)
       });
   }
 };

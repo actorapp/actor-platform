@@ -1,15 +1,16 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import 'babel-polyfill';
 import '../utils/intl-polyfill';
-import '../workers'
+//import '../workers'
 
 import RouterContainer from '../utils/RouterContainer';
 import DelegateContainer from '../utils/DelegateContainer';
+import SharedContainer from '../utils/SharedContainer';
 import SDKDelegate from './actor-sdk-delegate';
-import { endpoints } from '../constants/ActorAppConstants'
+import { endpoints, rootElement, homePage, twitter, helpPhone } from '../constants/ActorAppConstants'
 import Pace from 'pace';
 
 import React, { Component, PropTypes } from 'react';
@@ -30,6 +31,7 @@ import DefaultLogin from '../components/Login.react';
 import Main from '../components/Main.react';
 import DefaultJoinGroup from '../components/JoinGroup.react';
 import DefaultInstall from '../components/Install.react';
+import Modal from 'react-modal';
 
 import { extendL18n, getIntlData } from '../l18n';
 
@@ -80,23 +82,26 @@ class App extends Component {
 
 ReactMixin.onClass(App, IntlMixin);
 
-/** Class represents ActorSKD itself */
+/**
+ * Class represents ActorSKD itself
+ * @param {object} options - Object contains custom components, actions, localisation strings and etc.
+ */
 class ActorSDK {
-  /**
-   * @constructor
-   * @param {object} options - Object contains custom components, actions, localisation strings and etc.
-   */
   constructor(options = {}) {
     this.endpoints = (options.endpoints && options.endpoints.length > 0) ? options.endpoints : endpoints;
     this.isExperimental = options.isExperimental ? options.isExperimental : false;
-
-    this.rootElement = options.rootElement ? options.rootElement : 'actor-web-app';
     this.forceLocale = options.forceLocale ? options.forceLocale : null;
-
+    this.rootElement = options.rootElement ? options.rootElement : rootElement;
+    this.homePage = options.homePage ? options.homePage : homePage;
+    this.twitter = options.twitter ? options.twitter : twitter;
+    this.helpPhone = options.helpPhone ? options.helpPhone : helpPhone;
     this.delegate = options.delegate ? options.delegate : new SDKDelegate();
+
     DelegateContainer.set(this.delegate);
 
     if (this.delegate.l18n) extendL18n();
+
+    SharedContainer.set(this);
   }
 
   _starter = () => {
@@ -112,6 +117,9 @@ class ActorSDK {
     }
 
     const appRootElemet = document.getElementById(this.rootElement);
+
+    // initial setup fot react modal
+    Modal.setAppElement(appRootElemet);
 
     if (window.location.hash !== '#/deactivated') {
       if (crosstab.supported) crosstab.broadcast(ActorInitEvent, {});
