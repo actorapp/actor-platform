@@ -1,6 +1,7 @@
 package im.actor.server.encryption
 
 import akka.actor._
+import akka.event.Logging
 import akka.http.scaladsl.util.FastFuture
 import cats.std.all._
 import cats.syntax.all._
@@ -24,6 +25,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
   private val db = DbExtension(system).db
   private val seqUpdExt = SeqUpdatesExtension(system)
   private val socialExt = SocialExtension(system)
+  private val log = Logging(system, getClass)
 
   def fetchKeyGroups(userId: Int): Future[Seq[EncryptionKeyGroup]] =
     db.run(EncryptionKeyGroupRepo.fetch(userId))
@@ -69,7 +71,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
 
   def createKeyGroup(
     userId:               Int,
-    authSid:              Int,
+    authId:               Long,
     supportedEncryptions: Seq[String],
     identityKey:          EncryptionKey,
     keys:                 Seq[EncryptionKey],
@@ -79,7 +81,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
     val keyGroup = EncryptionKeyGroup(
       userId = userId,
       id = id,
-      authSid = Some(Int32Value(authSid)),
+      authIds = Vector(authId),
       supportedEncryptions = supportedEncryptions,
       identityKey = Some(identityKey),
       keys = keys,
@@ -104,7 +106,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
 
   def createKeyGroup(
     userId:               Int,
-    authSid:              Int,
+    authId:               Long,
     supportedEncryptions: Seq[String],
     apiIdentityKey:       ApiEncryptionKey,
     apiKeys:              Seq[ApiEncryptionKey],
@@ -114,7 +116,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
       identityKey ← XorT.fromXor[Future](toModel(apiIdentityKey))
       keys ← XorT.fromXor[Future](apiKeys.toVector.traverseU(toModel))
       signs ← XorT(FastFuture.successful(apiSignatures.toVector.traverseU(toModel)))
-      id ← XorT.right[Future, Exception, Int](createKeyGroup(userId, authSid, supportedEncryptions, identityKey, keys, signs))
+      id ← XorT.right[Future, Exception, Int](createKeyGroup(userId, authId, supportedEncryptions, identityKey, keys, signs))
     } yield id
 
     futureT.value map (_.valueOr(throw _))
@@ -210,20 +212,21 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
   def checkBox(
     box:              ApiEncryptedBox,
     ignoredKeyGroups: Map[Int, Set[Int]]
-  ): Future[Either[(Vector[ApiKeyGroupId], Vector[ApiKeyGroupId]), Map[Int, Vector[(Int, ApiEncryptedBox)]]]] = {
+  ): Future[Either[(Vector[ApiKeyGroupId], Vector[ApiKeyGroupId]), Map[Int, Vector[(Long, ApiEncryptedBox)]]]] = {
     val userChecksFu: Iterable[Future[(Seq[ApiKeyGroupId], Seq[ApiKeyGroupId], Seq[EncryptionKeyGroup])]] =
       box.keys.groupBy(_.usersId) map {
         case (userId, keys) ⇒
           db.run(EncryptionKeyGroupRepo.fetch(userId)) map { kgs ⇒
-            // kgs not presented in box
-
             val ignored = ignoredKeyGroups.getOrElse(userId, Set.empty)
 
+            // kgs not presented in box
             val missingKgs = kgs.view
               .filterNot(kg ⇒ keys.exists(_.keyGroupId == kg.id))
               .filterNot(kg ⇒ ignored.contains(kg.id))
               .map(kg ⇒ ApiKeyGroupId(userId, kg.id))
               .force
+
+            log.debug("Missing key groups: {}, ignoredKeyGroups: {}, ignored: {}", missingKgs, ignoredKeyGroups, ignored)
 
             // kgs presented in box but deleted by receiver
             val obsKgs = keys.view
@@ -248,9 +251,10 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
           .map {
             case (userId, ukgs) ⇒
               (userId,
-                ukgs map { kg ⇒
+                ukgs flatMap { kg ⇒
                   val keys = box.keys.filter(_.keyGroupId == kg.id)
-                  (kg.authSid.get.value, box.copy(keys = keys))
+                  val mappedBox = box.copy(keys = keys)
+                  kg.authIds map (_ → mappedBox)
                 })
           }
       )
