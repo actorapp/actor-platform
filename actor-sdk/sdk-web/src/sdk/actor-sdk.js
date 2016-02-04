@@ -35,21 +35,21 @@ import { extendL18n, getIntlData } from '../l18n';
 
 const { DefaultRoute, Route, RouteHandler } = Router;
 
+// Init app loading progressbar
 Pace.start({
   ajax: false,
   restartOnRequestAfter: false,
   restartOnPushState: false
 });
 
+// Init lightbox
 lightbox.load({
   animation: false,
   controlClose: '<i class="material-icons">close</i>'
 });
 
 window.isJsAppLoaded = false;
-window.jsAppLoaded = () => {
-  window.isJsAppLoaded = true;
-};
+window.jsAppLoaded = () => window.isJsAppLoaded = true;
 
 class App extends Component {
   static childContextTypes =  {
@@ -87,18 +87,16 @@ class ActorSDK {
    * @param {object} options - Object contains custom components, actions, localisation strings and etc.
    */
   constructor(options = {}) {
-
     this.endpoints = (options.endpoints && options.endpoints.length > 0) ? options.endpoints : endpoints;
     this.isExperimental = options.isExperimental ? options.isExperimental : false;
 
     this.rootElement = options.rootElement ? options.rootElement : 'actor-web-app';
+    this.forceLocale = options.forceLocale ? options.forceLocale : null;
 
     this.delegate = options.delegate ? options.delegate : new SDKDelegate();
     DelegateContainer.set(this.delegate);
 
-    if (this.delegate.l18n) {
-      extendL18n();
-    }
+    if (this.delegate.l18n) extendL18n();
   }
 
   _starter = () => {
@@ -116,10 +114,7 @@ class ActorSDK {
     const appRootElemet = document.getElementById(this.rootElement);
 
     if (window.location.hash !== '#/deactivated') {
-      if (crosstab.supported) {
-        crosstab.broadcast(ActorInitEvent, {});
-      }
-
+      if (crosstab.supported) crosstab.broadcast(ActorInitEvent, {});
       window.messenger = Actor.create(this.endpoints);
     }
 
@@ -127,7 +122,7 @@ class ActorSDK {
     const Deactivated = this.delegate.components.deactivated || DefaultDeactivated;
     const Install = this.delegate.components.install || DefaultInstall;
     const JoinGroup = this.delegate.components.joinGroup || DefaultJoinGroup;
-    const intlData = getIntlData();
+    const intlData = getIntlData(this.forceLocale);
 
     const routes = (
       <Route handler={App} name="app" path="/">
@@ -149,9 +144,7 @@ class ActorSDK {
     router.run((Root) => React.render(<Root {...intlData} delegate={this.delegate} isExperimental={this.isExperimental}/>, appRootElemet));
 
     if (window.location.hash !== '#/deactivated') {
-      if (LoginStore.isLoggedIn()) {
-        LoginActionCreators.setLoggedIn({redirect: false});
-      }
+      if (LoginStore.isLoggedIn()) LoginActionCreators.setLoggedIn({redirect: false});
     }
   };
 

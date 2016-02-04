@@ -12,10 +12,7 @@ import portuguese from './pt-BR';
 import chinese from './zh-CN';
 
 let language = navigator.language.toLocaleLowerCase() || navigator.browserLanguage.toLocaleLowerCase();
-
-if (language === 'zh-cn') {
-  language = 'zh'
-}
+if (language === 'zh-cn') language = 'zh'
 
 // Fallback to default language
 const defaultLanguage = english;
@@ -45,6 +42,7 @@ export function extendL18n() {
   chinese.messages = delegate.l18n.chinese ? assignDeep({}, chinese.messages, delegate.l18n.default.messages, delegate.l18n.chinese.messages) : chinese.messages;
 }
 
-export function getIntlData() {
-  return languageData[language] || languageData[language.split('-')[0]] || languageData['default'];
+export function getIntlData(locale) {
+  const lang = locale ? locale : language;
+  return languageData[lang] || languageData[lang.split('-')[0]] || languageData['default'];
 }

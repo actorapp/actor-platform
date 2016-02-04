@@ -73,92 +73,6 @@ class DialogSection extends Component {
     this.loadMessagesByScroll();
   }
 
-  render() {
-    const { peer, isMember, messagesToRender, overlayToRender } = this.state;
-    const { delegate } = this.context;
-
-    let activity = [],
-        ToolbarSection,
-        TypingSection,
-        ComposeSection,
-        MessagesSection;
-
-    if (delegate.components.dialog !== null && typeof delegate.components.dialog !== 'function') {
-      ToolbarSection = delegate.components.dialog.toolbar || DefaultToolbarSection;
-      MessagesSection = (typeof delegate.components.dialog.messages == 'function') ? delegate.components.dialog.messages : DefaultMessagesSection;
-      TypingSection = delegate.components.dialog.typing || DefaultTypingSection;
-      ComposeSection = delegate.components.dialog.compose || DefaultComposeSection;
-
-      if (delegate.components.dialog.activity) {
-        forEach(delegate.components.dialog.activity, (Activity) => activity.push(<Activity/>));
-      } else {
-        activity.push(<DefaultActivitySection/>);
-      }
-    } else {
-      ToolbarSection = DefaultToolbarSection;
-      MessagesSection = DefaultMessagesSection;
-      TypingSection = DefaultTypingSection;
-      ComposeSection = DefaultComposeSection;
-      activity.push(<DefaultActivitySection/>);
-    }
-
-    const mainScreen = peer ? (
-      <section className="dialog">
-        <ConnectionState/>
-        <div className="messages">
-          <MessagesSection messages={messagesToRender}
-                           overlay={overlayToRender}
-                           peer={peer}
-                           ref="messagesSection"
-                           onScroll={this.loadMessagesByScroll}/>
-
-        </div>
-        {
-          isMember
-            ? <footer className="dialog__footer">
-                <TypingSection/>
-                <ComposeSection/>
-              </footer>
-            : <footer className="dialog__footer dialog__footer--disabled row center-xs middle-xs ">
-                <h3>You are not a member</h3>
-              </footer>
-        }
-      </section>
-    ) : null;
-
-    const emptyScreen = (
-      <section className="dialog dialog--empty row center-xs middle-xs">
-        <ConnectionState/>
-
-        <div className="advice">
-          <div className="actor-logo">
-            <svg className="icon icon--gray"
-                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#star"/>'}}/>
-          </div>
-          <h2>Try to be better than yesterday!</h2>
-        </div>
-      </section>
-    );
-
-    return (
-      <section className="main">
-        {
-          peer
-            ? <ToolbarSection/>
-            : null
-        }
-        <div className="flexrow">
-          {
-            peer
-              ? mainScreen
-              : emptyScreen
-          }
-          {activity}
-        </div>
-      </section>
-    );
-  }
-
   fixScrollTimeout = () => {
     setTimeout(this.fixScroll, 50);
   };
@@ -206,6 +120,93 @@ class DialogSection extends Component {
       }
     }
   }, 5, {maxWait: 30});
+
+
+  render() {
+    const { peer, isMember, messagesToRender, overlayToRender } = this.state;
+    const { delegate } = this.context;
+
+    let activity = [],
+      ToolbarSection,
+      TypingSection,
+      ComposeSection,
+      MessagesSection;
+
+    if (delegate.components.dialog !== null && typeof delegate.components.dialog !== 'function') {
+      ToolbarSection = delegate.components.dialog.toolbar || DefaultToolbarSection;
+      MessagesSection = (typeof delegate.components.dialog.messages == 'function') ? delegate.components.dialog.messages : DefaultMessagesSection;
+      TypingSection = delegate.components.dialog.typing || DefaultTypingSection;
+      ComposeSection = delegate.components.dialog.compose || DefaultComposeSection;
+
+      if (delegate.components.dialog.activity) {
+        forEach(delegate.components.dialog.activity, (Activity) => activity.push(<Activity/>));
+      } else {
+        activity.push(<DefaultActivitySection/>);
+      }
+    } else {
+      ToolbarSection = DefaultToolbarSection;
+      MessagesSection = DefaultMessagesSection;
+      TypingSection = DefaultTypingSection;
+      ComposeSection = DefaultComposeSection;
+      activity.push(<DefaultActivitySection/>);
+    }
+
+    const mainScreen = peer ? (
+      <section className="dialog">
+        <ConnectionState/>
+        <div className="messages">
+          <MessagesSection messages={messagesToRender}
+                           overlay={overlayToRender}
+                           peer={peer}
+                           ref="messagesSection"
+                           onScroll={this.loadMessagesByScroll}/>
+
+        </div>
+        {
+          isMember
+            ? <footer className="dialog__footer">
+            <TypingSection/>
+            <ComposeSection/>
+          </footer>
+            : <footer className="dialog__footer dialog__footer--disabled row center-xs middle-xs ">
+            <h3>You are not a member</h3>
+          </footer>
+        }
+      </section>
+    ) : null;
+
+    const emptyScreen = (
+      <section className="dialog dialog--empty row center-xs middle-xs">
+        <ConnectionState/>
+
+        <div className="advice">
+          <div className="actor-logo">
+            <svg className="icon icon--gray"
+                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#star"/>'}}/>
+          </div>
+          <h2>Try to be better than yesterday!</h2>
+        </div>
+      </section>
+    );
+
+    return (
+      <section className="main">
+        {
+          peer
+            ? <ToolbarSection/>
+            : null
+        }
+        <div className="flexrow">
+          {
+            peer
+              ? mainScreen
+              : emptyScreen
+          }
+          {activity}
+        </div>
+      </section>
+    );
+  }
 }
 
 export default DialogSection;
