@@ -1,2 +1,3 @@
 * :bug: Encryption service fixes
 * :bug: Allow Range HTTP Header in files
+* :shipit: Strip bad messages from history
