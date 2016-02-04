@@ -28,7 +28,7 @@ object UserPresenceRepo {
     presences
       .filter(_.userId === userId)
       .distinctOn(_.userId)
-      .sortBy(_.lastSeenAt)
+      .sortBy(_.lastSeenAt.desc)
       .take(1)
 
   private val lastC = Compiled(last _)
