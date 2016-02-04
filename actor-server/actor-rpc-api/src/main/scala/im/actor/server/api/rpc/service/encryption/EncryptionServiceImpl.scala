@@ -15,10 +15,6 @@ import im.actor.server.sequence.SeqUpdatesExtension
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
-object EncryptionServiceErrors {
-  val OwnNotPresent = RpcError(400, "OWN_KEYS_NOT_PRESENT", "Own keys are not present", canTryAgain = false, None)
-}
-
 final class EncryptionServiceImpl(implicit system: ActorSystem) extends EncryptionService {
   import PeerHelpers._
 
@@ -48,7 +44,7 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
   ): Future[HandlerResult[ResponseCreateNewKeyGroup]] =
     authorized(clientData) { client ⇒
       for {
-        id ← encExt.createKeyGroup(client.userId, client.authSid, supportedEncryptions, identityKey, keys, signatures)
+        id ← encExt.createKeyGroup(client.userId, client.authId, supportedEncryptions, identityKey, keys, signatures)
       } yield Ok(ResponseCreateNewKeyGroup(id))
     }
 
@@ -147,28 +143,28 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
                   }
 
                 val (owns, peers) = mappings.partition(_._1 == client.userId)
+                val ownOpt = owns.headOption map (_._2)
 
-                owns.headOption match {
-                  case Some((_, ownMapping)) ⇒
-                    val peersFu =
-                      Future.sequence(peers map {
-                        case (userId, mapping) ⇒
-                          updExt.deliverMappedUpdate(userId, Some(UpdateEmptyUpdate), mapping.toMap)
-                      })
+                val peersFu =
+                  Future.sequence(peers map {
+                    case (userId, mapping) ⇒
+                      updExt.deliverAuthIdMappedUpdate(userId, Some(UpdateEmptyUpdate), mapping.toMap)
+                  })
 
-                    for {
-                      _ ← peersFu
-                      seqstate ← updExt.deliverMappedUpdate(client.userId, Some(UpdateEmptyUpdate), ownMapping)
-                    } yield Ok(ResponseSendEncryptedPackage(
-                      seq = Some(seqstate.seq),
-                      state = Some(seqstate.state.toByteArray),
-                      date = Some(date),
-                      Vector.empty,
-                      Vector.empty
-                    ))
-                  case None ⇒
-                    Future.successful(Error(EncryptionServiceErrors.OwnNotPresent))
-                }
+                for {
+                  _ ← peersFu
+                  seqstate ← ownOpt match {
+                    case Some(own) ⇒
+                      updExt.deliverAuthIdMappedUpdate(client.userId, Some(UpdateEmptyUpdate), own) map (Some(_))
+                    case None ⇒ FastFuture.successful(None)
+                  }
+                } yield Ok(ResponseSendEncryptedPackage(
+                  seq = seqstate map (_.seq),
+                  state = seqstate map (_.state.toByteArray),
+                  date = Some(date),
+                  Vector.empty,
+                  Vector.empty
+                ))
             }
           }
         }

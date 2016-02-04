@@ -131,6 +131,24 @@ final class SeqUpdatesExtension(
     deliveryId = deliveryId
   )
 
+  def deliverAuthIdMappedUpdate(
+    userId:     Int,
+    default:    Option[Update],
+    custom:     Map[Long, Update],
+    pushRules:  PushRules         = PushRules(),
+    deliveryId: String            = ""
+  ): Future[SeqState] =
+    for {
+      map ← db.run(AuthSessionRepo.findIdsByAuthIds(custom.keySet)) map (_.toMap)
+      res ← deliverMappedUpdate(
+        userId,
+        default,
+        custom map { case (authId, u) ⇒ map.getOrElse(authId, throw new RuntimeException("AuthId not found")) → u },
+        pushRules,
+        deliveryId
+      )
+    } yield res
+
   val DiffStep = 100L
 
   def getDifference(userId: Int, seq: Int, authSid: Int, maxSizeInBytes: Long): Future[(IndexedSeq[SeqUpdate], Boolean)] = {
