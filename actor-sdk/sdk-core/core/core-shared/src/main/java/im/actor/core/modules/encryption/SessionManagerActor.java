@@ -3,8 +3,8 @@ package im.actor.core.modules.encryption;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import im.actor.core.entity.encryption.PeerSession;
-import im.actor.core.entity.encryption.PeerSessionsStorage;
+import im.actor.core.modules.encryption.entity.PeerSession;
+import im.actor.core.modules.encryption.entity.PeerSessionsStorage;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.entity.PrivateKey;
 import im.actor.core.modules.encryption.entity.PublicKey;
@@ -13,26 +13,18 @@ import im.actor.core.modules.encryption.entity.UserKeysGroup;
 import im.actor.core.util.BaseKeyValueEngine;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.util.RandomUtils;
-import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ask.AskMessage;
-import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.crypto.ratchet.RatchetMasterSecret;
 import im.actor.runtime.crypto.ratchet.RatchetPrivateKey;
 import im.actor.runtime.crypto.ratchet.RatchetPublicKey;
 import im.actor.runtime.function.Constructor;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.FunctionTupled4;
-import im.actor.runtime.function.Predicate;
 import im.actor.runtime.function.Supplier;
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.promise.Promises;
-import im.actor.runtime.promise.PromisesArray;
-import im.actor.runtime.promise.Tuple3;
-import im.actor.runtime.promise.Tuple4;
 import im.actor.runtime.storage.KeyValueEngine;
 
 /**

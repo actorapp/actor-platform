@@ -1,5 +1,7 @@
 package im.actor.core.modules.encryption;
 
+import im.actor.core.api.ApiEncryptionKeyGroup;
+import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.entity.PrivateKey;
 import im.actor.core.modules.encryption.entity.PublicKey;
 import im.actor.core.modules.encryption.entity.UserKeys;
@@ -10,10 +12,12 @@ import im.actor.runtime.function.Supplier;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.Promises;
 
+import static im.actor.runtime.actors.ActorSystem.system;
+
 public class KeyManagerInt extends ActorInterface {
 
-    public KeyManagerInt(ActorRef dest) {
-        super(dest);
+    public KeyManagerInt(ModuleContext context) {
+        super(system().actorOf("encryption/keys", KeyManagerActor.CONSTRUCTOR(context)));
     }
 
     public Promise<KeyManagerActor.OwnIdentity> getOwnIdentity() {
@@ -40,6 +44,17 @@ public class KeyManagerInt extends ActorInterface {
         return ask(new KeyManagerActor.FetchOwnPreKeyById(id));
     }
 
+    public Promise<PrivateKey> getOwnPreKey(byte[] publicKey) {
+        return ask(new KeyManagerActor.FetchOwnPreKeyByPublic(publicKey));
+    }
+
+    public void onKeyGroupsAdded(int uid, ApiEncryptionKeyGroup keyGroup) {
+        send(new KeyManagerActor.PublicKeysGroupAdded(uid, keyGroup));
+    }
+
+    public void onKeyGroupsRemoved(int uid, int keyGroupId) {
+        send(new KeyManagerActor.PublicKeysGroupRemoved(uid, keyGroupId));
+    }
 
     public Supplier<Promise<byte[]>> supplyUserPreKey(final int uid, final int keyGroupId) {
         return new Supplier<Promise<byte[]>>() {

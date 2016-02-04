@@ -2,29 +2,23 @@ package im.actor.core.modules.encryption;
 
 import java.util.ArrayList;
 
-import im.actor.core.entity.encryption.PeerSession;
+import im.actor.core.modules.encryption.entity.PeerSession;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.entity.PrivateKey;
-import im.actor.core.modules.encryption.entity.UserKeys;
-import im.actor.core.modules.encryption.entity.UserKeysGroup;
-import im.actor.core.modules.encryption.entity.PublicKey;
-import im.actor.core.modules.encryption.session.EncryptedSession;
+import im.actor.core.modules.encryption.entity.SessionInternalState;
 import im.actor.core.modules.encryption.session.EncryptedSessionChain;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.*;
-import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.promise.Promises;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.core.modules.encryption.KeyManagerActor.*;
-import im.actor.runtime.promise.Tuple4;
 
 /**
  * Axolotl Ratchet encryption session
@@ -67,6 +61,7 @@ public class EncryptedSessionActor extends ModuleActor {
     //
 
     private byte[] latestTheirEphemeralKey;
+    private ArrayList<byte[]> ownLatestKeys;
     private ArrayList<EncryptedSessionChain> encryptionChains = new ArrayList<>();
     private ArrayList<EncryptedSessionChain> decryptionChains = new ArrayList<>();
 
@@ -125,8 +120,6 @@ public class EncryptedSessionActor extends ModuleActor {
         // final long theirEphemeralKey0Id = ByteStrings.bytesToLong(data, 12);
         final byte[] senderEphemeralKey = ByteStrings.substring(data, 20, 32);
         final byte[] receiverEphemeralKey = ByteStrings.substring(data, 52, 32);
-        Log.d(TAG, "Sender Ephemeral " + Crypto.keyHash(senderEphemeralKey));
-        Log.d(TAG, "Receiver Ephemeral " + Crypto.keyHash(receiverEphemeralKey));
 
         return pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
                 .map(new Function<EncryptedSessionChain, DecryptedPackage>() {
@@ -138,14 +131,8 @@ public class EncryptedSessionActor extends ModuleActor {
                 .then(new Consumer<DecryptedPackage>() {
                     @Override
                     public void apply(DecryptedPackage decryptedPackage) {
-                        Log.d(TAG, "onDecrypted");
                         latestTheirEphemeralKey = senderEphemeralKey;
-                    }
-                })
-                .failure(new Consumer<Exception>() {
-                    @Override
-                    public void apply(Exception e) {
-                        Log.d(TAG, "onError");
+                        saveSessionState();
                     }
                 });
     }
@@ -198,8 +185,8 @@ public class EncryptedSessionActor extends ModuleActor {
                         if (src != null) {
                             return Promises.success(src);
                         }
-
-                        return ask(context().getEncryption().getKeyManager(), new FetchOwnPreKeyByPublic(ephemeralKey))
+                        
+                        return context().getEncryption().getKeyManagerInt().getOwnPreKey(ephemeralKey)
                                 .map(new Function<PrivateKey, EncryptedSessionChain>() {
                                     @Override
                                     public EncryptedSessionChain apply(PrivateKey src) {
@@ -225,6 +212,10 @@ public class EncryptedSessionActor extends ModuleActor {
             throw new RuntimeException(e);
         }
         return new DecryptedPackage(decrypted);
+    }
+
+    private void saveSessionState() {
+        byte[] state = new SessionInternalState(ownLatestKeys, latestTheirEphemeralKey).toByteArray();
     }
 
     //

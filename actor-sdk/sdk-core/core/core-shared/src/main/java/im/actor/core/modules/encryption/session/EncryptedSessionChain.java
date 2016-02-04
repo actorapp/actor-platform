@@ -1,12 +1,10 @@
 package im.actor.core.modules.encryption.session;
 
 import java.util.HashSet;
-import java.util.Random;
 
-import im.actor.core.entity.encryption.PeerSession;
+import im.actor.core.modules.encryption.entity.PeerSession;
 import im.actor.core.util.RandomUtils;
 import im.actor.runtime.Crypto;
-import im.actor.runtime.Log;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.box.ActorBox;
