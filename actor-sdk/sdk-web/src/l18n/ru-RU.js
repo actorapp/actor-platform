@@ -28,7 +28,8 @@ export default {
       'helpAndFeedback': 'Помощь и обратная связь',
       'twitter': 'Наш твиттер',
       'preferences': 'Настройки',
-      'signOut': 'Выход'
+      'signOut': 'Выход',
+      'homePage': 'Домашняя страницв'
     },
 
     // Buttons
