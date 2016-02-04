@@ -1,3 +1,4 @@
 * :bug: Encryption service fixes
 * :bug: Allow Range HTTP Header in files
 * :shipit: Strip bad messages from history
+* :bug: Return keys in ResponseSendEncryptedPackage event if own keys aren't present
