@@ -23,7 +23,7 @@ import NotificationsStore from '../../stores/NotificationsStore';
 import OnlineStore from '../../stores/OnlineStore';
 
 import AvatarItem from '../common/AvatarItem.react';
-import Fold from '../common/Fold.React';
+import Fold from '../common/Fold.react';
 
 const getStateFromStores = (userId) => {
   const thisPeer = PeerStore.getUserPeer(userId);
