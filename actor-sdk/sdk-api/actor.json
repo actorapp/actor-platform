@@ -3895,6 +3895,36 @@
         {
           "type": "struct",
           "content": {
+            "name": "ServiceExChatArchived",
+            "doc": [
+              "Message about chat archived"
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 16
+            },
+            "expandable": "true",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExChatRestored",
+            "doc": [
+              "Message about chat restored"
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 17
+            },
+            "expandable": "true",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "DocumentMessage",
             "doc": [
               "File message",
@@ -4730,6 +4760,36 @@
         {
           "type": "rpc",
           "content": {
+            "name": "ArchiveChat",
+            "header": 2654,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Archiving chat",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Conversation peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "MessageSetReaction",
             "header": 210,
             "response": {
@@ -5363,6 +5423,32 @@
         {
           "type": "update",
           "content": {
+            "name": "ChatArchive",
+            "header": 94,
+            "doc": [
+              "Update about chat archive",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
             "name": "ChatGroupsChanged",
             "header": 1,
             "doc": [
@@ -5872,6 +5958,117 @@
         {
           "type": "rpc",
           "content": {
+            "name": "LoadArchived",
+            "header": 2651,
+            "response": {
+              "type": "anonymous",
+              "header": 2652,
+              "doc": [
+                "Archived dialogs",
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "full",
+                  "description": "  Referenced groups"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "full",
+                  "description": "  Referenced users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "dialogs",
+                  "category": "full",
+                  "description": "  Archived dialogs"
+                },
+                {
+                  "type": "reference",
+                  "argument": "nextOffset",
+                  "category": "compact",
+                  "description": "  Offset for next bunch"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 1,
+                  "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Dialog"
+                    }
+                  },
+                  "id": 3,
+                  "name": "dialogs"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bytes"
+                  },
+                  "id": 4,
+                  "name": "nextOffset"
+                }
+              ]
+            },
+            "doc": [
+              "Loading archived messages",
+              {
+                "type": "reference",
+                "argument": "nextOffset",
+                "category": "compact",
+                "description": "Optional next offset"
+              },
+              {
+                "type": "reference",
+                "argument": "limit",
+                "category": "full",
+                "description": "Maximum number of elements"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 1,
+                "name": "nextOffset"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "limit"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "LoadGroupedDialogs",
             "header": 225,
             "response": {
@@ -5896,6 +6093,18 @@
                   "argument": "groups",
                   "category": "full",
                   "description": "  Loaded groups"
+                },
+                {
+                  "type": "reference",
+                  "argument": "showArchived",
+                  "category": "full",
+                  "description": "  Show archived section"
+                },
+                {
+                  "type": "reference",
+                  "argument": "showInvite",
+                  "category": "full",
+                  "description": "  Show invite message"
                 }
               ],
               "attributes": [
@@ -5931,6 +6140,22 @@
                   },
                   "id": 3,
                   "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bool"
+                  },
+                  "id": 4,
+                  "name": "showArchived"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bool"
+                  },
+                  "id": 5,
+                  "name": "showInvite"
                 }
               ]
             },
@@ -14086,6 +14311,10 @@
               {
                 "name": "Group",
                 "id": 2
+              },
+              {
+                "name": "EncryptedPrivate",
+                "id": 3
               }
             ]
           }
