@@ -169,12 +169,12 @@ class DialogSection extends Component {
         {
           isMember
             ? <footer className="dialog__footer">
-            <TypingSection/>
-            <ComposeSection/>
-          </footer>
+                <TypingSection/>
+                <ComposeSection/>
+              </footer>
             : <footer className="dialog__footer dialog__footer--disabled row center-xs middle-xs ">
-            <h3>You are not a member</h3>
-          </footer>
+                <h3>You are not a member</h3>
+              </footer>
         }
       </section>
     ) : null;
@@ -189,10 +189,9 @@ class DialogSection extends Component {
         <div className="flexrow">
           {
             peer
-              ? mainScreen
+              ? [mainScreen, activity]
               : <EmptyScreen/>
           }
-          {activity}
         </div>
       </section>
     );

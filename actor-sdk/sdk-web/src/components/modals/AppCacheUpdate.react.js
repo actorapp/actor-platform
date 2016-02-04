@@ -10,9 +10,6 @@ import ActorTheme from '../../constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
 
-const appElement = document.getElementById('actor-web-app');
-Modal.setAppElement(appElement);
-
 const getStateFromStores = () => {
   return {
     isShown: AppCacheStore.isModalOpen()

@@ -24,9 +24,8 @@ export default {
       'editProfile': 'Editar perfil',
       'addToContacts': 'Añadir contacto',
       'createGroup': 'Crear grupo',
-      'configureIntegrations': 'Configurar Integraciones',
       'helpAndFeedback': 'Ayuda',
-      'twitter': 'Our twitter',
+      'twitter': 'Nuestro Twitter',
       'preferences': 'Preferencias',
       'signOut': 'Salir'
     },
@@ -40,22 +39,23 @@ export default {
       'checkCode': 'Comprobar código',
       'signUp': 'Registrarse',
       'add': 'Añadir',
-      'send': 'Send',
-      'sendAll': 'Send all',
+      'send': 'enviar',
+      'sendAll': 'Enviará toda',
       'createGroup': 'Crear grupo',
       'addMembers': 'Añadir miembros',
-      'quickSearch': 'Quick search',
-      'close': 'Close'
+      'quickSearch': 'Búsqueda rápida',
+      'close': 'Cerca'
     },
 
     // Messages
     'message': {
-      'pin': 'Pin',
-      'reply': 'Reply',
-      'forward': 'Forward',
+      'pin': 'Alfiler',
+      'reply': 'Responda',
+      'forward': 'Reenviar',
       'download': 'Descargar',
       'delete': 'Eliminar',
-      'uploading': 'Uploading...',
+      'quote': 'Citar',
+      'uploading': 'Carga...',
       'welcome': {
         'private': '<p>This is the very beginning of your private conversation with <strong>{name}</strong>.</p><p>All messages here are private between the two of you.</p>',
         'group': {
@@ -72,7 +72,7 @@ export default {
 
     // Compose
     'compose': {
-      'attach': 'Attachment',
+      'attach': 'Acoplamiento',
       'sendFile': 'Enviar archivo',
       'sendPhoto': 'Enviar foto',
       'send': 'Enviar',
@@ -81,7 +81,7 @@ export default {
         'italic': 'cursiva',
         'preformatted': 'preformateado'
       },
-      'dropzone': 'Drop here to send.'
+      'dropzone': 'Colocar aquí para enviar.'
     },
 
     // Modals
@@ -107,14 +107,14 @@ export default {
         'title': 'Recortar la imagen'
       },
       'contacts': {
-        'title': 'People',
-        'search': 'Search contacts',
-        'notFound': 'Sorry, no users found.'
+        'title': 'Personas',
+        'search': 'Buscar contactos',
+        'notFound': 'Lo sentimos, no hay usuarios encontrados.'
       },
       'groups': {
-        'title': 'Groups',
-        'search': 'Search',
-        'loading': 'Loading',
+        'title': 'Grupos',
+        'search': 'Buscar',
+        'loading': 'Cargando',
         'notFound': 'No matches found for <strong>{query}</strong>.'
       },
       'attachments': {
@@ -127,7 +127,7 @@ export default {
       },
       'addContact': {
         'title': 'Añadir contacto',
-        'query': 'Email, nickname or phone',
+        'query': 'Correo electrónico, teléfono o sobrenombre',
         'phone': 'Número de móvil',
         'notFound': 'User with such data is not found',
         'empty': 'Start typing to search people',
@@ -159,9 +159,9 @@ export default {
 
     // Profiles
     'profile': {
-      'email': 'email',
-      'phone': 'phone',
-      'nickname': 'nickname'
+      'email': 'correo electrónico',
+      'phone': 'móvil',
+      'nickname': 'nick usuario'
     },
     'createdBy': 'сreado por',
     'addPeople': 'Añadir personas',

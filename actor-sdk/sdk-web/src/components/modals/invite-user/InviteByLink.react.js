@@ -17,9 +17,6 @@ import InviteUserActions from '../../../actions/InviteUserActions';
 
 import InviteUserStore from '../../../stores/InviteUserStore';
 
-const appElement = document.getElementById('actor-web-app');
-Modal.setAppElement(appElement);
-
 const {addons: { PureRenderMixin }} = addons;
 
 const getStateFromStores = () => {

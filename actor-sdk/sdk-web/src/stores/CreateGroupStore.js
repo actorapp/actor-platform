@@ -15,8 +15,8 @@ let _modalOpen = false,
     _selectedUserIds = new Immutable.Set();
 
 class CreateGroupStore extends Store {
-  constructor(Dispatcher) {
-    super(Dispatcher);
+  constructor(dispatcher) {
+    super(dispatcher);
   }
 
   isModalOpen() {
