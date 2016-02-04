@@ -27,6 +27,7 @@
     <extend-property name="locale" values="cn" />
     <extend-property name="locale" values="ar" />
     <extend-property name="locale" values="pt" />
+    <extend-property name="locale" values="es" />
     <set-property-fallback name="locale" value="en" />
 
     <!-- Building single JS library -->
