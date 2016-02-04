@@ -12,6 +12,7 @@ import DefaultTypingSection from './dialog/TypingSection.react';
 import DefaultComposeSection from './dialog/ComposeSection.react';
 import DefaultToolbarSection from './ToolbarSection.react';
 import DefaultActivitySection from './ActivitySection.react';
+import DefaultEmptyScreen from './common/EmptyScreen.react';
 import ConnectionState from './common/ConnectionState.react';
 
 import ActivityStore from '../stores/ActivityStore';
@@ -127,16 +128,18 @@ class DialogSection extends Component {
     const { delegate } = this.context;
 
     let activity = [],
-      ToolbarSection,
-      TypingSection,
-      ComposeSection,
-      MessagesSection;
+        ToolbarSection,
+        TypingSection,
+        ComposeSection,
+        MessagesSection,
+        EmptyScreen;
 
     if (delegate.components.dialog !== null && typeof delegate.components.dialog !== 'function') {
       ToolbarSection = delegate.components.dialog.toolbar || DefaultToolbarSection;
       MessagesSection = (typeof delegate.components.dialog.messages == 'function') ? delegate.components.dialog.messages : DefaultMessagesSection;
       TypingSection = delegate.components.dialog.typing || DefaultTypingSection;
       ComposeSection = delegate.components.dialog.compose || DefaultComposeSection;
+      EmptyScreen = delegate.components.dialog.empty || DefaultEmptyScreen;
 
       if (delegate.components.dialog.activity) {
         forEach(delegate.components.dialog.activity, (Activity) => activity.push(<Activity/>));
@@ -148,6 +151,7 @@ class DialogSection extends Component {
       MessagesSection = DefaultMessagesSection;
       TypingSection = DefaultTypingSection;
       ComposeSection = DefaultComposeSection;
+      EmptyScreen = DefaultEmptyScreen;
       activity.push(<DefaultActivitySection/>);
     }
 
@@ -175,20 +179,6 @@ class DialogSection extends Component {
       </section>
     ) : null;
 
-    const emptyScreen = (
-      <section className="dialog dialog--empty row center-xs middle-xs">
-        <ConnectionState/>
-
-        <div className="advice">
-          <div className="actor-logo">
-            <svg className="icon icon--gray"
-                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#star"/>'}}/>
-          </div>
-          <h2>Try to be better than yesterday!</h2>
-        </div>
-      </section>
-    );
-
     return (
       <section className="main">
         {
@@ -200,7 +190,7 @@ class DialogSection extends Component {
           {
             peer
               ? mainScreen
-              : emptyScreen
+              : <EmptyScreen/>
           }
           {activity}
         </div>
