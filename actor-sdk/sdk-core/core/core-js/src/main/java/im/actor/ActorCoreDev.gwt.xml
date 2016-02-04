@@ -22,9 +22,12 @@
     <set-property name='gwt.logging.consoleHandler' value='ENABLED' />
     <set-property name="export" value="yes" />
 
-    <extend-property name="locale" values="en"/>
-    <extend-property name="locale" values="ru"/>
-    <extend-property name="locale" values="cn"/>
+    <extend-property name="locale" values="en" />
+    <extend-property name="locale" values="ru" />
+    <extend-property name="locale" values="cn" />
+    <extend-property name="locale" values="ar" />
+    <extend-property name="locale" values="pt" />
+    <extend-property name="locale" values="es" />
     <set-property-fallback name="locale" value="en"/>
 
 </module>
