@@ -73,7 +73,7 @@ trait HistoryHandlers {
         .map(_ filterNot (dialogExt.dialogWithSelf(client.userId, _)))
         .flatMap { dialogModels ⇒
           for {
-            dialogs ← DBIO.sequence(dialogModels map getDialogStruct)
+            dialogs ← DBIO.sequence(dialogModels map getDialogStruct) map (_.flatten)
             (users, groups) ← getDialogsUsersGroups(dialogs)
           } yield {
             Ok(ResponseLoadDialogs(
@@ -139,16 +139,19 @@ trait HistoryHandlers {
             .map(_.ofUser(client.userId))
             .foldLeft(Vector.empty[ApiMessageContainer], Set.empty[Int]) {
               case ((msgs, uids), message) ⇒
-                val messageStruct = message.asStruct(lastReceivedAt, lastReadAt, reactions.getOrElse(message.randomId, Vector.empty))
-                val newMsgs = msgs :+ messageStruct
+                message.asStruct(lastReceivedAt, lastReadAt, reactions.getOrElse(message.randomId, Vector.empty)).toOption match {
+                  case Some(messageStruct) ⇒
+                    val newMsgs = msgs :+ messageStruct
 
-                val newUserIds = relatedUsers(messageStruct.message) ++
-                  (if (message.senderUserId != client.userId)
-                    uids + message.senderUserId
-                  else
-                    uids)
+                    val newUserIds = relatedUsers(messageStruct.message) ++
+                      (if (message.senderUserId != client.userId)
+                        uids + message.senderUserId
+                      else
+                        uids)
 
-                (newMsgs, newUserIds)
+                    (newMsgs, newUserIds)
+                  case None ⇒ (msgs, uids)
+                }
             }
           userStructs ← DBIO.from(Future.sequence(userIds.toVector map (userExt.getApiStruct(_, client.userId, client.authId))))
         } yield Ok(ResponseLoadHistory(messages, userStructs))
@@ -221,7 +224,7 @@ trait HistoryHandlers {
     optDatesAction map { _ getOrElse (ZeroDate → ZeroDate) }
   }
 
-  private def getDialogStruct(dialogModel: Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[ApiDialog] = {
+  private def getDialogStruct(dialogModel: Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[Option[ApiDialog]] = {
     withHistoryOwner(dialogModel.peer, client.userId) { historyOwner ⇒
       for {
         (lastReceivedAt, lastReadAt) ← getLastReceiveReadDates(dialogModel.peer)
@@ -231,18 +234,18 @@ trait HistoryHandlers {
       } yield {
         val emptyMessageContent = ApiTextMessage(text = "", mentions = Vector.empty, ext = None)
         val messageModel = messageOpt.getOrElse(HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
-        val message = messageModel.asStruct(lastReceivedAt, lastReadAt, reactions)
-
-        ApiDialog(
-          peer = dialogModel.peer.asStruct,
-          unreadCount = unreadCount,
-          sortDate = dialogModel.lastMessageDate.getMillis,
-          senderUserId = message.senderUserId,
-          randomId = message.randomId,
-          date = message.date,
-          message = message.message,
-          state = message.state
-        )
+        messageModel.asStruct(lastReceivedAt, lastReadAt, reactions).toOption map { message ⇒
+          ApiDialog(
+            peer = dialogModel.peer.asStruct,
+            unreadCount = unreadCount,
+            sortDate = dialogModel.lastMessageDate.getMillis,
+            senderUserId = message.senderUserId,
+            randomId = message.randomId,
+            date = message.date,
+            message = message.message,
+            state = message.state
+          )
+        }
       }
     }
   }
