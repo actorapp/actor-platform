@@ -155,12 +155,12 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
                   _ ← peersFu
                   seqstate ← ownOpt match {
                     case Some(own) ⇒
-                      updExt.deliverAuthIdMappedUpdate(client.userId, Some(UpdateEmptyUpdate), own) map (Some(_))
-                    case None ⇒ FastFuture.successful(None)
+                      updExt.deliverAuthIdMappedUpdate(client.userId, Some(UpdateEmptyUpdate), own)
+                    case None ⇒ updExt.deliverSingleUpdate(client.userId, UpdateEmptyUpdate)
                   }
                 } yield Ok(ResponseSendEncryptedPackage(
-                  seq = seqstate map (_.seq),
-                  state = seqstate map (_.state.toByteArray),
+                  seq = Some(seqstate.seq),
+                  state = Some(seqstate.state.toByteArray),
                   date = Some(date),
                   Vector.empty,
                   Vector.empty
