@@ -28,7 +28,8 @@ export default {
       'helpAndFeedback': 'Help & Feedback',
       'twitter': 'Our twitter',
       'preferences': 'Preferences',
-      'signOut': 'Sign Out'
+      'signOut': 'Sign Out',
+      'homePage': 'Home page'
     },
 
     // Buttons

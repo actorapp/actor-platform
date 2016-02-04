@@ -11,7 +11,7 @@ import ActorClient from '../../utils/ActorClient';
 import { escapeWithEmoji } from '../../utils/EmojiUtils'
 import confirm from '../../utils/confirm'
 import SharedContainer from '../../utils/SharedContainer';
-import { twitter } from '../../constants/ActorAppConstants';
+import { twitter, homePage } from '../../constants/ActorAppConstants';
 
 
 import MyProfileActions from '../../actions/MyProfileActionCreators';
@@ -38,6 +38,7 @@ class HeaderSection extends Component {
 
     const SharedActor = SharedContainer.get();
     this.twitter = SharedActor.twitter ? SharedActor.twitter : twitter;
+    this.homePage = SharedActor.homePage ? SharedActor.homePage : homePage;
   }
 
   static getStores = () => [MyProfileStore, CreateGroupStore, AddContactStore, PreferencesStore];
@@ -78,10 +79,19 @@ class HeaderSection extends Component {
   openAddContactModal = () => AddContactActionCreators.open();
   onSettingsOpen = () => PreferencesActionCreators.show();
   openTwitter = (event) => {
+    event.preventDefault();
     if (ActorClient.isElectron()) {
       ActorClient.handleLinkClick(event);
     } else {
-      window.open(`https://twitter.com/${this.twitter}`);
+      window.open(`https://twitter.com/${this.twitter}`, '_blank');
+    }
+  };
+  openHomePage = (event) => {
+    event.preventDefault();
+    if (ActorClient.isElectron()) {
+      ActorClient.handleLinkClick(event);
+    } else {
+      window.open(this.homePage, '_blank');
     }
   };
   setLogout = () => {
@@ -133,19 +143,27 @@ class HeaderSection extends Component {
                   {this.getIntlMessage('menu.createGroup')}
                 </li>
                 <li className="dropdown__menu__separator"/>
+                <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
+                  <i className="material-icons">settings</i>
+                  {this.getIntlMessage('menu.preferences')}
+                </li>
                 <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
                   <i className="material-icons">help</i>
                   {this.getIntlMessage('menu.helpAndFeedback')}
                 </li>
-                <li className="dropdown__menu__item" onClick={this.openTwitter}>
-                  <svg className="icon icon--dropdown"
-                       style={{marginLeft: -34}}
-                       dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#twitter"/>'}}/>
-                  {this.getIntlMessage('menu.twitter')}
+                <li className="dropdown__menu__item">
+                  <a href={`https://twitter.com/${this.twitter}`} onClick={this.openTwitter}>
+                    <svg className="icon icon--dropdown"
+                         style={{marginLeft: -34}}
+                         dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#twitter"/>'}}/>
+                    {this.getIntlMessage('menu.twitter')}
+                  </a>
                 </li>
-                <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
-                  <i className="material-icons">settings</i>
-                  {this.getIntlMessage('menu.preferences')}
+                <li className="dropdown__menu__item">
+                  <a href={this.homePage} onClick={this.openHomePage}>
+                    <i className="material-icons">public</i>
+                    {this.getIntlMessage('menu.homePage')}
+                  </a>
                 </li>
                 <li className="dropdown__menu__separator"/>
                 <li className="dropdown__menu__item" onClick={this.setLogout}>
