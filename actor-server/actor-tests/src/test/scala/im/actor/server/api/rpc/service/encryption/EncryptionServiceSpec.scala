@@ -4,9 +4,14 @@ import im.actor.api.rpc.encryption._
 import im.actor.api.rpc._
 import im.actor.server.{ ImplicitSessionRegion, ImplicitAuthService, BaseAppSuite }
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.util.Random
+
 final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService with ImplicitSessionRegion {
   it should "create key group and load keys" in keyGroup
   it should "create and load ephermal keys" in ephermalKeys
+  "SendEncryptedPackage" should "ignore ignored keys" in ignoredKeys
 
   lazy val service = new EncryptionServiceImpl
 
@@ -133,5 +138,58 @@ final class EncryptionServiceSpec extends BaseAppSuite with ImplicitAuthService 
         }
       }
     }
+  }
+
+  def ignoredKeys() = {
+    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+    val (bob, bobAuthId, bobAuthSid, _) = createUser()
+
+    val aliceClientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    val bobClientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+
+    val (aliceKeyGroupId1, aliceKeys1) = createKeyGroup()(aliceClientData)
+    val (aliceKeyGroupId2, _) = createKeyGroup()(aliceClientData)
+    val (bobKeyGroupId, _) = createKeyGroup()(bobClientData)
+
+    {
+      implicit val clientData = bobClientData
+
+      whenReady(service.handleSendEncryptedPackage(
+        randomId = Random.nextLong(),
+        destPeers = Vector(getUserOutPeer(alice.id, bobAuthId)),
+        ignoredKeyGroups = Vector(ApiKeyGroupId(alice.id, 1), ApiKeyGroupId(alice.id, aliceKeyGroupId2)),
+        encryptedBox = ApiEncryptedBox(
+          keys = aliceKeys1 map (key ⇒ ApiEncyptedBoxKey(alice.id, aliceKeyGroupId1, key.keyAlg, key.keyMaterial.get)),
+          algType = "",
+          encPackage = Array(),
+          senderKeyGroupId = bobKeyGroupId,
+          Vector.empty
+        )
+      )) { resp ⇒
+        inside(resp) {
+          case Ok(resp: ResponseSendEncryptedPackage) ⇒
+            resp.missedKeyGroups shouldBe empty
+            resp.obsoleteKeyGroups shouldBe empty
+            resp.seq shouldBe None
+            resp.state shouldBe None
+        }
+      }
+    }
+  }
+
+  private def createKeyGroup()(implicit clientData: ClientData) = {
+    val supportedEncryptions = Vector("sup1")
+    val identityKey = ApiEncryptionKey(Random.nextLong(), "idalg", Some(Array[Byte](1, 2, 3)), Some(Array[Byte](1)))
+    val keys = Vector(ApiEncryptionKey(Random.nextLong(), "keyalg", Some(Array[Byte](3, 4, 5)), Some(Array[Byte](3))))
+    val signatures = Vector(
+      ApiEncryptionKeySignature(keys.head.keyId, "signalg", Array[Byte](4))
+    )
+    val keyGroupId = Await.result(service.handleCreateNewKeyGroup(
+      identityKey = identityKey,
+      supportedEncryptions = supportedEncryptions,
+      keys = keys,
+      signatures = signatures
+    ), 5.seconds).toOption.get.keyGroupId
+    (keyGroupId, keys)
   }
 }

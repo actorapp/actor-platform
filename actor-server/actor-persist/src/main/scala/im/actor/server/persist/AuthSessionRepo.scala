@@ -60,6 +60,9 @@ object AuthSessionRepo {
     activeSessions.filter(_.userId === userId)
   }
 
+  def idsByAuthIds(authIds: Set[Long]) =
+    activeSessions.filter(_.authId.inSet(authIds)).map(as ⇒ as.authId → as.id)
+
   def create(session: AuthSession) =
     sessions += session
 
@@ -80,6 +83,8 @@ object AuthSessionRepo {
 
   def findByDeviceHash(deviceHash: Array[Byte]) =
     byDeviceHashC(deviceHash).result
+
+  def findIdsByAuthIds(authIds: Set[Long]) = idsByAuthIds(authIds).result
 
   def delete(userId: Int, id: Int) =
     activeSessions.filter(s ⇒ s.userId === userId && s.id === id).map(_.deletedAt).update(Some(new DateTime))
