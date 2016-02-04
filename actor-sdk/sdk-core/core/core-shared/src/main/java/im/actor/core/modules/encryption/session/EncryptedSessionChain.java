@@ -56,7 +56,7 @@ public class EncryptedSessionChain {
 
     public byte[] decrypt(byte[] data) throws IntegrityException {
 
-        if (data.length < 88) {
+        if (data.length < 84) {
             throw new IntegrityException("Data length is too small");
         }
 
@@ -64,12 +64,11 @@ public class EncryptedSessionChain {
         // Parsing message header
         //
 
-        final int senderKeyGroupId = ByteStrings.bytesToInt(data, 0);
-        final long senderEphermalKey0Id = ByteStrings.bytesToLong(data, 4);
-        final long receiverEphermalKey0Id = ByteStrings.bytesToLong(data, 12);
-        final byte[] senderEphemeralKey = ByteStrings.substring(data, 20, 32);
-        final byte[] receiverEphemeralKey = ByteStrings.substring(data, 52, 32);
-        final int messageIndex = ByteStrings.bytesToInt(data, 84);
+        final long senderEphermalKey0Id = ByteStrings.bytesToLong(data, 0);
+        final long receiverEphermalKey0Id = ByteStrings.bytesToLong(data, 8);
+        final byte[] senderEphemeralKey = ByteStrings.substring(data, 16, 32);
+        final byte[] receiverEphemeralKey = ByteStrings.substring(data, 48, 32);
+        final int messageIndex = ByteStrings.bytesToInt(data, 80);
 
         //
         // Validating header
@@ -96,8 +95,8 @@ public class EncryptedSessionChain {
         //
 
         ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rootChainKey, messageIndex);
-        byte[] header = ByteStrings.substring(data, 0, 88);
-        byte[] message = ByteStrings.substring(data, 88, data.length - 88);
+        byte[] header = ByteStrings.substring(data, 0, 84);
+        byte[] message = ByteStrings.substring(data, 84, data.length - 84);
         return ActorBox.openBox(header, message, ratchetMessageKey);
     }
 
@@ -106,10 +105,9 @@ public class EncryptedSessionChain {
         ActorBoxKey ratchetMessageKey = RatchetMessageKey.buildKey(rootChainKey, messageIndex);
 
         byte[] header = ByteStrings.merge(
-                ByteStrings.intToBytes(session.getOwnKeyGroupId()),
                 ByteStrings.longToBytes(session.getOwnPreKeyId()), /*Alice Initial Ephermal*/
                 ByteStrings.longToBytes(session.getTheirPreKeyId()), /*Bob Initial Ephermal*/
-                Curve25519.keyGenPublic(ownPrivateKey),
+                ownPublicKey,
                 theirPublicKey,
                 ByteStrings.intToBytes(messageIndex)); /* Message Index */
 

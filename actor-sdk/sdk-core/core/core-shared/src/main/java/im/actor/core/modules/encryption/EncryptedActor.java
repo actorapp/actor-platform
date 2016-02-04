@@ -61,7 +61,7 @@ public class EncryptedActor extends ModuleActor {
                         for (int kgid : encryptBoxResponse.getIgnored()) {
                             ignored.add(new ApiKeyGroupId(uid, kgid));
                         }
-                        ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(0, boxKeys, "aes-kuznechik", encryptBoxResponse.getBox().getEncryptedPackage(),
+                        ApiEncryptedBox apiEncryptedBox = new ApiEncryptedBox(encryptBoxResponse.getBox().getSenderKeyGroupId(), boxKeys, "aes-kuznechik", encryptBoxResponse.getBox().getEncryptedPackage(),
                                 new ArrayList<ApiEncryptedBoxSignature>());
                         return new CipherTextPackage(apiEncryptedBox, ignored);
                     }
@@ -88,7 +88,7 @@ public class EncryptedActor extends ModuleActor {
             throw new RuntimeException("No keys found");
         }
 
-        EncryptedBox encryptedBox1 = new EncryptedBox(encryptedBoxKeys.toArray(new EncryptedBoxKey[encryptedBoxKeys.size()]), encryptedBox.getEncPackage());
+        EncryptedBox encryptedBox1 = new EncryptedBox(encryptedBox.getSenderKeyGroupId(), encryptedBoxKeys.toArray(new EncryptedBoxKey[encryptedBoxKeys.size()]), encryptedBox.getEncPackage());
 
         return ask(context().getEncryption().getEncryptedChatManager(uid), new EncryptedPeerActor.DecryptBox(encryptedBox1))
                 .map(new Function<EncryptedPeerActor.DecryptBoxResponse, PlainTextPackage>() {

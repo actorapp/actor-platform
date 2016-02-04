@@ -450,11 +450,18 @@ public class SenderActor extends ModuleActor {
                                 context().getMessagesModule().getConversationActor(peer)
                                         .send(new ConversationActor.MessageSent(rid, responseSendEncryptedPackage.getDate()));
                             } else {
-                                Log.d("SenderActor", "Missed: " +
-                                        Utils.toString(responseSendEncryptedPackage.getMissedKeyGroups()) + ", Obsolete: " +
-                                        Utils.toString(responseSendEncryptedPackage.getObsoleteKeyGroups()));
-                                self().send(new MessageError(peer, rid));
-                                context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageError(rid));
+                                if (responseSendEncryptedPackage.getMissedKeyGroups().size() == 0 &&
+                                        responseSendEncryptedPackage.getObsoleteKeyGroups().size() == 0) {
+                                    self().send(new MessageSent(peer, rid));
+                                    context().getMessagesModule().getConversationActor(peer)
+                                            .send(new ConversationActor.MessageSent(rid, responseSendEncryptedPackage.getDate()));
+                                } else {
+                                    Log.d("SenderActor", "Missed: " +
+                                            Utils.toString(responseSendEncryptedPackage.getMissedKeyGroups()) + ", Obsolete: " +
+                                            Utils.toString(responseSendEncryptedPackage.getObsoleteKeyGroups()));
+                                    self().send(new MessageError(peer, rid));
+                                    context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageError(rid));
+                                }
                             }
                         }
                     }).failure(new Consumer<Exception>() {

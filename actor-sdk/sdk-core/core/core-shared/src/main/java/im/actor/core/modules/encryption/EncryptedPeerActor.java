@@ -178,9 +178,9 @@ public class EncryptedPeerActor extends ModuleActor {
                             ignoredKeys.add(kgid);
                         }
 
-                        return new EncryptBoxResponse(new EncryptedBox(
+                        return new EncryptBoxResponse(new EncryptedBox(ownKeyGroupId,
                                 encryptedKeys.toArray(new EncryptedBoxKey[encryptedKeys.size()]),
-                                ByteStrings.merge(ByteStrings.intToBytes(ownKeyGroupId), encData)), ignoredKeys);
+                                encData), ignoredKeys);
                     }
                 });
     }
@@ -192,16 +192,14 @@ public class EncryptedPeerActor extends ModuleActor {
             return null;
         }
 
-        final int senderKeyGroup = ByteStrings.bytesToInt(ByteStrings.substring(data.getEncryptedPackage(), 0, 4));
-        final byte[] encPackage = ByteStrings.substring(data.getEncryptedPackage(), 4, data.getEncryptedPackage().length - 4);
-
         //
         // Picking session
         //
 
-        if (ignoredKeyGroups.contains(senderKeyGroup)) {
+        if (ignoredKeyGroups.contains(data.getSenderKeyGroupId())) {
             throw new RuntimeException("This key group is ignored");
         }
+
 
         return PromisesArray.of(data.getKeys())
                 .filter(EncryptedBoxKey.FILTER(myUid(), ownKeyGroupId))
@@ -209,11 +207,14 @@ public class EncryptedPeerActor extends ModuleActor {
                 .mapPromise(new Function<EncryptedBoxKey, Promise<Tuple2<SessionActor, EncryptedBoxKey>>>() {
                     @Override
                     public Promise<Tuple2<SessionActor, EncryptedBoxKey>> apply(final EncryptedBoxKey boxKey) {
-                        final long senderPreKeyId = ByteStrings.bytesToLong(boxKey.getEncryptedKey(), 4);
-                        final long receiverPreKeyId = ByteStrings.bytesToLong(boxKey.getEncryptedKey(), 12);
 
-                        if (activeSessions.containsKey(boxKey.getKeyGroupId())) {
-                            for (SessionActor s : activeSessions.get(senderKeyGroup).getSessions()) {
+                        Log.d(TAG, "DoDecrypt: #" + boxKey.getKeyGroupId() + " from #" + data.getSenderKeyGroupId());
+
+                        final long senderPreKeyId = ByteStrings.bytesToLong(boxKey.getEncryptedKey(), 0);
+                        final long receiverPreKeyId = ByteStrings.bytesToLong(boxKey.getEncryptedKey(), 8);
+
+                        if (activeSessions.containsKey(data.getSenderKeyGroupId())) {
+                            for (SessionActor s : activeSessions.get(data.getSenderKeyGroupId()).getSessions()) {
                                 if (s.getSession().getOwnPreKeyId() == receiverPreKeyId &&
                                         s.getSession().getTheirPreKeyId() == senderPreKeyId) {
                                     return success(new Tuple2<>(s, boxKey));
@@ -221,7 +222,7 @@ public class EncryptedPeerActor extends ModuleActor {
                             }
                         }
                         return context().getEncryption().getSessionManagerInt()
-                                .pickSession(uid, senderKeyGroup, receiverPreKeyId, senderPreKeyId)
+                                .pickSession(uid, data.getSenderKeyGroupId(), receiverPreKeyId, senderPreKeyId)
                                 .map(new Function<PeerSession, Tuple2<SessionActor, EncryptedBoxKey>>() {
                                     @Override
                                     public Tuple2<SessionActor, EncryptedBoxKey> apply(PeerSession src) {
@@ -245,7 +246,7 @@ public class EncryptedPeerActor extends ModuleActor {
                             byte[] encKeyExtended = decryptedPackage.getData().length >= 128
                                     ? decryptedPackage.getData()
                                     : keyPrf.calculate(decryptedPackage.getData(), "ActorPackage", 128);
-                            encData = ActorBox.openBox(ByteStrings.intToBytes(senderKeyGroup), encPackage, new ActorBoxKey(encKeyExtended));
+                            encData = ActorBox.openBox(ByteStrings.intToBytes(data.getSenderKeyGroupId()), data.getEncryptedPackage(), new ActorBoxKey(encKeyExtended));
                             return new DecryptBoxResponse(ApiEncryptedData.fromBytes(encData));
                         } catch (IOException e) {
                             e.printStackTrace();

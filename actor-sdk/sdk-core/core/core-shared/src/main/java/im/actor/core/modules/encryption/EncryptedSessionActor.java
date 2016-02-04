@@ -84,14 +84,16 @@ public class EncryptedSessionActor extends ModuleActor {
     public void preStart() {
         super.preStart();
         keyManager = encryption().getKeyManagerInt();
-        byte[] data = encryption().getSessionStorage().loadItem(session.getUid());
+        byte[] data = encryption().getSessionStorage().loadItem(session.getSid());
         if (data != null) {
             try {
                 SessionInternalState internalState = new SessionInternalState(data);
                 latestTheirEphemeralKey = internalState.getTheirLastPublicKey();
                 isRatcheting = internalState.isRatcheting();
                 for (byte[] b : internalState.getOwnPrivateKeys()) {
-                    lastOwnKeys.add(new EphemeralKey(b));
+                    EphemeralKey e = new EphemeralKey(b);
+                    lastOwnKeys.add(e);
+                    decryptionChains.put(e, new EphemeralDecryptionChains(e));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -149,11 +151,13 @@ public class EncryptedSessionActor extends ModuleActor {
         // Stage 4: Saving their ephemeral key
         //
 
-        // final int ownKeyGroupId = ByteStrings.bytesToInt(data, 0);
-        // final long ownEphemeralKey0Id = ByteStrings.bytesToLong(data, 4);
-        // final long theirEphemeralKey0Id = ByteStrings.bytesToLong(data, 12);
-        final byte[] senderEphemeralKey = ByteStrings.substring(data, 20, 32);
-        final byte[] receiverEphemeralKey = ByteStrings.substring(data, 52, 32);
+        // final long ownEphemeralKey0Id = ByteStrings.bytesToLong(data, 0);
+        // final long theirEphemeralKey0Id = ByteStrings.bytesToLong(data, 8);
+        final byte[] senderEphemeralKey = ByteStrings.substring(data, 16, 32);
+        final byte[] receiverEphemeralKey = ByteStrings.substring(data, 48, 32);
+
+        Log.d(TAG, "onDecrypt: Sender Ephemeral: " + Crypto.keyHash(senderEphemeralKey));
+        Log.d(TAG, "onDecrypt: Receiver Ephemeral: " + Crypto.keyHash(receiverEphemeralKey));
 
         return pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
                 .map(new Function<EncryptedSessionChain, DecryptedPackage>() {
@@ -183,6 +187,12 @@ public class EncryptedSessionActor extends ModuleActor {
                     saveSessionState();
                 }
 
+                if (encryptionChain != null) {
+                    if (!ByteStrings.isEquals(encryptionChain.getTheirPublicKey(), ephemeralKey)) {
+                        encryptionChain = null;
+                    }
+                }
+
                 if (encryptionChain == null) {
                     encryptionChain = new EncryptedSessionChain(session, lastOwnKeys.get(0).getPrivateKey(), latestTheirEphemeralKey);
                 }
@@ -204,7 +214,7 @@ public class EncryptedSessionActor extends ModuleActor {
                     throw new RuntimeException(e);
                 }
 
-                Log.d(TAG, "!Sender Ephemeral " + Crypto.keyHash(Curve25519.keyGenPublic(encryptedSessionChain.getOwnPrivateKey())));
+                Log.d(TAG, "!Sender Ephemeral " + Crypto.keyHash(encryptedSessionChain.getOwnPublicKey()));
                 Log.d(TAG, "!Receiver Ephemeral " + Crypto.keyHash(encryptedSessionChain.getTheirPublicKey()));
 
                 return new EncryptedPackageRes(encrypted, session.getTheirKeyGroupId());
@@ -291,7 +301,7 @@ public class EncryptedSessionActor extends ModuleActor {
         }
         byte[] state = new SessionInternalState(isRatcheting, ownKeys, latestTheirEphemeralKey)
                 .toByteArray();
-        encryption().getSessionStorage().addOrUpdateItem(session.getUid(), state);
+        encryption().getSessionStorage().addOrUpdateItem(session.getSid(), state);
     }
 
     //
