@@ -20,7 +20,7 @@ public class CursorReceiverActor extends CursorActor {
 
     @Override
     protected void perform(final Peer peer, final long date) {
-        ApiOutPeer outPeer = buidOutPeer(peer);
+        ApiOutPeer outPeer = buildOutPeer(peer);
 
         if (outPeer == null) {
             return;

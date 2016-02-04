@@ -61,7 +61,7 @@ public class MessageDeleteActor extends ModuleActor {
     }
 
     public void performDelete(final Peer peer, final List<Long> rids) {
-        final ApiOutPeer outPeer = buidOutPeer(peer);
+        final ApiOutPeer outPeer = buildOutPeer(peer);
         final ApiPeer apiPeer = buildApiPeer(peer);
         request(new RequestDeleteMessage(outPeer, rids), new RpcCallback<ResponseSeq>() {
 

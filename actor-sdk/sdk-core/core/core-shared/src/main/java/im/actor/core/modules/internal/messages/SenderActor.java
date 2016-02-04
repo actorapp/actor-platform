@@ -16,7 +16,6 @@ import im.actor.core.api.ApiEncryptedData;
 import im.actor.core.api.ApiEncryptedDataMessage;
 import im.actor.core.api.ApiFastThumb;
 import im.actor.core.api.ApiJsonMessage;
-import im.actor.core.api.ApiKeyGroupId;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiDocumentEx;
@@ -480,7 +479,7 @@ public class SenderActor extends ModuleActor {
                 }
             }).done(self());
         } else {
-            final ApiOutPeer outPeer = buidOutPeer(peer);
+            final ApiOutPeer outPeer = buildOutPeer(peer);
             final ApiPeer apiPeer = buildApiPeer(peer);
             if (outPeer == null || apiPeer == null) {
                 return;

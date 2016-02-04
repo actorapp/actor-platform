@@ -49,7 +49,7 @@ public class OwnTypingActor extends ModuleActor {
         }
         lastTypingTime = ActorTime.currentTime();
 
-        ApiOutPeer outPeer = buidOutPeer(peer);
+        ApiOutPeer outPeer = buildOutPeer(peer);
         if (outPeer == null) {
             return;
         }
@@ -66,7 +66,7 @@ public class OwnTypingActor extends ModuleActor {
     }
 
     private void onAbortTyping(Peer peer) {
-        ApiOutPeer outPeer = buidOutPeer(peer);
+        ApiOutPeer outPeer = buildOutPeer(peer);
         if (outPeer == null) {
             return;
         }
