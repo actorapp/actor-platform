@@ -236,11 +236,6 @@ export const AsyncActionStates = {
   FAILURE: 3
 };
 
-export const Support = {
-  id: 576465533,
-  phone: '+75551234567'
-};
-
 export const Path = {
   toImages: 'assets/images',
   toEmoji: 'assets/images/emoji'
@@ -251,6 +246,11 @@ export const endpoints = [
   'wss://front2-ws-mtproto-api-rev2.actor.im'
 ];
 
+export const rootElement = 'actor-web-app';
+export const homePage = 'https://actor.im';
+export const twitter = 'actorapp';
+export const helpPhone = '75551234567';
+
 export default {
   AuthSteps,
   ActionTypes,
@@ -260,7 +260,10 @@ export default {
   MessageContentTypes,
   KeyCodes,
   AsyncActionStates,
-  Support,
   Path,
-  endpoints
+  endpoints,
+  rootElement,
+  homePage,
+  twitter,
+  helpPhone
 };

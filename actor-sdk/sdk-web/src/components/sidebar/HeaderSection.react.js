@@ -10,6 +10,9 @@ import classnames from 'classnames';
 import ActorClient from '../../utils/ActorClient';
 import { escapeWithEmoji } from '../../utils/EmojiUtils'
 import confirm from '../../utils/confirm'
+import SharedContainer from '../../utils/SharedContainer';
+import { twitter } from '../../constants/ActorAppConstants';
+
 
 import MyProfileActions from '../../actions/MyProfileActionCreators';
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
@@ -32,6 +35,9 @@ import PreferencesModal from '../modals/Preferences.react';
 class HeaderSection extends Component {
   constructor(props) {
     super(props);
+
+    const SharedActor = SharedContainer.get();
+    this.twitter = SharedActor.twitter ? SharedActor.twitter : twitter;
   }
 
   static getStores = () => [MyProfileStore, CreateGroupStore, AddContactStore, PreferencesStore];
@@ -75,7 +81,7 @@ class HeaderSection extends Component {
     if (ActorClient.isElectron()) {
       ActorClient.handleLinkClick(event);
     } else {
-      window.open('https://twitter.com/actorapp')
+      window.open(`https://twitter.com/${this.twitter}`);
     }
   };
   setLogout = () => {
