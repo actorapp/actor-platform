@@ -226,8 +226,6 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
               .map(kg ⇒ ApiKeyGroupId(userId, kg.id))
               .force
 
-            log.debug("Missing key groups: {}, ignoredKeyGroups: {}, ignored: {}", missingKgs, ignoredKeyGroups, ignored)
-
             // kgs presented in box but deleted by receiver
             val obsKgs = keys.view
               .filterNot(kg ⇒ kgs.exists(_.id == kg.keyGroupId))
