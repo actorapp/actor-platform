@@ -16,8 +16,6 @@ object UserDialogRepo {
 
   val notArchived = userDialogs.filter(_.archivedAt.isEmpty)
 
-  val notArchivedVisible = notArchived.filter(_.shownAt.isDefined)
-
   private def byPK(userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int]) =
     userDialogs.filter(u ⇒ u.userId === userId && u.peerType === peerType && u.peerId === peerId)
 
@@ -31,7 +29,7 @@ object UserDialogRepo {
 trait UserDialogOperations {
   import UserDialogRepo._
 
-  def findUsersVisible(userId: Rep[Int]) = notArchivedVisible.filter(_.userId === userId)
+  def findUsersVisible(userId: Rep[Int]) = notArchived.filter(_.userId === userId)
 
   def findGroupIds(userId: Int) =
     idByPeerTypeC((userId, PeerType.Group.value)).result
