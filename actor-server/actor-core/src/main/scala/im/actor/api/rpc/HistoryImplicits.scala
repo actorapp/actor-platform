@@ -39,7 +39,7 @@ trait HistoryImplicits {
           )
         }
       } catch {
-        case e: Exception => Xor.Left(e.getMessage)
+        case e: Exception ⇒ Xor.Left(e.getMessage)
       }
     }
   }

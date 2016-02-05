@@ -25,8 +25,14 @@ object UserContactRepo {
   def byPK(ownerUserId: Int, contactUserId: Int) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId)
 
-  def byOwnerUserIdNotDeleted(ownerUserId: Int) =
+  private def byOwnerUserIdNotDeleted(ownerUserId: Rep[Int]) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.isDeleted === false)
+
+  private val byOwnerUserIdNotDeletedC = Compiled(byOwnerUserIdNotDeleted _)
+
+  private val countC = Compiled { (userId: Rep[Int]) ⇒
+    byOwnerUserIdNotDeleted(userId).length
+  }
 
   def byPKNotDeleted(ownerUserId: Rep[Int], contactUserId: Rep[Int]) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === false)
@@ -53,8 +59,10 @@ object UserContactRepo {
   def find(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).result.headOption
 
+  def count(ownerUserId: Int) = countC(ownerUserId).result
+
   def findIds(ownerUserId: Int, contactUserIds: Set[Int]) =
-    byOwnerUserIdNotDeleted(ownerUserId).filter(_.contactUserId inSet contactUserIds).map(_.contactUserId).result
+    byOwnerUserIdNotDeletedC.applied(ownerUserId).filter(_.contactUserId inSet contactUserIds).map(_.contactUserId).result
 
   def findOwners(contactUserId: Int) = byContactUserIdC(contactUserId).result
 
