@@ -189,7 +189,7 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
 
   def fetch[A](userId: Int, dateOpt: Option[DateTime], limit: Int, sorting: ((DialogCommonTable, UserDialogTable)) ⇒ ColumnOrdered[A], fetchArchived: Boolean)(implicit ec: ExecutionContext): DBIO[Seq[Dialog]] = {
     val baseQuery: Query[(DialogCommonTable, UserDialogTable), (DialogCommon, UserDialog), Seq] = {
-      (if (fetchArchived) archived else notArchived)
+      (if (fetchArchived) dialogs else notArchived)
         .filter({ case (_, u) ⇒ u.userId === userId })
         .sortBy(sorting)
     }
