@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType }
-import im.actor.api.rpc.weak.{ UpdateTypingStop, ApiTypingType, UpdateTyping, WeakService }
+import im.actor.api.rpc.weak._
 import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
@@ -45,7 +45,13 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
     }
   }
 
-  override def jhandleSetOnline(isOnline: Boolean, timeout: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleSetOnline(
+    isOnline:       Boolean,
+    timeout:        Long,
+    deviceCategory: Option[ApiDeviceType.Value],
+    deviceType:     Option[String],
+    clientData:     ClientData
+  ): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
 
       if (isOnline) {
@@ -59,6 +65,12 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
 
     db.run(toDBIOAction(authorizedAction))
   }
+
+  override def jhandlePauseNotifications(timeout: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    Future.failed(new RuntimeException("Not implemented"))
+
+  override def jhandleRestoreNotifications(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    Future.failed(new RuntimeException("Not implemented"))
 
   // TODO: DRY
   override def jhandleStopTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {

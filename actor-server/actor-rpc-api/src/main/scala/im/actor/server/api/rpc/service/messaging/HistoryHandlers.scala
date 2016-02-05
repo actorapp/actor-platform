@@ -1,5 +1,6 @@
 package im.actor.server.api.rpc.service.messaging
 
+import com.google.protobuf.wrappers.Int32Value
 import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
@@ -9,6 +10,7 @@ import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.server.dialog.{ DialogErrors, HistoryUtils }
 import im.actor.server.group.GroupUtils
 import im.actor.server.model.{ HistoryMessage, Dialog, PeerType, Peer }
+import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.persist.{ GroupUserRepo, HistoryMessageRepo }
 import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.sequence.SeqState
@@ -66,6 +68,22 @@ trait HistoryHandlers {
     }
   }
 
+  override def jhandleLoadArchived(nextOffset: Option[Array[Byte]], limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadArchived]] =
+    authorized(clientData) { implicit client ⇒
+      val offset = nextOffset map (Int32Value.parseFrom(_).value) getOrElse 0
+
+      db.run(for {
+        models ← DialogRepo.fetchArchived(client.userId, offset, limit)
+        dialogs ← DBIO.sequence(models map getDialogStruct) map (_.flatten)
+        (users, groups) ← getDialogsUsersGroups(dialogs)
+      } yield Ok(ResponseLoadArchived(
+        groups.toVector,
+        users.toVector,
+        dialogs.toVector,
+        Some(Int32Value(offset + dialogs.length).toByteArray)
+      )))
+    }
+
   override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       DialogRepo
@@ -100,17 +118,25 @@ trait HistoryHandlers {
             }
         }
         (groups, users) ← GroupUtils.getGroupsUsers(groupIds, userIds, client.userId, client.authId)
-      } yield Ok(ResponseLoadGroupedDialogs(dialogGroups, users.toVector, groups.toVector))
+        archivedExist ← db.run(DialogRepo.archivedExist(client.userId))
+        showInvite ← db.run(UserContactRepo.count(client.userId)) map (_ < 5)
+      } yield Ok(ResponseLoadGroupedDialogs(
+        dialogGroups,
+        users.toVector,
+        groups.toVector,
+        Some(archivedExist),
+        Some(showInvite)
+      ))
     }
 
   override def jhandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { implicit client ⇒
       (for {
-        seqstate ← dialogExt.hide(client.userId, peer.asModel)
+        seqstate ← dialogExt.archive(client.userId, peer.asModel)
         groups ← dialogExt.getGroupedDialogs(client.userId)
       } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.state.toByteArray, groups = groups))) recover {
-        case DialogErrors.DialogAlreadyHidden(peer) ⇒
-          Error(RpcError(406, "DIALOG_ALREADY_HIDDEN", "Dialog is already hidden.", canTryAgain = false, None))
+        case DialogErrors.DialogAlreadyArchived(peer) ⇒
+          Error(RpcError(406, "DIALOG_ALREADY_ARCHIVED", "Dialog is already archived.", canTryAgain = false, None))
       }
     }
 
@@ -120,8 +146,19 @@ trait HistoryHandlers {
         seqstate ← dialogExt.show(client.userId, peer.asModel)
         groups ← dialogExt.getGroupedDialogs(client.userId)
       } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.toByteArray, groups = groups))) recover {
-        case DialogErrors.DialogAlreadyHidden(peer) ⇒
+        case DialogErrors.DialogAlreadyShown(peer) ⇒
           Error(RpcError(406, "DIALOG_ALREADY_SHOWN", "Dialog is already shown.", canTryAgain = false, None))
+      }
+    }
+
+  def jhandleArchiveChat(
+    peer:       im.actor.api.rpc.peers.ApiOutPeer,
+    clientData: im.actor.api.rpc.ClientData
+  ): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { implicit client ⇒
+      withOutPeerF(peer) {
+        for (seqstate ← dialogExt.archive(client.userId, peer.asModel))
+          yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
       }
     }
 
@@ -282,17 +319,18 @@ trait HistoryHandlers {
 
   private def relatedUsers(ext: ApiServiceEx): Set[Int] =
     ext match {
-      case ApiServiceExContactRegistered(userId)                  ⇒ Set(userId)
-      case ApiServiceExChangedAvatar(_)                           ⇒ Set.empty
-      case ApiServiceExChangedTitle(_)                            ⇒ Set.empty
-      case ApiServiceExChangedTopic(_)                            ⇒ Set.empty
-      case ApiServiceExChangedAbout(_)                            ⇒ Set.empty
-      case ApiServiceExGroupCreated | _: ApiServiceExGroupCreated ⇒ Set.empty
-      case ApiServiceExPhoneCall(_)                               ⇒ Set.empty
-      case ApiServiceExPhoneMissed | _: ApiServiceExPhoneMissed   ⇒ Set.empty
-      case ApiServiceExUserInvited(invitedUserId)                 ⇒ Set(invitedUserId)
-      case ApiServiceExUserJoined | _: ApiServiceExUserJoined     ⇒ Set.empty
-      case ApiServiceExUserKicked(kickedUserId)                   ⇒ Set(kickedUserId)
-      case ApiServiceExUserLeft | _: ApiServiceExUserLeft         ⇒ Set.empty
+      case ApiServiceExContactRegistered(userId)                     ⇒ Set(userId)
+      case ApiServiceExChangedAvatar(_)                              ⇒ Set.empty
+      case ApiServiceExChangedTitle(_)                               ⇒ Set.empty
+      case ApiServiceExChangedTopic(_)                               ⇒ Set.empty
+      case ApiServiceExChangedAbout(_)                               ⇒ Set.empty
+      case ApiServiceExGroupCreated | _: ApiServiceExGroupCreated    ⇒ Set.empty
+      case ApiServiceExPhoneCall(_)                                  ⇒ Set.empty
+      case ApiServiceExPhoneMissed | _: ApiServiceExPhoneMissed      ⇒ Set.empty
+      case ApiServiceExUserInvited(invitedUserId)                    ⇒ Set(invitedUserId)
+      case ApiServiceExUserJoined | _: ApiServiceExUserJoined        ⇒ Set.empty
+      case ApiServiceExUserKicked(kickedUserId)                      ⇒ Set(kickedUserId)
+      case ApiServiceExUserLeft | _: ApiServiceExUserLeft            ⇒ Set.empty
+      case _: ApiServiceExChatArchived | _: ApiServiceExChatRestored ⇒ Set.empty
     }
 }

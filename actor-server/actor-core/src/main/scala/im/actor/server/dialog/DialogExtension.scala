@@ -147,9 +147,9 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withShow(Show(peer))).mapTo[SeqState]
     }
 
-  def hide(userId: Int, peer: Peer): Future[SeqState] =
+  def archive(userId: Int, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
-      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withHide(Hide(peer))).mapTo[SeqState]
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withArchive(Archive(peer))).mapTo[SeqState]
     }
 
   def favourite(userId: Int, peer: Peer): Future[SeqState] =

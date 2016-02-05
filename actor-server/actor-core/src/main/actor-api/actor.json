@@ -3895,6 +3895,36 @@
         {
           "type": "struct",
           "content": {
+            "name": "ServiceExChatArchived",
+            "doc": [
+              "Message about chat archived"
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 20
+            },
+            "expandable": "true",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExChatRestored",
+            "doc": [
+              "Message about chat restored"
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 21
+            },
+            "expandable": "true",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "DocumentMessage",
             "doc": [
               "File message",
@@ -4730,6 +4760,36 @@
         {
           "type": "rpc",
           "content": {
+            "name": "ArchiveChat",
+            "header": 2654,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Archiving chat",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Conversation peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "MessageSetReaction",
             "header": 210,
             "response": {
@@ -5363,6 +5423,32 @@
         {
           "type": "update",
           "content": {
+            "name": "ChatArchive",
+            "header": 94,
+            "doc": [
+              "Update about chat archive",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
             "name": "ChatGroupsChanged",
             "header": 1,
             "doc": [
@@ -5872,6 +5958,117 @@
         {
           "type": "rpc",
           "content": {
+            "name": "LoadArchived",
+            "header": 2651,
+            "response": {
+              "type": "anonymous",
+              "header": 2652,
+              "doc": [
+                "Archived dialogs",
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "full",
+                  "description": "  Referenced groups"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "full",
+                  "description": "  Referenced users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "dialogs",
+                  "category": "full",
+                  "description": "  Archived dialogs"
+                },
+                {
+                  "type": "reference",
+                  "argument": "nextOffset",
+                  "category": "compact",
+                  "description": "  Offset for next bunch"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 1,
+                  "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Dialog"
+                    }
+                  },
+                  "id": 3,
+                  "name": "dialogs"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bytes"
+                  },
+                  "id": 4,
+                  "name": "nextOffset"
+                }
+              ]
+            },
+            "doc": [
+              "Loading archived messages",
+              {
+                "type": "reference",
+                "argument": "nextOffset",
+                "category": "compact",
+                "description": "Optional next offset"
+              },
+              {
+                "type": "reference",
+                "argument": "limit",
+                "category": "full",
+                "description": "Maximum number of elements"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 1,
+                "name": "nextOffset"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "limit"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "LoadGroupedDialogs",
             "header": 225,
             "response": {
@@ -5896,6 +6093,18 @@
                   "argument": "groups",
                   "category": "full",
                   "description": "  Loaded groups"
+                },
+                {
+                  "type": "reference",
+                  "argument": "showArchived",
+                  "category": "full",
+                  "description": "  Show archived section"
+                },
+                {
+                  "type": "reference",
+                  "argument": "showInvite",
+                  "category": "full",
+                  "description": "  Show invite message"
                 }
               ],
               "attributes": [
@@ -5931,6 +6140,22 @@
                   },
                   "id": 3,
                   "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bool"
+                  },
+                  "id": 4,
+                  "name": "showArchived"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bool"
+                  },
+                  "id": 5,
+                  "name": "showInvite"
                 }
               ]
             },
@@ -10141,6 +10366,46 @@
           }
         },
         {
+          "type": "enum",
+          "content": {
+            "name": "DeviceType",
+            "values": [
+              {
+                "name": "GENERIC",
+                "id": 1
+              },
+              {
+                "name": "PC",
+                "id": 2
+              },
+              {
+                "name": "MOBILE",
+                "id": 3
+              },
+              {
+                "name": "TABLET",
+                "id": 4
+              },
+              {
+                "name": "WATCH",
+                "id": 5
+              },
+              {
+                "name": "MIRROR",
+                "id": 6
+              },
+              {
+                "name": "CAR",
+                "id": 7
+              },
+              {
+                "name": "TABLE",
+                "id": 8
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SetOnline",
@@ -10162,6 +10427,18 @@
                 "argument": "timeout",
                 "category": "full",
                 "description": "timeout of online state in milliseconds"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceType",
+                "category": "full",
+                "description": "Optional device type"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceCategory",
+                "category": "full",
+                "description": "Optional device category, for example android or ios"
               }
             ],
             "attributes": [
@@ -10177,8 +10454,109 @@
                 },
                 "id": 2,
                 "name": "timeout"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "DeviceType"
+                  }
+                },
+                "id": 3,
+                "name": "deviceType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "deviceCategory"
               }
             ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "PauseNotifications",
+            "header": 166,
+            "doc": [
+              "Update about pausing notifications",
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "full",
+                "description": "  Timeout for notifications resume"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 1,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "RestoreNotifications",
+            "header": 167,
+            "doc": [
+              "Update about restoring notifications"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "PauseNotifications",
+            "header": 2641,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Pause notifications",
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "hidden",
+                "description": "Timeout of pause"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "sec"
+                },
+                "id": 1,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RestoreNotifications",
+            "header": 2642,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Restoring notifications"
+            ],
+            "attributes": []
           }
         },
         {
@@ -10314,6 +10692,25 @@
                 },
                 "id": 1,
                 "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "DeviceType"
+                  }
+                },
+                "id": 2,
+                "name": "deviceType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "deviceCategory"
               }
             ]
           }
@@ -10340,6 +10737,25 @@
                 },
                 "id": 1,
                 "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "DeviceType"
+                  }
+                },
+                "id": 2,
+                "name": "deviceType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "deviceCategory"
               }
             ]
           }
@@ -10380,6 +10796,25 @@
                 },
                 "id": 2,
                 "name": "date"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "DeviceType"
+                  }
+                },
+                "id": 3,
+                "name": "deviceType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "deviceCategory"
               }
             ]
           }
@@ -13312,12 +13747,6 @@
                 "argument": "senderKeyGroupId",
                 "category": "full",
                 "description": "  Sender key group"
-              },
-              {
-                "type": "reference",
-                "argument": "signatures",
-                "category": "full",
-                "description": "  Encrypted box signature"
               }
             ],
             "expandable": "true",
@@ -13501,7 +13930,38 @@
             "response": {
               "type": "anonymous",
               "header": 2664,
-              "doc": [],
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  seq"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "full",
+                  "description": "  state"
+                },
+                {
+                  "type": "reference",
+                  "argument": "date",
+                  "category": "full",
+                  "description": "  date"
+                },
+                {
+                  "type": "reference",
+                  "argument": "obsoleteKeyGroups",
+                  "category": "full",
+                  "description": "  obsolete key groups"
+                },
+                {
+                  "type": "reference",
+                  "argument": "missedKeyGroups",
+                  "category": "full",
+                  "description": "  missed key groups"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -13679,6 +14139,160 @@
       ]
     },
     {
+      "title": "Storage",
+      "package": "storage",
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "UploadSharedBlob",
+            "header": 2660,
+            "response": {
+              "type": "anonymous",
+              "header": 2661,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "sharedObjectId",
+                  "category": "full",
+                  "description": "  Id of shared object"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "int32",
+                  "id": 1,
+                  "name": "sharedObjectId"
+                }
+              ]
+            },
+            "doc": [
+              "Upload shared blob with user",
+              {
+                "type": "reference",
+                "argument": "destPeer",
+                "category": "full",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "bucket",
+                "category": "full",
+                "description": "Bucked name"
+              },
+              {
+                "type": "reference",
+                "argument": "blob",
+                "category": "full",
+                "description": "Blob data"
+              },
+              {
+                "type": "reference",
+                "argument": "randomId",
+                "category": "full",
+                "description": "Random id for protecting from double upload"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "destPeer"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "bucket"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "blob"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "randomId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DownloadSharedBlob",
+            "header": 2662,
+            "response": {
+              "type": "anonymous",
+              "header": 2663,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "blob",
+                  "category": "full",
+                  "description": "  Blob contents"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "bytes",
+                  "id": 1,
+                  "name": "blob"
+                }
+              ]
+            },
+            "doc": [
+              "Download shared blob",
+              {
+                "type": "reference",
+                "argument": "destPeer",
+                "category": "full",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "bucket",
+                "category": "full",
+                "description": "Bucket name"
+              },
+              {
+                "type": "reference",
+                "argument": "objectId",
+                "category": "full",
+                "description": "Object Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "destPeer"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "bucket"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "objectId"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "Peers",
       "package": "peers",
       "doc": [
@@ -13697,6 +14311,10 @@
               {
                 "name": "Group",
                 "id": 2
+              },
+              {
+                "name": "EncryptedPrivate",
+                "id": 3
               }
             ]
           }
