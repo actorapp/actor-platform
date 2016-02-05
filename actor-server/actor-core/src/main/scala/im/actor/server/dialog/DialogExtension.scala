@@ -240,7 +240,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   def getGroupedDialogs(userId: Int) = {
     db.run {
       DialogRepo
-        .findNotArchivedSortByLastMessageData(userId, None, Int.MaxValue)
+        .fetchSortByLastMessageData(userId, None, Int.MaxValue)
         .map(_ filterNot (dialogWithSelf(userId, _)))
         .flatMap { dialogs ⇒
           val (groupModels, privateModels, favouriteModels) =
