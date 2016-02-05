@@ -1,4 +1,4 @@
-package im.actor.core.modules.updates;
+package im.actor.core.modules.calls;
 
 import im.actor.core.api.updates.UpdateCallEnded;
 import im.actor.core.api.updates.UpdateCallInProgress;

@@ -24,6 +24,7 @@ import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.modules.JsIdleModule;
 import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
+import im.actor.core.js.providers.JsWebRTCProvider;
 import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.providers.electron.JsElectronListener;
 import im.actor.core.js.utils.HtmlMarkdownUtils;
@@ -99,6 +100,7 @@ public class JsFacade implements Exportable {
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
         configuration.setPhoneBookProvider(new JsPhoneBookProvider());
         configuration.setNotificationProvider(new JsNotificationsProvider());
+        configuration.setWebRTCProvider(new JsWebRTCProvider());
 
         // Setting locale
         String locale = LocaleInfo.getCurrentLocale().getLocaleName();

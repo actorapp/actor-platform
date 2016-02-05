@@ -48,6 +48,8 @@ public class ConfigurationBuilder {
 
     private boolean isPhoneBookImportEnabled = true;
 
+    private WebRTCProvider webRTCProvider;
+
     /**
      * Setting if application need to upload phone book to server
      *
@@ -58,6 +60,19 @@ public class ConfigurationBuilder {
     @ObjectiveCName("setPhoneBookImportEnabled:")
     public ConfigurationBuilder setPhoneBookImportEnabled(boolean isPhoneBookImportEnabled) {
         this.isPhoneBookImportEnabled = isPhoneBookImportEnabled;
+        return this;
+    }
+
+    /**
+     * Setting Web RTC support provider
+     *
+     * @param webRTCProvider WebRTC provider
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("setWebRTCProvider:")
+    public ConfigurationBuilder setWebRTCProvider(WebRTCProvider webRTCProvider) {
+        this.webRTCProvider = webRTCProvider;
         return this;
     }
 
@@ -356,6 +371,7 @@ public class ConfigurationBuilder {
                 timeZone, preferredLanguages.toArray(new String[preferredLanguages.size()]),
                 customAppName,
                 trustedKeys.toArray(new TrustedKey[trustedKeys.size()]),
-                isPhoneBookImportEnabled);
+                isPhoneBookImportEnabled,
+                webRTCProvider);
     }
 }

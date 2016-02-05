@@ -4,6 +4,8 @@
 
 package im.actor.core;
 
+import org.jetbrains.annotations.Nullable;
+
 import im.actor.core.network.TrustedKey;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
 
@@ -45,6 +47,8 @@ public class Configuration {
 
     private boolean enablePhoneBookImport;
 
+    private WebRTCProvider webRTCProvider;
+
     Configuration(ConnectionEndpoint[] endpoints,
                   PhoneBookProvider phoneBookProvider,
                   NotificationProvider notificationProvider,
@@ -62,7 +66,8 @@ public class Configuration {
                   String[] preferredLanguages,
                   String customAppName,
                   TrustedKey[] trustedKeys,
-                  boolean enablePhoneBookImport) {
+                  boolean enablePhoneBookImport,
+                  WebRTCProvider webRTCProvider) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
         this.enableContactsLogging = enableContactsLogging;
@@ -81,6 +86,17 @@ public class Configuration {
         this.customAppName = customAppName;
         this.trustedKeys = trustedKeys;
         this.enablePhoneBookImport = enablePhoneBookImport;
+        this.webRTCProvider = webRTCProvider;
+    }
+
+    /**
+     * Getting Web RTC provider if set
+     *
+     * @return WebRTC provider
+     */
+    @Nullable
+    public WebRTCProvider getWebRTCProvider() {
+        return webRTCProvider;
     }
 
     /**
