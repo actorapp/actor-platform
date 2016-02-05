@@ -38,6 +38,10 @@ public class CallManagerActor extends ModuleActor {
         Log.d(TAG, "onIncomingCall (" + callId + ", " + uid + ")");
     }
 
+    private void onSignaling(long callId, byte[] message) {
+        Log.d(TAG, "onSignaling (" + callId + ")");
+    }
+
     private void subscribeForCalls() {
         if (subscribeRequest != -1) {
             context().getActorApi().cancelRequest(subscribeRequest);
@@ -60,6 +64,9 @@ public class CallManagerActor extends ModuleActor {
         if (message instanceof OnIncomingCall) {
             OnIncomingCall call = (OnIncomingCall) message;
             onIncomingCall(call.getCallId(), call.getUid());
+        } else if (message instanceof OnSignaling) {
+            OnSignaling signaling = (OnSignaling) message;
+            onSignaling(signaling.getCallId(), signaling.getMessage());
         } else {
             super.onReceive(message);
         }
@@ -81,6 +88,24 @@ public class CallManagerActor extends ModuleActor {
 
         public int getUid() {
             return uid;
+        }
+    }
+
+    public static class OnSignaling {
+        private long callId;
+        private byte[] message;
+
+        public OnSignaling(long callId, byte[] message) {
+            this.callId = callId;
+            this.message = message;
+        }
+
+        public long getCallId() {
+            return callId;
+        }
+
+        public byte[] getMessage() {
+            return message;
         }
     }
 }
