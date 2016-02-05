@@ -1,30 +1,33 @@
 package im.actor.core.modules.calls;
 
-import im.actor.core.api.updates.UpdateCallEnded;
-import im.actor.core.api.updates.UpdateCallInProgress;
 import im.actor.core.api.updates.UpdateCallSignal;
 import im.actor.core.api.updates.UpdateIncomingCall;
-import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.sequence.Processor;
 
-public class CallsProcessor extends AbsModule {
+public class CallsProcessor implements Processor {
+    private ModuleContext context;
+
     public CallsProcessor(ModuleContext context) {
-        super(context);
+        this.context = context;
     }
 
-    public void onIncomingCall(UpdateIncomingCall call) {
-        context().getCallsModule().onIncomingCall(call.getCallId(), call.getUid());
-    }
-
-    public void onCallInProgress(UpdateCallInProgress inProgress) {
-        context().getCallsModule().onCallInProgress(inProgress.getCallId(), inProgress.getTimeout());
-    }
-
-    public void onCallEnd(UpdateCallEnded callEnd) {
-        context().getCallsModule().onEndCall(callEnd.getCallId());
-    }
-
-    public void onSignal(UpdateCallSignal signal) {
-        context().getCallsModule().onSignal(signal.getCallId(), signal.getContent());
+    @Override
+    public boolean process(Object update) {
+        if (update instanceof UpdateIncomingCall) {
+            UpdateIncomingCall updateIncomingCall = (UpdateIncomingCall) update;
+            context.getCallsModule().getCallManager().send(
+                    new CallManagerActor.OnIncomingCall(
+                            updateIncomingCall.getCallId(),
+                            updateIncomingCall.getUid()));
+            return true;
+        } else if (update instanceof UpdateCallSignal) {
+            UpdateCallSignal updateCallSignal = (UpdateCallSignal) update;
+            context.getCallsModule().getCallManager().send(
+                    new CallManagerActor.OnSignaling(
+                            updateCallSignal.getCallId(),
+                            updateCallSignal.getContent()));
+        }
+        return false;
     }
 }
