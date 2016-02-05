@@ -25,8 +25,9 @@ import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
 import im.actor.core.js.providers.JsWebRTCProvider;
 import im.actor.core.js.providers.electron.JsElectronApp;
-import im.actor.core.js.providers.webrtc.JsUserMediaStream;
-import im.actor.core.js.providers.webrtc.JsWebRTC;
+import im.actor.core.js.providers.webrtc.JsSessionDescription;
+import im.actor.core.js.providers.webrtc.JsPeerConnection;
+import im.actor.core.js.providers.webrtc.JsPeerConnectionListener;
 import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
 import im.actor.core.network.RpcException;
@@ -134,15 +135,22 @@ public class JsFacade implements Exportable {
 
         messenger = new JsMessenger(configuration.build());
 
-        JsWebRTC.getAudioMedia().then(new Consumer<JsUserMediaStream>() {
+        JsPeerConnection peerConnection = JsPeerConnection.create(null);
+        peerConnection.setListener(new JsPeerConnectionListener() {
             @Override
-            public void apply(JsUserMediaStream mediaStream) {
-                Log.d(TAG, "Audio received");
+            public void onIceCandidate(String candidate) {
+                Log.d(TAG, "OnCandidate: " + candidate);
+            }
+        });
+        peerConnection.createOffer().then(new Consumer<JsSessionDescription>() {
+            @Override
+            public void apply(JsSessionDescription offer) {
+                Log.d(TAG, "Offer Ok: " + offer);
             }
         }).failure(new Consumer<Exception>() {
             @Override
             public void apply(Exception e) {
-                Log.w(TAG, "Audio Error");
+                Log.d(TAG, "Offer failure");
             }
         });
 

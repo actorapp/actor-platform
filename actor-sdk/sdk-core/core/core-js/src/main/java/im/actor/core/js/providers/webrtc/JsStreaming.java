@@ -5,7 +5,7 @@ import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
 
-public class JsWebRTC {
+public class JsStreaming {
 
     public static Promise<JsUserMediaStream> getUserAudio() {
         return getUserMedia(JsUserMediaConstraint.audioOnly());
