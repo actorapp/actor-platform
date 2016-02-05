@@ -116,13 +116,7 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
 
   private val byPKC = Compiled(byPKSimple _)
 
-  private val archived = DialogRepo.dialogs joinLeft GroupRepo.groups on (_._2.peerId === _.id) filter {
-    case ((_, users), groupOpt) ⇒ users.archivedAt.isDefined && groupOpt.map(!_.isHidden).getOrElse(true)
-  } map (_._1)
-
-  private val notArchived = DialogRepo.dialogs joinLeft GroupRepo.groups on (_._2.peerId === _.id) filter {
-    case ((_, users), groupOpt) ⇒ users.archivedAt.isEmpty && groupOpt.map(!_.isHidden).getOrElse(true)
-  } map (_._1)
+  private val archived = DialogRepo.dialogs.filter(_._2.archivedAt.isDefined)
 
   private def archivedByUserId(
     userId: Rep[Int],
@@ -135,8 +129,6 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
   private val archivedExistC = Compiled { (userId: Rep[Int]) ⇒
     archivedByUserId(userId, 0L, 1L).take(1).exists
   }
-
-  private val notHiddenNotArchived = notArchived filter { case (_, users) ⇒ users.shownAt.isDefined }
 
   private def byPKSimple(userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int]) =
     dialogs.filter({ case (_, u) ⇒ u.userId === userId && u.peerType === peerType && u.peerId === peerId })
@@ -187,16 +179,17 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
   def findDialog(userId: Int, peer: Peer)(implicit ec: ExecutionContext): DBIO[Option[Dialog]] =
     byPKC((userId, peer.typ.value, peer.id)).result.headOption map (_.map { case (c, u) ⇒ Dialog.fromCommonAndUser(c, u) })
 
-  def findNotArchivedSortByLastMessageData(userId: Int, dateOpt: Option[DateTime], limit: Int, fetchHidden: Boolean = false)(implicit ec: ExecutionContext): DBIO[Seq[Dialog]] =
-    findNotArchived(userId, dateOpt: Option[DateTime], limit, { case (_, u) ⇒ u.shownAt.asc }, fetchHidden)
+  def fetchSortByLastMessageData(userId: Int, dateOpt: Option[DateTime], limit: Int, fetchArchived: Boolean = false)(implicit ec: ExecutionContext): DBIO[Seq[Dialog]] =
+    fetch(userId, dateOpt: Option[DateTime], limit, { case (_, u) ⇒ u.shownAt.asc }, fetchArchived)
 
-  def findNotArchived(userId: Int, dateOpt: Option[DateTime], limit: Int, fetchHidden: Boolean = false)(implicit ec: ExecutionContext): DBIO[Seq[Dialog]] =
-    findNotArchived(userId, dateOpt: Option[DateTime], limit, { case (c, _) ⇒ c.lastMessageDate.desc }, fetchHidden)
+  def fetch(userId: Int, dateOpt: Option[DateTime], limit: Int, fetchArchived: Boolean = false)(implicit ec: ExecutionContext): DBIO[Seq[Dialog]] =
+    fetch(userId, dateOpt: Option[DateTime], limit, { case (c, _) ⇒ c.lastMessageDate.desc }, fetchArchived)
 
-  def findNotArchived[A](userId: Int, dateOpt: Option[DateTime], limit: Int, sorting: ((DialogCommonTable, UserDialogTable)) ⇒ ColumnOrdered[A], fetchHidden: Boolean)(implicit ec: ExecutionContext): DBIO[Seq[Dialog]] = {
-    val baseQuery: Query[(DialogCommonTable, UserDialogTable), (DialogCommon, UserDialog), Seq] = (if (fetchHidden) notArchived else notHiddenNotArchived)
-      .filter({ case (_, u) ⇒ u.userId === userId })
-      .sortBy(sorting)
+  def fetch[A](userId: Int, dateOpt: Option[DateTime], limit: Int, sorting: ((DialogCommonTable, UserDialogTable)) ⇒ ColumnOrdered[A], fetchArchived: Boolean)(implicit ec: ExecutionContext): DBIO[Seq[Dialog]] = {
+    val baseQuery: Query[(DialogCommonTable, UserDialogTable), (DialogCommon, UserDialog), Seq] =
+      (if (fetchArchived) archived else dialogs)
+        .filter({ case (_, u) ⇒ u.userId === userId })
+        .sortBy(sorting)
 
     val limitedQuery = dateOpt match {
       case Some(date) ⇒ baseQuery.filter({ case (c, _) ⇒ c.lastMessageDate <= date })

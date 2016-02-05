@@ -87,7 +87,7 @@ trait HistoryHandlers {
   override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       DialogRepo
-        .findNotArchived(client.userId, endDateTimeFrom(endDate), limit, fetchHidden = true)
+        .fetch(client.userId, endDateTimeFrom(endDate), limit, fetchArchived = true)
         .map(_ filterNot (dialogExt.dialogWithSelf(client.userId, _)))
         .flatMap { dialogModels ⇒
           for {
@@ -151,7 +151,7 @@ trait HistoryHandlers {
       }
     }
 
-  def jhandleArchiveChat(
+  override def jhandleArchiveChat(
     peer:       im.actor.api.rpc.peers.ApiOutPeer,
     clientData: im.actor.api.rpc.ClientData
   ): Future[HandlerResult[ResponseSeq]] =

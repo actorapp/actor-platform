@@ -173,7 +173,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     }
 
   protected def archive(state: DialogState): Unit = {
-    if (!state.isArchived)
+    if (state.isArchived)
       sender ! Status.Failure(DialogErrors.DialogAlreadyArchived(peer))
     else {
       val future =
