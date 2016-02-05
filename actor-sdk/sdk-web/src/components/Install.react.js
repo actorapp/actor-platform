@@ -25,7 +25,7 @@ class Install extends Component {
                src="assets/images/logo.png"
                srcSet="assets/images/logo@2x.png 2x"/>
 
-          <FormattedHTMLMessage message={this.getIntlMessage('main.install')}/>
+          <FormattedHTMLMessage message={this.getIntlMessage('main.install')} appName={this.appName}/>
 
           <p>
             <a href="//actor.im/ios">iPhone</a> | <a href="//actor.im/android">Android</a>
