@@ -1,4 +1,4 @@
-package im.actor.core.modules.internal;
+package im.actor.core.modules.calls;
 
 import java.util.HashMap;
 
@@ -16,7 +16,7 @@ import im.actor.core.events.IncomingCall;
 import im.actor.core.events.NewSessionCreated;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.internal.calls.CallActor;
+import im.actor.core.modules.calls.CallActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.Command;
@@ -43,7 +43,7 @@ public class CallsModule extends AbsModule {
     public static final int CALL_TIMEOUT = 10;
     public static boolean CALLS_ENABLED = false;
     public static boolean MULTIPLE_CALLS_ENABLED = false;
-    HashMap<Long, ActorRef> calls = new HashMap<Long, ActorRef>();
+    HashMap<Long, ActorRef> calls = new HashMap<>();
 
     public void run() {
         if (CALLS_ENABLED) {

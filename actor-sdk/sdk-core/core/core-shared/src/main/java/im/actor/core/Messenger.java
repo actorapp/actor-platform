@@ -43,7 +43,7 @@ import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerInfoClosed;
 import im.actor.core.events.PeerInfoOpened;
 import im.actor.core.events.UserVisible;
-import im.actor.core.modules.internal.CallsModule;
+import im.actor.core.modules.calls.CallsModule;
 import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
