@@ -96,8 +96,8 @@ class MessagesSection extends Component {
     const isMember = DialogStore.isMember();
 
     let MessageItem;
-    if (delegate.components.dialog && delegate.components.dialog.messages !== null && typeof delegate.components.messages !== 'function') {
-      MessageItem = (typeof delegate.components.dialog.messages.message == 'function') ? delegate.components.dialog.messages.message : DefaultMessageItem;
+    if (delegate.components.dialog.messages && delegate.components.dialog.messages !== null && typeof delegate.components.messages !== 'function') {
+      MessageItem = (typeof delegate.components.dialog.messages.message === 'function') ? delegate.components.dialog.messages.message : DefaultMessageItem;
     } else {
       MessageItem = DefaultMessageItem;
     }

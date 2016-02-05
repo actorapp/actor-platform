@@ -246,6 +246,7 @@ export const endpoints = [
   'wss://front2-ws-mtproto-api-rev2.actor.im'
 ];
 
+export const appName = 'Actor';
 export const rootElement = 'actor-web-app';
 export const homePage = 'https://actor.im';
 export const twitter = 'actorapp';
@@ -262,6 +263,7 @@ export default {
   AsyncActionStates,
   Path,
   endpoints,
+  appName,
   rootElement,
   homePage,
   twitter,
