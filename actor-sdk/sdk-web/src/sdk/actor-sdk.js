@@ -10,7 +10,7 @@ import RouterContainer from '../utils/RouterContainer';
 import DelegateContainer from '../utils/DelegateContainer';
 import SharedContainer from '../utils/SharedContainer';
 import SDKDelegate from './actor-sdk-delegate';
-import { endpoints, rootElement, homePage, twitter, helpPhone } from '../constants/ActorAppConstants'
+import { endpoints, rootElement, homePage, twitter, helpPhone, appName } from '../constants/ActorAppConstants'
 import Pace from 'pace';
 
 import React, { Component, PropTypes } from 'react';
@@ -95,6 +95,7 @@ class ActorSDK {
     this.homePage = options.homePage ? options.homePage : homePage;
     this.twitter = options.twitter ? options.twitter : twitter;
     this.helpPhone = options.helpPhone ? options.helpPhone : helpPhone;
+    this.appName = options.appName ? options.appName : appName;
     this.delegate = options.delegate ? options.delegate : new SDKDelegate();
 
     DelegateContainer.set(this.delegate);

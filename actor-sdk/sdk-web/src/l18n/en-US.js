@@ -15,6 +15,11 @@ export default {
         'codeInvalid': 'Invalid code',
         'codeExpired': 'Phone code is expired',
         'codeWait': 'Try to request code later'
+      },
+      'welcome': {
+        'header': 'Welcome to <strong>{appName}</strong>',
+        'text': '<p>{appName} Messenger brings all your business network connections into one place, makes it easily accessible wherever you go.</p>' +
+                '<p>Our aim is to make your work easier, reduce your email amount, make the business world closer by reducing time to find right contacts.</p>'
       }
     },
 
@@ -24,7 +29,6 @@ export default {
       'editProfile': 'Edit Profile',
       'addToContacts': 'Add contact',
       'createGroup': 'Create group',
-      'configureIntegrations': 'Configure Integrations',
       'helpAndFeedback': 'Help & Feedback',
       'twitter': 'Our twitter',
       'preferences': 'Preferences',
@@ -76,7 +80,7 @@ export default {
 
     // Connection state
     'connectionState': {
-      'connecting': 'Houston, we have a problem! Connection to Actor server is lost. Trying to reconnect now...',
+      'connecting': 'Houston, we have a problem! Connection to {appName} server is lost. Trying to reconnect now...',
       'online': 'You\'re back online!',
       'updating': ''
     },
@@ -252,6 +256,15 @@ export default {
         },
         'newDialog': 'create new dialog',
         'addPeople': 'add people'
+      }
+    },
+    'main': {
+      'empty': 'Try to be better than yesterday!',
+      'install': '<h1>Web version of <b>{appName}</b> works only on desktop browsers at this time</h1>' +
+                 '<h3>Please install our apps for using <b>{appName}</b> on your phone.</h3>',
+      'deactivated': {
+        'header': 'Tab deactivated',
+        'text': 'Oops, you have opened another tab with {appName}, so we had to deactivate this one to prevent some dangerous things happening.'
       }
     }
   }
