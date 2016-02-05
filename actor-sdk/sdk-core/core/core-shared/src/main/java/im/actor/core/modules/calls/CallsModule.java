@@ -70,6 +70,10 @@ public class CallsModule extends AbsModule {
 //        }
     }
 
+    public ActorRef getCallManager() {
+        return callManager;
+    }
+
     public Command<ResponseDoCall> makeCall(final int uid, final CallCallback callCallback) {
 //        return new Command<ResponseDoCall>() {
 //            @Override
@@ -140,18 +144,6 @@ public class CallsModule extends AbsModule {
         callManager.send(new CallManagerActor.OnIncomingCall(callId, uid));
     }
 
-    //on end call update
-    public void onEndCall(long callId) {
-//        Log.d(TAG, "end call update: " + callId);
-//        ActorRef call = calls.get(callId);
-//        if (call != null) {
-//            Log.d(TAG, "call exist - end it");
-//            call.send(new CallActor.EndCall());
-//        } else {
-//            Log.d(TAG, "call not exist - remove it");
-//            calls.remove(callId);
-//        }
-    }
 
     //after end call update processed by CallActor
     public void onCallEnded(long callId) {
@@ -159,22 +151,9 @@ public class CallsModule extends AbsModule {
 //        calls.remove(callId);
     }
 
-    public void onCallInProgress(long callId, int timeout) {
-//        ActorRef call = calls.get(callId);
-//        if (call != null) {
-//            call.send(new CallActor.CallInProgress(timeout));
-//        }
-    }
 
     public void sendSignal(long callId, AbsSignal signal) {
         // request(new RequestSendCallSignal(callId, signal.toByteArray()));
-    }
-
-    public void onSignal(long callId, byte[] data) {
-//        ActorRef call = calls.get(callId);
-//        if (call != null) {
-//            call.send(new CallActor.Signal(data));
-//        }
     }
 
     public interface CallCallback {
