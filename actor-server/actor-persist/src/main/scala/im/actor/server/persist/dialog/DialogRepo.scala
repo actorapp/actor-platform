@@ -118,6 +118,8 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
 
   private val archived = DialogRepo.dialogs.filter(_._2.archivedAt.isDefined)
 
+  private val notArchived = DialogRepo.dialogs.filter(_._2.archivedAt.isEmpty)
+
   private def archivedByUserId(
     userId: Rep[Int],
     offset: ConstColumn[Long],
@@ -186,10 +188,11 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
     fetch(userId, dateOpt: Option[DateTime], limit, { case (c, _) ⇒ c.lastMessageDate.desc }, fetchArchived)
 
   def fetch[A](userId: Int, dateOpt: Option[DateTime], limit: Int, sorting: ((DialogCommonTable, UserDialogTable)) ⇒ ColumnOrdered[A], fetchArchived: Boolean)(implicit ec: ExecutionContext): DBIO[Seq[Dialog]] = {
-    val baseQuery: Query[(DialogCommonTable, UserDialogTable), (DialogCommon, UserDialog), Seq] =
-      (if (fetchArchived) archived else dialogs)
+    val baseQuery: Query[(DialogCommonTable, UserDialogTable), (DialogCommon, UserDialog), Seq] = {
+      (if (fetchArchived) archived else notArchived)
         .filter({ case (_, u) ⇒ u.userId === userId })
         .sortBy(sorting)
+    }
 
     val limitedQuery = dateOpt match {
       case Some(date) ⇒ baseQuery.filter({ case (c, _) ⇒ c.lastMessageDate <= date })
