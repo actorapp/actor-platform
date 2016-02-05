@@ -21,12 +21,12 @@ import im.actor.core.entity.PeerSearchType;
 import im.actor.core.entity.PeerType;
 import im.actor.core.js.entity.*;
 import im.actor.core.js.modules.JsBindedValueCallback;
-import im.actor.core.js.modules.JsIdleModule;
 import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
 import im.actor.core.js.providers.JsWebRTCProvider;
 import im.actor.core.js.providers.electron.JsElectronApp;
-import im.actor.core.js.providers.electron.JsElectronListener;
+import im.actor.core.js.providers.webrtc.JsUserMediaStream;
+import im.actor.core.js.providers.webrtc.JsWebRTC;
 import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
 import im.actor.core.network.RpcException;
@@ -34,11 +34,11 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
+import im.actor.runtime.function.Consumer;
 import im.actor.runtime.js.JsFileSystemProvider;
 import im.actor.runtime.js.fs.JsBlob;
 import im.actor.runtime.js.fs.JsFile;
 import im.actor.runtime.js.mvvm.JsDisplayListCallback;
-import im.actor.runtime.js.threading.JsSecureInterval;
 import im.actor.runtime.js.utils.JsPromise;
 import im.actor.runtime.js.utils.JsPromiseExecutor;
 import im.actor.runtime.markdown.MarkdownParser;
@@ -133,6 +133,18 @@ public class JsFacade implements Exportable {
         }
 
         messenger = new JsMessenger(configuration.build());
+
+        JsWebRTC.getAudioMedia().then(new Consumer<JsUserMediaStream>() {
+            @Override
+            public void apply(JsUserMediaStream mediaStream) {
+                Log.d(TAG, "Audio received");
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                Log.w(TAG, "Audio Error");
+            }
+        });
 
         Log.d(TAG, "JsMessenger created");
     }
