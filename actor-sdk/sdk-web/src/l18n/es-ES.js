@@ -15,6 +15,11 @@ export default {
         'codeInvalid': 'Código no válido',
         'codeExpired': 'Phone code is expired',
         'codeWait': 'Try to request code later'
+      },
+      'welcome': {
+        'header': '<strong>{appName}</strong> Mensajería, gratis, y veloz.',
+        'text': '<p>Siente la libertad de comunicar desde cualquier dispositivo, móvil, pc, mac o tablets desde cualquier lugar del mundo solo con conexión wifi, 3G o 4G.</p>' +
+                '<p>Olvida para siempre el viejo correo electrónico y mensajes para tu negocio. {appName} plataforma centra todo en una sola aplicación.</p>'
       }
     },
 
@@ -222,6 +227,12 @@ export default {
     'preferencesSessionsCurrentSession': 'Current session',
     'preferencesSessionsAuthTime': 'Fecha de acceso',
     'preferencesSessionsTerminate': 'Eliminar',
-    'preferencesSessionsTerminateAll': 'Terminar todas las sesiones'
+    'preferencesSessionsTerminateAll': 'Terminar todas las sesiones',
+
+    'main': {
+      'empty': 'Seleccione diálogo o iniciar uno nuevo.',
+      'install': '<h1>Versión Web de <b>{appName}</b> Versión solo para navegadores</h1>' +
+                 '<h3>Link de aplicaciones móviles <b>{appName}</b>.</h3>'
+    }
   }
 };

@@ -5,7 +5,9 @@
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
+import { IntlMixin, FormattedMessage } from 'react-intl';
+import SharedContainer from '../../utils/SharedContainer';
+import { appName } from '../../constants/ActorAppConstants';
 
 import classnames from 'classnames';
 
@@ -14,6 +16,9 @@ import ConnectionStateStore from '../../stores/ConnectionStateStore';
 class ConnectionState extends Component {
   constructor(props) {
     super(props);
+
+    const SharedActor = SharedContainer.get();
+    this.appName = SharedActor.appName ? SharedActor.appName : appName;
   }
 
   static getStores = () => [ConnectionStateStore];
@@ -33,7 +38,9 @@ class ConnectionState extends Component {
     });
 
     return (
-      <div className={className}>{this.getIntlMessage(`connectionState.${connectionState}`)}</div>
+      <div className={className}>
+        <FormattedMessage message={this.getIntlMessage(`connectionState.${connectionState}`)} appName={this.appName}/>
+      </div>
     )
   }
 }

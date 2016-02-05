@@ -1,17 +1,15 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
-
-import _ from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
+import { IntlMixin, FormattedHTMLMessage } from 'react-intl';
 import { Styles, TextField } from 'material-ui';
-
-import { AuthSteps } from '../constants/ActorAppConstants';
+import SharedContainer from '../utils/SharedContainer';
+import { appName, AuthSteps } from '../constants/ActorAppConstants';
 
 import LoginActionCreators from '../actions/LoginActionCreators';
 
@@ -24,6 +22,9 @@ const ThemeManager = new Styles.ThemeManager();
 class Login extends Component {
   constructor(props){
     super(props);
+
+    const SharedActor = SharedContainer.get();
+    this.appName = SharedActor.appName ? SharedActor.appName : appName;
   }
 
   static contextTypes = {
@@ -150,25 +151,20 @@ class Login extends Component {
     return (
       <section className="login-new row center-xs middle-xs">
         <div className="login-new__welcome col-xs row center-xs middle-xs">
-          <img alt="Actor messenger"
+          <img alt={`${this.appName} messenger`}
                className="logo"
                src="assets/images/logo.png"
                srcSet="assets/images/logo@2x.png 2x"/>
 
           <article>
-            <h1 className="login-new__heading">Welcome to <strong>Actor</strong></h1>
-            <p>
-              Actor Messenger brings all your business network connections into one place,
-              makes it easily accessible wherever you go.
-            </p>
-            <p>
-              Our aim is to make your work easier, reduce your email amount,
-              make the business world closer by reducing time to find right contacts.
-            </p>
+            <h1 className="login-new__heading">
+              <FormattedHTMLMessage message={this.getIntlMessage('login.welcome.header')} appName={this.appName}/>
+            </h1>
+            <FormattedHTMLMessage message={this.getIntlMessage('login.welcome.text')} appName={this.appName}/>
           </article>
 
           <footer>
-            <div className="pull-left">Actor Messenger © 2015</div>
+            <div className="pull-left">{this.appName} Messenger © 2015</div>
             <div className="pull-right">
               <a href="//actorapp.ghost.io/desktop-apps">Desktop</a>&nbsp;&nbsp;•&nbsp;&nbsp;
               <a href="//actor.im/ios">iPhone</a>&nbsp;&nbsp;•&nbsp;&nbsp;
