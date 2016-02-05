@@ -14,7 +14,7 @@ object UserDialogRepo {
   val byPKC = Compiled(byPK _)
   val idByPeerTypeC = Compiled(idByPeerType _)
 
-  val notArchived = userDialogs.filter(_.isArchived === false)
+  val notArchived = userDialogs.filter(_.archivedAt.isEmpty)
 
   val notArchivedVisible = notArchived.filter(_.shownAt.isDefined)
 
@@ -42,11 +42,8 @@ trait UserDialogOperations {
   def usersExists(userId: Int, peer: Peer) =
     byPKC.applied((userId, peer.typ.value, peer.id)).exists.result
 
-  def hide(userId: Int, peer: Peer) =
-    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.shownAt).update(None)
-
   def show(userId: Int, peer: Peer) =
-    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.shownAt).update(Some(new DateTime))
+    byPKC.applied((userId, peer.typ.value, peer.id)).map(d ⇒ (d.shownAt, d.archivedAt)).update((Some(new DateTime), None))
 
   def favourite(userId: Int, peer: Peer) =
     byPKC.applied((userId, peer.typ.value, peer.id)).map(_.isFavourite).update(true)
@@ -60,8 +57,8 @@ trait UserDialogOperations {
   def updateOwnerLastReadAt(userId: Int, peer: Peer, ownerLastReadAt: DateTime)(implicit ec: ExecutionContext) =
     byPKC.applied((userId, peer.typ.value, peer.id)).map(_.ownerLastReadAt).update(ownerLastReadAt)
 
-  def makeArchived(userId: Int, peer: Peer) =
-    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.isArchived).update(true)
+  def archive(userId: Int, peer: Peer) =
+    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.archivedAt).update(Some(new DateTime))
 
   def delete(userId: Int, peer: Peer) =
     byPKC.applied((userId, peer.typ.value, peer.id)).delete

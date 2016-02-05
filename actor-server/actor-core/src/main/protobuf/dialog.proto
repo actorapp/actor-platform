@@ -21,7 +21,7 @@ message DialogCommands {
             MessageReceived message_received = 4;
             MessageRead message_read = 5;
             Show show = 6;
-            Hide hide = 7;
+        Archive archive = 15;
             Delete delete = 8;
             SetReaction set_reaction = 9;
             RemoveReaction remove_reaction = 10;
@@ -99,7 +99,7 @@ message DialogCommands {
         required Peer dest = 1;
     }
 
-    message Hide {
+    message Archive {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
 
         required Peer dest = 1;
