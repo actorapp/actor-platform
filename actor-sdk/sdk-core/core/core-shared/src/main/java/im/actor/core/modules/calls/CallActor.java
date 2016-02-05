@@ -1,9 +1,8 @@
-package im.actor.core.modules.internal.calls;
+package im.actor.core.modules.calls;
 
 import java.util.ArrayList;
 
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.internal.CallsModule;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.PoisonPill;
