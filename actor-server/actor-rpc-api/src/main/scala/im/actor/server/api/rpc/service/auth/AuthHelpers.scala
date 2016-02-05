@@ -4,13 +4,14 @@ import java.time.{ LocalDateTime, ZoneOffset }
 
 import akka.actor.ActorSystem
 import akka.pattern.ask
+import cats.data.Xor
 import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
 import im.actor.api.rpc.users.ApiSex._
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.acl.ACLUtils
-import im.actor.server.activation.Activation.{ CallCode, EmailCode, SmsCode }
 import im.actor.server.activation._
+import im.actor.server.activation.common._
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.model._
 import im.actor.server.persist._
@@ -85,12 +86,12 @@ trait AuthHelpers extends Helpers {
         case p: AuthPhoneTransaction ⇒
           val phone = p.phoneNumber
           for {
-            _ ← fromDBIO(activationContext.finish(p.transactionHash))
+            _ ← fromFuture(activationContext.cleanup(p.transactionHash))
             _ ← fromFuture(userExt.addPhone(user.id, phone))
           } yield ()
         case e: AuthEmailTransaction ⇒
           for {
-            _ ← fromDBIO(activationContext.finish(e.transactionHash))
+            _ ← fromFuture(activationContext.cleanup(e.transactionHash))
             _ ← fromFuture(userExt.addEmail(user.id, e.email))
           } yield ()
         case u: AuthUsernameTransaction ⇒
@@ -124,7 +125,7 @@ trait AuthHelpers extends Helpers {
         case tx: AuthTransactionBase with ExpirableCode ⇒
           val (codeExpired, codeInvalid) = expirationErrors(tx)
           for {
-            validationResponse ← fromDBIO(activationContext.validate(transactionHash, code))
+            validationResponse ← fromFuture(activationContext.validate(transactionHash, code))
             _ ← validationResponse match {
               case ExpiredCode                     ⇒ cleanupAndError(transactionHash, codeExpired)
               case InvalidHash                     ⇒ cleanupAndError(transactionHash, AuthErrors.InvalidAuthCodeHash)
@@ -160,13 +161,13 @@ trait AuthHelpers extends Helpers {
             //if user is not registered - return error
             phoneModel ← fromDBIOOption(AuthErrors.PhoneNumberUnoccupied)(UserPhoneRepo.findByPhoneNumber(phone).headOption)
             phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone).headOption)
-            _ ← fromDBIO(activationContext.finish(transactionHash))
+            _ ← fromFuture(activationContext.cleanup(transactionHash))
           } yield (phoneModel.userId, phoneAndCode._2)
         case e: AuthEmailTransaction ⇒
           for {
             //if user is not registered - return error
             emailModel ← fromDBIOOption(AuthErrors.EmailUnoccupied)(UserEmailRepo.find(e.email))
-            _ ← fromDBIO(activationContext.finish(transactionHash))
+            _ ← fromFuture(activationContext.cleanup(transactionHash))
           } yield (emailModel.userId, "")
         case u: AuthUsernameTransaction ⇒
           for {
@@ -230,19 +231,19 @@ trait AuthHelpers extends Helpers {
     } yield userStruct
   }
 
-  protected def sendSmsCode(phoneNumber: Long, code: String, transactionHash: Option[String])(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
+  protected def sendSmsCode(phoneNumber: Long, code: String, txHash: String)(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
     log.info("Sending sms code {} to {}", code, phoneNumber)
-    activationContext.send(transactionHash, SmsCode(phoneNumber, code))
+    DBIO.from(activationContext.send(txHash, SmsCode(phoneNumber, code)) map toScalaz)
   }
 
-  protected def sendCallCode(phoneNumber: Long, code: String, transactionHash: Option[String], language: String)(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
+  protected def sendCallCode(phoneNumber: Long, code: String, txHash: String, language: String)(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
     log.info("Sending call code {} to {}", code, phoneNumber)
-    activationContext.send(transactionHash, CallCode(phoneNumber, code, language))
+    DBIO.from(activationContext.send(txHash, CallCode(phoneNumber, code, language)) map toScalaz)
   }
 
-  protected def sendEmailCode(email: String, code: String, transactionHash: String)(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
+  protected def sendEmailCode(email: String, code: String, txHash: String)(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
     log.info("Sending email code {} to {}", code, email)
-    emailSender.send(Some(transactionHash), EmailCode(email, code))
+    DBIO.from(activationContext.send(txHash, EmailCode(email, code)) map toScalaz)
   }
 
   protected def genSmsHash() = ThreadLocalSecureRandom.current.nextLong().toString
@@ -304,5 +305,7 @@ trait AuthHelpers extends Helpers {
     (email replaceAll (""".*acme""", "")) replaceAll (".com", "")
 
   private def genCode() = ThreadLocalSecureRandom.current.nextLong().toString.dropWhile(c ⇒ c == '0' || c == '-').take(5)
+
+  private def toScalaz[A, B](xor: A Xor B) = xor.fold(f ⇒ -\/(f), s ⇒ \/-(s))
 
 }

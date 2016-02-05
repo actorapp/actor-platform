@@ -14,8 +14,8 @@ import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.ApiSex.ApiSex
 import im.actor.config.ActorConfig
 import im.actor.server.acl.ACLUtils
-import im.actor.server.activation.internal.{ DummyCallEngine, DummySmsEngine, ActivationConfig, InternalCodeActivation }
-import im.actor.server.activation.{ CodeFailure, CodeActivation }
+import im.actor.server.activation.common.CodeFailure
+import im.actor.server.activation.ActivationContext
 import im.actor.server.api.rpc.service.profile.ProfileErrors
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.db.DbExtension
@@ -41,7 +41,7 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scalaz._
 
-final class AuthServiceImpl(val activationContext: CodeActivation)(
+final class AuthServiceImpl(
   implicit
   val sessionRegion: SessionRegion,
   val actorSystem:   ActorSystem,
@@ -60,19 +60,9 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
   protected implicit val db: Database = DbExtension(actorSystem).db
   protected val userExt = UserExtension(actorSystem)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
-  private implicit val mat = ActorMaterializer()
+  protected val activationContext = new ActivationContext
 
-  // this is workaround to use internal mail sender, when using actor-activation option
-  protected val emailSender = ActorConfig.load().getString("services.activation.default-service") match {
-    case "internal" | "telesign" ⇒ activationContext
-    case "actor-activation" ⇒
-      InternalCodeActivation.newContext(
-        ActivationConfig.load.get,
-        new DummySmsEngine(),
-        new DummyCallEngine(),
-        new SmtpEmailSender(EmailConfig.load.get)
-      )
-  }
+  private implicit val mat = ActorMaterializer()
 
   protected val log = Logging(actorSystem, this)
 
@@ -195,7 +185,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
             _ ← fromDBIO(AuthPhoneTransactionRepo.create(phoneAuthTransaction))
           } yield transactionHash
       }
-      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), Some(transactionHash)))
+      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), transactionHash))
       isRegistered = optPhone.isDefined
     } yield ResponseStartPhoneAuth(transactionHash, isRegistered, Some(ApiPhoneActivationType.CODE))
     db.run(action.run)
@@ -284,7 +274,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
       tx ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(AuthPhoneTransactionRepo.find(transactionHash))
       code ← fromDBIO(AuthCodeRepo.findByTransactionHash(tx.transactionHash) map (_ map (_.code) getOrElse (genSmsCode(tx.phoneNumber))))
       lang = PhoneNumberUtils.normalizeWithCountry(tx.phoneNumber).headOption.map(_._2).getOrElse("en")
-      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendCallCode(tx.phoneNumber, genSmsCode(tx.phoneNumber), Some(transactionHash), lang))
+      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendCallCode(tx.phoneNumber, genSmsCode(tx.phoneNumber), transactionHash, lang))
     } yield ResponseVoid
 
     db.run(action.run)
@@ -383,7 +373,6 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
     db.run(action.run)
   }
 
-  //TODO: add email code validation
   def jhandleValidateCode(transactionHash: String, code: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
     val action: Result[ResponseAuth] =
       for {
@@ -510,7 +499,7 @@ final class AuthServiceImpl(val activationContext: CodeActivation)(
           UserPhoneRepo.exists(normPhoneNumber) map (res :+ _)
         }.map {
           case number :: smsHash :: smsCode :: isRegistered :: HNil ⇒
-            sendSmsCode(number, smsCode, None)
+            sendSmsCode(number, smsCode, "")
             Ok(ResponseSendAuthCodeObsolete(smsHash, isRegistered))
         }
         db.run(for {

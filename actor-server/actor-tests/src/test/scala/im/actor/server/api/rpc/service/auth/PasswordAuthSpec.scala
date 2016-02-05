@@ -3,7 +3,7 @@ package im.actor.server.api.rpc.service.auth
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ ResponseAuth, ResponseStartUsernameAuth }
 import im.actor.server.acl.ACLUtils
-import im.actor.server.activation.internal.{ ActivationConfig, DummyCallEngine, DummySmsEngine, InternalCodeActivation }
+import im.actor.server.activation.common.ActivationConfig
 import im.actor.server.email.DummyEmailSender
 import im.actor.server.oauth.GoogleProvider
 import im.actor.server.persist.UserPasswordRepo
@@ -17,8 +17,7 @@ final class PasswordAuthSpec extends BaseAppSuite with ImplicitSessionRegion {
   val oauthGoogleConfig = DummyOAuth2Server.config
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
   val activationConfig = ActivationConfig.load.get
-  val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, new DummyCallEngine, new DummyEmailSender)
-  implicit val service = new AuthServiceImpl(activationContext)
+  implicit val service = new AuthServiceImpl
   val userExt = UserExtension(system)
 
   def authByPassword() = {

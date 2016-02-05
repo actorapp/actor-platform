@@ -72,7 +72,7 @@ final class SimpleServerE2eSpec extends ActorSuite(
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
 
     val services = Seq(
-      new AuthServiceImpl(new DummyCodeActivation),
+      new AuthServiceImpl,
       new ContactsServiceImpl,
       MessagingServiceImpl(),
       new SequenceServiceImpl(sequenceConfig),

@@ -165,7 +165,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
     sessionRegion: SessionRegion,
     oauth2Service: GoogleProvider,
     system:        ActorSystem
-  ) = new AuthServiceImpl(new DummyCodeActivation)
+  ) = new AuthServiceImpl
 
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]
