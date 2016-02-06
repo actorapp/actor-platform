@@ -1,5 +1,6 @@
 package im.actor.core.modules.calls;
 
+import im.actor.core.api.updates.UpdateCallEnded;
 import im.actor.core.api.updates.UpdateCallSignal;
 import im.actor.core.api.updates.UpdateIncomingCall;
 import im.actor.core.modules.ModuleContext;
@@ -27,6 +28,11 @@ public class CallsProcessor implements Processor {
                     new CallManagerActor.OnSignaling(
                             updateCallSignal.getCallId(),
                             updateCallSignal.getContent()));
+            return true;
+        } else if (update instanceof UpdateCallEnded) {
+            UpdateCallEnded callEnded = (UpdateCallEnded) update;
+
+            return true;
         }
         return false;
     }

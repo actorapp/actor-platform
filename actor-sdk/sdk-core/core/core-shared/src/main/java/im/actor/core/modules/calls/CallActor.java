@@ -15,7 +15,7 @@ public class CallActor extends ModuleActor {
     private boolean alive = false;
     private long callId;
     private CallsModule.CallCallback callback;
-    private ArrayList<byte[]> signals = new ArrayList<byte[]>();
+    private ArrayList<byte[]> signals = new ArrayList<>();
 
     public CallActor(long callId, ModuleContext context) {
         super(context);

@@ -43,6 +43,7 @@ import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerInfoClosed;
 import im.actor.core.events.PeerInfoOpened;
 import im.actor.core.events.UserVisible;
+import im.actor.core.modules.calls.CallManagerActor;
 import im.actor.core.modules.calls.CallsModule;
 import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
@@ -1029,6 +1030,14 @@ public class Messenger {
     @ObjectiveCName("sendCallSignalWithCallId:withData:")
     public void sendCallSignal(long callId, AbsSignal data) {
         modules.getCallsModule().sendSignal(callId, data);
+    }
+
+    public void callSendSignaling(AbsSignal data) {
+        modules.getCallsModule().getCallManager().send(new CallManagerActor.SendSignaling(data));
+    }
+
+    public void callAnswer() {
+        modules.getCallsModule().getCallManager().send(new CallManagerActor.AnswerCall());
     }
 
     //////////////////////////////////////

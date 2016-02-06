@@ -5,10 +5,9 @@ import java.io.IOException;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
-/**
- * Created by root on 1/15/16.
- */
 public class AnswerSignal extends AbsSignal {
+
+    public static final String TYPE = "answer";
 
     private String sdp;
 
@@ -35,6 +34,11 @@ public class AnswerSignal extends AbsSignal {
 
     @Override
     public String getType() {
-        return "answer";
+        return TYPE;
+    }
+
+    @Override
+    public String toString() {
+        return "{type: " + TYPE + ", sdp: " + sdp + "}";
     }
 }
