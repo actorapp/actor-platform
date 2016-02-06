@@ -11,4 +11,16 @@ public class JsRTCIceCandidate extends JavaScriptObject {
     protected JsRTCIceCandidate() {
 
     }
+
+    public final native String getId()/*-{
+        return this.sdpMLineIndex;
+    }-*/;
+
+    public final native int getLabel()/*-{
+        return this.sdpMid;
+    }-*/;
+
+    public final native String getSDP()/*-{
+        return this.candidate;
+    }-*/;
 }
