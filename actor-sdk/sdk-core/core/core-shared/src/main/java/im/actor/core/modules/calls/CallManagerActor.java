@@ -1,6 +1,9 @@
 package im.actor.core.modules.calls;
 
+import im.actor.core.api.rpc.RequestCallInProgress;
+import im.actor.core.api.rpc.RequestSendCallSignal;
 import im.actor.core.api.rpc.RequestSubscribeToCalls;
+import im.actor.core.entity.signals.AbsSignal;
 import im.actor.core.events.NewSessionCreated;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.util.ModuleActor;
@@ -20,8 +23,12 @@ public class CallManagerActor extends ModuleActor {
     }
 
     private static final String TAG = "CallManagerActor";
+    private static final int IN_PROGRESS_TIMEOUT = 15000;
 
     private long subscribeRequest = -1;
+    private long progressRequest = -1;
+
+    private long runningCallId = -1;
 
     public CallManagerActor(ModuleContext context) {
         super(context);
@@ -36,10 +43,41 @@ public class CallManagerActor extends ModuleActor {
 
     private void onIncomingCall(long callId, int uid) {
         Log.d(TAG, "onIncomingCall (" + callId + ", " + uid + ")");
+        if (runningCallId != -1) {
+            return;
+        }
+        runningCallId = callId;
+        config().getWebRTCProvider().onIncomingCall();
+    }
+
+    private void onAnswerCall() {
+        Log.d(TAG, "onAnswerCall");
+        if (runningCallId == -1) {
+            return;
+        }
+
+        progressRequest = request(new RequestCallInProgress(runningCallId, IN_PROGRESS_TIMEOUT));
     }
 
     private void onSignaling(long callId, byte[] message) {
         Log.d(TAG, "onSignaling (" + callId + ")");
+        if (runningCallId != callId) {
+            return;
+        }
+
+        AbsSignal signal = AbsSignal.fromBytes(message);
+        if (signal != null) {
+            config().getWebRTCProvider().onSignalingReceived(signal);
+        }
+    }
+
+    private void onSendSignal(AbsSignal signal) {
+        Log.d(TAG, "onSendSignal: " + signal);
+        if (runningCallId == -1) {
+            return;
+        }
+
+        request(new RequestSendCallSignal(runningCallId, signal.toByteArray()));
     }
 
     private void subscribeForCalls() {
@@ -67,6 +105,10 @@ public class CallManagerActor extends ModuleActor {
         } else if (message instanceof OnSignaling) {
             OnSignaling signaling = (OnSignaling) message;
             onSignaling(signaling.getCallId(), signaling.getMessage());
+        } else if (message instanceof AnswerCall) {
+            onAnswerCall();
+        } else if (message instanceof SendSignaling) {
+            onSendSignal(((SendSignaling) message).getSignal());
         } else {
             super.onReceive(message);
         }
@@ -106,6 +148,23 @@ public class CallManagerActor extends ModuleActor {
 
         public byte[] getMessage() {
             return message;
+        }
+    }
+
+    public static class AnswerCall {
+
+    }
+
+    public static class SendSignaling {
+
+        private AbsSignal signal;
+
+        public SendSignaling(AbsSignal signal) {
+            this.signal = signal;
+        }
+
+        public AbsSignal getSignal() {
+            return signal;
         }
     }
 }

@@ -11,7 +11,7 @@ import im.actor.runtime.bser.DataInput;
 
 public abstract class AbsSignal extends BserObject {
 
-    String type;
+    private String type;
 
     @Override
     public void parse(BserValues values) throws IOException {
@@ -27,22 +27,19 @@ public abstract class AbsSignal extends BserObject {
 
     public static AbsSignal fromBytes(byte[] data) {
         try {
-
-            AbsSignal res = null;
             BserValues values = new BserValues(BserParser.deserialize(new DataInput(data, 0, data.length)));
-            if (values.getString(1).equals(new OfferSignal().getType())) {
+            String type = values.getString(1);
+            AbsSignal res;
+            if (OfferSignal.TYPE.equals(type)) {
                 res = new OfferSignal();
-            } else if (values.getString(1).equals(new AnswerSignal().getType())) {
+            } else if (AnswerSignal.TYPE.equals(type)) {
                 res = new AnswerSignal();
-            } else if (values.getString(1).equals(new CandidateSignal().getType())) {
+            } else if (CandidateSignal.TYPE.equals(type)) {
                 res = new CandidateSignal();
-            }
-
-            if (res != null) {
-                res.parse(values);
             } else {
-                Log.w("Signaling parser", "unknown signal");
+                throw new IOException("Unknown signal type " + type);
             }
+            res.parse(values);
             return res;
         } catch (IOException e) {
             return null;
