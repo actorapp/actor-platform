@@ -11,11 +11,13 @@ import im.actor.core.entity.signals.AnswerSignal;
 import im.actor.core.entity.signals.CandidateSignal;
 import im.actor.core.entity.signals.OfferSignal;
 import im.actor.core.js.JsMessenger;
+import im.actor.core.js.providers.webrtc.JsAudio;
 import im.actor.core.js.providers.webrtc.JsIceCandidateEvent;
 import im.actor.core.js.providers.webrtc.JsIceServer;
 import im.actor.core.js.providers.webrtc.JsPeerConnection;
 import im.actor.core.js.providers.webrtc.JsPeerConnectionConfig;
 import im.actor.core.js.providers.webrtc.JsPeerConnectionListener;
+import im.actor.core.js.providers.webrtc.JsRTCIceCandidate;
 import im.actor.core.js.providers.webrtc.JsSessionDescription;
 import im.actor.core.js.providers.webrtc.JsStreaming;
 import im.actor.core.js.providers.webrtc.JsUserMediaStream;
@@ -26,15 +28,19 @@ public class JsWebRTCProvider implements WebRTCProvider {
 
     private static final String TAG = "JsWebRTCProvider";
 
+    private static int NEXT_ITERATION = 0;
+
+    private int currentIteration = 0;
+
     private JsPeerConnection peerConnection;
     private JsUserMediaStream mediaStream;
     private boolean isReady = false;
-    private ArrayList<AbsSignal> pendingSignals;
+    private ArrayList<CandidateSignal> pendingCandidates;
 
     @Override
     public void onIncomingCall() {
         Log.d(TAG, "onIncomingCall");
-        pendingSignals = new ArrayList<>();
+        pendingCandidates = new ArrayList<>();
         JsMessenger.getInstance().callAnswer();
         JsArray<JsIceServer> servers = JsArray.createArray().cast();
         servers.push(JsIceServer.create("stun:62.4.22.219:3478"));
@@ -43,10 +49,18 @@ public class JsWebRTCProvider implements WebRTCProvider {
         peerConnection = JsPeerConnection.create(JsPeerConnectionConfig.create(servers));
         peerConnection.setListener(new JsPeerConnectionListener() {
             @Override
-            public void onIceCandidate(JsIceCandidateEvent candidate) {
+            public void onIceCandidate(JsRTCIceCandidate candidate) {
                 Log.d(TAG, "onIceCandidate: " + JsonUtils.stringify(candidate));
-                JsMessenger.getInstance().callSendSignaling(new CandidateSignal(candidate.getId(),
-                        candidate.getLabel(), candidate.getCandidate()));
+                if (candidate != null) {
+                    JsMessenger.getInstance().callSendSignaling(new CandidateSignal(candidate.getId(),
+                            candidate.getLabel(), candidate.getSDP()));
+                }
+            }
+
+            @Override
+            public void onStreamAdded(JsUserMediaStream stream) {
+                Log.d(TAG, "onStreamAdded: " + JsonUtils.stringify(stream));
+                JsAudio.playStream(stream);
             }
         });
         JsStreaming.getUserAudio().then(new Consumer<JsUserMediaStream>() {
@@ -89,6 +103,12 @@ public class JsWebRTCProvider implements WebRTCProvider {
                             peerConnection.setLocalDescription(jsSessionDescription);
                             Log.d(TAG, "Session desc: " + jsSessionDescription);
                             JsMessenger.getInstance().callSendSignaling(new AnswerSignal(jsSessionDescription.getSDP()));
+
+                            isReady = true;
+                            for (CandidateSignal signal1 : pendingCandidates) {
+                                applySignals(signal1);
+                            }
+                            pendingCandidates.clear();
                         }
                     }).failure(new Consumer<Exception>() {
                         @Override
@@ -106,11 +126,19 @@ public class JsWebRTCProvider implements WebRTCProvider {
 
         } else if (signal instanceof CandidateSignal) {
             CandidateSignal candidateSignal = (CandidateSignal) signal;
-            try {
-                peerConnection.addIceCandidate(candidateSignal.getLabel(), candidateSignal.getSdp());
-            } catch (Exception e) {
-                Log.e(TAG, e);
+            if (!isReady) {
+                pendingCandidates.add(candidateSignal);
+            } else {
+                applySignals(candidateSignal);
             }
+        }
+    }
+
+    private void applySignals(CandidateSignal signal) {
+        try {
+            peerConnection.addIceCandidate(signal.getLabel(), signal.getSdp());
+        } catch (Exception e) {
+            Log.e(TAG, e);
         }
     }
 
