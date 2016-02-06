@@ -21,13 +21,28 @@ public class JsPeerConnection extends JavaScriptObject {
 
     public final native void setListener(JsPeerConnectionListener listener)/*-{
         this.peerConnection.onicecandidate = function(candidate) {
-            callback.@im.actor.core.js.providers.webrtc.JsPeerConnectionListener::onIceCandidate(*)(candidate);
+            listener.@im.actor.core.js.providers.webrtc.JsPeerConnectionListener::onIceCandidate(*)(candidate);
         };
     }-*/;
 
-    public final native void setLocalDescription(JsSessionDescription description)/*-{
-        this.peerConnection.setLocalDescription(description);
-    }-*/;
+    public final Promise<String> setLocalDescription(final JsSessionDescription description) {
+        return new Promise<>(new PromiseFunc<String>() {
+            @Override
+            public void exec(final PromiseResolver<String> resolver) {
+                setLocalDescription(description, new JsClosure() {
+                    @Override
+                    public void callback() {
+                        resolver.result(null);
+                    }
+                }, new JsClosureError() {
+                    @Override
+                    public void onError(JavaScriptObject error) {
+                        resolver.error(new RuntimeException());
+                    }
+                });
+            }
+        }).done(JsScheduller.scheduller());
+    }
 
     public final Promise<String> setRemoteDescription(final JsSessionDescription description) {
         return new Promise<>(new PromiseFunc<String>() {
@@ -47,6 +62,10 @@ public class JsPeerConnection extends JavaScriptObject {
             }
         }).done(JsScheduller.scheduller());
     }
+
+    public final native void addStream(JsUserMediaStream stream)/*-{
+        this.peerConnection.addStream(stream);
+    }-*/;
 
     public final native void addIceCandidate(int label, String candidate)/*-{
         this.peerConnection.addIceCandidate(new RTCIceCandidate({sdpMLineIndex: label, candidate: candidate}));
@@ -111,6 +130,15 @@ public class JsPeerConnection extends JavaScriptObject {
 
     private final native void setRemoteDescription(JsSessionDescription description, JsClosure closure, JsClosureError error)/*-{
         this.peerConnection.setRemoteDescription(description, function() {
+            closure.@im.actor.core.js.entity.JsClosure::callback(*)();
+        }, function(e) {
+            $wnd.console.warn(e);
+            error.@im.actor.core.js.entity.JsClosureError::onError(*)(e);
+        });
+    }-*/;
+
+    public final native void setLocalDescription(JsSessionDescription description, JsClosure closure, JsClosureError error)/*-{
+        this.peerConnection.setLocalDescription(description, function() {
             closure.@im.actor.core.js.entity.JsClosure::callback(*)();
         }, function(e) {
             $wnd.console.warn(e);
