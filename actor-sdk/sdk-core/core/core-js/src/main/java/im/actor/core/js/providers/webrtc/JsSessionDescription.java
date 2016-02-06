@@ -8,10 +8,6 @@ public class JsSessionDescription extends JavaScriptObject {
         return new RTCSessionDescription({type: 'offer', sdp: sdp});
     }-*/;
 
-    public static native JsSessionDescription create(JsUserMediaStream stream)/*-{
-        return new RTCSessionDescription(stream);
-    }-*/;
-
     protected JsSessionDescription() {
 
     }
