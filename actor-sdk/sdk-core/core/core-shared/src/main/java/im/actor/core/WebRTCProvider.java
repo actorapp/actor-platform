@@ -1,5 +1,7 @@
 package im.actor.core;
 
+import im.actor.core.entity.signals.AbsSignal;
+
 public interface WebRTCProvider {
 
     void onIncomingCall();
@@ -8,7 +10,7 @@ public interface WebRTCProvider {
 
     void onCallStarted();
 
-    void onSignalingReceived(byte[] data);
+    void onSignalingReceived(AbsSignal signal);
 
     void onCallEnded();
 }

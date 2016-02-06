@@ -7,6 +7,8 @@ import im.actor.runtime.bser.BserWriter;
 
 public class CandidateSignal extends AbsSignal {
 
+    public static final String TYPE = "candidate";
+
     private String sdp;
     private int label;
     private String id;
@@ -19,6 +21,7 @@ public class CandidateSignal extends AbsSignal {
     }
 
     public CandidateSignal() {
+
     }
 
     public String getSdp() {
@@ -49,6 +52,11 @@ public class CandidateSignal extends AbsSignal {
 
     @Override
     public String getType() {
-        return "candidate";
+        return TYPE;
+    }
+
+    @Override
+    public String toString() {
+        return "{type: " + TYPE + ", id: " + id + ", label: " + label + " sdp: " + sdp + "}";
     }
 }
