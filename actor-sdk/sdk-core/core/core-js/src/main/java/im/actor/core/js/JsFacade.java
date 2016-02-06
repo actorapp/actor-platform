@@ -135,25 +135,6 @@ public class JsFacade implements Exportable {
 
         messenger = new JsMessenger(configuration.build());
 
-        JsPeerConnection peerConnection = JsPeerConnection.create(null);
-        peerConnection.setListener(new JsPeerConnectionListener() {
-            @Override
-            public void onIceCandidate(String candidate) {
-                Log.d(TAG, "OnCandidate: " + candidate);
-            }
-        });
-        peerConnection.createOffer().then(new Consumer<JsSessionDescription>() {
-            @Override
-            public void apply(JsSessionDescription offer) {
-                Log.d(TAG, "Offer Ok: " + offer);
-            }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                Log.d(TAG, "Offer failure");
-            }
-        });
-
         Log.d(TAG, "JsMessenger created");
     }
 
