@@ -21,8 +21,14 @@ public class JsPeerConnection extends JavaScriptObject {
 
     public final native void setListener(JsPeerConnectionListener listener)/*-{
         this.peerConnection.onicecandidate = function(candidate) {
-            listener.@im.actor.core.js.providers.webrtc.JsPeerConnectionListener::onIceCandidate(*)(candidate);
+            $wnd.console.warn(candidate);
+            listener.@im.actor.core.js.providers.webrtc.JsPeerConnectionListener::onIceCandidate(*)(candidate.candidate);
         };
+        this.peerConnection.onaddstream = function(event) {
+            $wnd.console.warn(event);
+            $wnd.console.warn(event.stream);
+            listener.@im.actor.core.js.providers.webrtc.JsPeerConnectionListener::onStreamAdded(*)(event.stream);
+        }
     }-*/;
 
     public final Promise<String> setLocalDescription(final JsSessionDescription description) {

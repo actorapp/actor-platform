@@ -8,7 +8,7 @@ public class JsIceCandidateEvent extends JavaScriptObject {
     }
 
     public final native String getId()/*-{
-        if (this.id == undefined) {
+        if (this.id === undefined) {
             return "";
         }
         return this.id;
@@ -18,7 +18,7 @@ public class JsIceCandidateEvent extends JavaScriptObject {
         return this.label;
     }-*/;
 
-    public final native String getCandidate()/*-{
-        return this.candidate;
+    public final native String getSDP()/*-{
+        return this.sdp;
     }-*/;
 }
