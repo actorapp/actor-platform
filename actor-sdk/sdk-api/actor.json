@@ -11836,7 +11836,7 @@
               {
                 "type": "reference",
                 "argument": "content",
-                "category": "full",
+                "category": "hidden",
                 "description": "  Signaling raw package"
               }
             ],
@@ -12038,7 +12038,7 @@
               {
                 "type": "reference",
                 "argument": "content",
-                "category": "full",
+                "category": "hidden",
                 "description": "Signaling raw package"
               }
             ],
