@@ -1,6 +1,7 @@
 package im.actor.core.modules.calls;
 
 import im.actor.core.api.updates.UpdateCallEnded;
+import im.actor.core.api.updates.UpdateCallInProgress;
 import im.actor.core.api.updates.UpdateCallSignal;
 import im.actor.core.api.updates.UpdateIncomingCall;
 import im.actor.core.modules.ModuleContext;
@@ -15,6 +16,7 @@ public class CallsProcessor implements Processor {
 
     @Override
     public boolean process(Object update) {
+
         if (update instanceof UpdateIncomingCall) {
             UpdateIncomingCall updateIncomingCall = (UpdateIncomingCall) update;
             context.getCallsModule().getCallManager().send(
@@ -31,7 +33,12 @@ public class CallsProcessor implements Processor {
             return true;
         } else if (update instanceof UpdateCallEnded) {
             UpdateCallEnded callEnded = (UpdateCallEnded) update;
-
+            context.getCallsModule().getCallManager().send(
+                    new CallManagerActor.OnCallEnded(
+                            callEnded.getCallId()));
+            return true;
+        } else if (update instanceof UpdateCallInProgress) {
+            // TODO: Implement
             return true;
         }
         return false;

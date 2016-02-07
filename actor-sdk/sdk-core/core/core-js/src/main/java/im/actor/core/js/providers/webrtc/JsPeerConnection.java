@@ -69,12 +69,16 @@ public class JsPeerConnection extends JavaScriptObject {
         }).done(JsScheduller.scheduller());
     }
 
-    public final native void addStream(JsUserMediaStream stream)/*-{
+    public final native void addStream(JsMediaStream stream)/*-{
         this.peerConnection.addStream(stream);
     }-*/;
 
     public final native void addIceCandidate(int label, String candidate)/*-{
         this.peerConnection.addIceCandidate(new RTCIceCandidate({sdpMLineIndex: label, candidate: candidate}));
+    }-*/;
+
+    public final native void close()/*-{
+        this.peerConnection.close();
     }-*/;
 
     public final Promise<JsSessionDescription> createOffer() {
