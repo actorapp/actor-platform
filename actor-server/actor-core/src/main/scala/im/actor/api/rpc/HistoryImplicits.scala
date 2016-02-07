@@ -15,27 +15,31 @@ trait HistoryImplicits {
       reactions:      Seq[MessageReaction]
     ): Xor[String, ApiMessageContainer] = {
       val in = CodedInputStream.newInstance(model.messageContentData)
-      Xor.fromEither(ApiMessage.parseFrom(in)) map { messageContent ⇒
-        val state = if (model.userId == model.senderUserId) {
-          if (model.date.getMillis <= lastReadAt.getMillis) {
-            Some(ApiMessageState.Read)
-          } else if (model.date.getMillis <= lastReceivedAt.getMillis) {
-            Some(ApiMessageState.Received)
+      try {
+        Xor.fromEither(ApiMessage.parseFrom(in)) map { messageContent ⇒
+          val state = if (model.userId == model.senderUserId) {
+            if (model.date.getMillis <= lastReadAt.getMillis) {
+              Some(ApiMessageState.Read)
+            } else if (model.date.getMillis <= lastReceivedAt.getMillis) {
+              Some(ApiMessageState.Received)
+            } else {
+              Some(ApiMessageState.Sent)
+            }
           } else {
-            Some(ApiMessageState.Sent)
+            None // for incoming
           }
-        } else {
-          None // for incoming
-        }
 
-        ApiMessageContainer(
-          senderUserId = model.senderUserId,
-          randomId = model.randomId,
-          date = model.date.getMillis,
-          message = messageContent,
-          state = state,
-          reactions = reactions.toVector map (r ⇒ ApiMessageReaction(r.userIds.toVector, r.code))
-        )
+          ApiMessageContainer(
+            senderUserId = model.senderUserId,
+            randomId = model.randomId,
+            date = model.date.getMillis,
+            message = messageContent,
+            state = state,
+            reactions = reactions.toVector map (r ⇒ ApiMessageReaction(r.userIds.toVector, r.code))
+          )
+        }
+      } catch {
+        case e: Exception ⇒ Xor.Left(e.getMessage)
       }
     }
   }
