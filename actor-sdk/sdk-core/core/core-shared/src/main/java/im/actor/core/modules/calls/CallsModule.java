@@ -1,11 +1,17 @@
 package im.actor.core.modules.calls;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.rpc.RequestDoCall;
+import im.actor.core.entity.CallState;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.User;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
+import im.actor.core.viewmodel.CallModel;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.webrtc.WebRTCProvider;
 import im.actor.core.api.rpc.ResponseDoCall;
@@ -24,6 +30,7 @@ public class CallsModule extends AbsModule {
 
     private WebRTCProvider provider;
     private ActorRef callManager;
+    private HashMap<Long, CallModel> callModels = new HashMap<>();
 
     public CallsModule(ModuleContext context) {
         super(context);
@@ -37,6 +44,14 @@ public class CallsModule extends AbsModule {
         }
 
         callManager = system().actorOf("calls/manager", CallManagerActor.CONSTRUCTOR(context()));
+    }
+
+    public void spawnNewModel(long id, Peer peer, ArrayList<Integer> activeMembers, CallState state) {
+        callModels.put(id, new CallModel(id, peer, activeMembers, state));
+    }
+
+    public CallModel getCall(long id) {
+        return callModels.get(id);
     }
 
     public ActorRef getCallManager() {
@@ -62,5 +77,13 @@ public class CallsModule extends AbsModule {
                 });
             }
         };
+    }
+
+    public void endCall(long callId) {
+        callManager.send(new CallManagerActor.EndCall(callId));
+    }
+
+    public void answerCall(long callId) {
+        callManager.send(new CallManagerActor.AnswerCall(callId));
     }
 }

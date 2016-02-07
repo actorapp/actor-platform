@@ -49,6 +49,7 @@ import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
 import im.actor.core.viewmodel.AppStateVM;
+import im.actor.core.viewmodel.CallModel;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
@@ -1003,6 +1004,37 @@ public class Messenger {
     @ObjectiveCName("doCallWithUid:")
     public Command<ResponseDoCall> doCall(int uid) {
         return modules.getCallsModule().makeCall(uid);
+    }
+
+    /**
+     * Ending call by call id
+     *
+     * @param callId Call id
+     */
+    @ObjectiveCName("endCallWithCallId:")
+    public void endCall(long callId) {
+        modules.getCallsModule().endCall(callId);
+    }
+
+    /**
+     * Answer call by call id
+     *
+     * @param callId Call id
+     */
+    @ObjectiveCName("answerCallWithCallId:")
+    public void answerCall(long callId) {
+        modules.getCallsModule().answerCall(callId);
+    }
+
+    /**
+     * Get Call View Model by call id
+     *
+     * @param callId Call id
+     * @return Call view model
+     */
+    @ObjectiveCName("getCallWithCallId:")
+    public CallModel getCall(long callId) {
+        return modules.getCallsModule().getCall(callId);
     }
 
     //////////////////////////////////////
