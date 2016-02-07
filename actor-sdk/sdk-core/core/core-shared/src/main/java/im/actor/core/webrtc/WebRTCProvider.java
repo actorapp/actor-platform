@@ -1,7 +1,6 @@
 package im.actor.core.webrtc;
 
-import im.actor.core.entity.Peer;
-import im.actor.core.viewmodel.UserVM;
+import im.actor.core.Messenger;
 
 /**
  * WebRTC provider. Used for providing Calls support.
@@ -14,9 +13,10 @@ public interface WebRTCProvider {
     /**
      * Init WebRTC provider
      *
+     * @param messenger  Messenger
      * @param controller controller
      */
-    void init(WebRTCController controller);
+    void init(Messenger messenger, WebRTCController controller);
 
     /**
      * Incoming Call event. To answer call invoke controller.answerCall();

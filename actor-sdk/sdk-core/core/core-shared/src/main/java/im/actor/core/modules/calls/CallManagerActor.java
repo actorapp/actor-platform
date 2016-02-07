@@ -8,6 +8,7 @@ import im.actor.core.api.rpc.RequestEndCall;
 import im.actor.core.api.rpc.RequestSendCallSignal;
 import im.actor.core.api.rpc.RequestSubscribeToCalls;
 import im.actor.core.api.rpc.ResponseVoid;
+import im.actor.core.entity.CallState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.signals.AbsSignal;
 import im.actor.core.entity.signals.AnswerSignal;
@@ -18,9 +19,8 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
-import im.actor.core.viewmodel.UserVM;
 import im.actor.core.webrtc.WebRTCProvider;
-import im.actor.runtime.Log;
+import im.actor.runtime.*;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.function.Constructor;
 
@@ -64,7 +64,7 @@ public class CallManagerActor extends ModuleActor {
 
         webRTCController = new WebRTCControllerImpl(self());
         provider = config().getWebRTCProvider();
-        provider.init(webRTCController);
+        provider.init(context().getMessenger(), webRTCController);
     }
 
 
@@ -84,7 +84,11 @@ public class CallManagerActor extends ModuleActor {
             isOfferRequested = true; // No outgoing offer needed for ingoing call
             isOfferReceived = false;
             isAnswerReceived = true; // No incoming answers needed for ingoing call
-            provider.onIncomingCall(callId, Peer.user(uid), new UserVM[]{getUserVM(uid)});
+            ArrayList<Integer> members = new ArrayList<>();
+            members.add(myUid());
+            members.add(uid);
+            context().getCallsModule().spawnNewModel(callId, Peer.user(uid), members, CallState.CALLING_INCOMING);
+            provider.onIncomingCall(callId);
         }
     }
 
@@ -100,7 +104,11 @@ public class CallManagerActor extends ModuleActor {
             isOfferRequested = false;
             isOfferReceived = true; // No offers needed for outgoing call
             isAnswerReceived = false;
-            provider.onOutgoingCall(callId, Peer.user(uid), new UserVM[]{getUserVM(uid)});
+            ArrayList<Integer> members = new ArrayList<>();
+            members.add(myUid());
+            members.add(uid);
+            context().getCallsModule().spawnNewModel(callId, Peer.user(uid), members, CallState.CALLING_OUTGOING);
+            provider.onOutgoingCall(callId);
         }
     }
 
@@ -162,6 +170,8 @@ public class CallManagerActor extends ModuleActor {
                 OfferSignal offer = (OfferSignal) signal;
                 if (!isOfferReceived) {
                     isOfferReceived = true;
+                    context().getCallsModule().getCall(callId).getCallStarted().change(im.actor.runtime.Runtime.getCurrentTime());
+                    context().getCallsModule().getCall(callId).getState().change(CallState.IN_PROGRESS);
                     provider.onOfferReceived(callId, offer.getSdp());
                 }
             } else if (signal instanceof AnswerSignal) {
@@ -202,8 +212,11 @@ public class CallManagerActor extends ModuleActor {
         if (webRTCController.getCallId() == callId) {
             if (!isOfferRequested) {
                 isOfferRequested = true;
+                context().getCallsModule().getCall(callId).getCallStarted().change(im.actor.runtime.Runtime.getCurrentTime());
+                context().getCallsModule().getCall(callId).getState().change(CallState.IN_PROGRESS);
                 provider.onOfferNeeded(callId);
             }
+
 
             // TODO: Auto kill call on timeout
         }
@@ -234,6 +247,7 @@ public class CallManagerActor extends ModuleActor {
                 context().getActorApi().cancelRequest(r);
             }
             pendingRequests.clear();
+            context().getCallsModule().getCall(callId).getState().change(CallState.ENDED);
         }
     }
 
@@ -436,18 +450,6 @@ public class CallManagerActor extends ModuleActor {
 
         public long getCallId() {
             return callId;
-        }
-    }
-
-    public static class MediaStreamsReady {
-        private long callid;
-
-        public MediaStreamsReady(long callid) {
-            this.callid = callid;
-        }
-
-        public long getCallid() {
-            return callid;
         }
     }
 
