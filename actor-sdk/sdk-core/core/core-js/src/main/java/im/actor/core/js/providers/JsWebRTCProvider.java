@@ -1,7 +1,6 @@
 package im.actor.core.js.providers;
 
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.client.JsonUtils;
 
 import java.util.ArrayList;
 
@@ -31,8 +30,12 @@ public class JsWebRTCProvider implements WebRTCProvider {
 
     private WebRTCController controller;
     private JsPeerConnection peerConnection;
+    private JsAudio voicePlayback;
+    private JsMediaStream voiceCapture;
+
     private boolean isReady = false;
     private ArrayList<CandidateSignal> pendingCandidates;
+    private long runningCallId;
 
     @Override
     public void init(WebRTCController controller) {
@@ -40,7 +43,10 @@ public class JsWebRTCProvider implements WebRTCProvider {
     }
 
     @Override
-    public void onIncomingCall(Peer peer, UserVM[] users) {
+    public void onIncomingCall(final long callId, Peer peer, UserVM[] users) {
+
+        runningCallId = callId;
+
         controller.answerCall();
 
         Log.d(TAG, "onIncomingCall");
@@ -54,47 +60,77 @@ public class JsWebRTCProvider implements WebRTCProvider {
         peerConnection.setListener(new JsPeerConnectionListener() {
             @Override
             public void onIceCandidate(JsRTCIceCandidate candidate) {
-                Log.d(TAG, "onIceCandidate: " + JsonUtils.stringify(candidate));
-                if (candidate != null) {
-                    controller.sendSignaling(new CandidateSignal(candidate.getId(),
-                            candidate.getLabel(), candidate.getSDP()));
+                if (runningCallId != callId) {
+                    return;
                 }
+
+                // Log.d(TAG, "onIceCandidate: " + JsonUtils.stringify(candidate));
+
+                controller.sendSignaling(new CandidateSignal(
+                        candidate.getId(),
+                        candidate.getLabel(),
+                        candidate.getSDP()));
+            }
+
+            @Override
+            public void onIceCandidatesEnded() {
+                if (runningCallId != callId) {
+                    return;
+                }
+
+                // Log.d(TAG, "onIceCandidate Ended");
             }
 
             @Override
             public void onStreamAdded(JsMediaStream stream) {
-                Log.d(TAG, "onStreamAdded: " + JsonUtils.stringify(stream));
-                JsAudio.playStream(stream);
+                if (runningCallId != callId) {
+                    return;
+                }
+
+                // Log.d(TAG, "onStreamAdded: " + JsonUtils.stringify(stream));
+
+                voicePlayback = JsAudio.create();
+                voicePlayback.setStream(stream);
+                voicePlayback.play();
             }
         });
 
         JsStreaming.getUserAudio().then(new Consumer<JsMediaStream>() {
             @Override
             public void apply(JsMediaStream jsMediaStream) {
-                // JsAudio.playStream(jsUserMediaStream);
+                if (runningCallId != callId) {
+                    jsMediaStream.stopAll();
+                    return;
+                }
+
                 Log.d(TAG, "Audio is created");
-                peerConnection.addStream(jsMediaStream);
+                voiceCapture = jsMediaStream;
+                peerConnection.addStream(voiceCapture);
             }
         }).failure(new Consumer<Exception>() {
             @Override
             public void apply(Exception e) {
+                if (runningCallId != callId) {
+                    return;
+                }
+
                 Log.d(TAG, "Audio failured");
             }
         });
     }
 
     @Override
-    public void onOutgoingCall(Peer peer, UserVM[] users) {
+    public void onOutgoingCall(long callId, Peer peer, UserVM[] users) {
 
     }
 
     @Override
-    public void onCallStart() {
+    public void onCallStart(long callId) {
 
     }
 
     @Override
-    public void onCallSignaling(AbsSignal signal) {
+    public void onCallSignaling(final long callId, AbsSignal signal) {
         Log.d(TAG, "onSignalingReceived: " + signal);
         if (signal instanceof OfferSignal) {
             String sdp = ((OfferSignal) signal).getSdp();
@@ -103,9 +139,16 @@ public class JsWebRTCProvider implements WebRTCProvider {
                 @Override
                 public void apply(String s) {
                     Log.d(TAG, "Description set");
+                    if (callId != runningCallId) {
+                        return;
+                    }
                     peerConnection.createAnswer().then(new Consumer<JsSessionDescription>() {
                         @Override
                         public void apply(JsSessionDescription jsSessionDescription) {
+                            if (callId != runningCallId) {
+                                return;
+                            }
+
                             peerConnection.setLocalDescription(jsSessionDescription);
                             Log.d(TAG, "Session desc: " + jsSessionDescription);
                             controller.sendSignaling(new AnswerSignal(jsSessionDescription.getSDP()));
@@ -119,6 +162,9 @@ public class JsWebRTCProvider implements WebRTCProvider {
                     }).failure(new Consumer<Exception>() {
                         @Override
                         public void apply(Exception e) {
+                            if (callId != runningCallId) {
+                                return;
+                            }
                             Log.d(TAG, "Description desc error");
                         }
                     });
@@ -126,6 +172,9 @@ public class JsWebRTCProvider implements WebRTCProvider {
             }).failure(new Consumer<Exception>() {
                 @Override
                 public void apply(Exception e) {
+                    if (callId != runningCallId) {
+                        return;
+                    }
                     Log.d(TAG, "Description error");
                 }
             });
@@ -150,8 +199,18 @@ public class JsWebRTCProvider implements WebRTCProvider {
     }
 
     @Override
-    public void onCallEnd() {
-        peerConnection.close();
-        peerConnection = null;
+    public void onCallEnd(long callId) {
+        if (voicePlayback != null) {
+            voicePlayback.reset();
+            voicePlayback = null;
+        }
+        if (voiceCapture != null) {
+            voiceCapture.stopAll();
+            voiceCapture = null;
+        }
+        if (peerConnection != null) {
+            peerConnection.close();
+            peerConnection = null;
+        }
     }
 }
