@@ -33,7 +33,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       becomeStashing(replyTo ⇒ ({
         case seq: SeqStateDate ⇒
           replyTo ! seq
-          if (state.isHidden) {
+          if (state.isArchived) {
             self.tell(Show(peer), ActorRef.noSender)
           }
           updateMessageDate(state, seq.date)
@@ -80,7 +80,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
         .map(_ ⇒ SendMessageAck())
         .pipeTo(sender()) onSuccess {
           case _ ⇒
-            if (state.isHidden) { self.tell(Show(peer), ActorRef.noSender) }
+            if (state.isArchived) { self.tell(Show(peer), ActorRef.noSender) }
         }
     }
 
@@ -172,8 +172,26 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       case Failure(e) ⇒ log.error(e, "Failed to ack MessageRead")
     }
 
+  protected def archive(state: DialogState): Unit = {
+    if (state.isArchived)
+      sender ! Status.Failure(DialogErrors.DialogAlreadyArchived(peer))
+    else {
+      val future =
+        (for {
+          _ ← db.run(DialogRepo.archive(userId, peer))
+          _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime))
+          _ ← userExt.notifyDialogsChanged(userId)
+          seqstate ← seqUpdExt.deliverSingleUpdate(userId, UpdateChatArchive(peer.asStruct))
+        } yield seqstate) pipeTo sender()
+
+      onSuccess(future) { _ ⇒
+        updateArchived(state)
+      }
+    }
+  }
+
   protected def show(state: DialogState): Unit = {
-    if (!state.isHidden)
+    if (!state.isArchived)
       sender ! Status.Failure(DialogErrors.DialogAlreadyShown(peer))
     else {
       val future =
@@ -184,25 +202,6 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
       onSuccess(future) { _ ⇒
         updateShown(state)
-      }
-    }
-  }
-
-  protected def hide(state: DialogState): Unit = {
-    if (state.isHidden)
-      sender ! Status.Failure(DialogErrors.DialogAlreadyHidden(peer))
-    else {
-      val future =
-        (for {
-          _ ← db.run(for {
-            _ ← DialogRepo.hide(userId, peer)
-            _ ← markMessagesRead(selfPeer, peer, new DateTime)
-          } yield ())
-          seqstate ← userExt.notifyDialogsChanged(userId)
-        } yield seqstate) pipeTo sender()
-
-      onSuccess(future) { _ ⇒
-        updateHidden(state)
       }
     }
   }
@@ -359,11 +358,11 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   private def updateReadDate(state: DialogState, date: Long): Unit =
     context become initialized(state.updated(LastReadDate(date)))
 
+  private def updateArchived(state: DialogState): Unit =
+    context become initialized(state.updated(Archived))
+
   private def updateShown(state: DialogState): Unit =
     context become initialized(state.updated(Shown))
-
-  private def updateHidden(state: DialogState): Unit =
-    context become initialized(state.updated(Hidden))
 
   private def updateFavourited(state: DialogState): Unit =
     context become initialized(state.updated(Favourited))

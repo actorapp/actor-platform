@@ -14,9 +14,7 @@ object UserDialogRepo {
   val byPKC = Compiled(byPK _)
   val idByPeerTypeC = Compiled(idByPeerType _)
 
-  val notArchived = userDialogs.filter(_.isArchived === false)
-
-  val notArchivedVisible = notArchived.filter(_.shownAt.isDefined)
+  val notArchived = userDialogs.filter(_.archivedAt.isEmpty)
 
   private def byPK(userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int]) =
     userDialogs.filter(u ⇒ u.userId === userId && u.peerType === peerType && u.peerId === peerId)
@@ -31,7 +29,7 @@ object UserDialogRepo {
 trait UserDialogOperations {
   import UserDialogRepo._
 
-  def findUsersVisible(userId: Rep[Int]) = notArchivedVisible.filter(_.userId === userId)
+  def findUsersVisible(userId: Rep[Int]) = notArchived.filter(_.userId === userId)
 
   def findGroupIds(userId: Int) =
     idByPeerTypeC((userId, PeerType.Group.value)).result
@@ -42,11 +40,8 @@ trait UserDialogOperations {
   def usersExists(userId: Int, peer: Peer) =
     byPKC.applied((userId, peer.typ.value, peer.id)).exists.result
 
-  def hide(userId: Int, peer: Peer) =
-    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.shownAt).update(None)
-
   def show(userId: Int, peer: Peer) =
-    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.shownAt).update(Some(new DateTime))
+    byPKC.applied((userId, peer.typ.value, peer.id)).map(d ⇒ (d.shownAt, d.archivedAt)).update((Some(new DateTime), None))
 
   def favourite(userId: Int, peer: Peer) =
     byPKC.applied((userId, peer.typ.value, peer.id)).map(_.isFavourite).update(true)
@@ -60,8 +55,8 @@ trait UserDialogOperations {
   def updateOwnerLastReadAt(userId: Int, peer: Peer, ownerLastReadAt: DateTime)(implicit ec: ExecutionContext) =
     byPKC.applied((userId, peer.typ.value, peer.id)).map(_.ownerLastReadAt).update(ownerLastReadAt)
 
-  def makeArchived(userId: Int, peer: Peer) =
-    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.isArchived).update(true)
+  def archive(userId: Int, peer: Peer) =
+    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.archivedAt).update(Some(new DateTime))
 
   def delete(userId: Int, peer: Peer) =
     byPKC.applied((userId, peer.typ.value, peer.id)).delete

@@ -184,10 +184,10 @@ final class SessionResendSpec extends BaseSessionSpec(
       expectNewSession(authId, sessionId, helloMessageId)
       expectMessageAck()
 
-      val upd1 = UpdateUserOffline(1)
-      val upd2first = UpdateUserOnline(2)
-      val upd2second = UpdateUserOffline(2)
-      val upd3 = UpdateUserOffline(3)
+      val upd1 = UpdateUserOffline(1, None, None)
+      val upd2first = UpdateUserOnline(2, None, None)
+      val upd2second = UpdateUserOffline(2, None, None)
+      val upd3 = UpdateUserOffline(3, None, None)
 
       weakUpdatesExt.pushUpdate(authId, upd1, Some("reduceKey 1 (uniq)"), None)
 
@@ -291,12 +291,12 @@ final class SessionResendSpec extends BaseSessionSpec(
   private def expectUserOnline(authId: Long, sessionId: Long, userId: Int)(implicit probe: TestProbe): Unit = {
     val weak = expectWeakUpdate(authId, sessionId)
     weak.updateHeader should ===(UpdateUserOnline.header)
-    UpdateUserOnline.parseFrom(weak.update) shouldBe Right(UpdateUserOnline(userId))
+    UpdateUserOnline.parseFrom(weak.update) shouldBe Right(UpdateUserOnline(userId, None, None))
   }
 
   private def expectUserOffline(authId: Long, sessionId: Long, userId: Int)(implicit probe: TestProbe): Unit = {
     val weak = expectWeakUpdate(authId, sessionId)
     weak.updateHeader should ===(UpdateUserOffline.header)
-    UpdateUserOffline.parseFrom(weak.update) shouldBe Right(UpdateUserOffline(userId))
+    UpdateUserOffline.parseFrom(weak.update) shouldBe Right(UpdateUserOffline(userId, None, None))
   }
 }

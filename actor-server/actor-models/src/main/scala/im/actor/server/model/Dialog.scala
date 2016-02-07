@@ -4,22 +4,22 @@ import org.joda.time.DateTime
 
 object Dialog {
   def apply(userId: Int, peer: Peer): Dialog =
-    Dialog(userId, peer, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0), Some(new DateTime), false, false, new DateTime)
+    Dialog(userId, peer, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0), Some(new DateTime), false, None, new DateTime)
 
   def withLastMessageDate(userId: Int, peer: Peer, lastMessageDate: DateTime) =
-    Dialog(userId, peer, lastMessageDate, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0), Some(new DateTime), false, false, new DateTime)
+    Dialog(userId, peer, lastMessageDate, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0), Some(new DateTime), false, None, new DateTime)
 
   def withLastReceivedAt(userId: Int, peer: Peer, lastReceivedAt: DateTime) =
-    Dialog(userId, peer, new DateTime(0), lastReceivedAt, new DateTime(0), new DateTime(0), new DateTime(0), Some(new DateTime), false, false, new DateTime)
+    Dialog(userId, peer, new DateTime(0), lastReceivedAt, new DateTime(0), new DateTime(0), new DateTime(0), Some(new DateTime), false, None, new DateTime)
 
   def withOwnerLastReceivedAt(userId: Int, peer: Peer, ownerLastReceivedAt: DateTime) =
-    Dialog(userId, peer, new DateTime(0), new DateTime(0), new DateTime(0), ownerLastReceivedAt, new DateTime(0), Some(new DateTime), false, false, new DateTime)
+    Dialog(userId, peer, new DateTime(0), new DateTime(0), new DateTime(0), ownerLastReceivedAt, new DateTime(0), Some(new DateTime), false, None, new DateTime)
 
   def withLastReadAt(userId: Int, peer: Peer, lastReadAt: DateTime) =
-    Dialog(userId, peer, new DateTime(0), new DateTime(0), lastReadAt, new DateTime(0), new DateTime(0), Some(new DateTime), false, false, new DateTime)
+    Dialog(userId, peer, new DateTime(0), new DateTime(0), lastReadAt, new DateTime(0), new DateTime(0), Some(new DateTime), false, None, new DateTime)
 
   def withOwnerLastReadAt(userId: Int, peer: Peer, ownerLastReadAt: DateTime) =
-    Dialog(userId, peer, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0), ownerLastReadAt, Some(new DateTime), false, false, new DateTime)
+    Dialog(userId, peer, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0), ownerLastReadAt, Some(new DateTime), false, None, new DateTime)
 
   def fromCommonAndUser(c: DialogCommon, u: UserDialog) = Dialog(
     userId = u.userId,
@@ -31,7 +31,7 @@ object Dialog {
     ownerLastReadAt = u.ownerLastReadAt,
     shownAt = u.shownAt,
     isFavourite = u.isFavourite,
-    isArchived = u.isArchived,
+    archivedAt = u.archivedAt,
     createdAt = u.createdAt
   )
 
@@ -47,7 +47,7 @@ case class Dialog(
   ownerLastReadAt:     DateTime,
   shownAt:             Option[DateTime],
   isFavourite:         Boolean,
-  isArchived:          Boolean,
+  archivedAt:          Option[DateTime],
   createdAt:           DateTime
 )
 
@@ -66,5 +66,5 @@ case class UserDialog(
   createdAt:           DateTime,
   shownAt:             Option[DateTime],
   isFavourite:         Boolean,
-  isArchived:          Boolean
+  archivedAt:          Option[DateTime]
 )
