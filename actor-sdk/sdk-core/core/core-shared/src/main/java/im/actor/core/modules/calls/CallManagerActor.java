@@ -60,7 +60,7 @@ public class CallManagerActor extends ModuleActor {
 
             // Notify provider
             pendingRequests = new HashSet<>();
-            provider.onIncomingCall(Peer.user(uid), new UserVM[]{getUserVM(uid)});
+            provider.onIncomingCall(callId, Peer.user(uid), new UserVM[]{getUserVM(uid)});
         }
     }
 
@@ -76,7 +76,7 @@ public class CallManagerActor extends ModuleActor {
         if (webRTCController.getCallId() == callId) {
             AbsSignal signal = AbsSignal.fromBytes(message);
             if (signal != null) {
-                provider.onCallSignaling(signal);
+                provider.onCallSignaling(callId, signal);
             }
         }
     }
@@ -92,7 +92,7 @@ public class CallManagerActor extends ModuleActor {
         Log.d(TAG, "onCallEnded: " + callId);
         if (webRTCController.getCallId() == callId) {
             webRTCController.clearCallId();
-            provider.onCallEnd();
+            provider.onCallEnd(callId);
         }
     }
 
