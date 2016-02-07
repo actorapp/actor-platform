@@ -1,7 +1,5 @@
 package im.actor.core.webrtc;
 
-import im.actor.core.entity.signals.AbsSignal;
-
 /**
  * Controller for WebRTC calls
  */
@@ -12,12 +10,36 @@ public interface WebRTCController {
      */
     void answerCall();
 
+
     /**
-     * Send Signaling to current call
+     * Send candidate to Peer
      *
-     * @param signal signal
+     * @param label label of candidate
+     * @param id    id of candidate
+     * @param sdp   sdp of candidate
      */
-    void sendSignaling(AbsSignal signal);
+    void sendCandidate(int label, String id, String sdp);
+
+    /**
+     * Send calling offer
+     *
+     * @param sdp sdp of the offer
+     */
+    void sendOffer(String sdp);
+
+    /**
+     * Send answer for offer
+     *
+     * @param sdp sdp of the offer
+     */
+    void sendAnswer(String sdp);
+
+    /**
+     * Notify that engine is ready to receive candidates
+     */
+    void readyForCandidates();
+
+
 
     /**
      * Ending current call

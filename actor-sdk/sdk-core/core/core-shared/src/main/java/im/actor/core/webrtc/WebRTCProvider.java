@@ -1,7 +1,6 @@
 package im.actor.core.webrtc;
 
 import im.actor.core.entity.Peer;
-import im.actor.core.entity.signals.AbsSignal;
 import im.actor.core.viewmodel.UserVM;
 
 /**
@@ -23,33 +22,53 @@ public interface WebRTCProvider {
      * Incoming Call event. To answer call invoke controller.answerCall();
      *
      * @param callId Unique Call Id
-     * @param peer   Call peer
-     * @param users  participators of a call
      */
-    void onIncomingCall(long callId, Peer peer, UserVM[] users);
+    void onIncomingCall(long callId);
 
     /**
      * Outgoing Call event. This doesn't mean that call is started.
      *
-     * @param peer  Call peer
-     * @param users participators of a call
+     * @param callId Unique Call Id
      */
-    void onOutgoingCall(long callId, Peer peer, UserVM[] users);
+    void onOutgoingCall(long callId);
 
     /**
-     * Call Start event. Called when they other peer answers a call.
-     */
-    void onCallStart(long callId);
-
-    /**
-     * Call signaling event. When other peer sends signaling.
+     * Called when WebRTC need to send offer
      *
-     * @param signal signal
+     * @param callId Unique Call Id
      */
-    void onCallSignaling(long callId, AbsSignal signal);
+    void onOfferNeeded(long callId);
+
+    /**
+     * Called when Answer received
+     *
+     * @param callId   Unique Call Id
+     * @param offerSDP answer SDP
+     */
+    void onAnswerReceived(long callId, String offerSDP);
+
+    /**
+     * Called when call offer arrived
+     *
+     * @param callId   Unique Call Id
+     * @param offerSDP offer SDP
+     */
+    void onOfferReceived(long callId, String offerSDP);
+
+    /**
+     * Called when new candidate arrived from other peer
+     *
+     * @param callId Unique Call Id
+     * @param id     id of candidate
+     * @param label  label of candidate
+     * @param sdp    sdp of candidate
+     */
+    void onCandidate(long callId, String id, int label, String sdp);
 
     /**
      * Call End event
+     *
+     * @param callId Unique Call Id
      */
     void onCallEnd(long callId);
 }

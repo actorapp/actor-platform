@@ -10224,7 +10224,7 @@
           <ref role="NX6Kv" node="6tgpW9bxKXq" resolve="callId" />
         </node>
         <node concept="NX1gA" id="6tgpW9bxOAr" role="NXp_2">
-          <property role="1GSvIU" value="full" />
+          <property role="1GSvIU" value="hidden" />
           <property role="NX6R2" value="Signaling raw package" />
           <ref role="NX6Kv" node="6tgpW9bxKXx" resolve="content" />
         </node>
@@ -10393,7 +10393,7 @@
           <ref role="NX6Kv" node="201xLeQvo9G" resolve="callId" />
         </node>
         <node concept="NX1gA" id="201xLeQvoac" role="1GBnQ6">
-          <property role="1GSvIU" value="full" />
+          <property role="1GSvIU" value="hidden" />
           <property role="NX6R2" value="Signaling raw package" />
           <ref role="NX6Kv" node="201xLeQvo9N" resolve="content" />
         </node>

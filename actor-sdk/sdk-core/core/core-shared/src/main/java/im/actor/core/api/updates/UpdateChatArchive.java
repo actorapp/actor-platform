@@ -15,53 +15,45 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateCallSignal extends Update {
+public class UpdateChatArchive extends Update {
 
-    public static final int HEADER = 0x38;
-    public static UpdateCallSignal fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateCallSignal(), data);
+    public static final int HEADER = 0x5e;
+    public static UpdateChatArchive fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateChatArchive(), data);
     }
 
-    private long callId;
-    private byte[] content;
+    private ApiPeer peer;
 
-    public UpdateCallSignal(long callId, @NotNull byte[] content) {
-        this.callId = callId;
-        this.content = content;
+    public UpdateChatArchive(@NotNull ApiPeer peer) {
+        this.peer = peer;
     }
 
-    public UpdateCallSignal() {
+    public UpdateChatArchive() {
 
-    }
-
-    public long getCallId() {
-        return this.callId;
     }
 
     @NotNull
-    public byte[] getContent() {
-        return this.content;
+    public ApiPeer getPeer() {
+        return this.peer;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.callId = values.getLong(1);
-        this.content = values.getBytes(2);
+        this.peer = values.getObj(1, new ApiPeer());
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, this.callId);
-        if (this.content == null) {
+        if (this.peer == null) {
             throw new IOException();
         }
-        writer.writeBytes(2, this.content);
+        writer.writeObject(1, this.peer);
     }
 
     @Override
     public String toString() {
-        String res = "update CallSignal{";
-        res += "callId=" + this.callId;
+        String res = "update ChatArchive{";
+        res += "peer=" + this.peer;
         res += "}";
         return res;
     }

@@ -40,6 +40,7 @@ public class UpdatesParser extends BaseParser<Update> {
             case 46: return UpdateMessageDelete.fromBytes(payload);
             case 47: return UpdateChatClear.fromBytes(payload);
             case 48: return UpdateChatDelete.fromBytes(payload);
+            case 94: return UpdateChatArchive.fromBytes(payload);
             case 1: return UpdateChatGroupsChanged.fromBytes(payload);
             case 222: return UpdateReactionsUpdate.fromBytes(payload);
             case 36: return UpdateGroupInvite.fromBytes(payload);

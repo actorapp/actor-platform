@@ -8,6 +8,10 @@ public class JsSessionDescription extends JavaScriptObject {
         return new RTCSessionDescription({type: 'offer', sdp: sdp});
     }-*/;
 
+    public static native JsSessionDescription createAnswer(String sdp)/*-{
+        return new RTCSessionDescription({type: 'answer', sdp: sdp});
+    }-*/;
+
     protected JsSessionDescription() {
 
     }
