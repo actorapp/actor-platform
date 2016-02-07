@@ -1,6 +1,8 @@
 package im.actor.core.modules.calls;
 
-import im.actor.core.entity.signals.AbsSignal;
+import im.actor.core.entity.signals.AnswerSignal;
+import im.actor.core.entity.signals.CandidateSignal;
+import im.actor.core.entity.signals.OfferSignal;
 import im.actor.core.webrtc.WebRTCController;
 import im.actor.runtime.actors.ActorRef;
 
@@ -33,14 +35,37 @@ public class WebRTCControllerImpl implements WebRTCController {
     }
 
     @Override
-    public void sendSignaling(AbsSignal signal) {
+    public void sendCandidate(int label, String id, String sdp) {
         if (callId != -1) {
-            ref.send(new CallManagerActor.SendSignaling(callId, signal));
+            ref.send(new CallManagerActor.SendSignaling(callId, new CandidateSignal(id, label, sdp)));
+        }
+    }
+
+    @Override
+    public void sendOffer(String sdp) {
+        if (callId != -1) {
+            ref.send(new CallManagerActor.SendSignaling(callId, new OfferSignal(sdp)));
+        }
+    }
+
+    @Override
+    public void sendAnswer(String sdp) {
+        if (callId != -1) {
+            ref.send(new CallManagerActor.SendSignaling(callId, new AnswerSignal(sdp)));
+        }
+    }
+
+    @Override
+    public void readyForCandidates() {
+        if (callId != -1) {
+            ref.send(new CallManagerActor.ReadyForCandidates(callId));
         }
     }
 
     @Override
     public void endCall() {
-
+        if (callId != -1) {
+            ref.send(new CallManagerActor.EndCall(callId));
+        }
     }
 }

@@ -32,6 +32,8 @@ public abstract class ApiServiceEx extends BserObject {
             case 8: return Bser.parse(new ApiServiceExContactRegistered(), content);
             case 9: return Bser.parse(new ApiServiceExPhoneMissed(), content);
             case 16: return Bser.parse(new ApiServiceExPhoneCall(), content);
+            case 20: return Bser.parse(new ApiServiceExChatArchived(), content);
+            case 21: return Bser.parse(new ApiServiceExChatRestored(), content);
             default: return new ApiServiceExUnsupported(key, content);
         }
     }

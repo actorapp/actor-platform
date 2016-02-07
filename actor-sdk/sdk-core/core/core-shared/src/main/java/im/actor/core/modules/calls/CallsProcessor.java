@@ -38,7 +38,10 @@ public class CallsProcessor implements Processor {
                             callEnded.getCallId()));
             return true;
         } else if (update instanceof UpdateCallInProgress) {
-            // TODO: Implement
+            UpdateCallInProgress callInProgress = (UpdateCallInProgress) update;
+            context.getCallsModule().getCallManager().send(
+                    new CallManagerActor.OnCallInProgress(callInProgress.getCallId(),
+                            callInProgress.getTimeout()));
             return true;
         }
         return false;

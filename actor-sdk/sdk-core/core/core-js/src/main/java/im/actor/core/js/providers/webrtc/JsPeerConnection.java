@@ -4,7 +4,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 import im.actor.core.js.entity.JsClosure;
 import im.actor.core.js.entity.JsClosureError;
-import im.actor.core.js.modules.JsScheduller;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
@@ -32,14 +31,14 @@ public class JsPeerConnection extends JavaScriptObject {
         }
     }-*/;
 
-    public final Promise<String> setLocalDescription(final JsSessionDescription description) {
-        return new Promise<>(new PromiseFunc<String>() {
+    public final Promise<JsSessionDescription> setLocalDescription(final JsSessionDescription description) {
+        return new Promise<>(new PromiseFunc<JsSessionDescription>() {
             @Override
-            public void exec(final PromiseResolver<String> resolver) {
+            public void exec(final PromiseResolver<JsSessionDescription> resolver) {
                 setLocalDescription(description, new JsClosure() {
                     @Override
                     public void callback() {
-                        resolver.result(null);
+                        resolver.result(description);
                     }
                 }, new JsClosureError() {
                     @Override
@@ -48,17 +47,17 @@ public class JsPeerConnection extends JavaScriptObject {
                     }
                 });
             }
-        }).done(JsScheduller.scheduller());
+        });
     }
 
-    public final Promise<String> setRemoteDescription(final JsSessionDescription description) {
-        return new Promise<>(new PromiseFunc<String>() {
+    public final Promise<JsSessionDescription> setRemoteDescription(final JsSessionDescription description) {
+        return new Promise<>(new PromiseFunc<JsSessionDescription>() {
             @Override
-            public void exec(final PromiseResolver<String> resolver) {
+            public void exec(final PromiseResolver<JsSessionDescription> resolver) {
                 setRemoteDescription(description, new JsClosure() {
                     @Override
                     public void callback() {
-                        resolver.result(null);
+                        resolver.result(description);
                     }
                 }, new JsClosureError() {
                     @Override
@@ -67,7 +66,7 @@ public class JsPeerConnection extends JavaScriptObject {
                     }
                 });
             }
-        }).done(JsScheduller.scheduller());
+        });
     }
 
     public final native void addStream(JsMediaStream stream)/*-{
@@ -98,7 +97,7 @@ public class JsPeerConnection extends JavaScriptObject {
                     }
                 });
             }
-        }).done(JsScheduller.scheduller());
+        });
     }
 
     public final Promise<JsSessionDescription> createAnswer() {
@@ -117,7 +116,7 @@ public class JsPeerConnection extends JavaScriptObject {
                     }
                 });
             }
-        }).done(JsScheduller.scheduller());
+        });
     }
 
     private final native void createOffer(JsSessionDescriptionCallback callback)/*-{
