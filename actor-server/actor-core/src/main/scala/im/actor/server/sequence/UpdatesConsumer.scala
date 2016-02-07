@@ -175,13 +175,13 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
       val updateFuture: Future[Update] =
         presence match {
           case Online ⇒
-            FastFuture.successful(UpdateUserOnline(p.userId))
+            FastFuture.successful(UpdateUserOnline(p.userId, None, None))
           case Offline ⇒
             lastSeenAt match {
               case Some(date) ⇒
                 lastSeenOrOffline(p.userId, date.getMillis / 1000)
               case None ⇒
-                FastFuture.successful(UpdateUserOffline(p.userId))
+                FastFuture.successful(UpdateUserOffline(p.userId, None, None))
             }
         }
 
@@ -209,18 +209,18 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
         userCanLastSeen ← ParameterRepo.findValue(presenceUserId, Parameter.Keys.Privacy.LastSeen, Parameter.Values.Privacy.LastSeen.Always.value)
         update ← if (selfCanLastSeen == Parameter.Values.Privacy.LastSeen.None.value ||
           userCanLastSeen == Parameter.Values.Privacy.LastSeen.None.value) {
-          DBIO.successful(UpdateUserOffline(presenceUserId))
+          DBIO.successful(UpdateUserOffline(presenceUserId, None, None))
         } else if (selfCanLastSeen == Parameter.Values.Privacy.LastSeen.Contacts.value ||
           userCanLastSeen == Parameter.Values.Privacy.LastSeen.Contacts.value) {
           for {
             isInContacts ← UserContactRepo.exists(presenceUserId, userId)
           } yield {
             if (isInContacts)
-              UpdateUserLastSeen(presenceUserId, tsSeconds)
+              UpdateUserLastSeen(presenceUserId, tsSeconds, None, None)
             else
-              UpdateUserOffline(presenceUserId)
+              UpdateUserOffline(presenceUserId, None, None)
           }
-        } else DBIO.successful(UpdateUserLastSeen(presenceUserId, tsSeconds))
+        } else DBIO.successful(UpdateUserLastSeen(presenceUserId, tsSeconds, None, None))
       } yield update
     }
   }

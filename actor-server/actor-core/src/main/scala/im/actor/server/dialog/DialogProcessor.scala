@@ -34,7 +34,8 @@ object DialogEvents {
   private[dialog] final case class LastReadDate(date: Long) extends DialogEvent
 
   private[dialog] case object Shown extends DialogEvent
-  private[dialog] case object Hidden extends DialogEvent
+
+  private[dialog] case object Archived extends DialogEvent
 
   private[dialog] case object Favourited extends DialogEvent
   private[dialog] case object Unfavourited extends DialogEvent
@@ -46,19 +47,19 @@ private[dialog] object DialogState {
     lastMessageDate: Long,
     lastReceiveDate: Long,
     lastReadDate:    Long,
-    isHidden:        Boolean,
     isFavourite:     Boolean,
-    isCreated:       Boolean
-  ) = DialogState(lastMessageDate, lastReceiveDate, lastReadDate, isHidden, isFavourite, isCreated)
+    isCreated:       Boolean,
+    isArchived:      Boolean
+  ) = DialogState(lastMessageDate, lastReceiveDate, lastReadDate, isFavourite, isCreated, isArchived)
 
   def fromModel(model: DialogModel, isCreated: Boolean): DialogState =
     DialogState(
       model.lastMessageDate.getMillis,
       model.ownerLastReceivedAt.getMillis,
       model.ownerLastReadAt.getMillis,
-      model.shownAt.isEmpty,
       model.isFavourite,
-      isCreated = isCreated
+      isCreated = isCreated,
+      isArchived = model.archivedAt.isDefined
     )
 }
 
@@ -66,17 +67,17 @@ private[dialog] final case class DialogState(
   lastMessageDate: Long, //we don't use it now anywhere. should we remove it?
   lastReceiveDate: Long,
   lastReadDate:    Long,
-  isHidden:        Boolean,
   isFavourite:     Boolean,
-  isCreated:       Boolean
+  isCreated:       Boolean,
+  isArchived:      Boolean
 ) extends ProcessorState[DialogState, DialogEvent] {
   import DialogEvents._
   override def updated(e: DialogEvent): DialogState = e match {
     case LastMessageDate(date) if date > this.lastMessageDate ⇒ this.copy(lastMessageDate = date)
     case LastReceiveDate(date) if date > this.lastReceiveDate ⇒ this.copy(lastReceiveDate = date)
     case LastReadDate(date) if date > this.lastReadDate ⇒ this.copy(lastReadDate = date)
-    case Shown ⇒ this.copy(isHidden = false)
-    case Hidden ⇒ this.copy(isHidden = true)
+    case Shown ⇒ this.copy(isArchived = false)
+    case Archived ⇒ this.copy(isArchived = true)
     case Favourited ⇒ this.copy(isFavourite = true)
     case Unfavourited ⇒ this.copy(isFavourite = false)
     case _ ⇒ this
@@ -164,7 +165,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
     case sr: SetReaction if invokes(sr) ⇒ setReaction(state, sr)
     case rr: RemoveReaction if invokes(rr) ⇒ removeReaction(state, rr)
     case Show(_) ⇒ show(state)
-    case Hide(_) ⇒ hide(state)
+    case Archive(_) ⇒ archive(state)
     case Favourite(_) ⇒ favourite(state)
     case Unfavourite(_) ⇒ unfavourite(state)
     case Delete(_) ⇒ delete(state)
