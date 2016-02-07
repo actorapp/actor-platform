@@ -1,5 +1,7 @@
 package im.actor.core.modules.calls;
 
+import java.util.HashSet;
+
 import im.actor.core.api.rpc.RequestCallInProgress;
 import im.actor.core.api.rpc.RequestSendCallSignal;
 import im.actor.core.api.rpc.RequestSubscribeToCalls;
@@ -29,6 +31,7 @@ public class CallManagerActor extends ModuleActor {
     private static final int IN_PROGRESS_TIMEOUT = 15000;
 
     private long subscribeRequest = -1;
+    private HashSet<Long> pendingRequests;
 
     private WebRTCControllerImpl webRTCController;
     private WebRTCProvider provider;
@@ -52,45 +55,46 @@ public class CallManagerActor extends ModuleActor {
         Log.d(TAG, "onIncomingCall (" + callId + ", " + uid + ")");
 
         // Switching call id
-        if (webRTCController.getCallId() != -1) {
-            return;
-        }
-        webRTCController.switchCallId(callId);
+        if (webRTCController.getCallId() == -1) {
+            webRTCController.switchCallId(callId);
 
-        // Notify provider
-        provider.onIncomingCall(Peer.user(uid), new UserVM[]{getUserVM(uid)});
+            // Notify provider
+            pendingRequests = new HashSet<>();
+            provider.onIncomingCall(Peer.user(uid), new UserVM[]{getUserVM(uid)});
+        }
     }
 
     private void onAnswerCall(long callId) {
         Log.d(TAG, "onAnswerCall");
-        if (webRTCController.getCallId() != callId) {
-            return;
+        if (webRTCController.getCallId() == callId) {
+            request(new RequestCallInProgress(callId, IN_PROGRESS_TIMEOUT));
         }
-
-        request(new RequestCallInProgress(callId, IN_PROGRESS_TIMEOUT));
     }
 
     private void onSignaling(long callId, byte[] message) {
         Log.d(TAG, "onSignaling (" + callId + ")");
-        if (webRTCController.getCallId() != callId) {
-            return;
-        }
-
-        AbsSignal signal = AbsSignal.fromBytes(message);
-        if (signal != null) {
-            provider.onCallSignaling(signal);
+        if (webRTCController.getCallId() == callId) {
+            AbsSignal signal = AbsSignal.fromBytes(message);
+            if (signal != null) {
+                provider.onCallSignaling(signal);
+            }
         }
     }
 
     private void onSendSignal(long callId, AbsSignal signal) {
         Log.d(TAG, "onSendSignal: " + signal);
-        if (webRTCController.getCallId() != callId) {
-            return;
+        if (webRTCController.getCallId() == callId) {
+            request(new RequestSendCallSignal(callId, signal.toByteArray()));
         }
-
-        request(new RequestSendCallSignal(callId, signal.toByteArray()));
     }
 
+    private void onCallEnded(long callId) {
+        Log.d(TAG, "onCallEnded: " + callId);
+        if (webRTCController.getCallId() == callId) {
+            webRTCController.clearCallId();
+            provider.onCallEnd();
+        }
+    }
 
     private void subscribeForCalls() {
         if (subscribeRequest != -1) {
@@ -121,6 +125,8 @@ public class CallManagerActor extends ModuleActor {
             onAnswerCall(((AnswerCall) message).getCallId());
         } else if (message instanceof SendSignaling) {
             onSendSignal(((SendSignaling) message).getCallId(), ((SendSignaling) message).getSignal());
+        } else if (message instanceof OnCallEnded) {
+            onCallEnded(((OnCallEnded) message).getCallId());
         } else {
             super.onReceive(message);
         }
@@ -160,6 +166,18 @@ public class CallManagerActor extends ModuleActor {
 
         public byte[] getMessage() {
             return message;
+        }
+    }
+
+    public static class OnCallEnded {
+        private long callId;
+
+        public OnCallEnded(long callId) {
+            this.callId = callId;
+        }
+
+        public long getCallId() {
+            return callId;
         }
     }
 
