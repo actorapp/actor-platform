@@ -18,7 +18,7 @@ import im.actor.core.js.providers.webrtc.JsPeerConnectionListener;
 import im.actor.core.js.providers.webrtc.JsRTCIceCandidate;
 import im.actor.core.js.providers.webrtc.JsSessionDescription;
 import im.actor.core.js.providers.webrtc.JsStreaming;
-import im.actor.core.js.providers.webrtc.JsUserMediaStream;
+import im.actor.core.js.providers.webrtc.JsMediaStream;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.core.webrtc.WebRTCController;
 import im.actor.core.webrtc.WebRTCProvider;
@@ -45,6 +45,7 @@ public class JsWebRTCProvider implements WebRTCProvider {
 
         Log.d(TAG, "onIncomingCall");
         pendingCandidates = new ArrayList<>();
+        isReady = false;
         JsArray<JsIceServer> servers = JsArray.createArray().cast();
         servers.push(JsIceServer.create("stun:62.4.22.219:3478"));
         servers.push(JsIceServer.create("turn:62.4.22.219:3478?transport=tcp", "actor", "password"));
@@ -57,25 +58,22 @@ public class JsWebRTCProvider implements WebRTCProvider {
                 if (candidate != null) {
                     controller.sendSignaling(new CandidateSignal(candidate.getId(),
                             candidate.getLabel(), candidate.getSDP()));
-
-//                    JsMessenger.getInstance().callSendSignaling(new CandidateSignal(candidate.getId(),
-//                            candidate.getLabel(), candidate.getSDP()));
                 }
             }
 
             @Override
-            public void onStreamAdded(JsUserMediaStream stream) {
+            public void onStreamAdded(JsMediaStream stream) {
                 Log.d(TAG, "onStreamAdded: " + JsonUtils.stringify(stream));
                 JsAudio.playStream(stream);
             }
         });
 
-        JsStreaming.getUserAudio().then(new Consumer<JsUserMediaStream>() {
+        JsStreaming.getUserAudio().then(new Consumer<JsMediaStream>() {
             @Override
-            public void apply(JsUserMediaStream jsUserMediaStream) {
+            public void apply(JsMediaStream jsMediaStream) {
                 // JsAudio.playStream(jsUserMediaStream);
                 Log.d(TAG, "Audio is created");
-                peerConnection.addStream(jsUserMediaStream);
+                peerConnection.addStream(jsMediaStream);
             }
         }).failure(new Consumer<Exception>() {
             @Override
@@ -153,6 +151,7 @@ public class JsWebRTCProvider implements WebRTCProvider {
 
     @Override
     public void onCallEnd() {
-
+        peerConnection.close();
+        peerConnection = null;
     }
 }

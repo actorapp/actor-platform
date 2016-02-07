@@ -7,25 +7,25 @@ import im.actor.runtime.promise.PromiseResolver;
 
 public class JsStreaming {
 
-    public static Promise<JsUserMediaStream> getUserAudio() {
+    public static Promise<JsMediaStream> getUserAudio() {
         return getUserMedia(JsUserMediaConstraint.audioOnly());
     }
 
-    public static Promise<JsUserMediaStream> getUserVideo() {
+    public static Promise<JsMediaStream> getUserVideo() {
         return getUserMedia(JsUserMediaConstraint.videoOnly());
     }
 
-    public static Promise<JsUserMediaStream> getUserAudioVideo() {
+    public static Promise<JsMediaStream> getUserAudioVideo() {
         return getUserMedia(JsUserMediaConstraint.audioVideo());
     }
 
-    public static Promise<JsUserMediaStream> getUserMedia(final JsUserMediaConstraint constraint) {
-        return new Promise<>(new PromiseFunc<JsUserMediaStream>() {
+    public static Promise<JsMediaStream> getUserMedia(final JsUserMediaConstraint constraint) {
+        return new Promise<>(new PromiseFunc<JsMediaStream>() {
             @Override
-            public void exec(final PromiseResolver<JsUserMediaStream> resolver) {
+            public void exec(final PromiseResolver<JsMediaStream> resolver) {
                 getUserMediaJs(constraint, new JsMediaCallback() {
                     @Override
-                    public void onCreated(JsUserMediaStream mediaStream) {
+                    public void onCreated(JsMediaStream mediaStream) {
                         resolver.result(mediaStream);
                     }
 
