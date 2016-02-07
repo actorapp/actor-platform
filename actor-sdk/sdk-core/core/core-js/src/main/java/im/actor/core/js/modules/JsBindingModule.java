@@ -4,6 +4,7 @@
 
 package im.actor.core.js.modules;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import im.actor.core.entity.Avatar;
+import im.actor.core.entity.CallState;
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
@@ -21,11 +23,13 @@ import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.StickerContent;
 import im.actor.core.js.JsMessenger;
+import im.actor.core.js.entity.JsCall;
 import im.actor.core.js.entity.JsContact;
 import im.actor.core.js.entity.JsCounter;
 import im.actor.core.js.entity.JsDialog;
 import im.actor.core.js.entity.JsDialogGroup;
 import im.actor.core.js.entity.JsDialogShort;
+import im.actor.core.js.entity.JsEventBusCallback;
 import im.actor.core.js.entity.JsGroup;
 import im.actor.core.js.entity.JsMessage;
 import im.actor.core.js.entity.JsOnlineGroup;
@@ -37,6 +41,7 @@ import im.actor.core.js.entity.JsUser;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Modules;
 import im.actor.core.viewmodel.AppStateVM;
+import im.actor.core.viewmodel.CallModel;
 import im.actor.core.viewmodel.DialogGroup;
 import im.actor.core.viewmodel.DialogSmall;
 import im.actor.core.viewmodel.GroupTypingVM;
@@ -55,22 +60,26 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     private JsMessenger messenger;
     private JsFilesModule filesModule;
 
-    private HashMap<Integer, JsBindedValue<JsUser>> users = new HashMap<Integer, JsBindedValue<JsUser>>();
-    private HashMap<Integer, JsBindedValue<JsGroup>> groups = new HashMap<Integer, JsBindedValue<JsGroup>>();
-    private HashMap<Integer, JsBindedValue<JsOnlineUser>> usersOnlines = new HashMap<Integer, JsBindedValue<JsOnlineUser>>();
-    private HashMap<Integer, JsBindedValue<JsOnlineGroup>> groupOnlines = new HashMap<Integer, JsBindedValue<JsOnlineGroup>>();
-    private HashMap<Peer, JsBindedValue<JsTyping>> typing = new HashMap<Peer, JsBindedValue<JsTyping>>();
+    private HashMap<Integer, JsBindedValue<JsUser>> users = new HashMap<>();
+    private HashMap<Integer, JsBindedValue<JsGroup>> groups = new HashMap<>();
+    private HashMap<Integer, JsBindedValue<JsOnlineUser>> usersOnlines = new HashMap<>();
+    private HashMap<Integer, JsBindedValue<JsOnlineGroup>> groupOnlines = new HashMap<>();
+    private HashMap<Peer, JsBindedValue<JsTyping>> typing = new HashMap<>();
     private JsBindedValue<String> onlineState;
 
     private JsDisplayList<JsDialog, Dialog> dialogsList;
     private JsDisplayList<JsContact, Contact> contactsList;
     private JsDisplayList<JsSearchEntity, SearchEntity> searchList;
-    private HashMap<Peer, JsDisplayList<JsMessage, Message>> messageLists = new HashMap<Peer, JsDisplayList<JsMessage, Message>>();
+    private HashMap<Peer, JsDisplayList<JsMessage, Message>> messageLists = new HashMap<>();
 
     private JsBindedValue<JsCounter> globalCounter;
     private JsBindedValue<JsCounter> tempGlobalCounter;
 
     private JsBindedValue<JsArray<JsDialogGroup>> dialogsGroupedList;
+
+    private HashMap<String, JsBindedValue<JsCall>> calls = new HashMap<>();
+
+    private ArrayList<JsEventBusCallback> eventBusCallbacks = new ArrayList<>();
 
     public JsBindingModule(JsMessenger messenger, JsFilesModule filesModule, Modules modules) {
         super(modules);
@@ -78,6 +87,23 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
         this.filesModule = filesModule;
         this.messenger = messenger;
         this.filesModule.registerListener(this);
+
+    }
+
+    public void broadcastEvent(String tag, JavaScriptObject obj) {
+        for (JsEventBusCallback c : eventBusCallbacks) {
+            c.onEvent(tag, obj);
+        }
+    }
+
+    public void subscribeEventBus(JsEventBusCallback callback) {
+        if (!eventBusCallbacks.contains(callback)) {
+            eventBusCallbacks.add(callback);
+        }
+    }
+
+    public void unsubscribeEventBus(JsEventBusCallback callback) {
+        eventBusCallbacks.remove(callback);
     }
 
     public JsBindedValue<JsArray<JsDialogGroup>> getDialogsGroupedList() {
@@ -241,6 +267,33 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             groupOnlines.put(gid, value);
         }
         return groupOnlines.get(gid);
+    }
+
+    public JsBindedValue<JsCall> getCall(String id) {
+        if (!calls.containsKey(id)) {
+            final CallModel callModel = messenger.getCall(Long.parseLong(id));
+            final JsBindedValue<JsCall> jsCall = new JsBindedValue<>(JsCall.create(messenger, callModel));
+            callModel.getState().subscribe(new ValueChangedListener<CallState>() {
+                @Override
+                public void onChanged(CallState val, Value<CallState> valueModel) {
+                    jsCall.changeValue(JsCall.create(messenger, callModel));
+                }
+            });
+            callModel.getActiveMembers().subscribe(new ValueChangedListener<ArrayList<Integer>>() {
+                @Override
+                public void onChanged(ArrayList<Integer> val, Value<ArrayList<Integer>> valueModel) {
+                    jsCall.changeValue(JsCall.create(messenger, callModel));
+                }
+            });
+            callModel.getCallStarted().subscribe(new ValueChangedListener<Long>() {
+                @Override
+                public void onChanged(Long val, Value<Long> valueModel) {
+                    jsCall.changeValue(JsCall.create(messenger, callModel));
+                }
+            });
+            calls.put(id, jsCall);
+        }
+        return calls.get(id);
     }
 
     public JsBindedValue<JsTyping> getTyping(final Peer peer) {
@@ -407,7 +460,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
         //
 
         for (JsDisplayList<JsMessage, Message> messageList : messageLists.values()) {
-            for(JsDisplayListBind<JsMessage,Message> b : messageList.getActiveBinds()){
+            for (JsDisplayListBind<JsMessage, Message> b : messageList.getActiveBinds()) {
                 b.startReconverting();
                 for (Message message : b.getRawItems()) {
                     UserVM user = context().getUsersModule().getUsers().get(message.getSenderId());
