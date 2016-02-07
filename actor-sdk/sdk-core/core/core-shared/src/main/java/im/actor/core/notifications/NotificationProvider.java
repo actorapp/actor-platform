@@ -2,12 +2,13 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core;
+package im.actor.core.notifications;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
 import java.util.List;
 
+import im.actor.core.Messenger;
 import im.actor.core.entity.Notification;
 
 /**

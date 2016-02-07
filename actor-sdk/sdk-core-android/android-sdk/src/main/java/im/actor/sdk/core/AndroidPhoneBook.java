@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import im.actor.sdk.util.Devices;
-import im.actor.core.PhoneBookProvider;
+import im.actor.core.phonebook.PhoneBookProvider;
 import im.actor.core.entity.PhoneBookContact;
 import im.actor.core.entity.PhoneBookEmail;
 import im.actor.core.entity.PhoneBookPhone;

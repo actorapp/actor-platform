@@ -12,7 +12,7 @@ import im.actor.runtime.promise.PromiseResolver;
 public class JsPeerConnection extends JavaScriptObject {
 
     public static native JsPeerConnection create(JsPeerConnectionConfig config)/*-{
-        return {peerConnection: new webkitRTCPeerConnection(config, {optional: [{DtlsSrtpKeyAgreement:true}]})};
+        return {peerConnection: new webkitRTCPeerConnection(config)};
     }-*/;
 
     protected JsPeerConnection() {
@@ -116,21 +116,38 @@ public class JsPeerConnection extends JavaScriptObject {
     }
 
     private final native void createOffer(JsSessionDescriptionCallback callback)/*-{
+
+        var sdpConstraints = {
+            'mandatory': {
+                'OfferToReceiveAudio': true,
+                'OfferToReceiveVideo': false
+            }
+        };
+
+
         this.peerConnection.createOffer(function(offer) {
             callback.@im.actor.core.js.providers.webrtc.JsSessionDescriptionCallback::onOfferCreated(*)(offer);
         }, function(error) {
         $wnd.console.warn(error);
             callback.@im.actor.core.js.providers.webrtc.JsSessionDescriptionCallback::onOfferFailure(*)();
-        });
+        }, sdpConstraints);
     }-*/;
 
     private final native void createAnswer(JsSessionDescriptionCallback callback)/*-{
+
+        var sdpConstraints = {
+            'mandatory': {
+                'OfferToReceiveAudio': true,
+                'OfferToReceiveVideo': false
+            }
+        };
+
         this.peerConnection.createAnswer(function(offer) {
             callback.@im.actor.core.js.providers.webrtc.JsSessionDescriptionCallback::onOfferCreated(*)(offer);
         }, function(error) {
             $wnd.console.warn(error);
             callback.@im.actor.core.js.providers.webrtc.JsSessionDescriptionCallback::onOfferFailure(*)();
-        });
+        }, sdpConstraints);
     }-*/;
 
 
