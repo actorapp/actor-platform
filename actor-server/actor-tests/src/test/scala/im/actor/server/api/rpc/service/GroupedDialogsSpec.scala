@@ -52,7 +52,7 @@ final class GroupedDialogsSpec
     ))) { _ ⇒
       whenReady(service.handleLoadGroupedDialogs()) { resp ⇒
         inside(resp) {
-          case Ok(ResponseLoadGroupedDialogs(dgroups, users, groups)) ⇒
+          case Ok(ResponseLoadGroupedDialogs(dgroups, users, groups, _, _)) ⇒
             dgroups.length shouldBe 2
 
             users.map(_.id).toSet shouldBe Set(user1.id, user2.id, user3.id)
