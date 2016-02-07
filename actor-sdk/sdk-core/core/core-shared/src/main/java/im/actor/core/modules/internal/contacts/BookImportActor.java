@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import im.actor.core.PhoneBookProvider;
+import im.actor.core.phonebook.PhoneBookProvider;
 import im.actor.core.api.ApiEmailToImport;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPhoneToImport;

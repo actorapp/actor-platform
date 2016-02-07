@@ -11,6 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import im.actor.core.network.TrustedKey;
+import im.actor.core.notifications.NotificationProvider;
+import im.actor.core.phonebook.PhoneBookProvider;
+import im.actor.core.webrtc.WebRTCProvider;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
@@ -19,9 +22,8 @@ import im.actor.runtime.mtproto.ConnectionEndpoint;
  * Configuration builder for starting up messenger object
  */
 public class ConfigurationBuilder {
-    private ArrayList<TrustedKey> trustedKeys = new ArrayList<TrustedKey>();
-    private ArrayList<ConfigurationExtension> extensions = new ArrayList<ConfigurationExtension>();
-    private ArrayList<ConnectionEndpoint> endpoints = new ArrayList<ConnectionEndpoint>();
+    private ArrayList<TrustedKey> trustedKeys = new ArrayList<>();
+    private ArrayList<ConnectionEndpoint> endpoints = new ArrayList<>();
 
     private PhoneBookProvider phoneBookProvider;
 
@@ -42,7 +44,7 @@ public class ConfigurationBuilder {
     private int maxFailureCount = 50;
 
     private String timeZone;
-    private ArrayList<String> preferredLanguages = new ArrayList<String>();
+    private ArrayList<String> preferredLanguages = new ArrayList<>();
 
     private String customAppName;
 
@@ -271,18 +273,6 @@ public class ConfigurationBuilder {
     }
 
     /**
-     * Adding app extension
-     *
-     * @param key       extension key
-     * @param extension extension
-     * @return this
-     */
-    public ConfigurationBuilder addExtension(String key, Extension extension) {
-        this.extensions.add(new ConfigurationExtension(key, extension));
-        return this;
-    }
-
-    /**
      * Adding Endpoint for API
      * Valid URLs are:
      * tcp://[host]:[port]
@@ -367,7 +357,6 @@ public class ConfigurationBuilder {
                 apiConfiguration, enableContactsLogging, enableNetworkLogging,
                 enableFilesLogging, deviceCategory, platformType,
                 minDelay, maxDelay, maxFailureCount,
-                extensions.toArray(new ConfigurationExtension[extensions.size()]),
                 timeZone, preferredLanguages.toArray(new String[preferredLanguages.size()]),
                 customAppName,
                 trustedKeys.toArray(new TrustedKey[trustedKeys.size()]),

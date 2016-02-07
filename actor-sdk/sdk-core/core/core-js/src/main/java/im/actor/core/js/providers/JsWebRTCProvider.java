@@ -5,14 +5,12 @@ import com.google.gwt.core.client.JsonUtils;
 
 import java.util.ArrayList;
 
-import im.actor.core.WebRTCProvider;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.signals.AbsSignal;
 import im.actor.core.entity.signals.AnswerSignal;
 import im.actor.core.entity.signals.CandidateSignal;
 import im.actor.core.entity.signals.OfferSignal;
-import im.actor.core.js.JsMessenger;
 import im.actor.core.js.providers.webrtc.JsAudio;
-import im.actor.core.js.providers.webrtc.JsIceCandidateEvent;
 import im.actor.core.js.providers.webrtc.JsIceServer;
 import im.actor.core.js.providers.webrtc.JsPeerConnection;
 import im.actor.core.js.providers.webrtc.JsPeerConnectionConfig;
@@ -21,6 +19,9 @@ import im.actor.core.js.providers.webrtc.JsRTCIceCandidate;
 import im.actor.core.js.providers.webrtc.JsSessionDescription;
 import im.actor.core.js.providers.webrtc.JsStreaming;
 import im.actor.core.js.providers.webrtc.JsUserMediaStream;
+import im.actor.core.viewmodel.UserVM;
+import im.actor.core.webrtc.WebRTCController;
+import im.actor.core.webrtc.WebRTCProvider;
 import im.actor.runtime.Log;
 import im.actor.runtime.function.Consumer;
 
@@ -28,20 +29,22 @@ public class JsWebRTCProvider implements WebRTCProvider {
 
     private static final String TAG = "JsWebRTCProvider";
 
-    private static int NEXT_ITERATION = 0;
-
-    private int currentIteration = 0;
-
+    private WebRTCController controller;
     private JsPeerConnection peerConnection;
-    private JsUserMediaStream mediaStream;
     private boolean isReady = false;
     private ArrayList<CandidateSignal> pendingCandidates;
 
     @Override
-    public void onIncomingCall() {
+    public void init(WebRTCController controller) {
+        this.controller = controller;
+    }
+
+    @Override
+    public void onIncomingCall(Peer peer, UserVM[] users) {
+        controller.answerCall();
+
         Log.d(TAG, "onIncomingCall");
         pendingCandidates = new ArrayList<>();
-        JsMessenger.getInstance().callAnswer();
         JsArray<JsIceServer> servers = JsArray.createArray().cast();
         servers.push(JsIceServer.create("stun:62.4.22.219:3478"));
         servers.push(JsIceServer.create("turn:62.4.22.219:3478?transport=tcp", "actor", "password"));
@@ -52,8 +55,11 @@ public class JsWebRTCProvider implements WebRTCProvider {
             public void onIceCandidate(JsRTCIceCandidate candidate) {
                 Log.d(TAG, "onIceCandidate: " + JsonUtils.stringify(candidate));
                 if (candidate != null) {
-                    JsMessenger.getInstance().callSendSignaling(new CandidateSignal(candidate.getId(),
+                    controller.sendSignaling(new CandidateSignal(candidate.getId(),
                             candidate.getLabel(), candidate.getSDP()));
+
+//                    JsMessenger.getInstance().callSendSignaling(new CandidateSignal(candidate.getId(),
+//                            candidate.getLabel(), candidate.getSDP()));
                 }
             }
 
@@ -63,9 +69,11 @@ public class JsWebRTCProvider implements WebRTCProvider {
                 JsAudio.playStream(stream);
             }
         });
+
         JsStreaming.getUserAudio().then(new Consumer<JsUserMediaStream>() {
             @Override
             public void apply(JsUserMediaStream jsUserMediaStream) {
+                // JsAudio.playStream(jsUserMediaStream);
                 Log.d(TAG, "Audio is created");
                 peerConnection.addStream(jsUserMediaStream);
             }
@@ -78,17 +86,17 @@ public class JsWebRTCProvider implements WebRTCProvider {
     }
 
     @Override
-    public void onOutgoingCall() {
-        Log.d(TAG, "onOutgoingCall");
+    public void onOutgoingCall(Peer peer, UserVM[] users) {
+
     }
 
     @Override
-    public void onCallStarted() {
-        Log.d(TAG, "onCallStarted");
+    public void onCallStart() {
+
     }
 
     @Override
-    public void onSignalingReceived(AbsSignal signal) {
+    public void onCallSignaling(AbsSignal signal) {
         Log.d(TAG, "onSignalingReceived: " + signal);
         if (signal instanceof OfferSignal) {
             String sdp = ((OfferSignal) signal).getSdp();
@@ -102,7 +110,7 @@ public class JsWebRTCProvider implements WebRTCProvider {
                         public void apply(JsSessionDescription jsSessionDescription) {
                             peerConnection.setLocalDescription(jsSessionDescription);
                             Log.d(TAG, "Session desc: " + jsSessionDescription);
-                            JsMessenger.getInstance().callSendSignaling(new AnswerSignal(jsSessionDescription.getSDP()));
+                            controller.sendSignaling(new AnswerSignal(jsSessionDescription.getSDP()));
 
                             isReady = true;
                             for (CandidateSignal signal1 : pendingCandidates) {
@@ -136,6 +144,7 @@ public class JsWebRTCProvider implements WebRTCProvider {
 
     private void applySignals(CandidateSignal signal) {
         try {
+            Log.d(TAG, "applySignals: " + signal);
             peerConnection.addIceCandidate(signal.getLabel(), signal.getSdp());
         } catch (Exception e) {
             Log.e(TAG, e);
@@ -143,11 +152,7 @@ public class JsWebRTCProvider implements WebRTCProvider {
     }
 
     @Override
-    public void onCallEnded() {
-        Log.d(TAG, "onCallEnded");
+    public void onCallEnd() {
 
-        // TODO: Close
-        peerConnection = null;
-        mediaStream = null;
     }
 }

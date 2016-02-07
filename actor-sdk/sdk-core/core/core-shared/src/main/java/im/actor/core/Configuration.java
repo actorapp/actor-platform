@@ -4,17 +4,16 @@
 
 package im.actor.core;
 
-import org.jetbrains.annotations.Nullable;
-
 import im.actor.core.network.TrustedKey;
+import im.actor.core.notifications.NotificationProvider;
+import im.actor.core.phonebook.PhoneBookProvider;
+import im.actor.core.webrtc.WebRTCProvider;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
 
 /**
  * Configuration for Messenger
  */
 public class Configuration {
-
-    private final ConfigurationExtension[] extensions;
 
     private final ConnectionEndpoint[] endpoints;
 
@@ -61,7 +60,6 @@ public class Configuration {
                   int minDelay,
                   int maxDelay,
                   int maxFailureCount,
-                  ConfigurationExtension[] extensions,
                   String timeZone,
                   String[] preferredLanguages,
                   String customAppName,
@@ -80,7 +78,6 @@ public class Configuration {
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
         this.maxFailureCount = maxFailureCount;
-        this.extensions = extensions;
         this.timeZone = timeZone;
         this.preferredLanguages = preferredLanguages;
         this.customAppName = customAppName;
@@ -94,7 +91,6 @@ public class Configuration {
      *
      * @return WebRTC provider
      */
-    @Nullable
     public WebRTCProvider getWebRTCProvider() {
         return webRTCProvider;
     }
@@ -124,15 +120,6 @@ public class Configuration {
      */
     public String getCustomAppName() {
         return customAppName;
-    }
-
-    /**
-     * Get configured extensions
-     *
-     * @return extensions
-     */
-    public ConfigurationExtension[] getExtensions() {
-        return extensions;
     }
 
     /**
