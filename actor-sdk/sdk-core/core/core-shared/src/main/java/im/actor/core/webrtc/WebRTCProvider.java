@@ -8,6 +8,7 @@ import im.actor.core.viewmodel.UserVM;
  * WebRTC provider. Used for providing Calls support.
  * All methods except init are called in background call management actor.
  * IMPORTANT: Right after "onCallEnd" called you need to stop sending any signaling messages.
+ * Between onIncomingCall/onOutgoingCall and onCallEnd all methods are called with the same call id.
  */
 public interface WebRTCProvider {
 
@@ -21,10 +22,11 @@ public interface WebRTCProvider {
     /**
      * Incoming Call event. To answer call invoke controller.answerCall();
      *
-     * @param peer  Call peer
-     * @param users participators of a call
+     * @param callId Unique Call Id
+     * @param peer   Call peer
+     * @param users  participators of a call
      */
-    void onIncomingCall(Peer peer, UserVM[] users);
+    void onIncomingCall(long callId, Peer peer, UserVM[] users);
 
     /**
      * Outgoing Call event. This doesn't mean that call is started.
@@ -32,22 +34,22 @@ public interface WebRTCProvider {
      * @param peer  Call peer
      * @param users participators of a call
      */
-    void onOutgoingCall(Peer peer, UserVM[] users);
+    void onOutgoingCall(long callId, Peer peer, UserVM[] users);
 
     /**
      * Call Start event. Called when they other peer answers a call.
      */
-    void onCallStart();
+    void onCallStart(long callId);
 
     /**
      * Call signaling event. When other peer sends signaling.
      *
      * @param signal signal
      */
-    void onCallSignaling(AbsSignal signal);
+    void onCallSignaling(long callId, AbsSignal signal);
 
     /**
      * Call End event
      */
-    void onCallEnd();
+    void onCallEnd(long callId);
 }
