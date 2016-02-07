@@ -62,7 +62,6 @@ public class RequestSendCallSignal extends Request<ResponseVoid> {
     public String toString() {
         String res = "rpc SendCallSignal{";
         res += "callId=" + this.callId;
-        res += ", content=" + byteArrayToString(this.content);
         res += "}";
         return res;
     }

@@ -25,11 +25,15 @@ public class ResponseLoadGroupedDialogs extends Response {
     private List<ApiDialogGroup> dialogs;
     private List<ApiUser> users;
     private List<ApiGroup> groups;
+    private Boolean showArchived;
+    private Boolean showInvite;
 
-    public ResponseLoadGroupedDialogs(@NotNull List<ApiDialogGroup> dialogs, @NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups) {
+    public ResponseLoadGroupedDialogs(@NotNull List<ApiDialogGroup> dialogs, @NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups, @Nullable Boolean showArchived, @Nullable Boolean showInvite) {
         this.dialogs = dialogs;
         this.users = users;
         this.groups = groups;
+        this.showArchived = showArchived;
+        this.showInvite = showInvite;
     }
 
     public ResponseLoadGroupedDialogs() {
@@ -51,6 +55,16 @@ public class ResponseLoadGroupedDialogs extends Response {
         return this.groups;
     }
 
+    @Nullable
+    public Boolean showArchived() {
+        return this.showArchived;
+    }
+
+    @Nullable
+    public Boolean showInvite() {
+        return this.showInvite;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         List<ApiDialogGroup> _dialogs = new ArrayList<ApiDialogGroup>();
@@ -68,6 +82,8 @@ public class ResponseLoadGroupedDialogs extends Response {
             _groups.add(new ApiGroup());
         }
         this.groups = values.getRepeatedObj(3, _groups);
+        this.showArchived = values.optBool(4);
+        this.showInvite = values.optBool(5);
     }
 
     @Override
@@ -75,6 +91,12 @@ public class ResponseLoadGroupedDialogs extends Response {
         writer.writeRepeatedObj(1, this.dialogs);
         writer.writeRepeatedObj(2, this.users);
         writer.writeRepeatedObj(3, this.groups);
+        if (this.showArchived != null) {
+            writer.writeBool(4, this.showArchived);
+        }
+        if (this.showInvite != null) {
+            writer.writeBool(5, this.showInvite);
+        }
     }
 
     @Override

@@ -9,6 +9,7 @@ public enum ApiPeerType {
 
     PRIVATE(1),
     GROUP(2),
+    ENCRYPTEDPRIVATE(3),
     UNSUPPORTED_VALUE(-1);
 
     private int value;
@@ -25,6 +26,7 @@ public enum ApiPeerType {
         switch(value) {
             case 1: return ApiPeerType.PRIVATE;
             case 2: return ApiPeerType.GROUP;
+            case 3: return ApiPeerType.ENCRYPTEDPRIVATE;
             default: return ApiPeerType.UNSUPPORTED_VALUE;
         }
     }

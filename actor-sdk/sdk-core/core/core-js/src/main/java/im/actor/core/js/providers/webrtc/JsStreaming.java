@@ -35,7 +35,7 @@ public class JsStreaming {
                     }
                 });
             }
-        }).done(JsScheduller.scheduller());
+        });
     }
 
     protected static native void getUserMediaJs(JsUserMediaConstraint constraint, JsMediaCallback callback)/*-{
