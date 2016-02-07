@@ -2,34 +2,13 @@ package im.actor.core.modules.calls;
 
 import java.util.HashMap;
 
-import im.actor.core.WebRTCProvider;
-import im.actor.core.api.ApiOutPeer;
-import im.actor.core.api.ApiPeerType;
-import im.actor.core.api.rpc.RequestCallInProgress;
-import im.actor.core.api.rpc.RequestDoCall;
-import im.actor.core.api.rpc.RequestEndCall;
-import im.actor.core.api.rpc.RequestSendCallSignal;
-import im.actor.core.api.rpc.RequestSubscribeToCalls;
+import im.actor.core.webrtc.WebRTCProvider;
 import im.actor.core.api.rpc.ResponseDoCall;
-import im.actor.core.entity.User;
 import im.actor.core.entity.signals.AbsSignal;
-import im.actor.core.events.IncomingCall;
-import im.actor.core.events.NewSessionCreated;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.calls.CallActor;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.Command;
-import im.actor.core.viewmodel.CommandCallback;
-import im.actor.runtime.Log;
-import im.actor.runtime.actors.Actor;
-import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.actors.Props;
-import im.actor.runtime.eventbus.BusSubscriber;
-import im.actor.runtime.eventbus.Event;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -44,6 +23,7 @@ public class CallsModule extends AbsModule {
 
     private HashMap<Long, ActorRef> calls = new HashMap<>();
     private WebRTCProvider provider;
+    private ActorRef callNotifier;
     private ActorRef callManager;
 
     public CallsModule(ModuleContext context) {
@@ -58,6 +38,7 @@ public class CallsModule extends AbsModule {
         }
 
         callManager = system().actorOf("calls/manager", CallManagerActor.CONSTRUCTOR(context()));
+        // provider.init();
 
 //        if (CALLS_ENABLED) {
 //            request(new RequestSubscribeToCalls());

@@ -3,10 +3,13 @@ package im.actor.core.modules.calls;
 import im.actor.core.api.rpc.RequestCallInProgress;
 import im.actor.core.api.rpc.RequestSendCallSignal;
 import im.actor.core.api.rpc.RequestSubscribeToCalls;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.signals.AbsSignal;
 import im.actor.core.events.NewSessionCreated;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.util.ModuleActor;
+import im.actor.core.viewmodel.UserVM;
+import im.actor.core.webrtc.WebRTCProvider;
 import im.actor.runtime.Log;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.function.Constructor;
@@ -26,9 +29,9 @@ public class CallManagerActor extends ModuleActor {
     private static final int IN_PROGRESS_TIMEOUT = 15000;
 
     private long subscribeRequest = -1;
-    private long progressRequest = -1;
 
-    private long runningCallId = -1;
+    private WebRTCControllerImpl webRTCController;
+    private WebRTCProvider provider;
 
     public CallManagerActor(ModuleContext context) {
         super(context);
@@ -39,46 +42,55 @@ public class CallManagerActor extends ModuleActor {
         super.preStart();
         subscribeForCalls();
         subscribe(NewSessionCreated.EVENT);
+
+        webRTCController = new WebRTCControllerImpl(self());
+        provider = config().getWebRTCProvider();
+        provider.init(webRTCController);
     }
 
     private void onIncomingCall(long callId, int uid) {
         Log.d(TAG, "onIncomingCall (" + callId + ", " + uid + ")");
-        if (runningCallId != -1) {
+
+        // Switching call id
+        if (webRTCController.getCallId() != -1) {
             return;
         }
-        runningCallId = callId;
-        config().getWebRTCProvider().onIncomingCall();
+        webRTCController.switchCallId(callId);
+
+        // Notify provider
+        provider.onIncomingCall(Peer.user(uid), new UserVM[]{getUserVM(uid)});
     }
 
-    private void onAnswerCall() {
+    private void onAnswerCall(long callId) {
         Log.d(TAG, "onAnswerCall");
-        if (runningCallId == -1) {
+        if (webRTCController.getCallId() != callId) {
             return;
         }
 
-        progressRequest = request(new RequestCallInProgress(runningCallId, IN_PROGRESS_TIMEOUT));
+        request(new RequestCallInProgress(callId, IN_PROGRESS_TIMEOUT));
     }
 
     private void onSignaling(long callId, byte[] message) {
         Log.d(TAG, "onSignaling (" + callId + ")");
-        if (runningCallId != callId) {
+        if (webRTCController.getCallId() != callId) {
             return;
         }
 
         AbsSignal signal = AbsSignal.fromBytes(message);
         if (signal != null) {
-            config().getWebRTCProvider().onSignalingReceived(signal);
+            provider.onCallSignaling(signal);
         }
     }
 
-    private void onSendSignal(AbsSignal signal) {
+    private void onSendSignal(long callId, AbsSignal signal) {
         Log.d(TAG, "onSendSignal: " + signal);
-        if (runningCallId == -1) {
+        if (webRTCController.getCallId() != callId) {
             return;
         }
 
-        request(new RequestSendCallSignal(runningCallId, signal.toByteArray()));
+        request(new RequestSendCallSignal(callId, signal.toByteArray()));
     }
+
 
     private void subscribeForCalls() {
         if (subscribeRequest != -1) {
@@ -106,9 +118,9 @@ public class CallManagerActor extends ModuleActor {
             OnSignaling signaling = (OnSignaling) message;
             onSignaling(signaling.getCallId(), signaling.getMessage());
         } else if (message instanceof AnswerCall) {
-            onAnswerCall();
+            onAnswerCall(((AnswerCall) message).getCallId());
         } else if (message instanceof SendSignaling) {
-            onSendSignal(((SendSignaling) message).getSignal());
+            onSendSignal(((SendSignaling) message).getCallId(), ((SendSignaling) message).getSignal());
         } else {
             super.onReceive(message);
         }
@@ -153,14 +165,29 @@ public class CallManagerActor extends ModuleActor {
 
     public static class AnswerCall {
 
+        private long callId;
+
+        public AnswerCall(long callId) {
+            this.callId = callId;
+        }
+
+        public long getCallId() {
+            return callId;
+        }
     }
 
     public static class SendSignaling {
 
+        private long callId;
         private AbsSignal signal;
 
-        public SendSignaling(AbsSignal signal) {
+        public SendSignaling(long callId, AbsSignal signal) {
+            this.callId = callId;
             this.signal = signal;
+        }
+
+        public long getCallId() {
+            return callId;
         }
 
         public AbsSignal getSignal() {
