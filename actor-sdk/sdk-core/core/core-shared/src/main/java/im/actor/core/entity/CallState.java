@@ -1,5 +1,5 @@
 package im.actor.core.entity;
 
 public enum CallState {
-    CALLING, IN_PROGRESS, ENDED
+    CALLING_OUTGOING, CALLING_INCOMING, IN_PROGRESS, ENDED
 }

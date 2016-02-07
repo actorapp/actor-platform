@@ -623,6 +623,40 @@ public class JsFacade implements Exportable {
         messenger.getJsGroupOnline(gid).unsubscribe(callback);
     }
 
+    // Calls
+
+    public void bindCall(String id, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsCall(id).subscribe(callback);
+    }
+
+    public void unbindCall(String id, JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getJsCall(id).unsubscribe(callback);
+    }
+
+    // Event Bus
+
+    public void bindEventBus(JsEventBusCallback callback) {
+        if (callback == null) {
+            return;
+        }
+
+        messenger.subscribeEventBus(callback);
+    }
+
+    public void unbindEventBus(JsEventBusCallback callback) {
+        if (callback == null) {
+            return;
+        }
+
+        messenger.unsubscribeEventBus(callback);
+    }
+
     // Actions
 
     public void sendMessage(JsPeer peer, String text) {

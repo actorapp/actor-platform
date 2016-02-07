@@ -4,6 +4,7 @@
 
 package im.actor.core.js;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.Event;
 
@@ -18,8 +19,10 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.FastThumb;
+import im.actor.core.js.entity.JsCall;
 import im.actor.core.js.entity.JsCounter;
 import im.actor.core.js.entity.JsDialogGroup;
+import im.actor.core.js.entity.JsEventBusCallback;
 import im.actor.core.js.entity.JsOnlineGroup;
 import im.actor.core.js.entity.JsOnlineUser;
 import im.actor.core.js.entity.JsSearchEntity;
@@ -180,6 +183,10 @@ public class JsMessenger extends Messenger {
         return jsBindingModule.getGroupOnline(gid);
     }
 
+    public JsBindedValue<JsCall> getJsCall(String id) {
+        return jsBindingModule.getCall(id);
+    }
+
     public JsBindedValue<JsTyping> getTyping(Peer peer) {
         return jsBindingModule.getTyping(peer);
     }
@@ -238,7 +245,17 @@ public class JsMessenger extends Messenger {
         return jsBindingModule.getDialogsGroupedList();
     }
 
+    public void broadcastEvent(String tag, JavaScriptObject obj) {
+        jsBindingModule.broadcastEvent(tag, obj);
+    }
 
+    public void subscribeEventBus(JsEventBusCallback callback) {
+        jsBindingModule.subscribeEventBus(callback);
+    }
+
+    public void unsubscribeEventBus(JsEventBusCallback callback) {
+        jsBindingModule.unsubscribeEventBus(callback);
+    }
 
     private String getSmallAvatarUrl(Avatar avatar) {
         if (avatar != null && avatar.getSmallImage() != null) {

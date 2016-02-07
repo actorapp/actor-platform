@@ -1,7 +1,10 @@
 package im.actor.core.js.providers;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
+import im.actor.core.Messenger;
+import im.actor.core.js.JsMessenger;
 import im.actor.core.js.modules.JsScheduller;
 import im.actor.core.js.providers.webrtc.JsAudio;
 import im.actor.core.js.providers.webrtc.JsIceServer;
@@ -24,6 +27,7 @@ public class JsWebRTCProvider implements WebRTCProvider {
     private static final String TAG = "JsWebRTCProvider";
 
     private WebRTCController controller;
+    private JsMessenger messenger;
     private JsPeerConnection peerConnection;
     private JsAudio voicePlayback;
     private JsMediaStream voiceCapture;
@@ -31,19 +35,28 @@ public class JsWebRTCProvider implements WebRTCProvider {
     private long runningCallId;
 
     @Override
-    public void init(WebRTCController controller) {
+    public void init(Messenger messenger, WebRTCController controller) {
         this.controller = controller;
+        this.messenger = (JsMessenger) messenger;
     }
 
     @Override
-    public void onIncomingCall(final long callId) {
+    public void onIncomingCall(long callId) {
         runningCallId = callId;
+
+        messenger.broadcastEvent("call", callEvent("" + callId, "incoming"));
     }
 
     @Override
     public void onOutgoingCall(long callId) {
         runningCallId = callId;
+
+        messenger.broadcastEvent("call", callEvent("" + callId, "outgoing"));
     }
+
+    private final native JavaScriptObject callEvent(String id, String type)/*-{
+        return {id: id, type: type};
+    }-*/;
 
     private void createPeerConnection(final long callId) {
         JsArray<JsIceServer> servers = JsArray.createArray().cast();
