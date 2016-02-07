@@ -6,10 +6,11 @@ package im.actor.core.js.providers;
 
 import java.util.ArrayList;
 
-import im.actor.core.PhoneBookProvider;
 import im.actor.core.entity.PhoneBookContact;
+import im.actor.core.phonebook.PhoneBookProvider;
 
 public class JsPhoneBookProvider implements PhoneBookProvider {
+
     @Override
     public void loadPhoneBook(Callback callback) {
         callback.onLoaded(new ArrayList<PhoneBookContact>());

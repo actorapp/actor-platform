@@ -9,7 +9,6 @@ import com.google.gwt.media.client.Audio;
 import java.util.List;
 
 import im.actor.core.Messenger;
-import im.actor.core.NotificationProvider;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Notification;
 import im.actor.core.entity.PeerType;
@@ -17,6 +16,7 @@ import im.actor.core.js.JsMessenger;
 import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.providers.notification.JsManagedNotification;
 import im.actor.core.js.providers.notification.JsNotification;
+import im.actor.core.notifications.NotificationProvider;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 
