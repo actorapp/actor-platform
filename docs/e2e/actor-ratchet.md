@@ -1,6 +1,6 @@
 # Actor Ratchet (based on Axolotl Ratchet)
 
-Actor Ratchet is based on ideas of Axolotl Ratchet, but imrove it to make it self-healing proto if something goes wrong in implementation or device environment.
+Actor Ratchet is based on ideas of Axolotl Ratchet, but improve it to make it self-healing proto if something goes wrong in implementation or device environment.
 
 Axolotl also requires to keep RootKey and complex state about encryption. We are trying to avoid this and make proto to be able to automatically heal itself.
 
