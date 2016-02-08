@@ -177,11 +177,6 @@ public class ActorSDK {
         log("Found time zone :\(timeZone)")
         builder.setTimeZone(timeZone)
   
-        // Extensions
-        for ex in extensions {
-            builder.addExtensionWithNSString(ex.key, withACExtension: ex.ext)
-        }
-        
         // Logs
         // builder.setEnableFilesLogging(true)
         
