@@ -1,5 +1,7 @@
 package im.actor.core.webrtc;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.core.Messenger;
 
 /**
@@ -16,6 +18,7 @@ public interface WebRTCProvider {
      * @param messenger  Messenger
      * @param controller controller
      */
+    @ObjectiveCName("initWithMessenger:withController:")
     void init(Messenger messenger, WebRTCController controller);
 
     /**
@@ -23,6 +26,7 @@ public interface WebRTCProvider {
      *
      * @param callId Unique Call Id
      */
+    @ObjectiveCName("onIncomingCallWithCallId:")
     void onIncomingCall(long callId);
 
     /**
@@ -30,6 +34,7 @@ public interface WebRTCProvider {
      *
      * @param callId Unique Call Id
      */
+    @ObjectiveCName("onOutgoingCallWithCallId:")
     void onOutgoingCall(long callId);
 
     /**
@@ -37,6 +42,7 @@ public interface WebRTCProvider {
      *
      * @param callId Unique Call Id
      */
+    @ObjectiveCName("onOfferNeededWithCallId:")
     void onOfferNeeded(long callId);
 
     /**
@@ -45,6 +51,7 @@ public interface WebRTCProvider {
      * @param callId   Unique Call Id
      * @param offerSDP answer SDP
      */
+    @ObjectiveCName("onAnswerReceivedWithCallId:withSDP:")
     void onAnswerReceived(long callId, String offerSDP);
 
     /**
@@ -53,6 +60,7 @@ public interface WebRTCProvider {
      * @param callId   Unique Call Id
      * @param offerSDP offer SDP
      */
+    @ObjectiveCName("onOfferReceivedWithCallId:withSDP:")
     void onOfferReceived(long callId, String offerSDP);
 
     /**
@@ -63,6 +71,7 @@ public interface WebRTCProvider {
      * @param label  label of candidate
      * @param sdp    sdp of candidate
      */
+    @ObjectiveCName("onCandidateWithCallId:withId:withLabel:withSDP:")
     void onCandidate(long callId, String id, int label, String sdp);
 
     /**
@@ -70,5 +79,6 @@ public interface WebRTCProvider {
      *
      * @param callId Unique Call Id
      */
+    @ObjectiveCName("onCallEndWithCallId:")
     void onCallEnd(long callId);
 }
