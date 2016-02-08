@@ -2,6 +2,8 @@ package im.actor.core.webrtc;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
+import org.jetbrains.annotations.NotNull;
+
 import im.actor.core.Messenger;
 
 /**
@@ -19,7 +21,7 @@ public interface WebRTCProvider {
      * @param controller controller
      */
     @ObjectiveCName("initWithMessenger:withController:")
-    void init(Messenger messenger, WebRTCController controller);
+    void init(@NotNull Messenger messenger, @NotNull WebRTCController controller);
 
     /**
      * Incoming Call event. To answer call invoke controller.answerCall();
@@ -52,7 +54,7 @@ public interface WebRTCProvider {
      * @param offerSDP answer SDP
      */
     @ObjectiveCName("onAnswerReceivedWithCallId:withSDP:")
-    void onAnswerReceived(long callId, String offerSDP);
+    void onAnswerReceived(long callId, @NotNull String offerSDP);
 
     /**
      * Called when call offer arrived
@@ -61,7 +63,7 @@ public interface WebRTCProvider {
      * @param offerSDP offer SDP
      */
     @ObjectiveCName("onOfferReceivedWithCallId:withSDP:")
-    void onOfferReceived(long callId, String offerSDP);
+    void onOfferReceived(long callId, @NotNull String offerSDP);
 
     /**
      * Called when new candidate arrived from other peer
@@ -72,7 +74,7 @@ public interface WebRTCProvider {
      * @param sdp    sdp of candidate
      */
     @ObjectiveCName("onCandidateWithCallId:withId:withLabel:withSDP:")
-    void onCandidate(long callId, String id, int label, String sdp);
+    void onCandidate(long callId, @NotNull String id, int label, @NotNull String sdp);
 
     /**
      * Call End event
