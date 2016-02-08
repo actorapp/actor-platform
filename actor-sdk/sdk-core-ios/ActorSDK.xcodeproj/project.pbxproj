@@ -2010,6 +2010,7 @@
 					"$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/",
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils",
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils/AudioRecorder/libopus/lib",
+					"$(inherited)",
 				);
 				MACH_O_TYPE = mh_dylib;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2060,6 +2061,7 @@
 					"$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/",
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils",
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils/AudioRecorder/libopus/lib",
+					"$(inherited)",
 				);
 				MACH_O_TYPE = mh_dylib;
 				ONLY_ACTIVE_ARCH = YES;
