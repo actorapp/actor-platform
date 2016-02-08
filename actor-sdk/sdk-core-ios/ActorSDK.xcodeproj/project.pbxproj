@@ -172,6 +172,7 @@
 		06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE89891BD8401C005A5530 /* Reachability.swift */; };
 		06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */; };
 		06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */; };
+		06E322C91C69344A00D66F53 /* iOSWebRTCProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E322C81C69344A00D66F53 /* iOSWebRTCProvider.swift */; };
 		06E7B2471C0F8D7A0090660C /* AALocationPickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2461C0F8D7A0090660C /* AALocationPickerController.swift */; };
 		06E7B24A1C0F92140090660C /* AABubbleLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */; };
 		06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B24B1C0FAB500090660C /* AAMapFastView.swift */; };
@@ -465,6 +466,7 @@
 		06CE89891BD8401C005A5530 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorSDKAnalytics.swift; sourceTree = "<group>"; };
+		06E322C81C69344A00D66F53 /* iOSWebRTCProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSWebRTCProvider.swift; sourceTree = "<group>"; };
 		06E7B2461C0F8D7A0090660C /* AALocationPickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AALocationPickerController.swift; sourceTree = "<group>"; };
 		06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleLocationCell.swift; sourceTree = "<group>"; };
 		06E7B24B1C0FAB500090660C /* AAMapFastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapFastView.swift; sourceTree = "<group>"; };
@@ -673,8 +675,9 @@
 		066A50D41BC4AE63000E606E /* ActorSDK */ = {
 			isa = PBXGroup;
 			children = (
-				065975081BC7C4F300B8C7DF /* Resources */,
 				069CF4151BCA5DB500C66E12 /* Sources */,
+				065975081BC7C4F300B8C7DF /* Resources */,
+				06E323091C693A4E00D66F53 /* Libs */,
 			);
 			path = ActorSDK;
 			sourceTree = "<group>";
@@ -714,7 +717,6 @@
 		066A51571BC4C112000E606E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				15D35F0A1C20182900E3717A /* AudioRecorder */,
 				15D35F721C201B5300E3717A /* Categories */,
 				152AA8901C29887A0030DEEE /* Extensions */,
 				066A53311BC534F5000E606E /* AAFileTypes.swift */,
@@ -756,6 +758,7 @@
 				066A51861BC4C383000E606E /* CocoaStorageRuntime.swift */,
 				066A51871BC4C383000E606E /* iOSNotificationProvider.swift */,
 				066A51881BC4C383000E606E /* iOSPhoneBookProvider.swift */,
+				06E322C81C69344A00D66F53 /* iOSWebRTCProvider.swift */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -1115,6 +1118,7 @@
 				066A525F1BC50E53000E606E /* Controllers */,
 				066A51201BC4B53C000E606E /* SwiftExtensions */,
 				066A51571BC4C112000E606E /* Utils */,
+				06E322CB1C69392F00D66F53 /* Libs */,
 				066A52131BC4EDEB000E606E /* Views */,
 				066A525D1BC503BB000E606E /* ActorApplicationDelegate.swift */,
 				066A50D51BC4AE63000E606E /* ActorSDK.h */,
@@ -1140,6 +1144,21 @@
 				069CF4CB1BCB909A00C66E12 /* CLTokenView.m */,
 			);
 			path = CLTokenInputView;
+			sourceTree = "<group>";
+		};
+		06E322CB1C69392F00D66F53 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				15D35F0A1C20182900E3717A /* AudioRecorder */,
+			);
+			name = Libs;
+			sourceTree = "<group>";
+		};
+		06E323091C693A4E00D66F53 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Libs;
 			sourceTree = "<group>";
 		};
 		06E7B2451C0F8D410090660C /* Location */ = {
@@ -1240,7 +1259,8 @@
 				15D35F4B1C20187E00E3717A /* NSObject+TGLock.h */,
 				15D35F4C1C20187E00E3717A /* NSObject+TGLock.m */,
 			);
-			path = AudioRecorder;
+			name = AudioRecorder;
+			path = Utils/AudioRecorder;
 			sourceTree = "<group>";
 		};
 		15D35F0B1C20184700E3717A /* opusenc */ = {
@@ -1798,6 +1818,7 @@
 				066A53221BC533F5000E606E /* AAMessagesFlowLayout.swift in Sources */,
 				15D35F541C20187E00E3717A /* AAOpusAudioRecorder.m in Sources */,
 				066A52671BC50E7B000E606E /* AAAuthPhoneViewController.swift in Sources */,
+				06E322C91C69344A00D66F53 /* iOSWebRTCProvider.swift in Sources */,
 				066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */,
 				066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */,
 				069CF4CD1BCB909A00C66E12 /* CLBackspaceDetectingTextField.m in Sources */,
@@ -2011,6 +2032,7 @@
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils",
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils/AudioRecorder/libopus/lib",
 					"$(inherited)",
+					"$(PROJECT_DIR)/ActorSDK/Libs",
 				);
 				MACH_O_TYPE = mh_dylib;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2062,6 +2084,7 @@
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils",
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils/AudioRecorder/libopus/lib",
 					"$(inherited)",
+					"$(PROJECT_DIR)/ActorSDK/Libs",
 				);
 				MACH_O_TYPE = mh_dylib;
 				ONLY_ACTIVE_ARCH = YES;
