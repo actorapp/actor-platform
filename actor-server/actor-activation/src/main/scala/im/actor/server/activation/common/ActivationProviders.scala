@@ -13,10 +13,11 @@ object ActivationProviders {
   val InApp = "in-app"
 
   /**
-   * TODO: describe doc
-   *
-   * @param system
-   * @return
+   * Instantiates activation providers based on configuration.
+   * Makes sure to instantiate only one instance of provider,
+   * if it is present for several activation types
+   * @param system actor system
+   * @return map from activation type to activation provider instance
    */
   def getProviders()(implicit system: ActorSystem): Map[String, ActivationProvider] = {
     val providersConfig = ActorConfig.load().getConfig("services.activation.providers")
@@ -33,9 +34,11 @@ object ActivationProviders {
     reverseMap flatMap {
       case (className, activationTypes) ⇒
         providerOf(className, system) match {
-          case Success(instance) ⇒ (activationTypes map { _ → instance }).toMap
+          case Success(instance) ⇒
+            system.log.debug("Successfully instantiated code provider: {}, for activation types: [{}]", className, activationTypes mkString ", ")
+            (activationTypes map { _ → instance }).toMap
           case Failure(e) ⇒
-            system.log.warning("Failed to instantiate code provider: {}", className)
+            system.log.warning("Failed to instantiate code provider: {}, exception: {}", className, e)
             Map.empty[String, ActivationProvider]
         }
     }

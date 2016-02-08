@@ -86,12 +86,12 @@ trait AuthHelpers extends Helpers {
         case p: AuthPhoneTransaction ⇒
           val phone = p.phoneNumber
           for {
-            _ ← fromFuture(activationContext.cleanup(p.transactionHash))
+            _ ← fromFuture(activationContext.cleanup(p))
             _ ← fromFuture(userExt.addPhone(user.id, phone))
           } yield ()
         case e: AuthEmailTransaction ⇒
           for {
-            _ ← fromFuture(activationContext.cleanup(e.transactionHash))
+            _ ← fromFuture(activationContext.cleanup(e))
             _ ← fromFuture(userExt.addEmail(user.id, e.email))
           } yield ()
         case u: AuthUsernameTransaction ⇒
@@ -125,7 +125,7 @@ trait AuthHelpers extends Helpers {
         case tx: AuthTransactionBase with ExpirableCode ⇒
           val (codeExpired, codeInvalid) = expirationErrors(tx)
           for {
-            validationResponse ← fromFuture(activationContext.validate(transactionHash, code))
+            validationResponse ← fromFuture(activationContext.validate(tx, code))
             _ ← validationResponse match {
               case ExpiredCode                     ⇒ cleanupAndError(transactionHash, codeExpired)
               case InvalidHash                     ⇒ cleanupAndError(transactionHash, AuthErrors.InvalidAuthCodeHash)
@@ -161,13 +161,13 @@ trait AuthHelpers extends Helpers {
             //if user is not registered - return error
             phoneModel ← fromDBIOOption(AuthErrors.PhoneNumberUnoccupied)(UserPhoneRepo.findByPhoneNumber(phone).headOption)
             phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone).headOption)
-            _ ← fromFuture(activationContext.cleanup(transactionHash))
+            _ ← fromFuture(activationContext.cleanup(p))
           } yield (phoneModel.userId, phoneAndCode._2)
         case e: AuthEmailTransaction ⇒
           for {
             //if user is not registered - return error
             emailModel ← fromDBIOOption(AuthErrors.EmailUnoccupied)(UserEmailRepo.find(e.email))
-            _ ← fromFuture(activationContext.cleanup(transactionHash))
+            _ ← fromFuture(activationContext.cleanup(e))
           } yield (emailModel.userId, "")
         case u: AuthUsernameTransaction ⇒
           for {
