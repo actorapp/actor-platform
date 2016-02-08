@@ -6,15 +6,15 @@ export default {
       'signIn': 'Registrarse',
       'wrong': '¿Equivocado?',
       'phone': 'Número de móvil',
-      'email': 'Email address',
+      'email': 'Dirección de email',
       'authCode': 'Código verificación',
       'yourName': 'Su nombre',
       'errors': {
         'numberInvalid': 'Número no válido',
         'nameInvalid': 'Nombre no válido',
         'codeInvalid': 'Código no válido',
-        'codeExpired': 'Phone code is expired',
-        'codeWait': 'Try to request code later'
+        'codeExpired': 'Código experido',
+        'codeWait': 'Vulve a solicitar pasado un minuto'
       },
       'welcome': {
         'header': '<strong>{appName}</strong> Mensajería, gratis, y veloz.',
@@ -50,7 +50,8 @@ export default {
       'createGroup': 'Crear grupo',
       'addMembers': 'Añadir miembros',
       'quickSearch': 'Búsqueda rápida',
-      'close': 'Cerca'
+      'close': 'Cerca',
+      'save': 'Guardar'
     },
 
     // Messages
@@ -63,17 +64,25 @@ export default {
       'quote': 'Citar',
       'uploading': 'Carga...',
       'welcome': {
-        'private': '<p>This is the very beginning of your private conversation with <strong>{name}</strong>.</p><p>All messages here are private between the two of you.</p>',
+        'private': '<p>Este es el inicio de tu conversación privada con <strong>{name}</strong>.</p><p>Todos los mensajes son encriptados entre los dos usuarios.</p>',
         'group': {
-          'main': '<p>This is the very beginning of <strong>{name}</strong> group conversation which created by {creator}.</p>',
-          'you': 'You',
+          'main': '<p>Este es el principio de <strong>{name}</strong> grupo de conversación que creado por {creator}.</p>',
+          'you': 'usted',
           'actions': {
-            'start': 'You can ',
-            'end': ' to this conversation.',
-            'invite': 'invite more users'
+            'start': 'Puede invitar ',
+            'end': ' a esta conversación.',
+            'invite': 'a más usuarios'
           }
         }
-      }
+      },
+      'loading': 'Cargando historial de mensajes'
+    },
+
+    // Connection state
+    'connectionState': {
+      'connecting': '¡Houston, tenemos un problema! Conexión con {appName} servidor se pierde. Intentando reconectar ahora...',
+      'online': 'Estás de vuelta en línea!',
+      'updating': ''
     },
 
     // Compose
@@ -115,51 +124,56 @@ export default {
       'contacts': {
         'title': 'Personas',
         'search': 'Buscar contactos',
-        'notFound': 'Lo sentimos, no hay usuarios encontrados.'
+        'notFound': 'Lo sentimos, no hay usuarios encontrados.',
+        'loading': 'Cargando'
       },
       'groups': {
         'title': 'Grupos',
         'search': 'Buscar',
         'loading': 'Cargando',
-        'notFound': 'No matches found for <strong>{query}</strong>.'
+        'notFound': 'No se han encontrado coincidencias <strong>{query}</strong>.'
       },
       'attachments': {
-        'title': 'Send file',
-        'name': 'Filename',
-        'type': 'Type',
-        'size': 'Size',
+        'title': 'Envier archivo',
+        'name': 'Nombre del archivo',
+        'type': 'Tipo',
+        'size': 'Tamaño',
         'extra': 'Extra',
-        'sendAsPicture': 'Send as picture'
+        'sendAsPicture': 'Enviar esta imagen'
       },
       'addContact': {
         'title': 'Añadir contacto',
         'query': 'Correo electrónico, teléfono o sobrenombre',
         'phone': 'Número de móvil',
-        'notFound': 'User with such data is not found',
-        'empty': 'Start typing to search people',
-        'searching': 'Search for "{query}"'
+        'notFound': 'El usuario con dichos datos no se encuentra',
+        'empty': 'Comience a escribir para buscar personas',
+        'searching': 'Buscar "{query}"'
       },
       'createGroup': {
         'title': 'Crear grupo',
         'groupName': 'Nombre de grupo'
       },
       'quickSearch': {
-        'title': 'Search everywhere',
-        'placeholder': 'Start typing',
-        'toNavigate': 'to navigate',
-        'toSelect': 'to select',
-        'toClose': 'to close',
-        'openDialog': 'Open conversation',
-        'startDialog': 'Start new conversation',
-        'notFound': 'No matches found for <strong>{query}</strong>.<br/>Have you spelled it correctly?'
+        'title': 'Buscar en todas partes',
+        'placeholder': 'Empieza a escribir',
+        'toNavigate': 'para navegar',
+        'toSelect': 'para seleccionar',
+        'toClose': 'para cerrar',
+        'openDialog': 'Abrir conversación',
+        'startDialog': 'Comenzar una nueva conversación',
+        'notFound': 'No se han encontrado coincidencias <strong>{query}</strong>.<br/>Tiene escrito correctamente?'
       },
       'confirm': {
-        'logout': 'Do you really want to leave?',
-        'leave': 'Do you really want to leave this conversation?',
-        'clear': 'Do you really want to clear this conversation?',
-        'delete': 'Do you really want to delete this conversation?',
-        'removeContact': 'You really want to remove {name} from your contacts?',
-        'kick': 'Are you sure you want kick {name}'
+        'logout': '¿De verdad quieres salir?',
+        'leave': '¿De verdad quieres salir de esta conversación?',
+        'clear': '¿Realmente desea borrar esta conversación?',
+        'delete': '¿De verdad quiere eliminar esta conversación?',
+        'removeContact': '¿De verdad quiere eliminar {name} de tus contactos?',
+        'kick': '¿Seguro que deseas expulsar a {name}',
+        'nonContactHide': {
+          'title': '¿Está seguro de que desea ocultar esta conversación?',
+          'body': 'Usuario {name} no está en su lista de contactos.'
+        }
       }
     },
 
@@ -191,7 +205,7 @@ export default {
       '=1 {# Miembro}' +
       'other {# Miembros}' +
     '}',
-    'kick': 'Kick',
+    'kick': 'Expulsar',
     'integrationToken': 'Integration Token',
     'integrationTokenHint': 'If you have programming chops, or know someone who does, this integration token allow the most flexibility and communication with your own systems.',
     'integrationTokenHelp': 'Learn how to integrate',
@@ -218,13 +232,13 @@ export default {
     'preferencesEnableEffects': 'Habilitar efectos de sonido',
     'preferencesNotificationsTitle': 'Notificaciones',
     'preferencesNotificationsGroup': 'Habilitar notificaciones de grupo',
-    'preferencesNotificationsOnlyMention': 'Enable mention only notifications',
-    'preferencesNotificationsOnlyMentionHint': 'You can enable notifications only for messages that contains you mention.',
-    'preferencesPrivacyTitle': 'Privacy',
-    'preferencesMessagePreview': 'Message preview',
-    'preferencesMessagePreviewHint': 'Remove message text from notifications.',
+    'preferencesNotificationsOnlyMention': 'Habilitar notificaciones solo por mención',
+    'preferencesNotificationsOnlyMentionHint': 'Puedes activar las notificaciones sólo para mensajes que contiene lo que mencionas.',
+    'preferencesPrivacyTitle': 'Privacidad',
+    'preferencesMessagePreview': 'Mensaje de previsualización',
+    'preferencesMessagePreviewHint': 'Retire el texto del mensaje de notificaciones.',
     'preferencesSessionsTitle': 'Sesiones activas',
-    'preferencesSessionsCurrentSession': 'Current session',
+    'preferencesSessionsCurrentSession': 'Sesión actual',
     'preferencesSessionsAuthTime': 'Fecha de acceso',
     'preferencesSessionsTerminate': 'Eliminar',
     'preferencesSessionsTerminateAll': 'Terminar todas las sesiones',
@@ -232,7 +246,11 @@ export default {
     'main': {
       'empty': 'Seleccione diálogo o iniciar uno nuevo.',
       'install': '<h1>Versión Web de <b>{appName}</b> Versión solo para navegadores</h1>' +
-                 '<h3>Link de aplicaciones móviles <b>{appName}</b>.</h3>'
+                 '<h3>Link de aplicaciones móviles <b>{appName}</b>.</h3>',
+      'deactivated': {
+        'header': 'Pestaña desactivada',
+        'text': 'Vaya, ha abierto otra sesión con {appName},así que tuvimos que desactivar ésta para evitar posibles errores.'
+      }
     }
   }
 };
