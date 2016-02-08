@@ -1,10 +1,10 @@
-package im.actor.server.activation.internal
+package im.actor.server.activation.common
+
+import com.github.kxbmap.configs._
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import scala.concurrent.duration._
 import scala.util.Try
-
-import com.github.kxbmap.configs._
-import com.typesafe.config.{ ConfigFactory, Config }
 
 object ActivationConfig {
   def load(config: Config): Try[ActivationConfig] =
