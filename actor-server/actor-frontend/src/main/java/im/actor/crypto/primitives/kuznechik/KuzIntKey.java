@@ -3,7 +3,7 @@ package im.actor.crypto.primitives.kuznechik;
 /**
  * Internal presentation of a Kuzhechik key
  */
-class KuzIntKey {
+public class KuzIntKey {
 
     private final Kuz128[] k;
 

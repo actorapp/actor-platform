@@ -35,8 +35,8 @@ public class HMAC implements Digest {
         outerKeyPad = new byte[digest.getDigestSize()];
         innerKeyPad = new byte[digest.getDigestSize()];
         for (int i = 0; i < outerKeyPad.length; i++) {
-            outerKeyPad[i] = (byte) (0x5c ^ this.secret[i]);
-            innerKeyPad[i] = (byte) (0x36 ^ this.secret[i]);
+            outerKeyPad[i] = (byte) (0x5c ^ (this.secret[i] & 0xFF));
+            innerKeyPad[i] = (byte) (0x36 ^ (this.secret[i] & 0xFF));
         }
     }
 

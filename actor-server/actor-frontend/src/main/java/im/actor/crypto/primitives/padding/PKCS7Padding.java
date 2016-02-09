@@ -7,7 +7,7 @@ import im.actor.crypto.primitives.Padding;
  *
  * @author Steve Kite (steve@actor.im)
  */
-public class TLSPadding implements Padding {
+public class PKCS7Padding implements Padding {
 
     @Override
     public void padding(byte[] src, int offset, int length) {
