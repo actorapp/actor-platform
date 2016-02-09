@@ -626,7 +626,7 @@ public class JsFacade implements Exportable {
 
     // Calls
 
-    public JsPromise doCAll(final int uid){
+    public JsPromise doCall(final int uid){
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
