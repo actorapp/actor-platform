@@ -113,7 +113,10 @@ public class SHA256Digest extends GeneralDigest {
         // expand 16 word block into 64 word blocks.
         //
         for (int t = 16; t <= 63; t++) {
-            X[t] = Theta1(X[t - 2]) + X[t - 7] + Theta0(X[t - 15]) + X[t - 16];
+            // X[t] = Theta1(X[t - 2]) + X[t - 7] + Theta0(X[t - 15]) + X[t - 16];
+            X[t] = jsWrap(Theta1(X[t - 2]) + X[t - 7]);
+            X[t] = jsWrap(X[t] + Theta0(X[t - 15]));
+            X[t] = jsWrap(X[t] + X[t - 16]);
         }
 
         //
@@ -130,63 +133,119 @@ public class SHA256Digest extends GeneralDigest {
 
         int t = 0;
         for (int i = 0; i < 8; i++) {
-            // t = 8 * i
-            h += Sum1(e) + Ch(e, f, g) + K[t] + X[t];
-            d += h;
-            h += Sum0(a) + Maj(a, b, c);
+
+            //// t = 8 * i
+            // h += Sum1(e) + Ch(e, f, g) + K[t] + X[t];
+            h = jsWrap(h + Sum1(e));
+            h = jsWrap(h + Ch(e, f, g));
+            h = jsWrap(h + K[t]);
+            h = jsWrap(h + X[t]);
+            // d += h
+            d = jsWrap(d + h);
+            // h += Sum0(a) + Maj(a, b, c)
+            h = jsWrap(h + Sum0(a));
+            h = jsWrap(h + Maj(a, b, c));
             ++t;
 
-            // t = 8 * i + 1
-            g += Sum1(d) + Ch(d, e, f) + K[t] + X[t];
-            c += g;
-            g += Sum0(h) + Maj(h, a, b);
+            //// t = 8 * i + 1
+            // g += Sum1(d) + Ch(d, e, f) + K[t] + X[t];
+            g = jsWrap(g + Sum1(d));
+            g = jsWrap(g + Ch(d, e, f));
+            g = jsWrap(g + K[t]);
+            g = jsWrap(g + X[t]);
+            // c += g;
+            c = jsWrap(c + g);
+            // g += Sum0(h) + Maj(h, a, b);
+            g = jsWrap(g + Sum0(h));
+            g = jsWrap(g + Maj(h, a, b));
             ++t;
 
-            // t = 8 * i + 2
-            f += Sum1(c) + Ch(c, d, e) + K[t] + X[t];
-            b += f;
-            f += Sum0(g) + Maj(g, h, a);
+            //// t = 8 * i + 2
+            // f += Sum1(c) + Ch(c, d, e) + K[t] + X[t];
+            f = jsWrap(f + Sum1(c));
+            f = jsWrap(f + Ch(c, d, e));
+            f = jsWrap(f + K[t]);
+            f = jsWrap(f + X[t]);
+            // b += f;
+            b = jsWrap(b + f);
+            // f += Sum0(g) + Maj(g, h, a);
+            f = jsWrap(f + Sum0(g));
+            f = jsWrap(f + Maj(g, h, a));
             ++t;
 
             // t = 8 * i + 3
-            e += Sum1(b) + Ch(b, c, d) + K[t] + X[t];
-            a += e;
-            e += Sum0(f) + Maj(f, g, h);
+            // e += Sum1(b) + Ch(b, c, d) + K[t] + X[t];
+            e = jsWrap(e + Sum1(b));
+            e = jsWrap(e + Ch(b, c, d));
+            e = jsWrap(e + K[t]);
+            e = jsWrap(e + X[t]);
+            // a += e;
+            a = jsWrap(a + e);
+            // e += Sum0(f) + Maj(f, g, h);
+            e = jsWrap(e + Sum0(f) + Maj(f, g, h));
             ++t;
 
-            // t = 8 * i + 4
-            d += Sum1(a) + Ch(a, b, c) + K[t] + X[t];
-            h += d;
-            d += Sum0(e) + Maj(e, f, g);
+            //// t = 8 * i + 4
+            // d += Sum1(a) + Ch(a, b, c) + K[t] + X[t];
+            d = jsWrap(d + Sum1(a));
+            d = jsWrap(d + Ch(a, b, c));
+            d = jsWrap(d + K[t]);
+            d = jsWrap(d + X[t]);
+            // h += d;
+            h = jsWrap(h + d);
+            // d += Sum0(e) + Maj(e, f, g);
+            d = jsWrap(d + Sum0(e));
+            d = jsWrap(d + Maj(e, f, g));
             ++t;
 
-            // t = 8 * i + 5
-            c += Sum1(h) + Ch(h, a, b) + K[t] + X[t];
-            g += c;
-            c += Sum0(d) + Maj(d, e, f);
+            //// t = 8 * i + 5
+            // c += Sum1(h) + Ch(h, a, b) + K[t] + X[t];
+            c = jsWrap(c + Sum1(h));
+            c = jsWrap(c + Ch(h, a, b));
+            c = jsWrap(c + K[t]);
+            c = jsWrap(c + X[t]);
+            // g += c;
+            g = jsWrap(g + c);
+            // c += Sum0(d) + Maj(d, e, f);
+            c = jsWrap(c + Sum0(d));
+            c = jsWrap(c + Maj(d, e, f));
             ++t;
 
-            // t = 8 * i + 6
-            b += Sum1(g) + Ch(g, h, a) + K[t] + X[t];
-            f += b;
-            b += Sum0(c) + Maj(c, d, e);
+            //// t = 8 * i + 6
+            // b += Sum1(g) + Ch(g, h, a) + K[t] + X[t];
+            b = jsWrap(b + Sum1(g));
+            b = jsWrap(b + Ch(g, h, a));
+            b = jsWrap(b + K[t]);
+            b = jsWrap(b + X[t]);
+            // f += b;
+            f = jsWrap(f + b);
+            // b += Sum0(c) + Maj(c, d, e);
+            b = jsWrap(b + Sum0(c));
+            b = jsWrap(b + Maj(c, d, e));
             ++t;
 
-            // t = 8 * i + 7
-            a += Sum1(f) + Ch(f, g, h) + K[t] + X[t];
-            e += a;
-            a += Sum0(b) + Maj(b, c, d);
+            //// t = 8 * i + 7
+            // a += Sum1(f) + Ch(f, g, h) + K[t] + X[t];
+            a = jsWrap(a + Sum1(f));
+            a = jsWrap(a + Ch(f, g, h));
+            a = jsWrap(a + K[t]);
+            a = jsWrap(a + X[t]);
+            // e += a;
+            e = jsWrap(e + a);
+            // a += Sum0(b) + Maj(b, c, d);
+            a = jsWrap(a + Sum0(b));
+            a = jsWrap(a + Maj(b, c, d));
             ++t;
         }
 
-        H1 += a;
-        H2 += b;
-        H3 += c;
-        H4 += d;
-        H5 += e;
-        H6 += f;
-        H7 += g;
-        H8 += h;
+        H1 = jsWrap(H1 + a);
+        H2 = jsWrap(H2 + b);
+        H3 = jsWrap(H3 + c);
+        H4 = jsWrap(H4 + d);
+        H5 = jsWrap(H5 + e);
+        H6 = jsWrap(H6 + f);
+        H7 = jsWrap(H7 + g);
+        H8 = jsWrap(H8 + h);
 
         //
         // reset the offset and clean out the word buffer.
@@ -195,41 +254,46 @@ public class SHA256Digest extends GeneralDigest {
         for (int i = 0; i < 16; i++) {
             X[i] = 0;
         }
+
+        logState();
     }
 
     /* SHA-256 functions */
-    private int Ch(
-            int x,
-            int y,
-            int z) {
-        return (x & y) ^ ((~x) & z);
+    private int Ch(int x, int y, int z) {
+        return jsWrap((x & y) ^ ((~x) & z));
     }
 
-    private int Maj(
-            int x,
-            int y,
-            int z) {
-        return (x & y) ^ (x & z) ^ (y & z);
+    private int Maj(int x, int y, int z) {
+        return jsWrap((x & y) ^ (x & z) ^ (y & z));
     }
 
-    private int Sum0(
-            int x) {
-        return ((x >>> 2) | (x << 30)) ^ ((x >>> 13) | (x << 19)) ^ ((x >>> 22) | (x << 10));
+    private int Sum0(int x) {
+        return jsWrap((jsWrap(x >>> 2) | jsWrap(x << 30)) ^ (jsWrap(x >>> 13) | jsWrap(x << 19)) ^ (jsWrap(x >>> 22) | jsWrap(x << 10)));
     }
 
-    private int Sum1(
-            int x) {
-        return ((x >>> 6) | (x << 26)) ^ ((x >>> 11) | (x << 21)) ^ ((x >>> 25) | (x << 7));
+    private int Sum1(int x) {
+        return jsWrap((jsWrap(x >>> 6) | jsWrap(x << 26)) ^ (jsWrap(x >>> 11) | jsWrap(x << 21)) ^ (jsWrap(x >>> 25) | jsWrap(x << 7)));
     }
 
-    private int Theta0(
-            int x) {
-        return ((x >>> 7) | (x << 25)) ^ ((x >>> 18) | (x << 14)) ^ (x >>> 3);
+    private int Theta0(int x) {
+        return jsWrap((jsWrap(x >>> 7) | jsWrap(x << 25)) ^ (jsWrap(x >>> 18) | jsWrap(x << 14)) ^ jsWrap(x >>> 3));
     }
 
-    private int Theta1(
-            int x) {
-        return ((x >>> 17) | (x << 15)) ^ ((x >>> 19) | (x << 13)) ^ (x >>> 10);
+    private int Theta1(int x) {
+        return jsWrap((jsWrap(x >>> 17) | jsWrap(x << 15)) ^ (jsWrap(x >>> 19) | jsWrap(x << 13)) ^ jsWrap(x >>> 10));
+    }
+
+    private int jsWrap(int val) {
+        return val & 0xFFFFFFFF;
+    }
+
+    private void logState() {
+        log("H1=" + H1 + ", H2=" + H2 + ", H3=" + H3 + ", H4=" + H4
+                + ", H5=" + H5 + ", H6=" + H6 + ", H7=" + H7 + ", H8=" + H8);
+    }
+
+    private void log(String log) {
+        System.out.println(log);
     }
 
     /* SHA-256 Constants

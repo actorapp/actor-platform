@@ -1,5 +1,7 @@
 package im.actor.crypto.primitives.kuznechik;
 
+import im.actor.crypto.primitives.util.Pack;
+
 /**
  * Mathematical methods for Kuzhechik encryption
  * <p/>
@@ -47,19 +49,49 @@ public class KuznechikMath {
     // linear operation l
     // static void kuz_l(w128_t *w)
     public static void kuz_l(Kuz128 w) {
-        // 16 rounds
-        for (int j = 0; j < 16; j++) {
-            // An LFSR with 16 elements from GF(2^8)
-            // x = w->b[15];	// since lvec[15] = 1
-            byte x = w.getB()[15];
+        kuz_l(w.getB());
+    }
 
-            for (int i = 14; i >= 0; i--) {
-                // w->b[i + 1] = w->b[i];
-                w.getB()[i + 1] = w.getB()[i];
-                // x ^= kuz_mul_gf256(w->b[i], kuz_lvec[i]);
-                x ^= kuz_mul_gf256_fast(w.getB()[i], KuznechikTables.kuz_lvec[i]);
-            }
-            w.getB()[0] = x;
+    public static void kuz_l(int[] w, byte[] tmp) {
+        Pack.intToBigEndian(w, tmp, 0);
+        kuz_l(tmp);
+        Pack.bigEndianToInt(tmp, 0, w);
+    }
+
+    public static void kuz_l(byte[] w) {
+        for (int j = 0; j < 16; j++) {
+            byte x = w[15];
+            w[15] = w[14];
+            x ^= kuz_mul_gf256_fast(w[14], KuznechikTables.kuz_lvec[14]);
+            w[14] = w[13];
+            x ^= kuz_mul_gf256_fast(w[13], KuznechikTables.kuz_lvec[13]);
+            w[13] = w[12];
+            x ^= kuz_mul_gf256_fast(w[12], KuznechikTables.kuz_lvec[12]);
+            w[12] = w[11];
+            x ^= kuz_mul_gf256_fast(w[11], KuznechikTables.kuz_lvec[11]);
+            w[11] = w[10];
+            x ^= kuz_mul_gf256_fast(w[10], KuznechikTables.kuz_lvec[10]);
+            w[10] = w[9];
+            x ^= kuz_mul_gf256_fast(w[9], KuznechikTables.kuz_lvec[9]);
+            w[9] = w[8];
+            x ^= kuz_mul_gf256_fast(w[8], KuznechikTables.kuz_lvec[8]);
+            w[8] = w[7];
+            x ^= kuz_mul_gf256_fast(w[7], KuznechikTables.kuz_lvec[7]);
+            w[7] = w[6];
+            x ^= kuz_mul_gf256_fast(w[6], KuznechikTables.kuz_lvec[6]);
+            w[6] = w[5];
+            x ^= kuz_mul_gf256_fast(w[5], KuznechikTables.kuz_lvec[5]);
+            w[5] = w[4];
+            x ^= kuz_mul_gf256_fast(w[4], KuznechikTables.kuz_lvec[4]);
+            w[4] = w[3];
+            x ^= kuz_mul_gf256_fast(w[3], KuznechikTables.kuz_lvec[3]);
+            w[3] = w[2];
+            x ^= kuz_mul_gf256_fast(w[2], KuznechikTables.kuz_lvec[2]);
+            w[2] = w[1];
+            x ^= kuz_mul_gf256_fast(w[1], KuznechikTables.kuz_lvec[1]);
+            w[1] = w[0];
+            x ^= kuz_mul_gf256_fast(w[0], KuznechikTables.kuz_lvec[0]);
+            w[0] = x;
         }
     }
 
