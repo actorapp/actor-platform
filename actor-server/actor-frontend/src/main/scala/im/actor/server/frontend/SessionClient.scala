@@ -7,11 +7,13 @@ import akka.pattern.pipe
 import akka.stream.actor.ActorPublisher
 import akka.stream.actor.ActorPublisherMessage.{ Cancel, Request }
 import com.google.protobuf.ByteString
+import im.actor.crypto.box.CBCHmacBox
 import im.actor.crypto.primitives.kuznechik.KuznechikCipher
 import im.actor.crypto.primitives.streebog.Streebog256
 import im.actor.crypto.primitives.aes.AESFastEngine
 import im.actor.crypto.primitives.digest.SHA256
-import im.actor.crypto.{ CBCHmacPackage, ActorProtoKey }
+import im.actor.crypto.primitives.util.ByteStrings
+import im.actor.crypto.{ ActorProtoKey }
 import im.actor.server.db.DbExtension
 import im.actor.server.model.MasterKey
 import im.actor.server.mtproto.codecs.protocol._
@@ -48,13 +50,13 @@ final class CryptoHelper(protoKeys: ActorProtoKey) {
 
   private object CbcHmac {
     object Server {
-      val USA = new CBCHmacPackage(
+      val USA = new CBCHmacBox(
         new AESFastEngine(protoKeys.getServerKey),
         new SHA256,
         protoKeys.getServerMacKey
       )
 
-      val Russia = new CBCHmacPackage(
+      val Russia = new CBCHmacBox(
         new KuznechikCipher(protoKeys.getServerRussianKey),
         new Streebog256,
         protoKeys.getServerMacRussianKey
@@ -62,13 +64,13 @@ final class CryptoHelper(protoKeys: ActorProtoKey) {
     }
 
     object Client {
-      val USA = new CBCHmacPackage(
+      val USA = new CBCHmacBox(
         new AESFastEngine(protoKeys.getClientKey),
         new SHA256,
         protoKeys.getClientMacKey
       )
 
-      val Russia = new CBCHmacPackage(
+      val Russia = new CBCHmacBox(
         new KuznechikCipher(protoKeys.getClientRussianKey),
         new Streebog256,
         protoKeys.getClientMacRussianKey
@@ -89,11 +91,11 @@ final class CryptoHelper(protoKeys: ActorProtoKey) {
   private def decryptRussia(seq: Long, cbcPackageBits: BitVector): Try[BitVector] =
     decrypt(seq, cbcPackageBits, CbcHmac.Client.Russia)
 
-  private def decrypt(seq: Long, cbcPackageBits: BitVector, cbcHmac: CBCHmacPackage): Try[BitVector] = {
+  private def decrypt(seq: Long, cbcPackageBits: BitVector, cbcHmac: CBCHmacBox): Try[BitVector] = {
     EncryptionCBCPackageCodec.decode(cbcPackageBits) match {
       case Attempt.Successful(DecodeResult(EncryptionCBCPackage(iv, encSecret), remainder)) ⇒
         if (remainder.isEmpty)
-          Try(BitVector(cbcHmac.decryptPackage(seq, iv.toByteArray, encSecret.toByteArray)))
+          Try(BitVector(cbcHmac.decryptPackage(ByteStrings.longToBytes(seq), iv.toByteArray, encSecret.toByteArray)))
         else
           Failure(EncryptedPackageDecodeError)
       case Attempt.Failure(e) ⇒ Failure(EncryptedPackageDecodeError)
@@ -111,12 +113,12 @@ final class CryptoHelper(protoKeys: ActorProtoKey) {
   private def encryptRussia(seq: Long, plaintext: Array[Byte]): EncryptionCBCPackage =
     encrypt(seq, plaintext, CbcHmac.Server.Russia)
 
-  private def encrypt(seq: Long, plaintext: Array[Byte], cbcHmac: CBCHmacPackage): EncryptionCBCPackage = {
+  private def encrypt(seq: Long, plaintext: Array[Byte], cbcHmac: CBCHmacBox): EncryptionCBCPackage = {
     val iv = new Array[Byte](16)
     random.nextBytes(iv)
 
     val encrypted = cbcHmac.encryptPackage(
-      seq,
+      ByteStrings.longToBytes(seq),
       iv,
       plaintext
     )
