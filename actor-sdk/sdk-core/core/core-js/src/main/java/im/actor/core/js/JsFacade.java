@@ -13,6 +13,7 @@ import com.google.gwt.user.client.Event;
 
 import im.actor.core.*;
 import im.actor.core.api.ApiAuthSession;
+import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
@@ -624,6 +625,27 @@ public class JsFacade implements Exportable {
     }
 
     // Calls
+
+    public JsPromise doCAll(final int uid){
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.doCall(uid).start(new CommandCallback<ResponseDoCall>() {
+                    @Override
+                    public void onResult(ResponseDoCall res) {
+                        Log.d(TAG, "doCall:result");
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "doCall:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
 
     public void bindCall(String id, JsBindedValueCallback callback) {
         if (callback == null) {
