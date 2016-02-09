@@ -7,19 +7,15 @@ import Foundation
 public extension UIViewController {
     public func navigateDetail(controller: UIViewController) {
         if (AADevice.isiPad) {
-            let split = UIApplication.sharedApplication().keyWindow?.rootViewController as! UISplitViewController;
+            let split = UIApplication.sharedApplication().keyWindow?.rootViewController as! UISplitViewController
             let master = split.viewControllers[0]
             let detail = AANavigationController()
             detail.viewControllers = [controller]
             split.viewControllers = [master, detail]
         } else {
-            
-            if controller.isKindOfClass(ConversationViewController.self) {
-                //navigationController?.view.layer.speed = 1.5
-            }
-            
+            let tabBar = UIApplication.sharedApplication().keyWindow?.rootViewController as! UITabBarController
             controller.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(controller, animated: true);
+            (tabBar.selectedViewController as! AANavigationController).pushViewController(controller, animated: true)
         }
     }
 }
