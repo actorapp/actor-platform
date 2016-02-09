@@ -6,6 +6,8 @@ import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import Recorder from 'opus-recorder';
 
+let isRecordingSupported = Recorder.isRecordingSupported() ? true : false;
+
 class VoiceRecorder extends Component {
   static propTypes = {
     onFinish: PropTypes.func.isRequired
@@ -18,10 +20,12 @@ class VoiceRecorder extends Component {
       isRecording: false
     };
 
-    this.recorder = new Recorder();
-    this.recorder.addEventListener('duration', this.handleChangeDuration);
-    this.recorder.addEventListener('streamReady', this.handleStreamReady);
-    this.recorder.addEventListener('dataAvailable', this.handleSendRecord);
+    if (isRecordingSupported) {
+      this.recorder = new Recorder();
+      this.recorder.addEventListener('duration', this.handleChangeDuration);
+      this.recorder.addEventListener('streamReady', this.handleStreamReady);
+      this.recorder.addEventListener('dataAvailable', this.handleSendRecord);
+    }
   }
 
   handleStartRecord = () => {
@@ -48,24 +52,28 @@ class VoiceRecorder extends Component {
   handleChangeDuration = (event) => this.setState({duration: event.detail.toFixed(2)});
 
   render() {
-    const { isRecording, duration } = this.state;
+    if (isRecordingSupported) {
+      const {isRecording, duration} = this.state;
 
-    const voiceRecorderClassName = classnames('voice-recorder', {
-      'voice-recorder--recording': isRecording
-    });
+      const voiceRecorderClassName = classnames('voice-recorder', {
+        'voice-recorder--recording': isRecording
+      });
 
-    return (
-      <div className={voiceRecorderClassName}>
-        <i className="material-icons icon"
-           onMouseDown={this.handleStartRecord}
-           onMouseUp={this.handleStopRecord}>mic</i>
-         <div className="duration">
-           <div className="fill row middle-xs center-xs">
-             Voice message duration:&nbsp; {duration}
-           </div>
-         </div>
-      </div>
-    );
+      return (
+        <div className={voiceRecorderClassName}>
+          <i className="material-icons icon"
+             onMouseDown={this.handleStartRecord}
+             onMouseUp={this.handleStopRecord}>mic</i>
+          <div className="duration">
+            <div className="fill row middle-xs center-xs">
+              Voice message duration:&nbsp; {duration}
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 }
 
