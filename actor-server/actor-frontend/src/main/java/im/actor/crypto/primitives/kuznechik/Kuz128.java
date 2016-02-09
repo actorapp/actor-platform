@@ -5,7 +5,7 @@ import im.actor.crypto.primitives.util.ByteStrings;
 /**
  * 128-bit variable
  */
-class Kuz128 {
+public class Kuz128 {
 
     private final byte[] b;
 

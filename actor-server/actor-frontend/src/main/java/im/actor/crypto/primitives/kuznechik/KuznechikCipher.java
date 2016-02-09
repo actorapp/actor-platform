@@ -147,6 +147,7 @@ public class KuznechikCipher implements BlockCipher {
             c.setQ(0, 0);
             c.setQ(1, 0);
             c.getB()[15] = (byte) i;
+
             KuznechikMath.kuz_l(c);
 
             // z.q[0] = x.q[0] ^ c.q[0];
@@ -156,9 +157,11 @@ public class KuznechikCipher implements BlockCipher {
             // kuz_l(&z);
             z.setQ(0, x.getQ(0) ^ c.getQ(0));
             z.setQ(1, x.getQ(1) ^ c.getQ(1));
+
             for (int j = 0; j < 16; j++) {
                 z.getB()[j] = KuznechikTables.kuz_pi[(z.getB()[j] & 0xFF)];
             }
+
             KuznechikMath.kuz_l(z);
 
             // z.q[0] ^= y.q[0];

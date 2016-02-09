@@ -25,7 +25,7 @@ import im.actor.crypto.primitives.util.Pack;
  * <p/>
  * This file contains the fast version with 8Kbytes of static tables for round precomputation
  * <p/>
- * Ported by Steve Kite (steve@actor.im)
+ * Ported by Steve Kite (steve@actor.im) from Bouncy Castle sources
  */
 public class AESFastEngine
         implements BlockCipher {
