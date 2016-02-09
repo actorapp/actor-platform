@@ -30,7 +30,7 @@ class Voice extends Component {
       isLoaded: this.isCached(),
       isPlaying: false,
       currentTime: 0,
-      duration: props.content.duration
+      duration: props.content.duration / 1000
     };
   }
 
@@ -115,7 +115,7 @@ class Voice extends Component {
     const voiceClassName = classnames(className, 'row');
 
     const current = this.humanTime(currentTime * 1000);
-    const total = this.humanTime(duration);
+    const total = this.humanTime(duration * 1000);
     const progress = (currentTime / duration) * 100;
 
     return (
