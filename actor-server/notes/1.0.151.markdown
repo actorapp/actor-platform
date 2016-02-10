@@ -1,2 +1,3 @@
 * :rocket: Faster encryption 
 * :shipit: Flexible activation config
+* :shipit: EventBus service
