@@ -17,6 +17,8 @@ import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.webrtc.WebRTCProvider;
 import im.actor.runtime.*;
+import im.actor.runtime.actors.Actor;
+import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.function.Constructor;
 
@@ -64,6 +66,15 @@ public class CallManagerActor extends ModuleActor {
     //
     // Starting call
     //
+
+    private void doCall(Peer peer) {
+        system().actorOf("actor/??", new ActorCreator() {
+            @Override
+            public Actor create() {
+                return new CallMasterActor(context());
+            }
+        });
+    }
 
     private void onIncomingCall(long callId) {
         Log.d(TAG, "onIncomingCall (" + callId + ")");
@@ -472,6 +483,18 @@ public class CallManagerActor extends ModuleActor {
 
         public String getSdp() {
             return sdp;
+        }
+    }
+
+    public static class DoCall {
+        private Peer peer;
+
+        public DoCall(Peer peer) {
+            this.peer = peer;
+        }
+
+        public Peer getPeer() {
+            return peer;
         }
     }
 }

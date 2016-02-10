@@ -104,10 +104,7 @@ public class ActorSDK {
     
     /// Web Invite Domain host
     public var inviteUrlHost: String? = nil
-    
-    /// Extensions
-    private var extensions = [ActorExtension]()
-    
+        
     /// Enable experimental features
     public var enableExperimentalFeatures: Bool = false
     
@@ -137,15 +134,7 @@ public class ActorSDK {
     
     // Reachability
     private var reachability: Reachability!
-    
-    //
-    // Initialization
-    //
-    
-    public func registerExtension(key: String, ext: ACExtension) {
-        extensions.append(ActorExtension(key: key, ext: ext))
-    }
-    
+
     public func createActor() {
         
         if isStarted {
@@ -172,6 +161,9 @@ public class ActorSDK {
         // Providers
         builder.setPhoneBookProvider(PhoneBookProvider())
         builder.setNotificationProvider(iOSNotificationProvider())
+        if (enableExperimentalFeatures) {
+            builder.setWebRTCProvider(iOSWebRTCProvider())
+        }
         
         // Stats
         builder.setPlatformType(ACPlatformType.IOS())
@@ -188,11 +180,6 @@ public class ActorSDK {
         log("Found time zone :\(timeZone)")
         builder.setTimeZone(timeZone)
   
-        // Extensions
-        for ex in extensions {
-            builder.addExtensionWithNSString(ex.key, withACExtension: ex.ext)
-        }
-        
         // Logs
         // builder.setEnableFilesLogging(true)
         
@@ -700,14 +687,4 @@ public enum AAAutoPush {
     case None
     case FromStart
     case AfterLogin
-}
-
-class ActorExtension {
-    let key: String
-    let ext: ACExtension
-    
-    init(key: String, ext: ACExtension) {
-        self.key = key
-        self.ext = ext
-    }
 }
