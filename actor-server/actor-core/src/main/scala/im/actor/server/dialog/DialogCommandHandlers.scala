@@ -378,10 +378,10 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     context become initialized(state.updated(Unfavourited))
 
   /**
-    * check access hash
-    * If `optAccessHash` is `None` - we simply don't check access hash
-    * If `optSenderAuthId` is None, and we are validating access hash for private peer - it is invalid
-    */
+   * check access hash
+   * If `optAccessHash` is `None` - we simply don't check access hash
+   * If `optSenderAuthId` is None, and we are validating access hash for private peer - it is invalid
+   */
   private def validateAccessHash(peer: Peer, optSenderAuthId: Option[Long], optAccessHash: Option[Long]): Future[Boolean] =
     optAccessHash map { hash ⇒
       peer.`type` match {
@@ -389,7 +389,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
           optSenderAuthId map { authId ⇒ userExt.checkAccessHash(peer.id, authId, hash) } getOrElse Future.successful(false)
         case PeerType.Group ⇒
           groupExt.checkAccessHash(peer.id, hash)
-        case unknown          ⇒ throw new RuntimeException(s"Unknown peer type $unknown")
+        case unknown ⇒ throw new RuntimeException(s"Unknown peer type $unknown")
       }
     } getOrElse Future.successful(true)
 }
