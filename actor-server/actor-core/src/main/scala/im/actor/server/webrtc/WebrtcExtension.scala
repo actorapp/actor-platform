@@ -6,6 +6,7 @@ import akka.cluster.sharding.ShardRegion.{ ExtractShardId, ExtractEntityId }
 import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding }
 import akka.util.Timeout
 import im.actor.config.ActorConfig
+import im.actor.types._
 
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -32,20 +33,14 @@ final class WebrtcExtension(system: ActorSystem) extends Extension {
     ClusterSharding(system)
       .start("WebrtcCall", WebrtcCallActor.props, ClusterShardingSettings(system), extractEntityId, extractShardId)
 
-  def doCall(callerUserId: Int, receiverUserId: Int): Future[Long] = {
+  def doCall(callerUserId: Int, receiverUserId: Int, eventBusId: String): Future[Long] = {
     val callId = ThreadLocalRandom.current().nextLong()
 
-    region ? WebrtcCallEnvelope(callId, StartCall(callerUserId, receiverUserId)) map (_ ⇒ callId)
+    region ? WebrtcCallEnvelope(callId, StartCall(callerUserId, receiverUserId, eventBusId)) map (_ ⇒ callId)
   }
 
-  def endCall(userId: Int, callId: Long): Future[Unit] =
-    region ? WebrtcCallEnvelope(callId, EndCall(userId)) map (_ ⇒ ())
-
-  def sendCallSignal(userId: Int, callId: Long, content: Array[Byte]): Future[Unit] =
-    region ? WebrtcCallEnvelope(callId, CallSignal(userId, content)) map (_ ⇒ ())
-
-  def sendCallInProgress(userId: Int, callId: Long, ptimeout: Int): Future[Unit] =
-    region ? WebrtcCallEnvelope(callId, CallInProgress(userId, ptimeout)) map (_ ⇒ ())
+  def getInfo(callId: Long): Future[(String, UserId, Seq[UserId])] =
+    (region ? WebrtcCallEnvelope(callId, GetInfo)).mapTo[GetInfoAck] map (_.tupled)
 }
 
 object WebrtcExtension extends ExtensionIdProvider with ExtensionId[WebrtcExtension] {
