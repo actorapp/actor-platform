@@ -38,6 +38,10 @@
     {
       "type": "int32",
       "alias": "keyGroupId"
+    },
+    {
+      "type": "string",
+      "alias": "busId"
     }
   ],
   "sections": [
@@ -11724,67 +11728,365 @@
       ]
     },
     {
-      "title": "WebRTC",
-      "package": "webrtc",
-      "doc": [
-        "WebRTC package that enables support to audio and video calls"
-      ],
+      "title": "EventBus",
+      "package": "eventbus",
       "items": [
         {
           "type": "rpc",
           "content": {
-            "name": "SubscribeToCalls",
-            "header": 2592,
+            "name": "CreateNewEventBus",
+            "header": 2665,
             "response": {
-              "type": "reference",
-              "name": "Void"
+              "type": "anonymous",
+              "header": 2666,
+              "doc": [
+                "Created new Event Bus",
+                {
+                  "type": "reference",
+                  "argument": "id",
+                  "category": "full",
+                  "description": "  Event Bus Id"
+                },
+                {
+                  "type": "reference",
+                  "argument": "deviceId",
+                  "category": "full",
+                  "description": "  Your Device Id"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "busId"
+                  },
+                  "id": 1,
+                  "name": "id"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  },
+                  "id": 2,
+                  "name": "deviceId"
+                }
+              ]
             },
             "doc": [
-              "Enabling subscription to calls (on NewSession need to re-subscribing)"
+              "Create new Event Bus",
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "full",
+                "description": "Optional timeout of Event Bus"
+              },
+              {
+                "type": "reference",
+                "argument": "isOwned",
+                "category": "full",
+                "description": "Is Event Bus owned by creator"
+              }
             ],
-            "attributes": []
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "msec"
+                  }
+                },
+                "id": 1,
+                "name": "timeout"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 2,
+                "name": "isOwned"
+              }
+            ]
           }
         },
         {
           "type": "rpc",
           "content": {
-            "name": "UnsubscribeToCalls",
-            "header": 2593,
+            "name": "JoinEventBus",
+            "header": 2668,
+            "response": {
+              "type": "anonymous",
+              "header": 2669,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "deviceId",
+                  "category": "full",
+                  "description": "  Your Device Id"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  },
+                  "id": 1,
+                  "name": "deviceId"
+                }
+              ]
+            },
+            "doc": [
+              "Joining Event Bus",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "Event Bus Id"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "hidden",
+                "description": "Join timeout"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "busId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "msec"
+                  }
+                },
+                "id": 2,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "KeepAliveEventBus",
+            "header": 2670,
             "response": {
               "type": "reference",
               "name": "Void"
             },
             "doc": [
-              "Disabling subscription to calls"
+              "Keep Alive Event Bus",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "Event Bus Id"
+              },
+              {
+                "type": "reference",
+                "argument": "timeout",
+                "category": "hidden",
+                "description": "Optional timeout for keep alive"
+              }
             ],
-            "attributes": []
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "busId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "msec"
+                  }
+                },
+                "id": 2,
+                "name": "timeout"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DisposeEventBus",
+            "header": 2667,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Dispose Event Bus",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "Event Bus Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "busId"
+                },
+                "id": 1,
+                "name": "id"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EventBusDestination",
+            "doc": [
+              "Event Bus Destination",
+              {
+                "type": "reference",
+                "argument": "userId",
+                "category": "full",
+                "description": "  User's Id"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceIds",
+                "category": "full",
+                "description": "  If device Ids are empty broadcast to every device"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "userId"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  }
+                },
+                "id": 2,
+                "name": "deviceIds"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "PostToEventBus",
+            "header": 2671,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Event Bus Destination",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "Bus Id"
+              },
+              {
+                "type": "reference",
+                "argument": "destinations",
+                "category": "full",
+                "description": "If Empty need to broadcase message to everyone"
+              },
+              {
+                "type": "reference",
+                "argument": "message",
+                "category": "full",
+                "description": "Message"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "busId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "EventBusDestination"
+                  }
+                },
+                "id": 2,
+                "name": "destinations"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "message"
+              }
+            ]
           }
         },
         {
           "type": "update",
           "content": {
-            "name": "IncomingCall",
-            "header": 52,
+            "name": "EventBusDeviceConnected",
+            "header": 2561,
             "doc": [
-              "Update about incoming call",
+              "Update about pubsub device connected",
               {
                 "type": "reference",
-                "argument": "callId",
+                "argument": "id",
                 "category": "full",
-                "description": "  Call Id"
+                "description": "  ID of Event Bus"
               },
               {
                 "type": "reference",
-                "argument": "uid",
+                "argument": "userId",
                 "category": "full",
-                "description": "  User's id"
+                "description": "  Joined User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceId",
+                "category": "full",
+                "description": "  Joined Device Unique Id"
               }
             ],
             "attributes": [
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "busId"
+                },
                 "id": 1,
-                "name": "callId"
+                "name": "id"
               },
               {
                 "type": {
@@ -11792,7 +12094,198 @@
                   "childType": "userId"
                 },
                 "id": 2,
-                "name": "uid"
+                "name": "userId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 3,
+                "name": "deviceId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "EventBusDeviceDisconnected",
+            "header": 2563,
+            "doc": [
+              "Update about device disconnected",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  ID of Event Bus"
+              },
+              {
+                "type": "reference",
+                "argument": "userId",
+                "category": "full",
+                "description": "  Joined User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceId",
+                "category": "full",
+                "description": "  Disconnected Device unique Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "busId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 2,
+                "name": "userId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 3,
+                "name": "deviceId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "EventBusMessage",
+            "header": 2562,
+            "doc": [
+              "Event Bus Message",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Event Bus Id"
+              },
+              {
+                "type": "reference",
+                "argument": "senderId",
+                "category": "full",
+                "description": "  Sender of message"
+              },
+              {
+                "type": "reference",
+                "argument": "senderDeviceId",
+                "category": "full",
+                "description": "  Device Id of sender"
+              },
+              {
+                "type": "reference",
+                "argument": "message",
+                "category": "compact",
+                "description": "  Message"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "busId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
+                },
+                "id": 2,
+                "name": "senderId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  }
+                },
+                "id": 3,
+                "name": "senderDeviceId"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "EventBusDisposed",
+            "header": 2564,
+            "doc": [
+              "Event Bus dispose",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Event Bus Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "busId"
+                },
+                "id": 1,
+                "name": "id"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "WebRTC",
+      "package": "webrtc",
+      "doc": [
+        "WebRTC package that enables support to audio and video calls"
+      ],
+      "items": [
+        {
+          "type": "update",
+          "content": {
+            "name": "IncomingCall",
+            "header": 52,
+            "doc": [
+              "Update about incoming call (Sent every 10 seconds)",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "  Call Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
               }
             ]
           }
@@ -11814,42 +12307,8 @@
             "attributes": [
               {
                 "type": "int64",
-                "id": 2,
-                "name": "callId"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "CallSignal",
-            "header": 56,
-            "doc": [
-              "WebRTC signaling package",
-              {
-                "type": "reference",
-                "argument": "callId",
-                "category": "full",
-                "description": "  Call id"
-              },
-              {
-                "type": "reference",
-                "argument": "content",
-                "category": "hidden",
-                "description": "  Signaling raw package"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int64",
                 "id": 1,
                 "name": "callId"
-              },
-              {
-                "type": "bytes",
-                "id": 2,
-                "name": "content"
               }
             ]
           }
@@ -11857,10 +12316,10 @@
         {
           "type": "update",
           "content": {
-            "name": "CallInProgress",
-            "header": 57,
+            "name": "CallRejected",
+            "header": 56,
             "doc": [
-              "Update about call in progress. If doesn't get next update in specified timeout - end call.",
+              "Update about call reject",
               {
                 "type": "reference",
                 "argument": "callId",
@@ -11869,9 +12328,9 @@
               },
               {
                 "type": "reference",
-                "argument": "timeout",
+                "argument": "userId",
                 "category": "full",
-                "description": "  Update timeout"
+                "description": "  User Id"
               }
             ],
             "attributes": [
@@ -11883,10 +12342,103 @@
               {
                 "type": {
                   "type": "alias",
-                  "childType": "sec"
+                  "childType": "userId"
                 },
                 "id": 2,
-                "name": "timeout"
+                "name": "userId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetCallInfo",
+            "header": 2600,
+            "response": {
+              "type": "anonymous",
+              "header": 2606,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "peer",
+                  "category": "full",
+                  "description": "  Destination peer"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "compact",
+                  "description": "  Groups"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "eventBusId",
+                  "category": "full",
+                  "description": "  Event Bus Id"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Peer"
+                  },
+                  "id": 1,
+                  "name": "peer"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "GroupOutPeer"
+                    }
+                  },
+                  "id": 2,
+                  "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "UserOutPeer"
+                    }
+                  },
+                  "id": 3,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "busId"
+                  },
+                  "id": 4,
+                  "name": "eventBusId"
+                }
+              ]
+            },
+            "doc": [
+              "Getting Call Information",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "Call Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
               }
             ]
           }
@@ -11922,12 +12474,6 @@
                 "argument": "peer",
                 "category": "full",
                 "description": "destination peer"
-              },
-              {
-                "type": "reference",
-                "argument": "timeout",
-                "category": "hidden",
-                "description": "Call timeout"
               }
             ],
             "attributes": [
@@ -11942,10 +12488,10 @@
               {
                 "type": {
                   "type": "alias",
-                  "childType": "sec"
+                  "childType": "busId"
                 },
                 "id": 2,
-                "name": "timeout"
+                "name": "eventBusId"
               }
             ]
           }
@@ -11953,105 +12499,81 @@
         {
           "type": "rpc",
           "content": {
-            "name": "EndCall",
-            "header": 2595,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
-            "doc": [
-              "Ending Call",
-              {
-                "type": "reference",
-                "argument": "callId",
-                "category": "full",
-                "description": "Call Id"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int64",
-                "id": 1,
-                "name": "callId"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "CallInProgress",
-            "header": 2596,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
-            "doc": [
-              "Notifying about call. Need to be continiously sent to server with timeout/2. Sent as initial call answering.",
-              {
-                "type": "reference",
-                "argument": "callId",
-                "category": "full",
-                "description": "Call Id"
-              },
-              {
-                "type": "reference",
-                "argument": "timeout",
-                "category": "hidden",
-                "description": "Timeout of sec"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int64",
-                "id": 1,
-                "name": "callId"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "sec"
-                },
-                "id": 2,
-                "name": "timeout"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "SendCallSignal",
+            "name": "JoinCall",
             "header": 2599,
             "response": {
               "type": "reference",
               "name": "Void"
             },
             "doc": [
-              "Sending call signal message",
+              "Answer Call",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Call Peer"
+              },
               {
                 "type": "reference",
                 "argument": "callId",
                 "category": "full",
                 "description": "Call Id"
-              },
-              {
-                "type": "reference",
-                "argument": "content",
-                "category": "hidden",
-                "description": "Signaling raw package"
               }
             ],
             "attributes": [
               {
-                "type": "int64",
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
                 "id": 1,
-                "name": "callId"
+                "name": "peer"
               },
               {
-                "type": "bytes",
+                "type": "int64",
                 "id": 2,
-                "name": "content"
+                "name": "callId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RejectCall",
+            "header": 2607,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "End Call",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Call Peer"
+              },
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "Call Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "callId"
               }
             ]
           }
@@ -14684,6 +15206,85 @@
                 "type": "bytes",
                 "id": 3,
                 "name": "update"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update_box",
+          "content": {
+            "name": "WeakFatUpdate",
+            "header": 2673,
+            "doc": [
+              "Fat Weak Update",
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Date of update"
+              },
+              {
+                "type": "reference",
+                "argument": "updateHeader",
+                "category": "full",
+                "description": "  Header of update"
+              },
+              {
+                "type": "reference",
+                "argument": "update",
+                "category": "full",
+                "description": "  The update"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "full",
+                "description": "  Users that are referenced in update"
+              },
+              {
+                "type": "reference",
+                "argument": "groups",
+                "category": "full",
+                "description": "  Groups that are referenced in update"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "date"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "updateHeader"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "update"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "User"
+                  }
+                },
+                "id": 4,
+                "name": "users"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Group"
+                  }
+                },
+                "id": 5,
+                "name": "groups"
               }
             ]
           }
