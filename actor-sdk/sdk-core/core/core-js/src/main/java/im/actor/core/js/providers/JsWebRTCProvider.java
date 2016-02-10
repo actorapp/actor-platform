@@ -3,6 +3,8 @@ package im.actor.core.js.providers;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
+import org.jetbrains.annotations.NotNull;
+
 import im.actor.core.Messenger;
 import im.actor.core.js.JsMessenger;
 import im.actor.core.js.modules.JsScheduller;
@@ -35,7 +37,7 @@ public class JsWebRTCProvider implements WebRTCProvider {
     private long runningCallId;
 
     @Override
-    public void init(Messenger messenger, WebRTCController controller) {
+    public void init(@NotNull Messenger messenger, @NotNull WebRTCController controller) {
         this.controller = controller;
         this.messenger = (JsMessenger) messenger;
     }
@@ -146,7 +148,7 @@ public class JsWebRTCProvider implements WebRTCProvider {
     }
 
     @Override
-    public void onAnswerReceived(final long callId, String offerSDP) {
+    public void onAnswerReceived(final long callId, @NotNull String offerSDP) {
         Log.d(TAG, "onAnswerReceived");
         peerConnection.setRemoteDescription(JsSessionDescription.createAnswer(offerSDP)).then(new Consumer<JsSessionDescription>() {
             @Override
@@ -167,7 +169,7 @@ public class JsWebRTCProvider implements WebRTCProvider {
     }
 
     @Override
-    public void onOfferReceived(final long callId, final String offerSDP) {
+    public void onOfferReceived(final long callId, @NotNull final String offerSDP) {
         Log.d(TAG, "onOfferReceived");
 
         createPeerConnection(callId);
@@ -222,7 +224,7 @@ public class JsWebRTCProvider implements WebRTCProvider {
     }
 
     @Override
-    public void onCandidate(long callId, String id, int label, String sdp) {
+    public void onCandidate(long callId, @NotNull String id, int label, @NotNull String sdp) {
         Log.d(TAG, "onCandidate");
         peerConnection.addIceCandidate(label, sdp);
     }
