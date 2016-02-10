@@ -15,53 +15,52 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class RequestSendCallSignal extends Request<ResponseVoid> {
+public class ResponseCreateNewEventBus extends Response {
 
-    public static final int HEADER = 0xa27;
-    public static RequestSendCallSignal fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestSendCallSignal(), data);
+    public static final int HEADER = 0xa6a;
+    public static ResponseCreateNewEventBus fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseCreateNewEventBus(), data);
     }
 
-    private long callId;
-    private byte[] content;
+    private String id;
+    private long deviceId;
 
-    public RequestSendCallSignal(long callId, @NotNull byte[] content) {
-        this.callId = callId;
-        this.content = content;
+    public ResponseCreateNewEventBus(@NotNull String id, long deviceId) {
+        this.id = id;
+        this.deviceId = deviceId;
     }
 
-    public RequestSendCallSignal() {
+    public ResponseCreateNewEventBus() {
 
-    }
-
-    public long getCallId() {
-        return this.callId;
     }
 
     @NotNull
-    public byte[] getContent() {
-        return this.content;
+    public String getId() {
+        return this.id;
+    }
+
+    public long getDeviceId() {
+        return this.deviceId;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.callId = values.getLong(1);
-        this.content = values.getBytes(2);
+        this.id = values.getString(1);
+        this.deviceId = values.getLong(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, this.callId);
-        if (this.content == null) {
+        if (this.id == null) {
             throw new IOException();
         }
-        writer.writeBytes(2, this.content);
+        writer.writeString(1, this.id);
+        writer.writeLong(2, this.deviceId);
     }
 
     @Override
     public String toString() {
-        String res = "rpc SendCallSignal{";
-        res += "callId=" + this.callId;
+        String res = "tuple CreateNewEventBus{";
         res += "}";
         return res;
     }

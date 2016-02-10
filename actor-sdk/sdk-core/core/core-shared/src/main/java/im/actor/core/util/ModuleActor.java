@@ -4,6 +4,8 @@
 
 package im.actor.core.util;
 
+import org.jetbrains.annotations.Nullable;
+
 import im.actor.core.Configuration;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
@@ -13,6 +15,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.eventbus.EventBusCallback;
 import im.actor.core.modules.sequence.Updates;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -29,7 +32,7 @@ import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.PreferencesStorage;
 
-public class ModuleActor extends AskcableActor implements BusSubscriber {
+public class ModuleActor extends AskcableActor implements BusSubscriber, EventBusCallback {
 
     protected static final long CURSOR_RECEIVED = 0;
     protected static final long CURSOR_READ = 1;
@@ -206,6 +209,35 @@ public class ModuleActor extends AskcableActor implements BusSubscriber {
 
     @Override
     public void onBusEvent(Event event) {
+
+    }
+
+    //
+    // Remove Event Bus
+    //
+
+    @Override
+    public void onBusConnected(String busId, long deviceId) {
+        
+    }
+
+    @Override
+    public void onBusDeviceConnected(String busId, int uid, long deviceId) {
+
+    }
+
+    @Override
+    public void onBusDeviceDisconnected(String busId, int uid, long deviceId) {
+
+    }
+
+    @Override
+    public void onBusMessage(String busId, @Nullable Integer senderId, @Nullable Long senderDevice, byte[] message) {
+
+    }
+
+    @Override
+    public void onEventBusDisposed(String busId) {
 
     }
 }

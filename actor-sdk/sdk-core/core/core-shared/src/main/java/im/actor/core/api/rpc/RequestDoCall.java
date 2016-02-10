@@ -23,11 +23,11 @@ public class RequestDoCall extends Request<ResponseDoCall> {
     }
 
     private ApiOutPeer peer;
-    private int timeout;
+    private String eventBusId;
 
-    public RequestDoCall(@NotNull ApiOutPeer peer, int timeout) {
+    public RequestDoCall(@NotNull ApiOutPeer peer, @NotNull String eventBusId) {
         this.peer = peer;
-        this.timeout = timeout;
+        this.eventBusId = eventBusId;
     }
 
     public RequestDoCall() {
@@ -39,14 +39,15 @@ public class RequestDoCall extends Request<ResponseDoCall> {
         return this.peer;
     }
 
-    public int getTimeout() {
-        return this.timeout;
+    @NotNull
+    public String getEventBusId() {
+        return this.eventBusId;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiOutPeer());
-        this.timeout = values.getInt(2);
+        this.eventBusId = values.getString(2);
     }
 
     @Override
@@ -55,7 +56,10 @@ public class RequestDoCall extends Request<ResponseDoCall> {
             throw new IOException();
         }
         writer.writeObject(1, this.peer);
-        writer.writeInt(2, this.timeout);
+        if (this.eventBusId == null) {
+            throw new IOException();
+        }
+        writer.writeString(2, this.eventBusId);
     }
 
     @Override
