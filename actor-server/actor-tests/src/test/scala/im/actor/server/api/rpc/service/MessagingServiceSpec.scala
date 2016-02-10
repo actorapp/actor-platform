@@ -9,6 +9,7 @@ import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType, ApiUserOutPeer }
+import im.actor.api.rpc.sequence.{ ApiUpdateContainer, ResponseGetDifference }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
@@ -23,7 +24,8 @@ class MessagingServiceSpec
   with ImplicitSequenceService
   with ImplicitSessionRegion
   with ImplicitAuthService
-  with SeqUpdateMatchers {
+  with SeqUpdateMatchers
+  with MessageParsing {
   behavior of "MessagingService"
 
   "Private Messaging" should "send messages" in s.privat.sendMessage
@@ -37,6 +39,8 @@ class MessagingServiceSpec
   it should "publish messages in PubSub" in s.pubsub.publish
 
   it should "not repeat message sending with same authId and RandomId" in s.group.cached
+
+  "Any Messaging" should "keep original order of sent messages" in s.generic.rightOrder
 
   object s {
     implicit val ec = system.dispatcher
@@ -309,6 +313,79 @@ class MessagingServiceSpec
           probe.expectMsgClass(classOf[PeerMessage])
         }
       }
+    }
+
+    object generic {
+
+      def rightOrder() = {
+        val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+        val (bob, bobAuthId, bobAuthSid, _) = createUser()
+
+        val alicePeer = ApiPeer(ApiPeerType.Private, alice.id)
+        val bobPeer = ApiPeer(ApiPeerType.Private, bob.id)
+
+        val aliceOutPeer = whenReady(ACLUtils.getOutPeer(alicePeer, bobAuthId))(identity)
+        val bobOutPeer = whenReady(ACLUtils.getOutPeer(bobPeer, aliceAuthId))(identity)
+
+        def sendMessageToAlice(text: String): Future[ResponseSeqDate] = {
+          implicit val clientData = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+          service.handleSendMessage(aliceOutPeer, ACLUtils.randomLong(), textMessage(text)) map (_.toOption.get)
+        }
+
+        val toAlice = for (i ← 1 to 100) yield sendMessageToAlice(i.toString)
+
+        toAlice foreach { whenReady(_)(identity) }
+
+        {
+          implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+
+          whenReady(service.handleLoadHistory(bobOutPeer, 0L, Int.MaxValue)) { resp ⇒
+            inside(resp) {
+              case Ok(ResponseLoadHistory(history, _)) ⇒
+                val textMessages = history map { e ⇒
+                  val parsed = parseMessage(e.message.toByteArray)
+                  inside(parsed) {
+                    case Right(_: ApiTextMessage) ⇒
+                  }
+                  val message = parsed.right.get
+                  message shouldBe an[ApiTextMessage]
+                  message.asInstanceOf[ApiTextMessage]
+                }
+                checkMessageOrder(textMessages)
+            }
+          }
+
+          whenReady(sequenceService.handleGetDifference(0, Array.empty, Vector.empty)) { resp ⇒
+            inside(resp) {
+              case Ok(diff: ResponseGetDifference) ⇒
+                val textMessages = diff.updates collect {
+                  case ApiUpdateContainer(UpdateMessage.header, bytes) ⇒
+                    val parsed = UpdateMessage.parseFrom(bytes)
+                    parsed should matchPattern {
+                      case Right(_) ⇒
+                    }
+                    val message = parsed.right.get.message
+                    message shouldBe an[ApiTextMessage]
+                    message.asInstanceOf[ApiTextMessage]
+                }
+                checkMessageOrder(textMessages)
+            }
+          }
+
+        }
+
+        def checkMessageOrder(textMessages: IndexedSeq[ApiTextMessage]) = {
+          textMessages should have length 100
+          (textMessages foldLeft 0) {
+            case (acc, el) ⇒
+              val intValue = el.text.toInt
+              if (intValue > acc) {} else { fail(s"order of elements was wrong: ${textMessages map (_.text) mkString ", "}") }
+              intValue
+          }
+        }
+
+      }
+
     }
 
   }

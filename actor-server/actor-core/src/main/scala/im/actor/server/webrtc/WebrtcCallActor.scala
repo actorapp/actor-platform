@@ -94,6 +94,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
         _ ← dialogExt.sendMessage(
           peer = ApiPeer(ApiPeerType.Private, receiverUserId),
           senderUserId = callerUserId,
+          senderAuthId = None,
           senderAuthSid = 0,
           randomId = ThreadLocalRandom.current().nextLong,
           message = ApiServiceMessage("Call ended", Some(ApiServiceExPhoneCall(duration)))
