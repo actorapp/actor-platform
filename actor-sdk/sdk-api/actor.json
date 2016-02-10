@@ -12293,10 +12293,10 @@
         {
           "type": "update",
           "content": {
-            "name": "CallEnded",
+            "name": "CallHandled",
             "header": 53,
             "doc": [
-              "Update about call end",
+              "Update about incoming call handled",
               {
                 "type": "reference",
                 "argument": "callId",
@@ -12309,43 +12309,6 @@
                 "type": "int64",
                 "id": 1,
                 "name": "callId"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "CallRejected",
-            "header": 56,
-            "doc": [
-              "Update about call reject",
-              {
-                "type": "reference",
-                "argument": "callId",
-                "category": "full",
-                "description": "  Call Id"
-              },
-              {
-                "type": "reference",
-                "argument": "userId",
-                "category": "full",
-                "description": "  User Id"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int64",
-                "id": 1,
-                "name": "callId"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 2,
-                "name": "userId"
               }
             ]
           }
@@ -12497,83 +12460,356 @@
           }
         },
         {
-          "type": "rpc",
+          "type": "trait",
           "content": {
-            "name": "JoinCall",
-            "header": 2599,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
+            "isContainer": "true",
+            "name": "WebRTCSignaling",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "AnswerCall",
             "doc": [
-              "Answer Call",
+              "Answer Call signal"
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 1
+            },
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EndCall",
+            "doc": [
+              "Ending Call signal"
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 2
+            },
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Candidate",
+            "doc": [
+              "Candidate signal",
               {
                 "type": "reference",
-                "argument": "peer",
+                "argument": "sessionId",
                 "category": "full",
-                "description": "Call Peer"
-              },
-              {
-                "type": "reference",
-                "argument": "callId",
-                "category": "full",
-                "description": "Call Id"
+                "description": "  Session Id of candidate"
               }
             ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 3
+            },
             "attributes": [
               {
                 "type": {
-                  "type": "struct",
-                  "childType": "OutPeer"
+                  "type": "alias",
+                  "childType": "randomId"
                 },
                 "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": "int64",
-                "id": 2,
-                "name": "callId"
+                "name": "sessionId"
               }
             ]
           }
         },
         {
-          "type": "rpc",
+          "type": "struct",
           "content": {
-            "name": "RejectCall",
-            "header": 2607,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
+            "name": "Offer",
             "doc": [
-              "End Call",
+              "Offer signal",
               {
                 "type": "reference",
-                "argument": "peer",
+                "argument": "sessionId",
                 "category": "full",
-                "description": "Call Peer"
+                "description": "  Session Id of offer"
               },
               {
                 "type": "reference",
-                "argument": "callId",
+                "argument": "sdp",
                 "category": "full",
-                "description": "Call Id"
+                "description": "  Offer SDP"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 4
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "sessionId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "sdp"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Answer",
+            "doc": [
+              "Answer signal",
+              {
+                "type": "reference",
+                "argument": "sessionId",
+                "category": "full",
+                "description": "  Session Id of answer"
+              },
+              {
+                "type": "reference",
+                "argument": "sdp",
+                "category": "full",
+                "description": "  Answer SDP"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 5
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "sessionId"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "sdp"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "NeedRenegotiate",
+            "doc": [
+              "Need renegotiate session. For example when streams are changed.",
+              {
+                "type": "reference",
+                "argument": "sessionId",
+                "category": "full",
+                "description": "  Session Id for renegotiation"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 6
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "sessionId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ConnectedDevice",
+            "doc": [
+              "Connected Device",
+              {
+                "type": "reference",
+                "argument": "device",
+                "category": "full",
+                "description": "  Device Id"
+              },
+              {
+                "type": "reference",
+                "argument": "isConnecting",
+                "category": "full",
+                "description": "  Is Connecting to device. Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "isConnected",
+                "category": "full",
+                "description": "  Is Connected to device. Default is false."
               }
             ],
             "attributes": [
               {
                 "type": {
-                  "type": "struct",
-                  "childType": "OutPeer"
+                  "type": "alias",
+                  "childType": "randomId"
                 },
                 "id": 1,
-                "name": "peer"
+                "name": "device"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
                 "id": 2,
-                "name": "callId"
+                "name": "isConnecting"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 3,
+                "name": "isConnected"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ConnectedUser",
+            "doc": [
+              "Connected User",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  Device uid"
+              },
+              {
+                "type": "reference",
+                "argument": "isConnecting",
+                "category": "full",
+                "description": "  Is Connecting to user. Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "isConnected",
+                "category": "full",
+                "description": "  Is connected to user. Default is false."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 4,
+                "name": "isConnecting"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 5,
+                "name": "isConnected"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ActiveDevices",
+            "doc": [
+              "List of current memb",
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "full",
+                "description": "  Currently active users"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 7
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ConnectedUser"
+                  }
+                },
+                "id": 2,
+                "name": "users"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "NeedOffer",
+            "doc": [
+              "Notification from owner that offer is required",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's Id"
+              },
+              {
+                "type": "reference",
+                "argument": "device",
+                "category": "full",
+                "description": "  Destination Device Id"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 8
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "device"
               }
             ]
           }
