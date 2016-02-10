@@ -136,6 +136,26 @@ export default {
     return window.messenger.bindMessages(peer, callback);
   },
 
+  bindEventBus(callback) {
+    window.messenger.bindEventBus(callback);
+  },
+
+  unbindEventBus(callback) {
+    window.messenger.unbindEventBus(callback);
+  },
+
+  bindCall(id, callback) {
+    window.messenger.bindCall(id, callback)
+  },
+
+  unbindCall(id, callback) {
+    window.messenger.unbindCall(id, callback)
+  },
+
+  makeCall(uid) {
+    return window.messenger.doCall(uid);
+  },
+
   getUser(uid) {
     return window.messenger.getUser(uid);
   },
