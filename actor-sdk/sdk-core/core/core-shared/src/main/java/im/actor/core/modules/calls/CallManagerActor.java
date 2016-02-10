@@ -3,10 +3,6 @@ package im.actor.core.modules.calls;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import im.actor.core.api.rpc.RequestCallInProgress;
-import im.actor.core.api.rpc.RequestEndCall;
-import im.actor.core.api.rpc.RequestSendCallSignal;
-import im.actor.core.api.rpc.RequestSubscribeToCalls;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.CallState;
 import im.actor.core.entity.Peer;
@@ -39,7 +35,6 @@ public class CallManagerActor extends ModuleActor {
     private static final int KEEP_ALIVE_TIMEOUT = 10;
     private static final int KEEP_ALIVE_DELAY = 5000;
 
-    private long subscribeRequest = -1;
     private HashSet<Long> pendingRequests = new HashSet<>();
 
     private WebRTCControllerImpl webRTCController;
@@ -59,8 +54,6 @@ public class CallManagerActor extends ModuleActor {
     @Override
     public void preStart() {
         super.preStart();
-        subscribeForCalls();
-        subscribe(NewSessionCreated.EVENT);
 
         webRTCController = new WebRTCControllerImpl(self());
         provider = config().getWebRTCProvider();
@@ -72,8 +65,8 @@ public class CallManagerActor extends ModuleActor {
     // Starting call
     //
 
-    private void onIncomingCall(long callId, int uid) {
-        Log.d(TAG, "onIncomingCall (" + callId + ", " + uid + ")");
+    private void onIncomingCall(long callId) {
+        Log.d(TAG, "onIncomingCall (" + callId + ")");
 
         if (webRTCController.getCallId() == -1) {
             webRTCController.switchCallId(callId);
@@ -84,12 +77,17 @@ public class CallManagerActor extends ModuleActor {
             isOfferRequested = true; // No outgoing offer needed for ingoing call
             isOfferReceived = false;
             isAnswerReceived = true; // No incoming answers needed for ingoing call
-            ArrayList<Integer> members = new ArrayList<>();
-            members.add(myUid());
-            members.add(uid);
-            context().getCallsModule().spawnNewModel(callId, Peer.user(uid), members, CallState.CALLING_INCOMING);
-            provider.onIncomingCall(callId);
+
+//            ArrayList<Integer> members = new ArrayList<>();
+//            members.add(myUid());
+//            members.add(uid);
+//            context().getCallsModule().spawnNewModel(callId, Peer.user(uid), members, CallState.CALLING_INCOMING);
+//            provider.onIncomingCall(callId);
         }
+    }
+
+    private void onIncomingCallHandled(long callId) {
+
     }
 
     private void onOutgoingCall(long callId, int uid) {
@@ -113,22 +111,22 @@ public class CallManagerActor extends ModuleActor {
     }
 
     private void doAnswerCall(final long callId) {
-        Log.d(TAG, "onAnswerCall");
-        if (webRTCController.getCallId() == callId) {
-            long requestId = request(new RequestCallInProgress(callId, KEEP_ALIVE_TIMEOUT), new RpcCallback<ResponseVoid>() {
-                @Override
-                public void onResult(ResponseVoid response) {
-                    doStartKeepAlive(callId);
-                }
-
-                @Override
-                public void onError(RpcException e) {
-                    Log.d(TAG, "Unable to answer call. Aborting");
-                    doAbortCall(callId);
-                }
-            });
-            pendingRequests.add(requestId);
-        }
+//        Log.d(TAG, "onAnswerCall");
+//        if (webRTCController.getCallId() == callId) {
+//            long requestId = request(new RequestCallInProgress(callId, KEEP_ALIVE_TIMEOUT), new RpcCallback<ResponseVoid>() {
+//                @Override
+//                public void onResult(ResponseVoid response) {
+//                    doStartKeepAlive(callId);
+//                }
+//
+//                @Override
+//                public void onError(RpcException e) {
+//                    Log.d(TAG, "Unable to answer call. Aborting");
+//                    doAbortCall(callId);
+//                }
+//            });
+//            pendingRequests.add(requestId);
+//        }
     }
 
     private void doStartKeepAlive(long callId) {
@@ -194,18 +192,18 @@ public class CallManagerActor extends ModuleActor {
     }
 
     private void doSendSignal(long callId, AbsSignal signal) {
-        Log.d(TAG, "onSendSignal: " + signal);
-        if (webRTCController.getCallId() == callId) {
-            pendingRequests.add(request(new RequestSendCallSignal(callId, signal.toByteArray())));
-        }
+//        Log.d(TAG, "onSendSignal: " + signal);
+//        if (webRTCController.getCallId() == callId) {
+//            pendingRequests.add(request(new RequestSendCallSignal(callId, signal.toByteArray())));
+//        }
     }
 
     private void doKeepAlive(long callId) {
-        Log.d(TAG, "doKeepAlive (" + callId + ")");
-        if (webRTCController.getCallId() == callId) {
-            pendingRequests.add(request(new RequestCallInProgress(callId, KEEP_ALIVE_TIMEOUT)));
-            self().send(new DoKeepAlive(callId), KEEP_ALIVE_DELAY);
-        }
+//        Log.d(TAG, "doKeepAlive (" + callId + ")");
+//        if (webRTCController.getCallId() == callId) {
+//            pendingRequests.add(request(new RequestCallInProgress(callId, KEEP_ALIVE_TIMEOUT)));
+//            self().send(new DoKeepAlive(callId), KEEP_ALIVE_DELAY);
+//        }
     }
 
     private void onKeepAlive(long callId, int timeout) {
@@ -232,47 +230,24 @@ public class CallManagerActor extends ModuleActor {
     }
 
     private void doEndCall(long callId) {
-        Log.d(TAG, "endCall: " + callId);
-        if (webRTCController.getCallId() == callId) {
-            request(new RequestEndCall(callId));
-        }
-        doAbortCall(callId);
+//        Log.d(TAG, "endCall: " + callId);
+//        if (webRTCController.getCallId() == callId) {
+//            request(new RequestEndCall(callId));
+//        }
+//        doAbortCall(callId);
     }
 
     private void doAbortCall(long callId) {
-        if (webRTCController.getCallId() == callId) {
-            webRTCController.clearCallId();
-            provider.onCallEnd(callId);
-            for (long r : pendingRequests) {
-                context().getActorApi().cancelRequest(r);
-            }
-            pendingRequests.clear();
-            context().getCallsModule().getCall(callId).getState().change(CallState.ENDED);
-        }
+//        if (webRTCController.getCallId() == callId) {
+//            webRTCController.clearCallId();
+//            provider.onCallEnd(callId);
+//            for (long r : pendingRequests) {
+//                context().getActorApi().cancelRequest(r);
+//            }
+//            pendingRequests.clear();
+//            context().getCallsModule().getCall(callId).getState().change(CallState.ENDED);
+//        }
     }
-
-
-    //
-    // Subscribing for call events
-    //
-
-    private void subscribeForCalls() {
-        if (subscribeRequest != -1) {
-            context().getActorApi().cancelRequest(subscribeRequest);
-            subscribeRequest = -1;
-        }
-        subscribeRequest = request(new RequestSubscribeToCalls());
-    }
-
-    @Override
-    public void onBusEvent(Event event) {
-        if (NewSessionCreated.EVENT.equals(event.getType())) {
-            subscribeForCalls();
-        } else {
-            super.onBusEvent(event);
-        }
-    }
-
 
     //
     // Messages
@@ -282,7 +257,10 @@ public class CallManagerActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof OnIncomingCall) {
             OnIncomingCall call = (OnIncomingCall) message;
-            onIncomingCall(call.getCallId(), call.getUid());
+            onIncomingCall(call.getCallId());
+        } else if (message instanceof OnIncomingCallHandled) {
+            OnIncomingCallHandled incomingCallHandled = (OnIncomingCallHandled) message;
+            onIncomingCallHandled(incomingCallHandled.getCallId());
         } else if (message instanceof OnOutgoingCall) {
             OnOutgoingCall call = (OnOutgoingCall) message;
             onOutgoingCall(call.getCallId(), call.getUid());
@@ -313,19 +291,26 @@ public class CallManagerActor extends ModuleActor {
     public static class OnIncomingCall {
 
         private long callId;
-        private int uid;
 
-        public OnIncomingCall(long callId, int uid) {
+        public OnIncomingCall(long callId) {
             this.callId = callId;
-            this.uid = uid;
         }
 
         public long getCallId() {
             return callId;
         }
+    }
 
-        public int getUid() {
-            return uid;
+    public static class OnIncomingCallHandled {
+
+        private long callId;
+
+        public OnIncomingCallHandled(long callId) {
+            this.callId = callId;
+        }
+
+        public long getCallId() {
+            return callId;
         }
     }
 

@@ -15,50 +15,45 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class UpdateCallInProgress extends Update {
+public class UpdateEventBusDisposed extends Update {
 
-    public static final int HEADER = 0x39;
-    public static UpdateCallInProgress fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateCallInProgress(), data);
+    public static final int HEADER = 0xa04;
+    public static UpdateEventBusDisposed fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateEventBusDisposed(), data);
     }
 
-    private long callId;
-    private int timeout;
+    private String id;
 
-    public UpdateCallInProgress(long callId, int timeout) {
-        this.callId = callId;
-        this.timeout = timeout;
+    public UpdateEventBusDisposed(@NotNull String id) {
+        this.id = id;
     }
 
-    public UpdateCallInProgress() {
+    public UpdateEventBusDisposed() {
 
     }
 
-    public long getCallId() {
-        return this.callId;
-    }
-
-    public int getTimeout() {
-        return this.timeout;
+    @NotNull
+    public String getId() {
+        return this.id;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.callId = values.getLong(1);
-        this.timeout = values.getInt(2);
+        this.id = values.getString(1);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, this.callId);
-        writer.writeInt(2, this.timeout);
+        if (this.id == null) {
+            throw new IOException();
+        }
+        writer.writeString(1, this.id);
     }
 
     @Override
     public String toString() {
-        String res = "update CallInProgress{";
-        res += "callId=" + this.callId;
-        res += ", timeout=" + this.timeout;
+        String res = "update EventBusDisposed{";
+        res += "id=" + this.id;
         res += "}";
         return res;
     }

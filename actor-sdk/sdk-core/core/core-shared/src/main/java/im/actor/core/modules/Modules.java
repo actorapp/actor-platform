@@ -8,6 +8,7 @@ import im.actor.core.Configuration;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.api.ApiModule;
+import im.actor.core.modules.eventbus.EventBusModule;
 import im.actor.core.modules.sequence.Updates;
 import im.actor.core.modules.internal.AppStateModule;
 import im.actor.core.modules.calls.CallsModule;
@@ -76,6 +77,7 @@ public class Modules implements ModuleContext {
     private volatile MentionsModule mentions;
     private volatile EncryptionModule encryptionModule;
     private volatile DeviceInfoModule deviceInfoModule;
+    private volatile EventBusModule eventBusModule;
 
     public Modules(Messenger messenger, Configuration configuration) {
         this.messenger = messenger;
@@ -150,6 +152,8 @@ public class Modules implements ModuleContext {
         displayLists = new DisplayLists(this);
         timing.section("DeviceInfo");
         deviceInfoModule = new DeviceInfoModule(this);
+        timing.section("EventBus");
+        eventBusModule = new EventBusModule(this);
         timing.end();
 
 
@@ -172,6 +176,8 @@ public class Modules implements ModuleContext {
         contacts.run();
         timing.section("Messages");
         messages.run();
+        timing.section("EventBus");
+        eventBusModule.run();
         timing.section("Updates");
         updates.run();
         timing.section("Calls");
@@ -193,50 +199,62 @@ public class Modules implements ModuleContext {
         });
     }
 
+    @Override
     public PreferencesStorage getPreferences() {
         return preferences;
     }
 
+    @Override
     public Configuration getConfiguration() {
         return configuration;
     }
 
+    @Override
     public Authentication getAuthModule() {
         return authentication;
     }
 
+    @Override
     public UsersModule getUsersModule() {
         return users;
     }
 
+    @Override
     public GroupsModule getGroupsModule() {
         return groups;
     }
 
+    @Override
     public StickersModule getStickersModule() {
         return stickers;
     }
 
+    @Override
     public CallsModule getCallsModule() {
         return calls;
     }
 
+    @Override
     public MessagesModule getMessagesModule() {
         return messages;
     }
 
+    @Override
     public Updates getUpdatesModule() {
         return updates;
     }
 
+    @Override
     public TypingModule getTypingModule() {
         return typing;
     }
 
+    @Override
     public PresenceModule getPresenceModule() {
         return presence;
     }
 
+    @Override
     public ActorApi getActorApi() {
         return api.getActorApi();
     }
@@ -246,62 +264,77 @@ public class Modules implements ModuleContext {
         return api;
     }
 
+    @Override
     public I18nEngine getI18nModule() {
         return i18nEngine;
     }
 
+    @Override
     public ContactsModule getContactsModule() {
         return contacts;
     }
 
+    @Override
     public FilesModule getFilesModule() {
         return filesModule;
     }
 
+    @Override
     public NotificationsModule getNotificationsModule() {
         return notifications;
     }
 
+    @Override
     public SettingsModule getSettingsModule() {
         return settings;
     }
 
+    @Override
     public ProfileModule getProfileModule() {
         return profile;
     }
 
+    @Override
     public AppStateModule getAppStateModule() {
         return appStateModule;
     }
 
+    @Override
     public PushesModule getPushesModule() {
         return pushes;
     }
 
+    @Override
     public SecurityModule getSecurityModule() {
         return security;
     }
 
+    @Override
     public SearchModule getSearchModule() {
         return search;
     }
 
+    @Override
     public Messenger getMessenger() {
         return messenger;
     }
 
+    @Override
     public ExternalModule getExternalModule() {
         return external;
     }
 
+    @Override
     public DisplayLists getDisplayListsModule() {
         return displayLists;
     }
 
+    @Override
     public MentionsModule getMentions() {
         return mentions;
     }
 
+    @Override
     public DeviceInfoModule getDeviceInfoModule() {
         return deviceInfoModule;
     }
@@ -311,6 +344,12 @@ public class Modules implements ModuleContext {
         return encryptionModule;
     }
 
+    @Override
+    public EventBusModule getEventBus() {
+        return eventBusModule;
+    }
+
+    @Override
     public EventBus getEvents() {
         return events;
     }
