@@ -666,6 +666,37 @@
       }
     }
   }
+  &--call {
+    .modal-new__header {
+      height: auto;
+      padding: 16px;
+      text-align: center;
+      box-shadow: none;
+
+      &__title {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 20px;
+        text-transform: uppercase;
+
+        color: $modal-text-color;
+      }
+    }
+
+    .modal-new__body {
+      padding: 0;
+    }
+
+    .modal-new__footer {
+      padding: 16px;
+      .button {
+        margin-bottom: 8px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
 
   .profile-picture {
     padding: 16px;

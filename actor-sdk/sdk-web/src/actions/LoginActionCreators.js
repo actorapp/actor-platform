@@ -14,6 +14,7 @@ import DialogActionCreators from './DialogActionCreators';
 import ContactActionCreators from './ContactActionCreators';
 import QuickSearchActionCreators from './QuickSearchActionCreators';
 import FaviconActionCreators from './FaviconActionCreators';
+import EventBusActionCreators from './EventBusActionCreators';
 
 const LoginActionCreators = {
   changeLogin(login) {
@@ -100,6 +101,7 @@ const LoginActionCreators = {
       ActorClient.bindContacts(ContactActionCreators.setContacts);
       ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList);
       ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon);
+      ActorClient.bindEventBus(EventBusActionCreators.broadcastEvent);
     }
   },
 
@@ -115,6 +117,7 @@ const LoginActionCreators = {
       ActorClient.unbindContacts(ContactActionCreators.setContacts);
       ActorClient.unbindSearch(QuickSearchActionCreators.setQuickSearchList);
       ActorClient.unbindTempGlobalCounter(FaviconActionCreators.setFavicon);
+      ActorClient.unbindEventBus(EventBusActionCreators.broadcastEvent);
     }
   },
 

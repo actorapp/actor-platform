@@ -185,8 +185,30 @@ export const ActionTypes = keymirror({
   USER_ONLINE_CHANGE: null,
 
   DROPDOWN_SHOW: null,
-  DROPDOWN_HIDE: null
+  DROPDOWN_HIDE: null,
+
+  CALL_MODAL_OPEN: null,
+  CALL_MODAL_HIDE: null,
+  CALL: null,
+  CALL_SUCCESS: null,
+  CALL_ERROR: null,
+  CALL_CHANGED: null
 });
+
+export const EventTypes = {
+  CALL: 'call'
+};
+
+export const CallTypes = {
+  INCOMING: 'incoming',
+  OUTGOING: 'outgoing'
+};
+
+export const CallStates = {
+  CALLING_IN: 'calling_in',
+  CALLING_OUT: 'calling_out',
+  ENDED: 'ended'
+};
 
 export const PeerTypes = {
   USER: 'user',

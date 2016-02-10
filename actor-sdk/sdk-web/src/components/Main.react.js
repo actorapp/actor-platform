@@ -21,6 +21,7 @@ import DefaultDialogSection from './DialogSection.react';
 import Favicon from './common/Favicon.react';
 
 import ModalsWrapper from './modals/ModalsWrapper.react';
+import CallModal from './modals/CallModal.react';
 import DropdownWrapper from './common/DropdownWrapper.react';
 
 class Main extends Component {
@@ -101,6 +102,7 @@ class Main extends Component {
 
         <ModalsWrapper/>
         <DropdownWrapper/>
+        <CallModal/>
       </div>
     );
   }
