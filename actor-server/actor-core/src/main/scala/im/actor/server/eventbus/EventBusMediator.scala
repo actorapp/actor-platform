@@ -35,6 +35,9 @@ private[eventbus] object EventBusMessages {
 
   final case class Join(clientUserId: UserId, clientAuthId: AuthId, timeout: Option[Long]) extends EventBusMessage
   final case class JoinAck(deviceId: DeviceId)
+
+  final case class Subscribe(ref: ActorRef) extends EventBusMessage
+  final case class SubscribeAck(subscribe: Subscribe)
 }
 
 object EventBusMediator {
@@ -64,6 +67,7 @@ final class EventBusMediator extends Actor with ActorLogging {
   val id = self.path.name
 
   var owner: Option[Int] = None
+  val internalConsumers = mutable.Set.empty[ActorRef]
 
   object consumers {
     private val a2d = mutable.Map.empty[AuthId, (UserId, DeviceId)]
@@ -104,6 +108,11 @@ final class EventBusMediator extends Actor with ActorLogging {
     }
   }
 
+  override def postStop(): Unit = {
+    super.postStop()
+    internalConsumers foreach (_ ! EventBus.Disposed(id))
+  }
+
   def receive = {
     case Create(clientUserId, clientAuthId, timeoutOpt, isOwned) ⇒
       if (isOwned.contains(true)) this.owner = Some(clientUserId)
@@ -132,6 +141,9 @@ final class EventBusMediator extends Actor with ActorLogging {
             }
           }
       }
+
+      val msg = EventBus.Message(id, clientUserId, message)
+      this.internalConsumers foreach (_ ! msg)
 
       sender() ! PostAck
     case KeepAlive(clientAuthId, timeoutOpt) ⇒
@@ -162,8 +174,18 @@ final class EventBusMediator extends Actor with ActorLogging {
         broadcast(UpdateEventBusDisposed(id))
         context stop self
       } else sender() ! Status.Failure(new RuntimeException("Attempt to dispose by not an owner"))
+    case Subscribe(ref) ⇒
+      this.internalConsumers.add(ref)
+      context watch ref
+    case Terminated(ref) ⇒
+      this.internalConsumers.remove(ref)
   }
 
   private def broadcast(update: Update): Unit =
     consumers.authIds foreach (weakExt.pushUpdate(_, update, None, None))
+
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    super.preRestart(reason, message)
+    log.error(reason, "Failure while processing message: {}", message)
+  }
 }
