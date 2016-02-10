@@ -2,6 +2,7 @@ package im.actor.server.webrtc
 
 import akka.actor._
 import akka.pattern.pipe
+import im.actor.api.rpc.Update
 import im.actor.api.rpc.messaging.{ ApiServiceMessage, ApiServiceExPhoneCall }
 import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
 import im.actor.api.rpc.webrtc._
@@ -64,7 +65,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
 
   def waitForStart: Receive = {
     case StartCall(callerUserId, receiverUserId) ⇒
-      val update = UpdateIncomingCall(id, callerUserId)
+      val update = UpdateIncomingCall(id)
 
       (for {
         _ ← db.run(WebrtcCallRepo.create(WebrtcCall(id, callerUserId, receiverUserId)))
@@ -114,6 +115,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
     {
       case CallInProgress(userId, timeout) ⇒
         withOrigin(userId) { targetUserId ⇒
+          /*
           val newReceive =
             if (userId == receiverUserId) {
               scheduledEndReceiver.cancel()
@@ -123,7 +125,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
               callInProgress(startTime, callerUserId, receiverUserId, scheduleEnd(timeout.seconds), scheduledEndReceiver)
             }
 
-          val update = UpdateCallInProgress(id, timeout)
+          val update: Update = ???
 
           (for {
             _ ← weakUpdExt.broadcastUserWeakUpdate(targetUserId, update, Some(s"webrtc_call_inprogress_$id"), Some(Webrtc.WeakGroup))
@@ -139,14 +141,17 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
               log.error(cause, "Failed to process CallInProgress")
               unstashAll()
               context.unbecome()
-          }, discardOld = false)
+          }, discardOld = false)*/
         }
       case CallSignal(userId, pkg) ⇒
         withOrigin(userId) { target ⇒
           // TODO: stashing
-          val update = UpdateCallSignal(id, pkg)
+
+          /*
+          val update: Update = ???
           weakUpdExt.broadcastUserWeakUpdate(target, update, Some(s"webrtc_call_signal_$id"), Some(Webrtc.WeakGroup))
           sender() ! CallSignalAck
+          */
         }
       case EndCall(userId) ⇒
         withOrigin(userId) { _ ⇒
