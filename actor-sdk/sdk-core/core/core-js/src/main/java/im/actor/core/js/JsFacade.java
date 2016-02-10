@@ -647,6 +647,14 @@ public class JsFacade implements Exportable {
         });
     }
 
+    public void answerCall(long callId){
+        messenger.answerCall(callId);
+    }
+
+    public void endCall(long callId){
+        messenger.endCall(callId);
+    }
+
     public void bindCall(String id, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
