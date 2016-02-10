@@ -9,10 +9,10 @@ import im.actor.core.api.ApiEncryptionKeyGroup;
 import im.actor.core.api.ApiEncryptionKeySignature;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateNewKeyGroup;
-import im.actor.core.api.rpc.RequestLoadEphermalPublicKeys;
+import im.actor.core.api.rpc.RequestLoadPrePublicKeys;
 import im.actor.core.api.rpc.RequestLoadPublicKey;
 import im.actor.core.api.rpc.RequestLoadPublicKeyGroups;
-import im.actor.core.api.rpc.RequestUploadEphermalKey;
+import im.actor.core.api.rpc.RequestUploadPreKey;
 import im.actor.core.api.rpc.ResponseCreateNewKeyGroup;
 import im.actor.core.api.rpc.ResponsePublicKeyGroups;
 import im.actor.core.api.rpc.ResponsePublicKeys;
@@ -166,7 +166,7 @@ public class KeyManagerActor extends ModuleActor {
             ArrayList<ApiEncryptionKeySignature> uploadingSignatures =
                     pendingEphermalKeys.map(PrivateKey.SIGN(ownKeys.getIdentityKey()));
 
-            api(new RequestUploadEphermalKey(ownKeys.getKeyGroupId(), uploadingKeys, uploadingSignatures))
+            api(new RequestUploadPreKey(ownKeys.getKeyGroupId(), uploadingKeys, uploadingSignatures))
                     .then(new Consumer<ResponseVoid>() {
                         @Override
                         public void apply(ResponseVoid responseVoid) {
@@ -387,7 +387,7 @@ public class KeyManagerActor extends ModuleActor {
                 .mapPromise(new Function<Tuple2<UserKeysGroup, UserKeys>, Promise<PublicKey>>() {
                     @Override
                     public Promise<PublicKey> apply(final Tuple2<UserKeysGroup, UserKeys> keyGroups) {
-                        return api(new RequestLoadEphermalPublicKeys(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), keyGroupId))
+                        return api(new RequestLoadPrePublicKeys(new ApiUserOutPeer(uid, getUser(uid).getAccessHash()), keyGroupId))
                                 .map(new Function<ResponsePublicKeys, PublicKey>() {
                                     @Override
                                     public PublicKey apply(ResponsePublicKeys response) {

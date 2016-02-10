@@ -172,6 +172,10 @@
 		06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE89891BD8401C005A5530 /* Reachability.swift */; };
 		06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */; };
 		06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */; };
+		06E322C91C69344A00D66F53 /* iOSWebRTCProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E322C81C69344A00D66F53 /* iOSWebRTCProvider.swift */; };
+		06E3230E1C69445C00D66F53 /* WebRTC.h in Headers */ = {isa = PBXBuildFile; fileRef = 06E3230D1C6942C400D66F53 /* WebRTC.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		06E323111C694C1D00D66F53 /* WebRTCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E323101C694C1D00D66F53 /* WebRTCExt.swift */; };
+		06E323151C6A7AC000D66F53 /* AACallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E323141C6A7AC000D66F53 /* AACallViewController.swift */; };
 		06E7B2471C0F8D7A0090660C /* AALocationPickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2461C0F8D7A0090660C /* AALocationPickerController.swift */; };
 		06E7B24A1C0F92140090660C /* AABubbleLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */; };
 		06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B24B1C0FAB500090660C /* AAMapFastView.swift */; };
@@ -465,6 +469,10 @@
 		06CE89891BD8401C005A5530 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorSDKAnalytics.swift; sourceTree = "<group>"; };
+		06E322C81C69344A00D66F53 /* iOSWebRTCProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSWebRTCProvider.swift; sourceTree = "<group>"; };
+		06E3230D1C6942C400D66F53 /* WebRTC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebRTC.h; sourceTree = "<group>"; };
+		06E323101C694C1D00D66F53 /* WebRTCExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebRTCExt.swift; sourceTree = "<group>"; };
+		06E323141C6A7AC000D66F53 /* AACallViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AACallViewController.swift; path = Calls/AACallViewController.swift; sourceTree = "<group>"; };
 		06E7B2461C0F8D7A0090660C /* AALocationPickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AALocationPickerController.swift; sourceTree = "<group>"; };
 		06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleLocationCell.swift; sourceTree = "<group>"; };
 		06E7B24B1C0FAB500090660C /* AAMapFastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapFastView.swift; sourceTree = "<group>"; };
@@ -673,8 +681,9 @@
 		066A50D41BC4AE63000E606E /* ActorSDK */ = {
 			isa = PBXGroup;
 			children = (
-				065975081BC7C4F300B8C7DF /* Resources */,
 				069CF4151BCA5DB500C66E12 /* Sources */,
+				065975081BC7C4F300B8C7DF /* Resources */,
+				06E323091C693A4E00D66F53 /* Libs */,
 			);
 			path = ActorSDK;
 			sourceTree = "<group>";
@@ -714,7 +723,6 @@
 		066A51571BC4C112000E606E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				15D35F0A1C20182900E3717A /* AudioRecorder */,
 				15D35F721C201B5300E3717A /* Categories */,
 				152AA8901C29887A0030DEEE /* Extensions */,
 				066A53311BC534F5000E606E /* AAFileTypes.swift */,
@@ -756,6 +764,7 @@
 				066A51861BC4C383000E606E /* CocoaStorageRuntime.swift */,
 				066A51871BC4C383000E606E /* iOSNotificationProvider.swift */,
 				066A51881BC4C383000E606E /* iOSPhoneBookProvider.swift */,
+				06E322C81C69344A00D66F53 /* iOSWebRTCProvider.swift */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -844,6 +853,7 @@
 				066A527B1BC51EC6000E606E /* Root */,
 				066A52EB1BC52AF8000E606E /* Settings */,
 				066A53091BC53197000E606E /* User */,
+				06E323131C6A7AA300D66F53 /* Calls */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1115,6 +1125,7 @@
 				066A525F1BC50E53000E606E /* Controllers */,
 				066A51201BC4B53C000E606E /* SwiftExtensions */,
 				066A51571BC4C112000E606E /* Utils */,
+				06E322CB1C69392F00D66F53 /* Libs */,
 				066A52131BC4EDEB000E606E /* Views */,
 				066A525D1BC503BB000E606E /* ActorApplicationDelegate.swift */,
 				066A50D51BC4AE63000E606E /* ActorSDK.h */,
@@ -1140,6 +1151,31 @@
 				069CF4CB1BCB909A00C66E12 /* CLTokenView.m */,
 			);
 			path = CLTokenInputView;
+			sourceTree = "<group>";
+		};
+		06E322CB1C69392F00D66F53 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				15D35F0A1C20182900E3717A /* AudioRecorder */,
+				06E3230D1C6942C400D66F53 /* WebRTC.h */,
+				06E323101C694C1D00D66F53 /* WebRTCExt.swift */,
+			);
+			name = Libs;
+			sourceTree = "<group>";
+		};
+		06E323091C693A4E00D66F53 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Libs;
+			sourceTree = "<group>";
+		};
+		06E323131C6A7AA300D66F53 /* Calls */ = {
+			isa = PBXGroup;
+			children = (
+				06E323141C6A7AC000D66F53 /* AACallViewController.swift */,
+			);
+			name = Calls;
 			sourceTree = "<group>";
 		};
 		06E7B2451C0F8D410090660C /* Location */ = {
@@ -1240,7 +1276,8 @@
 				15D35F4B1C20187E00E3717A /* NSObject+TGLock.h */,
 				15D35F4C1C20187E00E3717A /* NSObject+TGLock.m */,
 			);
-			path = AudioRecorder;
+			name = AudioRecorder;
+			path = Utils/AudioRecorder;
 			sourceTree = "<group>";
 		};
 		15D35F0B1C20184700E3717A /* opusenc */ = {
@@ -1515,6 +1552,7 @@
 				15F89F0A1C211FED00776ACD /* opus.h in Headers */,
 				15D35F511C20187E00E3717A /* ASQueue.h in Headers */,
 				15D35F1D1C20185500E3717A /* picture.h in Headers */,
+				06E3230E1C69445C00D66F53 /* WebRTC.h in Headers */,
 				06230F421BC95BD200A4807B /* RMPhoneFormat.h in Headers */,
 				069CF4CE1BCB909A00C66E12 /* CLToken.h in Headers */,
 			);
@@ -1625,7 +1663,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\ncd ActorSDK/Sources/ActorCore\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/Sources/ActorCore/convert.py\" \"${PROJECT_DIR}/ActorSDK/Sources/ActorCore/ActorCore.h\"\n\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"\n\ncp -a \"${PROJECT_DIR}/../sdk-core/core/core-shared/src/main/resources/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/\"";
+			shellScript = "set -e\n\ncd ActorSDK/Sources/ActorCore\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/Sources/ActorCore/convert.py\" \"${PROJECT_DIR}/ActorSDK/Sources/ActorCore/ActorCore.h\"\n\ncp -af \"${PODS_ROOT}/libjingle_peerconnection/libjingle_peerconnection/Headers/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"\n\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"\n\n\ncp -a \"${PROJECT_DIR}/../sdk-core/core/core-shared/src/main/resources/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/\"";
 		};
 		842CC4516DA967714D224C37 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1695,6 +1733,7 @@
 				15D35F601C20187E00E3717A /* AAOpusAudioPlayerAU.mm in Sources */,
 				15D35F1C1C20185500E3717A /* picture.c in Sources */,
 				066A532B1BC53406000E606E /* AABubbleCell.swift in Sources */,
+				06E323151C6A7AC000D66F53 /* AACallViewController.swift in Sources */,
 				066A52C71BC521EA000E606E /* AAEditTextController.swift in Sources */,
 				153F6B5D1C2B3AC500C0B960 /* AABubbleStickerCell.swift in Sources */,
 				15D35F1E1C20185500E3717A /* wav_io.c in Sources */,
@@ -1798,6 +1837,7 @@
 				066A53221BC533F5000E606E /* AAMessagesFlowLayout.swift in Sources */,
 				15D35F541C20187E00E3717A /* AAOpusAudioRecorder.m in Sources */,
 				066A52671BC50E7B000E606E /* AAAuthPhoneViewController.swift in Sources */,
+				06E322C91C69344A00D66F53 /* iOSWebRTCProvider.swift in Sources */,
 				066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */,
 				066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */,
 				069CF4CD1BCB909A00C66E12 /* CLBackspaceDetectingTextField.m in Sources */,
@@ -1859,6 +1899,7 @@
 				066A52421BC4EECD000E606E /* AATableViewHeader.swift in Sources */,
 				066A52CD1BC521FA000E606E /* AADialogsListContentControllerDelegate.swift in Sources */,
 				15D35F261C20186200E3717A /* framing.c in Sources */,
+				06E323111C694C1D00D66F53 /* WebRTCExt.swift in Sources */,
 				066A52231BC4EEAC000E606E /* AAManagedSection.swift in Sources */,
 				066A52D11BC52204000E606E /* AADialogCell.swift in Sources */,
 				066A51901BC4C383000E606E /* CocoaNetworkRuntime.swift in Sources */,
@@ -2010,6 +2051,8 @@
 					"$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/",
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils",
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils/AudioRecorder/libopus/lib",
+					"$(inherited)",
+					"$(PROJECT_DIR)/ActorSDK/Libs",
 				);
 				MACH_O_TYPE = mh_dylib;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2060,6 +2103,8 @@
 					"$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/",
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils",
 					"$(PROJECT_DIR)/ActorSDK/Sources/Utils/AudioRecorder/libopus/lib",
+					"$(inherited)",
+					"$(PROJECT_DIR)/ActorSDK/Libs",
 				);
 				MACH_O_TYPE = mh_dylib;
 				ONLY_ACTIVE_ARCH = YES;

@@ -1,5 +1,9 @@
 package im.actor.core.webrtc;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
+import org.jetbrains.annotations.NotNull;
+
 import im.actor.core.Messenger;
 
 /**
@@ -16,13 +20,15 @@ public interface WebRTCProvider {
      * @param messenger  Messenger
      * @param controller controller
      */
-    void init(Messenger messenger, WebRTCController controller);
+    @ObjectiveCName("initWithMessenger:withController:")
+    void init(@NotNull Messenger messenger, @NotNull WebRTCController controller);
 
     /**
      * Incoming Call event. To answer call invoke controller.answerCall();
      *
      * @param callId Unique Call Id
      */
+    @ObjectiveCName("onIncomingCallWithCallId:")
     void onIncomingCall(long callId);
 
     /**
@@ -30,6 +36,7 @@ public interface WebRTCProvider {
      *
      * @param callId Unique Call Id
      */
+    @ObjectiveCName("onOutgoingCallWithCallId:")
     void onOutgoingCall(long callId);
 
     /**
@@ -37,6 +44,7 @@ public interface WebRTCProvider {
      *
      * @param callId Unique Call Id
      */
+    @ObjectiveCName("onOfferNeededWithCallId:")
     void onOfferNeeded(long callId);
 
     /**
@@ -45,7 +53,8 @@ public interface WebRTCProvider {
      * @param callId   Unique Call Id
      * @param offerSDP answer SDP
      */
-    void onAnswerReceived(long callId, String offerSDP);
+    @ObjectiveCName("onAnswerReceivedWithCallId:withSDP:")
+    void onAnswerReceived(long callId, @NotNull String offerSDP);
 
     /**
      * Called when call offer arrived
@@ -53,7 +62,8 @@ public interface WebRTCProvider {
      * @param callId   Unique Call Id
      * @param offerSDP offer SDP
      */
-    void onOfferReceived(long callId, String offerSDP);
+    @ObjectiveCName("onOfferReceivedWithCallId:withSDP:")
+    void onOfferReceived(long callId, @NotNull String offerSDP);
 
     /**
      * Called when new candidate arrived from other peer
@@ -63,12 +73,14 @@ public interface WebRTCProvider {
      * @param label  label of candidate
      * @param sdp    sdp of candidate
      */
-    void onCandidate(long callId, String id, int label, String sdp);
+    @ObjectiveCName("onCandidateWithCallId:withId:withLabel:withSDP:")
+    void onCandidate(long callId, @NotNull String id, int label, @NotNull String sdp);
 
     /**
      * Call End event
      *
      * @param callId Unique Call Id
      */
+    @ObjectiveCName("onCallEndWithCallId:")
     void onCallEnd(long callId);
 }
