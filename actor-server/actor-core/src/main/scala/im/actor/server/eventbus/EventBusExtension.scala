@@ -15,6 +15,9 @@ import scala.concurrent.Future
 object EventBus {
   type EventBusId = String
   type DeviceId = Long
+
+  final case class Message(id: String, userId: Int, message: Array[Byte])
+  final case class Disposed(id: String)
 }
 
 final class EventBusExtension(system: ActorSystem) extends Extension {
@@ -32,6 +35,9 @@ final class EventBusExtension(system: ActorSystem) extends Extension {
       EventBusMediator.extractEntityId,
       EventBusMediator.extractShardId
     )
+
+  def subscribe(id: String, consumer: ActorRef): Future[Unit] =
+    (region ? EventBusEnvelope(id, Subscribe(consumer))) map (_ ⇒ ())
 
   def create(
     clientUserId: UserId,
