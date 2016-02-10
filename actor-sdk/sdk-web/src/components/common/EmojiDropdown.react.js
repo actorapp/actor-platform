@@ -6,7 +6,7 @@ import { forEach } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
-import { Path, KeyCodes } from '../../constants/ActorAppConstants';
+import { KeyCodes } from '../../constants/ActorAppConstants';
 import { emoji, getEmojiCategories } from '../../utils/EmojiUtils';
 import isInside from '../../utils/isInside';
 import EmojiActionCreators from '../../actions/EmojiActionCreators'

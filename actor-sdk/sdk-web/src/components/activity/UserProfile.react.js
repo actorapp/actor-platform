@@ -16,6 +16,7 @@ import { escapeWithEmoji } from '../../utils/EmojiUtils';
 import ContactActionCreators from '../../actions/ContactActionCreators';
 import DialogActionCreators from '../../actions/DialogActionCreators';
 import NotificationsActionCreators from '../../actions/NotificationsActionCreators';
+import CallActionCreators from '../../actions/CallActionCreators';
 
 import PeerStore from '../../stores/PeerStore';
 import DialogStore from '../../stores/DialogStore';
@@ -122,11 +123,16 @@ class UserProfile extends Component {
 
   handleAvatarClick = () => lightbox.open(this.props.user.bigAvatar);
 
+  makeCall = () => {
+    const { user } = this.props;
+    CallActionCreators.makeCall(user.id);
+  };
+
   render() {
     const { user } = this.props;
     const { isNotificationsEnabled, isActionsDropdownOpen, message } = this.state;
 
-    const dropdownClassNames = classnames('dropdown pull-left', {
+    const dropdownClassNames = classnames('dropdown', {
       'dropdown--opened': isActionsDropdownOpen
     });
 
@@ -179,29 +185,38 @@ class UserProfile extends Component {
                 : null
             }
 
-            <footer>
-              <div className={dropdownClassNames}>
-                <button className="dropdown__button button button--flat" onClick={this.toggleActionsDropdown}>
-                  <i className="material-icons">more_horiz</i>
-                  {this.getIntlMessage('actions')}
+            <footer className="row">
+              <div className="col-xs">
+                <button className="button button--green button--wide" onClick={this.makeCall}>
+                  <i className="material-icons">phone</i>
+                  {this.getIntlMessage('button.call')}
                 </button>
-                <ul className="dropdown__menu dropdown__menu--left">
-                  {
-                    user.isContact
-                      ? <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
-                          {this.getIntlMessage('removeFromContacts')}
-                        </li>
-                      : <li className="dropdown__menu__item" onClick={this.addToContacts}>
-                          {this.getIntlMessage('addToContacts')}
-                        </li>
-                  }
-                  <li className="dropdown__menu__item" onClick={() => this.clearChat(user.id)}>
-                    {this.getIntlMessage('clearConversation')}
-                  </li>
-                  <li className="dropdown__menu__item" onClick={() => this.deleteChat(user.id)}>
-                    {this.getIntlMessage('deleteConversation')}
-                  </li>
-                </ul>
+              </div>
+              <div style={{width: 10}}/>
+              <div className="col-xs">
+                <div className={dropdownClassNames}>
+                  <button className="dropdown__button button button--flat button--wide" onClick={this.toggleActionsDropdown}>
+                    <i className="material-icons">more_horiz</i>
+                    {this.getIntlMessage('actions')}
+                  </button>
+                  <ul className="dropdown__menu dropdown__menu--right">
+                    {
+                      user.isContact
+                        ? <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
+                            {this.getIntlMessage('removeFromContacts')}
+                          </li>
+                        : <li className="dropdown__menu__item" onClick={this.addToContacts}>
+                            {this.getIntlMessage('addToContacts')}
+                          </li>
+                    }
+                    <li className="dropdown__menu__item" onClick={() => this.clearChat(user.id)}>
+                      {this.getIntlMessage('clearConversation')}
+                    </li>
+                    <li className="dropdown__menu__item" onClick={() => this.deleteChat(user.id)}>
+                      {this.getIntlMessage('deleteConversation')}
+                    </li>
+                  </ul>
+                </div>
               </div>
             </footer>
           </li>
