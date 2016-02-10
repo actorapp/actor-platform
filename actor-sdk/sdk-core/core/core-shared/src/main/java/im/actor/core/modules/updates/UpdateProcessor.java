@@ -12,9 +12,6 @@ import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
-import im.actor.core.api.updates.UpdateCallEnded;
-import im.actor.core.api.updates.UpdateCallInProgress;
-import im.actor.core.api.updates.UpdateCallSignal;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
@@ -32,7 +29,6 @@ import im.actor.core.api.updates.UpdateGroupTopicChanged;
 import im.actor.core.api.updates.UpdateGroupUserInvited;
 import im.actor.core.api.updates.UpdateGroupUserKick;
 import im.actor.core.api.updates.UpdateGroupUserLeave;
-import im.actor.core.api.updates.UpdateIncomingCall;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.api.updates.UpdateMessageContentChanged;
 import im.actor.core.api.updates.UpdateMessageDelete;
@@ -54,6 +50,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.CallsProcessor;
+import im.actor.core.modules.eventbus.EventBusProcessor;
 import im.actor.core.modules.internal.contacts.ContactsSyncActor;
 import im.actor.core.modules.internal.messages.OwnReadActor;
 import im.actor.core.modules.updates.internal.ChangeContent;
@@ -72,8 +69,6 @@ import im.actor.core.modules.users.UsersProcessor;
 import im.actor.core.network.parser.Update;
 import im.actor.core.viewmodel.UserVM;
 
-import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
-
 public class UpdateProcessor extends AbsModule {
 
     private static final String TAG = "Updates";
@@ -88,6 +83,7 @@ public class UpdateProcessor extends AbsModule {
     private StickersProcessor stickersProcessor;
     private CallsProcessor callsProcessor;
     private EncryptedProcessor encryptedProcessor;
+    private EventBusProcessor eventBusProcessor;
 
     public UpdateProcessor(ModuleContext context) {
         super(context);
@@ -101,6 +97,7 @@ public class UpdateProcessor extends AbsModule {
         this.stickersProcessor = new StickersProcessor(context);
         this.callsProcessor = new CallsProcessor(context);
         this.encryptedProcessor = new EncryptedProcessor(context);
+        this.eventBusProcessor = new EventBusProcessor(context);
     }
 
     public void applyRelated(List<ApiUser> users,
@@ -208,6 +205,9 @@ public class UpdateProcessor extends AbsModule {
         if (callsProcessor.process(update)) {
             return;
         }
+        if (eventBusProcessor.process(update)) {
+            return;
+        }
         if (update instanceof UpdateUserOnline) {
             UpdateUserOnline userOnline = (UpdateUserOnline) update;
             presenceProcessor.onUserOnline(userOnline.getUid(), date);
@@ -230,7 +230,6 @@ public class UpdateProcessor extends AbsModule {
     }
 
     public void processUpdate(Update update) {
-        // Log.d(TAG, update + "");
         if (usersProcessor.process(update)) {
             return;
         }
@@ -238,6 +237,9 @@ public class UpdateProcessor extends AbsModule {
             return;
         }
         if (callsProcessor.process(update)) {
+            return;
+        }
+        if (eventBusProcessor.process(update)) {
             return;
         }
         if (update instanceof UpdateMessage) {
