@@ -13,6 +13,7 @@ import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.device.DeviceServiceImpl
 import im.actor.server.api.rpc.service.encryption.EncryptionServiceImpl
+import im.actor.server.api.rpc.service.eventbus.EventbusServiceImpl
 import im.actor.server.api.rpc.service.features.FeaturesServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
@@ -220,6 +221,9 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       system.log.debug("Starting EncryptionServiceImpl")
       val encryptionService = new EncryptionServiceImpl
 
+      system.log.debug("Starting EventbusServiceImpl")
+      val eventbusService = new EventbusServiceImpl(system)
+
       val services = Seq(
         authService,
         contactsService,
@@ -239,7 +243,8 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
         stickerService,
         featuresService,
         webrtcService,
-        encryptionService
+        encryptionService,
+        eventbusService
       )
 
       system.log.warning("Starting BotExtension")
