@@ -18,14 +18,15 @@ private[bot] final class MessagingBotService(system: ActorSystem) extends BotSer
 
   private def sendMessage(peer: OutPeer, randomId: Long, message: MessageBody) = RequestHandler[SendMessage, SendMessage#Response](
     (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒ {
-      // FIXME: check access hash
       for {
         SeqStateDate(_, _, date) ← dialogExt.sendMessage(
           peer = peer,
           senderUserId = botUserId,
           senderAuthSid = botAuthSid,
+          senderAuthId = Some(botAuthId),
           randomId = randomId,
           message = message,
+          accessHash = Some(peer.accessHash),
           isFat = false
         )
       } yield Right(MessageSent(date))

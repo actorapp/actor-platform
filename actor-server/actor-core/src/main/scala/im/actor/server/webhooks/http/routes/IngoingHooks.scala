@@ -51,7 +51,7 @@ trait IngoingHooks extends ContentUnmarshaller with PlayJsonSupport {
         for {
           (_, _, optBot) ← GroupExtension(system).getMemberIds(groupId)
           _ ← optBot map { botId ⇒
-            DialogExtension(system).sendMessage(ApiPeer(ApiPeerType.Group, groupId), botId, 0, ThreadLocalRandom.current().nextLong(), message)
+            DialogExtension(system).sendMessage(ApiPeer(ApiPeerType.Group, groupId), botId, 0, None, ThreadLocalRandom.current().nextLong(), message)
           } getOrElse Future.successful(Left(StatusCodes.NotAcceptable))
         } yield Right(())
       } getOrElse Future.successful(Left(StatusCodes.BadRequest))

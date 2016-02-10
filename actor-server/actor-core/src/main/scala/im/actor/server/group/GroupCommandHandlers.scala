@@ -179,6 +179,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
                   peer = ApiPeer(ApiPeerType.Group, groupId),
                   senderUserId = joiningUserId,
                   senderAuthSid = joinintUserAuthSid,
+                  senderAuthId = None,
                   randomId = randomId,
                   message = GroupServiceMessages.userJoined,
                   isFat = true

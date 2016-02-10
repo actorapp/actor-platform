@@ -2,22 +2,17 @@ package im.actor.server.sequence
 
 import java.util
 
-import akka.event.Logging
-
-import scala.collection.JavaConversions._
-import scala.concurrent.ExecutionContext
-import scala.concurrent.duration._
-
 import akka.actor.ActorSystem
-import akka.util.Timeout
+import akka.event.Logging
 import com.relayrides.pushy.apns._
 import com.relayrides.pushy.apns.util.{ SSLContextUtil, SimpleApnsPushNotification }
 import com.typesafe.config.Config
 import im.actor.server.db.ActorPostgresDriver.api._
-
 import im.actor.server.db.DbExtension
-import im.actor.server.user.{ UserProcessorRegion, UserExtension, UserOffice }
 
+import scala.collection.JavaConversions._
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
 import scala.util.Try
 
 case class ApplePushManagerConfig(certs: List[ApnsCert])

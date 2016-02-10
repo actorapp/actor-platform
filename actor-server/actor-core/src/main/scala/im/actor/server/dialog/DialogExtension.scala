@@ -77,11 +77,20 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       case _ ⇒ f
     }
 
-  def sendMessage(peer: ApiPeer, senderUserId: Int, senderAuthSid: Int, randomId: Long, message: ApiMessage, isFat: Boolean = false): Future[SeqStateDate] =
+  def sendMessage(
+    peer:          ApiPeer,
+    senderUserId:  Int,
+    senderAuthSid: Int,
+    senderAuthId:  Option[Long], //required only in case of access hash check for private peer
+    randomId:      Long,
+    message:       ApiMessage,
+    accessHash:    Option[Long] = None,
+    isFat:         Boolean      = false
+  ): Future[SeqStateDate] =
     withValidPeer(peer.asModel, senderUserId, Future.successful(SeqStateDate())) {
       val sender = Peer.privat(senderUserId)
       // we don't set date here, cause actual date set inside dialog processor
-      val sendMessage = SendMessage(sender, peer.asModel, senderAuthSid, date = None, randomId, message, isFat)
+      val sendMessage = SendMessage(sender, peer.asModel, senderAuthSid, senderAuthId, date = None, randomId, message, accessHash, isFat)
       (userExt.processorRegion.ref ? Envelope(sender).withSendMessage(sendMessage)).mapTo[SeqStateDate]
     }
 

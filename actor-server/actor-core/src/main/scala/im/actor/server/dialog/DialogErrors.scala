@@ -6,6 +6,8 @@ import scala.util.control.NoStackTrace
 
 abstract class DialogError(msg: String) extends RuntimeException(msg) with NoStackTrace
 
+case object InvalidAccessHash extends RuntimeException with NoStackTrace
+
 object DialogErrors {
   object MessageToSelf extends DialogError("Private dialog with self is not allowed")
 

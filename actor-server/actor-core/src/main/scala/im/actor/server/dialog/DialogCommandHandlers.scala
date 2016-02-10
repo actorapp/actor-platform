@@ -43,21 +43,27 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
           unstashAll()
       }: Receive) orElse reactions(state), discardOld = true)
 
-      withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
-        val sendDate = calcSendDate(state)
-        val message = sm.message
-        PubSubExtension(system).publish(PeerMessage(sm.origin, sm.dest, sm.randomId, sendDate, message))
-        (for {
-          _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(sendDate)))
-          _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-          _ ← dialogExt.updateCounters(peer, userId)
-          SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
-        } yield SeqStateDate(seq, state, sendDate)) recover {
-          case e ⇒
-            log.error(e, "Failed to send message")
-            throw e
+      validateAccessHash(sm.dest, sm.senderAuthId, sm.accessHash) map { valid ⇒
+        if (valid) {
+          withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
+            val sendDate = calcSendDate(state)
+            val message = sm.message
+            PubSubExtension(system).publish(PeerMessage(sm.origin, sm.dest, sm.randomId, sendDate, message))
+            (for {
+              _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(sendDate)))
+              _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
+              _ ← dialogExt.updateCounters(peer, userId)
+              SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
+            } yield SeqStateDate(seq, state, sendDate)) recover {
+              case e ⇒
+                log.error(e, "Failed to send message")
+                throw e
+            }
+          } pipeTo self
+        } else {
+          self ! Status.Failure(InvalidAccessHash)
         }
-      } pipeTo self
+      }
     }
   }
 
@@ -307,6 +313,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
    * Yields unique message date in current dialog.
    * When `candidate` date is same as last message date, we increment `candidate` value by 1,
    * thus resulting date can possibly be in future
+   *
    * @param state current dialog state
    * @return unique message date in current dialog
    */
@@ -369,4 +376,20 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   private def updateUnfavourited(state: DialogState): Unit =
     context become initialized(state.updated(Unfavourited))
+
+  /**
+    * check access hash
+    * If `optAccessHash` is `None` - we simply don't check access hash
+    * If `optSenderAuthId` is None, and we are validating access hash for private peer - it is invalid
+    */
+  private def validateAccessHash(peer: Peer, optSenderAuthId: Option[Long], optAccessHash: Option[Long]): Future[Boolean] =
+    optAccessHash map { hash ⇒
+      peer.`type` match {
+        case PeerType.Private ⇒
+          optSenderAuthId map { authId ⇒ userExt.checkAccessHash(peer.id, authId, hash) } getOrElse Future.successful(false)
+        case PeerType.Group ⇒
+          groupExt.checkAccessHash(peer.id, hash)
+        case unknown          ⇒ throw new RuntimeException(s"Unknown peer type $unknown")
+      }
+    } getOrElse Future.successful(true)
 }
