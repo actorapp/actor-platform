@@ -41,23 +41,21 @@ private[activation] final class TelesignProvider(_system: ActorSystem) extends A
 
   override def send(txHash: String, code: Code): Future[CodeFailure Xor Unit] = code match {
     case s: SmsCode ⇒
-      if (isTestPhone(s.phone)) {
-        Future.successful(Xor.right(()))
-      } else {
-        for {
-          resp ← (smsStateActor ? Send(code)).mapTo[SendAck].map(_.result)
-          _ ← createAuthCodeIfNeeded(resp, txHash, code.code)
-        } yield resp
-      }
+      for {
+        resp ← if (isTestPhone(s.phone))
+          Future.successful(Xor.right(()))
+        else
+          (smsStateActor ? Send(code)).mapTo[SendAck].map(_.result)
+        _ ← createAuthCodeIfNeeded(resp, txHash, code.code)
+      } yield resp
     case c: CallCode ⇒
-      if (isTestPhone(c.phone)) {
-        Future.successful(Xor.right(()))
-      } else {
-        for {
-          resp ← (callStateActor ? Send(code)).mapTo[SendAck].map(_.result)
-          _ ← createAuthCodeIfNeeded(resp, txHash, code.code)
-        } yield resp
-      }
+      for {
+        resp ← if (isTestPhone(c.phone))
+          Future.successful(Xor.right(()))
+        else
+          (callStateActor ? Send(code)).mapTo[SendAck].map(_.result)
+        _ ← createAuthCodeIfNeeded(resp, txHash, code.code)
+      } yield resp
     case other ⇒ throw new RuntimeException(s"This provider can't handle code of type: ${other.getClass}")
   }
 }
