@@ -294,6 +294,9 @@ public class CallManagerActor extends ModuleActor {
         } else if (message instanceof ReadyForCandidates) {
             ReadyForCandidates readyForCandidates = (ReadyForCandidates) message;
             onReadyReceiveCandidates(readyForCandidates.getCallId());
+        } else if (message instanceof DoCall) {
+            DoCall doCall = (DoCall) message;
+            doCall(doCall.getPeer());
         } else {
             super.onReceive(message);
         }
