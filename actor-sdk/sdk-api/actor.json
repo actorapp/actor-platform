@@ -11849,7 +11849,7 @@
               {
                 "type": "reference",
                 "argument": "timeout",
-                "category": "hidden",
+                "category": "full",
                 "description": "Join timeout"
               }
             ],
@@ -11896,7 +11896,7 @@
               {
                 "type": "reference",
                 "argument": "timeout",
-                "category": "hidden",
+                "category": "full",
                 "description": "Optional timeout for keep alive"
               }
             ],
@@ -12437,6 +12437,12 @@
                 "argument": "peer",
                 "category": "full",
                 "description": "destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "eventBusId",
+                "category": "full",
+                "description": "Call Event Bus Id"
               }
             ],
             "attributes": [

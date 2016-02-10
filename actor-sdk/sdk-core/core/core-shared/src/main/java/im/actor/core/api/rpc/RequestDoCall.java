@@ -66,6 +66,7 @@ public class RequestDoCall extends Request<ResponseDoCall> {
     public String toString() {
         String res = "rpc DoCall{";
         res += "peer=" + this.peer;
+        res += ", eventBusId=" + this.eventBusId;
         res += "}";
         return res;
     }
