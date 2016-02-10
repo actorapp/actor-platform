@@ -5,7 +5,7 @@ import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.ApiOutPeer
-import im.actor.api.rpc.webrtc.{ ResponseDoCall, WebrtcService }
+import im.actor.api.rpc.webrtc.{ ResponseGetCallInfo, ResponseDoCall, WebrtcService }
 import im.actor.server.session._
 import im.actor.server.webrtc.{ WebrtcCallErrors, WebrtcExtension, Webrtc }
 
@@ -24,6 +24,7 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
 
   val webrtcExt = WebrtcExtension(system)
 
+  /*
   override def jhandleDoCall(peer: ApiOutPeer, timeout: Int, clientData: ClientData): Future[HandlerResult[ResponseDoCall]] =
     authorized(clientData) { implicit client ⇒
       withOutPeerF(peer) {
@@ -76,5 +77,16 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
       } yield Ok(ResponseVoid)) recover {
         case WebrtcCallErrors.CallNotStarted ⇒ Error(WebrtcErrors.CallNotStarted)
       }
-    }
+    }*/
+  override def jhandleGetCallInfo(callId: Long, clientData: ClientData): Future[HandlerResult[ResponseGetCallInfo]] =
+    Future.failed(new RuntimeException("Not implemented"))
+
+  override def jhandleRejectCall(peer: ApiOutPeer, callId: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    Future.failed(new RuntimeException("Not implemented"))
+
+  override def jhandleJoinCall(peer: ApiOutPeer, callId: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    Future.failed(new RuntimeException("Not implemented"))
+
+  override def jhandleDoCall(peer: ApiOutPeer, eventBusId: String, clientData: ClientData): Future[HandlerResult[ResponseDoCall]] =
+    Future.failed(new RuntimeException("Not implemented"))
 }

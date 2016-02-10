@@ -1,7 +1,6 @@
 package im.actor.server.frontend
 
 import akka.stream.{ Attributes, Outlet, Inlet, FlowShape }
-import im.actor.server.model.MasterKey
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
