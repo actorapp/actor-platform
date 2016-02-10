@@ -9,6 +9,7 @@ import im.actor.concurrent.{ ActorFutures, ActorStashing }
 import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs.ProcessorState
 import im.actor.server.db.DbExtension
+import im.actor.server.group.GroupExtension
 import im.actor.server.model.{ Dialog ⇒ DialogModel, PeerType, Peer }
 import im.actor.server.persist.dialog.DialogRepo
 import im.actor.server.persist.{ GroupRepo, UserRepo }
@@ -120,6 +121,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   protected val db: Database = DbExtension(system).db
   protected val userExt = UserExtension(system)
+  protected val groupExt = GroupExtension(system)
   protected implicit val socialRegion = SocialExtension(system).region
   protected implicit val timeout = Timeout(5.seconds)
 
