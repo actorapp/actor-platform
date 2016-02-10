@@ -65,6 +65,7 @@ public class RequestJoinEventBus extends Request<ResponseJoinEventBus> {
     public String toString() {
         String res = "rpc JoinEventBus{";
         res += "id=" + this.id;
+        res += ", timeout=" + this.timeout;
         res += "}";
         return res;
     }

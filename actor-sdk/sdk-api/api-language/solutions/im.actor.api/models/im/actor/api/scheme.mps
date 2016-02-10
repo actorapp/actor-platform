@@ -10245,6 +10245,7 @@
         </node>
         <node concept="NX1gA" id="3Tolai5ML1M" role="1GBnQ6">
           <property role="NX6R2" value="Join timeout" />
+          <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3Tolai5M$P3" resolve="timeout" />
         </node>
       </node>
@@ -10282,6 +10283,7 @@
         </node>
         <node concept="NX1gA" id="3Tolai5MM2b" role="1GBnQ6">
           <property role="NX6R2" value="Optional timeout for keep alive" />
+          <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3Tolai5M_Py" resolve="timeout" />
         </node>
       </node>
@@ -10723,6 +10725,11 @@
           <property role="NX6R2" value="destination peer" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="201xLeQvfRW" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="3Tolai5O2bn" role="1GBnQ6">
+          <property role="NX6R2" value="Call Event Bus Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3Tolai5Np_j" resolve="eventBusId" />
         </node>
       </node>
       <node concept="w93zz" id="3Tolai5NMKi" role="2m5mJr">

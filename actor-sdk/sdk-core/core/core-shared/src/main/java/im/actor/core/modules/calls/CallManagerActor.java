@@ -67,11 +67,11 @@ public class CallManagerActor extends ModuleActor {
     // Starting call
     //
 
-    private void doCall(Peer peer) {
+    private void doCall(final Peer peer) {
         system().actorOf("actor/??", new ActorCreator() {
             @Override
             public Actor create() {
-                return new CallMasterActor(context());
+                return new CallMasterActor(peer, context());
             }
         });
     }
