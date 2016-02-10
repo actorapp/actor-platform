@@ -1,8 +1,6 @@
 package im.actor.core.modules.calls;
 
-import im.actor.core.api.updates.UpdateCallEnded;
-import im.actor.core.api.updates.UpdateCallInProgress;
-import im.actor.core.api.updates.UpdateCallSignal;
+import im.actor.core.api.updates.UpdateCallHandled;
 import im.actor.core.api.updates.UpdateIncomingCall;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.sequence.Processor;
@@ -16,32 +14,17 @@ public class CallsProcessor implements Processor {
 
     @Override
     public boolean process(Object update) {
-
         if (update instanceof UpdateIncomingCall) {
             UpdateIncomingCall updateIncomingCall = (UpdateIncomingCall) update;
             context.getCallsModule().getCallManager().send(
                     new CallManagerActor.OnIncomingCall(
-                            updateIncomingCall.getCallId(),
-                            updateIncomingCall.getUid()));
+                            updateIncomingCall.getCallId()));
             return true;
-        } else if (update instanceof UpdateCallSignal) {
-            UpdateCallSignal updateCallSignal = (UpdateCallSignal) update;
+        } else if (update instanceof UpdateCallHandled) {
+            UpdateCallHandled updateCallHandled = (UpdateCallHandled) update;
             context.getCallsModule().getCallManager().send(
-                    new CallManagerActor.OnSignaling(
-                            updateCallSignal.getCallId(),
-                            updateCallSignal.getContent()));
-            return true;
-        } else if (update instanceof UpdateCallEnded) {
-            UpdateCallEnded callEnded = (UpdateCallEnded) update;
-            context.getCallsModule().getCallManager().send(
-                    new CallManagerActor.OnCallEnded(
-                            callEnded.getCallId()));
-            return true;
-        } else if (update instanceof UpdateCallInProgress) {
-            UpdateCallInProgress callInProgress = (UpdateCallInProgress) update;
-            context.getCallsModule().getCallManager().send(
-                    new CallManagerActor.OnCallInProgress(callInProgress.getCallId(),
-                            callInProgress.getTimeout()));
+                    new CallManagerActor.OnIncomingCallHandled(
+                            updateCallHandled.getCallId()));
             return true;
         }
         return false;

@@ -62,19 +62,19 @@ public class CallsModule extends AbsModule {
         return new Command<ResponseDoCall>() {
             @Override
             public void start(final CommandCallback<ResponseDoCall> callback) {
-                User u = users().getValue(uid);
-                request(new RequestDoCall(new ApiOutPeer(ApiPeerType.PRIVATE, u.getUid(), u.getAccessHash()), CALL_TIMEOUT), new RpcCallback<ResponseDoCall>() {
-                    @Override
-                    public void onResult(final ResponseDoCall response) {
-                        callManager.send(new CallManagerActor.OnOutgoingCall(response.getCallId(), uid));
-                        callback.onResult(response);
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        callback.onError(e);
-                    }
-                });
+//                User u = users().getValue(uid);
+//                request(new RequestDoCall(new ApiOutPeer(ApiPeerType.PRIVATE, u.getUid(), u.getAccessHash()), CALL_TIMEOUT), new RpcCallback<ResponseDoCall>() {
+//                    @Override
+//                    public void onResult(final ResponseDoCall response) {
+//                        callManager.send(new CallManagerActor.OnOutgoingCall(response.getCallId(), uid));
+//                        callback.onResult(response);
+//                    }
+//
+//                    @Override
+//                    public void onError(RpcException e) {
+//                        callback.onError(e);
+//                    }
+//                });
             }
         };
     }

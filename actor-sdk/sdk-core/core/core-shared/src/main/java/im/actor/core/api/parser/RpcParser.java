@@ -113,12 +113,13 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 2588: return RequestEnableFeature.fromBytes(payload);
             case 2589: return RequestDisableFeature.fromBytes(payload);
             case 2590: return RequestCheckFeatureEnabled.fromBytes(payload);
-            case 2592: return RequestSubscribeToCalls.fromBytes(payload);
-            case 2593: return RequestUnsubscribeToCalls.fromBytes(payload);
+            case 2665: return RequestCreateNewEventBus.fromBytes(payload);
+            case 2668: return RequestJoinEventBus.fromBytes(payload);
+            case 2670: return RequestKeepAliveEventBus.fromBytes(payload);
+            case 2667: return RequestDisposeEventBus.fromBytes(payload);
+            case 2671: return RequestPostToEventBus.fromBytes(payload);
+            case 2600: return RequestGetCallInfo.fromBytes(payload);
             case 2597: return RequestDoCall.fromBytes(payload);
-            case 2595: return RequestEndCall.fromBytes(payload);
-            case 2596: return RequestCallInProgress.fromBytes(payload);
-            case 2599: return RequestSendCallSignal.fromBytes(payload);
             case 134: return RequestGetParameters.fromBytes(payload);
             case 128: return RequestEditParameter.fromBytes(payload);
             case 243: return RequestStoreEvents.fromBytes(payload);
@@ -188,6 +189,9 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 121: return ResponseGetFileUploadUrl.fromBytes(payload);
             case 138: return ResponseCommitFileUpload.fromBytes(payload);
             case 141: return ResponseGetFileUploadPartUrl.fromBytes(payload);
+            case 2666: return ResponseCreateNewEventBus.fromBytes(payload);
+            case 2669: return ResponseJoinEventBus.fromBytes(payload);
+            case 2606: return ResponseGetCallInfo.fromBytes(payload);
             case 2598: return ResponseDoCall.fromBytes(payload);
             case 135: return ResponseGetParameters.fromBytes(payload);
             case 2570: return ResponseRawRequest.fromBytes(payload);
@@ -209,6 +213,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 13: return SeqUpdate.fromBytes(payload);
             case 73: return FatSeqUpdate.fromBytes(payload);
             case 26: return WeakUpdate.fromBytes(payload);
+            case 2673: return WeakFatUpdate.fromBytes(payload);
             case 25: return SeqUpdateTooLong.fromBytes(payload);
             case 2625: return CombinedUpdate.fromBytes(payload);
         }

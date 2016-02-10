@@ -15,20 +15,20 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class RequestEndCall extends Request<ResponseVoid> {
+public class RequestGetCallInfo extends Request<ResponseGetCallInfo> {
 
-    public static final int HEADER = 0xa23;
-    public static RequestEndCall fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestEndCall(), data);
+    public static final int HEADER = 0xa28;
+    public static RequestGetCallInfo fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestGetCallInfo(), data);
     }
 
     private long callId;
 
-    public RequestEndCall(long callId) {
+    public RequestGetCallInfo(long callId) {
         this.callId = callId;
     }
 
-    public RequestEndCall() {
+    public RequestGetCallInfo() {
 
     }
 
@@ -48,7 +48,7 @@ public class RequestEndCall extends Request<ResponseVoid> {
 
     @Override
     public String toString() {
-        String res = "rpc EndCall{";
+        String res = "rpc GetCallInfo{";
         res += "callId=" + this.callId;
         res += "}";
         return res;
