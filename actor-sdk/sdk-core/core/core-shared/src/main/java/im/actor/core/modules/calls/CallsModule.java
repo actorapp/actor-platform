@@ -62,6 +62,7 @@ public class CallsModule extends AbsModule {
         return new Command<ResponseDoCall>() {
             @Override
             public void start(final CommandCallback<ResponseDoCall> callback) {
+                callManager.send(new CallManagerActor.DoCall(Peer.user(uid)));
 //                User u = users().getValue(uid);
 //                request(new RequestDoCall(new ApiOutPeer(ApiPeerType.PRIVATE, u.getUid(), u.getAccessHash()), CALL_TIMEOUT), new RpcCallback<ResponseDoCall>() {
 //                    @Override
