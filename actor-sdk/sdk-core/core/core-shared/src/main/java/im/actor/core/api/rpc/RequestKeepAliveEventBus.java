@@ -65,6 +65,7 @@ public class RequestKeepAliveEventBus extends Request<ResponseVoid> {
     public String toString() {
         String res = "rpc KeepAliveEventBus{";
         res += "id=" + this.id;
+        res += ", timeout=" + this.timeout;
         res += "}";
         return res;
     }
