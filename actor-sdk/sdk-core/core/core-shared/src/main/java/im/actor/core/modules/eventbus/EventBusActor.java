@@ -2,9 +2,13 @@ package im.actor.core.modules.eventbus;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+
+import im.actor.core.api.ApiEventBusDestination;
 import im.actor.core.api.rpc.RequestCreateNewEventBus;
 import im.actor.core.api.rpc.RequestJoinEventBus;
 import im.actor.core.api.rpc.RequestKeepAliveEventBus;
+import im.actor.core.api.rpc.RequestPostToEventBus;
 import im.actor.core.api.rpc.ResponseCreateNewEventBus;
 import im.actor.core.api.rpc.ResponseJoinEventBus;
 import im.actor.core.api.rpc.ResponseVoid;
@@ -122,6 +126,13 @@ public class EventBusActor extends ModuleActor {
 
     }
 
+    public final void sendMessage(int uid, long deviceId, byte[] data) {
+        ArrayList<ApiEventBusDestination> destinations = new ArrayList<>();
+        ArrayList<Long> deviceIds = new ArrayList<>();
+        deviceIds.add(deviceId);
+        destinations.add(new ApiEventBusDestination(uid, deviceIds));
+        request(new RequestPostToEventBus(busId, destinations, data));
+    }
 
     public void onBusShutdown() {
 
