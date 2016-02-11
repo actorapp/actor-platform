@@ -162,7 +162,7 @@ public class ActorSDK {
         builder.setPhoneBookProvider(PhoneBookProvider())
         builder.setNotificationProvider(iOSNotificationProvider())
         if (enableExperimentalFeatures) {
-            builder.setWebRTCProvider(iOSWebRTCProvider())
+            builder.setCallsProvider(iOSWebRTCProvider())
         }
         
         // Stats
