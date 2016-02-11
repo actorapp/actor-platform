@@ -551,7 +551,6 @@ public class ActorSDK {
      */
     public void setCallsEnabled(boolean callsEnabled) {
         this.callsEnabled = callsEnabled;
-        CallsModule.CALLS_ENABLED = callsEnabled;
     }
 
     /**
