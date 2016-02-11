@@ -12,6 +12,7 @@ import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
+import im.actor.core.api.updates.UpdateChatArchive;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
@@ -337,6 +338,8 @@ public class UpdateProcessor extends AbsModule {
             messagesProcessor.onCountersChanged(((UpdateCountersChanged) update).getCounters());
         } else if (update instanceof UpdateChatGroupsChanged) {
             messagesProcessor.onChatGroupsChanged(((UpdateChatGroupsChanged) update).getDialogs());
+        } else if (update instanceof UpdateChatArchive) {
+            messagesProcessor.onChatArchived(((UpdateChatArchive) update).getPeer());
         } else if (update instanceof UpdateReactionsUpdate) {
             messagesProcessor.onReactionsChanged(((UpdateReactionsUpdate) update).getPeer(),
                     ((UpdateReactionsUpdate) update).getRid(), ((UpdateReactionsUpdate) update).getReactions());

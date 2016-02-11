@@ -15,6 +15,7 @@ import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.base.SeqUpdate;
+import im.actor.core.api.rpc.RequestArchiveChat;
 import im.actor.core.api.rpc.RequestClearChat;
 import im.actor.core.api.rpc.RequestDeleteChat;
 import im.actor.core.api.rpc.RequestFavouriteDialog;
@@ -25,6 +26,7 @@ import im.actor.core.api.rpc.RequestUnfavouriteDialog;
 import im.actor.core.api.rpc.ResponseDialogsOrder;
 import im.actor.core.api.rpc.ResponseReactionsResponse;
 import im.actor.core.api.rpc.ResponseSeq;
+import im.actor.core.api.updates.UpdateChatArchive;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
@@ -837,11 +839,12 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         };
     }
 
-    public Command<Boolean> hideChat(final Peer peer) {
+
+    public Command<Boolean> archiveChat(final Peer peer) {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                ApiOutPeer outPeer;
+                final ApiOutPeer outPeer;
                 if (peer.getPeerType() == PeerType.PRIVATE) {
                     User user = users().getValue(peer.getPeerId());
                     if (user == null) {
@@ -877,12 +880,9 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                     });
                     return;
                 }
-                request(new RequestHideDialog(outPeer), new RpcCallback<ResponseDialogsOrder>() {
+                request(new RequestArchiveChat(outPeer), new RpcCallback<ResponseSeq>() {
                     @Override
-                    public void onResult(ResponseDialogsOrder response) {
-                        updates().onSeqUpdateReceived(response.getSeq(),
-                                response.getState(),
-                                new UpdateChatGroupsChanged(response.getGroups()));
+                    public void onResult(ResponseSeq response) {
 
                         updates().executeAfter(response.getSeq(),
                                 new Runnable() {

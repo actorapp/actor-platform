@@ -6,6 +6,7 @@ import java.util.List;
 
 import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiDialogShort;
+import im.actor.core.api.ApiPeer;
 import im.actor.core.api.rpc.RequestLoadGroupedDialogs;
 import im.actor.core.api.rpc.ResponseLoadGroupedDialogs;
 import im.actor.core.entity.Avatar;
@@ -98,6 +99,12 @@ public class GroupedDialogsActor extends ModuleActor {
         applyGroups(groupedItems);
     }
 
+
+    private void onChatArchived(ApiPeer peer) {
+
+    }
+
+
     // Tools
 
     private void notifyVM(Peer peer) {
@@ -189,6 +196,8 @@ public class GroupedDialogsActor extends ModuleActor {
         } else if (message instanceof GroupedDialogsChanged) {
             GroupedDialogsChanged g = (GroupedDialogsChanged) message;
             onGroupedChanged(g.getItems());
+        } else if (message instanceof ChatArchived) {
+            onChatArchived(((ChatArchived) message).getPeer());
         } else {
             super.onReceive(message);
         }
@@ -236,6 +245,17 @@ public class GroupedDialogsActor extends ModuleActor {
 
         public int getCounter() {
             return counter;
+        }
+    }
+
+    public static class ChatArchived {
+        ApiPeer peer;
+        public ChatArchived(ApiPeer peer) {
+            this.peer = peer;
+        }
+
+        public ApiPeer getPeer() {
+            return peer;
         }
     }
 }
