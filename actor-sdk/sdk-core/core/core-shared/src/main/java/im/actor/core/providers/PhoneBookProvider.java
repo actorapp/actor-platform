@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.phonebook;
+package im.actor.core.providers;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 

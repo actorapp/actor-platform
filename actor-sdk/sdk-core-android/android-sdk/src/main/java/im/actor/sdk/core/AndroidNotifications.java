@@ -22,7 +22,7 @@ import java.util.List;
 
 import im.actor.core.AndroidMessenger;
 import im.actor.core.Messenger;
-import im.actor.core.notifications.NotificationProvider;
+import im.actor.core.providers.NotificationProvider;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Notification;
 import im.actor.core.entity.Peer;
