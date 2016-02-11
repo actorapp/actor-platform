@@ -168,9 +168,10 @@ final class EventBusMediator extends Actor with ActorLogging {
       if (owner.contains(clientUserId)) {
         context stop self
       } else sender() ! Status.Failure(new RuntimeException("Attempt to dispose by not an owner"))
-    case Subscribe(ref) ⇒
+    case subscribe @ Subscribe(ref) ⇒
       this.internalConsumers.add(ref)
       context watch ref
+      sender() ! SubscribeAck(subscribe)
     case Terminated(ref) ⇒
       this.internalConsumers.remove(ref)
   }
