@@ -3,23 +3,18 @@ package im.actor.core.modules.calls;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.CallState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.signals.AbsSignal;
 import im.actor.core.entity.signals.AnswerSignal;
 import im.actor.core.entity.signals.CandidateSignal;
 import im.actor.core.entity.signals.OfferSignal;
-import im.actor.core.events.NewSessionCreated;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
-import im.actor.core.webrtc.WebRTCProvider;
+import im.actor.core.providers.CallsProvider;
 import im.actor.runtime.*;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
-import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.function.Constructor;
 
 public class CallManagerActor extends ModuleActor {
@@ -40,7 +35,7 @@ public class CallManagerActor extends ModuleActor {
     private HashSet<Long> pendingRequests = new HashSet<>();
 
     private WebRTCControllerImpl webRTCController;
-    private WebRTCProvider provider;
+    private CallsProvider provider;
     private boolean isStartedKeepAlive = false;
 
     private ArrayList<Candidate> pendingCandidates = new ArrayList<>();
@@ -58,7 +53,7 @@ public class CallManagerActor extends ModuleActor {
         super.preStart();
 
         webRTCController = new WebRTCControllerImpl(self());
-        provider = config().getWebRTCProvider();
+        provider = config().getCallsProvider();
         provider.init(context().getMessenger(), webRTCController);
     }
 
