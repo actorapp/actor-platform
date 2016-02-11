@@ -23,7 +23,7 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
 
   private lazy val groupExt = GroupExtension(actorSystem)
 
-  override def jhandleTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
       peer.`type` match {
         case ApiPeerType.Private ⇒
@@ -45,7 +45,7 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
     }
   }
 
-  override def jhandleSetOnline(
+  override def doHandleSetOnline(
     isOnline:       Boolean,
     timeout:        Long,
     deviceCategory: Option[ApiDeviceType.Value],
@@ -66,14 +66,14 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandlePauseNotifications(timeout: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+  override def doHandlePauseNotifications(timeout: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     Future.failed(new RuntimeException("Not implemented"))
 
-  override def jhandleRestoreNotifications(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+  override def doHandleRestoreNotifications(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     Future.failed(new RuntimeException("Not implemented"))
 
   // TODO: DRY
-  override def jhandleStopTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleStopTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
       peer.`type` match {
         case ApiPeerType.Private ⇒

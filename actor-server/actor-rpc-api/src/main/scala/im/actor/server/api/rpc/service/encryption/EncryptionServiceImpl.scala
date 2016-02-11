@@ -23,7 +23,7 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
   private val db = DbExtension(system).db
   private val updExt = SeqUpdatesExtension(system)
 
-  override def jhandleLoadPublicKeyGroups(
+  override def doHandleLoadPublicKeyGroups(
     userPeer:   ApiUserOutPeer,
     clientData: ClientData
   ): Future[HandlerResult[ResponsePublicKeyGroups]] =
@@ -35,7 +35,7 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
       }
     }
 
-  override def jhandleCreateNewKeyGroup(
+  override def doHandleCreateNewKeyGroup(
     identityKey:          ApiEncryptionKey,
     supportedEncryptions: IndexedSeq[String],
     keys:                 IndexedSeq[ApiEncryptionKey],
@@ -48,7 +48,7 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
       } yield Ok(ResponseCreateNewKeyGroup(id))
     }
 
-  override def jhandleDeleteKeyGroup(
+  override def doHandleDeleteKeyGroup(
     keyGroupId: Int,
     clientData: ClientData
   ): Future[HandlerResult[ResponseVoid]] =
@@ -58,7 +58,7 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
       } yield Ok(ResponseVoid)
     }
 
-  override def jhandleLoadPublicKey(
+  override def doHandleLoadPublicKey(
     userPeer:   ApiUserOutPeer,
     keyGroupId: Int,
     keyIds:     IndexedSeq[Long],
@@ -75,7 +75,7 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
       }
     }
 
-  override def jhandleUploadPreKey(
+  override def doHandleUploadPreKey(
     keyGroupId: Int,
     keys:       IndexedSeq[ApiEncryptionKey],
     signatures: IndexedSeq[ApiEncryptionKeySignature],
@@ -87,7 +87,7 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
       } yield Ok(ResponseVoid)
     }
 
-  override def jhandleLoadPrePublicKeys(
+  override def doHandleLoadPrePublicKeys(
     userPeer:   ApiUserOutPeer,
     keyGroupId: Int,
     clientData: ClientData
@@ -109,7 +109,7 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
       }
     }
 
-  override def jhandleSendEncryptedPackage(
+  override def doHandleSendEncryptedPackage(
     randomId:         Long,
     destPeers:        IndexedSeq[ApiUserOutPeer],
     ignoredKeyGroups: IndexedSeq[ApiKeyGroupId],
@@ -171,12 +171,12 @@ final class EncryptionServiceImpl(implicit system: ActorSystem) extends Encrypti
       }
     }
 
-  override def jhandleDisconnectKeyGroup(
+  override def doHandleDisconnectKeyGroup(
     keyGroupId: Int,
     clientData: ClientData
   ): Future[HandlerResult[ResponseVoid]] = Future.failed(new RuntimeException("Not implemented"))
 
-  override def jhandleConnectKeyGroup(
+  override def doHandleConnectKeyGroup(
     keyGroupId: Int,
     clientData: ClientData
   ): Future[HandlerResult[ResponseVoid]] = Future.failed(new RuntimeException("Not implemented"))

@@ -14,7 +14,7 @@ final class DeviceServiceImpl(implicit system: ActorSystem) extends DeviceServic
 
   private val userExt = UserExtension(system)
 
-  override def jhandleNotifyAboutDeviceInfo(preferredLanguages: IndexedSeq[String], timeZone: Option[String], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleNotifyAboutDeviceInfo(preferredLanguages: IndexedSeq[String], timeZone: Option[String], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
       userExt.setDeviceInfo(client.userId, DeviceInfo(timeZone.getOrElse(""), preferredLanguages))
       Future.successful(Ok(ResponseVoid))

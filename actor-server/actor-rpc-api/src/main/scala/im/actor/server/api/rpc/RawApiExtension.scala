@@ -5,7 +5,7 @@ import cats.data.Xor
 import im.actor.api.rpc.collections.ApiRawValue
 import im.actor.api.rpc.FutureResultRpcCats
 import im.actor.api.rpc.raw.RawApiService
-import im.actor.api.rpc.{ AuthorizedClientData, CommonErrors, RpcError }
+import im.actor.api.rpc.{ AuthorizedClientData, CommonRpcErrors, RpcError }
 
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.Future
@@ -29,8 +29,8 @@ private[rpc] final class RawApiExtensionImpl(system: ExtendedActorSystem) extend
 
   def handle(service: String, method: String, params: Option[ApiRawValue])(implicit client: AuthorizedClientData): Future[RpcError Xor ApiRawValue] =
     (for {
-      serviceHandler ← fromOption(CommonErrors.UnsupportedRequest)(services.get(service))
-      response ← fromOption(CommonErrors.UnsupportedRequest)(serviceHandler.handleRequests(client)(params).lift(method))
+      serviceHandler ← fromOption(CommonRpcErrors.UnsupportedRequest)(services.get(service))
+      response ← fromOption(CommonRpcErrors.UnsupportedRequest)(serviceHandler.handleRequests(client)(params).lift(method))
       result ← fromFutureEither(response)
     } yield result).value
 }
