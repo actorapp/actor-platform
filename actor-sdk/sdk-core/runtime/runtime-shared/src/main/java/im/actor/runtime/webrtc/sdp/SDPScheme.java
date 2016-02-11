@@ -1,4 +1,4 @@
-package im.actor.core.webrtc.sdp;
+package im.actor.runtime.webrtc.sdp;
 
 import java.util.ArrayList;
 import java.util.List;
