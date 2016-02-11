@@ -157,7 +157,7 @@ final class EventBusMediator extends Actor with ActorLogging {
       }
     case ConsumerTimedOut(authId) ⇒
       if ((owner.isDefined && consumers.ownerAuthIds == Set(authId)) || consumers.authIds == Set(authId)) {
-        log.debug("Disposing")
+        log.debug("Disposing as no more clients connected")
         broadcast(UpdateEventBusDisposed(id))
         context stop self
       } else {
@@ -175,6 +175,8 @@ final class EventBusMediator extends Actor with ActorLogging {
       sender() ! JoinAck(deviceId)
     case Dispose(clientUserId) ⇒
       if (owner.contains(clientUserId)) {
+        log.debug("Disposing by owner request")
+        broadcast(UpdateEventBusDisposed(id))
         context stop self
       } else sender() ! Status.Failure(new RuntimeException("Attempt to dispose by not an owner"))
     case subscribe @ Subscribe(ref) ⇒
