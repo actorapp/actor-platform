@@ -3,6 +3,8 @@ package im.actor.core.modules.calls;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import im.actor.core.api.rpc.RequestGetCallInfo;
+import im.actor.core.api.rpc.ResponseGetCallInfo;
 import im.actor.core.entity.CallState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.signals.AbsSignal;
@@ -16,6 +18,7 @@ import im.actor.runtime.*;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.function.Constructor;
+import im.actor.runtime.function.Consumer;
 
 public class CallManagerActor extends ModuleActor {
 
@@ -44,6 +47,8 @@ public class CallManagerActor extends ModuleActor {
     private boolean isOfferReceived = false;
     private boolean isAnswerReceived = false;
 
+    private HashSet<Long> handledCalls = new HashSet<>();
+
     public CallManagerActor(ModuleContext context) {
         super(context);
     }
@@ -63,7 +68,7 @@ public class CallManagerActor extends ModuleActor {
     //
 
     private void doCall(final Peer peer) {
-        system().actorOf("actor/??", new ActorCreator() {
+        system().actorOf("actor/master", new ActorCreator() {
             @Override
             public Actor create() {
                 return new CallMasterActor(peer, context());
@@ -73,6 +78,27 @@ public class CallManagerActor extends ModuleActor {
 
     private void onIncomingCall(long callId) {
         Log.d(TAG, "onIncomingCall (" + callId + ")");
+        if (handledCalls.contains(callId)) {
+            return;
+        }
+        handledCalls.add(callId);
+
+        api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
+            @Override
+            public void apply(final ResponseGetCallInfo responseGetCallInfo) {
+                system().actorOf("actor/slave", new ActorCreator() {
+                    @Override
+                    public Actor create() {
+                        return new CallSlaveActor(responseGetCallInfo.getEventBusId(), context());
+                    }
+                });
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                // Just Ignore
+            }
+        }).done(self());
 
 //        if (webRTCController.getCallId() == -1) {
 //            webRTCController.switchCallId(callId);
