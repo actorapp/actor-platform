@@ -33,8 +33,9 @@ final class TelesignClient(config: Config)(implicit system: ActorSystem) {
   private val HmacSha1Algorithm = "HmacSHA1"
   private val Utf8Encoding = "UTF-8"
   private val FormContentType = "application/x-www-form-urlencoded"
+  private lazy val http = new Http()
 
-  private val http = new Http()
+  system registerOnTermination http.shutdown()
 
   private implicit val ec: ExecutionContext = system.dispatcher
 
