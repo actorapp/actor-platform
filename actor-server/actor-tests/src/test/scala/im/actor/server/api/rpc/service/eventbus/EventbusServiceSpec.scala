@@ -59,5 +59,13 @@ final class EventbusServiceSpec
     Thread.sleep(1000)
 
     expectWeakUpdate(aliceAuthId, aliceSessionId)(aliceProbe).updateHeader shouldBe UpdateEventBusDisposed.header
+
+    {
+      implicit val clientData = aliceClientData
+
+      whenReady(service.handleKeepAliveEventBus(id, Some(1000))) {
+        case Error(_) ⇒
+      }
+    }
   }
 }
