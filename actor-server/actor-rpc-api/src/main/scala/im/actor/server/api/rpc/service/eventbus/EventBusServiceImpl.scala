@@ -56,8 +56,8 @@ final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
     clientData: ClientData
   ): Future[HandlerResult[ResponseVoid]] =
     authorized(clientData) { client ⇒
-      ext.keepAlive(client.authId, id, timeout)
-      FastFuture.successful(Ok(ResponseVoid))
+      for (_ ← ext.keepAlive(client.authId, id, timeout))
+        yield Ok(ResponseVoid)
     } recover {
       case EventBusErrors.EventBusNotFound ⇒ EventBusRpcErrors.EventBusNotFound
     }
