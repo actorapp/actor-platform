@@ -16,7 +16,7 @@ import im.actor.config.ActorConfig
 import im.actor.server.acl.ACLUtils
 import im.actor.server.activation.common.CodeFailure
 import im.actor.server.activation.ActivationContext
-import im.actor.server.api.rpc.service.profile.ProfileErrors
+import im.actor.server.api.rpc.service.profile.ProfileRpcErrors
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.db.DbExtension
 import im.actor.server.email.{ EmailConfig, SmtpEmailSender }
@@ -69,7 +69,7 @@ final class AuthServiceImpl(
 
   implicit protected val timeout = Timeout(10 seconds)
 
-  override def jhandleGetAuthSessions(clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] = {
+  override def doHandleGetAuthSessions(clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       for {
         sessionModels ← AuthSessionRepo.findByUserId(client.userId)
@@ -102,7 +102,7 @@ final class AuthServiceImpl(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  def jhandleCompleteOAuth2(transactionHash: String, code: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
+  override def doHandleCompleteOAuth2(transactionHash: String, code: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
     val action: Result[ResponseAuth] =
       for {
         transaction ← fromDBIOOption(AuthErrors.EmailCodeExpired)(AuthEmailTransactionRepo.find(transactionHash))
@@ -140,7 +140,7 @@ final class AuthServiceImpl(
     db.run(action.run)
   }
 
-  def jhandleGetOAuth2Params(transactionHash: String, redirectUrl: String, clientData: ClientData): Future[HandlerResult[ResponseGetOAuth2Params]] = {
+  override def doHandleGetOAuth2Params(transactionHash: String, redirectUrl: String, clientData: ClientData): Future[HandlerResult[ResponseGetOAuth2Params]] = {
     val action =
       for {
         transaction ← fromDBIOOption(AuthErrors.EmailCodeExpired)(AuthEmailTransactionRepo.find(transactionHash))
@@ -150,7 +150,7 @@ final class AuthServiceImpl(
     db.run(action.run)
   }
 
-  def jhandleStartPhoneAuth(
+  override def doHandleStartPhoneAuth(
     phoneNumber:        Long,
     appId:              Int,
     apiKey:             String,
@@ -190,7 +190,7 @@ final class AuthServiceImpl(
     db.run(action.run)
   }
 
-  override def jhandleStartUsernameAuth(
+  override def doHandleStartUsernameAuth(
     username:           String,
     appId:              Int,
     apiKey:             String,
@@ -202,7 +202,7 @@ final class AuthServiceImpl(
   ): Future[HandlerResult[ResponseStartUsernameAuth]] = {
     val action =
       for {
-        normUsername ← fromOption(ProfileErrors.NicknameInvalid)(StringUtils.normalizeUsername(username))
+        normUsername ← fromOption(ProfileRpcErrors.NicknameInvalid)(StringUtils.normalizeUsername(username))
         optUser ← fromDBIO(UserRepo.findByNickname(username))
         _ ← optUser map (u ⇒ forbidDeletedUser(u.id)) getOrElse point(())
         optAuthTransaction ← fromDBIO(AuthUsernameTransactionRepo.find(username, deviceHash))
@@ -230,7 +230,7 @@ final class AuthServiceImpl(
     db.run(action.run)
   }
 
-  override def jhandleStartAnonymousAuth(
+  override def doHandleStartAnonymousAuth(
     username:           String,
     appId:              Int,
     apiKey:             String,
@@ -242,10 +242,10 @@ final class AuthServiceImpl(
   ): Future[HandlerResult[ResponseAuth]] = {
     val action =
       for {
-        normUsername ← fromOption(ProfileErrors.NicknameInvalid)(StringUtils.normalizeUsername(username))
+        normUsername ← fromOption(ProfileRpcErrors.NicknameInvalid)(StringUtils.normalizeUsername(username))
         accessSalt = ACLUtils.nextAccessSalt()
         nicknameExists ← fromDBIO(UserRepo.nicknameExists(normUsername))
-        _ ← fromBoolean(ProfileErrors.NicknameBusy)(!nicknameExists)
+        _ ← fromBoolean(ProfileRpcErrors.NicknameBusy)(!nicknameExists)
         transactionHash = ACLUtils.authTransactionHash(accessSalt)
         transaction = AuthAnonymousTransaction(
           normUsername,
@@ -262,13 +262,10 @@ final class AuthServiceImpl(
         _ ← handleUserCreate(user, transaction, clientData)
         userStruct ← authorizeT(user.id, "", transaction, clientData)
       } yield ResponseAuth(userStruct, ApiConfig(maxGroupSize))
-
-    recover(db.run(action.run)) recover {
-      case UserErrors.NicknameTaken ⇒ Error(ProfileErrors.NicknameBusy)
-    }
+    db.run(action.run)
   }
 
-  override def jhandleSendCodeByPhoneCall(transactionHash: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleSendCodeByPhoneCall(transactionHash: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = for {
       tx ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(AuthPhoneTransactionRepo.find(transactionHash))
       code ← fromDBIO(AuthCodeRepo.findByTransactionHash(tx.transactionHash) map (_ map (_.code) getOrElse (genSmsCode(tx.phoneNumber))))
@@ -279,7 +276,7 @@ final class AuthServiceImpl(
     db.run(action.run)
   }
 
-  def jhandleSignUp(transactionHash: String, name: String, sex: Option[ApiSex], password: Option[String], clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
+  override def doHandleSignUp(transactionHash: String, name: String, sex: Option[ApiSex], password: Option[String], clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
     val action: Result[ResponseAuth] =
       for {
         //retrieve `authTransaction`
@@ -312,7 +309,7 @@ final class AuthServiceImpl(
     db.run(action.run)
   }
 
-  override def jhandleStartEmailAuth(
+  override def doHandleStartEmailAuth(
     email:              String,
     appId:              Int,
     apiKey:             String,
@@ -372,7 +369,7 @@ final class AuthServiceImpl(
     db.run(action.run)
   }
 
-  def jhandleValidateCode(transactionHash: String, code: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
+  override def doHandleValidateCode(transactionHash: String, code: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
     val action: Result[ResponseAuth] =
       for {
         //retreive `authTransaction`
@@ -387,7 +384,7 @@ final class AuthServiceImpl(
     db.run(action.run)
   }
 
-  override def jhandleValidatePassword(
+  override def doHandleValidatePassword(
     transactionHash: String,
     password:        String,
     clientData:      ClientData
@@ -402,7 +399,7 @@ final class AuthServiceImpl(
     db.run(action.run)
   }
 
-  override def jhandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData) map { implicit client ⇒
       AuthSessionRepo.findByAuthId(client.authId) flatMap {
         case Some(session) ⇒
@@ -414,7 +411,7 @@ final class AuthServiceImpl(
     db.run(toDBIOAction(action))
   }
 
-  override def jhandleTerminateAllSessions(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleTerminateAllSessions(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       for {
         sessions ← AuthSessionRepo.findByUserId(client.userId) map (_.filterNot(_.authId == client.authId))
@@ -427,7 +424,7 @@ final class AuthServiceImpl(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleTerminateSession(id: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleTerminateSession(id: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       AuthSessionRepo.find(client.userId, id).headOption flatMap {
         case Some(session) ⇒
@@ -445,7 +442,11 @@ final class AuthServiceImpl(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleStartTokenAuth(token: String, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, timeZone: Option[String], preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
+  override def doHandleStartTokenAuth(token: String, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, timeZone: Option[String], preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
     Future.failed(new RuntimeException("Not implemented"))
+
+  override def onFailure: PartialFunction[Throwable, RpcError] = recoverCommon orElse {
+    case UserErrors.NicknameTaken ⇒ ProfileRpcErrors.NicknameBusy
+  }
 
 }

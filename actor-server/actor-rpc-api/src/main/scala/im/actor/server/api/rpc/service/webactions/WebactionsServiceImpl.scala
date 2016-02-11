@@ -36,7 +36,7 @@ final class WebactionsServiceImpl(implicit actorSystem: ActorSystem) extends Web
   private val actionHashUserKV = WebactionsKeyValues.actionHashUserKV()
   private val db = DbExtension(actorSystem).db
 
-  override def jhandleInitWebaction(actionName: String, params: ApiMapValue, clientData: ClientData): Future[HandlerResult[ResponseInitWebaction]] = {
+  override def doHandleInitWebaction(actionName: String, params: ApiMapValue, clientData: ClientData): Future[HandlerResult[ResponseInitWebaction]] = {
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
       (for {
         fqn ← fromOption(WebactionNotFound)(Webaction.list.get(actionName))
@@ -48,7 +48,7 @@ final class WebactionsServiceImpl(implicit actorSystem: ActorSystem) extends Web
     db.run(toDBIOAction(authorizedAction map DBIO.from))
   }
 
-  override def jhandleCompleteWebaction(actionHash: String, completeUri: String, clientData: ClientData): Future[HandlerResult[ResponseCompleteWebaction]] = {
+  override def doHandleCompleteWebaction(actionHash: String, completeUri: String, clientData: ClientData): Future[HandlerResult[ResponseCompleteWebaction]] = {
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
       (for {
         actionName ← fromFutureOption(WrongActionHash)(actionHashUserKV.get(actionHash))
