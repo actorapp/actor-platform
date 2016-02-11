@@ -13,6 +13,12 @@ import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.util.Random
 
+abstract class EventBusError(message: String) extends RuntimeException(message)
+
+object EventBusErrors {
+  case object EventBusNotFound extends EventBusError("EventBus not found")
+}
+
 private[eventbus] trait EventBusMessage
 private[eventbus] final case class EventBusEnvelope(id: String, message: EventBusMessage)
 
@@ -116,6 +122,9 @@ final class EventBusMediator extends Actor with ActorLogging {
       timeoutOpt foreach (consumers.keepAlive(clientAuthId, _))
       sender() ! CreateAck(deviceId)
       context become created
+    case _ ⇒
+      sender() ! Status.Failure(EventBusErrors.EventBusNotFound)
+      context stop self
   }
 
   def created: Receive = {
