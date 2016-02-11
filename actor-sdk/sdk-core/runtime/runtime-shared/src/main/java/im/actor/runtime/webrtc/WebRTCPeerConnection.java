@@ -2,9 +2,9 @@ package im.actor.runtime.webrtc;
 
 public interface WebRTCPeerConnection {
 
-    void mute();
+    void addCallback(WebRTCPeerConnectionCallback callback);
 
-    void unmute();
+    void removeCallback(WebRTCPeerConnectionCallback callback);
 
     void addCandidate(int label, String id, String candidate);
 

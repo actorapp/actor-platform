@@ -1,19 +1,14 @@
 package im.actor.core.modules.calls;
 
-import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-
 import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.eventbus.EventBusActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.function.Consumer;
 
-public class CallMasterActor extends EventBusActor {
+public class CallMasterActor extends CallActor {
 
     private static final String TAG = "CallMasterActor";
 
@@ -52,17 +47,8 @@ public class CallMasterActor extends EventBusActor {
     }
 
     @Override
-    public void onMessageReceived(@Nullable Integer senderId, @Nullable Long senderDeviceId, byte[] data) {
-        ApiWebRTCSignaling signaling;
-        try {
-            signaling = ApiWebRTCSignaling.fromBytes(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d(TAG, "onMessageReceived:ignoring");
-            return;
-        }
-
-        Log.d(TAG, "onMessageReceived: " + signaling);
+    public void onSignalingMessage(int fromUid, long fromDeviceId, ApiWebRTCSignaling signaling) {
+        Log.d(TAG, "onSignalingMessage");
     }
 
     @Override

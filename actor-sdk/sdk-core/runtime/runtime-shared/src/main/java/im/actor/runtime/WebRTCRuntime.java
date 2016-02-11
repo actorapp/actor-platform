@@ -1,5 +1,6 @@
 package im.actor.runtime;
 
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 /**
@@ -12,5 +13,5 @@ public interface WebRTCRuntime {
      *
      * @return created peer connection
      */
-    WebRTCPeerConnection createPeerConnection();
+    Promise<WebRTCPeerConnection> createPeerConnection();
 }

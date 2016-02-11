@@ -3,6 +3,7 @@ package im.actor.runtime.cocoa;
 import com.google.j2objc.annotations.ObjectiveCName;
 
 import im.actor.runtime.WebRTCRuntime;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class CocoaWebRTCProxyProvider implements WebRTCRuntime {
@@ -15,7 +16,7 @@ public class CocoaWebRTCProxyProvider implements WebRTCRuntime {
     }
 
     @Override
-    public WebRTCPeerConnection createPeerConnection() {
+    public Promise<WebRTCPeerConnection> createPeerConnection() {
         if (rtcRuntime == null) {
             throw new RuntimeException("Storage Runtime not set");
         }
