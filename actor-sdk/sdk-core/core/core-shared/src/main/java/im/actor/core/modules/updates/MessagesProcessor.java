@@ -370,8 +370,9 @@ public class MessagesProcessor extends AbsModule {
         context().getAppStateModule().onCountersChanged(counters);
     }
 
-    public void onChatArchived(Peer peer) {
-
+    public void onChatArchived(ApiPeer peer) {
+        context().getMessagesModule().getDialogsGroupedActor()
+                .send(new GroupedDialogsActor.ChatArchived(peer));
     }
 
     public void onChatRestored(Peer peer) {
