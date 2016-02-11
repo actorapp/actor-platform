@@ -59,7 +59,7 @@ final class IntegrationsServiceSpec
         val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
         ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
-      whenReady(service.jhandleGetIntegrationToken(outPeer, clientData2))(_ should matchNotAuthorized)
+      whenReady(service.handleGetIntegrationToken(outPeer)(clientData2))(_ should matchNotAuthorized)
     }
 
     def e2(): Unit = {
@@ -69,9 +69,7 @@ final class IntegrationsServiceSpec
         ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
 
-      val groupToken = extractToken(outPeer.id)
-
-      whenReady(service.jhandleGetIntegrationToken(outPeer, clientData2)) { resp ⇒
+      whenReady(service.handleGetIntegrationToken(outPeer)(clientData2)) { resp ⇒
         resp should matchPattern { case Ok(_) ⇒ }
         inside(resp) {
           case Ok(ResponseIntegrationToken(token, url)) ⇒
@@ -88,11 +86,11 @@ final class IntegrationsServiceSpec
         ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
 
-      whenReady(service.jhandleRevokeIntegrationToken(outPeer, clientData2)) { resp ⇒
+      whenReady(service.handleRevokeIntegrationToken(outPeer)(clientData2)) { resp ⇒
         resp should matchNotAuthorized
       }
 
-      whenReady(service.jhandleGetIntegrationToken(outPeer, clientData2)) { resp ⇒
+      whenReady(service.handleGetIntegrationToken(outPeer)(clientData2)) { resp ⇒
         inside(resp) {
           case Ok(ResponseIntegrationToken(token, url)) ⇒
             token shouldEqual ""

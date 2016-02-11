@@ -44,7 +44,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
       .withSubscribeToSeq(SubscribeToSeq(opts map (_.id)))
   }
 
-  override def jhandleGetState(optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleGetState(optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       subscribeToSeq(optimizations)
       for {
@@ -55,7 +55,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleGetDifference(seq: Int, state: Array[Byte], optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
+  override def doHandleGetDifference(seq: Int, state: Array[Byte], optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
     authorized(clientData) { implicit client ⇒
       subscribeToSeq(optimizations)
 
@@ -95,15 +95,15 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  override def jhandleGetReferencedEntitites(
+  override def doHandleGetReferencedEntitites(
     users:      IndexedSeq[ApiUserOutPeer],
     groups:     IndexedSeq[ApiGroupOutPeer],
     clientData: ClientData
   ): Future[HandlerResult[ResponseGetReferencedEntitites]] =
     authorized(clientData) { client ⇒
       (for {
-        _ ← fromFutureBoolean(CommonErrors.InvalidAccessHash)(ACLUtils.checkOutPeers(users, client.authId))
-        _ ← fromFutureBoolean(CommonErrors.InvalidAccessHash)(ACLUtils.checkOutPeers(groups))
+        _ ← fromFutureBoolean(CommonRpcErrors.InvalidAccessHash)(ACLUtils.checkOutPeers(users, client.authId))
+        _ ← fromFutureBoolean(CommonRpcErrors.InvalidAccessHash)(ACLUtils.checkOutPeers(groups))
         res ← fromFuture(GroupUtils.getGroupsUsers(
           groups map (_.groupId),
           users map (_.userId), client.userId, client.authId
@@ -114,7 +114,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
       }).value map (_.toScalaz)
     }
 
-  override def jhandleSubscribeToOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleSubscribeToOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       DBIO.successful(Ok(ResponseVoid))
     }
@@ -129,7 +129,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  override def jhandleSubscribeFromOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleSubscribeFromOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       DBIO.successful(Ok(ResponseVoid))
     }
@@ -144,7 +144,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  override def jhandleSubscribeToGroupOnline(groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleSubscribeToGroupOnline(groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     Future.successful(Ok(ResponseVoid)) andThen {
       case _ ⇒
         // FIXME: #security check access hashes
@@ -153,7 +153,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  override def jhandleSubscribeFromGroupOnline(groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleSubscribeFromGroupOnline(groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     Future.successful(Ok(ResponseVoid)) andThen {
       case _ ⇒
         // FIXME: #security check access hashes

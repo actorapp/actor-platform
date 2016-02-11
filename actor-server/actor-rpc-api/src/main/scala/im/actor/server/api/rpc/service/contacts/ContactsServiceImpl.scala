@@ -49,7 +49,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
   private implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
 
-  object Errors {
+  object ContactsRpcErrors {
     val CantAddSelf = RpcError(401, "OWN_USER_ID", "User id cannot be equal to self.", false, None)
     val ContactAlreadyExists = RpcError(400, "CONTACT_ALREADY_EXISTS", "Contact already exists.", false, None)
     val ContactNotFound = RpcError(404, "CONTACT_NOT_FOUND", "Contact not found.", false, None)
@@ -63,12 +63,12 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     BitVector(md.digest(uids.getBytes)).toHex
   }
 
-  override def jhandleImportContacts(phones: IndexedSeq[ApiPhoneToImport], emails: IndexedSeq[ApiEmailToImport], clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] = {
+  override def doHandleImportContacts(phones: IndexedSeq[ApiPhoneToImport], emails: IndexedSeq[ApiEmailToImport], clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] = {
     val action =
       for {
         client ← authorizedClient(clientData)
         (clientPhones, clientEmails) ← fromFuture(userExt.getContactRecordsSet(client.userId))
-        user ← fromDBIOOption(CommonErrors.UserNotFound)(UserRepo.find(client.userId))
+        user ← fromDBIOOption(CommonRpcErrors.UserNotFound)(UserRepo.find(client.userId))
         optPhone ← fromDBIO(UserPhoneRepo.findByUserId(client.userId).headOption)
         optEmail ← fromDBIO(UserEmailRepo.findByUserId(client.userId).headOption)
 
@@ -80,7 +80,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     db.run(action.run)
   }
 
-  override def jhandleGetContacts(contactsHash: String, clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] = {
+  override def doHandleGetContacts(contactsHash: String, clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       val action = UserContactRepo.findContactIdsActive(client.userId).map(hashIds).flatMap { hash ⇒
         if (contactsHash == hash) {
@@ -105,18 +105,15 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleRemoveContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleRemoveContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       withUserOutPeerF(ApiUserOutPeer(userId, accessHash)) {
         for (seqstate ← userExt.removeContact(client.userId, userId))
           yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
       }
-    } recover {
-      case UserErrors.ContactNotFound ⇒ Error(Errors.ContactNotFound)
     }
-  }
 
-  override def jhandleAddContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleAddContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       val action = (for {
         optUser ← UserRepo.find(userId)
@@ -132,11 +129,11 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
                   seqstate ← DBIO.from(userExt.addContact(client.userId, user.id, None, optPhoneNumber, None))
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               case Some(contact) ⇒
-                DBIO.successful(Error(Errors.ContactAlreadyExists))
+                DBIO.successful(Error(ContactsRpcErrors.ContactAlreadyExists))
             }
-          } else DBIO.successful(Error(CommonErrors.InvalidAccessHash))
-        case (None, _) ⇒ DBIO.successful(Error(CommonErrors.UserNotFound))
-        case (_, None) ⇒ DBIO.successful(Error(CommonErrors.UserPhoneNotFound))
+          } else DBIO.successful(Error(CommonRpcErrors.InvalidAccessHash))
+        case (None, _) ⇒ DBIO.successful(Error(CommonRpcErrors.UserNotFound))
+        case (_, None) ⇒ DBIO.successful(Error(CommonRpcErrors.UserPhoneNotFound))
       }
 
       action
@@ -145,7 +142,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleSearchContacts(query: String, clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] = {
+  override def doHandleSearchContacts(query: String, clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] = {
     val action =
       for {
         client ← authorizedClient(clientData)
@@ -158,6 +155,10 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
         ResponseSearchContacts(users)
       }
     db.run(action.run)
+  }
+
+  override def onFailure: PartialFunction[Throwable, RpcError] = {
+    case UserErrors.ContactNotFound ⇒ ContactsRpcErrors.ContactNotFound
   }
 
   private def findByNickname(nickname: String, client: AuthorizedClientData): EitherT[DBIO, RpcError, Vector[ApiUser]] = {
@@ -176,7 +177,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
   private def findByNumber(rawNumber: String, client: AuthorizedClientData): EitherT[DBIO, RpcError, Vector[ApiUser]] = {
     for {
-      clientUser ← fromDBIOOption(CommonErrors.UserNotFound)(UserRepo.find(client.userId))
+      clientUser ← fromDBIOOption(CommonRpcErrors.UserNotFound)(UserRepo.find(client.userId))
       (clientPhones, _) ← fromFuture(userExt.getContactRecordsSet(client.userId))
       optPhone ← fromDBIO(UserPhoneRepo.findByUserId(client.userId).headOption map (_.filterNot(p ⇒ clientPhones.contains(p.number))))
       normalizedPhone ← point(PhoneNumberUtils.normalizeStr(rawNumber, clientUser.countryCode))

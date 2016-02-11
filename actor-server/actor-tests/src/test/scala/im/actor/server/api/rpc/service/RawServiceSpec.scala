@@ -41,7 +41,7 @@ class RawServiceSpec
   def e1() = {
     whenReady(service.handleRawRequest("maps", "getGeo", None)) { resp ⇒
       inside(resp) {
-        case Error(err) ⇒ err shouldEqual CommonErrors.UnsupportedRequest
+        case Error(err) ⇒ err shouldEqual CommonRpcErrors.UnsupportedRequest
       }
     }
   }
@@ -85,7 +85,7 @@ class RawServiceSpec
   def e4() = {
     whenReady(service.handleRawRequest("echo", "makeEcho", Some(ApiMapValue(Vector(ApiMapValueItem("query", ApiStringValue("Hello"))))))) { resp ⇒
       inside(resp) {
-        case Error(err) ⇒ err shouldEqual CommonErrors.UnsupportedRequest
+        case Error(err) ⇒ err shouldEqual CommonRpcErrors.UnsupportedRequest
       }
     }
 

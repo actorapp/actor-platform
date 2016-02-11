@@ -28,24 +28,24 @@ trait HistoryHandlers {
   import HistoryUtils._
   import im.actor.api.rpc.Implicits._
 
-  override def jhandleMessageReceived(peer: ApiOutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleMessageReceived(peer: ApiOutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
       dialogExt.messageReceived(peer.asPeer, client.userId, date) map (_ ⇒ Ok(ResponseVoid))
     }
   }
 
-  override def jhandleMessageRead(peer: ApiOutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleMessageRead(peer: ApiOutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
       dialogExt.messageRead(peer.asPeer, client.userId, client.authSid, date) map (_ ⇒ Ok(ResponseVoid))
     }
   }
 
-  override def jhandleClearChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleClearChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val action = requireAuth(clientData) map { implicit client ⇒
       val update = UpdateChatClear(peer.asPeer)
 
       for {
-        _ ← fromDBIOBoolean(CommonErrors.forbidden("Clearing of public chats is forbidden")) {
+        _ ← fromDBIOBoolean(CommonRpcErrors.forbidden("Clearing of public chats is forbidden")) {
           if (peer.`type` == ApiPeerType.Private) {
             DBIO.successful(true)
           } else {
@@ -60,7 +60,7 @@ trait HistoryHandlers {
     db.run(toDBIOAction(action map (_.run)))
   }
 
-  override def jhandleDeleteChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleDeleteChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
       for {
         SeqState(seq, state) ← dialogExt.delete(client.userId, peer.asModel)
@@ -68,7 +68,7 @@ trait HistoryHandlers {
     }
   }
 
-  override def jhandleLoadArchived(nextOffset: Option[Array[Byte]], limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadArchived]] =
+  override def doHandleLoadArchived(nextOffset: Option[Array[Byte]], limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadArchived]] =
     authorized(clientData) { implicit client ⇒
       val offset = nextOffset map (Int32Value.parseFrom(_).value) getOrElse 0
 
@@ -84,7 +84,7 @@ trait HistoryHandlers {
       )))
     }
 
-  override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
+  override def doHandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       DialogRepo
         .fetch(client.userId, endDateTimeFrom(endDate), limit, fetchArchived = true)
@@ -106,7 +106,7 @@ trait HistoryHandlers {
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] =
+  override def doHandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] =
     authorized(clientData) { implicit client ⇒
       for {
         dialogGroups ← dialogExt.getGroupedDialogs(client.userId)
@@ -129,29 +129,23 @@ trait HistoryHandlers {
       ))
     }
 
-  override def jhandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
+  override def doHandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { implicit client ⇒
-      (for {
+      for {
         seqstate ← dialogExt.archive(client.userId, peer.asModel)
         groups ← dialogExt.getGroupedDialogs(client.userId)
-      } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.state.toByteArray, groups = groups))) recover {
-        case DialogErrors.DialogAlreadyArchived(peer) ⇒
-          Error(RpcError(406, "DIALOG_ALREADY_ARCHIVED", "Dialog is already archived.", canTryAgain = false, None))
-      }
+      } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.state.toByteArray, groups = groups))
     }
 
-  override def jhandleShowDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
+  override def doHandleShowDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { implicit client ⇒
-      (for {
+      for {
         seqstate ← dialogExt.show(client.userId, peer.asModel)
         groups ← dialogExt.getGroupedDialogs(client.userId)
-      } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.toByteArray, groups = groups))) recover {
-        case DialogErrors.DialogAlreadyShown(peer) ⇒
-          Error(RpcError(406, "DIALOG_ALREADY_SHOWN", "Dialog is already shown.", canTryAgain = false, None))
-      }
+      } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.toByteArray, groups = groups))
     }
 
-  override def jhandleArchiveChat(
+  override def doHandleArchiveChat(
     peer:       im.actor.api.rpc.peers.ApiOutPeer,
     clientData: im.actor.api.rpc.ClientData
   ): Future[HandlerResult[ResponseSeq]] =
@@ -162,7 +156,7 @@ trait HistoryHandlers {
       }
     }
 
-  override def jhandleLoadHistory(peer: ApiOutPeer, endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadHistory]] =
+  override def doHandleLoadHistory(peer: ApiOutPeer, endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadHistory]] =
     authorized(clientData) { implicit client ⇒
       val action = withOutPeer(peer) {
         val modelPeer = peer.asModel
@@ -196,7 +190,7 @@ trait HistoryHandlers {
       db.run(action)
     }
 
-  override def jhandleDeleteMessage(outPeer: ApiOutPeer, randomIds: IndexedSeq[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleDeleteMessage(outPeer: ApiOutPeer, randomIds: IndexedSeq[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
       withOutPeer(outPeer) {
         val peer = outPeer.asModel
@@ -205,7 +199,7 @@ trait HistoryHandlers {
           if (isSharedUser(historyOwner)) {
             HistoryMessageRepo.find(historyOwner, peer, randomIds.toSet) flatMap { messages ⇒
               if (messages.exists(_.senderUserId != client.userId)) {
-                DBIO.successful(Error(CommonErrors.forbidden("You can only delete your own messages")))
+                DBIO.successful(Error(CommonRpcErrors.forbidden("You can only delete your own messages")))
               } else {
                 val update = UpdateMessageDelete(outPeer.asPeer, randomIds)
 
