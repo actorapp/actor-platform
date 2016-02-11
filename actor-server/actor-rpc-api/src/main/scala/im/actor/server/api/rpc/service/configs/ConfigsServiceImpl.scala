@@ -23,7 +23,7 @@ final class ConfigsServiceImpl(implicit actorSystem: ActorSystem) extends Config
   private implicit val timeout = Timeout(10.seconds)
   private val seqUpdExt = SeqUpdatesExtension(actorSystem)
 
-  override def jhandleEditParameter(rawKey: String, value: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleEditParameter(rawKey: String, value: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       val key = rawKey.trim
 
@@ -41,7 +41,7 @@ final class ConfigsServiceImpl(implicit actorSystem: ActorSystem) extends Config
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleGetParameters(clientData: ClientData): Future[HandlerResult[ResponseGetParameters]] = {
+  override def doHandleGetParameters(clientData: ClientData): Future[HandlerResult[ResponseGetParameters]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
         params ← ParameterRepo.find(client.userId)

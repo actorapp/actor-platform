@@ -23,7 +23,7 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
   protected val userExt = UserExtension(system)
   protected val groupExt = GroupExtension(system)
 
-  override def jhandlePeerSearch(query: IndexedSeq[ApiSearchCondition], clientData: ClientData): Future[HandlerResult[ResponsePeerSearch]] = {
+  override def doHandlePeerSearch(query: IndexedSeq[ApiSearchCondition], clientData: ClientData): Future[HandlerResult[ResponsePeerSearch]] = {
     authorized(clientData) { implicit client ⇒
       val (peerTypes, texts) = query.foldLeft(Set.empty[ApiSearchPeerType.Value], Set.empty[String]) {
         case ((pts, txts), ApiSearchPieceText(t))          ⇒ (pts, txts + t)
@@ -39,11 +39,11 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
     }
   }
 
-  override def jhandleMessageSearch(query: ApiSearchCondition, clientData: ClientData): Future[HandlerResult[ResponseMessageSearchResponse]] =
-    Future.successful(Error(CommonErrors.NotSupportedInOss))
+  override def doHandleMessageSearch(query: ApiSearchCondition, clientData: ClientData): Future[HandlerResult[ResponseMessageSearchResponse]] =
+    Future.successful(Error(CommonRpcErrors.NotSupportedInOss))
 
-  override def jhandleMessageSearchMore(loadMoreState: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseMessageSearchResponse]] =
-    Future.successful(Error(CommonErrors.NotSupportedInOss))
+  override def doHandleMessageSearchMore(loadMoreState: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseMessageSearchResponse]] =
+    Future.successful(Error(CommonRpcErrors.NotSupportedInOss))
 
   private def searchResult(pts: IndexedSeq[ApiSearchPeerType.Value], text: Option[String])(implicit client: AuthorizedClientData): Future[HandlerResult[ResponsePeerSearch]] = {
     for {

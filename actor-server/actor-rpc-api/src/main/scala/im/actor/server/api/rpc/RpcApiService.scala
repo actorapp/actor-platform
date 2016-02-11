@@ -53,7 +53,7 @@ private[rpc] final class RpcApiService(services: Seq[Service]) extends Actor wit
                 chain(rpcRequest)(clientData)
               } else {
                 log.error("Unsupported request {}", rpcRequest)
-                Future.successful(Error(CommonErrors.UnsupportedRequest))
+                Future.successful(Error(CommonRpcErrors.UnsupportedRequest))
               }
 
             result
@@ -69,7 +69,7 @@ private[rpc] final class RpcApiService(services: Seq[Service]) extends Actor wit
               .map(result ⇒ RpcResponse(messageId, result))
               .pipeTo(replyTo)
           case _ ⇒
-            Future.successful(CommonErrors.UnsupportedRequest)
+            Future.successful(CommonRpcErrors.UnsupportedRequest)
         }
       } catch {
         case e: Exception ⇒
