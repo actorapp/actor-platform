@@ -30,6 +30,7 @@
 		065975511BC7DD3C00B8C7DF /* highlight-default.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 0659754E1BC7DD3C00B8C7DF /* highlight-default.min.css */; };
 		065975521BC7DD3C00B8C7DF /* highlight.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 0659754F1BC7DD3C00B8C7DF /* highlight.min.js */; };
 		065975541BC7DF5100B8C7DF /* CocoaAssetsRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065975531BC7DF5100B8C7DF /* CocoaAssetsRuntime.swift */; };
+		065A06B61C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A06B51C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift */; };
 		066A50D61BC4AE63000E606E /* ActorSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 066A50D51BC4AE63000E606E /* ActorSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		066A50E21BC4AF9F000E606E /* ActorSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A50E11BC4AF9F000E606E /* ActorSDK.swift */; };
 		066A51221BC4B55C000E606E /* AADevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51211BC4B55C000E606E /* AADevice.swift */; };
@@ -324,6 +325,7 @@
 		0659754E1BC7DD3C00B8C7DF /* highlight-default.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "highlight-default.min.css"; sourceTree = "<group>"; };
 		0659754F1BC7DD3C00B8C7DF /* highlight.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = highlight.min.js; sourceTree = "<group>"; };
 		065975531BC7DF5100B8C7DF /* CocoaAssetsRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaAssetsRuntime.swift; sourceTree = "<group>"; };
+		065A06B51C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaWebRTCRuntime.swift; sourceTree = "<group>"; };
 		066A50D21BC4AE63000E606E /* ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		066A50D51BC4AE63000E606E /* ActorSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActorSDK.h; sourceTree = "<group>"; };
 		066A50D71BC4AE63000E606E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -762,6 +764,7 @@
 				066A518A1BC4C383000E606E /* CocoaHttpRuntime.swift */,
 				066A51891BC4C383000E606E /* CocoaNetworkRuntime.swift */,
 				066A51861BC4C383000E606E /* CocoaStorageRuntime.swift */,
+				065A06B51C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift */,
 				066A51871BC4C383000E606E /* iOSNotificationProvider.swift */,
 				066A51881BC4C383000E606E /* iOSPhoneBookProvider.swift */,
 				06E322C81C69344A00D66F53 /* iOSWebRTCProvider.swift */,
@@ -1769,6 +1772,7 @@
 				066A532D1BC53406000E606E /* AABubbleServiceCell.swift in Sources */,
 				065974A71BC62B3600B8C7DF /* ViewExtensions.swift in Sources */,
 				066A52F11BC52B02000E606E /* AASettingsNotificationsViewController.swift in Sources */,
+				065A06B61C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift in Sources */,
 				15D35F5A1C20187E00E3717A /* AATimer.m in Sources */,
 				066A52381BC4EEBA000E606E /* AAHeaderCell.swift in Sources */,
 				066A524B1BC4EF49000E606E /* AAViewController.swift in Sources */,
