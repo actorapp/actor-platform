@@ -17,7 +17,7 @@ import im.actor.runtime.function.Consumer;
 
 public class EventBusActor extends ModuleActor {
 
-    private static final long TIMEOUT = 10000;
+    private static final long TIMEOUT = 15000;
     private static final long KEEP_ALIVE = 5000;
 
     private boolean isProcessing;
