@@ -1,4 +1,4 @@
-package im.actor.core.webrtc.sdp;
+package im.actor.runtime.webrtc.sdp;
 
 public abstract class SDP {
     public static SDPScheme parse(String sdp) {

@@ -3,17 +3,11 @@ package im.actor.core.modules.calls;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import im.actor.core.api.ApiOutPeer;
-import im.actor.core.api.ApiPeerType;
-import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.entity.CallState;
 import im.actor.core.entity.Peer;
-import im.actor.core.entity.User;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.CallModel;
 import im.actor.core.viewmodel.CommandCallback;
-import im.actor.core.webrtc.WebRTCProvider;
+import im.actor.core.providers.CallsProvider;
 import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
@@ -28,14 +22,14 @@ public class CallsModule extends AbsModule {
 
     public static final String TAG = "CALLS";
 
-    private WebRTCProvider provider;
+    private CallsProvider provider;
     private ActorRef callManager;
     private HashMap<Long, CallModel> callModels = new HashMap<>();
 
     public CallsModule(ModuleContext context) {
         super(context);
 
-        provider = context().getConfiguration().getWebRTCProvider();
+        provider = context().getConfiguration().getCallsProvider();
     }
 
     public void run() {

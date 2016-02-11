@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import im.actor.core.network.TrustedKey;
-import im.actor.core.notifications.NotificationProvider;
-import im.actor.core.phonebook.PhoneBookProvider;
-import im.actor.core.webrtc.WebRTCProvider;
+import im.actor.core.providers.NotificationProvider;
+import im.actor.core.providers.PhoneBookProvider;
+import im.actor.core.providers.CallsProvider;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
@@ -50,7 +50,7 @@ public class ConfigurationBuilder {
 
     private boolean isPhoneBookImportEnabled = true;
 
-    private WebRTCProvider webRTCProvider;
+    private CallsProvider callsProvider;
 
     /**
      * Setting if application need to upload phone book to server
@@ -68,13 +68,13 @@ public class ConfigurationBuilder {
     /**
      * Setting Web RTC support provider
      *
-     * @param webRTCProvider WebRTC provider
+     * @param callsProvider WebRTC provider
      * @return this
      */
     @NotNull
-    @ObjectiveCName("setWebRTCProvider:")
-    public ConfigurationBuilder setWebRTCProvider(WebRTCProvider webRTCProvider) {
-        this.webRTCProvider = webRTCProvider;
+    @ObjectiveCName("setCallsProvider:")
+    public ConfigurationBuilder setCallsProvider(CallsProvider callsProvider) {
+        this.callsProvider = callsProvider;
         return this;
     }
 
@@ -361,6 +361,6 @@ public class ConfigurationBuilder {
                 customAppName,
                 trustedKeys.toArray(new TrustedKey[trustedKeys.size()]),
                 isPhoneBookImportEnabled,
-                webRTCProvider);
+                callsProvider);
     }
 }
