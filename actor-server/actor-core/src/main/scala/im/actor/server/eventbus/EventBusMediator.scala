@@ -72,7 +72,7 @@ final class EventBusMediator extends Actor with ActorLogging {
   object consumers {
     private val a2d = mutable.Map.empty[AuthId, (UserId, DeviceId)]
     private val d2a = mutable.Map.empty[DeviceId, (UserId, AuthId)]
-    private val ownerAuthIds = mutable.Set.empty[AuthId]
+    val ownerAuthIds = mutable.Set.empty[AuthId]
     private val a2timeouts = mutable.Map.empty[AuthId, Cancellable]
 
     def isOwnerConnected = ownerAuthIds.nonEmpty
@@ -106,11 +106,6 @@ final class EventBusMediator extends Actor with ActorLogging {
           (userId, deviceId)
       }
     }
-  }
-
-  override def postStop(): Unit = {
-    super.postStop()
-    internalConsumers foreach (_ ! EventBus.Disposed(id))
   }
 
   def receive = {
@@ -152,16 +147,16 @@ final class EventBusMediator extends Actor with ActorLogging {
         case None          ⇒ consumers.stopKeepAlive(clientAuthId)
       }
     case ConsumerTimedOut(authId) ⇒
-      consumers.remove(authId) match {
-        case Some((userId, deviceId)) ⇒
-          broadcast(UpdateEventBusDeviceDisconnected(id, userId, deviceId))
-
-          if ((owner.isDefined && !consumers.isOwnerConnected) || consumers.isEmpty) {
-            broadcast(UpdateEventBusDisposed(id))
-            context stop self
-          }
-        case None ⇒
-          log.error("ConsumerTimedOut with unknown authId: {}", authId)
+      if ((owner.isDefined && consumers.ownerAuthIds == Set(authId)) || consumers.authIds == Set(authId)) {
+        log.debug("Disposing")
+        broadcast(UpdateEventBusDisposed(id))
+        context stop self
+      } else {
+        consumers.remove(authId) match {
+          case Some((userId, deviceId)) ⇒
+            broadcast(UpdateEventBusDeviceDisconnected(id, userId, deviceId))
+          case None ⇒ log.error("Consumer timed out with unknown authId: {}", authId)
+        }
       }
     case Join(clientUserId, clientAuthId, timeoutOpt) ⇒
       val deviceId = Random.nextLong()
@@ -171,7 +166,6 @@ final class EventBusMediator extends Actor with ActorLogging {
       sender() ! JoinAck(deviceId)
     case Dispose(clientUserId) ⇒
       if (owner.contains(clientUserId)) {
-        broadcast(UpdateEventBusDisposed(id))
         context stop self
       } else sender() ! Status.Failure(new RuntimeException("Attempt to dispose by not an owner"))
     case Subscribe(ref) ⇒
