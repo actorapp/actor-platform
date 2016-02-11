@@ -12512,6 +12512,24 @@
                 "argument": "sessionId",
                 "category": "full",
                 "description": "  Session Id of candidate"
+              },
+              {
+                "type": "reference",
+                "argument": "index",
+                "category": "full",
+                "description": "  Index of candidate"
+              },
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Id of candidate"
+              },
+              {
+                "type": "reference",
+                "argument": "sdp",
+                "category": "full",
+                "description": "  SDP of candidate"
               }
             ],
             "trait": {
@@ -12526,6 +12544,21 @@
                 },
                 "id": 1,
                 "name": "sessionId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "index"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "id"
+              },
+              {
+                "type": "string",
+                "id": 4,
+                "name": "sdp"
               }
             ]
           }

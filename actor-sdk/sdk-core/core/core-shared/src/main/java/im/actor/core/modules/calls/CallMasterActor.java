@@ -51,53 +51,12 @@ public class CallMasterActor extends CallActor {
     @Override
     public void onDeviceConnected(final int uid, final long deviceId) {
         Log.d(TAG, "onDeviceConnected");
-        final long sessionId = RandomUtils.nextRid();
-        WebRTC.createPeerConnection().mapPromiseSelf(new Function<WebRTCPeerConnection, Promise<WebRTCLocalStream>>() {
-            @Override
-            public Promise<WebRTCLocalStream> apply(final WebRTCPeerConnection webRTCPeerConnection) {
-                return WebRTC.getUserAudio().then(new Consumer<WebRTCLocalStream>() {
-                    @Override
-                    public void apply(WebRTCLocalStream stream) {
-                        webRTCPeerConnection.addOwnStream(stream);
-                    }
-                });
-            }
-        }).mapPromiseSelf(new Function<WebRTCPeerConnection, Promise<Boolean>>() {
-            @Override
-            public Promise<Boolean> apply(final WebRTCPeerConnection webRTCPeerConnection) {
-                return webRTCPeerConnection.createOffer().then(new Consumer<String>() {
-                    @Override
-                    public void apply(String sdp) {
-                        sendSignalingMessage(uid, deviceId, new ApiOffer(sessionId, sdp));
-                    }
-                }).mapPromise(new Function<String, Promise<Boolean>>() {
-                    @Override
-                    public Promise<Boolean> apply(String s) {
-                        return webRTCPeerConnection.setLocalDescription("offer", s);
-                    }
-                });
-            }
-        }).then(new Consumer<WebRTCPeerConnection>() {
-            @Override
-            public void apply(WebRTCPeerConnection webRTCPeerConnection) {
-                Log.d(TAG, "onCallCreated:then");
-            }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                Log.d(TAG, "onCallCreated:failure");
-            }
-        }).done(self());
+        getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
     }
 
     @Override
     public void onDeviceDisconnected(int uid, long deviceId) {
         Log.d(TAG, "onDeviceDisconnected");
-    }
-
-    @Override
-    public void onSignalingMessage(int fromUid, long fromDeviceId, ApiWebRTCSignaling signaling) {
-        Log.d(TAG, "onSignalingMessage");
     }
 
     @Override

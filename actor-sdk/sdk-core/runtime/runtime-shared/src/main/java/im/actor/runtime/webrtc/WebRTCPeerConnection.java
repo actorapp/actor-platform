@@ -20,21 +20,21 @@ public interface WebRTCPeerConnection {
     @ObjectiveCName("addOwnStream:")
     void addOwnStream(@NotNull WebRTCLocalStream stream);
 
-    @ObjectiveCName("setLocalDescriptionWithType:withSPD:")
     @NotNull
-    Promise<Boolean> setLocalDescription(@NotNull String type, @NotNull String sdp);
+    @ObjectiveCName("setLocalDescription:")
+    Promise<WebRTCSessionDescription> setLocalDescription(@NotNull WebRTCSessionDescription description);
 
-    @ObjectiveCName("setRemoteDescriptionWithType:withSPD:")
     @NotNull
-    Promise<Boolean> setRemoteDescription(@NotNull String type, @NotNull String sdp);
+    @ObjectiveCName("setRemoteDescription:")
+    Promise<WebRTCSessionDescription> setRemoteDescription(@NotNull WebRTCSessionDescription description);
 
+    @NotNull
     @ObjectiveCName("creteOffer")
-    @NotNull
-    Promise<String> createOffer();
+    Promise<WebRTCSessionDescription> createOffer();
 
-    @ObjectiveCName("createAnswer")
     @NotNull
-    Promise<String> createAnswer();
+    @ObjectiveCName("createAnswer")
+    Promise<WebRTCSessionDescription> createAnswer();
 
     @ObjectiveCName("close")
     void close();
