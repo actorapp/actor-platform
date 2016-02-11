@@ -26,7 +26,7 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
 
   val webrtcExt = WebrtcExtension(system)
 
-  override def jhandleGetCallInfo(callId: Long, clientData: ClientData): Future[HandlerResult[ResponseGetCallInfo]] =
+  override def doHandleGetCallInfo(callId: Long, clientData: ClientData): Future[HandlerResult[ResponseGetCallInfo]] =
     authorized(clientData) { client ⇒
       for {
         (eventBusId, callerUserId, participants) ← webrtcExt.getInfo(callId)
@@ -34,14 +34,17 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
       } yield Ok(ResponseGetCallInfo(ApiPeer(ApiPeerType.Private, callerUserId), Vector.empty, users.toVector, eventBusId))
     }
 
-  override def jhandleDoCall(peer: ApiOutPeer, eventBusId: String, clientData: ClientData): Future[HandlerResult[ResponseDoCall]] =
+  override def doHandleDoCall(peer: ApiOutPeer, eventBusId: String, clientData: ClientData): Future[HandlerResult[ResponseDoCall]] =
     authorized(clientData) { implicit client ⇒
       withOutPeerF(peer) {
-        (for {
+        for {
           callId ← webrtcExt.doCall(client.userId, peer.id, eventBusId)
-        } yield Ok(ResponseDoCall(callId))) recover {
-          case WebrtcCallErrors.CallAlreadyStarted ⇒ Error(WebrtcErrors.CallAlreadyStareted)
-        }
+        } yield Ok(ResponseDoCall(callId))
       }
     }
+
+  override def onFailure: PartialFunction[Throwable, RpcError] = {
+    case WebrtcCallErrors.CallAlreadyStarted ⇒ WebrtcErrors.CallAlreadyStareted
+  }
+
 }

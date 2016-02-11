@@ -15,7 +15,7 @@ package object rpc extends {
 
   object Implicits extends PeersImplicits with HistoryImplicits
 
-  object CommonErrors {
+  object CommonRpcErrors {
     val GroupNotFound = RpcError(404, "GROUP_NOT_FOUND", "", false, None)
     val InvalidAccessHash = RpcError(403, "INVALID_ACCESS_HASH", "", false, None)
     val UnsupportedRequest = RpcError(400, "REQUEST_NOT_SUPPORTED", "Operation not supported.", false, None)
@@ -26,6 +26,12 @@ package object rpc extends {
     val NotSupportedInOss = RpcError(400, "NOT_SUPPORTED_IN_OSS", "Feature is not supported in the Open-Source version.", canTryAgain = false, None)
 
     def forbidden(userMessage: String) = RpcError(403, "FORBIDDEN", userMessage, false, None)
+  }
+
+  def recoverCommon: PartialFunction[Throwable, RpcError] = {
+    case UserNotFound(_)     ⇒ CommonRpcErrors.UserNotFound
+    case GroupNotFound(_)    ⇒ CommonRpcErrors.GroupNotFound
+    case EntityNotFoundError ⇒ CommonRpcErrors.EntityNotFound
   }
 
   type OkResp[+A] = A
@@ -76,18 +82,13 @@ package object rpc extends {
   def toResult[R](authorizedFuture: MaybeAuthorized[Future[RpcError \/ R]])(implicit ec: ExecutionContext): Future[RpcError \/ R] =
     recover(authorizedFuture.getOrElse(Future.successful(Result.UserNotAuthorized)))
 
-  def recover[A](f: Future[\/[RpcError, A]])(implicit ec: ExecutionContext): Future[\/[RpcError, A]] = f recover recoverPF
-  def recoverPF[A]: PartialFunction[Throwable, \/[RpcError, A]] = {
-    case UserNotFound(_)     ⇒ Error(CommonErrors.UserNotFound)
-    case GroupNotFound(_)    ⇒ Error(CommonErrors.GroupNotFound)
-    case EntityNotFoundError ⇒ Error(CommonErrors.EntityNotFound)
-  }
+  def recover[A](f: Future[\/[RpcError, A]])(implicit ec: ExecutionContext): Future[\/[RpcError, A]] = f recover (recoverCommon andThen { e ⇒ Error(e) })
 
   def authorized[R](clientData: ClientData)(fa: AuthorizedClientData ⇒ Future[RpcError \/ R])(implicit ec: ExecutionContext): Future[RpcError \/ R] =
     toResult(requireAuth(clientData) map fa)
 
   def authorizedClient(clientData: ClientData): Result[AuthorizedClientData] =
-    DBIOResult.fromOption(CommonErrors.UserNotFound)(clientData.authData.map(data ⇒ AuthorizedClientData(clientData.authId, clientData.sessionId, data.userId, data.authSid)))
+    DBIOResult.fromOption(CommonRpcErrors.UserNotFound)(clientData.authData.map(data ⇒ AuthorizedClientData(clientData.authId, clientData.sessionId, data.userId, data.authSid)))
 
   type Result[A] = EitherT[DBIO, RpcError, A]
 

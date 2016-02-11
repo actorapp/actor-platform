@@ -21,7 +21,7 @@ import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
-object ProfileErrors {
+object ProfileRpcErrors {
   val NicknameInvalid = RpcError(400, "NICKNAME_INVALID",
     "Invalid nickname. Valid nickname should contain from 5 to 32 characters, and may consist of latin characters, numbers and underscores", false, None)
   val NameInvalid = RpcError(400, "NAME_INVALID", "Invalid name. Valid name should not be empty or contain bad symbols", false, None)
@@ -44,11 +44,10 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   private implicit val socialRegion: SocialManagerRegion = SocialExtension(system).region
   private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(system).fsAdapter
 
-  override def jhandleEditAvatar(fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] = {
-    // TODO: flatten
-
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withFileLocation(fileLocation, AvatarSizeLimit) {
+  // TODO: flatten
+  override def doHandleEditAvatar(fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] =
+    authorized(clientData) { implicit client ⇒
+      val action = withFileLocation(fileLocation, AvatarSizeLimit) {
         scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()) flatMap {
           case Right(avatar) ⇒
             for {
@@ -62,14 +61,10 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
             throw FileErrors.LocationInvalid
         }
       }
+      db.run(action)
     }
 
-    db.run(toDBIOAction(authorizedAction)) recover {
-      case FileErrors.LocationInvalid ⇒ Error(Errors.LocationInvalid)
-    }
-  }
-
-  override def jhandleRemoveAvatar(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleRemoveAvatar(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
         UserCommands.UpdateAvatarAck(_, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, None))
@@ -79,60 +74,58 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+  override def doHandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       for {
         SeqState(seq, state) ← userExt.changeName(client.userId, name)
       } yield Ok(ResponseSeq(seq, state.toByteArray))
-    } recover {
-      case UserErrors.InvalidName ⇒ Error(ProfileErrors.NameInvalid)
     }
 
-  def jhandleEditNickName(nickname: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleEditNickName(nickname: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       for {
         SeqState(seq, state) ← userExt.changeNickname(client.userId, nickname)
       } yield Ok(ResponseSeq(seq, state.toByteArray))
-    } recover {
-      case UserErrors.NicknameTaken   ⇒ Error(ProfileErrors.NicknameBusy)
-      case UserErrors.InvalidNickname ⇒ Error(ProfileErrors.NicknameInvalid)
     }
-  }
 
-  def jhandleCheckNickName(nickname: String, clientData: ClientData): Future[HandlerResult[ResponseBool]] = {
+  override def doHandleCheckNickName(nickname: String, clientData: ClientData): Future[HandlerResult[ResponseBool]] =
     authorized(clientData) { implicit client ⇒
       (for {
-        _ ← fromBoolean(ProfileErrors.NicknameInvalid)(StringUtils.validUsername(nickname))
+        _ ← fromBoolean(ProfileRpcErrors.NicknameInvalid)(StringUtils.validUsername(nickname))
         exists ← fromFuture(db.run(UserRepo.nicknameExists(nickname.trim)))
       } yield ResponseBool(!exists)).run
     }
-  }
 
   //todo: move validation inside of UserOffice
-  def jhandleEditAbout(about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleEditAbout(about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
       (for {
         trimmed ← point(about.map(_.trim))
-        _ ← fromBoolean(ProfileErrors.AboutTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
+        _ ← fromBoolean(ProfileRpcErrors.AboutTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
         SeqState(seq, state) ← fromFuture(userExt.changeAbout(client.userId, trimmed))
       } yield ResponseSeq(seq, state.toByteArray)).run
     }
   }
 
-  override def jhandleEditMyTimeZone(tz: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleEditMyTimeZone(tz: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       (for {
         SeqState(seq, state) ← fromFuture(produceError)(userExt.changeTimeZone(client.userId, tz))
       } yield ResponseSeq(seq, state.toByteArray)).run
     }
-  }
 
-  override def jhandleEditMyPreferredLanguages(preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleEditMyPreferredLanguages(preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       (for {
         SeqState(seq, state) ← fromFuture(produceError)(userExt.changePreferredLanguages(client.userId, preferredLanguages))
       } yield ResponseSeq(seq, state.toByteArray)).run
     }
+
+  override def onFailure: PartialFunction[Throwable, RpcError] = {
+    case FileErrors.LocationInvalid ⇒ FileRpcErrors.LocationInvalid
+    case UserErrors.InvalidName     ⇒ ProfileRpcErrors.NameInvalid
+    case UserErrors.NicknameTaken   ⇒ ProfileRpcErrors.NicknameBusy
+    case UserErrors.InvalidNickname ⇒ ProfileRpcErrors.NicknameInvalid
   }
 
   private def produceError = PartialFunction[Throwable, RpcError] {
