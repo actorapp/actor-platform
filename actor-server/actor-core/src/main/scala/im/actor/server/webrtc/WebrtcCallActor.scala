@@ -62,7 +62,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
 
       (for {
         _ ← db.run(WebrtcCallRepo.create(WebrtcCall(id, callerUserId, receiverUserId)))
-        _ ← weakUpdExt.broadcastUserWeakUpdate(receiverUserId, update, None, Some(Webrtc.WeakGroup))
+        _ ← weakUpdExt.broadcastUserWeakUpdate(receiverUserId, update, None, None)
         _ ← eventBusExt.subscribe(eventBusId, self)
       } yield ()) pipeTo self
 
