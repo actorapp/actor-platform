@@ -364,6 +364,28 @@ public extension ARMarkdownParser {
 }
 
 //
+// Promises
+//
+
+public class AAPromiseFunc: NSObject, ARPromiseFunc {
+    
+    let closure: (resolver: ARPromiseResolver) -> ()
+    init(closure: (resolver: ARPromiseResolver) -> ()){
+        self.closure = closure
+    }
+    
+    public func exec(resolver: ARPromiseResolver) {
+        closure(resolver: resolver)
+    }
+}
+
+extension ARPromise {
+    convenience init(closure: (resolver: ARPromiseResolver) -> ()) {
+        super.init(AAPromiseFunc(closure: closure))
+    }
+}
+
+//
 // Data Binding
 //
 
