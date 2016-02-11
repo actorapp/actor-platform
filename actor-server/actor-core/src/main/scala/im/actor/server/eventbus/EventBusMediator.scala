@@ -38,6 +38,7 @@ private[eventbus] object EventBusMessages {
   case object PostAck
 
   final case class KeepAlive(clientAuthId: AuthId, timeout: Option[Long]) extends EventBusMessage
+  case object KeepAliveAck
 
   final case class Join(clientUserId: UserId, clientAuthId: AuthId, timeout: Option[Long]) extends EventBusMessage
   final case class JoinAck(deviceId: DeviceId)
@@ -155,6 +156,7 @@ final class EventBusMediator extends Actor with ActorLogging {
         case Some(timeout) ⇒ consumers.keepAlive(clientAuthId, timeout)
         case None          ⇒ consumers.stopKeepAlive(clientAuthId)
       }
+      sender() ! KeepAliveAck
     case ConsumerTimedOut(authId) ⇒
       if ((owner.isDefined && consumers.ownerAuthIds == Set(authId)) || consumers.authIds == Set(authId)) {
         log.debug("Disposing as no more clients connected")
