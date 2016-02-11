@@ -34,7 +34,7 @@ public class CallManagerActor extends ModuleActor {
 
     private HashSet<Long> pendingRequests = new HashSet<>();
 
-    private WebRTCControllerImpl webRTCController;
+    // private WebRTCControllerImpl webRTCController;
     private CallsProvider provider;
     private boolean isStartedKeepAlive = false;
 
@@ -52,9 +52,9 @@ public class CallManagerActor extends ModuleActor {
     public void preStart() {
         super.preStart();
 
-        webRTCController = new WebRTCControllerImpl(self());
+        // webRTCController = new WebRTCControllerImpl(self());
         provider = config().getCallsProvider();
-        provider.init(context().getMessenger(), webRTCController);
+        // provider.init(context().getMessenger(), webRTCController);
     }
 
 
@@ -74,22 +74,22 @@ public class CallManagerActor extends ModuleActor {
     private void onIncomingCall(long callId) {
         Log.d(TAG, "onIncomingCall (" + callId + ")");
 
-        if (webRTCController.getCallId() == -1) {
-            webRTCController.switchCallId(callId);
-            pendingRequests.clear();
-            pendingCandidates.clear();
-            isReadyReceiveCandidates = false;
-            isStartedKeepAlive = false;
-            isOfferRequested = true; // No outgoing offer needed for ingoing call
-            isOfferReceived = false;
-            isAnswerReceived = true; // No incoming answers needed for ingoing call
-
-//            ArrayList<Integer> members = new ArrayList<>();
-//            members.add(myUid());
-//            members.add(uid);
-//            context().getCallsModule().spawnNewModel(callId, Peer.user(uid), members, CallState.CALLING_INCOMING);
-//            provider.onIncomingCall(callId);
-        }
+//        if (webRTCController.getCallId() == -1) {
+//            webRTCController.switchCallId(callId);
+//            pendingRequests.clear();
+//            pendingCandidates.clear();
+//            isReadyReceiveCandidates = false;
+//            isStartedKeepAlive = false;
+//            isOfferRequested = true; // No outgoing offer needed for ingoing call
+//            isOfferReceived = false;
+//            isAnswerReceived = true; // No incoming answers needed for ingoing call
+//
+////            ArrayList<Integer> members = new ArrayList<>();
+////            members.add(myUid());
+////            members.add(uid);
+////            context().getCallsModule().spawnNewModel(callId, Peer.user(uid), members, CallState.CALLING_INCOMING);
+////            provider.onIncomingCall(callId);
+//        }
     }
 
     private void onIncomingCallHandled(long callId) {
@@ -99,21 +99,21 @@ public class CallManagerActor extends ModuleActor {
     private void onOutgoingCall(long callId, int uid) {
         Log.d(TAG, "onOutgoingCall (" + callId + ", " + uid + ")");
 
-        if (webRTCController.getCallId() == -1) {
-            webRTCController.switchCallId(callId);
-            pendingRequests.clear();
-            pendingCandidates.clear();
-            isReadyReceiveCandidates = false;
-            isStartedKeepAlive = false;
-            isOfferRequested = false;
-            isOfferReceived = true; // No offers needed for outgoing call
-            isAnswerReceived = false;
-            ArrayList<Integer> members = new ArrayList<>();
-            members.add(myUid());
-            members.add(uid);
-            context().getCallsModule().spawnNewModel(callId, Peer.user(uid), members, CallState.CALLING_OUTGOING);
-            provider.onOutgoingCall(callId);
-        }
+//        if (webRTCController.getCallId() == -1) {
+//            webRTCController.switchCallId(callId);
+//            pendingRequests.clear();
+//            pendingCandidates.clear();
+//            isReadyReceiveCandidates = false;
+//            isStartedKeepAlive = false;
+//            isOfferRequested = false;
+//            isOfferReceived = true; // No offers needed for outgoing call
+//            isAnswerReceived = false;
+//            ArrayList<Integer> members = new ArrayList<>();
+//            members.add(myUid());
+//            members.add(uid);
+//            context().getCallsModule().spawnNewModel(callId, Peer.user(uid), members, CallState.CALLING_OUTGOING);
+//            provider.onOutgoingCall(callId);
+//        }
     }
 
     private void doAnswerCall(final long callId) {
@@ -136,12 +136,12 @@ public class CallManagerActor extends ModuleActor {
     }
 
     private void doStartKeepAlive(long callId) {
-        if (webRTCController.getCallId() == callId) {
-            if (!isStartedKeepAlive) {
-                isStartedKeepAlive = true;
-                self().send(new DoKeepAlive(callId));
-            }
-        }
+//        if (webRTCController.getCallId() == callId) {
+//            if (!isStartedKeepAlive) {
+//                isStartedKeepAlive = true;
+//                self().send(new DoKeepAlive(callId));
+//            }
+//        }
     }
 
 
@@ -150,51 +150,51 @@ public class CallManagerActor extends ModuleActor {
     //
 
     private void onReadyReceiveCandidates(long callId) {
-        Log.d(TAG, "onReadyReceiveCandidates (" + callId + ")");
-        if (webRTCController.getCallId() == callId) {
-            if (!isReadyReceiveCandidates) {
-                isReadyReceiveCandidates = true;
-                for (Candidate c : pendingCandidates) {
-                    provider.onCandidate(callId, c.getId(), c.getLabel(), c.getSdp());
-                }
-                pendingCandidates.clear();
-            }
-        }
+//        Log.d(TAG, "onReadyReceiveCandidates (" + callId + ")");
+//        if (webRTCController.getCallId() == callId) {
+//            if (!isReadyReceiveCandidates) {
+//                isReadyReceiveCandidates = true;
+//                for (Candidate c : pendingCandidates) {
+//                    provider.onCandidate(callId, c.getId(), c.getLabel(), c.getSdp());
+//                }
+//                pendingCandidates.clear();
+//            }
+//        }
     }
 
     private void onSignaling(long callId, byte[] message) {
-        Log.d(TAG, "onSignaling (" + callId + ")");
-        if (webRTCController.getCallId() == callId) {
-            AbsSignal signal = AbsSignal.fromBytes(message);
-            if (signal == null) {
-                return;
-            }
-
-            if (signal instanceof OfferSignal) {
-                OfferSignal offer = (OfferSignal) signal;
-                if (!isOfferReceived) {
-                    isOfferReceived = true;
-                    context().getCallsModule().getCall(callId).getCallStarted().change(im.actor.runtime.Runtime.getCurrentTime());
-                    context().getCallsModule().getCall(callId).getState().change(CallState.IN_PROGRESS);
-                    provider.onOfferReceived(callId, offer.getSdp());
-                }
-            } else if (signal instanceof AnswerSignal) {
-                AnswerSignal answer = (AnswerSignal) signal;
-                if (!isAnswerReceived) {
-                    isAnswerReceived = true;
-                    provider.onAnswerReceived(callId, answer.getSdp());
-                }
-            } else if (signal instanceof CandidateSignal) {
-                CandidateSignal candidateSignal = (CandidateSignal) signal;
-                if (!isReadyReceiveCandidates) {
-                    pendingCandidates.add(new Candidate(candidateSignal.getLabel(),
-                            candidateSignal.getId(), candidateSignal.getSdp()));
-                } else {
-                    provider.onCandidate(callId, candidateSignal.getId(),
-                            candidateSignal.getLabel(), candidateSignal.getSdp());
-                }
-            }
-        }
+//        Log.d(TAG, "onSignaling (" + callId + ")");
+//        if (webRTCController.getCallId() == callId) {
+//            AbsSignal signal = AbsSignal.fromBytes(message);
+//            if (signal == null) {
+//                return;
+//            }
+//
+//            if (signal instanceof OfferSignal) {
+//                OfferSignal offer = (OfferSignal) signal;
+//                if (!isOfferReceived) {
+//                    isOfferReceived = true;
+//                    context().getCallsModule().getCall(callId).getCallStarted().change(im.actor.runtime.Runtime.getCurrentTime());
+//                    context().getCallsModule().getCall(callId).getState().change(CallState.IN_PROGRESS);
+//                    provider.onOfferReceived(callId, offer.getSdp());
+//                }
+//            } else if (signal instanceof AnswerSignal) {
+//                AnswerSignal answer = (AnswerSignal) signal;
+//                if (!isAnswerReceived) {
+//                    isAnswerReceived = true;
+//                    provider.onAnswerReceived(callId, answer.getSdp());
+//                }
+//            } else if (signal instanceof CandidateSignal) {
+//                CandidateSignal candidateSignal = (CandidateSignal) signal;
+//                if (!isReadyReceiveCandidates) {
+//                    pendingCandidates.add(new Candidate(candidateSignal.getLabel(),
+//                            candidateSignal.getId(), candidateSignal.getSdp()));
+//                } else {
+//                    provider.onCandidate(callId, candidateSignal.getId(),
+//                            candidateSignal.getLabel(), candidateSignal.getSdp());
+//                }
+//            }
+//        }
     }
 
     private void doSendSignal(long callId, AbsSignal signal) {
@@ -213,17 +213,17 @@ public class CallManagerActor extends ModuleActor {
     }
 
     private void onKeepAlive(long callId, int timeout) {
-        if (webRTCController.getCallId() == callId) {
-            if (!isOfferRequested) {
-                isOfferRequested = true;
-                context().getCallsModule().getCall(callId).getCallStarted().change(im.actor.runtime.Runtime.getCurrentTime());
-                context().getCallsModule().getCall(callId).getState().change(CallState.IN_PROGRESS);
-                provider.onOfferNeeded(callId);
-            }
-
-
-            // TODO: Auto kill call on timeout
-        }
+//        if (webRTCController.getCallId() == callId) {
+//            if (!isOfferRequested) {
+//                isOfferRequested = true;
+//                context().getCallsModule().getCall(callId).getCallStarted().change(im.actor.runtime.Runtime.getCurrentTime());
+//                context().getCallsModule().getCall(callId).getState().change(CallState.IN_PROGRESS);
+//                provider.onOfferNeeded(callId);
+//            }
+//
+//
+//            // TODO: Auto kill call on timeout
+//        }
     }
 
     //
