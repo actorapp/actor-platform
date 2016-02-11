@@ -371,8 +371,8 @@ public class MessagesProcessor extends AbsModule {
     }
 
     public void onChatArchived(ApiPeer peer) {
-        context().getMessagesModule().getDialogsGroupedActor()
-                .send(new GroupedDialogsActor.ChatArchived(peer));
+        context().getMessagesModule().getDialogsActor()
+                .send(new DialogsActor.ChatDelete(convert(peer)));
     }
 
     public void onChatRestored(Peer peer) {
