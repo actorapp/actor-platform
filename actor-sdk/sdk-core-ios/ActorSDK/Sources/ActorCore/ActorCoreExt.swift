@@ -381,7 +381,7 @@ public class AAPromiseFunc: NSObject, ARPromiseFunc {
 
 extension ARPromise {
     convenience init(closure: (resolver: ARPromiseResolver) -> ()) {
-        super.init(AAPromiseFunc(closure: closure))
+        self.init(executor: AAPromiseFunc(closure: closure))
     }
 }
 

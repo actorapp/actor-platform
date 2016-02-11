@@ -70,9 +70,9 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
         return ARPromise(closure: { (resolver) -> () in
             self.peerConnection.createAnswer(RTCMediaConstraints(), didCreate: { (desc, error) -> () in
                 if error == nil {
-                    resolver.result(desc.description)
+                    resolver.result(ARWebRTCSessionDescription(type: "answer", withSDP: desc.description))
                 } else {
-                    resolver.error(JavaLangException(NSString: "error"))
+                    resolver.error(JavaLangException(NSString: "Error \(error.description)"))
                 }
             })
         })
@@ -82,34 +82,33 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
         return ARPromise(closure: { (resolver) -> () in
             self.peerConnection.createOffer(RTCMediaConstraints(), didCreate: { (desc, error) -> () in
                 if error == nil {
-                    resolver.result(desc.description)
+                    resolver.result(ARWebRTCSessionDescription(type: "offer", withSDP: desc.description))
                 } else {
-                    resolver.error(JavaLangException(NSString: "error"))
+                    resolver.error(JavaLangException(NSString: "Error \(error.description)"))
                 }
             })
         })
     }
     
-    func setRemoteDescriptionWithType(type: String, withSPD sdp: String) -> ARPromise {
+    func setRemoteDescription(description_: ARWebRTCSessionDescription) -> ARPromise {
         return ARPromise(executor: AAPromiseFunc(closure: { (resolver) -> () in
-            self.peerConnection.setRemoteDescription(RTCSessionDescription(type: type, sdp: sdp), didSet: { (error) -> () in
+            self.peerConnection.setRemoteDescription(RTCSessionDescription(type: description_.type, sdp: description_.sdp), didSet: { (error) -> () in
                 if (error == nil) {
-                    resolver.result(JavaLangBoolean(boolean: true))
+                    resolver.result(description_)
                 } else {
-                    resolver.error(JavaLangException(NSString: "error"))
+                    resolver.error(JavaLangException(NSString: "Error \(error.description)"))
                 }
             })
         }))
-        
     }
     
-    func setLocalDescriptionWithType(type: String, withSPD sdp: String) -> ARPromise {
+    func setLocalDescription(description_: ARWebRTCSessionDescription) -> ARPromise {
         return ARPromise(executor: AAPromiseFunc(closure: { (resolver) -> () in
-            self.peerConnection.setLocalDescription(RTCSessionDescription(type: type, sdp: sdp), didSet: { (error) -> () in
+            self.peerConnection.setLocalDescription(RTCSessionDescription(type: description_.type, sdp: description_.sdp), didSet: { (error) -> () in
                 if (error == nil) {
-                    resolver.result(JavaLangBoolean(boolean: true))
+                    resolver.result(description_)
                 } else {
-                    resolver.error(JavaLangException(NSString: "error"))
+                    resolver.error(JavaLangException(NSString: "Error \(error.description)"))
                 }
             })
         }))
