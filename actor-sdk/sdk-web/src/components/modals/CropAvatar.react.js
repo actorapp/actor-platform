@@ -255,12 +255,28 @@ class CropAvatarModal extends Component {
   render() {
     const { isOpen, pictureSource, cropPosition, cropSize, scaledWidth, scaledHeight, maxImageHeight } = this.state;
     const { intl } = this.context;
+    const modalStyle = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null
+      }
+    };
 
     if (isOpen) {
       return (
         <Modal className="modal-new modal-new--profile-picture"
                closeTimeoutMS={150}
-               isOpen={isOpen}>
+               isOpen={isOpen}
+               style={modalStyle}>
 
           <div className="modal-new__header">
             <i className="modal-new__header__icon material-icons">crop</i>
