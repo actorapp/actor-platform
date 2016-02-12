@@ -130,12 +130,29 @@ class MyProfile extends Component {
 
     const cropAvatar = isCropModalOpen ? <CropAvatarModal onCropFinish={this.changeMyAvatar}/> : null;
 
+    const modalStyle = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null,
+        width: 440
+      }
+    };
+
     if (profile !== null && isOpen) {
       return (
         <Modal className="modal-new modal-new--profile"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 440}}>
+               style={modalStyle}>
 
           <header className="modal-new__header">
             <a className="modal-new__header__icon material-icons">person</a>

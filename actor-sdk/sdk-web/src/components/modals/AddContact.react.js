@@ -91,11 +91,28 @@ class AddContact extends Component {
       );
     }
 
+    const modalStyle = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null,
+        width: 360
+      }
+    };
+
     return (
       <Modal className="modal-new modal-new--add-contact add-contact"
              closeTimeoutMS={150}
              isOpen={isOpen}
-             style={{width: 360}}>
+             style={modalStyle}>
 
         <header className="modal-new__header">
           <h3 className="modal-new__header__title">{intl.messages['modal.addContact.title']}</h3>

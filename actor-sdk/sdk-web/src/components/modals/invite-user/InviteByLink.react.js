@@ -77,12 +77,29 @@ class InviteByLink extends Component {
 
     const groupName = (group !== null) ? <b dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.name)}}/> : null;
 
+    const modalStyle = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null,
+        width: 440
+      }
+    };
+
     if (isOpen) {
       return (
         <Modal className="modal-new modal-new--invite-by-link"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 440}}>
+               style={modalStyle}>
 
           <header className="modal-new__header">
             <svg className="modal-new__header__icon icon icon--blue"

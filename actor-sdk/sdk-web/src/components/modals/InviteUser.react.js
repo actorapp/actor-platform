@@ -105,12 +105,28 @@ class InviteUser extends Component {
           </li>
         );
       }
+      const modalStyle = {
+        content : {
+          position: null,
+          top: null,
+          left: null,
+          right: null,
+          bottom: null,
+          border: null,
+          background: null,
+          overflow: null,
+          outline: null,
+          padding: null,
+          borderRadius: null,
+          width: 440
+        }
+      };
 
       return (
         <Modal className="modal-new modal-new--invite contacts"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 440}}>
+               style={modalStyle}>
 
           <header className="modal-new__header">
             <a className="modal-new__header__icon material-icons">person_add</a>
