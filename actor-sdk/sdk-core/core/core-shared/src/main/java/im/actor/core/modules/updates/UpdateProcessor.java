@@ -118,7 +118,7 @@ public class UpdateProcessor extends AbsModule {
         } else if (update instanceof ArchivedDialogLoaded) {
             ResponseLoadArchived dialogs = ((ArchivedDialogLoaded) update).getDialogs();
             applyRelated(dialogs.getUsers(), dialogs.getGroups(), false);
-            messagesProcessor.onArchivedDialogsLoaded(dialogs);
+            messagesProcessor.onArchivedDialogsLoaded(((ArchivedDialogLoaded) update).getDialogs());
         } else if (update instanceof MessagesHistoryLoaded) {
             MessagesHistoryLoaded historyLoaded = (MessagesHistoryLoaded) update;
             applyRelated(historyLoaded.getLoadHistory().getUsers(), new ArrayList<ApiGroup>(), false);
