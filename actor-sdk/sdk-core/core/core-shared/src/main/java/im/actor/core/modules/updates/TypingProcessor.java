@@ -26,9 +26,9 @@ public class TypingProcessor extends AbsModule {
     @Verified
     public void onTyping(ApiPeer peer, int uid, ApiTypingType type) {
         if (peer.getType() == ApiPeerType.PRIVATE) {
-            typingActor.sendOnce(new TypingActor.PrivateTyping(uid, type));
+            typingActor.send(new TypingActor.PrivateTyping(uid, type));
         } else if (peer.getType() == ApiPeerType.GROUP) {
-            typingActor.sendOnce(new TypingActor.GroupTyping(peer.getId(), uid, type));
+            typingActor.send(new TypingActor.GroupTyping(peer.getId(), uid, type));
         }
     }
 
@@ -40,18 +40,18 @@ public class TypingProcessor extends AbsModule {
             return;
         }
         if (peer.getType() == ApiPeerType.PRIVATE) {
-            typingActor.sendOnce(new TypingActor.StopTyping(uid));
+            typingActor.send(new TypingActor.StopTyping(uid));
         } else if (peer.getType() == ApiPeerType.GROUP) {
-            typingActor.sendOnce(new TypingActor.StopGroupTyping(peer.getId(), uid));
+            typingActor.send(new TypingActor.StopGroupTyping(peer.getId(), uid));
         }
     }
 
     @Verified
     public void onMessage(ApiPeer peer, int uid) {
         if (peer.getType() == ApiPeerType.PRIVATE) {
-            typingActor.sendOnce(new TypingActor.StopTyping(uid));
+            typingActor.send(new TypingActor.StopTyping(uid));
         } else if (peer.getType() == ApiPeerType.GROUP) {
-            typingActor.sendOnce(new TypingActor.StopGroupTyping(peer.getId(), uid));
+            typingActor.send(new TypingActor.StopGroupTyping(peer.getId(), uid));
         }
     }
 }

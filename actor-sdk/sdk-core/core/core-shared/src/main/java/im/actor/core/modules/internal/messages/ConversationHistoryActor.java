@@ -41,7 +41,7 @@ public class ConversationHistoryActor extends ModuleActor {
         historyMaxDate = preferences().getLong(KEY_LOADED_DATE, Long.MAX_VALUE);
         historyLoaded = preferences().getBool(KEY_LOADED, false);
         if (!preferences().getBool(KEY_LOADED_INIT, false)) {
-            self().sendOnce(new LoadMore());
+            self().send(new LoadMore());
         } else {
             context().getMessagesModule().markAsLoaded(peer);
         }

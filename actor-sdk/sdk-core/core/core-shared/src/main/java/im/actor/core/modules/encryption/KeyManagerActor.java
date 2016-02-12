@@ -35,7 +35,6 @@ import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.ratchet.RatchetKeySignature;
 import im.actor.runtime.function.Consumer;

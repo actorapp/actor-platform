@@ -60,8 +60,8 @@ final class EventBusExtension(system: ActorSystem) extends Extension {
     message:      Array[Byte]
   ): Future[Unit] = (region ? EventBusEnvelope(id, Post(clientUserId, clientAuthId, destinations, message))) map (_ ⇒ ())
 
-  def keepAlive(clientAuthId: AuthId, id: String, timeout: Option[Long]): Unit =
-    region ? EventBusEnvelope(id, KeepAlive(clientAuthId, timeout))
+  def keepAlive(clientAuthId: AuthId, id: String, timeout: Option[Long]): Future[Unit] =
+    region ? EventBusEnvelope(id, KeepAlive(clientAuthId, timeout)) map (_ ⇒ ())
 
   def join(clientUserId: UserId, clientAuthId: AuthId, id: String, timeout: Option[Long]): Future[DeviceId] =
     (region ? EventBusEnvelope(id, Join(clientUserId, clientAuthId, timeout))).mapTo[JoinAck] map (_.deviceId)

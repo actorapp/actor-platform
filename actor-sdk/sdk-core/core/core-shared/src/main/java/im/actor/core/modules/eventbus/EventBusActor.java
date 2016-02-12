@@ -2,13 +2,9 @@ package im.actor.core.modules.eventbus;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-
-import im.actor.core.api.ApiEventBusDestination;
 import im.actor.core.api.rpc.RequestCreateNewEventBus;
 import im.actor.core.api.rpc.RequestJoinEventBus;
 import im.actor.core.api.rpc.RequestKeepAliveEventBus;
-import im.actor.core.api.rpc.RequestPostToEventBus;
 import im.actor.core.api.rpc.ResponseCreateNewEventBus;
 import im.actor.core.api.rpc.ResponseJoinEventBus;
 import im.actor.core.api.rpc.ResponseVoid;
@@ -16,7 +12,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
-import im.actor.runtime.Log;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 
@@ -29,6 +25,7 @@ public class EventBusActor extends ModuleActor {
     private String busId;
     private long deviceId;
 
+    private Cancellable keepAliveCancel;
     private long keepAliveRequest = -1;
 
     public EventBusActor(ModuleContext context) {
@@ -67,8 +64,7 @@ public class EventBusActor extends ModuleActor {
                     onBusStarted();
                     isProcessing = false;
                     unstashAll();
-                    self().send(new EventBusKeepAlive());
-                    Log.d("EventBus(" + busId + ")", "Joined");
+                    keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
                 }
             }).failure(new Consumer<Exception>() {
                 @Override
@@ -87,8 +83,7 @@ public class EventBusActor extends ModuleActor {
                     onBusStarted();
                     isProcessing = false;
                     unstashAll();
-                    self().send(new EventBusKeepAlive());
-                    Log.d("EventBus(" + busId + ")", "Created");
+                    keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
                 }
             }).failure(new Consumer<Exception>() {
                 @Override
@@ -129,15 +124,6 @@ public class EventBusActor extends ModuleActor {
 
     }
 
-    public final void sendMessage(int uid, long deviceId, byte[] data) {
-        Log.d("EventBus(" + busId + ")", "Send Message");
-        ArrayList<ApiEventBusDestination> destinations = new ArrayList<>();
-        ArrayList<Long> deviceIds = new ArrayList<>();
-        deviceIds.add(deviceId);
-        destinations.add(new ApiEventBusDestination(uid, deviceIds));
-        request(new RequestPostToEventBus(busId, destinations, data));
-        Log.d("EventBus(" + busId + ")", "Send Message End");
-    }
 
     public void onBusShutdown() {
 
@@ -169,13 +155,17 @@ public class EventBusActor extends ModuleActor {
                 dispose();
             }
         });
-        self().send(new EventBusKeepAlive(), KEEP_ALIVE);
+        keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
     }
 
     private void stopKeepAlive() {
         if (keepAliveRequest != -1) {
             context().getActorApi().cancelRequest(keepAliveRequest);
             keepAliveRequest = -1;
+        }
+        if (keepAliveCancel != null) {
+            keepAliveCancel.cancel();
+            keepAliveCancel = null;
         }
     }
 
@@ -184,7 +174,6 @@ public class EventBusActor extends ModuleActor {
     //
 
     public void shutdown() {
-        Log.d("EventBus(" + busId + ")", "Shutdown");
         isProcessing = true;
         stopKeepAlive();
         context().getEventBus().unsubscribe(busId, self());
@@ -199,7 +188,6 @@ public class EventBusActor extends ModuleActor {
     }
 
     public void dispose() {
-        Log.d("EventBus(" + busId + ")", "Dispose");
         isProcessing = true;
         stopKeepAlive();
         context().getEventBus().unsubscribe(busId, self());
@@ -215,7 +203,6 @@ public class EventBusActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
-        Log.d("EventBus(" + busId + ")", "onReceive: " + message);
         if (message instanceof EventBusShutdown) {
             if (isProcessing) {
                 stash();
@@ -244,23 +231,18 @@ public class EventBusActor extends ModuleActor {
             onDeviceDisconnected(deviceDisconnected.getUid(), deviceDisconnected.getDeviceId());
         } else if (message instanceof EventBusMessage) {
             if (isProcessing) {
-                Log.d("EventBus(" + busId + ")", "Is Processing");
                 stash();
                 return;
             }
             EventBusMessage eventBusMessage = (EventBusMessage) message;
-            Log.d("EventBus(" + busId + ")", "Message: " + eventBusMessage);
             onMessageReceived(eventBusMessage.getSenderId(), eventBusMessage.getSenderDeviceId(),
                     eventBusMessage.getMessage());
-            Log.d("EventBus(" + busId + ")", "End");
-        } else if (message instanceof EventBusKeepAlive) {
-            Log.d("EventBus(" + busId + ")", "Keep Alive");
+        } else if (message instanceof KeepAlive) {
             if (isProcessing) {
                 stash();
                 return;
             }
             doKeepAlive();
-            Log.d("EventBus(" + busId + ")", "Keep Alive: End");
         } else {
             super.onReceive(message);
         }
@@ -337,7 +319,7 @@ public class EventBusActor extends ModuleActor {
         }
     }
 
-    private static class EventBusKeepAlive {
+    private static class KeepAlive {
 
     }
 }

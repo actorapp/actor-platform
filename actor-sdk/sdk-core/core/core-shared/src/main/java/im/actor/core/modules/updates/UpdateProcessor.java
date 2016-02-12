@@ -11,7 +11,9 @@ import java.util.List;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUser;
+import im.actor.core.api.rpc.ResponseLoadArchived;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
+import im.actor.core.api.updates.UpdateChatArchive;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
@@ -53,6 +55,7 @@ import im.actor.core.modules.calls.CallsProcessor;
 import im.actor.core.modules.eventbus.EventBusProcessor;
 import im.actor.core.modules.internal.contacts.ContactsSyncActor;
 import im.actor.core.modules.internal.messages.OwnReadActor;
+import im.actor.core.modules.updates.internal.ArchivedDialogLoaded;
 import im.actor.core.modules.updates.internal.ChangeContent;
 import im.actor.core.modules.updates.internal.CombinedDifference;
 import im.actor.core.modules.updates.internal.ContactsLoaded;
@@ -112,6 +115,10 @@ public class UpdateProcessor extends AbsModule {
             ResponseLoadDialogs dialogs = ((DialogHistoryLoaded) update).getDialogs();
             applyRelated(dialogs.getUsers(), dialogs.getGroups(), false);
             messagesProcessor.onDialogsLoaded(dialogs);
+        } else if (update instanceof ArchivedDialogLoaded) {
+            ResponseLoadArchived dialogs = ((ArchivedDialogLoaded) update).getDialogs();
+            applyRelated(dialogs.getUsers(), dialogs.getGroups(), false);
+            messagesProcessor.onArchivedDialogsLoaded(dialogs);
         } else if (update instanceof MessagesHistoryLoaded) {
             MessagesHistoryLoaded historyLoaded = (MessagesHistoryLoaded) update;
             applyRelated(historyLoaded.getLoadHistory().getUsers(), new ArrayList<ApiGroup>(), false);
@@ -337,6 +344,8 @@ public class UpdateProcessor extends AbsModule {
             messagesProcessor.onCountersChanged(((UpdateCountersChanged) update).getCounters());
         } else if (update instanceof UpdateChatGroupsChanged) {
             messagesProcessor.onChatGroupsChanged(((UpdateChatGroupsChanged) update).getDialogs());
+        } else if (update instanceof UpdateChatArchive) {
+            messagesProcessor.onChatArchived(((UpdateChatArchive) update).getPeer());
         } else if (update instanceof UpdateReactionsUpdate) {
             messagesProcessor.onReactionsChanged(((UpdateReactionsUpdate) update).getPeer(),
                     ((UpdateReactionsUpdate) update).getRid(), ((UpdateReactionsUpdate) update).getReactions());
