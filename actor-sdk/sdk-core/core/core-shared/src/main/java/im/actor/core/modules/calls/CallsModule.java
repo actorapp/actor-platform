@@ -12,6 +12,7 @@ import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.Command;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorRef;
 
 import static im.actor.runtime.actors.ActorSystem.system;
@@ -56,6 +57,7 @@ public class CallsModule extends AbsModule {
         return new Command<ResponseDoCall>() {
             @Override
             public void start(final CommandCallback<ResponseDoCall> callback) {
+                Log.d(TAG, "callsManager: " + callManager);
                 callManager.send(new CallManagerActor.DoCall(Peer.user(uid)));
 //                User u = users().getValue(uid);
 //                request(new RequestDoCall(new ApiOutPeer(ApiPeerType.PRIVATE, u.getUid(), u.getAccessHash()), CALL_TIMEOUT), new RpcCallback<ResponseDoCall>() {
