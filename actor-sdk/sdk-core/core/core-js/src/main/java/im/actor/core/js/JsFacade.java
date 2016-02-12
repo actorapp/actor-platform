@@ -16,7 +16,6 @@ import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.ApiDialog;
 import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.api.rpc.ResponseLoadArchived;
-import im.actor.core.entity.Dialog;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
@@ -29,20 +28,15 @@ import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
 import im.actor.core.js.providers.JsWebRTCProvider;
 import im.actor.core.js.providers.electron.JsElectronApp;
-import im.actor.core.js.providers.webrtc.JsSessionDescription;
-import im.actor.core.js.providers.webrtc.JsPeerConnection;
-import im.actor.core.js.providers.webrtc.JsPeerConnectionListener;
 import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
 import im.actor.core.modules.internal.messages.entity.EntityConverter;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.CommandCallback;
-import im.actor.core.viewmodel.DialogSmall;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.js.JsFileSystemProvider;
 import im.actor.runtime.js.fs.JsBlob;
 import im.actor.runtime.js.fs.JsFile;
@@ -840,29 +834,38 @@ public class JsFacade implements Exportable {
         messenger.loadMoreDialogs();
     }
 
+    public JsPromise loaArchivedDialogs(){
+        return loadArchivedDialogs(true);
+    }
+
     public JsPromise loadMoreArchivedDialogs(){
+        return loadArchivedDialogs(false);
+    }
+
+    private JsPromise loadArchivedDialogs(final boolean init){
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.loadMoreArchivedDialogs(new RpcCallback<ResponseLoadArchived>() {
+                messenger.loadArchivedDialogs(init, new RpcCallback<ResponseLoadArchived>() {
                     @Override
                     public void onResult(ResponseLoadArchived response) {
                         JsArray<JsDialogShort> res = JsArray.createArray().cast();
                         for (ApiDialog d : response.getDialogs()) {
                             res.push(JsDialogShort.create(messenger.buildPeerInfo(EntityConverter.convert(d.getPeer())), d.getUnreadCount()));
                         }
-                        Log.d(TAG, "loadMoreArchivedDialogs:result");
+                        Log.d(TAG, "loadArchivedDialogs:result");
                         resolve(res);
                     }
 
                     @Override
                     public void onError(RpcException e) {
-                        Log.d(TAG, "loadMoreArchivedDialogs:error");
+                        Log.d(TAG, "loadArchivedDialogs:error");
                         reject(e.getMessage());
                     }
                 });
             }
         });
+
     }
 
     public void onChatEnd(JsPeer peer) {
