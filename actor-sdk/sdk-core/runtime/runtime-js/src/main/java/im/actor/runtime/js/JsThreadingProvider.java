@@ -13,11 +13,11 @@ import im.actor.runtime.actors.mailbox.ActorDispatcher;
 import im.actor.runtime.js.threading.JsAtomicInteger;
 import im.actor.runtime.js.threading.JsAtomicLong;
 import im.actor.runtime.js.threading.JsDispatch;
+import im.actor.runtime.js.threading.JsDispatcher;
 import im.actor.runtime.js.threading.JsThreadLocal;
-import im.actor.runtime.js.threading.JsTimerCompat;
-import im.actor.runtime.threading.AbsTimerCompat;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
+import im.actor.runtime.threading.Dispatcher;
 import im.actor.runtime.threading.ThreadLocalCompat;
 
 public class JsThreadingProvider implements ThreadingRuntime {
@@ -55,12 +55,12 @@ public class JsThreadingProvider implements ThreadingRuntime {
 
     @Override
     public <T> ThreadLocalCompat<T> createThreadLocal() {
-        return new JsThreadLocal<T>();
+        return new JsThreadLocal<>();
     }
 
     @Override
-    public AbsTimerCompat createTimer(Runnable runnable) {
-        return new JsTimerCompat(runnable);
+    public Dispatcher createDispatcher() {
+        return new JsDispatcher();
     }
 
     @Override

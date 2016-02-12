@@ -8,13 +8,11 @@ import im.actor.runtime.ThreadingRuntime;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.ThreadPriority;
 import im.actor.runtime.actors.mailbox.ActorDispatcher;
-import im.actor.runtime.threading.AbsTimerCompat;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
 import im.actor.runtime.threading.ThreadLocalCompat;
-import im.actor.runtime.threading.TimerCompat;
 
-public class GenericThreadingProvider implements ThreadingRuntime {
+public abstract class GenericThreadingProvider implements ThreadingRuntime {
 
     public GenericThreadingProvider() {
 
@@ -52,12 +50,7 @@ public class GenericThreadingProvider implements ThreadingRuntime {
 
     @Override
     public <T> ThreadLocalCompat<T> createThreadLocal() {
-        return new GenericThreadLocal<T>();
-    }
-
-    @Override
-    public AbsTimerCompat createTimer(Runnable runnable) {
-        return new TimerCompat(runnable);
+        return new GenericThreadLocal<>();
     }
 
     @Override

@@ -9,7 +9,7 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.ThreadPriority;
 import im.actor.runtime.actors.mailbox.ActorDispatcher;
-import im.actor.runtime.threading.AbsTimerCompat;
+import im.actor.runtime.threading.Dispatcher;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
 import im.actor.runtime.threading.ThreadLocalCompat;
@@ -80,13 +80,12 @@ public interface ThreadingRuntime {
     <T> ThreadLocalCompat<T> createThreadLocal();
 
     /**
-     * Creating Timer object
+     * Creating Dispatcher
      *
-     * @param runnable timer action
-     * @return the Timer object
+     * @return the Dispatcher object
      */
-    @ObjectiveCName("createTimer:")
-    AbsTimerCompat createTimer(Runnable runnable);
+    @ObjectiveCName("createDispatcher:")
+    Dispatcher createDispatcher();
 
     /**
      * Creating of Actor Dispatcher for dispatching of actor's Envelopes
