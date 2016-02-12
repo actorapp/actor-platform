@@ -14,11 +14,7 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.Cancellable;
-import im.actor.runtime.actors.MailboxCreator;
 import im.actor.runtime.actors.Props;
-import im.actor.runtime.actors.mailbox.Envelope;
-import im.actor.runtime.actors.mailbox.Mailbox;
-import im.actor.runtime.actors.mailbox.MailboxesQueue;
 import im.actor.runtime.annotations.Verified;
 
 @Verified

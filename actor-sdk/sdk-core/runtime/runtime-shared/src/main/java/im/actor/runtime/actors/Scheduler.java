@@ -4,7 +4,7 @@ import im.actor.runtime.threading.Dispatcher;
 
 public class Scheduler {
 
-    private static final Dispatcher TIMER_DISPATCHER = im.actor.runtime.Runtime.createDispatcher();
+    private static final Dispatcher TIMER_DISPATCHER = im.actor.runtime.Runtime.createDispatcher("scheduler");
 
     private Dispatcher destDispatcher;
     private ActorRef ref;
