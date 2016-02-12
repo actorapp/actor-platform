@@ -1,9 +1,11 @@
-package im.actor.core.js.providers.webrtc;
+package im.actor.runtime.js.webrtc;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
-public class JsMediaStream extends JavaScriptObject {
+import im.actor.runtime.webrtc.WebRTCLocalStream;
+
+public class JsMediaStream extends JavaScriptObject implements WebRTCLocalStream {
 
     protected JsMediaStream() {
 

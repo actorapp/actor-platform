@@ -85,7 +85,7 @@ public class PeerConnectionActor extends ModuleActor {
                 PeerConnectionActor.this.peerConnection.addCallback(new WebRTCPeerConnectionCallback() {
                     @Override
                     public void onCandidate(int label, String id, String candidate) {
-                        root.send(new DoCandidate(uid, deviceId, label, id, candidate));
+                        // root.send(new DoCandidate(uid, deviceId, label, id, candidate));
                     }
 
                     @Override
@@ -142,7 +142,7 @@ public class PeerConnectionActor extends ModuleActor {
             @Override
             public void apply(WebRTCSessionDescription description) {
                 Log.d(TAG, "onOfferNeeded:then");
-                root.send(new DoOffer(uid, deviceId, description.getSdp()));
+                // root.send(new DoOffer(uid, deviceId, description.getSdp()));
                 state = State.WAITING_ANSWER;
                 isReady = true;
                 unstashAll();
@@ -189,6 +189,7 @@ public class PeerConnectionActor extends ModuleActor {
             public void apply(WebRTCSessionDescription description) {
                 Log.d(TAG, "onOffer:then");
                 root.send(new DoAnswer(uid, deviceId, description.getSdp()));
+                Log.d(TAG, "onOffer:then:end");
                 onHandShakeCompleted();
             }
         }).failure(new Consumer<Exception>() {

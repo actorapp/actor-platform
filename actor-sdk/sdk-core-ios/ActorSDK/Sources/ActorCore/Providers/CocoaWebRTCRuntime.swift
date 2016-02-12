@@ -60,6 +60,7 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     
     func addOwnStream(stream: ARWebRTCLocalStream) {
         if let audio = stream as? RTCAudioTrack {
+            print("addOwnStream")
             let mediaStream = peerConnectionFactory.mediaStreamWithLabel("ARDAMSa0")
             mediaStream.addAudioTrack(audio)
             peerConnection.addStream(mediaStream)
@@ -125,30 +126,31 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     //
     
     func peerConnection(peerConnection: RTCPeerConnection!, signalingStateChanged stateChanged: RTCSignalingState) {
-        
+        print("signalingStateChanged \(stateChanged)")
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, addedStream stream: RTCMediaStream!) {
-        
+        print("addedStream")
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, removedStream stream: RTCMediaStream!) {
-        
+        print("removedStream")
     }
     
     func peerConnectionOnRenegotiationNeeded(peerConnection: RTCPeerConnection!) {
-        
+        print("onRenegotiationNeeded")
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, iceConnectionChanged newState: RTCICEConnectionState) {
-        
+        print("iceConnectionChanged \(newState)")
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, iceGatheringChanged newState: RTCICEGatheringState) {
-        
+        print("iceGatheringChanged \(newState)")
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, gotICECandidate candidate: RTCICECandidate!) {
+        print("gotICECandidate \(candidate)")
         for c in callbacks {
             c.onCandidateWithLabel(jint(candidate.sdpMLineIndex), withId: candidate.sdpMid, withCandidate: candidate.sdp)
         }

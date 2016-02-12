@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorTime;
 import im.actor.runtime.actors.mailbox.Envelope;
 import im.actor.runtime.actors.mailbox.MailboxesQueue;
@@ -19,11 +20,11 @@ public class EnvelopeRoot {
     private static final long MULTIPLE = 10000L;
 
     private long usedNowSlot = ActorTime.currentTime();
-    private final HashSet<Long> usedSlot = new HashSet<Long>();
+    private final HashSet<Long> usedSlot = new HashSet<>();
 
-    private final HashMap<Integer, EnvelopeCollection> collections = new HashMap<Integer, EnvelopeCollection>();
-    private final HashMap<Integer, Long> lastTopKey = new HashMap<Integer, Long>();
-    private final TreeMap<Long, EnvelopeCollection> sortedCollection = new TreeMap<Long, EnvelopeCollection>();
+    private final HashMap<Integer, EnvelopeCollection> collections = new HashMap<>();
+    private final HashMap<Integer, Long> lastTopKey = new HashMap<>();
+    private final TreeMap<Long, EnvelopeCollection> sortedCollection = new TreeMap<>();
 
     private MailboxesQueue queue;
 
@@ -40,6 +41,7 @@ public class EnvelopeRoot {
     }
 
     public synchronized void attachCollection(EnvelopeCollection collection) {
+        Log.d("EnvelopeRoot", "attachCollection (" + collection.getTopKey() + ") #" + collection.getId());
         long key = collection.getTopKey();
 
         if (!collections.containsKey(collection.getId())) {
@@ -55,6 +57,7 @@ public class EnvelopeRoot {
     }
 
     public synchronized void detachCollection(EnvelopeCollection collection) {
+        Log.d("EnvelopeRoot", "detachCollection (" + collection.getTopKey() + ") #" + collection.getId());
         if (!collections.containsKey(collection.getId())) {
             return;
         }
@@ -95,7 +98,9 @@ public class EnvelopeRoot {
     }
 
     synchronized void changedTopKey(EnvelopeCollection collection) {
+        Log.d("EnvelopeRoot", "changedTopKey (" + collection.getTopKey() + ") #" + collection.getId());
         if (!collections.containsKey(collection.getId())) {
+            Log.d("EnvelopeRoot", "changedTopKey - ignored");
             return;
         }
 
@@ -117,6 +122,7 @@ public class EnvelopeRoot {
 
     synchronized long buildKey(long time) {
         if (time <= 0 || time < usedNowSlot) {
+            // Log.d("EnvelopeRoot", "Build Key (" + time + ") -> (" + (usedNowSlot + 1) + ")");
             time = usedNowSlot++;
             return time;
         }

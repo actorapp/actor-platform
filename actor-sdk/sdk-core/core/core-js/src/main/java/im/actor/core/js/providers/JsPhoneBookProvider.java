@@ -7,7 +7,7 @@ package im.actor.core.js.providers;
 import java.util.ArrayList;
 
 import im.actor.core.entity.PhoneBookContact;
-import im.actor.core.phonebook.PhoneBookProvider;
+import im.actor.core.providers.PhoneBookProvider;
 
 public class JsPhoneBookProvider implements PhoneBookProvider {
 
