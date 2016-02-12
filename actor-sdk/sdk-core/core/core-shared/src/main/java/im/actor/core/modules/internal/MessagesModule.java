@@ -303,11 +303,11 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         });
     }
 
-    public void loadMoreArchivedDialogs(final RpcCallback<ResponseLoadArchived> callback) {
+    public void loadMoreArchivedDialogs(final boolean init, final RpcCallback<ResponseLoadArchived> callback) {
         im.actor.runtime.Runtime.dispatch(new Runnable() {
             @Override
             public void run() {
-                archivedDialogsActor.send(new ArchivedDialogsActor.LoadMore(callback));
+                archivedDialogsActor.send(new ArchivedDialogsActor.LoadMore(init, callback));
             }
         });
     }
