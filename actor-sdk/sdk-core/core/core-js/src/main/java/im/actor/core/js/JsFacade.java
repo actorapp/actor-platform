@@ -851,12 +851,14 @@ public class JsFacade implements Exportable {
                         for (ApiDialog d : response.getDialogs()) {
                             res.push(JsDialogShort.create(messenger.buildPeerInfo(EntityConverter.convert(d.getPeer())), d.getUnreadCount()));
                         }
+                        Log.d(TAG, "loadMoreArchivedDialogs:result");
                         resolve(res);
                     }
 
                     @Override
                     public void onError(RpcException e) {
-
+                        Log.d(TAG, "loadMoreArchivedDialogs:error");
+                        reject(e.getMessage());
                     }
                 });
             }
