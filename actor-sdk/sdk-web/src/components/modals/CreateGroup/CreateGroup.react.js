@@ -48,12 +48,30 @@ class CreateGroup extends Component {
 
   render() {
     const { isOpen } = this.state;
+    const { intl } = this.context;
+
+    const modalStyle = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null,
+        width: 350
+      }
+    };
 
     return (
       <Modal className="modal-new modal-new--create-group"
              closeTimeoutMS={150}
              isOpen={isOpen}
-             style={{width: 350}}>
+             style={modalStyle}>
 
         <header className="modal-new__header">
           <h3 className="modal-new__header__title">{intl.messages['modal.createGroup.title']}</h3>

@@ -120,11 +120,28 @@ class PreferencesModal extends Component {
       'preferences__list__item--active': activeTab === 'SECURITY'
     });
 
+    const modalStyle = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null,
+        width: 760
+      }
+    };
+
     return (
       <Modal className="modal-new modal-new--preferences"
              closeTimeoutMS={150}
              isOpen={isOpen}
-             style={{width: 760}}>
+             style={modalStyle}>
 
         <div className="modal-new__header">
           <i className="modal-new__header__icon material-icons">settings</i>

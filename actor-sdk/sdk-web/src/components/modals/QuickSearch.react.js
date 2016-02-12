@@ -178,11 +178,28 @@ class QuickSearch extends Component {
       );
     });
 
+    const modalStyle = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null,
+        width: 460
+      }
+    };
+
     return (
       <Modal className="modal modal--quick-search"
              closeTimeoutMS={150}
              isOpen={isOpen}
-             style={{width: 460}}>
+             style={modalStyle}>
         <div ref="modal">
 
           <header className="header">

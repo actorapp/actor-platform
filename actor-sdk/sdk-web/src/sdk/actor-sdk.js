@@ -65,12 +65,11 @@ class ActorSDK {
   _starter = () => {
 
     if (crosstab.supported) {
-      //  crosstab.on(ACTOR_INIT_EVENT, (msg) => {
-      //    if (msg.origin !== crosstab.id && window.location.hash !== '#/deactivated') {
-      //      window.location.assign('#/deactivated');
-      //      window.location.reload();
-      //    }
-      //  });
+      crosstab.on(ACTOR_INIT_EVENT, (msg) => {
+        if (msg.origin !== crosstab.id && window.location.hash !== '#/deactivated') {
+          history.push('deactivated');
+        }
+      });
     }
 
     const appRootElemet = document.getElementById('actor-web-app');
@@ -128,7 +127,7 @@ class ActorSDK {
 
     render(root, appRootElemet);
 
-    if (window.location.pathname !== '/deactivated') {
+    if (window.location.hash !== '#/deactivated') {
       if (LoginStore.isLoggedIn()) {
         LoginActionCreators.setLoggedIn({redirect: false});
       }
