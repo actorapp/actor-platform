@@ -24,6 +24,7 @@ import im.actor.core.api.rpc.RequestMessageRemoveReaction;
 import im.actor.core.api.rpc.RequestMessageSetReaction;
 import im.actor.core.api.rpc.RequestUnfavouriteDialog;
 import im.actor.core.api.rpc.ResponseDialogsOrder;
+import im.actor.core.api.rpc.ResponseLoadArchived;
 import im.actor.core.api.rpc.ResponseReactionsResponse;
 import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.api.updates.UpdateChatArchive;
@@ -85,7 +86,6 @@ import static im.actor.runtime.actors.ActorSystem.system;
 public class MessagesModule extends AbsModule implements BusSubscriber {
 
     private ListEngine<Dialog> dialogs;
-    private ListEngine<Dialog> archivedDialogs;
 
     private ActorRef dialogsActor;
     private ActorRef dialogsHistoryActor;
@@ -114,7 +114,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         this.dialogDescKeyValue = Storage.createKeyValue(STORAGE_DIALOGS_DESC, DialogSpecVM.CREATOR, DialogSpec.CREATOR);
         this.cursorStorage = new SyncKeyValue(Storage.createKeyValue(STORAGE_CURSOR));
         this.dialogs = Storage.createList(STORAGE_DIALOGS, Dialog.CREATOR);
-        this.archivedDialogs = Storage.createList(STORAGE_ARCHIVED_DIALOGS, Dialog.CREATOR);
     }
 
     public void run() {
@@ -285,10 +284,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         return dialogs;
     }
 
-    public ListEngine<Dialog> getArchivedDialogsEngine() {
-        return archivedDialogs;
-    }
-
     public void deleteMessages(Peer peer, long[] rids) {
         ActorRef conversationActor = getConversationActor(peer);
         ArrayList<Long> deleted = new ArrayList<Long>();
@@ -308,11 +303,11 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         });
     }
 
-    public void loadMoreArchivedDialogs() {
+    public void loadMoreArchivedDialogs(final RpcCallback<ResponseLoadArchived> callback) {
         im.actor.runtime.Runtime.dispatch(new Runnable() {
             @Override
             public void run() {
-                archivedDialogsActor.send(new ArchivedDialogsActor.LoadMore());
+                archivedDialogsActor.send(new ArchivedDialogsActor.LoadMore(callback));
             }
         });
     }

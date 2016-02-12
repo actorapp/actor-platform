@@ -20,7 +20,6 @@ import im.actor.runtime.mvvm.PlatformDisplayList;
 public class DisplayLists extends AbsModule {
 
     private PlatformDisplayList<Dialog> dialogGlobalList;
-    private PlatformDisplayList<Dialog> archivedDialogGlobalList;
 
     private PlatformDisplayList<Contact> contactsGlobalList;
 
@@ -51,16 +50,6 @@ public class DisplayLists extends AbsModule {
         return dialogGlobalList;
     }
 
-    public PlatformDisplayList<Dialog> getArchivedDialogsSharedList() {
-        im.actor.runtime.Runtime.checkMainThread();
-
-        if (archivedDialogGlobalList == null) {
-            archivedDialogGlobalList = buildArchivedDialogsList(true);
-        }
-
-        return archivedDialogGlobalList;
-    }
-
     public PlatformDisplayList<Message> getMessagesSharedList(Peer peer) {
         im.actor.runtime.Runtime.checkMainThread();
 
@@ -86,17 +75,6 @@ public class DisplayLists extends AbsModule {
         im.actor.runtime.Runtime.checkMainThread();
 
         PlatformDisplayList<Dialog> res = Storage.createDisplayList(context().getMessagesModule().getDialogsEngine(),
-                isShared, Dialog.ENTITY_NAME);
-
-        res.initTop();
-
-        return res;
-    }
-
-    public PlatformDisplayList<Dialog> buildArchivedDialogsList(boolean isShared) {
-        im.actor.runtime.Runtime.checkMainThread();
-
-        PlatformDisplayList<Dialog> res = Storage.createDisplayList(context().getMessagesModule().getArchivedDialogsEngine(),
                 isShared, Dialog.ENTITY_NAME);
 
         res.initTop();
