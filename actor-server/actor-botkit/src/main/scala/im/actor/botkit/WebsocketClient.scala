@@ -2,6 +2,7 @@ package im.actor.botkit
 
 import java.net.URI
 
+import akka.NotUsed
 import akka.actor._
 import akka.io.IO
 import akka.stream.actor._
@@ -19,10 +20,10 @@ import scala.util.control.NoStackTrace
 private[botkit] case object ConnectionClosed
 
 private[botkit] object WebsocketClient {
-  def sourceAndSink(url: String)(implicit context: ActorRefFactory) = {
+  def sourceAndSink(url: String)(implicit context: ActorRefFactory): (Source[String, NotUsed], Sink[String, NotUsed]) = {
     val actor = context.actorOf(props(url))
 
-    (Source(ActorPublisher[String](actor)), Sink(ActorSubscriber[String](actor)))
+    (Source.fromPublisher(ActorPublisher[String](actor)), Sink.fromSubscriber(ActorSubscriber[String](actor)))
   }
 
   def props(url: String) = Props(classOf[WebsocketClient], url)
@@ -50,7 +51,7 @@ private[botkit] final class WebsocketClient(url: String)
         onMessage(frame)
       case str: String ⇒
         connection ! TextFrame(str)
-      case spray.can.websocket.UpgradedToWebSocket =>
+      case spray.can.websocket.UpgradedToWebSocket ⇒
         self ! spray.io.ConnectionTimeouts.SetIdleTimeout(1.hour)
       case event: Http.ConnectionClosed ⇒
         onClose(event)

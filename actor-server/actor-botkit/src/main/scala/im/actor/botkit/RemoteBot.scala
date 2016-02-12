@@ -2,17 +2,13 @@ package im.actor.botkit
 
 import java.net.URLEncoder
 
-import akka.actor._
-import akka.http.scaladsl.Http
 import akka.stream.scaladsl.{ Sink, Source }
 import akka.stream.{ ActorMaterializer, OverflowStrategy }
 import akka.util.Timeout
 import im.actor.bots.BotMessages
-import im.actor.bots.BotMessages.ResponseBody
 import im.actor.concurrent.ActorFutures
 import upickle.default._
 
-import scala.concurrent.Promise
 import scala.concurrent.duration._
 
 object RemoteBot {
