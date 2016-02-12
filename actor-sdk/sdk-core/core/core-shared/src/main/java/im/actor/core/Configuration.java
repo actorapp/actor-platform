@@ -5,8 +5,8 @@
 package im.actor.core;
 
 import im.actor.core.network.TrustedKey;
-import im.actor.core.notifications.NotificationProvider;
-import im.actor.core.phonebook.PhoneBookProvider;
+import im.actor.core.providers.NotificationProvider;
+import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.webrtc.WebRTCProvider;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
 
