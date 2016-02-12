@@ -1,11 +1,10 @@
 package im.actor.runtime;
 
-import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.ThreadPriority;
-import im.actor.runtime.actors.mailbox.ActorDispatcher;
 import im.actor.runtime.threading.Dispatcher;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
+import im.actor.runtime.threading.ImmediateDispatcher;
 import im.actor.runtime.threading.ThreadLocalCompat;
 
 public class Runtime {
@@ -20,13 +19,12 @@ public class Runtime {
         return localeRuntime;
     }
 
-
-    public static ActorDispatcher createDefaultDispatcher(String name, ThreadPriority priority, ActorSystem actorSystem) {
-        return threadingRuntime.createDefaultDispatcher(name, priority, actorSystem);
+    public static Dispatcher createDispatcher(String name) {
+        return threadingRuntime.createDispatcher(name);
     }
 
-    public static ActorDispatcher createDispatcher(String name, int threadsCount, ThreadPriority priority, ActorSystem actorSystem) {
-        return threadingRuntime.createDispatcher(name, threadsCount, priority, actorSystem);
+    public static ImmediateDispatcher createImmediateDispatcher(String name, ThreadPriority priority) {
+        return threadingRuntime.createImmediateDispatcher(name, priority);
     }
 
     public static long getActorTime() {
@@ -53,12 +51,12 @@ public class Runtime {
         return threadingRuntime.createThreadLocal();
     }
 
-    public static Dispatcher createDispatcher() {
-        return threadingRuntime.createDispatcher();
-    }
-
     public static boolean isSingleThread() {
         return mainThreadRuntime.isSingleThread();
+    }
+
+    public static int getCoresCount() {
+        return threadingRuntime.getCoresCount();
     }
 
     public static void checkMainThread() {
