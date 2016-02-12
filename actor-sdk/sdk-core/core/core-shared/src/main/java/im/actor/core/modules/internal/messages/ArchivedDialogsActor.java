@@ -19,13 +19,13 @@ public class ArchivedDialogsActor extends ModuleActor {
 
     private static final int LIMIT = 20;
 
-    private static final String KEY_LOADED_OFFSET = "archived_dialogs_offset";
 
     private byte[] nextOffset;
 
     private boolean isLoading = false;
 
     RpcCallback<ResponseLoadArchived> lastCallback;
+    private long lastRequest = -1;
 
     public ArchivedDialogsActor(ModuleContext context) {
         super(context);
@@ -33,27 +33,30 @@ public class ArchivedDialogsActor extends ModuleActor {
 
     private void onLoadMore(boolean init, RpcCallback<ResponseLoadArchived> callback) {
 
-        if (isLoading) {
+        if (init || isLoading) {
 
             //
-            // replace old callback
+            // notify old callback replaced
             //
             lastCallback.onError(new RpcException(TAG, 0, "callback replaced", false, null));
-            lastCallback = callback;
+        }
+        lastCallback = callback;
+
+        if(isLoading && !init){
             return;
-        }else{
-            lastCallback = callback;
         }
 
         if(init){
+            if(lastRequest!=-1){
+                cancelRequest(lastRequest);
+            }
             nextOffset = null;
         }
 
         isLoading = true;
 
         Log.d(TAG, "Loading archived dialogs");
-
-        request(new RequestLoadArchived(nextOffset, LIMIT),
+        lastRequest = request(new RequestLoadArchived(nextOffset, LIMIT),
                 new RpcCallback<ResponseLoadArchived>() {
                     @Override
                     public void onResult(ResponseLoadArchived response) {
