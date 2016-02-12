@@ -173,7 +173,7 @@
 		06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE89891BD8401C005A5530 /* Reachability.swift */; };
 		06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */; };
 		06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */; };
-		06E322C91C69344A00D66F53 /* iOSWebRTCProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E322C81C69344A00D66F53 /* iOSWebRTCProvider.swift */; };
+		06E322C91C69344A00D66F53 /* iOSCallsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */; };
 		06E3230E1C69445C00D66F53 /* WebRTC.h in Headers */ = {isa = PBXBuildFile; fileRef = 06E3230D1C6942C400D66F53 /* WebRTC.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06E323111C694C1D00D66F53 /* WebRTCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E323101C694C1D00D66F53 /* WebRTCExt.swift */; };
 		06E323151C6A7AC000D66F53 /* AACallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E323141C6A7AC000D66F53 /* AACallViewController.swift */; };
@@ -471,7 +471,7 @@
 		06CE89891BD8401C005A5530 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorSDKAnalytics.swift; sourceTree = "<group>"; };
-		06E322C81C69344A00D66F53 /* iOSWebRTCProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSWebRTCProvider.swift; sourceTree = "<group>"; };
+		06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSCallsProvider.swift; sourceTree = "<group>"; };
 		06E3230D1C6942C400D66F53 /* WebRTC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebRTC.h; sourceTree = "<group>"; };
 		06E323101C694C1D00D66F53 /* WebRTCExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebRTCExt.swift; sourceTree = "<group>"; };
 		06E323141C6A7AC000D66F53 /* AACallViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AACallViewController.swift; path = Calls/AACallViewController.swift; sourceTree = "<group>"; };
@@ -767,7 +767,7 @@
 				065A06B51C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift */,
 				066A51871BC4C383000E606E /* iOSNotificationProvider.swift */,
 				066A51881BC4C383000E606E /* iOSPhoneBookProvider.swift */,
-				06E322C81C69344A00D66F53 /* iOSWebRTCProvider.swift */,
+				06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -1841,7 +1841,7 @@
 				066A53221BC533F5000E606E /* AAMessagesFlowLayout.swift in Sources */,
 				15D35F541C20187E00E3717A /* AAOpusAudioRecorder.m in Sources */,
 				066A52671BC50E7B000E606E /* AAAuthPhoneViewController.swift in Sources */,
-				06E322C91C69344A00D66F53 /* iOSWebRTCProvider.swift in Sources */,
+				06E322C91C69344A00D66F53 /* iOSCallsProvider.swift in Sources */,
 				066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */,
 				066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */,
 				069CF4CD1BCB909A00C66E12 /* CLBackspaceDetectingTextField.m in Sources */,

@@ -85,7 +85,7 @@ public class PeerConnectionActor extends ModuleActor {
                 PeerConnectionActor.this.peerConnection.addCallback(new WebRTCPeerConnectionCallback() {
                     @Override
                     public void onCandidate(int label, String id, String candidate) {
-                        // root.send(new DoCandidate(uid, deviceId, label, id, candidate));
+                        root.send(new DoCandidate(uid, deviceId, label, id, candidate));
                     }
 
                     @Override
@@ -142,7 +142,7 @@ public class PeerConnectionActor extends ModuleActor {
             @Override
             public void apply(WebRTCSessionDescription description) {
                 Log.d(TAG, "onOfferNeeded:then");
-                // root.send(new DoOffer(uid, deviceId, description.getSdp()));
+                root.send(new DoOffer(uid, deviceId, description.getSdp()));
                 state = State.WAITING_ANSWER;
                 isReady = true;
                 unstashAll();
@@ -238,7 +238,7 @@ public class PeerConnectionActor extends ModuleActor {
     }
 
     public void onCandidate(int index, @NotNull String id, @NotNull String sdp) {
-
+        peerConnection.addCandidate(index, id, sdp);
     }
 
     @Override
@@ -246,22 +246,26 @@ public class PeerConnectionActor extends ModuleActor {
         if (message instanceof OnOffer) {
             if (!isReady) {
                 stash();
+                return;
             }
             onOffer(((OnOffer) message).getSdp());
         } else if (message instanceof OnAnswer) {
             if (!isReady) {
                 stash();
+                return;
             }
             onAnswer(((OnAnswer) message).getSdp());
         } else if (message instanceof OnCandidate) {
             if (!isReady || !isReadyForCandidates) {
                 stash();
+                return;
             }
             OnCandidate candidate = (OnCandidate) message;
             onCandidate(candidate.getIndex(), candidate.getId(), candidate.getSdp());
         } else if (message instanceof OnOfferNeeded) {
             if (!isReady) {
                 stash();
+                return;
             }
             onOfferNeeded();
         } else {
