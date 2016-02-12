@@ -84,7 +84,7 @@ public interface ThreadingRuntime {
      *
      * @return the Dispatcher object
      */
-    @ObjectiveCName("createDispatcher:")
+    @ObjectiveCName("createDispatcher")
     Dispatcher createDispatcher();
 
     /**

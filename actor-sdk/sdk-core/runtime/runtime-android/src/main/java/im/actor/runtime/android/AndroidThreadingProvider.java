@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
+import im.actor.runtime.android.threading.AndroidDispatcher;
 import im.actor.runtime.android.time.SntpClient;
 import im.actor.runtime.generic.GenericThreadingProvider;
 import im.actor.runtime.Log;
@@ -66,6 +67,6 @@ public class AndroidThreadingProvider extends GenericThreadingProvider {
 
     @Override
     public Dispatcher createDispatcher() {
-        return null;
+        return new AndroidDispatcher();
     }
 }
