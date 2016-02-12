@@ -2,14 +2,13 @@ package im.actor.runtime.generic;
 
 import im.actor.runtime.generic.threading.GenericAtomicInteger;
 import im.actor.runtime.generic.threading.GenericAtomicLong;
-import im.actor.runtime.generic.threading.GenericDispatcherActor;
+import im.actor.runtime.generic.threading.GenericImmediateDispatcher;
 import im.actor.runtime.generic.threading.GenericThreadLocal;
 import im.actor.runtime.ThreadingRuntime;
-import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.ThreadPriority;
-import im.actor.runtime.actors.mailbox.ActorDispatcher;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
+import im.actor.runtime.threading.ImmediateDispatcher;
 import im.actor.runtime.threading.ThreadLocalCompat;
 
 public abstract class GenericThreadingProvider implements ThreadingRuntime {
@@ -54,12 +53,7 @@ public abstract class GenericThreadingProvider implements ThreadingRuntime {
     }
 
     @Override
-    public ActorDispatcher createDispatcher(String name, int threadsCount, ThreadPriority priority, ActorSystem actorSystem) {
-        return new GenericDispatcherActor(name, actorSystem, threadsCount, priority);
-    }
-
-    @Override
-    public ActorDispatcher createDefaultDispatcher(String name, ThreadPriority priority, ActorSystem actorSystem) {
-        return createDispatcher(name, getCoresCount() * 2, priority, actorSystem);
+    public ImmediateDispatcher createImmediateDispatcher(String name, ThreadPriority priority) {
+        return new GenericImmediateDispatcher(name, priority);
     }
 }
