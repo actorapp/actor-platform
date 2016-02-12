@@ -6,6 +6,7 @@ package im.actor.runtime.actors.mailbox;
 
 import java.util.HashMap;
 
+import im.actor.core.util.ActorTrace;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorContext;
 import im.actor.runtime.actors.ActorRef;
@@ -13,6 +14,7 @@ import im.actor.runtime.actors.ActorScope;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.ActorTime;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.actors.TraceInterface;
 import im.actor.runtime.actors.dispatch.AbstractDispatcher;
 import im.actor.runtime.actors.messages.DeadLetter;
 import im.actor.runtime.actors.messages.PoisonPill;
@@ -104,30 +106,50 @@ public abstract class ActorDispatcher {
 
     public final void sendMessageAtTime(ActorEndpoint endpoint, Object message, long time, ActorRef sender) {
         if (!isDisconnected(endpoint, message, sender)) {
+            TraceInterface traceInterface = actorSystem.getTraceInterface();
+            if (traceInterface != null) {
+                traceInterface.onMessageSent(endpoint.getScope().getActorRef(), message);
+            }
             endpoint.getMailbox().schedule(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), time);
         }
     }
 
     public final void sendMessageNow(ActorEndpoint endpoint, Object message, ActorRef sender) {
         if (!isDisconnected(endpoint, message, sender)) {
+            TraceInterface traceInterface = actorSystem.getTraceInterface();
+            if (traceInterface != null) {
+                traceInterface.onMessageSent(endpoint.getScope().getActorRef(), message);
+            }
             endpoint.getMailbox().schedule(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), 0);
         }
     }
 
     public final void sendMessageFirst(ActorEndpoint endpoint, Object message, ActorRef sender) {
         if (!isDisconnected(endpoint, message, sender)) {
+            TraceInterface traceInterface = actorSystem.getTraceInterface();
+            if (traceInterface != null) {
+                traceInterface.onMessageSent(endpoint.getScope().getActorRef(), message);
+            }
             endpoint.getMailbox().scheduleFirst(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender));
         }
     }
 
     public final void sendMessageOnceAtTime(ActorEndpoint endpoint, Object message, long time, ActorRef sender) {
         if (!isDisconnected(endpoint, message, sender)) {
+            TraceInterface traceInterface = actorSystem.getTraceInterface();
+            if (traceInterface != null) {
+                traceInterface.onMessageSent(endpoint.getScope().getActorRef(), message);
+            }
             endpoint.getMailbox().scheduleOnce(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), time);
         }
     }
 
     public final void sendMessageOnceNow(ActorEndpoint endpoint, Object message, ActorRef sender) {
         if (!isDisconnected(endpoint, message, sender)) {
+            TraceInterface traceInterface = actorSystem.getTraceInterface();
+            if (traceInterface != null) {
+                traceInterface.onMessageSent(endpoint.getScope().getActorRef(), message);
+            }
             endpoint.getMailbox().scheduleOnce(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), 0);
         }
     }
@@ -135,6 +157,10 @@ public abstract class ActorDispatcher {
     public final void cancelSend(ActorEndpoint endpoint, Object message, ActorRef sender) {
         if (!endpoint.isDisconnected()) {
             endpoint.getMailbox().unschedule(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender));
+            TraceInterface traceInterface = actorSystem.getTraceInterface();
+            if (traceInterface != null) {
+                traceInterface.onMessageSent(endpoint.getScope().getActorRef(), message);
+            }
         }
     }
 

@@ -16,7 +16,7 @@ import im.actor.core.js.JsMessenger;
 import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.providers.notification.JsManagedNotification;
 import im.actor.core.js.providers.notification.JsNotification;
-import im.actor.core.notifications.NotificationProvider;
+import im.actor.core.providers.NotificationProvider;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 

@@ -1,4 +1,4 @@
-package im.actor.core.js.providers.webrtc;
+package im.actor.runtime.js.webrtc;
 
 public class MediaException extends RuntimeException {
 
