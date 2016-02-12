@@ -1,13 +1,12 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import _ from 'lodash';
+import { map } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { CreateGroupSteps } from '../../../constants/ActorAppConstants';
 
 import CreateGroupActionCreators from '../../../actions/CreateGroupActionCreators';
@@ -36,6 +35,10 @@ class CreateGroupForm extends Component {
       contacts: ContactStore.getList()
     }
   }
+
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   componentDidMount() {
     if (this.state.step === CreateGroupSteps.NAME_INPUT) {
@@ -79,6 +82,7 @@ class CreateGroupForm extends Component {
 
   render() {
     const { step, name, selectedUserIds, contacts } = this.state;
+    const { intl } = this.context;
     let stepForm;
 
     switch (step) {
@@ -87,7 +91,7 @@ class CreateGroupForm extends Component {
           <form className="group-name">
             <div className="modal-new__body">
               <TextField className="input__material--wide"
-                         floatingLabel={this.getIntlMessage('modal.createGroup.groupName')}
+                         floatingLabel={intl.messages['modal.createGroup.groupName']}
                          ref="groupName"
                          onChange={this.handleNameChange}
                          value={name}/>
@@ -96,7 +100,7 @@ class CreateGroupForm extends Component {
             <footer className="modal-new__footer text-right">
               <button className="button button--lightblue"
                       onClick={this.handleNameSubmit}>
-                {this.getIntlMessage('button.addMembers')}
+                {intl.messages['button.addMembers']}
               </button>
             </footer>
 
@@ -106,7 +110,7 @@ class CreateGroupForm extends Component {
 
       case CreateGroupSteps.CONTACTS_SELECTION:
       case CreateGroupSteps.CREATION_STARTED:
-        let contactList = _.map(contacts, (contact, i) => {
+        let contactList = map(contacts, (contact, i) => {
           return (
             <ContactItem contact={contact} key={i} onToggle={this.onContactToggle}/>
           );
@@ -114,7 +118,7 @@ class CreateGroupForm extends Component {
         stepForm = (
           <form className="group-members">
             <div className="count">
-              <FormattedMessage message={this.getIntlMessage('members')} numMembers={selectedUserIds.size}/>
+              <FormattedMessage id="members" values={{numMembers: selectedUserIds.size}}/>
             </div>
 
             <div className="modal-new__body">
@@ -127,13 +131,12 @@ class CreateGroupForm extends Component {
               {
                 step === CreateGroupSteps.CREATION_STARTED
                   ? <button className="button button--lightblue"
-                            disabled>{this.getIntlMessage('button.createGroup')}</button>
+                            disabled>{intl.messages['button.createGroup']}</button>
                   : <button className="button button--lightblue"
-                            onClick={this.handleCreateGroup}>{this.getIntlMessage('button.createGroup')}</button>
+                            onClick={this.handleCreateGroup}>{intl.messages['button.createGroup']}</button>
               }
 
             </footer>
-
           </form>
         );
         break;
@@ -143,7 +146,5 @@ class CreateGroupForm extends Component {
     return stepForm;
   }
 }
-
-ReactMixin.onClass(CreateGroupForm, IntlMixin);
 
 export default Container.create(CreateGroupForm, {pure: false});

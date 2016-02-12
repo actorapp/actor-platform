@@ -1,23 +1,23 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { union, without } from 'lodash';
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 
 let targetCollection = [];
 
 export default class DropZone extends Component {
   static propTypes = {
-    children: React.PropTypes.node,
+    children: PropTypes.node,
 
-    onDropComplete: React.PropTypes.func.isRequired,
+    onDropComplete: PropTypes.func.isRequired,
 
     // Callbacks
-    onDragEnterCallback: React.PropTypes.func,
-    onDragLeaveCallback: React.PropTypes.func,
-    onDropCallback: React.PropTypes.func
+    onDragEnterCallback: PropTypes.func,
+    onDragLeaveCallback: PropTypes.func,
+    onDropCallback: PropTypes.func
   };
 
   constructor(props) {
@@ -42,34 +42,37 @@ export default class DropZone extends Component {
   }
 
   onWindowDragEnter = (event) => {
+    const { onDragEnterCallback } = this.props;
     event.preventDefault();
 
     if (targetCollection.length === 0) {
       this.setState({isActive: true});
-      this.props.onDragEnterCallback && this.props.onDragEnterCallback();
+      onDragEnterCallback && onDragEnterCallback();
     }
 
     targetCollection = union(targetCollection, [event.target]);
   };
   onWindowDragOver = (event) => event.preventDefault();
   onWindowDragLeave = (event) => {
+    const { onDragLeaveCallback } = this.props;
     event.preventDefault();
 
     targetCollection = without(targetCollection, event.target);
 
     if (targetCollection.length === 0) {
       this.setState({isActive: false});
-      this.props.onDragLeaveCallback && this.props.onDragLeaveCallback();
+      onDragLeaveCallback && onDragLeaveCallback();
     }
   };
 
   onDragEnter = () => this.setState({isHovered: true});
   onDragLeave = () => this.setState({isHovered: false});
   onDrop = (event) => {
+    const { onDropCallback, onDropComplete } = this.props;
     this.onDragLeave();
     this.onWindowDragLeave(event);
-    this.props.onDropCallback && this.props.onDropCallback();
-    this.props.onDropComplete(event.dataTransfer.files);
+    onDropCallback && onDropCallback();
+    onDropComplete(event.dataTransfer.files);
   };
 
   render() {

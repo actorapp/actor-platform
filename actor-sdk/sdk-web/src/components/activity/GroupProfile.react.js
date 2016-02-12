@@ -1,11 +1,10 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { assign } from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import { lightbox } from '../../utils/ImageUtils';
 import { Container } from 'flux/utils';
@@ -16,12 +15,10 @@ import confirm from '../../utils/confirm'
 import { escapeWithEmoji } from '../../utils/EmojiUtils'
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
-import GroupProfileActionCreators from '../../actions/GroupProfileActionCreators';
 import InviteUserActions from '../../actions/InviteUserActions';
 import EditGroupActionCreators from '../../actions/EditGroupActionCreators';
 import NotificationsActionCreators from '../../actions/NotificationsActionCreators';
 
-import PeerStore from '../../stores/PeerStore';
 import DialogStore from '../../stores/DialogStore';
 import NotificationsStore from '../../stores/NotificationsStore';
 import GroupStore from '../../stores/GroupStore';
@@ -32,7 +29,7 @@ import AvatarItem from '../common/AvatarItem.react';
 import InviteUser from '../modals/InviteUser.react';
 import InviteByLink from '../modals/invite-user/InviteByLink.react';
 import GroupProfileMembers from '../activity/GroupProfileMembers.react';
-import Fold from '../common/Fold.React';
+import Fold from '../common/Fold.react';
 import EditGroup from '../modals/EditGroup.react';
 
 const getStateFromStores = (gid) => {
@@ -59,6 +56,10 @@ class GroupProfile extends Component {
     return getStateFromStores((prevState && prevState.group) ? prevState.group.id : null);
   }
 
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
 
@@ -76,9 +77,10 @@ class GroupProfile extends Component {
   onAddMemberClick = group => InviteUserActions.show(group);
 
   onLeaveGroupClick = gid => {
-    confirm(this.getIntlMessage('modal.confirm.leave'), {
-      abortLabel: this.getIntlMessage('button.cancel'),
-      confirmLabel: this.getIntlMessage('button.ok')
+    const { intl } = this.context;
+    confirm(intl.messages['modal.confirm.leave'], {
+      abortLabel: intl.messages['button.cancel'],
+      confirmLabel: intl.messages['button.ok']
     }).then(
       () => DialogActionCreators.leaveGroup(gid),
       () => {}
@@ -110,9 +112,10 @@ class GroupProfile extends Component {
   };
 
   onClearGroupClick = (gid) => {
-    confirm(this.getIntlMessage('modal.confirm.clear'), {
-      abortLabel: this.getIntlMessage('button.cancel'),
-      confirmLabel: this.getIntlMessage('button.ok')
+    const { intl } = this.context;
+    confirm(intl.messages['modal.confirm.clear'], {
+      abortLabel: intl.messages['button.cancel'],
+      confirmLabel: intl.messages['button.ok']
     }).then(
       () => {
         const peer = ActorClient.getGroupPeer(gid);
@@ -123,9 +126,10 @@ class GroupProfile extends Component {
   };
 
   onDeleteGroupClick = (gid) => {
-    confirm(this.getIntlMessage('modal.confirm.delete'), {
-      abortLabel: this.getIntlMessage('button.cancel'),
-      confirmLabel: this.getIntlMessage('button.ok')
+    const { intl } = this.context;
+    confirm(intl.messages['modal.confirm.delete'], {
+      abortLabel: intl.messages['button.cancel'],
+      confirmLabel: intl.messages['button.ok']
     }).then(
       () => {
         const peer = ActorClient.getGroupPeer(gid);
@@ -147,6 +151,7 @@ class GroupProfile extends Component {
       isMoreDropdownOpen,
       message
     } = this.state;
+    const { intl } = this.context;
 
     const myId = UserStore.getMyId();
     const admin = UserStore.getUser(group.adminId);
@@ -162,7 +167,7 @@ class GroupProfile extends Component {
     );
 
     const groupMeta = [
-      <header>
+      <header key={1}>
         <AvatarItem image={group.bigAvatar}
                     placeholder={group.placeholder}
                     size="large"
@@ -171,24 +176,24 @@ class GroupProfile extends Component {
 
         <h3 className="group_profile__meta__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.name)}}/>
         <div className="group_profile__meta__created">
-          {this.getIntlMessage('createdBy')}
+          {intl.messages['createdBy']}
           &nbsp;
           <span dangerouslySetInnerHTML={{__html: escapeWithEmoji(admin.name)}}/>
         </div>
       </header>
     ,
       group.about ? (
-        <div className="group_profile__meta__description"
+        <div className="group_profile__meta__description" key={2}
              dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.about).replace(/\n/g, '<br/>')}}/>
       ) : null
     ];
 
     const token = (group.adminId === myId) ? (
       <li className="profile__list__item group_profile__integration no-p">
-        <Fold icon="power" iconClassName="icon--pink" title={this.getIntlMessage('integrationToken')}>
+        <Fold icon="power" iconClassName="icon--pink" title={intl.messages['integrationToken']}>
           <div className="info info--light">
-            <p>{this.getIntlMessage('integrationTokenHint')}</p>
-            <a href="https://actor.readme.io/docs/simple-integration" target="_blank">{this.getIntlMessage('integrationTokenHelp')}</a>
+            <p>{intl.messages['integrationTokenHint']}</p>
+            <a href="https://actor.readme.io/docs/simple-integration" target="_blank">{intl.messages['integrationTokenHelp']}</a>
           </div>
           <textarea className="textarea" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
         </Fold>
@@ -207,7 +212,7 @@ class GroupProfile extends Component {
                     <button className="button button--flat button--wide"
                             onClick={() => this.onAddMemberClick(group)}>
                       <i className="material-icons">person_add</i>
-                      {this.getIntlMessage('addPeople')}
+                      {intl.messages['addPeople']}
                     </button>
                   </div>
                   <div style={{width: 10}}/>
@@ -216,24 +221,24 @@ class GroupProfile extends Component {
                       <button className="dropdown__button button button--flat button--wide"
                               onClick={this.toggleMoreDropdown}>
                         <i className="material-icons">more_horiz</i>
-                        {this.getIntlMessage('more')}
+                        {intl.messages['more']}
                       </button>
                       <ul className="dropdown__menu dropdown__menu--right">
                         <li className="dropdown__menu__item" onClick={() => this.onEditGroupClick(group.id)}>
                           <i className="material-icons">mode_edit</i>
-                          {this.getIntlMessage('editGroup')}
+                          {intl.messages['editGroup']}
                         </li>
                         <li className="dropdown__menu__item"
                             onClick={() => this.onLeaveGroupClick(group.id)}>
-                          {this.getIntlMessage('leaveGroup')}
+                          {intl.messages['leaveGroup']}
                         </li>
                         <li className="dropdown__menu__item"
                             onClick={() => this.onClearGroupClick(group.id)}>
-                          {this.getIntlMessage('clearGroup')}
+                          {intl.messages['clearGroup']}
                         </li>
                         <li className="dropdown__menu__item"
                             onClick={() => this.onDeleteGroupClick(group.id)}>
-                          {this.getIntlMessage('deleteGroup')}
+                          {intl.messages['deleteGroup']}
                         </li>
                       </ul>
                     </div>
@@ -242,7 +247,7 @@ class GroupProfile extends Component {
               </li>
 
               <li className="profile__list__item group_profile__media no-p hide">
-                <Fold icon="attach_file" iconClassName="icon--gray" title={this.getIntlMessage('sharedMedia')}>
+                <Fold icon="attach_file" iconClassName="icon--gray" title={intl.messages['sharedMedia']}>
                   <ul>
                     <li><a>230 Shared Photos and Videos</a></li>
                     <li><a>49 Shared Links</a></li>
@@ -254,7 +259,7 @@ class GroupProfile extends Component {
               <li className="profile__list__item group_profile__notifications no-p">
                 <label htmlFor="notifications">
                   <i className="material-icons icon icon--squash">notifications_none</i>
-                  {this.getIntlMessage('notifications')}
+                  {intl.messages['notifications']}
 
                   <div className="switch pull-right">
                     <input checked={isNotificationsEnabled}
@@ -296,7 +301,5 @@ class GroupProfile extends Component {
 
   }
 }
-
-ReactMixin.onClass(GroupProfile, IntlMixin);
 
 export default Container.create(GroupProfile);

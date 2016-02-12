@@ -1,5 +1,5 @@
 export default {
-  'locales': 'en-US',
+  'locale': 'en',
   'messages': {
     // Login
     'login': {
@@ -15,6 +15,12 @@ export default {
         'codeInvalid': 'Invalid code',
         'codeExpired': 'Phone code is expired',
         'codeWait': 'Try to request code later'
+      },
+      'welcome': {
+        'heading': 'Welcome to <strong>Actor</strong>',
+        'text': '<p>Actor Messenger brings all your business network connections into one place, makes it easily accessible wherever you go.</p>' +
+                '<p>Our aim is to make your work easier, reduce your email amount, make the business world closer by reducing time to find right contacts.</p>',
+        'copyright': 'Actor Messenger © 2015'
       }
     },
 

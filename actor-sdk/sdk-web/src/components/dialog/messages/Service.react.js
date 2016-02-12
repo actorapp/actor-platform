@@ -1,13 +1,13 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
 
 /**
  * Class that represents a component for display service message content
- * @param {string} text Service message text
- * @param {string} className Component class name
+ * @param {String} text Service message text
+ * @param {String} className Component class name
  */
 class Service extends Component {
   static propTypes = {

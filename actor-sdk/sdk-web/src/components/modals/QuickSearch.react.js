@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { map } from 'lodash';
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
-import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import Modal from 'react-modal';
 import classnames from 'classnames';
 import isInside from '../../utils/isInside';
 
-import { KeyCodes, PeerTypes } from '../../constants/ActorAppConstants';
+import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import QuickSearchActionCreators from '../../actions/QuickSearchActionCreators';
 import DialogActionCreators from '../../actions/DialogActionCreators';
@@ -39,6 +39,10 @@ class QuickSearch extends Component {
     }
   }
 
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
   componentDidMount() {
     this.setFocus();
     document.addEventListener('keydown', this.handleKeyDown, false);
@@ -50,74 +54,9 @@ class QuickSearch extends Component {
     document.removeEventListener('click', this.handleDocumentClick, false);
   }
 
-  render() {
-    const { isOpen, results, selectedIndex, query } = this.state;
-
-    const resultsList = map(results, (result, index) => {
-      const resultClassName = classnames('results__item row', {
-        'results__item--active': selectedIndex === index
-      });
-
-      return (
-        <li className={resultClassName}
-            key={index}
-            onClick={() => this.handleDialogSelect(result.peerInfo.peer)}
-            onMouseOver={() => this.setState({selectedIndex: index})}>
-          <AvatarItem image={result.peerInfo.avatar}
-                      placeholder={result.peerInfo.placeholder}
-                      size="small"
-                      title={result.peerInfo.title}/>
-          <div className="title col-xs">
-            <div className="hint pull-right">{this.getIntlMessage('modal.quickSearch.openDialog')}</div>
-            {result.peerInfo.title}
-          </div>
-        </li>
-      );
-    });
-
-    return (
-      <Modal className="modal modal--quick-search"
-             closeTimeoutMS={150}
-             isOpen={isOpen}
-             style={{width: 460}}>
-        <div ref="modal">
-
-          <header className="header">
-            <div className="pull-left">{this.getIntlMessage('modal.quickSearch.title')}</div>
-            <div className="pull-right"><strong>esc</strong>&nbsp; {this.getIntlMessage('modal.quickSearch.toClose')}</div>
-            <div className="pull-right"><strong>↵</strong>&nbsp; {this.getIntlMessage('modal.quickSearch.toSelect')}</div>
-            <div className="pull-right"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; {this.getIntlMessage('modal.quickSearch.toNavigate')}</div>
-          </header>
-
-          <div className="input">
-            <input type="text"
-                   placeholder={this.getIntlMessage('modal.quickSearch.placeholder')}
-                   onChange={this.handleSearch}
-                   value={query}
-                   ref="query"/>
-          </div>
-
-          <ul className="results" ref="results">
-            {
-              resultsList.length > 0
-                ? resultsList
-                : <li className="results__item results__item--suggestion row">
-                    <FormattedHTMLMessage
-                      message={this.getIntlMessage('modal.quickSearch.notFound')}
-                      query={query} />
-                    <button className="button button--rised hide">Create new dialog {query}</button>
-                  </li>
-            }
-          </ul>
-
-        </div>
-      </Modal>
-    );
-  }
-
   setFocus = () => {
     setTimeout(() => {
-      React.findDOMNode(this.refs.query).focus();
+      findDOMNode(this.refs.query).focus();
     }, 0);
   };
 
@@ -196,12 +135,12 @@ class QuickSearch extends Component {
   };
 
   handleScroll = (top) => {
-    const resultsNode = React.findDOMNode(this.refs.results);
+    const resultsNode = findDOMNode(this.refs.results);
     resultsNode.scrollTop = top;
   };
 
   handleDocumentClick = (event) => {
-    const modal = React.findDOMNode(this.refs.modal);
+    const modal = findDOMNode(this.refs.modal);
     const modalRect = modal.getBoundingClientRect();
     const coords = {
       x: event.pageX || event.clientX,
@@ -212,8 +151,72 @@ class QuickSearch extends Component {
       this.handleClose();
     }
   };
-}
 
-ReactMixin.onClass(QuickSearch, IntlMixin);
+  render() {
+    const { isOpen, results, selectedIndex, query } = this.state;
+    const { intl } = this.context;
+
+    const resultsList = map(results, (result, index) => {
+      const resultClassName = classnames('results__item row', {
+        'results__item--active': selectedIndex === index
+      });
+
+      return (
+        <li className={resultClassName}
+            key={index}
+            onClick={() => this.handleDialogSelect(result.peerInfo.peer)}
+            onMouseOver={() => this.setState({selectedIndex: index})}>
+          <AvatarItem image={result.peerInfo.avatar}
+                      placeholder={result.peerInfo.placeholder}
+                      size="small"
+                      title={result.peerInfo.title}/>
+          <div className="title col-xs">
+            <div className="hint pull-right">{intl.messages['modal.quickSearch.openDialog']}</div>
+            {result.peerInfo.title}
+          </div>
+        </li>
+      );
+    });
+
+    return (
+      <Modal className="modal modal--quick-search"
+             closeTimeoutMS={150}
+             isOpen={isOpen}
+             style={{width: 460}}>
+        <div ref="modal">
+
+          <header className="header">
+            <div className="pull-left">{intl.messages['modal.quickSearch.title']}</div>
+            <div className="pull-right"><strong>esc</strong>&nbsp; {intl.messages['modal.quickSearch.toClose']}</div>
+            <div className="pull-right"><strong>↵</strong>&nbsp; {intl.messages['modal.quickSearch.toSelect']}</div>
+            <div className="pull-right"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; {intl.messages['modal.quickSearch.toNavigate']}</div>
+          </header>
+
+          <div className="input">
+            <input type="text"
+                   placeholder={intl.messages['modal.quickSearch.placeholder']}
+                   onChange={this.handleSearch}
+                   value={query}
+                   ref="query"/>
+          </div>
+
+          <ul className="results" ref="results">
+            {
+              resultsList.length > 0
+                ? resultsList
+                : <li className="results__item results__item--suggestion row">
+                    <FormattedHTMLMessage id="modal.quickSearch.notFound"
+                                          values={{query}}/>
+                    <button className="button button--rised hide">Create new dialog {query}</button>
+                  </li>
+            }
+          </ul>
+
+        </div>
+      </Modal>
+    );
+  }
+
+}
 
 export default Container.create(QuickSearch, {pure: false});

@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 import Modal from 'react-modal';
 import { KeyCodes } from '../../../constants/ActorAppConstants';
 
@@ -26,6 +24,10 @@ class CreateGroup extends Component {
       isOpen: CreateGroupStore.isModalOpen()
     };
   }
+
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   componentWillMount() {
     document.addEventListener('keydown', this.handleKeyDown, false);
@@ -54,7 +56,7 @@ class CreateGroup extends Component {
              style={{width: 350}}>
 
         <header className="modal-new__header">
-          <h3 className="modal-new__header__title">{this.getIntlMessage('modal.createGroup.title')}</h3>
+          <h3 className="modal-new__header__title">{intl.messages['modal.createGroup.title']}</h3>
           <a className="modal-new__header__close modal-new__header__icon material-icons pull-right"
              onClick={this.handleClose}>clear</a>
         </header>
@@ -65,7 +67,5 @@ class CreateGroup extends Component {
     );
   }
 }
-
-ReactMixin.onClass(CreateGroup, IntlMixin);
 
 export default Container.create(CreateGroup);

@@ -1,20 +1,17 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { forEach } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
+import { findDOMNode } from 'react-dom';
 import Modal from 'react-modal';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 
 import { KeyCodes } from '../../../constants/ActorAppConstants';
-import humanFileSize from '../../../utils/humanFileSize';
 
 import AttachmentsActionCreators from '../../../actions/AttachmentsActionCreators';
-import MessageActionCreators from '../../../actions/MessageActionCreators';
 
 import AttachmentStore from '../../../stores/AttachmentStore';
 
@@ -36,11 +33,15 @@ class SendAttachment extends Component {
     }
   }
 
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
   componentWillMount() {
     document.addEventListener('keydown', this.handleKeyDown, false);
   }
   componentDidMount() {
-    React.findDOMNode(this.refs.send).focus()
+    findDOMNode(this.refs.send).focus()
   }
 
   componentWillUnmount() {
@@ -75,6 +76,7 @@ class SendAttachment extends Component {
 
   render() {
     const { isOpen, attachments, selectedIndex } = this.state;
+    const { intl } = this.context;
     const isSingleFile = attachments.length > 1;
 
     return (
@@ -84,11 +86,11 @@ class SendAttachment extends Component {
              style={{width: 700}}>
 
         <header className="modal-new__header">
-          <h3 className="modal-new__header__title">{this.getIntlMessage('modal.attachments.title')}</h3>
+          <h3 className="modal-new__header__title">{intl.messages['modal.attachments.title']}</h3>
           {
             isSingleFile
               ? <button className="button button--lightblue pull-right"
-                        onClick={this.handleSendAll}>{this.getIntlMessage('button.sendAll')}</button>
+                        onClick={this.handleSendAll}>{intl.messages['button.sendAll']}</button>
               : null
           }
         </header>
@@ -110,16 +112,14 @@ class SendAttachment extends Component {
 
           <div className="col-xs text-right">
             <button className="button"
-                    onClick={this.handleCancel}>{this.getIntlMessage('button.cancel')}</button>
+                    onClick={this.handleCancel}>{intl.messages['button.cancel']}</button>
             <button className="button button--rised" ref="send"
-                    onClick={this.handleSend}>{this.getIntlMessage('button.send')}</button>
+                    onClick={this.handleSend}>{intl.messages['button.send']}</button>
           </div>
         </footer>
       </Modal>
     );
   }
 }
-
-ReactMixin.onClass(SendAttachment, IntlMixin);
 
 export default Container.create(SendAttachment, {pure: false});

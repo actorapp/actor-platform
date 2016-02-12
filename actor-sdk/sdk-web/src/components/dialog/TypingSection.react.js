@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component } from 'react';
@@ -13,8 +13,7 @@ class Typing extends Component {
 
   static calculateState() {
     const typing = TypingStore.getTyping();
-    const newState = (typing === null) ? {show: false} : {typing, show: true};
-    return newState;
+    return (typing === null) ? {show: false} : {typing, show: true};
   }
 
   constructor(props) {

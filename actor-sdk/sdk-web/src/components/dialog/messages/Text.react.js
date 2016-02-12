@@ -1,12 +1,11 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
 import memoize from 'memoizee';
 import ActorClient from '../../../utils/ActorClient';
 
-import { Path } from '../../../constants/ActorAppConstants';
 import { emoji } from '../../../utils/EmojiUtils';
 
 const processText = (text) => {
@@ -47,7 +46,7 @@ class Text extends Component {
 
     return (
       <div className={className}>
-        <div className="text" dangerouslySetInnerHTML={{__html: processText(text)}}/>
+        <div className="text" dangerouslySetInnerHTML={{__html: memoizedProcessText(text)}}/>
       </div>
     );
   }

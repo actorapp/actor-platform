@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 
 /**
  * Class that represents a component for display document message content
@@ -20,8 +18,14 @@ class Document extends Component {
     className: PropTypes.string
   };
 
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
   render() {
     const { content, className } = this.props;
+    const { intl } = this.context;
+
     const documentClassName = classnames(className, 'row');
 
     return (
@@ -45,8 +49,8 @@ class Document extends Component {
             <div className="document__actions">
               {
                 content.isUploading
-                  ? <span>{this.getIntlMessage('message.uploading')}</span>
-                  : <a href={content.fileUrl}>{this.getIntlMessage('message.download')}</a>
+                  ? <span>{intl.messages['message.uploading']}</span>
+                  : <a href={content.fileUrl}>{intl.messages['message.download']}</a>
               }
             </div>
           </div>
@@ -56,7 +60,5 @@ class Document extends Component {
     );
   }
 }
-
-ReactMixin.onClass(Document, IntlMixin);
 
 export default Document;
