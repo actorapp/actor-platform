@@ -2,6 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+import React from 'react';
 import assignDeep from 'assign-deep';
 
 import DelegateContainer from '../utils/DelegateContainer'
@@ -46,5 +47,25 @@ export function extendL18n() {
 }
 
 export function getIntlData() {
-  return languageData[language] || languageData[language.split('-')[0]] || languageData['default'];
+  const currentLanguage = languageData[language] || languageData[language.split('-')[0]] || languageData['default'];
+
+  const flattenMessages = (nestedMessages, prefix = '') => {
+    return Object.keys(nestedMessages).reduce((messages, key) => {
+      let value = nestedMessages[key];
+      let prefixedKey = prefix ? `${prefix}.${key}` : key;
+
+      if (typeof value === 'string') {
+        messages[prefixedKey] = value;
+      } else {
+        Object.assign(messages, flattenMessages(value, prefixedKey));
+      }
+
+      return messages;
+    }, {});
+  };
+
+  return {
+    locale: currentLanguage.locale,
+    messages: flattenMessages(currentLanguage.messages)
+  }
 }

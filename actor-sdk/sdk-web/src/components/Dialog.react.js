@@ -1,25 +1,22 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
 import { debounce, forEach } from 'lodash';
 
-import { PeerTypes } from '../constants/ActorAppConstants';
-
-import PeerUtils from '../utils/PeerUtils';
+import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 
 import MessagesSection from './dialog/MessagesSection.react';
 import DefaultTypingSection from './dialog/TypingSection.react';
 import DefaultComposeSection from './dialog/ComposeSection.react';
-import DefaultToolbarSection from './ToolbarSection.react';
-import DefaultActivitySection from './ActivitySection.react';
+import DefaultToolbarSection from './Toolbar.react';
+import DefaultActivitySection from './Activity.react';
 import ConnectionState from './common/ConnectionState.react';
 
 import ActivityStore from '../stores/ActivityStore';
 import DialogStore from '../stores/DialogStore';
 import MessageStore from '../stores/MessageStore';
-import GroupStore from '../stores/GroupStore';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
 
@@ -76,6 +73,55 @@ class DialogSection extends Component {
     this.loadMessagesByScroll();
   }
 
+  fixScrollTimeout = () => {
+    setTimeout(this.fixScroll, 50);
+  };
+
+  fixScroll = () => {
+    const scrollNode = findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
+    const node = scrollNode.getElementsByClassName('ss-content')[0];
+    if (node) {
+      node.scrollTop = node.scrollHeight - lastScrolledFromBottom - node.offsetHeight;
+    }
+  };
+
+  onChange = () => {
+    lastScrolledFromBottom = 0;
+    renderMessagesCount = initialRenderMessagesCount;
+    this.setState(getStateFromStores());
+  };
+
+  onMessagesChange = debounce(() => {
+    this.setState(getStateFromStores());
+  }, 10, {maxWait: 50, leading: true});
+
+  loadMessagesByScroll = debounce(() => {
+    const { peer, messages, messagesToRender } = this.state;
+
+    if (peer) {
+      const scrollNode = findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
+      const node = scrollNode.getElementsByClassName('ss-content')[0];
+      let scrollTop = node.scrollTop;
+      lastScrolledFromBottom = node.scrollHeight - scrollTop - node.offsetHeight; // was node.scrollHeight - scrollTop
+
+      if (node.scrollTop < loadMessagesScrollTop) {
+
+        if (messages.length > messagesToRender.length) {
+          renderMessagesCount += renderMessagesStep;
+
+          if (renderMessagesCount > messages.length) {
+            renderMessagesCount = messages.length;
+          }
+
+          this.setState(getStateFromStores());
+        } else {
+            DialogActionCreators.onChatEnd(peer);
+        }
+      }
+    }
+  }, 5, {maxWait: 30});
+
+
   render() {
     const { peer, isMember, messagesToRender, overlayToRender } = this.state;
     const { delegate } = this.context;
@@ -91,15 +137,15 @@ class DialogSection extends Component {
       ComposeSection = delegate.components.dialog.compose || DefaultComposeSection;
 
       if (delegate.components.dialog.activity) {
-        forEach(delegate.components.dialog.activity, (Activity) => activity.push(<Activity/>));
+        forEach(delegate.components.dialog.activity, (Activity, index) => activity.push(<Activity key={index}/>));
       } else {
-        activity.push(<DefaultActivitySection/>);
+        activity.push(<DefaultActivitySection key={1}/>);
       }
     } else {
       ToolbarSection = DefaultToolbarSection;
       TypingSection = DefaultTypingSection;
       ComposeSection = DefaultComposeSection;
-      activity.push(<DefaultActivitySection/>);
+      activity.push(<DefaultActivitySection key={1}/>);
     }
 
     const mainScreen = peer ? (
@@ -158,54 +204,6 @@ class DialogSection extends Component {
       </section>
     );
   }
-
-  fixScrollTimeout = () => {
-    setTimeout(this.fixScroll, 50);
-  };
-
-  fixScroll = () => {
-    const scrollNode = React.findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
-    const node = scrollNode.getElementsByClassName('ss-content')[0];
-    if (node) {
-      node.scrollTop = node.scrollHeight - lastScrolledFromBottom - node.offsetHeight;
-    }
-  };
-
-  onChange = () => {
-    lastScrolledFromBottom = 0;
-    renderMessagesCount = initialRenderMessagesCount;
-    this.setState(getStateFromStores());
-  };
-
-  onMessagesChange = debounce(() => {
-    this.setState(getStateFromStores());
-  }, 10, {maxWait: 50, leading: true});
-
-  loadMessagesByScroll = debounce(() => {
-    const { peer, messages, messagesToRender } = this.state;
-
-    if (peer) {
-      const scrollNode = React.findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
-      const node = scrollNode.getElementsByClassName('ss-content')[0];
-      let scrollTop = node.scrollTop;
-      lastScrolledFromBottom = node.scrollHeight - scrollTop - node.offsetHeight; // was node.scrollHeight - scrollTop
-
-      if (node.scrollTop < loadMessagesScrollTop) {
-
-        if (messages.length > messagesToRender.length) {
-          renderMessagesCount += renderMessagesStep;
-
-          if (renderMessagesCount > messages.length) {
-            renderMessagesCount = messages.length;
-          }
-
-          this.setState(getStateFromStores());
-        } else {
-            DialogActionCreators.onChatEnd(peer);
-        }
-      }
-    }
-  }, 5, {maxWait: 30});
 }
 
 export default DialogSection;

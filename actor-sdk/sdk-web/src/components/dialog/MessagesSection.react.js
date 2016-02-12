@@ -1,19 +1,16 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { forEach, map, debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import ActorClient from '../../utils/ActorClient';
 import Scrollbar from '../common/Scrollbar.react';
-import { MessageContentTypes, PeerTypes } from '../../constants/ActorAppConstants';
 
 import MessageActionCreators from '../../actions/MessageActionCreators';
 
 import VisibilityStore from '../../stores/VisibilityStore';
-//import GroupStore from '../../stores/GroupStore';
 import DialogStore from '../../stores/DialogStore';
 import MessageStore from '../../stores/MessageStore';
 

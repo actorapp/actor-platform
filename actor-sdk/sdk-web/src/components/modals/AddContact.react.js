@@ -1,14 +1,12 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { map, debounce } from 'lodash';
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import classNames from 'classnames';
 import Modal from 'react-modal';
-import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
@@ -32,6 +30,10 @@ class AddContact extends Component {
       isSearching: AddContactStore.isSearching()
     };
   }
+
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   componentWillMount() {
     document.addEventListener('keydown', this.handleKeyDown, false);
@@ -76,6 +78,7 @@ class AddContact extends Component {
 
   render() {
     const { isOpen, isSearching, query, results } = this.state;
+    const { intl } = this.context;
     const isQueryEmpty = !query || query.length === '';
 
     const resultContacts = map(results, (result, index) => <ContactItem key={index} {...result} onSelect={this.handleSelect}/>);
@@ -83,7 +86,7 @@ class AddContact extends Component {
     if (resultContacts.length === 0 && !isQueryEmpty) {
       resultContacts.push(
         <li className="add-contact__results__item add-contact__results__item--not-found">
-          {this.getIntlMessage('modal.addContact.notFound')}
+          {intl.messages['modal.addContact.notFound']}
         </li>
       );
     }
@@ -95,14 +98,14 @@ class AddContact extends Component {
              style={{width: 360}}>
 
         <header className="modal-new__header">
-          <h3 className="modal-new__header__title">{this.getIntlMessage('modal.addContact.title')}</h3>
+          <h3 className="modal-new__header__title">{intl.messages['modal.addContact.title']}</h3>
           <a className="modal-new__header__close modal-new__header__icon material-icons pull-right"
              onClick={this.handleClose}>clear</a>
         </header>
 
         <div className="modal-new__body">
           <TextField className="input__material--wide"
-                     floatingLabel={this.getIntlMessage('modal.addContact.query')}
+                     floatingLabel={intl.messages['modal.addContact.query']}
                      onChange={this.handleQueryChange}
                      ref="query"
                      value={query}/>
@@ -113,14 +116,14 @@ class AddContact extends Component {
           {
             isQueryEmpty
               ? <li className="add-contact__results__item add-contact__results__item--searching">
-                  {this.getIntlMessage('modal.addContact.empty')}
+                  {intl.messages['modal.addContact.empty']}
                 </li>
               : resultContacts
 
               // Search is too fast for showing searching status.
               //: isSearching
               //  ? <li className="add-contact__results__item add-contact__results__item--searching">
-              //      <FormattedMessage message={this.getIntlMessage('modal.addContact.searching')} query={query}/>
+              //      <FormattedMessage id="modal.addContact.searching" values={{query}}/>
               //    </li>
               //  : resultContacts
           }
@@ -131,7 +134,5 @@ class AddContact extends Component {
     );
   }
 }
-
-ReactMixin.onClass(AddContact, IntlMixin);
 
 export default Container.create(AddContact);

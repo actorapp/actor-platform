@@ -1,15 +1,12 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { find, assign, forEach } from 'lodash';
 
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import Modal from 'react-modal';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 
-import ActorClient from '../../utils/ActorClient';
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import InviteUserActions from '../../actions/InviteUserActions';
@@ -31,7 +28,7 @@ const getStateFromStores = () => {
 const hasMember = (group, userId) =>
   undefined !== find(group.members, (c) => c.peerInfo.peer.id === userId);
 
-class InviteUser extends React.Component {
+class InviteUser extends Component {
   constructor(props) {
     super(props);
 
@@ -42,6 +39,10 @@ class InviteUser extends React.Component {
     InviteUserStore.addChangeListener(this.onChange);
     ContactStore.addListener(this.onChange);
   }
+
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   componentWillUnmount() {
     InviteUserStore.removeChangeListener(this.onChange);
@@ -76,6 +77,7 @@ class InviteUser extends React.Component {
 
   render() {
     const { contacts, group, search, isOpen } = this.state;
+    const { intl } = this.context;
 
     let contactList = [];
 
@@ -99,7 +101,7 @@ class InviteUser extends React.Component {
       if (contactList.length === 0) {
         contactList.push(
           <li className="contacts__list__item contacts__list__item--empty text-center">
-            {this.getIntlMessage('inviteModalNotFound')}
+            {intl.messages['inviteModalNotFound']}
           </li>
         );
       }
@@ -112,10 +114,10 @@ class InviteUser extends React.Component {
 
           <header className="modal-new__header">
             <a className="modal-new__header__icon material-icons">person_add</a>
-            <h3 className="modal-new__header__title">{this.getIntlMessage('inviteModalTitle')}</h3>
+            <h3 className="modal-new__header__title">{intl.messages['inviteModalTitle']}</h3>
 
             <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onClose}>{this.getIntlMessage('button.done')}</button>
+              <button className="button button--lightblue" onClick={this.onClose}>{intl.messages['button.done']}</button>
             </div>
           </header>
 
@@ -124,14 +126,14 @@ class InviteUser extends React.Component {
               <i className="material-icons">search</i>
               <input className="input input--search"
                      onChange={this.onSearchChange}
-                     placeholder={this.getIntlMessage('inviteModalSearch')}
+                     placeholder={intl.messages['inviteModalSearch']}
                      type="search"
                      value={search}/>
             </div>
 
             <a className="link link--blue" onClick={this.onInviteUrlByClick}>
               <i className="material-icons">link</i>
-              {this.getIntlMessage('inviteByLink')}
+              {intl.messages['inviteByLink']}
             </a>
           </div>
 
@@ -148,7 +150,5 @@ class InviteUser extends React.Component {
     }
   }
 }
-
-ReactMixin.onClass(InviteUser, IntlMixin);
 
 export default InviteUser;

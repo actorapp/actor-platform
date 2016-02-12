@@ -4,9 +4,9 @@
 
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
+import history from '../utils/history';
 import ActorClient from '../utils/ActorClient';
 import PeerUtils from '../utils/PeerUtils';
-import RouterContainer from '../utils/RouterContainer';
 
 import MessageActionCreators from './MessageActionCreators';
 import GroupProfileActionCreators from './GroupProfileActionCreators';
@@ -24,14 +24,12 @@ const DialogActionCreators = {
   },
 
   selectDialogPeer(peer) {
-    const router = RouterContainer.get();
     const currentPeer = DialogStore.getCurrentPeer();
 
     // Unbind from previous peer
     if (currentPeer !== null) {
       this.onConversationClosed(currentPeer);
-      //ActorClient.unbindChat(currentPeer, MessageActionCreators.setMessages);
-      messagesBinding.unbind();
+      messagesBinding && messagesBinding.unbind();
       ActorClient.unbindTyping(currentPeer, TypingActionCreators.setTyping);
 
       switch (currentPeer.type) {
@@ -50,7 +48,6 @@ const DialogActionCreators = {
     dispatch(ActionTypes.SELECT_DIALOG_PEER, { peer });
 
     this.onConversationOpen(peer);
-    //ActorClient.bindChat(peer, MessageActionCreators.setMessages);
     messagesBinding = ActorClient.bindMessages(peer, MessageActionCreators.setMessages);
     ActorClient.bindTyping(peer, TypingActionCreators.setTyping);
     switch(peer.type) {
@@ -66,7 +63,9 @@ const DialogActionCreators = {
       default:
     }
 
-    router.transitionTo('main', {id: PeerUtils.peerToString(peer)});
+    // console.debug('history', history);
+    // console.debug('string', `im/${PeerUtils.peerToString(peer)}`);
+    history.push(`/im/${PeerUtils.peerToString(peer)}`);
   },
 
   selectDialogPeerUser(uid) {

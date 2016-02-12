@@ -1,39 +1,39 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import 'babel-polyfill';
 import '../utils/intl-polyfill';
-import '../workers'
 
-import RouterContainer from '../utils/RouterContainer';
-import DelegateContainer from '../utils/DelegateContainer';
-import SDKDelegate from './actor-sdk-delegate';
-import { endpoints } from '../constants/ActorAppConstants'
-import Pace from 'pace';
-
-import React, { Component, PropTypes } from 'react';
-import Router from 'react-router';
-import ReactMixin from 'react-mixin';
 import Actor from 'actor-js';
+import SDKDelegate from './actor-sdk-delegate';
+import DelegateContainer from '../utils/DelegateContainer';
+import { endpoints } from '../constants/ActorAppConstants'
 
-import { IntlMixin } from 'react-intl';
+import Pace from 'pace';
+import React, { PropTypes } from 'react';
+import { render } from 'react-dom';
+import { Router, Route, IndexRoute } from 'react-router';
+import history from '../utils/history';
+import { IntlProvider } from 'react-intl';
 import crosstab from 'crosstab';
 
 import LoginActionCreators from '../actions/LoginActionCreators';
 
 import LoginStore from '../stores/LoginStore';
 
-import DefaultDeactivated from '../components/Deactivated.react';
-import DefaultLogin from '../components/Login.react';
+import App from '../components/App.react';
 import Main from '../components/Main.react';
-import DefaultJoinGroup from '../components/JoinGroup.react';
+import DefaultLogin from '../components/Login.react';
+import DefaultDeactivated from '../components/Deactivated.react';
+import DefaultJoin from '../components/Join.react';
 import DefaultInstall from '../components/Install.react';
 
 import { extendL18n, getIntlData } from '../l18n';
 
-const { DefaultRoute, Route, RouteHandler } = Router;
+const ACTOR_INIT_EVENT = 'INIT';
 
+// Init app load progress bar
 Pace.start({
   ajax: false,
   restartOnRequestAfter: false,
@@ -41,45 +41,14 @@ Pace.start({
 });
 
 window.isJsAppLoaded = false;
-window.jsAppLoaded = () => {
-  window.isJsAppLoaded = true;
-};
+window.jsAppLoaded = () => window.isJsAppLoaded = true;
 
-class App extends Component {
-  static childContextTypes =  {
-    delegate: PropTypes.object,
-    isExperimental: PropTypes.bool
-  };
-
-  static propTypes =  {
-    delegate: PropTypes.object,
-    isExperimental: PropTypes.bool
-  };
-
-  getChildContext() {
-    return {
-      delegate: this.props.delegate,
-      isExperimental: this.props.isExperimental
-    };
-  }
-
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return <RouteHandler/>;
-  }
-}
-
-ReactMixin.onClass(App, IntlMixin);
-
-/** Class represents ActorSKD itself */
+/**
+ * Class represents ActorSKD itself
+ *
+ * @param {object} options - Object contains custom components, actions and localisation strings.
+ */
 class ActorSDK {
-  /**
-   * @constructor
-   * @param {object} options - Object contains custom components, actions and localisation strings.
-   */
   constructor(options = {}) {
 
     this.endpoints = (options.endpoints && options.endpoints.length > 0) ? options.endpoints : endpoints;
@@ -93,23 +62,22 @@ class ActorSDK {
     }
   }
 
-  _starter() {
-    const ActorInitEvent = 'concurrentActorInit';
+  _starter = () => {
 
     if (crosstab.supported) {
-      crosstab.on(ActorInitEvent, (msg) => {
-        if (msg.origin !== crosstab.id && window.location.hash !== '#/deactivated') {
-          window.location.assign('#/deactivated');
-          window.location.reload();
-        }
-      });
+      //  crosstab.on(ACTOR_INIT_EVENT, (msg) => {
+      //    if (msg.origin !== crosstab.id && window.location.hash !== '#/deactivated') {
+      //      window.location.assign('#/deactivated');
+      //      window.location.reload();
+      //    }
+      //  });
     }
 
     const appRootElemet = document.getElementById('actor-web-app');
 
-    if (window.location.hash !== '#/deactivated') {
+    if (window.location.pathname !== '/deactivated') {
       if (crosstab.supported) {
-        crosstab.broadcast(ActorInitEvent, {});
+        crosstab.broadcast(ACTOR_INIT_EVENT, {});
       }
 
       window.messenger = Actor.create(this.endpoints);
@@ -118,29 +86,49 @@ class ActorSDK {
     const Login = this.delegate.components.login || DefaultLogin;
     const Deactivated = this.delegate.components.deactivated || DefaultDeactivated;
     const Install = this.delegate.components.install || DefaultInstall;
-    const JoinGroup = this.delegate.components.joinGroup || DefaultJoinGroup;
+    const Join = this.delegate.components.join || DefaultJoin;
     const intlData = getIntlData();
 
-    const routes = (
-      <Route handler={App} name="app" path="/">
-        <Route handler={Login} name="login" path="/auth"/>
+    const requireAuth = (nextState, replaceState) => {
+      if (!LoginStore.isLoggedIn()) {
+        replaceState({
+          pathname: '/auth',
+          state: {nextPathname: nextState.location.pathname}
+        })
+      }
+    };
 
-        <Route handler={Main} name="main" path="/im/:id"/>
-        <Route handler={JoinGroup} name="join" path="/join/:token"/>
-        <Route handler={Deactivated} name="deactivated" path="/deactivated"/>
-        <Route handler={Install} name="install" path="/install"/>
+    /**
+     * Method for pulling props to router components
+     *
+     * @param RoutedComponent component for extending
+     * @param props props to extend
+     * @returns {object} extended component
+     */
+    const createElement = (Component, props) => {
+      return <Component {...props} delegate={this.delegate} isExperimental={this.isExperimental}/>;
+    };
 
-        <DefaultRoute handler={Main}/>
-      </Route>
+    const root = (
+      <IntlProvider {...intlData}>
+        <Router history={history} createElement={createElement}>
+          <Route path="/" component={App}>
+            <Route path="auth" component={Login}/>
+            <Route path="deactivated" component={Deactivated}/>
+            <Route path="install" component={Install}/>
+            <Route path="join/:token" component={Join}/>
+
+            <Route path="im/:id" component={Main}/>
+
+            <IndexRoute component={Main} onEnter={requireAuth}/>
+          </Route>
+        </Router>
+      </IntlProvider>
     );
 
-    const router = Router.create(routes, Router.HashLocation);
+    render(root, appRootElemet);
 
-    RouterContainer.set(router);
-
-    router.run((Root) => React.render(<Root {...intlData} delegate={this.delegate} isExperimental={this.isExperimental}/>, appRootElemet));
-
-    if (window.location.hash !== '#/deactivated') {
+    if (window.location.pathname !== '/deactivated') {
       if (LoginStore.isLoggedIn()) {
         LoginActionCreators.setLoggedIn({redirect: false});
       }
@@ -154,7 +142,7 @@ class ActorSDK {
     if (window.isJsAppLoaded) {
       this._starter();
     } else {
-      window.jsAppLoaded = this._starter.bind(this);
+      window.jsAppLoaded = this._starter;
     }
   }
 }

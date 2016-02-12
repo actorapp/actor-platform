@@ -1,13 +1,12 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
-import requireAuth from '../utils/require-auth';
 
 import JoinGroupActions from '../actions/JoinGroupActions';
 
-class JoinGroup extends Component {
+export default class Join extends Component {
   static propTypes = {
     params: PropTypes.object
   };
@@ -22,5 +21,3 @@ class JoinGroup extends Component {
     return null;
   }
 }
-
-export default requireAuth(JoinGroup);

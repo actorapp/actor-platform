@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { escape } from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl'
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
@@ -13,12 +11,9 @@ import PeerUtils from '../../../utils/PeerUtils';
 import { MessageContentTypes } from '../../../constants/ActorAppConstants';
 
 import DialogActionCreators from '../../../actions/DialogActionCreators';
-import MessageActionCreators from '../../../actions/MessageActionCreators';
 import ActivityActionCreators from '../../../actions/ActivityActionCreators';
-import ComposeActionCreators from '../../../actions/ComposeActionCreators';
 import DropdownActionCreators from '../../../actions/DropdownActionCreators';
 
-import UserStore from '../../../stores/UserStore';
 import DropdownStore from '../../../stores/DropdownStore';
 
 import AvatarItem from '../../common/AvatarItem.react';
@@ -230,7 +225,5 @@ class MessageItem extends Component {
     );
   }
 }
-
-ReactMixin.onClass(MessageItem, IntlMixin);
 
 export default Container.create(MessageItem, {withProps: true});

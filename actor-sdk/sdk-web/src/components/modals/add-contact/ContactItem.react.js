@@ -1,11 +1,10 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
-import classnames from 'classnames';
 
 import AvatarItem from '../../common/AvatarItem.react';
 

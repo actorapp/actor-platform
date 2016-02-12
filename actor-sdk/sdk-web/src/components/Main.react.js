@@ -1,36 +1,32 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
-
 import { PeerTypes, KeyCodes } from '../constants/ActorAppConstants';
 
-import requireAuth from '../utils/require-auth';
-import ActorClient from '../utils/ActorClient';
 import PeerUtils from '../utils/PeerUtils';
-import RouterContainer from '../utils/RouterContainer';
+import history from '../utils/history';
 import { preloadEmojiSheet } from '../utils/EmojiUtils'
 
 import DialogActionCreators from '../actions/DialogActionCreators';
 import VisibilityActionCreators from '../actions/VisibilityActionCreators';
 import QuickSearchActionCreators from '../actions/QuickSearchActionCreators';
 
-import DefaultSidebarSection from './SidebarSection.react';
-import DefaultDialogSection from './DialogSection.react';
+import UserStore from '../stores/UserStore';
+import GroupStore from '../stores/GroupStore';
+
+import DefaultSidebar from './Sidebar.react';
+import DefaultDialog from './Dialog.react';
 import Favicon from './common/Favicon.react';
 
 import ModalsWrapper from './modals/ModalsWrapper.react';
 import DropdownWrapper from './common/DropdownWrapper.react';
 
 class Main extends Component {
-  static contextTypes = {
-    router: PropTypes.func,
-    delegate: PropTypes.object
-  };
-
   static propTypes = {
-    params: PropTypes.object
+    params: PropTypes.object,
+    delegate: PropTypes.object
   };
 
   constructor(props) {
@@ -54,15 +50,28 @@ class Main extends Component {
       let peerInfo = undefined;
 
       if (peer.type == PeerTypes.GROUP) {
-        peerInfo = ActorClient.getGroup(peer.id)
+        peerInfo = GroupStore.getGroup(peer.id)
       } else {
-        peerInfo = ActorClient.getUser(peer.id)
+        peerInfo = UserStore.getUser(peer.id)
       }
 
       if (peerInfo) {
+        //select.peer
         DialogActionCreators.selectDialogPeer(peer);
       } else {
-        RouterContainer.get().transitionTo('/');
+        history.replace('/');
+      }
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { params } = nextProps;
+    if (this.props.params.id !== params.id) {
+      const peer = PeerUtils.stringToPeer(params.id);
+      if (peer) {
+        DialogActionCreators.selectDialogPeer(peer);
+      } else {
+        history.push('/');
       }
     }
   }
@@ -85,25 +94,24 @@ class Main extends Component {
   };
 
   render() {
-    const { params } = this.props;
-    const { delegate } = this.context;
+    const { delegate, params } = this.props;
     const peer = PeerUtils.stringToPeer(params.id);
 
-    const SidebarSection = (typeof delegate.components.sidebar == 'function') ? delegate.components.sidebar : DefaultSidebarSection;
-    const DialogSection = (typeof delegate.components.dialog == 'function') ? delegate.components.dialog : DefaultDialogSection;
+    const Sidebar = (typeof delegate.components.sidebar == 'function') ? delegate.components.sidebar : DefaultSidebar;
+    const Dialog = (typeof delegate.components.dialog == 'function') ? delegate.components.dialog : DefaultDialog;
 
     return (
       <div className="app">
         <Favicon/>
 
-        <SidebarSection selectedPeer={peer}/>
-        <DialogSection peer={peer}/>
+        <Sidebar/>
+        <Dialog peer={peer}/>
 
-        <ModalsWrapper/>
-        <DropdownWrapper/>
+         <ModalsWrapper/>
+         <DropdownWrapper/>
       </div>
     );
   }
 }
 
-export default requireAuth(Main);
+export default Main;

@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl'
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import isInside from '../../../utils/isInside';
 
@@ -22,6 +22,10 @@ class MessageActions extends Component {
     message: PropTypes.object.isRequired,
     targetRect: PropTypes.object.isRequired,
     hideOnScroll: PropTypes.bool.isRequired
+  };
+
+  static contextTypes = {
+    intl: PropTypes.object
   };
 
   constructor(props) {
@@ -43,7 +47,7 @@ class MessageActions extends Component {
   }
 
   handleDocumentClick = (event) => {
-    const dropdown = React.findDOMNode(this.refs.dropdown);
+    const dropdown = findDOMNode(this.refs.dropdown);
     const dropdownRect = dropdown.getBoundingClientRect();
     const coords = {
       x: event.pageX || event.clientX,
@@ -81,6 +85,8 @@ class MessageActions extends Component {
 
   render() {
     const { message, targetRect } = this.props;
+    const { intl } = this.context;
+
     const isThisMyMessage = UserStore.getMyId() === message.sender.peer.id;
 
     const dropdownStyles = {
@@ -88,31 +94,37 @@ class MessageActions extends Component {
       left: targetRect.left
     };
 
+    const dropdownMenuStyles = {
+      minWidth: 120,
+      right: 2,
+      top: -4
+    };
+
     return (
       <div className="dropdown dropdown--opened dropdown--small" style={dropdownStyles}>
-        <ul className="dropdown__menu dropdown__menu--right" ref="dropdown" style={{minWidth: 120, right: 2, top: -4}}>
+        <ul className="dropdown__menu dropdown__menu--right" ref="dropdown" style={dropdownMenuStyles}>
           <li className="dropdown__menu__item hide">
-            <i className="icon material-icons">star_rate</i> {this.getIntlMessage('message.pin')}
+            <i className="icon material-icons">star_rate</i> {intl.messages['message.pin']}
           </li>
           {
             !isThisMyMessage
               ? <li className="dropdown__menu__item" onClick={this.handleReply}>
-                  <i className="icon material-icons">reply</i> {this.getIntlMessage('message.reply')}
+                  <i className="icon material-icons">reply</i> {intl.messages['message.reply']}
                 </li>
               : null
           }
           {
             message.content.content === MessageContentTypes.TEXT
               ? <li className="dropdown__menu__item" onClick={this.handleQuote}>
-                  <i className="icon material-icons">format_quote</i> {this.getIntlMessage('message.quote')}
+                  <i className="icon material-icons">format_quote</i> {intl.messages['message.quote']}
                 </li>
               : null
           }
           <li className="dropdown__menu__item hide">
-            <i className="icon material-icons">forward</i> {this.getIntlMessage('message.forward')}
+            <i className="icon material-icons">forward</i> {intl.messages['message.forward']}
           </li>
           <li className="dropdown__menu__item" onClick={this.handleDelete}>
-            <i className="icon material-icons">delete</i> {this.getIntlMessage('message.delete')}
+            <i className="icon material-icons">delete</i> {intl.messages['message.delete']}
           </li>
         </ul>
       </div>
@@ -121,7 +133,6 @@ class MessageActions extends Component {
   }
 }
 
-ReactMixin.onClass(MessageActions, IntlMixin);
 ReactMixin.onClass(MessageActions, PureRenderMixin);
 
 export default MessageActions;

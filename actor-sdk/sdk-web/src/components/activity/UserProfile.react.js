@@ -1,11 +1,10 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { assign } from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import { lightbox } from '../../utils/ImageUtils';
 
@@ -23,7 +22,7 @@ import NotificationsStore from '../../stores/NotificationsStore';
 import OnlineStore from '../../stores/OnlineStore';
 
 import AvatarItem from '../common/AvatarItem.react';
-import Fold from '../common/Fold.React';
+import Fold from '../common/Fold.react';
 
 const getStateFromStores = (userId) => {
   const thisPeer = PeerStore.getUserPeer(userId);
@@ -37,6 +36,10 @@ const getStateFromStores = (userId) => {
 class UserProfile extends Component {
   static propTypes = {
     user: PropTypes.object.isRequired
+  };
+
+  static contextTypes = {
+    intl: PropTypes.object
   };
 
   constructor(props) {
@@ -55,13 +58,10 @@ class UserProfile extends Component {
 
   removeFromContacts = () => {
     const { user } = this.props;
-    const confirmText = (
-      <FormattedMessage message={this.getIntlMessage('modal.confirm.removeContact')}
-                        name={user.name}/>
-    );
-    confirm(confirmText, {
-      abortLabel: this.getIntlMessage('button.cancel'),
-      confirmLabel: this.getIntlMessage('button.ok')
+    const { intl } = this.context;
+    confirm(<FormattedMessage id="modal.confirm.removeContact" values={{name: user.name}}/>, {
+      abortLabel: intl.messages['button.cancel'],
+      confirmLabel: intl.messages['button.ok']
     }).then(
       () => ContactActionCreators.removeContact(user.id),
       () => {}
@@ -95,9 +95,10 @@ class UserProfile extends Component {
   };
 
   clearChat = (uid) => {
-    confirm(this.getIntlMessage('modal.confirm.clear'), {
-      abortLabel: this.getIntlMessage('button.cancel'),
-      confirmLabel: this.getIntlMessage('button.ok')
+    const { intl } = this.context;
+    confirm(intl.messages['modal.confirm.clear'], {
+      abortLabel: intl.messages['button.cancel'],
+      confirmLabel: intl.messages['button.ok']
     }).then(
       () => {
         const peer = ActorClient.getUserPeer(uid);
@@ -108,9 +109,10 @@ class UserProfile extends Component {
   };
 
   deleteChat = (uid) => {
-    confirm(this.getIntlMessage('modal.confirm.delete'), {
-      abortLabel: this.getIntlMessage('button.cancel'),
-      confirmLabel: this.getIntlMessage('button.ok')
+    const { intl } = this.context;
+    confirm(intl.messages['modal.confirm.delete'], {
+      abortLabel: intl.messages['button.cancel'],
+      confirmLabel: intl.messages['button.ok']
     }).then(
       () => {
         const peer = ActorClient.getUserPeer(uid);
@@ -124,6 +126,7 @@ class UserProfile extends Component {
 
   render() {
     const { user } = this.props;
+    const { intl } = this.context;
     const { isNotificationsEnabled, isActionsDropdownOpen, message } = this.state;
 
     const dropdownClassNames = classnames('dropdown pull-left', {
@@ -135,7 +138,7 @@ class UserProfile extends Component {
         <svg className="icon icon--pink"
              dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#username"/>'}}/>
         <span className="title">{user.nick}</span>
-        <span className="description">{this.getIntlMessage('profile.nickname')}</span>
+        <span className="description">{intl.messages['profile.nickname']}</span>
       </li>
     ) : null;
 
@@ -144,7 +147,7 @@ class UserProfile extends Component {
         <svg className="icon icon--blue"
              dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#envelope"/>'}}/>
         <span className="title"><a href={'mailto:' + user.emails[0].email}>{user.emails[0].email}</a></span>
-        <span className="description">{this.getIntlMessage('profile.email')}</span>
+        <span className="description">{intl.messages['profile.email']}</span>
       </li>
     ) : null;
 
@@ -152,7 +155,7 @@ class UserProfile extends Component {
       <li>
         <i className="material-icons icon icon--green">call</i>
         <span className="title"><a href={'tel:+' + user.phones[0].number}>{'+' + user.phones[0].number}</a></span>
-        <span className="description">{this.getIntlMessage('profile.phone')}</span>
+        <span className="description">{intl.messages['profile.phone']}</span>
       </li>
     ) : null;
 
@@ -183,23 +186,23 @@ class UserProfile extends Component {
               <div className={dropdownClassNames}>
                 <button className="dropdown__button button button--flat" onClick={this.toggleActionsDropdown}>
                   <i className="material-icons">more_horiz</i>
-                  {this.getIntlMessage('actions')}
+                  {intl.messages['actions']}
                 </button>
                 <ul className="dropdown__menu dropdown__menu--left">
                   {
                     user.isContact
                       ? <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
-                          {this.getIntlMessage('removeFromContacts')}
+                          {intl.messages['removeFromContacts']}
                         </li>
                       : <li className="dropdown__menu__item" onClick={this.addToContacts}>
-                          {this.getIntlMessage('addToContacts')}
+                          {intl.messages['addToContacts']}
                         </li>
                   }
                   <li className="dropdown__menu__item" onClick={() => this.clearChat(user.id)}>
-                    {this.getIntlMessage('clearConversation')}
+                    {intl.messages['clearConversation']}
                   </li>
                   <li className="dropdown__menu__item" onClick={() => this.deleteChat(user.id)}>
-                    {this.getIntlMessage('deleteConversation')}
+                    {intl.messages['deleteConversation']}
                   </li>
                 </ul>
               </div>
@@ -215,7 +218,7 @@ class UserProfile extends Component {
           </li>
 
           <li className="profile__list__item user_profile__media no-p hide">
-            <Fold icon="attach_file" iconClassName="icon--gray" title={this.getIntlMessage('sharedMedia')}>
+            <Fold icon="attach_file" iconClassName="icon--gray" title={intl.messages['sharedMedia']}>
               <ul>
                 <li><a>230 Shared Photos and Videos</a></li>
                 <li><a>49 Shared Links</a></li>
@@ -227,7 +230,7 @@ class UserProfile extends Component {
           <li className="profile__list__item user_profile__notifications no-p">
             <label htmlFor="notifications">
               <i className="material-icons icon icon--squash">notifications_none</i>
-              {this.getIntlMessage('notifications')}
+              {intl.messages['notifications']}
               <div className="switch pull-right">
                 <input checked={isNotificationsEnabled}
                        id="notifications"
@@ -243,7 +246,5 @@ class UserProfile extends Component {
     );
   }
 }
-
-ReactMixin.onClass(UserProfile, IntlMixin);
 
 export default UserProfile;

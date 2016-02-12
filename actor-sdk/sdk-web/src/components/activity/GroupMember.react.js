@@ -1,15 +1,12 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React from 'react';
-import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import React, { Component, PropTypes } from 'react';
+import { FormattedMessage } from 'react-intl';
 import confirm from '../../utils/confirm'
 import { escapeWithEmoji } from '../../utils/EmojiUtils'
 import ActorClient from '../../utils/ActorClient'
-
-import { AsyncActionStates } from '../../constants/ActorAppConstants';
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
 import KickUserActionCreators from '../../actions/KickUserActionCreators';
@@ -27,11 +24,15 @@ const getStateFromStore = (uid) => {
   }
 };
 
-class GroupMember extends React.Component {
+class GroupMember extends Component {
   static propTypes = {
-    peerInfo: React.PropTypes.object.isRequired,
-    canKick: React.PropTypes.bool.isRequired,
-    gid: React.PropTypes.number.isRequired
+    peerInfo: PropTypes.object.isRequired,
+    canKick: PropTypes.bool.isRequired,
+    gid: PropTypes.number.isRequired
+  };
+
+  static contextTypes = {
+    intl: PropTypes.object
   };
 
   constructor(props) {
@@ -47,9 +48,33 @@ class GroupMember extends React.Component {
     KickUserStore.removeChangeListener(this.onChange);
   };
 
+  onChange = () => {
+    const { peerInfo } = this.props;
+    this.setState(getStateFromStore(peerInfo.peer.id));
+  };
+
+  onClick = (id) => DialogActionCreators.selectDialogPeerUser(id);
+
+  onKick = (gid, uid) => {
+    const { peerInfo } = this.props;
+    const { intl } = this.context;
+
+    confirm(<FormattedMessage id="modal.confirm.kick" values={{name: peerInfo.title}}/>, {
+      abortLabel: intl.messages['button.cancel'],
+      confirmLabel: intl.messages['button.ok']
+    }).then(
+      () => {
+        KickUserStore.addChangeListener(this.onChange);
+        KickUserActionCreators.kickMember(gid, uid);
+      },
+      () => {}
+    );
+  };
+
   render() {
     const { peerInfo, canKick, gid } = this.props;
     const { kickUserState } = this.state;
+    const { intl } = this.context;
     const myId = ActorClient.getUid();
 
     let controls;
@@ -58,7 +83,7 @@ class GroupMember extends React.Component {
         <div className="controls pull-right">
           <Stateful.Root currentState={kickUserState}>
             <Stateful.Pending>
-              <a onClick={() => this.onKick(gid, peerInfo.peer.id)}>{this.getIntlMessage('kick')}</a>
+              <a onClick={() => this.onKick(gid, peerInfo.peer.id)}>{intl.messages['kick']}</a>
             </Stateful.Pending>
             <Stateful.Processing>
               <i className="material-icons spin">autorenew</i>
@@ -91,34 +116,6 @@ class GroupMember extends React.Component {
       </li>
     )
   }
-
-  onChange = () => {
-    const { peerInfo } = this.props;
-    this.setState(getStateFromStore(peerInfo.peer.id));
-  };
-
-  onClick = (id) => DialogActionCreators.selectDialogPeerUser(id);
-
-  onKick = (gid, uid) => {
-    const { peerInfo } = this.props;
-    const confirmText = (
-      <FormattedMessage message={this.getIntlMessage('modal.confirm.kick')}
-                        name={peerInfo.title}/>
-    );
-
-    confirm(confirmText, {
-      abortLabel: this.getIntlMessage('button.cancel'),
-      confirmLabel: this.getIntlMessage('button.ok')
-    }).then(
-      () => {
-        KickUserStore.addChangeListener(this.onChange);
-        KickUserActionCreators.kickMember(gid, uid);
-      },
-      () => {}
-    );
-  };
 }
-
-ReactMixin.onClass(GroupMember, IntlMixin);
 
 export default GroupMember;

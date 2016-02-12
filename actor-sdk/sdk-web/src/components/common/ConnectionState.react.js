@@ -1,12 +1,9 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
-
 import classnames from 'classnames';
 
 import ConnectionStateStore from '../../stores/ConnectionStateStore';
@@ -15,6 +12,10 @@ class ConnectionState extends Component {
   constructor(props) {
     super(props);
   }
+
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   static getStores = () => [ConnectionStateStore];
 
@@ -26,6 +27,7 @@ class ConnectionState extends Component {
 
   render() {
     const { connectionState } = this.state;
+    const { intl } = this.context;
 
     const className = classnames('connection-state', {
       'connection-state--online': connectionState === 'online',
@@ -33,11 +35,9 @@ class ConnectionState extends Component {
     });
 
     return (
-      <div className={className}>{this.getIntlMessage(`connectionState.${connectionState}`)}</div>
+      <div className={className}>{intl.messages[`connectionState.${connectionState}`]}</div>
     )
   }
 }
-
-ReactMixin.onClass(ConnectionState, IntlMixin);
 
 export default Container.create(ConnectionState, {pure: false});
