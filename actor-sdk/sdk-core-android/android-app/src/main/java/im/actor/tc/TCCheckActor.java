@@ -22,7 +22,7 @@ public class TCCheckActor extends Actor {
     private ActorRef tc;
 
     public TCCheckActor(String url, ActorRef tc) {
-        this.ids = new HashSet<Integer>();
+        this.ids = new HashSet<>();
         this.url = url;
         this.tc = tc;
     }
@@ -65,7 +65,7 @@ public class TCCheckActor extends Actor {
             }
 
         }
-        self().send(new Check(), 1000);
+        schedule(new Check(), 1000);
     }
 
     public void onAdd(int id) {

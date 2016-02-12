@@ -11,6 +11,7 @@ import im.actor.core.events.AppVisibleChanged;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 
@@ -26,6 +27,7 @@ public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
     private boolean isAlwaysOnline = false;
     private boolean isVisible = false;
     private long prevRid = 0;
+    private Cancellable performCancellable;
 
     public OwnPresenceActor(Modules messenger) {
         super(messenger);
@@ -37,7 +39,7 @@ public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
         isAlwaysOnline = false;
 
         if (isAlwaysOnline) {
-            self().sendOnce(new PerformOnline());
+            schedulePerform(0);
         } else {
             context().getEvents().subscribe(this, AppVisibleChanged.EVENT);
         }
@@ -45,12 +47,12 @@ public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
 
     private void onAppVisible() {
         isVisible = true;
-        self().sendOnce(new PerformOnline());
+        schedulePerform(0);
     }
 
     private void onAppHidden() {
         isVisible = false;
-        self().sendOnce(new PerformOnline());
+        schedulePerform(0);
     }
 
     private void performOnline() {
@@ -72,8 +74,16 @@ public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
                     }
                 });
         if (isOnline) {
-            self().sendOnce(new PerformOnline(), RESEND_TIMEOUT);
+            schedulePerform(RESEND_TIMEOUT);
         }
+    }
+
+    private void schedulePerform(long delay) {
+        if (performCancellable != null) {
+            performCancellable.cancel();
+            performCancellable = null;
+        }
+        performCancellable = schedule(new PerformOnline(), delay);
     }
 
     // Messages

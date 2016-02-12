@@ -3,7 +3,7 @@ package im.actor.runtime;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.ThreadPriority;
 import im.actor.runtime.actors.mailbox.ActorDispatcher;
-import im.actor.runtime.threading.AbsTimerCompat;
+import im.actor.runtime.threading.Dispatcher;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
 import im.actor.runtime.threading.ThreadLocalCompat;
@@ -53,8 +53,8 @@ public class Runtime {
         return threadingRuntime.createThreadLocal();
     }
 
-    public static AbsTimerCompat createTimer(Runnable runnable) {
-        return threadingRuntime.createTimer(runnable);
+    public static Dispatcher createDispatcher() {
+        return threadingRuntime.createDispatcher();
     }
 
     public static boolean isSingleThread() {

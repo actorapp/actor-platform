@@ -16,6 +16,7 @@ import im.actor.runtime.HTTP;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.OutputFile;
 import im.actor.runtime.http.FileDownloadCallback;
@@ -39,6 +40,7 @@ public class DownloadTask extends ModuleActor {
 
     private long lastNotifyDate;
     private float currentProgress;
+    private Cancellable notifyCancellable;
 
     private String fileUrl;
     private int blockSize = 32 * 1024;
@@ -84,9 +86,7 @@ public class DownloadTask extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
-        if (message instanceof NotifyProgress) {
-            performReportProgress();
-        } else if (message instanceof Retry) {
+        if (message instanceof Retry) {
             Retry retry = (Retry) message;
             retryPart(retry.getBlockIndex(), retry.getFileOffset(), retry.getAttempt());
         } else {
@@ -267,11 +267,22 @@ public class DownloadTask extends ModuleActor {
         }
 
         long delta = im.actor.runtime.Runtime.getActorTime() - lastNotifyDate;
+
+        if (notifyCancellable != null) {
+            notifyCancellable.cancel();
+            notifyCancellable = null;
+        }
+
         if (delta > NOTIFY_THROTTLE) {
             lastNotifyDate = im.actor.runtime.Runtime.getActorTime();
-            self().send(new NotifyProgress());
+            performReportProgress();
         } else {
-            self().sendOnce(new NotifyProgress(), delta);
+            notifyCancellable = schedule(new Runnable() {
+                @Override
+                public void run() {
+                    performReportProgress();
+                }
+            }, delta);
         }
     }
 
@@ -288,10 +299,6 @@ public class DownloadTask extends ModuleActor {
         }
         isCompleted = true;
         manager.send(new DownloadManager.OnDownloaded(fileReference.getFileId(), reference));
-    }
-
-    private class NotifyProgress {
-
     }
 
     private class Retry {
