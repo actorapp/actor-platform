@@ -25,7 +25,7 @@ public class ArchivedDialogsActor extends ModuleActor {
 
     private boolean isLoading = false;
 
-    RpcCallback<ResponseLoadArchived> callback;
+    RpcCallback<ResponseLoadArchived> lastCallback;
 
     public ArchivedDialogsActor(ModuleContext context) {
         super(context);
@@ -36,8 +36,9 @@ public class ArchivedDialogsActor extends ModuleActor {
         nextOffset = preferences().getBytes(KEY_LOADED_OFFSET);
     }
 
-    private void onLoadMore(final RpcCallback<ResponseLoadArchived> callback) {
-        this.callback = callback;
+    private void onLoadMore(RpcCallback<ResponseLoadArchived> callback) {
+        this.lastCallback.onError(new RpcException(TAG, 0, "callback replaced", false, null));
+        this.lastCallback = callback;
 
         if (isLoading) {
             return;
@@ -50,13 +51,12 @@ public class ArchivedDialogsActor extends ModuleActor {
                 new RpcCallback<ResponseLoadArchived>() {
                     @Override
                     public void onResult(ResponseLoadArchived response) {
-
                         updates().onUpdateReceived(new ArchivedDialogLoaded(response));
                     }
 
                     @Override
                     public void onError(RpcException e) {
-                        callback.onError(e);
+                        lastCallback.onError(e);
                     }
                 });
     }
@@ -66,7 +66,7 @@ public class ArchivedDialogsActor extends ModuleActor {
 
         this.nextOffset = responseLoadArchiveds.getNextOffset();
         preferences().putBytes(KEY_LOADED_OFFSET, nextOffset);
-        callback.onResult(responseLoadArchiveds);
+        lastCallback.onResult(responseLoadArchiveds);
         Log.d(TAG, "Archived loaded");
     }
 
