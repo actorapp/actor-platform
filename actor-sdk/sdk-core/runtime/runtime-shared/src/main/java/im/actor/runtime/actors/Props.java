@@ -4,9 +4,6 @@
 
 package im.actor.runtime.actors;
 
-import im.actor.runtime.actors.mailbox.Mailbox;
-import im.actor.runtime.actors.mailbox.MailboxesQueue;
-
 /**
  * <p>Props is a configuration class to specify options for the creation of actors, think of it as an immutable and
  * thus freely shareable recipe for creating an actor including associated dispatcher information.</p>
@@ -15,14 +12,11 @@ import im.actor.runtime.actors.mailbox.MailboxesQueue;
 public final class Props {
 
     private final ActorCreator creator;
-    private final MailboxCreator mailboxCreator;
 
     private final String dispatcher;
 
-    private Props(String dispatcher, ActorCreator creator,
-                  MailboxCreator mailboxCreator) {
+    private Props(String dispatcher, ActorCreator creator) {
         this.creator = creator;
-        this.mailboxCreator = mailboxCreator;
         this.dispatcher = dispatcher;
     }
 
@@ -36,19 +30,6 @@ public final class Props {
         return creator.create();
     }
 
-    /**
-     * Creating mailbox for actor
-     *
-     * @param queue queue of mailboxes
-     * @return mailbox
-     */
-    public Mailbox createMailbox(MailboxesQueue queue) {
-        if (mailboxCreator != null) {
-            return mailboxCreator.createMailbox(queue);
-        } else {
-            return new Mailbox(queue);
-        }
-    }
 
     /**
      * Getting dispatcher id if available
@@ -66,7 +47,7 @@ public final class Props {
      * @return this
      */
     public Props changeDispatcher(String dispatcher) {
-        return new Props(dispatcher, creator, mailboxCreator);
+        return new Props(dispatcher, creator);
     }
 
     /**
@@ -76,16 +57,6 @@ public final class Props {
      * @return Props object
      */
     public static Props create(ActorCreator creator) {
-        return new Props(null, creator, null);
-    }
-
-    /**
-     * Create props from Actor creator with custom mailbox
-     *
-     * @param creator Actor creator class
-     * @return Props object
-     */
-    public static Props create(ActorCreator creator, MailboxCreator mailboxCreator) {
-        return new Props(null, creator, mailboxCreator);
+        return new Props(null, creator);
     }
 }
