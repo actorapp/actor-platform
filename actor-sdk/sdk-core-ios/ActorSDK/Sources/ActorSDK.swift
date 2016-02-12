@@ -161,6 +161,7 @@ public class ActorSDK {
         // Providers
         builder.setPhoneBookProvider(PhoneBookProvider())
         builder.setNotificationProvider(iOSNotificationProvider())
+        builder.setCallsProvider(iOSCallsProvider())
         
         // Stats
         builder.setPlatformType(ACPlatformType.IOS())

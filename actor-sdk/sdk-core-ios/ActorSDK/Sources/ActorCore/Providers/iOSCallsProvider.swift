@@ -4,7 +4,7 @@
 
 import Foundation
 
-class iOSWebRTCProvider: NSObject, ACCallsProvider {
+class iOSCallsProvider: NSObject, ACCallsProvider {
     
     func onIncomingCallWithCallId(callId: jlong) {
         
