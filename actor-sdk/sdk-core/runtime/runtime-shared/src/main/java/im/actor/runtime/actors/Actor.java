@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import im.actor.runtime.actors.ask.AskCallback;
 import im.actor.runtime.actors.ask.AskIntRequest;
 import im.actor.runtime.actors.ask.AskMessage;
-import im.actor.runtime.actors.mailbox.Mailbox;
+import im.actor.runtime.actors.dispatch.Mailbox;
 import im.actor.runtime.actors.messages.DeadLetter;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.promise.Promise;
