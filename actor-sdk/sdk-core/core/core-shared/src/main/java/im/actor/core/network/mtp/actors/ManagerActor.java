@@ -24,6 +24,7 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSelection;
 import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.DataOutput;
@@ -82,6 +83,7 @@ public class ManagerActor extends Actor {
     // Creating
     private boolean isCheckingConnections = false;
     private final ExponentialBackoff backoff;
+    private Cancellable checkCancellable;
 
     private ActorRef receiver;
     private ActorRef sender;
@@ -255,7 +257,11 @@ public class ManagerActor extends Actor {
                     Log.w(TAG, "Requesting connection creating in " + wait + " ms");
                 }
             }
-            self().sendOnce(new PerformConnectionCheck(), wait);
+            if (checkCancellable != null) {
+                checkCancellable.cancel();
+                checkCancellable = null;
+            }
+            checkCancellable = schedule(new PerformConnectionCheck(), wait);
         }
     }
 

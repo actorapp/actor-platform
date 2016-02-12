@@ -24,6 +24,7 @@ import im.actor.runtime.storage.PreferencesStorage;
 public abstract class AbsModule {
 
     public static final String STORAGE_DIALOGS = "dialogs";
+    public static final String STORAGE_ARCHIVED_DIALOGS = "dialogs_archived";
     public static final String STORAGE_DIALOGS_DESC = "dialogs_desc";
     public static final String STORAGE_USERS = "users";
     public static final String STORAGE_STICKER_PACKS = "sticker_packs";
@@ -72,6 +73,10 @@ public abstract class AbsModule {
 
     public ActorRef dialogsHistoryActor() {
         return context().getMessagesModule().getDialogsHistoryActor();
+    }
+
+    public ActorRef archivedDialogsActor() {
+        return context().getMessagesModule().getArchivedDialogsActor();
     }
 
     public ActorRef ownReadActor() {

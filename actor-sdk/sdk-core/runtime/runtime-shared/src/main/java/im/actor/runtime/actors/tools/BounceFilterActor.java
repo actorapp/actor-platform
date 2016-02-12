@@ -3,6 +3,7 @@ package im.actor.runtime.actors.tools;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorTime;
+import im.actor.runtime.actors.Cancellable;
 
 public class BounceFilterActor extends Actor {
 
@@ -10,6 +11,7 @@ public class BounceFilterActor extends Actor {
 
     private long lastMessage = 0;
     private Message message;
+    private Cancellable flushCancellable;
 
     private void onMessage(Message message) {
         long time = ActorTime.currentTime();
@@ -29,7 +31,11 @@ public class BounceFilterActor extends Actor {
             // Too early
             if (this.message == null || isOverride(this.message, message)) {
                 this.message = message;
-                self().sendOnce(new Flush(), BOUNCE_DELAY - delta);
+                if (flushCancellable != null) {
+                    flushCancellable.cancel();
+                    flushCancellable = null;
+                }
+                flushCancellable = schedule(new Flush(), BOUNCE_DELAY - delta);
             }
         }
     }

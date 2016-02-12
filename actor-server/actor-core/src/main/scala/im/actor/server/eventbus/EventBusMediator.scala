@@ -13,6 +13,12 @@ import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.util.Random
 
+abstract class EventBusError(message: String) extends RuntimeException(message)
+
+object EventBusErrors {
+  case object EventBusNotFound extends EventBusError("EventBus not found")
+}
+
 private[eventbus] trait EventBusMessage
 private[eventbus] final case class EventBusEnvelope(id: String, message: EventBusMessage)
 
@@ -32,6 +38,7 @@ private[eventbus] object EventBusMessages {
   case object PostAck
 
   final case class KeepAlive(clientAuthId: AuthId, timeout: Option[Long]) extends EventBusMessage
+  case object KeepAliveAck
 
   final case class Join(clientUserId: UserId, clientAuthId: AuthId, timeout: Option[Long]) extends EventBusMessage
   final case class JoinAck(deviceId: DeviceId)
@@ -72,7 +79,7 @@ final class EventBusMediator extends Actor with ActorLogging {
   object consumers {
     private val a2d = mutable.Map.empty[AuthId, (UserId, DeviceId)]
     private val d2a = mutable.Map.empty[DeviceId, (UserId, AuthId)]
-    private val ownerAuthIds = mutable.Set.empty[AuthId]
+    val ownerAuthIds = mutable.Set.empty[AuthId]
     private val a2timeouts = mutable.Map.empty[AuthId, Cancellable]
 
     def isOwnerConnected = ownerAuthIds.nonEmpty
@@ -108,11 +115,6 @@ final class EventBusMediator extends Actor with ActorLogging {
     }
   }
 
-  override def postStop(): Unit = {
-    super.postStop()
-    internalConsumers foreach (_ ! EventBus.Disposed(id))
-  }
-
   def receive = {
     case Create(clientUserId, clientAuthId, timeoutOpt, isOwned) ⇒
       if (isOwned.contains(true)) this.owner = Some(clientUserId)
@@ -121,6 +123,9 @@ final class EventBusMediator extends Actor with ActorLogging {
       timeoutOpt foreach (consumers.keepAlive(clientAuthId, _))
       sender() ! CreateAck(deviceId)
       context become created
+    case _ ⇒
+      sender() ! Status.Failure(EventBusErrors.EventBusNotFound)
+      context stop self
   }
 
   def created: Receive = {
@@ -151,17 +156,18 @@ final class EventBusMediator extends Actor with ActorLogging {
         case Some(timeout) ⇒ consumers.keepAlive(clientAuthId, timeout)
         case None          ⇒ consumers.stopKeepAlive(clientAuthId)
       }
+      sender() ! KeepAliveAck
     case ConsumerTimedOut(authId) ⇒
-      consumers.remove(authId) match {
-        case Some((userId, deviceId)) ⇒
-          broadcast(UpdateEventBusDeviceDisconnected(id, userId, deviceId))
-
-          if ((owner.isDefined && !consumers.isOwnerConnected) || consumers.isEmpty) {
-            broadcast(UpdateEventBusDisposed(id))
-            context stop self
-          }
-        case None ⇒
-          log.error("ConsumerTimedOut with unknown authId: {}", authId)
+      if ((owner.isDefined && consumers.ownerAuthIds == Set(authId)) || consumers.authIds == Set(authId)) {
+        log.debug("Disposing as no more clients connected")
+        broadcast(UpdateEventBusDisposed(id))
+        context stop self
+      } else {
+        consumers.remove(authId) match {
+          case Some((userId, deviceId)) ⇒
+            broadcast(UpdateEventBusDeviceDisconnected(id, userId, deviceId))
+          case None ⇒ log.error("Consumer timed out with unknown authId: {}", authId)
+        }
       }
     case Join(clientUserId, clientAuthId, timeoutOpt) ⇒
       val deviceId = Random.nextLong()
@@ -171,12 +177,14 @@ final class EventBusMediator extends Actor with ActorLogging {
       sender() ! JoinAck(deviceId)
     case Dispose(clientUserId) ⇒
       if (owner.contains(clientUserId)) {
+        log.debug("Disposing by owner request")
         broadcast(UpdateEventBusDisposed(id))
         context stop self
       } else sender() ! Status.Failure(new RuntimeException("Attempt to dispose by not an owner"))
-    case Subscribe(ref) ⇒
+    case subscribe @ Subscribe(ref) ⇒
       this.internalConsumers.add(ref)
       context watch ref
+      sender() ! SubscribeAck(subscribe)
     case Terminated(ref) ⇒
       this.internalConsumers.remove(ref)
   }

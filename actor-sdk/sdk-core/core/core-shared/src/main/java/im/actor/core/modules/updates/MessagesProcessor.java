@@ -10,12 +10,12 @@ import java.util.List;
 
 import im.actor.core.api.ApiDialog;
 import im.actor.core.api.ApiDialogGroup;
-import im.actor.core.api.ApiEncryptedMessage;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiMessageContainer;
 import im.actor.core.api.ApiMessageReaction;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiAppCounters;
+import im.actor.core.api.rpc.ResponseLoadArchived;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.api.rpc.ResponseLoadHistory;
 import im.actor.core.api.updates.UpdateMessage;
@@ -27,7 +27,7 @@ import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.EncryptedMsgActor;
+import im.actor.core.modules.internal.messages.ArchivedDialogsActor;
 import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.core.modules.internal.messages.ConversationHistoryActor;
 import im.actor.core.modules.internal.messages.CursorReceiverActor;
@@ -286,14 +286,21 @@ public class MessagesProcessor extends AbsModule {
 
     @Verified
     public void onDialogsLoaded(ResponseLoadDialogs dialogsResponse) {
-
         // Should we eliminate DialogHistory?
+        dialogsLoaded(dialogsResponse.getDialogs(), false, null);
+    }
 
+    @Verified
+    public void onArchivedDialogsLoaded(ResponseLoadArchived dialogsResponse) {
+        dialogsLoaded(dialogsResponse.getDialogs(), true, dialogsResponse.getNextOffset());
+    }
+
+    public void dialogsLoaded(List<ApiDialog> apiDialogs, boolean archived, byte[] nextOffset) {
         ArrayList<DialogHistory> dialogs = new ArrayList<DialogHistory>();
 
         long maxLoadedDate = Long.MAX_VALUE;
 
-        for (ApiDialog dialog : dialogsResponse.getDialogs()) {
+        for (ApiDialog dialog : apiDialogs) {
 
             maxLoadedDate = Math.min(dialog.getSortDate(), maxLoadedDate);
 
@@ -316,14 +323,19 @@ public class MessagesProcessor extends AbsModule {
 
         // Sending updates to dialogs actor
         if (dialogs.size() > 0) {
-            dialogsActor().send(new DialogsActor.HistoryLoaded(dialogs));
-        } else {
+            dialogsActor().send(new DialogsActor.HistoryLoaded(dialogs, archived));
+        } else if(!archived){
             context().getAppStateModule().onDialogsLoaded();
         }
 
         // Sending notification to history actor
-        dialogsHistoryActor().send(new DialogsHistoryActor.LoadedMore(dialogsResponse.getDialogs().size(),
-                maxLoadedDate));
+        if(!archived){
+            dialogsHistoryActor().send(new DialogsHistoryActor.LoadedMore(apiDialogs.size(),
+                    maxLoadedDate));
+        }else{
+            archivedDialogsActor().send(new ArchivedDialogsActor.LoadedMore(apiDialogs.size(),
+                    nextOffset));
+        }
     }
 
     @Verified
@@ -370,8 +382,9 @@ public class MessagesProcessor extends AbsModule {
         context().getAppStateModule().onCountersChanged(counters);
     }
 
-    public void onChatArchived(Peer peer) {
-
+    public void onChatArchived(ApiPeer peer) {
+        //context().getMessagesModule().getDialogsActor()
+        //        .send(new DialogsActor.ChatDelete(convert(peer)));
     }
 
     public void onChatRestored(Peer peer) {

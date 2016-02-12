@@ -104,7 +104,7 @@ public class ActorSDK {
     
     /// Web Invite Domain host
     public var inviteUrlHost: String? = nil
-        
+    
     /// Enable experimental features
     public var enableExperimentalFeatures: Bool = false
     
@@ -134,7 +134,7 @@ public class ActorSDK {
     
     // Reachability
     private var reachability: Reachability!
-
+    
     public func createActor() {
         
         if isStarted {
@@ -161,9 +161,6 @@ public class ActorSDK {
         // Providers
         builder.setPhoneBookProvider(PhoneBookProvider())
         builder.setNotificationProvider(iOSNotificationProvider())
-        if (enableExperimentalFeatures) {
-            builder.setCallsProvider(iOSWebRTCProvider())
-        }
         
         // Stats
         builder.setPlatformType(ACPlatformType.IOS())

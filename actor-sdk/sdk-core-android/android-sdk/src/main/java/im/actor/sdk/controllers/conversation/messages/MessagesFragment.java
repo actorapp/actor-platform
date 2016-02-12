@@ -66,6 +66,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 
     private static final int REQUEST_GALLERY = 198;
     private String shortcutText;
+    private long firstUnread =-1;
 
     public static MessagesFragment create(Peer peer) {
         return new MessagesFragment(peer);
@@ -135,6 +136,9 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     }
 
     protected void bindDisplayListLoad(boolean notify) {
+        firstUnread = messenger().loadFirstUnread(peer);
+
+        Log.d("DIAPLAY_LIST", "bindDisplayListLoad: " + notify);
         final BindedDisplayList<Message> list = getDisplayList();
         DisplayList.AndroidChangeListener<Message> listener = new DisplayList.AndroidChangeListener<Message>() {
 
@@ -154,6 +158,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 
     private void ondisplayListLoaded() {
         final BindedDisplayList<Message> list = getDisplayList();
+        Log.d("DIAPLAY_LIST", "ondisplayListLoaded  isLoaded: " + isLoaded + " list size: " + list.getSize());
         if (isLoaded) {
             return;
         }
@@ -164,7 +169,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 
         isLoaded = true;
         //long lastRead = modules.getMessagesModule().loadReadState(peer);
-        long firstUnread = messenger().loadFirstUnread(peer);
+        Log.d("DIAPLAY_LIST", "ondisplayListLoaded  firstUnread: " + firstUnread);
 
         if (firstUnread == 0) {
             // Already scrolled to bottom
@@ -216,6 +221,9 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     @Override
     protected BindedListAdapter<Message, MessageHolder> onCreateAdapter(BindedDisplayList<Message> displayList, Activity activity) {
         messagesAdapter = new MessagesAdapter(displayList, this, activity);
+        if(firstUnread!=-1 && messagesAdapter.getFirstUnread()==-1){
+            messagesAdapter.setFirstUnread(firstUnread);
+        }
         return messagesAdapter;
     }
 
@@ -236,7 +244,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     @Override
     public void onResume() {
         super.onResume();
-        bindDisplayListLoad(onPauseSize != 0 && getDisplayList().getSize() != onPauseSize);
+//        bindDisplayListLoad(onPauseSize != 0 && getDisplayList().getSize() != onPauseSize);
         messenger().onConversationOpen(peer);
     }
 

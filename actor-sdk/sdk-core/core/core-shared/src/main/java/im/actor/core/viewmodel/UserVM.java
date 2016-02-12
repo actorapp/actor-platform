@@ -33,7 +33,7 @@ import im.actor.runtime.annotations.MainThread;
 import im.actor.runtime.mvvm.BaseValueModel;
 import im.actor.runtime.mvvm.ModelChangedListener;
 import im.actor.runtime.mvvm.ValueModelCreator;
-import im.actor.runtime.threading.AbsTimerCompat;
+import im.actor.runtime.threading.CommonTimer;
 
 /**
  * User View Model
@@ -71,7 +71,7 @@ public class UserVM extends BaseValueModel<User> {
     private BooleanValueModel isContact;
     @NotNull
     private ValueModelUserPresence presence;
-    private AbsTimerCompat presenceTimer;
+    private CommonTimer presenceTimer;
 
     @NotNull
     private ValueModelUserPhone phones;
@@ -112,7 +112,7 @@ public class UserVM extends BaseValueModel<User> {
         contacts = new ValueModelContactRecord("user." + id + ".contacts", new ArrayListContactRecord(user.getRecords()));
 
         // Notify about presence change every minute as text representation can change
-        presenceTimer = im.actor.runtime.Runtime.createTimer(new Runnable() {
+        presenceTimer = new CommonTimer(new Runnable() {
             @Override
             public void run() {
                 presence.forceNotify();

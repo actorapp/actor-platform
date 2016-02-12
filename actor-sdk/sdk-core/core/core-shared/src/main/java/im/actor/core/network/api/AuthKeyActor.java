@@ -22,6 +22,7 @@ import im.actor.runtime.Log;
 import im.actor.runtime.Network;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.Utils;
 import im.actor.runtime.crypto.Cryptos;
@@ -46,6 +47,7 @@ public class AuthKeyActor extends Actor {
     private Random random = new Random();
     private final ExponentialBackoff exponentialBackoff = new ExponentialBackoff(1000, 30000, 25);
     private ActorState currentState;
+    private Cancellable reconnectCancellable;
 
     private void startKeyCreation(Endpoints endpoints) {
         Log.d(TAG, "startKeyCreation");
@@ -64,7 +66,11 @@ public class AuthKeyActor extends Actor {
 
         goToStartState();
 
-        self().send(new TryCreateConnection());
+        if (reconnectCancellable != null) {
+            reconnectCancellable.cancel();
+            reconnectCancellable = null;
+        }
+        reconnectCancellable = schedule(new TryCreateConnection(), 0);
     }
 
     //
@@ -321,7 +327,11 @@ public class AuthKeyActor extends Actor {
         if (currentState != null) {
             long delay = exponentialBackoff.exponentialWait();
             Log.d(TAG, "Trying to recreate connection in " + delay + " ms...");
-            self().sendOnce(new TryCreateConnection(), delay);
+            if (reconnectCancellable != null) {
+                reconnectCancellable.cancel();
+                reconnectCancellable = null;
+            }
+            reconnectCancellable = schedule(new TryCreateConnection(), delay);
         }
     }
 

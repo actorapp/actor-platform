@@ -9,7 +9,7 @@ import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorTime;
 import im.actor.runtime.actors.TraceInterface;
-import im.actor.runtime.actors.mailbox.Envelope;
+import im.actor.runtime.actors.dispatch.Envelope;
 
 /**
  * Actor System Trace Interface implementation for logging problems

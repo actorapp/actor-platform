@@ -57,6 +57,7 @@ final class EchoBotSpec
       peer = ApiPeer(ApiPeerType.Private, EchoBot.UserId),
       senderUserId = user.id,
       senderAuthSid = authSid,
+      senderAuthId = None,
       randomId = Random.nextLong(),
       message = ApiTextMessage("Hello", Vector.empty, None),
       isFat = false
@@ -88,6 +89,7 @@ final class EchoBotSpec
       peer = ApiPeer(ApiPeerType.Group, groupPeer.groupId),
       senderUserId = user.id,
       senderAuthSid = authSid,
+      senderAuthId = None,
       randomId = Random.nextLong(),
       message = ApiTextMessage("Hello", Vector.empty, None),
       isFat = false

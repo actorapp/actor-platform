@@ -31,7 +31,6 @@ import im.actor.core.entity.WebActionDescriptor;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.internal.Sticker;
-import im.actor.core.entity.signals.AbsSignal;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Modules;
@@ -43,8 +42,6 @@ import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerInfoClosed;
 import im.actor.core.events.PeerInfoOpened;
 import im.actor.core.events.UserVisible;
-import im.actor.core.modules.calls.CallManagerActor;
-import im.actor.core.modules.calls.CallsModule;
 import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
@@ -831,14 +828,14 @@ public class Messenger {
     }
 
     /**
-     * Hide chat
+     * Archive chat
      *
      * @param peer destination peer
      * @return Command for execution
      */
-    @ObjectiveCName("hideChatCommandWithPeer:")
-    public Command<Boolean> hideChat(Peer peer) {
-        return modules.getMessagesModule().hideChat(peer);
+    @ObjectiveCName("archiveChatCommandWithPeer:")
+    public Command<Boolean> archiveChat(Peer peer) {
+        return modules.getMessagesModule().archiveChat(peer);
     }
 
     /**

@@ -19,6 +19,7 @@ import im.actor.runtime.HTTP;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.crypto.CRC32;
 import im.actor.runtime.files.FileReadCallback;
 import im.actor.runtime.files.FileSystemReference;
@@ -56,6 +57,7 @@ public class UploadTask extends ModuleActor {
     private int uploaded;
     private int uploadCount;
     private long lastNotifyDate;
+    private Cancellable notifyCancellable;
 
     private byte[] uploadConfig;
     private CRC32 crc32;
@@ -124,9 +126,7 @@ public class UploadTask extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
-        if (message instanceof NotifyProgress) {
-            performReportProgress();
-        } else if (message instanceof Retry) {
+        if (message instanceof Retry) {
             Retry retry = (Retry) message;
             retryPart(retry.getBlockIndex(), retry.getData(), retry.getAttempt());
         } else {
@@ -332,7 +332,7 @@ public class UploadTask extends ModuleActor {
                                         Log.w(TAG, "Block #" + blockIndex + " upload error #" + error + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
                                     }
 
-                                    self().send(new Retry(blockIndex, data, attempt + 1), retryInSecs * 1000L);
+                                    schedule(new Retry(blockIndex, data, attempt + 1), retryInSecs * 1000L);
                                 } else {
                                     // User Error
                                     self().send(new Runnable() {
@@ -379,12 +379,22 @@ public class UploadTask extends ModuleActor {
             currentProgress = progress;
         }
 
+        if (notifyCancellable != null) {
+            notifyCancellable.cancel();
+            notifyCancellable = null;
+        }
+
         long delta = im.actor.runtime.Runtime.getActorTime() - lastNotifyDate;
         if (delta > NOTIFY_THROTTLE) {
             lastNotifyDate = im.actor.runtime.Runtime.getActorTime();
-            self().send(new NotifyProgress());
+            performReportProgress();
         } else {
-            self().sendOnce(new NotifyProgress(), delta);
+            notifyCancellable = schedule(new Runnable() {
+                @Override
+                public void run() {
+                    performReportProgress();
+                }
+            }, delta);
         }
     }
 
@@ -401,10 +411,6 @@ public class UploadTask extends ModuleActor {
         }
         isCompleted = true;
         manager.send(new UploadManager.UploadTaskComplete(rid, location, reference));
-    }
-
-    private class NotifyProgress {
-
     }
 
     private class Retry {
