@@ -11,7 +11,7 @@ import im.actor.runtime.threading.Dispatcher;
 public class CocoaThreadingProvider extends GenericThreadingProvider {
 
     @Override
-    public Dispatcher createDispatcher() {
+    public Dispatcher createDispatcher(String name) {
         return new CocoaDispatcher();
     }
 }

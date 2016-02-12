@@ -3,9 +3,6 @@ package im.actor.runtime;
 import im.actor.runtime.http.FileDownloadCallback;
 import im.actor.runtime.http.FileUploadCallback;
 
-/**
- * Created by ex3ndr on 07.08.15.
- */
 public class HttpRuntimeProvider implements HttpRuntime {
 
     @Override

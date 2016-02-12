@@ -10,8 +10,8 @@ public class AndroidDispatcher implements Dispatcher {
     private HandlerThread handlerThread;
     private Handler handler;
 
-    public AndroidDispatcher() {
-        handlerThread = new HandlerThread("dispatcher", Thread.NORM_PRIORITY);
+    public AndroidDispatcher(String name) {
+        handlerThread = new HandlerThread(name, Thread.NORM_PRIORITY);
         handlerThread.start();
 
         // Wait for Looper ready
