@@ -354,6 +354,20 @@ public class JsFacade implements Exportable {
         messenger.getSharedDialogList().unsubscribe(callback);
     }
 
+    public void bindArchivedDialogs(JsDisplayListCallback<JsDialog> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getSharedArchivedDialogList().subscribe(callback, false);
+    }
+
+    public void unbindArchivedDialogs(JsDisplayListCallback<JsDialog> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getSharedArchivedDialogList().unsubscribe(callback);
+    }
+
     public void bindGroupDialogs(JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -479,20 +493,20 @@ public class JsFacade implements Exportable {
         });
     }
 
-    public JsPromise hideChat(final JsPeer peer) {
+    public JsPromise archiveChat(final JsPeer peer) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.hideChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                messenger.archiveChat(peer.convert()).start(new CommandCallback<Boolean>() {
                     @Override
                     public void onResult(Boolean res) {
-                        Log.d(TAG, "hideChat:result");
+                        Log.d(TAG, "archiveChat:result");
                         resolve();
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        Log.d(TAG, "hideChat:error");
+                        Log.d(TAG, "archiveChat:error");
                         reject(e.getMessage());
                     }
                 });
@@ -828,6 +842,10 @@ public class JsFacade implements Exportable {
 
     public void onDialogsEnd() {
         messenger.loadMoreDialogs();
+    }
+
+    public void onArchivedDialogsEnd() {
+        messenger.loadMoreArchivedDialogs();
     }
 
     public void onChatEnd(JsPeer peer) {

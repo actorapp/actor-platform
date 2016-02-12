@@ -14,6 +14,7 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSelection;
 import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.Log;
 import im.actor.core.network.mtp.MTProto;
@@ -49,12 +50,14 @@ public class PusherActor extends Actor {
 
     private HashSet<Long> pendingConfirm;
 
+    private Cancellable askCancellable;
+
     public PusherActor(MTProto proto) {
         this.proto = proto;
         this.isEnableLog = proto.isEnableLog();
-        this.unsentPackages = new HashMap<Long, ProtoMessage>();
-        this.pendingConfirm = new HashSet<Long>();
-        this.confirm = new HashSet<Long>();
+        this.unsentPackages = new HashMap<>();
+        this.pendingConfirm = new HashSet<>();
+        this.confirm = new HashSet<>();
     }
 
     @Override
@@ -126,9 +129,17 @@ public class PusherActor extends Actor {
             }
             confirm.add(((ConfirmMessage) message).mid);
             if (confirm.size() >= ACK_THRESHOLD) {
-                self().sendOnce(new ForceAck());
+                if (askCancellable != null) {
+                    askCancellable.cancel();
+                    askCancellable = null;
+                }
+                askCancellable = schedule(new ForceAck(), 0);
             } else if (confirm.size() == 1) {
-                self().sendOnce(new ForceAck(), ACK_DELAY);
+                if (askCancellable != null) {
+                    askCancellable.cancel();
+                    askCancellable = null;
+                }
+                askCancellable = schedule(new ForceAck(), ACK_DELAY);
             }
         } else if (message instanceof ForceAck) {
             if (confirm.size() == 0) {

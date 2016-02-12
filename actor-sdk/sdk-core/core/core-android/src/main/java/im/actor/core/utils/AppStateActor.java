@@ -3,6 +3,7 @@ package im.actor.core.utils;
 import im.actor.core.AndroidMessenger;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;
+import im.actor.runtime.actors.Cancellable;
 
 public class AppStateActor extends Actor {
 
@@ -15,6 +16,7 @@ public class AppStateActor extends Actor {
     private boolean isAppOpen = false;
     private boolean isScreenVisible = true;
     private int activityCount = 0;
+    private Cancellable closeCancellable;
 
     public AppStateActor(AndroidMessenger messenger) {
         this.messenger = messenger;
@@ -40,14 +42,21 @@ public class AppStateActor extends Actor {
     private void onAppProbablyClosed() {
         Log.d(TAG, "onAppProbablyClosed");
         if (isAppOpen) {
-            self().sendOnce(new MarkAppAsClosed(), CLOSE_TIMEOUT);
+            if (closeCancellable != null) {
+                closeCancellable.cancel();
+                closeCancellable = null;
+            }
+            closeCancellable = schedule(new MarkAppAsClosed(), CLOSE_TIMEOUT);
         }
     }
 
     private void onAppProbablyOpened() {
         Log.d(TAG, "onAppProbablyOpened");
         onAppOpened();
-        self().sendOnce(new MarkAppAsClosed(), 24 * 60 * 60 * 1000); // Far away
+        if (closeCancellable != null) {
+            closeCancellable.cancel();
+            closeCancellable = null;
+        }
     }
 
     private void onAppOpened() {

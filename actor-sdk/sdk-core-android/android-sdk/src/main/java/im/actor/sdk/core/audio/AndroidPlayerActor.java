@@ -64,7 +64,7 @@ public class AndroidPlayerActor extends Actor {
         }
 
         callback.onStart(currentFileName);
-        self().send(new Notify(), 500);
+        schedule(new Notify(), 500);
         state = STATE_STARTED;
     }
 
@@ -78,7 +78,7 @@ public class AndroidPlayerActor extends Actor {
                     float progress = ((float) mplayer.getCurrentPosition()) / duration;
                     callback.onProgress(currentFileName, progress);
                 }
-                self().send(new Notify(), 500);
+                schedule(new Notify(), 500);
             }
         }
     }

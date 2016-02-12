@@ -6,9 +6,13 @@ import im.actor.api.rpc.ClientData
 import im.actor.api.rpc._
 import im.actor.api.rpc.eventbus.{ ApiEventBusDestination, ResponseCreateNewEventBus, ResponseJoinEventBus, EventbusService }
 import im.actor.api.rpc.misc.ResponseVoid
-import im.actor.server.eventbus.EventBusExtension
+import im.actor.server.eventbus.{ EventBusErrors, EventBusExtension }
 
 import scala.concurrent.{ ExecutionContext, Future }
+
+object EventBusRpcErrors {
+  val EventBusNotFound = Error(RpcError(404, "NOT_FOUND", "EventBus not found.", canTryAgain = false, data = None))
+}
 
 final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
   override implicit protected val ec: ExecutionContext = system.dispatcher
@@ -28,6 +32,8 @@ final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
   override def jhandleDisposeEventBus(id: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     authorized(clientData) { client ⇒
       for (_ ← ext.dispose(client.userId, id)) yield Ok(ResponseVoid)
+    } recover {
+      case EventBusErrors.EventBusNotFound ⇒ EventBusRpcErrors.EventBusNotFound
     }
 
   override def jhandlePostToEventBus(
@@ -40,6 +46,8 @@ final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
       for {
         _ ← ext.post(client.userId, client.authId, id, destinations, message)
       } yield Ok(ResponseVoid)
+    } recover {
+      case EventBusErrors.EventBusNotFound ⇒ EventBusRpcErrors.EventBusNotFound
     }
 
   override def jhandleKeepAliveEventBus(
@@ -48,8 +56,10 @@ final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
     clientData: ClientData
   ): Future[HandlerResult[ResponseVoid]] =
     authorized(clientData) { client ⇒
-      ext.keepAlive(client.authId, id, timeout)
-      FastFuture.successful(Ok(ResponseVoid))
+      for (_ ← ext.keepAlive(client.authId, id, timeout))
+        yield Ok(ResponseVoid)
+    } recover {
+      case EventBusErrors.EventBusNotFound ⇒ EventBusRpcErrors.EventBusNotFound
     }
 
   override def jhandleJoinEventBus(
@@ -61,5 +71,7 @@ final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
       for {
         deviceId ← ext.join(client.userId, client.authId, id, timeout)
       } yield Ok(ResponseJoinEventBus(deviceId))
+    } recover {
+      case EventBusErrors.EventBusNotFound ⇒ EventBusRpcErrors.EventBusNotFound
     }
 }

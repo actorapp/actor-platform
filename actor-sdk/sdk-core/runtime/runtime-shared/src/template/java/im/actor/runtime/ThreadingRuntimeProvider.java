@@ -1,11 +1,10 @@
 package im.actor.runtime;
 
-import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.ThreadPriority;
-import im.actor.runtime.actors.mailbox.ActorDispatcher;
-import im.actor.runtime.threading.AbsTimerCompat;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
+import im.actor.runtime.threading.Dispatcher;
+import im.actor.runtime.threading.ImmediateDispatcher;
 import im.actor.runtime.threading.ThreadLocalCompat;
 
 public class ThreadingRuntimeProvider implements ThreadingRuntime {
@@ -46,17 +45,12 @@ public class ThreadingRuntimeProvider implements ThreadingRuntime {
     }
 
     @Override
-    public AbsTimerCompat createTimer(Runnable runnable) {
+    public Dispatcher createDispatcher(ThreadPriority priority) {
         throw new RuntimeException("Dumb");
     }
 
     @Override
-    public ActorDispatcher createDispatcher(String name, int threadsCount, ThreadPriority priority, ActorSystem actorSystem) {
-        throw new RuntimeException("Dumb");
-    }
-
-    @Override
-    public ActorDispatcher createDefaultDispatcher(String name, ThreadPriority priority, ActorSystem system) {
+    public ImmediateDispatcher createImmediateDispatcher(ThreadPriority priority) {
         throw new RuntimeException("Dumb");
     }
 }

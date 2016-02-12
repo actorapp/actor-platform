@@ -275,7 +275,7 @@ public class ApiBroker extends Actor {
             Log.d(TAG, "<- internal_error#" + holder.publicId + " " + e.getTryAgainDelay() + " sec" +
                     " in " + (Runtime.getCurrentTime() - holder.requestTime) + " ms");
             if (e.isCanTryAgain()) {
-                self().send(new ForceResend(rid), e.getTryAgainDelay() * 1000L);
+                schedule(new ForceResend(rid), e.getTryAgainDelay() * 1000L);
             } else {
                 requests.remove(rid);
                 if (holder.protoId != 0) {
@@ -287,7 +287,7 @@ public class ApiBroker extends Actor {
             RpcFloodWait f = (RpcFloodWait) protoStruct;
             Log.d(TAG, "<- flood_wait#" + holder.publicId + " " + f.getDelay() + " sec" +
                     " in " + (Runtime.getCurrentTime() - holder.requestTime) + " ms");
-            self().send(new ForceResend(rid), f.getDelay() * 1000L);
+            schedule(new ForceResend(rid), f.getDelay() * 1000L);
         } else {
             Log.d(TAG, "<- unknown_package#" + holder.publicId +
                     " in " + (Runtime.getCurrentTime() - holder.requestTime) + " ms");

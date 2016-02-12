@@ -25,7 +25,7 @@ abstract class BaseAppSuite(_system: ActorSystem = {
   with ActorSerializerPrepare {
 
   protected implicit val materializer: ActorMaterializer = ActorMaterializer()
-  protected implicit lazy val ec: ExecutionContext = _system.dispatcher
+  implicit lazy val ec: ExecutionContext = _system.dispatcher
 
   protected implicit lazy val db: PostgresDriver.api.Database = {
     DbExtension(_system).clean()

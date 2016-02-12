@@ -4,9 +4,9 @@
 
 package im.actor.runtime.actors;
 
-import im.actor.runtime.actors.mailbox.ActorDispatcher;
-import im.actor.runtime.actors.mailbox.ActorEndpoint;
-import im.actor.runtime.actors.mailbox.Mailbox;
+import im.actor.runtime.actors.dispatch.ActorDispatcher;
+import im.actor.runtime.actors.dispatch.ActorEndpoint;
+import im.actor.runtime.actors.dispatch.Mailbox;
 
 /**
  * <p>INTERNAL API</p>
@@ -35,7 +35,7 @@ public class ActorScope {
                       ActorEndpoint endpoint) {
         this.actorSystem = actorSystem;
         this.mailbox = mailbox;
-        this.actorRef = new ActorRef(endpoint, actorSystem, dispatcher, path);
+        this.actorRef = new ActorRef(endpoint, actorSystem, path);
         this.dispatcher = dispatcher;
         this.path = path;
         this.props = props;
