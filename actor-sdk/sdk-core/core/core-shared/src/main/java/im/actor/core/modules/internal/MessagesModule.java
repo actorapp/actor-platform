@@ -47,6 +47,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.events.AppVisibleChanged;
 import im.actor.core.events.PeerChatClosed;
 import im.actor.core.events.PeerChatOpened;
+import im.actor.core.modules.internal.messages.ArchivedDialogsActor;
 import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.core.modules.internal.messages.ConversationHistoryActor;
 import im.actor.core.modules.internal.messages.CursorReaderActor;
@@ -66,6 +67,7 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
+import im.actor.core.viewmodel.DialogSmall;
 import im.actor.core.viewmodel.DialogSpecVM;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorCreator;
@@ -83,9 +85,11 @@ import static im.actor.runtime.actors.ActorSystem.system;
 public class MessagesModule extends AbsModule implements BusSubscriber {
 
     private ListEngine<Dialog> dialogs;
+    private ListEngine<Dialog> archivedDialogs;
 
     private ActorRef dialogsActor;
     private ActorRef dialogsHistoryActor;
+    private ActorRef archivedDialogsActor;
     private ActorRef dialogsGroupedActor;
     private ActorRef ownReadActor;
     private ActorRef plainReadActor;
@@ -110,6 +114,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         this.dialogDescKeyValue = Storage.createKeyValue(STORAGE_DIALOGS_DESC, DialogSpecVM.CREATOR, DialogSpec.CREATOR);
         this.cursorStorage = new SyncKeyValue(Storage.createKeyValue(STORAGE_CURSOR));
         this.dialogs = Storage.createList(STORAGE_DIALOGS, Dialog.CREATOR);
+        this.archivedDialogs = Storage.createList(STORAGE_ARCHIVED_DIALOGS, Dialog.CREATOR);
     }
 
     public void run() {
@@ -125,6 +130,13 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                 return new DialogsHistoryActor(context());
             }
         }), "actor/dialogs/history");
+
+        this.archivedDialogsActor = system().actorOf(Props.create(new ActorCreator() {
+            @Override
+            public ArchivedDialogsActor create() {
+                return new ArchivedDialogsActor(context());
+            }
+        }), "actor/dialogs/archived");
 
         this.dialogsGroupedActor = system().actorOf(Props.create(new ActorCreator() {
             @Override
@@ -261,12 +273,20 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         return dialogsHistoryActor;
     }
 
+    public ActorRef getArchivedDialogsActor() {
+        return archivedDialogsActor;
+    }
+
     public ActorRef getDialogsGroupedActor() {
         return dialogsGroupedActor;
     }
 
     public ListEngine<Dialog> getDialogsEngine() {
         return dialogs;
+    }
+
+    public ListEngine<Dialog> getArchivedDialogsEngine() {
+        return archivedDialogs;
     }
 
     public void deleteMessages(Peer peer, long[] rids) {
@@ -284,6 +304,15 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
             @Override
             public void run() {
                 dialogsHistoryActor.send(new DialogsHistoryActor.LoadMore());
+            }
+        });
+    }
+
+    public void loadMoreArchivedDialogs() {
+        im.actor.runtime.Runtime.dispatch(new Runnable() {
+            @Override
+            public void run() {
+                archivedDialogsActor.send(new ArchivedDialogsActor.LoadMore());
             }
         });
     }
