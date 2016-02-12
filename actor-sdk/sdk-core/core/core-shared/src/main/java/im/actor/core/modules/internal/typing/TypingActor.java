@@ -13,11 +13,8 @@ import im.actor.core.util.ModuleActor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.actors.MailboxCreator;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.Props;
-import im.actor.runtime.actors.mailbox.Envelope;
-import im.actor.runtime.actors.mailbox.Mailbox;
-import im.actor.runtime.actors.mailbox.MailboxesQueue;
 import im.actor.runtime.annotations.Verified;
 
 @Verified
@@ -29,23 +26,15 @@ public class TypingActor extends ModuleActor {
             public TypingActor create() {
                 return new TypingActor(messenger);
             }
-        }, new MailboxCreator() {
-            @Override
-            public Mailbox createMailbox(MailboxesQueue queue) {
-                return new Mailbox(queue) {
-                    @Override
-                    protected boolean isEqualEnvelope(Envelope a, Envelope b) {
-                        return a.getMessage().equals(b.getMessage());
-                    }
-                };
-            }
         }), "actor/typing");
     }
 
     private static final int TYPING_TEXT_TIMEOUT = 7000;
 
-    private HashSet<Integer> typings = new HashSet<Integer>();
-    private HashMap<Integer, HashSet<Integer>> groupTypings = new HashMap<Integer, HashSet<Integer>>();
+    private HashMap<Integer, Cancellable> typingsCancellables = new HashMap<>();
+    private HashSet<Integer> typings = new HashSet<>();
+    private HashMap<Integer, HashSet<Integer>> groupTypings = new HashMap<>();
+    private HashMap<Integer, HashMap<Integer, Cancellable>> groupCancellables = new HashMap<>();
 
     public TypingActor(ModuleContext messenger) {
         super(messenger);
@@ -67,13 +56,21 @@ public class TypingActor extends ModuleActor {
 
             context().getTypingModule().getTyping(uid).getTyping().change(true);
         }
-        self().sendOnce(new StopTyping(uid), TYPING_TEXT_TIMEOUT);
+
+        if (typingsCancellables.containsKey(uid)) {
+            typingsCancellables.remove(uid).cancel();
+        }
+        typingsCancellables.put(uid, schedule(new StopTyping(uid), TYPING_TEXT_TIMEOUT));
     }
 
     @Verified
     private void stopPrivateTyping(int uid) {
         if (typings.contains(uid)) {
             typings.remove(uid);
+
+            if (typingsCancellables.containsKey(uid)) {
+                typingsCancellables.remove(uid).cancel();
+            }
 
             context().getTypingModule().getTyping(uid).getTyping().change(false);
         }
@@ -120,7 +117,15 @@ public class TypingActor extends ModuleActor {
             }
         }
 
-        self().sendOnce(new StopGroupTyping(gid, uid), TYPING_TEXT_TIMEOUT);
+        if (!groupCancellables.containsKey(gid)) {
+            groupCancellables.put(gid, new HashMap<Integer, Cancellable>());
+        }
+
+        HashMap<Integer, Cancellable> cancellables = groupCancellables.get(gid);
+        if (cancellables.containsKey(uid)) {
+            cancellables.remove(uid).cancel();
+        }
+        cancellables.put(uid, schedule(new StopGroupTyping(gid, uid), TYPING_TEXT_TIMEOUT));
     }
 
     @Verified

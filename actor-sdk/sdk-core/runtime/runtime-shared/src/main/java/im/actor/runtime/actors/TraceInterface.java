@@ -4,7 +4,7 @@
 
 package im.actor.runtime.actors;
 
-import im.actor.runtime.actors.mailbox.Envelope;
+import im.actor.runtime.actors.dispatch.Envelope;
 
 public interface TraceInterface {
     void onEnvelopeDelivered(Envelope envelope);

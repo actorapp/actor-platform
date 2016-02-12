@@ -6,12 +6,10 @@ package im.actor.runtime.actors;
 
 import java.util.ArrayList;
 
-import im.actor.runtime.Log;
 import im.actor.runtime.actors.ask.AskCallback;
 import im.actor.runtime.actors.ask.AskIntRequest;
 import im.actor.runtime.actors.ask.AskMessage;
-import im.actor.runtime.actors.ask.AskResult;
-import im.actor.runtime.actors.mailbox.Mailbox;
+import im.actor.runtime.actors.dispatch.Mailbox;
 import im.actor.runtime.actors.messages.DeadLetter;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.promise.Promise;
@@ -23,6 +21,8 @@ import im.actor.runtime.promise.PromiseResolver;
  * Actor object
  */
 public class Actor {
+
+    private Scheduler scheduler;
 
     private String path;
 
@@ -229,7 +229,7 @@ public class Actor {
     }
 
     public void ask(final ActorRef dest, final Object message, final AskCallback callback) {
-        new Promise<Object>(new PromiseFunc<Object>() {
+        new Promise<>(new PromiseFunc<Object>() {
             @Override
             public void exec(final PromiseResolver<Object> executor) {
                 become(new Receiver() {
@@ -270,5 +270,21 @@ public class Actor {
                 }
             }
         }).done(self());
+    }
+
+    public Cancellable schedule(final Object obj, long delay) {
+        if (scheduler == null) {
+            scheduler = new Scheduler(self());
+        }
+        if (obj instanceof Runnable) {
+            return scheduler.schedule((Runnable) obj, delay);
+        } else {
+            return scheduler.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    handleMessage(obj, self());
+                }
+            }, delay);
+        }
     }
 }

@@ -27,6 +27,7 @@ import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.Props;
 
 import static im.actor.runtime.actors.ActorSystem.system;
@@ -144,6 +145,7 @@ public class JsFilesModule extends AbsModule {
         private boolean isLoading = false;
         private JsFilesModule filesModule;
         private ArrayList<FileRequest> filesQueue = new ArrayList<FileRequest>();
+        private Cancellable performCancellable;
 
         public FileBinderActor(JsFilesModule filesModule, ModuleContext context) {
             super(context);
@@ -155,7 +157,8 @@ public class JsFilesModule extends AbsModule {
         public void onReceive(Object message) {
             if (message instanceof FileRequest) {
                 filesQueue.add((FileRequest) message);
-                self().sendOnce(new PerformLoad(), DELAY);
+
+                schedulePerform();
             } else if (message instanceof PerformLoad) {
                 performLoad();
             } else {
@@ -195,7 +198,7 @@ public class JsFilesModule extends AbsModule {
                     filesModule.onFileUrlLoaded(responses);
 
                     isLoading = false;
-                    self().sendOnce(new PerformLoad(), DELAY);
+                    schedulePerform();
                 }
 
                 @Override
@@ -207,9 +210,17 @@ public class JsFilesModule extends AbsModule {
                     Log.e(TAG, e);
 
                     isLoading = false;
-                    self().sendOnce(new PerformLoad(), DELAY);
+                    schedulePerform();
                 }
             });
+        }
+
+        private void schedulePerform() {
+            if (performCancellable != null) {
+                performCancellable.cancel();
+                performCancellable = null;
+            }
+            performCancellable = schedule(new PerformLoad(), DELAY);
         }
 
         private class PerformLoad {

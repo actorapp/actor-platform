@@ -7,14 +7,16 @@ package im.actor.runtime.actors;
 import java.util.HashMap;
 
 import im.actor.runtime.Runtime;
-import im.actor.runtime.actors.mailbox.ActorDispatcher;
+import im.actor.runtime.actors.dispatch.ActorDispatcher;
 import im.actor.runtime.function.Constructor;
-import im.actor.runtime.promise.Promise;
 
 /**
  * Entry point for Actor Model, creates all actors and dispatchers
  */
 public class ActorSystem {
+
+    public static final float THREAD_MULTIPLIER = 1.5f;
+    public static final int THREAD_MAX_COUNT = 4;
 
     private static final ActorSystem mainSystem = new ActorSystem();
 
@@ -62,7 +64,9 @@ public class ActorSystem {
                 return;
             }
 
-            ActorDispatcher dispatcher = im.actor.runtime.Runtime.createDispatcher(dispatcherId, threadsCount, ThreadPriority.LOW, this);
+            ActorDispatcher dispatcher = new ActorDispatcher(dispatcherId, ThreadPriority.LOW, this,
+                    Runtime.isSingleThread() ? 1 : threadsCount);
+
             dispatchers.put(dispatcherId, dispatcher);
         }
     }
@@ -73,32 +77,12 @@ public class ActorSystem {
      * @param dispatcherId dispatcher id
      */
     public void addDispatcher(String dispatcherId) {
-        synchronized (dispatchers) {
-            if (dispatchers.containsKey(dispatcherId)) {
-                return;
-            }
-
-            ActorDispatcher dispatcher = Runtime.createDefaultDispatcher(dispatcherId, ThreadPriority.LOW, this);
-            addDispatcher(dispatcherId, dispatcher);
-        }
+        addDispatcher(dispatcherId,
+                Math.min((int) (Runtime.getCoresCount() * THREAD_MULTIPLIER), THREAD_MAX_COUNT));
     }
 
-    /**
-     * Registering custom dispatcher
-     *
-     * @param dispatcherId dispatcher id
-     * @param dispatcher   dispatcher object
-     */
-    public void addDispatcher(String dispatcherId, ActorDispatcher dispatcher) {
-        synchronized (dispatchers) {
-            if (dispatchers.containsKey(dispatcherId)) {
-                return;
-            }
-            dispatchers.put(dispatcherId, dispatcher);
-        }
-    }
 
-    public <T extends Actor> ActorRef actorOf(ActorSelection selection) {
+    public ActorRef actorOf(ActorSelection selection) {
         return actorOf(selection.getProps(), selection.getPath());
     }
 

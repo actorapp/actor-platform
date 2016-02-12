@@ -23,6 +23,7 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.function.Constructor;
 import im.actor.runtime.function.Consumer;
 
@@ -54,6 +55,8 @@ public class SequenceActor extends ModuleActor {
     private int finishedSeq;
     private byte[] finishedState;
 
+    private Cancellable forceInvalidateCancellable;
+
     private SequenceHandlerInt handler;
 
     public SequenceActor(ModuleContext modules) {
@@ -76,7 +79,7 @@ public class SequenceActor extends ModuleActor {
             Log.d(TAG, "Ignored PushSeq {seq:" + seq + "}");
         } else {
             Log.w(TAG, "External Out of sequence: starting timer for invalidation");
-            self().sendOnce(new ForceInvalidate(), INVALIDATE_GAP);
+            startInvalidationTimer();
         }
     }
 
@@ -285,19 +288,29 @@ public class SequenceActor extends ModuleActor {
 
     private void stopInvalidationTimer() {
         isTimerStarted = false;
-        // Faaaaaar away
-        self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
+        if (forceInvalidateCancellable != null) {
+            forceInvalidateCancellable.cancel();
+            forceInvalidateCancellable = null;
+        }
     }
 
     private void startInvalidationTimer() {
         if (!isTimerStarted) {
-            self().sendOnce(new ForceInvalidate(), INVALIDATE_GAP);
+            if (forceInvalidateCancellable != null) {
+                forceInvalidateCancellable.cancel();
+                forceInvalidateCancellable = null;
+            }
+            forceInvalidateCancellable = schedule(new ForceInvalidate(), INVALIDATE_GAP);
             isTimerStarted = true;
         }
     }
 
     private void forceInvalidate() {
-        self().sendOnce(new ForceInvalidate());
+        if (forceInvalidateCancellable != null) {
+            forceInvalidateCancellable.cancel();
+            forceInvalidateCancellable = null;
+        }
+        forceInvalidateCancellable = schedule(new ForceInvalidate(), 0);
         isTimerStarted = false;
     }
 

@@ -10,9 +10,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
+import im.actor.runtime.actors.ThreadPriority;
+import im.actor.runtime.android.threading.AndroidDispatcher;
 import im.actor.runtime.android.time.SntpClient;
 import im.actor.runtime.generic.GenericThreadingProvider;
 import im.actor.runtime.Log;
+import im.actor.runtime.threading.Dispatcher;
+import im.actor.runtime.threading.ImmediateDispatcher;
 
 public class AndroidThreadingProvider extends GenericThreadingProvider {
 
@@ -61,5 +65,10 @@ public class AndroidThreadingProvider extends GenericThreadingProvider {
     @Override
     public long getSyncedCurrentTime() {
         return System.currentTimeMillis() + syncDelta;
+    }
+
+    @Override
+    public Dispatcher createDispatcher(String name) {
+        return new AndroidDispatcher(name);
     }
 }

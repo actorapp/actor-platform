@@ -7,17 +7,16 @@ package im.actor.runtime.js;
 import java.util.Date;
 
 import im.actor.runtime.ThreadingRuntime;
-import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.ThreadPriority;
-import im.actor.runtime.actors.mailbox.ActorDispatcher;
 import im.actor.runtime.js.threading.JsAtomicInteger;
 import im.actor.runtime.js.threading.JsAtomicLong;
-import im.actor.runtime.js.threading.JsDispatch;
+import im.actor.runtime.js.threading.JsDispatcher;
+import im.actor.runtime.js.threading.JsImmediateDispatcher;
 import im.actor.runtime.js.threading.JsThreadLocal;
-import im.actor.runtime.js.threading.JsTimerCompat;
-import im.actor.runtime.threading.AbsTimerCompat;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
+import im.actor.runtime.threading.Dispatcher;
+import im.actor.runtime.threading.ImmediateDispatcher;
 import im.actor.runtime.threading.ThreadLocalCompat;
 
 public class JsThreadingProvider implements ThreadingRuntime {
@@ -55,21 +54,16 @@ public class JsThreadingProvider implements ThreadingRuntime {
 
     @Override
     public <T> ThreadLocalCompat<T> createThreadLocal() {
-        return new JsThreadLocal<T>();
+        return new JsThreadLocal<>();
     }
 
     @Override
-    public AbsTimerCompat createTimer(Runnable runnable) {
-        return new JsTimerCompat(runnable);
+    public Dispatcher createDispatcher(String name) {
+        return new JsDispatcher();
     }
 
     @Override
-    public ActorDispatcher createDispatcher(String name, int threadsCount, ThreadPriority priority, ActorSystem actorSystem) {
-        return createDefaultDispatcher(name, priority, actorSystem);
-    }
-
-    @Override
-    public ActorDispatcher createDefaultDispatcher(String name, ThreadPriority priority, ActorSystem system) {
-        return new JsDispatch(name, system);
+    public ImmediateDispatcher createImmediateDispatcher(String name, ThreadPriority priority) {
+        return new JsImmediateDispatcher(name);
     }
 }
