@@ -1,6 +1,5 @@
-package im.actor.core.js.providers.webrtc;
+package im.actor.runtime.js.webrtc;
 
-import im.actor.core.js.modules.JsScheduller;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
@@ -40,9 +39,9 @@ public class JsStreaming {
 
     protected static native void getUserMediaJs(JsUserMediaConstraint constraint, JsMediaCallback callback)/*-{
         $wnd.navigator.getUserMedia(constraint, function(stream) {
-            callback.@im.actor.core.js.providers.webrtc.JsMediaCallback::onCreated(*)(stream);
+            callback.@im.actor.runtime.js.webrtc.JsMediaCallback::onCreated(*)(stream);
         }, function(error) {
-            callback.@im.actor.core.js.providers.webrtc.JsMediaCallback::onError(*)(error);
+            callback.@im.actor.runtime.js.webrtc.JsMediaCallback::onError(*)(error);
         });
     }-*/;
 }

@@ -16,6 +16,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 
@@ -67,6 +68,7 @@ public class EventBusActor extends ModuleActor {
                     isProcessing = false;
                     unstashAll();
                     self().send(new EventBusKeepAlive());
+                    Log.d("EventBus(" + busId + ")", "Joined");
                 }
             }).failure(new Consumer<Exception>() {
                 @Override
@@ -86,6 +88,7 @@ public class EventBusActor extends ModuleActor {
                     isProcessing = false;
                     unstashAll();
                     self().send(new EventBusKeepAlive());
+                    Log.d("EventBus(" + busId + ")", "Created");
                 }
             }).failure(new Consumer<Exception>() {
                 @Override
@@ -127,11 +130,13 @@ public class EventBusActor extends ModuleActor {
     }
 
     public final void sendMessage(int uid, long deviceId, byte[] data) {
+        Log.d("EventBus(" + busId + ")", "Send Message");
         ArrayList<ApiEventBusDestination> destinations = new ArrayList<>();
         ArrayList<Long> deviceIds = new ArrayList<>();
         deviceIds.add(deviceId);
         destinations.add(new ApiEventBusDestination(uid, deviceIds));
         request(new RequestPostToEventBus(busId, destinations, data));
+        Log.d("EventBus(" + busId + ")", "Send Message End");
     }
 
     public void onBusShutdown() {
@@ -179,6 +184,7 @@ public class EventBusActor extends ModuleActor {
     //
 
     public void shutdown() {
+        Log.d("EventBus(" + busId + ")", "Shutdown");
         isProcessing = true;
         stopKeepAlive();
         context().getEventBus().unsubscribe(busId, self());
@@ -193,6 +199,7 @@ public class EventBusActor extends ModuleActor {
     }
 
     public void dispose() {
+        Log.d("EventBus(" + busId + ")", "Dispose");
         isProcessing = true;
         stopKeepAlive();
         context().getEventBus().unsubscribe(busId, self());
@@ -208,6 +215,7 @@ public class EventBusActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
+        Log.d("EventBus(" + busId + ")", "onReceive: " + message);
         if (message instanceof EventBusShutdown) {
             if (isProcessing) {
                 stash();
@@ -236,18 +244,23 @@ public class EventBusActor extends ModuleActor {
             onDeviceDisconnected(deviceDisconnected.getUid(), deviceDisconnected.getDeviceId());
         } else if (message instanceof EventBusMessage) {
             if (isProcessing) {
+                Log.d("EventBus(" + busId + ")", "Is Processing");
                 stash();
                 return;
             }
             EventBusMessage eventBusMessage = (EventBusMessage) message;
+            Log.d("EventBus(" + busId + ")", "Message: " + eventBusMessage);
             onMessageReceived(eventBusMessage.getSenderId(), eventBusMessage.getSenderDeviceId(),
                     eventBusMessage.getMessage());
+            Log.d("EventBus(" + busId + ")", "End");
         } else if (message instanceof EventBusKeepAlive) {
+            Log.d("EventBus(" + busId + ")", "Keep Alive");
             if (isProcessing) {
                 stash();
                 return;
             }
             doKeepAlive();
+            Log.d("EventBus(" + busId + ")", "Keep Alive: End");
         } else {
             super.onReceive(message);
         }

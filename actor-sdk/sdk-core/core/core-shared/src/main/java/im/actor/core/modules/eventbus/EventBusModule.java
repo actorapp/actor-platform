@@ -9,6 +9,7 @@ import im.actor.core.api.updates.UpdateEventBusDisposed;
 import im.actor.core.api.updates.UpdateEventBusMessage;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorRef;
 
 public class EventBusModule extends AbsModule {
@@ -49,7 +50,9 @@ public class EventBusModule extends AbsModule {
                         busMessage.getSenderId(),
                         busMessage.getSenderDeviceId(),
                         busMessage.getMessage()));
+                Log.d("EVENTBUS", "Delivered");
             } else {
+                Log.d("EVENTBUS", "Not Delivered");
                 if (!pendingMessages.containsKey(busMessage.getId())) {
                     pendingMessages.put(busMessage.getId(), new ArrayList<>());
                 }
@@ -63,6 +66,7 @@ public class EventBusModule extends AbsModule {
                         deviceConnected.getUserId(),
                         deviceConnected.getDeviceId()));
             } else {
+                Log.d("EVENTBUS", "Not Delivered");
                 if (!pendingMessages.containsKey(deviceConnected.getId())) {
                     pendingMessages.put(deviceConnected.getId(), new ArrayList<>());
                 }
@@ -75,6 +79,7 @@ public class EventBusModule extends AbsModule {
                 dest.send(new EventBusActor.EventBusDeviceDisconnected(deviceDisconnected.getUserId(),
                         deviceDisconnected.getDeviceId()));
             } else {
+                Log.d("EVENTBUS", "Not Delivered");
                 if (!pendingMessages.containsKey(deviceDisconnected.getId())) {
                     pendingMessages.put(deviceDisconnected.getId(), new ArrayList<>());
                 }
@@ -86,6 +91,7 @@ public class EventBusModule extends AbsModule {
             if (dest != null) {
                 dest.send(new EventBusActor.EventBusDisposed());
             } else {
+                Log.d("EVENTBUS", "Not Delivered");
                 if (!pendingMessages.containsKey(disposed.getId())) {
                     pendingMessages.put(disposed.getId(), new ArrayList<>());
                 }

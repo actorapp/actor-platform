@@ -24,11 +24,8 @@ import im.actor.core.js.entity.*;
 import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
-import im.actor.core.js.providers.JsWebRTCProvider;
+import im.actor.core.js.providers.JsCallsProvider;
 import im.actor.core.js.providers.electron.JsElectronApp;
-import im.actor.core.js.providers.webrtc.JsSessionDescription;
-import im.actor.core.js.providers.webrtc.JsPeerConnection;
-import im.actor.core.js.providers.webrtc.JsPeerConnectionListener;
 import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
 import im.actor.core.network.RpcException;
@@ -36,7 +33,6 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
-import im.actor.runtime.function.Consumer;
 import im.actor.runtime.js.JsFileSystemProvider;
 import im.actor.runtime.js.fs.JsBlob;
 import im.actor.runtime.js.fs.JsFile;
@@ -102,7 +98,7 @@ public class JsFacade implements Exportable {
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
         configuration.setPhoneBookProvider(new JsPhoneBookProvider());
         configuration.setNotificationProvider(new JsNotificationsProvider());
-        configuration.setWebRTCProvider(new JsWebRTCProvider());
+        configuration.setCallsProvider(new JsCallsProvider());
 
         // Setting locale
         String locale = LocaleInfo.getCurrentLocale().getLocaleName();
