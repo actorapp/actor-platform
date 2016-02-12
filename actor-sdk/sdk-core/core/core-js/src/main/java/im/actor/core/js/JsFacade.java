@@ -358,6 +358,20 @@ public class JsFacade implements Exportable {
         messenger.getSharedDialogList().unsubscribe(callback);
     }
 
+    public void bindArchivedDialogs(JsDisplayListCallback<JsDialog> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getSharedArchivedDialogList().subscribe(callback, false);
+    }
+
+    public void unbindArchivedDialogs(JsDisplayListCallback<JsDialog> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getSharedArchivedDialogList().unsubscribe(callback);
+    }
+
     public void bindGroupDialogs(JsBindedValueCallback callback) {
         if (callback == null) {
             return;
@@ -832,6 +846,10 @@ public class JsFacade implements Exportable {
 
     public void onDialogsEnd() {
         messenger.loadMoreDialogs();
+    }
+
+    public void onArchivedDialogsEnd() {
+        messenger.loadMoreArchivedDialogs();
     }
 
     public void onChatEnd(JsPeer peer) {

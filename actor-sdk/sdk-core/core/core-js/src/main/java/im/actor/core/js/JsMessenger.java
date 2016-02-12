@@ -163,6 +163,10 @@ public class JsMessenger extends Messenger {
         modules.getMessagesModule().loadMoreDialogs();
     }
 
+    public void loadMoreArchivedDialogs() {
+        modules.getMessagesModule().loadMoreArchivedDialogs();
+    }
+
     public void loadMoreHistory(Peer peer) {
         modules.getMessagesModule().loadMoreHistory(peer);
     }
@@ -227,6 +231,10 @@ public class JsMessenger extends Messenger {
 
     public JsDisplayList<JsDialog, Dialog> getSharedDialogList() {
         return jsBindingModule.getSharedDialogList();
+    }
+
+    public JsDisplayList<JsDialog, Dialog> getSharedArchivedDialogList() {
+        return jsBindingModule.getSharedArchivedDialogList();
     }
 
     public JsDisplayList<JsContact, Contact> getSharedContactList() {
