@@ -102,12 +102,6 @@ public abstract class ActorDispatcher {
         return false;
     }
 
-    public final void sendMessageAtTime(ActorEndpoint endpoint, Object message, long time, ActorRef sender) {
-        if (!isDisconnected(endpoint, message, sender)) {
-            endpoint.getMailbox().schedule(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), time);
-        }
-    }
-
     public final void sendMessageNow(ActorEndpoint endpoint, Object message, ActorRef sender) {
         if (!isDisconnected(endpoint, message, sender)) {
             endpoint.getMailbox().schedule(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), 0);
@@ -119,25 +113,6 @@ public abstract class ActorDispatcher {
             endpoint.getMailbox().scheduleFirst(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender));
         }
     }
-
-    public final void sendMessageOnceAtTime(ActorEndpoint endpoint, Object message, long time, ActorRef sender) {
-        if (!isDisconnected(endpoint, message, sender)) {
-            endpoint.getMailbox().scheduleOnce(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), time);
-        }
-    }
-
-    public final void sendMessageOnceNow(ActorEndpoint endpoint, Object message, ActorRef sender) {
-        if (!isDisconnected(endpoint, message, sender)) {
-            endpoint.getMailbox().scheduleOnce(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), 0);
-        }
-    }
-
-    public final void cancelSend(ActorEndpoint endpoint, Object message, ActorRef sender) {
-        if (!endpoint.isDisconnected()) {
-            endpoint.getMailbox().unschedule(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender));
-        }
-    }
-
 
     public String getName() {
         return name;

@@ -69,6 +69,34 @@ endef
 define EOL
 
 
+
+
+endef
+
+
+define long_list_to_file
+@if [ -e $(1) ]; then rm $(1); fi
+@files='$(wordlist    1, 499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist  500, 999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 1000,1499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 1500,1999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 2000,2499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 2500,2999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 3000,3499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 3500,3999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 4000,4499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 4500,4999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 5000,5499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 5500,5999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 6000,6499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 6500,6999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 7000,7499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 7500,7999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 8000,8499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 8500,8999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 9000,9499,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@files='$(wordlist 9500,9999,$(2))' && for i in $$files; do echo $$i >> $(1); done
+@if [ ! -e $(1) ]; then touch $(1); fi
 endef
 
 # Build Tasks
@@ -102,10 +130,11 @@ $(foreach root,$(SOURCE_ROOTS),$(eval $(call SOURCE_ROOT_RULE,$(root))))
 # @rm -f $(OBJ_DIR)/$(LIBRARY_NAME)
 # $(call max_args,@ar crv $(OBJ_DIR)/$(LIBRARY_NAME),2,$(OBJECT_FILES))
 # @$(call max_args,ar rcs $(OBJ_DIR)/$(LIBRARY_NAME),1100,$(OBJECT_FILES))
+
 build: $(OBJ_DIR) $(OBJECT_FILES)
 	@rm -f $(OBJ_DIR)/$(LIBRARY_NAME)
-	@ar rcs $(OBJ_DIR)/$(LIBRARY_NAME) $(OBJECT_FILES)
-	@ranlib $(OBJ_DIR)/$(LIBRARY_NAME)
+	$(call long_list_to_file,$(OBJ_DIR)/_objs_list,$(OBJECT_FILES))
+	@libtool -static -o $(OBJ_DIR)/$(LIBRARY_NAME) -filelist $(OBJ_DIR)/_objs_list
 
 $(OBJ_DIR)/%.o: $(SOURCES_DIR)/%.m
 	@mkdir -p $(dir $@)
