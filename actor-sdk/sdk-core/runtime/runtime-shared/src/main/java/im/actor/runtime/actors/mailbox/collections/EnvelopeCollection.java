@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.mailbox.Envelope;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.ThreadLocalCompat;
@@ -57,6 +58,8 @@ public class EnvelopeCollection {
             root.changedTopKey(this);
         }
 
+        Log.d("Envelopes#" + id, "Add (" + topKey + "): " + allEnvelopesDebug());
+
         return key;
     }
 
@@ -75,6 +78,8 @@ public class EnvelopeCollection {
         }
 
         root.changedTopKey(this);
+
+        Log.d("Envelopes#" + id, "First (" + topKey + "): " + allEnvelopesDebug());
 
         return key;
     }
@@ -102,6 +107,8 @@ public class EnvelopeCollection {
         if (oldKey != topKey) {
             root.changedTopKey(this);
         }
+
+        Log.d("Envelopes#" + id, "Remove (" + topKey + "): " + allEnvelopesDebug());
     }
 
     public long putEnvelopeOnce(Envelope envelope, long time, EnvelopeComparator comparator) {
@@ -125,6 +132,8 @@ public class EnvelopeCollection {
         if (oldKey != topKey) {
             root.changedTopKey(this);
         }
+
+        Log.d("Envelopes#" + id, "Once (" + topKey + "): " + allEnvelopesDebug());
 
         return key;
     }
@@ -187,8 +196,21 @@ public class EnvelopeCollection {
         }
     }
 
+    public String allEnvelopesDebug() {
+        String res = "[ ";
+        synchronized (envelopes) {
+            for (ScheduledEnvelope e : envelopes.values()) {
+                if (res.length() != 1) {
+                    res += ", ";
+                }
+                res += e.getEnvelope().getMessage() + " (" + e.getKey() + ")";
+            }
+        }
+        return res + "] ";
+    }
+
     public interface EnvelopeComparator {
-        public boolean equals(Envelope a, Envelope b);
+        boolean equals(Envelope a, Envelope b);
     }
 
     public static class FetchResult {

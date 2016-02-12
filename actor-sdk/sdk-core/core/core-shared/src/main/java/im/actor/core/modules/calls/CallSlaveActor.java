@@ -1,25 +1,15 @@
 package im.actor.core.modules.calls;
 
-import im.actor.core.api.ApiAnswer;
-import im.actor.core.api.ApiOffer;
-import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.Log;
-import im.actor.runtime.WebRTC;
-import im.actor.runtime.function.Consumer;
-import im.actor.runtime.function.Function;
-import im.actor.runtime.promise.Promise;
-import im.actor.runtime.webrtc.WebRTCLocalStream;
-import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class CallSlaveActor extends CallActor {
 
-    private static final String TAG = "CallMasterActor";
+    private static final String TAG = "CallSlaveActor";
 
     public CallSlaveActor(String busId, ModuleContext context) {
         super(busId, context);
     }
-
 
     @Override
     public void onBusJoined() {
@@ -49,5 +39,12 @@ public class CallSlaveActor extends CallActor {
     @Override
     public void onBusStopped() {
         Log.d(TAG, "onBusStopped");
+    }
+
+    @Override
+    public void onReceive(Object message) {
+        Log.d(TAG,"onReceive");
+        super.onReceive(message);
+        Log.d(TAG, "onReceive:end");
     }
 }

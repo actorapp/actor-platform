@@ -1,4 +1,4 @@
-package im.actor.core.js.entity;
+package im.actor.runtime.js.entity;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
