@@ -4,14 +4,10 @@
 
 package im.actor.core.modules.internal.messages;
 
-import im.actor.core.api.ApiDialogShort;
 import im.actor.core.api.rpc.RequestLoadArchived;
-import im.actor.core.api.rpc.RequestLoadDialogs;
 import im.actor.core.api.rpc.ResponseLoadArchived;
-import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.updates.internal.ArchivedDialogLoaded;
-import im.actor.core.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
@@ -23,14 +19,13 @@ public class ArchivedDialogsActor extends ModuleActor {
 
     private static final int LIMIT = 20;
 
-    private static final String KEY_LOADED_DATE = "archived_dialogs_date";
-    private static final String KEY_LOADED = "archived_dialogs_loaded";
-    private static final String KEY_LOADED_INIT = "archived_dialogs_inited";
+    private static final String KEY_LOADED_OFFSET = "archived_dialogs_offset";
 
     private byte[] nextOffset;
-    private boolean archivedLoaded;
 
     private boolean isLoading = false;
+
+    RpcCallback<ResponseLoadArchived> callback;
 
     public ArchivedDialogsActor(ModuleContext context) {
         super(context);
@@ -38,17 +33,12 @@ public class ArchivedDialogsActor extends ModuleActor {
 
     @Override
     public void preStart() {
-        nextOffset = preferences().getBytes(KEY_LOADED_DATE);
-        archivedLoaded = preferences().getBool(KEY_LOADED, false);
-        if (!preferences().getBool(KEY_LOADED_INIT, false)) {
-            self().send(new LoadMore());
-        }
+        nextOffset = preferences().getBytes(KEY_LOADED_OFFSET);
     }
 
-    private void onLoadMore() {
-        if (archivedLoaded) {
-            return;
-        }
+    private void onLoadMore(final RpcCallback<ResponseLoadArchived> callback) {
+        this.callback = callback;
+
         if (isLoading) {
             return;
         }
@@ -61,31 +51,22 @@ public class ArchivedDialogsActor extends ModuleActor {
                     @Override
                     public void onResult(ResponseLoadArchived response) {
 
-                        // Invoke on sequence actor
                         updates().onUpdateReceived(new ArchivedDialogLoaded(response));
                     }
 
                     @Override
                     public void onError(RpcException e) {
-                        e.printStackTrace();
-                        // Never happens
+                        callback.onError(e);
                     }
                 });
     }
 
-    private void onLoadedMore(int loaded, byte[] nextOffset) {
+    private void onLoadedMore(ResponseLoadArchived responseLoadArchiveds) {
         isLoading = false;
 
-        if (loaded < LIMIT) {
-            archivedLoaded = true;
-        } else {
-            archivedLoaded = false;
-            this.nextOffset = nextOffset;
-        }
-        preferences().putBytes(KEY_LOADED_DATE, nextOffset);
-        preferences().putBool(KEY_LOADED, archivedLoaded);
-        preferences().putBool(KEY_LOADED_INIT, true);
-
+        this.nextOffset = responseLoadArchiveds.getNextOffset();
+        preferences().putBytes(KEY_LOADED_OFFSET, nextOffset);
+        callback.onResult(responseLoadArchiveds);
         Log.d(TAG, "Archived loaded");
     }
 
@@ -94,26 +75,34 @@ public class ArchivedDialogsActor extends ModuleActor {
     @Override
     public void onReceive(Object message) {
         if (message instanceof LoadMore) {
-            onLoadMore();
+            onLoadMore(((LoadMore) message).getCallback());
         } else if (message instanceof LoadedMore) {
-            LoadedMore loaded = (LoadedMore) message;
-            onLoadedMore(loaded.loaded, loaded.nextOffset);
+            onLoadedMore(((LoadedMore) message).getResponseLoadArchived());
         } else {
             drop(message);
         }
     }
 
     public static class LoadMore {
+        RpcCallback<ResponseLoadArchived> callback;
+        public LoadMore(RpcCallback<ResponseLoadArchived> callback) {
+            this.callback = callback;
+        }
 
+        public RpcCallback<ResponseLoadArchived> getCallback() {
+            return callback;
+        }
     }
 
     public static class LoadedMore {
-        private int loaded;
-        private byte[] nextOffset;
+        ResponseLoadArchived responseLoadArchived;
 
-        public LoadedMore(int loaded, byte[] nextOffset) {
-            this.loaded = loaded;
-            this.nextOffset = nextOffset;
+        public LoadedMore(ResponseLoadArchived responseLoadArchived) {
+            this.responseLoadArchived = responseLoadArchived;
+        }
+
+        public ResponseLoadArchived getResponseLoadArchived() {
+            return responseLoadArchived;
         }
     }
 }

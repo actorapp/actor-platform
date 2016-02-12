@@ -68,7 +68,6 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     private JsBindedValue<String> onlineState;
 
     private JsDisplayList<JsDialog, Dialog> dialogsList;
-    private JsDisplayList<JsDialog, Dialog> archivedDialogsList;
     private JsDisplayList<JsContact, Contact> contactsList;
     private JsDisplayList<JsSearchEntity, SearchEntity> searchList;
     private HashMap<Peer, JsDisplayList<JsMessage, Message>> messageLists = new HashMap<>();
@@ -363,14 +362,6 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
         }
 
         return dialogsList;
-    }
-
-    public JsDisplayList<JsDialog, Dialog> getSharedArchivedDialogList() {
-        if (archivedDialogsList == null) {
-            archivedDialogsList = (JsDisplayList<JsDialog, Dialog>) context().getDisplayListsModule().getArchivedDialogsSharedList();
-        }
-
-        return archivedDialogsList;
     }
 
     public JsDisplayList<JsMessage, Message> getSharedMessageList(Peer peer) {
