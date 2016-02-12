@@ -834,7 +834,7 @@ public class JsFacade implements Exportable {
         messenger.loadMoreDialogs();
     }
 
-    public JsPromise loaArchivedDialogs(){
+    public JsPromise loadArchivedDialogs(){
         return loadArchivedDialogs(true);
     }
 
