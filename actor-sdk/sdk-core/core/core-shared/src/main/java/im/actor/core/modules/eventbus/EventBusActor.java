@@ -12,6 +12,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 
@@ -24,6 +25,7 @@ public class EventBusActor extends ModuleActor {
     private String busId;
     private long deviceId;
 
+    private Cancellable keepAliveCancel;
     private long keepAliveRequest = -1;
 
     public EventBusActor(ModuleContext context) {
@@ -62,7 +64,7 @@ public class EventBusActor extends ModuleActor {
                     onBusStarted();
                     isProcessing = false;
                     unstashAll();
-                    self().send(new EventBusKeepAlive());
+                    keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
                 }
             }).failure(new Consumer<Exception>() {
                 @Override
@@ -81,7 +83,7 @@ public class EventBusActor extends ModuleActor {
                     onBusStarted();
                     isProcessing = false;
                     unstashAll();
-                    self().send(new EventBusKeepAlive());
+                    keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
                 }
             }).failure(new Consumer<Exception>() {
                 @Override
@@ -153,13 +155,17 @@ public class EventBusActor extends ModuleActor {
                 dispose();
             }
         });
-        self().send(new EventBusKeepAlive(), KEEP_ALIVE);
+        keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
     }
 
     private void stopKeepAlive() {
         if (keepAliveRequest != -1) {
             context().getActorApi().cancelRequest(keepAliveRequest);
             keepAliveRequest = -1;
+        }
+        if (keepAliveCancel != null) {
+            keepAliveCancel.cancel();
+            keepAliveCancel = null;
         }
     }
 
@@ -231,7 +237,7 @@ public class EventBusActor extends ModuleActor {
             EventBusMessage eventBusMessage = (EventBusMessage) message;
             onMessageReceived(eventBusMessage.getSenderId(), eventBusMessage.getSenderDeviceId(),
                     eventBusMessage.getMessage());
-        } else if (message instanceof EventBusKeepAlive) {
+        } else if (message instanceof KeepAlive) {
             if (isProcessing) {
                 stash();
                 return;
@@ -313,7 +319,7 @@ public class EventBusActor extends ModuleActor {
         }
     }
 
-    private static class EventBusKeepAlive {
+    private static class KeepAlive {
 
     }
 }

@@ -60,27 +60,6 @@ public class ActorRef {
     }
 
     /**
-     * Send message with empty sender and delay
-     *
-     * @param message message
-     * @param delay   delay
-     */
-    public void send(Object message, long delay) {
-        dispatcher.sendMessageAtTime(endpoint, message, ActorTime.currentTime() + delay, null);
-    }
-
-    /**
-     * Send message
-     *
-     * @param message message
-     * @param delay   delay
-     * @param sender  sender
-     */
-    public void send(Object message, long delay, ActorRef sender) {
-        dispatcher.sendMessageAtTime(endpoint, message, ActorTime.currentTime() + delay, sender);
-    }
-
-    /**
      * Sending message before all other messages
      *
      * @param message message
@@ -97,64 +76,5 @@ public class ActorRef {
      */
     public void sendFirst(Object message) {
         dispatcher.sendMessageFirst(endpoint, message, null);
-    }
-
-    /**
-     * Send message once
-     *
-     * @param message message
-     */
-    public void sendOnce(Object message) {
-        dispatcher.sendMessageOnceNow(endpoint, message, null);
-    }
-
-    /**
-     * Send message once
-     *
-     * @param message message
-     * @param sender  sender
-     */
-    public void sendOnce(Object message, ActorRef sender) {
-        dispatcher.sendMessageOnceNow(endpoint, message, sender);
-    }
-
-    /**
-     * Send message once
-     *
-     * @param message message
-     * @param delay   delay
-     */
-    public void sendOnce(Object message, long delay) {
-        dispatcher.sendMessageOnceAtTime(endpoint, message, ActorTime.currentTime() + delay, null);
-    }
-
-    /**
-     * Send message once
-     *
-     * @param message message
-     * @param delay   delay
-     * @param sender  sender
-     */
-    public void sendOnce(Object message, long delay, ActorRef sender) {
-        dispatcher.sendMessageOnceAtTime(endpoint, message, ActorTime.currentTime() + delay, sender);
-    }
-
-    /**
-     * Cancelling scheduled message
-     *
-     * @param message message
-     */
-    public void cancelMessage(Object message) {
-        cancelMessage(message, null);
-    }
-
-    /**
-     * Cancelling scheduled message
-     *
-     * @param message message
-     * @param sender  sender
-     */
-    public void cancelMessage(Object message, ActorRef sender) {
-        dispatcher.cancelSend(endpoint, message, sender);
     }
 }
