@@ -30,6 +30,7 @@ import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.MailboxCreator;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.mailbox.Envelope;
@@ -48,33 +49,18 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
             public PresenceActor create() {
                 return new PresenceActor(messenger);
             }
-        }, new MailboxCreator() {
-            @Override
-            public Mailbox createMailbox(MailboxesQueue queue) {
-                return new Mailbox(queue) {
-                    @Override
-                    protected boolean isEqualEnvelope(Envelope a, Envelope b) {
-                        if (a.getMessage() instanceof OnlineUserTimeout && b.getMessage() instanceof OnlineUserTimeout) {
-                            if (((OnlineUserTimeout) a.getMessage()).getUid() == ((OnlineUserTimeout) b.getMessage()).getUid()) {
-                                return true;
-                            }
-                        }
-                        return super.isEqualEnvelope(a, b);
-                    }
-                };
-            }
         }), "actor/presence/users");
     }
 
     private static final int ONLINE_TIMEOUT = 5 * 60 * 1000;
-    private static final long FOREVER = 24 * 60 * 60 * 1000L;
 
     private static final String TAG = "PresenceActor";
 
-    private HashMap<Integer, Long> lastUidState = new HashMap<Integer, Long>();
-    private HashMap<Integer, Long> lastGidState = new HashMap<Integer, Long>();
-    private HashSet<Integer> uids = new HashSet<Integer>();
-    private HashSet<Integer> gids = new HashSet<Integer>();
+    private HashMap<Integer, Long> lastUidState = new HashMap<>();
+    private HashMap<Integer, Long> lastGidState = new HashMap<>();
+    private HashMap<Integer, Cancellable> uidCancellables = new HashMap<>();
+    private HashSet<Integer> uids = new HashSet<>();
+    private HashSet<Integer> gids = new HashSet<>();
 
     public PresenceActor(ModuleContext messenger) {
         super(messenger);
@@ -103,9 +89,12 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
             vm.getPresence().change(new UserPresence(UserPresence.State.ONLINE));
         }
 
-        // Send
-        self().sendOnce(new OnlineUserTimeout(uid, (int) ((updateDate + ONLINE_TIMEOUT) / 1000L),
-                updateDate + ONLINE_TIMEOUT), ONLINE_TIMEOUT);
+        // Updating timeout
+        if (uidCancellables.containsKey(uid)) {
+            uidCancellables.remove(uid).cancel();
+        }
+        uidCancellables.put(uid, schedule(new OnlineUserTimeout(uid, (int) ((updateDate + ONLINE_TIMEOUT) / 1000L),
+                updateDate + ONLINE_TIMEOUT), ONLINE_TIMEOUT));
     }
 
     @Verified
@@ -124,8 +113,9 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
         }
 
         // Cancel timeout
-        self().sendOnce(new OnlineUserTimeout(uid, (int) ((updateDate + ONLINE_TIMEOUT) / 1000L),
-                updateDate + ONLINE_TIMEOUT), FOREVER);
+        if (uidCancellables.containsKey(uid)) {
+            uidCancellables.remove(uid).cancel();
+        }
     }
 
     @Verified
@@ -144,7 +134,9 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
         }
 
         // Cancel timeout
-        self().sendOnce(new OnlineUserTimeout(uid, 0, 0), FOREVER);
+        if (uidCancellables.containsKey(uid)) {
+            uidCancellables.remove(uid).cancel();
+        }
     }
 
     private void onUserGoesOffline(int uid, int date, long updateDate) {
@@ -162,7 +154,9 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
         }
 
         // Cancel timeout
-        self().sendOnce(new OnlineUserTimeout(uid, 0, 0), FOREVER);
+        if (uidCancellables.containsKey(uid)) {
+            uidCancellables.remove(uid).cancel();
+        }
     }
 
     @Verified

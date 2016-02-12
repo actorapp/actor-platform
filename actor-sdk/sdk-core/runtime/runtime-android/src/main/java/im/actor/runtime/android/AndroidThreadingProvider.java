@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import im.actor.runtime.android.time.SntpClient;
 import im.actor.runtime.generic.GenericThreadingProvider;
 import im.actor.runtime.Log;
+import im.actor.runtime.threading.Dispatcher;
 
 public class AndroidThreadingProvider extends GenericThreadingProvider {
 
@@ -61,5 +62,10 @@ public class AndroidThreadingProvider extends GenericThreadingProvider {
     @Override
     public long getSyncedCurrentTime() {
         return System.currentTimeMillis() + syncDelta;
+    }
+
+    @Override
+    public Dispatcher createDispatcher() {
+        return null;
     }
 }

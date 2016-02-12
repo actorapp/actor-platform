@@ -7,6 +7,7 @@ import im.actor.core.util.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.Props;
 
 import static im.actor.runtime.actors.ActorSystem.system;
@@ -45,6 +46,7 @@ public class JsIdleModule extends AbsModule {
 
         private boolean isAppVisible = true;
         private JsMessenger messenger;
+        private Cancellable flushCancellable;
 
         public IdleActor(JsMessenger messenger, ModuleContext context) {
             super(context);
@@ -55,7 +57,7 @@ public class JsIdleModule extends AbsModule {
         public void preStart() {
             // Log.d("JsIdle", "preStart");
             JsIdleDetection.subscribe(this);
-            self().sendOnce(new FlushTimeout(), TIMEOUT);
+            scheduleFlush();
         }
 
         public void onActionDetected() {
@@ -64,7 +66,15 @@ public class JsIdleModule extends AbsModule {
                 isAppVisible = true;
                 messenger.onAppVisible();
             }
-            self().sendOnce(new FlushTimeout(), TIMEOUT);
+            scheduleFlush();
+        }
+
+        void scheduleFlush() {
+            if (flushCancellable != null) {
+                flushCancellable.cancel();
+                flushCancellable = null;
+            }
+            flushCancellable = schedule(new FlushTimeout(), TIMEOUT);
         }
 
         public void onTimeoutDetected() {

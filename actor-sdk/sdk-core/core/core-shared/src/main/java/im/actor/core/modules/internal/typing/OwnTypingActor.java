@@ -15,6 +15,7 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.ActorTime;
+import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.annotations.Verified;
 
@@ -37,6 +38,8 @@ public class OwnTypingActor extends ModuleActor {
 
     private long prevRid = 0;
 
+    private Cancellable typingCancellable;
+
     @Verified
     public OwnTypingActor(ModuleContext messenger) {
         super(messenger);
@@ -56,13 +59,22 @@ public class OwnTypingActor extends ModuleActor {
 
         cancelPrevRequest();
         prevRid = request(new RequestTyping(outPeer, ApiTypingType.TEXT));
-        self().sendOnce(new AbortTyping(peer), TYPING_CANCEL_DELAY);
+
+        if (typingCancellable != null) {
+            typingCancellable.cancel();
+            typingCancellable = null;
+        }
+        typingCancellable = schedule(new AbortTyping(peer), TYPING_CANCEL_DELAY);
     }
 
     private void onMessageSent(Peer peer) {
         cancelPrevRequest();
         lastTypingTime = 0;
-        self().sendOnce(new AbortTyping(peer), 24 * 60 * 60 * 1000L);
+
+        if (typingCancellable != null) {
+            typingCancellable.cancel();
+            typingCancellable = null;
+        }
     }
 
     private void onAbortTyping(Peer peer) {
