@@ -66,14 +66,4 @@ public class ActorContext {
         actorScope.setMessage(message);
     }
 
-    /**
-     * Stopping actor
-     */
-    public void stopSelf() {
-        try {
-            actorScope.getDispatcher().killGracefully(actorScope);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

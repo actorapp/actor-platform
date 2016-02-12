@@ -4,8 +4,9 @@
 
 package im.actor.runtime.actors;
 
-import im.actor.runtime.actors.mailbox.ActorDispatcher;
-import im.actor.runtime.actors.mailbox.ActorEndpoint;
+import im.actor.runtime.actors.dispatch.ActorDispatcher;
+import im.actor.runtime.actors.dispatch.ActorEndpoint;
+import im.actor.runtime.actors.dispatch.Envelope;
 
 /**
  * Reference to Actor that allows to send messages to real Actor
@@ -13,7 +14,6 @@ import im.actor.runtime.actors.mailbox.ActorEndpoint;
 public class ActorRef {
 
     private ActorSystem system;
-    private ActorDispatcher dispatcher;
     private String path;
     private ActorEndpoint endpoint;
 
@@ -29,14 +29,12 @@ public class ActorRef {
      * <p>INTERNAL API</p>
      * Creating actor reference
      *
-     * @param system     actor system
-     * @param dispatcher dispatcher of actor
-     * @param path       path of actor
+     * @param system actor system
+     * @param path   path of actor
      */
-    public ActorRef(ActorEndpoint endpoint, ActorSystem system, ActorDispatcher dispatcher, String path) {
+    public ActorRef(ActorEndpoint endpoint, ActorSystem system, String path) {
         this.endpoint = endpoint;
         this.system = system;
-        this.dispatcher = dispatcher;
         this.path = path;
     }
 
@@ -46,7 +44,7 @@ public class ActorRef {
      * @param message message
      */
     public void send(Object message) {
-        dispatcher.sendMessageNow(endpoint, message, null);
+        send(message, null);
     }
 
     /**
@@ -56,7 +54,7 @@ public class ActorRef {
      * @param sender  sender
      */
     public void send(Object message, ActorRef sender) {
-        dispatcher.sendMessageNow(endpoint, message, sender);
+        endpoint.getMailbox().schedule(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender));
     }
 
     /**
@@ -66,15 +64,6 @@ public class ActorRef {
      * @param sender  sender
      */
     public void sendFirst(Object message, ActorRef sender) {
-        dispatcher.sendMessageFirst(endpoint, message, sender);
-    }
-
-    /**
-     * Sending message before all other messages
-     *
-     * @param message message
-     */
-    public void sendFirst(Object message) {
-        dispatcher.sendMessageFirst(endpoint, message, null);
+        endpoint.getMailbox().scheduleFirst(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender));
     }
 }

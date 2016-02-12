@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.runtime.actors.mailbox;
+package im.actor.runtime.actors.dispatch;
 
 import com.google.j2objc.annotations.Property;
 
@@ -15,12 +15,9 @@ public class ActorEndpoint {
     private Mailbox mailbox;
     @Property
     private ActorScope scope;
-    @Property
-    private boolean isDisconnected;
 
     public ActorEndpoint(String path) {
         this.path = path;
-        isDisconnected = false;
     }
 
     public String getPath() {
@@ -35,12 +32,7 @@ public class ActorEndpoint {
         return scope;
     }
 
-    public boolean isDisconnected() {
-        return isDisconnected;
-    }
-
     public void connect(Mailbox mailbox, ActorScope scope) {
-        isDisconnected = false;
         this.mailbox = mailbox;
         this.scope = scope;
     }

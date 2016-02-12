@@ -5,9 +5,6 @@ import im.actor.runtime.storage.KeyValueStorage;
 import im.actor.runtime.storage.ListStorage;
 import im.actor.runtime.storage.PreferencesStorage;
 
-/**
- * Created by ex3ndr on 07.08.15.
- */
 public class StorageRuntimeProvider implements StorageRuntime {
 
     @Override
