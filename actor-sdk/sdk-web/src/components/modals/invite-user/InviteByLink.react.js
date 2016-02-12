@@ -1,13 +1,13 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { assign } from 'lodash';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import Modal from 'react-modal';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { FormattedMessage } from 'react-intl';
 import { escapeWithEmoji } from '../../../utils/EmojiUtils'
 
 import { KeyCodes } from '../../../constants/ActorAppConstants';
@@ -28,7 +28,7 @@ const getStateFromStores = () => {
   };
 };
 
-class InviteByLink extends React.Component {
+class InviteByLink extends Component {
   constructor(props) {
     super(props);
 
@@ -36,6 +36,10 @@ class InviteByLink extends React.Component {
 
     InviteUserStore.addChangeListener(this.onChange);
   }
+
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   componentWillUnmount() {
     InviteUserStore.removeChangeListener(this.onChange);
@@ -46,52 +50,6 @@ class InviteByLink extends React.Component {
       document.addEventListener('keydown', this.onKeyDown, false);
     } else if (this.state.isOpen && !nextState.isOpen) {
       document.removeEventListener('keydown', this.onKeyDown, false);
-    }
-  }
-
-  render() {
-    const { group, inviteUrl, isOpen } = this.state;
-
-    const groupName = (group !== null) ? <b dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.name)}}/> : null;
-
-    if (isOpen) {
-      return (
-        <Modal className="modal-new modal-new--invite-by-link"
-               closeTimeoutMS={150}
-               isOpen={isOpen}
-               style={{width: 440}}>
-
-          <header className="modal-new__header">
-            <svg className="modal-new__header__icon icon icon--blue"
-                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#back"/>'}}
-                 onClick={this.onBackClick}/>
-
-            <h3 className="modal-new__header__title">
-              {this.getIntlMessage('inviteByLinkModalTitle')}
-            </h3>
-
-            <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onClose}>{this.getIntlMessage('button.done')}</button>
-            </div>
-          </header>
-
-          <div className="modal-new__body">
-            <FormattedMessage groupName={groupName} message={this.getIntlMessage('inviteByLinkModalDescription')}/>
-            <textarea className="textarea" onClick={this.onInviteLinkClick} readOnly row="3" value={inviteUrl}/>
-          </div>
-
-          <footer className="modal-new__footer">
-            <button className="button button--rised pull-left hide">
-              {this.getIntlMessage('inviteByLinkModalRevokeButton')}
-            </button>
-            <button className="button button--rised pull-right hide">
-              {this.getIntlMessage('inviteByLinkModalCopyButton')}
-            </button>
-          </footer>
-        </Modal>
-      );
-    } else {
-      return null;
     }
   }
 
@@ -112,9 +70,55 @@ class InviteByLink extends React.Component {
       this.onClose();
     }
   };
+
+  render() {
+    const { group, inviteUrl, isOpen } = this.state;
+    const { intl } = this.context;
+
+    const groupName = (group !== null) ? <b dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.name)}}/> : null;
+
+    if (isOpen) {
+      return (
+        <Modal className="modal-new modal-new--invite-by-link"
+               closeTimeoutMS={150}
+               isOpen={isOpen}
+               style={{width: 440}}>
+
+          <header className="modal-new__header">
+            <svg className="modal-new__header__icon icon icon--blue"
+                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#back"/>'}}
+                 onClick={this.onBackClick}/>
+
+            <h3 className="modal-new__header__title">
+              {intl.messages['inviteByLinkModalTitle']}
+            </h3>
+
+            <div className="pull-right">
+              <button className="button button--lightblue" onClick={this.onClose}>{intl.messages['button.done']}</button>
+            </div>
+          </header>
+
+          <div className="modal-new__body">
+            <FormattedMessage id="inviteByLinkModalDescription" values={{groupName}}/>
+            <textarea className="textarea" onClick={this.onInviteLinkClick} readOnly row="3" value={inviteUrl}/>
+          </div>
+
+          <footer className="modal-new__footer">
+            <button className="button button--rised pull-left hide">
+              {intl.messages['inviteByLinkModalRevokeButton']}
+            </button>
+            <button className="button button--rised pull-right hide">
+              {intl.messages['inviteByLinkModalCopyButton']}
+            </button>
+          </footer>
+        </Modal>
+      );
+    } else {
+      return null;
+    }
+  }
 }
 
-ReactMixin.onClass(InviteByLink, IntlMixin);
 ReactMixin.onClass(InviteByLink, PureRenderMixin);
 
 export default InviteByLink;

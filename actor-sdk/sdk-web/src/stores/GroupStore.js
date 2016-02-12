@@ -4,7 +4,7 @@
 
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes, AsyncActionStates } from '../constants/ActorAppConstants';
+import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 
 let _integrationToken = null;
@@ -14,10 +14,21 @@ class GroupStore extends Store {
     super(dispatcher);
   }
 
+  /**
+   * Get group information
+   *
+   * @param gid {number} Group id
+   * @returns {object} Group information
+   */
   getGroup(gid) {
     return ActorClient.getGroup(gid);
   }
 
+  /**
+   * Get group integration token
+   *
+   * @returns {string|null}
+   */
   getToken() {
     return _integrationToken;
   }

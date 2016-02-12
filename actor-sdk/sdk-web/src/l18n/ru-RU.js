@@ -1,5 +1,5 @@
 export default {
-  'locales': 'ru-RU',
+  'locale': 'ru',
   'messages': {
     // Login
     'login': {

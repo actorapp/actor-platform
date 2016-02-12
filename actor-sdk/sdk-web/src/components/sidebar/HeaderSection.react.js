@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 import classnames from 'classnames';
 import ActorClient from '../../utils/ActorClient';
 import { escapeWithEmoji } from '../../utils/EmojiUtils'
@@ -46,6 +44,10 @@ class HeaderSection extends Component {
     }
   }
 
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
   componentWillMount() {
     this.setState({isOpened: false});
   }
@@ -79,9 +81,10 @@ class HeaderSection extends Component {
     }
   };
   setLogout = () => {
-    confirm(this.getIntlMessage('modal.confirm.logout'), {
-      abortLabel: this.getIntlMessage('button.cancel'),
-      confirmLabel: this.getIntlMessage('button.ok')
+    const { intl } = this.context;
+    confirm(intl.messages['modal.confirm.logout'], {
+      abortLabel: intl.messages['button.cancel'],
+      confirmLabel: intl.messages['button.ok']
     }).then(
       () => LoginActionCreators.setLoggedOut(),
       () => {}
@@ -90,9 +93,9 @@ class HeaderSection extends Component {
 
   render() {
     const { profile, isOpened, isMyProfileOpen, isCreateGroupOpen, isAddContactsOpen, isPreferencesOpen } = this.state;
+    const { intl } = this.context;
 
     if (profile) {
-
       const headerClass = classnames('sidebar__header', 'sidebar__header--clickable', {
         'sidebar__header--opened': isOpened
       });
@@ -116,34 +119,34 @@ class HeaderSection extends Component {
               <ul className="dropdown__menu dropdown__menu--right">
                 <li className="dropdown__menu__item" onClick={this.openMyProfile}>
                   <i className="material-icons">edit</i>
-                  {this.getIntlMessage('menu.editProfile')}
+                  {intl.messages['menu.editProfile']}
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openAddContactModal}>
                   <i className="material-icons">person_add</i>
-                  {this.getIntlMessage('menu.addToContacts')}
+                  {intl.messages['menu.addToContacts']}
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openCreateGroup}>
                   <i className="material-icons">group_add</i>
-                  {this.getIntlMessage('menu.createGroup')}
+                  {intl.messages['menu.createGroup']}
                 </li>
                 <li className="dropdown__menu__separator"/>
                 <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
                   <i className="material-icons">help</i>
-                  {this.getIntlMessage('menu.helpAndFeedback')}
+                  {intl.messages['menu.helpAndFeedback']}
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openTwitter}>
                   <svg className="icon icon--dropdown"
                        style={{marginLeft: -34}}
                        dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#twitter"/>'}}/>
-                  {this.getIntlMessage('menu.twitter')}
+                  {intl.messages['menu.twitter']}
                 </li>
                 <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
                   <i className="material-icons">settings</i>
-                  {this.getIntlMessage('menu.preferences')}
+                  {intl.messages['menu.preferences']}
                 </li>
                 <li className="dropdown__menu__separator"/>
                 <li className="dropdown__menu__item" onClick={this.setLogout}>
-                  {this.getIntlMessage('menu.signOut')}
+                  {intl.messages['menu.signOut']}
                 </li>
               </ul>
             </div>
@@ -163,7 +166,5 @@ class HeaderSection extends Component {
     }
   }
 }
-
-ReactMixin.onClass(HeaderSection, IntlMixin);
 
 export default Container.create(HeaderSection);

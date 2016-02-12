@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
-import RouterContainer from '../utils/RouterContainer';
+import history from '../utils/history';
 
 import DialogActionCreators from './DialogActionCreators';
 
@@ -29,10 +29,7 @@ export default {
       }
     };
 
-    const goHome = () => {
-      const router = RouterContainer.get();
-      router.replaceWith('/');
-    };
+    const goHome = () => history.replace('/');
 
     joinViaLink()
       .then(selectJoined)

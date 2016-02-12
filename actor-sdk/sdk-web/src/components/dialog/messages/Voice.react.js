@@ -1,11 +1,10 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import classnames from 'classnames';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 
 let cache = [];
 
@@ -101,7 +100,7 @@ class Voice extends Component {
   };
 
   handleRewind = (event) => {
-    const rewindRect = React.findDOMNode(this.refs.rewind).getBoundingClientRect();
+    const rewindRect = findDOMNode(this.refs.rewind).getBoundingClientRect();
     const rewindPosition = (event.clientX - rewindRect.left) / rewindRect.width;
 
     this.audio.currentTime = this.audio.duration * rewindPosition;
@@ -153,7 +152,5 @@ class Voice extends Component {
     );
   }
 }
-
-ReactMixin.onClass(Voice, IntlMixin);
 
 export default Voice;

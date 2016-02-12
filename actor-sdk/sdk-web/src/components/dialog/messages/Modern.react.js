@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { map } from 'lodash';
@@ -32,9 +32,9 @@ function getColor(color) {
 
 /**
  * Class that represents component for display modern text message attachment field
- * @param {string} title Field title
- * @param {string} value Field value
- * @param {bool} isShort Display short version of field
+ * @param {String} title Field title
+ * @param {String} value Field value
+ * @param {Boolean} isShort Display short version of field
  */
 class Field extends Component {
   static propTypes = {
@@ -67,11 +67,11 @@ class Field extends Component {
 
 /**
  * Class that represents component for display modern text message attachments
- * @param {array} fields Array of objects contains attachment fields
- * @param {object} paragraphStyle Contains attachment styles
- * @param {string} text Attachment text
- * @param {string} title Attachment title
- * @param {string} titleUrl Attachment title url
+ * @param {Array} fields Array of objects contains attachment fields
+ * @param {Object} paragraphStyle Contains attachment styles
+ * @param {String} text Attachment text
+ * @param {String} title Attachment title
+ * @param {String} titleUrl Attachment title url
  */
 class Attach extends Component {
   static propTypes = {
@@ -116,10 +116,10 @@ class Attach extends Component {
 
 /**
  * Class that represents component for display modern text messages content
- * @param {array} attaches Array of objects contains modern message attached paragraphs
- * @param {object} paragraphStyle Contains message styles
- * @param {string} text Message text
- * @param {string} className Component class name
+ * @param {Array} attaches Array of objects contains modern message attached paragraphs
+ * @param {Object} paragraphStyle Contains message styles
+ * @param {String} text Message text
+ * @param {String} className Component class name
  */
 class TextModern extends Component {
   static propTypes = {

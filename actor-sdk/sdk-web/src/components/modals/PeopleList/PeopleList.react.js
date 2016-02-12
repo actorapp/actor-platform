@@ -1,13 +1,12 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { map, debounce } from 'lodash';
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 
 import { KeyCodes } from '../../../constants/ActorAppConstants';
 
@@ -22,6 +21,10 @@ class PeopleList extends Component {
   constructor(props) {
     super(props);
   }
+
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   static getStores = () => [PeopleStore];
 
@@ -42,7 +45,7 @@ class PeopleList extends Component {
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  setFocus = () => React.findDOMNode(this.refs.search).focus();
+  setFocus = () => findDOMNode(this.refs.search).focus();
 
   handleClose = () => ContactActionCreators.close();
 
@@ -72,8 +75,8 @@ class PeopleList extends Component {
 
       this.setState({selectedIndex: index});
 
-      const scrollContainerNode = React.findDOMNode(this.refs.results);
-      const selectedNode = React.findDOMNode(this.refs.selected);
+      const scrollContainerNode = findDOMNode(this.refs.results);
+      const selectedNode = findDOMNode(this.refs.selected);
       const scrollContainerNodeRect = scrollContainerNode.getBoundingClientRect();
       const selectedNodeRect = selectedNode.getBoundingClientRect();
 
@@ -92,8 +95,8 @@ class PeopleList extends Component {
 
       this.setState({selectedIndex: index});
 
-      const scrollContainerNode = React.findDOMNode(this.refs.results);
-      const selectedNode = React.findDOMNode(this.refs.selected);
+      const scrollContainerNode = findDOMNode(this.refs.results);
+      const selectedNode = findDOMNode(this.refs.selected);
       const scrollContainerNodeRect = scrollContainerNode.getBoundingClientRect();
       const selectedNodeRect = selectedNode.getBoundingClientRect();
 
@@ -135,12 +138,13 @@ class PeopleList extends Component {
   };
 
   handleScroll = (top) => {
-    const resultsNode = React.findDOMNode(this.refs.results);
+    const resultsNode = findDOMNode(this.refs.results);
     resultsNode.scrollTop = top;
   };
 
   render() {
     const { query, results, selectedIndex, list } = this.state;
+    const { intl } = this.context;
 
     const peopleList = map(results, (result, index) => <People contact={result} key={index}
                                                                onClick={this.handleContactSelect}
@@ -151,13 +155,13 @@ class PeopleList extends Component {
     return (
       <div className="newmodal newmodal__contacts">
         <header className="newmodal__header">
-          <h2>{this.getIntlMessage('modal.contacts.title')}</h2>
+          <h2>{intl.messages['modal.contacts.title']}</h2>
         </header>
 
         <section className="newmodal__search">
           <input className="newmodal__search__input"
                  onChange={this.handleSearchChange}
-                 placeholder={this.getIntlMessage('modal.contacts.search')}
+                 placeholder={intl.messages['modal.contacts.search']}
                  type="search"
                  ref="search"
                  value={query}/>
@@ -166,10 +170,10 @@ class PeopleList extends Component {
         <ul className="newmodal__result contacts__list" ref="results">
           {
             list.length === 0
-              ? <div>{this.getIntlMessage('modal.contacts.loading')}</div>
+              ? <div>{intl.messages['modal.contacts.loading']}</div>
               : results.length === 0
               ? <li className="contacts__list__item contacts__list__item--empty text-center">
-                  {this.getIntlMessage('modal.contacts.notFound')}
+                  {intl.messages['modal.contacts.notFound']}
                 </li>
               : peopleList
           }
@@ -178,8 +182,6 @@ class PeopleList extends Component {
     )
   }
 }
-
-ReactMixin.onClass(PeopleList, IntlMixin);
 
 export default Container.create(PeopleList, {pure: false});
 
