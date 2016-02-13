@@ -1,50 +1,49 @@
 package im.actor.runtime.webrtc.sdp;
 
+import java.util.ArrayList;
+
 public abstract class SDP {
+
     public static SDPScheme parse(String sdp) {
-
         SDPReader reader = new SDPReader(sdp);
+        SDPRawRecord record;
 
-//        String[] lines = sdp.split("\\r?\\n");
-//        int cursor = 0;
-//
-//        //
-//        // Header
-//        //
-//        if (!lines[cursor].startsWith("v=")) {
-//            throw new RuntimeException("First line doesn't start with version of SDP");
-//        }
-//        int ver = Integer.parseInt(lines[cursor].substring(2));
-//        cursor++;
+        //
+        // Session
+        //
+        SDPSession session = new SDPSession(reader.readVersion());
+        while ((record = reader.readUntil('m')) != null) {
+            session.getRecords().add(record);
+        }
 
-//        //
-//        // Session
-//        //
-//        SDPSession session = new SDPSession(ver);
-//        while (cursor < lines.length) {
-//            // Reached media section
-//            if (lines[cursor].startsWith("m=")) {
-//                break;
-//            }
-//            char type = lines[cursor].charAt(0);
-//            String val = lines[cursor].substring(2);
-//            session.getRecords().add(new SDPRawRecord(type, val));
-//            cursor++;
-//        }
-//
-//        //
-//        // Media Lines
-//        //
-//        while (cursor < lines.length) {
-//            String mediaStartLine = lines[cursor++];
-//            while (cursor < lines.length) {
-//                if (lines[cursor].startsWith("m=")) {
-//                    break;
-//                }
-//                cursor++;
-//            }
-//        }
+        //
+        // Media Lines
+        //
+        ArrayList<SDPMedia> medias = new ArrayList<>();
+        SDPRawRecord mediaLine;
+        while ((mediaLine = reader.readRecord('m')) != null) {
+            String[] mediaDesc = mediaLine.getValue().split(" ");
+            String mediaType = mediaDesc[0];
+            int codecsCount = Integer.parseInt(mediaDesc[1]);
+            ArrayList<String> protocols = new ArrayList<>();
+            for (String p : mediaDesc[2].split("/")) {
+                protocols.add(p);
+            }
+            ArrayList<Integer> codecs = new ArrayList<>();
+            for (int i = 0; i < codecsCount; i++) {
+                codecs.add(Integer.parseInt(mediaDesc[3 + i]));
+            }
+            ArrayList<String> args = new ArrayList<>();
+            for (int i = codecsCount + 3; i < mediaDesc.length; i++) {
+                args.add(mediaDesc[i]);
+            }
+            ArrayList<SDPRawRecord> records = new ArrayList<>();
+            while ((record = reader.readUntil('m')) != null) {
+                records.add(record);
+            }
+            medias.add(new SDPMedia(mediaType, protocols, codecs, args, records));
+        }
 
-        return null;
+        return new SDPScheme(session, medias);
     }
 }
