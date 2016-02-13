@@ -8,9 +8,9 @@ public class SDPSession {
     private final int version;
     private final ArrayList<SDPRawRecord> records;
 
-    public SDPSession(int version, List<SDPRawRecord> records) {
+    public SDPSession(int version) {
         this.version = version;
-        this.records = new ArrayList<>(records);
+        this.records = new ArrayList<>();
     }
 
     public int getVersion() {
