@@ -16,10 +16,9 @@ import im.actor.runtime.function.Function;
 import im.actor.runtime.function.FunctionTupled2;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.Promises;
-import im.actor.runtime.webrtc.WebRTCLocalStream;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
-import im.actor.runtime.webrtc.WebRTCRemoteStream;
 import im.actor.runtime.webrtc.WebRTCSessionDescription;
 
 public class PeerConnectionActor extends ModuleActor {
@@ -71,9 +70,9 @@ public class PeerConnectionActor extends ModuleActor {
         Log.d(TAG, "preStart");
 
         isReady = false;
-        Promises.tuple(WebRTC.createPeerConnection(), WebRTC.getUserAudio()).map(new FunctionTupled2<WebRTCPeerConnection, WebRTCLocalStream, WebRTCPeerConnection>() {
+        Promises.tuple(WebRTC.createPeerConnection(), WebRTC.getUserAudio()).map(new FunctionTupled2<WebRTCPeerConnection, WebRTCMediaStream, WebRTCPeerConnection>() {
             @Override
-            public WebRTCPeerConnection apply(WebRTCPeerConnection webRTCPeerConnection, WebRTCLocalStream stream) {
+            public WebRTCPeerConnection apply(WebRTCPeerConnection webRTCPeerConnection, WebRTCMediaStream stream) {
                 webRTCPeerConnection.addOwnStream(stream);
                 return webRTCPeerConnection;
             }
@@ -94,12 +93,12 @@ public class PeerConnectionActor extends ModuleActor {
                     }
 
                     @Override
-                    public void onStreamAdded(WebRTCRemoteStream stream) {
+                    public void onStreamAdded(WebRTCMediaStream stream) {
 
                     }
 
                     @Override
-                    public void onStreamRemoved(WebRTCRemoteStream stream) {
+                    public void onStreamRemoved(WebRTCMediaStream stream) {
 
                     }
                 });

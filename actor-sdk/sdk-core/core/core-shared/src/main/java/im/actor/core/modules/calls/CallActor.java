@@ -3,7 +3,6 @@ package im.actor.core.modules.calls;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import im.actor.core.api.ApiAnswer;
@@ -13,14 +12,7 @@ import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.eventbus.EventBusActor;
 import im.actor.runtime.Log;
-import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.function.Consumer;
-import im.actor.runtime.function.Function;
-import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.Promises;
-import im.actor.runtime.webrtc.WebRTCLocalStream;
-import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class CallActor extends EventBusActor {
 
