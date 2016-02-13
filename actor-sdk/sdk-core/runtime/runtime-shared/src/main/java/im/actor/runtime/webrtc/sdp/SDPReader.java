@@ -17,4 +17,37 @@ class SDPReader {
         }
         cursor = 0;
     }
+
+    public SDPRawRecord readUntil(char v) {
+        if (cursor < records.length) {
+            if (records[cursor].getType() != v) {
+                return records[cursor++];
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public SDPRawRecord readRecord() {
+        if (cursor < records.length) {
+            return records[cursor++];
+        }
+        return null;
+    }
+
+    public SDPRawRecord readRecord(char v) {
+        if (cursor < records.length) {
+            if (records[cursor].getType() == v) {
+                return records[cursor++];
+            } else {
+                throw new RuntimeException("Type mismatch. Expected: " + v + ", got: " + records[cursor].getType());
+            }
+        }
+        return null;
+    }
+
+    public int readVersion() {
+        return Integer.parseInt(readRecord('v').getValue());
+    }
 }
