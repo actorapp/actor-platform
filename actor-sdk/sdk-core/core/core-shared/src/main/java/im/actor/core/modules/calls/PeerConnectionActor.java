@@ -11,6 +11,7 @@ import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.function.FunctionTupled2;
@@ -46,6 +47,8 @@ public class PeerConnectionActor extends ModuleActor {
     @NotNull
     private WebRTCPeerConnection peerConnection;
     @NotNull
+    private WebRTCMediaStream stream;
+    @NotNull
     private State state = State.INITIALIZATION;
 
     public PeerConnectionActor(@NotNull ActorRef root, int uid, long deviceId, @NotNull ModuleContext context) {
@@ -73,6 +76,7 @@ public class PeerConnectionActor extends ModuleActor {
         Promises.tuple(WebRTC.createPeerConnection(), WebRTC.getUserAudio()).map(new FunctionTupled2<WebRTCPeerConnection, WebRTCMediaStream, WebRTCPeerConnection>() {
             @Override
             public WebRTCPeerConnection apply(WebRTCPeerConnection webRTCPeerConnection, WebRTCMediaStream stream) {
+                PeerConnectionActor.this.stream = stream;
                 webRTCPeerConnection.addOwnStream(stream);
                 return webRTCPeerConnection;
             }
@@ -240,6 +244,14 @@ public class PeerConnectionActor extends ModuleActor {
         peerConnection.addCandidate(index, id, sdp);
     }
 
+    public void onEnded() {
+        peerConnection.close();
+        stream.close();
+        isReady = false;
+        state = State.CLOSED;
+        self().send(PoisonPill.INSTANCE);
+    }
+
     @Override
     public void onReceive(Object message) {
         if (message instanceof OnOffer) {
@@ -267,6 +279,12 @@ public class PeerConnectionActor extends ModuleActor {
                 return;
             }
             onOfferNeeded();
+        } else if (message instanceof DoStop) {
+            if (!isReady) {
+                stash();
+                return;
+            }
+            onEnded();
         } else {
             super.onReceive(message);
         }
@@ -445,7 +463,11 @@ public class PeerConnectionActor extends ModuleActor {
         }
     }
 
+    public static class DoStop {
+
+    }
+
     private enum State {
-        INITIALIZATION, WAITING_HANDSHAKE, WAITING_ANSWER, READY
+        INITIALIZATION, WAITING_HANDSHAKE, WAITING_ANSWER, READY, CLOSED
     }
 }
