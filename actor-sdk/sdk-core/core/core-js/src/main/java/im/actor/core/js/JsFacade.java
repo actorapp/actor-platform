@@ -636,13 +636,13 @@ public class JsFacade implements Exportable {
 
     // Calls
 
-    public JsPromise doCall(final int uid){
+    public JsPromise doCall(final int uid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.doCall(uid).start(new CommandCallback<ResponseDoCall>() {
+                messenger.doCall(uid).start(new CommandCallback<Long>() {
                     @Override
-                    public void onResult(ResponseDoCall res) {
+                    public void onResult(Long res) {
                         Log.d(TAG, "doCall:result");
                         resolve();
                     }
@@ -657,11 +657,11 @@ public class JsFacade implements Exportable {
         });
     }
 
-    public void answerCall(String callId){
+    public void answerCall(String callId) {
         messenger.answerCall(Long.parseLong(callId));
     }
 
-    public void endCall(String callId){
+    public void endCall(String callId) {
         messenger.endCall(Long.parseLong(callId));
     }
 

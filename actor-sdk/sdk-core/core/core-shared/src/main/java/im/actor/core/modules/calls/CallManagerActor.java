@@ -118,7 +118,10 @@ public class CallManagerActor extends ModuleActor {
     }
 
     private void doEndCall(long callId) {
-
+        ActorRef currentCall = currentCalls.remove(callId);
+        if (currentCall != null) {
+            currentCall.send(new CallActor.DoEndCall());
+        }
     }
 
     //

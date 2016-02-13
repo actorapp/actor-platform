@@ -177,7 +177,7 @@ public class PeerConnection implements WebRTCPeerConnection {
     public void close() {
         peerConnection.close();
         for (MediaStream s : streams.values()) {
-            s.dispose();
+            s.close();
         }
     }
 }
