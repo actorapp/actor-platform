@@ -45,12 +45,12 @@ public class ThreadingRuntimeProvider implements ThreadingRuntime {
     }
 
     @Override
-    public Dispatcher createDispatcher(ThreadPriority priority) {
+    public Dispatcher createDispatcher(String name) {
         throw new RuntimeException("Dumb");
     }
 
     @Override
-    public ImmediateDispatcher createImmediateDispatcher(ThreadPriority priority) {
+    public ImmediateDispatcher createImmediateDispatcher(String name, ThreadPriority priority) {
         throw new RuntimeException("Dumb");
     }
 }
