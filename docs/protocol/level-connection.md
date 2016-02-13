@@ -12,19 +12,19 @@ TCP Transport use **slightly different encoding rules**. Main difference that th
 
 ```
 Frame {
-	// Index of package starting from zero. 
-  // If packageIndex is broken connection need to be dropped.
+	// Index of package starting from zero.
+	// If packageIndex is broken connection need to be dropped.
 	packageIndex: int
-  // Type of message
-  header: byte
-  // Package payload
-  body: bytes
-  // CRC32 of body
-  crc32: int
+	// Type of message
+	header: byte
+	// Package payload
+	body: bytes
+	// CRC32 of body
+	crc32: int
 }
 ```
 
-Frame can contain different data in body field depends on header value. 
+Frame can contain different data in body field depends on header value.
 If header is equals to zero then payload is protocol object and **need to be sent to [Transport Level](doc:transport-level)**. Otherwise frame is signaling message. Unknown messages can be silently ignored.
 
 ```
@@ -45,17 +45,17 @@ Pong {
 // Notification about connection drop
 Drop {
 	messageId: long
-  errorCode: byte
-  errorMessage: string
+	errorCode: byte
+	errorMessage: string
 }
 
 // header = 4
 // Sent by server when we need to temporary redirect to another server
 Redirect {
 	host: string
-  port: int
-  // Redirection timeout
-  timeout: int
+	port: int
+	// Redirection timeout
+	timeout: int
 }
 
 // header = 6
@@ -66,24 +66,24 @@ Ack {
 
 // header == 0xFF
 Handshake {
-  // Current MTProto revision
-  // For Rev 2 need to eq 1
+	// Current MTProto revision
+	// For Rev 2 need to eq 1
 	protoRevision: byte
-  // API Major and Minor version
-  apiMajorVersion: byte
+	// API Major and Minor version
+	apiMajorVersion: byte
 	apiMinorVersion: byte
-  // Some Random Bytes (suggested size is 32 bytes)
-  randomBytes: bytes
+	// Some Random Bytes (suggested size is 32 bytes)
+	randomBytes: bytes
 }
 
 // header == 0xFE
 HandshakeResponse {
-  // return same versions as request, 0 - version is not supported
+	// return same versions as request, 0 - version is not supported
 	protoRevision: byte
-  apiMajorVersion: byte
+	apiMajorVersion: byte
 	apiMinorVersion: byte
-  // SHA256 of randomBytes from request
-  sha1: byte[32]
+	// SHA256 of randomBytes from request
+sha1: byte[32]
 }
 ```
 
