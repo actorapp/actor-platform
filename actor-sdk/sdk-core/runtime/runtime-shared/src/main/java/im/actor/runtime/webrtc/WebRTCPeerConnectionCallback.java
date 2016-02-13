@@ -11,8 +11,8 @@ public interface WebRTCPeerConnectionCallback {
     void onCandidatesEnd();
 
     @ObjectiveCName("onStreamAdded:")
-    void onStreamAdded(WebRTCRemoteStream stream);
+    void onStreamAdded(WebRTCMediaStream stream);
 
     @ObjectiveCName("onStreamRemoved:")
-    void onStreamRemoved(WebRTCRemoteStream stream);
+    void onStreamRemoved(WebRTCMediaStream stream);
 }

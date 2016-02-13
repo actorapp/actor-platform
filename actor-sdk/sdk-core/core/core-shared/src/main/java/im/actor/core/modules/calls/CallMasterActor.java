@@ -7,7 +7,6 @@ import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
-import im.actor.runtime.Log;
 import im.actor.runtime.function.Consumer;
 
 public class CallMasterActor extends CallActor {
