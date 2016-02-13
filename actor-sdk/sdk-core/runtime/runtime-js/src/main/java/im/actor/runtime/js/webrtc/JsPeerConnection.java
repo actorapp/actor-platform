@@ -8,7 +8,9 @@ import im.actor.runtime.js.entity.JsClosureError;
 public class JsPeerConnection extends JavaScriptObject {
 
     public static native JsPeerConnection create(JsPeerConnectionConfig config)/*-{
-        return {peerConnection: new webkitRTCPeerConnection(config)};
+        var peerConnectionClass = $wnd.RTCPeerConnection || $wnd.mozRTCPeerConnection ||
+                       $wnd.webkitRTCPeerConnection || $wnd.msRTCPeerConnection;
+        return {peerConnection: new peerConnectionClass(config)};
     }-*/;
 
     protected JsPeerConnection() {
@@ -82,14 +84,18 @@ public class JsPeerConnection extends JavaScriptObject {
 
     public final native void setListener(JsPeerConnectionListener listener)/*-{
         this.peerConnection.onicecandidate = function(candidate) {
-            if (candidate.candidate == null) {
-                listener.@im.actor.runtime.js.webrtc.JsPeerConnectionListener::onIceCandidatesEnded(*)();
-            } else {
+            if (candidate.candidate != null) {
                 listener.@im.actor.runtime.js.webrtc.JsPeerConnectionListener::onIceCandidate(*)(candidate.candidate);
             }
         };
         this.peerConnection.onaddstream = function(event) {
             listener.@im.actor.runtime.js.webrtc.JsPeerConnectionListener::onStreamAdded(*)(event.stream);
+        }
+        this.peerConnection.onremovestream = function(event) {
+            listener.@im.actor.runtime.js.webrtc.JsPeerConnectionListener::onStreamRemoved(*)(event.stream);
+        }
+        this.peerConnection.onnegotiationneeded = function(event) {
+            listener.@im.actor.runtime.js.webrtc.JsPeerConnectionListener::onRenegotiationNeeded(*)();
         }
     }-*/;
 

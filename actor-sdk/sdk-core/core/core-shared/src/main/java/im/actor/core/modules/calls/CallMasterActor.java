@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.ResponseDoCall;
+import im.actor.core.entity.CallState;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.function.Consumer;
 
 public class CallMasterActor extends CallActor {
@@ -14,11 +16,19 @@ public class CallMasterActor extends CallActor {
     private static final String TAG = "CallMasterActor";
 
     private final Peer peer;
+    private CommandCallback<Long> callback;
     private ArrayList<ConnectedHolder> connectedDevices = new ArrayList<>();
 
-    public CallMasterActor(Peer peer, ModuleContext context) {
+    public CallMasterActor(Peer peer, ModuleContext context, CommandCallback<Long> callback) {
         super(context);
+        this.callback = callback;
         this.peer = peer;
+    }
+
+    @Override
+    public void preStart() {
+        super.preStart();
+        createBus();
     }
 
     @Override
@@ -26,18 +36,23 @@ public class CallMasterActor extends CallActor {
         api(new RequestDoCall(buidOutPeer(peer), getBusId())).then(new Consumer<ResponseDoCall>() {
             @Override
             public void apply(ResponseDoCall responseDoCall) {
-                onCallCreated();
+                context().getCallsModule().getCallManager().send(
+                        new CallManagerActor.OnCallCreated(responseDoCall.getCallId()), self());
+                // TODO: Move to call actor
+                context().getCallsModule().spawnNewModel(responseDoCall.getCallId(),
+                        peer, new ArrayList<Integer>(), CallState.CALLING_OUTGOING);
+
+                callback.onResult(responseDoCall.getCallId());
+                callback = null;
             }
         }).failure(new Consumer<Exception>() {
             @Override
             public void apply(Exception e) {
+                callback.onError(e);
+                callback = null;
                 dispose();
             }
         }).done(self());
-    }
-
-    public void onCallCreated() {
-
     }
 
     @Override
@@ -48,10 +63,17 @@ public class CallMasterActor extends CallActor {
         }
         getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
         for (ConnectedHolder c : connectedDevices) {
-            // sendSignalingMessage(c.uid, c.deviceId, new ApiNeedOffer(uid, deviceId));
-            sendSignalingMessage(uid, deviceId, new ApiNeedOffer(c.uid, c.deviceId));
+            sendSignalingMessage(c.uid, c.deviceId, new ApiNeedOffer(uid, deviceId));
         }
         connectedDevices.add(connectedHolder);
+    }
+
+    @Override
+    public void onBusDisposed() {
+        super.onBusDisposed();
+        if (callback != null) {
+            callback.onError(new RuntimeException("Internal Error"));
+        }
     }
 
     private static class ConnectedHolder {

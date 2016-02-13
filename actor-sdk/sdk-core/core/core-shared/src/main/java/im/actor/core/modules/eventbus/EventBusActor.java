@@ -36,11 +36,6 @@ public class EventBusActor extends ModuleActor {
         super(context);
     }
 
-    public EventBusActor(String busId, ModuleContext context) {
-        super(context);
-        this.busId = busId;
-    }
-
     public String getBusId() {
         return busId;
     }
@@ -49,55 +44,49 @@ public class EventBusActor extends ModuleActor {
         return deviceId;
     }
 
-    //
-    // Start
-    //
-
-    @Override
-    public void preStart() {
-        super.preStart();
-
+    public void joinBus(final String busId) {
         isProcessing = true;
-        if (busId != null) {
-            api(new RequestJoinEventBus(busId, TIMEOUT)).then(new Consumer<ResponseJoinEventBus>() {
-                @Override
-                public void apply(ResponseJoinEventBus responseJoinEventBus) {
-                    deviceId = responseJoinEventBus.getDeviceId();
-                    context().getEventBus().subscribe(busId, self());
-                    onBusJoined();
-                    onBusStarted();
-                    isProcessing = false;
-                    unstashAll();
-                    keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
-                }
-            }).failure(new Consumer<Exception>() {
-                @Override
-                public void apply(Exception e) {
-                    dispose();
-                }
-            }).done(self());
-        } else {
-            api(new RequestCreateNewEventBus(TIMEOUT, true)).then(new Consumer<ResponseCreateNewEventBus>() {
-                @Override
-                public void apply(ResponseCreateNewEventBus responseCreateNewEventBus) {
-                    busId = responseCreateNewEventBus.getId();
-                    deviceId = responseCreateNewEventBus.getDeviceId();
-                    context().getEventBus().subscribe(busId, self());
-                    onBusCreated();
-                    onBusStarted();
-                    isProcessing = false;
-                    unstashAll();
-                    keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
-                }
-            }).failure(new Consumer<Exception>() {
-                @Override
-                public void apply(Exception e) {
-                    dispose();
-                }
-            }).done(self());
-        }
+        api(new RequestJoinEventBus(busId, TIMEOUT)).then(new Consumer<ResponseJoinEventBus>() {
+            @Override
+            public void apply(ResponseJoinEventBus responseJoinEventBus) {
+                EventBusActor.this.busId = busId;
+                deviceId = responseJoinEventBus.getDeviceId();
+                context().getEventBus().subscribe(busId, self());
+                onBusJoined();
+                onBusStarted();
+                isProcessing = false;
+                unstashAll();
+                keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                dispose();
+            }
+        }).done(self());
     }
 
+    public void createBus() {
+        isProcessing = true;
+        api(new RequestCreateNewEventBus(TIMEOUT, true)).then(new Consumer<ResponseCreateNewEventBus>() {
+            @Override
+            public void apply(ResponseCreateNewEventBus responseCreateNewEventBus) {
+                busId = responseCreateNewEventBus.getId();
+                deviceId = responseCreateNewEventBus.getDeviceId();
+                context().getEventBus().subscribe(busId, self());
+                onBusCreated();
+                onBusStarted();
+                isProcessing = false;
+                unstashAll();
+                keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                dispose();
+            }
+        }).done(self());
+    }
 
     //
     // Processing

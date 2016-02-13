@@ -3,9 +3,7 @@ package im.actor.runtime.js.webrtc;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
-import im.actor.runtime.webrtc.WebRTCMediaStream;
-
-public class JsMediaStream extends JavaScriptObject implements WebRTCMediaStream {
+public class JsMediaStream extends JavaScriptObject {
 
     protected JsMediaStream() {
 
@@ -29,6 +27,10 @@ public class JsMediaStream extends JavaScriptObject implements WebRTCMediaStream
 
     public native final void removeTrack(JsMediaStreamTrack track)/*-{
         this.removeTrack(track);
+    }-*/;
+
+    public native final String createUrl()/*-{
+        return URL.createObjectURL(this);
     }-*/;
 
     public final void stopAll() {
