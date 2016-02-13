@@ -71,7 +71,7 @@ public class CallManagerActor extends ModuleActor {
     // Incoming call
     //
 
-    private void onIncomingCall(long callId) {
+    private void onIncomingCall(final long callId) {
         Log.d(TAG, "onIncomingCall (" + callId + ")");
 
         // Filter double updates about incoming call
@@ -80,22 +80,13 @@ public class CallManagerActor extends ModuleActor {
         }
         handledCalls.add(callId);
 
-        api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
+        currentCalls.put(callId, system().actorOf("actor/slave", new ActorCreator() {
             @Override
-            public void apply(final ResponseGetCallInfo responseGetCallInfo) {
-                system().actorOf("actor/slave", new ActorCreator() {
-                    @Override
-                    public Actor create() {
-                        return new CallSlaveActor(responseGetCallInfo.getEventBusId(), context());
-                    }
-                });
+            public Actor create() {
+                return new CallSlaveActor(callId, context());
             }
-        }).failure(new Consumer<Exception>() {
-            @Override
-            public void apply(Exception e) {
-                // Just Ignore
-            }
-        }).done(self());
+        }));
+        provider.onCallStart(callId);
     }
 
     private void onIncomingCallHandled(long callId) {
@@ -105,7 +96,7 @@ public class CallManagerActor extends ModuleActor {
     }
 
     private void doAnswerCall(final long callId) {
-
+        answeredCalls.add(callId);
     }
 
 

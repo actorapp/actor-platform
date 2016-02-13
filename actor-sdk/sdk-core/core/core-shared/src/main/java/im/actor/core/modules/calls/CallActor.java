@@ -51,6 +51,24 @@ public class CallActor extends EventBusActor {
         }
     }
 
+    public final void sendSignalingMessage(int uid, ApiWebRTCSignaling signaling) {
+        try {
+            sendMessage(uid, signaling.buildContainer());
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Ignore
+        }
+    }
+
+    public final void sendSignalingMessage(ApiWebRTCSignaling signaling) {
+        try {
+            sendMessage(signaling.buildContainer());
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Ignore
+        }
+    }
+
     @Override
     public final void onMessageReceived(@Nullable Integer senderId, @Nullable Long senderDeviceId, byte[] data) {
         if (senderId == null || senderDeviceId == null) {

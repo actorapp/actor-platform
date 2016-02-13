@@ -28,6 +28,7 @@ public abstract class ApiWebRTCSignaling extends BserObject {
             case 6: return Bser.parse(new ApiNeedRenegotiate(), content);
             case 7: return Bser.parse(new ApiActiveDevices(), content);
             case 8: return Bser.parse(new ApiNeedOffer(), content);
+            case 9: return Bser.parse(new ApiSwitchMaster(), content);
             default: return new ApiWebRTCSignalingUnsupported(key, content);
         }
     }

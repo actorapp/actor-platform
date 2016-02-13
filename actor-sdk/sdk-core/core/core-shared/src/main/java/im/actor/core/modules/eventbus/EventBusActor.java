@@ -130,6 +130,16 @@ public class EventBusActor extends ModuleActor {
 
     }
 
+    public void sendMessage(byte[] data) {
+        request(new RequestPostToEventBus(busId, new ArrayList<ApiEventBusDestination>(), data));
+    }
+
+    public void sendMessage(int uid, byte[] data) {
+        ArrayList<ApiEventBusDestination> destinations = new ArrayList<>();
+        destinations.add(new ApiEventBusDestination(uid, new ArrayList<Long>()));
+        request(new RequestPostToEventBus(busId, destinations, data));
+    }
+
     public void sendMessage(int uid, long deviceId, byte[] data) {
         ArrayList<ApiEventBusDestination> destinations = new ArrayList<>();
         ArrayList<Long> deviceIds = new ArrayList<>();
