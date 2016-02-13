@@ -12,6 +12,7 @@ import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.R;
 
 public abstract class BaseJsonHolder extends MessageHolder {
+
     public BaseJsonHolder(MessagesAdapter adapter, ViewGroup viewGroup, int resourceId, boolean isFullSize) {
         super(adapter, inflate(resourceId, viewGroup), isFullSize);
 
@@ -20,15 +21,15 @@ public abstract class BaseJsonHolder extends MessageHolder {
 
     @Override
     protected void bindData(Message message, boolean isUpdated, PreprocessedData preprocessedData) {
-        JSONObject json = ((JsonContent) message.getContent()).getJson();
-        JSONObject data = null;
-        try {
-            data = json.getJSONObject("data");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        bindData(message, data, isUpdated, preprocessedData);
+//        JSONObject json = ((JsonContent) message.getContent()).getJson();
+//        JSONObject data = null;
+//        try {
+//            data = json.getJSONObject("data");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        bindData(message, data, isUpdated, preprocessedData);
     }
 
     protected abstract void bindData(Message message, JSONObject data, boolean isUpdated, PreprocessedData preprocessedData);
