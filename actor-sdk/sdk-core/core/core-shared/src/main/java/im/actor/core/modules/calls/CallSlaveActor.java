@@ -36,17 +36,14 @@ public class CallSlaveActor extends CallActor {
         }).done(self());
     }
 
-    @Override
-    public void onBusStarted() {
-        super.onBusStarted();
-    }
-
     public void onMasterNodeChanged(int fromUid, long fromDeviceId) {
         masterNode = new MasterNode(fromUid, fromDeviceId);
         if (isAnswerPending) {
             isAnswerPending = false;
             sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiAnswerCall());
         }
+
+        schedule(new DoAnswer(), 5000);
     }
 
     public void onNeedOffer(int destUid, long destDeviceId) {

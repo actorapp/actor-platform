@@ -3,8 +3,6 @@ package im.actor.core.modules.calls;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import im.actor.core.api.rpc.RequestGetCallInfo;
-import im.actor.core.api.rpc.ResponseGetCallInfo;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.util.ModuleActor;
@@ -16,7 +14,6 @@ import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.function.Constructor;
-import im.actor.runtime.function.Consumer;
 
 public class CallManagerActor extends ModuleActor {
 

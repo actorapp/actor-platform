@@ -1,4 +1,4 @@
-package im.actor.core.webrtc.sdp;
+package im.actor.runtime.webrtc.sdp;
 
 import org.junit.Test;
 
