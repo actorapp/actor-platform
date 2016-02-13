@@ -18,7 +18,7 @@ public interface WebRTCPeerConnection {
     void addCandidate(int label, @NotNull String id, @NotNull String candidate);
 
     @ObjectiveCName("addOwnStream:")
-    void addOwnStream(@NotNull WebRTCLocalStream stream);
+    void addOwnStream(@NotNull WebRTCMediaStream stream);
 
     @NotNull
     @ObjectiveCName("setLocalDescription:")
