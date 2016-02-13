@@ -18,4 +18,9 @@ public interface WebRTCMediaStream {
      * @param isEnabled is track enabled
      */
     void setEnabled(boolean isEnabled);
+
+    /**
+     * Closing stream
+     */
+    void close();
 }

@@ -35,7 +35,11 @@ public class MediaStream implements WebRTCMediaStream {
         }
     }
 
-    public void dispose() {
-        audio.reset();
+    @Override
+    public void close() {
+        if (audio != null) {
+            audio.reset();
+        }
+        stream.stopAll();
     }
 }
