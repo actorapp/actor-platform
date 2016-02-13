@@ -21,7 +21,7 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     }
 }
 
-extension RTCAudioTrack: ARWebRTCLocalStream {
+extension RTCAudioTrack: ARWebRTCMediaStream {
     
 }
 
@@ -58,7 +58,7 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
         peerConnection.addICECandidate(RTCICECandidate(mid: id_, index: Int(label), sdp: candidate))
     }
     
-    func addOwnStream(stream: ARWebRTCLocalStream) {
+    func addOwnStream(stream: ARWebRTCMediaStream) {
         if let audio = stream as? RTCAudioTrack {
             print("addOwnStream")
             let mediaStream = peerConnectionFactory.mediaStreamWithLabel("ARDAMSa0")
