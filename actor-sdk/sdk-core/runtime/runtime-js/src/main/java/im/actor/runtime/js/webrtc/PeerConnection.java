@@ -6,6 +6,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import im.actor.runtime.js.entity.JsClosure;
 import im.actor.runtime.js.entity.JsClosureError;
@@ -21,10 +22,12 @@ public class PeerConnection implements WebRTCPeerConnection {
 
     private JsPeerConnection peerConnection;
     private ArrayList<WebRTCPeerConnectionCallback> callbacks = new ArrayList<>();
+    private HashMap<JsMediaStream, MediaStream> streams = new HashMap<>();
 
     public PeerConnection(JsPeerConnection peerConnection) {
         this.peerConnection = peerConnection;
         this.peerConnection.setListener(new JsPeerConnectionListener() {
+
             @Override
             public void onIceCandidate(JsRTCIceCandidate candidate) {
                 for (WebRTCPeerConnectionCallback c : callbacks) {
@@ -33,15 +36,29 @@ public class PeerConnection implements WebRTCPeerConnection {
             }
 
             @Override
-            public void onIceCandidatesEnded() {
-
+            public void onStreamAdded(JsMediaStream stream) {
+                MediaStream stream1 = new MediaStream(stream);
+                streams.put(stream, stream1);
+                for (WebRTCPeerConnectionCallback c : callbacks) {
+                    c.onStreamAdded(stream1);
+                }
             }
 
             @Override
-            public void onStreamAdded(JsMediaStream stream) {
-                JsAudio audio = JsAudio.create();
-                audio.setStream(stream);
-                audio.play();
+            public void onStreamRemoved(JsMediaStream stream) {
+                MediaStream stream1 = streams.get(stream);
+                if (stream1 != null) {
+                    for (WebRTCPeerConnectionCallback c : callbacks) {
+                        c.onStreamRemoved(stream1);
+                    }
+                }
+            }
+
+            @Override
+            public void onRenegotiationNeeded() {
+                for (WebRTCPeerConnectionCallback c : callbacks) {
+                    c.onRenegotiationNeeded();
+                }
             }
         });
     }
@@ -159,5 +176,8 @@ public class PeerConnection implements WebRTCPeerConnection {
     @Override
     public void close() {
         peerConnection.close();
+        for (MediaStream s : streams.values()) {
+            s.dispose();
+        }
     }
 }

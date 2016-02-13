@@ -8,6 +8,7 @@ import im.actor.runtime.function.Consumer;
 import im.actor.runtime.js.webrtc.JsMediaStream;
 import im.actor.runtime.js.webrtc.JsPeerConnection;
 import im.actor.runtime.js.webrtc.JsStreaming;
+import im.actor.runtime.js.webrtc.MediaStream;
 import im.actor.runtime.js.webrtc.PeerConnection;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
@@ -37,7 +38,7 @@ public class JsWebRTCProvider implements WebRTCRuntime {
                 JsStreaming.getUserAudio().then(new Consumer<JsMediaStream>() {
                     @Override
                     public void apply(JsMediaStream jsMediaStream) {
-                        resolver.result(jsMediaStream);
+                        resolver.result(new MediaStream(jsMediaStream, false));
                     }
                 }).failure(new Consumer<Exception>() {
                     @Override

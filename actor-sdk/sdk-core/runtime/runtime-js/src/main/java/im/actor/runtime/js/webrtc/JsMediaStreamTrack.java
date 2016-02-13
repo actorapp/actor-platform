@@ -8,6 +8,10 @@ public class JsMediaStreamTrack extends JavaScriptObject {
 
     }
 
+    public final native void setEnabled(boolean val)/*-{
+        this.enabled = val;
+    }-*/;
+
     public final native boolean isEnabled()/*-{
         return this.enabled;
     }-*/;
