@@ -12,7 +12,7 @@ import im.actor.runtime.js.webrtc.PeerConnection;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
-import im.actor.runtime.webrtc.WebRTCLocalStream;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class JsWebRTCProvider implements WebRTCRuntime {
@@ -30,10 +30,10 @@ public class JsWebRTCProvider implements WebRTCRuntime {
 
     @NotNull
     @Override
-    public Promise<WebRTCLocalStream> getUserAudio() {
-        return new Promise<>(new PromiseFunc<WebRTCLocalStream>() {
+    public Promise<WebRTCMediaStream> getUserAudio() {
+        return new Promise<>(new PromiseFunc<WebRTCMediaStream>() {
             @Override
-            public void exec(@NotNull final PromiseResolver<WebRTCLocalStream> resolver) {
+            public void exec(@NotNull final PromiseResolver<WebRTCMediaStream> resolver) {
                 JsStreaming.getUserAudio().then(new Consumer<JsMediaStream>() {
                     @Override
                     public void apply(JsMediaStream jsMediaStream) {
