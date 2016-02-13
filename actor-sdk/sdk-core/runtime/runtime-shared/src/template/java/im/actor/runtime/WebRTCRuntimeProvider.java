@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.Promises;
-import im.actor.runtime.webrtc.WebRTCLocalStream;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class WebRTCRuntimeProvider implements WebRTCRuntime {
@@ -15,9 +15,9 @@ public class WebRTCRuntimeProvider implements WebRTCRuntime {
         return Promises.failure(new RuntimeException("Dumb"));
     }
 
-    @Override
     @NotNull
-    public Promise<WebRTCLocalStream> getUserAudio() {
+    @Override
+    public Promise<WebRTCMediaStream> getUserAudio() {
         return Promises.failure(new RuntimeException("Dumb"));
     }
 }
