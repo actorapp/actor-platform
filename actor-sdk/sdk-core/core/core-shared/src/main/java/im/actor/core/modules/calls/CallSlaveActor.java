@@ -1,5 +1,7 @@
 package im.actor.core.modules.calls;
 
+import im.actor.core.api.ApiNeedOffer;
+import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.Log;
 
@@ -12,39 +14,13 @@ public class CallSlaveActor extends CallActor {
     }
 
     @Override
-    public void onBusJoined() {
-        Log.d(TAG, "onBusCreated");
-    }
-
-    @Override
-    public void onDeviceConnected(int uid, long deviceId) {
-        Log.d(TAG, "onDeviceConnected");
-    }
-
-    @Override
-    public void onDeviceDisconnected(int uid, long deviceId) {
-        Log.d(TAG, "onDeviceDisconnected");
-    }
-
-    @Override
-    public void onBusShutdown() {
-        Log.d(TAG, "onBusShutdown");
-    }
-
-    @Override
-    public void onBusDisposed() {
-        Log.d(TAG, "onBusDisposed");
-    }
-
-    @Override
-    public void onBusStopped() {
-        Log.d(TAG, "onBusStopped");
-    }
-
-    @Override
-    public void onReceive(Object message) {
-        Log.d(TAG,"onReceive");
-        super.onReceive(message);
-        Log.d(TAG, "onReceive:end");
+    public void onSignalingMessage(int fromUid, long fromDeviceId, ApiWebRTCSignaling signaling) {
+        if (signaling instanceof ApiNeedOffer) {
+            ApiNeedOffer needOffer = (ApiNeedOffer) signaling;
+            Log.w(TAG, "Need offer for: " + needOffer.getUid());
+            getPeer(needOffer.getUid(), needOffer.getDevice()).send(new PeerConnectionActor.OnOfferNeeded());
+        } else {
+            super.onSignalingMessage(fromUid, fromDeviceId, signaling);
+        }
     }
 }
