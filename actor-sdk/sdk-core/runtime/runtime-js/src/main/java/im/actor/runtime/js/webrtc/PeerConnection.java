@@ -12,7 +12,7 @@ import im.actor.runtime.js.entity.JsClosureError;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
-import im.actor.runtime.webrtc.WebRTCLocalStream;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
 import im.actor.runtime.webrtc.WebRTCSessionDescription;
@@ -64,7 +64,7 @@ public class PeerConnection implements WebRTCPeerConnection {
     }
 
     @Override
-    public void addOwnStream(@NotNull WebRTCLocalStream stream) {
+    public void addOwnStream(@NotNull WebRTCMediaStream stream) {
         if (stream instanceof JsMediaStream) {
             peerConnection.addStream((JsMediaStream) stream);
         }
