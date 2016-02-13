@@ -43,7 +43,6 @@ public class CallActor extends EventBusActor {
     }
 
     public final void sendSignalingMessage(int uid, long deviceId, ApiWebRTCSignaling signaling) {
-        // Log.d(TAG, "sendSignaling");
         try {
             sendMessage(uid, deviceId, signaling.buildContainer());
         } catch (IOException e) {
@@ -54,9 +53,6 @@ public class CallActor extends EventBusActor {
 
     @Override
     public final void onMessageReceived(@Nullable Integer senderId, @Nullable Long senderDeviceId, byte[] data) {
-        // Log.d(TAG, "onMessageReceived:start");
-
-        // Ignoring messages without sender
         if (senderId == null || senderDeviceId == null) {
             return;
         }
@@ -72,29 +68,22 @@ public class CallActor extends EventBusActor {
 
         Log.d(TAG, "onMessageReceived: " + signaling);
         onSignalingMessage(senderId, senderDeviceId, signaling);
-        // Log.d(TAG, "onMessageReceived: " + signaling + ": end");
     }
 
     @Override
-    public void onReceive(Object message) {
-        // Log.d(TAG, "onReceive");
-        if (message instanceof PeerConnectionActor.DoAnswer) {
-            //Log.d(TAG, "onReceive:doAnswer");
-            PeerConnectionActor.DoAnswer answer = (PeerConnectionActor.DoAnswer) message;
-            sendSignalingMessage(answer.getUid(), answer.getDeviceId(),
-                    new ApiAnswer(0, answer.getSdp()));
-        } else if (message instanceof PeerConnectionActor.DoOffer) {
-            PeerConnectionActor.DoOffer offer = (PeerConnectionActor.DoOffer) message;
-            sendSignalingMessage(offer.getUid(), offer.getDeviceId(),
-                    new ApiOffer(0, offer.getSdp()));
-        } else if (message instanceof PeerConnectionActor.DoCandidate) {
-            PeerConnectionActor.DoCandidate candidate = (PeerConnectionActor.DoCandidate) message;
-            sendSignalingMessage(candidate.getUid(), candidate.getDeviceId(),
-                    new ApiCandidate(0, candidate.getIndex(), candidate.getId(), candidate.getSdp()));
-        } else {
-            super.onReceive(message);
+    public void onBusStopped() {
+        super.onBusStopped();
+        for (int uid : peerConnections.keySet()) {
+            HashMap<Long, ActorRef> peers = peerConnections.get(uid);
+            for (ActorRef p : peers.values()) {
+                p.send(new PeerConnectionActor.DoStop());
+            }
         }
-        //Log.d(TAG, "onReceive:End");
+        peerConnections.clear();
+    }
+
+    public final void doEndCall() {
+        shutdown();
     }
 
     protected ActorRef getPeer(int uid, long deviceId) {
@@ -109,5 +98,34 @@ public class CallActor extends EventBusActor {
                 PeerConnectionActor.CONSTRUCTOR(self(), uid, deviceId, context()));
         refs.put(deviceId, ref);
         return ref;
+    }
+
+    //
+    // Messages
+    //
+
+    @Override
+    public void onReceive(Object message) {
+        if (message instanceof PeerConnectionActor.DoAnswer) {
+            PeerConnectionActor.DoAnswer answer = (PeerConnectionActor.DoAnswer) message;
+            sendSignalingMessage(answer.getUid(), answer.getDeviceId(),
+                    new ApiAnswer(0, answer.getSdp()));
+        } else if (message instanceof PeerConnectionActor.DoOffer) {
+            PeerConnectionActor.DoOffer offer = (PeerConnectionActor.DoOffer) message;
+            sendSignalingMessage(offer.getUid(), offer.getDeviceId(),
+                    new ApiOffer(0, offer.getSdp()));
+        } else if (message instanceof PeerConnectionActor.DoCandidate) {
+            PeerConnectionActor.DoCandidate candidate = (PeerConnectionActor.DoCandidate) message;
+            sendSignalingMessage(candidate.getUid(), candidate.getDeviceId(),
+                    new ApiCandidate(0, candidate.getIndex(), candidate.getId(), candidate.getSdp()));
+        } else if (message instanceof DoEndCall) {
+            doEndCall();
+        } else {
+            super.onReceive(message);
+        }
+    }
+
+    public static class DoEndCall {
+
     }
 }
