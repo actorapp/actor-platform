@@ -172,7 +172,8 @@ public class PeerConnectionActor extends ModuleActor {
         // 5. Enter READY mode
         //
 
-        Log.d(TAG, "onOffer");
+        Log.d(TAG, "Received Offer");
+
         isReady = false;
         peerConnection.setRemoteDescription(new WebRTCSessionDescription("offer", sdp)).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
             @Override
@@ -187,15 +188,12 @@ public class PeerConnectionActor extends ModuleActor {
         }).then(new Consumer<WebRTCSessionDescription>() {
             @Override
             public void apply(WebRTCSessionDescription description) {
-                Log.d(TAG, "onOffer:then");
                 root.send(new DoAnswer(uid, deviceId, description.getSdp()));
-                Log.d(TAG, "onOffer:then:end");
                 onHandShakeCompleted();
             }
         }).failure(new Consumer<Exception>() {
             @Override
             public void apply(Exception e) {
-                Log.d(TAG, "onOffer:failure");
                 e.printStackTrace();
                 // TODO: Handle It
             }
@@ -207,6 +205,8 @@ public class PeerConnectionActor extends ModuleActor {
         if (state != State.WAITING_ANSWER) {
             return;
         }
+
+        Log.d(TAG, "Received Answer");
 
         //
         // Stages

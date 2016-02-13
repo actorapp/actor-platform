@@ -50,9 +50,9 @@ public class EventBusModule extends AbsModule {
                         busMessage.getSenderId(),
                         busMessage.getSenderDeviceId(),
                         busMessage.getMessage()));
-                Log.d("EVENTBUS", "Delivered");
+                // Log.d("EVENTBUS", "Delivered");
             } else {
-                Log.d("EVENTBUS", "Not Delivered");
+                // Log.d("EVENTBUS", "Not Delivered");
                 if (!pendingMessages.containsKey(busMessage.getId())) {
                     pendingMessages.put(busMessage.getId(), new ArrayList<>());
                 }
@@ -66,7 +66,7 @@ public class EventBusModule extends AbsModule {
                         deviceConnected.getUserId(),
                         deviceConnected.getDeviceId()));
             } else {
-                Log.d("EVENTBUS", "Not Delivered");
+                // Log.d("EVENTBUS", "Not Delivered");
                 if (!pendingMessages.containsKey(deviceConnected.getId())) {
                     pendingMessages.put(deviceConnected.getId(), new ArrayList<>());
                 }
@@ -91,7 +91,7 @@ public class EventBusModule extends AbsModule {
             if (dest != null) {
                 dest.send(new EventBusActor.EventBusDisposed());
             } else {
-                Log.d("EVENTBUS", "Not Delivered");
+                // Log.d("EVENTBUS", "Not Delivered");
                 if (!pendingMessages.containsKey(disposed.getId())) {
                     pendingMessages.put(disposed.getId(), new ArrayList<>());
                 }

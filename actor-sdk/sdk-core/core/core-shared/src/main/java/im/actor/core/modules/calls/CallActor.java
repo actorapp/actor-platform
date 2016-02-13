@@ -55,7 +55,7 @@ public class CallActor extends EventBusActor {
     }
 
     public final void sendSignalingMessage(int uid, long deviceId, ApiWebRTCSignaling signaling) {
-        Log.d(TAG, "sendSignaling");
+        // Log.d(TAG, "sendSignaling");
         try {
             sendMessage(uid, deviceId, signaling.buildContainer());
         } catch (IOException e) {
@@ -66,7 +66,7 @@ public class CallActor extends EventBusActor {
 
     @Override
     public final void onMessageReceived(@Nullable Integer senderId, @Nullable Long senderDeviceId, byte[] data) {
-        Log.d(TAG, "onMessageReceived:start");
+        // Log.d(TAG, "onMessageReceived:start");
 
         // Ignoring messages without sender
         if (senderId == null || senderDeviceId == null) {
@@ -84,14 +84,14 @@ public class CallActor extends EventBusActor {
 
         Log.d(TAG, "onMessageReceived: " + signaling);
         onSignalingMessage(senderId, senderDeviceId, signaling);
-        Log.d(TAG, "onMessageReceived: " + signaling + ": end");
+        // Log.d(TAG, "onMessageReceived: " + signaling + ": end");
     }
 
     @Override
     public void onReceive(Object message) {
-        Log.d(TAG, "onReceive");
+        // Log.d(TAG, "onReceive");
         if (message instanceof PeerConnectionActor.DoAnswer) {
-            Log.d(TAG, "onReceive:doAnswer");
+            //Log.d(TAG, "onReceive:doAnswer");
             PeerConnectionActor.DoAnswer answer = (PeerConnectionActor.DoAnswer) message;
             sendSignalingMessage(answer.getUid(), answer.getDeviceId(),
                     new ApiAnswer(0, answer.getSdp()));
@@ -106,7 +106,7 @@ public class CallActor extends EventBusActor {
         } else {
             super.onReceive(message);
         }
-        Log.d(TAG, "onReceive:End");
+        //Log.d(TAG, "onReceive:End");
     }
 
     protected ActorRef getPeer(int uid, long deviceId) {

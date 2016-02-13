@@ -24,6 +24,26 @@ public class PeerConnection implements WebRTCPeerConnection {
 
     public PeerConnection(JsPeerConnection peerConnection) {
         this.peerConnection = peerConnection;
+        this.peerConnection.setListener(new JsPeerConnectionListener() {
+            @Override
+            public void onIceCandidate(JsRTCIceCandidate candidate) {
+                for (WebRTCPeerConnectionCallback c : callbacks) {
+                    c.onCandidate(candidate.getLabel(), candidate.getId(), candidate.getSDP());
+                }
+            }
+
+            @Override
+            public void onIceCandidatesEnded() {
+
+            }
+
+            @Override
+            public void onStreamAdded(JsMediaStream stream) {
+                JsAudio audio = JsAudio.create();
+                audio.setStream(stream);
+                audio.play();
+            }
+        });
     }
 
     @Override
