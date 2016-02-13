@@ -25,7 +25,7 @@ public class SDPSession {
     public String toString() {
         String res = "v=" + version + "\r\n";
         for (SDPRawRecord r : records) {
-            res = r.getType() + "=" + r.getType() + "\r\n";
+            res += r.toString() + "\r\n";
         }
         return res;
     }
