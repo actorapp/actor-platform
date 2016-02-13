@@ -21,8 +21,15 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     }
 }
 
-extension RTCAudioTrack: ARWebRTCMediaStream {
+class MediaStream: NSObject, ARWebRTCMediaStream {
     
+    func isEnabled() -> jboolean {
+        return true
+    }
+    
+    func setEnabledWithBoolean(isEnabled: jboolean) {
+        
+    }
 }
 
 class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnectionDelegate {
@@ -53,9 +60,8 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
             callbacks.removeAtIndex(index!)
         }
     }
-    
-    func addCandidateWithLabel(label: jint, withId id_: String, withCandidate candidate: String) {
-        peerConnection.addICECandidate(RTCICECandidate(mid: id_, index: Int(label), sdp: candidate))
+    func addCandidateWithIndex(index: jint, withId id_: String, withSDP sdp: String) {
+        peerConnection.addICECandidate(RTCICECandidate(mid: id_, index: Int(index), sdp: sdp))
     }
     
     func addOwnStream(stream: ARWebRTCMediaStream) {

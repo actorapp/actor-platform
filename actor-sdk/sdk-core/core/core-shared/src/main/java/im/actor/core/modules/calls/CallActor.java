@@ -24,10 +24,6 @@ public class CallActor extends EventBusActor {
         super(context);
     }
 
-    public CallActor(String busId, ModuleContext context) {
-        super(busId, context);
-    }
-
     //
     // Signaling Wrappers
     //

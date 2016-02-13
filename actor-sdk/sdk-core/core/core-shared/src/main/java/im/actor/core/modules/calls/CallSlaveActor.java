@@ -9,8 +9,17 @@ public class CallSlaveActor extends CallActor {
 
     private static final String TAG = "CallSlaveActor";
 
+    private final String busId;
+
     public CallSlaveActor(String busId, ModuleContext context) {
-        super(busId, context);
+        super(context);
+        this.busId = busId;
+    }
+
+    @Override
+    public void preStart() {
+        super.preStart();
+        joinBus(busId);
     }
 
     @Override

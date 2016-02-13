@@ -999,8 +999,8 @@ public class Messenger {
      * @return command to execute
      */
     @ObjectiveCName("doCallWithUid:")
-    public Command<ResponseDoCall> doCall(int uid) {
-        return modules.getCallsModule().makeCall(uid);
+    public Command<Long> doCall(int uid) {
+        return modules.getCallsModule().makeCall(Peer.user(uid));
     }
 
     /**

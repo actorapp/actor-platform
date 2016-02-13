@@ -15,20 +15,12 @@ import im.actor.core.Messenger;
 public interface CallsProvider {
 
     /**
-     * Incoming Call event. To answer call invoke controller.answerCall();
+     * Call event. This doesn't mean that call is started.
      *
      * @param callId Unique Call Id
      */
-    @ObjectiveCName("onIncomingCallWithCallId:")
-    void onIncomingCall(long callId);
-
-    /**
-     * Outgoing Call event. This doesn't mean that call is started.
-     *
-     * @param callId Unique Call Id
-     */
-    @ObjectiveCName("onOutgoingCallWithCallId:")
-    void onOutgoingCall(long callId);
+    @ObjectiveCName("onCallStartWithCallId:")
+    void onCallStart(long callId);
 
     /**
      * Call End event
