@@ -5,7 +5,7 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import org.jetbrains.annotations.NotNull;
 
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.webrtc.WebRTCLocalStream;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 /**
@@ -29,5 +29,5 @@ public interface WebRTCRuntime {
      */
     @NotNull
     @ObjectiveCName("getUserAudio")
-    Promise<WebRTCLocalStream> getUserAudio();
+    Promise<WebRTCMediaStream> getUserAudio();
 }

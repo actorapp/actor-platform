@@ -1,7 +1,7 @@
 package im.actor.runtime;
 
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.webrtc.WebRTCLocalStream;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public final class WebRTC {
@@ -12,7 +12,7 @@ public final class WebRTC {
         return rtcRuntime.createPeerConnection();
     }
 
-    public static Promise<WebRTCLocalStream> getUserAudio() {
+    public static Promise<WebRTCMediaStream> getUserAudio() {
         return rtcRuntime.getUserAudio();
     }
 }
