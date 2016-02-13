@@ -20,4 +20,13 @@ public class SDPScheme {
     public ArrayList<SDPMedia> getMediaLevel() {
         return mediaLevel;
     }
+
+    @Override
+    public String toString() {
+        String res = sessionLevel.toString();
+        for (SDPMedia media : mediaLevel) {
+            res += media.toString();
+        }
+        return res;
+    }
 }
