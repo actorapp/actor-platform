@@ -12852,6 +12852,20 @@
               }
             ]
           }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SwitchMaster",
+            "doc": [
+              "Switching master node"
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 9
+            },
+            "attributes": []
+          }
         }
       ]
     },
