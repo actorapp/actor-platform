@@ -11044,6 +11044,18 @@
           <ref role="NX6Kv" node="3Tolai5NVBR" resolve="device" />
         </node>
       </node>
+      <node concept="2m5naR" id="3Tolai5ObtG" role="2m5mJr">
+        <property role="TrG5h" value="SwitchMaster" />
+        <property role="tsOgz" value="false" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
+        <node concept="Nu42z" id="3Tolai5ObvS" role="3BtCOu">
+          <property role="Nu42W" value="09" />
+        </node>
+        <node concept="NXeRC" id="3Tolai5OcxF" role="NXodf">
+          <property role="NXePf" value="Switching master node" />
+        </node>
+      </node>
       <node concept="1Dx9M1" id="6tgpW9bxpK8" role="1Dx9rD">
         <property role="1Dx9K7" value="WebRTC package that enables support to audio and video calls" />
       </node>
