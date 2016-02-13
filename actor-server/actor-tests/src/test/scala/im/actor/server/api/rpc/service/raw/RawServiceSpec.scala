@@ -1,12 +1,11 @@
-package im.actor.server.api.rpc.service
+package im.actor.server.api.rpc.service.raw
 
 import akka.actor.ActorSystem
 import cats.data.Xor
 import im.actor.api.rpc._
 import im.actor.api.rpc.collections._
-import im.actor.api.rpc.raw.{ RawApiService, MapStyleRawApiService }
+import im.actor.api.rpc.raw.{ MapStyleRawApiService, RawApiService }
 import im.actor.server.api.rpc.RawApiExtension
-import im.actor.server.api.rpc.service.raw.RawServiceImpl
 import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegion }
 import play.api.libs.json.Json
 
