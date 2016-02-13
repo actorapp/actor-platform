@@ -65,8 +65,6 @@ public class ContentDescription extends BserObject {
             return new ContentDescription(ContentType.SERVICE_CALL_ENDED);
         } else if (msg instanceof ServiceCallMissed) {
             return new ContentDescription(ContentType.SERVICE_CALL_MISSED);
-        } else if (msg instanceof JsonContent) {
-            return new ContentDescription(ContentType.CUSTOM_JSON_MESSAGE, ((JsonContent) msg).getContentDescription());
         } else if (msg instanceof ServiceGroupAvatarChanged) {
             if (((ServiceGroupAvatarChanged) msg).getNewAvatar() == null) {
                 return new ContentDescription(ContentType.SERVICE_AVATAR_REMOVED);
