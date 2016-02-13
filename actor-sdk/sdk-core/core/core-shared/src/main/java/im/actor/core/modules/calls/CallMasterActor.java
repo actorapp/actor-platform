@@ -2,7 +2,10 @@ package im.actor.core.modules.calls;
 
 import java.util.ArrayList;
 
+import im.actor.core.api.ApiAnswerCall;
 import im.actor.core.api.ApiNeedOffer;
+import im.actor.core.api.ApiSwitchMaster;
+import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.entity.CallState;
@@ -56,16 +59,25 @@ public class CallMasterActor extends CallActor {
     }
 
     @Override
-    public void onDeviceConnected(final int uid, final long deviceId) {
-        ConnectedHolder connectedHolder = new ConnectedHolder(uid, deviceId);
-        if (connectedDevices.contains(connectedHolder)) {
-            return;
+    public void onDeviceConnected(int uid, long deviceId) {
+        sendSignalingMessage(uid, deviceId, new ApiSwitchMaster());
+    }
+
+    @Override
+    public void onSignalingMessage(int fromUid, long fromDeviceId, ApiWebRTCSignaling signaling) {
+        if (signaling instanceof ApiAnswerCall) {
+            ConnectedHolder connectedHolder = new ConnectedHolder(fromUid, fromDeviceId);
+            if (connectedDevices.contains(connectedHolder)) {
+                return;
+            }
+            getPeer(fromUid, fromDeviceId).send(new PeerConnectionActor.OnOfferNeeded());
+            for (ConnectedHolder c : connectedDevices) {
+                sendSignalingMessage(c.uid, c.deviceId, new ApiNeedOffer(fromUid, fromDeviceId));
+            }
+            connectedDevices.add(connectedHolder);
+        } else {
+            super.onSignalingMessage(fromUid, fromDeviceId, signaling);
         }
-        getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
-        for (ConnectedHolder c : connectedDevices) {
-            sendSignalingMessage(c.uid, c.deviceId, new ApiNeedOffer(uid, deviceId));
-        }
-        connectedDevices.add(connectedHolder);
     }
 
     @Override

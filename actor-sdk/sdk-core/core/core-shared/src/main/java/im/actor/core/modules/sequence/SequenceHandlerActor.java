@@ -73,7 +73,7 @@ public class SequenceHandlerActor extends ModuleActor {
             return;
         }
 
-        // Log.d(TAG, "Processing weak update: " + update);
+        Log.d(TAG, "Processing weak update: " + update);
         this.processor.processWeakUpdate(update, date);
     }
 
@@ -196,7 +196,6 @@ public class SequenceHandlerActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
-        Log.d(TAG, "Processing onReceive: " + message);
         if (message instanceof WeakUpdate) {
             WeakUpdate weakUpdate = (WeakUpdate) message;
             try {
