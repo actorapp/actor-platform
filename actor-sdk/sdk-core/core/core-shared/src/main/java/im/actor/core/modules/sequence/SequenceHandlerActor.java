@@ -73,7 +73,7 @@ public class SequenceHandlerActor extends ModuleActor {
             return;
         }
 
-        Log.d(TAG, "Processing weak update: " + update);
+        // Log.d(TAG, "Processing weak update: " + update);
         this.processor.processWeakUpdate(update, date);
     }
 
@@ -115,7 +115,7 @@ public class SequenceHandlerActor extends ModuleActor {
             processor.applyRelated(users, groups, true);
         }
 
-        Log.d(TAG, "Processing update success");
+        // Log.d(TAG, "Processing update success");
         return Promises.success(new UpdateProcessed());
     }
 
