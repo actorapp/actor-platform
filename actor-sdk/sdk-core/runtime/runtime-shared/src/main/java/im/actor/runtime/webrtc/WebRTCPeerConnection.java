@@ -6,36 +6,86 @@ import org.jetbrains.annotations.NotNull;
 
 import im.actor.runtime.promise.Promise;
 
+/**
+ * WebRTC peer connection
+ */
 public interface WebRTCPeerConnection {
 
+    /**
+     * Adding Callback for events from peer connection
+     *
+     * @param callback callback for adding
+     */
     @ObjectiveCName("addCallback:")
     void addCallback(@NotNull WebRTCPeerConnectionCallback callback);
 
+    /**
+     * Remove Callback for events from peer connection
+     *
+     * @param callback callback for adding
+     */
     @ObjectiveCName("removeCallback:")
     void removeCallback(@NotNull WebRTCPeerConnectionCallback callback);
 
-    @ObjectiveCName("addCandidateWithLabel:withId:withCandidate:")
-    void addCandidate(int label, @NotNull String id, @NotNull String candidate);
+    /**
+     * Adding Remote Candidate
+     *
+     * @param index index of candidate
+     * @param id    id of candidate
+     * @param sdp   candidate SDP
+     */
+    @ObjectiveCName("addCandidateWithIndex:withId:withSDP:")
+    void addCandidate(int index, @NotNull String id, @NotNull String sdp);
 
+    /**
+     * Adding Own Stream
+     *
+     * @param stream added stream
+     */
     @ObjectiveCName("addOwnStream:")
     void addOwnStream(@NotNull WebRTCMediaStream stream);
 
+    /**
+     * Setting Local Description
+     *
+     * @param description description to set
+     * @return Promise of set description. MUST be same as argument.
+     */
     @NotNull
     @ObjectiveCName("setLocalDescription:")
     Promise<WebRTCSessionDescription> setLocalDescription(@NotNull WebRTCSessionDescription description);
 
+    /**
+     * Setting Remote Description
+     *
+     * @param description description to set
+     * @return Promise of set description. MUST be same as argument.
+     */
     @NotNull
     @ObjectiveCName("setRemoteDescription:")
     Promise<WebRTCSessionDescription> setRemoteDescription(@NotNull WebRTCSessionDescription description);
 
+    /**
+     * Create Offer
+     *
+     * @return Promise of created offer
+     */
     @NotNull
     @ObjectiveCName("creteOffer")
     Promise<WebRTCSessionDescription> createOffer();
 
+    /**
+     * Create Answer
+     *
+     * @return Promise of created answer
+     */
     @NotNull
     @ObjectiveCName("createAnswer")
     Promise<WebRTCSessionDescription> createAnswer();
 
+    /**
+     * Closing peer connection
+     */
     @ObjectiveCName("close")
     void close();
 }

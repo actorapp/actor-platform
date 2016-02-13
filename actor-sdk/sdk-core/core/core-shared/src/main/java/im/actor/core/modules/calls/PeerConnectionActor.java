@@ -88,17 +88,17 @@ public class PeerConnectionActor extends ModuleActor {
                     }
 
                     @Override
-                    public void onCandidatesEnd() {
-
-                    }
-
-                    @Override
                     public void onStreamAdded(WebRTCMediaStream stream) {
 
                     }
 
                     @Override
                     public void onStreamRemoved(WebRTCMediaStream stream) {
+
+                    }
+
+                    @Override
+                    public void onRenegotiationNeeded() {
 
                     }
                 });

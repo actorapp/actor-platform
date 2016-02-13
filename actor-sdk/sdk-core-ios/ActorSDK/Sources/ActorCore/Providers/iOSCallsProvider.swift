@@ -6,12 +6,11 @@ import Foundation
 
 class iOSCallsProvider: NSObject, ACCallsProvider {
     
-    func onIncomingCallWithCallId(callId: jlong) {
-        
-    }
-    
-    func onOutgoingCallWithCallId(callId: jlong) {
-        
+    func onCallStartWithCallId(callId: jlong) {
+        dispatchOnUi() { () -> Void in
+            let rootController = ActorSDK.sharedActor().bindedToWindow.rootViewController!
+            rootController.presentViewController(AACallViewController(callId: callId), animated: true, completion: nil)
+        }
     }
     
     func onCallEndWithCallId(callId: jlong) {

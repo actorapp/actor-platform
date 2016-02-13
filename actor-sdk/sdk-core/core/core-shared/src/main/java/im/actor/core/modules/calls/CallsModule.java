@@ -19,8 +19,6 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 public class CallsModule extends AbsModule {
 
-    public static final int CALL_TIMEOUT = 10;
-
     public static final String TAG = "CALLS";
 
     private CallsProvider provider;
@@ -53,25 +51,11 @@ public class CallsModule extends AbsModule {
         return callManager;
     }
 
-    public Command<ResponseDoCall> makeCall(final int uid) {
-        return new Command<ResponseDoCall>() {
+    public Command<Long> makeCall(final Peer peer) {
+        return new Command<Long>() {
             @Override
-            public void start(final CommandCallback<ResponseDoCall> callback) {
-                Log.d(TAG, "callsManager: " + callManager);
-                callManager.send(new CallManagerActor.DoCall(Peer.user(uid)));
-//                User u = users().getValue(uid);
-//                request(new RequestDoCall(new ApiOutPeer(ApiPeerType.PRIVATE, u.getUid(), u.getAccessHash()), CALL_TIMEOUT), new RpcCallback<ResponseDoCall>() {
-//                    @Override
-//                    public void onResult(final ResponseDoCall response) {
-//                        callManager.send(new CallManagerActor.OnOutgoingCall(response.getCallId(), uid));
-//                        callback.onResult(response);
-//                    }
-//
-//                    @Override
-//                    public void onError(RpcException e) {
-//                        callback.onError(e);
-//                    }
-//                });
+            public void start(final CommandCallback<Long> callback) {
+                callManager.send(new CallManagerActor.DoCall(peer, callback));
             }
         };
     }
