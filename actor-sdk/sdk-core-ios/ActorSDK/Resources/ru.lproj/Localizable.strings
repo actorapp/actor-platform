@@ -18,7 +18,7 @@
  * Contacts
  */
 
-"ContactsAddHeader" = "Добавить Контакт";
+"ContactsAddHeader" = "Добавить контакт";
 
 "ContactsAddHint" = "Укажите номер телефона";
 
@@ -38,14 +38,14 @@
 
 "SettingsEdit" = "Изменить";
 
-"SettingsSetPhoto" = "Поставить новое фото";
+"SettingsSetPhoto" = "Установить новое фото";
 
 
-"SettingsChangeName" = "Поменять имя";
+"SettingsChangeName" = "Изменить имя";
 
 "SettingsEditHeader" = "Ваше имя";
 
-"SettingsEditHint" = "Пожалуйста, укажите ваше реально имя что бы люди лучше понимали кто вы.";
+"SettingsEditHint" = "Пожалуйста, укажите ваше реальное имя чтобы другие люди могли узнать вас.";
 
 "SettingsEditFieldHint" = "Введите ваше имя";
 
@@ -66,15 +66,15 @@
 
 "SettingsUsernameHintField" = "Введите свой ник";
 
-"SettingsUsernameHint" = "Вы можете выбрать ник в Акторе. Если вы это сделаете, то другие люди смогут найти вас без номера телефона.\n\nВы можете использовать латинские буквы, цифры и подчеркивание. Минимальная длинна - 5 символов.";
+"SettingsUsernameHint" = "Вы можете выбрать ник в {appname}. Если вы это сделаете, то другие люди смогут найти вас без номера телефона.\n\nВы можете использовать латинские буквы, цифры и подчеркивание. Минимальная длина - 5 символов.";
 
-"SettingsChangeAboutTitle" = "О Себе";
+"SettingsChangeAboutTitle" = "О себе";
 
-"SettingsChangeAboutHint" = "Рассажите что-нибудь о себе людям";
+"SettingsChangeAboutHint" = "Расскажите что-нибудь о себе";
 
 "SettingsAskQuestion" = "Задать вопрос";
 
-"SettingsAbout" = "О Программе";
+"SettingsAbout" = "О программе";
 
 "SettingsTwitter" = "Twitter";
 
@@ -87,7 +87,7 @@
 
 "SettingsLastSeen" = "Последняя активность";
 
-"SettingsLastSeenHint" = "Измените, кто может видеть вашу последнюю активность.";
+"SettingsLastSeenHint" = "Укажите, кто может видеть вашу последнюю активность.";
 
 
 "SettingsLastSeenEverybody" = "Все";
@@ -119,7 +119,7 @@
 
 "ProfileRename" = "Переименовать контакт";
 
-"ProfileRenameMessage" = "Вы можете изменять имя контакта для более удобной организации своей телефонной книги. Все изменения будут видны только Вам.";
+"ProfileRenameMessage" = "Вы можете изменить имя контакта для более удобной организации своей телефонной книги. Все изменения будут видны только вам.";
 
 "ProfileRenameAction" = "Переименовать";
 
@@ -153,13 +153,13 @@
 
 "GroupEditHint" = "Введите тему группы";
 
-"GroupSetPhoto" = "Поменять фото группы";
+"GroupSetPhoto" = "Изменить фото группы";
 
 "GroupSetTitle" = "Изменить тему группы";
 
-"GroupEditConfirm" = "Вы уверены, что хотите поменять тему группы?";
+"GroupEditConfirm" = "Вы уверены, что хотите изменить тему группы?";
 
-"GroupEditConfirmAction" = "Поменять тему";
+"GroupEditConfirmAction" = "Изменить тему";
 
 "GroupNotifications" = "Оповещения";
 
@@ -173,7 +173,7 @@
 
 "GroupMemberInfo" = "Профиль";
 
-"GroupMemberMakeAdmin" = "Сделать админ. группы";
+"GroupMemberMakeAdmin" = "Сделать администратором";
 
 "GroupMemberMakeMessage" = "Вы уверены, что хотите сделать {name} администратором группы?";
 
@@ -209,7 +209,7 @@
 
 "GroupInviteLinkHint" = "Вы можете пригласить людей в эту группу, отправляя им эту ссылку для приглашения.";
 
-"GroupInviteLinkRevokeMessage" = "Вы уверены, что хотите сбросить ссылку? Как только Вы это сделаете, никто не сможет по ней присоединиться в группу.";
+"GroupInviteLinkRevokeMessage" = "Вы уверены, что хотите сбросить ссылку? Как только Вы это сделаете, никто не сможет по ней присоединиться к группе.";
 
 "GroupInviteLinkRevokeAction" = "Сбросить";
 
@@ -221,7 +221,7 @@
 
 "GroupIntegrationDoc" = "Открыть документацию";
 
-"GroupIntegrationLinkRevokeMessage" = "Вы уверены, что хотите сбросить ссылку? Как только Вы это сделаете, Вы больше не сможетк по ней отправлять сообщения в группу.";
+"GroupIntegrationLinkRevokeMessage" = "Вы уверены, что хотите сбросить ссылку? Как только вы это сделаете, вы больше не сможете по ней отправлять сообщения в группу.";
 
 "GroupIntegrationLinkRevokeAction" = "Сбросить";
 
@@ -243,7 +243,7 @@
 
 "CreateGroupNamePlaceholder" = "Название группы";
 
-"CreateGroupHint" = "Пожалуйста, укажите название группы и при желании ее фото";
+"CreateGroupHint" = "Пожалуйста, укажите название группы и фото, при желании";
 
 "CreateGroupMembersTitle" = "Пригласить участников";
 
@@ -267,7 +267,7 @@
 
 "NotificationsInAppTitle" = "Оповещения в приложении";
 
-"NotificationsNotificationHint" = "Вы можете выключить оповещения для конкретных людей или групп на страницах их профилей.";
+"NotificationsNotificationHint" = "Вы можете выключить оповещения от конкретных людей или групп на страницах их профилей.";
 
 "NotificationsPrivacyTitle" = "Приватность";
 
@@ -303,7 +303,7 @@
 
 "PrivacyTerminateAlertSingle" = "Удалить сессию";
 
-"PrivacyTerminateHint" = "Выход со всех устройств кроме этого.";
+"PrivacyTerminateHint" = "Выход из всех устройств, кроме этого.";
 
 /*
  * Wallpapers
@@ -311,7 +311,7 @@
 
 "WallpapersTitle" = "Обои чата";
 
-"WallpapersPhoto" = "Медиа библеотека";
+"WallpapersPhoto" = "Выбрать из галереи";
 
 /*
  * Chat
@@ -327,21 +327,21 @@
  * Chat attachment menu
  */
 
-"AttachmentsSendPhoto" = "Отправить {count} Фото";
+"AttachmentsSendPhoto" = "Отправить {count} фото";
 
-"AttachmentsSendPhotos" = "Отправить {count} Фото";
+"AttachmentsSendPhotos" = "Отправить {count} фото";
 
 /*
  * Find
  */
 
-"FindTitle" = "Поиск Людей";
+"FindTitle" = "Поиск людей";
 
-"FindFieldHint" = "телефон, адрес почты или ник";
+"FindFieldHint" = "Телефон, почта или ник";
 
-"FindHint" = "Для поиска введите номер телефона, адрес электронной почты или ник";
+"FindHint" = "Для поиска введите номер телефона, адрес электронной почты или ник.";
 
-"FindNotFound" = "К сожалению, мы не смогли никого найти по этому поисковому запросу";
+"FindNotFound" = "К сожалению, мы не смогли никого найти по этому поисковому запросу.";
 
 /*
  * Placeholders
@@ -349,7 +349,7 @@
 
 "Placeholder_Empty_Title" = "Пригласите своих друзей";
 
-"Placeholder_Empty_Message" = "Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.";
+"Placeholder_Empty_Message" = "Никто из ваших контактов не использует {appname}. Используйте кнопку ниже чтобы пригласить их.";
 
 "Placeholder_Empty_Action" = "РАССКАЗАТЬ ДРУЗЬЯМ";
 
@@ -363,19 +363,19 @@
 
 "Placeholder_Contacts_Title" = "Пригласите своих друзей";
 
-"Placeholder_Contacts_Message" = "Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.";
+"Placeholder_Contacts_Message" = "Никто из ваших контактов не использует {appname}. Используйте кнопку ниже чтобы пригласить их.";
 
 "Placeholder_Contacts_Action" = "РАССКАЗАТЬ ДРУЗЬЯМ";
 
-"Placeholder_Contacts_Message2" = "или добавьте контакт вручную через кнопку плюс справа вверху экрана";
+"Placeholder_Contacts_Message2" = "или добавьте контакт вручную через кнопку \"плюс\" в правом верхнем углу экрана";
 
 "Placeholder_Dialogs_Title" = "Начать общение";
 
-"Placeholder_Dialogs_Message" = "Выберите контакт из списка контактов или нажмине кнопку \"написать\" для начала общения.";
+"Placeholder_Dialogs_Message" = "Выберите контакт из списка или нажмине кнопку \"написать\" для начала общения.";
 
 "Placeholder_Group_Title" = "Не участник группы";
 
-"Placeholder_Group_Message" = "К сожалению, Вы больше не являетесь участником этой группы.";
+"Placeholder_Group_Message" = "К сожалению, вы больше не являетесь участником этой группы.";
 
 /*
  * Auth
@@ -385,11 +385,11 @@
 
 "AuthStarButton" = "Начать общение";
 
-"AuthPhoneTitle" = "Ваш Телефон";
+"AuthPhoneTitle" = "Ваш телефон";
 
 "AuthPhoneNumberHint" = "Ваш номер телефона";
 
-"AuthPhoneHint" = "Пожалуйста, укажите Вашу страну и номер телефона.";
+"AuthPhoneHint" = "Пожалуйста, укажите вашу страну и номер телефона.";
 
 "AuthTermsOfServiceFull" = "Зарегистрировавшись, вы соглашаетесь с Условиями предоставления услуг.";
 
@@ -399,11 +399,11 @@
 
 "AuthCodeFieldHint" = "Код активации";
 
-"AuthCodeHint" = "Мы отправили Вам SMS с кодом активации.";
+"AuthCodeHint" = "Мы отправили вам SMS с кодом активации.";
 
-"AuthCallDoneHint" = "Актор набрал ваш номер.";
+"AuthCallDoneHint" = "{appname} набрал ваш номер.";
 
-"AuthCallHint" = "Актор позвонит вам через {time}";
+"AuthCallHint" = "{appname} позвонит вам через {time}";
 
 "AuthNoCodeHint" = "Не получили код?";
 
@@ -415,7 +415,7 @@
 
 "AuthProfileNameHint" = "Ваше имя";
 
-"AuthProfileHint" = "Введите свое имя и фото";
+"AuthProfileHint" = "Введите свое имя и выберите фото";
 
 "AuthTerms" = "By signing up to {app_name}, you agree not to: \n\n - use our service to send spam and scam users.\n- use our service to send spam and scam users.\n- use our service to send spam and scam users.\n- promote violence on publicly viewable {app_name} bots or channels.\n\nWe reserve the right to update these Terms of Service later.";
 
@@ -471,7 +471,7 @@
 
 "AlertSet" = "Установить";
 
-"AlertOk" = "OK";
+"AlertOk" = "Ok";
 
 "AlertYes" = "Да";
 
@@ -483,7 +483,7 @@
 
 "AlertInvite" = "Пригласить";
 
-"UnsupportedContent" = "Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновление приложения что бы увидеть его.";
+"UnsupportedContent" = "Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновления приложения.";
 
 /*
  * Actions
@@ -515,7 +515,7 @@
 
 "ErrorPhoneIncorrect" = "Неправильный номер телефона. Пожалуйста, повторите попытку.";
 
-"ErrorCodeExpired" = "Код устарел. Пожалуйста, начните авторизацию с начала.";
+"ErrorCodeExpired" = "Код устарел. Пожалуйста, авторизуйтесь снова.";
 
 "ErrorAlreadyJoined" = "Вы уже участник группы";
 
