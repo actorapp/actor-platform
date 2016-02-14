@@ -16,6 +16,7 @@
 #import "NYTPhotosOverlayView.h"
 #import "NYTPhotoCaptionView.h"
 #import "NSBundle+NYTPhotoViewer.h"
+#import <ActorSDK/ActorSDK-Swift.h>
 
 #ifdef ANIMATED_GIF_SUPPORT
 #import <FLAnimatedImage/FLAnimatedImage.h>
@@ -176,7 +177,7 @@ static const UIEdgeInsets NYTPhotosViewControllerCloseButtonImageInsets = {3, 0,
     self.modalPresentationCapturesStatusBarAppearance = YES;
 
     _overlayView = [[NYTPhotosOverlayView alloc] initWithFrame:CGRectZero];
-    _overlayView.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"NYTPhotoViewerCloseButtonX" inBundle:[NSBundle nyt_photoViewerResourceBundle] compatibleWithTraitCollection:nil] landscapeImagePhone:[UIImage imageNamed:@"NYTPhotoViewerCloseButtonXLandscape" inBundle:[NSBundle nyt_photoViewerResourceBundle] compatibleWithTraitCollection:nil] style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonTapped:)];
+    _overlayView.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage bundled:@"NYTPhotoViewerCloseButtonX.png"] landscapeImagePhone:[UIImage bundled:@"NYTPhotoViewerCloseButtonXLandscape.png"] style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonTapped:)];
     _overlayView.leftBarButtonItem.imageInsets = NYTPhotosViewControllerCloseButtonImageInsets;
     _overlayView.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonTapped:)];
 

@@ -6,7 +6,7 @@ import Foundation
 
 let frameworkBundle = NSBundle(identifier: "im.actor.ActorSDK")!
 
-extension NSBundle {
+public extension NSBundle {
     static var framework: NSBundle {
         get {
             return frameworkBundle
@@ -14,7 +14,7 @@ extension NSBundle {
     }
 }
 
-extension UIImage {
+public extension UIImage {
     class func bundled(named: String) -> UIImage? {
         
         if let appImage = UIImage(named: named) {
