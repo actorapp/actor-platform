@@ -106,7 +106,7 @@ final class HttpApiFrontendSpec
     val publicGroup = createPubGroup("public group", "PG", Set(user2.id)).groupPeer
 
     val resourcesPath = Paths.get(getClass.getResource("/files").toURI).toFile.getCanonicalPath
-    val config = HttpApiConfig("127.0.0.1", 9000, "http://localhost:9090", resourcesPath, None)
+    val config = HttpApiConfig("127.0.0.1", 9090, "http://localhost:9090", resourcesPath, None)
     HttpApiFrontend.start(config, tlsContext = None)
 
     val http = Http()
