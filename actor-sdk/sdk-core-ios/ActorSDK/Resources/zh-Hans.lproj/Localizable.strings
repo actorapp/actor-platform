@@ -38,6 +38,7 @@
 
 "SettingsEdit" = "编辑";
 
+
 "SettingsSetPhoto" = "设置头像";
 
 "SettingsChangeName" = "修改名字";
@@ -50,8 +51,6 @@
 "SettingsEditFieldHint" = "Enter your name";
 
 
-"SettingsAboutNotSet" = "Set about me";
-
 "SettingsUsernameNotSet" = "Set username";
 
 "SettingsUsernameTitle" = "Username";
@@ -59,6 +58,9 @@
 "SettingsUsernameHintField" = "Enter your Username";
 
 "SettingsUsernameHint" = "You can choose a username in {appname}. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
+
+
+"SettingsAboutNotSet" = "Set about me";
 
 "SettingsChangeAboutTitle" = "About me";
 
@@ -237,13 +239,19 @@
 
 "CreateGroupTitle" = "创建群";
 
-"CreateGroupNamePlaceholder" = "输入群名称";
-
 "CreateGroupHint" = "Please provide group subject and optional group icon";
+
+"CreateGroupNamePlaceholder" = "输入群名称";
 
 "CreateGroupMembersTitle" = "Invite members";
 
 "CreateGroupMembersPlaceholders" = "Enter Names";
+
+/*
+ * Location
+ */
+
+"LocationTitle" = "Location";
 
 /*
  * Notifications
@@ -315,17 +323,35 @@
 
 "ChatNewMessages" = "新消息";
 
+"ChatVoiceMessage" = "语音消息";
+
+"ChatHoldToTalk" = "按住说话";
+
+"ChatReleaseToSend" = "松开结束";
+
+"ChatSlideUpToCancel" = "上滑取消";
+
+"Chat.MicrophoneAccessDisabled"  = "We needs access to your microphone for voice messages. Please go to Settings — Privacy — Microphone and set to ON";
+
+/*
+ * Chat attachment menu
+ */
+
+"AttachmentsSendPhoto" = "发送选中图片 ({count})";
+
+"AttachmentsSendPhotos" = "发送选中图片 ({count})";
+
 /*
  * Find
  */
 
-"FindTitle" = "Find People";
+"FindTitle" = "添加朋友";
 
-"FindFieldHint" = "phone number, email or nickname";
+"FindFieldHint" = "手机号或昵称";
 
-"FindHint" = "Enter phone number, email or nickname and press search";
+"FindHint" = "输入手机号或昵称，然后点击搜索";
 
-"FindNotFound" = "Sorry, but we are unable to find person for this search query";
+"FindNotFound" = "对不起，没有找到";
 
 /*
  * Placeholders
@@ -367,7 +393,7 @@
 
 "AuthMoreInfo" = "免费，快速，安全的消息.";
 
-"AuthStarButton" = "家庭通信";
+"AuthStarButton" = "开始";
 
 "AuthPhoneTitle" = "你的电话";
 
@@ -385,9 +411,9 @@
 
 "AuthCodeHint" = "已经通过短信为你发送验证码，请稍侯。";
 
-"AuthCallHint" = "{appname} will call you in {time}";
+"AuthCallHint" = "{appname} 将在 {time} 后拨打你的电话";
 
-"AuthCallDoneHint" = "{appname} dialed your number.";
+"AuthCallDoneHint" = "{appname} 拨打了你的电话.";
 
 "AuthNoCodeHint" = "Doesn't get the code?";
 
@@ -402,12 +428,6 @@
 "AuthProfileHint" = "请输入你的名字并上传头像";
 
 "AuthTerms" = "By signing up to {app_name}, you agree not to: \n\n - use our service to send spam and scam users.\n\n- promote violence on publicly viewable {app_name} bots or channels.\n\nWe reserve the right to update these Terms of Service later.";
-
-/*
- * Location
- */
-
-"LocationTitle" = "Location";
 
 /*
  * Common Elements
@@ -429,7 +449,7 @@
 
 "ShareLocation" = "位置";
 
-"ShareContact" = "联系";
+"ShareContact" = "联系人";
 
 /*
  *  Navigation
@@ -469,9 +489,9 @@
 
 "AlertError" = "Error";
 
-"AlertTryAgain" = "Try Again";
+"AlertTryAgain" = "重试";
 
-"AlertInvite" = "Invite";
+"AlertInvite" = "邀请";
 
 "UnsupportedContent" = "这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。";
 
@@ -488,12 +508,12 @@
 "AlertLinkCopied" = "链接已经被复制到剪贴板。";
 
 /*
- * Network
+ *  Network
  */
 
-"StatusConnecting" = "Connecting...";
+"StatusConnecting" = "连接中...";
 
-"StatusSyncing" = "Syncing...";
+"StatusSyncing" = "同步中...";
 
 /*
  * Errors
