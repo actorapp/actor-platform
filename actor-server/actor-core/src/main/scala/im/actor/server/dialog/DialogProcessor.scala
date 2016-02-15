@@ -5,7 +5,7 @@ import akka.pattern.pipe
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.concurrent.{ ActorFutures, ActorStashing }
+import im.actor.concurrent.{ ActorFutures, ActorStashing, AlertingActor }
 import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs.ProcessorState
 import im.actor.server.db.DbExtension
@@ -112,7 +112,8 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   with ActorLogging
   with DialogCommandHandlers
   with ActorFutures
-  with ActorStashing {
+  with ActorStashing
+  with AlertingActor {
   import DialogCommands._
   import DialogProcessor._
 
