@@ -1,4 +1,4 @@
-package im.actor.runtime.webrtc.sdp;
+package im.actor.runtime.webrtc.sdp.entities;
 
 public class SDPRawRecord {
 
