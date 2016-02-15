@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 
 import QuickSearchActionCreators from '../../actions/QuickSearchActionCreators';
 
@@ -26,23 +24,26 @@ class QuickSearchButton extends Component {
     };
   }
 
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
   openQuickSearch = () => QuickSearchActionCreators.show();
 
   render() {
     const { isQuickSearchOpen } = this.state;
+    const { intl } = this.context;
 
     return (
       <footer className="sidebar__quick-search" >
         <a onClick={this.openQuickSearch}>
           <div className="icon-holder"><i className="material-icons">search</i></div>
-          {this.getIntlMessage('button.quickSearch')}
+          {intl.messages['button.quickSearch']}
         </a>
         {isQuickSearchOpen ? <QuickSearch/> : null}
       </footer>
     )
   }
 }
-
-ReactMixin.onClass(QuickSearchButton, IntlMixin);
 
 export default Container.create(QuickSearchButton, {pure: false});

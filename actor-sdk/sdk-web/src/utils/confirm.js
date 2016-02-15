@@ -1,17 +1,18 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import { KeyCodes } from '../constants/ActorAppConstants'
 import ComposeActionCreators from '../actions/ComposeActionCreators';
 
-class Confirm extends React.Component {
+class Confirm extends Component {
   static propTypes = {
-    message: React.PropTypes.string.isRequired,
-    description: React.PropTypes.string,
-    abortLabel: React.PropTypes.string,
-    confirmLabel: React.PropTypes.string
+    message: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    abortLabel: PropTypes.string,
+    confirmLabel: PropTypes.string
   };
 
   constructor(props) {
@@ -25,7 +26,7 @@ class Confirm extends React.Component {
 
   componentDidMount() {
     ComposeActionCreators.toggleAutoFocus(false);
-    React.findDOMNode(this.refs.confirm).focus();
+    findDOMNode(this.refs.confirm).focus();
     document.addEventListener('keydown', this.onKeyDown, false);
   }
 

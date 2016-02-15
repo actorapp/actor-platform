@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
 import ActorClient from '../utils/ActorClient';
-import RouterContainer from '../utils/RouterContainer';
+import history from '../utils/history';
 import DelegateContainer from '../utils/DelegateContainer';
 
 import MyProfileActionCreators from './MyProfileActionCreators';
@@ -85,14 +85,19 @@ const LoginActionCreators = {
       delegate.actions.setLoggedIn(opts);
     } else {
       if (opts.redirect) {
-        const router = RouterContainer.get();
-        const nextPath = router.getCurrentQuery().nextPath;
+        // console.debug('opts.redirect', opts.redirect);
+        // console.debug('history', history);
 
-        if (nextPath) {
-          router.replaceWith(nextPath);
-        } else {
-          router.replaceWith('/');
-        }
+        // TODO: redirect to home after login
+        // const router = RouterContainer.get();
+        // const nextPath = router.getCurrentQuery().nextPath;
+        //
+        // if (nextPath) {
+        //   router.replaceWith(nextPath);
+        // } else {
+        //   router.replaceWith('/');
+        // }
+        history.replace('/');
       }
 
       dispatch(ActionTypes.AUTH_SET_LOGGED_IN);

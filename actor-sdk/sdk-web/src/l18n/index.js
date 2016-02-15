@@ -12,7 +12,7 @@ import portuguese from './pt-BR';
 import chinese from './zh-CN';
 
 let language = navigator.language.toLocaleLowerCase() || navigator.browserLanguage.toLocaleLowerCase();
-if (language === 'zh-cn') language = 'zh'
+if (language === 'zh-cn') language = 'zh';
 
 // Fallback to default language
 const defaultLanguage = english;
@@ -44,5 +44,25 @@ export function extendL18n() {
 
 export function getIntlData(locale) {
   const lang = locale ? locale : language;
-  return languageData[lang] || languageData[lang.split('-')[0]] || languageData['default'];
+  const currentLanguage = languageData[lang] || languageData[lang.split('-')[0]] || languageData['default']
+
+  const flattenMessages = (nestedMessages, prefix = '') => {
+    return Object.keys(nestedMessages).reduce((messages, key) => {
+      let value = nestedMessages[key];
+      let prefixedKey = prefix ? `${prefix}.${key}` : key;
+
+      if (typeof value === 'string') {
+        messages[prefixedKey] = value;
+      } else {
+        Object.assign(messages, flattenMessages(value, prefixedKey));
+      }
+
+      return messages;
+    }, {});
+  };
+
+  return {
+    locale: currentLanguage.locale,
+    messages: flattenMessages(currentLanguage.messages)
+  }
 }

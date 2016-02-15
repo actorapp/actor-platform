@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
-import addons from 'react/addons';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classnames from 'classnames';
 
 import InviteUserStore from '../../../stores/InviteUserStore';
@@ -16,8 +16,6 @@ import Stateful from '../../common/Stateful';
 
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
 
-const {addons: { PureRenderMixin }} = addons;
-
 const getStateFromStore = (props) => {
   const { contact } = props;
 
@@ -26,11 +24,11 @@ const getStateFromStore = (props) => {
   }
 };
 
-class ContactItem extends React.Component {
+class ContactItem extends Component {
   static propTypes = {
-    contact: React.PropTypes.object,
-    onSelect: React.PropTypes.func,
-    isMember: React.PropTypes.bool
+    contact: PropTypes.object,
+    onSelect: PropTypes.func,
+    isMember: PropTypes.bool
   };
 
   constructor(props) {

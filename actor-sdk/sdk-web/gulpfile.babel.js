@@ -16,7 +16,7 @@ import rename from 'gulp-rename';
 const argv = minimist(process.argv.slice(2));
 const isProduction = argv.release || false;
 
-gulp.task('webpack:dev', () => {
+gulp.task('webpack:dev', ['sdk'], () => {
   new webpackDevServer(webpack(webpackConfig), {
     publicPath: '/',
     contentBase: './dist',
@@ -53,8 +53,8 @@ gulp.task('html', () => {
 
 gulp.task('workers', ['sdk'], () => {
   gulp.src([
-    'build/workers/offline-worker.*',
-    'build/workers/serviceworker-cache-polyfill.*',
+    //'build/workers/offline-worker.*',
+    //'build/workers/serviceworker-cache-polyfill.*',
     'node_modules/opus-recorder/libopus.js',
     'node_modules/opus-recorder/oggopusDecoder.js',
     'node_modules/opus-recorder/oggopusEncoder.js',

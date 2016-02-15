@@ -1,8 +1,9 @@
 /*
- * Copyright (C) 2016 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import classnames from 'classnames';
 import SimpleScroll from 'simple-scrollbar';
 
@@ -23,7 +24,7 @@ class Scrollbar extends Component {
   }
 
   componentDidMount() {
-    const scrollNode = React.findDOMNode(this.refs.scroll);
+    const scrollNode = findDOMNode(this.refs.scroll);
     this.scrollbar.initElement(scrollNode);
   }
 
@@ -33,7 +34,7 @@ class Scrollbar extends Component {
   };
 
   scrollTo = (to) => {
-    const scrollNode = React.findDOMNode(this.refs.scroll);
+    const scrollNode = findDOMNode(this.refs.scroll);
     this.scrollbar.scrollTo(scrollNode, to);
   };
 
