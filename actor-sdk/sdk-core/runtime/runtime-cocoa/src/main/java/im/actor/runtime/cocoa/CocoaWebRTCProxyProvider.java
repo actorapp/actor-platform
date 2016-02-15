@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import im.actor.runtime.WebRTCRuntime;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.Promises;
-import im.actor.runtime.webrtc.WebRTCLocalStream;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class CocoaWebRTCProxyProvider implements WebRTCRuntime {
@@ -30,7 +30,7 @@ public class CocoaWebRTCProxyProvider implements WebRTCRuntime {
 
     @NotNull
     @Override
-    public Promise<WebRTCLocalStream> getUserAudio() {
+    public Promise<WebRTCMediaStream> getUserAudio() {
         if (rtcRuntime == null) {
             return Promises.failure(new RuntimeException("WebRTC Runtime not set"));
         }
