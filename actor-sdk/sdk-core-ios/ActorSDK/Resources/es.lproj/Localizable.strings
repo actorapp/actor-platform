@@ -504,6 +504,10 @@
 
 "AlertLinkCopied" = "Enlace copiado al portapapeles.";
 
+"ActionOpenLink" = "Enlace abierto";
+
+"ActionCancel" = "Cancelar";
+
 /*
  * Network
  */

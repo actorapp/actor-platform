@@ -205,7 +205,16 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     // Url open handling
     
     public func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
-        openUrl(url)
+        let actionSheet: UIAlertController = UIAlertController(title: nil, message: url.absoluteString, preferredStyle: .ActionSheet)
+        actionSheet.addAction(UIAlertAction(title: AALocalized("ActionOpenLink"), style: .Default, handler: { action in
+            self.openUrl(url)
+        }))
+        actionSheet.addAction(UIAlertAction(title: AALocalized("ActionCopyLink"), style: .Default, handler: { action in
+            UIPasteboard.generalPasteboard().string = url.absoluteString
+            self.controller.alertUser("AlertLinkCopied")
+        }))
+        actionSheet.addAction(UIAlertAction(title: AALocalized("ActionCancel"), style: .Cancel, handler:nil))
+        self.controller.presentViewController(actionSheet, animated: true, completion: nil)
     }
     
     public func attributedLabel(label: TTTAttributedLabel!, didSelectLinkWithURL url: NSURL!) {
