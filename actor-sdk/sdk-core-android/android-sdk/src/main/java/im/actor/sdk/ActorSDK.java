@@ -39,6 +39,7 @@ import im.actor.sdk.controllers.fragment.group.GroupInfoActivity;
 import im.actor.sdk.controllers.fragment.profile.ProfileActivity;
 import im.actor.sdk.controllers.fragment.settings.MyProfileActivity;
 import im.actor.sdk.controllers.fragment.settings.SecuritySettingsActivity;
+import im.actor.sdk.core.AndroidCallProvider;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.core.ActorPushManager;
@@ -240,6 +241,8 @@ public class ActorSDK {
         if (customApplicationName != null) {
             builder.setCustomAppName(customApplicationName);
         }
+
+        builder.setCallsProvider(new AndroidCallProvider());
 
         this.messenger = new AndroidMessenger(AndroidContext.getContext(), builder.build());
 

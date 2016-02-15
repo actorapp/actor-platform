@@ -1,25 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/phoneState"
+    <ImageView
+        android:id="@+id/avatar_bgrnd"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:src="@drawable/img_profile_avatar_default"
+        android:scaleType="centerCrop" />
 
-    <Button
-        android:id="@+id/answerCall"
+    <im.actor.sdk.view.avatar.CoverAvatarView
+        android:id="@+id/avatar"
         android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Answer" />
+        android:layout_gravity="top|left"
+        android:orientation="vertical"
+        android:layout_margin="40dp"
+        >
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:textSize="26sp" />
 
-    <Button
-        android:id="@+id/cancelCall"
+        <TextView
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_secondary"/>
+    </LinearLayout>
+
+
+    <ImageButton
+        android:layout_gravity="bottom"
+        android:id="@+id/end_call"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="End" />
-</LinearLayout>
+        android:layout_height="60dp"
+        android:background="@color/accent"
+        android:src="@drawable/ic_call_white_36dp" />
+
+    <LinearLayout
+        android:id="@+id/answer_container"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom">
+
+        <ImageButton
+            android:layout_gravity="bottom"
+            android:id="@+id/answer"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="60dp"
+            android:background="@color/primary_alt"
+            android:src="@drawable/ic_call_white_36dp" />
+
+        <ImageButton
+            android:layout_gravity="bottom"
+            android:id="@+id/notAnswer"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="60dp"
+            android:background="@color/accent"
+            android:src="@drawable/ic_call_white_36dp" />
+    </LinearLayout>
+
+</FrameLayout>
