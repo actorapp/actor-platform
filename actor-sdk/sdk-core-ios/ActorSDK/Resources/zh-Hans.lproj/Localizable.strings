@@ -50,7 +50,13 @@
 
 "SettingsUsernameHintField" = "输入用户名";
 
-"SettingsUsernameHint" = "You can choose a username in {appname}. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
+"SettingsUsernameNotSet" = "设置用户名";
+ 
+"SettingsUsernameTitle" = "用户名";
+
+"SettingsUsernameHintField" = "输入用户名";
+
+"SettingsUsernameHint" = "你可以设置{appname}的用户名, 以便于其他人不知道你的电话号码也可以直接联系你.\n\n你可以用 a-z, 0-9 和下划线. 至少 5 个字符.";
 
 
 "SettingsAboutNotSet" = "填写自我介绍";
@@ -76,7 +82,7 @@
 "SettingsVersion" = "版本 {version}";
 
 
-"SettingsAllSessions" = "所有会议";
+"SettingsAllSessions" = "所有会话";
 
 "SettingsLastSeen" = "最后一次露面";
 
@@ -244,7 +250,7 @@
  * Location
  */
 
-"LocationTitle" = "Location";
+"LocationTitle" = "位置";
 
 /*
  * Notifications
@@ -280,7 +286,7 @@
 
 "NotificationsOnlyMentions" = "仅成员";
 
-"NotificationsOnlyMentionsHint" = "You can enable notifications only for messages that contains your mention";
+"NotificationsOnlyMentionsHint" = "你可以只打开提到你的消息通知";
 
 /*
  * Privacy
@@ -290,9 +296,9 @@
 
 "PrivacyTerminate" = "终止所有会话";
 
-"PrivacyTerminateAlert" = "Terminate all sessions";
+"PrivacyTerminateAlert" = "终止所有会话";
 
-"PrivacyTerminateAlertSingle" = "Terminate session";
+"PrivacyTerminateAlertSingle" = "终止会话";
 
 "PrivacyTerminateHint" = "退出除此设备之外的所有设备。";
 
@@ -324,7 +330,7 @@
 
 "ChatSlideUpToCancel" = "上滑取消";
 
-"Chat.MicrophoneAccessDisabled"  = "We needs access to your microphone for voice messages. Please go to Settings — Privacy — Microphone and set to ON";
+"Chat.MicrophoneAccessDisabled"  = "我们需要访问麦克风来发送语音信息. 请打开 设置 — 隐私 — 麦克风，然后打开开关";
 
 /*
  * Chat attachment menu
@@ -394,9 +400,9 @@
 
 "AuthPhoneHint" = "请选择你的国家并输入你的电话号码。";
 
-"AuthTermsOfServiceFull" = "By signing up, you agree to the Terms of Service.";
+"AuthTermsOfServiceFull" = "若使用此应用服务，您应当阅读并遵守服务条款.";
 
-"AuthTermsOfService" = "Terms of Service";
+"AuthTermsOfService" = "服务条款";
 
 "AuthPhoneTooShort" = "电话号码太短";
 
@@ -408,7 +414,7 @@
 
 "AuthCallDoneHint" = "{appname} 拨打了你的电话.";
 
-"AuthNoCodeHint" = "Doesn't get the code?";
+"AuthNoCodeHint" = "没收到验证码?";
 
 "AuthProfileTitle" = "你的信息";
 
