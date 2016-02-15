@@ -19,11 +19,6 @@ class Voice extends Component {
 
   constructor(props) {
     super(props);
-    const { content } = props;
-
-    if (content.fileUrl) {
-      this.createAudioElement(content.fileUrl);
-    }
 
     this.state = {
       isLoaded: this.isCached(),
@@ -31,6 +26,14 @@ class Voice extends Component {
       currentTime: 0,
       duration: props.content.duration / 1000
     };
+  }
+
+  componentDidMount() {
+    const { content } = this.props;
+
+    if (content.fileUrl) {
+      this.createAudioElement(content.fileUrl);
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {

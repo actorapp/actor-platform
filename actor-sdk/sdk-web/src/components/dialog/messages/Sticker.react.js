@@ -13,7 +13,7 @@ let cache = {};
 class Sticker extends Component {
   static propTypes = {
     className: PropTypes.string,
-    fileUrl: PropTypes.string.isRequired,
+    fileUrl: PropTypes.string,
     h: PropTypes.number.isRequired,
     w: PropTypes.number.isRequired
   };
