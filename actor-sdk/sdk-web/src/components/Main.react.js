@@ -33,9 +33,6 @@ class Main extends Component {
   constructor(props) {
     super(props);
 
-    const { params } = props;
-    const peer = PeerUtils.stringToPeer(params.id);
-
     document.addEventListener('visibilitychange', this.onVisibilityChange);
     document.addEventListener('keydown', this.onKeyDown, false);
 
@@ -45,6 +42,11 @@ class Main extends Component {
     if (!document.hidden) {
       VisibilityActionCreators.createAppVisible();
     }
+  }
+
+  componentDidMount() {
+    const { params } = this.props;
+    const peer = PeerUtils.stringToPeer(params.id);
 
     if (peer) {
       // It is needed to prevent failure on opening dialog while library didn't load dialogs (right after auth)
@@ -57,7 +59,6 @@ class Main extends Component {
       }
 
       if (peerInfo) {
-        //select.peer
         DialogActionCreators.selectDialogPeer(peer);
       } else {
         history.replace('/');
