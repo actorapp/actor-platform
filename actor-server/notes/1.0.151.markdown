@@ -3,3 +3,4 @@
 * :shipit: EventBus service
 * :rocket: Upgrade botkit(stability improvements)
 * :shipit: Unified error handling in rpc services
+* :fix: Optimize bot updates
