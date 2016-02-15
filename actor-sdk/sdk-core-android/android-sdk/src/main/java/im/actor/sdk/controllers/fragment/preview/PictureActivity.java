@@ -61,6 +61,7 @@ public class PictureActivity extends BaseActivity {
     private View backgroundView;
     private PictureFragment fragment;
     private String path;
+    private float bitmapWidth, bitmapHeight;
     private boolean uiIsHidden;
     private Toolbar toolbar;
     private View containerView;
@@ -125,16 +126,20 @@ public class PictureActivity extends BaseActivity {
                 .commit();
 
 
-        Bitmap bitmap;
+        Bitmap bitmap = null;
         try {
             bitmap = ImageLoading.loadBitmapOptimized(path);
+            bitmapWidth = bitmap.getWidth();
+            bitmapHeight = bitmap.getHeight();
         } catch (ImageLoadException e) {
             e.printStackTrace();
             return;
         }
         transitionView.setImageBitmap(bitmap);
+        if (bitmap != null)
+            bitmap = null;
 
-        MediaFullscreenAnimationUtils.animateForward(transitionView, bitmap, transitionLeft, transitionTop, transitionWidth, transitionHeight,
+        MediaFullscreenAnimationUtils.animateForward(transitionView, bitmapWidth, bitmapHeight, transitionLeft, transitionTop, transitionWidth, transitionHeight,
                 new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -166,15 +171,15 @@ public class PictureActivity extends BaseActivity {
                         .commit();
                 containerView.setVisibility(View.GONE);
 
-                Bitmap bitmap;
-                try {
-                    bitmap = ImageLoading.loadBitmapOptimized(path);
-                } catch (ImageLoadException e) {
-                    e.printStackTrace();
-                    return;
-                }
+//                Bitmap bitmap;
+//                try {
+//                    bitmap = ImageLoading.loadBitmapOptimized(path);
+//                } catch (ImageLoadException e) {
+//                    e.printStackTrace();
+//                    return;
+//                }
 
-                MediaFullscreenAnimationUtils.animateBack(transitionView, bitmap, transitionLeft, transitionTop, transitionWidth, transitionHeight,
+                MediaFullscreenAnimationUtils.animateBack(transitionView, bitmapWidth, bitmapHeight, transitionLeft, transitionTop, transitionWidth, transitionHeight,
                         new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
@@ -261,11 +266,16 @@ public class PictureActivity extends BaseActivity {
             circularView.setVisibility(View.GONE);
             imageView = (ImageView) rootView.findViewById(R.id.image);
 
+            Bitmap bitmap = null;
             try {
-                imageView.setImageBitmap(ImageLoading.loadBitmapOptimized(path));
+                bitmap = ImageLoading.loadBitmapOptimized(path);
+                imageView.setImageBitmap(bitmap);
             } catch (ImageLoadException e) {
                 e.printStackTrace();
             }
+            if (bitmap != null)
+                bitmap = null;
+
             attacher = new PhotoViewAttacher(imageView);
             attacher.setOnDoubleTapListener(new DefaultOnDoubleTapListener(attacher) {
                 @Override
