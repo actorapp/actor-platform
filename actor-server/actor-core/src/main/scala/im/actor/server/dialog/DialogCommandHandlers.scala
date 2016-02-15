@@ -39,9 +39,11 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
           updateMessageDate(state, seq.date)
           unstashAll()
         case fail: Status.Failure ⇒
+          log.error(fail.cause, "Failed to send message")
           replyTo forward fail
+          context unbecome ()
           unstashAll()
-      }: Receive) orElse reactions(state), discardOld = true)
+      }: Receive) orElse reactions(state), discardOld = false)
 
       validateAccessHash(sm.dest, sm.senderAuthId, sm.accessHash) map { valid ⇒
         if (valid) {
@@ -49,16 +51,12 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
             val sendDate = calcSendDate(state)
             val message = sm.message
             PubSubExtension(system).publish(PeerMessage(sm.origin, sm.dest, sm.randomId, sendDate, message))
-            (for {
+            for {
               _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(sendDate)))
               _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
               _ ← dialogExt.updateCounters(peer, userId)
               SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
-            } yield SeqStateDate(seq, state, sendDate)) recover {
-              case e ⇒
-                log.error(e, "Failed to send message")
-                throw e
-            }
+            } yield SeqStateDate(seq, state, sendDate)
           } pipeTo self
         } else {
           self ! Status.Failure(InvalidAccessHash)
