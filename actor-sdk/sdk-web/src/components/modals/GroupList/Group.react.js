@@ -1,15 +1,9 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
 import classnames from 'classnames';
-import { IntlMixin } from 'react-intl';
-
-import GroupListActionCreators from '../../../actions/GroupListActionCreators'
-
-import GroupListStore from '../../../stores/GroupListStore';
 
 import AvatarItem from '../../common/AvatarItem.react';
 
@@ -86,7 +80,5 @@ class Group extends Component {
     )
   }
 }
-
-ReactMixin.onClass(Group, IntlMixin);
 
 export default Group;

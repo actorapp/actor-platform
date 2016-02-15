@@ -3,8 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import SharedContainer from '../utils/SharedContainer';
 import { appName } from '../constants/ActorAppConstants';
 
@@ -20,14 +19,12 @@ class Deactivated extends Component {
     return (
       <div className="deactivated row center-xs middle-xs">
         <div className="deactivated__window">
-          <h2>{this.getIntlMessage('main.deactivated.header')}</h2>
-          <p><FormattedMessage message={this.getIntlMessage('main.deactivated.text')} appName={this.appName}/></p>
+          <h2><FormattedMessage id="main.deactivated.header"/></h2>
+          <p><FormattedMessage id="main.deactivated.text" values={{appName: this.appName}}/></p>
         </div>
       </div>
     );
   }
 }
-
-ReactMixin.onClass(Deactivated, IntlMixin);
 
 export default Deactivated;

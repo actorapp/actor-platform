@@ -1,14 +1,12 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { map } from 'lodash';
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import Modal from 'react-modal';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
@@ -22,6 +20,10 @@ class PreferencesModal extends Component {
   constructor(props) {
     super(props);
   }
+
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   static getStores = () => [PreferencesStore];
 
@@ -95,6 +97,7 @@ class PreferencesModal extends Component {
       isShowNotificationsTextEnabled,
       sessions
     } = this.state;
+    const { intl } = this.context;
 
     const sessionList = map(sessions, (session) => <Session {...session}/>);
 
@@ -117,18 +120,35 @@ class PreferencesModal extends Component {
       'preferences__list__item--active': activeTab === 'SECURITY'
     });
 
+    const modalStyle = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null,
+        width: 760
+      }
+    };
+
     return (
       <Modal className="modal-new modal-new--preferences"
              closeTimeoutMS={150}
              isOpen={isOpen}
-             style={{width: 760}}>
+             style={modalStyle}>
 
         <div className="modal-new__header">
           <i className="modal-new__header__icon material-icons">settings</i>
-          <h3 className="modal-new__header__title">{this.getIntlMessage('preferencesModalTitle')}</h3>
+          <h3 className="modal-new__header__title">{intl.messages['preferencesModalTitle']}</h3>
 
           <div className="pull-right">
-            <button className="button button--lightblue" onClick={this.onDone}>{this.getIntlMessage('button.done')}</button>
+            <button className="button button--lightblue" onClick={this.onDone}>{intl.messages['button.done']}</button>
           </div>
         </div>
 
@@ -137,15 +157,15 @@ class PreferencesModal extends Component {
             <aside className="preferences__tabs">
               <a className={generalTabClassNames}
                  onClick={() => this.changeTab('GENERAL')}>
-                {this.getIntlMessage('preferencesGeneralTab')}
+                {intl.messages['preferencesGeneralTab']}
               </a>
               <a className={notificationTabClassNames}
                  onClick={() => this.changeTab('NOTIFICATIONS')}>
-                {this.getIntlMessage('preferencesNotificationsTab')}
+                {intl.messages['preferencesNotificationsTab']}
               </a>
               <a className={securityTabClassNames}
                  onClick={() => this.changeTab('SECURITY')}>
-                {this.getIntlMessage('preferencesSecurityTab')}
+                {intl.messages['preferencesSecurityTab']}
               </a>
             </aside>
             <div className="preferences__body">
@@ -154,7 +174,7 @@ class PreferencesModal extends Component {
                   <ul>
                     <li>
                       <i className="icon material-icons">keyboard</i>
-                      <h4>{this.getIntlMessage('preferencesSendMessageTitle')}</h4>
+                      <h4>{intl.messages['preferencesSendMessageTitle']}</h4>
                       <div className="radio">
                         <input type="radio"
                                name="sendByEnter"
@@ -163,7 +183,7 @@ class PreferencesModal extends Component {
                                defaultChecked={isSendByEnterEnabled}
                                onChange={this.changeSendByEnter}/>
                         <label htmlFor="sendByEnterEnabled">
-                          <b>Enter</b> – {this.getIntlMessage('preferencesSendMessage')}, <b>Shift + Enter</b> – {this.getIntlMessage('preferencesNewLine')}
+                          <b>Enter</b> – {intl.messages['preferencesSendMessage']}, <b>Shift + Enter</b> – {intl.messages['preferencesNewLine']}
                         </label>
                       </div>
                       <div className="radio">
@@ -174,7 +194,7 @@ class PreferencesModal extends Component {
                                defaultChecked={!isSendByEnterEnabled}
                                onChange={this.changeSendByEnter}/>
                         <label htmlFor="sendByEnterDisabled">
-                          <b>Cmd + Enter</b> – {this.getIntlMessage('preferencesSendMessage')}, <b>Enter</b> – {this.getIntlMessage('preferencesNewLine')}
+                          <b>Cmd + Enter</b> – {intl.messages['preferencesSendMessage']}, <b>Enter</b> – {intl.messages['preferencesNewLine']}
                         </label>
                       </div>
                     </li>
@@ -184,27 +204,27 @@ class PreferencesModal extends Component {
                   <ul>
                     <li>
                       <i className="icon material-icons">music_note</i>
-                      <h4>{this.getIntlMessage('preferencesEffectsTitle')}</h4>
+                      <h4>{intl.messages['preferencesEffectsTitle']}</h4>
                       <div className="checkbox">
                         <input type="checkbox"
                                id="soundEffects"
                                defaultChecked={isSoundEffectsEnabled}
                                onChange={this.changeSoundEffectsEnabled}/>
                         <label htmlFor="soundEffects">
-                          {this.getIntlMessage('preferencesEnableEffects')}
+                          {intl.messages['preferencesEnableEffects']}
                         </label>
                       </div>
                     </li>
                     <li>
                       <i className="icon material-icons">notifications</i>
-                      <h4>{this.getIntlMessage('preferencesNotificationsTitle')}</h4>
+                      <h4>{intl.messages['preferencesNotificationsTitle']}</h4>
                       <div className="checkbox">
                         <input type="checkbox"
                                id="groupNotifications"
                                defaultChecked={isGroupsNotificationsEnabled}
                                onChange={this.changeGroupsNotificationsEnabled}/>
                         <label htmlFor="groupNotifications">
-                          {this.getIntlMessage('preferencesNotificationsGroup')}
+                          {intl.messages['preferencesNotificationsGroup']}
                         </label>
                       </div>
                       <div className="checkbox">
@@ -213,24 +233,24 @@ class PreferencesModal extends Component {
                                defaultChecked={isOnlyMentionNotifications}
                                onChange={this.changeMentionNotifications}/>
                         <label htmlFor="mentionsNotifications">
-                          {this.getIntlMessage('preferencesNotificationsOnlyMention')}
+                          {intl.messages['preferencesNotificationsOnlyMention']}
                         </label>
                       </div>
-                      <p className="hint">{this.getIntlMessage('preferencesNotificationsOnlyMentionHint')}</p>
+                      <p className="hint">{intl.messages['preferencesNotificationsOnlyMentionHint']}</p>
                     </li>
                     <li>
                       <i className="icon material-icons">visibility</i>
-                      <h4>{this.getIntlMessage('preferencesPrivacyTitle')}</h4>
+                      <h4>{intl.messages['preferencesPrivacyTitle']}</h4>
                       <div className="checkbox">
                         <input type="checkbox"
                                id="notificationTextPreview"
                                defaultChecked={isShowNotificationsTextEnabled}
                                onChange={this.changeIsShowNotificationTextEnabled}/>
                         <label htmlFor="notificationTextPreview">
-                          {this.getIntlMessage('preferencesMessagePreview')}
+                          {intl.messages['preferencesMessagePreview']}
                         </label>
                       </div>
-                      <p className="hint">{this.getIntlMessage('preferencesMessagePreviewHint')}</p>
+                      <p className="hint">{intl.messages['preferencesMessagePreviewHint']}</p>
                     </li>
                   </ul>
                 </div>
@@ -238,12 +258,12 @@ class PreferencesModal extends Component {
                   <ul>
                     <li>
                       <i className="icon material-icons">devices</i>
-                      <h4>{this.getIntlMessage('preferencesSessionsTitle')}</h4>
+                      <h4>{intl.messages['preferencesSessionsTitle']}</h4>
                       <ul className="session-list">
                         {sessionList}
                         <li className="session-list__session">
                           <a className="link--red" onClick={this.onTerminateAllSessionsClick}>
-                            {this.getIntlMessage('preferencesSessionsTerminateAll')}
+                            {intl.messages['preferencesSessionsTerminateAll']}
                           </a>
                         </li>
                       </ul>
@@ -260,7 +280,5 @@ class PreferencesModal extends Component {
     );
   }
 }
-
-ReactMixin.onClass(PreferencesModal, IntlMixin);
 
 export default Container.create(PreferencesModal);

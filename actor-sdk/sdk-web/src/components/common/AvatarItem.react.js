@@ -1,25 +1,29 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
-import { emojiRegexp } from '../../utils/EmojiUtils';
 
-export default class AvatarItem extends React.Component {
+export default class AvatarItem extends Component {
   static propTypes = {
-    className: React.PropTypes.string,
-    image: React.PropTypes.string,
-    placeholder: React.PropTypes.string.isRequired,
-    size: React.PropTypes.string,
-    title: React.PropTypes.string.isRequired,
+    className: PropTypes.string,
+    image: PropTypes.string,
+    placeholder: PropTypes.string.isRequired,
+    size: PropTypes.string,
+    title: PropTypes.string.isRequired,
 
-    onClick: React.PropTypes.func
+    onClick: PropTypes.func
   };
 
   constructor(props) {
     super(props);
   }
+
+  handleClick = (event) => {
+    const { onClick } = this.props;
+    onClick && onClick(event);
+  };
 
   render() {
     const { title, className, image, size, placeholder } = this.props;
@@ -53,9 +57,4 @@ export default class AvatarItem extends React.Component {
       </div>
     );
   }
-
-  handleClick = (event) => {
-    const { onClick } = this.props;
-    onClick && onClick(event);
-  };
 }

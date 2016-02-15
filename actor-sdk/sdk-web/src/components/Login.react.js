@@ -5,49 +5,25 @@
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
-import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedHTMLMessage } from 'react-intl';
-import { Styles, TextField } from 'material-ui';
 import SharedContainer from '../utils/SharedContainer';
 import { appName, AuthSteps } from '../constants/ActorAppConstants';
+import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 
 import LoginActionCreators from '../actions/LoginActionCreators';
 
 import LoginStore from '../stores/LoginStore';
 
-import ActorTheme from '../constants/ActorTheme';
-
-const ThemeManager = new Styles.ThemeManager();
+import TextField from './common/TextField.react';
 
 class Login extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
     const SharedActor = SharedContainer.get();
     this.appName = SharedActor.appName ? SharedActor.appName : appName;
   }
 
-  static contextTypes = {
-    router: PropTypes.func
-  };
-
-  static propTypes = {
-    query: PropTypes.object
-  };
-
-  static childContextTypes = {
-    muiTheme: PropTypes.object
-  };
-
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    }
-  };
-
-  static getStores() {
-    return [LoginStore];
-  }
+  static getStores = () => [LoginStore];
 
   static calculateState() {
     return {
@@ -62,11 +38,9 @@ class Login extends Component {
     }
   };
 
-  componentWillMount() {
-    const { query } = this.props;
-
-    ThemeManager.setTheme(ActorTheme);
-  }
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   componentDidMount() {
     this.handleFocus();
@@ -128,17 +102,18 @@ class Login extends Component {
 
   render() {
     const { step, errors, login, code, name, isCodeRequested, isCodeSended, isSignupStarted } = this.state;
+    const { intl } = this.context;
 
-    let requestFormClassName = classnames('login__form', 'login__form--request', {
-      'login__form--active': step === AuthSteps.LOGIN_WAIT,
-      'login__form--done': step !== AuthSteps.LOGIN_WAIT && isCodeRequested
+    let requestFormClassName = classnames('login-new__forms__form', 'login-new__forms__form--request', {
+      'login-new__forms__form--active': step === AuthSteps.LOGIN_WAIT,
+      'login-new__forms__form--done': step !== AuthSteps.LOGIN_WAIT && isCodeRequested
     });
-    let checkFormClassName = classnames('login__form', 'login__form--check', {
-      'login__form--active': step === AuthSteps.CODE_WAIT && isCodeRequested,
-      'login__form--done': step !== AuthSteps.CODE_WAIT && isCodeSended
+    let checkFormClassName = classnames('login-new__forms__form', 'login-new__forms__form--check', {
+      'login-new__forms__form--active': step === AuthSteps.CODE_WAIT && isCodeRequested,
+      'login-new__forms__form--done': step !== AuthSteps.CODE_WAIT && isCodeSended
     });
-    let signupFormClassName = classnames('login__form', 'login__form--signup', {
-      'login__form--active': step === AuthSteps.NAME_WAIT
+    let signupFormClassName = classnames('login-new__forms__form', 'login-new__forms__form--signup', {
+      'login-new__forms__form--active': step === AuthSteps.NAME_WAIT
     });
 
     const spinner = (
@@ -158,13 +133,14 @@ class Login extends Component {
 
           <article>
             <h1 className="login-new__heading">
-              <FormattedHTMLMessage message={this.getIntlMessage('login.welcome.header')} appName={this.appName}/>
+              <FormattedHTMLMessage id="login.welcome.header" values={{appName: this.appName}}/>
             </h1>
-            <FormattedHTMLMessage message={this.getIntlMessage('login.welcome.text')} appName={this.appName}/>
+
+            <FormattedHTMLMessage id="login.welcome.text" values={{appName: this.appName}}/>
           </article>
 
           <footer>
-            <div className="pull-left">{this.appName} Messenger © 2015</div>
+            <div className="pull-left"><FormattedMessage id="login.welcome.copyright" values={{appName: this.appName}}/></div>
             <div className="pull-right">
               <a href="//actorapp.ghost.io/desktop-apps">Desktop</a>&nbsp;&nbsp;•&nbsp;&nbsp;
               <a href="//actor.im/ios">iPhone</a>&nbsp;&nbsp;•&nbsp;&nbsp;
@@ -173,65 +149,62 @@ class Login extends Component {
           </footer>
         </div>
 
-        <div className="login-new__form col-xs-6 col-md-4 row center-xs middle-xs">
+        <div className="login-new__forms col-xs-6 col-md-4 row center-xs middle-xs">
           <div>
-            <h1 className="login-new__heading">{this.getIntlMessage('login.signIn')}</h1>
+            <h1 className="login-new__heading"><FormattedMessage id="login.signIn"/></h1>
 
             <form className={requestFormClassName} onSubmit={this.onRequestCode}>
-              <a className="wrong" onClick={this.handleRestartAuthClick}>{this.getIntlMessage('login.wrong')}</a>
-              <TextField className="login__form__input"
+              <a className="wrong" onClick={this.handleRestartAuthClick}><FormattedMessage id="login.wrong"/></a>
+              <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isCodeRequested || step !== AuthSteps.LOGIN_WAIT}
                          errorText={errors.login}
-                         floatingLabelText={this.getIntlMessage('login.phone')}
+                         floatingLabel={intl.messages['login.phone']}
                          onChange={this.onLoginChange}
                          ref="login"
                          value={login}/>
-
               <footer className="text-center">
                 <button className="button button--rised button--wide"
                         type="submit"
                         disabled={isCodeRequested}>
-                  {this.getIntlMessage('button.requestCode')}
+                  <FormattedMessage id="button.requestCode"/>
                   {isCodeRequested ? spinner : null}
                 </button>
               </footer>
             </form>
 
             <form className={checkFormClassName} onSubmit={this.onSendCode}>
-              <TextField className="login__form__input"
+              <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isCodeSended || step !== AuthSteps.CODE_WAIT}
                          errorText={errors.code}
-                         floatingLabelText={this.getIntlMessage('login.authCode')}
+                         floatingLabel={intl.messages['login.authCode']}
                          onChange={this.onCodeChange}
                          ref="code"
                          type="text"
                          value={code}/>
-
               <footer className="text-center">
                 <button className="button button--rised button--wide"
                         type="submit"
                         disabled={isCodeSended}>
-                  {this.getIntlMessage('button.checkCode')}
+                  <FormattedMessage id="button.checkCode"/>
                   {isCodeSended ? spinner : null}
                 </button>
               </footer>
             </form>
 
             <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
-              <TextField className="login__form__input"
+              <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isSignupStarted || step === AuthSteps.COMPLETED}
                          errorText={errors.signup}
-                         floatingLabelText={this.getIntlMessage('login.yourName')}
+                         floatingLabel={intl.messages['login.yourName']}
                          onChange={this.onNameChange}
                          ref="name"
                          type="text"
                          value={name}/>
-
               <footer className="text-center">
                 <button className="button button--rised button--wide"
                         type="submit"
                         disabled={isSignupStarted}>
-                  {this.getIntlMessage('button.signUp')}
+                  <FormattedMessage id="button.signUp"/>
                   {isSignupStarted ? spinner : null}
                 </button>
               </footer>
@@ -243,6 +216,4 @@ class Login extends Component {
   }
 }
 
-ReactMixin.onClass(Login, IntlMixin);
-
-export default Container.create(Login, {pure: false});
+export default Container.create(Login, {pure: false, withProps: true});

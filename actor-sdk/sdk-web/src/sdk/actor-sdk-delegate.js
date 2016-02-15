@@ -4,14 +4,12 @@
 
 /**
  * Class representing a delegate for overriding default app behaviour.
+ *
+ * @param {object} components - Object contains custom react components.
+ * @param {object} actions - Object contains custom actions.
+ * @param {object} l18n - Object contains custom translations.
  */
 class ActorSDKDelegate {
-  /**
-   * @constructor
-   * @param {object} components - Object contains custom react components.
-   * @param {object} actions - Object contains custom actions.
-   * @param {object} l18n - Object contains custom translations.
-   */
   constructor(components = {}, actions = {}, l18n = {}) {
     this.components = {
       login: components.login || null,
