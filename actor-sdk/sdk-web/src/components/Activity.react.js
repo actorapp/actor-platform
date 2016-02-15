@@ -49,7 +49,13 @@ class ActivitySection extends Component {
       }
 
       return (
-        <section className={activityClassName}>{activityBody}</section>
+        <section className={activityClassName}>
+          {
+            isOpen
+              ? activityBody
+              : null
+          }
+        </section>
       );
     } else {
       return null;

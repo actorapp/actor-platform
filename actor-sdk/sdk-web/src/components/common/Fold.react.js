@@ -7,7 +7,10 @@ import classnames from 'classnames';
 
 class Fold extends Component {
   static propTypes = {
-    children: PropTypes.element,
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node
+    ]),
     icon: PropTypes.string,
     iconClassName: PropTypes.string,
     iconElement: PropTypes.element,
