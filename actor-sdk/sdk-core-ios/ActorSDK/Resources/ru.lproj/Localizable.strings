@@ -497,6 +497,10 @@
 
 "AlertLinkCopied" = "Ссылка скопирована в буфер обмена.";
 
+"ActionOpenLink" = "Открыть ссылку";
+
+"ActionCancel" = "Отмена";
+
 /*
  * Network
  */
