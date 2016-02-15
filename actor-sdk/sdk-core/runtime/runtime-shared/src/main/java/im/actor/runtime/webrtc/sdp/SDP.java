@@ -1,11 +1,13 @@
 package im.actor.runtime.webrtc.sdp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import im.actor.runtime.webrtc.sdp.entities.SDPMedia;
 import im.actor.runtime.webrtc.sdp.entities.SDPMediaMode;
 import im.actor.runtime.webrtc.sdp.entities.SDPRawRecord;
 import im.actor.runtime.webrtc.sdp.entities.SDPSession;
+import im.actor.runtime.webrtc.sdp.entities.SDPCodec;
 
 public abstract class SDP {
 
@@ -33,16 +35,17 @@ public abstract class SDP {
             String[] mediaDesc = mediaLine.getValue().split(" ");
             String mediaType = mediaDesc[0];
             int port = Integer.parseInt(mediaDesc[1]);
-            ArrayList<String> protocols = new ArrayList<>();
-            for (String p : mediaDesc[2].split("/")) {
-                protocols.add(p);
-            }
-            ArrayList<Integer> codecs = new ArrayList<>();
+            String protocol = mediaDesc[2];
+            ArrayList<Integer> codecIds = new ArrayList<>();
             for (int i = 3; i < mediaDesc.length; i++) {
-                codecs.add(Integer.parseInt(mediaDesc[i]));
+                codecIds.add(Integer.parseInt(mediaDesc[i]));
             }
             SDPMediaMode mode = SDPMediaMode.SEND_RECEIVE;
             ArrayList<SDPRawRecord> records = new ArrayList<>();
+            // ArrayList<SDPCodec> codecs = new ArrayList<>();
+            HashMap<Integer, SDPCodec> codecs = new HashMap<>();
+            HashMap<Integer, HashMap<String, String>> args = new HashMap<>();
+            HashMap<Integer, ArrayList<String>> codecFeedbackMessages = new HashMap<>();
             while ((record = reader.readUntil('m')) != null) {
                 if (record.getType() == 'a' && "sendrecv".equals(record.getValue())) {
                     mode = SDPMediaMode.SEND_RECEIVE;
@@ -52,11 +55,46 @@ public abstract class SDP {
                     mode = SDPMediaMode.RECEIVE_ONLY;
                 } else if (record.getType() == 'a' && "sendonly".equals(record.getValue())) {
                     mode = SDPMediaMode.SEND_ONLY;
+                } else if (record.getType() == 'a' && record.getValue().startsWith("rtpmap:")) {
+                    String[] codecMap = record.getValue().split(" ", 2);
+                    int index = Integer.parseInt(codecMap[0].substring("rtpmap:".length()));
+                    String[] codecDef = codecMap[1].split("/");
+                    String codecName = codecDef[0];
+                    int clockRate = Integer.parseInt(codecDef[1]);
+                    String codecArgs = codecDef.length >= 3 ? codecDef[2] : null;
+                    codecs.put(index, new SDPCodec(index, codecName, clockRate, codecArgs));
+                } else if (record.getType() == 'a' && record.getValue().startsWith("fmtp:")) {
+                    String[] codecMap = record.getValue().split(" ", 2);
+                    int index = Integer.parseInt(codecMap[0].substring("fmtp:".length()));
+                    String params = codecMap[1];
+                    String[] pLines = params.trim().split(";");
+                    HashMap<String, String> p = new HashMap<>();
+                    for (String s : pLines) {
+                        s = s.trim();
+                        String[] v2 = s.split("=", 2);
+                        p.put(v2[0], v2[1]);
+                    }
+                    args.put(index, p);
+                } else if (record.getType() == 'a' && record.getValue().startsWith("rtcp-fb:")) {
+                    String[] codecMap = record.getValue().split(" ", 2);
+                    int index = Integer.parseInt(codecMap[0].substring("rtcp-fb:".length()));
+                    if (!codecFeedbackMessages.containsKey(index)) {
+                        codecFeedbackMessages.put(index, new ArrayList<String>());
+                    }
+                    codecFeedbackMessages.get(index).add(codecMap[1]);
                 } else {
                     records.add(record);
                 }
             }
-            medias.add(new SDPMedia(mediaType, port, protocols, codecs, mode, records));
+
+            ArrayList<SDPCodec> codec = new ArrayList<>();
+            for (int index : codecIds) {
+                SDPCodec sdpCodec = codecs.get(index);
+                sdpCodec.setFormat(args.get(index));
+                sdpCodec.setCodecFeedback(codecFeedbackMessages.get(index));
+                codec.add(sdpCodec);
+            }
+            medias.add(new SDPMedia(mediaType, port, protocol, codec, mode, records));
         }
 
         return new SDPScheme(session, medias);

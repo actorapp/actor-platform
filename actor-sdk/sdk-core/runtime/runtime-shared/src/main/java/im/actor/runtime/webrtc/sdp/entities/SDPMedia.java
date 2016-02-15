@@ -6,16 +6,16 @@ public class SDPMedia {
 
     private String type;
     private int port;
-    private ArrayList<String> protocols;
-    private ArrayList<Integer> codecs;
+    private String protocol;
+    private ArrayList<SDPCodec> codecs;
     private ArrayList<SDPRawRecord> records;
     private SDPMediaMode mode;
 
-    public SDPMedia(String type, int port, ArrayList<String> protocols, ArrayList<Integer> codecs,
+    public SDPMedia(String type, int port, String protocol, ArrayList<SDPCodec> codecs,
                     SDPMediaMode mode, ArrayList<SDPRawRecord> records) {
         this.type = type;
         this.port = port;
-        this.protocols = protocols;
+        this.protocol = protocol;
         this.codecs = codecs;
         this.records = records;
         this.mode = mode;
@@ -26,11 +26,15 @@ public class SDPMedia {
         return type;
     }
 
-    public ArrayList<String> getProtocols() {
-        return protocols;
+    public int getPort() {
+        return port;
     }
 
-    public ArrayList<Integer> getCodecs() {
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public ArrayList<SDPCodec> getCodecs() {
         return codecs;
     }
 
@@ -42,19 +46,10 @@ public class SDPMedia {
         return mode;
     }
 
-    @Override
-    public String toString() {
-        String res = "m=" + type + " " + port;
-        String proto = "";
-        for (String p : protocols) {
-            if (proto.length() > 0) {
-                proto += "/";
-            }
-            proto += p;
-        }
-        res += " " + proto;
-        for (Integer codec : codecs) {
-            res += " " + codec;
+    public String toSDP() {
+        String res = "m=" + type + " " + port + " " + protocol;
+        for (SDPCodec codec : codecs) {
+            res += " " + codec.getIndex();
         }
         res += "\r\n";
         switch (mode) {
@@ -71,9 +66,17 @@ public class SDPMedia {
                 res += "a=sendonly\r\n";
                 break;
         }
+        for (SDPCodec codec : codecs) {
+            res += codec.toSDP();
+        }
         for (SDPRawRecord r : records) {
-            res += r.toString() + "\r\n";
+            res += r.toSDP() + "\r\n";
         }
         return res;
+    }
+
+    @Override
+    public String toString() {
+        return toSDP();
     }
 }

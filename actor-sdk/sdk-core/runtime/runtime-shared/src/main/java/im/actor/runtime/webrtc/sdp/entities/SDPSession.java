@@ -32,14 +32,18 @@ public class SDPSession {
         return records;
     }
 
-    @Override
-    public String toString() {
+    public String toSDP() {
         String res = "v=" + version + "\r\n";
         res += "o=" + originator + "\r\n";
         res += "s=" + name + "\r\n";
         for (SDPRawRecord r : records) {
-            res += r.toString() + "\r\n";
+            res += r.toSDP() + "\r\n";
         }
         return res;
+    }
+
+    @Override
+    public String toString() {
+        return toSDP();
     }
 }
