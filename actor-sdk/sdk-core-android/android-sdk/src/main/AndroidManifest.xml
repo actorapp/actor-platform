@@ -281,6 +281,13 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".controllers.calls.CallActivity"
+            android:theme="@style/CommonActivityTheme"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:showOnLockScreen="true" />
+
         <service
             android:name="im.actor.sdk.services.KeepAliveService"
             android:enabled="true"

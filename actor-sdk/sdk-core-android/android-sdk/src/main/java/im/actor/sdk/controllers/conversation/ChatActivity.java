@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
+import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
@@ -100,6 +101,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private static final int REQUEST_CONTACT = 5;
     private static final int PERMISSIONS_REQUEST_CAMERA = 6;
     private static final int PERMISSION_REQUEST_RECORD_AUDIO = 7;
+    private static final int PERMISSIONS_REQUEST_FOR_CALL = 8;
     // Peer of current chat
     private Peer peer;
 
@@ -1026,6 +1028,11 @@ public class ChatActivity extends ActorEditTextActivity {
             menu.findItem(R.id.leaveGroup).setVisible(false);
         }
 
+        if (getPeer().getPeerType() != PeerType.PRIVATE || !ActorSDK.sharedActor().isCallsEnabled()) {
+            menu.findItem(R.id.call).setVisible(false);
+        }
+
+
         // Hide unsupported files menu
         menu.findItem(R.id.files).setVisible(false);
 
@@ -1075,7 +1082,29 @@ public class ChatActivity extends ActorEditTextActivity {
         } else if (i == R.id.files) {// startActivity(Intents.openDocs(chatType, chatId, ChatActivity.this));
 
         }
+
+        if (getPeer().getPeerType() == PeerType.PRIVATE && ActorSDK.sharedActor().isCallsEnabled()) {
+            if (item.getItemId() == R.id.call) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED) {
+                    Log.d("Permissions", "call - no permission :c");
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.VIBRATE, Manifest.permission.WAKE_LOCK},
+                            PERMISSIONS_REQUEST_FOR_CALL);
+
+                }else{
+                    startCall();
+                }
+            }
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startCall() {
+        Command<Long> cmd = messenger().doCall(peer.getPeerId());
+        execute(cmd, R.string.progress_common);
+
     }
 
     @Override
