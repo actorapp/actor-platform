@@ -100,13 +100,13 @@ const LoginActionCreators = {
         history.replace('/');
       }
 
-      dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
       ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
       ActorClient.bindDialogs(DialogActionCreators.setDialogs);
       ActorClient.bindContacts(ContactActionCreators.setContacts);
       ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList);
       ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon);
       ActorClient.bindEventBus(EventBusActionCreators.broadcastEvent);
+      dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
     }
   },
 
@@ -116,13 +116,13 @@ const LoginActionCreators = {
     if (delegate.actions.setLoggedOut) {
       delegate.actions.setLoggedOut();
     } else {
-      dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
       ActorClient.unbindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
       ActorClient.unbindDialogs(DialogActionCreators.setDialogs);
       ActorClient.unbindContacts(ContactActionCreators.setContacts);
       ActorClient.unbindSearch(QuickSearchActionCreators.setQuickSearchList);
       ActorClient.unbindTempGlobalCounter(FaviconActionCreators.setFavicon);
       ActorClient.unbindEventBus(EventBusActionCreators.broadcastEvent);
+      dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
     }
   },
 
