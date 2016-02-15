@@ -84,7 +84,7 @@ export default {
     'connectionState': {
       'connecting': 'Houston, we have a problem! Connection to {appName} server is lost. Trying to reconnect now...',
       'online': 'You\'re back online!',
-      'updating': 'фывы'
+      'updating': ''
     },
 
     // Compose
