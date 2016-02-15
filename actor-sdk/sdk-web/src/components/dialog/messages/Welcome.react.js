@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedHTMLMessage } from 'react-intl'
-import addons from 'react/addons';
+import { FormattedHTMLMessage } from 'react-intl'
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import { PeerTypes } from '../../../constants/ActorAppConstants';
 
@@ -13,8 +13,6 @@ import InviteUserActions from '../../../actions/InviteUserActions';
 
 import UserStore from '../../../stores/UserStore';
 import GroupStore from '../../../stores/GroupStore';
-
-const {addons: { PureRenderMixin }} = addons;
 
 class Welcome extends Component {
   constructor(props) {
@@ -25,29 +23,33 @@ class Welcome extends Component {
     peer: PropTypes.object.isRequired
   };
 
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
   render() {
     const { peer } = this.props;
+    const { intl } = this.context;
 
     let welcomeText;
     switch (peer.type) {
       case PeerTypes.USER:
         const user = UserStore.getUser(peer.id);
-        welcomeText = <FormattedHTMLMessage message={this.getIntlMessage('message.welcome.private')} name={user.name}/>;
+        welcomeText = <FormattedHTMLMessage id="message.welcome.private" values={{name: user.name}}/>;
         break;
       case PeerTypes.GROUP:
         const group = GroupStore.getGroup(peer.id);
         const myID = UserStore.getMyId();
         const admin = UserStore.getUser(group.adminId);
-        const creator = group.adminId === myID ? this.getIntlMessage('message.welcome.group.you') : admin.name;
+        const creator = group.adminId === myID ? intl.messages['message.welcome.group.you'] : admin.name;
         welcomeText = [
-          <FormattedHTMLMessage message={this.getIntlMessage('message.welcome.group.main')}
-                                name={group.name}
-                                creator={creator}/>
+          <FormattedHTMLMessage id="message.welcome.group.main" key={1}
+                                values={{name: group.name, creator}}/>
         ,
-          <p>
-            {this.getIntlMessage('message.welcome.group.actions.start')}
-            <a onClick={() => InviteUserActions.show(group)}>{this.getIntlMessage('message.welcome.group.actions.invite')}</a>
-            {this.getIntlMessage('message.welcome.group.actions.end')}
+          <p key={2}>
+            {intl.messages['message.welcome.group.actions.start']}
+            <a onClick={() => InviteUserActions.show(group)}>{intl.messages['message.welcome.group.actions.invite']}</a>
+            {intl.messages['message.welcome.group.actions.end']}
           </p>
         ];
         break;
@@ -69,7 +71,6 @@ class Welcome extends Component {
   }
 }
 
-ReactMixin.onClass(Welcome, IntlMixin);
 ReactMixin.onClass(Welcome, PureRenderMixin);
 
 export default Welcome;

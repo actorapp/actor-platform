@@ -3,8 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedHTMLMessage } from 'react-intl';
+import { FormattedHTMLMessage } from 'react-intl';
 import SharedContainer from '../utils/SharedContainer';
 import { appName } from '../constants/ActorAppConstants';
 
@@ -25,17 +24,12 @@ class Install extends Component {
                src="assets/images/logo.png"
                srcSet="assets/images/logo@2x.png 2x"/>
 
-          <FormattedHTMLMessage message={this.getIntlMessage('main.install')} appName={this.appName}/>
+          <FormattedHTMLMessage id="main.install" values={{appName: this.appName}}/>
 
-          <p>
-            <a href="//actor.im/ios">iPhone</a> | <a href="//actor.im/android">Android</a>
-          </p>
         </div>
       </section>
     );
   }
 }
-
-ReactMixin.onClass(Install, IntlMixin);
 
 export default Install;

@@ -4,9 +4,9 @@
 
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
+import history from '../utils/history';
 import ActorClient from '../utils/ActorClient';
 import PeerUtils from '../utils/PeerUtils';
-import RouterContainer from '../utils/RouterContainer';
 
 import MessageActionCreators from './MessageActionCreators';
 import GroupProfileActionCreators from './GroupProfileActionCreators';
@@ -24,7 +24,6 @@ const DialogActionCreators = {
   },
 
   selectDialogPeer(peer) {
-    const router = RouterContainer.get();
     const currentPeer = DialogStore.getCurrentPeer();
 
     // Unbind from previous peer
@@ -64,7 +63,9 @@ const DialogActionCreators = {
       default:
     }
 
-    router.transitionTo('main', {id: PeerUtils.peerToString(peer)});
+    // console.debug('history', history);
+    // console.debug('string', `im/${PeerUtils.peerToString(peer)}`);
+    history.push(`/im/${PeerUtils.peerToString(peer)}`);
   },
 
   selectDialogPeerUser(uid) {

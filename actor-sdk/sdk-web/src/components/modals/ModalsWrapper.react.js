@@ -1,12 +1,11 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import { KeyCodes } from '../../constants/ActorAppConstants';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 
 import ContactActionCreators from '../../actions/ContactActionCreators';
 import GroupListActionCreators from '../../actions/GroupListActionCreators';
@@ -17,32 +16,32 @@ import GroupListStore from '../../stores/GroupListStore';
 import PeopleList from './PeopleList'
 import GroupList from './GroupList'
 
-const getStates = () => {
-  return {
-    isPeoplesOpen: ContactStore.isOpen(),
-    isGroupsOpen: GroupListStore.isOpen()
-  }
-};
-
 class ModalsWrapper extends Component {
   constructor(props) {
     super(props);
-
-    this.state = getStates();
   }
+
+  static getStores = () => [ContactStore, GroupListStore];
+
+  static calculateState() {
+    return {
+      isPeoplesOpen: ContactStore.isOpen(),
+      isGroupsOpen: GroupListStore.isOpen()
+    };
+  }
+
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   componentWillMount() {
     document.addEventListener('keydown', this.handleKeyDown, false);
 
-    ContactStore.addListener(this.handleChange);
-    GroupListStore.addListener(this.handleChange);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
-
-  handleChange = () => this.setState(getStates());
 
   handleKeyDown = (event) => {
     switch (event.keyCode) {
@@ -81,6 +80,7 @@ class ModalsWrapper extends Component {
 
   render() {
     const { isPeoplesOpen, isGroupsOpen } = this.state;
+    const { intl } = this.context;
 
     const wrapperClassName = classnames('modal-wrapper', {
       'modal-wrapper--opened': isPeoplesOpen || isGroupsOpen
@@ -90,7 +90,7 @@ class ModalsWrapper extends Component {
       <div className={wrapperClassName}>
         <div className="modal-wrapper__close" onClick={this.handleClose}>
           <i className="close_icon material-icons">close</i>
-          <div className="text">{this.getIntlMessage('button.close')}</div>
+          <div className="text">{intl.messages['button.close']}</div>
         </div>
 
         {isPeoplesOpen ? <PeopleList/> : null}
@@ -100,6 +100,4 @@ class ModalsWrapper extends Component {
   }
 }
 
-ReactMixin.onClass(ModalsWrapper, IntlMixin);
-
-export default ModalsWrapper;
+export default Container.create(ModalsWrapper, { pure: false });

@@ -4,8 +4,6 @@
 
 import { escape } from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl'
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
@@ -16,7 +14,6 @@ import DialogActionCreators from '../../../actions/DialogActionCreators';
 import ActivityActionCreators from '../../../actions/ActivityActionCreators';
 import DropdownActionCreators from '../../../actions/DropdownActionCreators';
 
-import UserStore from '../../../stores/UserStore';
 import DropdownStore from '../../../stores/DropdownStore';
 
 import AvatarItem from '../../common/AvatarItem.react';
@@ -228,7 +225,5 @@ class MessageItem extends Component {
     );
   }
 }
-
-ReactMixin.onClass(MessageItem, IntlMixin);
 
 export default Container.create(MessageItem, {withProps: true});

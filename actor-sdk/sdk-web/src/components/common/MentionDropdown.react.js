@@ -1,27 +1,27 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React from 'react';
+import { map } from 'lodash';
+import React, { PropTypes, Component } from 'react';
+import { findDOMNode } from 'react-dom';
 import classnames from 'classnames';
 import ReactMixin from 'react-mixin';
-import addons from 'react/addons';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import AvatarItem from './AvatarItem.react';
 
-const {addons: { PureRenderMixin }} = addons;
-
 const DROPDOWN_ITEM_HEIGHT = 38;
 let scrollIndex = 0;
 
-class MentionDropdown extends React.Component {
+class MentionDropdown extends Component {
   static propTypes = {
-    mentions: React.PropTypes.array,
-    className: React.PropTypes.string,
-    onSelect: React.PropTypes.func.isRequired,
-    onClose: React.PropTypes.func
+    mentions: PropTypes.array,
+    className: PropTypes.string,
+    onSelect: PropTypes.func.isRequired,
+    onClose: PropTypes.func
   };
 
   constructor(props) {
@@ -69,7 +69,7 @@ class MentionDropdown extends React.Component {
   onSelect = (value) => this.props.onSelect(value);
 
   handleScroll = (top) => {
-    const menuListNode = React.findDOMNode(this.refs.mentionList);
+    const menuListNode = findDOMNode(this.refs.mentionList);
     menuListNode.scrollTop = top;
   };
 
@@ -143,7 +143,7 @@ class MentionDropdown extends React.Component {
     const mentionClassName = classnames('mention', {
       'mention--opened': isOpen
     }, className);
-    const mentionsElements = _.map(mentions, (mention, index) => {
+    const mentionsElements = map(mentions, (mention, index) => {
       const itemClassName = classnames('mention__list__item', {
         'mention__list__item--active': selectedIndex === index
       });

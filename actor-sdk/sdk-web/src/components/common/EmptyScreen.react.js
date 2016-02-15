@@ -3,8 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import ConnectionState from './ConnectionState.react';
 
@@ -23,13 +22,11 @@ class EmptyScreen extends Component {
             <svg className="icon icon--gray"
                  dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#star"/>'}}/>
           </div>
-          <h2>{this.getIntlMessage('main.empty')}</h2>
+          <h2><FormattedMessage id="main.empty"/></h2>
         </div>
       </section>
     );
   }
 }
-
-ReactMixin.onClass(EmptyScreen, IntlMixin);
 
 export default EmptyScreen;

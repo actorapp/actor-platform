@@ -241,7 +241,7 @@
       display: block;
 
       cursor: text;
-      transition: all 250ms cubic-bezier(.23, 1, .32, 1) 0ms;
+      //transition: all 250ms cubic-bezier(.23, 1, .32, 1) 0ms;
       transform: translateY(22px) translateZ(0);
       transform-origin: 0 50%;
       text-align: left;
@@ -252,7 +252,7 @@
       margin: 0;
       padding: 4px 0;
 
-      transition: box-shadow 250ms cubic-bezier(.23, 1, .32, 1) 0ms;
+      //transition: box-shadow 250ms cubic-bezier(.23, 1, .32, 1) 0ms;
 
       border: none;
       outline: none;
