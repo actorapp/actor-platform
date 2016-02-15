@@ -44,41 +44,34 @@
 "SettingsChangeName" = "修改名字";
 
 
-"SettingsEditHeader" = "Your name";
+"SettingsUsernameNotSet" = "填写用户名";
 
-"SettingsEditHint" = "Please, enter your real name to help people better understand who you are.";
+"SettingsUsernameTitle" = "用户名";
 
-"SettingsEditFieldHint" = "Enter your name";
-
-
-"SettingsUsernameNotSet" = "Set username";
-
-"SettingsUsernameTitle" = "Username";
-
-"SettingsUsernameHintField" = "Enter your Username";
+"SettingsUsernameHintField" = "输入用户名";
 
 "SettingsUsernameHint" = "You can choose a username in {appname}. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
 
 
-"SettingsAboutNotSet" = "Set about me";
+"SettingsAboutNotSet" = "填写自我介绍";
 
-"SettingsChangeAboutTitle" = "About me";
+"SettingsChangeAboutTitle" = "自我介绍";
 
-"SettingsChangeAboutHint" = "Tell people anything you want about yourself";
+"SettingsChangeAboutHint" = "简单介绍一下你自己";
 
 
 "SettingsSecurity" = "安全";
 
-"SettingsWallpapers" = "Wallpapers";
+"SettingsWallpapers" = "壁纸";
 
 
 "SettingsNotifications" = "通知和声音";
 
 "SettingsAskQuestion" = "提问";
 
-"SettingsTwitter" = "App Twitter";
+"SettingsTwitter" = "推特帐号";
 
-"SettingsAbout" = "App Homepage";
+"SettingsAbout" = "网站";
 
 "SettingsVersion" = "版本 {version}";
 
@@ -97,7 +90,7 @@
 "SettingsLastSeenNone"    = "没人";
 
 
-"SettingsMobilePhone"    = "手機";
+"SettingsMobilePhone"    = "手机";
 
 /*
  * Profile
@@ -147,9 +140,9 @@
  * Group
  */
 
-"GroupEditHeader" = "Theme";
+"GroupEditHeader" = "群聊名称";
 
-"GroupEditHint" = "Enter group theme";
+"GroupEditHint" = "输入群聊名称";
 
 "GroupSetPhoto" = "设置群头像";
 
@@ -171,11 +164,11 @@
 
 "GroupMemberInfo" = "成员信息";
 
-"GroupMemberMakeAdmin" = "Make Group admin";
+"GroupMemberMakeAdmin" = "设为群组管理员";
 
-"GroupMemberMakeMessage" = "Are you sure want to make {name} admin of this group?";
+"GroupMemberMakeMessage" = "确定将 {name} 设为群组管理员吗?";
 
-"GroupMemberMakeAction" = "Yes";
+"GroupMemberMakeAction" = "确定";
 
 "GroupMemberKick" = "移出群";
 
@@ -223,11 +216,11 @@
 
 "GroupIntegrationLinkRevokeAction" = "废除";
 
-"GroupJoinMessage" = "Are you sure want to join group?";
+"GroupJoinMessage" = "确定加入群组?";
 
-"GroupJoinAction" = "Join";
+"GroupJoinAction" = "加入";
 
-"GroupMembers" = "MEMBERS";
+"GroupMembers" = "群成员";
 
 /*
  * Compose
@@ -239,13 +232,13 @@
 
 "CreateGroupTitle" = "创建群";
 
-"CreateGroupHint" = "Please provide group subject and optional group icon";
+"CreateGroupHint" = "请填写群组名称和图标";
 
 "CreateGroupNamePlaceholder" = "输入群名称";
 
-"CreateGroupMembersTitle" = "Invite members";
+"CreateGroupMembersTitle" = "邀请成员";
 
-"CreateGroupMembersPlaceholders" = "Enter Names";
+"CreateGroupMembersPlaceholders" = "输入名称";
 
 /*
  * Location
@@ -283,9 +276,9 @@
 
 "NotificationSecretMessage" = "新消息";
 
-"NotificationsGroups" = "Group Notifications";
+"NotificationsGroups" = "群组通知";
 
-"NotificationsOnlyMentions" = "Only Mentions";
+"NotificationsOnlyMentions" = "仅成员";
 
 "NotificationsOnlyMentionsHint" = "You can enable notifications only for messages that contains your mention";
 
@@ -307,9 +300,9 @@
  * Wallpapers
  */
 
-"WallpapersTitle" = "Wallpapers";
+"WallpapersTitle" = "壁纸";
 
-"WallpapersPhoto" = "Photo Library";
+"WallpapersPhoto" = "相册";
 
 /*
  * Chat
@@ -479,7 +472,7 @@
 
 "AlertSave" = "保存";
 
-"AlertSet" = "Set";
+"AlertSet" = "设置";
 
 "AlertOk" = "确定";
 
@@ -487,7 +480,7 @@
 
 "AlertNo" = "否";
 
-"AlertError" = "Error";
+"AlertError" = "错误";
 
 "AlertTryAgain" = "重试";
 
@@ -523,8 +516,8 @@
 
 "ErrorCodeExpired" = "验证码过期。请重新验证一次。";
 
-"ErrorAlreadyJoined" = "You are already member of group";
+"ErrorAlreadyJoined" = "你已经是群组成员";
 
-"ErrorUnableToJoin" = "Unable to join to group";
+"ErrorUnableToJoin" = "不能加入群组";
 
-"ErrorUnableToCall" = "Unable to call this number";
+"ErrorUnableToCall" = "不能拨打这个号码";
