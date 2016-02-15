@@ -487,6 +487,10 @@
 
 "AlertLinkCopied" = "链接已经被复制到剪贴板。";
 
+"ActionOpenLink" = "打开链接";
+
+"ActionCancel" = "取消";
+
 /*
  * Network
  */
