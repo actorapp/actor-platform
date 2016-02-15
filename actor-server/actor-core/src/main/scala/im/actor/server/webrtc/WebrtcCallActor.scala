@@ -135,7 +135,6 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
     }
   }
 
-
   override def postStop(): Unit = {
     scheduledUpd foreach (_.cancel())
     super.postStop()
