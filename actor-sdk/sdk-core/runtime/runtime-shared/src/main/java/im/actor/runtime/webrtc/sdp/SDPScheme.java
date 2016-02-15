@@ -3,6 +3,9 @@ package im.actor.runtime.webrtc.sdp;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.runtime.webrtc.sdp.entities.SDPMedia;
+import im.actor.runtime.webrtc.sdp.entities.SDPSession;
+
 public class SDPScheme {
 
     public SDPSession sessionLevel;
