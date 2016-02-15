@@ -21,6 +21,11 @@ import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
 import im.actor.runtime.webrtc.WebRTCSessionDescription;
+import im.actor.runtime.webrtc.sdp.SDP;
+import im.actor.runtime.webrtc.sdp.SDPScheme;
+import im.actor.runtime.webrtc.sdp.entities.SDPCodec;
+import im.actor.runtime.webrtc.sdp.entities.SDPMedia;
+import im.actor.runtime.webrtc.sdp.entities.SDPMediaMode;
 
 public class PeerConnectionActor extends ModuleActor {
 
@@ -113,10 +118,9 @@ public class PeerConnectionActor extends ModuleActor {
         }).failure(new Consumer<Exception>() {
             @Override
             public void apply(Exception e) {
-                e.printStackTrace();
-                // TODO: Handle It
-
                 Log.d(TAG, "preStart:error");
+                e.printStackTrace();
+                onHandshakeFailure();
             }
         }).done(self());
     }
@@ -136,7 +140,7 @@ public class PeerConnectionActor extends ModuleActor {
 
         Log.d(TAG, "onOfferNeeded");
         isReady = false;
-        peerConnection.createOffer().mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
+        peerConnection.createOffer().map(OPTIMIZE_SDP).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
             @Override
             public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription description) {
                 return peerConnection.setLocalDescription(description);
@@ -155,7 +159,7 @@ public class PeerConnectionActor extends ModuleActor {
             public void apply(Exception e) {
                 Log.d(TAG, "onOfferNeeded:failure");
                 e.printStackTrace();
-                // TODO: Handle It
+                onHandshakeFailure();
             }
         }).done(self());
     }
@@ -183,7 +187,7 @@ public class PeerConnectionActor extends ModuleActor {
             public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription description) {
                 return peerConnection.createAnswer();
             }
-        }).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
+        }).map(OPTIMIZE_SDP).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
             @Override
             public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription description) {
                 return peerConnection.setLocalDescription(description);
@@ -197,8 +201,9 @@ public class PeerConnectionActor extends ModuleActor {
         }).failure(new Consumer<Exception>() {
             @Override
             public void apply(Exception e) {
+                Log.d(TAG, "onOffer:failure");
                 e.printStackTrace();
-                // TODO: Handle It
+                onHandshakeFailure();
             }
         }).done(self());
     }
@@ -228,9 +233,26 @@ public class PeerConnectionActor extends ModuleActor {
             public void apply(Exception e) {
                 Log.d(TAG, "onAnswer:failure");
                 e.printStackTrace();
-                // TODO: Handle It
+                onHandshakeFailure();
             }
         }).done(self());
+    }
+
+    private void onHandshakeFailure() {
+        isReady = false;
+        isReadyForCandidates = false;
+        state = State.CLOSED;
+        if (peerConnection != null) {
+            peerConnection.close();
+            peerConnection = null;
+        }
+        if (stream != null) {
+            stream.close();
+            stream = null;
+        }
+        self().send(PoisonPill.INSTANCE);
+
+        // TODO: Notify Root
     }
 
     private void onHandShakeCompleted() {
@@ -251,6 +273,39 @@ public class PeerConnectionActor extends ModuleActor {
         state = State.CLOSED;
         self().send(PoisonPill.INSTANCE);
     }
+
+    //
+    // Configuration
+    //
+
+    private static Function<WebRTCSessionDescription, WebRTCSessionDescription> OPTIMIZE_SDP
+            = new Function<WebRTCSessionDescription, WebRTCSessionDescription>() {
+        @Override
+        public WebRTCSessionDescription apply(WebRTCSessionDescription description) {
+            SDPScheme sdpScheme = SDP.parse(description.getSdp());
+
+            for (SDPMedia m : sdpScheme.getMediaLevel()) {
+
+                // Disabling media streams
+                m.setMode(SDPMediaMode.INACTIVE);
+
+                // Optimizing opus
+                if ("audio".equals(m.getType())) {
+                    for (SDPCodec codec : m.getCodecs()) {
+                        if ("opus".equals(codec.getName())) {
+
+                        }
+                    }
+                }
+            }
+
+            return new WebRTCSessionDescription(description.getType(), sdpScheme.toSDP());
+        }
+    };
+
+    //
+    // Messages
+    //
 
     @Override
     public void onReceive(Object message) {

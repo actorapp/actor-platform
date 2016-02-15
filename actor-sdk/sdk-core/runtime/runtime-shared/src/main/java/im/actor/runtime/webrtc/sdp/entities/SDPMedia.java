@@ -46,6 +46,10 @@ public class SDPMedia {
         return mode;
     }
 
+    public void setMode(SDPMediaMode mode) {
+        this.mode = mode;
+    }
+
     public String toSDP() {
         String res = "m=" + type + " " + port + " " + protocol;
         for (SDPCodec codec : codecs) {

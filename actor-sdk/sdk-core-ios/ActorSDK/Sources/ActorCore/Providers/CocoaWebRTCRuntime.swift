@@ -88,11 +88,8 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     }
     
     func addOwnStream(stream: ARWebRTCMediaStream) {
-        if let audio = stream as? RTCAudioTrack {
-            print("addOwnStream")
-            let mediaStream = peerConnectionFactory.mediaStreamWithLabel("ARDAMSa0")
-            mediaStream.addAudioTrack(audio)
-            peerConnection.addStream(mediaStream)
+        if let str = stream as? MediaStream {
+            peerConnection.addStream(str.stream)
         }
     }
     
