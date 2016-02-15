@@ -1,5 +1,7 @@
 package im.actor.runtime.webrtc.sdp;
 
+import im.actor.runtime.webrtc.sdp.entities.SDPRawRecord;
+
 class SDPReader {
 
     private SDPRawRecord[] records;
@@ -36,7 +38,7 @@ class SDPReader {
         return null;
     }
 
-    public SDPRawRecord readRecord(char v) {
+    public SDPRawRecord readOptionalRecord(char v) {
         if (cursor < records.length) {
             if (records[cursor].getType() == v) {
                 return records[cursor++];
@@ -45,6 +47,14 @@ class SDPReader {
             }
         }
         return null;
+    }
+
+    public SDPRawRecord readRecord(char v) {
+        SDPRawRecord res = readOptionalRecord(v);
+        if (res == null) {
+            throw new RuntimeException("End reached");
+        }
+        return res;
     }
 
     public int readVersion() {
