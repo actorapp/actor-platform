@@ -18,8 +18,12 @@ public class SDPRawRecord {
         return value;
     }
 
+    public String toSDP() {
+        return type + "=" + value;
+    }
+
     @Override
     public String toString() {
-        return type + "=" + value;
+        return toSDP();
     }
 }

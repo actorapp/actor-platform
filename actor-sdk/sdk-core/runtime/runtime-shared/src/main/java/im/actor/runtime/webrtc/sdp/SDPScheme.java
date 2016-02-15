@@ -24,12 +24,17 @@ public class SDPScheme {
         return mediaLevel;
     }
 
-    @Override
-    public String toString() {
-        String res = sessionLevel.toString();
+
+    public String toSDP() {
+        String res = sessionLevel.toSDP();
         for (SDPMedia media : mediaLevel) {
-            res += media.toString();
+            res += media.toSDP();
         }
         return res;
+    }
+
+    @Override
+    public String toString() {
+        return toSDP();
     }
 }
