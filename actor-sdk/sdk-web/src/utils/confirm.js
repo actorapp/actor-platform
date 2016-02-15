@@ -2,8 +2,8 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
-import { findDOMNode } from 'react-dom';
+import React, { Component, PropTypes, render, createElement } from 'react';
+import { findDOMNode, unmountComponentAtNode } from 'react-dom';
 import { KeyCodes } from '../constants/ActorAppConstants'
 import ComposeActionCreators from '../actions/ComposeActionCreators';
 
@@ -72,10 +72,10 @@ export default function confirm(message, options = {})  {
   let element = document.createElement('div');
   element.className = 'modal-backdrop';
   const wrapper = document.body.appendChild(element);
-  const component = React.render(React.createElement(Confirm, {message, ...options}), wrapper);
+  const component = render(createElement(Confirm, {message, ...options}), wrapper);
 
   function cleanup() {
-    React.unmountComponentAtNode(wrapper);
+    unmountComponentAtNode(wrapper);
     setTimeout(() => wrapper.remove(), 0);
   }
 
