@@ -198,11 +198,11 @@ class UserProfile extends Component {
               <div style={{width: 10}}/>
               <div className="col-xs">
                 <div className={dropdownClassNames}>
-                  <button className="dropdown__button button button--flat" onClick={this.toggleActionsDropdown}>
+                  <button className="dropdown__button button button--flat button--wide" onClick={this.toggleActionsDropdown}>
                     <i className="material-icons">more_horiz</i>
                     {intl.messages['actions']}
                   </button>
-                  <ul className="dropdown__menu dropdown__menu--left">
+                  <ul className="dropdown__menu dropdown__menu--right">
                     {
                       user.isContact
                         ? <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
