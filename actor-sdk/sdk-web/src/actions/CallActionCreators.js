@@ -4,6 +4,7 @@
 
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, CallStates } from '../constants/ActorAppConstants';
+import CallStore from '../stores/CallStore';
 import ActorClient from '../utils/ActorClient';
 
 export default {
@@ -30,5 +31,15 @@ export default {
         break;
       default:
     }
+  },
+
+  answerCall(id) {
+    ActorClient.answerCall(id);
+    dispatch(ActionTypes.CALL_ANSWER, { id })
+  },
+
+  endCall() {
+    ActorClient.endCall(id);
+    dispatch(ActionTypes.CALL_END, { id })
   }
 }

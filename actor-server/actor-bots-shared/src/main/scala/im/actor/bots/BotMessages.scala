@@ -292,7 +292,7 @@ object BotMessages {
     override def readResponse(obj: Js.Obj) = readJs[MessageSent](obj)
   }
 
-  @key("SendMessage")
+  @key("UpdateMessageContent")
   final case class UpdateMessageContent(
     @beanGetter peer:           OutPeer,
     @beanGetter randomId:       Long,
