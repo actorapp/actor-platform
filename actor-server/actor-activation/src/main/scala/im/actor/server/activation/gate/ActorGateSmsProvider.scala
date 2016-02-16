@@ -17,7 +17,7 @@ import spray.httpx.unmarshalling._
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 
-class ActorGateSmsProvider(implicit system: ActorSystem)
+private[activation] final class ActorGateSmsProvider(implicit system: ActorSystem)
   extends ActivationProvider
   with JsonFormatters
   with PlayJsonSupport {

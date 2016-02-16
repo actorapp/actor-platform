@@ -107,6 +107,7 @@ services {
   activation {
     # Define code providers. look im.actor.server.activation for full provider list
     # providers {
+    #   internal: im.actor.server.activation.internal.InternalCodeProvider
     #   sms: im.actor.server.activation.gate.ActorGateSmsProvider
     #   smtp: im.actor.server.activation.smtp.SMTPProvider
     #   call: im.actor.server.activation.telesign.TelesignProvider
@@ -120,6 +121,12 @@ services {
     # Email template for email code activation
     # email {
     #   template: ${actor.home}/templates/activation-email-template.html
+    # }
+    # Setting for internal activation(aka via actor bot)
+    # internal {
+    #   sender-user-id: 10
+    #   online-time-window: 10m
+    #   message-template: "Your Actor activation code: $$CODE$$"
     # }
   }
 
