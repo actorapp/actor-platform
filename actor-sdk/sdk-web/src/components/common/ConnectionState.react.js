@@ -6,7 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
 import SharedContainer from '../../utils/SharedContainer';
-import { appName } from '../../constants/ActorAppConstants';
+import { appName, ConnectionStates } from '../../constants/ActorAppConstants';
 import classnames from 'classnames';
 
 import ConnectionStateStore from '../../stores/ConnectionStateStore';
@@ -31,13 +31,17 @@ class ConnectionState extends Component {
     const { connectionState } = this.state;
 
     const className = classnames('connection-state', {
-      'connection-state--online': connectionState === 'online',
-      'connection-state--connection': connectionState === 'connecting'
+      'connection-state--online': connectionState === ConnectionStates.ONLINE,
+      'connection-state--connection': connectionState === ConnectionStates.CONNECTING
     });
 
     return (
       <div className={className}>
-        <FormattedMessage id={`connectionState.${connectionState}`} values={{appName: this.appName}}/>
+        {
+          connectionState !== ConnectionStates.UPDATING
+            ? <FormattedMessage id={`connectionState.${connectionState}`} values={{appName: this.appName}}/>
+            : null
+        }
       </div>
     )
   }
