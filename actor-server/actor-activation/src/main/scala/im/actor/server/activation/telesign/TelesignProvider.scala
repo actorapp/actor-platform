@@ -14,9 +14,8 @@ import im.actor.util.misc.PhoneNumberUtils.isTestPhone
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-private[activation] final class TelesignProvider(_system: ActorSystem) extends ActivationProvider with CommonAuthCodes {
+private[activation] final class TelesignProvider(implicit system: ActorSystem) extends ActivationProvider with CommonAuthCodes {
 
-  private implicit val system = _system
   protected val activationConfig = ActivationConfig.load.getOrElse(throw new RuntimeException("Failed to load activation config"))
   protected val db = DbExtension(system).db
   protected implicit val ec = system.dispatcher

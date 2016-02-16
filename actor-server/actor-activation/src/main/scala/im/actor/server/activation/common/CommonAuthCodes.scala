@@ -42,7 +42,7 @@ trait CommonAuthCodes {
     case Xor.Right(_) ⇒ db.run(AuthCodeRepo.createOrUpdate(txHash, code))
   }
 
-  private def isExpired(code: AuthCode, expiration: Long): Boolean =
+  protected def isExpired(code: AuthCode, expiration: Long): Boolean =
     code.createdAt.plus(expiration, MILLIS).isBefore(LocalDateTime.now(ZoneOffset.UTC))
 
 }
