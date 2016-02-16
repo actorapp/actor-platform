@@ -22,7 +22,10 @@ final class WeakUpdatesExtensionImpl(system: ActorSystem) extends WeakUpdatesExt
   private val region = WeakUpdatesManagerRegion.startRegion()(system)
   private lazy val userExt = UserExtension(system)
 
-  def broadcastUserWeakUpdate(userId: Int, update: Update, reduceKey: Option[String], group: Option[String] = None): Future[Unit] = {
+  def broadcastUsersWeakUpdate(userIds: Seq[Int], update: Update, reduceKey: Option[String] = None, group: Option[String] = None): Future[Unit] =
+    Future.sequence(userIds map (broadcastUserWeakUpdate(_, update, reduceKey, group))) map (_ ⇒ ())
+
+  def broadcastUserWeakUpdate(userId: Int, update: Update, reduceKey: Option[String] = None, group: Option[String] = None): Future[Unit] = {
     val header = update.header
     val serializedData = update.toByteArray
     val msg = PushUpdate(header, serializedData, reduceKey, group)
