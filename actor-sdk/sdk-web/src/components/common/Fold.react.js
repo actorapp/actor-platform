@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
@@ -7,7 +7,10 @@ import classnames from 'classnames';
 
 class Fold extends Component {
   static propTypes = {
-    children: PropTypes.element,
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node
+    ]),
     icon: PropTypes.string,
     iconClassName: PropTypes.string,
     iconElement: PropTypes.element,
@@ -21,6 +24,8 @@ class Fold extends Component {
       isOpen: false
     }
   }
+
+  onClick = () => this.setState({isOpen: !this.state.isOpen});
 
   render() {
     const { icon, iconClassName, title, iconElement } = this.props;
@@ -51,10 +56,6 @@ class Fold extends Component {
       </div>
     );
   }
-
-  onClick = () => {
-    this.setState({isOpen: !this.state.isOpen});
-  };
 }
 
 export default Fold;

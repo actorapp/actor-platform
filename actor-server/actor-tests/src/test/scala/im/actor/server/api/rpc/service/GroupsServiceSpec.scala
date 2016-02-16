@@ -476,12 +476,12 @@ final class GroupsServiceSpec
 
     val groupOutPeer = createGroupResponse.groupPeer
 
-    whenReady(service.jhandleGetGroupInviteUrl(groupOutPeer, clientData1)) { resp ⇒
+    whenReady(service.handleGetGroupInviteUrl(groupOutPeer)(clientData1)) { resp ⇒
       inside(resp) {
         case Ok(ResponseInviteUrl(url)) ⇒
           url should startWith(groupInviteConfig.baseUrl)
 
-          whenReady(service.jhandleJoinGroup(url, clientData2))(_ ⇒ ())
+          whenReady(service.handleJoinGroup(url)(clientData2))(_ ⇒ ())
 
           expectUpdate(createGroupResponse.seq, classOf[UpdateMessage]) { upd ⇒
             upd.message shouldEqual GroupServiceMessages.userJoined
@@ -548,9 +548,9 @@ final class GroupsServiceSpec
       createGroup("Fun group", Set.empty).groupPeer
     }
 
-    val url = whenReady(service.jhandleGetGroupInviteUrl(groupOutPeer, clientData1)) { _.toOption.get.url }
+    val url = whenReady(service.handleGetGroupInviteUrl(groupOutPeer)(clientData1)) { _.toOption.get.url }
 
-    whenReady(service.jhandleJoinGroup(url, clientData2)) { resp ⇒
+    whenReady(service.handleJoinGroup(url)(clientData2)) { resp ⇒
       resp should matchPattern {
         case Ok(ResponseJoinGroup(_, _, _, _, _, _)) ⇒
       }
@@ -558,9 +558,9 @@ final class GroupsServiceSpec
 
     val peer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
-    whenReady(messagingService.jhandleSendMessage(peer, 22324L, ApiTextMessage("hello", Vector.empty, None), clientData1)) { _ ⇒ }
+    whenReady(messagingService.handleSendMessage(peer, 22324L, ApiTextMessage("hello", Vector.empty, None))(clientData1)) { _ ⇒ }
 
-    whenReady(messagingService.jhandleMessageRead(peer, System.currentTimeMillis, clientData2)) { _ ⇒ }
+    whenReady(messagingService.handleMessageRead(peer, System.currentTimeMillis)(clientData2)) { _ ⇒ }
 
     {
       implicit val clientData = clientData1
@@ -634,8 +634,8 @@ final class GroupsServiceSpec
       createGroup("Fun group", Set(user2.id)).groupPeer
     }
 
-    whenReady(service.jhandleMakeUserAdmin(groupOutPeer, user3OutPeer, clientData2)) { resp ⇒
-      resp shouldEqual Error(CommonErrors.forbidden("Only admin can perform this action."))
+    whenReady(service.handleMakeUserAdmin(groupOutPeer, user3OutPeer)(clientData2)) { resp ⇒
+      resp shouldEqual Error(CommonRpcErrors.forbidden("Only admin can perform this action."))
     }
   }
 
@@ -693,8 +693,8 @@ final class GroupsServiceSpec
       createGroup("Fun group", Set(user2.id)).groupPeer
     }
 
-    whenReady(service.jhandleEditGroupAbout(groupOutPeer, 1L, Some("It is group for fun"), clientData2)) { resp ⇒
-      resp shouldEqual Error(CommonErrors.forbidden("Only admin can perform this action."))
+    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some("It is group for fun"))(clientData2)) { resp ⇒
+      resp shouldEqual Error(CommonRpcErrors.forbidden("Only admin can perform this action."))
     }
   }
 
@@ -751,14 +751,14 @@ final class GroupsServiceSpec
     }
 
     val topic1 = Some("Fun stufff")
-    whenReady(service.jhandleEditGroupTopic(groupOutPeer, 1L, topic1, clientData1)) { resp ⇒
+    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, topic1)(clientData1)) { resp ⇒
       resp should matchPattern {
         case Ok(_: ResponseSeqDate) ⇒
       }
     }
 
     val topic2 = Some("Fun stuff. Typo!")
-    whenReady(service.jhandleEditGroupTopic(groupOutPeer, 1L, topic2, clientData2)) { resp ⇒
+    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, topic2)(clientData2)) { resp ⇒
       resp should matchPattern {
         case Ok(_: ResponseSeqDate) ⇒
       }
@@ -1023,8 +1023,8 @@ final class GroupsServiceSpec
       }
     }
 
-    val user1Seq = whenReady(sequenceService.jhandleGetState(Vector.empty, clientData1))(_.toOption.get.seq)
-    val user2Seq = whenReady(sequenceService.jhandleGetState(Vector.empty, clientData2))(_.toOption.get.seq)
+    val user1Seq = whenReady(sequenceService.handleGetState(Vector.empty)(clientData1))(_.toOption.get.seq)
+    val user2Seq = whenReady(sequenceService.handleGetState(Vector.empty)(clientData2))(_.toOption.get.seq)
 
     {
       implicit val clientData = clientData2

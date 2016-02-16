@@ -24,7 +24,7 @@ final class PushServiceImpl(
   private implicit val db: Database = DbExtension(actorSystem).db
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
 
-  override def jhandleUnregisterPush(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleUnregisterPush(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
       for {
         _ ← seqUpdExt.deletePushCredentials(client.authId)
@@ -32,7 +32,7 @@ final class PushServiceImpl(
     }
   }
 
-  override def jhandleRegisterGooglePush(projectId: Long, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleRegisterGooglePush(projectId: Long, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val creds = GooglePushCredentials(clientData.authId, projectId, token)
     for {
       _ ← db.run(GooglePushCredentialsRepo.deleteByToken(token))
@@ -41,7 +41,7 @@ final class PushServiceImpl(
     } yield Ok(ResponseVoid)
   }
 
-  override def jhandleRegisterApplePush(apnsKey: Int, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def doHandleRegisterApplePush(apnsKey: Int, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     BitVector.fromHex(token) match {
       case Some(tokenBits) ⇒
         val tokenBytes = tokenBits.toByteArray
@@ -57,7 +57,7 @@ final class PushServiceImpl(
     }
   }
 
-  override def jhandleRegisterActorPush(
+  override def doHandleRegisterActorPush(
     topic:      String,
     publicKeys: IndexedSeq[ApiEncryptionKey],
     clientData: ClientData

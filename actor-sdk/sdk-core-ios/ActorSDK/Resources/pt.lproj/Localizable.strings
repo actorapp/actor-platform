@@ -483,6 +483,10 @@
 
 "AlertLinkCopied" = "Link copiado para a área de transferência.";
 
+"ActionOpenLink" = "Link Aberto";
+
+"ActionCancel" = "Cancelar";
+
 /*
  * Network
  */

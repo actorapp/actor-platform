@@ -8,7 +8,6 @@ import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.user.UserExtension
 import im.actor.util.misc.IdUtils
-import org.scalatest.Inside._
 
 import scala.concurrent._
 import scala.concurrent.duration._

@@ -46,33 +46,18 @@ public class Application extends ActorSDKApplication {
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setMainColor(Color.parseColor("#529a88"));
 //        style.setAvatarBackgroundResource(R.drawable.img_profile_avatar_default);
-        AbsContent.registerConverter(new ContentConverter() {
-            @Override
-            public AbsContent convert(AbsContentContainer container) {
-                return JsonContent.convert(container, new TCBotMesaage());
-            }
-
-            @Override
-            public boolean validate(AbsContent content) {
-                return content instanceof TCBotMesaage;
-            }
-        });
+//        AbsContent.registerConverter(new ContentConverter() {
+//            @Override
+//            public AbsContent convert(AbsContentContainer container) {
+//                return JsonContent.convert(container, new TCBotMesaage());
+//            }
+//
+//            @Override
+//            public boolean validate(AbsContent content) {
+//                return content instanceof TCBotMesaage;
+//            }
+//        });
     }
-
-    public static class TCBotMesaage extends JsonContent {
-
-        @Override
-        public String getDataType() {
-            return "tcmessage";
-        }
-
-        @Override
-        public String getContentDescriptionEn() {
-            return "TeamCity message";
-        }
-
-    }
-
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
 

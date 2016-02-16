@@ -10,7 +10,7 @@ import scala.concurrent.Future
 trait FavouritesHandlers extends PeersImplicits {
   this: MessagingServiceImpl ⇒
 
-  override def jhandleFavouriteDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
+  override def doHandleFavouriteDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { client ⇒
       for {
         SeqState(seq, state) ← dialogExt.favourite(client.userId, peer.asModel)
@@ -18,7 +18,7 @@ trait FavouritesHandlers extends PeersImplicits {
       } yield Ok(ResponseDialogsOrder(seq, state.toByteArray, groups))
     }
 
-  override def jhandleUnfavouriteDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
+  override def doHandleUnfavouriteDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { client ⇒
       for {
         SeqState(seq, state) ← dialogExt.unfavourite(client.userId, peer.asModel)

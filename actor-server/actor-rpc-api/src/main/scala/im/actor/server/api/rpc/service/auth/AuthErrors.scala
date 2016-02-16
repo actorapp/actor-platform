@@ -1,6 +1,6 @@
 package im.actor.server.api.rpc.service.auth
 
-import im.actor.api.rpc.{ CommonErrors, RpcError }
+import im.actor.api.rpc.{ CommonRpcErrors, RpcError }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.activation.common.{ BadRequest, SendFailure, CodeFailure }
 
@@ -26,7 +26,7 @@ object AuthErrors {
   val ActivationServiceError = RpcError(500, "ACTIVATION_SERVICE_ERROR", "Error occured in activation service. Try again later.", true, None)
   val InvalidAuthCodeHash = RpcError(400, "CODE_HASH_INVALID", "", false, None)
   val PasswordInvalid = RpcError(400, "PASSWORD_INVALID", s"Password have to be more than ${ACLUtils.PasswordMinLength} and less than ${ACLUtils.PasswordMaxLength}", false, None)
-  val UserDeleted = CommonErrors.forbidden("Unable to log in, your account is deleted")
+  val UserDeleted = CommonRpcErrors.forbidden("Unable to log in, your account is deleted")
 
   def activationFailure(failure: CodeFailure) = failure match {
     case SendFailure(message) ⇒ RpcError(500, "GATE_ERROR", message, true, None)

@@ -13,7 +13,9 @@ import com.google.gwt.user.client.Event;
 
 import im.actor.core.*;
 import im.actor.core.api.ApiAuthSession;
+import im.actor.core.api.ApiDialog;
 import im.actor.core.api.rpc.ResponseDoCall;
+import im.actor.core.api.rpc.ResponseLoadArchived;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
@@ -28,6 +30,8 @@ import im.actor.core.js.providers.JsCallsProvider;
 import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
+import im.actor.core.modules.internal.messages.entity.EntityConverter;
+import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
@@ -352,20 +356,6 @@ public class JsFacade implements Exportable {
             return;
         }
         messenger.getSharedDialogList().unsubscribe(callback);
-    }
-
-    public void bindArchivedDialogs(JsDisplayListCallback<JsDialog> callback) {
-        if (callback == null) {
-            return;
-        }
-        messenger.getSharedArchivedDialogList().subscribe(callback, false);
-    }
-
-    public void unbindArchivedDialogs(JsDisplayListCallback<JsDialog> callback) {
-        if (callback == null) {
-            return;
-        }
-        messenger.getSharedArchivedDialogList().unsubscribe(callback);
     }
 
     public void bindGroupDialogs(JsBindedValueCallback callback) {
@@ -838,8 +828,38 @@ public class JsFacade implements Exportable {
         messenger.loadMoreDialogs();
     }
 
-    public void onArchivedDialogsEnd() {
-        messenger.loadMoreArchivedDialogs();
+    public JsPromise loadArchivedDialogs(){
+        return loadArchivedDialogs(true);
+    }
+
+    public JsPromise loadMoreArchivedDialogs(){
+        return loadArchivedDialogs(false);
+    }
+
+    private JsPromise loadArchivedDialogs(final boolean init){
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.loadArchivedDialogs(init, new RpcCallback<ResponseLoadArchived>() {
+                    @Override
+                    public void onResult(ResponseLoadArchived response) {
+                        JsArray<JsDialogShort> res = JsArray.createArray().cast();
+                        for (ApiDialog d : response.getDialogs()) {
+                            res.push(JsDialogShort.create(messenger.buildPeerInfo(EntityConverter.convert(d.getPeer())), d.getUnreadCount()));
+                        }
+                        Log.d(TAG, "loadArchivedDialogs:result");
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        Log.d(TAG, "loadArchivedDialogs:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+
     }
 
     public void onChatEnd(JsPeer peer) {

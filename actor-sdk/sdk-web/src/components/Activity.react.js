@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component } from 'react';
@@ -49,7 +49,13 @@ class ActivitySection extends Component {
       }
 
       return (
-        <section className={activityClassName}>{activityBody}</section>
+        <section className={activityClassName}>
+          {
+            isOpen
+              ? activityBody
+              : null
+          }
+        </section>
       );
     } else {
       return null;

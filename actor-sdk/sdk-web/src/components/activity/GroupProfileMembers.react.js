@@ -1,21 +1,18 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import _ from 'lodash';
-
-import React from 'react';
+import { map } from 'lodash';
+import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
-import addons from 'react/addons';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import GroupMember from '../activity/GroupMember.react';
 
-const {addons: { PureRenderMixin }} = addons;
-
-class GroupProfileMembers extends React.Component {
+class GroupProfileMembers extends Component {
   static propTypes = {
-    groupId: React.PropTypes.number,
-    members: React.PropTypes.array.isRequired
+    groupId: PropTypes.number,
+    members: PropTypes.array.isRequired
   };
 
   constructor(props) {
@@ -25,9 +22,7 @@ class GroupProfileMembers extends React.Component {
   render() {
     const { groupId, members } = this.props;
 
-    const membersList = _.map(members, (member, index) => {
-      return <GroupMember {...member} gid={groupId} key={index}/>;
-    }, this);
+    const membersList = map(members, (member, index) => <GroupMember {...member} gid={groupId} key={index}/>);
 
     return (
         <ul className="group_profile__members__list">
