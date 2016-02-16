@@ -192,7 +192,9 @@ export const ActionTypes = keymirror({
   CALL: null,
   CALL_SUCCESS: null,
   CALL_ERROR: null,
-  CALL_CHANGED: null
+  CALL_CHANGED: null,
+  CALL_ANSWER: null,
+  CALL_END: null
 });
 
 export const EventTypes = {
