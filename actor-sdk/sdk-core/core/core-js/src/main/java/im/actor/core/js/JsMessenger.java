@@ -120,12 +120,6 @@ public class JsMessenger extends Messenger {
         return isElectron;
     }
 
-    public void onMessageShown(Peer peer, Long sortKey) {
-        // TODO: Implement uid
-//        it's deleted from MessagesModule
-//        modules.getMessagesModule().onMessageShown(peer, 0, sortKey);
-    }
-
     public void sendPhoto(final Peer peer, final String fileName, final JsBlob blob) {
         Log.d(TAG, "Resizing photo");
         JsImageResize.resize(blob, new JsResizeListener() {

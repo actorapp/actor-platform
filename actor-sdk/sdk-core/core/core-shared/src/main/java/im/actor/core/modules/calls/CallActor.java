@@ -3,14 +3,23 @@ package im.actor.core.modules.calls;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import im.actor.core.api.ApiAnswer;
 import im.actor.core.api.ApiCandidate;
 import im.actor.core.api.ApiOffer;
 import im.actor.core.api.ApiWebRTCSignaling;
+import im.actor.core.entity.Group;
+import im.actor.core.entity.GroupMember;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.eventbus.EventBusActor;
+import im.actor.core.viewmodel.CallMember;
+import im.actor.core.viewmodel.CallMemberState;
+import im.actor.core.viewmodel.CallState;
+import im.actor.core.viewmodel.CallVM;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorRef;
 
@@ -19,9 +28,44 @@ public class CallActor extends EventBusActor {
     private static final String TAG = "CallActor";
 
     private HashMap<Integer, HashMap<Long, ActorRef>> peerConnections = new HashMap<>();
+    private HashMap<Long, CallVM> callModels;
 
     public CallActor(ModuleContext context) {
         super(context);
+    }
+
+    @Override
+    public void preStart() {
+        super.preStart();
+        callModels = context().getCallsModule().getCallModels();
+    }
+
+
+    //
+    // Call Model helpers
+    //
+    public CallVM spawnNewVM(long callId, Peer peer, ArrayList<CallMember> members, CallState callState) {
+        CallVM callVM = new CallVM(callId, peer, members, callState);
+        synchronized (callModels) {
+            callModels.put(callId, callVM);
+        }
+        return callVM;
+    }
+
+    public CallVM spanNewOutgoingVM(long callId, Peer peer) {
+        ArrayList<CallMember> members = new ArrayList<>();
+        if (peer.getPeerType() == PeerType.PRIVATE ||
+                peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            members.add(new CallMember(peer.getPeerId(), CallMemberState.CALLING));
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            Group g = getGroup(peer.getPeerId());
+            for (GroupMember gm : g.getMembers()) {
+                if (gm.getUid() != myUid()) {
+                    members.add(new CallMember(gm.getUid(), CallMemberState.CALLING));
+                }
+            }
+        }
+        return spawnNewVM(callId, peer, members, CallState.CALLING_OUTGOING);
     }
 
     //
