@@ -6,7 +6,7 @@ import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public final class WebRTC {
 
-    private static WebRTCRuntime rtcRuntime = new WebRTCRuntimeProvider();
+    private static WebRTCRuntime rtcRuntime = new AndroidWebRTCRuntimeProvider();
 
     public static Promise<WebRTCPeerConnection> createPeerConnection() {
         return rtcRuntime.createPeerConnection();
