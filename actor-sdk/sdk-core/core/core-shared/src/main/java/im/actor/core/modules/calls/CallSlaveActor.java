@@ -61,8 +61,6 @@ public class CallSlaveActor extends CallActor {
             isAnswerPending = false;
             sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiAnswerCall());
         }
-
-        // schedule(new DoAnswer(), 5000);
     }
 
     public void onNeedOffer(int destUid, long destDeviceId) {
