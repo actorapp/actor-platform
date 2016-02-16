@@ -1003,6 +1003,17 @@ public class Messenger {
     }
 
     /**
+     * Starting new group call
+     *
+     * @param gid group you want to call
+     * @return command to execute
+     */
+    @ObjectiveCName("doCallWithGid:")
+    public Command<Long> doGroupCall(int gid) {
+        return modules.getCallsModule().makeCall(Peer.group(gid));
+    }
+
+    /**
      * Ending call by call id
      *
      * @param callId Call id
