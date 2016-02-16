@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import cats.data.Xor
 import im.actor.api.rpc._
 import im.actor.api.rpc.collections._
-import im.actor.api.rpc.raw.{ MapStyleRawApiService, RawApiService }
+import im.actor.api.rpc.raw.{ ArrayStyleRawApiService, MapStyleRawApiService, RawApiService }
 import im.actor.server.api.rpc.RawApiExtension
 import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegion }
 import play.api.libs.json.Json
@@ -28,7 +28,9 @@ class RawServiceSpec
 
   it should "detect dynamically registered services" in e4
 
-  it should "work with map style service" in e5
+  it should "work with map style service" in mapStyle
+
+  it should "work with array style service" in arrayStyle
 
   val service = new RawServiceImpl()
 
@@ -101,7 +103,7 @@ class RawServiceSpec
     }
   }
 
-  def e5() = {
+  def mapStyle() = {
     RawApiExtension(system).register("mapDictionary", new MapStyleDictionaryService(system))
 
     whenReady(service.handleRawRequest("mapDictionary", "getWord", Some(ApiMapValue(Vector(ApiMapValueItem("word", ApiStringValue("culture"))))))) { resp ⇒
@@ -134,6 +136,41 @@ class RawServiceSpec
           case ApiMapValue(items) ⇒
             items should have length 1
             items.head shouldEqual ApiMapValueItem("meaning", ApiStringValue(newWord._2))
+        }
+      }
+    }
+
+  }
+
+  def arrayStyle() = {
+    RawApiExtension(system).register("arrayDictionary", new ArrayStyleDictionaryService(system))
+
+    whenReady(service.handleRawRequest("arrayDictionary", "getWord", Some(ApiStringValue("culture")))) { resp ⇒
+      inside(resp) {
+        case \/-(rawValue) ⇒ inside(rawValue.result) {
+          case ApiArrayValue(items) ⇒
+            items should have length 1
+            items.head shouldEqual ApiStringValue(DictionaryMeanings.Culture)
+        }
+      }
+    }
+
+    val newWord = "thing" → "You know, the thing!"
+    whenReady(service.handleRawRequest("arrayDictionary", "putWord", Some(ApiArrayValue(Vector(
+      ApiStringValue(newWord._1),
+      ApiStringValue(newWord._2)
+    ))))) { resp ⇒
+      inside(resp) {
+        case \/-(rawValue) ⇒ rawValue.result shouldEqual ApiStringValue("true")
+      }
+    }
+
+    whenReady(service.handleRawRequest("arrayDictionary", "getWord", Some(ApiStringValue(newWord._1)))) { resp ⇒
+      inside(resp) {
+        case \/-(rawValue) ⇒ inside(rawValue.result) {
+          case ApiArrayValue(items) ⇒
+            items should have length 1
+            items.head shouldEqual ApiStringValue(newWord._2)
         }
       }
     }
@@ -232,6 +269,48 @@ class RawServiceSpec
       (for {
         _ ← point(kv.put(word, meaning))
       } yield ApiMapValue(Vector(ApiMapValueItem("result", ApiStringValue("true"))))).value
+    }
+  }
+
+  /**
+   * Example raw api service that stores and retrieves words from dictionary. Implemented with Array-style arguments
+   */
+  private final class ArrayStyleDictionaryService(system: ActorSystem) extends ArrayStyleRawApiService(system) {
+    import DictionaryMeanings._
+    import im.actor.api.rpc.FutureResultRpcCats._
+
+    sealed trait DictionaryRequest
+    case class GetWord(word: String) extends DictionaryRequest
+    case class PutWord(word: String, meaning: String) extends DictionaryRequest
+
+    private val kv = TrieMap.empty[String, String]
+
+    kv.put("culture", Culture)
+    kv.put("science", Science)
+    kv.put("software", Software)
+
+    override type Request = DictionaryRequest
+
+    override protected def validateRequests = optParams ⇒ {
+      case "getWord" ⇒ parseParams[String](optParams) map GetWord
+      case "putWord" ⇒ parseParams[PutWord](optParams)
+    }
+
+    override protected def processRequests = implicit client ⇒ {
+      case GetWord(word)          ⇒ getWord(word)
+      case PutWord(word, meaning) ⇒ putWord(word, meaning)
+    }
+
+    def getWord(word: String)(implicit client: AuthorizedClientData): Future[Response] = {
+      (for {
+        optValue ← point(kv.get(word))
+        encodedArr = optValue map { e ⇒ Vector(ApiStringValue(e)) } getOrElse Vector.empty
+      } yield ApiArrayValue(encodedArr)).value
+    }
+
+    def putWord(word: String, meaning: String)(implicit client: AuthorizedClientData): Future[Response] = {
+      kv.put(word, meaning)
+      Future.successful(Xor.right(ApiStringValue("true")))
     }
   }
 
