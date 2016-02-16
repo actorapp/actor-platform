@@ -9,10 +9,6 @@ services {
     password: <password>
   }
 
-  activation {
-    default-service: actor-activation
-  }
-
   actor-activation {
     auth-token: <token>
   }
