@@ -1,5 +1,7 @@
 package im.actor.runtime.crypto.primitives.util;
 
+import com.google.j2objc.annotations.AutoreleasePool;
+
 /**
  * Source: Bouncy Castle v1.54
  * <p>
@@ -22,6 +24,7 @@ public abstract class Pack {
         return n;
     }
 
+    @AutoreleasePool
     public static void bigEndianToInt(byte[] bs, int off, int[] ns) {
         for (int i = 0; i < ns.length; ++i) {
             ns[i] = bigEndianToInt(bs, off);

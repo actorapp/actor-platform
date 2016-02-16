@@ -8,19 +8,27 @@ import AudioToolbox.AudioServices
 
 @objc class iOSNotificationProvider: NSObject, ACNotificationProvider {
 
+    var isLoaded = false
     var internalMessage:SystemSoundID = 0
     var sounds: [String: SystemSoundID] = [:]
     var lastSoundPlay: Double = 0
     
     override init() {
         super.init()
-        let path = NSBundle.framework.URLForResource("notification", withExtension: "caf");
-        AudioServicesCreateSystemSoundID(path!, &internalMessage)
+    }
+    
+    func loadSound(){
+        if !isLoaded {
+            isLoaded = true
+            let path = NSBundle.framework.URLForResource("notification", withExtension: "caf");
+            AudioServicesCreateSystemSoundID(path!, &internalMessage)
+        }
     }
     
     func onMessageArriveInAppWithMessenger(messenger: ACMessenger!) {
         let currentTime = NSDate().timeIntervalSinceReferenceDate
         if (currentTime - lastSoundPlay > 0.2) {
+            loadSound()
             AudioServicesPlaySystemSound(internalMessage)
             lastSoundPlay = currentTime
         }
