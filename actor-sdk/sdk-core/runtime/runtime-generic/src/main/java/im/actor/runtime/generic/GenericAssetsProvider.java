@@ -6,9 +6,6 @@ import java.io.InputStream;
 
 import im.actor.runtime.AssetsRuntime;
 
-/**
- * Created by ex3ndr on 07.08.15.
- */
 public class GenericAssetsProvider implements AssetsRuntime {
 
     @Override
@@ -21,6 +18,25 @@ public class GenericAssetsProvider implements AssetsRuntime {
         InputStream stream = getClass().getClassLoader().getResourceAsStream(name);
         try {
             return readFully(stream, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public byte[] loadBinAsset(String name) {
+        InputStream stream = getClass().getClassLoader().getResourceAsStream(name);
+        try {
+            return readFully(stream);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
