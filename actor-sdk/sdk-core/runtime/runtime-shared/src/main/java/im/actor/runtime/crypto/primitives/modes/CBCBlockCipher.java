@@ -1,5 +1,7 @@
 package im.actor.runtime.crypto.primitives.modes;
 
+import com.google.j2objc.annotations.AutoreleasePool;
+
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.BlockCipher;
 
@@ -37,28 +39,8 @@ public class CBCBlockCipher {
             throw new IntegrityException("Incorrect iv size");
         }
 
-        byte[] currentBlock = new byte[blockSize];
         byte[] res = new byte[data.length];
-
-        byte[] currentIV = new byte[blockSize];
-        for (int i = 0; i < blockSize; i++) {
-            currentIV[i] = iv[i];
-        }
-
-        int count = data.length / blockSize;
-        for (int i = 0; i < count; i++) {
-
-            for (int j = 0; j < blockSize; j++) {
-                currentBlock[j] = (byte) ((data[i * blockSize + j] & 0xFF) ^ (currentIV[j] & 0xFF));
-            }
-
-            blockCipher.encryptBlock(currentBlock, 0, res, i * blockSize);
-
-            for (int j = 0; j < blockSize; j++) {
-                currentIV[j] = res[i * blockSize + j];
-            }
-        }
-
+        encrypt(iv, data, res);
         return res;
     }
 
@@ -78,7 +60,36 @@ public class CBCBlockCipher {
         }
 
         byte[] res = new byte[data.length];
+        decrypt(iv, data, res);
+        return res;
+    }
 
+    @AutoreleasePool
+    private void encrypt(byte[] iv, byte[] data, byte[] res) {
+        byte[] currentBlock = new byte[blockSize];
+
+        byte[] currentIV = new byte[blockSize];
+        for (int i = 0; i < blockSize; i++) {
+            currentIV[i] = iv[i];
+        }
+
+        int count = data.length / blockSize;
+        for (int i = 0; i < count; i++) {
+
+            for (int j = 0; j < blockSize; j++) {
+                currentBlock[j] = (byte) ((data[i * blockSize + j] & 0xFF) ^ (currentIV[j] & 0xFF));
+            }
+
+            blockCipher.encryptBlock(currentBlock, 0, res, i * blockSize);
+
+            for (int j = 0; j < blockSize; j++) {
+                currentIV[j] = res[i * blockSize + j];
+            }
+        }
+    }
+
+    @AutoreleasePool
+    private void decrypt(byte[] iv, byte[] data, byte[] res) {
         byte[] r = new byte[blockSize];
         for (int i = 0; i < blockSize; i++) {
             r[i] = iv[i];
@@ -97,7 +108,5 @@ public class CBCBlockCipher {
                 r[j] = data[i * blockSize + j];
             }
         }
-
-        return res;
     }
 }
