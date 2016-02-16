@@ -79,7 +79,8 @@ public class AACallViewController: AAViewController {
     private func layoutButtons() {
         if !declineCallButton.hidden || !answerCallButton.hidden {
             if !declineCallButton.hidden && !answerCallButton.hidden {
-                
+                declineCallButton.frame = CGRectMake((self.view.width / 2 - 72) / 2, self.view.height - 96, 72, 72)
+                answerCallButton.frame = CGRectMake( (self.view.width / 2) + (self.view.width / 2 - 72) / 2, self.view.height - 96, 72, 72)
             } else {
                 if !answerCallButton.hidden {
                     answerCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 96, 72, 72)
