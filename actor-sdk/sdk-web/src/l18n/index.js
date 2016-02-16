@@ -1,15 +1,27 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import assignDeep from 'assign-deep';
-
 import DelegateContainer from '../utils/DelegateContainer'
+import assignDeep from 'assign-deep';
+import { addLocaleData } from 'react-intl';
+import en from 'react-intl/lib/locale-data/en';
+import ru from 'react-intl/lib/locale-data/ru';
+import es from 'react-intl/lib/locale-data/es';
+import pt from 'react-intl/lib/locale-data/pt';
+import zh from 'react-intl/lib/locale-data/zh';
+
 import russian from './ru-RU';
 import english from './en-US';
 import spanish from './es-ES';
 import portuguese from './pt-BR';
 import chinese from './zh-CN';
+
+addLocaleData(en);
+addLocaleData(ru);
+addLocaleData(es);
+addLocaleData(pt);
+addLocaleData(zh);
 
 let language = navigator.language.toLocaleLowerCase() || navigator.browserLanguage.toLocaleLowerCase();
 if (language === 'zh-cn') language = 'zh';
