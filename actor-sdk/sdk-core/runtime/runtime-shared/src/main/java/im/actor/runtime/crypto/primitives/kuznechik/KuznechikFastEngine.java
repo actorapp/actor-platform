@@ -122,10 +122,14 @@ public class KuznechikFastEngine implements BlockCipher {
             (byte) 0x37, (byte) 0xc4, (byte) 0xaf, (byte) 0x24, (byte) 0x2e, (byte) 0x6f, (byte) 0x8a, (byte) 0xa8, (byte) 0xf7, (byte) 0x60, (byte) 0x49, (byte) 0xe3, (byte) 0x80, (byte) 0x86, (byte) 0x59, (byte) 0x07,
     };
 
-    private static final int[] gf256res;
-    private static final int[] gf256resInv;
+    private static volatile int[] gf256res;
+    private static volatile int[] gf256resInv;
 
-    static {
+    public static void initCalc() {
+        if (gf256res != null || gf256resInv != null) {
+            return;
+        }
+        
         gf256res = new int[16 * 256 * 4];
         gf256resInv = new int[16 * 256 * 4];
 
@@ -149,6 +153,15 @@ public class KuznechikFastEngine implements BlockCipher {
         }
     }
 
+    public static void initDump(byte[] data) {
+        if (gf256res != null || gf256resInv != null) {
+            return;
+        }
+        gf256res = new int[16 * 256 * 4];
+        gf256resInv = new int[16 * 256 * 4];
+        Pack.bigEndianToInt(data, 0, gf256res);
+        Pack.bigEndianToInt(data, gf256res.length * 4, gf256resInv);
+    }
 
     static void kuz_l_fast(int[] w) {
         int a0 = 0, a1 = 0, a2 = 0, a3 = 0;
