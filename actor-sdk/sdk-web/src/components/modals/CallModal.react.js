@@ -7,7 +7,7 @@ import { Container } from 'flux/utils';
 // import { FormattedMessage } from 'react-intl';
 import Modal from 'react-modal';
 
-import { KeyCodes } from '../../constants/ActorAppConstants';
+import { KeyCodes, CallTypes } from '../../constants/ActorAppConstants';
 
 import CallActionCreators from '../../actions/CallActionCreators';
 
@@ -23,6 +23,7 @@ class CallModal extends Component {
   static calculateState() {
     return {
       isOpen: CallStore.isOpen(),
+      callId: CallStore.getCallId(),
       callType: CallStore.getCallType(),
       callMembers: CallStore.getCallMembers(),
       callPeer: CallStore.getCallPeer(),
@@ -39,8 +40,45 @@ class CallModal extends Component {
     }
   };
 
+  handleAnswer = () => {
+    const { callId } = this.state;
+    console.debug('handleAnswer', callId);
+    CallActionCreators.answerCall(callId);
+  };
+
+  handleDecline = () => {
+    const { callId } = this.state;
+    console.debug('handleDecline', callId);
+  };
+
+  handleEnd = () => {
+    const { callId } = this.state;
+    console.debug('handleEnd', callId);
+    CallActionCreators.endCall(callId);
+  };
+
   render() {
     const { isOpen, callType } = this.state;
+
+    let modalFooter;
+    switch (callType) {
+      case CallTypes.INCOMING:
+        modalFooter = (
+          <div className="modal-new__footer">
+            <button className="button button--rised button--wide" onClick={this.handleAnswer}>Answer</button>
+            <button className="button button--rised button--wide" onClick={this.handleDecline}>Decline</button>
+          </div>
+        );
+        break;
+      case CallTypes.OUTGOING:
+        modalFooter = (
+          <div className="modal-new__footer">
+            <button className="button button--rised button--wide" onClick={this.handleEnd}>End</button>
+          </div>
+        );
+        break;
+      default:
+    }
 
     if (isOpen) {
       return (
@@ -55,10 +93,7 @@ class CallModal extends Component {
           <div className="modal-new__body">
           </div>
 
-          <div className="modal-new__footer">
-            <button className="button button--rised button--wide">Answer</button>
-            <button className="button button--rised button--wide">Decline</button>
-          </div>
+          {modalFooter}
         </Modal>
       );
     } else {
