@@ -117,6 +117,15 @@ public class AAGroupViewController: AAContentTableController {
                     return true
                 }
             }
+            
+            // Header: Change title
+            s.action("Do Call") { (r) -> () in
+                r.selectAction = { () -> Bool in
+                    
+                    // self.execute(Actor.doCallWithUid(jint(self.uid)))
+                    return true
+                }
+            }
         }
         
         // Notifications
