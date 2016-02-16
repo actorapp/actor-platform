@@ -113,11 +113,11 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
 
     {
       case EventBus.Disposed(_) ⇒ end()
-      case EventBus.Message(_, userId, message) ⇒
+      case EventBus.Message(_, userId, authId, message) ⇒
         ApiWebRTCSignaling.parseFrom(message).right foreach {
           case ApiAnswerCall ⇒
             scheduledUpd foreach (_.cancel())
-            weakUpdExt.broadcastUsersWeakUpdate(participants.filterNot(_ == userId), UpdateCallHandled(id))
+            weakUpdExt.broadcastUserWeakUpdate(userId, UpdateCallHandled(id), excludeAuthIds = Set(authId))
             context become callInProgress(eventBusId, System.currentTimeMillis(), callerUserId, participants)
           case ApiEndCall ⇒
             scheduledUpd foreach (_.cancel())

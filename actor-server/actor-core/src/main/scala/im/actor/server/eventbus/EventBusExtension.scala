@@ -16,7 +16,7 @@ object EventBus {
   type EventBusId = String
   type DeviceId = Long
 
-  final case class Message(id: String, userId: Int, message: Array[Byte])
+  final case class Message(id: String, userId: Int, authId: Long, message: Array[Byte])
   final case class Disposed(id: String)
 }
 
