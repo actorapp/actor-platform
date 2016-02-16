@@ -7,7 +7,7 @@ import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
 let _isOpen = false;
-let _type, _members, _peer, _state;
+let _id, _type, _members, _peer, _state;
 
 class CallStore extends Store {
   constructor(dispatcher) {
@@ -16,6 +16,10 @@ class CallStore extends Store {
 
   isOpen() {
     return _isOpen;
+  }
+
+  getCallId() {
+    return _id;
   }
 
   getCallType() {
@@ -37,8 +41,10 @@ class CallStore extends Store {
   __onDispatch(action) {
     switch(action.type) {
       case ActionTypes.CALL_MODAL_OPEN:
+        const { id, type } = action.event;
         _isOpen = true;
-        _type = action.event.type;
+        _id = id;
+        _type = type;
         this.__emitChange();
         break;
       case ActionTypes.CALL_MODAL_HIDE:
