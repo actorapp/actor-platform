@@ -56,7 +56,13 @@ public class CallManagerActor extends ModuleActor {
         //
         // Stopping current call as we started new done
         //
-        stopRunningCall();
+        if (currentCall != null) {
+            ActorRef dest = runningCalls.remove(currentCall);
+            if (dest != null) {
+                dest.send(new CallActor.DoEndCall());
+            }
+            currentCall = null;
+        }
 
         //
         // Spawning new Actor for call
@@ -74,7 +80,13 @@ public class CallManagerActor extends ModuleActor {
         //
         // Stopping current call some are started during call establishing
         //
-        stopRunningCall();
+        if (currentCall != null) {
+            ActorRef dest = runningCalls.remove(currentCall);
+            if (dest != null) {
+                dest.send(new CallActor.DoEndCall());
+            }
+            currentCall = null;
+        }
 
         //
         // Saving Reference to call
@@ -136,15 +148,48 @@ public class CallManagerActor extends ModuleActor {
     }
 
     private void onIncomingCallHandled(long callId) {
-        if (handledCalls.contains(callId) && !answeredCalls.contains(callId)) {
-            // Kill Actor
+
+        // If We are not answered this call on this device
+        if (!answeredCalls.contains(callId)) {
+
+            //
+            // Notify provider
+            //
+            if (currentCall == callId) {
+                currentCall = null;
+                provider.onCallEnd(callId);
+            }
+
+            //
+            // Shutdown call actor
+            //
+            ActorRef ref = runningCalls.remove(callId);
+            if (ref != null) {
+                ref.send(new CallActor.EventBusShutdown());
+            }
         }
     }
 
     private void doAnswerCall(final long callId) {
         Log.d(TAG, "onIncomingCall (" + callId + ")");
 
-        answeredCalls.add(callId);
+        // If not already answered
+        if (!answeredCalls.contains(callId)) {
+
+            //
+            // Mark as answered
+            //
+            answeredCalls.add(callId);
+
+            //
+            // Sending answer message to actor.
+            // Hint: If we will send message to master call actor nothing will happen
+            //
+            ActorRef ref = runningCalls.get(callId);
+            if (ref != null) {
+                ref.send(new CallSlaveActor.DoAnswer());
+            }
+        }
     }
 
 
@@ -154,26 +199,46 @@ public class CallManagerActor extends ModuleActor {
 
     private void onCallEnded(long callId) {
         Log.d(TAG, "onCallEnded (" + callId + ")");
+
+        //
+        // Event ALWAYS comes from Call Actor and we doesn't need
+        // to stop it explicitly.
+        //
+        // Removing from running calls
+        //
         runningCalls.remove(callId);
+
+        //
+        // Notify Provider if this call was current
+        //
+        if (currentCall == callId) {
+            currentCall = callId;
+            provider.onCallEnd(callId);
+        }
     }
 
     private void doEndCall(long callId) {
         Log.d(TAG, "doEndCall (" + callId + ")");
-        ActorRef currentCall = runningCalls.remove(callId);
-        if (currentCall != null) {
-            currentCall.send(new CallActor.DoEndCall());
+
+        //
+        // Action ALWAYS comes from UI side and we need only stop call actor
+        // explicitly and it will do the rest.
+        //
+        ActorRef currentCallActor = runningCalls.remove(callId);
+        if (currentCallActor != null) {
+            currentCallActor.send(new CallActor.DoEndCall());
+        }
+
+        //
+        // Notify Provider if this call was current
+        //
+        if (currentCall == callId) {
+            currentCall = callId;
+            provider.onCallEnd(callId);
         }
     }
 
-    private void stopRunningCall() {
-        if (currentCall != null) {
-            ActorRef dest = runningCalls.remove(currentCall);
-            if (dest != null) {
-                dest.send(new CallActor.DoEndCall());
-            }
-        }
-        currentCall = null;
-    }
+    
 
     //
     // Messages
