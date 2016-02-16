@@ -5,3 +5,4 @@
 * :shipit: Unified error handling in rpc services
 * :fix: Optimize bot updates
 * :fix: Correct sender in kick/leave from group service messages
+* :feat: Actor bots sends activation code, if user was online recently
