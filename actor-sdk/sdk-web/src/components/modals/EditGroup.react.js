@@ -1,14 +1,11 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
 import Modal from 'react-modal';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
-//import { Styles, TextField } from 'material-ui';
-//import ActorTheme from '../../constants/ActorTheme';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
@@ -22,22 +19,14 @@ import TextField from '../common/TextField.react';
 import AvatarItem from '../common/AvatarItem.react';
 import CropAvatarModal from './CropAvatar.react';
 
-//const ThemeManager = new Styles.ThemeManager();
-
 class EditGroup extends Component {
   constructor(props) {
     super(props);
   }
 
-  //static childContextTypes = {
-  //  muiTheme: React.PropTypes.object
-  //};
-  //
-  //getChildContext() {
-  //  return {
-  //    muiTheme: ThemeManager.getCurrentTheme()
-  //  };
-  //}
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   static getStores = () => [EditGroupStore, CropAvatarStore];
 
@@ -51,19 +40,6 @@ class EditGroup extends Component {
       isCropModalOpen: CropAvatarStore.isOpen()
     }
   }
-
-  //componentWillMount() {
-  //  ThemeManager.setTheme(ActorTheme);
-  //  ThemeManager.setComponentThemes({
-  //    textField: {
-  //      textColor: 'rgba(0,0,0,.87)',
-  //      focusColor: '#68a3e7',
-  //      backgroundColor: 'transparent',
-  //      borderColor: '#68a3e7',
-  //      disabledTextColor: 'rgba(0,0,0,.4)'
-  //    }
-  //  });
-  //}
 
   componentWillUnmount() {
     this.removeListeners();
@@ -101,8 +77,8 @@ class EditGroup extends Component {
   };
 
   onProfilePictureInputChange = () => {
-    const imageInput = React.findDOMNode(this.refs.imageInput);
-    const imageForm = React.findDOMNode(this.refs.imageForm);
+    const imageInput = findDOMNode(this.refs.imageInput);
+    const imageForm = findDOMNode(this.refs.imageForm);
     const file = imageInput.files[0];
 
     let reader = new FileReader();
@@ -114,7 +90,7 @@ class EditGroup extends Component {
   };
 
   onChangeAvatarClick = () => {
-    const imageInput = React.findDOMNode(this.refs.imageInput);
+    const imageInput = findDOMNode(this.refs.imageInput);
     imageInput.click()
   };
 
@@ -130,28 +106,45 @@ class EditGroup extends Component {
 
   render() {
     const { isOpen, group, isCropModalOpen, title, about, isAdmin } = this.state;
+    const { intl } = this.context;
 
     const cropAvatar = isCropModalOpen ? <CropAvatarModal onCropFinish={this.changeGroupAvatar}/> : null;
+    const modalStyle = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null,
+        width: 440
+      }
+    };
 
     if (isOpen) {
       return (
         <Modal className="modal-new modal-new--edit-group"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 440}}>
+               style={modalStyle}>
 
           <header className="modal-new__header">
             <a className="modal-new__header__icon material-icons">edit</a>
-            <h3 className="modal-new__header__title">{this.getIntlMessage('modal.group.title')}</h3>
+            <h3 className="modal-new__header__title">{intl.messages['modal.group.title']}</h3>
             <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onSave}>{this.getIntlMessage('button.done')}</button>
+              <button className="button button--lightblue" onClick={this.onSave}>{intl.messages['button.done']}</button>
             </div>
           </header>
 
           <div className="modal-new__body row">
             <div className="col-xs">
               <TextField className="input__material--wide"
-                         floatingLabel={this.getIntlMessage('modal.group.name')}
+                         floatingLabel={intl.messages['modal.group.name']}
                          onChange={this.onTitleChange}
                          ref="name"
                          value={title}/>
@@ -159,7 +152,7 @@ class EditGroup extends Component {
               {
                 isAdmin
                   ? <div className="about">
-                      <label htmlFor="about">{this.getIntlMessage('modal.group.about')}</label>
+                      <label htmlFor="about">{intl.messages['modal.group.about']}</label>
                       <textarea className="textarea" value={about} onChange={this.onAboutChange} id="about"/>
                     </div>
                   : null
@@ -172,11 +165,11 @@ class EditGroup extends Component {
                             size="big"
                             title={group.name}/>
                 <a onClick={this.onChangeAvatarClick}>
-                  <span>{this.getIntlMessage('modal.group.avatarChange')}</span>
+                  <span>{intl.messages['modal.group.avatarChange']}</span>
                 </a>
               </div>
               <div className="profile-picture__controls">
-                <a onClick={this.onProfilePictureRemove}>{this.getIntlMessage('modal.group.avatarRemove')}</a>
+                <a onClick={this.onProfilePictureRemove}>{intl.messages['modal.group.avatarRemove']}</a>
               </div>
               <form className="hide" ref="imageForm">
                 <input onChange={this.onProfilePictureInputChange} ref="imageInput" type="file"/>
@@ -192,7 +185,5 @@ class EditGroup extends Component {
     }
   }
 }
-
-ReactMixin.onClass(EditGroup, IntlMixin);
 
 export default Container.create(EditGroup, {pure: false});

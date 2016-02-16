@@ -1,5 +1,5 @@
 export default {
-  'locales': 'zh-CN',
+  'locale': 'zh',
   'messages': {
     // Menus
     'menu': {

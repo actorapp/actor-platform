@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 
 import PreferencesActionCreators from '../../../actions/PreferencesActionCreators';
 
@@ -26,10 +24,14 @@ class SessionItem extends Component {
   };
 
   static propTypes = {
-    appTitle: React.PropTypes.string.isRequired,
-    holder: React.PropTypes.string.isRequired,
-    id: React.PropTypes.number.isRequired,
-    authTime: React.PropTypes.object.isRequired
+    appTitle: PropTypes.string.isRequired,
+    holder: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    authTime: PropTypes.object.isRequired
+  };
+
+  static contextTypes = {
+    intl: PropTypes.object
   };
 
   onTerminate = () => PreferencesActionCreators.terminateSession(this.props.id);
@@ -37,9 +39,10 @@ class SessionItem extends Component {
   render() {
     const { appTitle, holder, authTime } = this.props;
     const { terminateSessionState } = this.state;
+    const { intl } = this.context;
 
     const currentDevice = (holder === 'THIS_DEVICE') ? (
-      <small>{this.getIntlMessage('preferencesSessionsCurrentSession')}</small>
+      <small>{intl.messages['preferencesSessionsCurrentSession']}</small>
     ) : null;
 
     return (
@@ -50,13 +53,13 @@ class SessionItem extends Component {
         </div>
 
         <small>
-          <b>{this.getIntlMessage('preferencesSessionsAuthTime')}:</b> {authTime.toString()}
+          <b>{intl.messages['preferencesSessionsAuthTime']}:</b> {authTime.toString()}
         </small>
 
         <Stateful.Root currentState={terminateSessionState}>
           <Stateful.Pending>
             <a className="session-list__session__terminate link--blue" onClick={this.onTerminate}>
-              {this.getIntlMessage('preferencesSessionsTerminate')}
+              {intl.messages['preferencesSessionsTerminate']}
             </a>
           </Stateful.Pending>
           <Stateful.Processing>
@@ -73,7 +76,5 @@ class SessionItem extends Component {
     )
   }
 }
-
-ReactMixin.onClass(SessionItem, IntlMixin);
 
 export default Container.create(SessionItem, {pure: false, withProps: true});

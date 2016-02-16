@@ -2,16 +2,16 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes } from 'react';
 import { debounce, forEach } from 'lodash';
 
-import { PeerTypes } from '../constants/ActorAppConstants';
+import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 
 import DefaultMessagesSection from './dialog/MessagesSection.react';
 import DefaultTypingSection from './dialog/TypingSection.react';
 import DefaultComposeSection from './dialog/ComposeSection.react';
-import DefaultToolbarSection from './ToolbarSection.react';
-import DefaultActivitySection from './ActivitySection.react';
+import DefaultToolbarSection from './Toolbar.react';
+import DefaultActivitySection from './Activity.react';
 import DefaultEmptyScreen from './common/EmptyScreen.react';
 import ConnectionState from './common/ConnectionState.react';
 
@@ -79,7 +79,7 @@ class DialogSection extends Component {
   };
 
   fixScroll = () => {
-    const scrollNode = React.findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
+    const scrollNode = findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
     const node = scrollNode.getElementsByClassName('ss-content')[0];
     if (node) {
       node.scrollTop = node.scrollHeight - lastScrolledFromBottom - node.offsetHeight;
@@ -100,7 +100,7 @@ class DialogSection extends Component {
     const { peer, messages, messagesToRender } = this.state;
 
     if (peer) {
-      const scrollNode = React.findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
+      const scrollNode = findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
       const node = scrollNode.getElementsByClassName('ss-content')[0];
       let scrollTop = node.scrollTop;
       lastScrolledFromBottom = node.scrollHeight - scrollTop - node.offsetHeight; // was node.scrollHeight - scrollTop
@@ -142,9 +142,9 @@ class DialogSection extends Component {
       EmptyScreen = delegate.components.dialog.empty || DefaultEmptyScreen;
 
       if (delegate.components.dialog.activity) {
-        forEach(delegate.components.dialog.activity, (Activity) => activity.push(<Activity/>));
+        forEach(delegate.components.dialog.activity, (Activity, index) => activity.push(<Activity key={index}/>));
       } else {
-        activity.push(<DefaultActivitySection/>);
+        activity.push(<DefaultActivitySection key={1}/>);
       }
     } else {
       ToolbarSection = DefaultToolbarSection;
@@ -152,11 +152,11 @@ class DialogSection extends Component {
       TypingSection = DefaultTypingSection;
       ComposeSection = DefaultComposeSection;
       EmptyScreen = DefaultEmptyScreen;
-      activity.push(<DefaultActivitySection/>);
+      activity.push(<DefaultActivitySection key={1}/>);
     }
 
     const mainScreen = peer ? (
-      <section className="dialog">
+      <section className="dialog" key={0}>
         <ConnectionState/>
         <div className="messages">
           <MessagesSection messages={messagesToRender}

@@ -48,11 +48,9 @@ final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSyste
 
     updateOptFuture flatMap {
       case Some(body) ⇒
-        val groupIds = upd._relatedGroupIds
         val userIds = upd._relatedUserIds
-
         for {
-          (apiGroups, apiUsers) ← GroupUtils.getGroupsUsers(groupIds, userIds, botUserId, botAuthId)
+          (apiGroups, apiUsers) ← GroupUtils.getGroupsUsers(Seq.empty[Int], userIds, botUserId, botAuthId)
         } yield Some(BotFatSeqUpdate(
           seq = seq,
           body = body,

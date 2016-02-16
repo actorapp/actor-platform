@@ -1,5 +1,5 @@
 export default {
-  'locales': 'en-US',
+  'locale': 'en',
   'messages': {
     // Login
     'login': {
@@ -19,7 +19,8 @@ export default {
       'welcome': {
         'header': 'Welcome to <strong>{appName}</strong>',
         'text': '<p>{appName} Messenger brings all your business network connections into one place, makes it easily accessible wherever you go.</p>' +
-                '<p>Our aim is to make your work easier, reduce your email amount, make the business world closer by reducing time to find right contacts.</p>'
+                '<p>Our aim is to make your work easier, reduce your email amount, make the business world closer by reducing time to find right contacts.</p>',
+        'copyright': '{appName} Messenger © 2015'
       }
     },
 
@@ -262,7 +263,8 @@ export default {
     'main': {
       'empty': 'Try to be better than yesterday!',
       'install': '<h1>Web version of <b>{appName}</b> works only on desktop browsers at this time</h1>' +
-                 '<h3>Please install our apps for using <b>{appName}</b> on your phone.</h3>',
+                 '<h3>Please install our apps for using <b>{appName}</b> on your phone.</h3>' +
+                 '<p><a href="//actor.im/ios">iPhone</a> | <a href="//actor.im/android">Android</a></p>',
       'deactivated': {
         'header': 'Tab deactivated',
         'text': 'Oops, you have opened another tab with {appName}, so we had to deactivate this one to prevent some dangerous things happening.'

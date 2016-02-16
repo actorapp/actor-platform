@@ -1,12 +1,10 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
-import classnames from 'classnames';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 import { dataURItoBlob } from '../../utils/ImageUtils';
 
 import Modal from 'react-modal';
@@ -25,7 +23,7 @@ class CropAvatarModal extends Component {
   }
 
   static propTypes = {
-    onCropFinish: React.PropTypes.func.isRequired
+    onCropFinish: PropTypes.func.isRequired
   };
 
   static getStores = () => [CropAvatarStore];
@@ -47,17 +45,22 @@ class CropAvatarModal extends Component {
     };
   }
 
+  static contextTypes = {
+    intl: PropTypes.object
+  };
+
   componentDidMount() {
-    const originalImage = React.findDOMNode(this.refs.originalImage);
+    const originalImage = findDOMNode(this.refs.originalImage);
     document.addEventListener('keydown', this.onKeyDown, false);
     window.addEventListener('resize', this.storeScaledSizes, false);
     originalImage.addEventListener('load', this.storeScaledSizes, false);
   }
 
   componentWillUnmount() {
-    const originalImage = React.findDOMNode(this.refs.originalImage);
+    const originalImage = findDOMNode(this.refs.originalImage);
     document.removeEventListener('keydown', this.onKeyDown, false);
     window.removeEventListener('resize', this.storeScaledSizes, false);
+    originalImage.removeEventListener('load', this.storeScaledSizes, false);
   }
 
   onClose = () => CropAvatarActionCreators.hide();
@@ -74,7 +77,7 @@ class CropAvatarModal extends Component {
 
     event.preventDefault();
 
-    const wrapper = React.findDOMNode(this.refs.wrapper);
+    const wrapper = findDOMNode(this.refs.wrapper);
     const wrapperRect = wrapper.getBoundingClientRect();
 
     const dragOffset = {
@@ -88,7 +91,7 @@ class CropAvatarModal extends Component {
   };
   onMoving = (event) => {
     const { dragOffset, cropSize } = this.state;
-    const wrapper = React.findDOMNode(this.refs.wrapper);
+    const wrapper = findDOMNode(this.refs.wrapper);
     const wrapperRect = wrapper.getBoundingClientRect();
 
     let cropPosition = {
@@ -112,7 +115,7 @@ class CropAvatarModal extends Component {
   };
 
   onStartResizeTop = (event) => {
-    const wrapper = React.findDOMNode(this.refs.wrapper);
+    const wrapper = findDOMNode(this.refs.wrapper);
     const resizeLastCoord = event.pageY;
     event.preventDefault();
     this.setState({resizeLastCoord});
@@ -121,7 +124,7 @@ class CropAvatarModal extends Component {
   };
 
   onStartResizeRight = (event) => {
-    const wrapper = React.findDOMNode(this.refs.wrapper);
+    const wrapper = findDOMNode(this.refs.wrapper);
     const resizeLastCoord = event.pageX;
     event.preventDefault();
     this.setState({resizeLastCoord});
@@ -130,7 +133,7 @@ class CropAvatarModal extends Component {
   };
 
   onStartResizeBottom = (event) => {
-    const wrapper = React.findDOMNode(this.refs.wrapper);
+    const wrapper = findDOMNode(this.refs.wrapper);
     const resizeLastCoord = event.pageY;
     event.preventDefault();
     this.setState({resizeLastCoord});
@@ -139,7 +142,7 @@ class CropAvatarModal extends Component {
   };
 
   onStartResizeLeft = (event) => {
-    const wrapper = React.findDOMNode(this.refs.wrapper);
+    const wrapper = findDOMNode(this.refs.wrapper);
     const resizeLastCoord = event.pageX;
     event.preventDefault();
     this.setState({resizeLastCoord});
@@ -200,7 +203,7 @@ class CropAvatarModal extends Component {
   };
 
   removeListeners = () => {
-    const wrapper = React.findDOMNode(this.refs.wrapper);
+    const wrapper = findDOMNode(this.refs.wrapper);
 
     wrapper.removeEventListener('mousemove', this.onMoving);
     wrapper.removeEventListener('touchmove', this.onMoving);
@@ -219,7 +222,7 @@ class CropAvatarModal extends Component {
   onCrop = () => {
     const { cropPosition, cropSize, scaleRatio } = this.state;
     const { onCropFinish } = this.props;
-    const cropImage = React.findDOMNode(this.refs.cropImage);
+    const cropImage = findDOMNode(this.refs.cropImage);
     let canvas = document.createElement('canvas');
     let context = canvas.getContext('2d');
 
@@ -235,7 +238,7 @@ class CropAvatarModal extends Component {
 
   storeScaledSizes = (event) => {
     const { cropSize } = this.state;
-    const originalImage = React.findDOMNode(this.refs.originalImage);
+    const originalImage = findDOMNode(this.refs.originalImage);
     const scaledWidth = originalImage.width;
     const scaledHeight = originalImage.height;
     const naturalWidth = originalImage.naturalWidth;
@@ -251,18 +254,35 @@ class CropAvatarModal extends Component {
 
   render() {
     const { isOpen, pictureSource, cropPosition, cropSize, scaledWidth, scaledHeight, maxImageHeight } = this.state;
+    const { intl } = this.context;
+    const modalStyle = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null
+      }
+    };
 
     if (isOpen) {
       return (
         <Modal className="modal-new modal-new--profile-picture"
                closeTimeoutMS={150}
-               isOpen={isOpen}>
+               isOpen={isOpen}
+               style={modalStyle}>
 
           <div className="modal-new__header">
             <i className="modal-new__header__icon material-icons">crop</i>
-            <h3 className="modal-new__header__title">{this.getIntlMessage('modal.crop.title')}</h3>
+            <h3 className="modal-new__header__title">{intl.messages['modal.crop.title']}</h3>
             <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onCrop}>{this.getIntlMessage('button.done')}</button>
+              <button className="button button--lightblue" onClick={this.onCrop}>{intl.messages['button.done']}</button>
             </div>
           </div>
 
@@ -310,7 +330,5 @@ class CropAvatarModal extends Component {
     }
   }
 }
-
-ReactMixin.onClass(CropAvatarModal, IntlMixin);
 
 export default Container.create(CropAvatarModal);

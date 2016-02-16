@@ -1,13 +1,13 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { map, debounce } from 'lodash';
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
-import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedHTMLMessage } from 'react-intl';
+import { FormattedHTMLMessage } from 'react-intl';
 
 import { KeyCodes } from '../../../constants/ActorAppConstants';
 
@@ -22,6 +22,10 @@ class GroupList extends Component {
   constructor(props) {
     super(props);
   }
+
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   static getStores = () => [GroupListStore];
 
@@ -42,47 +46,7 @@ class GroupList extends Component {
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  render() {
-    const { query, results, selectedIndex, list } = this.state;
-
-    let groupList = map(results, (result, index) => <Group group={result} key={index}
-                                                           isSelected={selectedIndex === index}
-                                                           ref={selectedIndex === index ? 'selected' : null}
-                                                           onClick={this.handleGroupSelect}
-                                                           onMouseOver={() => this.setState({selectedIndex: index})}/>);
-
-    return (
-      <div className="newmodal newmodal__groups">
-        <header className="newmodal__header">
-          <h2>{this.getIntlMessage('modal.groups.title')}</h2>
-        </header>
-
-        <section className="newmodal__search">
-          <input className="newmodal__search__input"
-                 onChange={this.handleSearchChange}
-                 placeholder={this.getIntlMessage('modal.groups.search')}
-                 type="search"
-                 ref="search"
-                 value={query}/>
-        </section>
-
-        <ul className="newmodal__result group__list" ref="results">
-          {
-            list.length === 0
-              ? <div>{this.getIntlMessage('modal.groups.loading')}</div>
-              : results.length === 0
-                ? <li className="group__list__item group__list__item--empty text-center">
-                    <FormattedHTMLMessage message={this.getIntlMessage('modal.groups.notFound')}
-                                          query={query} />
-                  </li>
-                : groupList
-          }
-        </ul>
-      </div>
-    )
-  }
-
-  setFocus = () => React.findDOMNode(this.refs.search).focus();
+  setFocus = () => findDOMNode(this.refs.search).focus();
   handleClose = () => GroupListActionCreators.close();
 
   handleSearchChange = (event) => {
@@ -111,8 +75,8 @@ class GroupList extends Component {
 
       this.setState({selectedIndex: index});
 
-      const scrollContainerNode = React.findDOMNode(this.refs.results);
-      const selectedNode = React.findDOMNode(this.refs.selected);
+      const scrollContainerNode = findDOMNode(this.refs.results);
+      const selectedNode = findDOMNode(this.refs.selected);
       const scrollContainerNodeRect = scrollContainerNode.getBoundingClientRect();
       const selectedNodeRect = selectedNode.getBoundingClientRect();
 
@@ -131,8 +95,8 @@ class GroupList extends Component {
 
       this.setState({selectedIndex: index});
 
-      const scrollContainerNode = React.findDOMNode(this.refs.results);
-      const selectedNode = React.findDOMNode(this.refs.selected);
+      const scrollContainerNode = findDOMNode(this.refs.results);
+      const selectedNode = findDOMNode(this.refs.selected);
       const scrollContainerNodeRect = scrollContainerNode.getBoundingClientRect();
       const selectedNodeRect = selectedNode.getBoundingClientRect();
 
@@ -174,11 +138,50 @@ class GroupList extends Component {
   };
 
   handleScroll = (top) => {
-    const resultsNode = React.findDOMNode(this.refs.results);
+    const resultsNode = findDOMNode(this.refs.results);
     resultsNode.scrollTop = top;
   };
-}
 
-ReactMixin.onClass(GroupList, IntlMixin);
+  render() {
+    const { query, results, selectedIndex, list } = this.state;
+    const { intl } = this.context;
+
+    let groupList = map(results, (result, index) => <Group group={result} key={index}
+                                                           isSelected={selectedIndex === index}
+                                                           ref={selectedIndex === index ? 'selected' : null}
+                                                           onClick={this.handleGroupSelect}
+                                                           onMouseOver={() => this.setState({selectedIndex: index})}/>);
+
+    return (
+      <div className="newmodal newmodal__groups">
+        <header className="newmodal__header">
+          <h2>{intl.messages['modal.groups.title']}</h2>
+        </header>
+
+        <section className="newmodal__search">
+          <input className="newmodal__search__input"
+                 onChange={this.handleSearchChange}
+                 placeholder={intl.messages['modal.groups.search']}
+                 type="search"
+                 ref="search"
+                 value={query}/>
+        </section>
+
+        <ul className="newmodal__result group__list" ref="results">
+          {
+            list.length === 0
+              ? <div>{intl.messages['modal.groups.loading']}</div>
+              : results.length === 0
+                  ? <li className="group__list__item group__list__item--empty text-center">
+                      <FormattedHTMLMessage id="modal.groups.notFound"
+                                            values={{query}} />
+                    </li>
+                  : groupList
+          }
+        </ul>
+      </div>
+    )
+  }
+}
 
 export default Container.create(GroupList, {pure: false});

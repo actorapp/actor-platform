@@ -206,7 +206,16 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       val update = UpdateGroupUserKick(groupId, kickedUserId, kickerUserId, date.toEpochMilli, randomId)
       val serviceMessage = GroupServiceMessages.userKicked(kickedUserId)
 
-      db.run(removeUser(kickedUserId, group.members.keySet, kickerAuthSid, serviceMessage, update, date, randomId)) pipeTo replyTo
+      db.run(removeUser(
+        initiatorId = kickerUserId,
+        userId = kickedUserId,
+        group.members.keySet,
+        kickerAuthSid,
+        serviceMessage,
+        update,
+        date,
+        randomId
+      )) pipeTo replyTo
     }
   }
 
@@ -218,7 +227,16 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
       val update = UpdateGroupUserLeave(groupId, userId, evt.ts.toEpochMilli, randomId)
       val serviceMessage = GroupServiceMessages.userLeft(userId)
-      db.run(removeUser(userId, group.members.keySet, authSid, serviceMessage, update, evt.ts, randomId)) pipeTo replyTo
+      db.run(removeUser(
+        initiatorId = userId,
+        userId = userId,
+        group.members.keySet,
+        authSid,
+        serviceMessage,
+        update,
+        evt.ts,
+        randomId
+      )) pipeTo replyTo
     }
   }
 
@@ -390,7 +408,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
-  private def removeUser(userId: Int, memberIds: Set[Int], clientAuthSid: Int, serviceMessage: ApiServiceMessage, update: Update, date: Instant, randomId: Long): DBIO[SeqStateDate] = {
+  private def removeUser(initiatorId: Int, userId: Int, memberIds: Set[Int], clientAuthSid: Int, serviceMessage: ApiServiceMessage, update: Update, date: Instant, randomId: Long): DBIO[SeqStateDate] = {
     val groupPeer = Peer(PeerType.Group, groupId)
     for {
       _ ← GroupUserRepo.delete(groupId, userId)
@@ -408,7 +426,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       _ ← dialog.DialogRepo.updateOwnerLastReadAt(userId, groupPeer, new DateTime(date.toEpochMilli))
       _ ← DBIO.from(dialogExt.writeMessage(
         ApiPeer(ApiPeerType.Group, groupId),
-        userId,
+        initiatorId,
         date,
         randomId,
         serviceMessage

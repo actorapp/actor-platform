@@ -4,14 +4,12 @@
 
 import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
-import addons from 'react/addons';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classnames from 'classnames';
 
 import AvatarItem from '../../common/AvatarItem.react';
 
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
-
-const {addons: { PureRenderMixin }} = addons;
 
 class PeopleItem extends Component {
   constructor(props) {
