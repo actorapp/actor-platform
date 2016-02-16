@@ -408,6 +408,8 @@
 
 "AuthTermsOfService" = "服务条款";
 
+"AuthTermsOfServiceTitle" = "服务条款";
+
 "AuthPhoneTooShort" = "电话号码太短";
 
 "AuthCodeFieldHint" = "验证码";
