@@ -9,12 +9,13 @@ public class AACallViewController: AAViewController {
     
     public let binder = AABinder()
     public let callId: jlong
-    public let call: ACCallModel
+    public let call: ACCallVM
     public let bgImage = UIImageView(image: UIImage.bundled("bg_1.jpg"))
     public let bgImageOverlay = UIView()
     public let senderAvatar: AAAvatarView = AAAvatarView(frameSize: 120, type: .Rounded)
     public let peerTitle = UILabel()
     public let answerCall = UIButton(frame: CGRectMake(0, 0, 80, 80))
+    public let declineCall = UIButton(frame: CGRectMake(0, 0, 80, 80))
     
     public init(callId: jlong) {
         self.callId = callId
@@ -29,12 +30,21 @@ public class AACallViewController: AAViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        answerCall.backgroundColor = UIColor(rgb: 0xc04945)
-        answerCall.setTitle("End Call", forState: .Normal)
+        answerCall.backgroundColor = UIColor.greenColor()
+        answerCall.setTitle("Answer ", forState: .Normal)
         answerCall.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         answerCall.viewDidTap = {
+            Actor.answerCallWithCallId(self.callId)
+//             self.navigateDetail(ConversationViewController(peer: self.call.peer))
+//            self.dismiss()
+        }
+        
+        declineCall.backgroundColor = UIColor.redColor()
+        declineCall.setTitle("End Call", forState: .Normal)
+        declineCall.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        declineCall.viewDidTap = {
             Actor.endCallWithCallId(self.callId)
-            self.navigateDetail(ConversationViewController(peer: self.call.getPeer()))            
+            self.navigateDetail(ConversationViewController(peer: self.call.peer))
             self.dismiss()
         }
         
@@ -61,6 +71,7 @@ public class AACallViewController: AAViewController {
         senderAvatar.frame = CGRectMake((self.view.width - 120) / 2, 100, 120, 120)
         peerTitle.frame = CGRectMake(60, senderAvatar.bottom + 20, view.width - 120, 34)
         answerCall.frame = CGRectMake(0, self.view.height - 48, self.view.width, 48)
+        declineCall.frame = CGRectMake(0, self.view.height - 48 - 48, self.view.width, 48)
     }
     
     public override func viewWillAppear(animated: Bool) {
@@ -69,26 +80,35 @@ public class AACallViewController: AAViewController {
         //
         // Binding State
         //
-        binder.bind(call.getState()) { (value: ACCallState!) -> () in
+        binder.bind(call.state) { (value: ACCallState!) -> () in
             if (ACCallState_Enum.CALLING_INCOMING == value.toNSEnum()) {
-                print("Call \(self.callId) incoming")
+                self.answerCall.hidden = false
+                self.declineCall.hidden = false
             } else if (ACCallState_Enum.IN_PROGRESS == value.toNSEnum()) {
-                print("Call \(self.callId) in progress")
+                self.answerCall.hidden = true
+                self.declineCall.hidden = false
+            } else if (ACCallState_Enum.CALLING_OUTGOING == value.toNSEnum()){
+                self.answerCall.hidden = true
+                self.declineCall.hidden = false
+            } else if (ACCallState_Enum.ENDED == value.toNSEnum()) {
+                self.answerCall.hidden = false
+                self.declineCall.hidden = false
             } else {
-                print("Call \(self.callId) unknown")
+                self.answerCall.hidden = false
+                self.declineCall.hidden = false
             }
         }
         
         //
         // Binding Avatar
         //
-        binder.bind(call.getActiveMembers()) { (value: JavaUtilArrayList!) -> () in
+        binder.bind(call.members) { (value: JavaUtilArrayList!) -> () in
             
             print("Bind user")
             
             var users = [ACUserVM]()
             for i in 0..<value.size() {
-                let uid = (value.getWithInt(i) as! JavaLangInteger).intValue()
+                let uid = (value.getWithInt(i) as! ACCallMember).uid
                 if (uid != Actor.myUid()) {
                     users.append(Actor.getUserWithUid(uid))
                 }
@@ -106,12 +126,12 @@ public class AACallViewController: AAViewController {
         //
         // Binding Title
         //
-        if (call.getPeer().peerType.toNSEnum() == ACPeerType_Enum.PRIVATE) {
-            binder.bind(Actor.getUserWithUid(call.getPeer().peerId).getNameModel(), closure: { (value: String!) -> () in
+        if (call.peer.peerType.toNSEnum() == ACPeerType_Enum.PRIVATE) {
+            binder.bind(Actor.getUserWithUid(call.peer.peerId).getNameModel(), closure: { (value: String!) -> () in
                 self.peerTitle.text = value
             })
-        } else if (call.getPeer().peerType.toNSEnum() == ACPeerType_Enum.GROUP) {
-            binder.bind(Actor.getGroupWithGid(call.getPeer().peerId).getNameModel(), closure: { (value: String!) -> () in
+        } else if (call.peer.peerType.toNSEnum() == ACPeerType_Enum.GROUP) {
+            binder.bind(Actor.getGroupWithGid(call.peer.peerId).getNameModel(), closure: { (value: String!) -> () in
                 self.peerTitle.text = value
             })
         }

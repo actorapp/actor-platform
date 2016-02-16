@@ -15,7 +15,6 @@ import java.util.List;
 import im.actor.core.api.ApiRawValue;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
-import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.api.rpc.ResponseRawRequest;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
@@ -46,7 +45,7 @@ import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
 import im.actor.core.viewmodel.AppStateVM;
-import im.actor.core.viewmodel.CallModel;
+import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
@@ -1030,7 +1029,7 @@ public class Messenger {
      * @return Call view model
      */
     @ObjectiveCName("getCallWithCallId:")
-    public CallModel getCall(long callId) {
+    public CallVM getCall(long callId) {
         return modules.getCallsModule().getCall(callId);
     }
 
