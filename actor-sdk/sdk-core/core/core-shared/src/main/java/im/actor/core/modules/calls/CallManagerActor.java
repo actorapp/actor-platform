@@ -155,7 +155,7 @@ public class CallManagerActor extends ModuleActor {
             //
             // Notify provider
             //
-            if (currentCall == callId) {
+            if (currentCall!=null && currentCall == callId) {
                 currentCall = null;
                 provider.onCallEnd(callId);
             }
@@ -211,7 +211,7 @@ public class CallManagerActor extends ModuleActor {
         //
         // Notify Provider if this call was current
         //
-        if (currentCall == callId) {
+        if (currentCall!=null && currentCall == callId) {
             currentCall = callId;
             provider.onCallEnd(callId);
         }
@@ -232,7 +232,7 @@ public class CallManagerActor extends ModuleActor {
         //
         // Notify Provider if this call was current
         //
-        if (currentCall == callId) {
+        if (currentCall!=null && currentCall == callId) {
             currentCall = null;
             provider.onCallEnd(callId);
         }

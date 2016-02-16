@@ -5,7 +5,7 @@ import org.webrtc.AudioTrack;
 import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 
-import static im.actor.runtime.WebRTCRuntimeProvider.factory;
+import static im.actor.runtime.AndroidWebRTCRuntimeProvider.factory;
 
 
 public class AndroidMediaStream implements WebRTCMediaStream {
@@ -13,12 +13,15 @@ public class AndroidMediaStream implements WebRTCMediaStream {
     private AudioTrack audioTrack;
     private MediaStream stream;
     private boolean isEnabled = false;
+    private boolean local;
+    private boolean diposed = false;
 
     public AndroidMediaStream(MediaStream stream){
         this(stream, true, false);
     }
 
     public AndroidMediaStream(MediaStream stream, boolean autoPlay, boolean local) {
+        this.local = local;
         this.stream = stream;
             if(!local){
                 audioTrack = stream.audioTracks.get(0);
@@ -46,10 +49,14 @@ public class AndroidMediaStream implements WebRTCMediaStream {
 
     @Override
     public void close() {
-        stream.dispose();
+//        stream.dispose();
     }
 
     public MediaStream getStream() {
         return stream;
+    }
+
+    public boolean isLocal() {
+        return local;
     }
 }
