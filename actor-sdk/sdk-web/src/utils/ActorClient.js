@@ -156,6 +156,14 @@ export default {
     return window.messenger.doCall(uid);
   },
 
+  answerCall(id) {
+    window.messenger.answerCall(id)
+  },
+
+  endCall(id) {
+    window.messenger.endCall(id)
+  },
+
   getUser(uid) {
     return window.messenger.getUser(uid);
   },
