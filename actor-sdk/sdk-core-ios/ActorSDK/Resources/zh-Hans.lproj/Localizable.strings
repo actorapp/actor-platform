@@ -361,6 +361,10 @@
 
 "Placeholder_Group_Message" = "非常不幸，您不是群成员。";
 
+"Placeholder_Location_Title" = "启用位置";
+
+"Placeholder_Location_Message" = "请启用定位服务的设备设置分享你的位置。";
+
 /*
  * Auth
  */

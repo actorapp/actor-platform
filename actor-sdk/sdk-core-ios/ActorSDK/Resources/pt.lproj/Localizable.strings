@@ -363,6 +363,10 @@
 
 "Placeholder_Group_Message" = "Infelizmente você não é menro desse grupo.";
 
+"Placeholder_Location_Title" = "Ativar localização";
+
+"Placeholder_Location_Message" = "Ative os Serviços de Localização em configurações do dispositivo para partilhar a sua localização.";
+
 /*
  * Auth
  */

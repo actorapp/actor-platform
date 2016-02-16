@@ -387,6 +387,10 @@
 
 "Placeholder_Group_Message" = "Unfortunately, you are not a member of this group.";
 
+"Placeholder_Location_Title" = "Enable Location Services";
+
+"Placeholder_Location_Message" = "Please enable Location Services in device settings to share your location.";
+
 /*
  * Auth
  */
