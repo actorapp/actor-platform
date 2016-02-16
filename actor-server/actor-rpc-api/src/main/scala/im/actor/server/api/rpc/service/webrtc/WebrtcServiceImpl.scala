@@ -43,7 +43,7 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
 
   override def onFailure: PartialFunction[Throwable, RpcError] = {
     case WebrtcCallErrors.CallAlreadyStarted ⇒ WebrtcErrors.CallAlreadyStareted
-    case WebrtcCallErrors.CallNotStarted => WebrtcErrors.CallNotStarted
-    case WebrtcCallErrors.NotAParticipant => WebrtcErrors.NotAParticipant
+    case WebrtcCallErrors.CallNotStarted     ⇒ WebrtcErrors.CallNotStarted
+    case WebrtcCallErrors.NotAParticipant    ⇒ WebrtcErrors.NotAParticipant
   }
 }
