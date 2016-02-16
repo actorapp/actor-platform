@@ -70,6 +70,8 @@ public class AuthActivity extends BaseFragmentActivity {
         if (messenger().getAuthState() == AuthState.LOGGED_IN) {
             finish();
         }
+
+        updateState();
     }
 
     public void updateState() {
@@ -80,6 +82,12 @@ public class AuthActivity extends BaseFragmentActivity {
         if (this.state != null && this.state == state) {
             return;
         }
+
+        // if we show the next fragment when app is in background and not visible , app crashes!
+        // e.g when the GSM data is off and after trying to send code we go to settings to turn on, app is going invisible and ...
+        if (state != AuthState.LOGGED_IN && getIsResumed() == false)
+            return;
+
         this.state = state;
 
         switch (state) {
