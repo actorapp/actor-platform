@@ -9,7 +9,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 import scala.reflect.ClassTag
 import scalaz._, Scalaz._
 
-package object rpc extends {
+package object rpc extends PeersImplicits with HistoryImplicits {
 
   import slick.dbio.NoStream
 

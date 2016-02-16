@@ -6,6 +6,7 @@ import akka.cluster.sharding.ShardRegion.{ ExtractShardId, ExtractEntityId }
 import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding }
 import akka.util.Timeout
 import im.actor.config.ActorConfig
+import im.actor.server.model.Peer
 import im.actor.types._
 
 import scala.concurrent.Future
@@ -33,10 +34,10 @@ final class WebrtcExtension(system: ActorSystem) extends Extension {
     ClusterSharding(system)
       .start("WebrtcCall", WebrtcCallActor.props, ClusterShardingSettings(system), extractEntityId, extractShardId)
 
-  def doCall(callerUserId: Int, receiverUserId: Int, eventBusId: String): Future[Long] = {
+  def doCall(callerUserId: Int, peer: Peer, eventBusId: String): Future[Long] = {
     val callId = ThreadLocalRandom.current().nextLong()
 
-    region ? WebrtcCallEnvelope(callId, StartCall(callerUserId, receiverUserId, eventBusId)) map (_ ⇒ callId)
+    region ? WebrtcCallEnvelope(callId, StartCall(callerUserId, peer, eventBusId)) map (_ ⇒ callId)
   }
 
   def getInfo(callId: Long): Future[(String, UserId, Seq[UserId])] =
