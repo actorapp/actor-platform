@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import org.webrtc.DataChannel;
 import org.webrtc.IceCandidate;
+import org.webrtc.Logging;
 import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
@@ -12,19 +13,28 @@ import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
 
-import static im.actor.runtime.WebRTCRuntimeProvider.factory;
+import static im.actor.runtime.AndroidWebRTCRuntimeProvider.factory;
 
 public class AndroidPeerConnection implements WebRTCPeerConnection{
-    PeerConnection pc;
+    private static final boolean LIBJINGLE_LOGS = false;
     static ArrayList<PeerConnection.IceServer> iceServers;
 
     public AndroidPeerConnection() {
+        if (LIBJINGLE_LOGS) {
+            Logging.enableTracing(
+                    "logcat:",
+                    EnumSet.of(Logging.TraceLevel.TRACE_ALL),
+                    Logging.Severity.LS_SENSITIVE);
+
+        }
+        
         if(iceServers == null){
             iceServers = new ArrayList<PeerConnection.IceServer>();
             iceServers.add(new PeerConnection.IceServer("stun:62.4.22.219:3478"));
@@ -33,7 +43,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection{
 
         }
 
-        this.pc = factory().createPeerConnection(iceServers, new MediaConstraints(), new PeerConnection.Observer() {
+        this.peerConnection = factory().createPeerConnection(iceServers, new MediaConstraints(), new PeerConnection.Observer() {
             @Override
             public void onSignalingChange(PeerConnection.SignalingState signalingState) {
 
@@ -128,7 +138,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection{
         return new Promise<>(new PromiseFunc<WebRTCSessionDescription>() {
             @Override
             public void exec(@NotNull final PromiseResolver<WebRTCSessionDescription> resolver) {
-                peerConnection.setRemoteDescription(new SdpObserver() {
+                peerConnection.setLocalDescription(new SdpObserver() {
                     @Override
                     public void onCreateSuccess(SessionDescription sessionDescription) {
                         //we are just setting here
@@ -251,8 +261,10 @@ public class AndroidPeerConnection implements WebRTCPeerConnection{
     @Override
     public void close() {
         for (AndroidMediaStream m:streams.values()) {
-            peerConnection.removeStream(m.getStream());
-            m.close();
+            if(m.isLocal()){
+                peerConnection.removeStream(m.getStream());
+                m.getStream().dispose();
+            }
         }
         peerConnection.close();
         peerConnection.dispose();

@@ -160,7 +160,7 @@ public class CallFragment extends BaseFragment {
                         initIncoming();
                         break;
                     case CALLING_OUTGOING:
-                        onConnecting();
+//                        onConnecting();
                         break;
                 }
             }
@@ -237,7 +237,7 @@ public class CallFragment extends BaseFragment {
 
     private void onAnswer() {
 
-        onConnecting();
+//        onConnecting();
         answerContainer.setVisibility(View.INVISIBLE);
         if (ringtone != null) {
             ringtone.stop();
