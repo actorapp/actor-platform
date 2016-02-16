@@ -1,14 +1,12 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import SharedContainer from '../../utils/SharedContainer';
 import { appName } from '../../constants/ActorAppConstants';
-
 import classnames from 'classnames';
 
 import ConnectionStateStore from '../../stores/ConnectionStateStore';
@@ -39,12 +37,10 @@ class ConnectionState extends Component {
 
     return (
       <div className={className}>
-        <FormattedMessage message={this.getIntlMessage(`connectionState.${connectionState}`)} appName={this.appName}/>
+        <FormattedMessage id={`connectionState.${connectionState}`} values={{appName: this.appName}}/>
       </div>
     )
   }
 }
-
-ReactMixin.onClass(ConnectionState, IntlMixin);
 
 export default Container.create(ConnectionState, {pure: false});

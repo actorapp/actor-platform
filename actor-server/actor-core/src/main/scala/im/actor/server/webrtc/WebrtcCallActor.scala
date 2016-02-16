@@ -13,6 +13,7 @@ import im.actor.server.persist.webrtc.WebrtcCallRepo
 import im.actor.server.sequence.WeakUpdatesExtension
 import im.actor.types._
 
+import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
 sealed abstract class WebrtcCallError(message: String) extends RuntimeException(message)
@@ -54,6 +55,8 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
   private lazy val eventBusExt = EventBusExtension(context.system)
   private val db = DbExtension(context.system).db
 
+  private var scheduledUpd: Option[Cancellable] = None
+
   def receive = waitForStart
 
   def waitForStart: Receive = {
@@ -62,18 +65,20 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
 
       (for {
         _ ← db.run(WebrtcCallRepo.create(WebrtcCall(id, callerUserId, receiverUserId)))
-        _ ← weakUpdExt.broadcastUserWeakUpdate(receiverUserId, update, None, None)
         _ ← eventBusExt.subscribe(eventBusId, self)
-      } yield ()) pipeTo self
+      } yield context.system.scheduler.schedule(0.seconds, 5.seconds) {
+        weakUpdExt.broadcastUserWeakUpdate(receiverUserId, update, None, None)
+      }) pipeTo self
 
       becomeStashing(replyTo ⇒ {
-        case () ⇒
+        case schedUpd: Cancellable ⇒
+          this.scheduledUpd = Some(schedUpd)
           replyTo ! StartCallAck
           context become callInProgress(eventBusId, System.currentTimeMillis(), callerUserId, receiverUserId)
           unstashAll()
         case failure: Status.Failure ⇒
           replyTo forward failure
-          throw failure.cause
+          context stop self
       }, discardOld = true)
     case _ ⇒ sender() ! Status.Failure(WebrtcCallErrors.CallNotStarted)
   }
@@ -117,8 +122,10 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
       case EventBus.Message(_, userId, message) ⇒
         ApiWebRTCSignaling.parseFrom(message).right foreach {
           case ApiAnswerCall ⇒
+            scheduledUpd foreach (_.cancel())
             context become callInProgress(eventBusId, System.currentTimeMillis(), callerUserId, receiverUserId)
           case ApiEndCall ⇒
+            scheduledUpd foreach (_.cancel())
             withOrigin(userId)(_ ⇒ end())
           case _ ⇒
         }
@@ -126,6 +133,11 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
         sender() ! GetInfoAck(eventBusId, callerUserId, Seq(callerUserId, receiverUserId))
       case _: StartCall ⇒ sender() ! WebrtcCallErrors.CallAlreadyStarted
     }
+  }
+
+  override def postStop(): Unit = {
+    scheduledUpd foreach (_.cancel())
+    super.postStop()
   }
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {

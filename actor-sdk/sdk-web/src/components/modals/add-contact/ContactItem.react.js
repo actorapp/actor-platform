@@ -1,17 +1,14 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
-import addons from 'react/addons';
-import classnames from 'classnames';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import AvatarItem from '../../common/AvatarItem.react';
 
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
-
-const {addons: { PureRenderMixin }} = addons;
 
 class ContactItem extends Component {
   static propTypes = {

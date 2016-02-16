@@ -1,13 +1,12 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { assign, forEach } from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import classnames from 'classnames';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
+import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
+import classnames from 'classnames';
 
 import ActorClient from '../../utils/ActorClient';
 import Inputs from '../../utils/Inputs';
@@ -48,9 +47,9 @@ class ComposeSection extends Component {
     };
   }
 
-  //static contextTypes = {
-  //  isExperimental: PropTypes.bool
-  //};
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   constructor(props) {
     super(props);
@@ -146,7 +145,7 @@ class ComposeSection extends Component {
   };
 
   resetAttachmentForm = () => {
-    const form = React.findDOMNode(this.refs.attachmentForm);
+    const form = findDOMNode(this.refs.attachmentForm);
     form.reset();
   };
 
@@ -182,7 +181,7 @@ class ComposeSection extends Component {
   };
 
   getCaretPosition = () => {
-    const composeArea = React.findDOMNode(this.refs.area);
+    const composeArea = findDOMNode(this.refs.area);
     const selection = Inputs.getInputSelection(composeArea);
     return selection.start;
   };
@@ -193,11 +192,11 @@ class ComposeSection extends Component {
   };
 
   setFocus = () => {
-    React.findDOMNode(this.refs.area).focus();
+    findDOMNode(this.refs.area).focus();
   };
 
   setBlur = () => {
-    React.findDOMNode(this.refs.area).blur();
+    findDOMNode(this.refs.area).blur();
   };
 
   handleDrop = (files) => {
@@ -211,13 +210,13 @@ class ComposeSection extends Component {
   };
 
   handleAttachmentClick = () => {
-    const attachmentInputNode = React.findDOMNode(this.refs.attachment);
+    const attachmentInputNode = findDOMNode(this.refs.attachment);
     attachmentInputNode.setAttribute('multiple', true);
     attachmentInputNode.click();
   };
 
   handleComposeAttachmentChange = () => {
-    const attachmentInputNode = React.findDOMNode(this.refs.attachment);
+    const attachmentInputNode = findDOMNode(this.refs.attachment);
     let attachments = [];
 
     forEach(attachmentInputNode.files, (file) => attachments.push(file));
@@ -233,7 +232,7 @@ class ComposeSection extends Component {
 
   render() {
     const { text, profile, mentions, isMarkdownHintShow, isSendAttachmentOpen } = this.state;
-    const { isExperimental } = this.context;
+    const { intl } = this.context;
     const markdownHintClassName = classnames('compose__markdown-hint', {
       'compose__markdown-hint--active': isMarkdownHintShow
     });
@@ -249,11 +248,11 @@ class ComposeSection extends Component {
         <VoiceRecorder onFinish={this.sendVoiceRecord}/>
 
         <div className={markdownHintClassName}>
-          <b>*{this.getIntlMessage('compose.markdown.bold')}*</b>
+          <b>*{intl.messages['compose.markdown.bold']}*</b>
           &nbsp;&nbsp;
-          <i>_{this.getIntlMessage('compose.markdown.italic')}_</i>
+          <i>_{intl.messages['compose.markdown.italic']}_</i>
           &nbsp;&nbsp;
-          <code>```{this.getIntlMessage('compose.markdown.preformatted')}```</code>
+          <code>```{intl.messages['compose.markdown.preformatted']}```</code>
         </div>
 
         <AvatarItem className="my-avatar"
@@ -268,15 +267,15 @@ class ComposeSection extends Component {
                   value={text}
                   ref="area"/>
 
-        <DropZone onDropComplete={this.handleDrop}>{this.getIntlMessage('compose.dropzone')}</DropZone>
+        <DropZone onDropComplete={this.handleDrop}>{intl.messages['compose.dropzone']}</DropZone>
 
         <footer className="compose__footer row">
           <button className="button attachment" onClick={this.handleAttachmentClick}>
-            <i className="material-icons">attachment</i> {this.getIntlMessage('compose.attach')}
+            <i className="material-icons">attachment</i> {intl.messages['compose.attach']}
           </button>
           <span className="col-xs"/>
           <button className="button button--lightblue" onClick={this.sendTextMessage}>
-            {this.getIntlMessage('compose.send')}
+            {intl.messages['compose.send']}
           </button>
         </footer>
 
@@ -291,7 +290,5 @@ class ComposeSection extends Component {
     );
   }
 }
-
-ReactMixin.onClass(ComposeSection, IntlMixin);
 
 export default Container.create(ComposeSection, {pure: false});

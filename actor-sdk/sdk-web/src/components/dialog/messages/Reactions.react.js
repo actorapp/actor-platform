@@ -4,11 +4,9 @@
 
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
-import { addons } from 'react/addons';
+import CSSTransitionGroup from 'react-addons-css-transition-group';
 
 import MessageActionCreators from '../../../actions/MessageActionCreators';
-
-const { CSSTransitionGroup } = addons;
 
 class MessageReactions extends Component {
   constructor(props) {

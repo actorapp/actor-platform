@@ -19,7 +19,7 @@ class PubgroupsServiceImpl(
 ) extends PubgroupsService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  override def jhandleGetPublicGroups(clientData: ClientData): Future[HandlerResult[ResponseGetPublicGroups]] = {
+  override def doHandleGetPublicGroups(clientData: ClientData): Future[HandlerResult[ResponseGetPublicGroups]] = {
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
       for {
         groups ← GroupRepo.findPublic

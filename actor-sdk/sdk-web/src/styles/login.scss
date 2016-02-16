@@ -42,14 +42,12 @@
       box-sizing: border-box;
       width: 100%;
       padding: 0 70px;
+
+      color: $login-text-color;
       p {
         margin: 8px 0 0;
       }
-
-      color: $login-text-color;
       a {
-        //margin-left: 34px;
-
         text-decoration: none;
 
         color: $login-text-color;
@@ -85,42 +83,91 @@
       font-weight: 400;
     }
   }
-  &__form {
+  &__forms {
     position: relative;
 
     box-sizing: border-box;
     height: 100%;
     padding: 50px;
-    form {
-      span {
-        display: block;
-
-        margin-bottom: 20px;
-      }
-      footer {
-        margin-top: 20px;
-      }
-    }
     & > div {
       width: 100%;
       & > a {
-        color: white;
-        margin-top: 16px;
         font-size: 14px;
+
         display: inline-block;
-        text-decoration: none;
+
+        margin-top: 16px;
+
         cursor: pointer;
+        text-decoration: none;
+
+        color: white;
         border-bottom: 1px dotted white;
         &:hover {
           border-bottom: 1px solid white;
         }
       }
     }
-    footer {
+
+    &__form {
+      display: none;
+
+      text-align: center;
+
+      footer {
+        margin-top: 36px;
+      }
       .spinner {
         position: absolute;
         top: 8px;
         right: 10px;
+      }
+
+      &--request {
+        position: relative;
+        .wrong {
+          font-size: 14px;
+
+          position: absolute;
+          z-index: 1;
+          top: 22px;
+          right: 0;
+
+          display: none;
+
+          cursor: pointer;
+
+          color: white;
+        }
+      }
+      &--active {
+        display: block;
+      }
+      &--done {
+        display: block;
+
+        margin-bottom: 36px;
+        .wrong {
+          display: block;
+        }
+        footer {
+          display: none;
+        }
+      }
+
+      .input__material {
+        label {
+          color: rgba(white, .3);
+        }
+        input {
+          box-shadow: 0 1px 0 0 rgba(white, .15);
+        }
+
+        &--focus {
+          label {
+            color: rgba(white, .8) !important;
+          }
+        }
       }
     }
   }
@@ -276,48 +323,6 @@
       cursor: not-allowed;
 
       opacity: .7;
-    }
-  }
-  &__form {
-    display: none;
-
-    text-align: center;
-    &--request {
-      position: relative;
-      .wrong {
-        font-size: 14px;
-
-        position: absolute;
-        z-index: 1;
-        top: 41px;
-        right: 0;
-
-        display: none;
-
-        cursor: pointer;
-
-        color: white;
-      }
-    }
-    &--active {
-      display: block;
-    }
-    &--done {
-      display: block;
-      .wrong {
-        display: block;
-      }
-      footer {
-        display: none;
-      }
-    }
-
-    &__input {
-      box-sizing: border-box;
-      width: 100% !important;
-      hr {
-        transform-origin: left;
-      }
     }
   }
 }

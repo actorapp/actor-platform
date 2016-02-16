@@ -10,6 +10,7 @@ import java.util.List;
 
 import im.actor.core.api.ApiDialog;
 import im.actor.core.api.ApiDialogGroup;
+import im.actor.core.api.ApiEncryptedMessage;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiMessageContainer;
 import im.actor.core.api.ApiMessageReaction;
@@ -27,6 +28,7 @@ import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.EncryptedMsgActor;
 import im.actor.core.modules.internal.messages.ArchivedDialogsActor;
 import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.core.modules.internal.messages.ConversationHistoryActor;
@@ -38,6 +40,7 @@ import im.actor.core.modules.internal.messages.OwnReadActor;
 import im.actor.core.modules.internal.messages.SenderActor;
 import im.actor.core.modules.internal.messages.entity.DialogHistory;
 import im.actor.core.modules.internal.messages.entity.EntityConverter;
+import im.actor.core.modules.updates.internal.ArchivedDialogLoaded;
 import im.actor.runtime.annotations.Verified;
 
 import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
@@ -286,21 +289,14 @@ public class MessagesProcessor extends AbsModule {
 
     @Verified
     public void onDialogsLoaded(ResponseLoadDialogs dialogsResponse) {
+
         // Should we eliminate DialogHistory?
-        dialogsLoaded(dialogsResponse.getDialogs(), false, null);
-    }
 
-    @Verified
-    public void onArchivedDialogsLoaded(ResponseLoadArchived dialogsResponse) {
-        dialogsLoaded(dialogsResponse.getDialogs(), true, dialogsResponse.getNextOffset());
-    }
-
-    public void dialogsLoaded(List<ApiDialog> apiDialogs, boolean archived, byte[] nextOffset) {
         ArrayList<DialogHistory> dialogs = new ArrayList<DialogHistory>();
 
         long maxLoadedDate = Long.MAX_VALUE;
 
-        for (ApiDialog dialog : apiDialogs) {
+        for (ApiDialog dialog : dialogsResponse.getDialogs()) {
 
             maxLoadedDate = Math.min(dialog.getSortDate(), maxLoadedDate);
 
@@ -323,19 +319,14 @@ public class MessagesProcessor extends AbsModule {
 
         // Sending updates to dialogs actor
         if (dialogs.size() > 0) {
-            dialogsActor().send(new DialogsActor.HistoryLoaded(dialogs, archived));
-        } else if(!archived){
+            dialogsActor().send(new DialogsActor.HistoryLoaded(dialogs));
+        } else {
             context().getAppStateModule().onDialogsLoaded();
         }
 
         // Sending notification to history actor
-        if(!archived){
-            dialogsHistoryActor().send(new DialogsHistoryActor.LoadedMore(apiDialogs.size(),
-                    maxLoadedDate));
-        }else{
-            archivedDialogsActor().send(new ArchivedDialogsActor.LoadedMore(apiDialogs.size(),
-                    nextOffset));
-        }
+        dialogsHistoryActor().send(new DialogsHistoryActor.LoadedMore(dialogsResponse.getDialogs().size(),
+                maxLoadedDate));
     }
 
     @Verified
@@ -394,5 +385,9 @@ public class MessagesProcessor extends AbsModule {
     public void onChatGroupsChanged(List<ApiDialogGroup> groups) {
         context().getMessagesModule().getDialogsGroupedActor()
                 .send(new GroupedDialogsActor.GroupedDialogsChanged(groups));
+    }
+
+    public void onArchivedDialogsLoaded(ResponseLoadArchived responseLoadArchived) {
+        archivedDialogsActor().send(new ArchivedDialogsActor.LoadedMore(responseLoadArchived));
     }
 }

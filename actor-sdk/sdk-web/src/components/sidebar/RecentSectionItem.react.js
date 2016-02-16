@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
-import classNames from 'classnames';
+import classnames from 'classnames';
 
 import PeerUtils from '../../utils/PeerUtils';
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
@@ -31,7 +31,7 @@ class RecentSectionItem extends Component {
 
     const isActive = selectedPeer && PeerUtils.equals(dialog.peer.peer, selectedPeer);
 
-    const recentClassName = classNames('sidebar__list__item', 'row', {
+    const recentClassName = classnames('sidebar__list__item', 'row', {
       'sidebar__list__item--active': isActive,
       'sidebar__list__item--unread': dialog.counter > 0
     });

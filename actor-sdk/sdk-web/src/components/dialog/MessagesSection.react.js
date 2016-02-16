@@ -6,9 +6,7 @@ import { forEach, map, debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import ActorClient from '../../utils/ActorClient';
 import Scrollbar from '../common/Scrollbar.react';
-import { MessageContentTypes, PeerTypes } from '../../constants/ActorAppConstants';
 
 import MessageActionCreators from '../../actions/MessageActionCreators';
 

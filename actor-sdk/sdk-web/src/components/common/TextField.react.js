@@ -1,22 +1,27 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
+
 import classnames from 'classnames';
 
 class TextField extends Component {
   static propTypes = {
-    className: React.PropTypes.string,
-    floatingLabel: React.PropTypes.string,
-    type: React.PropTypes.string,
-    value: React.PropTypes.string,
-    ref: React.PropTypes.string,
-    disabled: React.PropTypes.bool,
+    className: PropTypes.string,
+    floatingLabel: PropTypes.oneOfType([
+      PropTypes.node,
+      PropTypes.string
+    ]),
+    type: PropTypes.string,
+    value: PropTypes.string,
+    ref: PropTypes.string,
+    disabled: PropTypes.bool,
 
-    onChange: React.PropTypes.func,
-    onFocus: React.PropTypes.func,
-    onBlur: React.PropTypes.func
+    onChange: PropTypes.func,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.func
   };
 
   constructor(props) {
@@ -64,7 +69,7 @@ class TextField extends Component {
   focus = () => {
     const { ref } = this.props;
     setTimeout(() => {
-      React.findDOMNode(ref ? ref : this.refs.input).focus();
+      findDOMNode(ref ? ref : this.refs.input).focus();
     }, 0);
   };
 

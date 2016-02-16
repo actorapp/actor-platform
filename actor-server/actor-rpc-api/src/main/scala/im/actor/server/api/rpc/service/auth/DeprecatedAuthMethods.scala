@@ -12,7 +12,7 @@ trait DeprecatedAuthMethods {
   private val deprecationException = new scala.RuntimeException("Deprecated method")
 
   @deprecated("schema api changes", "2015-06-09")
-  override def jhandleSendAuthCodeObsolete(
+  override def doHandleSendAuthCodeObsolete(
     rawPhoneNumber: Long,
     appId:          Int,
     apiKey:         String,
@@ -20,7 +20,7 @@ trait DeprecatedAuthMethods {
   ): Future[HandlerResult[ResponseSendAuthCodeObsolete]] = Future.failed(deprecationException)
 
   @deprecated("schema api changes", "2015-06-09")
-  override def jhandleSendAuthCallObsolete(
+  override def doHandleSendAuthCallObsolete(
     phoneNumber: Long,
     smsHash:     String,
     appId:       Int,
@@ -29,7 +29,7 @@ trait DeprecatedAuthMethods {
   ): Future[HandlerResult[ResponseVoid]] = Future.failed(deprecationException)
 
   @deprecated("schema api changes", "2015-06-09")
-  override def jhandleSignInObsolete(
+  override def doHandleSignInObsolete(
     rawPhoneNumber: Long,
     smsHash:        String,
     smsCode:        String,
@@ -41,7 +41,7 @@ trait DeprecatedAuthMethods {
   ): Future[HandlerResult[ResponseAuth]] = Future.failed(deprecationException)
 
   @deprecated("schema api changes", "2015-06-09")
-  override def jhandleSignUpObsolete(
+  override def doHandleSignUpObsolete(
     rawPhoneNumber: Long,
     smsHash:        String,
     smsCode:        String,

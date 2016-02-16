@@ -1,9 +1,10 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { forEach } from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import { KeyCodes } from '../../constants/ActorAppConstants';
@@ -82,7 +83,7 @@ class EmojiDropdown extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     const { isOpen } = nextState;
-    const emojiDropdown = React.findDOMNode(this.refs.emojiDropdown);
+    const emojiDropdown = findDOMNode(this.refs.emojiDropdown);
 
     if (isOpen) {
       emojiDropdown.addEventListener('mouseenter', this.handleEmojiMouseEnter, false);
@@ -112,7 +113,7 @@ class EmojiDropdown extends Component {
     event.stopPropagation();
     event.preventDefault();
     if (!event.target.className.includes('emoji-dropdown__header__tabs__tab')) {
-      const emojiDropdown = React.findDOMNode(this.refs.emojiDropdown);
+      const emojiDropdown = findDOMNode(this.refs.emojiDropdown);
       const emojiRect = emojiDropdown.getBoundingClientRect();
       const coords = {
         x: event.pageX || event.clientX,

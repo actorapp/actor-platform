@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component, PropTypes } from 'react';
@@ -17,12 +17,7 @@ class SidebarSection extends Component {
     delegate: PropTypes.object
   };
 
-  static propTypes = {
-    selectedPeer: PropTypes.object.isRequired
-  };
-
   render() {
-    const { selectedPeer } = this.props;
     const { delegate } = this.context;
 
     let HeaderSection, RecentSection, FooterSection;
@@ -39,7 +34,7 @@ class SidebarSection extends Component {
     return (
       <aside className="sidebar">
         <HeaderSection/>
-        <RecentSection selectedPeer={selectedPeer}/>
+        <RecentSection/>
         <FooterSection/>
       </aside>
     );

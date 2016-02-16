@@ -1,14 +1,12 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
 import Modal from 'react-modal';
-import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
 
-import ActorClient from '../../utils/ActorClient';
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import MyProfileActions from '../../actions/MyProfileActionCreators';
@@ -43,6 +41,10 @@ class MyProfile extends Component {
       isCropModalOpen: CropAvatarStore.isOpen()
     };
   }
+
+  static contextTypes = {
+    intl: PropTypes.object
+  };
 
   componentWillMount() {
     const { name, nick, about } = this.state;
@@ -100,8 +102,8 @@ class MyProfile extends Component {
   };
 
   onProfilePictureInputChange = () => {
-    const imageInput = React.findDOMNode(this.refs.imageInput);
-    const imageForm = React.findDOMNode(this.refs.imageForm);
+    const imageInput = findDOMNode(this.refs.imageInput);
+    const imageForm = findDOMNode(this.refs.imageForm);
     const file = imageInput.files[0];
 
     let reader = new FileReader();
@@ -113,7 +115,7 @@ class MyProfile extends Component {
   };
 
   handleChangeAvatarClick = () => {
-    const imageInput = React.findDOMNode(this.refs.imageInput);
+    const imageInput = findDOMNode(this.refs.imageInput);
     imageInput.click()
   };
 
@@ -123,25 +125,43 @@ class MyProfile extends Component {
 
   render() {
     const { isOpen, isCropModalOpen, profile, nick, name, about } = this.state;
+    const { intl } = this.context;
     const isProfileChanged = this.isProfileChanged();
 
     const cropAvatar = isCropModalOpen ? <CropAvatarModal onCropFinish={this.changeMyAvatar}/> : null;
+
+    const modalStyle = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null,
+        width: 440
+      }
+    };
 
     if (profile !== null && isOpen) {
       return (
         <Modal className="modal-new modal-new--profile"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 440}}>
+               style={modalStyle}>
 
           <header className="modal-new__header">
             <a className="modal-new__header__icon material-icons">person</a>
-            <h3 className="modal-new__header__title">{this.getIntlMessage('modal.profile.title')}</h3>
+            <h3 className="modal-new__header__title">{intl.messages['modal.profile.title']}</h3>
             <div className="pull-right">
               {
                 isProfileChanged
-                  ? <button className="button button--lightblue" onClick={this.handleSave}>{this.getIntlMessage('button.save')}</button>
-                  : <button className="button" onClick={this.handleClose}>{this.getIntlMessage('button.close')}</button>
+                  ? <button className="button button--lightblue" onClick={this.handleSave}>{intl.messages['button.save']}</button>
+                  : <button className="button" onClick={this.handleClose}>{intl.messages['button.close']}</button>
               }
             </div>
           </header>
@@ -149,14 +169,14 @@ class MyProfile extends Component {
             <div className="col-xs">
               <div className="name">
                 <TextField className="input__material--wide"
-                           floatingLabel={this.getIntlMessage('modal.profile.name')}
+                           floatingLabel={intl.messages['modal.profile.name']}
                            onChange={this.handleNameChange}
                            type="text"
                            value={name}/>
               </div>
               <div className="nick">
                 <TextField className="input__material--wide"
-                           floatingLabel={this.getIntlMessage('modal.profile.nick')}
+                           floatingLabel={intl.messages['modal.profile.nick']}
                            onChange={this.handleNicknameChange}
                            type="text"
                            value={nick}/>
@@ -165,7 +185,7 @@ class MyProfile extends Component {
                 profile.phones[0]
                   ? <div className="phone">
                       <TextField className="input__material--wide"
-                                 floatingLabel={this.getIntlMessage('modal.profile.phone')}
+                                 floatingLabel={intl.messages['modal.profile.phone']}
                                  disabled
                                  type="tel"
                                  value={(profile.phones[0] || {}).number}/>
@@ -176,7 +196,7 @@ class MyProfile extends Component {
                 profile.emails[0]
                   ? <div className="phone">
                       <TextField className="input__material--wide"
-                                 floatingLabel={this.getIntlMessage('modal.profile.email')}
+                                 floatingLabel={intl.messages['modal.profile.email']}
                                  disabled
                                  type="email"
                                  value={(profile.emails[0] || {}).email}/>
@@ -184,7 +204,7 @@ class MyProfile extends Component {
                   : null
               }
               <div className="about">
-                <label htmlFor="about">{this.getIntlMessage('modal.profile.about')}</label>
+                <label htmlFor="about">{intl.messages['modal.profile.about']}</label>
                 <textarea className="textarea"
                           id="about"
                           onChange={this.handleAboutChange}
@@ -198,13 +218,13 @@ class MyProfile extends Component {
                             size="big"
                             title={profile.name}/>
                 <a onClick={this.handleChangeAvatarClick}>
-                  <span>{this.getIntlMessage('modal.profile.avatarChange')}</span>
+                  <span>{intl.messages['modal.profile.avatarChange']}</span>
                 </a>
               </div>
               {
                 profile.bigAvatar
                   ? <div className="profile-picture__controls">
-                      <a onClick={this.onProfilePictureRemove}>{this.getIntlMessage('modal.profile.avatarRemove')}</a>
+                      <a onClick={this.onProfilePictureRemove}>{intl.messages['modal.profile.avatarRemove']}</a>
                     </div>
                   : null
               }
@@ -222,7 +242,5 @@ class MyProfile extends Component {
     }
   }
 }
-
-ReactMixin.onClass(MyProfile, IntlMixin);
 
 export default Container.create(MyProfile, {pure: false});

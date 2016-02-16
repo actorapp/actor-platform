@@ -1,11 +1,10 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import FaviconStore from '../../stores/FaviconStore';
-import FaviconActionCreators from '../../actions/FaviconActionCreators';
 
 class Favicon extends Component {
   constructor(props) {
