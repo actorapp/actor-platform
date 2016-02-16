@@ -20,6 +20,11 @@ public class CocoaAssetsProxyProvider implements AssetsRuntime {
         return assetsRuntime.loadAsset(name);
     }
 
+    @Override
+    public byte[] loadBinAsset(String name) {
+        return assetsRuntime.loadBinAsset(name);
+    }
+
 //    @Override
 //    public native boolean hasAsset(String name)/*-[
 //        NSBundle *mainBundle = [NSBundle mainBundle];

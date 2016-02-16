@@ -6,7 +6,7 @@ import Foundation
 
 class CocoaAssetsRuntime: NSObject, ARAssetsRuntime {
 
-    @objc func hasAssetWithNSString(name: String!) -> jboolean {
+    func hasAssetWithNSString(name: String!) -> jboolean {
         if NSBundle.mainBundle().pathForResource(name, ofType: nil) != nil {
             return true
         }
@@ -16,7 +16,7 @@ class CocoaAssetsRuntime: NSObject, ARAssetsRuntime {
         return false
     }
     
-    @objc func loadAssetWithNSString(name: String!) -> String! {
+    func loadAssetWithNSString(name: String!) -> String! {
         var path: String?
         path = NSBundle.mainBundle().pathForResource(name, ofType: nil)
         if path != nil {
@@ -36,6 +36,25 @@ class CocoaAssetsRuntime: NSObject, ARAssetsRuntime {
             }
         }
         
-        fatalError("Unable to find resource \(name)")
+        return nil
+    }
+    
+    func loadBinAssetWithNSString(name: String!) -> IOSByteArray! {
+        var path: String?
+        path = NSBundle.mainBundle().pathForResource(name, ofType: nil)
+        if path != nil {
+            if let data = NSData(contentsOfFile: path!) {
+                return data.toJavaBytes()
+            }
+        }
+        
+        path = NSBundle.framework.pathForResource(name, ofType: nil)
+        if path != nil {
+            if let data = NSData(contentsOfFile: path!) {
+                return data.toJavaBytes()
+            }
+        }
+        
+        return nil
     }
 }

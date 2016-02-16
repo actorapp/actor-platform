@@ -4,4 +4,6 @@ public interface AssetsRuntime {
     boolean hasAsset(String name);
 
     String loadAsset(String name);
+
+    byte[] loadBinAsset(String name);
 }
