@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import im.actor.core.entity.Avatar;
-import im.actor.core.entity.CallState;
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
@@ -34,14 +33,15 @@ import im.actor.core.js.entity.JsGroup;
 import im.actor.core.js.entity.JsMessage;
 import im.actor.core.js.entity.JsOnlineGroup;
 import im.actor.core.js.entity.JsOnlineUser;
-import im.actor.core.js.entity.JsPeerInfo;
 import im.actor.core.js.entity.JsSearchEntity;
 import im.actor.core.js.entity.JsTyping;
 import im.actor.core.js.entity.JsUser;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Modules;
 import im.actor.core.viewmodel.AppStateVM;
-import im.actor.core.viewmodel.CallModel;
+import im.actor.core.viewmodel.CallMember;
+import im.actor.core.viewmodel.CallState;
+import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.DialogGroup;
 import im.actor.core.viewmodel.DialogSmall;
 import im.actor.core.viewmodel.GroupTypingVM;
@@ -57,8 +57,8 @@ import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 
 public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
+
     private JsMessenger messenger;
-    private JsFilesModule filesModule;
 
     private HashMap<Integer, JsBindedValue<JsUser>> users = new HashMap<>();
     private HashMap<Integer, JsBindedValue<JsGroup>> groups = new HashMap<>();
@@ -85,10 +85,8 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     public JsBindingModule(JsMessenger messenger, JsFilesModule filesModule, Modules modules) {
         super(modules);
 
-        this.filesModule = filesModule;
         this.messenger = messenger;
-        this.filesModule.registerListener(this);
-
+        filesModule.registerListener(this);
     }
 
     public void broadcastEvent(String tag, JavaScriptObject obj) {
@@ -111,7 +109,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
         if (dialogsGroupedList == null) {
             ValueModel<ArrayList<DialogGroup>> dialogGroups =
                     context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel();
-            dialogsGroupedList = new JsBindedValue<JsArray<JsDialogGroup>>();
+            dialogsGroupedList = new JsBindedValue<>();
             dialogGroups.subscribe(new ValueChangedListener<ArrayList<DialogGroup>>() {
                 @Override
                 public void onChanged(ArrayList<DialogGroup> val, Value<ArrayList<DialogGroup>> valueModel) {
@@ -139,7 +137,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
         if (onlineState == null) {
 
             final AppStateVM vm = context().getAppStateModule().getAppStateVM();
-            onlineState = new JsBindedValue<String>("online");
+            onlineState = new JsBindedValue<>("online");
 
             vm.getIsConnecting().subscribe(new ValueChangedListener<Boolean>() {
                 @Override
@@ -177,7 +175,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     public JsBindedValue<JsUser> getUser(int uid) {
         if (!users.containsKey(uid)) {
             final UserVM userVM = context().getUsersModule().getUsers().get(uid);
-            final JsBindedValue<JsUser> value = new JsBindedValue<JsUser>(JsUser.fromUserVM(userVM, messenger));
+            final JsBindedValue<JsUser> value = new JsBindedValue<>(JsUser.fromUserVM(userVM, messenger));
 
             // Bind updates
             userVM.subscribe(new ModelChangedListener<UserVM>() {
@@ -202,7 +200,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     public JsBindedValue<JsOnlineUser> getUserOnline(int uid) {
         if (!usersOnlines.containsKey(uid)) {
-            final JsBindedValue<JsOnlineUser> value = new JsBindedValue<JsOnlineUser>();
+            final JsBindedValue<JsOnlineUser> value = new JsBindedValue<>();
             final UserVM userVM = context().getUsersModule().getUsers().get(uid);
 
             userVM.getPresence().subscribe(new ValueChangedListener<UserPresence>() {
@@ -228,7 +226,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     public JsBindedValue<JsGroup> getGroup(int gid) {
         if (!groups.containsKey(gid)) {
             final GroupVM groupVM = context().getGroupsModule().getGroupsCollection().get(gid);
-            final JsBindedValue<JsGroup> value = new JsBindedValue<JsGroup>(JsGroup.fromGroupVM(groupVM, messenger));
+            final JsBindedValue<JsGroup> value = new JsBindedValue<>(JsGroup.fromGroupVM(groupVM, messenger));
 
             // Bind updates
             groupVM.subscribe(new ModelChangedListener<GroupVM>() {
@@ -245,7 +243,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     public JsBindedValue<JsOnlineGroup> getGroupOnline(int gid) {
         if (!groupOnlines.containsKey(gid)) {
-            final JsBindedValue<JsOnlineGroup> value = new JsBindedValue<JsOnlineGroup>();
+            final JsBindedValue<JsOnlineGroup> value = new JsBindedValue<>();
             final GroupVM groupVM = context().getGroupsModule().getGroupsCollection().get(gid);
             groupVM.getPresence().subscribe(new ValueChangedListener<Integer>() {
                 @Override
@@ -272,7 +270,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     public JsBindedValue<JsCall> getCall(String id) {
         if (!calls.containsKey(id)) {
-            final CallModel callModel = messenger.getCall(Long.parseLong(id));
+            final CallVM callModel = messenger.getCall(Long.parseLong(id));
             final JsBindedValue<JsCall> jsCall = new JsBindedValue<>(JsCall.create(messenger, callModel));
             callModel.getState().subscribe(new ValueChangedListener<CallState>() {
                 @Override
@@ -280,15 +278,9 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                     jsCall.changeValue(JsCall.create(messenger, callModel));
                 }
             });
-            callModel.getActiveMembers().subscribe(new ValueChangedListener<ArrayList<Integer>>() {
+            callModel.getMembers().subscribe(new ValueChangedListener<ArrayList<CallMember>>() {
                 @Override
-                public void onChanged(ArrayList<Integer> val, Value<ArrayList<Integer>> valueModel) {
-                    jsCall.changeValue(JsCall.create(messenger, callModel));
-                }
-            });
-            callModel.getCallStarted().subscribe(new ValueChangedListener<Long>() {
-                @Override
-                public void onChanged(Long val, Value<Long> valueModel) {
+                public void onChanged(ArrayList<CallMember> val, Value<ArrayList<CallMember>> valueModel) {
                     jsCall.changeValue(JsCall.create(messenger, callModel));
                 }
             });
@@ -302,7 +294,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             if (peer.getPeerType() == PeerType.PRIVATE) {
                 UserTypingVM userTypingVM = context().getTypingModule().getTyping(peer.getPeerId());
 
-                final JsBindedValue<JsTyping> value = new JsBindedValue<JsTyping>();
+                final JsBindedValue<JsTyping> value = new JsBindedValue<>();
                 userTypingVM.getTyping().subscribe(new ValueChangedListener<Boolean>() {
                     @Override
                     public void onChanged(Boolean val, Value<Boolean> valueModel) {
@@ -316,7 +308,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                 typing.put(peer, value);
             } else if (peer.getPeerType() == PeerType.GROUP) {
                 GroupTypingVM groupTypingVM = context().getTypingModule().getGroupTyping(peer.getPeerId());
-                final JsBindedValue<JsTyping> value = new JsBindedValue<JsTyping>();
+                final JsBindedValue<JsTyping> value = new JsBindedValue<>();
                 groupTypingVM.getActive().subscribe(new ValueChangedListener<int[]>() {
                     @Override
                     public void onChanged(int[] val, Value<int[]> valueModel) {
@@ -385,7 +377,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     public JsBindedValue<JsCounter> getGlobalCounter() {
         if (globalCounter == null) {
             ValueModel<Integer> counter = context().getAppStateModule().getAppStateVM().getGlobalCounter();
-            globalCounter = new JsBindedValue<JsCounter>(JsCounter.create(counter.get()));
+            globalCounter = new JsBindedValue<>(JsCounter.create(counter.get()));
             counter.subscribe(new ValueChangedListener<Integer>() {
                 @Override
                 public void onChanged(Integer val, Value<Integer> valueModel) {
@@ -399,7 +391,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     public JsBindedValue<JsCounter> getTempGlobalCounter() {
         if (tempGlobalCounter == null) {
             ValueModel<Integer> counter = context().getAppStateModule().getAppStateVM().getGlobalTempCounter();
-            tempGlobalCounter = new JsBindedValue<JsCounter>(JsCounter.create(counter.get()));
+            tempGlobalCounter = new JsBindedValue<>(JsCounter.create(counter.get()));
             counter.subscribe(new ValueChangedListener<Integer>() {
                 @Override
                 public void onChanged(Integer val, Value<Integer> valueModel) {

@@ -441,12 +441,6 @@ public class JsFacade implements Exportable {
         return new JsMessagesBind(callback, messenger.getSharedChatList(peerC), messenger.getConversationVM(peerC));
     }
 
-    public void onMessageShown(JsPeer peer, JsMessage message) {
-        if (message.isOnServer()) {
-            messenger.onMessageShown(peer.convert(), Long.parseLong(message.getSortKey()));
-        }
-    }
-
     public void deleteMessage(JsPeer peer, String id) {
         messenger.deleteMessages(peer.convert(), new long[]{Long.parseLong(id)});
     }

@@ -8,10 +8,11 @@ import im.actor.core.api.ApiSwitchMaster;
 import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.ResponseDoCall;
-import im.actor.core.entity.CallState;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.function.Consumer;
 
 public class CallMasterActor extends CallActor {
@@ -19,8 +20,10 @@ public class CallMasterActor extends CallActor {
     private static final String TAG = "CallMasterActor";
 
     private final Peer peer;
+    private ActorRef callManager;
     private CommandCallback<Long> callback;
     private ArrayList<ConnectedHolder> connectedDevices = new ArrayList<>();
+    private CallVM callVM;
 
     public CallMasterActor(Peer peer, ModuleContext context, CommandCallback<Long> callback) {
         super(context);
@@ -31,6 +34,7 @@ public class CallMasterActor extends CallActor {
     @Override
     public void preStart() {
         super.preStart();
+        callManager = context().getCallsModule().getCallManager();
         createBus();
     }
 
@@ -39,12 +43,8 @@ public class CallMasterActor extends CallActor {
         api(new RequestDoCall(buidOutPeer(peer), getBusId())).then(new Consumer<ResponseDoCall>() {
             @Override
             public void apply(ResponseDoCall responseDoCall) {
-                context().getCallsModule().getCallManager().send(
-                        new CallManagerActor.OnCallCreated(responseDoCall.getCallId()), self());
-                // TODO: Move to call actor
-                context().getCallsModule().spawnNewModel(responseDoCall.getCallId(),
-                        peer, new ArrayList<Integer>(), CallState.CALLING_OUTGOING);
-
+                callVM = spanNewOutgoingVM(responseDoCall.getCallId(), peer);
+                callManager.send(new CallManagerActor.DoCallComplete(responseDoCall.getCallId()), self());
                 callback.onResult(responseDoCall.getCallId());
                 callback = null;
             }

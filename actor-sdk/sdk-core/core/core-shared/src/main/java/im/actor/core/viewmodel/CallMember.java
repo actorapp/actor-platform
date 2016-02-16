@@ -1,7 +1,24 @@
 package im.actor.core.viewmodel;
 
-import im.actor.core.entity.CallState;
+import com.google.j2objc.annotations.Property;
 
 public class CallMember {
-    private CallState state;
+
+    @Property("nonatomic, readonly")
+    private int uid;
+    @Property("nonatomic, readonly")
+    private CallMemberState state;
+
+    public CallMember(int uid, CallMemberState state) {
+        this.uid = uid;
+        this.state = state;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public CallMemberState getState() {
+        return state;
+    }
 }

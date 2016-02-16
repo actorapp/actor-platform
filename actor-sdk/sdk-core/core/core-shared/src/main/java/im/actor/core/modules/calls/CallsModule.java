@@ -1,18 +1,14 @@
 package im.actor.core.modules.calls;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import im.actor.core.entity.CallState;
 import im.actor.core.entity.Peer;
-import im.actor.core.viewmodel.CallModel;
+import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.providers.CallsProvider;
-import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.Command;
-import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorRef;
 
 import static im.actor.runtime.actors.ActorSystem.system;
@@ -23,7 +19,7 @@ public class CallsModule extends AbsModule {
 
     private CallsProvider provider;
     private ActorRef callManager;
-    private HashMap<Long, CallModel> callModels = new HashMap<>();
+    private HashMap<Long, CallVM> callModels = new HashMap<>();
 
     public CallsModule(ModuleContext context) {
         super(context);
@@ -39,11 +35,11 @@ public class CallsModule extends AbsModule {
         callManager = system().actorOf("calls/manager", CallManagerActor.CONSTRUCTOR(context()));
     }
 
-    public void spawnNewModel(long id, Peer peer, ArrayList<Integer> activeMembers, CallState state) {
-        callModels.put(id, new CallModel(id, peer, activeMembers, state));
+    public HashMap<Long, CallVM> getCallModels() {
+        return callModels;
     }
 
-    public CallModel getCall(long id) {
+    public CallVM getCall(long id) {
         return callModels.get(id);
     }
 
