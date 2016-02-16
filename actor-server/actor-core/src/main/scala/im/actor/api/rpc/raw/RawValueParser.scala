@@ -8,13 +8,14 @@ trait RawValueParser[A] {
   def parse(raw: ApiRawValue): Option[A]
 }
 
-// target parsing type is ApiArrayValue
-// todo: add nesting
-object RawValueParser {
+object RawValueParser extends RawValueParserTypeclassInstances {
   def apply[T: RawValueParser]: RawValueParser[T] = implicitly[RawValueParser[T]]
 
   def parse[A: RawValueParser](raw: ApiRawValue): Option[A] = RawValueParser[A].parse(raw)
+}
 
+// todo: add nesting
+trait RawValueParserTypeclassInstances {
   import shapeless._
 
   implicit val booleanParser = new RawValueParser[Boolean] {
