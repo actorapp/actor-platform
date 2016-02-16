@@ -121,8 +121,7 @@ public class AAGroupViewController: AAContentTableController {
             // Header: Change title
             s.action("Do Call") { (r) -> () in
                 r.selectAction = { () -> Bool in
-                    
-                    // self.execute(Actor.doCallWithUid(jint(self.uid)))
+                    self.execute(Actor.doCallWithGid(jint(self.gid)))
                     return true
                 }
             }
