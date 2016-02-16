@@ -13,7 +13,6 @@ import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.session.SessionRegion
-import im.actor.tls.TlsContext
 
 sealed trait EndpointType
 
@@ -74,24 +73,12 @@ object Frontend {
     mat:           Materializer
   ): Unit = {
     val serverKeys = ServerKey.loadKeysFromConfig(serverConfig).get
-    val kssConfig = serverConfig.getConfig("tls.keystores")
 
     endpoint match {
       case Endpoint(Tcp, host, port, keystore) ⇒
-        val tlsContext = keystore map (TlsContext.load(kssConfig, _)) map {
-          case Left(err)  ⇒ throw err
-          case Right(ctx) ⇒ ctx
-        }
-
-        TcpFrontend.start(host, port, serverKeys, tlsContext)
-
+        TcpFrontend.start(host, port, serverKeys)
       case Endpoint(WebSocket, host, port, keystore) ⇒
-        val tlsContext = keystore map (TlsContext.load(kssConfig, _)) map {
-          case Left(err)  ⇒ throw err
-          case Right(ctx) ⇒ ctx
-        }
-
-        WsFrontend.start(host, port, serverKeys, tlsContext)
+        WsFrontend.start(host, port, serverKeys)
     }
   }
 }
