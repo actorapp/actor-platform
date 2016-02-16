@@ -107,7 +107,7 @@ final class HttpApiFrontendSpec
 
     val resourcesPath = Paths.get(getClass.getResource("/files").toURI).toFile.getCanonicalPath
     val config = HttpApiConfig("127.0.0.1", 9090, "http://localhost:9090", resourcesPath, None)
-    HttpApiFrontend.start(config, tlsContext = None)
+    HttpApiFrontend.start(config)
 
     val http = Http()
 
