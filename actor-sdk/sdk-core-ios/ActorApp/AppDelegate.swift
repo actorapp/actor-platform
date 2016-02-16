@@ -15,7 +15,7 @@ import ActorSDK
         
         // Even when Fabric/Crashlytics not configured
         // this method doesn't crash
-        Fabric.with([Crashlytics.self()])
+        // Fabric.with([Crashlytics.self()])
         
         ActorSDK.sharedActor().inviteUrlHost = "quit.email"
         ActorSDK.sharedActor().inviteUrlScheme = "actor"

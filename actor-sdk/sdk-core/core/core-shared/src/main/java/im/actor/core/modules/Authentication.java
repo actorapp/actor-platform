@@ -102,15 +102,6 @@ public class Authentication {
         if (modules.getPreferences().getBool(KEY_AUTH, false)) {
             state = AuthState.LOGGED_IN;
             modules.onLoggedIn();
-
-            // Notify ActorAnalytics
-            User user = modules.getUsersModule().getUsersStorage().getValue(myUid);
-            ArrayList<Long> records = new ArrayList<Long>();
-            for (ContactRecord contactRecord : user.getRecords()) {
-                if (contactRecord.getRecordType() == ContactRecordType.PHONE) {
-                    records.add(Long.parseLong(contactRecord.getRecordData()));
-                }
-            }
         } else {
             state = AuthState.AUTH_START;
         }

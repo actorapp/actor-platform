@@ -7,6 +7,8 @@ import j2objc
 
 public extension String {
     
+    public var isEmpty: Bool { return self.characters.isEmpty }
+    
     public var length: Int { return self.characters.count }
     
     public func trim() -> String {
