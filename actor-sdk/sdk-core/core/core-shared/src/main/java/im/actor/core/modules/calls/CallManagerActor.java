@@ -142,6 +142,8 @@ public class CallManagerActor extends ModuleActor {
     }
 
     private void doAnswerCall(final long callId) {
+        Log.d(TAG, "onIncomingCall (" + callId + ")");
+
         answeredCalls.add(callId);
     }
 
@@ -151,10 +153,12 @@ public class CallManagerActor extends ModuleActor {
     //
 
     private void onCallEnded(long callId) {
+        Log.d(TAG, "onCallEnded (" + callId + ")");
         runningCalls.remove(callId);
     }
 
     private void doEndCall(long callId) {
+        Log.d(TAG, "doEndCall (" + callId + ")");
         ActorRef currentCall = runningCalls.remove(callId);
         if (currentCall != null) {
             currentCall.send(new CallActor.DoEndCall());
