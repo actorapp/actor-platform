@@ -1,5 +1,7 @@
 package im.actor.core.modules.calls;
 
+import java.util.ArrayList;
+
 import im.actor.core.api.ApiAnswerCall;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.ApiSwitchMaster;
@@ -7,10 +9,16 @@ import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.api.rpc.RequestGetCallInfo;
 import im.actor.core.api.rpc.ResponseGetCallInfo;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.viewmodel.CallMember;
+import im.actor.core.viewmodel.CallState;
+import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.function.Consumer;
+
+import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
 
 public class CallSlaveActor extends CallActor {
 
+    private ActorRef callManager;
     private MasterNode masterNode;
     private boolean isAnswerPending = false;
     private long callId;
@@ -23,9 +31,13 @@ public class CallSlaveActor extends CallActor {
     @Override
     public void preStart() {
         super.preStart();
+        callManager = context().getCallsModule().getCallManager();
         api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
             @Override
             public void apply(final ResponseGetCallInfo responseGetCallInfo) {
+                spawnNewVM(callId, convert(responseGetCallInfo.getPeer()),
+                        new ArrayList<CallMember>(), CallState.CALLING_INCOMING);
+                callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
                 joinBus(responseGetCallInfo.getEventBusId());
             }
         }).failure(new Consumer<Exception>() {
