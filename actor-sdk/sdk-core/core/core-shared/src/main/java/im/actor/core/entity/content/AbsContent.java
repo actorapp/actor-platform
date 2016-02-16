@@ -160,12 +160,12 @@ public abstract class AbsContent {
                 } else if (content instanceof ApiJsonMessage) {
                     ApiJsonMessage json = (ApiJsonMessage) content;
                     JSONObject object = new JSONObject(json.getRawJson());
-                    if (object.getString("dataType").equals("banner")) {
-                        return new BannerContent(remoteContainer);
-                    } else if (object.getString("dataType").equals("contact")) {
+                    if (object.getString("dataType").equals("contact")) {
                         return new ContactContent(remoteContainer);
                     } else if (object.getString("dataType").equals("location")) {
                         return new LocationContent(remoteContainer);
+                    } else {
+                        return new JsonContent(remoteContainer);
                     }
                 } else if (content instanceof ApiStickerMessage) {
                     return new StickerContent(remoteContainer);

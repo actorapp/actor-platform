@@ -33,7 +33,7 @@ object PeerHelpers {
     outPeer.`type` match {
       case ApiPeerType.Private ⇒
         DBIO.from(ACLUtils.checkOutPeer(outPeer, client.authId)) flatMap {
-          case false ⇒ DBIO.successful(Error(CommonErrors.InvalidAccessHash))
+          case false ⇒ DBIO.successful(Error(CommonRpcErrors.InvalidAccessHash))
           case true  ⇒ f
         }
       case ApiPeerType.Group ⇒
@@ -79,7 +79,7 @@ object PeerHelpers {
     withGroupOutPeer(groupOutPeer) { group ⇒
       (for (user ← GroupUserRepo.find(group.id, userId)) yield user).flatMap {
         case Some(user) ⇒ f(group)
-        case None       ⇒ DBIO.successful(Error(CommonErrors.forbidden("You are not a group member.")))
+        case None       ⇒ DBIO.successful(Error(CommonRpcErrors.forbidden("You are not a group member.")))
       }
     }
   }
@@ -88,7 +88,7 @@ object PeerHelpers {
     withOwnGroupMember(groupOutPeer, client.userId) { group ⇒
       (for (user ← GroupUserRepo.find(group.id, client.userId)) yield user).flatMap {
         case Some(gu) if gu.isAdmin ⇒ f(group)
-        case _                      ⇒ DBIO.successful(Error(CommonErrors.forbidden("Only admin can perform this action.")))
+        case _                      ⇒ DBIO.successful(Error(CommonRpcErrors.forbidden("Only admin can perform this action.")))
       }
     }
   }
@@ -159,7 +159,7 @@ object PeerHelpers {
           if (kickUserOutPeer.userId != client.userId && (inviterUserId == client.userId || group.creatorUserId == client.userId)) {
             f(group)
           } else {
-            DBIO.successful(Error(CommonErrors.forbidden("You are permitted to kick this user.")))
+            DBIO.successful(Error(CommonRpcErrors.forbidden("You are permitted to kick this user.")))
           }
         case None ⇒ DBIO.successful(Error(RpcError(404, "USER_NOT_FOUND", "User is not a group member.", false, None)))
       }
@@ -203,22 +203,22 @@ object PeerHelpers {
         case None ⇒
           (for (bot ← GroupBotRepo.find(group.id, userId)) yield bot).flatMap {
             case Some(bot) ⇒ DBIO.successful(\/-(group))
-            case None      ⇒ DBIO.successful(Error(CommonErrors.forbidden("No access to the group.")))
+            case None      ⇒ DBIO.successful(Error(CommonRpcErrors.forbidden("No access to the group.")))
           }
       }
-    case None ⇒ DBIO.successful(Error(CommonErrors.GroupNotFound))
+    case None ⇒ DBIO.successful(Error(CommonRpcErrors.GroupNotFound))
   }
 
   private def withGroupOutPeer[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
     GroupRepo.findFull(groupOutPeer.groupId) flatMap {
       case Some(group) ⇒
         if (group.accessHash != groupOutPeer.accessHash) {
-          DBIO.successful(Error(CommonErrors.InvalidAccessHash))
+          DBIO.successful(Error(CommonRpcErrors.InvalidAccessHash))
         } else {
           f(group)
         }
       case None ⇒
-        DBIO.successful(Error(CommonErrors.GroupNotFound))
+        DBIO.successful(Error(CommonRpcErrors.GroupNotFound))
     }
   }
 
@@ -226,7 +226,7 @@ object PeerHelpers {
     optGroup match {
       case Some(group) ⇒
         DBIO.successful(\/-(group))
-      case None ⇒ DBIO.successful(Error(CommonErrors.GroupNotFound))
+      case None ⇒ DBIO.successful(Error(CommonRpcErrors.GroupNotFound))
     }
   }
 
@@ -234,7 +234,7 @@ object PeerHelpers {
     if (accessHash == ACLUtils.userAccessHash(client.authId, user)) {
       \/-(user)
     } else {
-      Error(CommonErrors.InvalidAccessHash)
+      Error(CommonRpcErrors.InvalidAccessHash)
     }
   }
 
@@ -242,7 +242,7 @@ object PeerHelpers {
     if (accessHash == group.accessHash) {
       \/-(group)
     } else {
-      Error(CommonErrors.InvalidAccessHash)
+      Error(CommonRpcErrors.InvalidAccessHash)
     }
   }
 

@@ -17,7 +17,7 @@ final class FeaturesServiceImpl(implicit system: ActorSystem) extends FeaturesSe
 
   private val db = DbExtension(system).db
 
-  override def jhandleEnableFeature(
+  override def doHandleEnableFeature(
     featureName: String,
     args:        Option[Array[Byte]],
     clientData:  ClientData
@@ -36,7 +36,7 @@ final class FeaturesServiceImpl(implicit system: ActorSystem) extends FeaturesSe
       } yield Ok(ResponseVoid)
     }
 
-  override def jhandleCheckFeatureEnabled(
+  override def doHandleCheckFeatureEnabled(
     userOutPeer: ApiUserOutPeer,
     featureName: String,
     clientData:  ClientData
@@ -47,7 +47,7 @@ final class FeaturesServiceImpl(implicit system: ActorSystem) extends FeaturesSe
       } yield Ok(ResponseBool(exists))
     }
 
-  override def jhandleDisableFeature(
+  override def doHandleDisableFeature(
     featureName: String,
     clientData:  ClientData
   ): Future[HandlerResult[ResponseVoid]] =

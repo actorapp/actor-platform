@@ -10,6 +10,7 @@ import com.google.gwt.user.client.Event;
 
 import im.actor.core.Configuration;
 import im.actor.core.Messenger;
+import im.actor.core.api.rpc.ResponseLoadArchived;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
@@ -46,6 +47,7 @@ import im.actor.core.js.providers.electron.JsElectronListener;
 import im.actor.core.js.providers.notification.JsChromePush;
 import im.actor.core.js.providers.notification.JsSafariPush;
 import im.actor.core.js.providers.notification.PushSubscribeResult;
+import im.actor.core.network.RpcCallback;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
@@ -157,8 +159,8 @@ public class JsMessenger extends Messenger {
         modules.getMessagesModule().loadMoreDialogs();
     }
 
-    public void loadMoreArchivedDialogs() {
-        modules.getMessagesModule().loadMoreArchivedDialogs();
+    public void loadArchivedDialogs(boolean init, RpcCallback<ResponseLoadArchived> callback) {
+        modules.getMessagesModule().loadMoreArchivedDialogs(init, callback);
     }
 
     public void loadMoreHistory(Peer peer) {
@@ -227,9 +229,6 @@ public class JsMessenger extends Messenger {
         return jsBindingModule.getSharedDialogList();
     }
 
-    public JsDisplayList<JsDialog, Dialog> getSharedArchivedDialogList() {
-        return jsBindingModule.getSharedArchivedDialogList();
-    }
 
     public JsDisplayList<JsContact, Contact> getSharedContactList() {
         return jsBindingModule.getSharedContactList();

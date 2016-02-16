@@ -64,9 +64,8 @@ public class TCActor extends Actor {
     public void onIdchecked(int id, JSONObject json) {
         try {
             for (long rid : reidMap.get(id)) {
-                messenger().updateJsonMessageContentLocal(peerMap.get(id), rid, JsonContent.create(new Application.TCBotMesaage(), json));
-                Log.d("TC", "update local");
-
+//                messenger().updateJsonMessageContentLocal(peerMap.get(id), rid, JsonContent.create(new Application.TCBotMesaage(), json));
+//                Log.d("TC", "update local");
             }
             if (json.getString("state").equals("finished")) {
                 ids.remove(new Integer(id));

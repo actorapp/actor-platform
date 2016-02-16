@@ -40,9 +40,9 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(actorSystem).fsAdapter
   private val groupPresenceExt = GroupPresenceExtension(actorSystem)
 
-  override def jhandleEditGroupAvatar(groupOutPeer: ApiGroupOutPeer, randomId: Long, fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
+  override def doHandleEditGroupAvatar(groupOutPeer: ApiGroupOutPeer, randomId: Long, fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] =
+    authorized(clientData) { implicit client ⇒
+      val action = withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withFileLocation(fileLocation, AvatarSizeLimit) {
           scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()) flatMap {
             case Right(avatar) ⇒
@@ -59,14 +59,10 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           }
         }
       }
+      db.run(action)
     }
 
-    db.run(toDBIOAction(authorizedAction)) recover {
-      case FileErrors.LocationInvalid ⇒ Error(Errors.LocationInvalid)
-    }
-  }
-
-  override def jhandleRemoveGroupAvatar(groupOutPeer: ApiGroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def doHandleRemoveGroupAvatar(groupOutPeer: ApiGroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
@@ -82,7 +78,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleKickUser(groupOutPeer: ApiGroupOutPeer, randomId: Long, userOutPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def doHandleKickUser(groupOutPeer: ApiGroupOutPeer, randomId: Long, userOutPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withKickableGroupMember(groupOutPeer, userOutPeer) { fullGroup ⇒ //maybe move to group peer manager
         for {
@@ -97,7 +93,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleLeaveGroup(groupOutPeer: ApiGroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def doHandleLeaveGroup(groupOutPeer: ApiGroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
@@ -111,7 +107,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleCreateGroup(randomId: Long, title: String, users: IndexedSeq[ApiUserOutPeer], groupType: Option[String], userData: Option[ApiMapValue], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
+  override def doHandleCreateGroup(randomId: Long, title: String, users: IndexedSeq[ApiUserOutPeer], groupType: Option[String], userData: Option[ApiMapValue], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
     authorized(clientData) { implicit client ⇒
       db.run(withUserOutPeers(users) {
         withValidGroupTitle(title) { validTitle ⇒
@@ -143,7 +139,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     }
   }
 
-  override def jhandleCreateGroupObsolete(randomId: Long, title: String, users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseCreateGroupObsolete]] = {
+  override def doHandleCreateGroupObsolete(randomId: Long, title: String, users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseCreateGroupObsolete]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withUserOutPeers(users) {
         withValidGroupTitle(title) { validTitle ⇒
@@ -167,9 +163,9 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleInviteUser(groupOutPeer: ApiGroupOutPeer, randomId: Long, userOutPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
+  override def doHandleInviteUser(groupOutPeer: ApiGroupOutPeer, randomId: Long, userOutPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
+    authorized(clientData) { implicit client ⇒
+      val action = withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withUserOutPeer(userOutPeer) {
           for {
             res ← DBIO.from(groupExt.inviteToGroup(fullGroup.id, userOutPeer.userId, randomId))
@@ -179,14 +175,10 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           }
         }
       }
+      db.run(action)
     }
 
-    db.run(toDBIOAction(authorizedAction)) recover {
-      case GroupErrors.UserAlreadyInvited ⇒ Error(GroupRpcErrors.UserAlreadyInvited)
-    }
-  }
-
-  override def jhandleEditGroupTitle(groupOutPeer: ApiGroupOutPeer, randomId: Long, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def doHandleEditGroupTitle(groupOutPeer: ApiGroupOutPeer, randomId: Long, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
@@ -198,7 +190,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleGetGroupInviteUrl(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {
+  override def doHandleGetGroupInviteUrl(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupPeer, client.userId) { fullGroup ⇒
         for {
@@ -215,9 +207,9 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleJoinGroup(url: String, clientData: ClientData): Future[HandlerResult[ResponseJoinGroup]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withValidInviteToken(groupInviteConfig.baseUrl, url) { (fullGroup, token) ⇒
+  override def doHandleJoinGroup(url: String, clientData: ClientData): Future[HandlerResult[ResponseJoinGroup]] =
+    authorized(clientData) { implicit client ⇒
+      val action = withValidInviteToken(groupInviteConfig.baseUrl, url) { (fullGroup, token) ⇒
         val group = Group.fromFull(fullGroup)
 
         val join = groupExt.joinGroup(
@@ -232,15 +224,12 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           groupStruct ← DBIO.from(groupExt.getApiStruct(group.id, client.userId))
         } yield Ok(ResponseJoinGroup(groupStruct, seqstatedate.seq, seqstatedate.state.toByteArray, seqstatedate.date, userStructs.toVector, randomId))
       }
+      db.run(action)
     }
-    db.run(toDBIOAction(authorizedAction)) recover {
-      case GroupErrors.UserAlreadyInvited ⇒ Error(GroupRpcErrors.UserAlreadyInvited)
-    }
-  }
 
-  override def jhandleEnterGroup(peer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseEnterGroup]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withPublicGroup(peer) { fullGroup ⇒
+  override def doHandleEnterGroup(peer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseEnterGroup]] =
+    authorized(clientData) { implicit client ⇒
+      val action = withPublicGroup(peer) { fullGroup ⇒
         GroupUserRepo.find(fullGroup.id, client.userId) flatMap {
           case Some(_) ⇒ DBIO.successful(Error(GroupRpcErrors.UserAlreadyInvited))
           case None ⇒
@@ -252,14 +241,10 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
             } yield Ok(ResponseEnterGroup(groupStruct, userStructs.toVector, randomId, seqstatedate.seq, seqstatedate.state.toByteArray, seqstatedate.date))
         }
       }
+      db.run(action)
     }
 
-    db.run(toDBIOAction(authorizedAction)) recover {
-      case GroupErrors.UserAlreadyInvited ⇒ Error(GroupRpcErrors.UserAlreadyInvited)
-    }
-  }
-
-  override def jhandleRevokeInviteUrl(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {
+  override def doHandleRevokeInviteUrl(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupPeer, client.userId) { fullGroup ⇒
         val token = accessToken(ThreadLocalSecureRandom.current())
@@ -277,28 +262,22 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   /**
    * all members of group can edit group topic
    */
-  def jhandleEditGroupTopic(groupPeer: ApiGroupOutPeer, randomId: Long, topic: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def doHandleEditGroupTopic(groupPeer: ApiGroupOutPeer, randomId: Long, topic: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     authorized(clientData) { implicit client ⇒
-      (for {
+      for {
         SeqStateDate(seq, state, date) ← groupExt.updateTopic(groupPeer.groupId, client.userId, topic, randomId)
-      } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))) recover {
-        case GroupErrors.NotAMember   ⇒ Error(CommonErrors.forbidden("User is not a group member."))
-        case GroupErrors.TopicTooLong ⇒ Error(GroupRpcErrors.TopicTooLong)
-      }
+      } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
     }
   }
 
   /**
    * only admin can change group's about
    */
-  def jhandleEditGroupAbout(groupPeer: ApiGroupOutPeer, randomId: Long, about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def doHandleEditGroupAbout(groupPeer: ApiGroupOutPeer, randomId: Long, about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     authorized(clientData) { implicit client ⇒
-      (for {
+      for {
         SeqStateDate(seq, state, date) ← groupExt.updateAbout(groupPeer.groupId, client.userId, about, randomId)
-      } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))) recover {
-        case GroupErrors.NotAdmin     ⇒ Error(CommonErrors.forbidden("Only admin can perform this action."))
-        case GroupErrors.AboutTooLong ⇒ Error(GroupRpcErrors.AboutTooLong)
-      }
+      } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
     }
   }
 
@@ -307,16 +286,22 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
    * if this user id already admin - `GroupErrors.UserAlreadyAdmin` will be returned
    * it could be many admins in one group
    */
-  def jhandleMakeUserAdmin(groupPeer: ApiGroupOutPeer, userPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseMakeUserAdmin]] = {
+  override def doHandleMakeUserAdmin(groupPeer: ApiGroupOutPeer, userPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseMakeUserAdmin]] = {
     authorized(clientData) { implicit client ⇒
-      (for {
+      for {
         (members, SeqState(seq, state)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, userPeer.userId)
-      } yield Ok(ResponseMakeUserAdmin(members, seq, state.toByteArray))) recover {
-        case GroupErrors.NotAMember       ⇒ Error(CommonErrors.forbidden("User is not a group member."))
-        case GroupErrors.NotAdmin         ⇒ Error(CommonErrors.forbidden("Only admin can perform this action."))
-        case GroupErrors.UserAlreadyAdmin ⇒ Error(GroupRpcErrors.UserAlreadyAdmin)
-      }
+      } yield Ok(ResponseMakeUserAdmin(members, seq, state.toByteArray))
     }
+  }
+
+  override def onFailure: PartialFunction[Throwable, RpcError] = {
+    case GroupErrors.NotAMember         ⇒ CommonRpcErrors.forbidden("User is not a group member.")
+    case GroupErrors.NotAdmin           ⇒ CommonRpcErrors.forbidden("Only admin can perform this action.")
+    case GroupErrors.UserAlreadyAdmin   ⇒ GroupRpcErrors.UserAlreadyAdmin
+    case GroupErrors.AboutTooLong       ⇒ GroupRpcErrors.AboutTooLong
+    case GroupErrors.TopicTooLong       ⇒ GroupRpcErrors.TopicTooLong
+    case FileErrors.LocationInvalid     ⇒ FileRpcErrors.LocationInvalid
+    case GroupErrors.UserAlreadyInvited ⇒ GroupRpcErrors.UserAlreadyInvited
   }
 
 }

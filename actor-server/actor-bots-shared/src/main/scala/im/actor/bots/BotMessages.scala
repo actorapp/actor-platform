@@ -292,6 +292,18 @@ object BotMessages {
     override def readResponse(obj: Js.Obj) = readJs[MessageSent](obj)
   }
 
+  @key("SendMessage")
+  final case class UpdateMessageContent(
+    @beanGetter peer:           OutPeer,
+    @beanGetter randomId:       Long,
+    @beanGetter updatedMessage: MessageBody
+  ) extends RequestBody {
+    override type Response = MessageContentUpdated
+    override val service = Services.Messaging
+
+    override def readResponse(obj: Js.Obj) = readJs[MessageContentUpdated](obj)
+  }
+
   @key("SetValue")
   final case class SetValue(
     @beanGetter keyspace: String,
@@ -443,6 +455,20 @@ object BotMessages {
   }
 
   final case class MessageSent(@beanGetter date: Long) extends ResponseBody
+
+  @key("MessageContentUpdated")
+  sealed trait MessageContentUpdated extends ResponseBody
+
+  @key("MessageContentUpdated")
+  case object MessageContentUpdated extends MessageContentUpdated
+
+  implicit val messageContentUpdatedReader = upickle.default.Reader[MessageContentUpdated] {
+    case Js.Obj() ⇒ MessageContentUpdated
+  }
+
+  implicit val messageContentUpdatedWriter = upickle.default.Writer[MessageContentUpdated] {
+    case _ ⇒ Js.Obj()
+  }
 
   @key("CreateGroup")
   final case class CreateGroup(

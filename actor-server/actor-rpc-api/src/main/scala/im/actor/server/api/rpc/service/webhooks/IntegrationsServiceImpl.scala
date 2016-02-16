@@ -22,9 +22,9 @@ class IntegrationsServiceImpl(baseUri: String)(implicit actorSystem: ActorSystem
   private val db: Database = DbExtension(actorSystem).db
   private val groupExt = GroupExtension(actorSystem)
 
-  override def jhandleGetIntegrationToken(groupPeer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
+  override def doHandleGetIntegrationToken(groupPeer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] =
+    authorized(clientData) { implicit client ⇒
+      val action = withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
         for {
           optToken ← DBIO.from(groupExt.getIntegrationToken(groupOutPeer.groupId, client.userId))
         } yield {
@@ -32,23 +32,22 @@ class IntegrationsServiceImpl(baseUri: String)(implicit actorSystem: ActorSystem
           Ok(ResponseIntegrationToken(token, url))
         }
       }
+      db.run(action)
     }
-    db.run(toDBIOAction(authorizedAction)) recover {
-      case NotAMember ⇒ Error(CommonErrors.forbidden("You are not a group member."))
-    }
-  }
 
-  override def jhandleRevokeIntegrationToken(groupPeer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
+  override def doHandleRevokeIntegrationToken(groupPeer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] =
+    authorized(clientData) { implicit client ⇒
+      val action = withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
         for {
           token ← DBIO.from(groupExt.revokeIntegrationToken(groupOutPeer.groupId, client.userId))
         } yield Ok(ResponseIntegrationToken(token, makeUrl(baseUri, token)))
       }
+      db.run(action)
     }
-    db.run(toDBIOAction(authorizedAction)) recover {
-      case NotAdmin ⇒ Error(CommonErrors.forbidden("Only admin can perform this action."))
-    }
+
+  override def onFailure: PartialFunction[Throwable, RpcError] = {
+    case NotAdmin   ⇒ CommonRpcErrors.forbidden("Only admin can perform this action.")
+    case NotAMember ⇒ CommonRpcErrors.forbidden("You are not a group member.")
   }
 
 }

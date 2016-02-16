@@ -29,7 +29,7 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
   private val db: Database = DbExtension(actorSystem).db
   private val userExt = UserExtension(actorSystem)
 
-  override def jhandleEditUserLocalName(userId: Int, accessHash: Long, name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleEditUserLocalName(userId: Int, accessHash: Long, name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
       StringUtils.validName(name) match {
         case \/-(validName) ⇒
@@ -47,9 +47,9 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
                   seqstate ← seqstateF
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               } else {
-                Future.successful(Error(CommonErrors.InvalidAccessHash))
+                Future.successful(Error(CommonRpcErrors.InvalidAccessHash))
               }
-            case None ⇒ Future.successful(Error(CommonErrors.UserNotFound))
+            case None ⇒ Future.successful(Error(CommonRpcErrors.UserNotFound))
           }
         case -\/(err) ⇒ Future.successful(Error(UserErrors.NameInvalid))
       }

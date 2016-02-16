@@ -507,6 +507,10 @@
 
 "AlertLinkCopied" = "Link copied to clipboard.";
 
+"ActionOpenLink" = "Open Link";
+
+"ActionCancel" = "Cancel";
+
 /*
  *  Network
  */

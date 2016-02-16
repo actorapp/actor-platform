@@ -4,8 +4,8 @@ import sbt._
 
 object Dependencies {
   object V {
-    val actorCommons = "0.0.12"
-    val actorBotkit = "1.0.66"
+    val actorCommons = "0.0.13"
+    val actorBotkit = "1.0.72"
     val akka = "2.4.2-RC2"
     val akkaHttpJson = "1.5.0"
     val cats = "0.3.0"
@@ -15,7 +15,7 @@ object Dependencies {
     val slick = "3.1.1"
     val slickPg = "0.10.2"
     val scalatest = "2.2.4"
-    val shardakka = "0.1.21"
+    val shardakka = "0.1.22"
     val scalapbSer = "0.1.14"
   }
 

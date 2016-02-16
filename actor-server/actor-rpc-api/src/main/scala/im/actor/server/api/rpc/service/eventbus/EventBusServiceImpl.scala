@@ -18,7 +18,7 @@ final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
   override implicit protected val ec: ExecutionContext = system.dispatcher
   private val ext = EventBusExtension(system)
 
-  override def jhandleCreateNewEventBus(
+  override def doHandleCreateNewEventBus(
     timeout:    Option[Long],
     isOwned:    Option[Boolean],
     clientData: ClientData
@@ -29,14 +29,14 @@ final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
       } yield Ok(ResponseCreateNewEventBus(id, deviceId))
     }
 
-  override def jhandleDisposeEventBus(id: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+  override def doHandleDisposeEventBus(id: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     authorized(clientData) { client ⇒
       for (_ ← ext.dispose(client.userId, id)) yield Ok(ResponseVoid)
     } recover {
       case EventBusErrors.EventBusNotFound ⇒ EventBusRpcErrors.EventBusNotFound
     }
 
-  override def jhandlePostToEventBus(
+  override def doHandlePostToEventBus(
     id:           String,
     destinations: IndexedSeq[ApiEventBusDestination],
     message:      Array[Byte],
@@ -50,7 +50,7 @@ final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
       case EventBusErrors.EventBusNotFound ⇒ EventBusRpcErrors.EventBusNotFound
     }
 
-  override def jhandleKeepAliveEventBus(
+  override def doHandleKeepAliveEventBus(
     id:         String,
     timeout:    Option[Long],
     clientData: ClientData
@@ -62,7 +62,7 @@ final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
       case EventBusErrors.EventBusNotFound ⇒ EventBusRpcErrors.EventBusNotFound
     }
 
-  override def jhandleJoinEventBus(
+  override def doHandleJoinEventBus(
     id:         String,
     timeout:    Option[Long],
     clientData: ClientData

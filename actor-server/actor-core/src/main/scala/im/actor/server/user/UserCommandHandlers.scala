@@ -4,6 +4,7 @@ import java.time.{ LocalDateTime, ZoneOffset }
 import java.util.TimeZone
 
 import akka.actor.{ ActorSystem, Status }
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import im.actor.api.rpc.contacts.{ UpdateContactsRemoved, UpdateContactRegistered, UpdateContactsAdded }
 import im.actor.api.rpc.messaging._
@@ -166,28 +167,36 @@ private[user] trait UserCommandHandlers {
     }
 
   protected def addPhone(user: UserState, phone: Long): Unit =
-    persistReply(UserEvents.PhoneAdded(now(), phone), user) { _ ⇒
-      val rng = ThreadLocalSecureRandom.current()
-      db.run(for {
-        _ ← UserPhoneRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone")
-        _ ← DBIO.from(markContactRegistered(user, phone, false))
-      } yield {
-        AddPhoneAck()
-      }) andThen {
-        case Failure(e) ⇒ log.error(e, "Failed to add phone")
+    if (user.phones.contains(phone))
+      sender() ! AddPhoneAck()
+    else {
+      persistReply(UserEvents.PhoneAdded(now(), phone), user) { _ ⇒
+        val rng = ThreadLocalSecureRandom.current()
+        db.run(for {
+          _ ← UserPhoneRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone")
+          _ ← DBIO.from(markContactRegistered(user, phone, false))
+        } yield {
+          AddPhoneAck()
+        }) andThen {
+          case Failure(e) ⇒ log.error(e, "Failed to add phone")
+        }
       }
     }
 
   protected def addEmail(user: UserState, email: String): Unit =
-    persistReply(UserEvents.EmailAdded(now(), email), user) { event ⇒
-      val rng = ThreadLocalSecureRandom.current()
-      db.run(for {
-        _ ← UserEmailRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
-        _ ← DBIO.from(markContactRegistered(user, email, false))
-      } yield {
-        AddEmailAck()
-      }) andThen {
-        case Failure(e) ⇒ log.error(e, "Failed to add email")
+    if (user.emails.contains(email))
+      sender() ! AddEmailAck()
+    else {
+      persistReply(UserEvents.EmailAdded(now(), email), user) { event ⇒
+        val rng = ThreadLocalSecureRandom.current()
+        db.run(for {
+          _ ← UserEmailRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
+          _ ← DBIO.from(markContactRegistered(user, email, false))
+        } yield {
+          AddEmailAck()
+        }) andThen {
+          case Failure(e) ⇒ log.error(e, "Failed to add email")
+        }
       }
     }
 

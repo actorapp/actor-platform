@@ -15,7 +15,7 @@ import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.server._
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
-import im.actor.server.api.rpc.service.profile.{ ProfileErrors, ProfileServiceImpl }
+import im.actor.server.api.rpc.service.profile.{ ProfileRpcErrors, ProfileServiceImpl }
 
 final class ProfileServiceSpec
   extends BaseAppSuite
@@ -131,49 +131,49 @@ final class ProfileServiceSpec
       val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
       val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
 
-      whenReady(service.jhandleCheckNickName("rockjam", clientData1)) { resp ⇒
+      whenReady(service.handleCheckNickName("rockjam")(clientData1)) { resp ⇒
         resp shouldEqual Ok(ResponseBool(true))
       }
 
-      whenReady(service.jhandleEditNickName(Some("rockjam"), clientData1)) { resp ⇒
+      whenReady(service.handleEditNickName(Some("rockjam"))(clientData1)) { resp ⇒
         resp should matchPattern {
           case Ok(_: ResponseSeq) ⇒
         }
       }
 
-      whenReady(service.jhandleEditNickName(Some("rockjam"), clientData2)) { resp ⇒
+      whenReady(service.handleEditNickName(Some("rockjam"))(clientData2)) { resp ⇒
         inside(resp) {
-          case Error(e) ⇒ e shouldEqual ProfileErrors.NicknameBusy
+          case Error(e) ⇒ e shouldEqual ProfileRpcErrors.NicknameBusy
         }
       }
 
-      whenReady(service.jhandleCheckNickName("rockjam", clientData2)) { resp ⇒
+      whenReady(service.handleCheckNickName("rockjam")(clientData2)) { resp ⇒
         resp shouldEqual Ok(ResponseBool(false))
       }
 
-      whenReady(service.jhandleCheckNickName("rock-jam", clientData2)) { resp ⇒
+      whenReady(service.handleCheckNickName("rock-jam")(clientData2)) { resp ⇒
         inside(resp) {
-          case Error(e) ⇒ e shouldEqual ProfileErrors.NicknameInvalid
+          case Error(e) ⇒ e shouldEqual ProfileRpcErrors.NicknameInvalid
         }
       }
 
-      whenReady(service.jhandleEditNickName(Some("rock-jam"), clientData2)) { resp ⇒
+      whenReady(service.handleEditNickName(Some("rock-jam"))(clientData2)) { resp ⇒
         inside(resp) {
-          case Error(e) ⇒ e shouldEqual ProfileErrors.NicknameInvalid
+          case Error(e) ⇒ e shouldEqual ProfileRpcErrors.NicknameInvalid
         }
       }
 
-      whenReady(service.jhandleEditNickName(None, clientData1)) { resp ⇒
+      whenReady(service.handleEditNickName(None)(clientData1)) { resp ⇒
         resp should matchPattern {
           case Ok(_: ResponseSeq) ⇒
         }
       }
 
-      whenReady(service.jhandleCheckNickName("rockjam", clientData2)) { resp ⇒
+      whenReady(service.handleCheckNickName("rockjam")(clientData2)) { resp ⇒
         resp shouldEqual Ok(ResponseBool(true))
       }
 
-      whenReady(service.jhandleEditNickName(Some("rockjam"), clientData2)) { resp ⇒
+      whenReady(service.handleEditNickName(Some("rockjam"))(clientData2)) { resp ⇒
         resp should matchPattern {
           case Ok(_: ResponseSeq) ⇒
         }
@@ -187,7 +187,7 @@ final class ProfileServiceSpec
       val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
       val about = Some("is' me")
-      whenReady(service.jhandleEditAbout(about, clientData1)) { resp ⇒
+      whenReady(service.handleEditAbout(about)(clientData1)) { resp ⇒
         resp should matchPattern {
           case Ok(_: ResponseSeq) ⇒
         }
@@ -198,14 +198,14 @@ final class ProfileServiceSpec
         optUser.get.about shouldEqual about
       }
 
-      val tooLong = 1 to 300 map (e ⇒ ".") mkString ("")
-      whenReady(service.jhandleEditAbout(Some(tooLong), clientData1)) { resp ⇒
+      val tooLong = 1 to 300 map (e ⇒ ".") mkString ""
+      whenReady(service.handleEditAbout(Some(tooLong))(clientData1)) { resp ⇒
         inside(resp) {
-          case Error(e) ⇒ e shouldEqual ProfileErrors.AboutTooLong
+          case Error(e) ⇒ e shouldEqual ProfileRpcErrors.AboutTooLong
         }
       }
 
-      whenReady(service.jhandleEditAbout(None, clientData1)) { resp ⇒
+      whenReady(service.handleEditAbout(None)(clientData1)) { resp ⇒
         resp should matchPattern {
           case Ok(_: ResponseSeq) ⇒
         }
@@ -306,11 +306,9 @@ final class ProfileServiceSpec
       val (user, authId, authSid, _) = createUser()
       val sessionId = createSessionId()
 
-      val clientData1 = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
-
-      whenReady(service.jhandleEditName("", clientData)) { resp ⇒
+      whenReady(service.handleEditName("")(clientData)) { resp ⇒
         inside(resp) {
-          case Error(e) ⇒ e shouldEqual ProfileErrors.NameInvalid
+          case Error(e) ⇒ e shouldEqual ProfileRpcErrors.NameInvalid
         }
       }
 

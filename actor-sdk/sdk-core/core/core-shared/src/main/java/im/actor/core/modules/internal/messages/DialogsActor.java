@@ -31,9 +31,7 @@ import static im.actor.core.util.JavaUtil.equalsE;
 public class DialogsActor extends ModuleActor {
 
     private ListEngine<Dialog> dialogs;
-    private ListEngine<Dialog> archivedDialogs;
     private Boolean isEmpty;
-    private Boolean isArchivedEmpty;
     private Boolean emptyNotified;
 
     public DialogsActor(ModuleContext context) {
@@ -44,9 +42,7 @@ public class DialogsActor extends ModuleActor {
     public void preStart() {
         super.preStart();
         this.dialogs = context().getMessagesModule().getDialogsEngine();
-        this.archivedDialogs = context().getMessagesModule().getArchivedDialogsEngine();
-        notifyState(true, true);
-        notifyState(true, false);
+        notifyState(true);
     }
 
     @Verified
@@ -120,7 +116,7 @@ public class DialogsActor extends ModuleActor {
             }
 
             addOrUpdateItem(builder.createDialog());
-            notifyState(forceUpdate, false);
+            notifyState(forceUpdate);
         }
 
         Log.d("DialogsActor", "onMessage in " + (Runtime.getCurrentTime() - start) + " ms");
@@ -164,10 +160,8 @@ public class DialogsActor extends ModuleActor {
     private void onChatDeleted(Peer peer) {
         // Removing dialog
         dialogs.removeItem(peer.getUnuqueId());
-        archivedDialogs.removeItem(peer.getUnuqueId());
 
-        notifyState(true, true);
-        notifyState(true, false);
+        notifyState(true);
     }
 
     @Verified
@@ -241,11 +235,11 @@ public class DialogsActor extends ModuleActor {
     }
 
     @Verified
-    private void onHistoryLoaded(List<DialogHistory> history, boolean isArchived) {
+    private void onHistoryLoaded(List<DialogHistory> history) {
         ArrayList<Dialog> updated = new ArrayList<Dialog>();
         for (DialogHistory dialogHistory : history) {
             // Ignore already available dialogs
-            if ((isArchived?archivedDialogs:dialogs).getValue(dialogHistory.getPeer().getUnuqueId()) != null) {
+            if (dialogs.getValue(dialogHistory.getPeer().getUnuqueId()) != null) {
                 continue;
             }
 
@@ -262,19 +256,16 @@ public class DialogsActor extends ModuleActor {
                     dialogHistory.getRid(), description.getContentType(), description.getText(), dialogHistory.getStatus(),
                     dialogHistory.getSenderId(), dialogHistory.getDate(), description.getRelatedUser()));
         }
-        addOrUpdateItems(updated, isArchived);
-        if(!isArchived){
-            updateSearch(updated);
-            context().getAppStateModule().onDialogsLoaded();
-        }
-        notifyState(true, isArchived);
+        addOrUpdateItems(updated);
+        updateSearch(updated);
+        context().getAppStateModule().onDialogsLoaded();
+        notifyState(true);
     }
-
 
     // Utils
 
-    private void addOrUpdateItems(List<Dialog> updated, boolean isArchived) {
-        (isArchived?archivedDialogs:dialogs).addOrUpdateItems(updated);
+    private void addOrUpdateItems(List<Dialog> updated) {
+        dialogs.addOrUpdateItems(updated);
     }
 
     private void addOrUpdateItem(Dialog dialog) {
@@ -291,16 +282,12 @@ public class DialogsActor extends ModuleActor {
         context().getSearchModule().onDialogsChanged(updated);
     }
 
-    private void notifyState(boolean force, boolean isArchived) {
-        if ((isArchived?isArchivedEmpty:isEmpty) == null || force) {
-            if(isArchived){
-                isArchivedEmpty = this.archivedDialogs.isEmpty();
-            }else{
-                isEmpty = this.dialogs.isEmpty();
-            }
+    private void notifyState(boolean force) {
+        if (isEmpty == null || force) {
+            isEmpty = this.dialogs.isEmpty();
         }
 
-        if (!isArchived && !isEmpty.equals(emptyNotified)) {
+        if (!isEmpty.equals(emptyNotified)) {
             emptyNotified = isEmpty;
             context().getAppStateModule().onDialogsUpdate(isEmpty);
         }
@@ -362,7 +349,7 @@ public class DialogsActor extends ModuleActor {
             onMessage(deleted.getPeer(), deleted.getTopMessage(), true, -1);
         } else if (message instanceof HistoryLoaded) {
             HistoryLoaded historyLoaded = (HistoryLoaded) message;
-            onHistoryLoaded(historyLoaded.getHistory(), ((HistoryLoaded) message).isArchived());
+            onHistoryLoaded(historyLoaded.getHistory());
         } else if (message instanceof GroupChanged) {
             GroupChanged groupChanged = (GroupChanged) message;
             onGroupChanged(groupChanged.getGroup());
@@ -535,20 +522,14 @@ public class DialogsActor extends ModuleActor {
     }
 
     public static class HistoryLoaded {
-        boolean archived;
         private List<DialogHistory> history;
 
-        public HistoryLoaded(List<DialogHistory> history, boolean archived) {
+        public HistoryLoaded(List<DialogHistory> history) {
             this.history = history;
-            this.archived = archived;
         }
 
         public List<DialogHistory> getHistory() {
             return history;
-        }
-
-        public boolean isArchived() {
-            return archived;
         }
     }
 }
