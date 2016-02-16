@@ -171,7 +171,7 @@ public class CallManagerActor extends ModuleActor {
     }
 
     private void doAnswerCall(final long callId) {
-        Log.d(TAG, "onIncomingCall (" + callId + ")");
+        Log.d(TAG, "doAnswerCall (" + callId + ")");
 
         // If not already answered
         if (!answeredCalls.contains(callId)) {
