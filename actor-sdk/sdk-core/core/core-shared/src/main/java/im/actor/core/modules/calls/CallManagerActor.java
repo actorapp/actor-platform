@@ -32,7 +32,8 @@ public class CallManagerActor extends ModuleActor {
     private HashSet<Long> handledCalls = new HashSet<>();
     private HashSet<Long> answeredCalls = new HashSet<>();
 
-    private HashMap<Long, ActorRef> currentCalls = new HashMap<>();
+    private Long currentCall;
+    private HashMap<Long, ActorRef> runningCalls = new HashMap<>();
 
     public CallManagerActor(ModuleContext context) {
         super(context);
@@ -50,6 +51,16 @@ public class CallManagerActor extends ModuleActor {
     //
 
     private void doCall(final Peer peer, final CommandCallback<Long> callback) {
+        Log.d(TAG, "doCall (" + peer + ")");
+
+        //
+        // Stopping current call as we started new done
+        //
+        stopRunningCall();
+
+        //
+        // Spawning new Actor for call
+        //
         system().actorOf("actor/master/" + RandomUtils.nextRid(), new ActorCreator() {
             @Override
             public Actor create() {
@@ -59,7 +70,25 @@ public class CallManagerActor extends ModuleActor {
     }
 
     private void onCallCreated(long callId, ActorRef ref) {
-        currentCalls.put(callId, ref);
+
+        //
+        // Stopping current call some are started during call establishing
+        //
+        stopRunningCall();
+
+        //
+        // Saving Reference to call
+        //
+        runningCalls.put(callId, ref);
+
+        //
+        // Setting Current Call
+        //
+        currentCall = callId;
+
+        //
+        // Notify Provider about new current call
+        //
         provider.onCallStart(callId);
     }
 
@@ -71,19 +100,39 @@ public class CallManagerActor extends ModuleActor {
     private void onIncomingCall(final long callId) {
         Log.d(TAG, "onIncomingCall (" + callId + ")");
 
+        //
         // Filter double updates about incoming call
+        //
         if (handledCalls.contains(callId)) {
             return;
         }
         handledCalls.add(callId);
 
-        currentCalls.put(callId, system().actorOf("actor/slave", new ActorCreator() {
+        //
+        // Spawning new Actor for call
+        //
+        system().actorOf("actor/slave/" + RandomUtils.nextRid(), new ActorCreator() {
             @Override
             public Actor create() {
                 return new CallSlaveActor(callId, context());
             }
-        }));
-        provider.onCallStart(callId);
+        });
+    }
+
+    private void onIncomingCallReady(long callId, ActorRef ref) {
+
+        //
+        // Saving reference to incoming call
+        //
+        runningCalls.put(callId, ref);
+
+        //
+        // Change Current Call if there are no ongoing calls now
+        //
+        if (currentCall == null) {
+            currentCall = callId;
+            provider.onCallStart(callId);
+        }
     }
 
     private void onIncomingCallHandled(long callId) {
@@ -102,14 +151,24 @@ public class CallManagerActor extends ModuleActor {
     //
 
     private void onCallEnded(long callId) {
-        currentCalls.remove(callId);
+        runningCalls.remove(callId);
     }
 
     private void doEndCall(long callId) {
-        ActorRef currentCall = currentCalls.remove(callId);
+        ActorRef currentCall = runningCalls.remove(callId);
         if (currentCall != null) {
             currentCall.send(new CallActor.DoEndCall());
         }
+    }
+
+    private void stopRunningCall() {
+        if (currentCall != null) {
+            ActorRef dest = runningCalls.remove(currentCall);
+            if (dest != null) {
+                dest.send(new CallActor.DoEndCall());
+            }
+        }
+        currentCall = null;
     }
 
     //
@@ -133,9 +192,12 @@ public class CallManagerActor extends ModuleActor {
         } else if (message instanceof DoCall) {
             DoCall doCall = (DoCall) message;
             doCall(doCall.getPeer(), doCall.getCallback());
-        } else if (message instanceof OnCallCreated) {
-            OnCallCreated callCreated = (OnCallCreated) message;
+        } else if (message instanceof DoCallComplete) {
+            DoCallComplete callCreated = (DoCallComplete) message;
             onCallCreated(callCreated.getCallId(), sender());
+        } else if (message instanceof IncomingCallReady) {
+            IncomingCallReady callComplete = (IncomingCallReady) message;
+            onIncomingCallReady(callComplete.getCallId(), sender());
         } else {
             super.onReceive(message);
         }
@@ -204,7 +266,13 @@ public class CallManagerActor extends ModuleActor {
         }
     }
 
+
+    //
+    // Call Start
+    //
+
     public static class DoCall {
+
         private Peer peer;
         private CommandCallback<Long> callback;
 
@@ -222,11 +290,23 @@ public class CallManagerActor extends ModuleActor {
         }
     }
 
-    public static class OnCallCreated {
+    public static class DoCallComplete {
 
         private long callId;
 
-        public OnCallCreated(long callId) {
+        public DoCallComplete(long callId) {
+            this.callId = callId;
+        }
+
+        public long getCallId() {
+            return callId;
+        }
+    }
+
+    public static class IncomingCallReady {
+        private long callId;
+
+        public IncomingCallReady(long callId) {
             this.callId = callId;
         }
 

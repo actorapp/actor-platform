@@ -5,14 +5,15 @@ import com.google.gwt.core.client.JsArray;
 
 import im.actor.core.entity.Peer;
 import im.actor.core.js.JsMessenger;
-import im.actor.core.viewmodel.CallModel;
+import im.actor.core.viewmodel.CallMember;
+import im.actor.core.viewmodel.CallVM;
 
 public class JsCall extends JavaScriptObject {
 
-    public static JsCall create(JsMessenger messenger, CallModel model) {
+    public static JsCall create(JsMessenger messenger, CallVM model) {
         JsArray<JsPeerInfo> members = JsArray.createArray().cast();
-        for (int uid : model.getActiveMembers().get()) {
-            members.push(messenger.buildPeerInfo(Peer.user(uid)));
+        for (CallMember member : model.getMembers().get()) {
+            members.push(messenger.buildPeerInfo(Peer.user(member.getUid())));
         }
         String state;
         switch (model.getState().get()) {
