@@ -2,14 +2,8 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import DelegateContainer from '../utils/DelegateContainer'
 import assignDeep from 'assign-deep';
-import { addLocaleData } from 'react-intl';
-import en from 'react-intl/lib/locale-data/en';
-import ru from 'react-intl/lib/locale-data/ru';
-import es from 'react-intl/lib/locale-data/es';
-import pt from 'react-intl/lib/locale-data/pt';
-import zh from 'react-intl/lib/locale-data/zh';
+import DelegateContainer from '../utils/DelegateContainer';
 
 import russian from './ru-RU';
 import english from './en-US';
@@ -17,11 +11,19 @@ import spanish from './es-ES';
 import portuguese from './pt-BR';
 import chinese from './zh-CN';
 
-addLocaleData(en);
-addLocaleData(ru);
-addLocaleData(es);
-addLocaleData(pt);
-addLocaleData(zh);
+import { addLocaleData } from 'react-intl';
+
+import enLocaleData from 'react-intl/lib/locale-data/en';
+import ruLocaleData from 'react-intl/lib/locale-data/ru';
+import esLocaleData from 'react-intl/lib/locale-data/es';
+import ptLocaleData from 'react-intl/lib/locale-data/pt';
+import zhLocaleData from 'react-intl/lib/locale-data/zh';
+
+addLocaleData(enLocaleData);
+addLocaleData(ruLocaleData);
+addLocaleData(esLocaleData);
+addLocaleData(ptLocaleData);
+addLocaleData(zhLocaleData);
 
 let language = navigator.language.toLocaleLowerCase() || navigator.browserLanguage.toLocaleLowerCase();
 if (language === 'zh-cn') language = 'zh';
