@@ -7,14 +7,16 @@ import Foundation
 class iOSCallsProvider: NSObject, ACCallsProvider {
     
     func onCallStartWithCallId(callId: jlong) {
-        dispatchOnUi() { () -> Void in
+        dispatchOnUi() {
             let rootController = ActorSDK.sharedActor().bindedToWindow.rootViewController!
             rootController.presentViewController(AACallViewController(callId: callId), animated: true, completion: nil)
         }
     }
     
     func onCallEndWithCallId(callId: jlong) {
-        
+        dispatchOnUi() {
+            
+        }
     }
     
 //    private var controller: ACWebRTCController!
