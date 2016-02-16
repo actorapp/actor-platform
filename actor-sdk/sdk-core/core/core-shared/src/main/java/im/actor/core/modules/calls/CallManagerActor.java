@@ -233,7 +233,7 @@ public class CallManagerActor extends ModuleActor {
         // Notify Provider if this call was current
         //
         if (currentCall == callId) {
-            currentCall = callId;
+            currentCall = null;
             provider.onCallEnd(callId);
         }
     }
