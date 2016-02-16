@@ -13,21 +13,18 @@ import im.actor.runtime.annotations.Verified;
 @Verified
 public class ContactsProcessor extends AbsModule {
 
-    private ActorRef contactsSyncActor;
-
     @Verified
     public ContactsProcessor(ModuleContext context) {
         super(context);
-        contactsSyncActor = context().getContactsModule().getContactSyncActor();
     }
 
     @Verified
     public void onContactsAdded(int[] uid) {
-        contactsSyncActor.send(new ContactsSyncActor.ContactsAdded(uid));
+        context().getContactsModule().getContactSyncActor().send(new ContactsSyncActor.ContactsAdded(uid));
     }
 
     @Verified
     public void onContactsRemoved(int[] uid) {
-        contactsSyncActor.send(new ContactsSyncActor.ContactsRemoved(uid));
+        context().getContactsModule().getContactSyncActor().send(new ContactsSyncActor.ContactsRemoved(uid));
     }
 }
