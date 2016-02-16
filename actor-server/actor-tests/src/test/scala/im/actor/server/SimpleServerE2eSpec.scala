@@ -82,7 +82,7 @@ final class SimpleServerE2eSpec extends ActorSuite(
 
     RpcApiExtension(system).register(services)
 
-    TcpFrontend.start("127.0.0.1", 9070, Seq.empty, None)
+    TcpFrontend.start("127.0.0.1", 9070, Seq.empty)
 
     val remote = new InetSocketAddress("127.0.0.1", 9070)
 
