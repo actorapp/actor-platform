@@ -137,15 +137,20 @@ final class EventBusMediator extends Actor with ActorLogging {
         message = message
       )
 
-      dests foreach {
-        case ApiEventBusDestination(destUserId, deviceIds) ⇒
-          deviceIds foreach { deviceId ⇒
-            consumers.byDeviceId(deviceId) foreach {
-              case (userId, authId) ⇒
-                weakExt.pushUpdate(authId, update, None, None)
-            }
+      val authIds = dests match {
+        case Nil ⇒ consumers.authIds
+        case _ ⇒
+          dests flatMap {
+            case ApiEventBusDestination(destUserId, deviceIds) ⇒
+              deviceIds flatMap { deviceId ⇒
+                consumers.byDeviceId(deviceId) map {
+                  case (userId, authId) ⇒ authId
+                }
+              }
           }
       }
+
+      authIds foreach (weakExt.pushUpdate(_, update, None, None))
 
       val msg = EventBus.Message(id, clientUserId, message)
       this.internalConsumers foreach (_ ! msg)
