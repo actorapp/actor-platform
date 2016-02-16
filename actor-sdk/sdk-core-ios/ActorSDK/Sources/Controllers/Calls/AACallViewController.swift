@@ -10,12 +10,11 @@ public class AACallViewController: AAViewController {
     public let binder = AABinder()
     public let callId: jlong
     public let call: ACCallVM
-    public let bgImage = UIImageView(image: UIImage.bundled("bg_1.jpg"))
-    public let bgImageOverlay = UIView()
     public let senderAvatar: AAAvatarView = AAAvatarView(frameSize: 120, type: .Rounded)
     public let peerTitle = UILabel()
-    public let answerCall = UIButton(frame: CGRectMake(0, 0, 80, 80))
-    public let declineCall = UIButton(frame: CGRectMake(0, 0, 80, 80))
+    public let callState = UILabel()
+    public let answerCallButton = UIButton()
+    public let declineCallButton = UIButton()
     
     public init(callId: jlong) {
         self.callId = callId
@@ -30,48 +29,66 @@ public class AACallViewController: AAViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        answerCall.backgroundColor = UIColor.greenColor()
-        answerCall.setTitle("Answer ", forState: .Normal)
-        answerCall.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        answerCall.viewDidTap = {
+        //
+        // Buttons
+        //
+        answerCallButton.setImage(UIImage.bundled("ic_call_36pt")!.tintImage(UIColor.whiteColor()), forState: .Normal)
+        answerCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(rgb: 0x54dd64), size: CGSizeMake(72, 72), radius: 36), forState: .Normal)
+        answerCallButton.viewDidTap = {
             Actor.answerCallWithCallId(self.callId)
-//             self.navigateDetail(ConversationViewController(peer: self.call.peer))
-//            self.dismiss()
         }
         
-        declineCall.backgroundColor = UIColor.redColor()
-        declineCall.setTitle("End Call", forState: .Normal)
-        declineCall.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        declineCall.viewDidTap = {
+        declineCallButton.setImage(UIImage.bundled("ic_call_end_36pt")!.tintImage(UIColor.whiteColor()), forState: .Normal)
+        declineCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(rgb: 0xfc2c31), size: CGSizeMake(72, 72), radius: 36), forState: .Normal)
+        declineCallButton.viewDidTap = {
             Actor.endCallWithCallId(self.callId)
-            self.navigateDetail(ConversationViewController(peer: self.call.peer))
             self.dismiss()
         }
         
-        bgImage.contentMode = UIViewContentMode.ScaleAspectFill
-        bgImageOverlay.opaque = false
-        bgImageOverlay.backgroundColor = UIColor(rgb: 0x86aed7)
-        peerTitle.textColor = UIColor.whiteColor()
+        //
+        // Peer Info
+        //
+        
+        peerTitle.textColor = ActorSDK.sharedActor().style.vcTextColor
         peerTitle.textAlignment = NSTextAlignment.Center
         peerTitle.font = UIFont.thinSystemFontOfSize(32)
         
-        self.view.addSubview(bgImage)
-        self.view.addSubview(bgImageOverlay)
+        callState.textColor = ActorSDK.sharedActor().style.vcHintColor
+        callState.textAlignment = NSTextAlignment.Center
+        callState.font = UIFont.thinSystemFontOfSize(32)
+        
+        self.view.backgroundColor = UIColor.whiteColor()
+        
         self.view.addSubview(senderAvatar)
         self.view.addSubview(peerTitle)
-        self.view.addSubview(answerCall)
+        self.view.addSubview(callState)
+        self.view.addSubview(answerCallButton)
+        self.view.addSubview(declineCallButton)
     }
     
     public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
-        bgImage.frame = self.view.bounds
-        bgImageOverlay.frame = self.view.bounds
-        
-        senderAvatar.frame = CGRectMake((self.view.width - 120) / 2, 100, 120, 120)
+        senderAvatar.frame = CGRectMake((self.view.width - 90) / 2, 100, 90, 90)
         peerTitle.frame = CGRectMake(60, senderAvatar.bottom + 20, view.width - 120, 34)
-        answerCall.frame = CGRectMake(0, self.view.height - 48, self.view.width, 48)
-        declineCall.frame = CGRectMake(0, self.view.height - 48 - 48, self.view.width, 48)
+        callState.frame = CGRectMake(60, peerTitle.bottom + 20, view.width - 120, 34)
+        
+        layoutButtons()
+    }
+    
+    private func layoutButtons() {
+        if !declineCallButton.hidden || !answerCallButton.hidden {
+            if !declineCallButton.hidden && !answerCallButton.hidden {
+                
+            } else {
+                if !answerCallButton.hidden {
+                    answerCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 96, 72, 72)
+                }
+                if !declineCallButton.hidden {
+                    declineCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 96, 72, 72)
+                }
+            }
+        }
     }
     
     public override func viewWillAppear(animated: Bool) {
@@ -82,44 +99,30 @@ public class AACallViewController: AAViewController {
         //
         binder.bind(call.state) { (value: ACCallState!) -> () in
             if (ACCallState_Enum.CALLING_INCOMING == value.toNSEnum()) {
-                self.answerCall.hidden = false
-                self.declineCall.hidden = false
+                self.answerCallButton.hidden = false
+                self.declineCallButton.hidden = false
+                self.callState.text = "Incoming call..."
+                self.layoutButtons()
             } else if (ACCallState_Enum.IN_PROGRESS == value.toNSEnum()) {
-                self.answerCall.hidden = true
-                self.declineCall.hidden = false
+                self.answerCallButton.hidden = true
+                self.declineCallButton.hidden = false
+                self.callState.text = "0:00"
+                self.layoutButtons()
             } else if (ACCallState_Enum.CALLING_OUTGOING == value.toNSEnum()){
-                self.answerCall.hidden = true
-                self.declineCall.hidden = false
+                self.answerCallButton.hidden = true
+                self.declineCallButton.hidden = false
+                self.callState.text = "Ringing..."
+                self.layoutButtons()
             } else if (ACCallState_Enum.ENDED == value.toNSEnum()) {
-                self.answerCall.hidden = false
-                self.declineCall.hidden = false
+                self.answerCallButton.hidden = false
+                self.declineCallButton.hidden = false
+                self.callState.text = "Call Ended"
+                self.layoutButtons()
             } else {
-                self.answerCall.hidden = false
-                self.declineCall.hidden = false
-            }
-        }
-        
-        //
-        // Binding Avatar
-        //
-        binder.bind(call.members) { (value: JavaUtilArrayList!) -> () in
-            
-            print("Bind user")
-            
-            var users = [ACUserVM]()
-            for i in 0..<value.size() {
-                let uid = (value.getWithInt(i) as! ACCallMember).uid
-                if (uid != Actor.myUid()) {
-                    users.append(Actor.getUserWithUid(uid))
-                }
-            }
-            
-            print("Bind user \(users.count)")
-            
-            if (users.count == 1) {
-                self.senderAvatar.bind(users[0].getNameModel().get(), id: users[0].getId(), avatar: users[0].getAvatarModel().get())
-            } else {
-                // TODO: Multiple Users
+                self.answerCallButton.hidden = false
+                self.declineCallButton.hidden = false
+                self.callState.text = ""
+                self.layoutButtons()
             }
         }
         
@@ -127,22 +130,26 @@ public class AACallViewController: AAViewController {
         // Binding Title
         //
         if (call.peer.peerType.toNSEnum() == ACPeerType_Enum.PRIVATE) {
-            binder.bind(Actor.getUserWithUid(call.peer.peerId).getNameModel(), closure: { (value: String!) -> () in
+            let user = Actor.getUserWithUid(call.peer.peerId)
+            binder.bind(user.getNameModel(), closure: { (value: String!) -> () in
                 self.peerTitle.text = value
+            })
+            binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar!) -> () in
+                self.senderAvatar.bind(user.getNameModel().get(), id: user.getId(), avatar: value)
             })
         } else if (call.peer.peerType.toNSEnum() == ACPeerType_Enum.GROUP) {
-            binder.bind(Actor.getGroupWithGid(call.peer.peerId).getNameModel(), closure: { (value: String!) -> () in
+            let group = Actor.getGroupWithGid(call.peer.peerId)
+            binder.bind(group.getNameModel(), closure: { (value: String!) -> () in
                 self.peerTitle.text = value
             })
+            binder.bind(group.getAvatarModel(), closure: { (value: ACAvatar!) -> () in
+                self.senderAvatar.bind(group.getNameModel().get(), id: group.getId(), avatar: value)
+            })
         }
-        
-        UIApplication.sharedApplication().setStatusBarStyle(.LightContent, animated: true)
     }
     
     public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         binder.unbindAll()
-        
-        UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
     }
 }

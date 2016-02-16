@@ -8,6 +8,7 @@ import im.actor.core.api.ApiSwitchMaster;
 import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.api.rpc.RequestGetCallInfo;
 import im.actor.core.api.rpc.ResponseGetCallInfo;
+import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.CallMember;
 import im.actor.core.viewmodel.CallState;
@@ -22,6 +23,7 @@ public class CallSlaveActor extends CallActor {
     private MasterNode masterNode;
     private boolean isAnswerPending = false;
     private long callId;
+    private Peer peer;
 
     public CallSlaveActor(long callId, ModuleContext context) {
         super(context);
@@ -35,9 +37,7 @@ public class CallSlaveActor extends CallActor {
         api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
             @Override
             public void apply(final ResponseGetCallInfo responseGetCallInfo) {
-                spawnNewVM(callId, convert(responseGetCallInfo.getPeer()),
-                        new ArrayList<CallMember>(), CallState.CALLING_INCOMING);
-                callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
+                peer = convert(responseGetCallInfo.getPeer());
                 joinBus(responseGetCallInfo.getEventBusId());
             }
         }).failure(new Consumer<Exception>() {
@@ -48,6 +48,13 @@ public class CallSlaveActor extends CallActor {
         }).done(self());
     }
 
+    @Override
+    public void onBusStarted() {
+        super.onBusStarted();
+        spawnNewVM(callId, peer, new ArrayList<CallMember>(), CallState.CALLING_INCOMING);
+        callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
+    }
+
     public void onMasterNodeChanged(int fromUid, long fromDeviceId) {
         masterNode = new MasterNode(fromUid, fromDeviceId);
         if (isAnswerPending) {
@@ -55,7 +62,7 @@ public class CallSlaveActor extends CallActor {
             sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiAnswerCall());
         }
 
-        schedule(new DoAnswer(), 5000);
+        // schedule(new DoAnswer(), 5000);
     }
 
     public void onNeedOffer(int destUid, long destDeviceId) {
