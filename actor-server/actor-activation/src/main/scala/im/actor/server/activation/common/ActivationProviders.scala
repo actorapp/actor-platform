@@ -10,7 +10,7 @@ object ActivationProviders {
   val Sms = "sms"
   val Smtp = "smtp"
   val Call = "call"
-  val InApp = "in-app"
+  val Internal = "internal"
 
   /**
    * Instantiates activation providers based on configuration.
