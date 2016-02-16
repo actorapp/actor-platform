@@ -45,4 +45,9 @@ public class JsAssetsProvider implements AssetsRuntime {
 
         return null;
     }
+
+    @Override
+    public byte[] loadBinAsset(String name) {
+        return null;
+    }
 }

@@ -60,7 +60,9 @@ import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.*;
 import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -85,6 +87,15 @@ public class Messenger {
 
         // Start Messenger initialization
         Timing timing = new Timing("MESSENGER_INIT");
+
+        // Encryption
+        timing.section("Encryption");
+        byte[] asset = Assets.loadBinAsset("kuz_tables.bin");
+        if (asset != null) {
+            KuznechikFastEngine.initDump(asset);
+        } else {
+            KuznechikFastEngine.initCalc();
+        }
 
         // Actor system
         timing.section("Actors");
