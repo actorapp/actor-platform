@@ -33,7 +33,7 @@ public class AudioActorEx extends AndroidPlayerActor {
 
             mplayer = new MediaPlayer();
             mplayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
-//            mplayer.setDataSource(context, Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.tone));
+            mplayer.setDataSource(context, Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.tone));
             mplayer.prepare();
             mplayer.setLooping(true);
             mplayer.start();
