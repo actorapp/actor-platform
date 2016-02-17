@@ -5,12 +5,21 @@ import android.content.Intent;
 
 import im.actor.core.providers.CallsProvider;
 import im.actor.core.viewmodel.CallState;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.actors.Props;
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.controllers.calls.AudioActorEx;
 import im.actor.sdk.controllers.calls.CallActivity;
+import im.actor.sdk.core.audio.AndroidPlayerActor;
+import im.actor.sdk.core.audio.AudioPlayerActor;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class AndroidCallProvider implements CallsProvider {
+    private ActorRef toneActor;
+
 
     @Override
     public void onCallStart(long callId) {
@@ -24,16 +33,52 @@ public class AndroidCallProvider implements CallsProvider {
 
     @Override
     public void onCallEnd(long callId) {
-        messenger().getCall(callId).getState().change(CallState.ENDED);
+
     }
 
     @Override
     public void startOutgoingBeep() {
-        // TODO: Implement
+        if (toneActor == null) {
+            toneActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
+                @Override
+                public AudioActorEx create() {
+                    return new AudioActorEx(messenger().getContext(), new AudioPlayerActor.AudioPlayerCallback() {
+                        @Override
+                        public void onStart(String fileName) {
+
+                        }
+
+                        @Override
+                        public void onStop(String fileName) {
+
+                        }
+
+                        @Override
+                        public void onPause(String fileName, float progress) {
+
+                        }
+
+                        @Override
+                        public void onProgress(String fileName, float progress) {
+
+                        }
+
+                        @Override
+                        public void onError(String fileName) {
+
+                        }
+                    });
+                }
+            }), "actor/android_tone");
+        }
+
+        toneActor.send(new AndroidPlayerActor.Play(""));
     }
 
     @Override
     public void stopOutgoingBeep() {
-        // TODO: Implement
+        if(toneActor!=null){
+            toneActor.send(new AudioActorEx.Stop());
+        }
     }
 }
