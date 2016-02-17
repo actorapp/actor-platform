@@ -34,6 +34,7 @@ public class CallManagerActor extends ModuleActor {
 
     private Long currentCall;
     private HashMap<Long, ActorRef> runningCalls = new HashMap<>();
+    private boolean isBeeping = false;
 
     public CallManagerActor(ModuleContext context) {
         super(context);
@@ -85,6 +86,10 @@ public class CallManagerActor extends ModuleActor {
             if (dest != null) {
                 dest.send(new CallActor.DoEndCall());
             }
+            if (isBeeping) {
+                isBeeping = false;
+                provider.stopOutgoingBeep();
+            }
             currentCall = null;
         }
 
@@ -102,6 +107,8 @@ public class CallManagerActor extends ModuleActor {
         // Notify Provider about new current call
         //
         provider.onCallStart(callId);
+        isBeeping = true;
+        provider.startOutgoingBeep();
     }
 
 
@@ -155,7 +162,7 @@ public class CallManagerActor extends ModuleActor {
             //
             // Notify provider
             //
-            if (currentCall!=null && currentCall == callId) {
+            if (currentCall != null && currentCall == callId) {
                 currentCall = null;
                 provider.onCallEnd(callId);
             }
@@ -192,6 +199,16 @@ public class CallManagerActor extends ModuleActor {
         }
     }
 
+    private void onCallAnswered(long callId) {
+        Log.d(TAG, "onCallAnswered (" + callId + ")");
+        if (currentCall == callId) {
+            if (isBeeping) {
+                isBeeping = false;
+                provider.stopOutgoingBeep();
+            }
+        }
+    }
+
 
     //
     // Ending call
@@ -211,9 +228,14 @@ public class CallManagerActor extends ModuleActor {
         //
         // Notify Provider if this call was current
         //
-        if (currentCall!=null && currentCall == callId) {
+        if (currentCall != null && currentCall == callId) {
             currentCall = callId;
             provider.onCallEnd(callId);
+
+            if (isBeeping) {
+                isBeeping = false;
+                provider.stopOutgoingBeep();
+            }
         }
     }
 
@@ -232,13 +254,16 @@ public class CallManagerActor extends ModuleActor {
         //
         // Notify Provider if this call was current
         //
-        if (currentCall!=null && currentCall == callId) {
+        if (currentCall != null && currentCall == callId) {
             currentCall = null;
             provider.onCallEnd(callId);
+            if (isBeeping) {
+                isBeeping = false;
+                provider.stopOutgoingBeep();
+            }
         }
     }
 
-    
 
     //
     // Messages
@@ -267,6 +292,9 @@ public class CallManagerActor extends ModuleActor {
         } else if (message instanceof IncomingCallReady) {
             IncomingCallReady callComplete = (IncomingCallReady) message;
             onIncomingCallReady(callComplete.getCallId(), sender());
+        } else if (message instanceof OnCallAnswered) {
+            OnCallAnswered answered = (OnCallAnswered) message;
+            onCallAnswered(answered.getCallId());
         } else {
             super.onReceive(message);
         }
@@ -364,6 +392,18 @@ public class CallManagerActor extends ModuleActor {
         private long callId;
 
         public DoCallComplete(long callId) {
+            this.callId = callId;
+        }
+
+        public long getCallId() {
+            return callId;
+        }
+    }
+
+    public static class OnCallAnswered {
+        private long callId;
+
+        public OnCallAnswered(long callId) {
             this.callId = callId;
         }
 

@@ -44,7 +44,6 @@ public class AACallViewController: AAViewController {
         declineCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(rgb: 0xfc2c31), size: CGSizeMake(72, 72), radius: 36), forState: .Normal)
         declineCallButton.viewDidTap = {
             Actor.endCallWithCallId(self.callId)
-            self.dismiss()
         }
         
         //
@@ -128,7 +127,7 @@ public class AACallViewController: AAViewController {
                 self.layoutButtons()
                 if (!self.isScheduledDispose) {
                     self.isScheduledDispose = true
-                    dispatchAfterOnUi(1) {
+                    dispatchAfterOnUi(0.8) {
                         self.dismiss()
                     }
                 }
