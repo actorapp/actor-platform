@@ -156,11 +156,17 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, addedStream stream: RTCMediaStream!) {
-        print("addedStream")
+        print("onStreamAdded")
+        for c in callbacks {
+            c.onStreamAdded(MediaStream(stream: stream!))
+        }
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, removedStream stream: RTCMediaStream!) {
-        print("removedStream")
+        print("onStreamRemoved")
+        for c in callbacks {
+            c.onStreamRemoved(MediaStream(stream: stream!))
+        }
     }
     
     func peerConnectionOnRenegotiationNeeded(peerConnection: RTCPeerConnection!) {

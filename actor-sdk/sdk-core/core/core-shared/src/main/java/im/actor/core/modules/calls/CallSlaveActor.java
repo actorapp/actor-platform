@@ -12,8 +12,10 @@ import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.CallMember;
 import im.actor.core.viewmodel.CallState;
+import im.actor.core.viewmodel.CallVM;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
 
@@ -24,6 +26,7 @@ public class CallSlaveActor extends CallActor {
     private boolean isAnswerPending = false;
     private long callId;
     private Peer peer;
+    private CallVM callVM;
 
     public CallSlaveActor(long callId, ModuleContext context) {
         super(context);
@@ -51,7 +54,7 @@ public class CallSlaveActor extends CallActor {
     @Override
     public void onBusStarted() {
         super.onBusStarted();
-        spawnNewVM(callId, peer, new ArrayList<CallMember>(), CallState.CALLING_INCOMING);
+        callVM = spawnNewVM(callId, peer, new ArrayList<CallMember>(), CallState.CALLING_INCOMING);
         callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
     }
 
@@ -68,6 +71,8 @@ public class CallSlaveActor extends CallActor {
     }
 
     public void doAnswer() {
+        callVM.getState().change(CallState.CONNECTING);
+
         if (masterNode == null) {
             isAnswerPending = true;
         } else {
@@ -75,6 +80,20 @@ public class CallSlaveActor extends CallActor {
         }
     }
 
+    @Override
+    public void onStreamAdded(int uid, long deviceId, WebRTCMediaStream stream) {
+        if (uid != myUid() && callVM.getState().get() == CallState.CONNECTING) {
+            callVM.getState().change(CallState.IN_PROGRESS);
+        }
+    }
+
+    @Override
+    public void onBusStopped() {
+        super.onBusStopped();
+
+        callVM.getState().change(CallState.ENDED);
+        callManager.send(new CallManagerActor.OnCallEnded(callId));
+    }
 
     //
     // Messages

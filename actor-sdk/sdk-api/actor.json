@@ -12490,7 +12490,7 @@
         {
           "type": "struct",
           "content": {
-            "name": "EndCall",
+            "name": "RejectCall",
             "doc": [
               "Ending Call signal"
             ],
@@ -12675,144 +12675,6 @@
         {
           "type": "struct",
           "content": {
-            "name": "ConnectedDevice",
-            "doc": [
-              "Connected Device",
-              {
-                "type": "reference",
-                "argument": "device",
-                "category": "full",
-                "description": "  Device Id"
-              },
-              {
-                "type": "reference",
-                "argument": "isConnecting",
-                "category": "full",
-                "description": "  Is Connecting to device. Default is false."
-              },
-              {
-                "type": "reference",
-                "argument": "isConnected",
-                "category": "full",
-                "description": "  Is Connected to device. Default is false."
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 1,
-                "name": "device"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 2,
-                "name": "isConnecting"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 3,
-                "name": "isConnected"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "ConnectedUser",
-            "doc": [
-              "Connected User",
-              {
-                "type": "reference",
-                "argument": "uid",
-                "category": "full",
-                "description": "  Device uid"
-              },
-              {
-                "type": "reference",
-                "argument": "isConnecting",
-                "category": "full",
-                "description": "  Is Connecting to user. Default is false."
-              },
-              {
-                "type": "reference",
-                "argument": "isConnected",
-                "category": "full",
-                "description": "  Is connected to user. Default is false."
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 1,
-                "name": "uid"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 4,
-                "name": "isConnecting"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 5,
-                "name": "isConnected"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "ActiveDevices",
-            "doc": [
-              "List of current memb",
-              {
-                "type": "reference",
-                "argument": "users",
-                "category": "full",
-                "description": "  Currently active users"
-              }
-            ],
-            "trait": {
-              "name": "WebRTCSignaling",
-              "key": 7
-            },
-            "attributes": [
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "ConnectedUser"
-                  }
-                },
-                "id": 2,
-                "name": "users"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
             "name": "NeedOffer",
             "doc": [
               "Notification from owner that offer is required",
@@ -12865,6 +12727,307 @@
               "key": 9
             },
             "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "MembersChanged",
+            "doc": [
+              "Event Bus update about members changed",
+              {
+                "type": "reference",
+                "argument": "allMembers",
+                "category": "full",
+                "description": "  All Members of call"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 16
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "CallMember"
+                  }
+                },
+                "id": 1,
+                "name": "allMembers"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "MemberAdded",
+            "doc": [
+              "Event Bus update about member added",
+              {
+                "type": "reference",
+                "argument": "memberAdded",
+                "category": "full",
+                "description": "  Member Added"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 17
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "CallMember"
+                },
+                "id": 2,
+                "name": "memberAdded"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "MemberRemoved",
+            "doc": [
+              "Event Bus update about member removed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceId",
+                "category": "full",
+                "description": "  Device Id"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 18
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "deviceId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "MemberStateUpdated",
+            "doc": [
+              "Member state updated",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceId",
+                "category": "full",
+                "description": "  Device Id"
+              },
+              {
+                "type": "reference",
+                "argument": "newState",
+                "category": "hidden",
+                "description": "  New State of member"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 19
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "deviceId"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "CallMemberStateHolder"
+                },
+                "id": 3,
+                "name": "newState"
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "CallMemberState",
+            "values": [
+              {
+                "name": "RINGING",
+                "id": 1
+              },
+              {
+                "name": "CONNECTING",
+                "id": 2
+              },
+              {
+                "name": "CONNECTED",
+                "id": 3
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "CallMemberStateHolder",
+            "doc": [
+              "Call Member state holder",
+              {
+                "type": "reference",
+                "argument": "state",
+                "category": "full",
+                "description": "  State Value"
+              },
+              {
+                "type": "reference",
+                "argument": "fallbackIsRinging",
+                "category": "full",
+                "description": "  Fallback flag for future compatibility of state"
+              },
+              {
+                "type": "reference",
+                "argument": "fallbackIsConnected",
+                "category": "full",
+                "description": "  Fallback flag for future compatibility of state"
+              },
+              {
+                "type": "reference",
+                "argument": "fallbackIsConnecting",
+                "category": "full",
+                "description": "  Fallback flag for future compatibility of state"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "CallMemberState"
+                },
+                "id": 1,
+                "name": "state"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 2,
+                "name": "fallbackIsRinging"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 3,
+                "name": "fallbackIsConnected"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 4,
+                "name": "fallbackIsConnecting"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "CallMember",
+            "doc": [
+              "Call Member",
+              {
+                "type": "reference",
+                "argument": "userId",
+                "category": "full",
+                "description": "  Member User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceId",
+                "category": "full",
+                "description": "  Member Device Id"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "category": "full",
+                "description": "  State of member"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "userId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "deviceId"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "CallMemberStateHolder"
+                },
+                "id": 3,
+                "name": "state"
+              }
+            ]
           }
         }
       ]
