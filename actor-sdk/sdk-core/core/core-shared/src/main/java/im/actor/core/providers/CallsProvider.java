@@ -23,6 +23,14 @@ public interface CallsProvider {
     void onCallStart(long callId);
 
     /**
+     * Call Answered Event
+     *
+     * @param callId Unique Call Id
+     */
+    @ObjectiveCName("onCallAnsweredWithCallId:")
+    void onCallAnswered(long callId);
+
+    /**
      * Call End event
      *
      * @param callId Unique Call Id
