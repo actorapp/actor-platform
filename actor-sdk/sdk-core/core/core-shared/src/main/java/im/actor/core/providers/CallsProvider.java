@@ -29,4 +29,16 @@ public interface CallsProvider {
      */
     @ObjectiveCName("onCallEndWithCallId:")
     void onCallEnd(long callId);
+
+    /**
+     * Event When outgoing beep need to start
+     */
+    @ObjectiveCName("startOutgoingBeep")
+    void startOutgoingBeep();
+
+    /**
+     * Event when outgoing beep need to stop
+     */
+    @ObjectiveCName("stopOutgoingBeep")
+    void stopOutgoingBeep();
 }
