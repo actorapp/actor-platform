@@ -1028,7 +1028,7 @@ public class ChatActivity extends ActorEditTextActivity {
             menu.findItem(R.id.leaveGroup).setVisible(false);
         }
 
-        if (getPeer().getPeerType() != PeerType.PRIVATE || !ActorSDK.sharedActor().isCallsEnabled()) {
+        if (!ActorSDK.sharedActor().isCallsEnabled()) {
             menu.findItem(R.id.call).setVisible(false);
         }
 
@@ -1083,7 +1083,7 @@ public class ChatActivity extends ActorEditTextActivity {
 
         }
 
-        if (getPeer().getPeerType() == PeerType.PRIVATE && ActorSDK.sharedActor().isCallsEnabled()) {
+        if (ActorSDK.sharedActor().isCallsEnabled()) {
             if (item.getItemId() == R.id.call) {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
                         ContextCompat.checkSelfPermission(this, Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED ||
@@ -1102,7 +1102,13 @@ public class ChatActivity extends ActorEditTextActivity {
     }
 
     private void startCall() {
-        Command<Long> cmd = messenger().doCall(peer.getPeerId());
+        Command<Long> cmd;
+        if(peer.getPeerType() == PeerType.PRIVATE){
+            cmd = messenger().doCall(peer.getPeerId());
+
+        }else{
+            cmd = messenger().doGroupCall(peer.getPeerId());
+        }
         execute(cmd, R.string.progress_common);
 
     }
