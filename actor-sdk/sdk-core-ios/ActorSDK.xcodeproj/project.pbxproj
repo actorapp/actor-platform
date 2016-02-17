@@ -178,6 +178,7 @@
 		06E323111C694C1D00D66F53 /* WebRTCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E323101C694C1D00D66F53 /* WebRTCExt.swift */; };
 		06E323151C6A7AC000D66F53 /* AACallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E323141C6A7AC000D66F53 /* AACallViewController.swift */; };
 		06E3C58B1C746CCC004776CD /* tone.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 06E3C58A1C746AAC004776CD /* tone.m4a */; };
+		06E3C58D1C749320004776CD /* ringtone.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 06E3C58C1C74931F004776CD /* ringtone.m4a */; };
 		06E7B2471C0F8D7A0090660C /* AALocationPickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2461C0F8D7A0090660C /* AALocationPickerController.swift */; };
 		06E7B24A1C0F92140090660C /* AABubbleLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */; };
 		06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B24B1C0FAB500090660C /* AAMapFastView.swift */; };
@@ -477,6 +478,7 @@
 		06E323101C694C1D00D66F53 /* WebRTCExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebRTCExt.swift; sourceTree = "<group>"; };
 		06E323141C6A7AC000D66F53 /* AACallViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AACallViewController.swift; path = Calls/AACallViewController.swift; sourceTree = "<group>"; };
 		06E3C58A1C746AAC004776CD /* tone.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = tone.m4a; sourceTree = "<group>"; };
+		06E3C58C1C74931F004776CD /* ringtone.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ringtone.m4a; sourceTree = "<group>"; };
 		06E7B2461C0F8D7A0090660C /* AALocationPickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AALocationPickerController.swift; sourceTree = "<group>"; };
 		06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleLocationCell.swift; sourceTree = "<group>"; };
 		06E7B24B1C0FAB500090660C /* AAMapFastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapFastView.swift; sourceTree = "<group>"; };
@@ -633,6 +635,7 @@
 				065975501BC7DD3C00B8C7DF /* Highlighter */,
 				06230F431BC95C0E00A4807B /* ABPhoneFieldCodes.txt */,
 				0659753A1BC7D22200B8C7DF /* Images.xcassets */,
+				06E3C58C1C74931F004776CD /* ringtone.m4a */,
 				065975461BC7D34200B8C7DF /* Localizable.strings */,
 				06230F441BC95C0E00A4807B /* PhoneFormats.dat */,
 				153F6B3C1C2A9B1900C0B960 /* begin_record.caf */,
@@ -1648,6 +1651,7 @@
 				065975441BC7D34200B8C7DF /* Localizable.strings in Resources */,
 				06E3C58B1C746CCC004776CD /* tone.m4a in Resources */,
 				BED5A1DB1C4839590045FDB0 /* NYTPhotoViewerCloseButtonXLandscape@2x.png in Resources */,
+				06E3C58D1C749320004776CD /* ringtone.m4a in Resources */,
 				0659754C1BC7DBA000B8C7DF /* notification.caf in Resources */,
 				BEF11DB61C466D800076400A /* begin_record.caf in Resources */,
 				063074191BD68E370053DEAF /* bg_3_preview.jpg in Resources */,

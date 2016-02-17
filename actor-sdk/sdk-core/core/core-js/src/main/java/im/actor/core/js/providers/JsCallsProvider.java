@@ -31,6 +31,11 @@ public class JsCallsProvider implements CallsProvider {
     }
 
     @Override
+    public void onCallAnswered(long callId) {
+
+    }
+
+    @Override
     public void onCallEnd(long callId) {
         JsMessenger.getInstance().broadcastEvent("calls", callEvent("" + callId, "ended"));
 

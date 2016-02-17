@@ -23,6 +23,11 @@ public class AndroidCallProvider implements CallsProvider {
     }
 
     @Override
+    public void onCallAnswered(long callId) {
+        // TODO: Implement
+    }
+
+    @Override
     public void onCallEnd(long callId) {
         messenger().getCall(callId).getState().change(CallState.ENDED);
     }
