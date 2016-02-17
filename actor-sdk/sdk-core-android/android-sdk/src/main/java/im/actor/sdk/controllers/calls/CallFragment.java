@@ -1,6 +1,7 @@
 package im.actor.sdk.controllers.calls;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,24 +16,27 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
+import im.actor.core.entity.PeerType;
+import im.actor.core.viewmodel.CallMember;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.CallVM;
+import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;
@@ -43,13 +47,18 @@ import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
-import im.actor.sdk.core.audio.AndroidPlayerActor;
-import im.actor.sdk.core.audio.AudioPlayerActor;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.SearchHighlight;
+import im.actor.sdk.view.adapters.HolderAdapter;
+import im.actor.sdk.view.adapters.ViewHolder;
+import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.avatar.CoverAvatarView;
 
+import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
@@ -121,13 +130,23 @@ public class CallFragment extends BaseFragment {
         //
         CoverAvatarView avatarView = (CoverAvatarView) cont.findViewById(R.id.avatar);
         avatarView.setBkgrnd((ImageView) cont.findViewById(R.id.avatar_bgrnd));
-
-        final UserVM user = users().get(peer.getPeerId());
-        bind(avatarView, user.getAvatar());
-
         TextView nameTV = (TextView) cont.findViewById(R.id.name);
         nameTV.setTextColor(ActorSDK.sharedActor().style.getProfileTitleColor());
-        bind(nameTV, user.getName());
+
+        if(peer.getPeerType() == PeerType.PRIVATE){
+
+            UserVM user = users().get(peer.getPeerId());
+            bind(avatarView, user.getAvatar());
+            bind(nameTV, user.getName());
+        }else if(peer.getPeerType() == PeerType.GROUP){
+            GroupVM g = groups().get(peer.getPeerId());
+            bind(avatarView, g.getAvatar());
+            bind(nameTV, g.getName());
+        }
+
+        ListView membersList  = (ListView) cont.findViewById(R.id.members_list);
+        CallMembersAdapter membersAdapter = new CallMembersAdapter(getActivity(), call.getMembers());
+        membersList.setAdapter(membersAdapter);
 
         timerTV = (TextView) cont.findViewById(R.id.timer);
         timerTV.setTextColor(ActorSDK.sharedActor().style.getProfileSubtitleColor());
@@ -301,13 +320,6 @@ public class CallFragment extends BaseFragment {
 
     }
 
-    private void toastInCenter(String s) {
-        Toast t = Toast.makeText(getActivity(),
-                s, Toast.LENGTH_SHORT);
-        t.setGravity(Gravity.CENTER, 0, 0);
-        t.show();
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -338,5 +350,82 @@ public class CallFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         manager.cancel(NOTIFICATION_ID);
+    }
+
+    class CallMembersAdapter extends HolderAdapter<CallMember>{
+
+
+        private ArrayList<CallMember> members;
+
+        protected CallMembersAdapter(Context context, final ValueModel<ArrayList<CallMember>> members) {
+            super(context);
+            this.members = members.get();
+            members.subscribe(new ValueChangedListener<ArrayList<CallMember>>() {
+                @Override
+                public void onChanged(ArrayList<CallMember> val, Value<ArrayList<CallMember>> valueModel) {
+                    CallMembersAdapter.this.members = val;
+                    notifyDataSetChanged();
+                    Log.d("STATUS CHANGED", val.toString());
+                }
+            });
+        }
+
+        @Override
+        public int getCount() {
+            return members.size();
+        }
+
+        @Override
+        public CallMember getItem(int position) {
+            return members.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return members.get(position).getUid();
+        }
+
+        @Override
+        protected ViewHolder<CallMember> createHolder(CallMember obj) {
+            return new MemberHolder();
+        }
+
+        private class MemberHolder extends ViewHolder<CallMember>{
+
+            CallMember data;
+            private TextView userName;
+            private TextView status;
+            private AvatarView avatarView;
+
+            @Override
+            public View init(final CallMember data, ViewGroup viewGroup, Context context) {
+                View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_call_member_item, viewGroup, false);
+
+                userName = (TextView) res.findViewById(R.id.name);
+                userName.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+                status = (TextView) res.findViewById(R.id.status);
+                status.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+                avatarView = (AvatarView) res.findViewById(R.id.avatar);
+                avatarView.init(Screen.dp(35), 18);
+                this.data = data;
+
+                return res;
+            }
+
+            @Override
+            public void bind(CallMember data, int position, Context context) {
+                UserVM user = users().get(data.getUid());
+                this.data = data;
+                avatarView.bind(user);
+                userName.setText(user.getName().get());
+                status.setText(data.getState().name());
+            }
+
+
+            @Override
+            public void unbind() {
+                avatarView.unbind();
+            }
+        }
     }
 }

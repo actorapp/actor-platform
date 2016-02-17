@@ -21,4 +21,9 @@ public class CallMember {
     public CallMemberState getState() {
         return state;
     }
+
+    @Override
+    public String toString() {
+        return uid + " | " + state.name();
+    }
 }
