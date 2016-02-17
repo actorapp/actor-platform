@@ -64,7 +64,6 @@ public class CallFragment extends BaseFragment {
     private Vibrator v;
     private View answerContainer;
     private Ringtone ringtone;
-    private ActorRef toneActor;
     private CallVM call;
     private ActorRef timer;
     private TextView timerTV;
@@ -160,7 +159,7 @@ public class CallFragment extends BaseFragment {
                         initIncoming();
                         break;
                     case CALLING_OUTGOING:
-//                        onConnecting();
+                        onConnecting();
                         break;
                 }
             }
@@ -237,7 +236,7 @@ public class CallFragment extends BaseFragment {
 
     private void onAnswer() {
 
-//        onConnecting();
+        onConnecting();
         answerContainer.setVisibility(View.INVISIBLE);
         if (ringtone != null) {
             ringtone.stop();
@@ -261,64 +260,6 @@ public class CallFragment extends BaseFragment {
 
 
     public void onConnecting() {
-        if (toneActor == null) {
-            toneActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
-                @Override
-                public AudioActorEx create() {
-                    return new AudioActorEx(getActivity(), new AudioPlayerActor.AudioPlayerCallback() {
-                        @Override
-                        public void onStart(String fileName) {
-
-                        }
-
-                        @Override
-                        public void onStop(String fileName) {
-
-                        }
-
-                        @Override
-                        public void onPause(String fileName, float progress) {
-
-                        }
-
-                        @Override
-                        public void onProgress(String fileName, float progress) {
-
-                        }
-
-                        @Override
-                        public void onError(String fileName) {
-
-                        }
-                    });
-                }
-            }), "actor/android_tone");
-        }
-
-        toneActor.send(new AndroidPlayerActor.Play(""));
-
-
-        vibrate = true;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (vibrate) {
-                    try {
-                        v.vibrate(10);
-                        Thread.sleep(5);
-                        v.vibrate(10);
-                        Thread.sleep(200);
-                        v.vibrate(10);
-                        Thread.sleep(5);
-                        v.vibrate(10);
-                        Thread.sleep(600);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-
         powerManager = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(field, getActivity().getLocalClassName());
 
@@ -329,9 +270,6 @@ public class CallFragment extends BaseFragment {
 
 
     public void onConnected() {
-        if (toneActor != null) {
-            toneActor.send(new AndroidPlayerActor.Stop());
-        }
         vibrate = false;
         v.cancel();
         v.vibrate(200);
@@ -339,9 +277,6 @@ public class CallFragment extends BaseFragment {
     }
 
     public void onCallEnd() {
-        if (toneActor != null) {
-            toneActor.send(new AndroidPlayerActor.Stop());
-        }
         vibrate = false;
         if (ringtone != null) {
             ringtone.stop();
