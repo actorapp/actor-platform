@@ -123,7 +123,7 @@ object Build extends sbt.Build with Versioning with Releasing {
         scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
       )
   )
-    .dependsOn(actorEmail, actorSms, actorPersist)
+    .dependsOn(actorCore, actorEmail, actorSms, actorPersist)
 
   lazy val actorBots = Project(
     id = "actor-bots",

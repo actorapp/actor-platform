@@ -42,7 +42,7 @@ public class StickersModule extends AbsModule {
     public StickersModule(ModuleContext context) {
         super(context);
         this.stickerPacksList = Storage.createKeyValue(STORAGE_STICKER_ALL_PACKS);
-        stickerPacks = new ValueModel<ArrayList<StickerPackVM>>("sticker_packs_vms", new ArrayList<StickerPackVM>());
+        stickerPacks = new ValueModel<>("sticker_packs_vms", new ArrayList<StickerPackVM>());
         stickerPacks.change(buildStickerPacks());
         context().getEvents().subscribe(new BusSubscriber() {
             @Override

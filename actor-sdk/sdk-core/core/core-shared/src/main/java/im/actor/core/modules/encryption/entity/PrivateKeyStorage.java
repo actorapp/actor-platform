@@ -15,6 +15,7 @@ public class PrivateKeyStorage extends BserObject {
     private PrivateKey identityKey = null;
     private PrivateKey[] keys;
     private PrivateKey[] preKeys;
+    private boolean wasRegenerated = false;
 
     public PrivateKeyStorage(int keyGroupId, PrivateKey identityKey, PrivateKey[] keys, PrivateKey[] preKeys) {
         this.keyGroupId = keyGroupId;
@@ -84,19 +85,26 @@ public class PrivateKeyStorage extends BserObject {
         return uploadedKeys.get(RandomUtils.randomId(uploadedKeys.size()));
     }
 
+    public boolean isWasRegenerated() {
+        return wasRegenerated;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         keyGroupId = values.getInt(1);
         identityKey = new PrivateKey(values.getBytes(2));
+        wasRegenerated |= identityKey.isWasRegenerated();
         List<byte[]> r = values.getRepeatedBytes(3);
         keys = new PrivateKey[r.size()];
         for (int i = 0; i < keys.length; i++) {
             keys[i] = new PrivateKey(r.get(i));
+            wasRegenerated |= keys[i].isWasRegenerated();
         }
         r = values.getRepeatedBytes(4);
         preKeys = new PrivateKey[r.size()];
         for (int i = 0; i < preKeys.length; i++) {
             preKeys[i] = new PrivateKey(r.get(i));
+            wasRegenerated |= preKeys[i].isWasRegenerated();
         }
     }
 

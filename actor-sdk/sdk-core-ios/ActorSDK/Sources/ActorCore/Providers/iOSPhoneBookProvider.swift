@@ -8,76 +8,110 @@ import AddressBook
 class PhoneBookProvider: NSObject, ACPhoneBookProvider {
     
     func loadPhoneBookWithCallback(callback: ACPhoneBookProvider_Callback!) {
-        let rawBook = ABAddressBookCreateWithOptions(nil, nil);
-        if (rawBook == nil) {
-            print("Access to AddressBook denied");
-            callback.onLoadedWithContacts(JavaUtilArrayList())
-            return
-        }
-        let book: ABAddressBook = rawBook.takeRetainedValue()
-        ABAddressBookRequestAccessWithCompletion(book, { (granted: Bool, error: CFError!) -> Void in
-            if (!granted) {
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(2.0 * Double(NSEC_PER_SEC))), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            
+            let rawBook = ABAddressBookCreateWithOptions(nil, nil);
+            if (rawBook == nil) {
                 print("Access to AddressBook denied");
                 callback.onLoadedWithContacts(JavaUtilArrayList())
-                return;
+                return
             }
-            
-            let numbersSet = NSCharacterSet(charactersInString: "0123456789").invertedSet
-            let contacts = JavaUtilArrayList()
-            var index = 1
-            let people = ABAddressBookCopyArrayOfAllPeople(book).takeRetainedValue() as [ABRecordRef]
-            for person in people {
-                let firstName = self.extractString(person as ABRecord, propertyName: kABPersonFirstNameProperty)
-                let middleName = self.extractString(person as ABRecord, propertyName: kABPersonMiddleNameProperty)
-                let lastName = self.extractString(person as ABRecord, propertyName: kABPersonLastNameProperty)
-                
-                var contactName :String? = [firstName, middleName, lastName]
-                    .filter({ (val: String?) -> Bool in return val != nil && val!.length > 0})
-                    .map({ (val: String?) -> String in return val! })
-                    .joinWithSeparator(" ")
-                
-                if (firstName == "Name not specified") {
-                    contactName = nil
+            let book: ABAddressBook = rawBook.takeRetainedValue()
+            ABAddressBookRequestAccessWithCompletion(book, { (granted: Bool, error: CFError!) -> Void in
+                if (!granted) {
+                    print("Access to AddressBook denied");
+                    callback.onLoadedWithContacts(JavaUtilArrayList())
+                    return;
                 }
                 
-                let contactPhones = JavaUtilArrayList()
-                let contactEmails = JavaUtilArrayList()
-                let contact = ACPhoneBookContact(long: jlong(index++), withNSString: contactName, withJavaUtilArrayList: contactPhones, withJavaUtilArrayList: contactEmails)
-                
-                if let phones: ABMultiValueRef =
-                    self.extractProperty(person as ABRecord, propertyName: kABPersonPhoneProperty) as ABMultiValueRef? {
-                        for i in 0...ABMultiValueGetCount(phones) {
-                            var phoneStr = self.extractString(phones, index: i)
-                            if (phoneStr == nil || phoneStr!.trim().length == 0) {
-                                continue
+                autoreleasepool {
+                    let numbersSet = NSCharacterSet(charactersInString: "0123456789").invertedSet
+                    let contacts = JavaUtilArrayList()
+                    var index = 1
+                    let people = ABAddressBookCopyArrayOfAllPeople(book).takeRetainedValue() as [ABRecordRef]
+                    
+                    for person in people {
+                        let firstName = self.extractString(person as ABRecord, propertyName: kABPersonFirstNameProperty)
+                        let middleName = self.extractString(person as ABRecord, propertyName: kABPersonMiddleNameProperty)
+                        let lastName = self.extractString(person as ABRecord, propertyName: kABPersonLastNameProperty)
+                        
+                        var contactName :String?
+                        
+                        //
+                        // For Performance. LOL.
+                        //
+                        if firstName != nil {
+                            if middleName != nil {
+                                if lastName != nil {
+                                    contactName = firstName! + " " + middleName! + " " + lastName!
+                                } else {
+                                    contactName = firstName! + " " + middleName!
+                                }
+                            } else {
+                                if (lastName != nil) {
+                                    contactName = firstName! + " " + lastName!
+                                } else {
+                                    contactName = firstName
+                                }
                             }
-                            phoneStr = phoneStr?.strip(numbersSet)
-                            let phoneVal = phoneStr?.toLong()
-                            if (phoneVal != nil) {
-                                contactPhones.addWithId(ACPhoneBookPhone(long: jlong(index++), withLong: jlong(phoneVal!)))
+                        } else {
+                            if middleName != nil {
+                                if lastName != nil {
+                                    contactName = middleName! + " " + lastName!
+                                } else {
+                                    contactName = middleName
+                                }
+                            } else {
+                                if lastName != nil {
+                                    contactName = lastName
+                                }
                             }
                         }
-                }
-                
-                if let emails: ABMultiValueRef =
-                    self.extractProperty(person as ABRecord, propertyName: kABPersonEmailProperty) as ABMultiValueRef? {
-                        for i in 0...ABMultiValueGetCount(emails) {
-                            let emailStr = self.extractString(emails, index: i)
-                            if (emailStr == nil || emailStr!.trim().length == 0) {
-                                continue
-                            }
-                            contactEmails.addWithId(ACPhoneBookEmail(long: jlong(index++), withNSString: emailStr!))
+                        
+                        if (firstName == "Name not specified") {
+                            contactName = nil
                         }
+                        
+                        let contactPhones = JavaUtilArrayList()
+                        let contactEmails = JavaUtilArrayList()
+                        let contact = ACPhoneBookContact(long: jlong(index++), withNSString: contactName, withJavaUtilArrayList: contactPhones, withJavaUtilArrayList: contactEmails)
+                        
+                        if let phones: ABMultiValueRef =
+                            self.extractProperty(person as ABRecord, propertyName: kABPersonPhoneProperty) as ABMultiValueRef? {
+                                for i in 0...ABMultiValueGetCount(phones) {
+                                    var phoneStr = self.extractString(phones, index: i)
+                                    if (phoneStr == nil || phoneStr!.trim().isEmpty) {
+                                        continue
+                                    }
+                                    phoneStr = phoneStr!.strip(numbersSet)
+                                    let phoneVal = Int64(phoneStr!)// numberFormatter.numberFromString(phoneStr!)?.longLongValue
+                                    if (phoneVal != nil) {
+                                        contactPhones.addWithId(ACPhoneBookPhone(long: jlong(index++), withLong: jlong(phoneVal!)))
+                                    }
+                                }
+                        }
+                        
+                        if let emails: ABMultiValueRef =
+                            self.extractProperty(person as ABRecord, propertyName: kABPersonEmailProperty) as ABMultiValueRef? {
+                                for i in 0...ABMultiValueGetCount(emails) {
+                                    let emailStr = self.extractString(emails, index: i)
+                                    if (emailStr == nil || emailStr!.trim().isEmpty) {
+                                        continue
+                                    }
+                                    contactEmails.addWithId(ACPhoneBookEmail(long: jlong(index++), withNSString: emailStr!))
+                                }
+                        }
+                        
+                        if (contactPhones.size() != 0 || contactEmails.size() != 0) {
+                            contacts.addWithId(contact)
+                        }
+                    }
+                    
+                    callback.onLoadedWithContacts(contacts)
                 }
-                
-                if (contactPhones.size() != 0 || contactEmails.size() != 0) {
-                    contacts.addWithId(contact)
-                }
-            }
-            
-            callback.onLoadedWithContacts(contacts)
-        });
-
+            })
+        }
     }
     
     private func extractString(record: ABRecord, propertyName : ABPropertyID) -> String? {
