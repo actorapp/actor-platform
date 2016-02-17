@@ -7,6 +7,8 @@ package im.actor.runtime;
 import java.math.BigInteger;
 
 import im.actor.runtime.crypto.primitives.digest.KeyDigest;
+import im.actor.runtime.crypto.primitives.digest.MD5;
+import im.actor.runtime.crypto.primitives.digest.MD5Digest;
 import im.actor.runtime.crypto.primitives.digest.SHA256;
 import im.actor.runtime.util.Hex;
 
@@ -14,11 +16,20 @@ public class Crypto {
 
     final protected static char[] hexArray = "0123456789abcdef".toCharArray();
 
-    private static final CryptoRuntime provider = new CryptoRuntimeProvider();
+    private static final CryptoRuntime runtime = new CryptoRuntimeProvider();
+
     private static final RandomRuntime random = new RandomRuntimeProvider();
 
+    public static void waitForCryptoLoaded() {
+        runtime.waitForCryptoLoaded();
+    }
+
     public static byte[] MD5(byte[] data) {
-        return provider.MD5(data);
+        MD5 md5 = new MD5();
+        md5.update(data, 0, data.length);
+        byte[] res = new byte[16];
+        md5.doFinal(res, 0);
+        return res;
     }
 
     public static String keyHash(byte[] publicKey) {

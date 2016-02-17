@@ -89,19 +89,6 @@ public class Messenger {
         // Start Messenger initialization
         Timing timing = new Timing("MESSENGER_INIT");
 
-        // Encryption
-        timing.section("Encryption");
-        if (Runtime.isSingleThread()) {
-            KuznechikFastEngine.initCalc();
-        } else {
-            Runtime.dispatch(new Runnable() {
-                @Override
-                public void run() {
-                    KuznechikFastEngine.initDump(Assets.loadBinAsset("kuz_tables.bin"));
-                }
-            });
-        }
-
         // Actor system
         timing.section("Actors");
         ActorSystem.system().setTraceInterface(new ActorTrace());
