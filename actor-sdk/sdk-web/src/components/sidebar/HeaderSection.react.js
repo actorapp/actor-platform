@@ -10,7 +10,7 @@ import { escapeWithEmoji } from '../../utils/EmojiUtils'
 import confirm from '../../utils/confirm'
 import SharedContainer from '../../utils/SharedContainer';
 import { twitter, homePage } from '../../constants/ActorAppConstants';
-
+import { Link } from 'react-router';
 
 import MyProfileActions from '../../actions/MyProfileActionCreators';
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
@@ -171,6 +171,10 @@ class HeaderSection extends Component {
                 <li className="dropdown__menu__separator"/>
                 <li className="dropdown__menu__item" onClick={this.setLogout}>
                   {intl.messages['menu.signOut']}
+                </li>
+                <li className="dropdown__menu__separator"/>
+                <li className="dropdown__menu__item">
+                  <Link to="/archive">Archive</Link>
                 </li>
               </ul>
             </div>
