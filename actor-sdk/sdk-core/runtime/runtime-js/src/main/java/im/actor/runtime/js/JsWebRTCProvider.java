@@ -1,12 +1,16 @@
 package im.actor.runtime.js;
 
+import com.google.gwt.core.client.JsArray;
+
 import org.jetbrains.annotations.NotNull;
 
 import im.actor.core.js.modules.JsScheduller;
 import im.actor.runtime.WebRTCRuntime;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.js.webrtc.JsIceServer;
 import im.actor.runtime.js.webrtc.JsMediaStream;
 import im.actor.runtime.js.webrtc.JsPeerConnection;
+import im.actor.runtime.js.webrtc.JsPeerConnectionConfig;
 import im.actor.runtime.js.webrtc.JsStreaming;
 import im.actor.runtime.js.webrtc.MediaStream;
 import im.actor.runtime.js.webrtc.PeerConnection;
@@ -24,7 +28,11 @@ public class JsWebRTCProvider implements WebRTCRuntime {
         return new Promise<>(new PromiseFunc<WebRTCPeerConnection>() {
             @Override
             public void exec(@NotNull PromiseResolver<WebRTCPeerConnection> resolver) {
-                resolver.result(new PeerConnection(JsPeerConnection.create(null)));
+                JsArray<JsIceServer> servers = JsArray.createArray().cast();
+                servers.push(JsIceServer.create("stun:62.4.22.219:3478"));
+                servers.push(JsIceServer.create("turn:62.4.22.219:3478?transport=tcp", "actor", "password"));
+                servers.push(JsIceServer.create("turn:62.4.22.219:3478?transport=udp", "actor", "password"));
+                resolver.result(new PeerConnection(JsPeerConnection.create(JsPeerConnectionConfig.create(servers))));
             }
         });
     }

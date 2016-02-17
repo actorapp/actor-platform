@@ -98,12 +98,12 @@ public class PeerConnectionActor extends ModuleActor {
 
                     @Override
                     public void onStreamAdded(WebRTCMediaStream stream) {
-
+                        root.send(new OnStreamAdded(uid, deviceId, stream));
                     }
 
                     @Override
                     public void onStreamRemoved(WebRTCMediaStream stream) {
-
+                        root.send(new OnStreamRemoved(uid, deviceId, stream));
                     }
 
                     @Override
@@ -282,28 +282,29 @@ public class PeerConnectionActor extends ModuleActor {
             = new Function<WebRTCSessionDescription, WebRTCSessionDescription>() {
         @Override
         public WebRTCSessionDescription apply(WebRTCSessionDescription description) {
-            SDPScheme sdpScheme = SDP.parse(description.getSdp());
-
-            for (SDPMedia m : sdpScheme.getMediaLevel()) {
-
-                // Disabling media streams
-                // m.setMode(SDPMediaMode.INACTIVE);
-
-                // Optimizing opus
-                if ("audio".equals(m.getType())) {
-                    for (SDPCodec codec : m.getCodecs()) {
-                        if ("opus".equals(codec.getName())) {
-                            codec.getFormat().put("maxcodedaudiobandwidth", "16000");
-                            codec.getFormat().put("maxaveragebitrate", "20000");
-                            codec.getFormat().put("stereo", "0");
-                            codec.getFormat().put("useinbandfec", "1");
-                            codec.getFormat().put("usedtx", "1");
-                        }
-                    }
-                }
-            }
-
-            return new WebRTCSessionDescription(description.getType(), sdpScheme.toSDP());
+//            SDPScheme sdpScheme = SDP.parse(description.getSdp());
+//
+//            for (SDPMedia m : sdpScheme.getMediaLevel()) {
+//
+//                // Disabling media streams
+//                // m.setMode(SDPMediaMode.INACTIVE);
+//
+//                // Optimizing opus
+//                if ("audio".equals(m.getType())) {
+//                    for (SDPCodec codec : m.getCodecs()) {
+//                        if ("opus".equals(codec.getName())) {
+//                            codec.getFormat().put("maxcodedaudiobandwidth", "16000");
+//                            codec.getFormat().put("maxaveragebitrate", "20000");
+//                            codec.getFormat().put("stereo", "0");
+//                            codec.getFormat().put("useinbandfec", "1");
+//                            codec.getFormat().put("usedtx", "1");
+//                        }
+//                    }
+//                }
+//            }
+//
+//            return new WebRTCSessionDescription(description.getType(), sdpScheme.toSDP());
+            return description;
         }
     };
 
@@ -447,6 +448,55 @@ public class PeerConnectionActor extends ModuleActor {
 
         public String getSdp() {
             return sdp;
+        }
+    }
+
+    public static class OnStreamAdded {
+        private int uid;
+        private long deviceId;
+        private WebRTCMediaStream stream;
+
+        public OnStreamAdded(int uid, long deviceId, WebRTCMediaStream stream) {
+            this.uid = uid;
+            this.deviceId = deviceId;
+            this.stream = stream;
+        }
+
+        public int getUid() {
+            return uid;
+        }
+
+        public long getDeviceId() {
+            return deviceId;
+        }
+
+        public WebRTCMediaStream getStream() {
+            return stream;
+        }
+    }
+
+    public static class OnStreamRemoved {
+
+        private int uid;
+        private long deviceId;
+        private WebRTCMediaStream stream;
+
+        public OnStreamRemoved(int uid, long deviceId, WebRTCMediaStream stream) {
+            this.uid = uid;
+            this.deviceId = deviceId;
+            this.stream = stream;
+        }
+
+        public int getUid() {
+            return uid;
+        }
+
+        public long getDeviceId() {
+            return deviceId;
+        }
+
+        public WebRTCMediaStream getStream() {
+            return stream;
         }
     }
 

@@ -22,6 +22,7 @@ import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 public class CallActor extends EventBusActor {
 
@@ -84,6 +85,14 @@ public class CallActor extends EventBusActor {
             getPeer(fromUid, fromDeviceId).send(new PeerConnectionActor.OnCandidate(candidate.getIndex(),
                     candidate.getId(), candidate.getSdp()));
         }
+    }
+
+    public void onStreamAdded(int uid, long deviceId, WebRTCMediaStream stream) {
+
+    }
+
+    public void onStreamRemoved(int uid, long deviceId, WebRTCMediaStream stream) {
+
     }
 
     public final void sendSignalingMessage(int uid, long deviceId, ApiWebRTCSignaling signaling) {
@@ -182,6 +191,12 @@ public class CallActor extends EventBusActor {
                     new ApiCandidate(0, candidate.getIndex(), candidate.getId(), candidate.getSdp()));
         } else if (message instanceof DoEndCall) {
             doEndCall();
+        } else if (message instanceof PeerConnectionActor.OnStreamAdded) {
+            PeerConnectionActor.OnStreamAdded streamAdded = (PeerConnectionActor.OnStreamAdded) message;
+            onStreamAdded(streamAdded.getUid(), streamAdded.getDeviceId(), streamAdded.getStream());
+        } else if (message instanceof PeerConnectionActor.OnStreamRemoved) {
+            PeerConnectionActor.OnStreamRemoved streamRemoved = (PeerConnectionActor.OnStreamRemoved) message;
+            onStreamRemoved(streamRemoved.getUid(), streamRemoved.getDeviceId(), streamRemoved.getStream());
         } else {
             super.onReceive(message);
         }

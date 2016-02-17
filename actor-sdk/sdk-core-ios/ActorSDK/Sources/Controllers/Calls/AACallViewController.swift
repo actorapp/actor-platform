@@ -16,6 +16,8 @@ public class AACallViewController: AAViewController {
     public let answerCallButton = UIButton()
     public let declineCallButton = UIButton()
     
+    var isScheduledDispose = false
+    
     public init(callId: jlong) {
         self.callId = callId
         self.call = ActorSDK.sharedActor().messenger.getCallWithCallId(callId)
@@ -104,6 +106,11 @@ public class AACallViewController: AAViewController {
                 self.declineCallButton.hidden = false
                 self.callState.text = "Incoming call..."
                 self.layoutButtons()
+            } else if (ACCallState_Enum.CONNECTING == value.toNSEnum()) {
+                self.answerCallButton.hidden = true
+                self.declineCallButton.hidden = false
+                self.callState.text = "Connecting"
+                self.layoutButtons()
             } else if (ACCallState_Enum.IN_PROGRESS == value.toNSEnum()) {
                 self.answerCallButton.hidden = true
                 self.declineCallButton.hidden = false
@@ -115,10 +122,16 @@ public class AACallViewController: AAViewController {
                 self.callState.text = "Ringing..."
                 self.layoutButtons()
             } else if (ACCallState_Enum.ENDED == value.toNSEnum()) {
-                self.answerCallButton.hidden = false
-                self.declineCallButton.hidden = false
                 self.callState.text = "Call Ended"
+                self.answerCallButton.hidden = true
+                self.declineCallButton.hidden = true
                 self.layoutButtons()
+                if (!self.isScheduledDispose) {
+                    self.isScheduledDispose = true
+                    dispatchAfterOnUi(1) {
+                        self.dismiss()
+                    }
+                }
             } else {
                 self.answerCallButton.hidden = false
                 self.declineCallButton.hidden = false
