@@ -10,14 +10,11 @@
 		06230F091BC7FF3500A4807B /* ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F081BC7FF3000A4807B /* ActorSDK.framework */; };
 		06230F0A1BC7FF3500A4807B /* ActorSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F081BC7FF3000A4807B /* ActorSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		068C6E4F1BBC4BF900182516 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */; };
-		06AA5F4B1BEF956200AF98FB /* iapetus.caf in Resources */ = {isa = PBXBuildFile; fileRef = 06AA5F491BEF956200AF98FB /* iapetus.caf */; };
-		06AA5F4C1BEF956200AF98FB /* notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = 06AA5F4A1BEF956200AF98FB /* notification.caf */; };
 		06CE898E1BD841D0005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898D1BD841D0005A5530 /* SystemConfiguration.framework */; };
 		06E7B24F1C109C4B0090660C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06E7B24E1C109C4B0090660C /* MapKit.framework */; };
 		2CE3FEBEF881B465BDE1045A959BFB0A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2ACD33B73078EB46A22D2D4C45BF1E6E /* Images.xcassets */; };
 		34279C7FB8E40393FEAC939F6474BE2E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 148837AEB986AFDE519BEBD3686AB073 /* main.m */; };
 		4403E543C36C1FDC89DD4E00 /* Pods_ActorApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2F298FBF1BB3C0A84996ED3 /* Pods_ActorApp.framework */; };
-		BEF11DB81C466D980076400A /* begin_record.caf in Resources */ = {isa = PBXBuildFile; fileRef = BEF11DB71C466D980076400A /* begin_record.caf */; };
 		DFE814D1E12D2647AF2DBA3F76405F06 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */; };
 		F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
@@ -57,8 +54,6 @@
 		06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ActorSDK.xcodeproj; sourceTree = "<group>"; };
 		065974E11BC6926C00B8C7DF /* ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = ActorSDK.framework; path = "/Users/ex3ndr/Library/Developer/Xcode/DerivedData/ActorApp-clcqncodqhdxutfqgjvteqywzxue/Build/Products/Debug-iphoneos/ActorSDK.framework"; sourceTree = "<absolute>"; };
 		068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "Supporting Files/Launch Screen.storyboard"; sourceTree = "<group>"; };
-		06AA5F491BEF956200AF98FB /* iapetus.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iapetus.caf; sourceTree = "<group>"; };
-		06AA5F4A1BEF956200AF98FB /* notification.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = notification.caf; sourceTree = "<group>"; };
 		06CE898D1BD841D0005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		06E7B24E1C109C4B0090660C /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		148837AEB986AFDE519BEBD3686AB073 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "Supporting Files/main.m"; sourceTree = "<group>"; };
@@ -71,7 +66,6 @@
 		7C171D4472C8F54A2AA0315EA0C69FED /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8B0B56F75C11CA3A0404AB4417F9B41B /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ABB53674A14E3D46A5B22DBAF8A27AA1 /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
-		BEF11DB71C466D980076400A /* begin_record.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = begin_record.caf; sourceTree = "<group>"; };
 		C1B62AB706C51EDEB616B70C706CAB59 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
 		DE8D1D9859D2C4D4C7EC7AD74BB65F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Supporting Files/Info.plist"; sourceTree = "<group>"; };
 		E2F298FBF1BB3C0A84996ED3 /* Pods_ActorApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -123,9 +117,6 @@
 		75DC9F2DE93F0AFA6A85B53C4B694EAE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				06AA5F491BEF956200AF98FB /* iapetus.caf */,
-				06AA5F4A1BEF956200AF98FB /* notification.caf */,
-				BEF11DB71C466D980076400A /* begin_record.caf */,
 				2ACD33B73078EB46A22D2D4C45BF1E6E /* Images.xcassets */,
 				13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */,
 				068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */,
@@ -267,10 +258,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CE3FEBEF881B465BDE1045A959BFB0A /* Images.xcassets in Resources */,
-				BEF11DB81C466D980076400A /* begin_record.caf in Resources */,
 				F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */,
-				06AA5F4C1BEF956200AF98FB /* notification.caf in Resources */,
-				06AA5F4B1BEF956200AF98FB /* iapetus.caf in Resources */,
 				068C6E4F1BBC4BF900182516 /* Launch Screen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
