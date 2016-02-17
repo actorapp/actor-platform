@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -194,7 +195,7 @@ public class MainPhoneController extends MainBaseController {
 
         pager = (ViewPager) findViewById(R.id.vp_pager);
         pager.setOffscreenPageLimit(2);
-        homePagerAdapter = new HomePagerAdapter(getFragmentManager());
+        homePagerAdapter = getHomePagerAdapter();
         pager.setAdapter(homePagerAdapter);
         pager.setCurrentItem(0);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -291,6 +292,11 @@ public class MainPhoneController extends MainBaseController {
                 startActivity(sendIntent);
             }
         });
+    }
+
+    @NonNull
+    public HomePagerAdapter getHomePagerAdapter() {
+        return new HomePagerAdapter(getFragmentManager());
     }
 
     @Override
@@ -596,18 +602,28 @@ public class MainPhoneController extends MainBaseController {
             switch (position) {
                 default:
                 case 0:
-                    DialogsFragment res1 = new DialogsFragment();
-                    Bundle arguments = new Bundle();
-                    arguments.putString("invite_url", joinGroupUrl);
-                    res1.setArguments(arguments);
-                    res1.setHasOptionsMenu(false);
-                    return res1;
+                    return getDialogsFragment();
                 case 1:
-                    ContactsFragment res2 = new ContactsFragment();
-                    res2.setHasOptionsMenu(false);
-                    return res2;
+                    return getContactsFragment();
 
             }
+        }
+
+        @NonNull
+        public ContactsFragment getContactsFragment() {
+            ContactsFragment res2 = new ContactsFragment();
+            res2.setHasOptionsMenu(false);
+            return res2;
+        }
+
+        @NonNull
+        public DialogsFragment getDialogsFragment() {
+            DialogsFragment res1 = new DialogsFragment();
+            Bundle arguments = new Bundle();
+            arguments.putString("invite_url", joinGroupUrl);
+            res1.setArguments(arguments);
+            res1.setHasOptionsMenu(false);
+            return res1;
         }
 
         @Override
