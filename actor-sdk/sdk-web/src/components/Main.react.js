@@ -26,7 +26,10 @@ import DropdownWrapper from './common/DropdownWrapper.react';
 
 class Main extends Component {
   static propTypes = {
-    params: PropTypes.object,
+    params: PropTypes.object
+  };
+
+  static contextTypes = {
     delegate: PropTypes.object
   };
 
@@ -96,8 +99,8 @@ class Main extends Component {
   };
 
   render() {
-    const { delegate, params } = this.props;
-    const peer = PeerUtils.stringToPeer(params.id);
+    const { delegate } = this.context;
+    console.debug(this.props.children);
 
     const Sidebar = (typeof delegate.components.sidebar == 'function') ? delegate.components.sidebar : DefaultSidebar;
     const Dialog = (typeof delegate.components.dialog == 'function') ? delegate.components.dialog : DefaultDialog;
@@ -107,7 +110,11 @@ class Main extends Component {
         <Favicon/>
 
         <Sidebar/>
-        <Dialog peer={peer}/>
+        {
+          this.props.children
+            ? this.props.children
+            : <Dialog/>
+        }
 
         <ModalsWrapper/>
         <DropdownWrapper/>

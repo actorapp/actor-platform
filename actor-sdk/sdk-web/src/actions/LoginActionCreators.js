@@ -101,7 +101,8 @@ const LoginActionCreators = {
       }
 
       ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
-      ActorClient.bindDialogs(DialogActionCreators.setDialogs);
+      // ActorClient.bindDialogs(DialogActionCreators.setDialogs);
+      ActorClient.bindGroupDialogs(DialogActionCreators.setDialogs);
       ActorClient.bindContacts(ContactActionCreators.setContacts);
       ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList);
       ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon);
@@ -118,7 +119,8 @@ const LoginActionCreators = {
     } else {
       ActorClient.unbindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
       ActorClient.unbindDialogs(DialogActionCreators.setDialogs);
-      ActorClient.unbindContacts(ContactActionCreators.setContacts);
+      // ActorClient.unbindContacts(ContactActionCreators.setContacts);
+      ActorClient.unbindGroupDialogs(DialogActionCreators.setDialogs);
       ActorClient.unbindSearch(QuickSearchActionCreators.setQuickSearchList);
       ActorClient.unbindTempGlobalCounter(FaviconActionCreators.setFavicon);
       ActorClient.unbindEventBus(EventBusActionCreators.broadcastEvent);
