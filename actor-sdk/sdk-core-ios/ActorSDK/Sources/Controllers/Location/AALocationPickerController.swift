@@ -65,17 +65,20 @@ public class AALocationPickerController: AAViewController, CLLocationManagerDele
     func updateAuthStatus(status: CLAuthorizationStatus) {
         if (status == CLAuthorizationStatus.Denied) {
             // User explictly denied access to maps
-            showPlaceholderWithImage(UIImage.bundled(""), title: "Enable location",subtitle: "Enable location services in settings.")
+            showPlaceholderWithImage(UIImage.bundled("location_placeholder"), title: AALocalized("Placeholder_Location_Title"), subtitle: AALocalized("Placeholder_Location_Message"))
             map.hidden = true
+            pinPoint.hidden = true
             navigationItem.rightBarButtonItem = nil
         } else if (status == CLAuthorizationStatus.Restricted || status == CLAuthorizationStatus.NotDetermined) {
             // App doesn't complete auth request
             map.hidden = false
+            pinPoint.hidden = false
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .Done, target: self, action: "doneDidTap")
             hidePlaceholder()
         } else {
             // Authorised
             map.hidden = false
+            pinPoint.hidden = false
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .Done, target: self, action: "doneDidTap")
             hidePlaceholder()
         }

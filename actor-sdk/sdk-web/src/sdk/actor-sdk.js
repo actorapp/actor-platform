@@ -3,7 +3,7 @@
  */
 
 import 'babel-polyfill';
-import '../utils/intl-polyfill';
+import initPollyfils from '../utils/polyfills';
 
 import Actor from 'actor-js';
 import DelegateContainer from '../utils/DelegateContainer';
@@ -149,11 +149,15 @@ class ActorSDK {
    * Start application
    */
   startApp() {
-    if (window.isJsAppLoaded) {
-      this._starter();
-    } else {
-      window.jsAppLoaded = this._starter;
+    const start = () => {
+      if (window.isJsAppLoaded) {
+        this._starter();
+      } else {
+        window.jsAppLoaded = this._starter;
+      }
     }
+
+    initPollyfils(start);
   }
 }
 

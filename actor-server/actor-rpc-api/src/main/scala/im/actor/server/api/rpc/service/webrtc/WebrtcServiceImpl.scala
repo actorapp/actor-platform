@@ -1,15 +1,13 @@
 package im.actor.server.api.rpc.service.webrtc
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc._
-import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer, ApiOutPeer }
 import im.actor.api.rpc.webrtc.{ ResponseGetCallInfo, ResponseDoCall, WebrtcService }
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
 import im.actor.server.session._
-import im.actor.server.webrtc.{ WebrtcCallErrors, WebrtcExtension, Webrtc }
+import im.actor.server.webrtc.{ WebrtcCallErrors, WebrtcExtension }
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -38,13 +36,14 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
     authorized(clientData) { implicit client ⇒
       withOutPeerF(peer) {
         for {
-          callId ← webrtcExt.doCall(client.userId, peer.id, eventBusId)
+          callId ← webrtcExt.doCall(client.userId, peer.asModel, eventBusId)
         } yield Ok(ResponseDoCall(callId))
       }
     }
 
   override def onFailure: PartialFunction[Throwable, RpcError] = {
     case WebrtcCallErrors.CallAlreadyStarted ⇒ WebrtcErrors.CallAlreadyStareted
+    case WebrtcCallErrors.CallNotStarted     ⇒ WebrtcErrors.CallNotStarted
+    case WebrtcCallErrors.NotAParticipant    ⇒ WebrtcErrors.NotAParticipant
   }
-
 }

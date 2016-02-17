@@ -212,6 +212,12 @@ export const CallStates = {
   ENDED: 'ended'
 };
 
+export const ConnectionStates = {
+  ONLINE: 'online',
+  CONNECTING: 'connecting',
+  UPDATING: 'updating'
+}
+
 export const PeerTypes = {
   USER: 'user',
   GROUP: 'group'
@@ -279,6 +285,10 @@ export const helpPhone = '75551234567';
 export default {
   AuthSteps,
   ActionTypes,
+  EventTypes,
+  CallTypes,
+  CallStates,
+  ConnectionStates,
   PeerTypes,
   ActivityTypes,
   CreateGroupSteps,

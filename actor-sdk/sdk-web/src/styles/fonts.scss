@@ -14,14 +14,22 @@
          url($path + '.ttf')  format('truetype');
 
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
+/* RobotoDraft */
+// @include font-face(RobotoDraft, RobotoDraft-Light, normal, 300);
+// @include font-face(RobotoDraft, RobotoDraft-Regular, normal, 400);
+// @include font-face(RobotoDraft, RobotoDraft-Medium, normal, 500);
+// @include font-face(RobotoDraft, RobotoDraft-Bold, normal, 700);
+
 /* Roboto */
-@include font-face(RobotoDraft, RobotoDraft-Light, normal, 300);
-@include font-face(RobotoDraft, RobotoDraft-Regular, normal, 400);
-@include font-face(RobotoDraft, RobotoDraft-Medium, normal, 500);
-@include font-face(RobotoDraft, RobotoDraft-Bold, normal, 700);
+@include font-face(Roboto, roboto-light, normal, 300);
+@include font-face(Roboto, roboto-regular, normal, 400);
+@include font-face(Roboto, roboto-medium, normal, 500);
+@include font-face(Roboto, roboto-bold, normal, 700);
 
 /*  Self hosted Google Material icons font */
 @font-face {

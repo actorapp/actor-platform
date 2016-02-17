@@ -378,11 +378,11 @@ public class ActorStyle {
 
     // Status Colors
     
-    public var chatIconCheck1 = UIImage.templated("msg_check_1")
-    public var chatIconCheck2 = UIImage.templated("msg_check_2")
-    public var chatIconError = UIImage.templated("msg_error")
-    public var chatIconWarring = UIImage.templated("msg_warring")
-    public var chatIconClock = UIImage.templated("msg_clock")
+    public lazy var chatIconCheck1 = UIImage.templated("msg_check_1")
+    public lazy var chatIconCheck2 = UIImage.templated("msg_check_2")
+    public lazy var chatIconError = UIImage.templated("msg_error")
+    public lazy var chatIconWarring = UIImage.templated("msg_warring")
+    public lazy var chatIconClock = UIImage.templated("msg_clock")
     
     
     
@@ -517,7 +517,7 @@ public class ActorStyle {
         set(v) { _chatAutocompleteHighlight = v }
     }
     
-    public var chatBgColor = UIColor(patternImage: UIImage.bundled("bg_foggy_birds")!.tintBgImage(UIColor(rgb: 0xe7e0c4)))
+    public lazy var chatBgColor = UIColor(patternImage: UIImage.bundled("bg_foggy_birds")!.tintBgImage(UIColor(rgb: 0xe7e0c4)))
     
     //
     // Dialogs styles
