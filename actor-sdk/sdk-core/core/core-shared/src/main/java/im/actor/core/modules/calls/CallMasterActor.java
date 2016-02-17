@@ -21,6 +21,7 @@ import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 public class CallMasterActor extends CallActor {
 
@@ -33,6 +34,7 @@ public class CallMasterActor extends CallActor {
     private CallVM callVM;
     private long callId;
     private ArrayList<CallMember> members = new ArrayList<>();
+    private boolean isAnswered = false;
 
     public CallMasterActor(Peer peer, ModuleContext context, CommandCallback<Long> callback) {
         super(context);
@@ -126,6 +128,22 @@ public class CallMasterActor extends CallActor {
             // Notify everyone about members changed
             //
             sendSignalingMessage(createMembersChanged());
+        }
+    }
+
+    @Override
+    public void onStreamAdded(int uid, long deviceId, WebRTCMediaStream stream) {
+
+        //
+        // Changing State to IN_PROGRESS once first stream appear
+        //
+        if (callVM.getState().get() == CallState.CALLING_OUTGOING) {
+            callVM.getState().change(CallState.IN_PROGRESS);
+        }
+
+        if (!isAnswered) {
+            isAnswered = true;
+            callManager.send(new CallManagerActor.AnswerCall(callId));
         }
     }
 

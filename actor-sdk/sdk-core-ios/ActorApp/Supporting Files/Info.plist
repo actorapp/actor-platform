@@ -68,6 +68,7 @@
 	<string>Sharing location</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
