@@ -49,5 +49,14 @@ class iOSCallsProvider: NSObject, ACCallsProvider {
     
     func stopOutgoingBeep() {
         beepPlayer.stop()
+        
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
+            try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeVoiceChat)
+            try AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.None)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch let error as NSError {
+            print("Error: \(error.description)")
+        }
     }
 }
