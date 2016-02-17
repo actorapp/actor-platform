@@ -1,8 +1,12 @@
 package im.actor.core.modules.calls;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import im.actor.core.api.ApiAnswerCall;
+import im.actor.core.api.ApiCallMember;
+import im.actor.core.api.ApiCallMemberStateHolder;
+import im.actor.core.api.ApiMembersChanged;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.ApiSwitchMaster;
 import im.actor.core.api.ApiWebRTCSignaling;
@@ -10,6 +14,9 @@ import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.calls.entity.CallMember;
+import im.actor.core.modules.calls.entity.CallMemberState;
+import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.actors.ActorRef;
@@ -24,6 +31,8 @@ public class CallMasterActor extends CallActor {
     private CommandCallback<Long> callback;
     private ArrayList<ConnectedHolder> connectedDevices = new ArrayList<>();
     private CallVM callVM;
+    private long callId;
+    private ArrayList<CallMember> members = new ArrayList<>();
 
     public CallMasterActor(Peer peer, ModuleContext context, CommandCallback<Long> callback) {
         super(context);
@@ -43,6 +52,7 @@ public class CallMasterActor extends CallActor {
         api(new RequestDoCall(buidOutPeer(peer), getBusId())).then(new Consumer<ResponseDoCall>() {
             @Override
             public void apply(ResponseDoCall responseDoCall) {
+                callId = responseDoCall.getCallId();
                 callVM = spanNewOutgoingVM(responseDoCall.getCallId(), peer);
                 callManager.send(new CallManagerActor.DoCallComplete(responseDoCall.getCallId()), self());
                 callback.onResult(responseDoCall.getCallId());
@@ -60,7 +70,63 @@ public class CallMasterActor extends CallActor {
 
     @Override
     public void onDeviceConnected(int uid, long deviceId) {
+
+        //
+        // For every newly connected device notify who is king
+        // in this call
+        //
         sendSignalingMessage(uid, deviceId, new ApiSwitchMaster());
+
+        //
+        // Pending Members
+        //
+        boolean found = false;
+        for (CallMember m : members) {
+            if (m.getUid() == uid) {
+                m.setState(CallMemberState.CONNECTING);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            members.add(new CallMember(uid, CallMemberState.CONNECTING));
+        }
+
+        //
+        // Notify everyone about new member
+        //
+        sendSignalingMessage(createMembersChanged());
+    }
+
+    @Override
+    public void onDeviceDisconnected(int uid, long deviceId) {
+
+        //
+        // Removing connected device. If it is was the last - stop call.
+        //
+        ConnectedHolder connectedHolder = new ConnectedHolder(uid, deviceId);
+        if (connectedDevices.contains(connectedHolder)) {
+            connectedDevices.remove(connectedHolder);
+            if (connectedDevices.size() == 0) {
+                shutdown();
+                return;
+            }
+
+            //
+            // Removing active member
+            //
+            for (CallMember m : members) {
+                if (m.getUid() == uid) {
+                    members.remove(m);
+                    break;
+                }
+            }
+
+            //
+            // Notify everyone about members changed
+            //
+            sendSignalingMessage(createMembersChanged());
+        }
     }
 
     @Override
@@ -75,6 +141,14 @@ public class CallMasterActor extends CallActor {
                 sendSignalingMessage(c.uid, c.deviceId, new ApiNeedOffer(fromUid, fromDeviceId));
             }
             connectedDevices.add(connectedHolder);
+
+            for (CallMember m : members) {
+                if (m.getUid() == fromUid) {
+                    m.setState(CallMemberState.CONNECTED);
+                    break;
+                }
+            }
+            sendSignalingMessage(createMembersChanged());
         } else {
             super.onSignalingMessage(fromUid, fromDeviceId, signaling);
         }
@@ -86,6 +160,21 @@ public class CallMasterActor extends CallActor {
         if (callback != null) {
             callback.onError(new RuntimeException("Internal Error"));
         }
+    }
+
+    @Override
+    public void onBusStopped() {
+        super.onBusStopped();
+        callVM.getState().change(CallState.ENDED);
+        callManager.send(new CallManagerActor.OnCallEnded(callId));
+    }
+
+    private ApiMembersChanged createMembersChanged() {
+        ArrayList<ApiCallMember> callMembers = new ArrayList<>();
+        for (CallMember m : members) {
+            callMembers.add(new ApiCallMember(m.getUid(), 0, m.getState().toApiState()));
+        }
+        return new ApiMembersChanged(callMembers);
     }
 
     private static class ConnectedHolder {
@@ -116,5 +205,13 @@ public class CallMasterActor extends CallActor {
             result = 31 * result + (int) (deviceId ^ (deviceId >>> 32));
             return result;
         }
+    }
+
+    private static class ConnectedUser {
+        private int uid;
+
+    }
+
+    private enum UserState {
     }
 }

@@ -78,11 +78,10 @@ class AASessionDescriptionSetDelegate: NSObject, RTCSessionDescriptionDelegate {
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, didCreateSessionDescription sdp: RTCSessionDescription!, error: NSError!) {
-        print("didCreateSessionDescription")
+
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, didSetSessionDescriptionWithError error: NSError!) {
-        print("didSetSessionDescriptionWithError")
         
         setAssociatedObject(peerConnection, value: "", associativeKey: &sessionSetTarget)
         

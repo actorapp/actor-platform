@@ -21,14 +21,17 @@ public abstract class ApiWebRTCSignaling extends BserObject {
         byte[] content = values.getBytes(2);
         switch(key) { 
             case 1: return Bser.parse(new ApiAnswerCall(), content);
-            case 2: return Bser.parse(new ApiEndCall(), content);
+            case 2: return Bser.parse(new ApiRejectCall(), content);
             case 3: return Bser.parse(new ApiCandidate(), content);
             case 4: return Bser.parse(new ApiOffer(), content);
             case 5: return Bser.parse(new ApiAnswer(), content);
             case 6: return Bser.parse(new ApiNeedRenegotiate(), content);
-            case 7: return Bser.parse(new ApiActiveDevices(), content);
             case 8: return Bser.parse(new ApiNeedOffer(), content);
             case 9: return Bser.parse(new ApiSwitchMaster(), content);
+            case 16: return Bser.parse(new ApiMembersChanged(), content);
+            case 17: return Bser.parse(new ApiMemberAdded(), content);
+            case 18: return Bser.parse(new ApiMemberRemoved(), content);
+            case 19: return Bser.parse(new ApiMemberStateUpdated(), content);
             default: return new ApiWebRTCSignalingUnsupported(key, content);
         }
     }
