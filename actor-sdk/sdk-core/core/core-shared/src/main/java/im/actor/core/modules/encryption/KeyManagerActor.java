@@ -33,6 +33,7 @@ import im.actor.runtime.actors.ask.AskIntRequest;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
 import im.actor.runtime.collections.ManagedList;
+import im.actor.runtime.crypto.Curve25519KeyPair;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.crypto.Curve25519;
@@ -82,19 +83,26 @@ public class KeyManagerActor extends ModuleActor {
         if (ownKeysStorage != null) {
             try {
                 ownKeys = new PrivateKeyStorage(ownKeysStorage);
+
+                // If we need re-save key storage
+                if (ownKeys.isWasRegenerated()) {
+                    encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         if (ownKeys == null) {
-            byte[] identityPrivate = Curve25519.keyGenPrivate(Crypto.randomBytes(64));
-            byte[] key0 = Curve25519.keyGenPrivate(Crypto.randomBytes(64));
+            Curve25519KeyPair identityPrivate = Curve25519.keyGen(Crypto.randomBytes(64));
+            Curve25519KeyPair key0 = Curve25519.keyGen(Crypto.randomBytes(64));
 
             ownKeys = new PrivateKeyStorage(0,
-                    new PrivateKey(RandomUtils.nextRid(), "curve25519", identityPrivate),
+                    new PrivateKey(RandomUtils.nextRid(), "curve25519", identityPrivate.getPrivateKey(),
+                            identityPrivate.getPublicKey()),
                     new PrivateKey[]{
-                            new PrivateKey(RandomUtils.nextRid(), "curve25519", key0)
+                            new PrivateKey(RandomUtils.nextRid(), "curve25519", key0.getPrivateKey(),
+                                    key0.getPublicKey())
                     },
                     new PrivateKey[0]);
             encryptionKeysStorage.addOrUpdateItem(0, ownKeys.toByteArray());

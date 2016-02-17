@@ -12,7 +12,6 @@ import im.actor.server.api.http.app.AppFilesHttpHandler
 import im.actor.server.api.http.status.StatusHttpHandler
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.HttpApiTokenRepo
-import im.actor.tls.TlsContext
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -72,14 +71,13 @@ private object HttpApiFrontend {
   ): Unit = {
     HttpApiConfig.load(serverConfig.getConfig("http")) match {
       case Success(apiConfig) ⇒
-        val tlsContext = TlsContext.load(serverConfig.getConfig("tls.keystores")).right.toOption
-        start(apiConfig, tlsContext)
+        start(apiConfig)
       case Failure(e) ⇒
         throw e
     }
   }
 
-  def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(implicit system: ActorSystem): Unit = {
+  def start(config: HttpApiConfig)(implicit system: ActorSystem): Unit = {
     implicit val mat = ActorMaterializer()
 
     val status = new StatusHttpHandler
@@ -94,7 +92,7 @@ private object HttpApiFrontend {
     Http().bind(
       config.interface,
       config.port,
-      connectionContext = tlsContext map (_.asHttpsContext) getOrElse Http().defaultServerHttpContext,
+      connectionContext = Http().defaultServerHttpContext,
       settings = defaultSettings.withTimeouts(defaultSettings.timeouts.withIdleTimeout(IdleTimeout))
     )
       .runForeach { conn ⇒

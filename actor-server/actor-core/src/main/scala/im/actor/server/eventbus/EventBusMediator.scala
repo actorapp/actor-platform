@@ -137,17 +137,22 @@ final class EventBusMediator extends Actor with ActorLogging {
         message = message
       )
 
-      dests foreach {
-        case ApiEventBusDestination(destUserId, deviceIds) ⇒
-          deviceIds foreach { deviceId ⇒
-            consumers.byDeviceId(deviceId) foreach {
-              case (userId, authId) ⇒
-                weakExt.pushUpdate(authId, update, None, None)
-            }
+      val authIds = dests match {
+        case Nil ⇒ consumers.authIds
+        case _ ⇒
+          dests flatMap {
+            case ApiEventBusDestination(destUserId, deviceIds) ⇒
+              deviceIds flatMap { deviceId ⇒
+                consumers.byDeviceId(deviceId) map {
+                  case (userId, authId) ⇒ authId
+                }
+              }
           }
       }
 
-      val msg = EventBus.Message(id, clientUserId, message)
+      authIds foreach (weakExt.pushUpdate(_, update, None, None))
+
+      val msg = EventBus.Message(id, clientUserId, clientAuthId, message)
       this.internalConsumers foreach (_ ! msg)
 
       sender() ! PostAck
@@ -160,8 +165,7 @@ final class EventBusMediator extends Actor with ActorLogging {
     case ConsumerTimedOut(authId) ⇒
       if ((owner.isDefined && consumers.ownerAuthIds == Set(authId)) || consumers.authIds == Set(authId)) {
         log.debug("Disposing as no more clients connected")
-        broadcast(UpdateEventBusDisposed(id))
-        context stop self
+        dispose()
       } else {
         consumers.remove(authId) match {
           case Some((userId, deviceId)) ⇒
@@ -178,8 +182,7 @@ final class EventBusMediator extends Actor with ActorLogging {
     case Dispose(clientUserId) ⇒
       if (owner.contains(clientUserId)) {
         log.debug("Disposing by owner request")
-        broadcast(UpdateEventBusDisposed(id))
-        context stop self
+        dispose()
       } else sender() ! Status.Failure(new RuntimeException("Attempt to dispose by not an owner"))
     case subscribe @ Subscribe(ref) ⇒
       this.internalConsumers.add(ref)
@@ -187,6 +190,12 @@ final class EventBusMediator extends Actor with ActorLogging {
       sender() ! SubscribeAck(subscribe)
     case Terminated(ref) ⇒
       this.internalConsumers.remove(ref)
+  }
+
+  private def dispose(): Unit = {
+    broadcast(UpdateEventBusDisposed(id))
+    internalConsumers foreach (_ ! EventBus.Disposed(id))
+    context stop self
   }
 
   private def broadcast(update: Update): Unit =
