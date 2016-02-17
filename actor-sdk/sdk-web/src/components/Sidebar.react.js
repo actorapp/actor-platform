@@ -5,7 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 
 import DefaultHeaderSection from './sidebar/HeaderSection.react';
-import DefaultRecentSection from './sidebar/RecentSection.react';
+import DefaultRecent from './sidebar/Recent.react';
 import QuickSearchButton from './sidebar/QuickSearchButton.react';
 
 class SidebarSection extends Component {
@@ -20,21 +20,21 @@ class SidebarSection extends Component {
   render() {
     const { delegate } = this.context;
 
-    let HeaderSection, RecentSection, FooterSection;
+    let HeaderSection, Recent, FooterSection;
     if (delegate.components.sidebar !== null && typeof delegate.components.sidebar !== 'function') {
       HeaderSection = delegate.components.sidebar.header || DefaultHeaderSection;
-      RecentSection = delegate.components.sidebar.recent || DefaultRecentSection;
+      Recent = delegate.components.sidebar.recent || DefaultRecent;
       FooterSection = delegate.components.sidebar.footer || QuickSearchButton;
     } else {
       HeaderSection = DefaultHeaderSection;
-      RecentSection = DefaultRecentSection;
+      Recent = DefaultRecent;
       FooterSection = QuickSearchButton;
     }
 
     return (
       <aside className="sidebar">
         <HeaderSection/>
-        <RecentSection/>
+        <Recent/>
         <FooterSection/>
       </aside>
     );

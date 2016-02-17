@@ -30,6 +30,8 @@ import DefaultLogin from '../components/Login.react';
 import DefaultDeactivated from '../components/Deactivated.react';
 import DefaultJoin from '../components/Join.react';
 import DefaultInstall from '../components/Install.react';
+import DefaultArchive from '../components/Archive.react';
+import DefaultDialog from '../components/Dialog.react';
 import Modal from 'react-modal';
 
 import { extendL18n, getIntlData } from '../l18n';
@@ -95,7 +97,9 @@ class ActorSDK {
     const Login = this.delegate.components.login || DefaultLogin;
     const Deactivated = this.delegate.components.deactivated || DefaultDeactivated;
     const Install = this.delegate.components.install || DefaultInstall;
+    const Archive = this.delegate.components.archive || DefaultArchive;
     const Join = this.delegate.components.join || DefaultJoin;
+    const Dialog = this.delegate.components.dialog || DefaultDialog;
     const intlData = getIntlData(this.forceLocale);
 
     const requireAuth = (nextState, replaceState) => {
@@ -127,7 +131,8 @@ class ActorSDK {
             <Route path="install" component={Install}/>
             <Route path="join/:token" component={Join}/>
 
-            <Route path="im/:id" component={Main}/>
+            <Route path="im/:id" component={Dialog} createElement={Main}/>
+            <Route path="archive" component={Archive} createElement={Main}/>
 
             <IndexRoute component={Main} onEnter={requireAuth}/>
           </Route>

@@ -38,9 +38,9 @@ function getColor(color) {
  */
 class Field extends Component {
   static propTypes = {
-    title: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-    isShort: PropTypes.bool.isRequired
+    title: PropTypes.string,
+    value: PropTypes.string,
+    isShort: PropTypes.bool
   };
 
   constructor(props) {
@@ -75,11 +75,11 @@ class Field extends Component {
  */
 class Attach extends Component {
   static propTypes = {
-    paragraphStyle: PropTypes.object.isRequired,
-    text: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    titleUrl: PropTypes.string.isRequired,
-    fields: PropTypes.array.isRequired
+    paragraphStyle: PropTypes.object,
+    text: PropTypes.string,
+    title: PropTypes.string,
+    titleUrl: PropTypes.string,
+    fields: PropTypes.array
   };
 
   constructor(props) {
@@ -98,14 +98,16 @@ class Attach extends Component {
       backgroundColor: getColor(paragraphStyle.bgColor) || 'transparent'
     };
 
-    const visibleTitle = titleUrl ? <a href={titleUrl}>{title}</a> : {title};
-
     const attachmentFields = map(fields, (field, index) => <Field key={index} {...field}/>);
 
     return (
       <div className={attachmentClassName} style={attachmentStyles}>
         <div className="attachment__title">
-          {visibleTitle}
+          {
+            titleUrl
+              ? <a href={titleUrl}>{title}</a>
+              : title
+          }
         </div>
         {text ? text : null}
         {attachmentFields ? <div className="attachment_fields row">{attachmentFields}</div> : null}
@@ -123,9 +125,9 @@ class Attach extends Component {
  */
 class TextModern extends Component {
   static propTypes = {
-    attaches: PropTypes.array.isRequired,
-    paragraphStyle: PropTypes.object.isRequired,
-    text: PropTypes.string.isRequired,
+    attaches: PropTypes.array,
+    paragraphStyle: PropTypes.object,
+    text: PropTypes.string,
     className: PropTypes.string
   };
 

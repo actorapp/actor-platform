@@ -4,26 +4,67 @@
 
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
-
+import { FormattedMessage } from 'react-intl';
 import PeerUtils from '../../utils/PeerUtils';
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
+import confirm from '../../utils/confirm';
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
+import FavoriteActionCreators from '../../actions/FavoriteActionCreators';
 
 import DialogStore from '../../stores/DialogStore';
+import UserStore from '../../stores/UserStore';
 
 import AvatarItem from '../common/AvatarItem.react';
 
-class RecentSectionItem extends Component {
+class RecentItem extends Component {
   constructor(props){
     super(props);
   }
 
   static propTypes = {
-    dialog: PropTypes.object.isRequired
+    dialog: PropTypes.object.isRequired,
+    type: PropTypes.string
+  };
+
+  static contextTypes = {
+    intl: PropTypes.object
   };
 
   onClick = () => DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
+
+  handleHideChat = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const { dialog } = this.props;
+    const { intl } = this.context;
+
+    if (UserStore.isContact(dialog.peer.peer.id)) {
+      DialogActionCreators.hideChat(dialog.peer.peer);
+    } else {
+      confirm(intl.messages['modal.confirm.nonContactHide.title'], {
+        description: <FormattedMessage id="modal.confirm.nonContactHide.body"
+                                       values={{name: dialog.peer.title}}/>,
+        abortLabel: intl.messages['button.cancel'],
+        confirmLabel: intl.messages['button.ok']
+      }).then(
+        () => DialogActionCreators.hideChat(dialog.peer.peer),
+        () => {}
+      );
+    }
+  };
+
+  handleFavorite = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    FavoriteActionCreators.favoriteChat(this.props.dialog.peer.peer);
+  };
+
+  handleUnfavorite = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    FavoriteActionCreators.unfavoriteChat(this.props.dialog.peer.peer);
+  };
 
   render() {
     const { dialog } = this.props;
@@ -53,4 +94,4 @@ class RecentSectionItem extends Component {
   }
 }
 
-export default RecentSectionItem;
+export default RecentItem;
