@@ -21,6 +21,14 @@ public class MediaStream implements WebRTCMediaStream {
         }
     }
 
+    public JsMediaStream getStream() {
+        return stream;
+    }
+
+    public JsAudio getAudio() {
+        return audio;
+    }
+
     @Override
     public boolean isEnabled() {
         return isEnabled;

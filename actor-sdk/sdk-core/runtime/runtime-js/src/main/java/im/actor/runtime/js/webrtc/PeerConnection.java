@@ -82,8 +82,8 @@ public class PeerConnection implements WebRTCPeerConnection {
 
     @Override
     public void addOwnStream(@NotNull WebRTCMediaStream stream) {
-        if (stream instanceof JsMediaStream) {
-            peerConnection.addStream((JsMediaStream) stream);
+        if (stream instanceof MediaStream) {
+            peerConnection.addStream(((MediaStream) stream).getStream());
         }
     }
 
