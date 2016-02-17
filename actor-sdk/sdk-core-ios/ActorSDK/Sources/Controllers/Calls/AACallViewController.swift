@@ -159,10 +159,13 @@ public class AACallViewController: AAViewController {
                 self.senderAvatar.bind(group.getNameModel().get(), id: group.getId(), avatar: value)
             })
         }
+        
+        UIDevice.currentDevice().proximityMonitoringEnabled = true
     }
     
     public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        UIDevice.currentDevice().proximityMonitoringEnabled = false
         binder.unbindAll()
     }
 }
