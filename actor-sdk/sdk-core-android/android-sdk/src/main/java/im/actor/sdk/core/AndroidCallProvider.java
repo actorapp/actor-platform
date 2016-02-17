@@ -10,7 +10,8 @@ import im.actor.sdk.controllers.calls.CallActivity;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
-public class AndroidCallProvider implements CallsProvider{
+public class AndroidCallProvider implements CallsProvider {
+
     @Override
     public void onCallStart(long callId) {
         Context context = ActorSDK.sharedActor().getMessenger().getContext();
@@ -24,5 +25,15 @@ public class AndroidCallProvider implements CallsProvider{
     @Override
     public void onCallEnd(long callId) {
         messenger().getCall(callId).getState().change(CallState.ENDED);
+    }
+
+    @Override
+    public void startOutgoingBeep() {
+        // TODO: Implement
+    }
+
+    @Override
+    public void stopOutgoingBeep() {
+        // TODO: Implement
     }
 }
