@@ -13,7 +13,6 @@ import akka.util.ByteString
 import slick.driver.PostgresDriver.api.Database
 
 import im.actor.server.session.SessionRegion
-import im.actor.tls.TlsContext
 
 import scala.concurrent.duration._
 
@@ -23,7 +22,7 @@ object WsFrontend extends Frontend("ws") {
 
   val IdleTimeout = 15.minutes
 
-  def start(host: String, port: Int, serverKeys: Seq[ServerKey], tlsContext: Option[TlsContext])(
+  def start(host: String, port: Int, serverKeys: Seq[ServerKey])(
     implicit
     sessionRegion: SessionRegion,
     db:            Database,
@@ -36,7 +35,7 @@ object WsFrontend extends Frontend("ws") {
     val connections = Http().bind(
       host,
       port,
-      connectionContext = tlsContext map (_.asHttpsContext) getOrElse Http().defaultServerHttpContext,
+      connectionContext = Http().defaultServerHttpContext,
       settings = defaultSettings.withTimeouts(defaultSettings.timeouts.withIdleTimeout(IdleTimeout))
     )
 

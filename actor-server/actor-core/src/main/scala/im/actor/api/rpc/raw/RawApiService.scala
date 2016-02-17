@@ -7,6 +7,10 @@ import im.actor.api.rpc.{ AuthorizedClientData, RpcError }
 
 import scala.concurrent.Future
 
+object RawApiRpcErrors {
+  val InvalidParams = RpcError(400, "INVALID_PARAMS", "", canTryAgain = true, None)
+}
+
 /**
  * Base class for raw service handlers.
  */

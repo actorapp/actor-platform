@@ -61,6 +61,7 @@ import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.*;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 import im.actor.runtime.mvvm.MVVMCollection;
@@ -90,11 +91,15 @@ public class Messenger {
 
         // Encryption
         timing.section("Encryption");
-        byte[] asset = Assets.loadBinAsset("kuz_tables.bin");
-        if (asset != null) {
-            KuznechikFastEngine.initDump(asset);
-        } else {
+        if (Runtime.isSingleThread()) {
             KuznechikFastEngine.initCalc();
+        } else {
+            Runtime.dispatch(new Runnable() {
+                @Override
+                public void run() {
+                    KuznechikFastEngine.initDump(Assets.loadBinAsset("kuz_tables.bin"));
+                }
+            });
         }
 
         // Actor system

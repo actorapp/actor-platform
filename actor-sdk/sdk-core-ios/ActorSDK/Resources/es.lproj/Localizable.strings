@@ -381,6 +381,10 @@
 
 "Placeholder_Group_Message" = "Desafortunadamente, no eres miembro de este grupo.";
 
+"Placeholder_Location_Title" = "Activar ubicación";
+
+"Placeholder_Location_Message" = "Por favor, activa los servicios de ubicación en la configuración del dispositivo para compartir su ubicación.";
+
 /*
  * Auth
  */
