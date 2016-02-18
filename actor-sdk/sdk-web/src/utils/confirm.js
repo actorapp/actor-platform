@@ -2,14 +2,17 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes, render, createElement } from 'react';
-import { findDOMNode, unmountComponentAtNode } from 'react-dom';
+import React, { Component, PropTypes, createElement } from 'react';
+import { render, findDOMNode, unmountComponentAtNode } from 'react-dom';
 import { KeyCodes } from '../constants/ActorAppConstants'
 import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 class Confirm extends Component {
   static propTypes = {
-    message: PropTypes.string.isRequired,
+    message: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node
+    ]).isRequired,
     description: PropTypes.string,
     abortLabel: PropTypes.string,
     confirmLabel: PropTypes.string
