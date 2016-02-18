@@ -86,15 +86,21 @@ public class CallSlaveActor extends CallActor {
     @Override
     public void doEndCall() {
         super.doEndCall();
-        callVM.getState().change(CallState.ENDED);
-        sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiRejectCall());
+        if (callVM != null) {
+            callVM.getState().change(CallState.ENDED);
+        }
+        if (masterNode!=null) {
+            sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiRejectCall());
+        }
     }
 
     @Override
     public void onBusStopped() {
         super.onBusStopped();
 
-        callVM.getState().change(CallState.ENDED);
+        if (callVM != null) {
+            callVM.getState().change(CallState.ENDED);
+        }
         callManager.send(new CallManagerActor.OnCallEnded(callId));
     }
 
