@@ -96,9 +96,10 @@ public class AACallViewController: AAViewController {
     }
     
     private func layoutButtons() {
-        muteButton.frame = CGRectMake((self.view.width / 3 - 72) / 2, self.view.height - 226, 72, 72)
-        speakerButton.frame = CGRectMake( self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 226, 72, 72)
-        videoButton.frame = CGRectMake( 2 * self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 226, 72, 72)
+        muteButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 226, 72, 72)
+//        muteButton.frame = CGRectMake((self.view.width / 3 - 72) / 2, self.view.height - 226, 72, 72)
+//        speakerButton.frame = CGRectMake( self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 226, 72, 72)
+//        videoButton.frame = CGRectMake( 2 * self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 226, 72, 72)
         
         if !declineCallButton.hidden || !answerCallButton.hidden {
             if !declineCallButton.hidden && !answerCallButton.hidden {
@@ -164,10 +165,10 @@ public class AACallViewController: AAViewController {
         binder.bind(call.isMuted) { (value: JavaLangBoolean!) -> () in
             if (value.booleanValue()) {
                 self.muteButton.setImage(UIImage.bundled("ic_mic_off_36pt")!.tintImage(UIColor.whiteColor()), forState: .Normal)
-                self.muteButton.setImage(UIImage.bundled("ic_mic_off_36pt")!.tintImage(UIColor.whiteColor()), forState: .Disabled)
+                self.muteButton.setBackgroundImage(Imaging.roundedImage(ActorSDK.sharedActor().style.vcTintColor, radius: 36), forState: .Normal)
             } else {
                 self.muteButton.setImage(UIImage.bundled("ic_mic_off_36pt")!.tintImage(ActorSDK.sharedActor().style.vcTintColor), forState: .Normal)
-                self.muteButton.setImage(UIImage.bundled("ic_mic_off_36pt")!.tintImage(ActorSDK.sharedActor().style.vcHintColor), forState: .Disabled)
+                self.muteButton.setBackgroundImage(Imaging.roundedImage(UIColor.whiteColor(), radius: 36), forState: .Normal)
             }
         }
         
