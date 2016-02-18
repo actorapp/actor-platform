@@ -42,6 +42,9 @@ public class CallActor extends EventBusActor {
         callModels = context().getCallsModule().getCallModels();
     }
 
+    public boolean isMuted() {
+        return isMuted;
+    }
 
     //
     // Call Model helpers
@@ -123,7 +126,7 @@ public class CallActor extends EventBusActor {
         }
     }
 
-    public final void onMute() {
+    public void onMute() {
         if (isMuted) {
             return;
         }
@@ -137,7 +140,7 @@ public class CallActor extends EventBusActor {
         }
     }
 
-    public final void onUnmute() {
+    public void onUnmute() {
         if (!isMuted) {
             return;
         }

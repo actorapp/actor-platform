@@ -55,6 +55,7 @@ public class CallSlaveActor extends CallActor {
     public void onBusStarted() {
         super.onBusStarted();
         callVM = spawnNewVM(callId, peer, new ArrayList<CallMember>(), CallState.CALLING_INCOMING);
+        callVM.getIsMuted().change(isMuted());
         callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
     }
 

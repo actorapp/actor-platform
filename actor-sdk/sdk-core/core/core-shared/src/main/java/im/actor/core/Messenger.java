@@ -1027,6 +1027,20 @@ public class Messenger {
     }
 
     /**
+     * Toggle muting of call
+     *
+     * @param callId Call Id
+     */
+    @ObjectiveCName("toggleCallMuteWithCallId:")
+    public void toggleCallMute(long callId) {
+        if (modules.getCallsModule().getCall(callId).getIsMuted().get()) {
+            modules.getCallsModule().unmuteCall(callId);
+        } else {
+            modules.getCallsModule().muteCall(callId);
+        }
+    }
+
+    /**
      * Answer call by call id
      *
      * @param callId Call id
