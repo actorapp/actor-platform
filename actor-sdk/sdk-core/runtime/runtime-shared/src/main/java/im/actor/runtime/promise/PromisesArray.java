@@ -30,6 +30,7 @@ public class PromisesArray<T> {
      * @param <T>        type of array
      * @return array
      */
+    @SuppressWarnings("unchecked")
     public static <T> PromisesArray<T> of(Collection<T> collection) {
         final ArrayList<Promise<T>> res = new ArrayList<>();
         for (T t : collection) {
@@ -77,7 +78,7 @@ public class PromisesArray<T> {
     public static <T> PromisesArray<T> ofPromises(Promise<T>... items) {
         ArrayList<Promise<T>> res = new ArrayList<>();
         Collections.addAll(res, items);
-        final Promise[] promises = (Promise[]) res.toArray();
+        final Promise[] promises = res.toArray(new Promise[res.size()]);
         return new PromisesArray<>(new PromiseFunc<Promise<T>[]>() {
             @Override
             public void exec(PromiseResolver<Promise<T>[]> executor) {
