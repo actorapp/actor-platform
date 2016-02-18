@@ -2,10 +2,14 @@ package im.actor.core.modules.calls;
 
 import java.util.ArrayList;
 
+import im.actor.core.api.ApiAdvertiseSelf;
 import im.actor.core.api.ApiAnswerCall;
 import im.actor.core.api.ApiCallMember;
 import im.actor.core.api.ApiMembersChanged;
 import im.actor.core.api.ApiNeedOffer;
+import im.actor.core.api.ApiOnAnswer;
+import im.actor.core.api.ApiPeer;
+import im.actor.core.api.ApiPeerSettings;
 import im.actor.core.api.ApiRejectCall;
 import im.actor.core.api.ApiSwitchMaster;
 import im.actor.core.api.ApiWebRTCSignaling;
@@ -145,19 +149,64 @@ public class CallMasterActor extends CallActor {
         }
     }
 
-    public void onDeviceAnswered(int uid, long deviceId) {
+    public void onDeviceAdvertised(int uid, long deviceId, ApiPeerSettings peerSettings) {
 
         //
         // For each valid UID and DeviceID
         //
-        if (state.onDeviceAnswered(uid, deviceId)) {
+        if (state.onDeviceAdvertised(uid, deviceId, peerSettings)) {
 
             //
-            // Starting connection to this device
+            // Trying to start silent connection if supported
             //
-            getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
-            for (MasterCallDevice device : state.getConnectedDevices()) {
-                sendSignalingMessage(device.getUid(), device.getDeviceId(), new ApiNeedOffer(uid, deviceId));
+            if (state.startSilentConnection(uid, deviceId)) {
+
+                debugState();
+
+                //
+                // Starting connection to this device with silent flag
+                //
+                getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
+                for (MasterCallDevice device : state.getConnectedDevices()) {
+                    sendSignalingMessage(device.getUid(), device.getDeviceId(),
+                            new ApiNeedOffer(uid, deviceId, peerSettings, true));
+                }
+            }
+        }
+    }
+
+    public void onDeviceAnswered(int uid, long deviceId) {
+
+        //
+        // If current device connected with silenced mode
+        //
+        boolean isSilenced = state.isStartedSilently(uid, deviceId);
+
+        //
+        // For each valid UID and DeviceID
+        //
+        if (state.onDeviceAnswered(uid, deviceId, true)) {
+
+            if (isSilenced) {
+
+                //
+                // Notify all devices about answer
+                //
+                for (MasterCallDevice device : state.getConnectedDevices()) {
+                    sendSignalingMessage(device.getUid(), device.getDeviceId(),
+                            new ApiOnAnswer(uid, deviceId));
+                }
+            } else {
+
+                //
+                // Starting connection to this device
+                //
+                ApiPeerSettings peerSettings = state.getPeerSettings(uid, deviceId);
+                getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
+                for (MasterCallDevice device : state.getConnectedDevices()) {
+                    sendSignalingMessage(device.getUid(), device.getDeviceId(),
+                            new ApiNeedOffer(uid, deviceId, peerSettings, false));
+                }
             }
 
             //
@@ -254,7 +303,7 @@ public class CallMasterActor extends CallActor {
 
     private void updateCallVMState() {
 
-        Log.d(TAG, "Call State:\n" + state);
+        debugState();
 
         //
         // Do nothing if call is ended
@@ -336,6 +385,10 @@ public class CallMasterActor extends CallActor {
         return new ApiMembersChanged(callMembers);
     }
 
+    private void debugState(){
+        Log.d(TAG, "Call State:\n" + state);
+    }
+
     //
     // Messages handling
     //
@@ -346,6 +399,8 @@ public class CallMasterActor extends CallActor {
             onDeviceAnswered(fromUid, fromDeviceId);
         } else if (signaling instanceof ApiRejectCall) {
             onDeviceRejected(fromUid, fromDeviceId);
+        } else if (signaling instanceof ApiAdvertiseSelf) {
+            onDeviceAdvertised(fromUid, fromDeviceId, ((ApiAdvertiseSelf) signaling).getPeerSettings());
         } else {
             super.onSignalingMessage(fromUid, fromDeviceId, signaling);
         }

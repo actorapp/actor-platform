@@ -4,6 +4,8 @@ import com.google.j2objc.annotations.Property;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.Log;
@@ -34,11 +36,12 @@ public class PeerConnectionActor extends ModuleActor {
                                            final int uid,
                                            final long deviceId,
                                            final boolean isMuted,
+                                           final boolean isSilentMode,
                                            @NotNull final ModuleContext context) {
         return new ActorCreator() {
             @Override
             public Actor create() {
-                return new PeerConnectionActor(root, uid, deviceId, isMuted, context);
+                return new PeerConnectionActor(root, uid, deviceId, isMuted, isSilentMode, context);
             }
         };
     }
@@ -48,7 +51,9 @@ public class PeerConnectionActor extends ModuleActor {
     private final ActorRef root;
     private final int uid;
     private final long deviceId;
+    private final boolean isSilentMode;
     private boolean isMuted;
+    private boolean isSilented;
     private boolean isReady = false;
     private boolean isReadyForCandidates = false;
     @NotNull
@@ -58,13 +63,17 @@ public class PeerConnectionActor extends ModuleActor {
     @NotNull
     private State state = State.INITIALIZATION;
 
-    public PeerConnectionActor(@NotNull ActorRef root, int uid, long deviceId, boolean isMuted, @NotNull ModuleContext context) {
+    private ArrayList<WebRTCMediaStream> silencedStreams = new ArrayList<>();
+
+    public PeerConnectionActor(@NotNull ActorRef root, int uid, long deviceId, boolean isMuted, boolean isSilentMode, @NotNull ModuleContext context) {
         super(context);
         TAG = "PeerConnection#" + uid + "(" + deviceId + ")";
         this.isMuted = isMuted;
         this.root = root;
         this.uid = uid;
         this.deviceId = deviceId;
+        this.isSilentMode = isSilentMode;
+        this.isSilented = isSilentMode;
     }
 
     public int getUid() {
@@ -84,7 +93,7 @@ public class PeerConnectionActor extends ModuleActor {
         Promises.tuple(WebRTC.createPeerConnection(), WebRTC.getUserAudio()).map(new FunctionTupled2<WebRTCPeerConnection, WebRTCMediaStream, WebRTCPeerConnection>() {
             @Override
             public WebRTCPeerConnection apply(WebRTCPeerConnection webRTCPeerConnection, WebRTCMediaStream stream) {
-                stream.setEnabled(!isMuted);
+                setEnabled(stream);
                 PeerConnectionActor.this.stream = stream;
                 webRTCPeerConnection.addOwnStream(stream);
                 return webRTCPeerConnection;
@@ -102,11 +111,16 @@ public class PeerConnectionActor extends ModuleActor {
 
                     @Override
                     public void onStreamAdded(WebRTCMediaStream stream) {
+                        if (isSilentMode && isSilented) {
+                            stream.setEnabled(false);
+                            silencedStreams.add(stream);
+                        }
                         root.send(new OnStreamAdded(uid, deviceId, stream));
                     }
 
                     @Override
                     public void onStreamRemoved(WebRTCMediaStream stream) {
+                        silencedStreams.remove(stream);
                         root.send(new OnStreamRemoved(uid, deviceId, stream));
                     }
 
@@ -271,14 +285,27 @@ public class PeerConnectionActor extends ModuleActor {
     }
 
     public void onMute() {
-        if (stream != null) {
-            stream.setEnabled(false);
+        isMuted = true;
+        setEnabled(stream);
+    }
+
+    public void onUnsilence() {
+        isSilented = false;
+        for (WebRTCMediaStream s : silencedStreams) {
+            s.setEnabled(true);
         }
+        silencedStreams.clear();
+        setEnabled(stream);
     }
 
     public void onUnmute() {
-        if (stream != null) {
-            stream.setEnabled(true);
+        isMuted = false;
+        setEnabled(stream);
+    }
+
+    private void setEnabled(WebRTCMediaStream mediaStream) {
+        if (mediaStream != null) {
+            mediaStream.setEnabled(!(isMuted || (isSilentMode && isSilented)));
         }
     }
 
@@ -380,6 +407,12 @@ public class PeerConnectionActor extends ModuleActor {
                 return;
             }
             onUnmute();
+        } else if (message instanceof DoUnsilence) {
+            if (!isReady) {
+                stash();
+                return;
+            }
+            onUnsilence();
         } else {
             super.onReceive(message);
         }
@@ -616,6 +649,10 @@ public class PeerConnectionActor extends ModuleActor {
     }
 
     public static class DoUnmute {
+
+    }
+
+    public static class DoUnsilence {
 
     }
 

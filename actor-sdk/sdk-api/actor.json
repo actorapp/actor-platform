@@ -12476,6 +12476,38 @@
         {
           "type": "struct",
           "content": {
+            "name": "AdvertiseSelf",
+            "doc": [
+              "Advertizing self to a master mode",
+              {
+                "type": "reference",
+                "argument": "peerSettings",
+                "category": "full",
+                "description": "  Optional peer Settings"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 21
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "PeerSettings"
+                  }
+                },
+                "id": 1,
+                "name": "peerSettings"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "AnswerCall",
             "doc": [
               "Answer Call signal"
@@ -12580,6 +12612,12 @@
                 "argument": "sdp",
                 "category": "full",
                 "description": "  Offer SDP"
+              },
+              {
+                "type": "reference",
+                "argument": "ownPeerSettings",
+                "category": "full",
+                "description": "  Optional Own Peer settings"
               }
             ],
             "trait": {
@@ -12599,6 +12637,17 @@
                 "type": "string",
                 "id": 2,
                 "name": "sdp"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "PeerSettings"
+                  }
+                },
+                "id": 3,
+                "name": "ownPeerSettings"
               }
             ]
           }
@@ -12689,11 +12738,128 @@
                 "argument": "device",
                 "category": "full",
                 "description": "  Destination Device Id"
+              },
+              {
+                "type": "reference",
+                "argument": "peerSettings",
+                "category": "full",
+                "description": "  Optional peer settings"
+              },
+              {
+                "type": "reference",
+                "argument": "isSilent",
+                "category": "full",
+                "description": "  Optional flag indicates that connection is established before real answer"
               }
             ],
             "trait": {
               "name": "WebRTCSignaling",
               "key": 8
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "device"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "PeerSettings"
+                  }
+                },
+                "id": 3,
+                "name": "peerSettings"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 4,
+                "name": "isSilent"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "OnAnswer",
+            "doc": [
+              "Notification about call answer",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "device",
+                "category": "full",
+                "description": "  Device Id"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 22
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "device"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "NeedDisconnect",
+            "doc": [
+              "Notification about requirement about required disconnection from peer",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's Id"
+              },
+              {
+                "type": "reference",
+                "argument": "device",
+                "category": "hidden",
+                "description": "  Device Id"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 20
             },
             "attributes": [
               {
@@ -13026,6 +13192,67 @@
                 },
                 "id": 3,
                 "name": "state"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "PeerSettings",
+            "doc": [
+              "Peer Settings",
+              {
+                "type": "reference",
+                "argument": "is3DESSupported",
+                "category": "full",
+                "description": "  Marking if 3DES supported. Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "isMobile",
+                "category": "full",
+                "description": "  Is Peer a mobile phone. Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "canBeAudioRelay",
+                "category": "full",
+                "description": "  If peer can audio relay. Default is false."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 1,
+                "name": "is3DESSupported"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 2,
+                "name": "isMobile"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 3,
+                "name": "canBeAudioRelay"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 4,
+                "name": "canConnect"
               }
             ]
           }
