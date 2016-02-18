@@ -284,8 +284,14 @@ public class PeerConnectionActor extends ModuleActor {
 
     public void onEnded() {
         Log.d(TAG, "OnEnded");
-        peerConnection.close();
-        stream.close();
+        if (peerConnection != null) {
+            peerConnection.close();
+            peerConnection = null;
+        }
+        if (stream != null) {
+            stream.close();
+            stream = null;
+        }
         isReady = false;
         state = State.CLOSED;
         self().send(PoisonPill.INSTANCE);

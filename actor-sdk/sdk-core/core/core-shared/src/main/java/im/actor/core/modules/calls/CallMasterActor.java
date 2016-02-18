@@ -268,7 +268,7 @@ public class CallMasterActor extends CallActor {
         //
         if (state.getConnectedMembers()
                 .isAll(MasterCallMember.IS_ENDED)) {
-            callVM.getState().change(CallState.ENDED);
+            shutdown();
             return;
         }
 

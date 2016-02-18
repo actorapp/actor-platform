@@ -175,9 +175,13 @@ public class PeerConnection implements WebRTCPeerConnection {
 
     @Override
     public void close() {
-        peerConnection.close();
+        if (peerConnection != null) {
+            peerConnection.close();
+            peerConnection = null;
+        }
         for (MediaStream s : streams.values()) {
             s.close();
         }
+        streams.clear();
     }
 }
