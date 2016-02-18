@@ -8,6 +8,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -17,11 +19,12 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -52,11 +55,10 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.util.Screen;
-import im.actor.sdk.view.SearchHighlight;
+import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.adapters.HolderAdapter;
 import im.actor.sdk.view.adapters.ViewHolder;
 import im.actor.sdk.view.avatar.AvatarView;
-import im.actor.sdk.view.avatar.CoverAvatarView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -75,8 +77,14 @@ public class CallFragment extends BaseFragment {
     private Ringtone ringtone;
     private CallVM call;
     private ActorRef timer;
-    private TextView timerTV;
+    private TextView statusTV;
     private NotificationManager manager;
+    private CallState currentState;
+    private ImageButton endCall;
+    private boolean speakerOn = false;
+    private AudioManager audioManager;
+    private AvatarView avatarView;
+    private ListView membersList;
 
     public CallFragment() {
 
@@ -111,7 +119,7 @@ public class CallFragment extends BaseFragment {
             }
         });
         ImageButton notAnswer = (ImageButton) cont.findViewById(R.id.notAnswer);
-        ImageButton endCall = (ImageButton) cont.findViewById(R.id.end_call);
+        endCall = (ImageButton) cont.findViewById(R.id.end_call);
         notAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,66 +134,162 @@ public class CallFragment extends BaseFragment {
         });
 
         //
-        //Avatar/Name
+        //Avatar/Name bind
         //
-        CoverAvatarView avatarView = (CoverAvatarView) cont.findViewById(R.id.avatar);
-        avatarView.setBkgrnd((ImageView) cont.findViewById(R.id.avatar_bgrnd));
+        avatarView = (AvatarView) cont.findViewById(R.id.avatar);
+        avatarView.init(Screen.dp(130), 50);
+
         TextView nameTV = (TextView) cont.findViewById(R.id.name);
-        nameTV.setTextColor(ActorSDK.sharedActor().style.getProfileTitleColor());
-
+        nameTV.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         if(peer.getPeerType() == PeerType.PRIVATE){
-
             UserVM user = users().get(peer.getPeerId());
-            bind(avatarView, user.getAvatar());
+            avatarView.bind(user);
             bind(nameTV, user.getName());
         }else if(peer.getPeerType() == PeerType.GROUP){
             GroupVM g = groups().get(peer.getPeerId());
-            bind(avatarView, g.getAvatar());
+            avatarView.bind(g);
             bind(nameTV, g.getName());
         }
 
-        ListView membersList  = (ListView) cont.findViewById(R.id.members_list);
+        //
+        // Members list
+        //
+        membersList  = (ListView) cont.findViewById(R.id.members_list);
         CallMembersAdapter membersAdapter = new CallMembersAdapter(getActivity(), call.getMembers());
         membersList.setAdapter(membersAdapter);
 
-        timerTV = (TextView) cont.findViewById(R.id.timer);
-        timerTV.setTextColor(ActorSDK.sharedActor().style.getProfileSubtitleColor());
+        //
+        // Members list/ avatar switch
+        //
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchAvatarMembers();
+            }
+        };
+        avatarView.setOnClickListener(listener);
+        cont.findViewById(R.id.background).setOnClickListener(listener);
+
+        membersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switchAvatarMembers();
+            }
+
+        });
+
+
+
+        statusTV = (TextView) cont.findViewById(R.id.status);
+        statusTV.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
 
         //
         // Check permission
         //
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED) {
             Log.d("Permissions", "call - no permission :c");
-            CallFragment.this.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.VIBRATE, Manifest.permission.WAKE_LOCK},
+            CallFragment.this.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.VIBRATE, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.WAKE_LOCK},
                     PERMISSIONS_REQUEST_FOR_CALL);
 
         }
 
+        audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+        final TintImageView speaker = (TintImageView) cont.findViewById(R.id.speaker);
+        speaker.setResource(R.drawable.ic_volume_up_white_36dp);
+        speaker.setTint(getResources().getColor(R.color.primary));
+        speaker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               speakerOn = !speakerOn;
+               audioManager.setSpeakerphoneOn(speakerOn);
+                if(speakerOn){
+                    speaker.setBackgroundResource(R.drawable.call_action_background_active);
+                    speaker.setTint(Color.WHITE);
+                }else{
+                    speaker.setBackgroundResource(R.drawable.call_action_background);
+                    speaker.setTint(getResources().getColor(R.color.primary));
+                }
+            }
+        });
+
+        final TintImageView muteCall = (TintImageView) cont.findViewById(R.id.mute);
+        muteCall.setResource(R.drawable.ic_mic_off_white_36dp);
+        muteCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                messenger().toggleCallMute(callId);
+            }
+        });
+
+
+
+        call.getIsMuted().subscribe(new ValueChangedListener<Boolean>() {
+            @Override
+            public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                if(val){
+                    muteCall.setBackgroundResource(R.drawable.call_action_background_active);
+                    muteCall.setTint(Color.WHITE);
+                }else{
+                    muteCall.setBackgroundResource(R.drawable.call_action_background);
+                    muteCall.setTint(getResources().getColor(R.color.primary));
+                }
+            }
+        });
+
         call.getState().subscribe(new ValueChangedListener<CallState>() {
             @Override
             public void onChanged(CallState val, Value<CallState> valueModel) {
-                switch (val){
-                    case ENDED:
+                if(currentState!=val){
+                    currentState = val;
+                    switch (val){
+
+                        case CALLING:
+                            if(call.isOutgoing()){
+                                statusTV.setText(R.string.call_outgoing);
+                            }else{
+                                statusTV.setText(R.string.call_incoming);
+                                initIncoming();
+                            }
+                            enableWakeLock();
+                            break;
+
+                        case CONNECTING:
+                            statusTV.setText(R.string.call_connecting);
+                            break;
+
+                        case IN_PROGRESS:
+                            onConnected();
+                            startTimer();
+                            break;
+
+                        case ENDED:
+                        statusTV.setText(R.string.call_ended);
                         onCallEnd();
                         break;
-                    case IN_PROGRESS:
-                        onConnected();
-                        startTimer();
-                        break;
-                    case CALLING_INCOMING:
-                        initIncoming();
-                        break;
-                    case CALLING_OUTGOING:
-                        onConnecting();
-                        break;
+
+                    }
                 }
+
             }
         }, true);
 
 
         return cont;
+    }
+
+    public void switchAvatarMembers() {
+        if(peer.getPeerType() == PeerType.GROUP){
+            if(avatarView.getVisibility() == View.VISIBLE){
+                hideView(avatarView);
+                showView(membersList);
+            }else{
+                hideView(membersList);
+                showView(avatarView);
+            }
+        }
     }
 
     private void startTimer() {
@@ -207,7 +311,9 @@ public class CallFragment extends BaseFragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                timerTV.setText(formatter.format(new Date(timeFromRegister)));
+                                if(currentState == CallState.IN_PROGRESS){
+                                    statusTV.setText(formatter.format(new Date(timeFromRegister)));
+                                }
                             }
                         });
                     }
@@ -231,6 +337,7 @@ public class CallFragment extends BaseFragment {
 
     private void initIncoming() {
         answerContainer.setVisibility(View.VISIBLE);
+        endCall.setVisibility(View.INVISIBLE);
 
         new Thread(new Runnable() {
             @Override
@@ -239,7 +346,7 @@ public class CallFragment extends BaseFragment {
                     Thread.sleep(1100);
                     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
                     ringtone = RingtoneManager.getRingtone(getActivity(), notification);
-                    if (getActivity() != null & answerContainer.getVisibility() == View.VISIBLE) {
+                    if (getActivity() != null & answerContainer.getVisibility() == View.VISIBLE && currentState == CallState.CALLING) {
                         if (ringtone != null) {
                             ringtone.play();
                         }
@@ -255,7 +362,7 @@ public class CallFragment extends BaseFragment {
 
     private void onAnswer() {
 
-        onConnecting();
+        endCall.setVisibility(View.VISIBLE);
         answerContainer.setVisibility(View.INVISIBLE);
         if (ringtone != null) {
             ringtone.stop();
@@ -278,7 +385,7 @@ public class CallFragment extends BaseFragment {
     private int field = 0x00000020;
 
 
-    public void onConnecting() {
+    public void enableWakeLock() {
         powerManager = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(field, getActivity().getLocalClassName());
 
@@ -296,6 +403,7 @@ public class CallFragment extends BaseFragment {
     }
 
     public void onCallEnd() {
+        audioManager.setSpeakerphoneOn(false);
         vibrate = false;
         if (ringtone != null) {
             ringtone.stop();
@@ -319,6 +427,15 @@ public class CallFragment extends BaseFragment {
         }
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.members){
+            switchAvatarMembers();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void onPause() {
