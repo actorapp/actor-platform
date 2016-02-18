@@ -33,11 +33,12 @@ public class PeerConnectionActor extends ModuleActor {
     public static ActorCreator CONSTRUCTOR(@NotNull final ActorRef root,
                                            final int uid,
                                            final long deviceId,
+                                           final boolean isMuted,
                                            @NotNull final ModuleContext context) {
         return new ActorCreator() {
             @Override
             public Actor create() {
-                return new PeerConnectionActor(root, uid, deviceId, context);
+                return new PeerConnectionActor(root, uid, deviceId, isMuted, context);
             }
         };
     }
@@ -47,6 +48,7 @@ public class PeerConnectionActor extends ModuleActor {
     private final ActorRef root;
     private final int uid;
     private final long deviceId;
+    private boolean isMuted;
     private boolean isReady = false;
     private boolean isReadyForCandidates = false;
     @NotNull
@@ -56,9 +58,10 @@ public class PeerConnectionActor extends ModuleActor {
     @NotNull
     private State state = State.INITIALIZATION;
 
-    public PeerConnectionActor(@NotNull ActorRef root, int uid, long deviceId, @NotNull ModuleContext context) {
+    public PeerConnectionActor(@NotNull ActorRef root, int uid, long deviceId, boolean isMuted, @NotNull ModuleContext context) {
         super(context);
         TAG = "PeerConnection#" + uid + "(" + deviceId + ")";
+        this.isMuted = isMuted;
         this.root = root;
         this.uid = uid;
         this.deviceId = deviceId;
@@ -81,6 +84,7 @@ public class PeerConnectionActor extends ModuleActor {
         Promises.tuple(WebRTC.createPeerConnection(), WebRTC.getUserAudio()).map(new FunctionTupled2<WebRTCPeerConnection, WebRTCMediaStream, WebRTCPeerConnection>() {
             @Override
             public WebRTCPeerConnection apply(WebRTCPeerConnection webRTCPeerConnection, WebRTCMediaStream stream) {
+                stream.setEnabled(!isMuted);
                 PeerConnectionActor.this.stream = stream;
                 webRTCPeerConnection.addOwnStream(stream);
                 return webRTCPeerConnection;
@@ -266,6 +270,18 @@ public class PeerConnectionActor extends ModuleActor {
         peerConnection.addCandidate(index, id, sdp);
     }
 
+    public void onMute() {
+        if (stream != null) {
+            stream.setEnabled(false);
+        }
+    }
+
+    public void onUnmute() {
+        if (stream != null) {
+            stream.setEnabled(true);
+        }
+    }
+
     public void onEnded() {
         peerConnection.close();
         stream.close();
@@ -345,6 +361,18 @@ public class PeerConnectionActor extends ModuleActor {
                 return;
             }
             onEnded();
+        } else if (message instanceof DoMute) {
+            if (!isReady) {
+                stash();
+                return;
+            }
+            onMute();
+        } else if (message instanceof DoUnmute) {
+            if (!isReady) {
+                stash();
+                return;
+            }
+            onUnmute();
         } else {
             super.onReceive(message);
         }
@@ -573,6 +601,14 @@ public class PeerConnectionActor extends ModuleActor {
     }
 
     public static class DoStop {
+
+    }
+
+    public static class DoMute {
+
+    }
+
+    public static class DoUnmute {
 
     }
 
