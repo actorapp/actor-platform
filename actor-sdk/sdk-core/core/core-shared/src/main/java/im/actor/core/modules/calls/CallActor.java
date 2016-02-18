@@ -30,6 +30,7 @@ public class CallActor extends EventBusActor {
 
     private HashMap<Integer, HashMap<Long, ActorRef>> peerConnections = new HashMap<>();
     private HashMap<Long, CallVM> callModels;
+    private boolean isMuted = false;
 
     public CallActor(ModuleContext context) {
         super(context);
@@ -122,6 +123,34 @@ public class CallActor extends EventBusActor {
         }
     }
 
+    public final void onMute() {
+        if (isMuted) {
+            return;
+        }
+        isMuted = true;
+
+        for (int uid : peerConnections.keySet()) {
+            HashMap<Long, ActorRef> peers = peerConnections.get(uid);
+            for (ActorRef p : peers.values()) {
+                p.send(new PeerConnectionActor.DoMute());
+            }
+        }
+    }
+
+    public final void onUnmute() {
+        if (!isMuted) {
+            return;
+        }
+        isMuted = false;
+
+        for (int uid : peerConnections.keySet()) {
+            HashMap<Long, ActorRef> peers = peerConnections.get(uid);
+            for (ActorRef p : peers.values()) {
+                p.send(new PeerConnectionActor.DoUnmute());
+            }
+        }
+    }
+
     @Override
     public final void onMessageReceived(@Nullable Integer senderId, @Nullable Long senderDeviceId, byte[] data) {
         if (senderId == null || senderDeviceId == null) {
@@ -166,7 +195,7 @@ public class CallActor extends EventBusActor {
             return refs.get(deviceId);
         }
         ActorRef ref = system().actorOf(getPath() + "/uid:" + uid + "/" + deviceId,
-                PeerConnectionActor.CONSTRUCTOR(self(), uid, deviceId, context()));
+                PeerConnectionActor.CONSTRUCTOR(self(), uid, deviceId, isMuted, context()));
         refs.put(deviceId, ref);
         return ref;
     }
@@ -197,12 +226,24 @@ public class CallActor extends EventBusActor {
         } else if (message instanceof PeerConnectionActor.OnStreamRemoved) {
             PeerConnectionActor.OnStreamRemoved streamRemoved = (PeerConnectionActor.OnStreamRemoved) message;
             onStreamRemoved(streamRemoved.getUid(), streamRemoved.getDeviceId(), streamRemoved.getStream());
+        } else if (message instanceof Mute) {
+            onMute();
+        } else if (message instanceof Unmute) {
+            onUnmute();
         } else {
             super.onReceive(message);
         }
     }
 
     public static class DoEndCall {
+
+    }
+
+    public static class Mute {
+
+    }
+
+    public static class Unmute {
 
     }
 }
