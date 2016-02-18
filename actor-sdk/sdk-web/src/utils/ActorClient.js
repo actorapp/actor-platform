@@ -145,11 +145,11 @@ export default {
   },
 
   bindCall(id, callback) {
-    window.messenger.bindCall(id, callback)
+    window.messenger.bindCall(id, callback);
   },
 
   unbindCall(id, callback) {
-    window.messenger.unbindCall(id, callback)
+    window.messenger.unbindCall(id, callback);
   },
 
   makeCall(uid) {
@@ -157,11 +157,11 @@ export default {
   },
 
   answerCall(id) {
-    window.messenger.answerCall(id)
+    window.messenger.answerCall(id);
   },
 
   endCall(id) {
-    window.messenger.endCall(id)
+    window.messenger.endCall(id);
   },
 
   getUser(uid) {

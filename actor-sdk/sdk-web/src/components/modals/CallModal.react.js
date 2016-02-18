@@ -4,14 +4,16 @@
 
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
-// import { FormattedMessage } from 'react-intl';
 import Modal from 'react-modal';
+// import { FormattedMessage } from 'react-intl';
+import AvatarItem from '../common/AvatarItem.react';
 
-import { KeyCodes, CallTypes } from '../../constants/ActorAppConstants';
+import { KeyCodes, CallStates } from '../../constants/ActorAppConstants';
 
 import CallActionCreators from '../../actions/CallActionCreators';
 
-import CallStore from '../../stores/CallStore'
+import CallStore from '../../stores/CallStore';
+import UserStore from '../../stores/UserStore';
 
 class CallModal extends Component {
   constructor(props) {
@@ -23,11 +25,11 @@ class CallModal extends Component {
   static calculateState() {
     return {
       isOpen: CallStore.isOpen(),
-      callId: CallStore.getCallId(),
-      callType: CallStore.getCallType(),
-      callMembers: CallStore.getCallMembers(),
-      callPeer: CallStore.getCallPeer(),
-      callState: CallStore.getCallState()
+      isOutgoing: CallStore.isOutgoing(),
+      callId: CallStore.getId(),
+      callMembers: CallStore.getMembers(),
+      callPeer: CallStore.getPeer(),
+      callState: CallStore.getState()
     };
   }
 
@@ -42,58 +44,80 @@ class CallModal extends Component {
 
   handleAnswer = () => {
     const { callId } = this.state;
-    console.debug('handleAnswer', callId);
     CallActionCreators.answerCall(callId);
-  };
-
-  handleDecline = () => {
-    const { callId } = this.state;
-    console.debug('handleDecline', callId);
   };
 
   handleEnd = () => {
     const { callId } = this.state;
-    console.debug('handleEnd', callId);
     CallActionCreators.endCall(callId);
   };
 
-  render() {
-    const { isOpen, callType } = this.state;
+  handleMute = () => {
+    console.debug('handleMute')
+  };
 
-    let modalFooter;
-    switch (callType) {
-      case CallTypes.INCOMING:
-        modalFooter = (
-          <div className="modal-new__footer">
-            <button className="button button--rised button--wide" onClick={this.handleAnswer}>Answer</button>
-            <button className="button button--rised button--wide" onClick={this.handleDecline}>Decline</button>
-          </div>
-        );
-        break;
-      case CallTypes.OUTGOING:
-        modalFooter = (
-          <div className="modal-new__footer">
-            <button className="button button--rised button--wide" onClick={this.handleEnd}>End</button>
-          </div>
-        );
-        break;
-      default:
-    }
+  render() {
+    const { isOpen, isOutgoing, callPeer, callMembers, callState } = this.state;
+    console.debug(this.state);
 
     if (isOpen) {
+      const modalStyles = {
+        content : {
+          position: null,
+          top: null,
+          left: null,
+          right: null,
+          bottom: null,
+          border: null,
+          background: null,
+          overflow: null,
+          outline: null,
+          padding: null,
+          borderRadius: null,
+          width: 300
+        }
+      };
+
+      const peerInfo = callPeer ? UserStore.getUser(callPeer.id) : null;
+
       return (
         <Modal className="modal-new modal-new--call"
                closeTimeoutMS={150}
+               style={modalStyles}
                isOpen={isOpen}>
 
           <div className="modal-new__header">
-            <h3 className="modal-new__header__title">{`${callType} call`}</h3>
+            <h3 className="modal-new__header__title">{callState}</h3>
           </div>
 
           <div className="modal-new__body">
+            {
+              peerInfo
+                ? <AvatarItem image={peerInfo.avatar} placeholder={peerInfo.placeholder}
+                              size="huge" title={peerInfo.name}/>
+                : null
+            }
           </div>
 
-          {modalFooter}
+          <div className="modal-new__footer">
+            {
+              callState === CallStates.IN_PROGRESS
+                ? <button className="button button--rised button--wide" onClick={this.handleMute}>Mute</button>
+                : null
+            }
+            {
+              !isOutgoing && callState === CallStates.CALLING
+                ? <button className="button button--rised button--wide" onClick={this.handleAnswer}>Answer</button>
+                : null
+            }
+            <button className="button button--rised button--wide" onClick={this.handleEnd}>
+              {
+                isOutgoing
+                  ? 'Cancel'
+                  : 'Decline'
+              }
+            </button>
+          </div>
         </Modal>
       );
     } else {

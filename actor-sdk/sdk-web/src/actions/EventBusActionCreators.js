@@ -2,20 +2,17 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { dispatch } from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes, EventTypes, CallTypes } from '../constants/ActorAppConstants';
+import { EventTypes } from '../constants/ActorAppConstants';
 import CallActionCreators from './CallActionCreators';
 
-const EventBusActionCreators = {
+export default {
   broadcastEvent(type, event) {
     //console.debug('broadcastEvent', type, event);
     switch (type) {
-      case EventTypes.CALL:
+      case EventTypes.CALLS:
         CallActionCreators.handleCall(event);
         break;
       default:
     }
   }
 };
-
-export default EventBusActionCreators;

@@ -7,7 +7,8 @@ import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
 let _isOpen = false;
-let _id, _type, _members, _peer, _state;
+let _isOutgoing = false;
+let _id, _members, _peer, _state;
 
 class CallStore extends Store {
   constructor(dispatcher) {
@@ -18,33 +19,31 @@ class CallStore extends Store {
     return _isOpen;
   }
 
-  getCallId() {
+  isOutgoing() {
+    return _isOutgoing
+  }
+
+  getId() {
     return _id;
   }
 
-  getCallType() {
-    return _type;
-  }
-
-  getCallMembers() {
+  getMembers() {
     return _members;
   }
 
-  getCallPeer() {
+  getPeer() {
     return _peer;
   }
 
-  getCallState() {
+  getState() {
     return _state;
   }
 
   __onDispatch(action) {
     switch(action.type) {
       case ActionTypes.CALL_MODAL_OPEN:
-        const { id, type } = action.event;
         _isOpen = true;
-        _id = id;
-        _type = type;
+        _id  = action.id;
         this.__emitChange();
         break;
       case ActionTypes.CALL_MODAL_HIDE:
@@ -52,14 +51,15 @@ class CallStore extends Store {
         this.__emitChange();
         break;
       case ActionTypes.CALL_CHANGED:
-        const { members, peer, state } = action.call;
+        const { members, peer, state, isOutgoing } = action.call;
+        _isOutgoing = isOutgoing;
         _members = members;
         _peer = peer;
         _state = state;
         this.__emitChange();
         break;
       case ActionTypes.CALL:
-        console.debug('ActionTypes.CALL', action);
+        // console.debug('ActionTypes.CALL', action);
         break;
       default:
     }
