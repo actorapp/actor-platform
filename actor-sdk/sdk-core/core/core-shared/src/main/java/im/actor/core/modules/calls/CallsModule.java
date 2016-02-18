@@ -56,6 +56,14 @@ public class CallsModule extends AbsModule {
         };
     }
 
+    public void muteCall(long callId) {
+        callManager.send(new CallManagerActor.MuteCall(callId));
+    }
+
+    public void unmuteCall(long callId) {
+        callManager.send(new CallManagerActor.UnmuteCall(callId));
+    }
+
     public void endCall(long callId) {
         callManager.send(new CallManagerActor.EndCall(callId));
     }
