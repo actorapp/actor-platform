@@ -17,11 +17,11 @@ public class JsCall extends JavaScriptObject {
         }
         String state;
         switch (model.getState().get()) {
-            case CALLING_INCOMING:
-                state = "calling_in";
+            case CALLING:
+                state = "calling";
                 break;
-            case CALLING_OUTGOING:
-                state = "calling_out";
+            case CONNECTING:
+                state = "connecting";
                 break;
             case IN_PROGRESS:
                 state = "in_progress";
@@ -31,11 +31,11 @@ public class JsCall extends JavaScriptObject {
                 state = "ended";
                 break;
         }
-        return create(JsPeer.create(model.getPeer()), members, state);
+        return create(JsPeer.create(model.getPeer()), model.isOutgoing(), members, state);
     }
 
-    public static native JsCall create(JsPeer peer, JsArray<JsPeerInfo> members, String state)/*-{
-        return {peer: peer, members: members, state: state};
+    public static native JsCall create(JsPeer peer, boolean isOutgoing, JsArray<JsPeerInfo> members, String state)/*-{
+        return {peer: peer, isOutgoing: isOutgoing, members: members, state: state};
     }-*/;
 
     protected JsCall() {

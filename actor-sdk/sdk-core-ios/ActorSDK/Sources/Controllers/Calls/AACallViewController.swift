@@ -131,10 +131,16 @@ public class AACallViewController: AAViewController {
         // Binding State
         //
         binder.bind(call.state) { (value: ACCallState!) -> () in
-            if (ACCallState_Enum.CALLING_INCOMING == value.toNSEnum()) {
-                self.answerCallButton.hidden = false
-                self.declineCallButton.hidden = false
-                self.callState.text = "Incoming call..."
+            if (ACCallState_Enum.CALLING == value.toNSEnum()) {
+                if (self.call.isOutgoing) {
+                    self.answerCallButton.hidden = true
+                    self.declineCallButton.hidden = false
+                    self.callState.text = "Ringing..."
+                } else {
+                    self.answerCallButton.hidden = false
+                    self.declineCallButton.hidden = false
+                    self.callState.text = "Incoming call..."
+                }
                 self.layoutButtons()
             } else if (ACCallState_Enum.CONNECTING == value.toNSEnum()) {
                 self.answerCallButton.hidden = true
@@ -145,11 +151,6 @@ public class AACallViewController: AAViewController {
                 self.answerCallButton.hidden = true
                 self.declineCallButton.hidden = false
                 self.callState.text = "0:00"
-                self.layoutButtons()
-            } else if (ACCallState_Enum.CALLING_OUTGOING == value.toNSEnum()){
-                self.answerCallButton.hidden = true
-                self.declineCallButton.hidden = false
-                self.callState.text = "Ringing..."
                 self.layoutButtons()
             } else if (ACCallState_Enum.ENDED == value.toNSEnum()) {
                 self.callState.text = "Call Ended"
@@ -189,13 +190,16 @@ public class AACallViewController: AAViewController {
                 case ACCallMemberState_Enum.ENDED:
                     debugStr += " - Ended"
                     break
-                case ACCallMemberState_Enum.CALLING:
-                    debugStr += " - Calling"
+                case ACCallMemberState_Enum.RINGING:
+                    debugStr += " - Ringing"
                     break
                 case ACCallMemberState_Enum.IN_PROGRESS:
                     debugStr += " - In Progress"
                     break
-                case ACCallMemberState_Enum.CALLING_REACHED:
+                case ACCallMemberState_Enum.CONNECTING:
+                    debugStr += " - Connecting"
+                    break
+                case ACCallMemberState_Enum.RINGING_REACHED:
                     debugStr += " - Reached"
                     break
                 default:

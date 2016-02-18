@@ -23,7 +23,7 @@ public class JsCallsProvider implements CallsProvider {
         JsMessenger.getInstance().broadcastEvent("calls", callEvent("" + callId, "started"));
 
         // Obsolete
-        if (JsMessenger.getInstance().getCall(callId).getState().get() == CallState.CALLING_OUTGOING) {
+        if (JsMessenger.getInstance().getCall(callId).isOutgoing()) {
             JsMessenger.getInstance().broadcastEvent("call", callEvent("" + callId, "ongoing"));
         } else {
             JsMessenger.getInstance().broadcastEvent("call", callEvent("" + callId, "incoming"));
