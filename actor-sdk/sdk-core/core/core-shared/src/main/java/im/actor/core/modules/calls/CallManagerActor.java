@@ -196,6 +196,13 @@ public class CallManagerActor extends ModuleActor {
             if (ref != null) {
                 ref.send(new CallSlaveActor.DoAnswer());
             }
+
+            //
+            // Notify Provider to stop playing ringtone
+            //
+            if (currentCall == callId) {
+                provider.onCallAnswered(callId);
+            }
         }
     }
 
@@ -206,6 +213,8 @@ public class CallManagerActor extends ModuleActor {
                 isBeeping = false;
                 provider.stopOutgoingBeep();
             }
+
+            provider.onCallAnswered(callId);
         }
     }
 
@@ -244,8 +253,8 @@ public class CallManagerActor extends ModuleActor {
         //
         // Notify Provider if this call was current
         //
-        if (currentCall != null && currentCall == callId) {
-            currentCall = callId;
+        if (currentCall == callId) {
+            currentCall = null;
             provider.onCallEnd(callId);
 
             if (isBeeping) {
