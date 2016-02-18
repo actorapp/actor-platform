@@ -4,80 +4,165 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/avatar_bgrnd"
+    <im.actor.sdk.controllers.conversation.view.ChatBackgroundView
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/img_profile_avatar_default"
-        android:scaleType="centerCrop" />
+        android:weightSum="2"
+        android:orientation="vertical">
 
-    <im.actor.sdk.view.avatar.CoverAvatarView
-        android:id="@+id/avatar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <RelativeLayout
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|left"
-        android:orientation="vertical"
-        android:layout_margin="40dp"
-        >
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:includeFontPadding="false"
-            android:lines="1"
-            android:textSize="26sp" />
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="top|center_horizontal"
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_secondary"/>
+            <im.actor.sdk.view.avatar.AvatarView
+                android:id="@+id/avatar"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
 
-        <ListView
-            android:id="@+id/members_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <ListView
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:visibility="invisible"
+                android:id="@+id/members_list"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"/>
+
+            <TextView
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/avatar"
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:lines="1"
+                android:textSize="26sp"
+                android:layout_alignParentBottom="true" />
+
+
+
+
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="top|center_horizontal"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/answer_container"
+                android:visibility="invisible"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="20dp">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="60dp">
+
+                    <ImageButton
+                        android:layout_gravity="center"
+                        android:id="@+id/notAnswer"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/end_call_background"
+                        android:src="@drawable/ic_call_end_white_36dp" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="60dp">
+                    <ImageButton
+                        android:layout_gravity="center"
+                        android:id="@+id/answer"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/answer_background"
+                        android:src="@drawable/ic_call_white_36dp" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <ImageButton
+                android:visibility="visible"
+                android:layout_gravity="bottom|center_horizontal"
+                android:id="@+id/end_call"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/end_call_background"
+                android:src="@drawable/ic_call_end_white_36dp"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:layout_gravity="center_horizontal|top"
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_gravity="center">
+
+
+                <FrameLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                    <im.actor.sdk.view.TintImageView
+                        android:id="@+id/speaker"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="60dp"
+                        android:scaleType="centerInside"
+                        android:layout_width="60dp"
+                        android:background="@drawable/call_action_background"
+                        />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                    <im.actor.sdk.view.TintImageView
+                        android:id="@+id/mute"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="60dp"
+                        android:scaleType="centerInside"
+                        android:layout_width="60dp"
+                        android:background="@drawable/call_action_background"
+                        />
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+
+
     </LinearLayout>
 
-
-    <ImageButton
-        android:layout_gravity="bottom"
-        android:id="@+id/end_call"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/accent"
-        android:src="@drawable/ic_call_white_36dp" />
-
-    <LinearLayout
-        android:id="@+id/answer_container"
-        android:visibility="invisible"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom">
-
-        <ImageButton
-            android:layout_gravity="bottom"
-            android:id="@+id/answer"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="60dp"
-            android:background="@color/primary_alt"
-            android:src="@drawable/ic_call_white_36dp" />
-
-        <ImageButton
-            android:layout_gravity="bottom"
-            android:id="@+id/notAnswer"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="60dp"
-            android:background="@color/accent"
-            android:src="@drawable/ic_call_white_36dp" />
-    </LinearLayout>
 
 </FrameLayout>
