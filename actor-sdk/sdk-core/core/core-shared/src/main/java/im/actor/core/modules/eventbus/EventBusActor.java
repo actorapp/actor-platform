@@ -187,21 +187,27 @@ public class EventBusActor extends ModuleActor {
     public void shutdown() {
         isProcessing = true;
         stopKeepAlive();
-        context().getEventBus().unsubscribe(busId, self());
+        if (busId != null) {
+            context().getEventBus().unsubscribe(busId, self());
+        }
         onBusShutdown();
         onBusStopped();
-        api(new RequestKeepAliveEventBus(busId, 1L)).then(new Consumer<ResponseVoid>() {
-            @Override
-            public void apply(ResponseVoid responseVoid) {
-                self().send(PoisonPill.INSTANCE);
-            }
-        }).done(self());
+        if (busId != null) {
+            api(new RequestKeepAliveEventBus(busId, 1L)).then(new Consumer<ResponseVoid>() {
+                @Override
+                public void apply(ResponseVoid responseVoid) {
+                    self().send(PoisonPill.INSTANCE);
+                }
+            }).done(self());
+        }
     }
 
     public void dispose() {
         isProcessing = true;
         stopKeepAlive();
-        context().getEventBus().unsubscribe(busId, self());
+        if (busId != null) {
+            context().getEventBus().unsubscribe(busId, self());
+        }
         onBusDisposed();
         onBusStopped();
         self().send(PoisonPill.INSTANCE);
