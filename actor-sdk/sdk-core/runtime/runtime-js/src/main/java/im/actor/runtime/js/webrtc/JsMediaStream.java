@@ -29,6 +29,13 @@ public class JsMediaStream extends JavaScriptObject {
         this.removeTrack(track);
     }-*/;
 
+    public final void stop() {
+        JsArray<JsMediaStreamTrack> tracks = getTracks();
+        for (int i = 0; i < tracks.length(); i++) {
+            tracks.get(i).stop();
+        }
+    }
+
     public native final String createUrl()/*-{
         return URL.createObjectURL(this);
     }-*/;
