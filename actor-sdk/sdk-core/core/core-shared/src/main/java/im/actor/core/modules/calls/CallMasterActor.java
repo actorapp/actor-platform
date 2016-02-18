@@ -56,6 +56,7 @@ public class CallMasterActor extends CallActor {
             public void apply(ResponseDoCall responseDoCall) {
                 callId = responseDoCall.getCallId();
                 callVM = spanNewOutgoingVM(responseDoCall.getCallId(), peer);
+                callVM.getIsMuted().change(isMuted());
                 callManager.send(new CallManagerActor.DoCallComplete(responseDoCall.getCallId()), self());
                 callback.onResult(responseDoCall.getCallId());
                 callback = null;
@@ -169,6 +170,22 @@ public class CallMasterActor extends CallActor {
             sendSignalingMessage(createMembersChanged());
         } else {
             super.onSignalingMessage(fromUid, fromDeviceId, signaling);
+        }
+    }
+
+    @Override
+    public void onMute() {
+        super.onMute();
+        if (callVM != null) {
+            callVM.getIsMuted().change(true);
+        }
+    }
+
+    @Override
+    public void onUnmute() {
+        super.onUnmute();
+        if (callVM != null) {
+            callVM.getIsMuted().change(false);
         }
     }
 

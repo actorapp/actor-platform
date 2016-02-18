@@ -215,14 +215,14 @@ public class CallManagerActor extends ModuleActor {
     private void onCallMute(long callId) {
         ActorRef ref = runningCalls.get(callId);
         if (ref != null) {
-
+            ref.send(new CallActor.Mute());
         }
     }
 
     private void onCallUnmute(long callId) {
         ActorRef ref = runningCalls.get(callId);
         if (ref != null) {
-
+            ref.send(new CallActor.Unmute());
         }
     }
 
@@ -311,6 +311,10 @@ public class CallManagerActor extends ModuleActor {
         } else if (message instanceof OnCallAnswered) {
             OnCallAnswered answered = (OnCallAnswered) message;
             onCallAnswered(answered.getCallId());
+        } else if (message instanceof MuteCall) {
+            onCallMute(((MuteCall) message).getCallId());
+        } else if (message instanceof UnmuteCall) {
+            onCallUnmute(((UnmuteCall) message).getCallId());
         } else {
             super.onReceive(message);
         }
