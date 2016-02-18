@@ -36,7 +36,14 @@ public class JsMediaStream extends JavaScriptObject {
     public final void stopAll() {
         JsArray<JsMediaStreamTrack> tracks = getTracks();
         for (int i = 0; i < tracks.length(); i++) {
-            tracks.get(i).stop();
+            tracks.get(i).setEnabled(false);
+        }
+    }
+
+    public final void startAll() {
+        JsArray<JsMediaStreamTrack> tracks = getTracks();
+        for (int i = 0; i < tracks.length(); i++) {
+            tracks.get(i).setEnabled(true);
         }
     }
 }

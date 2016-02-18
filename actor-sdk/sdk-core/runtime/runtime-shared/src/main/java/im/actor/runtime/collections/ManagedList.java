@@ -93,6 +93,14 @@ public class ManagedList<T> extends ArrayList<T> {
         return get(0);
     }
 
+    public T firstOrNull() {
+        if (size() == 0) {
+            return null;
+        } else {
+            return get(0);
+        }
+    }
+
     public Promise<T> firstPromise() {
         return new Promise<T>(new PromiseFunc<T>() {
             @Override

@@ -20,6 +20,8 @@ public class AACallViewController: AAViewController {
     public let speakerButton = UIButton()
     public let videoButton = UIButton()
     
+    public let debugLabel = UILabel()
+    
     var isScheduledDispose = false
     
     public init(callId: jlong) {
@@ -73,6 +75,10 @@ public class AACallViewController: AAViewController {
         callState.textAlignment = NSTextAlignment.Center
         callState.font = UIFont.thinSystemFontOfSize(32)
         
+        debugLabel.textColor = ActorSDK.sharedActor().style.vcTextColor
+        debugLabel.lineBreakMode = .ByWordWrapping
+        debugLabel.numberOfLines = 0
+        
         self.view.backgroundColor = UIColor.whiteColor()
         
         self.view.addSubview(senderAvatar)
@@ -83,6 +89,7 @@ public class AACallViewController: AAViewController {
         self.view.addSubview(muteButton)
         self.view.addSubview(speakerButton)
         self.view.addSubview(videoButton)
+        self.view.addSubview(debugLabel)
     }
     
     public override func viewWillLayoutSubviews() {
@@ -91,6 +98,7 @@ public class AACallViewController: AAViewController {
         senderAvatar.frame = CGRectMake((self.view.width - 90) / 2, 100, 90, 90)
         peerTitle.frame = CGRectMake(60, senderAvatar.bottom + 20, view.width - 120, 34)
         callState.frame = CGRectMake(60, peerTitle.bottom + 20, view.width - 120, 34)
+        debugLabel.frame = view.bounds
         
         layoutButtons()
     }
@@ -170,6 +178,33 @@ public class AACallViewController: AAViewController {
                 self.muteButton.setImage(UIImage.bundled("ic_mic_off_36pt")!.tintImage(ActorSDK.sharedActor().style.vcTintColor), forState: .Normal)
                 self.muteButton.setBackgroundImage(Imaging.roundedImage(UIColor.whiteColor(), radius: 36), forState: .Normal)
             }
+        }
+        
+        binder.bind(call.members) { (value: JavaUtilArrayList!) -> () in
+            var debugStr = ""
+            for i in 0..<value.size() {
+                let member = value.getWithInt(i) as! ACCallMember
+                debugStr += "\(member.uid)"
+                switch(member.state.toNSEnum()) {
+                case ACCallMemberState_Enum.ENDED:
+                    debugStr += " - Ended"
+                    break
+                case ACCallMemberState_Enum.CALLING:
+                    debugStr += " - Calling"
+                    break
+                case ACCallMemberState_Enum.IN_PROGRESS:
+                    debugStr += " - In Progress"
+                    break
+                case ACCallMemberState_Enum.CALLING_REACHED:
+                    debugStr += " - Reached"
+                    break
+                default:
+                    debugStr += " - Unknown"
+                    break
+                }
+                debugStr += "\n"
+            }
+            self.debugLabel.text = debugStr
         }
         
         //

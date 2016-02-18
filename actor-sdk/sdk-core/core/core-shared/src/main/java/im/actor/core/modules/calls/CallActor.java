@@ -185,7 +185,7 @@ public class CallActor extends EventBusActor {
         peerConnections.clear();
     }
 
-    public final void doEndCall() {
+    public void doEndCall() {
         shutdown();
     }
 
