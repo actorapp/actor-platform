@@ -200,7 +200,7 @@ public class CallManagerActor extends ModuleActor {
             //
             // Notify Provider to stop playing ringtone
             //
-            if (currentCall == callId) {
+            if (currentCall != null && currentCall == callId) {
                 provider.onCallAnswered(callId);
             }
         }
@@ -253,7 +253,7 @@ public class CallManagerActor extends ModuleActor {
         //
         // Notify Provider if this call was current
         //
-        if (currentCall == callId) {
+        if (currentCall != null && currentCall == callId) {
             currentCall = null;
             provider.onCallEnd(callId);
 
