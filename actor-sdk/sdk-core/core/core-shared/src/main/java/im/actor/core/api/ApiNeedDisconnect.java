@@ -14,26 +14,22 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiNeedOffer extends ApiWebRTCSignaling {
+public class ApiNeedDisconnect extends ApiWebRTCSignaling {
 
     private int uid;
     private long device;
-    private ApiPeerSettings peerSettings;
-    private Boolean isSilent;
 
-    public ApiNeedOffer(int uid, long device, @Nullable ApiPeerSettings peerSettings, @Nullable Boolean isSilent) {
+    public ApiNeedDisconnect(int uid, long device) {
         this.uid = uid;
         this.device = device;
-        this.peerSettings = peerSettings;
-        this.isSilent = isSilent;
     }
 
-    public ApiNeedOffer() {
+    public ApiNeedDisconnect() {
 
     }
 
     public int getHeader() {
-        return 8;
+        return 20;
     }
 
     public int getUid() {
@@ -44,43 +40,22 @@ public class ApiNeedOffer extends ApiWebRTCSignaling {
         return this.device;
     }
 
-    @Nullable
-    public ApiPeerSettings getPeerSettings() {
-        return this.peerSettings;
-    }
-
-    @Nullable
-    public Boolean isSilent() {
-        return this.isSilent;
-    }
-
     @Override
     public void parse(BserValues values) throws IOException {
         this.uid = values.getInt(1);
         this.device = values.getLong(2);
-        this.peerSettings = values.optObj(3, new ApiPeerSettings());
-        this.isSilent = values.optBool(4);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.uid);
         writer.writeLong(2, this.device);
-        if (this.peerSettings != null) {
-            writer.writeObject(3, this.peerSettings);
-        }
-        if (this.isSilent != null) {
-            writer.writeBool(4, this.isSilent);
-        }
     }
 
     @Override
     public String toString() {
-        String res = "struct NeedOffer{";
+        String res = "struct NeedDisconnect{";
         res += "uid=" + this.uid;
-        res += ", device=" + this.device;
-        res += ", peerSettings=" + this.peerSettings;
-        res += ", isSilent=" + this.isSilent;
         res += "}";
         return res;
     }

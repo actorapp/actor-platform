@@ -1,5 +1,6 @@
 package im.actor.core.modules.calls.entity;
 
+import im.actor.core.api.ApiPeerSettings;
 import im.actor.runtime.collections.ManagedList;
 
 /**
@@ -83,7 +84,7 @@ public class MasterCallManager {
         //
         // Adding new connected device with isActive = false
         //
-        connectedDevices.add(new MasterCallDevice(uid, deviceId, false));
+        connectedDevices.add(new MasterCallDevice(uid, deviceId));
 
         //
         // Update Member State
@@ -130,13 +131,13 @@ public class MasterCallManager {
         connectedDevices.remove(device);
 
         //
-        // If Device Was Active - update member state
+        // If device was answered - update member state
         //
-        if (device.isActive()) {
+        if (device.isAnswered()) {
             boolean isConnected = false;
             for (MasterCallDevice m : connectedDevices
                     .filter(MasterCallDevice.PREDICATE(uid))) {
-                if (m.isActive()) {
+                if (m.isAnswered()) {
                     isConnected = true;
                     break;
                 }
@@ -149,6 +150,124 @@ public class MasterCallManager {
         return true;
     }
 
+
+    /**
+     * Called When device is disconnected
+     *
+     * @param uid          User Id
+     * @param deviceId     Device Id
+     * @param peerSettings Peer Settings
+     * @return if device was disconnected
+     */
+    public boolean onDeviceAdvertised(int uid, long deviceId, ApiPeerSettings peerSettings) {
+
+        //
+        // Searching for member
+        //
+        MasterCallMember member = connectedMembers
+                .filter(MasterCallMember.PREDICATE(uid))
+                .firstOrNull();
+        if (member == null) {
+            return false;
+        }
+
+        //
+        // Searching for connected device
+        //
+        MasterCallDevice device = connectedDevices
+                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
+                .firstOrNull();
+        if (device == null) {
+            return false;
+        }
+
+        if (device.getDeviceState() != MasterCallDeviceState.PENDING) {
+            return false;
+        }
+
+        device.setDeviceState(MasterCallDeviceState.ADVERTISED);
+        device.setPeerSettings(peerSettings);
+
+        return true;
+    }
+
+    /**
+     * Call To start silent connection
+     *
+     * @param uid      User Id
+     * @param deviceId Device Id
+     * @return is silent connection need to be started
+     */
+    public boolean startSilentConnection(int uid, long deviceId) {
+        //
+        // Searching for connected device
+        //
+        MasterCallDevice device = connectedDevices
+                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
+                .firstOrNull();
+        if (device == null) {
+            return false;
+        }
+
+        switch (device.getDeviceState()) {
+            case ADVERTISED:
+                if (device.getPeerSettings() != null) {
+                    if (device.getPeerSettings().canConnect() != null) {
+                        if (device.getPeerSettings().canConnect()) {
+                            device.setDeviceState(MasterCallDeviceState.CONNECTING_SILENCED);
+                            return true;
+                        }
+                    }
+                }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checking if connection silently connected
+     *
+     * @param uid      User Id
+     * @param deviceId Device Id
+     * @return is silent connection opened
+     */
+    public boolean isStartedSilently(int uid, long deviceId) {
+        //
+        // Searching for connected device
+        //
+        MasterCallDevice device = connectedDevices
+                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
+                .firstOrNull();
+        if (device == null) {
+            return false;
+        }
+
+        switch (device.getDeviceState()) {
+            case SILENCED:
+            case CONNECTING_SILENCED:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Getting Peer settings if available
+     *
+     * @param uid      User Id
+     * @param deviceId Device Id
+     * @return peer settings if available
+     */
+    public ApiPeerSettings getPeerSettings(int uid, long deviceId) {
+        MasterCallDevice device = connectedDevices
+                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
+                .firstOrNull();
+        if (device == null) {
+            return null;
+        }
+        return device.getPeerSettings();
+    }
+
     /**
      * Called When Device is Answered
      *
@@ -156,7 +275,7 @@ public class MasterCallManager {
      * @param deviceId Device Id
      * @return if device was answered
      */
-    public boolean onDeviceAnswered(int uid, long deviceId) {
+    public boolean onDeviceAnswered(int uid, long deviceId, boolean supportSilence) {
 
         //
         // Searching for connected device
@@ -179,25 +298,41 @@ public class MasterCallManager {
         }
 
         //
-        // Check if already answered
+        // Update Device States
         //
-        if (device.isActive()) {
-            return false;
+        switch (device.getDeviceState()) {
+            case PENDING:
+            case ADVERTISED:
+            case CONNECTING_SILENCED:
+                device.setDeviceState(MasterCallDeviceState.CONNECTING);
+                break;
+            case SILENCED:
+                device.setDeviceState(MasterCallDeviceState.IN_PROGRESS);
+                break;
+            case IN_PROGRESS:
+            case CONNECTING:
+                return false;
         }
-
-        //
-        // Mark Device as Active
-        //
-        device.setIsActive(true);
 
         //
         // Update User State
         //
-        switch (member.getState()) {
-            case RINGING:
-            case RINGING_REACHED:
-                member.setState(MasterCallMemberState.CONNECTING);
-                break;
+        // TODO: Check State for some corner states
+        if (member.getState() == MasterCallMemberState.RINGING
+                || member.getState() == MasterCallMemberState.RINGING_REACHED) {
+
+            switch (device.getDeviceState()) {
+                case PENDING:
+                case ADVERTISED:
+                case CONNECTING:
+                case CONNECTING_SILENCED:
+                    member.setState(MasterCallMemberState.CONNECTING);
+                    break;
+                case IN_PROGRESS:
+                case SILENCED:
+                    member.setState(MasterCallMemberState.IN_PROGRESS);
+                    break;
+            }
         }
 
         return true;
@@ -233,10 +368,12 @@ public class MasterCallManager {
         }
 
         //
-        // If device wasn't answered - ignore call rejection
+        // If device already answered - ignore call rejection
         //
-        if (device.isActive()) {
-            return false;
+        switch (device.getDeviceState()) {
+            case IN_PROGRESS:
+            case CONNECTING:
+                return false;
         }
 
         //
@@ -306,11 +443,11 @@ public class MasterCallManager {
     public String toString() {
         String res = "Devices: \n";
         for (MasterCallDevice device : connectedDevices) {
-            res += device.getUid() + "-" + device.getDeviceId() + ": " + device.isActive() + "\n";
+            res += device.getUid() + "-" + device.getDeviceId() + ": " + device.getDeviceState() + "\n";
         }
         res += "Members: \n";
         for (MasterCallMember member : connectedMembers) {
-            res += member.getUid() + " - " + member.getState();
+            res += member.getUid() + " - " + member.getState() + "\n";
         }
         return res;
     }
