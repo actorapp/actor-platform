@@ -13,13 +13,10 @@ public class MediaFullscreenAnimationUtils {
         public static final int animationMultiplier = 1;
         public static int startDelay = 60;
 
-        public static void animateForward(final View transitionView, Bitmap bitmap,
+        public static void animateForward(final View transitionView, float bitmapWidth, float bitmapHeight,
                                           int transitionLeft, int transitionTop,
                                           int transitionWidth, int transitionHeight, final Animator.AnimatorListener listener) {
             transitionView.clearAnimation();
-            float bitmapWidth = bitmap.getWidth();
-            float bitmapHeight = bitmap.getHeight();
-
 
             float screenWidth = Screen.getWidth();
             float screenHeight = Screen.getHeight() + (Build.VERSION.SDK_INT >= 21 ? Screen.getNavbarHeight() : 0);
@@ -86,13 +83,10 @@ public class MediaFullscreenAnimationUtils {
 
         }
 
-        public static void animateBack(final View transitionView, Bitmap bitmap,
+        public static void animateBack(final View transitionView, float bitmapWidth, float bitmapHeight,
                                        final int transitionLeft, final int transitionTop,
                                        int transitionWidth, int transitionHeight, final Animator.AnimatorListener listener) {
             transitionView.clearAnimation();
-            float bitmapWidth = bitmap.getWidth();
-            float bitmapHeight = bitmap.getHeight();
-
 
             float screenWidth = Screen.getWidth();
             float screenHeight = Screen.getHeight() + (Build.VERSION.SDK_INT >= 19 ? Screen.getNavbarHeight() : 0);
