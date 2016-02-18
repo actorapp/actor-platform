@@ -15,17 +15,18 @@ import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.calls.entity.CallMember;
-import im.actor.core.modules.calls.entity.CallMemberState;
+import im.actor.core.modules.calls.entity.MasterCallDevice;
+import im.actor.core.modules.calls.entity.MasterCallMemberState;
+import im.actor.core.modules.calls.entity.MasterCallManager;
 import im.actor.core.modules.calls.entity.MasterCallMember;
+import im.actor.core.viewmodel.CallMember;
+import im.actor.core.viewmodel.CallMemberState;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.function.Consumer;
-import im.actor.runtime.function.Function;
-import im.actor.runtime.function.Predicate;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 public class CallMasterActor extends CallActor {
@@ -33,13 +34,13 @@ public class CallMasterActor extends CallActor {
     private static final String TAG = "CallMasterActor";
 
     private final Peer peer;
+
     private ActorRef callManager;
     private CommandCallback<Long> callback;
     private long callId;
     private CallVM callVM;
 
-    private ManagedList<MasterCallMember> members;
-    private boolean isAnswered = false;
+    private MasterCallManager state;
 
     public CallMasterActor(Peer peer, ModuleContext context, CommandCallback<Long> callback) {
         super(context);
@@ -60,26 +61,34 @@ public class CallMasterActor extends CallActor {
             @Override
             public void apply(ResponseDoCall responseDoCall) {
 
+                //
+                // Initialization of Call State
+                //
                 // TODO: Possible race conditions when members changed during call initiation
                 // Need to return explicit callers in response
+                state = new MasterCallManager();
                 if (peer.getPeerType() == PeerType.GROUP) {
-                    members = ManagedList.of(getGroup(peer.getPeerId()).getMembers())
-                            .filter(new Predicate<GroupMember>() {
-                                @Override
-                                public boolean apply(GroupMember groupMember) {
-                                    return groupMember.getUid() != myUid();
-                                }
-                            })
-                            .map(MasterCallMember.FROM_MEMBER);
+                    for (GroupMember gm : getGroup(peer.getPeerId()).getMembers()) {
+                        if (gm.getUid() != myUid()) {
+                            state.addMember(gm.getUid(), MasterCallMemberState.RINGING);
+                        }
+                    }
                 } else if (peer.getPeerType() == PeerType.PRIVATE) {
-                    members = ManagedList.of(new MasterCallMember(peer.getPeerId(), CallMemberState.RINGING));
+                    state.addMember(peer.getPeerId(), MasterCallMemberState.RINGING);
                 } else {
-                    // Halt?
+                    throw new RuntimeException("Unsupported Peer Type group");
                 }
 
+                //
+                // Initialization of CallVM
+                //
                 callId = responseDoCall.getCallId();
                 callVM = spanNewOutgoingVM(responseDoCall.getCallId(), peer);
                 callVM.getIsMuted().change(isMuted());
+
+                //
+                // Notifying about successful call creation
+                //
                 callManager.send(new CallManagerActor.DoCallComplete(responseDoCall.getCallId()), self());
                 callback.onResult(responseDoCall.getCallId());
                 callback = null;
@@ -98,72 +107,80 @@ public class CallMasterActor extends CallActor {
     public void onDeviceConnected(int uid, long deviceId) {
 
         //
-        // Searching for a member
+        // For each valid UID and DeviceID
         //
-        MasterCallMember member = members
-                .filter(MasterCallMember.PREDICATE(uid))
-                .firstOrNull();
-        if (member == null) {
-            return;
+        if (state.onDeviceConnected(uid, deviceId)) {
+
+            //
+            // Notify who is king in this call
+            //
+            sendSignalingMessage(uid, deviceId, new ApiSwitchMaster());
+
+            //
+            // Update State
+            //
+            updateCallVMState();
+            updateMembers();
         }
-
-        //
-        // Adding registered device
-        //
-        member.getDeviceId().add(deviceId);
-
-        //
-        // Update member state if necessary
-        //
-        if (member.getState() == CallMemberState.RINGING) {
-            member.setState(CallMemberState.CONNECTING);
-        }
-
-        //
-        // For every newly connected device notify who is king
-        // in this call
-        //
-        sendSignalingMessage(uid, deviceId, new ApiSwitchMaster());
-
-        //
-        // Update Members State
-        //
-        updateMembers();
     }
 
     @Override
     public void onDeviceDisconnected(final int uid, final long deviceId) {
 
         //
-        // Searching for connected device
+        // For each valid UID and DeviceID
         //
-        MasterCallMember member = members
-                .filter(MasterCallMember.PREDICATE(uid, deviceId))
-                .firstOrNull();
-        if (member == null) {
-            return;
+        if (state.onDeviceDisconnected(uid, deviceId)) {
+
+            //
+            // Disconnecting peer connection
+            //
+            disconnectPeer(uid, deviceId);
+
+            //
+            // Update State
+            //
+            updateCallVMState();
+            updateMembers();
         }
+    }
+
+    public void onDeviceAnswered(int uid, long deviceId) {
 
         //
-        // Remove device and if necessary remove from group
+        // For each valid UID and DeviceID
         //
-        member.getDeviceId().remove(deviceId);
-        if (member.getDeviceId().size() == 0) {
-            members.remove(member);
+        if (state.onDeviceAnswered(uid, deviceId)) {
+
+            //
+            // Starting connection to this device
+            //
+            getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
+            for (MasterCallDevice device : state.getConnectedDevices()) {
+                sendSignalingMessage(device.getUid(), device.getDeviceId(), new ApiNeedOffer(uid, deviceId));
+            }
+
+            //
+            // Update State
+            //
+            updateCallVMState();
+            updateMembers();
         }
+    }
+
+    public void onDeviceRejected(int uid, long deviceId) {
 
         //
-        // If there are no members left - stop call
+        // For each valid UID and DeviceID
         //
-        if (members.isEmpty()) {
-            shutdown();
-            return;
-        }
+        if (state.onDeviceRejected(uid, deviceId)) {
 
-        //
-        // Update Members State
-        //
-        updateMembers();
+            //
+            // Update State
+            //
+            updateCallVMState();
+            updateMembers();
+        }
     }
 
     @Override
@@ -172,86 +189,22 @@ public class CallMasterActor extends CallActor {
         //
         // Changing State to IN_PROGRESS once first stream appear
         //
-        if (!isAnswered) {
-            isAnswered = true;
-            callVM.getState().change(CallState.IN_PROGRESS);
+
+        if (state.onDeviceStreamAdded(uid, deviceId)) {
+
+            //
+            // Notify Call Manager for stopping call beeping
+            //
             callManager.send(new CallManagerActor.OnCallAnswered(callId));
+
+            //
+            // Update State
+            //
+            updateCallVMState();
+            updateMembers();
         }
     }
 
-    public void onCallAnswered(int uid, long deviceId) {
-
-        //
-        // Searching for suitable Call Member
-        //
-        MasterCallMember callMember = members
-                .filter(MasterCallMember.PREDICATE(uid))
-                .firstOrNull();
-        if (callMember == null) {
-            return;
-        }
-
-        //
-        // If already connected: ignore message
-        //
-//        if (callMember.getDeviceId().contains(deviceId)) {
-//            return;
-//        }
-
-        //
-        // Establishing connection
-        //
-        getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
-        for (MasterCallMember member : members) {
-            for (long devId : member.getDeviceId()) {
-                sendSignalingMessage(member.getUid(), devId, new ApiNeedOffer(uid, deviceId));
-            }
-        }
-
-        //
-        // Adding new device
-        //
-        callMember.getDeviceId().add(deviceId);
-
-        //
-        // Update Member State
-        //
-        callMember.setState(CallMemberState.CONNECTED);
-
-        //
-        // Update Members State
-        //
-        updateMembers();
-    }
-
-    public void onCallRejected(int uid, long deviceId) {
-
-        //
-        // Searching for suitable Call Member
-        //
-        MasterCallMember callMember = members
-                .filter(MasterCallMember.PREDICATE(uid, deviceId))
-                .firstOrNull();
-        if (callMember == null) {
-            return;
-        }
-
-        callMember.getDeviceId().remove(deviceId);
-
-        if (callMember.getDeviceId().size() == 0) {
-            members.remove(callMember);
-        }
-
-        if (members.isEmpty()) {
-            shutdown();
-            return;
-        }
-
-        //
-        // Update Members State
-        //
-        updateMembers();
-    }
 
     @Override
     public void onMute() {
@@ -299,40 +252,87 @@ public class CallMasterActor extends CallActor {
     }
 
 
+    private void updateCallVMState() {
+
+        Log.d(TAG, "Call State:\n" + state);
+
+        //
+        // Do nothing if call is ended
+        //
+        if (callVM.getState().get() == CallState.ENDED) {
+            return;
+        }
+
+        //
+        // If All members ended call then end call
+        //
+        if (state.getConnectedMembers()
+                .isAll(MasterCallMember.IS_ENDED)) {
+            callVM.getState().change(CallState.ENDED);
+            return;
+        }
+
+        //
+        // If Any member is in progress then call is in progress
+        //
+        if (state.getConnectedMembers()
+                .isAny(MasterCallMember.IS_IN_PROGRESS)) {
+            callVM.getState().change(CallState.IN_PROGRESS);
+            return;
+        }
+
+
+        if (state.getConnectedMembers()
+                .isAny(MasterCallMember.IS_CONNECTING)) {
+            callVM.getState().change(CallState.CONNECTING);
+            return;
+        }
+
+        // TODO: Connecting States
+    }
+
+
     private void updateMembers() {
 
         //
         // Update Calls VM
         //
         ArrayList<im.actor.core.viewmodel.CallMember> callMembers = new ArrayList<>();
-        for (CallMember m : members) {
-            im.actor.core.viewmodel.CallMemberState state;
-            switch (m.getState()) {
-                case RINGING:
-                    state = im.actor.core.viewmodel.CallMemberState.CALLING;
+        for (MasterCallMember callMember : state.getConnectedMembers()) {
+            CallMemberState callMemberState;
+            switch (callMember.getState()) {
+                case RINGING_REACHED:
+                    callMemberState = CallMemberState.RINGING_REACHED;
                     break;
-                case CONNECTED:
-                    state = im.actor.core.viewmodel.CallMemberState.IN_PROGRESS;
+                case RINGING:
+                    callMemberState = CallMemberState.RINGING;
                     break;
                 case CONNECTING:
+                    callMemberState = CallMemberState.CONNECTING;
+                    break;
+                case IN_PROGRESS:
+                    callMemberState = CallMemberState.IN_PROGRESS;
+                    break;
                 default:
-                    state = im.actor.core.viewmodel.CallMemberState.CALLING_REACHED;
+                case ENDED:
+                    callMemberState = CallMemberState.ENDED;
+                    break;
             }
-            callMembers.add(new im.actor.core.viewmodel.CallMember(m.getUid(), state));
+            callMembers.add(new CallMember(callMember.getUid(), callMemberState));
         }
         callVM.getMembers().change(callMembers);
 
         //
         // Broadcast new members
         //
-        sendSignalingMessage(createMembersChanged());
+        // sendSignalingMessage(createMembersChanged());
     }
 
     private ApiMembersChanged createMembersChanged() {
         ArrayList<ApiCallMember> callMembers = new ArrayList<>();
-        for (CallMember m : members) {
-            callMembers.add(new ApiCallMember(m.getUid(), 0, m.getState().toApiState()));
-        }
+//        for (CallMember m : members) {
+//            callMembers.add(new ApiCallMember(m.getUid(), 0, m.getState().toApiState()));
+//        }
         return new ApiMembersChanged(callMembers);
     }
 
@@ -343,9 +343,9 @@ public class CallMasterActor extends CallActor {
     @Override
     public void onSignalingMessage(int fromUid, long fromDeviceId, ApiWebRTCSignaling signaling) {
         if (signaling instanceof ApiAnswerCall) {
-            onCallAnswered(fromUid, fromDeviceId);
+            onDeviceAnswered(fromUid, fromDeviceId);
         } else if (signaling instanceof ApiRejectCall) {
-            onCallRejected(fromUid, fromDeviceId);
+            onDeviceRejected(fromUid, fromDeviceId);
         } else {
             super.onSignalingMessage(fromUid, fromDeviceId, signaling);
         }

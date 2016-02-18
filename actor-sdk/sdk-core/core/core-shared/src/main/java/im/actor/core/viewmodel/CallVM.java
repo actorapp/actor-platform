@@ -20,13 +20,20 @@ public class CallVM {
     private final ValueModel<ArrayList<CallMember>> members;
     @Property("nonatomic, readonly")
     private final BooleanValueModel isMuted;
+    @Property("nonatomic, readonly")
+    private final boolean isOutgoing;
 
-    public CallVM(long callId, Peer peer, ArrayList<CallMember> initialMembers, CallState state) {
+    public CallVM(long callId, Peer peer, boolean isOutgoing, ArrayList<CallMember> initialMembers, CallState state) {
         this.callId = callId;
         this.peer = peer;
+        this.isOutgoing = isOutgoing;
         this.state = new ValueModel<>("calls." + callId + ".state", state);
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
         this.isMuted = new BooleanValueModel("calls." + callId + ".state", false);
+    }
+
+    public boolean isOutgoing() {
+        return isOutgoing;
     }
 
     public Peer getPeer() {

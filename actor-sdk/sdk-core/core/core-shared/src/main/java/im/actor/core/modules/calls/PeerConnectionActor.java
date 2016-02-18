@@ -283,6 +283,7 @@ public class PeerConnectionActor extends ModuleActor {
     }
 
     public void onEnded() {
+        Log.d(TAG, "OnEnded");
         peerConnection.close();
         stream.close();
         isReady = false;
