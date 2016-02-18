@@ -36,10 +36,17 @@ public class MediaStream implements WebRTCMediaStream {
 
     @Override
     public void setEnabled(boolean isEnabled) {
-        if (isEnabled) {
-            audio.play();
+        if (audio != null) {
+            if (isEnabled) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+        if (!isEnabled) {
+            stream.stopAll();
         } else {
-            audio.pause();
+            stream.startAll();
         }
     }
 

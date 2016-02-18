@@ -65,10 +65,10 @@ public class CallsModule extends AbsModule {
     }
 
     public void endCall(long callId) {
-        callManager.send(new CallManagerActor.EndCall(callId));
+        callManager.send(new CallManagerActor.DoEndCall(callId));
     }
 
     public void answerCall(long callId) {
-        callManager.send(new CallManagerActor.AnswerCall(callId));
+        callManager.send(new CallManagerActor.DoAnswerCall(callId));
     }
 }

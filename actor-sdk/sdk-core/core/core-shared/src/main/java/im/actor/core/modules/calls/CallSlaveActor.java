@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import im.actor.core.api.ApiAnswerCall;
 import im.actor.core.api.ApiNeedOffer;
+import im.actor.core.api.ApiRejectCall;
 import im.actor.core.api.ApiSwitchMaster;
 import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.api.rpc.RequestGetCallInfo;
@@ -23,7 +24,6 @@ public class CallSlaveActor extends CallActor {
 
     private ActorRef callManager;
     private MasterNode masterNode;
-    private boolean isAnswerPending = false;
     private long callId;
     private Peer peer;
     private CallVM callVM;
@@ -56,15 +56,15 @@ public class CallSlaveActor extends CallActor {
         super.onBusStarted();
         callVM = spawnNewVM(callId, peer, new ArrayList<CallMember>(), CallState.CALLING_INCOMING);
         callVM.getIsMuted().change(isMuted());
-        callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
     }
 
     public void onMasterNodeChanged(int fromUid, long fromDeviceId) {
         masterNode = new MasterNode(fromUid, fromDeviceId);
-        if (isAnswerPending) {
-            isAnswerPending = false;
-            sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiAnswerCall());
-        }
+
+        //
+        // Notify UI only after successful master node information received
+        //
+        callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
     }
 
     public void onNeedOffer(int destUid, long destDeviceId) {
@@ -73,12 +73,7 @@ public class CallSlaveActor extends CallActor {
 
     public void doAnswer() {
         callVM.getState().change(CallState.CONNECTING);
-
-        if (masterNode == null) {
-            isAnswerPending = true;
-        } else {
-            sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiAnswerCall());
-        }
+        sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiAnswerCall());
     }
 
     @Override
@@ -86,6 +81,13 @@ public class CallSlaveActor extends CallActor {
         if (uid != myUid() && callVM.getState().get() == CallState.CONNECTING) {
             callVM.getState().change(CallState.IN_PROGRESS);
         }
+    }
+
+    @Override
+    public void doEndCall() {
+        super.doEndCall();
+        callVM.getState().change(CallState.ENDED);
+        sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiRejectCall());
     }
 
     @Override

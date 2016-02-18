@@ -10935,6 +10935,41 @@
           <ref role="NX6Kv" node="3Tolai5NVBR" resolve="device" />
         </node>
       </node>
+      <node concept="2m5naR" id="3xEfKBqKbxy" role="2m5mJr">
+        <property role="TrG5h" value="NeedDisconnect" />
+        <property role="tsOgz" value="false" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
+        <node concept="2m7Kf5" id="3xEfKBqKb$k" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="wb0Ql" id="3xEfKBqKb$o" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3xEfKBqKb$r" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="device" />
+          <node concept="wb0Ql" id="3xEfKBqKb$x" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="3xEfKBqKb$i" role="3BtCOu">
+          <property role="Nu42W" value="14" />
+        </node>
+        <node concept="NXeRC" id="3xEfKBqKb$$" role="NXodf">
+          <property role="NXePf" value="Notification about requirement about required disconnection from peer" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqKb$D" role="NXodf">
+          <property role="NX6R2" value="User's Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3xEfKBqKb$k" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqKb$L" role="NXodf">
+          <property role="NX6R2" value="Device Id" />
+          <ref role="NX6Kv" node="3xEfKBqKb$r" resolve="device" />
+        </node>
+      </node>
       <node concept="2m5naR" id="3Tolai5ObtG" role="2m5mJr">
         <property role="TrG5h" value="SwitchMaster" />
         <property role="tsOgz" value="false" />
