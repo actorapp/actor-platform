@@ -30,17 +30,17 @@ public class AudioActorEx extends AndroidPlayerActor {
         state = STATE_NONE;
 
         try {
-
-            mplayer = new MediaPlayer();
+            if(mplayer == null){
+                mplayer = new MediaPlayer();
+            }
             mplayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
             mplayer.setDataSource(context, Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.tone));
             mplayer.prepare();
-            mplayer.setLooping(true);
             mplayer.start();
             mplayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
-                    self().send(new Stop());
+                    self().send(new Play(""));
                 }
             });
             mplayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
