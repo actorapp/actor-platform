@@ -49,8 +49,8 @@ public class CallActor extends EventBusActor {
     //
     // Call Model helpers
     //
-    public CallVM spawnNewVM(long callId, Peer peer, ArrayList<CallMember> members, CallState callState) {
-        CallVM callVM = new CallVM(callId, peer, members, callState);
+    public CallVM spawnNewVM(long callId, Peer peer, boolean isOutgoing, ArrayList<CallMember> members, CallState callState) {
+        CallVM callVM = new CallVM(callId, peer, isOutgoing, members, callState);
         synchronized (callModels) {
             callModels.put(callId, callVM);
         }
@@ -61,16 +61,16 @@ public class CallActor extends EventBusActor {
         ArrayList<CallMember> members = new ArrayList<>();
         if (peer.getPeerType() == PeerType.PRIVATE ||
                 peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
-            members.add(new CallMember(peer.getPeerId(), CallMemberState.CALLING));
+            members.add(new CallMember(peer.getPeerId(), CallMemberState.RINGING));
         } else if (peer.getPeerType() == PeerType.GROUP) {
             Group g = getGroup(peer.getPeerId());
             for (GroupMember gm : g.getMembers()) {
                 if (gm.getUid() != myUid()) {
-                    members.add(new CallMember(gm.getUid(), CallMemberState.CALLING));
+                    members.add(new CallMember(gm.getUid(), CallMemberState.RINGING));
                 }
             }
         }
-        return spawnNewVM(callId, peer, members, CallState.CALLING_OUTGOING);
+        return spawnNewVM(callId, peer, true, members, CallState.CALLING);
     }
 
     //
@@ -201,6 +201,18 @@ public class CallActor extends EventBusActor {
                 PeerConnectionActor.CONSTRUCTOR(self(), uid, deviceId, isMuted, context()));
         refs.put(deviceId, ref);
         return ref;
+    }
+
+    protected void disconnectPeer(int uid, long deviceId) {
+        HashMap<Long, ActorRef> deviceRefs = peerConnections.get(uid);
+        if (deviceRefs == null) {
+            return;
+        }
+        ActorRef ref = deviceRefs.get(deviceId);
+        if (ref == null) {
+            return;
+        }
+        ref.send(new PeerConnectionActor.DoStop());
     }
 
     //
