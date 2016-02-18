@@ -209,6 +209,22 @@ public class CallManagerActor extends ModuleActor {
         }
     }
 
+    //
+    // Call Mute/Unmute
+    //
+    private void onCallMute(long callId) {
+        ActorRef ref = runningCalls.get(callId);
+        if (ref != null) {
+
+        }
+    }
+
+    private void onCallUnmute(long callId) {
+        ActorRef ref = runningCalls.get(callId);
+        if (ref != null) {
+
+        }
+    }
 
     //
     // Ending call
@@ -363,6 +379,34 @@ public class CallManagerActor extends ModuleActor {
         }
     }
 
+
+    //
+    // Call State
+    //
+
+    public static class MuteCall {
+        private long callId;
+
+        public MuteCall(long callId) {
+            this.callId = callId;
+        }
+
+        public long getCallId() {
+            return callId;
+        }
+    }
+
+    public static class UnmuteCall {
+        private long callId;
+
+        public UnmuteCall(long callId) {
+            this.callId = callId;
+        }
+
+        public long getCallId() {
+            return callId;
+        }
+    }
 
     //
     // Call Start
