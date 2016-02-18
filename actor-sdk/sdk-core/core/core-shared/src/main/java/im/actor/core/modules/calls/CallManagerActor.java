@@ -293,10 +293,10 @@ public class CallManagerActor extends ModuleActor {
         } else if (message instanceof OnIncomingCallHandled) {
             OnIncomingCallHandled incomingCallHandled = (OnIncomingCallHandled) message;
             onIncomingCallHandled(incomingCallHandled.getCallId());
-        } else if (message instanceof AnswerCall) {
-            doAnswerCall(((AnswerCall) message).getCallId());
-        } else if (message instanceof EndCall) {
-            doEndCall(((EndCall) message).getCallId());
+        } else if (message instanceof DoAnswerCall) {
+            doAnswerCall(((DoAnswerCall) message).getCallId());
+        } else if (message instanceof DoEndCall) {
+            doEndCall(((DoEndCall) message).getCallId());
         } else if (message instanceof OnCallEnded) {
             onCallEnded(((OnCallEnded) message).getCallId());
         } else if (message instanceof DoCall) {
@@ -358,11 +358,11 @@ public class CallManagerActor extends ModuleActor {
         }
     }
 
-    public static class AnswerCall {
+    public static class DoAnswerCall {
 
         private long callId;
 
-        public AnswerCall(long callId) {
+        public DoAnswerCall(long callId) {
             this.callId = callId;
         }
 
@@ -371,10 +371,10 @@ public class CallManagerActor extends ModuleActor {
         }
     }
 
-    public static class EndCall {
+    public static class DoEndCall {
         private long callId;
 
-        public EndCall(long callId) {
+        public DoEndCall(long callId) {
             this.callId = callId;
         }
 
