@@ -18,10 +18,12 @@ public class ApiOffer extends ApiWebRTCSignaling {
 
     private long sessionId;
     private String sdp;
+    private ApiPeerSettings ownPeerSettings;
 
-    public ApiOffer(long sessionId, @NotNull String sdp) {
+    public ApiOffer(long sessionId, @NotNull String sdp, @Nullable ApiPeerSettings ownPeerSettings) {
         this.sessionId = sessionId;
         this.sdp = sdp;
+        this.ownPeerSettings = ownPeerSettings;
     }
 
     public ApiOffer() {
@@ -41,10 +43,16 @@ public class ApiOffer extends ApiWebRTCSignaling {
         return this.sdp;
     }
 
+    @Nullable
+    public ApiPeerSettings getOwnPeerSettings() {
+        return this.ownPeerSettings;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.sessionId = values.getLong(1);
         this.sdp = values.getString(2);
+        this.ownPeerSettings = values.optObj(3, new ApiPeerSettings());
     }
 
     @Override
@@ -54,6 +62,9 @@ public class ApiOffer extends ApiWebRTCSignaling {
             throw new IOException();
         }
         writer.writeString(2, this.sdp);
+        if (this.ownPeerSettings != null) {
+            writer.writeObject(3, this.ownPeerSettings);
+        }
     }
 
     @Override
@@ -61,6 +72,7 @@ public class ApiOffer extends ApiWebRTCSignaling {
         String res = "struct Offer{";
         res += "sessionId=" + this.sessionId;
         res += ", sdp=" + this.sdp;
+        res += ", ownPeerSettings=" + this.ownPeerSettings;
         res += "}";
         return res;
     }

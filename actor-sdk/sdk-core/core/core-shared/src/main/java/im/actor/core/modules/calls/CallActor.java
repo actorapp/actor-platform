@@ -6,9 +6,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import im.actor.core.DeviceCategory;
 import im.actor.core.api.ApiAnswer;
 import im.actor.core.api.ApiCandidate;
 import im.actor.core.api.ApiOffer;
+import im.actor.core.api.ApiPeerSettings;
 import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.GroupMember;
@@ -21,6 +23,7 @@ import im.actor.core.viewmodel.CallMemberState;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 
@@ -31,6 +34,8 @@ public class CallActor extends EventBusActor {
     private HashMap<Integer, HashMap<Long, ActorRef>> peerConnections = new HashMap<>();
     private HashMap<Long, CallVM> callModels;
     private boolean isMuted = false;
+    private ApiPeerSettings peerSettings;
+    private boolean isSilentEnabled = false;
 
     public CallActor(ModuleContext context) {
         super(context);
@@ -40,6 +45,22 @@ public class CallActor extends EventBusActor {
     public void preStart() {
         super.preStart();
         callModels = context().getCallsModule().getCallModels();
+        boolean isMobile = config().getDeviceCategory() == DeviceCategory.MOBILE ||
+                config().getDeviceCategory() == DeviceCategory.TABLET;
+        boolean isSupportsFastConnect = isMobile;
+        peerSettings = new ApiPeerSettings(true, isMobile, false, isSupportsFastConnect);
+    }
+
+    public boolean isSilentEnabled() {
+        return isSilentEnabled;
+    }
+
+    public void setIsSilentEnabled(boolean isSilentEnabled) {
+        this.isSilentEnabled = isSilentEnabled;
+    }
+
+    public ApiPeerSettings getPeerSettings() {
+        return peerSettings;
     }
 
     public boolean isMuted() {
@@ -198,7 +219,7 @@ public class CallActor extends EventBusActor {
             return refs.get(deviceId);
         }
         ActorRef ref = system().actorOf(getPath() + "/uid:" + uid + "/" + deviceId,
-                PeerConnectionActor.CONSTRUCTOR(self(), uid, deviceId, isMuted, context()));
+                PeerConnectionActor.CONSTRUCTOR(self(), uid, deviceId, isMuted, isSilentEnabled, context()));
         refs.put(deviceId, ref);
         return ref;
     }
@@ -215,6 +236,15 @@ public class CallActor extends EventBusActor {
         ref.send(new PeerConnectionActor.DoStop());
     }
 
+    protected void unsilencePeers() {
+        setIsSilentEnabled(false);
+        for (HashMap<Long, ActorRef> deviceRefs : peerConnections.values()) {
+            for (ActorRef ref : deviceRefs.values()) {
+                ref.send(new PeerConnectionActor.DoUnsilence());
+            }
+        }
+    }
+
     //
     // Messages
     //
@@ -228,7 +258,7 @@ public class CallActor extends EventBusActor {
         } else if (message instanceof PeerConnectionActor.DoOffer) {
             PeerConnectionActor.DoOffer offer = (PeerConnectionActor.DoOffer) message;
             sendSignalingMessage(offer.getUid(), offer.getDeviceId(),
-                    new ApiOffer(0, offer.getSdp()));
+                    new ApiOffer(0, offer.getSdp(), null));
         } else if (message instanceof PeerConnectionActor.DoCandidate) {
             PeerConnectionActor.DoCandidate candidate = (PeerConnectionActor.DoCandidate) message;
             sendSignalingMessage(candidate.getUid(), candidate.getDeviceId(),

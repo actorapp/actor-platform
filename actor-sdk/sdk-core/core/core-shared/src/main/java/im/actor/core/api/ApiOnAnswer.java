@@ -14,45 +14,49 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiActiveDevices extends ApiWebRTCSignaling {
+public class ApiOnAnswer extends ApiWebRTCSignaling {
 
-    private List<ApiConnectedUser> users;
+    private int uid;
+    private long device;
 
-    public ApiActiveDevices(@NotNull List<ApiConnectedUser> users) {
-        this.users = users;
+    public ApiOnAnswer(int uid, long device) {
+        this.uid = uid;
+        this.device = device;
     }
 
-    public ApiActiveDevices() {
+    public ApiOnAnswer() {
 
     }
 
     public int getHeader() {
-        return 7;
+        return 22;
     }
 
-    @NotNull
-    public List<ApiConnectedUser> getUsers() {
-        return this.users;
+    public int getUid() {
+        return this.uid;
+    }
+
+    public long getDevice() {
+        return this.device;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<ApiConnectedUser> _users = new ArrayList<ApiConnectedUser>();
-        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
-            _users.add(new ApiConnectedUser());
-        }
-        this.users = values.getRepeatedObj(2, _users);
+        this.uid = values.getInt(1);
+        this.device = values.getLong(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeRepeatedObj(2, this.users);
+        writer.writeInt(1, this.uid);
+        writer.writeLong(2, this.device);
     }
 
     @Override
     public String toString() {
-        String res = "struct ActiveDevices{";
-        res += "users=" + this.users;
+        String res = "struct OnAnswer{";
+        res += "uid=" + this.uid;
+        res += ", device=" + this.device;
         res += "}";
         return res;
     }

@@ -2,8 +2,10 @@ package im.actor.core.modules.calls;
 
 import java.util.ArrayList;
 
+import im.actor.core.api.ApiAdvertiseSelf;
 import im.actor.core.api.ApiAnswerCall;
 import im.actor.core.api.ApiNeedOffer;
+import im.actor.core.api.ApiPeerSettings;
 import im.actor.core.api.ApiRejectCall;
 import im.actor.core.api.ApiSwitchMaster;
 import im.actor.core.api.ApiWebRTCSignaling;
@@ -37,6 +39,7 @@ public class CallSlaveActor extends CallActor {
     public void preStart() {
         super.preStart();
         callManager = context().getCallsModule().getCallManager();
+        setIsSilentEnabled(true);
         api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
             @Override
             public void apply(final ResponseGetCallInfo responseGetCallInfo) {
@@ -62,18 +65,24 @@ public class CallSlaveActor extends CallActor {
         masterNode = new MasterNode(fromUid, fromDeviceId);
 
         //
+        // Advertise own settings to call master
+        //
+        sendSignalingMessage(fromUid, fromDeviceId, new ApiAdvertiseSelf(getPeerSettings()));
+
+        //
         // Notify UI only after successful master node information received
         //
         callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
     }
 
-    public void onNeedOffer(int destUid, long destDeviceId) {
+    public void onNeedOffer(int destUid, long destDeviceId, Boolean isSilent, ApiPeerSettings peerSettings) {
         getPeer(destUid, destDeviceId).send(new PeerConnectionActor.OnOfferNeeded());
     }
 
     public void doAnswer() {
         callVM.getState().change(CallState.CONNECTING);
         sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiAnswerCall());
+        unsilencePeers();
     }
 
     @Override
@@ -89,7 +98,7 @@ public class CallSlaveActor extends CallActor {
         if (callVM != null) {
             callVM.getState().change(CallState.ENDED);
         }
-        if (masterNode!=null) {
+        if (masterNode != null) {
             sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiRejectCall());
         }
     }
@@ -112,7 +121,7 @@ public class CallSlaveActor extends CallActor {
     public void onSignalingMessage(int fromUid, long fromDeviceId, ApiWebRTCSignaling signaling) {
         if (signaling instanceof ApiNeedOffer) {
             ApiNeedOffer needOffer = (ApiNeedOffer) signaling;
-            onNeedOffer(needOffer.getUid(), needOffer.getDevice());
+            onNeedOffer(needOffer.getUid(), needOffer.getDevice(), needOffer.isSilent(), needOffer.getPeerSettings());
         } else if (signaling instanceof ApiSwitchMaster) {
             onMasterNodeChanged(fromUid, fromDeviceId);
         } else {
