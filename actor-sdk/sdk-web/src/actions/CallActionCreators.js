@@ -3,14 +3,23 @@
  */
 
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes, CallStates } from '../constants/ActorAppConstants';
-import CallStore from '../stores/CallStore';
+import { ActionTypes, CallTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 
 export default {
   handleCall(event) {
-    ActorClient.bindCall(event.id, this.setCall);
-    dispatch(ActionTypes.CALL_MODAL_OPEN, { event })
+    const { id, type } = event;
+    switch (type) {
+      case CallTypes.STARTED:
+        dispatch(ActionTypes.CALL_MODAL_OPEN, { id });
+        ActorClient.bindCall(id, this.setCall);
+        break;
+      case CallTypes.ENDED:
+        dispatch(ActionTypes.CALL_MODAL_HIDE, { id });
+        ActorClient.unbindCall(id, this.setCall);
+        break;
+      default:
+    }
   },
 
   makeCall(uid) {
@@ -22,15 +31,7 @@ export default {
   },
 
   setCall(call) {
-    console.debug('setCall', call);
     dispatch(ActionTypes.CALL_CHANGED, { call });
-
-    switch (call.state) {
-      case CallStates.ENDED:
-        dispatch(ActionTypes.CALL_MODAL_HIDE);
-        break;
-      default:
-    }
   },
 
   answerCall(id) {
@@ -38,7 +39,7 @@ export default {
     dispatch(ActionTypes.CALL_ANSWER, { id })
   },
 
-  endCall() {
+  endCall(id) {
     ActorClient.endCall(id);
     dispatch(ActionTypes.CALL_END, { id })
   }
