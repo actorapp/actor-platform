@@ -10736,6 +10736,31 @@
         <property role="TrG5h" value="WebRTCSignaling" />
         <property role="1FaRnq" value="true" />
       </node>
+      <node concept="2m5naR" id="3xEfKBqKcEa" role="2m5mJr">
+        <property role="TrG5h" value="AdvertiseSelf" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
+        <node concept="2m7Kf5" id="3xEfKBqKuFH" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peerSettings" />
+          <node concept="2m5nlT" id="3xEfKBqKwZ7" role="2m7DVh">
+            <node concept="2m5mGg" id="3xEfKBqKwZd" role="3GH5xg">
+              <ref role="2m5mJy" node="3xEfKBqKruE" resolve="PeerSettings" />
+            </node>
+          </node>
+        </node>
+        <node concept="NXeRC" id="3xEfKBqKcHw" role="NXodf">
+          <property role="NXePf" value="Advertizing self to a master mode" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqKcH_" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional peer Settings" />
+          <ref role="NX6Kv" node="3xEfKBqKuFH" resolve="peerSettings" />
+        </node>
+        <node concept="Nu42z" id="3xEfKBqKEqP" role="3BtCOu">
+          <property role="Nu42W" value="15" />
+        </node>
+      </node>
       <node concept="2m5naR" id="3Tolai5NMLS" role="2m5mJr">
         <property role="TrG5h" value="AnswerCall" />
         <property role="w4tQU" value="true" />
@@ -10827,6 +10852,15 @@
           <property role="TrG5h" value="sdp" />
           <node concept="2m5ndX" id="3Tolai5NNXJ" role="2m7DVh" />
         </node>
+        <node concept="2m7Kf5" id="3xEfKBqKz53" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="ownPeerSettings" />
+          <node concept="2m5nlT" id="3xEfKBqKz5b" role="2m7DVh">
+            <node concept="2m5mGg" id="3xEfKBqKz5h" role="3GH5xg">
+              <ref role="2m5mJy" node="3xEfKBqKruE" resolve="PeerSettings" />
+            </node>
+          </node>
+        </node>
         <node concept="Nu42z" id="3Tolai5NNVK" role="3BtCOu">
           <property role="Nu42W" value="04" />
         </node>
@@ -10842,6 +10876,11 @@
           <property role="NX6R2" value="Offer SDP" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3Tolai5NNXF" resolve="sdp" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqKz5M" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional Own Peer settings" />
+          <ref role="NX6Kv" node="3xEfKBqKz53" resolve="ownPeerSettings" />
         </node>
       </node>
       <node concept="2m5naR" id="3Tolai5NNWH" role="2m5mJr">
@@ -10918,6 +10957,22 @@
             <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
+        <node concept="2m7Kf5" id="3xEfKBqKfPN" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="peerSettings" />
+          <node concept="2m5nlT" id="3xEfKBqKfPV" role="2m7DVh">
+            <node concept="2m5mGg" id="3xEfKBqKwZ2" role="3GH5xg">
+              <ref role="2m5mJy" node="3xEfKBqKruE" resolve="PeerSettings" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3xEfKBqKJOQ" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="isSilent" />
+          <node concept="2m5nlT" id="3xEfKBqKJP1" role="2m7DVh">
+            <node concept="2m5ndN" id="3xEfKBqKJP7" role="3GH5xg" />
+          </node>
+        </node>
         <node concept="Nu42z" id="3Tolai5NVC0" role="3BtCOu">
           <property role="Nu42W" value="08" />
         </node>
@@ -10933,6 +10988,51 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Destination Device Id" />
           <ref role="NX6Kv" node="3Tolai5NVBR" resolve="device" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqKwZl" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional peer settings" />
+          <ref role="NX6Kv" node="3xEfKBqKfPN" resolve="peerSettings" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqKJPg" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional flag indicates that connection is established before real answer" />
+          <ref role="NX6Kv" node="3xEfKBqKJOQ" resolve="isSilent" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="3xEfKBqKKVN" role="2m5mJr">
+        <property role="TrG5h" value="OnAnswer" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
+        <node concept="2m7Kf5" id="3xEfKBqKKZg" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="wb0Ql" id="3xEfKBqKKZk" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3xEfKBqKKZn" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="device" />
+          <node concept="wb0Ql" id="3xEfKBqKKZt" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="3xEfKBqKKZw" role="NXodf">
+          <property role="NXePf" value="Notification about call answer" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqKKZ_" role="NXodf">
+          <property role="NX6R2" value="User Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3xEfKBqKKZg" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqKKZH" role="NXodf">
+          <property role="NX6R2" value="Device Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3xEfKBqKKZn" resolve="device" />
+        </node>
+        <node concept="Nu42z" id="3xEfKBqKO9a" role="3BtCOu">
+          <property role="Nu42W" value="16" />
         </node>
       </node>
       <node concept="2m5naR" id="3xEfKBqKbxy" role="2m5mJr">
@@ -11221,6 +11321,55 @@
           <property role="NX6R2" value="State of member" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3xEfKBqJVGe" resolve="state" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="3xEfKBqKruE" role="2m5mJr">
+        <property role="TrG5h" value="PeerSettings" />
+        <node concept="2m7Kf5" id="3xEfKBqKrxN" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="is3DESSupported" />
+          <node concept="2m5nlT" id="3xEfKBqKrxR" role="2m7DVh">
+            <node concept="2m5ndN" id="3xEfKBqKrxX" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3xEfKBqKry0" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="isMobile" />
+          <node concept="2m5nlT" id="3xEfKBqKry7" role="2m7DVh">
+            <node concept="2m5ndN" id="3xEfKBqKryd" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3xEfKBqKs_o" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="canBeAudioRelay" />
+          <node concept="2m5nlT" id="3xEfKBqKs_y" role="2m7DVh">
+            <node concept="2m5ndN" id="3xEfKBqKs_C" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3xEfKBqKDn$" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="canConnect" />
+          <node concept="2m5nlT" id="3xEfKBqKDnL" role="2m7DVh">
+            <node concept="2m5ndN" id="3xEfKBqKDnR" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="3xEfKBqKryg" role="NXodf">
+          <property role="NXePf" value="Peer Settings" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqKryl" role="NXodf">
+          <property role="NX6R2" value="Marking if 3DES supported. Default is false." />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3xEfKBqKrxN" resolve="is3DESSupported" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqKryt" role="NXodf">
+          <property role="NX6R2" value="Is Peer a mobile phone. Default is false." />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3xEfKBqKry0" resolve="isMobile" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqKs_K" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="If peer can audio relay. Default is false." />
+          <ref role="NX6Kv" node="3xEfKBqKs_o" resolve="canBeAudioRelay" />
         </node>
       </node>
       <node concept="1Dx9M1" id="6tgpW9bxpK8" role="1Dx9rD">

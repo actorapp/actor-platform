@@ -14,28 +14,43 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiEndCall extends ApiWebRTCSignaling {
+public class ApiAdvertiseSelf extends ApiWebRTCSignaling {
 
+    private ApiPeerSettings peerSettings;
 
-    public ApiEndCall() {
+    public ApiAdvertiseSelf(@Nullable ApiPeerSettings peerSettings) {
+        this.peerSettings = peerSettings;
+    }
+
+    public ApiAdvertiseSelf() {
 
     }
 
     public int getHeader() {
-        return 2;
+        return 21;
+    }
+
+    @Nullable
+    public ApiPeerSettings getPeerSettings() {
+        return this.peerSettings;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
+        this.peerSettings = values.optObj(1, new ApiPeerSettings());
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
+        if (this.peerSettings != null) {
+            writer.writeObject(1, this.peerSettings);
+        }
     }
 
     @Override
     public String toString() {
-        String res = "struct EndCall{";
+        String res = "struct AdvertiseSelf{";
+        res += "peerSettings=" + this.peerSettings;
         res += "}";
         return res;
     }

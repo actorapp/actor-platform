@@ -1,5 +1,6 @@
 package im.actor.core.modules.calls.entity;
 
+import im.actor.core.api.ApiPeerSettings;
 import im.actor.runtime.function.Predicate;
 
 public class MasterCallDevice {
@@ -24,12 +25,14 @@ public class MasterCallDevice {
 
     private int uid;
     private long deviceId;
-    private boolean isActive;
+    private ApiPeerSettings peerSettings;
+    private MasterCallDeviceState deviceState;
 
-    public MasterCallDevice(int uid, long deviceId, boolean isActive) {
+    public MasterCallDevice(int uid, long deviceId) {
         this.uid = uid;
         this.deviceId = deviceId;
-        this.isActive = isActive;
+        this.deviceState = MasterCallDeviceState.PENDING;
+        this.peerSettings = null;
     }
 
     public int getUid() {
@@ -40,11 +43,24 @@ public class MasterCallDevice {
         return deviceId;
     }
 
-    public boolean isActive() {
-        return isActive;
+    public ApiPeerSettings getPeerSettings() {
+        return peerSettings;
     }
 
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
+    public void setPeerSettings(ApiPeerSettings peerSettings) {
+        this.peerSettings = peerSettings;
+    }
+
+    public MasterCallDeviceState getDeviceState() {
+        return deviceState;
+    }
+
+    public boolean isAnswered() {
+        return deviceState == MasterCallDeviceState.CONNECTING
+                || deviceState == MasterCallDeviceState.IN_PROGRESS;
+    }
+
+    public void setDeviceState(MasterCallDeviceState deviceState) {
+        this.deviceState = deviceState;
     }
 }
