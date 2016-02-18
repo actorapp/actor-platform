@@ -73,7 +73,9 @@ class iOSCallsProvider: NSObject, ACCallsProvider {
     }
     
     private func stopRingtone() {
-        ringtonePlayer.pause()
+        if ringtonePlayer != nil {
+            ringtonePlayer.pause()
+        }
         if (self.latestNotification != nil) {
             UIApplication.sharedApplication().cancelLocalNotification(self.latestNotification)
             self.latestNotification = nil

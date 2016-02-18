@@ -16,6 +16,10 @@ public class AACallViewController: AAViewController {
     public let answerCallButton = UIButton()
     public let declineCallButton = UIButton()
     
+    public let muteButton = UIButton()
+    public let speakerButton = UIButton()
+    public let videoButton = UIButton()
+    
     var isScheduledDispose = false
     
     public init(callId: jlong) {
@@ -46,6 +50,17 @@ public class AACallViewController: AAViewController {
             Actor.endCallWithCallId(self.callId)
         }
         
+        muteButton.viewDidTap = {
+            Actor.toggleCallMuteWithCallId(self.callId)
+        }
+        
+        speakerButton.setImage(UIImage.bundled("ic_call_36pt")!.tintImage(ActorSDK.sharedActor().style.vcTintColor), forState: .Normal)
+        speakerButton.setImage(UIImage.bundled("ic_call_36pt")!.tintImage(ActorSDK.sharedActor().style.vcHintColor), forState: .Disabled)
+        
+        videoButton.setImage(UIImage.bundled("ic_call_36pt")!.tintImage(ActorSDK.sharedActor().style.vcTintColor), forState: .Normal)
+        videoButton.setImage(UIImage.bundled("ic_call_36pt")!.tintImage(ActorSDK.sharedActor().style.vcHintColor), forState: .Disabled)
+        videoButton.enabled = false
+        
         //
         // Peer Info
         //
@@ -65,6 +80,9 @@ public class AACallViewController: AAViewController {
         self.view.addSubview(callState)
         self.view.addSubview(answerCallButton)
         self.view.addSubview(declineCallButton)
+        self.view.addSubview(muteButton)
+        self.view.addSubview(speakerButton)
+        self.view.addSubview(videoButton)
     }
     
     public override func viewWillLayoutSubviews() {
@@ -78,6 +96,10 @@ public class AACallViewController: AAViewController {
     }
     
     private func layoutButtons() {
+        muteButton.frame = CGRectMake((self.view.width / 3 - 72) / 2, self.view.height - 226, 72, 72)
+        speakerButton.frame = CGRectMake( self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 226, 72, 72)
+        videoButton.frame = CGRectMake( 2 * self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 226, 72, 72)
+        
         if !declineCallButton.hidden || !answerCallButton.hidden {
             if !declineCallButton.hidden && !answerCallButton.hidden {
                 declineCallButton.frame = CGRectMake((self.view.width / 2 - 72) / 2, self.view.height - 96, 72, 72)
@@ -136,6 +158,16 @@ public class AACallViewController: AAViewController {
                 self.declineCallButton.hidden = false
                 self.callState.text = ""
                 self.layoutButtons()
+            }
+        }
+        
+        binder.bind(call.isMuted) { (value: JavaLangBoolean!) -> () in
+            if (value.booleanValue()) {
+                self.muteButton.setImage(UIImage.bundled("ic_mic_off_36pt")!.tintImage(UIColor.whiteColor()), forState: .Normal)
+                self.muteButton.setImage(UIImage.bundled("ic_mic_off_36pt")!.tintImage(UIColor.whiteColor()), forState: .Disabled)
+            } else {
+                self.muteButton.setImage(UIImage.bundled("ic_mic_off_36pt")!.tintImage(ActorSDK.sharedActor().style.vcTintColor), forState: .Normal)
+                self.muteButton.setImage(UIImage.bundled("ic_mic_off_36pt")!.tintImage(ActorSDK.sharedActor().style.vcHintColor), forState: .Disabled)
             }
         }
         
