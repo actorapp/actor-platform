@@ -1,5 +1,5 @@
 package im.actor.core.viewmodel;
 
 public enum CallMemberState {
-    CALLING, CALLING_REACHED, IN_PROGRESS, ENDED
+    RINGING, RINGING_REACHED, CONNECTING, IN_PROGRESS, ENDED
 }

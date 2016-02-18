@@ -1,28 +1,38 @@
 package im.actor.core.modules.calls.entity;
 
-import java.util.ArrayList;
-
-import im.actor.core.entity.GroupMember;
-import im.actor.runtime.function.Function;
 import im.actor.runtime.function.Predicate;
 
-public class MasterCallMember extends CallMember {
+public class MasterCallMember {
 
-    public static Function<GroupMember, MasterCallMember> FROM_MEMBER = new Function<GroupMember, MasterCallMember>() {
+
+    public static Predicate<MasterCallMember> IS_ENDED = new Predicate<MasterCallMember>() {
         @Override
-        public MasterCallMember apply(GroupMember groupMember) {
-            return new MasterCallMember(groupMember.getUid(), CallMemberState.RINGING);
+        public boolean apply(MasterCallMember masterCallMember) {
+            return masterCallMember.getState() == MasterCallMemberState.ENDED;
         }
     };
 
-    public static Predicate<MasterCallMember> PREDICATE(final int uid, final long deviceId) {
-        return new Predicate<MasterCallMember>() {
-            @Override
-            public boolean apply(MasterCallMember masterCallMember) {
-                return masterCallMember.getUid() == uid && masterCallMember.getDeviceId().contains(deviceId);
-            }
-        };
-    }
+    public static Predicate<MasterCallMember> IS_RINGING = new Predicate<MasterCallMember>() {
+        @Override
+        public boolean apply(MasterCallMember masterCallMember) {
+            return masterCallMember.getState() == MasterCallMemberState.RINGING_REACHED ||
+                    masterCallMember.getState() == MasterCallMemberState.RINGING;
+        }
+    };
+
+    public static Predicate<MasterCallMember> IS_IN_PROGRESS = new Predicate<MasterCallMember>() {
+        @Override
+        public boolean apply(MasterCallMember masterCallMember) {
+            return masterCallMember.getState() == MasterCallMemberState.IN_PROGRESS;
+        }
+    };
+
+    public static Predicate<MasterCallMember> IS_CONNECTING = new Predicate<MasterCallMember>() {
+        @Override
+        public boolean apply(MasterCallMember masterCallMember) {
+            return masterCallMember.getState() == MasterCallMemberState.CONNECTING;
+        }
+    };
 
     public static Predicate<MasterCallMember> PREDICATE(final int uid) {
         return new Predicate<MasterCallMember>() {
@@ -33,13 +43,23 @@ public class MasterCallMember extends CallMember {
         };
     }
 
-    private ArrayList<Long> deviceId = new ArrayList<>();
+    private int uid;
+    private MasterCallMemberState state;
 
-    public MasterCallMember(int uid, CallMemberState state) {
-        super(uid, state);
+    public MasterCallMember(int uid, MasterCallMemberState state) {
+        this.uid = uid;
+        this.state = state;
     }
 
-    public ArrayList<Long> getDeviceId() {
-        return deviceId;
+    public int getUid() {
+        return uid;
+    }
+
+    public MasterCallMemberState getState() {
+        return state;
+    }
+
+    public void setState(MasterCallMemberState state) {
+        this.state = state;
     }
 }

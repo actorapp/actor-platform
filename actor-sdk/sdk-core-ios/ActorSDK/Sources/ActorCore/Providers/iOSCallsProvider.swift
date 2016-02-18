@@ -14,7 +14,7 @@ class iOSCallsProvider: NSObject, ACCallsProvider {
     func onCallStartWithCallId(callId: jlong) {
         dispatchOnUi() {
             
-            if ((Actor.getCallWithCallId(callId).state.get() as! ACCallState).toNSEnum() == ACCallState_Enum.CALLING_INCOMING) {
+            if (!Actor.getCallWithCallId(callId).isOutgoing) {
                 self.startRingtone()
             } else {
                 self.stopRingtone()
