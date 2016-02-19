@@ -21,12 +21,18 @@ import DefaultDialog from './Dialog.react';
 import Favicon from './common/Favicon.react';
 
 import ModalsWrapper from './modals/ModalsWrapper.react';
-import CallModal from './modals/CallModal.react';
 import DropdownWrapper from './common/DropdownWrapper.react';
+import CallModal from './modals/CallModal.react';
+import InviteUser from './modals/InviteUser.react';
+import InviteByLink from './modals/invite-user/InviteByLink.react';
+import EditGroup from './modals/EditGroup.react';
 
 class Main extends Component {
   static propTypes = {
-    params: PropTypes.object,
+    params: PropTypes.object
+  };
+
+  static contextTypes = {
     delegate: PropTypes.object
   };
 
@@ -96,7 +102,8 @@ class Main extends Component {
   };
 
   render() {
-    const { delegate, params } = this.props;
+    const { params } = this.props;
+    const { delegate } = this.context;
     const peer = PeerUtils.stringToPeer(params.id);
 
     const Sidebar = (typeof delegate.components.sidebar == 'function') ? delegate.components.sidebar : DefaultSidebar;
@@ -107,10 +114,13 @@ class Main extends Component {
         <Favicon/>
 
         <Sidebar/>
-        <Dialog peer={peer}/>
+        <Dialog/>
 
         <ModalsWrapper/>
         <DropdownWrapper/>
+        <InviteUser/>
+        <InviteByLink/>
+        <EditGroup/>
         <CallModal/>
       </div>
     );
