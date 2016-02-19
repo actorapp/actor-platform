@@ -17,12 +17,10 @@ import java.util.ArrayList;
 public class ApiCallMember extends BserObject {
 
     private int userId;
-    private long deviceId;
     private ApiCallMemberStateHolder state;
 
-    public ApiCallMember(int userId, long deviceId, @NotNull ApiCallMemberStateHolder state) {
+    public ApiCallMember(int userId, @NotNull ApiCallMemberStateHolder state) {
         this.userId = userId;
-        this.deviceId = deviceId;
         this.state = state;
     }
 
@@ -34,10 +32,6 @@ public class ApiCallMember extends BserObject {
         return this.userId;
     }
 
-    public long getDeviceId() {
-        return this.deviceId;
-    }
-
     @NotNull
     public ApiCallMemberStateHolder getState() {
         return this.state;
@@ -46,14 +40,12 @@ public class ApiCallMember extends BserObject {
     @Override
     public void parse(BserValues values) throws IOException {
         this.userId = values.getInt(1);
-        this.deviceId = values.getLong(2);
         this.state = values.getObj(3, new ApiCallMemberStateHolder());
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.userId);
-        writer.writeLong(2, this.deviceId);
         if (this.state == null) {
             throw new IOException();
         }
@@ -64,7 +56,6 @@ public class ApiCallMember extends BserObject {
     public String toString() {
         String res = "struct CallMember{";
         res += "userId=" + this.userId;
-        res += ", deviceId=" + this.deviceId;
         res += ", state=" + this.state;
         res += "}";
         return res;
