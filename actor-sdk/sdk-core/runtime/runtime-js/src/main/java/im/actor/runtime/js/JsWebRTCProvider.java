@@ -17,21 +17,27 @@ import im.actor.runtime.js.webrtc.PeerConnection;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
+import im.actor.runtime.webrtc.WebRTCIceServer;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
+import im.actor.runtime.webrtc.WebRTCSettings;
 
 public class JsWebRTCProvider implements WebRTCRuntime {
 
     @NotNull
     @Override
-    public Promise<WebRTCPeerConnection> createPeerConnection() {
+    public Promise<WebRTCPeerConnection> createPeerConnection(final WebRTCIceServer[] webRTCIceServers, WebRTCSettings settings) {
         return new Promise<>(new PromiseFunc<WebRTCPeerConnection>() {
             @Override
             public void exec(@NotNull PromiseResolver<WebRTCPeerConnection> resolver) {
                 JsArray<JsIceServer> servers = JsArray.createArray().cast();
-                servers.push(JsIceServer.create("stun:62.4.22.219:3478"));
-                servers.push(JsIceServer.create("turn:62.4.22.219:3478?transport=tcp", "actor", "password"));
-                servers.push(JsIceServer.create("turn:62.4.22.219:3478?transport=udp", "actor", "password"));
+                for (WebRTCIceServer s : webRTCIceServers) {
+                    if (s.getUsername() != null || s.getCredential() != null) {
+                        servers.push(JsIceServer.create(s.getUrl(), s.getUsername(), s.getCredential()));
+                    } else {
+                        servers.push(JsIceServer.create(s.getUrl()));
+                    }
+                }
                 resolver.result(new PeerConnection(JsPeerConnection.create(JsPeerConnectionConfig.create(servers))));
             }
         });

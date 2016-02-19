@@ -19,10 +19,12 @@ import im.actor.runtime.function.Function;
 import im.actor.runtime.function.FunctionTupled2;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.Promises;
+import im.actor.runtime.webrtc.WebRTCIceServer;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
 import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
 import im.actor.runtime.webrtc.WebRTCSessionDescription;
+import im.actor.runtime.webrtc.WebRTCSettings;
 import im.actor.runtime.webrtc.sdp.SDP;
 import im.actor.runtime.webrtc.sdp.SDPScheme;
 import im.actor.runtime.webrtc.sdp.entities.SDPCodec;
@@ -90,7 +92,10 @@ public class PeerConnectionActor extends ModuleActor {
         Log.d(TAG, "preStart");
 
         isReady = false;
-        Promises.tuple(WebRTC.createPeerConnection(), WebRTC.getUserAudio()).map(new FunctionTupled2<WebRTCPeerConnection, WebRTCMediaStream, WebRTCPeerConnection>() {
+
+        WebRTCIceServer[] iceServers = config().getWebRTCIceServers();
+        WebRTCSettings settings = new WebRTCSettings(false, false);
+        Promises.tuple(WebRTC.createPeerConnection(iceServers, settings), WebRTC.getUserAudio()).map(new FunctionTupled2<WebRTCPeerConnection, WebRTCMediaStream, WebRTCPeerConnection>() {
             @Override
             public WebRTCPeerConnection apply(WebRTCPeerConnection webRTCPeerConnection, WebRTCMediaStream stream) {
                 setEnabled(stream);

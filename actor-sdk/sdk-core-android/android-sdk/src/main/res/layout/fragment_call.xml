@@ -84,7 +84,7 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:background="@drawable/end_call_background"
-                        android:src="@drawable/ic_call_end_white_36dp" />
+                        />
                 </FrameLayout>
 
                 <FrameLayout
@@ -110,7 +110,6 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@drawable/end_call_background"
-                android:src="@drawable/ic_call_end_white_36dp"
                 android:layout_marginBottom="20dp"/>
 
             <TextView
