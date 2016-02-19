@@ -1,6 +1,5 @@
 package im.actor.config
 
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 import akka.actor.ActorSystem
@@ -12,11 +11,7 @@ import scala.util.{ Failure, Success, Try }
 
 object ActorConfig {
   def load(defaults: Config = ConfigFactory.empty()): Config = {
-    val mainConfig = Option(System.getProperty("actor.home")) match {
-      case Some(home) ⇒
-        ConfigFactory.load(ConfigFactory.parseFile(new File(s"$home/conf/server.conf")))
-      case None ⇒ ConfigFactory.load()
-    }
+    val mainConfig = ConfigFactory.load()
 
     val config = defaults.withFallback(ConfigFactory.parseString(
       s"""
