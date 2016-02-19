@@ -48,7 +48,7 @@ public class CallSlaveActor extends CallActor {
     public void preStart() {
         super.preStart();
         callManager = context().getCallsModule().getCallManager();
-        setIsSilentEnabled(true);
+        getPeerCollection().setIsEnabled(false);
         api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
             @Override
             public void apply(final ResponseGetCallInfo responseGetCallInfo) {
@@ -67,7 +67,7 @@ public class CallSlaveActor extends CallActor {
     public void onBusStarted() {
         super.onBusStarted();
         callVM = spawnNewVM(callId, peer, false, new ArrayList<CallMember>(), CallState.CALLING);
-        callVM.getIsMuted().change(isMuted());
+        callVM.getIsMuted().change(getPeerCollection().isMuted());
     }
 
     public void onMasterNodeChanged(int fromUid, long fromDeviceId) {
@@ -146,7 +146,7 @@ public class CallSlaveActor extends CallActor {
     }
 
     public void onNeedOffer(int destUid, long destDeviceId, Boolean isSilent, ApiPeerSettings peerSettings) {
-        getPeer(destUid, destDeviceId).send(new PeerConnectionActor.OnOfferNeeded());
+        getPeerCollection().getPeer(destUid, destDeviceId).send(new PeerConnectionActor.OnOfferNeeded());
     }
 
     public void doAnswer() {
@@ -158,7 +158,7 @@ public class CallSlaveActor extends CallActor {
                 callVM.getState().change(CallState.CONNECTING);
             }
             sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiAnswerCall());
-            unsilencePeers();
+            getPeerCollection().setIsEnabled(true);
         }
     }
 

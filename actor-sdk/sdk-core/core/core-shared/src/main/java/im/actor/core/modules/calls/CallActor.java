@@ -17,6 +17,8 @@ import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.calls.entity.InvalidTransactionException;
+import im.actor.core.modules.calls.entity.PeerCollection;
 import im.actor.core.modules.eventbus.EventBusActor;
 import im.actor.core.viewmodel.CallMember;
 import im.actor.core.viewmodel.CallMemberState;
@@ -31,11 +33,9 @@ public class CallActor extends EventBusActor {
 
     private static final String TAG = "CallActor";
 
-    private HashMap<Integer, HashMap<Long, ActorRef>> peerConnections = new HashMap<>();
+    private PeerCollection peerCollection;
     private HashMap<Long, CallVM> callModels;
-    private boolean isMuted = false;
     private ApiPeerSettings peerSettings;
-    private boolean isSilentEnabled = false;
 
     public CallActor(ModuleContext context) {
         super(context);
@@ -45,26 +45,18 @@ public class CallActor extends EventBusActor {
     public void preStart() {
         super.preStart();
         callModels = context().getCallsModule().getCallModels();
+        peerCollection = new PeerCollection(self(), context());
         boolean isMobile = config().getDeviceCategory() == DeviceCategory.MOBILE ||
                 config().getDeviceCategory() == DeviceCategory.TABLET;
-        boolean isSupportsFastConnect = true;
-        peerSettings = new ApiPeerSettings(true, isMobile, false, isSupportsFastConnect);
+        peerSettings = new ApiPeerSettings(true, isMobile, false, true);
     }
 
-    public boolean isSilentEnabled() {
-        return isSilentEnabled;
-    }
-
-    public void setIsSilentEnabled(boolean isSilentEnabled) {
-        this.isSilentEnabled = isSilentEnabled;
+    public PeerCollection getPeerCollection() {
+        return peerCollection;
     }
 
     public ApiPeerSettings getPeerSettings() {
         return peerSettings;
-    }
-
-    public boolean isMuted() {
-        return isMuted;
     }
 
     //
@@ -95,30 +87,50 @@ public class CallActor extends EventBusActor {
     }
 
     //
+    // Nodes
+    //
+
+    public void onNodeConnected(int uid, long deviceId) throws InvalidTransactionException {
+
+    }
+
+    public void onNodeDisconnected(int uid, long deviceId) throws InvalidTransactionException {
+
+    }
+
+
+    //
     // Signaling Wrappers
     //
 
     public void onSignalingMessage(int fromUid, long fromDeviceId, ApiWebRTCSignaling signaling) {
         if (signaling instanceof ApiOffer) {
             ApiOffer offer = (ApiOffer) signaling;
-            getPeer(fromUid, fromDeviceId).send(new PeerConnectionActor.OnOffer(offer.getSdp()));
+            peerCollection.getPeer(fromUid, fromDeviceId)
+                    .send(new PeerConnectionActor.OnOffer(offer.getSdp()));
         } else if (signaling instanceof ApiAnswer) {
             ApiAnswer answer = (ApiAnswer) signaling;
-            getPeer(fromUid, fromDeviceId).send(new PeerConnectionActor.OnAnswer(answer.getSdp()));
+            peerCollection.getPeer(fromUid, fromDeviceId)
+                    .send(new PeerConnectionActor.OnAnswer(answer.getSdp()));
         } else if (signaling instanceof ApiCandidate) {
             ApiCandidate candidate = (ApiCandidate) signaling;
-            getPeer(fromUid, fromDeviceId).send(new PeerConnectionActor.OnCandidate(candidate.getIndex(),
-                    candidate.getId(), candidate.getSdp()));
+            peerCollection.getPeer(fromUid, fromDeviceId)
+                    .send(new PeerConnectionActor.OnCandidate(candidate.getIndex(),
+                            candidate.getId(), candidate.getSdp()));
         }
     }
 
-    public void onStreamAdded(int uid, long deviceId, WebRTCMediaStream stream) {
+    public void onStreamAdded(int uid, long deviceId, WebRTCMediaStream stream) throws InvalidTransactionException {
 
     }
 
-    public void onStreamRemoved(int uid, long deviceId, WebRTCMediaStream stream) {
+    public void onStreamRemoved(int uid, long deviceId, WebRTCMediaStream stream) throws InvalidTransactionException {
 
     }
+
+    //
+    // Send Signaling
+    //
 
     public final void sendSignalingMessage(int uid, long deviceId, ApiWebRTCSignaling signaling) {
         try {
@@ -147,33 +159,27 @@ public class CallActor extends EventBusActor {
         }
     }
 
-    public void onMute() {
-        if (isMuted) {
-            return;
-        }
-        isMuted = true;
-
-        for (int uid : peerConnections.keySet()) {
-            HashMap<Long, ActorRef> peers = peerConnections.get(uid);
-            for (ActorRef p : peers.values()) {
-                p.send(new PeerConnectionActor.DoMute());
-            }
-        }
+    public void onMuteChanged(boolean value) {
+        peerCollection.setIsMuted(value);
     }
 
-    public void onUnmute() {
-        if (!isMuted) {
-            return;
-        }
-        isMuted = false;
+    //
+    // Call Ending
+    //
 
-        for (int uid : peerConnections.keySet()) {
-            HashMap<Long, ActorRef> peers = peerConnections.get(uid);
-            for (ActorRef p : peers.values()) {
-                p.send(new PeerConnectionActor.DoUnmute());
-            }
-        }
+    @Override
+    public void onBusStopped() {
+        super.onBusStopped();
+        peerCollection.stopAll();
     }
+
+    public void doEndCall() {
+        shutdown();
+    }
+
+    //
+    // Messages
+    //
 
     @Override
     public final void onMessageReceived(@Nullable Integer senderId, @Nullable Long senderDeviceId, byte[] data) {
@@ -195,59 +201,24 @@ public class CallActor extends EventBusActor {
     }
 
     @Override
-    public void onBusStopped() {
-        super.onBusStopped();
-        for (int uid : peerConnections.keySet()) {
-            HashMap<Long, ActorRef> peers = peerConnections.get(uid);
-            for (ActorRef p : peers.values()) {
-                p.send(new PeerConnectionActor.DoStop());
-            }
-        }
-        peerConnections.clear();
-    }
-
-    public void doEndCall() {
-        shutdown();
-    }
-
-    protected ActorRef getPeer(int uid, long deviceId) {
-        if (!peerConnections.containsKey(uid)) {
-            peerConnections.put(uid, new HashMap<Long, ActorRef>());
-        }
-        HashMap<Long, ActorRef> refs = peerConnections.get(uid);
-        if (refs.containsKey(deviceId)) {
-            return refs.get(deviceId);
-        }
-        ActorRef ref = system().actorOf(getPath() + "/uid:" + uid + "/" + deviceId,
-                PeerConnectionActor.CONSTRUCTOR(self(), uid, deviceId, isMuted, isSilentEnabled, context()));
-        refs.put(deviceId, ref);
-        return ref;
-    }
-
-    protected void disconnectPeer(int uid, long deviceId) {
-        HashMap<Long, ActorRef> deviceRefs = peerConnections.get(uid);
-        if (deviceRefs == null) {
-            return;
-        }
-        ActorRef ref = deviceRefs.get(deviceId);
-        if (ref == null) {
-            return;
-        }
-        ref.send(new PeerConnectionActor.DoStop());
-    }
-
-    protected void unsilencePeers() {
-        setIsSilentEnabled(false);
-        for (HashMap<Long, ActorRef> deviceRefs : peerConnections.values()) {
-            for (ActorRef ref : deviceRefs.values()) {
-                ref.send(new PeerConnectionActor.DoUnsilence());
-            }
+    public final void onDeviceConnected(int uid, long deviceId) {
+        super.onDeviceConnected(uid, deviceId);
+        try {
+            onNodeConnected(uid, deviceId);
+        } catch (InvalidTransactionException e) {
+            e.printStackTrace();
         }
     }
 
-    //
-    // Messages
-    //
+    @Override
+    public void onDeviceDisconnected(int uid, long deviceId) {
+        super.onDeviceDisconnected(uid, deviceId);
+        try {
+            onNodeDisconnected(uid, deviceId);
+        } catch (InvalidTransactionException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onReceive(Object message) {
@@ -267,14 +238,22 @@ public class CallActor extends EventBusActor {
             doEndCall();
         } else if (message instanceof PeerConnectionActor.OnStreamAdded) {
             PeerConnectionActor.OnStreamAdded streamAdded = (PeerConnectionActor.OnStreamAdded) message;
-            onStreamAdded(streamAdded.getUid(), streamAdded.getDeviceId(), streamAdded.getStream());
+            try {
+                onStreamAdded(streamAdded.getUid(), streamAdded.getDeviceId(), streamAdded.getStream());
+            } catch (InvalidTransactionException e) {
+                e.printStackTrace();
+            }
         } else if (message instanceof PeerConnectionActor.OnStreamRemoved) {
             PeerConnectionActor.OnStreamRemoved streamRemoved = (PeerConnectionActor.OnStreamRemoved) message;
-            onStreamRemoved(streamRemoved.getUid(), streamRemoved.getDeviceId(), streamRemoved.getStream());
+            try {
+                onStreamRemoved(streamRemoved.getUid(), streamRemoved.getDeviceId(), streamRemoved.getStream());
+            } catch (InvalidTransactionException e) {
+                e.printStackTrace();
+            }
         } else if (message instanceof Mute) {
-            onMute();
+            onMuteChanged(true);
         } else if (message instanceof Unmute) {
-            onUnmute();
+            onMuteChanged(false);
         } else {
             super.onReceive(message);
         }

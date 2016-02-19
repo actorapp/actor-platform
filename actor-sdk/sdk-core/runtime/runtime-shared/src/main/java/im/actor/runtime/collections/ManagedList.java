@@ -18,6 +18,10 @@ public class ManagedList<T> extends ArrayList<T> {
         return new ManagedList<>(collection);
     }
 
+    public static <T> ManagedList<T> empty() {
+        return new ManagedList<>();
+    }
+
     public static <T> ManagedList<T> of(T... vals) {
         ManagedList<T> res = new ManagedList<>();
         for (T t : vals) {
@@ -105,6 +109,24 @@ public class ManagedList<T> extends ArrayList<T> {
         ManagedList<T> res = new ManagedList<>(this);
         Collections.sort(res, comparator);
         return res;
+    }
+
+    public T firstOrNull(Predicate<T> predicate) {
+        for (T t : this) {
+            if (predicate.apply(t)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public T first(Predicate<T> predicate) {
+        for (T t : this) {
+            if (predicate.apply(t)) {
+                return t;
+            }
+        }
+        throw new RuntimeException("Unable to find element");
     }
 
     public T first() {
