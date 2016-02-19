@@ -1,5 +1,5 @@
 export default {
-  'locales': 'es-ES',
+  'locale': 'es',
   'messages': {
     // Login
     'login': {
