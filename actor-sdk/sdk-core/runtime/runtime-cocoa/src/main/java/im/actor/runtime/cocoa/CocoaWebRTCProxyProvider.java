@@ -7,8 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import im.actor.runtime.WebRTCRuntime;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.Promises;
+import im.actor.runtime.webrtc.WebRTCIceServer;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
+import im.actor.runtime.webrtc.WebRTCSettings;
 
 public class CocoaWebRTCProxyProvider implements WebRTCRuntime {
 
@@ -18,14 +20,14 @@ public class CocoaWebRTCProxyProvider implements WebRTCRuntime {
     public static void setWebRTCRuntime(WebRTCRuntime rtcRuntime) {
         CocoaWebRTCProxyProvider.rtcRuntime = rtcRuntime;
     }
-
-    @Override
+    
     @NotNull
-    public Promise<WebRTCPeerConnection> createPeerConnection() {
+    @Override
+    public Promise<WebRTCPeerConnection> createPeerConnection(WebRTCIceServer[] webRTCIceServers, WebRTCSettings settings) {
         if (rtcRuntime == null) {
             return Promises.failure(new RuntimeException("WebRTC Runtime not set"));
         }
-        return rtcRuntime.createPeerConnection();
+        return rtcRuntime.createPeerConnection(webRTCIceServers, settings);
     }
 
     @NotNull

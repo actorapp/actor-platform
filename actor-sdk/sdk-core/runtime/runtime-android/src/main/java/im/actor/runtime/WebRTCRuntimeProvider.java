@@ -1,4 +1,6 @@
 package im.actor.runtime;
 
-public class WebRTCRuntimeProvider extends AndroidWebRTCRuntimeProvider{
+import im.actor.runtime.android.AndroidWebRTCRuntimeProvider;
+
+public class WebRTCRuntimeProvider extends AndroidWebRTCRuntimeProvider {
 }
