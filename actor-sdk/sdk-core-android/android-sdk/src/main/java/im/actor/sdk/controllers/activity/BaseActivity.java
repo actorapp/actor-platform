@@ -174,6 +174,11 @@ public class BaseActivity extends AppCompatActivity {
         messenger().onActivityClosed();
     }
 
+    protected boolean getIsResumed()
+    {
+        return isResumed;
+    }
+
     public <T> void execute(Command<T> cmd, int title, final CommandCallback<T> callback) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(title));
