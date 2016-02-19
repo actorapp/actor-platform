@@ -36,6 +36,7 @@ import im.actor.runtime.webrtc.WebRTCMediaStream;
 public class CallMasterActor extends CallActor {
 
     private static final String TAG = "CallMasterActor";
+    private static final long MASTER_CALL_TIMEOUT = 8000;
 
     private final Peer peer;
 
@@ -56,7 +57,7 @@ public class CallMasterActor extends CallActor {
     public void preStart() {
         super.preStart();
         callManager = context().getCallsModule().getCallManager();
-        createBus();
+        createBus(MASTER_CALL_TIMEOUT);
     }
 
     @Override
@@ -385,7 +386,7 @@ public class CallMasterActor extends CallActor {
         return new ApiMembersChanged(callMembers);
     }
 
-    private void debugState(){
+    private void debugState() {
         Log.d(TAG, "Call State:\n" + state);
     }
 
