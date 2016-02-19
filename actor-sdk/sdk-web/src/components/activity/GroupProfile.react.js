@@ -26,11 +26,8 @@ import UserStore from '../../stores/UserStore';
 import OnlineStore from '../../stores/OnlineStore';
 
 import AvatarItem from '../common/AvatarItem.react';
-import InviteUser from '../modals/InviteUser.react';
-import InviteByLink from '../modals/invite-user/InviteByLink.react';
 import GroupProfileMembers from '../activity/GroupProfileMembers.react';
 import Fold from '../common/Fold.react';
-import EditGroup from '../modals/EditGroup.react';
 
 const getStateFromStores = (gid) => {
   const thisPeer = gid ? GroupStore.getGroup(gid) : null;
@@ -281,10 +278,6 @@ class GroupProfile extends Component {
               {token}
             </ul>
           </Scrollbar>
-
-          <InviteUser/>
-          <InviteByLink/>
-          <EditGroup/>
         </div>
       );
     } else {
