@@ -53,7 +53,7 @@ export default {
       'quickSearch': 'Quick search',
       'close': 'Close',
       'save': 'Save',
-      'call': 'Voice call'
+      'call': 'Make call'
     },
 
     // Messages
@@ -270,8 +270,16 @@ export default {
                  '<p><a href="//actor.im/ios">iPhone</a> | <a href="//actor.im/android">Android</a></p>',
       'deactivated': {
         'header': 'Tab deactivated',
-        'text': 'Oops, you have opened another tab with {appName}, so we had to deactivate this one to prevent some dangerous things happening.'
+        'text': 'Oops, we have detected another tab with {appName}, so we had to deactivate this one to prevent some dangerous things happening.'
       }
+    },
+    call: {
+      outgoing: 'Outgoing call',
+      incoming: 'Incoming call',
+      mute: 'Mute',
+      answer: 'Answer',
+      decline: 'Decline',
+      end: 'End call'
     }
   }
 };

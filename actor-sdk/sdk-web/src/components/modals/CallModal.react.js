@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import Modal from 'react-modal';
-// import { FormattedMessage } from 'react-intl';
+ import { FormattedMessage } from 'react-intl';
 import AvatarItem from '../common/AvatarItem.react';
 
 import { KeyCodes, CallStates } from '../../constants/ActorAppConstants';
@@ -50,36 +50,91 @@ class CallModal extends Component {
   handleEnd = () => {
     const { callId } = this.state;
     CallActionCreators.endCall(callId);
+    //this.handleClose();
   };
 
   handleMute = () => {
-    console.debug('handleMute')
+    console.debug('handleMute');
   };
 
   render() {
     const { isOpen, isOutgoing, callPeer, callMembers, callState } = this.state;
-    console.debug(this.state);
+    const peerInfo = callPeer ? UserStore.getUser(callPeer.id) : null;
+
+    const modalStyles = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null,
+        width: 240,
+        minWidth: 240
+      }
+    };
+
+    const modalBody = peerInfo ? (
+      <div>
+        <AvatarItem image={peerInfo.avatar} placeholder={peerInfo.placeholder}
+                    size="big" title={peerInfo.name}/>
+        <h4 className="caller-name">{peerInfo.name}</h4>
+      </div>
+    ) : null;
+
+    let modalFooter;
+    switch (callState) {
+      case CallStates.CALLING:
+        modalFooter = (
+          <div>
+            {
+              isOutgoing
+                ? null
+                : <button className="button button--rised button--wide" onClick={this.handleAnswer}>
+                    <FormattedMessage id="call.answer"/>
+                  </button>
+            }
+            <button className="button button--rised button--wide" onClick={this.handleEnd}>
+              {
+                isOutgoing
+                  ? <FormattedMessage id="button.cancel"/>
+                  : <FormattedMessage id="call.decline"/>
+              }
+            </button>
+          </div>
+        );
+        break;
+      case CallStates.IN_PROGRESS:
+      case CallStates.CONNECTING:
+        modalFooter = (
+          <div>
+            <button className="button button--rised button--wide" onClick={this.handleMute}>
+              <FormattedMessage id="call.mute"/>
+            </button>
+            <button className="button button--rised button--wide" onClick={this.handleEnd}>
+              <FormattedMessage id="call.end"/>
+            </button>
+          </div>
+        );
+        break;
+      case CallStates.ENDED:
+        modalFooter = (
+          <div>
+            <button className="button button--rised button--wide" onClick={this.handleClose}>
+              <FormattedMessage id="button.close"/>
+            </button>
+          </div>
+        );
+        break;
+      default:
+    }
 
     if (isOpen) {
-      const modalStyles = {
-        content : {
-          position: null,
-          top: null,
-          left: null,
-          right: null,
-          bottom: null,
-          border: null,
-          background: null,
-          overflow: null,
-          outline: null,
-          padding: null,
-          borderRadius: null,
-          width: 300
-        }
-      };
-
-      const peerInfo = callPeer ? UserStore.getUser(callPeer.id) : null;
-
       return (
         <Modal className="modal-new modal-new--call"
                closeTimeoutMS={150}
@@ -87,36 +142,22 @@ class CallModal extends Component {
                isOpen={isOpen}>
 
           <div className="modal-new__header">
-            <h3 className="modal-new__header__title">{callState}</h3>
+            <h3 className="modal-new__header__title">
+              {
+                isOutgoing
+                  ? <FormattedMessage id="call.outgoing"/>
+                  : <FormattedMessage id="call.incoming"/>
+              }
+            </h3>
           </div>
 
           <div className="modal-new__body">
-            {
-              peerInfo
-                ? <AvatarItem image={peerInfo.avatar} placeholder={peerInfo.placeholder}
-                              size="huge" title={peerInfo.name}/>
-                : null
-            }
+            {/* <small>STATE: {callState}</small> */}
+            {modalBody}
           </div>
 
           <div className="modal-new__footer">
-            {
-              callState === CallStates.IN_PROGRESS
-                ? <button className="button button--rised button--wide" onClick={this.handleMute}>Mute</button>
-                : null
-            }
-            {
-              !isOutgoing && callState === CallStates.CALLING
-                ? <button className="button button--rised button--wide" onClick={this.handleAnswer}>Answer</button>
-                : null
-            }
-            <button className="button button--rised button--wide" onClick={this.handleEnd}>
-              {
-                isOutgoing
-                  ? 'Cancel'
-                  : 'Decline'
-              }
-            </button>
+            {modalFooter}
           </div>
         </Modal>
       );
