@@ -4,8 +4,12 @@
 
 package im.actor.runtime.se;
 
-import im.actor.runtime.crypto.bouncycastle.BouncyCastleRuntime;
+import im.actor.runtime.CryptoRuntime;
 
-public class JavaSeCryptoProvider extends BouncyCastleRuntime {
+public class JavaSeCryptoProvider implements CryptoRuntime {
 
+    @Override
+    public void waitForCryptoLoaded() {
+
+    }
 }
