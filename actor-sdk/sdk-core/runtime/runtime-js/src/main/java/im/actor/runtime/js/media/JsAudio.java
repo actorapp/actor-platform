@@ -1,6 +1,9 @@
-package im.actor.runtime.js.webrtc;
+package im.actor.runtime.js.media;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+
+import im.actor.runtime.js.webrtc.JsMediaStream;
 
 public class JsAudio extends JavaScriptObject {
 
@@ -12,7 +15,11 @@ public class JsAudio extends JavaScriptObject {
 
     }
 
-    public final native void setStream(JsMediaStream mediaStream)/*-{
+    public final native void setSourceUrl(String url)/*-{
+        this.audio.src = url;
+    }-*/;
+
+    public final native void setSourceStream(JsMediaStream mediaStream)/*-{
         this.audio.src = URL.createObjectURL(mediaStream);
     }-*/;
 
