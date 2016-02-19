@@ -51,4 +51,5 @@ dependencies {
     compile project(':actor-sdk:sdk-core:runtime:runtime-android')
     compile 'com.android.support:recyclerview-v7:23+'
     compile 'com.squareup.okhttp:okhttp:2+'
+    compile 'io.pristine:libjingle:11139@aar'
 }

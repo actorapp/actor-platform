@@ -12,8 +12,9 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
         RTCPeerConnectionFactory.initializeSSL()
     }
     
-    func createPeerConnection() -> ARPromise {
-        return ARPromises.success(CocoaWebRTCPeerConnection(peerConnectionFactory: peerConnectionFactory))
+    func createPeerConnectionWithServers(webRTCIceServers: IOSObjectArray!, withSettings settings: ARWebRTCSettings!) -> ARPromise {
+        let servers: [ARWebRTCIceServer] = webRTCIceServers.toSwiftArray()
+        return ARPromises.success(CocoaWebRTCPeerConnection(servers: servers, peerConnectionFactory: peerConnectionFactory))
     }
     
     func getUserAudio() -> ARPromise {
@@ -60,14 +61,17 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     private var peerConnection: RTCPeerConnection!
     private var callbacks = [ARWebRTCPeerConnectionCallback]()
     private let peerConnectionFactory: RTCPeerConnectionFactory
-    init(peerConnectionFactory: RTCPeerConnectionFactory) {
+    init(servers: [ARWebRTCIceServer], peerConnectionFactory: RTCPeerConnectionFactory) {
         self.peerConnectionFactory = peerConnectionFactory
         super.init()
-        let iceServers = [
-            RTCICEServer(URI: NSURL(string: "stun:62.4.22.219:3478"), username: "", password: ""),
-            RTCICEServer(URI: NSURL(string: "turn:62.4.22.219:3478?transport=tcp"), username: "actor", password: "password"),
-            RTCICEServer(URI: NSURL(string: "turn:62.4.22.219:3478?transport=udp"), username: "actor", password: "password")
-        ]
+        
+        let iceServers = servers.map { (src) -> RTCICEServer in
+            if (src.username == nil || src.credential == nil) {
+                return RTCICEServer(URI: NSURL(string: src.url), username: "", password: "")
+            } else {
+                return RTCICEServer(URI: NSURL(string: src.url), username: src.username, password: src.credential)
+            }
+        }
         peerConnection = peerConnectionFactory.peerConnectionWithICEServers(iceServers, constraints: RTCMediaConstraints(), delegate: self)
     }
     

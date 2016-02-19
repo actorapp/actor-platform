@@ -29,6 +29,7 @@ import im.actor.runtime.Log;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
+import im.actor.runtime.webrtc.WebRTCIceServer;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.conversation.ChatActivity;
@@ -85,6 +86,11 @@ public class ActorSDK {
      * Server Endpoints
      */
     private String[] endpoints = new String[0];
+
+    /**
+     * WebRTC ICE servers
+     */
+    private WebRTCIceServer[] webRTCIceServers = new WebRTCIceServer[0];
 
     /**
      * Trusted Encryption keys
@@ -169,6 +175,18 @@ public class ActorSDK {
                 "fc49f2f2465f5b4e038ec7c070975858a8b5542aa6ec1f927a57c4f646e1c143",
                 "6709b8b733a9f20a96b9091767ac19fd6a2a978ba0dccc85a9ac8f6b6560ac1a"
         };
+        webRTCIceServers = new WebRTCIceServer[]{
+                new WebRTCIceServer("stun:turn1.actor.im:443"),
+                new WebRTCIceServer("stun:turn2.actor.im:443"),
+                new WebRTCIceServer("stun:turn3.actor.im:443"),
+
+                new WebRTCIceServer("turn:turn1.actor.im:443?transport=tcp", "actor", "password"),
+                new WebRTCIceServer("turn:turn1.actor.im:443?transport=udp", "actor", "password"),
+                new WebRTCIceServer("turn:turn2.actor.im:443?transport=tcp", "actor", "password"),
+                new WebRTCIceServer("turn:turn2.actor.im:443?transport=udp", "actor", "password"),
+                new WebRTCIceServer("turn:turn3.actor.im:443?transport=tcp", "actor", "password"),
+                new WebRTCIceServer("turn:turn3.actor.im:443?transport=udp", "actor", "password"),
+        };
     }
 
     /**
@@ -205,6 +223,9 @@ public class ActorSDK {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         for (String s : endpoints) {
             builder.addEndpoint(s);
+        }
+        for (WebRTCIceServer s : webRTCIceServers) {
+            builder.addWebRTCServer(s.getUrl(), s.getCredential(), s.getCredential());
         }
         for (String t : trustedKeys) {
             builder.addTrustedKey(t);
@@ -348,6 +369,24 @@ public class ActorSDK {
     public void setEndpoints(String[] endpoints) {
         this.endpoints = endpoints;
         this.trustedKeys = new String[0];
+    }
+
+    /**
+     * Getting WebRTC ICE servers
+     *
+     * @return WebRTC ICE server list
+     */
+    public WebRTCIceServer[] getWebRTCIceServers() {
+        return webRTCIceServers;
+    }
+
+    /**
+     * Setting WebRTC ICE Servers
+     *
+     * @param webRTCIceServers new WebRTC ICE server list
+     */
+    public void setWebRTCIceServers(WebRTCIceServer[] webRTCIceServers) {
+        this.webRTCIceServers = webRTCIceServers;
     }
 
     /**

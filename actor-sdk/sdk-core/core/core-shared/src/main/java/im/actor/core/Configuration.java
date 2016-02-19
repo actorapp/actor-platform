@@ -9,6 +9,7 @@ import im.actor.core.providers.NotificationProvider;
 import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.providers.CallsProvider;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
+import im.actor.runtime.webrtc.WebRTCIceServer;
 
 /**
  * Configuration for Messenger
@@ -16,6 +17,7 @@ import im.actor.runtime.mtproto.ConnectionEndpoint;
 public class Configuration {
 
     private final ConnectionEndpoint[] endpoints;
+    private final WebRTCIceServer[] webRTCIceServers;
 
     private final TrustedKey[] trustedKeys;
 
@@ -65,7 +67,8 @@ public class Configuration {
                   String customAppName,
                   TrustedKey[] trustedKeys,
                   boolean enablePhoneBookImport,
-                  CallsProvider callsProvider) {
+                  CallsProvider callsProvider,
+                  WebRTCIceServer[] webRTCIceServers) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
         this.enableContactsLogging = enableContactsLogging;
@@ -84,6 +87,7 @@ public class Configuration {
         this.trustedKeys = trustedKeys;
         this.enablePhoneBookImport = enablePhoneBookImport;
         this.callsProvider = callsProvider;
+        this.webRTCIceServers = webRTCIceServers;
     }
 
     /**
@@ -93,6 +97,15 @@ public class Configuration {
      */
     public CallsProvider getCallsProvider() {
         return callsProvider;
+    }
+
+    /**
+     * Getting WebRTC ICE servers
+     *
+     * @return ice servers
+     */
+    public WebRTCIceServer[] getWebRTCIceServers() {
+        return webRTCIceServers;
     }
 
     /**

@@ -1,4 +1,4 @@
-package im.actor.runtime.webrtc;
+package im.actor.runtime.android.webrtc;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,34 +16,38 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
+import im.actor.runtime.android.AndroidWebRTCRuntimeProvider;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
+import im.actor.runtime.webrtc.WebRTCIceServer;
+import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.runtime.webrtc.WebRTCPeerConnection;
+import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
+import im.actor.runtime.webrtc.WebRTCSessionDescription;
+import im.actor.runtime.webrtc.WebRTCSettings;
 
-import static im.actor.runtime.AndroidWebRTCRuntimeProvider.factory;
+public class AndroidPeerConnection implements WebRTCPeerConnection {
 
-public class AndroidPeerConnection implements WebRTCPeerConnection{
     private static final boolean LIBJINGLE_LOGS = false;
-    static ArrayList<PeerConnection.IceServer> iceServers;
 
-    public AndroidPeerConnection() {
+    public AndroidPeerConnection(WebRTCIceServer[] webRTCIceServers, WebRTCSettings settings) {
+
         if (LIBJINGLE_LOGS) {
-            Logging.enableTracing(
-                    "logcat:",
+            Logging.enableTracing("logcat:",
                     EnumSet.of(Logging.TraceLevel.TRACE_ALL),
                     Logging.Severity.LS_SENSITIVE);
 
         }
-        
-        if(iceServers == null){
-            iceServers = new ArrayList<PeerConnection.IceServer>();
-            iceServers.add(new PeerConnection.IceServer("stun:62.4.22.219:3478"));
-            iceServers.add(new PeerConnection.IceServer("turn:62.4.22.219:3478?transport=tcp", "actor", "password"));
-            iceServers.add(new PeerConnection.IceServer("turn:62.4.22.219:3478?transport=udp", "actor", "password"));
 
+        ArrayList<PeerConnection.IceServer> servers = new ArrayList<>();
+        for (WebRTCIceServer webRTCIceServer : webRTCIceServers) {
+            servers.add(new PeerConnection.IceServer(
+                    webRTCIceServer.getUrl(),
+                    webRTCIceServer.getUsername(),
+                    webRTCIceServer.getCredential()));
         }
-
-        this.peerConnection = factory().createPeerConnection(iceServers, new MediaConstraints(), new PeerConnection.Observer() {
+        this.peerConnection = AndroidWebRTCRuntimeProvider.FACTORY.createPeerConnection(servers, new MediaConstraints(), new PeerConnection.Observer() {
             @Override
             public void onSignalingChange(PeerConnection.SignalingState signalingState) {
 
@@ -109,7 +113,6 @@ public class AndroidPeerConnection implements WebRTCPeerConnection{
     private HashMap<MediaStream, AndroidMediaStream> streams = new HashMap<>();
 
 
-
     @Override
     public void addCallback(@NotNull WebRTCPeerConnectionCallback callback) {
         if (!callbacks.contains(callback)) {
@@ -129,7 +132,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection{
 
     @Override
     public void addOwnStream(@NotNull WebRTCMediaStream stream) {
-        peerConnection.addStream(((AndroidMediaStream)stream).getStream());
+        peerConnection.addStream(((AndroidMediaStream) stream).getStream());
     }
 
     @NotNull
@@ -159,7 +162,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection{
                         resolver.error(new Exception("setLocalDescription:onSetFailure"));
 
                     }
-                }, new SessionDescription(description.getType().equals("offer")? SessionDescription.Type.OFFER: SessionDescription.Type.ANSWER, description.getSdp()));
+                }, new SessionDescription(description.getType().equals("offer") ? SessionDescription.Type.OFFER : SessionDescription.Type.ANSWER, description.getSdp()));
             }
         });
     }
@@ -191,7 +194,7 @@ public class AndroidPeerConnection implements WebRTCPeerConnection{
                         resolver.error(new Exception("setRemoteDescription:onSetFailure"));
 
                     }
-                }, new SessionDescription(description.getType().equals("offer")? SessionDescription.Type.OFFER: SessionDescription.Type.ANSWER, description.getSdp()));
+                }, new SessionDescription(description.getType().equals("offer") ? SessionDescription.Type.OFFER : SessionDescription.Type.ANSWER, description.getSdp()));
             }
         });
     }
@@ -260,8 +263,8 @@ public class AndroidPeerConnection implements WebRTCPeerConnection{
 
     @Override
     public void close() {
-        for (AndroidMediaStream m:streams.values()) {
-            if(m.isLocal()){
+        for (AndroidMediaStream m : streams.values()) {
+            if (m.isLocal()) {
                 peerConnection.removeStream(m.getStream());
                 m.getStream().dispose();
             }

@@ -7,6 +7,7 @@ package im.actor.core;
 import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -14,16 +15,20 @@ import im.actor.core.network.TrustedKey;
 import im.actor.core.providers.NotificationProvider;
 import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.providers.CallsProvider;
+import im.actor.core.util.StringMatch;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
+import im.actor.runtime.webrtc.WebRTCIceServer;
 
 /**
  * Configuration builder for starting up messenger object
  */
 public class ConfigurationBuilder {
+
     private ArrayList<TrustedKey> trustedKeys = new ArrayList<>();
     private ArrayList<ConnectionEndpoint> endpoints = new ArrayList<>();
+    private ArrayList<WebRTCIceServer> webRTCServers = new ArrayList<>();
 
     private PhoneBookProvider phoneBookProvider;
 
@@ -327,6 +332,21 @@ public class ConfigurationBuilder {
     }
 
     /**
+     * Adding WebRTC signaling server
+     *
+     * @param url        Url to server
+     * @param userName   optional username
+     * @param credential optional credential
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("addWebRTCServer:withUserName:withCredential:")
+    public ConfigurationBuilder addWebRTCServer(@NotNull String url, @Nullable String userName, @Nullable String credential) {
+        webRTCServers.add(new WebRTCIceServer(url, userName, credential));
+        return this;
+    }
+
+    /**
      * Build configuration
      *
      * @return result configuration
@@ -361,6 +381,7 @@ public class ConfigurationBuilder {
                 customAppName,
                 trustedKeys.toArray(new TrustedKey[trustedKeys.size()]),
                 isPhoneBookImportEnabled,
-                callsProvider);
+                callsProvider,
+                webRTCServers.toArray(new WebRTCIceServer[webRTCServers.size()]));
     }
 }
