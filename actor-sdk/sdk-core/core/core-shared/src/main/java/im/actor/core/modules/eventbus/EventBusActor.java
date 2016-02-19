@@ -22,12 +22,14 @@ import im.actor.runtime.function.Consumer;
 
 public class EventBusActor extends ModuleActor {
 
-    private static final long TIMEOUT = 15000;
-    private static final long KEEP_ALIVE = 5000;
+    private static final long DEFAULT_TIMEOUT = 16000;
 
     private boolean isProcessing;
     private String busId;
     private long deviceId;
+
+    private long keepAliveTimeout;
+    private long keepAliveRetry;
 
     private Cancellable keepAliveCancel;
     private long keepAliveRequest = -1;
@@ -45,8 +47,14 @@ public class EventBusActor extends ModuleActor {
     }
 
     public void joinBus(final String busId) {
+        joinBus(busId, DEFAULT_TIMEOUT);
+    }
+
+    public void joinBus(final String busId, long timeout) {
         isProcessing = true;
-        api(new RequestJoinEventBus(busId, TIMEOUT)).then(new Consumer<ResponseJoinEventBus>() {
+        keepAliveTimeout = timeout;
+        keepAliveRetry = timeout / 2;
+        api(new RequestJoinEventBus(busId, keepAliveTimeout)).then(new Consumer<ResponseJoinEventBus>() {
             @Override
             public void apply(ResponseJoinEventBus responseJoinEventBus) {
                 EventBusActor.this.busId = busId;
@@ -56,7 +64,7 @@ public class EventBusActor extends ModuleActor {
                 onBusStarted();
                 isProcessing = false;
                 unstashAll();
-                keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
+                keepAliveCancel = schedule(new KeepAlive(), keepAliveRetry);
             }
         }).failure(new Consumer<Exception>() {
             @Override
@@ -67,8 +75,14 @@ public class EventBusActor extends ModuleActor {
     }
 
     public void createBus() {
+        createBus(DEFAULT_TIMEOUT);
+    }
+
+    public void createBus(long timeout) {
         isProcessing = true;
-        api(new RequestCreateNewEventBus(TIMEOUT, true)).then(new Consumer<ResponseCreateNewEventBus>() {
+        keepAliveTimeout = timeout;
+        keepAliveRetry = timeout / 2;
+        api(new RequestCreateNewEventBus(keepAliveTimeout, true)).then(new Consumer<ResponseCreateNewEventBus>() {
             @Override
             public void apply(ResponseCreateNewEventBus responseCreateNewEventBus) {
                 busId = responseCreateNewEventBus.getId();
@@ -78,7 +92,7 @@ public class EventBusActor extends ModuleActor {
                 onBusStarted();
                 isProcessing = false;
                 unstashAll();
-                keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
+                keepAliveCancel = schedule(new KeepAlive(), keepAliveRetry);
             }
         }).failure(new Consumer<Exception>() {
             @Override
@@ -155,7 +169,7 @@ public class EventBusActor extends ModuleActor {
 
     private void doKeepAlive() {
         stopKeepAlive();
-        keepAliveRequest = request(new RequestKeepAliveEventBus(busId, TIMEOUT), new RpcCallback<ResponseVoid>() {
+        keepAliveRequest = request(new RequestKeepAliveEventBus(busId, keepAliveTimeout), new RpcCallback<ResponseVoid>() {
             @Override
             public void onResult(ResponseVoid response) {
                 // Do Nothing
@@ -166,7 +180,7 @@ public class EventBusActor extends ModuleActor {
                 dispose();
             }
         });
-        keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
+        keepAliveCancel = schedule(new KeepAlive(), keepAliveRetry);
     }
 
     private void stopKeepAlive() {
