@@ -80,7 +80,7 @@
     "react-mixin": "3.0.3",
     "react-modal": "0.6.1",
     "react-router": "2.0.0",
-    "react-scroll": "github:actorapp/react-scroll.git#f690add1cd1367e5483074d5a2dcddd3892f28fe",
+    "react-scroll": "github:actorapp/react-scroll.git#develop",
     "react-visibility-sensor": "3.0.0",
     "simple-scrollbar": "github:actorapp/simple-scrollbar.git"
   },
