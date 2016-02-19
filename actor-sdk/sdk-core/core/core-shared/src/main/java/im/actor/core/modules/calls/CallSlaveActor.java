@@ -34,10 +34,14 @@ public class CallSlaveActor extends CallActor {
     private long callId;
     private Peer peer;
     private CallVM callVM;
+    private boolean isConnected;
+    private boolean isAnswered;
 
     public CallSlaveActor(long callId, ModuleContext context) {
         super(context);
         this.callId = callId;
+        this.isConnected = false;
+        this.isAnswered = false;
     }
 
     @Override
@@ -146,24 +150,35 @@ public class CallSlaveActor extends CallActor {
     }
 
     public void doAnswer() {
-        callVM.getState().change(CallState.CONNECTING);
-        sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiAnswerCall());
-        unsilencePeers();
+        if (!isAnswered) {
+            isAnswered = true;
+            if (isConnected) {
+                callVM.getState().change(CallState.IN_PROGRESS);
+            } else {
+                callVM.getState().change(CallState.CONNECTING);
+            }
+            sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiAnswerCall());
+            unsilencePeers();
+        }
     }
 
     @Override
     public void onStreamAdded(int uid, long deviceId, WebRTCMediaStream stream) {
-        if (uid != myUid() && callVM.getState().get() == CallState.CONNECTING) {
-            callVM.getState().change(CallState.IN_PROGRESS);
+        if (uid == myUid()) {
+            return;
+        }
+
+        if (!isConnected) {
+            isConnected = true;
+            if (isAnswered) {
+                callVM.getState().change(CallState.IN_PROGRESS);
+            }
         }
     }
 
     @Override
     public void doEndCall() {
         super.doEndCall();
-        if (callVM != null) {
-            callVM.getState().change(CallState.ENDED);
-        }
         if (masterNode != null) {
             sendSignalingMessage(masterNode.getUid(), masterNode.getDeviceId(), new ApiRejectCall());
         }
