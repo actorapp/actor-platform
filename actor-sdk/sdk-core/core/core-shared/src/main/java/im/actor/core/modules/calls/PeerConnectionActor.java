@@ -25,11 +25,6 @@ import im.actor.runtime.webrtc.WebRTCPeerConnection;
 import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
 import im.actor.runtime.webrtc.WebRTCSessionDescription;
 import im.actor.runtime.webrtc.WebRTCSettings;
-import im.actor.runtime.webrtc.sdp.SDP;
-import im.actor.runtime.webrtc.sdp.SDPScheme;
-import im.actor.runtime.webrtc.sdp.entities.SDPCodec;
-import im.actor.runtime.webrtc.sdp.entities.SDPMedia;
-import im.actor.runtime.webrtc.sdp.entities.SDPMediaMode;
 
 public class PeerConnectionActor extends ModuleActor {
 
@@ -53,9 +48,8 @@ public class PeerConnectionActor extends ModuleActor {
     private final ActorRef root;
     private final int uid;
     private final long deviceId;
-    private final boolean isSilentMode;
     private boolean isMuted;
-    private boolean isSilented;
+    private boolean isEnabled;
     private boolean isReady = false;
     private boolean isReadyForCandidates = false;
     @NotNull
@@ -65,17 +59,16 @@ public class PeerConnectionActor extends ModuleActor {
     @NotNull
     private State state = State.INITIALIZATION;
 
-    private ArrayList<WebRTCMediaStream> silencedStreams = new ArrayList<>();
+    private ArrayList<WebRTCMediaStream> incomingStreams = new ArrayList<>();
 
-    public PeerConnectionActor(@NotNull ActorRef root, int uid, long deviceId, boolean isMuted, boolean isSilentMode, @NotNull ModuleContext context) {
+    public PeerConnectionActor(@NotNull ActorRef root, int uid, long deviceId, boolean isMuted, boolean isEnabled, @NotNull ModuleContext context) {
         super(context);
         TAG = "PeerConnection#" + uid + "(" + deviceId + ")";
         this.isMuted = isMuted;
         this.root = root;
         this.uid = uid;
         this.deviceId = deviceId;
-        this.isSilentMode = isSilentMode;
-        this.isSilented = isSilentMode;
+        this.isEnabled = isEnabled;
     }
 
     public int getUid() {
@@ -116,16 +109,14 @@ public class PeerConnectionActor extends ModuleActor {
 
                     @Override
                     public void onStreamAdded(WebRTCMediaStream stream) {
-                        if (isSilentMode && isSilented) {
-                            stream.setEnabled(false);
-                            silencedStreams.add(stream);
-                        }
+                        stream.setEnabled(isEnabled);
+                        incomingStreams.add(stream);
                         root.send(new OnStreamAdded(uid, deviceId, stream));
                     }
 
                     @Override
                     public void onStreamRemoved(WebRTCMediaStream stream) {
-                        silencedStreams.remove(stream);
+                        incomingStreams.remove(stream);
                         root.send(new OnStreamRemoved(uid, deviceId, stream));
                     }
 
@@ -289,28 +280,28 @@ public class PeerConnectionActor extends ModuleActor {
         peerConnection.addCandidate(index, id, sdp);
     }
 
-    public void onMute() {
-        isMuted = true;
-        setEnabled(stream);
-    }
-
-    public void onUnsilence() {
-        isSilented = false;
-        for (WebRTCMediaStream s : silencedStreams) {
-            s.setEnabled(true);
+    public void onMute(boolean isMuted) {
+        if (isMuted == this.isMuted) {
+            return;
         }
-        silencedStreams.clear();
+        this.isMuted = isMuted;
         setEnabled(stream);
     }
 
-    public void onUnmute() {
-        isMuted = false;
+    public void onEnabled(boolean isEnabled) {
+        if (isEnabled == this.isEnabled) {
+            return;
+        }
+        this.isEnabled = isEnabled;
+        for (WebRTCMediaStream s : incomingStreams) {
+            s.setEnabled(isEnabled);
+        }
         setEnabled(stream);
     }
 
     private void setEnabled(WebRTCMediaStream mediaStream) {
         if (mediaStream != null) {
-            mediaStream.setEnabled(!(isMuted || (isSilentMode && isSilented)));
+            mediaStream.setEnabled(!(isMuted || (!isEnabled)));
         }
     }
 
@@ -405,19 +396,13 @@ public class PeerConnectionActor extends ModuleActor {
                 stash();
                 return;
             }
-            onMute();
-        } else if (message instanceof DoUnmute) {
+            onMute(((DoMute) message).isMuted());
+        } else if (message instanceof DoEnable) {
             if (!isReady) {
                 stash();
                 return;
             }
-            onUnmute();
-        } else if (message instanceof DoUnsilence) {
-            if (!isReady) {
-                stash();
-                return;
-            }
-            onUnsilence();
+            onEnabled(((DoEnable) message).isEnabled());
         } else {
             super.onReceive(message);
         }
@@ -650,15 +635,28 @@ public class PeerConnectionActor extends ModuleActor {
     }
 
     public static class DoMute {
+        boolean isMuted;
 
+        public DoMute(boolean isMuted) {
+            this.isMuted = isMuted;
+        }
+
+        public boolean isMuted() {
+            return isMuted;
+        }
     }
 
-    public static class DoUnmute {
+    public static class DoEnable {
 
-    }
+        boolean isEnabled;
 
-    public static class DoUnsilence {
+        public DoEnable(boolean isEnabled) {
+            this.isEnabled = isEnabled;
+        }
 
+        public boolean isEnabled() {
+            return isEnabled;
+        }
     }
 
     private enum State {
