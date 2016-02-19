@@ -75,8 +75,6 @@ final class SequenceServiceSpec extends BaseAppSuite({
       val diff = res.toOption.get
       inside(res) {
         case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups, _, _, _)) ⇒
-          println(user2.id)
-          println(updates.map(_.update.length))
           updates.map(_.toByteArray.length).sum should be <= withError(config.maxDifferenceSize)
           needMore shouldEqual true
           totalUpdates ++= updates

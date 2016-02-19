@@ -136,8 +136,6 @@ object ACLUtils extends ACLBase with ACLFiles {
   def checkPassword(userId: Int, password: String)(implicit ec: ExecutionContext): DBIO[Boolean] =
     UserPasswordRepo.find(userId) map {
       case Some(UserPassword(_, hash, salt)) ⇒
-        println(s"=== password ${password} hash ${BitVector(hash.toByteArray).toHex} salt ${BitVector(salt.toByteArray).toHex}")
-        println(s"=== calculated ${BitVector(hashPassword(password, salt.toByteArray))}")
         ByteString.copyFrom(hashPassword(password, salt.toByteArray)) == hash
       case None ⇒ false
     }
