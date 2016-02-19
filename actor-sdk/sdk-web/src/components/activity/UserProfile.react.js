@@ -4,6 +4,7 @@
 
 import { assign } from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import { lightbox } from '../../utils/ImageUtils';
@@ -25,11 +26,11 @@ import OnlineStore from '../../stores/OnlineStore';
 import AvatarItem from '../common/AvatarItem.react';
 import Fold from '../common/Fold.react';
 
-const getStateFromStores = (userId) => {
-  const thisPeer = PeerStore.getUserPeer(userId);
+const getStateFromStores = (uid) => {
+  const thisPeer = uid ? GroupStore.getGroup(uid) : null;
   return {
     thisPeer: thisPeer,
-    isNotificationsEnabled: NotificationsStore.isNotificationsEnabled(thisPeer),
+    isNotificationsEnabled: thisPeer ? NotificationsStore.isNotificationsEnabled(thisPeer) : true,
     message: OnlineStore.getMessage()
   };
 };
@@ -39,6 +40,14 @@ class UserProfile extends Component {
     user: PropTypes.object.isRequired
   };
 
+  static getStores() {
+    return [NotificationsStore, OnlineStore];
+  }
+
+  static calculateState(prevState) {
+    return getStateFromStores((prevState && prevState.user) ? prevState.user.id : null);
+  }
+
   static contextTypes = {
     intl: PropTypes.object
   };
@@ -46,13 +55,10 @@ class UserProfile extends Component {
   constructor(props) {
     super(props);
 
-    this.state = assign({
-      isActionsDropdownOpen: false
-    }, getStateFromStores(props.user.id));
-
-    NotificationsStore.addListener(this.onChange);
-    DialogStore.addListener(this.onChange);
-    OnlineStore.addListener(this.onChange);
+    this.state = {
+      isMoreDropdownOpen: false,
+      user: props.user // hack to be able to access userId in getStateFromStores
+    }
   }
 
   addToContacts = () => ContactActionCreators.addContact(this.props.user.id);
@@ -262,4 +268,4 @@ class UserProfile extends Component {
   }
 }
 
-export default UserProfile;
+export default Container.create(UserProfile);
