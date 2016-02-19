@@ -13066,12 +13066,20 @@
                 "id": 1
               },
               {
+                "name": "RINGING_REACHED",
+                "id": 4
+              },
+              {
                 "name": "CONNECTING",
                 "id": 2
               },
               {
                 "name": "CONNECTED",
                 "id": 3
+              },
+              {
+                "name": "ENDED",
+                "id": 5
               }
             ]
           }
@@ -13103,6 +13111,18 @@
               {
                 "type": "reference",
                 "argument": "fallbackIsConnecting",
+                "category": "full",
+                "description": "  Fallback flag for future compatibility of state"
+              },
+              {
+                "type": "reference",
+                "argument": "fallbackIsRingingReached",
+                "category": "full",
+                "description": "  Fallback flag for future compatibility of state"
+              },
+              {
+                "type": "reference",
+                "argument": "fallbackIsEnded",
                 "category": "full",
                 "description": "  Fallback flag for future compatibility of state"
               }
@@ -13139,6 +13159,22 @@
                 },
                 "id": 4,
                 "name": "fallbackIsConnecting"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 5,
+                "name": "fallbackIsRingingReached"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 6,
+                "name": "fallbackIsEnded"
               }
             ]
           }
@@ -13157,12 +13193,6 @@
               },
               {
                 "type": "reference",
-                "argument": "deviceId",
-                "category": "full",
-                "description": "  Member Device Id"
-              },
-              {
-                "type": "reference",
                 "argument": "state",
                 "category": "full",
                 "description": "  State of member"
@@ -13176,14 +13206,6 @@
                 },
                 "id": 1,
                 "name": "userId"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "deviceId"
               },
               {
                 "type": {

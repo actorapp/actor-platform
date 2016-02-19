@@ -1,9 +1,13 @@
 package im.actor.core.modules.calls;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import im.actor.core.api.ApiAdvertiseSelf;
 import im.actor.core.api.ApiAnswerCall;
+import im.actor.core.api.ApiCallMember;
+import im.actor.core.api.ApiCallMemberStateHolder;
+import im.actor.core.api.ApiMembersChanged;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.ApiPeerSettings;
 import im.actor.core.api.ApiRejectCall;
@@ -14,6 +18,7 @@ import im.actor.core.api.rpc.ResponseGetCallInfo;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.CallMember;
+import im.actor.core.viewmodel.CallMemberState;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.runtime.actors.ActorRef;
@@ -75,6 +80,67 @@ public class CallSlaveActor extends CallActor {
         callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
     }
 
+    public void onMembersChanged(List<ApiCallMember> allMembers) {
+
+        //
+        // Handling Members
+        //
+        ArrayList<CallMember> members = new ArrayList<>();
+        for (ApiCallMember apiCallMember : allMembers) {
+            if (getUser(apiCallMember.getUserId()) == null) {
+                continue;
+            }
+            if (apiCallMember.getUserId() == myUid()) {
+                continue;
+            }
+            ApiCallMemberStateHolder stateHolder = apiCallMember.getState();
+            CallMemberState state;
+            switch (stateHolder.getState()) {
+                case RINGING:
+                    state = CallMemberState.RINGING;
+                    break;
+                case RINGING_REACHED:
+                    state = CallMemberState.RINGING_REACHED;
+                    break;
+                case CONNECTING:
+                    state = CallMemberState.CONNECTING;
+                    break;
+                case CONNECTED:
+                    state = CallMemberState.IN_PROGRESS;
+                    break;
+                case ENDED:
+                    state = CallMemberState.ENDED;
+                    break;
+                default:
+                    if (stateHolder.fallbackIsRingingReached() != null && stateHolder.fallbackIsRingingReached()) {
+                        state = CallMemberState.RINGING_REACHED;
+                        break;
+                    }
+                    if (stateHolder.fallbackIsEnded() != null && stateHolder.fallbackIsEnded()) {
+                        state = CallMemberState.ENDED;
+                        break;
+                    }
+                    if (stateHolder.fallbackIsRinging() != null && stateHolder.fallbackIsRinging()) {
+                        state = CallMemberState.RINGING;
+                        break;
+                    }
+
+                    if (stateHolder.fallbackIsConnecting() != null && stateHolder.fallbackIsConnecting()) {
+                        state = CallMemberState.CONNECTING;
+                        break;
+                    }
+
+                    if (stateHolder.fallbackIsConnected() != null && stateHolder.fallbackIsConnected()) {
+                        state = CallMemberState.IN_PROGRESS;
+                        break;
+                    }
+                    state = CallMemberState.RINGING;
+            }
+            members.add(new CallMember(apiCallMember.getUserId(), state));
+        }
+        callVM.getMembers().change(members);
+    }
+
     public void onNeedOffer(int destUid, long destDeviceId, Boolean isSilent, ApiPeerSettings peerSettings) {
         getPeer(destUid, destDeviceId).send(new PeerConnectionActor.OnOfferNeeded());
     }
@@ -124,6 +190,8 @@ public class CallSlaveActor extends CallActor {
             onNeedOffer(needOffer.getUid(), needOffer.getDevice(), needOffer.isSilent(), needOffer.getPeerSettings());
         } else if (signaling instanceof ApiSwitchMaster) {
             onMasterNodeChanged(fromUid, fromDeviceId);
+        } else if (signaling instanceof ApiMembersChanged) {
+            onMembersChanged(((ApiMembersChanged) signaling).getAllMembers());
         } else {
             super.onSignalingMessage(fromUid, fromDeviceId, signaling);
         }

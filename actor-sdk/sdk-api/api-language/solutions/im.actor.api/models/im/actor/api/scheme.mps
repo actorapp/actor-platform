@@ -11218,6 +11218,10 @@
           <property role="TrG5h" value="RINGING" />
           <property role="2m7y0m" value="1" />
         </node>
+        <node concept="2m7y0F" id="3xEfKBqKUs2" role="2m7ymf">
+          <property role="TrG5h" value="RINGING_REACHED" />
+          <property role="2m7y0m" value="4" />
+        </node>
         <node concept="2m7y0F" id="3xEfKBqJSuX" role="2m7ymf">
           <property role="TrG5h" value="CONNECTING" />
           <property role="2m7y0m" value="2" />
@@ -11225,6 +11229,10 @@
         <node concept="2m7y0F" id="3xEfKBqJSv0" role="2m7ymf">
           <property role="TrG5h" value="CONNECTED" />
           <property role="2m7y0m" value="3" />
+        </node>
+        <node concept="2m7y0F" id="3xEfKBqKZGJ" role="2m7ymf">
+          <property role="TrG5h" value="ENDED" />
+          <property role="2m7y0m" value="5" />
         </node>
       </node>
       <node concept="2m5naR" id="3xEfKBqJTzW" role="2m5mJr">
@@ -11257,6 +11265,20 @@
             <node concept="2m5ndN" id="3xEfKBqJTBe" role="3GH5xg" />
           </node>
         </node>
+        <node concept="2m7Kf5" id="3xEfKBqKVvh" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="fallbackIsRingingReached" />
+          <node concept="2m5nlT" id="3xEfKBqKVvw" role="2m7DVh">
+            <node concept="2m5ndN" id="3xEfKBqKVvA" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3xEfKBqKZGP" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="fallbackIsEnded" />
+          <node concept="2m5nlT" id="3xEfKBqKZH7" role="2m7DVh">
+            <node concept="2m5ndN" id="3xEfKBqKZHd" role="3GH5xg" />
+          </node>
+        </node>
         <node concept="NXeRC" id="3xEfKBqJUDo" role="NXodf">
           <property role="NXePf" value="Call Member state holder" />
         </node>
@@ -11280,6 +11302,16 @@
           <property role="NX6R2" value="Fallback flag for future compatibility of state" />
           <ref role="NX6Kv" node="3xEfKBqJTAW" resolve="fallbackIsConnecting" />
         </node>
+        <node concept="NX1gA" id="3xEfKBqKWyX" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Fallback flag for future compatibility of state" />
+          <ref role="NX6Kv" node="3xEfKBqKVvh" resolve="fallbackIsRingingReached" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqKZHo" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Fallback flag for future compatibility of state" />
+          <ref role="NX6Kv" node="3xEfKBqKZGP" resolve="fallbackIsEnded" />
+        </node>
       </node>
       <node concept="2m5naR" id="3xEfKBqJRkx" role="2m5mJr">
         <property role="TrG5h" value="CallMember" />
@@ -11288,13 +11320,6 @@
           <property role="TrG5h" value="userId" />
           <node concept="wb0Ql" id="3xEfKBqJRmR" role="2m7DVh">
             <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="3xEfKBqJRmU" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="deviceId" />
-          <node concept="wb0Ql" id="3xEfKBqJRn0" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
         <node concept="2m7Kf5" id="3xEfKBqJVGe" role="2m0hLx">
@@ -11311,11 +11336,6 @@
           <property role="NX6R2" value="Member User Id" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3xEfKBqJRmK" resolve="userId" />
-        </node>
-        <node concept="NX1gA" id="3xEfKBqJVGA" role="NXodf">
-          <property role="NX6R2" value="Member Device Id" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="3xEfKBqJRmU" resolve="deviceId" />
         </node>
         <node concept="NX1gA" id="3xEfKBqJVGK" role="NXodf">
           <property role="NX6R2" value="State of member" />
