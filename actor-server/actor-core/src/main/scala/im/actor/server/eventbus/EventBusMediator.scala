@@ -150,7 +150,7 @@ final class EventBusMediator extends Actor with ActorLogging {
           }
       }
 
-      authIds foreach (weakExt.pushUpdate(_, update, None, None))
+      authIds filterNot (_ == clientAuthId) foreach (weakExt.pushUpdate(_, update, None, None))
 
       val msg = EventBus.Message(id, clientUserId, clientAuthId, message)
       this.internalConsumers foreach (_ ! msg)
