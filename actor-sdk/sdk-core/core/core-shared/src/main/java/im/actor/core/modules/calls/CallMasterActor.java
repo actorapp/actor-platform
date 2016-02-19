@@ -10,7 +10,6 @@ import im.actor.core.api.ApiCallMemberStateHolder;
 import im.actor.core.api.ApiMembersChanged;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.ApiOnAnswer;
-import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerSettings;
 import im.actor.core.api.ApiRejectCall;
 import im.actor.core.api.ApiSwitchMaster;
@@ -21,7 +20,8 @@ import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.calls.entity.MasterCallDevice;
+import im.actor.core.modules.calls.entity.CallNode;
+import im.actor.core.modules.calls.entity.InvalidTransactionException;
 import im.actor.core.modules.calls.entity.MasterCallMemberState;
 import im.actor.core.modules.calls.entity.MasterCallManager;
 import im.actor.core.modules.calls.entity.MasterCallMember;
@@ -91,7 +91,7 @@ public class CallMasterActor extends CallActor {
                 //
                 callId = responseDoCall.getCallId();
                 callVM = spanNewOutgoingVM(responseDoCall.getCallId(), peer);
-                callVM.getIsMuted().change(isMuted());
+                callVM.getIsMuted().change(getPeerCollection().isMuted());
 
                 //
                 // Notifying about successful call creation
@@ -111,137 +111,122 @@ public class CallMasterActor extends CallActor {
     }
 
     @Override
-    public void onDeviceConnected(int uid, long deviceId) {
-
+    public void onNodeConnected(int uid, long deviceId) throws InvalidTransactionException {
         //
         // For each valid UID and DeviceID
         //
-        if (state.onDeviceConnected(uid, deviceId)) {
+        state.onDeviceConnected(uid, deviceId);
 
-            //
-            // Notify who is king in this call
-            //
-            sendSignalingMessage(uid, deviceId, new ApiSwitchMaster());
+        //
+        // Notify who is king in this call
+        //
+        sendSignalingMessage(uid, deviceId, new ApiSwitchMaster());
 
-            //
-            // Advertise members
-            //
-            sendSignalingMessage(uid, deviceId, buildMembersList());
+        //
+        // Advertise members
+        //
+        sendSignalingMessage(uid, deviceId, buildMembersList());
 
-            //
-            // Update State
-            //
+        if (state.onInvalidated()) {
             updateCallVMState();
             updateMembers();
         }
     }
 
     @Override
-    public void onDeviceDisconnected(final int uid, final long deviceId) {
+    public void onNodeDisconnected(int uid, long deviceId) throws InvalidTransactionException {
 
         //
         // For each valid UID and DeviceID
         //
-        if (state.onDeviceDisconnected(uid, deviceId)) {
+        state.onDeviceDisconnected(uid, deviceId);
 
-            //
-            // Disconnecting peer connection
-            //
-            disconnectPeer(uid, deviceId);
+        //
+        // Disconnecting peer connection
+        //
+        getPeerCollection().disconnectPeer(uid, deviceId);
 
-            //
-            // Update State
-            //
+        if (state.onInvalidated()) {
             updateCallVMState();
             updateMembers();
         }
     }
 
-    public void onDeviceAdvertised(int uid, long deviceId, ApiPeerSettings peerSettings) {
+    public void onDeviceAdvertised(int uid, long deviceId, ApiPeerSettings peerSettings) throws InvalidTransactionException {
 
         //
         // For each valid UID and DeviceID
         //
-        if (state.onDeviceAdvertised(uid, deviceId, peerSettings)) {
+        state.onDeviceAdvertised(uid, deviceId, peerSettings);
 
-            //
-            // Trying to start silent connection if supported
-            //
-            if (state.startSilentConnection(uid, deviceId)) {
-
-                debugState();
-
-                //
-                // Starting connection to this device with silent flag
-                //
-                getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
-                for (MasterCallDevice device : state.getConnectedDevices()) {
-                    sendSignalingMessage(device.getUid(), device.getDeviceId(),
-                            new ApiNeedOffer(uid, deviceId, peerSettings, true));
-                }
-            }
+        if (state.onInvalidated()) {
+            updateCallVMState();
+            updateMembers();
         }
+//        //
+//        // Trying to start silent connection if supported
+//        //
+//        if (state.startSilentConnection(uid, deviceId)) {
+//
+//            debugState();
+//
+//            //
+//            // Starting connection to this device with silent flag
+//            //
+//            getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
+//            for (CallNode device : state.getCallGrid().getNodes()) {
+//                if (device.getMember().getUid() == uid && device.getDeviceId() == deviceId) {
+//                    continue;
+//                }
+//                if (device.getPeerSettings() == null) {
+//                    continue;
+//                }
+//                Boolean canConnectBeforeAnswer = device.getPeerSettings().canConnect();
+//                if (canConnectBeforeAnswer == null || !canConnectBeforeAnswer) {
+//                    continue;
+//                }
+//
+//                sendSignalingMessage(device.getMember().getUid(), device.getDeviceId(),
+//                        new ApiNeedOffer(uid, deviceId, peerSettings, true));
+//            }
+//        }
     }
 
-    public void onDeviceAnswered(int uid, long deviceId) {
-
-        //
-        // If current device connected with silenced mode
-        //
-        boolean isSilenced = state.isStartedSilently(uid, deviceId);
+    public void onDeviceAnswered(int uid, long deviceId) throws InvalidTransactionException {
 
         //
         // For each valid UID and DeviceID
         //
-        if (state.onDeviceAnswered(uid, deviceId, true)) {
+        state.onDeviceAnswered(uid, deviceId);
 
-            if (isSilenced) {
+        ApiPeerSettings peerSettings = null;//state.getPeerSettings(uid, deviceId);
+        getPeerCollection().getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
+        for (CallNode device : state.getCallGrid().getNodes()) {
+            sendSignalingMessage(device.getMember().getUid(), device.getDeviceId(),
+                    new ApiNeedOffer(uid, deviceId, peerSettings, false));
+        }
 
-                //
-                // Notify all devices about answer
-                //
-                for (MasterCallDevice device : state.getConnectedDevices()) {
-                    sendSignalingMessage(device.getUid(), device.getDeviceId(),
-                            new ApiOnAnswer(uid, deviceId));
-                }
-            } else {
-
-                //
-                // Starting connection to this device
-                //
-                ApiPeerSettings peerSettings = state.getPeerSettings(uid, deviceId);
-                getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
-                for (MasterCallDevice device : state.getConnectedDevices()) {
-                    sendSignalingMessage(device.getUid(), device.getDeviceId(),
-                            new ApiNeedOffer(uid, deviceId, peerSettings, false));
-                }
-            }
-
-            //
-            // Update State
-            //
+        if (state.onInvalidated()) {
             updateCallVMState();
             updateMembers();
         }
     }
 
-    public void onDeviceRejected(int uid, long deviceId) {
+    public void onDeviceRejected(int uid, long deviceId) throws InvalidTransactionException {
 
         //
         // For each valid UID and DeviceID
         //
-        if (state.onDeviceRejected(uid, deviceId)) {
+        state.onDeviceRejected(uid, deviceId);
 
-            //
-            // Update State
-            //
+        if (state.onInvalidated()) {
             updateCallVMState();
             updateMembers();
         }
     }
 
     @Override
-    public void onStreamAdded(int uid, long deviceId, WebRTCMediaStream stream) {
+    public void onStreamAdded(int uid, long deviceId, WebRTCMediaStream stream) throws InvalidTransactionException {
 
         //
         // Changing State to IN_PROGRESS once first stream appear
@@ -253,37 +238,19 @@ public class CallMasterActor extends CallActor {
             // Notify Call Manager for stopping call beeping
             //
             callManager.send(new CallManagerActor.OnCallAnswered(callId));
+        }
 
-            //
-            // Update State
-            //
+        if (state.onInvalidated()) {
             updateCallVMState();
             updateMembers();
         }
     }
 
-
     @Override
-    public void onMute() {
-        super.onMute();
-
-        //
-        // Update CallVM state. Actual Muting is performed in super class.
-        //
+    public void onMuteChanged(boolean value) {
+        super.onMuteChanged(value);
         if (callVM != null) {
-            callVM.getIsMuted().change(true);
-        }
-    }
-
-    @Override
-    public void onUnmute() {
-        super.onUnmute();
-
-        //
-        // Update CallVM state. Actual Muting is performed in super class.
-        //
-        if (callVM != null) {
-            callVM.getIsMuted().change(false);
+            callVM.getIsMuted().change(value);
         }
     }
 
@@ -323,7 +290,7 @@ public class CallMasterActor extends CallActor {
         //
         // If All members ended call then end call
         //
-        if (state.getConnectedMembers()
+        if (state.getMembers()
                 .isAll(MasterCallMember.IS_ENDED)) {
             shutdown();
             return;
@@ -332,14 +299,14 @@ public class CallMasterActor extends CallActor {
         //
         // If Any member is in progress then call is in progress
         //
-        if (state.getConnectedMembers()
+        if (state.getMembers()
                 .isAny(MasterCallMember.IS_IN_PROGRESS)) {
             callVM.getState().change(CallState.IN_PROGRESS);
             return;
         }
 
 
-        if (state.getConnectedMembers()
+        if (state.getMembers()
                 .isAny(MasterCallMember.IS_CONNECTING)) {
             callVM.getState().change(CallState.CONNECTING);
             return;
@@ -355,7 +322,7 @@ public class CallMasterActor extends CallActor {
         // Build Updated member lists
         //
         ArrayList<im.actor.core.viewmodel.CallMember> callMembers = new ArrayList<>();
-        for (MasterCallMember callMember : state.getConnectedMembers()) {
+        for (MasterCallMember callMember : state.getMembers()) {
             CallMemberState callMemberState;
             switch (callMember.getState()) {
                 case RINGING_REACHED:
@@ -393,7 +360,7 @@ public class CallMasterActor extends CallActor {
         ArrayList<ApiCallMember> apiCallMembers = new ArrayList<>();
         apiCallMembers.add(new ApiCallMember(myUid(), new ApiCallMemberStateHolder(ApiCallMemberState.CONNECTED,
                 false, true, false, false, false)));
-        for (MasterCallMember callMember : state.getConnectedMembers()) {
+        for (MasterCallMember callMember : state.getMembers()) {
             ApiCallMemberStateHolder callMemberStateHolder;
             switch (callMember.getState()) {
                 case RINGING_REACHED:
@@ -439,11 +406,23 @@ public class CallMasterActor extends CallActor {
     @Override
     public void onSignalingMessage(int fromUid, long fromDeviceId, ApiWebRTCSignaling signaling) {
         if (signaling instanceof ApiAnswerCall) {
-            onDeviceAnswered(fromUid, fromDeviceId);
+            try {
+                onDeviceAnswered(fromUid, fromDeviceId);
+            } catch (InvalidTransactionException e) {
+                e.printStackTrace();
+            }
         } else if (signaling instanceof ApiRejectCall) {
-            onDeviceRejected(fromUid, fromDeviceId);
+            try {
+                onDeviceRejected(fromUid, fromDeviceId);
+            } catch (InvalidTransactionException e) {
+                e.printStackTrace();
+            }
         } else if (signaling instanceof ApiAdvertiseSelf) {
-            onDeviceAdvertised(fromUid, fromDeviceId, ((ApiAdvertiseSelf) signaling).getPeerSettings());
+            try {
+                onDeviceAdvertised(fromUid, fromDeviceId, ((ApiAdvertiseSelf) signaling).getPeerSettings());
+            } catch (InvalidTransactionException e) {
+                e.printStackTrace();
+            }
         } else {
             super.onSignalingMessage(fromUid, fromDeviceId, signaling);
         }
