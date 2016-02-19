@@ -1,5 +1,6 @@
 package im.actor.runtime.js.webrtc;
 
+import im.actor.runtime.js.media.JsAudio;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 public class MediaStream implements WebRTCMediaStream {
@@ -16,7 +17,7 @@ public class MediaStream implements WebRTCMediaStream {
         this.stream = stream;
         if (autoPlay) {
             this.audio = JsAudio.create();
-            this.audio.setStream(stream);
+            this.audio.setSourceStream(stream);
             this.audio.play();
         }
     }
