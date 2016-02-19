@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import im.actor.core.api.ApiAdvertiseSelf;
 import im.actor.core.api.ApiAnswerCall;
 import im.actor.core.api.ApiCallMember;
+import im.actor.core.api.ApiCallMemberState;
+import im.actor.core.api.ApiCallMemberStateHolder;
 import im.actor.core.api.ApiMembersChanged;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.ApiOnAnswer;
@@ -120,6 +122,11 @@ public class CallMasterActor extends CallActor {
             // Notify who is king in this call
             //
             sendSignalingMessage(uid, deviceId, new ApiSwitchMaster());
+
+            //
+            // Advertise members
+            //
+            sendSignalingMessage(uid, deviceId, buildMembersList());
 
             //
             // Update State
@@ -345,7 +352,7 @@ public class CallMasterActor extends CallActor {
     private void updateMembers() {
 
         //
-        // Update Calls VM
+        // Build Updated member lists
         //
         ArrayList<im.actor.core.viewmodel.CallMember> callMembers = new ArrayList<>();
         for (MasterCallMember callMember : state.getConnectedMembers()) {
@@ -370,20 +377,55 @@ public class CallMasterActor extends CallActor {
             }
             callMembers.add(new CallMember(callMember.getUid(), callMemberState));
         }
+
+        //
+        // Update CallVM
+        //
         callVM.getMembers().change(callMembers);
 
         //
         // Broadcast new members
         //
-        // sendSignalingMessage(createMembersChanged());
+        sendSignalingMessage(buildMembersList());
     }
 
-    private ApiMembersChanged createMembersChanged() {
-        ArrayList<ApiCallMember> callMembers = new ArrayList<>();
-//        for (CallMember m : members) {
-//            callMembers.add(new ApiCallMember(m.getUid(), 0, m.getState().toApiState()));
-//        }
-        return new ApiMembersChanged(callMembers);
+    private ApiMembersChanged buildMembersList() {
+        ArrayList<ApiCallMember> apiCallMembers = new ArrayList<>();
+        apiCallMembers.add(new ApiCallMember(myUid(), new ApiCallMemberStateHolder(ApiCallMemberState.CONNECTED,
+                false, true, false, false, false)));
+        for (MasterCallMember callMember : state.getConnectedMembers()) {
+            ApiCallMemberStateHolder callMemberStateHolder;
+            switch (callMember.getState()) {
+                case RINGING_REACHED:
+                    callMemberStateHolder = new ApiCallMemberStateHolder(
+                            ApiCallMemberState.RINGING_REACHED,
+                            true, false, false, true, false);
+                    break;
+                case RINGING:
+                    callMemberStateHolder = new ApiCallMemberStateHolder(
+                            ApiCallMemberState.RINGING,
+                            true, false, false, false, false);
+                    break;
+                case CONNECTING:
+                    callMemberStateHolder = new ApiCallMemberStateHolder(
+                            ApiCallMemberState.CONNECTING,
+                            false, false, true, false, false);
+                    break;
+                case IN_PROGRESS:
+                    callMemberStateHolder = new ApiCallMemberStateHolder(
+                            ApiCallMemberState.CONNECTED,
+                            false, true, false, false, false);
+                    break;
+                default:
+                case ENDED:
+                    callMemberStateHolder = new ApiCallMemberStateHolder(
+                            ApiCallMemberState.ENDED,
+                            false, false, false, false, true);
+                    break;
+            }
+            apiCallMembers.add(new ApiCallMember(callMember.getUid(), callMemberStateHolder));
+        }
+        return new ApiMembersChanged(apiCallMembers);
     }
 
     private void debugState() {
