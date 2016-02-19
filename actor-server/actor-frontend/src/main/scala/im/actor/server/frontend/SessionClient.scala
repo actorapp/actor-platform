@@ -22,6 +22,7 @@ import im.actor.server.mtproto.transport.Drop
 import im.actor.server.mtproto.{ transport ⇒ T }
 import im.actor.server.persist.{ AuthIdRepo, MasterKeyRepo }
 import im.actor.server.session.{ HandleMessageBox, SessionEnvelope, SessionRegion }
+import im.actor.util.ThreadLocalSecureRandom
 import scodec.{ DecodeResult, Attempt }
 import scodec.bits.BitVector
 import slick.dbio.DBIO
@@ -46,7 +47,7 @@ private[frontend] object SessionClient {
 }
 
 final class CryptoHelper(protoKeys: ActorProtoKey) {
-  private val random = new SecureRandom
+  private def random = ThreadLocalSecureRandom.current()
 
   private object CbcHmac {
     object Server {
