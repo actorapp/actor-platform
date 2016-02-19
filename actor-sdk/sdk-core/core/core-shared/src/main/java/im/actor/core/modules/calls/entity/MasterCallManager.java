@@ -1,28 +1,35 @@
 package im.actor.core.modules.calls.entity;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import im.actor.core.api.ApiPeerSettings;
 import im.actor.runtime.collections.ManagedList;
+import im.actor.runtime.function.Function;
 
 /**
  * Helper Class for managing current call devices
  */
 public class MasterCallManager {
 
-    private ManagedList<MasterCallDevice> connectedDevices;
-    private ManagedList<MasterCallMember> connectedMembers;
+    private ManagedList<MasterCallMember> members;
+    private CallGrid callGrid;
+    private boolean isInvalidated = false;
     private boolean isAnswered = false;
 
     public MasterCallManager() {
-        this.connectedDevices = ManagedList.of();
-        this.connectedMembers = ManagedList.of();
+        this.callGrid = new CallGrid();
+        this.members = ManagedList.of();
     }
 
-    public ManagedList<MasterCallDevice> getConnectedDevices() {
-        return connectedDevices;
+    public CallGrid getCallGrid() {
+        return callGrid;
     }
 
-    public ManagedList<MasterCallMember> getConnectedMembers() {
-        return connectedMembers;
+    public ManagedList<MasterCallMember> getMembers() {
+        return members;
     }
 
     /**
@@ -33,11 +40,10 @@ public class MasterCallManager {
      * @return is member was added
      */
     public boolean addMember(int uid, MasterCallMemberState state) {
-        if (connectedMembers
-                .filter(MasterCallMember.PREDICATE(uid))
+        if (members.filter(MasterCallMember.PREDICATE(uid))
                 .isEmpty()) {
 
-            connectedMembers.add(new MasterCallMember(uid, state));
+            members.add(new MasterCallMember(uid, state));
             return true;
         }
         return false;
@@ -50,7 +56,7 @@ public class MasterCallManager {
      * @return is member was removed
      */
     public boolean removeMember(int uid) {
-        return connectedMembers.removeAll(connectedMembers.filter(MasterCallMember.PREDICATE(uid)));
+        return members.removeAll(members.filter(MasterCallMember.PREDICATE(uid)));
     }
 
     /**
@@ -58,42 +64,33 @@ public class MasterCallManager {
      *
      * @param uid      User Id
      * @param deviceId Device Id
-     * @return if device was connected
      */
-    public boolean onDeviceConnected(int uid, long deviceId) {
+    public void onDeviceConnected(int uid, long deviceId) throws InvalidTransactionException {
+
+        //
+        // Protection from double connected nodes
+        //
+        if (hasNode(uid, deviceId)) {
+            throw new InvalidTransactionException();
+        }
 
         //
         // Searching for member
         //
-        MasterCallMember member = connectedMembers
-                .filter(MasterCallMember.PREDICATE(uid))
-                .firstOrNull();
-        if (member == null) {
-            return false;
-        }
-
-        //
-        // Protection from double connected events
-        //
-        if (!connectedDevices
-                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
-                .isEmpty()) {
-            return false;
-        }
+        MasterCallMember member = getMember(uid);
 
         //
         // Adding new connected device with isActive = false
         //
-        connectedDevices.add(new MasterCallDevice(uid, deviceId));
+        callGrid.addNode(new CallNode(member, deviceId));
 
         //
         // Update Member State
         //
         if (member.getState() == MasterCallMemberState.RINGING) {
             member.setState(MasterCallMemberState.RINGING_REACHED);
+            isInvalidated = true;
         }
-
-        return true;
     }
 
     /**
@@ -101,53 +98,53 @@ public class MasterCallManager {
      *
      * @param uid      User Id
      * @param deviceId Device Id
-     * @return if device was disconnected
      */
-    public boolean onDeviceDisconnected(int uid, long deviceId) {
+    public ArrayList<CallNode> onDeviceDisconnected(final int uid, final long deviceId) throws InvalidTransactionException {
 
         //
-        // Searching for member
+        // Searching for node
         //
-        MasterCallMember member = connectedMembers
-                .filter(MasterCallMember.PREDICATE(uid))
-                .firstOrNull();
-        if (member == null) {
-            return false;
-        }
-
-        //
-        // Searching for connected device
-        //
-        MasterCallDevice device = connectedDevices
-                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
-                .firstOrNull();
-        if (device == null) {
-            return false;
-        }
+        CallNode node = getNode(uid, deviceId);
 
         //
         // Removing Connected Device from list
         //
-        connectedDevices.remove(device);
+        ArrayList<CallGridEdge> removedEdges = callGrid.removeNode(node);
 
         //
         // If device was answered - update member state
         //
-        if (device.isAnswered()) {
+        if (node.isAnswered()) {
             boolean isConnected = false;
-            for (MasterCallDevice m : connectedDevices
-                    .filter(MasterCallDevice.PREDICATE(uid))) {
+            for (CallNode m : callGrid.getNodes(uid)) {
                 if (m.isAnswered()) {
                     isConnected = true;
                     break;
                 }
             }
             if (!isConnected) {
-                member.setState(MasterCallMemberState.ENDED);
+                if (node.getMember().getState() != MasterCallMemberState.ENDED) {
+                    node.getMember().setState(MasterCallMemberState.ENDED);
+                    isInvalidated = true;
+                }
             }
         }
 
-        return true;
+        //
+        // Converting affected edges
+        //
+        return ManagedList.of(removedEdges)
+                .map(new Function<CallGridEdge, CallNode>() {
+                    @Override
+                    public CallNode apply(CallGridEdge callGridEdge) {
+                        CallNode endNode = callGridEdge.getEnd();
+                        if (endNode.getMember().getUid() != uid && endNode.getDeviceId() != deviceId) {
+                            return callGridEdge.getEnd();
+                        } else {
+                            return callGridEdge.getStart();
+                        }
+                    }
+                });
     }
 
 
@@ -157,145 +154,95 @@ public class MasterCallManager {
      * @param uid          User Id
      * @param deviceId     Device Id
      * @param peerSettings Peer Settings
-     * @return if device was disconnected
      */
-    public boolean onDeviceAdvertised(int uid, long deviceId, ApiPeerSettings peerSettings) {
+    public void onDeviceAdvertised(int uid, long deviceId, ApiPeerSettings peerSettings) throws InvalidTransactionException {
+
+        CallNode node = getNode(uid, deviceId);
 
         //
-        // Searching for member
+        // If is in pending state - save settings and update state
         //
-        MasterCallMember member = connectedMembers
-                .filter(MasterCallMember.PREDICATE(uid))
-                .firstOrNull();
-        if (member == null) {
-            return false;
+        if (node.getDeviceState() != CallNodeState.PENDING) {
+            throw new InvalidTransactionException();
         }
-
-        //
-        // Searching for connected device
-        //
-        MasterCallDevice device = connectedDevices
-                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
-                .firstOrNull();
-        if (device == null) {
-            return false;
-        }
-
-        if (device.getDeviceState() != MasterCallDeviceState.PENDING) {
-            return false;
-        }
-
-        device.setDeviceState(MasterCallDeviceState.ADVERTISED);
-        device.setPeerSettings(peerSettings);
-
-        return true;
+        node.setDeviceState(CallNodeState.ADVERTISED);
+        node.setPeerSettings(peerSettings);
+        isInvalidated = true;
     }
 
-    /**
-     * Call To start silent connection
-     *
-     * @param uid      User Id
-     * @param deviceId Device Id
-     * @return is silent connection need to be started
-     */
-    public boolean startSilentConnection(int uid, long deviceId) {
-        //
-        // Searching for connected device
-        //
-        MasterCallDevice device = connectedDevices
-                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
-                .firstOrNull();
-        if (device == null) {
-            return false;
-        }
+//    /**
+//     * Call To start silent connection
+//     *
+//     * @param uid      User Id
+//     * @param deviceId Device Id
+//     * @return is silent connection need to be started
+//     */
+//    public boolean startSilentConnection(int uid, long deviceId) throws InvalidTransactionException {
+//        //
+//        // Searching for connected device
+//        //
+//        CallNode device = getNode(uid, deviceId);
+//        if (device == null) {
+//            return false;
+//        }
+//
+//        switch (device.getDeviceState()) {
+//            case ADVERTISED:
+//                if (device.getPeerSettings() != null) {
+//                    if (device.getPeerSettings().canConnect() != null) {
+//                        if (device.getPeerSettings().canConnect()) {
+//                            device.setDeviceState(CallNodeState.CONNECTING_SILENCED);
+//                            return true;
+//                        }
+//                    }
+//                }
+//        }
+//
+//        return false;
+//    }
 
-        switch (device.getDeviceState()) {
-            case ADVERTISED:
-                if (device.getPeerSettings() != null) {
-                    if (device.getPeerSettings().canConnect() != null) {
-                        if (device.getPeerSettings().canConnect()) {
-                            device.setDeviceState(MasterCallDeviceState.CONNECTING_SILENCED);
-                            return true;
-                        }
-                    }
-                }
-        }
+//    /**
+//     * Checking if connection silently connected
+//     *
+//     * @param uid      User Id
+//     * @param deviceId Device Id
+//     * @return is silent connection opened
+//     */
+//    public boolean isStartedSilently(int uid, long deviceId) throws InvalidTransactionException {
+//        //
+//        // Searching for connected device
+//        //
+//        CallNode node = getNode(uid, deviceId);
+//
+//        switch (node.getDeviceState()) {
+//            case SILENCED:
+//            case CONNECTING_SILENCED:
+//                return true;
+//            default:
+//                return false;
+//        }
+//    }
 
-        return false;
-    }
-
-    /**
-     * Checking if connection silently connected
-     *
-     * @param uid      User Id
-     * @param deviceId Device Id
-     * @return is silent connection opened
-     */
-    public boolean isStartedSilently(int uid, long deviceId) {
-        //
-        // Searching for connected device
-        //
-        MasterCallDevice device = connectedDevices
-                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
-                .firstOrNull();
-        if (device == null) {
-            return false;
-        }
-
-        switch (device.getDeviceState()) {
-            case SILENCED:
-            case CONNECTING_SILENCED:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Getting Peer settings if available
-     *
-     * @param uid      User Id
-     * @param deviceId Device Id
-     * @return peer settings if available
-     */
-    public ApiPeerSettings getPeerSettings(int uid, long deviceId) {
-        MasterCallDevice device = connectedDevices
-                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
-                .firstOrNull();
-        if (device == null) {
-            return null;
-        }
-        return device.getPeerSettings();
-    }
+//    /**
+//     * Getting Peer settings if available
+//     *
+//     * @param uid      User Id
+//     * @param deviceId Device Id
+//     * @return peer settings if available
+//     */
+//    public ApiPeerSettings getPeerSettings(int uid, long deviceId) throws InvalidTransactionException {
+//        return getNode(uid, deviceId).getPeerSettings();
+//    }
 
     /**
      * Called When Device is Answered
      *
      * @param uid      User Id
      * @param deviceId Device Id
-     * @return if device was answered
      */
-    public boolean onDeviceAnswered(int uid, long deviceId, boolean supportSilence) {
+    public void onDeviceAnswered(int uid, long deviceId) throws InvalidTransactionException {
 
-        //
-        // Searching for connected device
-        //
-        MasterCallDevice device = connectedDevices
-                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
-                .firstOrNull();
-        if (device == null) {
-            return false;
-        }
-
-        //
-        // Searching for member
-        //
-        MasterCallMember member = connectedMembers
-                .filter(MasterCallMember.PREDICATE(uid))
-                .firstOrNull();
-        if (member == null) {
-            return false;
-        }
+        CallNode device = getNode(uid, deviceId);
 
         //
         // Update Device States
@@ -304,38 +251,38 @@ public class MasterCallManager {
             case PENDING:
             case ADVERTISED:
             case CONNECTING_SILENCED:
-                device.setDeviceState(MasterCallDeviceState.CONNECTING);
+                device.setDeviceState(CallNodeState.CONNECTING);
                 break;
             case SILENCED:
-                device.setDeviceState(MasterCallDeviceState.IN_PROGRESS);
+                device.setDeviceState(CallNodeState.IN_PROGRESS);
                 break;
             case IN_PROGRESS:
             case CONNECTING:
-                return false;
+                throw new InvalidTransactionException();
         }
 
         //
         // Update User State
         //
         // TODO: Check State for some corner states
-        if (member.getState() == MasterCallMemberState.RINGING
-                || member.getState() == MasterCallMemberState.RINGING_REACHED) {
+        if (device.getMember().getState() == MasterCallMemberState.RINGING
+                || device.getMember().getState() == MasterCallMemberState.RINGING_REACHED) {
 
             switch (device.getDeviceState()) {
                 case PENDING:
                 case ADVERTISED:
                 case CONNECTING:
                 case CONNECTING_SILENCED:
-                    member.setState(MasterCallMemberState.CONNECTING);
+                    device.getMember().setState(MasterCallMemberState.CONNECTING);
+                    isInvalidated = true;
                     break;
                 case IN_PROGRESS:
                 case SILENCED:
-                    member.setState(MasterCallMemberState.IN_PROGRESS);
+                    device.getMember().setState(MasterCallMemberState.IN_PROGRESS);
+                    isInvalidated = true;
                     break;
             }
         }
-
-        return true;
     }
 
     /**
@@ -343,29 +290,9 @@ public class MasterCallManager {
      *
      * @param uid      User Id
      * @param deviceId Device Id
-     * @return if device was rejected
      */
-    public boolean onDeviceRejected(int uid, long deviceId) {
-
-        //
-        // Searching for connected device
-        //
-        MasterCallDevice device = connectedDevices
-                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
-                .firstOrNull();
-        if (device == null) {
-            return false;
-        }
-
-        //
-        // Searching for member
-        //
-        MasterCallMember member = connectedMembers
-                .filter(MasterCallMember.PREDICATE(uid))
-                .firstOrNull();
-        if (member == null) {
-            return false;
-        }
+    public void onDeviceRejected(int uid, long deviceId) throws InvalidTransactionException {
+        CallNode device = getNode(uid, deviceId);
 
         //
         // If device already answered - ignore call rejection
@@ -373,20 +300,19 @@ public class MasterCallManager {
         switch (device.getDeviceState()) {
             case IN_PROGRESS:
             case CONNECTING:
-                return false;
+                throw new InvalidTransactionException();
         }
 
         //
         // Mark Member as rejected member
         //
-        switch (member.getState()) {
+        switch (device.getMember().getState()) {
             case RINGING_REACHED:
             case RINGING:
-                member.setState(MasterCallMemberState.ENDED);
+                device.getMember().setState(MasterCallMemberState.ENDED);
+                isInvalidated = true;
                 break;
         }
-
-        return true;
     }
 
     /**
@@ -396,38 +322,34 @@ public class MasterCallManager {
      * @param deviceId Device Id
      * @return if this is a first stream in this call
      */
-    public boolean onDeviceStreamAdded(int uid, long deviceId) {
+    public boolean onDeviceStreamAdded(int uid, long deviceId) throws InvalidTransactionException {
 
         //
         // Searching for connected device
         //
-        MasterCallDevice device = connectedDevices
-                .filter(MasterCallDevice.PREDICATE(uid, deviceId))
-                .firstOrNull();
-        if (device == null) {
-            return false;
-        }
+        CallNode device = getNode(uid, deviceId);
 
         //
-        // Searching for member
+        // Update Device State
         //
-        MasterCallMember member = connectedMembers
-                .filter(MasterCallMember.PREDICATE(uid))
-                .firstOrNull();
-        if (member == null) {
-            return false;
+        switch (device.getDeviceState()) {
+            case CONNECTING:
+                device.setDeviceState(CallNodeState.IN_PROGRESS);
+                break;
+            case CONNECTING_SILENCED:
+                device.setDeviceState(CallNodeState.SILENCED);
+                break;
         }
-
 
         //
         // Update Member State
         //
-        switch (member.getState()) {
-            case CONNECTING:
-                member.setState(MasterCallMemberState.IN_PROGRESS);
+        switch (device.getDeviceState()) {
+            case IN_PROGRESS:
+                device.getMember().setState(MasterCallMemberState.IN_PROGRESS);
+                isInvalidated = true;
                 break;
         }
-
 
         //
         // Return True only for the first method invoke
@@ -439,14 +361,44 @@ public class MasterCallManager {
         return true;
     }
 
+    public boolean onInvalidated() {
+        if (isInvalidated) {
+            isInvalidated = false;
+            return true;
+        }
+        return false;
+    }
+
+    @NotNull
+    private MasterCallMember getMember(int uid) throws InvalidTransactionException {
+        MasterCallMember member = members.firstOrNull(MasterCallMember.PREDICATE(uid));
+        if (member == null) {
+            throw new InvalidTransactionException();
+        }
+        return member;
+    }
+
+    @NotNull
+    private CallNode getNode(int uid, long deviceId) throws InvalidTransactionException {
+        CallNode node = callGrid.getNodes().firstOrNull(CallNode.PREDICATE(uid, deviceId));
+        if (node == null) {
+            throw new InvalidTransactionException();
+        }
+        return node;
+    }
+
+    private boolean hasNode(int uid, long deviceId) throws InvalidTransactionException {
+        return callGrid.getNodes().firstOrNull(CallNode.PREDICATE(uid, deviceId)) != null;
+    }
+
     @Override
     public String toString() {
         String res = "Devices: \n";
-        for (MasterCallDevice device : connectedDevices) {
-            res += device.getUid() + "-" + device.getDeviceId() + ": " + device.getDeviceState() + "\n";
-        }
+//        for (CallNode device : nodes) {
+//            res += device.getUid() + "-" + device.getDeviceId() + ": " + device.getDeviceState() + "\n";
+//        }
         res += "Members: \n";
-        for (MasterCallMember member : connectedMembers) {
+        for (MasterCallMember member : members) {
             res += member.getUid() + " - " + member.getState() + "\n";
         }
         return res;
