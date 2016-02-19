@@ -47,7 +47,7 @@ public class CallActor extends EventBusActor {
         callModels = context().getCallsModule().getCallModels();
         boolean isMobile = config().getDeviceCategory() == DeviceCategory.MOBILE ||
                 config().getDeviceCategory() == DeviceCategory.TABLET;
-        boolean isSupportsFastConnect = isMobile;
+        boolean isSupportsFastConnect = true;
         peerSettings = new ApiPeerSettings(true, isMobile, false, isSupportsFastConnect);
     }
 
