@@ -44,6 +44,7 @@ import im.actor.runtime.js.mvvm.JsDisplayListCallback;
 import im.actor.runtime.js.utils.JsPromise;
 import im.actor.runtime.js.utils.JsPromiseExecutor;
 import im.actor.runtime.markdown.MarkdownParser;
+import im.actor.runtime.webrtc.WebRTCIceServer;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
@@ -65,6 +66,19 @@ public class JsFacade implements Exportable {
     private static final String[] EndpointsProduction = {
             "wss://front1-ws-mtproto-api-rev2.actor.im/",
             "wss://front2-ws-mtproto-api-rev2.actor.im/"
+    };
+
+    private WebRTCIceServer[] webRTCIceServers = {
+            new WebRTCIceServer("stun:turn1.actor.im:443"),
+            new WebRTCIceServer("stun:turn2.actor.im:443"),
+            new WebRTCIceServer("stun:turn3.actor.im:443"),
+
+            new WebRTCIceServer("turn:turn1.actor.im:443?transport=tcp", "actor", "password"),
+            new WebRTCIceServer("turn:turn1.actor.im:443?transport=udp", "actor", "password"),
+            new WebRTCIceServer("turn:turn2.actor.im:443?transport=tcp", "actor", "password"),
+            new WebRTCIceServer("turn:turn2.actor.im:443?transport=udp", "actor", "password"),
+            new WebRTCIceServer("turn:turn3.actor.im:443?transport=tcp", "actor", "password"),
+            new WebRTCIceServer("turn:turn3.actor.im:443?transport=udp", "actor", "password"),
     };
 
     private static final String[] EndpointsDev1 = {
@@ -132,6 +146,11 @@ public class JsFacade implements Exportable {
         // Adding endpoints
         for (String endpoint : endpoints) {
             configuration.addEndpoint(endpoint);
+        }
+
+        // Adding WebRTC ICE servers
+        for (WebRTCIceServer iceServer : webRTCIceServers) {
+            configuration.addWebRTCServer(iceServer.getUrl(), iceServer.getUsername(), iceServer.getCredential());
         }
 
         messenger = new JsMessenger(configuration.build());
@@ -828,15 +847,15 @@ public class JsFacade implements Exportable {
         messenger.loadMoreDialogs();
     }
 
-    public JsPromise loadArchivedDialogs(){
+    public JsPromise loadArchivedDialogs() {
         return loadArchivedDialogs(true);
     }
 
-    public JsPromise loadMoreArchivedDialogs(){
+    public JsPromise loadMoreArchivedDialogs() {
         return loadArchivedDialogs(false);
     }
 
-    private JsPromise loadArchivedDialogs(final boolean init){
+    private JsPromise loadArchivedDialogs(final boolean init) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
