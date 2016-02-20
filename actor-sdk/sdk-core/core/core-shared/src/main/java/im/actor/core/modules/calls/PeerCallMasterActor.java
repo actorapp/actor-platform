@@ -29,6 +29,8 @@ public class PeerCallMasterActor extends AbsCallActor {
     private CommandCallback<Long> callback;
     private HashSet<Integer> members;
     private HashMap<Long, Node> nodes;
+    private boolean isStarted;
+    private boolean isAnswered;
     private long callId;
     private CallVM callVM;
 
@@ -182,6 +184,25 @@ public class PeerCallMasterActor extends AbsCallActor {
                 }
             }
         }
+
+        if (!isAnswered) {
+            isAnswered = true;
+            if (isStarted) {
+                callVM.getState().change(CallState.IN_PROGRESS);
+            } else {
+                callVM.getState().change(CallState.CONNECTING);
+            }
+        }
+    }
+
+    @Override
+    public void onFirstPeerStarted() {
+        super.onFirstPeerStarted();
+
+        isStarted = true;
+        if (isAnswered) {
+            callVM.getState().change(CallState.IN_PROGRESS);
+        }
     }
 
     @Override
@@ -194,6 +215,11 @@ public class PeerCallMasterActor extends AbsCallActor {
     public void onPeerStarted(int uid, long deviceId) {
         super.onPeerStarted(uid, deviceId);
         Log.d(TAG, "onPeerStarted:" + deviceId);
+
+        if (callVM.getState().get() == CallState.RINGING ||
+                callVM.getState().get() == CallState.CONNECTING) {
+
+        }
     }
 
     @Override
