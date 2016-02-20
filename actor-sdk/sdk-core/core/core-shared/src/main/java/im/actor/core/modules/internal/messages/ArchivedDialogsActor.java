@@ -38,7 +38,9 @@ public class ArchivedDialogsActor extends ModuleActor {
             //
             // notify old callback replaced
             //
-            lastCallback.onError(new RpcException(TAG, 0, "callback replaced", false, null));
+            if(lastCallback!=null){
+                lastCallback.onError(new RpcException(TAG, 0, "callback replaced", false, null));
+            }
         }
         lastCallback = callback;
 
