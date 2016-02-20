@@ -14,7 +14,7 @@ import Pace from 'pace';
 
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, IndexRoute } from 'react-router';
+import { Router, Route, IndexRoute, IndexRedirect } from 'react-router';
 import history from '../utils/history';
 import { IntlProvider } from 'react-intl';
 import crosstab from 'crosstab';
@@ -32,6 +32,7 @@ import DefaultJoin from '../components/Join.react';
 import DefaultInstall from '../components/Install.react';
 import DefaultArchive from '../components/Archive.react';
 import DefaultDialog from '../components/Dialog.react';
+import DefaultEmpty from '../components/common/EmptyScreen.react';
 import Modal from 'react-modal';
 
 import { extendL18n, getIntlData } from '../l18n';
@@ -99,6 +100,7 @@ class ActorSDK {
     const Install = this.delegate.components.install || DefaultInstall;
     const Archive = this.delegate.components.archive || DefaultArchive;
     const Join = this.delegate.components.join || DefaultJoin;
+    const Empty = this.delegate.components.empty || DefaultEmpty;
     const Dialog = this.delegate.components.dialog || DefaultDialog;
     const intlData = getIntlData(this.forceLocale);
 
@@ -129,12 +131,15 @@ class ActorSDK {
             <Route path="auth" component={Login}/>
             <Route path="deactivated" component={Deactivated}/>
             <Route path="install" component={Install}/>
-            <Route path="join/:token" component={Join}/>
+            <Route path="join/:token" component={Join} onEnter={requireAuth}/>
 
-            <Route path="im/:id" component={Dialog} createElement={Main}/>
-            <Route path="archive" component={Archive} createElement={Main}/>
+            <Route path="im" component={Main} onEnter={requireAuth}>
+              <Route path="archive" component={Archive}/>
+              <Route path=":id" component={Dialog}/>
+              <IndexRoute component={Empty}/>
+            </Route>
 
-            <IndexRoute component={Main} onEnter={requireAuth}/>
+            <IndexRedirect to="im"/>
           </Route>
         </Router>
       </IntlProvider>
@@ -160,7 +165,7 @@ class ActorSDK {
       } else {
         window.jsAppLoaded = this._starter;
       }
-    }
+    };
 
     initPollyfils(start);
   }

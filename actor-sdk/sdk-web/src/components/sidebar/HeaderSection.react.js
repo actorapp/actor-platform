@@ -174,7 +174,7 @@ class HeaderSection extends Component {
                 </li>
                 <li className="dropdown__menu__separator"/>
                 <li className="dropdown__menu__item">
-                  <Link to="/archive">Archive</Link>
+                  <Link to="/im/archive">Archive</Link>
                 </li>
               </ul>
             </div>

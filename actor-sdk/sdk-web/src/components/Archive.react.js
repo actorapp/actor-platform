@@ -7,15 +7,10 @@ import React, { Component, PropTypes } from 'react';
 class Archive extends Component {
   constructor(props){
     super(props);
+    console.debug('Archive', props);
   }
 
-  static contextTypes = {
-    delegate: PropTypes.object
-  };
-
   render() {
-    const { delegate } = this.context;
-
     return (
       <section className="archive">
         <h1>section.archive</h1>
