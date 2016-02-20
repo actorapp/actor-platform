@@ -18,6 +18,7 @@ import DialogActionCreators from '../../actions/DialogActionCreators';
 import InviteUserActions from '../../actions/InviteUserActions';
 import EditGroupActionCreators from '../../actions/EditGroupActionCreators';
 import NotificationsActionCreators from '../../actions/NotificationsActionCreators';
+import CallActionCreators from '../../actions/CallActionCreators';
 
 import DialogStore from '../../stores/DialogStore';
 import NotificationsStore from '../../stores/NotificationsStore';
@@ -28,6 +29,8 @@ import OnlineStore from '../../stores/OnlineStore';
 import AvatarItem from '../common/AvatarItem.react';
 import GroupProfileMembers from '../activity/GroupProfileMembers.react';
 import Fold from '../common/Fold.react';
+
+const MAX_GROUP_CALL_SIZE = 25;
 
 const getStateFromStores = (gid) => {
   const thisPeer = gid ? GroupStore.getGroup(gid) : null;
@@ -75,10 +78,7 @@ class GroupProfile extends Component {
 
   onLeaveGroupClick = gid => {
     const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.leave'], {
-      abortLabel: intl.messages['button.cancel'],
-      confirmLabel: intl.messages['button.ok']
-    }).then(
+    confirm(intl.messages['modal.confirm.leave']).then(
       () => DialogActionCreators.leaveGroup(gid),
       () => {}
     );
@@ -89,7 +89,6 @@ class GroupProfile extends Component {
     NotificationsActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
   };
 
-  onChange = () => this.setState(getStateFromStores(this.props.group.id));
   selectToken = (event) => event.target.select();
 
   toggleMoreDropdown = () => {
@@ -110,10 +109,7 @@ class GroupProfile extends Component {
 
   onClearGroupClick = (gid) => {
     const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.clear'], {
-      abortLabel: intl.messages['button.cancel'],
-      confirmLabel: intl.messages['button.ok']
-    }).then(
+    confirm(intl.messages['modal.confirm.clear']).then(
       () => {
         const peer = ActorClient.getGroupPeer(gid);
         DialogActionCreators.clearChat(peer)
@@ -124,10 +120,7 @@ class GroupProfile extends Component {
 
   onDeleteGroupClick = (gid) => {
     const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.delete'], {
-      abortLabel: intl.messages['button.cancel'],
-      confirmLabel: intl.messages['button.ok']
-    }).then(
+    confirm(intl.messages['modal.confirm.delete']).then(
       () => {
         const peer = ActorClient.getGroupPeer(gid);
         DialogActionCreators.deleteChat(peer);
@@ -139,6 +132,11 @@ class GroupProfile extends Component {
   onEditGroupClick = (gid) => EditGroupActionCreators.show(gid);
 
   handleAvatarClick = () => lightbox.open(this.props.group.bigAvatar);
+
+  makeCall = () => {
+    const { group } = this.props;
+    CallActionCreators.makeCall(group.id);
+  };
 
   render() {
     const { group } = this.props;
@@ -206,11 +204,18 @@ class GroupProfile extends Component {
                 {groupMeta}
                 <footer className="row">
                   <div className="col-xs">
-                    <button className="button button--flat button--wide"
-                            onClick={() => this.onAddMemberClick(group)}>
-                      <i className="material-icons">person_add</i>
-                      {intl.messages['addPeople']}
-                    </button>
+                    {
+                      group.members.length < MAX_GROUP_CALL_SIZE
+                        ? <button className="button button--green button--wide" onClick={this.makeCall}>
+                            <i className="material-icons">phone</i>
+                            {intl.messages['button.call']}
+                          </button>
+                        : <button className="button button--flat button--wide"
+                                  onClick={() => this.onAddMemberClick(group)}>
+                            <i className="material-icons">person_add</i>
+                            {intl.messages['addPeople']}
+                          </button>
+                    }
                   </div>
                   <div style={{width: 10}}/>
                   <div className="col-xs">
@@ -225,6 +230,14 @@ class GroupProfile extends Component {
                           <i className="material-icons">mode_edit</i>
                           {intl.messages['editGroup']}
                         </li>
+                        {
+                          group.members.length < MAX_GROUP_CALL_SIZE
+                            ? <li className="dropdown__menu__item" onClick={() => this.onAddMemberClick(group)}>
+                                <i className="material-icons">person_add</i>
+                                {intl.messages['addPeople']}
+                              </li>
+                            : null
+                        }
                         <li className="dropdown__menu__item"
                             onClick={() => this.onLeaveGroupClick(group.id)}>
                           {intl.messages['leaveGroup']}

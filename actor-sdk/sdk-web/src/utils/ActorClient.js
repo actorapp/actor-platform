@@ -152,8 +152,8 @@ export default {
     window.messenger.unbindCall(id, callback);
   },
 
-  makeCall(uid) {
-    return window.messenger.doCall(uid);
+  makeCall(peerId) {
+    return window.messenger.doCall(peerId);
   },
 
   answerCall(id) {
