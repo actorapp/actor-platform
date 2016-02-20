@@ -246,7 +246,7 @@ public class CallFragment extends BaseFragment {
                     currentState = val;
                     switch (val){
 
-                        case CALLING:
+                        case RINGING:
                             if(call.isOutgoing()){
                                 statusTV.setText(R.string.call_outgoing);
                             }else{
@@ -346,7 +346,7 @@ public class CallFragment extends BaseFragment {
                     Thread.sleep(1100);
                     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
                     ringtone = RingtoneManager.getRingtone(getActivity(), notification);
-                    if (getActivity() != null & answerContainer.getVisibility() == View.VISIBLE && currentState == CallState.CALLING) {
+                    if (getActivity() != null & answerContainer.getVisibility() == View.VISIBLE && currentState == CallState.RINGING) {
                         if (ringtone != null) {
                             ringtone.play();
                         }
