@@ -119,14 +119,14 @@ $sticker-max-size: 180px;
       }
     }
     .ss-scroll {
-      right: 4px;
+      right: 6px;
       width: 4px;
       opacity: .2;
       background-color: $dusk;
       &:hover,
       &:active {
         width: 8px;
-        right: 2px;
+        right: 4px;
         opacity: 1 !important;
       }
     }
