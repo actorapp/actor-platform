@@ -75,7 +75,7 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
    * @return
    */
   def start(): ActorServer = {
-    Option(System.getProperty("actor.home")) foreach { home =>
+    Option(System.getProperty("actor.home")) foreach { home ⇒
       System.setProperty("config.file", s"$home/conf/server.conf")
     }
 
