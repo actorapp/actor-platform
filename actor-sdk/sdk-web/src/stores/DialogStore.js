@@ -30,9 +30,14 @@ class DialogStore extends Store {
 
   __onDispatch(action) {
     switch(action.type) {
-      case ActionTypes.SELECT_DIALOG_PEER:
+      case ActionTypes.BIND_DIALOG_PEER:
         _lastPeer = _currentPeer;
         _currentPeer = action.peer;
+        this.__emitChange();
+        break;
+      case ActionTypes.UNBIND_DIALOG_PEER:
+        _lastPeer = _currentPeer;
+        _currentPeer = null;
         this.__emitChange();
         break;
       default:

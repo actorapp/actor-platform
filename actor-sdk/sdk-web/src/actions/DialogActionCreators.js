@@ -9,10 +9,10 @@ import ActorClient from '../utils/ActorClient';
 import PeerUtils from '../utils/PeerUtils';
 
 import MessageActionCreators from './MessageActionCreators';
-import GroupProfileActionCreators from './GroupProfileActionCreators';
 import TypingActionCreators from './TypingActionCreators';
 import DialogInfoActionCreators from './DialogInfoActionCreators';
 import OnlineActionCreators from './OnlineActionCreators';
+import GroupProfileActionCreators from './GroupProfileActionCreators';
 
 import DialogStore from '../stores/DialogStore';
 
@@ -28,6 +28,8 @@ const DialogActionCreators = {
 
     // Unbind from previous peer
     if (currentPeer !== null) {
+      dispatch(ActionTypes.UNBIND_DIALOG_PEER);
+
       this.onConversationClosed(currentPeer);
       messagesBinding && messagesBinding.unbind();
       ActorClient.unbindTyping(currentPeer, TypingActionCreators.setTyping);
@@ -45,34 +47,32 @@ const DialogActionCreators = {
       }
     }
 
-    dispatch(ActionTypes.SELECT_DIALOG_PEER, { peer });
+    if (peer !== null) {
+      dispatch(ActionTypes.BIND_DIALOG_PEER, { peer });
 
-    this.onConversationOpen(peer);
-    messagesBinding = ActorClient.bindMessages(peer, MessageActionCreators.setMessages);
-    ActorClient.bindTyping(peer, TypingActionCreators.setTyping);
-    switch(peer.type) {
-      case PeerTypes.USER:
-        ActorClient.bindUser(peer.id, DialogInfoActionCreators.setDialogInfo);
-        ActorClient.bindUserOnline(peer.id, OnlineActionCreators.setUserOnline);
-        break;
-      case PeerTypes.GROUP:
-        ActorClient.bindGroup(peer.id, DialogInfoActionCreators.setDialogInfo);
-        ActorClient.bindGroupOnline(peer.id, OnlineActionCreators.setGroupOnline);
-        GroupProfileActionCreators.getIntegrationToken(peer.id);
-        break;
-      default:
+      this.onConversationOpen(peer);
+      messagesBinding = ActorClient.bindMessages(peer, MessageActionCreators.setMessages);
+      ActorClient.bindTyping(peer, TypingActionCreators.setTyping);
+      switch(peer.type) {
+        case PeerTypes.USER:
+          ActorClient.bindUser(peer.id, DialogInfoActionCreators.setDialogInfo);
+          ActorClient.bindUserOnline(peer.id, OnlineActionCreators.setUserOnline);
+          break;
+        case PeerTypes.GROUP:
+          ActorClient.bindGroup(peer.id, DialogInfoActionCreators.setDialogInfo);
+          ActorClient.bindGroupOnline(peer.id, OnlineActionCreators.setGroupOnline);
+          GroupProfileActionCreators.getIntegrationToken(peer.id);
+          break;
+        default:
+      }
     }
-
-    // console.debug('history', history);
-    // console.debug('string', `im/${PeerUtils.peerToString(peer)}`);
-    history.push(`/im/${PeerUtils.peerToString(peer)}`);
   },
 
   selectDialogPeerUser(uid) {
     if (uid === ActorClient.getUid()) {
       console.warn('You can\'t chat with yourself');
     } else {
-      this.selectDialogPeer(ActorClient.getUserPeer(uid));
+      history.push(`/im/${PeerUtils.peerToString(ActorClient.getUserPeer(uid))}`);
     }
   },
 
