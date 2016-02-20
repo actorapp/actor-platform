@@ -80,7 +80,7 @@ class DialogSection extends Component {
 
   fixScroll = () => {
     const scrollNode = findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
-    const node = scrollNode.getElementsByClassName('ss-content')[0];
+    const node = scrollNode.getElementsByClassName('ss-scrollarea')[0];
     if (node) {
       node.scrollTop = node.scrollHeight - lastScrolledFromBottom - node.offsetHeight;
     }
@@ -101,7 +101,7 @@ class DialogSection extends Component {
 
     if (peer) {
       const scrollNode = findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
-      const node = scrollNode.getElementsByClassName('ss-content')[0];
+      const node = scrollNode.getElementsByClassName('ss-scrollarea')[0];
       let scrollTop = node.scrollTop;
       lastScrolledFromBottom = node.scrollHeight - scrollTop - node.offsetHeight; // was node.scrollHeight - scrollTop
 
