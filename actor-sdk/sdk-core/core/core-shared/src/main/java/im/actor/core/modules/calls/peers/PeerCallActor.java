@@ -97,7 +97,7 @@ public class PeerCallActor extends EventBusActor {
             if (webRTCMediaStream != null) {
                 peerNodeInt.setOwnStream(webRTCMediaStream);
             }
-            if (isAnswered) {
+            if (isAnswered || !isSlaveMode) {
                 peerNodeInt.onAnswered();
             }
             refs.put(deviceId, peerNodeInt);
