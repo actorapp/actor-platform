@@ -131,7 +131,7 @@ public class AACallViewController: AAViewController {
         // Binding State
         //
         binder.bind(call.state) { (value: ACCallState!) -> () in
-            if (ACCallState_Enum.CALLING == value.toNSEnum()) {
+            if (ACCallState_Enum.RINGING == value.toNSEnum()) {
                 if (self.call.isOutgoing) {
                     self.answerCallButton.hidden = true
                     self.declineCallButton.hidden = false

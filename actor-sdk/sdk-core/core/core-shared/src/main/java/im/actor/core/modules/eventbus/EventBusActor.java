@@ -206,14 +206,6 @@ public class EventBusActor extends ModuleActor {
         }
         onBusShutdown();
         onBusStopped();
-        if (busId != null) {
-            api(new RequestKeepAliveEventBus(busId, 1L)).then(new Consumer<ResponseVoid>() {
-                @Override
-                public void apply(ResponseVoid responseVoid) {
-                    self().send(PoisonPill.INSTANCE);
-                }
-            }).done(self());
-        }
     }
 
     public void dispose() {
@@ -224,9 +216,17 @@ public class EventBusActor extends ModuleActor {
         }
         onBusDisposed();
         onBusStopped();
+        busId = null;
         self().send(PoisonPill.INSTANCE);
     }
 
+    @Override
+    public void postStop() {
+        super.postStop();
+        if (busId != null) {
+            request(new RequestKeepAliveEventBus(busId, 1L));
+        }
+    }
 
     //
     // Messages
