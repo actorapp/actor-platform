@@ -91,7 +91,7 @@
     overflow: auto;
 
     margin: 0;
-    padding: 0;
+    padding: 0 0 10px;
 
     list-style: none;
     &__title {
@@ -133,6 +133,8 @@
       font-size: 15px;
 
       padding: 5px 14px;
+      margin: 0;
+      text-decoration: none;
 
       cursor: pointer;
       vertical-align: middle;
@@ -189,6 +191,20 @@
           color: white;
         }
       }
+      .favorite {
+        height: 24px;
+        text-align: center;
+        display: none;
+        .icon {
+          vertical-align: top;
+          font-size: 20px;
+          line-height: 24px;
+          color: rgba(white, .5);
+          &:hover {
+            color: white;
+          }
+        }
+      }
 
       &:hover {
         color: white;
@@ -201,6 +217,9 @@
           display: none;
         }
         .delete {
+          display: block;
+        }
+        .favorite {
           display: block;
         }
       }
@@ -217,10 +236,6 @@
         .avatar {
           filter: none;
         }
-      }
-
-      &:last-child {
-        margin-bottom: 10px;
       }
     }
 
@@ -249,10 +264,9 @@
 
   &__recent {
     position: absolute;
-    top: $toolbar-height;
-    right: 0;
-    bottom: 50px;
-    left: 0;
+    top: $sidebar-header-height;
+    bottom: $sidebar-footer-height;
+    width: 100%;
     &__empty {
       font-size: 14px;
       font-weight: 500;
@@ -273,16 +287,57 @@
         color: $dark-sky-blue;
       }
     }
-
-    .scroll-wrapper {
-      .ss-scroll {
-        right: -2px;
-        width: 4px;
-        opacity: 1 !important;
-        &:hover,
-        &:active {
-          width: 8px;
-          right: -4px;
+    &__scroll-container {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      left: auto;
+      top: auto;
+      right: auto;
+      bottom: auto;
+      .scroll-wrapper {
+        .ss-scroll {
+          right: -2px;
+          width: 4px;
+          opacity: 1 !important;
+          &:hover,
+          &:active {
+            width: 8px;
+            right: -4px;
+          }
+        }
+      }
+    }
+    &__unread {
+      position: absolute;
+      width: 100%;
+      background-color: $coral;
+      height: 4px;
+      left: 0;
+      z-index: 2;
+      transition: 100ms;
+      overflow: hidden;
+      .material-icons {
+        font-size: 16px;
+        position: absolute;
+        left: 50%;
+        margin-left: -10px;
+        width: 20px;
+      }
+      &:hover {
+        cursor: pointer;
+        height: 16px;
+      }
+      &--above {
+        top: 0;
+        .material-icons {
+          bottom: 0;
+        }
+      }
+      &--below {
+        bottom: 0;
+        .material-icons {
+          top: 0;
         }
       }
     }
