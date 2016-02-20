@@ -45,6 +45,7 @@ public class PeerCallActor extends EventBusActor {
     private boolean wasRejected;
     private boolean wasAnswered;
     private boolean haveMaster = false;
+    private boolean isAnswered = false;
     private int masterUid;
     private long masterDeviceId;
 
@@ -88,12 +89,15 @@ public class PeerCallActor extends EventBusActor {
             ActorRef ref = system().actorOf(getPath() + "/" + uid + "/" + deviceId, new ActorCreator() {
                 @Override
                 public Actor create() {
-                    return new PeerNodeActor(uid, deviceId, self(), context());
+                    return new PeerNodeActor(uid, deviceId, selfSettings.isPreConnectionEnabled(), self(), context());
                 }
             });
             PeerNodeInt peerNodeInt = new PeerNodeInt(ref);
             if (webRTCMediaStream != null) {
                 peerNodeInt.setOwnStream(webRTCMediaStream);
+            }
+            if (isAnswered) {
+                peerNodeInt.onAnswered();
             }
             refs.put(deviceId, peerNodeInt);
         }
@@ -164,8 +168,15 @@ public class PeerCallActor extends EventBusActor {
     }
 
     public void sendAnswer() {
+        if (isAnswered) {
+            return;
+        }
+        isAnswered = true;
         if (haveMaster) {
             sendSignaling(masterUid, masterDeviceId, new ApiAnswerCall());
+            for (PeerNodeInt node : refs.values()) {
+                node.onAnswered();
+            }
         } else {
             wasAnswered = true;
         }
@@ -238,7 +249,6 @@ public class PeerCallActor extends EventBusActor {
         } else if (signaling instanceof ApiOffer) {
             ApiOffer offer = (ApiOffer) signaling;
             getPeer(senderId, senderDeviceId).onAdvertised(new PeerNodeSettings(offer.getOwnPeerSettings()));
-            getPeer(senderId, senderDeviceId).onAnswered();
             getPeer(senderId, senderDeviceId).onOffer(offer.getSdp());
         } else if (signaling instanceof ApiAnswer) {
             ApiAnswer answer = (ApiAnswer) signaling;
