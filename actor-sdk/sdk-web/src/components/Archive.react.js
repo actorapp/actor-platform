@@ -4,17 +4,23 @@
 
 import React, { Component, PropTypes } from 'react';
 
+import ConnectionState from './common/ConnectionState.react';
+
 class Archive extends Component {
   constructor(props){
     super(props);
-    console.debug('Archive', props);
   }
 
   render() {
     return (
-      <section className="archive">
-        <h1>section.archive</h1>
-      </section>
+    <section className="main">
+      <div className="flexrow">
+        <section className="archive">
+          <ConnectionState/>
+          <h1>section.archive</h1>
+        </section>
+      </div>
+    </section>
     );
   }
 }

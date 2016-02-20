@@ -8,12 +8,11 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import PeerUtils from '../utils/PeerUtils';
 
-import DefaultMessagesSection from './dialog/MessagesSection.react';
-import DefaultTypingSection from './dialog/TypingSection.react';
-import DefaultComposeSection from './dialog/ComposeSection.react';
-import DefaultToolbarSection from './Toolbar.react';
-import DefaultActivitySection from './Activity.react';
-import DefaultEmptyScreen from './common/EmptyScreen.react';
+import DefaultMessages from './dialog/MessagesSection.react';
+import DefaultTyping from './dialog/TypingSection.react';
+import DefaultCompose from './dialog/ComposeSection.react';
+import DefaultToolbar from './Toolbar.react';
+import DefaultActivity from './Activity.react';
 import ConnectionState from './common/ConnectionState.react';
 
 import ActivityStore from '../stores/ActivityStore';
@@ -155,28 +154,25 @@ class DialogSection extends Component {
         ToolbarSection,
         TypingSection,
         ComposeSection,
-        MessagesSection,
-        EmptyScreen;
+        MessagesSection;
 
     if (delegate.components.dialog !== null && typeof delegate.components.dialog !== 'function') {
-      ToolbarSection = delegate.components.dialog.toolbar || DefaultToolbarSection;
-      MessagesSection = (typeof delegate.components.dialog.messages == 'function') ? delegate.components.dialog.messages : DefaultMessagesSection;
-      TypingSection = delegate.components.dialog.typing || DefaultTypingSection;
-      ComposeSection = delegate.components.dialog.compose || DefaultComposeSection;
-      EmptyScreen = delegate.components.dialog.empty || DefaultEmptyScreen;
+      ToolbarSection = delegate.components.dialog.toolbar || DefaultToolbar;
+      MessagesSection = (typeof delegate.components.dialog.messages == 'function') ? delegate.components.dialog.messages : DefaultMessages;
+      TypingSection = delegate.components.dialog.typing || DefaultTyping;
+      ComposeSection = delegate.components.dialog.compose || DefaultCompose;
 
       if (delegate.components.dialog.activity) {
         forEach(delegate.components.dialog.activity, (Activity, index) => activity.push(<Activity key={index}/>));
       } else {
-        activity.push(<DefaultActivitySection key={1}/>);
+        activity.push(<DefaultActivity key={1}/>);
       }
     } else {
-      ToolbarSection = DefaultToolbarSection;
-      MessagesSection = DefaultMessagesSection;
-      TypingSection = DefaultTypingSection;
-      ComposeSection = DefaultComposeSection;
-      EmptyScreen = DefaultEmptyScreen;
-      activity.push(<DefaultActivitySection key={1}/>);
+      ToolbarSection = DefaultToolbar;
+      MessagesSection = DefaultMessages;
+      TypingSection = DefaultTyping;
+      ComposeSection = DefaultCompose;
+      activity.push(<DefaultActivity key={1}/>);
     }
 
     const mainScreen = peer ? (

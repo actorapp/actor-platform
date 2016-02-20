@@ -32,7 +32,7 @@ import DefaultJoin from '../components/Join.react';
 import DefaultInstall from '../components/Install.react';
 import DefaultArchive from '../components/Archive.react';
 import DefaultDialog from '../components/Dialog.react';
-import DefaultEmpty from '../components/common/EmptyScreen.react';
+import DefaultEmpty from '../components/Empty.react';
 import Modal from 'react-modal';
 
 import { extendL18n, getIntlData } from '../l18n';
