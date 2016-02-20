@@ -60,7 +60,22 @@ public class CallNode {
                 || deviceState == CallNodeState.IN_PROGRESS;
     }
 
+    public boolean isSupportsPreConnection() {
+        if (peerSettings == null) {
+            return false;
+        }
+        if (peerSettings.canConnect() != null) {
+            return peerSettings.canConnect();
+        }
+        return false;
+    }
+
     public void setDeviceState(CallNodeState deviceState) {
         this.deviceState = deviceState;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + deviceId + "]";
     }
 }

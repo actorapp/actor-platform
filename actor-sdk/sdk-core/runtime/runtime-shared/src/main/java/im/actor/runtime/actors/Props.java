@@ -15,9 +15,12 @@ public final class Props {
 
     private final String dispatcher;
 
-    private Props(String dispatcher, ActorCreator creator) {
+    private final ActorSupervisor supervisor;
+
+    private Props(String dispatcher, ActorCreator creator, ActorSupervisor supervisor) {
         this.creator = creator;
         this.dispatcher = dispatcher;
+        this.supervisor = supervisor;
     }
 
     /**
@@ -41,13 +44,32 @@ public final class Props {
     }
 
     /**
+     * Getting supervisor if available
+     *
+     * @return the supervisor
+     */
+    public ActorSupervisor getSupervisor() {
+        return supervisor;
+    }
+
+    /**
      * Changing dispatcher
      *
      * @param dispatcher dispatcher id
-     * @return this
+     * @return updated props
      */
     public Props changeDispatcher(String dispatcher) {
-        return new Props(dispatcher, creator);
+        return new Props(dispatcher, creator, supervisor);
+    }
+
+    /**
+     * Changing supervisor of an Actor
+     *
+     * @param supervisor supervisor of actor
+     * @return updated props
+     */
+    public Props changeSupervisor(ActorSupervisor supervisor) {
+        return new Props(dispatcher, creator, supervisor);
     }
 
     /**
@@ -57,6 +79,6 @@ public final class Props {
      * @return Props object
      */
     public static Props create(ActorCreator creator) {
-        return new Props(null, creator);
+        return new Props(null, creator, null);
     }
 }
