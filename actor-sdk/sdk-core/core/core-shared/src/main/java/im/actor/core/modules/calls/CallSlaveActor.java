@@ -69,20 +69,11 @@ public class CallSlaveActor extends AbsCallActor {
         // Creating Call VM
         //
         callVM = spawnNewVM(callId, peer, false, new ArrayList<CallMember>(), CallState.RINGING);
-        callVM.getIsMuted().change(isMuted());
 
         //
         // Notify call manager to trigger ringing
         //
         callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
-    }
-
-    @Override
-    public void onMute(boolean isMuted) {
-        super.onMute(isMuted);
-        if (callVM != null) {
-            callVM.getIsMuted().change(isMuted);
-        }
     }
 
     @Override

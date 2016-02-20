@@ -13241,6 +13241,12 @@
                 "argument": "canBeAudioRelay",
                 "category": "full",
                 "description": "  If peer can audio relay. Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "canPreConnect",
+                "category": "full",
+                "description": "  If peer can preconnect before answer"
               }
             ],
             "attributes": [
@@ -13274,7 +13280,7 @@
                   "childType": "bool"
                 },
                 "id": 4,
-                "name": "canConnect"
+                "name": "canPreConnect"
               }
             ]
           }
