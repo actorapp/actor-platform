@@ -8,6 +8,7 @@ import { FormattedMessage } from 'react-intl';
 import PeerUtils from '../../utils/PeerUtils';
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
 import confirm from '../../utils/confirm';
+import { Link } from 'react-router';
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
 import FavoriteActionCreators from '../../actions/FavoriteActionCreators';
@@ -68,27 +69,28 @@ class RecentItem extends Component {
 
   render() {
     const { dialog } = this.props;
-    const selectedPeer = DialogStore.getCurrentPeer();
-
-    const isActive = selectedPeer && PeerUtils.equals(dialog.peer.peer, selectedPeer);
+    const toPeer = PeerUtils.peerToString(dialog.peer.peer);
 
     const recentClassName = classnames('sidebar__list__item', 'row', {
-      'sidebar__list__item--active': isActive,
       'sidebar__list__item--unread': dialog.counter > 0
     });
 
     return (
-      <li className={recentClassName} onClick={this.onClick}>
-        <AvatarItem image={dialog.peer.avatar}
-                    placeholder={dialog.peer.placeholder}
-                    size="tiny"
-                    title={dialog.peer.title}/>
-        <div className="title col-xs" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialog.peer.title)}}/>
-        {
-          dialog.counter > 0
-            ? <span className="counter">{dialog.counter}</span>
-            : null
-        }
+      <li>
+        <Link to={`/im/${toPeer}`} className={recentClassName} activeClassName="sidebar__list__item--active">
+          <AvatarItem image={dialog.peer.avatar}
+                      placeholder={dialog.peer.placeholder}
+                      size="tiny"
+                      title={dialog.peer.title}/>
+          <div className="title col-xs" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialog.peer.title)}}/>
+          {
+            dialog.counter > 0
+              ? <span className="counter">{dialog.counter}</span>
+              : null
+          }
+        </Link>
+        {/*
+        */}
       </li>
     );
   }

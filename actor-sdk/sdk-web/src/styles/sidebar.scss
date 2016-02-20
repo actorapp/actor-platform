@@ -91,7 +91,7 @@
     overflow: auto;
 
     margin: 0;
-    padding: 0;
+    padding: 0 0 10px;
 
     list-style: none;
     &__title {
@@ -133,6 +133,8 @@
       font-size: 15px;
 
       padding: 5px 14px;
+      margin: 0;
+      text-decoration: none;
 
       cursor: pointer;
       vertical-align: middle;
@@ -234,10 +236,6 @@
         .avatar {
           filter: none;
         }
-      }
-
-      &:last-child {
-        margin-bottom: 10px;
       }
     }
 
