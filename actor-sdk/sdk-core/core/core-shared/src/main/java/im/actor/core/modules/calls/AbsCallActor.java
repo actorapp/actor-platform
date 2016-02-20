@@ -17,6 +17,7 @@ import im.actor.core.viewmodel.CallVM;
 public class AbsCallActor extends PeerCallActor {
 
     private final HashMap<Long, CallVM> callModels;
+    private CallVM callVM;
 
     public AbsCallActor(boolean isSlaveMode, ModuleContext context) {
         super(isSlaveMode, context);
@@ -29,9 +30,11 @@ public class AbsCallActor extends PeerCallActor {
     //
     public CallVM spawnNewVM(long callId, Peer peer, boolean isOutgoing, ArrayList<CallMember> members, CallState callState) {
         CallVM callVM = new CallVM(callId, peer, isOutgoing, members, callState);
+        callVM.getIsMuted().change(isMuted());
         synchronized (callModels) {
             callModels.put(callId, callVM);
         }
+        this.callVM = callVM;
         return callVM;
     }
 
@@ -49,5 +52,13 @@ public class AbsCallActor extends PeerCallActor {
             }
         }
         return spawnNewVM(callId, peer, true, members, CallState.RINGING);
+    }
+
+    @Override
+    public void onMute(boolean isMuted) {
+        super.onMute(isMuted);
+        if (callVM != null) {
+            callVM.getIsMuted().change(isMuted);
+        }
     }
 }
