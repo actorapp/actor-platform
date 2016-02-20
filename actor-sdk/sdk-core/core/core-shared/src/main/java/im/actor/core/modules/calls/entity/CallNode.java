@@ -64,9 +64,6 @@ public class CallNode {
         if (peerSettings == null) {
             return false;
         }
-        if (peerSettings.canConnect() != null) {
-            return peerSettings.canConnect();
-        }
         return false;
     }
 
