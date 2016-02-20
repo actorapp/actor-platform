@@ -8,6 +8,7 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 import history from '../utils/history';
 import DelegateContainer from '../utils/DelegateContainer';
+import LocationContainer from '../utils/LocationContainer';
 
 import MyProfileActionCreators from './MyProfileActionCreators';
 import DialogActionCreators from './DialogActionCreators';
@@ -85,23 +86,19 @@ const LoginActionCreators = {
       delegate.actions.setLoggedIn(opts);
     } else {
       if (opts.redirect) {
-        // console.debug('opts.redirect', opts.redirect);
-        // console.debug('history', history);
+        const location = LocationContainer.get();
+        const { nextPathname } = location.state;
 
-        // TODO: redirect to home after login
-        // const router = RouterContainer.get();
-        // const nextPath = router.getCurrentQuery().nextPath;
-        //
-        // if (nextPath) {
-        //   router.replaceWith(nextPath);
-        // } else {
-        //   router.replaceWith('/');
-        // }
-        history.replace('/');
+        if (nextPathname) {
+          history.replace(nextPathname);
+        } else {
+          history.replace('/');
+        }
       }
 
       ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
-      ActorClient.bindDialogs(DialogActionCreators.setDialogs);
+      // ActorClient.bindDialogs(DialogActionCreators.setDialogs);
+      ActorClient.bindGroupDialogs(DialogActionCreators.setDialogs);
       ActorClient.bindContacts(ContactActionCreators.setContacts);
       ActorClient.bindSearch(QuickSearchActionCreators.setQuickSearchList);
       ActorClient.bindTempGlobalCounter(FaviconActionCreators.setFavicon);
@@ -118,7 +115,8 @@ const LoginActionCreators = {
     } else {
       ActorClient.unbindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
       ActorClient.unbindDialogs(DialogActionCreators.setDialogs);
-      ActorClient.unbindContacts(ContactActionCreators.setContacts);
+      // ActorClient.unbindContacts(ContactActionCreators.setContacts);
+      ActorClient.unbindGroupDialogs(DialogActionCreators.setDialogs);
       ActorClient.unbindSearch(QuickSearchActionCreators.setQuickSearchList);
       ActorClient.unbindTempGlobalCounter(FaviconActionCreators.setFavicon);
       ActorClient.unbindEventBus(EventBusActionCreators.broadcastEvent);

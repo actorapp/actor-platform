@@ -6,6 +6,7 @@ import { debounce, forEach } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
+import PeerUtils from '../utils/PeerUtils';
 
 import DefaultMessagesSection from './dialog/MessagesSection.react';
 import DefaultTypingSection from './dialog/TypingSection.react';
@@ -50,6 +51,10 @@ class DialogSection extends Component {
     delegate: PropTypes.object
   };
 
+  static propTypes = {
+    params: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
 
@@ -60,18 +65,33 @@ class DialogSection extends Component {
     DialogStore.addListener(this.onChange);
   }
 
-  componentDidMount() {
-    const { peer } = this.state;
+  componentWillMount() {
+    const peer = PeerUtils.stringToPeer(this.props.params.id);
+    DialogActionCreators.selectDialogPeer(peer);
+  }
 
+  componentDidMount() {
+    const peer = PeerUtils.stringToPeer(this.props.params.id);
     if (peer) {
       this.fixScroll();
       this.loadMessagesByScroll();
     }
   }
 
-  componentDidUpdate() {
-    this.fixScroll();
-    this.loadMessagesByScroll();
+  componentWillReceiveProps(nextProps) {
+    const { params } = nextProps;
+    if (this.props.params.id !== params.id) {
+      const peer = PeerUtils.stringToPeer(params.id);
+      DialogActionCreators.selectDialogPeer(peer);
+      if (peer) {
+        this.fixScroll();
+        this.loadMessagesByScroll();
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    DialogActionCreators.selectDialogPeer(null);
   }
 
   fixScrollTimeout = () => {
@@ -181,17 +201,10 @@ class DialogSection extends Component {
 
     return (
       <section className="main">
-        {
-          peer
-            ? <ToolbarSection/>
-            : null
-        }
+        <ToolbarSection/>
         <div className="flexrow">
-          {
-            peer
-              ? [mainScreen, activity]
-              : <EmptyScreen/>
-          }
+          {mainScreen}
+          {activity}
         </div>
       </section>
     );
