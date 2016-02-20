@@ -18,6 +18,7 @@ public class PeerNodeActor extends ModuleActor {
 
     private final long deviceId;
     private final int uid;
+    private final boolean isPreConnectEnabled;
     private final ActorRef callActor;
     private ActorRef peerConnection;
     private PeerNodeSettings settings;
@@ -26,8 +27,9 @@ public class PeerNodeActor extends ModuleActor {
     private boolean isMuted = false;
     private boolean isConnected = false;
 
-    public PeerNodeActor(int uid, long deviceId, ActorRef callActor, ModuleContext context) {
+    public PeerNodeActor(int uid, long deviceId, boolean isPreConnectEnabled, ActorRef callActor, ModuleContext context) {
         super(context);
+        this.isPreConnectEnabled = isPreConnectEnabled;
         this.callActor = callActor;
         this.uid = uid;
         this.deviceId = deviceId;
@@ -69,7 +71,7 @@ public class PeerNodeActor extends ModuleActor {
         if (peerConnection == null
                 && settings != null
                 && mediaStream != null
-                && (settings.isPreConnectionEnabled() || isAnswered)) {
+                && ((settings.isPreConnectionEnabled() && isPreConnectEnabled) || isAnswered)) {
 
             peerConnection = system().actorOf(getPath() + "/connection",
                     PeerConnectionActor.CONSTRUCTOR(mediaStream, isAnswered, self(), context()),
@@ -178,7 +180,6 @@ public class PeerNodeActor extends ModuleActor {
             super.onReceive(message);
         }
     }
-
 
     public static class OnAdvertised {
 
