@@ -246,8 +246,6 @@ public class PeerConnectionActor extends ModuleActor {
             peerConnection = null;
         }
         self().send(PoisonPill.INSTANCE);
-
-        // TODO: Notify Root
     }
 
     private void onHandShakeCompleted() {
