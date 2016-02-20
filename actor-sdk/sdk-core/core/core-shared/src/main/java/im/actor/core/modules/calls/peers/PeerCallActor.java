@@ -13,6 +13,7 @@ import im.actor.core.api.ApiCallMember;
 import im.actor.core.api.ApiCandidate;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.ApiOffer;
+import im.actor.core.api.ApiOnAnswer;
 import im.actor.core.api.ApiPeerSettings;
 import im.actor.core.api.ApiRejectCall;
 import im.actor.core.api.ApiSwitchMaster;
@@ -106,10 +107,16 @@ public class PeerCallActor extends EventBusActor {
     }
 
     public void startSignaling(String busId) {
+        if (!isSlaveMode) {
+            throw new RuntimeException("This operation is only for slave mode");
+        }
         joinBus(busId);
     }
 
     public void onMasterSwitched(int uid, long deviceId) {
+        if (!isSlaveMode) {
+            throw new RuntimeException("This operation is only for slave mode");
+        }
         this.masterUid = uid;
         this.masterDeviceId = deviceId;
         this.haveMaster = true;
@@ -163,8 +170,25 @@ public class PeerCallActor extends EventBusActor {
 
     }
 
+    public void onAdvertised(int uid, long deviceId, ApiPeerSettings settings) {
+
+    }
+
+    public void onAnswered(int uid, long deviceId) {
+
+    }
+
     public void sendAdvertise(int uid, long deviceId, ApiPeerSettings settings) {
         sendSignaling(uid, deviceId, new ApiAdvertiseSelf(settings));
+    }
+
+    public void sendNeedOffer(int uid, long deviceId, int destUid, long destDeviceId,
+                              ApiPeerSettings settings, boolean isSilent) {
+        sendSignaling(uid, deviceId, new ApiNeedOffer(destUid, destDeviceId, settings, isSilent));
+    }
+
+    public void sendOnAnswered(int uid, long deviceId, int destUid, long destDeviceId) {
+        sendSignaling(uid, deviceId, new ApiOnAnswer(destUid, destDeviceId));
     }
 
     public void sendAnswer() {
@@ -195,11 +219,15 @@ public class PeerCallActor extends EventBusActor {
     }
 
     public void sendRTCOffer(int uid, long deviceId, String sdp) {
-        sendSignaling(uid, deviceId, new ApiAnswer(0, sdp));
+        sendSignaling(uid, deviceId, new ApiOffer(0, sdp, getSelfSettings().toApi()));
     }
 
     public void sendRTCCandidate(int uid, long deviceId, int index, String id, String sdp) {
         sendSignaling(uid, deviceId, new ApiCandidate(0, index, id, sdp));
+    }
+
+    public void sendSwitchMaster(int uid, long deviceId) {
+        sendSignaling(uid, deviceId, new ApiSwitchMaster());
     }
 
     public void sendSignaling(int uid, long deviceId, ApiWebRTCSignaling signaling) {
@@ -260,6 +288,11 @@ public class PeerCallActor extends EventBusActor {
         } else if (signaling instanceof ApiNeedOffer) {
             ApiNeedOffer needOffer = (ApiNeedOffer) signaling;
             getPeer(needOffer.getUid(), needOffer.getDevice()).onOfferNeeded();
+        } else if (signaling instanceof ApiAdvertiseSelf) {
+            ApiAdvertiseSelf advertiseSelf = (ApiAdvertiseSelf) signaling;
+            onAdvertised(senderId, senderDeviceId, advertiseSelf.getPeerSettings());
+        } else if (signaling instanceof ApiAnswerCall) {
+            onAnswered(senderId, senderDeviceId);
         }
     }
 

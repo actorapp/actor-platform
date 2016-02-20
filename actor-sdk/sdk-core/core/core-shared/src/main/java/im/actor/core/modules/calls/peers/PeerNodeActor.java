@@ -110,7 +110,7 @@ public class PeerNodeActor extends ModuleActor {
 
     @ActorMessage
     public void onOfferNeeded() {
-
+        peerConnection.send(new PeerConnectionActor.OnOfferNeeded());
     }
 
     @Override
