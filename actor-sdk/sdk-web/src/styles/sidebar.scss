@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 .sidebar {
@@ -271,6 +271,19 @@
         cursor: pointer;
 
         color: $dark-sky-blue;
+      }
+    }
+
+    .scroll-wrapper {
+      .ss-scroll {
+        right: -2px;
+        width: 4px;
+        opacity: 1 !important;
+        &:hover,
+        &:active {
+          width: 8px;
+          right: -4px;
+        }
       }
     }
   }

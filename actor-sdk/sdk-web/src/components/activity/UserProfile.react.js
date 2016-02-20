@@ -65,11 +65,7 @@ class UserProfile extends Component {
 
   removeFromContacts = () => {
     const { user } = this.props;
-    const { intl } = this.context;
-    confirm(<FormattedMessage id="modal.confirm.removeContact" values={{name: user.name}}/>, {
-      abortLabel: intl.messages['button.cancel'],
-      confirmLabel: intl.messages['button.ok']
-    }).then(
+    confirm(<FormattedMessage id="modal.confirm.removeContact" values={{name: user.name}}/>).then(
       () => ContactActionCreators.removeContact(user.id),
       () => {}
     );
@@ -103,10 +99,7 @@ class UserProfile extends Component {
 
   clearChat = (uid) => {
     const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.clear'], {
-      abortLabel: intl.messages['button.cancel'],
-      confirmLabel: intl.messages['button.ok']
-    }).then(
+    confirm(intl.messages['modal.confirm.clear']).then(
       () => {
         const peer = ActorClient.getUserPeer(uid);
         DialogActionCreators.clearChat(peer);
@@ -117,10 +110,7 @@ class UserProfile extends Component {
 
   deleteChat = (uid) => {
     const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.delete'], {
-      abortLabel: intl.messages['button.cancel'],
-      confirmLabel: intl.messages['button.ok']
-    }).then(
+    confirm(intl.messages['modal.confirm.delete']).then(
       () => {
         const peer = ActorClient.getUserPeer(uid);
         DialogActionCreators.deleteChat(peer);
