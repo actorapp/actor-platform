@@ -8,6 +8,7 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 import history from '../utils/history';
 import DelegateContainer from '../utils/DelegateContainer';
+import LocationContainer from '../utils/LocationContainer';
 
 import MyProfileActionCreators from './MyProfileActionCreators';
 import DialogActionCreators from './DialogActionCreators';
@@ -85,19 +86,14 @@ const LoginActionCreators = {
       delegate.actions.setLoggedIn(opts);
     } else {
       if (opts.redirect) {
-        // console.debug('opts.redirect', opts.redirect);
-        // console.debug('history', history);
+        const location = LocationContainer.get();
+        const { nextPathname } = location.state;
 
-        // TODO: redirect to home after login
-        // const router = RouterContainer.get();
-        // const nextPath = router.getCurrentQuery().nextPath;
-        //
-        // if (nextPath) {
-        //   router.replaceWith(nextPath);
-        // } else {
-        //   router.replaceWith('/');
-        // }
-        history.replace('/');
+        if (nextPathname) {
+          history.replace(nextPathname);
+        } else {
+          history.replace('/');
+        }
       }
 
       ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
