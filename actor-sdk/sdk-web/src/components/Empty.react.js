@@ -5,7 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import ConnectionState from './ConnectionState.react';
+import ConnectionState from './common/ConnectionState.react';
 
 class EmptyScreen extends Component {
   constructor(props) {
