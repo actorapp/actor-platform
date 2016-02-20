@@ -1,4 +1,4 @@
-package im.actor.core.modules.calls;
+package im.actor.core.modules.calls.peers;
 
 import com.google.j2objc.annotations.Property;
 
@@ -29,54 +29,45 @@ import im.actor.runtime.webrtc.WebRTCSettings;
 public class PeerConnectionActor extends ModuleActor {
 
     @NotNull
-    public static ActorCreator CONSTRUCTOR(@NotNull final ActorRef root,
-                                           final int uid,
-                                           final long deviceId,
-                                           final boolean isMuted,
-                                           final boolean isSilentMode,
+    public static ActorCreator CONSTRUCTOR(@NotNull final WebRTCMediaStream mediaStream,
+                                           final boolean isEnabled,
+                                           @NotNull final ActorRef nodeActor,
                                            @NotNull final ModuleContext context) {
         return new ActorCreator() {
             @Override
             public Actor create() {
-                return new PeerConnectionActor(root, uid, deviceId, isMuted, isSilentMode, context);
+                return new PeerConnectionActor(mediaStream, isEnabled, nodeActor, context);
             }
         };
     }
 
+
     private final String TAG;
     @NotNull
-    private final ActorRef root;
-    private final int uid;
-    private final long deviceId;
-    private boolean isMuted;
+    private final ActorRef nodeActor;
+    @NotNull
+    private final WebRTCMediaStream stream;
+
+    @NotNull
+    private WebRTCPeerConnection peerConnection;
+
     private boolean isEnabled;
     private boolean isReady = false;
     private boolean isReadyForCandidates = false;
     @NotNull
-    private WebRTCPeerConnection peerConnection;
-    @NotNull
-    private WebRTCMediaStream stream;
-    @NotNull
-    private State state = State.INITIALIZATION;
+    private PeerConnectionState state = PeerConnectionState.INITIALIZATION;
 
     private ArrayList<WebRTCMediaStream> incomingStreams = new ArrayList<>();
 
-    public PeerConnectionActor(@NotNull ActorRef root, int uid, long deviceId, boolean isMuted, boolean isEnabled, @NotNull ModuleContext context) {
+    public PeerConnectionActor(@NotNull WebRTCMediaStream mediaStream,
+                               boolean isEnabled,
+                               @NotNull ActorRef nodeActor,
+                               @NotNull ModuleContext context) {
         super(context);
-        TAG = "PeerConnection#" + uid + "(" + deviceId + ")";
-        this.isMuted = isMuted;
-        this.root = root;
-        this.uid = uid;
-        this.deviceId = deviceId;
+        TAG = "PeerConnection";
+        this.nodeActor = nodeActor;
         this.isEnabled = isEnabled;
-    }
-
-    public int getUid() {
-        return uid;
-    }
-
-    public long getDeviceId() {
-        return deviceId;
+        this.stream = mediaStream;
     }
 
     @Override
@@ -88,36 +79,30 @@ public class PeerConnectionActor extends ModuleActor {
 
         WebRTCIceServer[] iceServers = config().getWebRTCIceServers();
         WebRTCSettings settings = new WebRTCSettings(false, false);
-        Promises.tuple(WebRTC.createPeerConnection(iceServers, settings), WebRTC.getUserAudio()).map(new FunctionTupled2<WebRTCPeerConnection, WebRTCMediaStream, WebRTCPeerConnection>() {
-            @Override
-            public WebRTCPeerConnection apply(WebRTCPeerConnection webRTCPeerConnection, WebRTCMediaStream stream) {
-                setEnabled(stream);
-                PeerConnectionActor.this.stream = stream;
-                webRTCPeerConnection.addOwnStream(stream);
-                return webRTCPeerConnection;
-            }
-        }).then(new Consumer<WebRTCPeerConnection>() {
+        WebRTC.createPeerConnection(iceServers, settings).then(new Consumer<WebRTCPeerConnection>() {
             @Override
             public void apply(WebRTCPeerConnection webRTCPeerConnection) {
                 Log.d(TAG, "preStart:then");
                 PeerConnectionActor.this.peerConnection = webRTCPeerConnection;
+                PeerConnectionActor.this.peerConnection.addOwnStream(stream);
                 PeerConnectionActor.this.peerConnection.addCallback(new WebRTCPeerConnectionCallback() {
                     @Override
                     public void onCandidate(int label, String id, String candidate) {
-                        root.send(new DoCandidate(uid, deviceId, label, id, candidate));
+                        nodeActor.send(new PeerNodeActor.DoCandidate(label, id, candidate));
                     }
 
                     @Override
                     public void onStreamAdded(WebRTCMediaStream stream) {
                         stream.setEnabled(isEnabled);
                         incomingStreams.add(stream);
-                        root.send(new OnStreamAdded(uid, deviceId, stream));
+                        nodeActor.send(new PeerNodeActor.OnStreamAdded());
                     }
 
                     @Override
                     public void onStreamRemoved(WebRTCMediaStream stream) {
                         incomingStreams.remove(stream);
-                        root.send(new OnStreamRemoved(uid, deviceId, stream));
+                        nodeActor.send(new PeerNodeActor.OnStreamRemoved());
+                        // root.send(new OnStreamRemoved(uid, deviceId, stream));
                     }
 
                     @Override
@@ -125,7 +110,7 @@ public class PeerConnectionActor extends ModuleActor {
 
                     }
                 });
-                state = State.WAITING_HANDSHAKE;
+                state = PeerConnectionState.WAITING_HANDSHAKE;
                 isReady = true;
                 unstashAll();
             }
@@ -141,7 +126,7 @@ public class PeerConnectionActor extends ModuleActor {
 
     public void onOfferNeeded() {
         // Ignore if we are not waiting for handshake
-        if (state != State.WAITING_HANDSHAKE) {
+        if (state != PeerConnectionState.WAITING_HANDSHAKE) {
             return;
         }
 
@@ -163,8 +148,8 @@ public class PeerConnectionActor extends ModuleActor {
             @Override
             public void apply(WebRTCSessionDescription description) {
                 Log.d(TAG, "onOfferNeeded:then");
-                root.send(new DoOffer(uid, deviceId, description.getSdp()));
-                state = State.WAITING_ANSWER;
+                nodeActor.send(new PeerNodeActor.DoOffer(description.getSdp()));
+                state = PeerConnectionState.WAITING_ANSWER;
                 isReady = true;
                 unstashAll();
             }
@@ -180,7 +165,7 @@ public class PeerConnectionActor extends ModuleActor {
 
     public void onOffer(@NotNull String sdp) {
         // Ignore if we are not waiting for handshake
-        if (state != State.WAITING_HANDSHAKE) {
+        if (state != PeerConnectionState.WAITING_HANDSHAKE) {
             return;
         }
 
@@ -209,7 +194,7 @@ public class PeerConnectionActor extends ModuleActor {
         }).then(new Consumer<WebRTCSessionDescription>() {
             @Override
             public void apply(WebRTCSessionDescription description) {
-                root.send(new DoAnswer(uid, deviceId, description.getSdp()));
+                nodeActor.send(new PeerNodeActor.DoAnswer(description.getSdp()));
                 onHandShakeCompleted();
             }
         }).failure(new Consumer<Exception>() {
@@ -224,7 +209,7 @@ public class PeerConnectionActor extends ModuleActor {
 
     public void onAnswer(@NotNull String sdp) {
         // Ignore if we are not waiting for answer
-        if (state != State.WAITING_ANSWER) {
+        if (state != PeerConnectionState.WAITING_ANSWER) {
             return;
         }
 
@@ -255,14 +240,10 @@ public class PeerConnectionActor extends ModuleActor {
     private void onHandshakeFailure() {
         isReady = false;
         isReadyForCandidates = false;
-        state = State.CLOSED;
+        state = PeerConnectionState.CLOSED;
         if (peerConnection != null) {
             peerConnection.close();
             peerConnection = null;
-        }
-        if (stream != null) {
-            stream.close();
-            stream = null;
         }
         self().send(PoisonPill.INSTANCE);
 
@@ -272,20 +253,12 @@ public class PeerConnectionActor extends ModuleActor {
     private void onHandShakeCompleted() {
         isReady = true;
         isReadyForCandidates = true;
-        state = State.READY;
+        state = PeerConnectionState.READY;
         unstashAll();
     }
 
     public void onCandidate(int index, @NotNull String id, @NotNull String sdp) {
         peerConnection.addCandidate(index, id, sdp);
-    }
-
-    public void onMute(boolean isMuted) {
-        if (isMuted == this.isMuted) {
-            return;
-        }
-        this.isMuted = isMuted;
-        setEnabled(stream);
     }
 
     public void onEnabled(boolean isEnabled) {
@@ -296,13 +269,6 @@ public class PeerConnectionActor extends ModuleActor {
         for (WebRTCMediaStream s : incomingStreams) {
             s.setEnabled(isEnabled);
         }
-        setEnabled(stream);
-    }
-
-    private void setEnabled(WebRTCMediaStream mediaStream) {
-        if (mediaStream != null) {
-            mediaStream.setEnabled(!(isMuted || (!isEnabled)));
-        }
     }
 
     public void onEnded() {
@@ -311,12 +277,8 @@ public class PeerConnectionActor extends ModuleActor {
             peerConnection.close();
             peerConnection = null;
         }
-        if (stream != null) {
-            stream.close();
-            stream = null;
-        }
         isReady = false;
-        state = State.CLOSED;
+        state = PeerConnectionState.CLOSED;
         self().send(PoisonPill.INSTANCE);
     }
 
@@ -391,12 +353,6 @@ public class PeerConnectionActor extends ModuleActor {
                 return;
             }
             onEnded();
-        } else if (message instanceof DoMute) {
-            if (!isReady) {
-                stash();
-                return;
-            }
-            onMute(((DoMute) message).isMuted());
         } else if (message instanceof DoEnable) {
             if (!isReady) {
                 stash();
@@ -405,156 +361,6 @@ public class PeerConnectionActor extends ModuleActor {
             onEnabled(((DoEnable) message).isEnabled());
         } else {
             super.onReceive(message);
-        }
-    }
-
-    //
-    // Outbound Messages
-    //
-
-    public static class DoOffer {
-
-        @Property("nonatomic, readonly")
-        private int uid;
-        @Property("nonatomic, readonly")
-        private long deviceId;
-        @NotNull
-        @Property("nonatomic, readonly")
-        private String sdp;
-
-        public DoOffer(int uid, long deviceId, @NotNull String sdp) {
-            this.uid = uid;
-            this.deviceId = deviceId;
-            this.sdp = sdp;
-        }
-
-        public int getUid() {
-            return uid;
-        }
-
-        public long getDeviceId() {
-            return deviceId;
-        }
-
-        @NotNull
-        public String getSdp() {
-            return sdp;
-        }
-    }
-
-    public static class DoAnswer {
-
-        @Property("nonatomic, readonly")
-        private final int uid;
-        @Property("nonatomic, readonly")
-        private final long deviceId;
-        @NotNull
-        @Property("nonatomic, readonly")
-        private final String sdp;
-
-        public DoAnswer(int uid, long deviceId, @NotNull String sdp) {
-            this.uid = uid;
-            this.deviceId = deviceId;
-            this.sdp = sdp;
-        }
-
-        public int getUid() {
-            return uid;
-        }
-
-        public long getDeviceId() {
-            return deviceId;
-        }
-
-        @NotNull
-        public String getSdp() {
-            return sdp;
-        }
-    }
-
-    public static class DoCandidate {
-
-        private int uid;
-        private long deviceId;
-        private int index;
-        private String id;
-        private String sdp;
-
-        public DoCandidate(int uid, long deviceId, int index, String id, String sdp) {
-            this.uid = uid;
-            this.deviceId = deviceId;
-            this.index = index;
-            this.id = id;
-            this.sdp = sdp;
-        }
-
-        public int getUid() {
-            return uid;
-        }
-
-        public long getDeviceId() {
-            return deviceId;
-        }
-
-        public int getIndex() {
-            return index;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getSdp() {
-            return sdp;
-        }
-    }
-
-    public static class OnStreamAdded {
-        private int uid;
-        private long deviceId;
-        private WebRTCMediaStream stream;
-
-        public OnStreamAdded(int uid, long deviceId, WebRTCMediaStream stream) {
-            this.uid = uid;
-            this.deviceId = deviceId;
-            this.stream = stream;
-        }
-
-        public int getUid() {
-            return uid;
-        }
-
-        public long getDeviceId() {
-            return deviceId;
-        }
-
-        public WebRTCMediaStream getStream() {
-            return stream;
-        }
-    }
-
-    public static class OnStreamRemoved {
-
-        private int uid;
-        private long deviceId;
-        private WebRTCMediaStream stream;
-
-        public OnStreamRemoved(int uid, long deviceId, WebRTCMediaStream stream) {
-            this.uid = uid;
-            this.deviceId = deviceId;
-            this.stream = stream;
-        }
-
-        public int getUid() {
-            return uid;
-        }
-
-        public long getDeviceId() {
-            return deviceId;
-        }
-
-        public WebRTCMediaStream getStream() {
-            return stream;
         }
     }
 
@@ -634,18 +440,6 @@ public class PeerConnectionActor extends ModuleActor {
 
     }
 
-    public static class DoMute {
-        boolean isMuted;
-
-        public DoMute(boolean isMuted) {
-            this.isMuted = isMuted;
-        }
-
-        public boolean isMuted() {
-            return isMuted;
-        }
-    }
-
     public static class DoEnable {
 
         boolean isEnabled;
@@ -657,9 +451,5 @@ public class PeerConnectionActor extends ModuleActor {
         public boolean isEnabled() {
             return isEnabled;
         }
-    }
-
-    private enum State {
-        INITIALIZATION, WAITING_HANDSHAKE, WAITING_ANSWER, READY, CLOSED
     }
 }
