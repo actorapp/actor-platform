@@ -13,8 +13,8 @@ public class PeerNodeSettings {
 
     public PeerNodeSettings(ApiPeerSettings peerSettings) {
         if (peerSettings != null) {
-            if (peerSettings.canConnect() != null) {
-                isPreConnectionEnabled = peerSettings.canConnect();
+            if (peerSettings.canPreConnect() != null) {
+                isPreConnectionEnabled = peerSettings.canPreConnect();
             }
         }
     }

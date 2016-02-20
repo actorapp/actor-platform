@@ -11368,7 +11368,7 @@
         </node>
         <node concept="2m7Kf5" id="3xEfKBqKDn$" role="2m0hLx">
           <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="canConnect" />
+          <property role="TrG5h" value="canPreConnect" />
           <node concept="2m5nlT" id="3xEfKBqKDnL" role="2m7DVh">
             <node concept="2m5ndN" id="3xEfKBqKDnR" role="3GH5xg" />
           </node>
@@ -11390,6 +11390,11 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="If peer can audio relay. Default is false." />
           <ref role="NX6Kv" node="3xEfKBqKs_o" resolve="canBeAudioRelay" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqL87R" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="If peer can preconnect before answer" />
+          <ref role="NX6Kv" node="3xEfKBqKDn$" resolve="canPreConnect" />
         </node>
       </node>
       <node concept="1Dx9M1" id="6tgpW9bxpK8" role="1Dx9rD">
