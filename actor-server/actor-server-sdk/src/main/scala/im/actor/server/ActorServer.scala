@@ -75,6 +75,10 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
    * @return
    */
   def start(): ActorServer = {
+    Option(System.getProperty("actor.home")) foreach { home ⇒
+      System.setProperty("config.file", s"$home/conf/server.conf")
+    }
+
     System.setProperty("sun.jnu.encoding", "UTF-8")
     System.setProperty("file.encoding", "UTF-8")
 

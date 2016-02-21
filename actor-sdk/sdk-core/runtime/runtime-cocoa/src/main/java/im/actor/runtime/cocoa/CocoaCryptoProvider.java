@@ -4,8 +4,8 @@
 
 package im.actor.runtime.cocoa;
 
-import im.actor.runtime.crypto.bouncycastle.BouncyCastleRuntime;
+import im.actor.runtime.generic.GenericCryptoProvider;
 
-public class CocoaCryptoProvider extends BouncyCastleRuntime {
+public class CocoaCryptoProvider extends GenericCryptoProvider {
 
 }

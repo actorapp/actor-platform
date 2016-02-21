@@ -4,9 +4,17 @@
 
 package im.actor.runtime.js;
 
+import im.actor.runtime.CryptoRuntime;
+import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 
-import im.actor.runtime.crypto.bouncycastle.BouncyCastleRuntime;
+public class JsCryptoProvider implements CryptoRuntime {
 
-public class JsCryptoProvider extends BouncyCastleRuntime {
+    public JsCryptoProvider() {
+        KuznechikFastEngine.initCalc();
+    }
 
+    @Override
+    public void waitForCryptoLoaded() {
+
+    }
 }

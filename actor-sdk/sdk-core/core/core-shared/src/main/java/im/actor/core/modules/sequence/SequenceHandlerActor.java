@@ -115,7 +115,7 @@ public class SequenceHandlerActor extends ModuleActor {
             processor.applyRelated(users, groups, true);
         }
 
-        Log.d(TAG, "Processing update success");
+        // Log.d(TAG, "Processing update success");
         return Promises.success(new UpdateProcessed());
     }
 
@@ -196,7 +196,6 @@ public class SequenceHandlerActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
-        Log.d(TAG, "Processing onReceive: " + message);
         if (message instanceof WeakUpdate) {
             WeakUpdate weakUpdate = (WeakUpdate) message;
             try {

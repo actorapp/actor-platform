@@ -26,7 +26,7 @@ import im.actor.core.js.entity.*;
 import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
-import im.actor.core.js.providers.JsWebRTCProvider;
+import im.actor.core.js.providers.JsCallsProvider;
 import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
@@ -44,6 +44,7 @@ import im.actor.runtime.js.mvvm.JsDisplayListCallback;
 import im.actor.runtime.js.utils.JsPromise;
 import im.actor.runtime.js.utils.JsPromiseExecutor;
 import im.actor.runtime.markdown.MarkdownParser;
+import im.actor.runtime.webrtc.WebRTCIceServer;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
@@ -65,6 +66,19 @@ public class JsFacade implements Exportable {
     private static final String[] EndpointsProduction = {
             "wss://front1-ws-mtproto-api-rev2.actor.im/",
             "wss://front2-ws-mtproto-api-rev2.actor.im/"
+    };
+
+    private WebRTCIceServer[] webRTCIceServers = {
+            new WebRTCIceServer("stun:turn1.actor.im:443"),
+            new WebRTCIceServer("stun:turn2.actor.im:443"),
+            new WebRTCIceServer("stun:turn3.actor.im:443"),
+
+            new WebRTCIceServer("turn:turn1.actor.im:443?transport=tcp", "actor", "password"),
+            new WebRTCIceServer("turn:turn1.actor.im:443?transport=udp", "actor", "password"),
+            new WebRTCIceServer("turn:turn2.actor.im:443?transport=tcp", "actor", "password"),
+            new WebRTCIceServer("turn:turn2.actor.im:443?transport=udp", "actor", "password"),
+            new WebRTCIceServer("turn:turn3.actor.im:443?transport=tcp", "actor", "password"),
+            new WebRTCIceServer("turn:turn3.actor.im:443?transport=udp", "actor", "password"),
     };
 
     private static final String[] EndpointsDev1 = {
@@ -102,7 +116,7 @@ public class JsFacade implements Exportable {
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
         configuration.setPhoneBookProvider(new JsPhoneBookProvider());
         configuration.setNotificationProvider(new JsNotificationsProvider());
-        configuration.setWebRTCProvider(new JsWebRTCProvider());
+        configuration.setCallsProvider(new JsCallsProvider());
 
         // Setting locale
         String locale = LocaleInfo.getCurrentLocale().getLocaleName();
@@ -132,6 +146,11 @@ public class JsFacade implements Exportable {
         // Adding endpoints
         for (String endpoint : endpoints) {
             configuration.addEndpoint(endpoint);
+        }
+
+        // Adding WebRTC ICE servers
+        for (WebRTCIceServer iceServer : webRTCIceServers) {
+            configuration.addWebRTCServer(iceServer.getUrl(), iceServer.getUsername(), iceServer.getCredential());
         }
 
         messenger = new JsMessenger(configuration.build());
@@ -431,12 +450,6 @@ public class JsFacade implements Exportable {
         return new JsMessagesBind(callback, messenger.getSharedChatList(peerC), messenger.getConversationVM(peerC));
     }
 
-    public void onMessageShown(JsPeer peer, JsMessage message) {
-        if (message.isOnServer()) {
-            messenger.onMessageShown(peer.convert(), Long.parseLong(message.getSortKey()));
-        }
-    }
-
     public void deleteMessage(JsPeer peer, String id) {
         messenger.deleteMessages(peer.convert(), new long[]{Long.parseLong(id)});
     }
@@ -626,13 +639,13 @@ public class JsFacade implements Exportable {
 
     // Calls
 
-    public JsPromise doCall(final int uid){
+    public JsPromise doCall(final int uid) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.doCall(uid).start(new CommandCallback<ResponseDoCall>() {
+                messenger.doCall(uid).start(new CommandCallback<Long>() {
                     @Override
-                    public void onResult(ResponseDoCall res) {
+                    public void onResult(Long res) {
                         Log.d(TAG, "doCall:result");
                         resolve();
                     }
@@ -647,11 +660,11 @@ public class JsFacade implements Exportable {
         });
     }
 
-    public void answerCall(String callId){
+    public void answerCall(String callId) {
         messenger.answerCall(Long.parseLong(callId));
     }
 
-    public void endCall(String callId){
+    public void endCall(String callId) {
         messenger.endCall(Long.parseLong(callId));
     }
 
@@ -834,15 +847,15 @@ public class JsFacade implements Exportable {
         messenger.loadMoreDialogs();
     }
 
-    public JsPromise loadArchivedDialogs(){
+    public JsPromise loadArchivedDialogs() {
         return loadArchivedDialogs(true);
     }
 
-    public JsPromise loadMoreArchivedDialogs(){
+    public JsPromise loadMoreArchivedDialogs() {
         return loadArchivedDialogs(false);
     }
 
-    private JsPromise loadArchivedDialogs(final boolean init){
+    private JsPromise loadArchivedDialogs(final boolean init) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {

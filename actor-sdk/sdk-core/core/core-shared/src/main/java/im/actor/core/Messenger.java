@@ -15,7 +15,6 @@ import java.util.List;
 import im.actor.core.api.ApiRawValue;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
-import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.api.rpc.ResponseRawRequest;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
@@ -46,7 +45,7 @@ import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
 import im.actor.core.viewmodel.AppStateVM;
-import im.actor.core.viewmodel.CallModel;
+import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
@@ -89,19 +88,6 @@ public class Messenger {
 
         // Start Messenger initialization
         Timing timing = new Timing("MESSENGER_INIT");
-
-        // Encryption
-        timing.section("Encryption");
-        if (Runtime.isSingleThread()) {
-            KuznechikFastEngine.initCalc();
-        } else {
-            Runtime.dispatch(new Runnable() {
-                @Override
-                public void run() {
-                    KuznechikFastEngine.initDump(Assets.loadBinAsset("kuz_tables.bin"));
-                }
-            });
-        }
 
         // Actor system
         timing.section("Actors");
@@ -1015,8 +1001,19 @@ public class Messenger {
      * @return command to execute
      */
     @ObjectiveCName("doCallWithUid:")
-    public Command<ResponseDoCall> doCall(int uid) {
-        return modules.getCallsModule().makeCall(uid);
+    public Command<Long> doCall(int uid) {
+        return modules.getCallsModule().makeCall(Peer.user(uid));
+    }
+
+    /**
+     * Starting new group call
+     *
+     * @param gid group you want to call
+     * @return command to execute
+     */
+    @ObjectiveCName("doCallWithGid:")
+    public Command<Long> doGroupCall(int gid) {
+        return modules.getCallsModule().makeCall(Peer.group(gid));
     }
 
     /**
@@ -1027,6 +1024,20 @@ public class Messenger {
     @ObjectiveCName("endCallWithCallId:")
     public void endCall(long callId) {
         modules.getCallsModule().endCall(callId);
+    }
+
+    /**
+     * Toggle muting of call
+     *
+     * @param callId Call Id
+     */
+    @ObjectiveCName("toggleCallMuteWithCallId:")
+    public void toggleCallMute(long callId) {
+        if (modules.getCallsModule().getCall(callId).getIsMuted().get()) {
+            modules.getCallsModule().unmuteCall(callId);
+        } else {
+            modules.getCallsModule().muteCall(callId);
+        }
     }
 
     /**
@@ -1046,7 +1057,7 @@ public class Messenger {
      * @return Call view model
      */
     @ObjectiveCName("getCallWithCallId:")
-    public CallModel getCall(long callId) {
+    public CallVM getCall(long callId) {
         return modules.getCallsModule().getCall(callId);
     }
 

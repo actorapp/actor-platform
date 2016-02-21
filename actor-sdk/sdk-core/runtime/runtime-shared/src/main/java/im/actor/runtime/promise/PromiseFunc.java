@@ -1,5 +1,9 @@
 package im.actor.runtime.promise;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Method that evaluate result of a promise
  *
@@ -7,5 +11,6 @@ package im.actor.runtime.promise;
  */
 public interface PromiseFunc<T> {
 
-    void exec(PromiseResolver<T> resolver);
+    @ObjectiveCName("exec:")
+    void exec(@NotNull PromiseResolver<T> resolver);
 }

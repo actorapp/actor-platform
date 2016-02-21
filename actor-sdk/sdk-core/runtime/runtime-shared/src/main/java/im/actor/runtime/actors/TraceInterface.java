@@ -16,4 +16,6 @@ public interface TraceInterface {
     void onDeadLetter(ActorRef receiver, Object message);
 
     void onActorDie(ActorRef ref, Envelope envelope, Exception e);
+
+    void onMessageSent(ActorRef ref, Object message);
 }

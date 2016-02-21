@@ -56,6 +56,9 @@ android {
 
 dependencies {
 
+    // Calls
+    compile 'io.pristine:libjingle:11139@aar'
+
     // UI
     compile 'com.facebook.fresco:fresco:0.7.0'
     compile 'com.facebook.rebound:rebound:0.3.8'

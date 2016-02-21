@@ -56,6 +56,24 @@ public class ManagedList<T> extends ArrayList<T> {
         return res;
     }
 
+    public boolean isAll(Predicate<T> predicate) {
+        for (T t : this) {
+            if (!predicate.apply(t)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isAny(Predicate<T> predicate) {
+        for (T t : this) {
+            if (predicate.apply(t)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public <R> ManagedList<R> map(Function<T, R> map) {
         ManagedList<R> res = new ManagedList<>();
         for (T t : this) {
@@ -91,6 +109,14 @@ public class ManagedList<T> extends ArrayList<T> {
 
     public T first() {
         return get(0);
+    }
+
+    public T firstOrNull() {
+        if (size() == 0) {
+            return null;
+        } else {
+            return get(0);
+        }
     }
 
     public Promise<T> firstPromise() {

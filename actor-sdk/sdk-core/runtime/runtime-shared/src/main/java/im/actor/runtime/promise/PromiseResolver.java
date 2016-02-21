@@ -1,5 +1,7 @@
 package im.actor.runtime.promise;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,6 +28,7 @@ public class PromiseResolver<T> {
      *
      * @return promise
      */
+    @ObjectiveCName("getPromise")
     public Promise<T> getPromise() {
         return promise;
     }
@@ -35,6 +38,7 @@ public class PromiseResolver<T> {
      *
      * @return dispatcher actor
      */
+    @ObjectiveCName("getDispatcher")
     public ActorRef getDispatcher() {
         return dispatcher;
     }
@@ -44,6 +48,7 @@ public class PromiseResolver<T> {
      *
      * @param res result of promise
      */
+    @ObjectiveCName("result:")
     public void result(@Nullable T res) {
         promise.result(res);
     }
@@ -53,6 +58,7 @@ public class PromiseResolver<T> {
      *
      * @param res result of promise
      */
+    @ObjectiveCName("tryResult:")
     public void tryResult(@Nullable T res) {
         promise.tryResult(res);
     }
@@ -62,6 +68,7 @@ public class PromiseResolver<T> {
      *
      * @param e reason
      */
+    @ObjectiveCName("error:")
     public void error(@NotNull Exception e) {
         promise.error(e);
     }
@@ -71,6 +78,7 @@ public class PromiseResolver<T> {
      *
      * @param e reason
      */
+    @ObjectiveCName("tryError:")
     public void tryError(@NotNull Exception e) {
         promise.tryError(e);
     }

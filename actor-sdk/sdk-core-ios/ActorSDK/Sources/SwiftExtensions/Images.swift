@@ -140,6 +140,10 @@ public extension UIImage {
 
 public class Imaging {
     
+    public class func roundedImage(color: UIColor, radius: CGFloat) -> UIImage {
+        return roundedImage(color, size: CGSizeMake(radius * 2, radius * 2), radius: radius)
+    }
+    
     public class func roundedImage(color: UIColor, size: CGSize, radius: CGFloat) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         let path = UIBezierPath(roundedRect: CGRectMake(0, 0, size.width, size.height), cornerRadius: radius)

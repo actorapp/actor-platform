@@ -2,14 +2,20 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import React, { Component, PropTypes, render, createElement } from 'react';
-import { findDOMNode, unmountComponentAtNode } from 'react-dom';
-import { KeyCodes } from '../constants/ActorAppConstants'
+import React, { Component, PropTypes, createElement } from 'react';
+import { render, findDOMNode, unmountComponentAtNode } from 'react-dom';
+import { KeyCodes } from '../constants/ActorAppConstants';
 import ComposeActionCreators from '../actions/ComposeActionCreators';
+import { IntlProvider, FormattedMessage } from 'react-intl';
+import { getIntlData } from '../l18n';
+import SharedContainer from '../utils/SharedContainer';
 
 class Confirm extends Component {
   static propTypes = {
-    message: PropTypes.string.isRequired,
+    message: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node
+    ]).isRequired,
     description: PropTypes.string,
     abortLabel: PropTypes.string,
     confirmLabel: PropTypes.string
@@ -22,6 +28,9 @@ class Confirm extends Component {
       this.reject = reject;
       this.resolve = resolve;
     });
+
+    const SharedActor = SharedContainer.get();
+    this.intlData = getIntlData(SharedActor.forceLocale);
   }
 
   componentDidMount() {
@@ -39,24 +48,26 @@ class Confirm extends Component {
     const { message, description, abortLabel, confirmLabel } = this.props;
 
     return (
-      <div className="modal modal--confirm">
-        <header className="modal__header">
-          <h4 className="modal__header__title">{message}</h4>
-        </header>
-        {
-          description
-            ? <div className="modal__body">{description}</div>
-            : null
-        }
-        <footer className="modal__footer text-right">
-          <button className="button" onClick={this.reject}>
-            {abortLabel || 'Cancel'}
-          </button>
-          <button className="button button--lightblue" onClick={this.resolve} ref="confirm">
-            {confirmLabel || 'Ok'}
-          </button>
-        </footer>
-      </div>
+      <IntlProvider {...this.intlData}>
+        <div className="modal modal--confirm">
+          <header className="modal__header">
+            <h4 className="modal__header__title">{message}</h4>
+          </header>
+          {
+            description
+              ? <div className="modal__body">{description}</div>
+              : null
+          }
+          <footer className="modal__footer text-right">
+            <button className="button" onClick={this.reject}>
+              {abortLabel || <FormattedMessage id="button.cancel"/>}
+            </button>
+            <button className="button button--lightblue" onClick={this.resolve} ref="confirm">
+              {confirmLabel ||<FormattedMessage id="button.ok"/>}
+            </button>
+          </footer>
+        </div>
+      </IntlProvider>
     );
   }
 
@@ -72,6 +83,7 @@ export default function confirm(message, options = {})  {
   let element = document.createElement('div');
   element.className = 'modal-backdrop';
   const wrapper = document.body.appendChild(element);
+
   const component = render(createElement(Confirm, {message, ...options}), wrapper);
 
   function cleanup() {

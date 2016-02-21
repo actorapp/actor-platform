@@ -5,22 +5,23 @@ import com.google.gwt.core.client.JsArray;
 
 import im.actor.core.entity.Peer;
 import im.actor.core.js.JsMessenger;
-import im.actor.core.viewmodel.CallModel;
+import im.actor.core.viewmodel.CallMember;
+import im.actor.core.viewmodel.CallVM;
 
 public class JsCall extends JavaScriptObject {
 
-    public static JsCall create(JsMessenger messenger, CallModel model) {
+    public static JsCall create(JsMessenger messenger, CallVM model) {
         JsArray<JsPeerInfo> members = JsArray.createArray().cast();
-        for (int uid : model.getActiveMembers().get()) {
-            members.push(messenger.buildPeerInfo(Peer.user(uid)));
+        for (CallMember member : model.getMembers().get()) {
+            members.push(messenger.buildPeerInfo(Peer.user(member.getUid())));
         }
         String state;
         switch (model.getState().get()) {
-            case CALLING_INCOMING:
-                state = "calling_in";
+            case CALLING:
+                state = "calling";
                 break;
-            case CALLING_OUTGOING:
-                state = "calling_out";
+            case CONNECTING:
+                state = "connecting";
                 break;
             case IN_PROGRESS:
                 state = "in_progress";
@@ -30,11 +31,11 @@ public class JsCall extends JavaScriptObject {
                 state = "ended";
                 break;
         }
-        return create(JsPeer.create(model.getPeer()), members, state);
+        return create(JsPeer.create(model.getPeer()), model.isOutgoing(), members, state);
     }
 
-    public static native JsCall create(JsPeer peer, JsArray<JsPeerInfo> members, String state)/*-{
-        return {peer: peer, members: members, state: state};
+    public static native JsCall create(JsPeer peer, boolean isOutgoing, JsArray<JsPeerInfo> members, String state)/*-{
+        return {peer: peer, isOutgoing: isOutgoing, members: members, state: state};
     }-*/;
 
     protected JsCall() {

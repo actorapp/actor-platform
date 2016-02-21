@@ -7,8 +7,9 @@ package im.actor.core;
 import im.actor.core.network.TrustedKey;
 import im.actor.core.providers.NotificationProvider;
 import im.actor.core.providers.PhoneBookProvider;
-import im.actor.core.webrtc.WebRTCProvider;
+import im.actor.core.providers.CallsProvider;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
+import im.actor.runtime.webrtc.WebRTCIceServer;
 
 /**
  * Configuration for Messenger
@@ -16,6 +17,7 @@ import im.actor.runtime.mtproto.ConnectionEndpoint;
 public class Configuration {
 
     private final ConnectionEndpoint[] endpoints;
+    private final WebRTCIceServer[] webRTCIceServers;
 
     private final TrustedKey[] trustedKeys;
 
@@ -46,7 +48,7 @@ public class Configuration {
 
     private boolean enablePhoneBookImport;
 
-    private WebRTCProvider webRTCProvider;
+    private CallsProvider callsProvider;
 
     Configuration(ConnectionEndpoint[] endpoints,
                   PhoneBookProvider phoneBookProvider,
@@ -65,7 +67,8 @@ public class Configuration {
                   String customAppName,
                   TrustedKey[] trustedKeys,
                   boolean enablePhoneBookImport,
-                  WebRTCProvider webRTCProvider) {
+                  CallsProvider callsProvider,
+                  WebRTCIceServer[] webRTCIceServers) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
         this.enableContactsLogging = enableContactsLogging;
@@ -83,16 +86,26 @@ public class Configuration {
         this.customAppName = customAppName;
         this.trustedKeys = trustedKeys;
         this.enablePhoneBookImport = enablePhoneBookImport;
-        this.webRTCProvider = webRTCProvider;
+        this.callsProvider = callsProvider;
+        this.webRTCIceServers = webRTCIceServers;
     }
 
     /**
-     * Getting Web RTC provider if set
+     * Getting Calls provider if set
      *
-     * @return WebRTC provider
+     * @return Calls provider
      */
-    public WebRTCProvider getWebRTCProvider() {
-        return webRTCProvider;
+    public CallsProvider getCallsProvider() {
+        return callsProvider;
+    }
+
+    /**
+     * Getting WebRTC ICE servers
+     *
+     * @return ice servers
+     */
+    public WebRTCIceServer[] getWebRTCIceServers() {
+        return webRTCIceServers;
     }
 
     /**

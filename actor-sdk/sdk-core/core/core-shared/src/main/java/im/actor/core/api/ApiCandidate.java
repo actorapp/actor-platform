@@ -17,9 +17,15 @@ import java.util.ArrayList;
 public class ApiCandidate extends ApiWebRTCSignaling {
 
     private long sessionId;
+    private int index;
+    private String id;
+    private String sdp;
 
-    public ApiCandidate(long sessionId) {
+    public ApiCandidate(long sessionId, int index, @NotNull String id, @NotNull String sdp) {
         this.sessionId = sessionId;
+        this.index = index;
+        this.id = id;
+        this.sdp = sdp;
     }
 
     public ApiCandidate() {
@@ -34,20 +40,49 @@ public class ApiCandidate extends ApiWebRTCSignaling {
         return this.sessionId;
     }
 
+    public int getIndex() {
+        return this.index;
+    }
+
+    @NotNull
+    public String getId() {
+        return this.id;
+    }
+
+    @NotNull
+    public String getSdp() {
+        return this.sdp;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.sessionId = values.getLong(1);
+        this.index = values.getInt(2);
+        this.id = values.getString(3);
+        this.sdp = values.getString(4);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeLong(1, this.sessionId);
+        writer.writeInt(2, this.index);
+        if (this.id == null) {
+            throw new IOException();
+        }
+        writer.writeString(3, this.id);
+        if (this.sdp == null) {
+            throw new IOException();
+        }
+        writer.writeString(4, this.sdp);
     }
 
     @Override
     public String toString() {
         String res = "struct Candidate{";
         res += "sessionId=" + this.sessionId;
+        res += ", index=" + this.index;
+        res += ", id=" + this.id;
+        res += ", sdp=" + this.sdp;
         res += "}";
         return res;
     }

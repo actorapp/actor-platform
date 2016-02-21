@@ -17,6 +17,7 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import java.io.File;
 
 import im.actor.core.entity.Avatar;
+import im.actor.core.entity.AvatarImage;
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.PublicGroup;
@@ -91,8 +92,8 @@ public class AvatarView extends SimpleDraweeView {
 
     public void bind(Avatar avatar, String title, int id) {
         // Same avatar
-        if (avatar != null && avatar.getSmallImage() != null
-                && avatar.getSmallImage().getFileReference().getFileId() == currentId) {
+        if (avatar != null && getImage(avatar) != null
+                && getImage(avatar).getFileReference().getFileId() == currentId) {
             return;
         }
 
@@ -105,13 +106,13 @@ public class AvatarView extends SimpleDraweeView {
 
         setImageURI(null);
 
-        if (avatar == null || avatar.getSmallImage() == null) {
+        if (avatar == null || getImage(avatar) == null) {
             currentId = 0;
             return;
         }
-        currentId = avatar.getSmallImage().getFileReference().getFileId();
+        currentId = getImage(avatar).getFileReference().getFileId();
 
-        bindedFile = messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+        bindedFile = messenger().bindFile(getImage(avatar).getFileReference(), true, new FileVMCallback() {
             @Override
             public void onNotDownloaded() {
 
@@ -135,6 +136,11 @@ public class AvatarView extends SimpleDraweeView {
                 setController(controller);
             }
         });
+    }
+
+    public AvatarImage getImage(Avatar avatar) {
+
+        return size>=100?avatar.getLargeImage():avatar.getSmallImage();
     }
 
     public void bindRaw(String fileName) {

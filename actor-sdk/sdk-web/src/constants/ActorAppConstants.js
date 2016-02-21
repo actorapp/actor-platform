@@ -32,11 +32,13 @@ export const ActionTypes = keymirror({
   AUTH_SET_LOGGED_IN: null,
   AUTH_SET_LOGGED_OUT: null,
 
+  BIND_DIALOG_PEER: null,
+  UNBIND_DIALOG_PEER: null,
+
   DIALOGS_CHANGED: null,
   DIALOG_INFO_CHANGED: null,
   TYPING_CHANGED: null,
   MY_PROFILE_CHANGED: null,
-  SELECT_DIALOG_PEER: null,
   MESSAGES_CHANGED: null,
   CONNECTION_STATE_CHANGED: null,
 
@@ -198,17 +200,18 @@ export const ActionTypes = keymirror({
 });
 
 export const EventTypes = {
-  CALL: 'call'
+  CALLS: 'calls'
 };
 
 export const CallTypes = {
-  INCOMING: 'incoming',
-  OUTGOING: 'outgoing'
+  STARTED: 'started',
+  ENDED: 'ended'
 };
 
 export const CallStates = {
-  CALLING_IN: 'calling_in',
-  CALLING_OUT: 'calling_out',
+  CALLING: 'calling',
+  CONNECTING: 'connecting',
+  IN_PROGRESS: 'in_progress',
   ENDED: 'ended'
 };
 
@@ -216,7 +219,7 @@ export const ConnectionStates = {
   ONLINE: 'online',
   CONNECTING: 'connecting',
   UPDATING: 'updating'
-}
+};
 
 export const PeerTypes = {
   USER: 'user',

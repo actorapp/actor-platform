@@ -2,9 +2,13 @@ package im.actor.core.modules.eventbus;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+
+import im.actor.core.api.ApiEventBusDestination;
 import im.actor.core.api.rpc.RequestCreateNewEventBus;
 import im.actor.core.api.rpc.RequestJoinEventBus;
 import im.actor.core.api.rpc.RequestKeepAliveEventBus;
+import im.actor.core.api.rpc.RequestPostToEventBus;
 import im.actor.core.api.rpc.ResponseCreateNewEventBus;
 import im.actor.core.api.rpc.ResponseJoinEventBus;
 import im.actor.core.api.rpc.ResponseVoid;
@@ -18,23 +22,20 @@ import im.actor.runtime.function.Consumer;
 
 public class EventBusActor extends ModuleActor {
 
-    private static final long TIMEOUT = 15000;
-    private static final long KEEP_ALIVE = 5000;
+    private static final long DEFAULT_TIMEOUT = 16000;
 
     private boolean isProcessing;
     private String busId;
     private long deviceId;
+
+    private long keepAliveTimeout;
+    private long keepAliveRetry;
 
     private Cancellable keepAliveCancel;
     private long keepAliveRequest = -1;
 
     public EventBusActor(ModuleContext context) {
         super(context);
-    }
-
-    public EventBusActor(String busId, ModuleContext context) {
-        super(context);
-        this.busId = busId;
     }
 
     public String getBusId() {
@@ -45,55 +46,61 @@ public class EventBusActor extends ModuleActor {
         return deviceId;
     }
 
-    //
-    // Start
-    //
-
-    @Override
-    public void preStart() {
-        super.preStart();
-
-        isProcessing = true;
-        if (busId != null) {
-            api(new RequestJoinEventBus(busId, TIMEOUT)).then(new Consumer<ResponseJoinEventBus>() {
-                @Override
-                public void apply(ResponseJoinEventBus responseJoinEventBus) {
-                    deviceId = responseJoinEventBus.getDeviceId();
-                    context().getEventBus().subscribe(busId, self());
-                    onBusJoined();
-                    onBusStarted();
-                    isProcessing = false;
-                    unstashAll();
-                    keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
-                }
-            }).failure(new Consumer<Exception>() {
-                @Override
-                public void apply(Exception e) {
-                    dispose();
-                }
-            }).done(self());
-        } else {
-            api(new RequestCreateNewEventBus(TIMEOUT, true)).then(new Consumer<ResponseCreateNewEventBus>() {
-                @Override
-                public void apply(ResponseCreateNewEventBus responseCreateNewEventBus) {
-                    busId = responseCreateNewEventBus.getId();
-                    deviceId = responseCreateNewEventBus.getDeviceId();
-                    context().getEventBus().subscribe(busId, self());
-                    onBusCreated();
-                    onBusStarted();
-                    isProcessing = false;
-                    unstashAll();
-                    keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
-                }
-            }).failure(new Consumer<Exception>() {
-                @Override
-                public void apply(Exception e) {
-                    dispose();
-                }
-            }).done(self());
-        }
+    public void joinBus(final String busId) {
+        joinBus(busId, DEFAULT_TIMEOUT);
     }
 
+    public void joinBus(final String busId, long timeout) {
+        isProcessing = true;
+        keepAliveTimeout = timeout;
+        keepAliveRetry = timeout / 2;
+        api(new RequestJoinEventBus(busId, keepAliveTimeout)).then(new Consumer<ResponseJoinEventBus>() {
+            @Override
+            public void apply(ResponseJoinEventBus responseJoinEventBus) {
+                EventBusActor.this.busId = busId;
+                deviceId = responseJoinEventBus.getDeviceId();
+                context().getEventBus().subscribe(busId, self());
+                onBusJoined();
+                onBusStarted();
+                isProcessing = false;
+                unstashAll();
+                keepAliveCancel = schedule(new KeepAlive(), keepAliveRetry);
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                dispose();
+            }
+        }).done(self());
+    }
+
+    public void createBus() {
+        createBus(DEFAULT_TIMEOUT);
+    }
+
+    public void createBus(long timeout) {
+        isProcessing = true;
+        keepAliveTimeout = timeout;
+        keepAliveRetry = timeout / 2;
+        api(new RequestCreateNewEventBus(keepAliveTimeout, true)).then(new Consumer<ResponseCreateNewEventBus>() {
+            @Override
+            public void apply(ResponseCreateNewEventBus responseCreateNewEventBus) {
+                busId = responseCreateNewEventBus.getId();
+                deviceId = responseCreateNewEventBus.getDeviceId();
+                context().getEventBus().subscribe(busId, self());
+                onBusCreated();
+                onBusStarted();
+                isProcessing = false;
+                unstashAll();
+                keepAliveCancel = schedule(new KeepAlive(), keepAliveRetry);
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                dispose();
+            }
+        }).done(self());
+    }
 
     //
     // Processing
@@ -137,6 +144,24 @@ public class EventBusActor extends ModuleActor {
 
     }
 
+    public void sendMessage(byte[] data) {
+        request(new RequestPostToEventBus(busId, new ArrayList<ApiEventBusDestination>(), data));
+    }
+
+    public void sendMessage(int uid, byte[] data) {
+        ArrayList<ApiEventBusDestination> destinations = new ArrayList<>();
+        destinations.add(new ApiEventBusDestination(uid, new ArrayList<Long>()));
+        request(new RequestPostToEventBus(busId, destinations, data));
+    }
+
+    public void sendMessage(int uid, long deviceId, byte[] data) {
+        ArrayList<ApiEventBusDestination> destinations = new ArrayList<>();
+        ArrayList<Long> deviceIds = new ArrayList<>();
+        deviceIds.add(deviceId);
+        destinations.add(new ApiEventBusDestination(uid, deviceIds));
+        request(new RequestPostToEventBus(busId, destinations, data));
+    }
+
 
     //
     // Keep Alive
@@ -144,7 +169,7 @@ public class EventBusActor extends ModuleActor {
 
     private void doKeepAlive() {
         stopKeepAlive();
-        keepAliveRequest = request(new RequestKeepAliveEventBus(busId, TIMEOUT), new RpcCallback<ResponseVoid>() {
+        keepAliveRequest = request(new RequestKeepAliveEventBus(busId, keepAliveTimeout), new RpcCallback<ResponseVoid>() {
             @Override
             public void onResult(ResponseVoid response) {
                 // Do Nothing
@@ -155,7 +180,7 @@ public class EventBusActor extends ModuleActor {
                 dispose();
             }
         });
-        keepAliveCancel = schedule(new KeepAlive(), KEEP_ALIVE);
+        keepAliveCancel = schedule(new KeepAlive(), keepAliveRetry);
     }
 
     private void stopKeepAlive() {
@@ -176,21 +201,27 @@ public class EventBusActor extends ModuleActor {
     public void shutdown() {
         isProcessing = true;
         stopKeepAlive();
-        context().getEventBus().unsubscribe(busId, self());
+        if (busId != null) {
+            context().getEventBus().unsubscribe(busId, self());
+        }
         onBusShutdown();
         onBusStopped();
-        api(new RequestKeepAliveEventBus(busId, 1L)).then(new Consumer<ResponseVoid>() {
-            @Override
-            public void apply(ResponseVoid responseVoid) {
-                self().send(PoisonPill.INSTANCE);
-            }
-        }).done(self());
+        if (busId != null) {
+            api(new RequestKeepAliveEventBus(busId, 1L)).then(new Consumer<ResponseVoid>() {
+                @Override
+                public void apply(ResponseVoid responseVoid) {
+                    self().send(PoisonPill.INSTANCE);
+                }
+            }).done(self());
+        }
     }
 
     public void dispose() {
         isProcessing = true;
         stopKeepAlive();
-        context().getEventBus().unsubscribe(busId, self());
+        if (busId != null) {
+            context().getEventBus().unsubscribe(busId, self());
+        }
         onBusDisposed();
         onBusStopped();
         self().send(PoisonPill.INSTANCE);

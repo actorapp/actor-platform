@@ -364,6 +364,28 @@ public extension ARMarkdownParser {
 }
 
 //
+// Promises
+//
+
+public class AAPromiseFunc: NSObject, ARPromiseFunc {
+    
+    let closure: (resolver: ARPromiseResolver) -> ()
+    init(closure: (resolver: ARPromiseResolver) -> ()){
+        self.closure = closure
+    }
+    
+    public func exec(resolver: ARPromiseResolver) {
+        closure(resolver: resolver)
+    }
+}
+
+extension ARPromise {
+    convenience init(closure: (resolver: ARPromiseResolver) -> ()) {
+        self.init(executor: AAPromiseFunc(closure: closure))
+    }
+}
+
+//
 // Data Binding
 //
 
@@ -375,7 +397,7 @@ public class AABinder {
         
     }
     
-    public func bind<T1,T2,T3>(valueModel1:ARValue, valueModel2:ARValue, valueModel3:ARValue, closure: (value1:T1?, value2:T2?, value3:T3?) -> ()) {
+    public func bind<T1,T2,T3>(valueModel1:ARValue, valueModel2:ARValue, valueModel3:ARValue, closure: (value1:T1!, value2:T2!, value3:T3!) -> ()) {
         
         let listener1 = BindListener { (_value1) -> () in
             closure(value1: _value1 as? T1, value2: valueModel2.get() as? T2, value3: valueModel3.get() as? T3)
@@ -396,7 +418,7 @@ public class AABinder {
     }
     
     
-    public func bind<T1,T2>(valueModel1:ARValue, valueModel2:ARValue, closure: (value1:T1?, value2:T2?) -> ()) {
+    public func bind<T1,T2>(valueModel1:ARValue, valueModel2:ARValue, closure: (value1:T1!, value2:T2!) -> ()) {
         let listener1 = BindListener { (_value1) -> () in
             closure(value1: _value1 as? T1, value2: valueModel2.get() as? T2)
         };
@@ -410,7 +432,7 @@ public class AABinder {
         closure(value1: valueModel1.get() as? T1, value2: valueModel2.get() as? T2)
     }
     
-    public func bind<T>(value:ARValue, closure: (value: T?)->()) {
+    public func bind<T>(value:ARValue, closure: (value: T!)->()) {
         let listener = BindListener { (value2) -> () in
             closure(value: value2 as? T)
         };

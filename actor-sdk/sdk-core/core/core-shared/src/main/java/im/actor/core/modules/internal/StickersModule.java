@@ -4,17 +4,12 @@
 
 package im.actor.core.modules.internal;
 
-import org.bouncycastle.util.Arrays;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import im.actor.core.api.ApiStickerCollection;
 import im.actor.core.api.rpc.RequestLoadOwnStickers;
 import im.actor.core.api.rpc.ResponseLoadOwnStickers;
 import im.actor.core.api.updates.UpdateOwnStickersChanged;
-import im.actor.core.api.updates.UpdateStickerCollectionsChanged;
 import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.entity.content.internal.StickersPack;
 import im.actor.core.modules.AbsModule;
@@ -27,12 +22,8 @@ import im.actor.runtime.Storage;
 import im.actor.runtime.bser.Bser;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
-import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
-import im.actor.runtime.storage.KeyValueEngine;
-import im.actor.runtime.storage.KeyValueItem;
 import im.actor.runtime.storage.KeyValueStorage;
-import im.actor.runtime.storage.ListEngine;
 
 public class StickersModule extends AbsModule {
     private KeyValueStorage stickerPacksList;

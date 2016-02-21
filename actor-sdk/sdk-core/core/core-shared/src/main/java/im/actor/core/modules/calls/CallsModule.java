@@ -1,20 +1,11 @@
 package im.actor.core.modules.calls;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import im.actor.core.api.ApiOutPeer;
-import im.actor.core.api.ApiPeerType;
-import im.actor.core.api.rpc.RequestDoCall;
-import im.actor.core.entity.CallState;
 import im.actor.core.entity.Peer;
-import im.actor.core.entity.User;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
-import im.actor.core.viewmodel.CallModel;
+import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
-import im.actor.core.webrtc.WebRTCProvider;
-import im.actor.core.api.rpc.ResponseDoCall;
+import im.actor.core.providers.CallsProvider;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.Command;
@@ -24,18 +15,16 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 public class CallsModule extends AbsModule {
 
-    public static final int CALL_TIMEOUT = 10;
-
     public static final String TAG = "CALLS";
 
-    private WebRTCProvider provider;
+    private CallsProvider provider;
     private ActorRef callManager;
-    private HashMap<Long, CallModel> callModels = new HashMap<>();
+    private HashMap<Long, CallVM> callModels = new HashMap<>();
 
     public CallsModule(ModuleContext context) {
         super(context);
 
-        provider = context().getConfiguration().getWebRTCProvider();
+        provider = context().getConfiguration().getCallsProvider();
     }
 
     public void run() {
@@ -46,11 +35,11 @@ public class CallsModule extends AbsModule {
         callManager = system().actorOf("calls/manager", CallManagerActor.CONSTRUCTOR(context()));
     }
 
-    public void spawnNewModel(long id, Peer peer, ArrayList<Integer> activeMembers, CallState state) {
-        callModels.put(id, new CallModel(id, peer, activeMembers, state));
+    public HashMap<Long, CallVM> getCallModels() {
+        return callModels;
     }
 
-    public CallModel getCall(long id) {
+    public CallVM getCall(long id) {
         return callModels.get(id);
     }
 
@@ -58,32 +47,28 @@ public class CallsModule extends AbsModule {
         return callManager;
     }
 
-    public Command<ResponseDoCall> makeCall(final int uid) {
-        return new Command<ResponseDoCall>() {
+    public Command<Long> makeCall(final Peer peer) {
+        return new Command<Long>() {
             @Override
-            public void start(final CommandCallback<ResponseDoCall> callback) {
-//                User u = users().getValue(uid);
-//                request(new RequestDoCall(new ApiOutPeer(ApiPeerType.PRIVATE, u.getUid(), u.getAccessHash()), CALL_TIMEOUT), new RpcCallback<ResponseDoCall>() {
-//                    @Override
-//                    public void onResult(final ResponseDoCall response) {
-//                        callManager.send(new CallManagerActor.OnOutgoingCall(response.getCallId(), uid));
-//                        callback.onResult(response);
-//                    }
-//
-//                    @Override
-//                    public void onError(RpcException e) {
-//                        callback.onError(e);
-//                    }
-//                });
+            public void start(final CommandCallback<Long> callback) {
+                callManager.send(new CallManagerActor.DoCall(peer, callback));
             }
         };
     }
 
+    public void muteCall(long callId) {
+        callManager.send(new CallManagerActor.MuteCall(callId));
+    }
+
+    public void unmuteCall(long callId) {
+        callManager.send(new CallManagerActor.UnmuteCall(callId));
+    }
+
     public void endCall(long callId) {
-        callManager.send(new CallManagerActor.EndCall(callId));
+        callManager.send(new CallManagerActor.DoEndCall(callId));
     }
 
     public void answerCall(long callId) {
-        callManager.send(new CallManagerActor.AnswerCall(callId));
+        callManager.send(new CallManagerActor.DoAnswerCall(callId));
     }
 }

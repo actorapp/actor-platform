@@ -1,8 +1,6 @@
 package im.actor.runtime.crypto.primitives.kuznechik;
 
-import com.google.j2objc.annotations.AutoreleasePool;
-
-import im.actor.runtime.*;
+import im.actor.runtime.Crypto;
 import im.actor.runtime.crypto.primitives.BlockCipher;
 import im.actor.runtime.crypto.primitives.util.Pack;
 
@@ -125,9 +123,6 @@ public class KuznechikFastEngine implements BlockCipher {
             (byte) 0x37, (byte) 0xc4, (byte) 0xaf, (byte) 0x24, (byte) 0x2e, (byte) 0x6f, (byte) 0x8a, (byte) 0xa8, (byte) 0xf7, (byte) 0x60, (byte) 0x49, (byte) 0xe3, (byte) 0x80, (byte) 0x86, (byte) 0x59, (byte) 0x07,
     };
 
-    private static boolean isLoaded;
-    private static final Object LOCk = new Object();
-
     private static int[] gf256res;
     private static int[] gf256resInv;
 
@@ -157,47 +152,31 @@ public class KuznechikFastEngine implements BlockCipher {
                 Pack.bigEndianToInt(tmp, 0, gf256resInv, (index + (16 * i)) * 4, 4);
             }
         }
-
-        synchronized (LOCk) {
-            isLoaded = true;
-            LOCk.notifyAll();
-        }
     }
 
-    @AutoreleasePool
     public static void initDump(final byte[] data) {
-        im.actor.runtime.Runtime.dispatch(new Runnable() {
-            @Override
-            public void run() {
-                if (gf256res != null || gf256resInv != null) {
-                    return;
-                }
-                gf256res = new int[16 * 256 * 4];
-                gf256resInv = new int[16 * 256 * 4];
-                int offset = 0;
-                int n;
-                for (int i = 0; i < gf256res.length; ++i) {
-                    n = data[offset++] << 24;
-                    n |= (data[offset++] & 0xff) << 16;
-                    n |= (data[offset++] & 0xff) << 8;
-                    n |= (data[offset++] & 0xff);
-                    gf256res[i] = n;
-                }
+        if (gf256res != null || gf256resInv != null) {
+            return;
+        }
+        gf256res = new int[16 * 256 * 4];
+        gf256resInv = new int[16 * 256 * 4];
+        int offset = 0;
+        int n;
+        for (int i = 0; i < gf256res.length; ++i) {
+            n = data[offset++] << 24;
+            n |= (data[offset++] & 0xff) << 16;
+            n |= (data[offset++] & 0xff) << 8;
+            n |= (data[offset++] & 0xff);
+            gf256res[i] = n;
+        }
 
-                for (int i = 0; i < gf256resInv.length; ++i) {
-                    n = data[offset++] << 24;
-                    n |= (data[offset++] & 0xff) << 16;
-                    n |= (data[offset++] & 0xff) << 8;
-                    n |= (data[offset++] & 0xff);
-                    gf256resInv[i] = n;
-                }
-
-                synchronized (LOCk) {
-                    isLoaded = true;
-                    LOCk.notifyAll();
-                }
-            }
-        });
+        for (int i = 0; i < gf256resInv.length; ++i) {
+            n = data[offset++] << 24;
+            n |= (data[offset++] & 0xff) << 16;
+            n |= (data[offset++] & 0xff) << 8;
+            n |= (data[offset++] & 0xff);
+            gf256resInv[i] = n;
+        }
     }
 
     static void kuz_l_fast(int[] w) {
@@ -280,21 +259,8 @@ public class KuznechikFastEngine implements BlockCipher {
     private int C3;
 
     public KuznechikFastEngine(byte[] key) {
-
-        synchronized (LOCk) {
-            if (!isLoaded) {
-                try {
-                    LOCk.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-
+        Crypto.waitForCryptoLoaded();
         this.key = convertKey(key);
-
-
     }
 
     @Override

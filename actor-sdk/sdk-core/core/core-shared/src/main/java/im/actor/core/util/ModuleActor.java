@@ -182,7 +182,7 @@ public class ModuleActor extends AskcableActor implements BusSubscriber {
     }
 
     public <T extends Response> Promise<T> api(final Request<T> request) {
-        return new Promise<T>(new PromiseFunc<T>() {
+        return new Promise<>(new PromiseFunc<T>() {
             @Override
             public void exec(final PromiseResolver<T> executor) {
                 context.getActorApi().request(request, new RpcCallback<T>() {

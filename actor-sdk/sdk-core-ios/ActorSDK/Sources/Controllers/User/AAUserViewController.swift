@@ -65,9 +65,17 @@ class AAUserViewController: AAContentTableController {
             }
             
             // Profile: Send messages
+            s.action("Do Call") { (r) -> () in
+                r.selectAction = { () -> Bool in
+                    self.execute(Actor.doCallWithUid(jint(self.uid)))
+                    return false
+                }
+            }
+            
+            // Profile: Send messages
             s.action("ProfileSendMessage") { (r) -> () in
                 r.selectAction = { () -> Bool in
-                     self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
+                    self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
                     self.popover?.dismissPopoverAnimated(true)
                     return false
                 }

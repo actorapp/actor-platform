@@ -4,8 +4,8 @@
 
 package im.actor.runtime.android;
 
-import im.actor.runtime.crypto.bouncycastle.BouncyCastleRuntime;
+import im.actor.runtime.generic.GenericCryptoProvider;
 
-public class AndroidCryptoProvider extends BouncyCastleRuntime {
+public class AndroidCryptoProvider extends GenericCryptoProvider {
 
 }

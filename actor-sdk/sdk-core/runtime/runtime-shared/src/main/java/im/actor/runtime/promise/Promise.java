@@ -1,5 +1,7 @@
 package im.actor.runtime.promise;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,6 +41,7 @@ public class Promise<T> {
     /**
      * Default constructor of promise
      */
+    @ObjectiveCName("initWithExecutor:")
     public Promise(PromiseFunc<T> executor) {
         this.executor = executor;
     }
@@ -56,6 +59,7 @@ public class Promise<T> {
      * @param then supplier for result
      * @return this
      */
+    @ObjectiveCName("then:")
     public synchronized Promise<T> then(final Consumer<T> then) {
         if (isFinished) {
             if (exception == null) {
@@ -88,6 +92,7 @@ public class Promise<T> {
      * @param failure supplier for exception
      * @return this
      */
+    @ObjectiveCName("failure:")
     public synchronized Promise<T> failure(final Consumer<Exception> failure) {
         if (isFinished) {
             if (exception != null) {
@@ -121,6 +126,7 @@ public class Promise<T> {
      * @param callback callback for completion
      * @return this
      */
+    @ObjectiveCName("complete:")
     public synchronized Promise<T> complete(final PromiseCallback<T> callback) {
         if (isFinished) {
 
@@ -147,6 +153,7 @@ public class Promise<T> {
      * @param resolver destination resolver
      * @return this
      */
+    @ObjectiveCName("pipeTo:")
     public synchronized Promise<T> pipeTo(final PromiseResolver<T> resolver) {
         complete(new PromiseCallback<T>() {
             @Override
@@ -167,6 +174,7 @@ public class Promise<T> {
      *
      * @param ref Scheduling actor
      */
+    @ObjectiveCName("done:")
     public Promise<T> done(ActorRef ref) {
         if (isStarted) {
             throw new RuntimeException("Promise already started!");
@@ -182,6 +190,7 @@ public class Promise<T> {
         return this;
     }
 
+    @ObjectiveCName("log:")
     public Promise<T> log(final String TAG) {
         return complete(new PromiseCallback<T>() {
             @Override
@@ -211,6 +220,7 @@ public class Promise<T> {
      * @param <R> destination type
      * @return casted promise
      */
+    @ObjectiveCName("cast")
     public <R> Promise<R> cast() {
         return (Promise<R>) this;
     }
@@ -220,6 +230,7 @@ public class Promise<T> {
      *
      * @return result
      */
+    @ObjectiveCName("getResult")
     public T getResult() {
         if (!isFinished) {
             throw new RuntimeException("Promise is not finished!");
@@ -232,6 +243,7 @@ public class Promise<T> {
      *
      * @return result
      */
+    @ObjectiveCName("isFinished")
     public boolean isFinished() {
         return isFinished;
     }
@@ -241,6 +253,7 @@ public class Promise<T> {
      *
      * @return exception
      */
+    @ObjectiveCName("getException")
     public Exception getException() {
         if (!isFinished) {
             throw new RuntimeException("Promise is not finished!");
@@ -248,6 +261,7 @@ public class Promise<T> {
         return exception;
     }
 
+    @ObjectiveCName("mapIfNull:")
     public Promise<T> mapIfNull(final Supplier<T> producer) {
         final Promise<T> self = this;
         return new Promise<T>(new PromiseFunc<T>() {
@@ -280,6 +294,7 @@ public class Promise<T> {
         });
     }
 
+    @ObjectiveCName("mapIfNullPromise:")
     public Promise<T> mapIfNullPromise(final Supplier<Promise<T>> producer) {
         final Promise<T> self = this;
         return new Promise<T>(new PromiseFunc<T>() {
@@ -332,6 +347,7 @@ public class Promise<T> {
      * @param <R> destination type
      * @return promise
      */
+    @ObjectiveCName("map:")
     public <R> Promise<R> map(final Function<T, R> res) {
         final Promise<T> self = this;
         return new Promise<R>() {
@@ -369,6 +385,7 @@ public class Promise<T> {
      * @param <R> destination type
      * @return promise
      */
+    @ObjectiveCName("mapPromise:")
     public <R> Promise<R> mapPromise(final Function<T, Promise<R>> res) {
         final Promise<T> self = this;
         return new Promise<R>() {
@@ -412,6 +429,21 @@ public class Promise<T> {
         };
     }
 
+    public <R> Promise<T> mapPromiseSelf(final Function<T, Promise<R>> res) {
+        return mapPromise(new Function<T, Promise<T>>() {
+            @Override
+            public Promise<T> apply(final T t) {
+                return res.apply(t).map(new Function<R, T>() {
+                    @Override
+                    public T apply(R r) {
+                        return t;
+                    }
+                });
+            }
+        });
+    }
+
+    @ObjectiveCName("fallback:")
     public Promise<T> fallback(final Function<Exception, Promise<T>> catchThen) {
         final Promise<T> self = this;
         return new Promise<T>(new PromiseFunc<T>() {
@@ -447,6 +479,7 @@ public class Promise<T> {
         });
     }
 
+    @ObjectiveCName("afterVoid:")
     public <R> Promise<R> afterVoid(final Supplier<Promise<R>> promiseSupplier) {
         final Promise<T> self = this;
         return new Promise<R>(new PromiseFunc<R>() {

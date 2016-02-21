@@ -7,6 +7,7 @@ import classnames from 'classnames';
 import Recorder from 'opus-recorder';
 
 let isRecordingSupported = Recorder.isRecordingSupported() ? true : false;
+console.debug('isRecordingSupported', isRecordingSupported);
 
 class VoiceRecorder extends Component {
   static propTypes = {

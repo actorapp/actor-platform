@@ -363,8 +363,10 @@ public class ConversationViewController: AAConversationContentController, UIDocu
         // Releasing bindings
         binder.unbindAll()
     
-        self.actionSheet.removeFromSuperview()
-        self.actionSheet = nil
+        if self.actionSheet != nil {
+            self.actionSheet.removeFromSuperview()
+            self.actionSheet = nil
+        }
     }
 
     ////////////////////////////////////////////////////////////

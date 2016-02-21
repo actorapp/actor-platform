@@ -4,14 +4,16 @@
 
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
-// import { FormattedMessage } from 'react-intl';
 import Modal from 'react-modal';
+ import { FormattedMessage } from 'react-intl';
+import AvatarItem from '../common/AvatarItem.react';
 
-import { KeyCodes, CallTypes } from '../../constants/ActorAppConstants';
+import { KeyCodes, CallStates } from '../../constants/ActorAppConstants';
 
 import CallActionCreators from '../../actions/CallActionCreators';
 
-import CallStore from '../../stores/CallStore'
+import CallStore from '../../stores/CallStore';
+import UserStore from '../../stores/UserStore';
 
 class CallModal extends Component {
   constructor(props) {
@@ -23,11 +25,11 @@ class CallModal extends Component {
   static calculateState() {
     return {
       isOpen: CallStore.isOpen(),
-      callId: CallStore.getCallId(),
-      callType: CallStore.getCallType(),
-      callMembers: CallStore.getCallMembers(),
-      callPeer: CallStore.getCallPeer(),
-      callState: CallStore.getCallState()
+      isOutgoing: CallStore.isOutgoing(),
+      callId: CallStore.getId(),
+      callMembers: CallStore.getMembers(),
+      callPeer: CallStore.getPeer(),
+      callState: CallStore.getState()
     };
   }
 
@@ -42,38 +44,90 @@ class CallModal extends Component {
 
   handleAnswer = () => {
     const { callId } = this.state;
-    console.debug('handleAnswer', callId);
     CallActionCreators.answerCall(callId);
-  };
-
-  handleDecline = () => {
-    const { callId } = this.state;
-    console.debug('handleDecline', callId);
   };
 
   handleEnd = () => {
     const { callId } = this.state;
-    console.debug('handleEnd', callId);
     CallActionCreators.endCall(callId);
+    //this.handleClose();
+  };
+
+  handleMute = () => {
+    console.debug('handleMute');
   };
 
   render() {
-    const { isOpen, callType } = this.state;
+    const { isOpen, isOutgoing, callPeer, callMembers, callState } = this.state;
+    const peerInfo = callPeer ? UserStore.getUser(callPeer.id) : null;
+
+    const modalStyles = {
+      content : {
+        position: null,
+        top: null,
+        left: null,
+        right: null,
+        bottom: null,
+        border: null,
+        background: null,
+        overflow: null,
+        outline: null,
+        padding: null,
+        borderRadius: null,
+        width: 240,
+        minWidth: 240
+      }
+    };
+
+    const modalBody = peerInfo ? (
+      <div>
+        <AvatarItem image={peerInfo.avatar} placeholder={peerInfo.placeholder}
+                    size="big" title={peerInfo.name}/>
+        <h4 className="caller-name">{peerInfo.name}</h4>
+      </div>
+    ) : null;
 
     let modalFooter;
-    switch (callType) {
-      case CallTypes.INCOMING:
+    switch (callState) {
+      case CallStates.CALLING:
         modalFooter = (
-          <div className="modal-new__footer">
-            <button className="button button--rised button--wide" onClick={this.handleAnswer}>Answer</button>
-            <button className="button button--rised button--wide" onClick={this.handleDecline}>Decline</button>
+          <div>
+            {
+              isOutgoing
+                ? null
+                : <button className="button button--rised button--wide" onClick={this.handleAnswer}>
+                    <FormattedMessage id="call.answer"/>
+                  </button>
+            }
+            <button className="button button--rised button--wide" onClick={this.handleEnd}>
+              {
+                isOutgoing
+                  ? <FormattedMessage id="button.cancel"/>
+                  : <FormattedMessage id="call.decline"/>
+              }
+            </button>
           </div>
         );
         break;
-      case CallTypes.OUTGOING:
+      case CallStates.IN_PROGRESS:
+      case CallStates.CONNECTING:
         modalFooter = (
-          <div className="modal-new__footer">
-            <button className="button button--rised button--wide" onClick={this.handleEnd}>End</button>
+          <div>
+            <button className="button button--rised button--wide" onClick={this.handleMute}>
+              <FormattedMessage id="call.mute"/>
+            </button>
+            <button className="button button--rised button--wide" onClick={this.handleEnd}>
+              <FormattedMessage id="call.end"/>
+            </button>
+          </div>
+        );
+        break;
+      case CallStates.ENDED:
+        modalFooter = (
+          <div>
+            <button className="button button--rised button--wide" onClick={this.handleClose}>
+              <FormattedMessage id="button.close"/>
+            </button>
           </div>
         );
         break;
@@ -84,16 +138,27 @@ class CallModal extends Component {
       return (
         <Modal className="modal-new modal-new--call"
                closeTimeoutMS={150}
+               style={modalStyles}
                isOpen={isOpen}>
 
           <div className="modal-new__header">
-            <h3 className="modal-new__header__title">{`${callType} call`}</h3>
+            <h3 className="modal-new__header__title">
+              {
+                isOutgoing
+                  ? <FormattedMessage id="call.outgoing"/>
+                  : <FormattedMessage id="call.incoming"/>
+              }
+            </h3>
           </div>
 
           <div className="modal-new__body">
+            {/* <small>STATE: {callState}</small> */}
+            {modalBody}
           </div>
 
-          {modalFooter}
+          <div className="modal-new__footer">
+            {modalFooter}
+          </div>
         </Modal>
       );
     } else {

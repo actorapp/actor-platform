@@ -22,12 +22,15 @@ target 'ActorApp' do
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
     pod 'YYKit'
+    pod 'BrightFutures'
 
     # Main UI
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
     pod 'Neon'
+    pod 'Cartography'
+    pod 'PureLayout'
 
     # Small UI
     pod 'VBFPopFlatButton'
@@ -42,6 +45,9 @@ target 'ActorApp' do
     pod 'BlockAlertsAnd-ActionSheets'
     pod 'RMUniversalAlert'
     pod 'PSTAlertController'
+    
+    # Calls
+    # pod 'libjingle_peerconnection'
 end
 
 target 'ActorSDK' do
@@ -55,6 +61,9 @@ target 'ActorSDK' do
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
     pod 'YYKit'
+    pod 'BrightFutures'
+    pod 'Cartography'
+    pod 'PureLayout'
 
     # Main UI
     pod 'TTTAttributedLabel'
@@ -74,4 +83,7 @@ target 'ActorSDK' do
     pod 'BlockAlertsAnd-ActionSheets'
     pod 'RMUniversalAlert'
     pod 'PSTAlertController'
+    
+    # Calls
+    pod 'libjingle_peerconnection'
 end

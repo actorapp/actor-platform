@@ -25,11 +25,11 @@ gulp.task('webpack:dev', ['sdk'], () => {
     stats: {
       colors: true
     }
-  }).listen(3000, 'localhost', (err) => {
+  }).listen(3000, '0.0.0.0', (err) => {
     if (err) {
       throw new gutil.PluginError('[webpack:dev]', err);
     }
-    gutil.log('[webpack:dev]', 'http://localhost:3000');
+    gutil.log('[webpack:dev]', 'http://0.0.0.0:3000');
   });
 });
 

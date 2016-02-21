@@ -39,7 +39,7 @@ public class Application extends ActorSDKApplication {
         ActorSDK.sharedActor().setTwitter("");
         ActorSDK.sharedActor().setHomePage("http://www.foo.com");
         ActorSDK.sharedActor().setInviteUrl("http://www.foo.com");
-
+        ActorSDK.sharedActor().setCallsEnabled(true);
 
 //        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://192.168.1.184:9070"});
 

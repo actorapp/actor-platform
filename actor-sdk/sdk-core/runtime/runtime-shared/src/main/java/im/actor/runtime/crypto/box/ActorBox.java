@@ -4,7 +4,6 @@ package im.actor.runtime.crypto.box;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.aes.AESFastEngine;
 import im.actor.runtime.crypto.primitives.digest.SHA256;
-import im.actor.runtime.crypto.primitives.kuznechik.KuznechikCipher;
 import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 import im.actor.runtime.crypto.primitives.padding.PKCS7Padding;
 import im.actor.runtime.crypto.primitives.streebog.Streebog256;
