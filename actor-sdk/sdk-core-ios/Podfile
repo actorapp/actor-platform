@@ -1,3 +1,5 @@
+source 'https://github.com/CocoaPods/Specs'
+
 platform :ios, '8.0'
 use_frameworks!
 
@@ -15,7 +17,7 @@ target 'ActorApp' do
     # Tracking
     pod 'HockeySDK', '~> 3.8-RC'
     pod 'Fabric'
-    pod 'Crashlytics'
+    pod 'Crashlytics', '~> 3.6'
 
     # Core Tools
     pod 'RegexKitLite'
