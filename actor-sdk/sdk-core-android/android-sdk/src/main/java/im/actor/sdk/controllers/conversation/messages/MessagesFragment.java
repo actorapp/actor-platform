@@ -408,6 +408,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 
                     } else if (menuItem.getItemId() == R.id.forward) {
                         Intent i = new Intent(getActivity(), ActorMainActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         if (messagesAdapter.getSelected().length == 1) {
                             Message m = messagesAdapter.getSelected()[0];
                             if (m.getContent() instanceof TextContent) {
@@ -453,6 +454,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                         }
                         actionMode.finish();
                         startActivity(i);
+                        getActivity().finish();
                         return true;
                     }
                     return false;
