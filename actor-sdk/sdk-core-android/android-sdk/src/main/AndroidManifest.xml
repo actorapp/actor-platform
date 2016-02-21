@@ -63,6 +63,7 @@
         <activity
             android:name="im.actor.sdk.controllers.activity.ActorMainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
             android:label="@string/app_name"
             android:theme="@style/MainActivityTheme"
             android:windowSoftInputMode="adjustResize">
