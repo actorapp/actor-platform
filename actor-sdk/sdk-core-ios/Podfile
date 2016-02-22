@@ -17,7 +17,6 @@ target 'ActorApp' do
     # Tracking
     pod 'HockeySDK', '~> 3.8-RC'
     pod 'Fabric'
-    pod 'Crashlytics', '~> 3.6'
 
     # Core Tools
     pod 'RegexKitLite'
