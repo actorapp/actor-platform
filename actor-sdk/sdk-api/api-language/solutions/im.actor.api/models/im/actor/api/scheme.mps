@@ -11961,6 +11961,38 @@
           <ref role="NX6Kv" node="GBscvBBv9B" resolve="token" />
         </node>
       </node>
+      <node concept="2m6fVq" id="3xEfKBqLdoQ" role="2m5mJr">
+        <property role="TrG5h" value="RegisterApplePushKit" />
+        <node concept="2m7Kf5" id="3xEfKBqLdp$" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="apnsKey" />
+          <node concept="2m5ndE" id="3xEfKBqLdpC" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3xEfKBqLdpF" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="token" />
+          <node concept="2m5ndX" id="3xEfKBqLdpL" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3xEfKBqLdoR" role="NuuwV">
+          <property role="Nu42W" value="A10" />
+        </node>
+        <node concept="2m1Rp1" id="3xEfKBqLdpx" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="3xEfKBqLdpO" role="1GBnQ6">
+          <property role="NXePf" value="Registration of a new Apple's PushKit tokens" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqLdpT" role="1GBnQ6">
+          <property role="1GSvIU" value="hidden" />
+          <property role="NX6R2" value="APNS key id" />
+          <ref role="NX6Kv" node="3xEfKBqLdp$" resolve="apnsKey" />
+        </node>
+        <node concept="NX1gA" id="3xEfKBqLdq1" role="1GBnQ6">
+          <property role="1GSvIU" value="danger" />
+          <property role="NX6R2" value="token value" />
+          <ref role="NX6Kv" node="3xEfKBqLdpF" resolve="token" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="7ZzLuuoIUGN" role="2m5mJr">
         <property role="TrG5h" value="RegisterActorPush" />
         <node concept="NXeRC" id="7ZzLuuoIUHC" role="1GBnQ6">

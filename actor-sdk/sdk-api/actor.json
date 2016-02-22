@@ -13968,6 +13968,44 @@
         {
           "type": "rpc",
           "content": {
+            "name": "RegisterApplePushKit",
+            "header": 2576,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Registration of a new Apple's PushKit tokens",
+              {
+                "type": "reference",
+                "argument": "apnsKey",
+                "category": "hidden",
+                "description": "APNS key id"
+              },
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "danger",
+                "description": "token value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "apnsKey"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "RegisterActorPush",
             "header": 2575,
             "response": {
