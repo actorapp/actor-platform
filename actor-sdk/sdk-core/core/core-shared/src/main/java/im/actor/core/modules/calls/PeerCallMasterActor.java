@@ -100,19 +100,30 @@ public class PeerCallMasterActor extends AbsCallActor {
         }).done(self());
     }
 
+
     @Override
     public void onDeviceConnected(int uid, long deviceId) {
-        if (!members.contains(uid) || uid == 0) {
+
+        /*
+         * Initial connection of device to chat.
+         * Here we need to advertise master for any suitable member.
+         */
+
+        if (!members.contains(uid) && uid != 0) {
             return;
         }
-
-        Log.d(TAG, "onDeviceConnected:" + deviceId);
-
         sendSwitchMaster(uid, deviceId);
     }
 
     @Override
     public void onAdvertised(int uid, long deviceId, ApiPeerSettings settings) {
+
+        /*
+         * Advertised Peer - create local peer and start opening connections if this node supports
+         * connections before answering.
+         * Additionally filter double messages.
+         */
+
         if (nodes.containsKey(deviceId)) {
             return;
         }
@@ -148,15 +159,19 @@ public class PeerCallMasterActor extends AbsCallActor {
 
     @Override
     public void onAnswered(int uid, long deviceId) {
-        super.onAnswered(uid, deviceId);
+
+        /*
+         * Peer Answered on call. Enabling ready connections, create new if necessary.
+         */
+
+        Node node = nodes.get(deviceId);
+        if (node == null || node.isAnswered()) {
+            return;
+        }
+        node.setIsAnswered(true);
 
         Log.d(TAG, "onAnswered:" + deviceId);
 
-        if (!nodes.containsKey(deviceId)) {
-            return;
-        }
-
-        Node node = nodes.get(deviceId);
         if (node.getPeerSettings().isPreConnectionEnabled() && getSelfSettings().isPreConnectionEnabled()) {
             getPeer(uid, deviceId).onAnswered();
         } else {
@@ -185,6 +200,9 @@ public class PeerCallMasterActor extends AbsCallActor {
             }
         }
 
+        //
+        // Updating call state
+        //
         if (!isAnswered) {
             isAnswered = true;
             if (isStarted) {
@@ -192,23 +210,22 @@ public class PeerCallMasterActor extends AbsCallActor {
             } else {
                 callVM.getState().change(CallState.CONNECTING);
             }
+            callManager.send(new CallManagerActor.OnCallAnswered(callId));
         }
     }
 
     @Override
     public void onFirstPeerStarted() {
-        super.onFirstPeerStarted();
+
+        /*
+         * Called When first device started to send actual data
+         */
 
         isStarted = true;
         if (isAnswered) {
             callVM.getState().change(CallState.IN_PROGRESS);
+            callManager.send(new CallManagerActor.OnCallAnswered(callId));
         }
-    }
-
-    @Override
-    public void onPeerConnected(int uid, long deviceId) {
-        super.onPeerConnected(uid, deviceId);
-        Log.d(TAG, "onPeerConnected:" + deviceId);
     }
 
     @Override
@@ -225,6 +242,19 @@ public class PeerCallMasterActor extends AbsCallActor {
     @Override
     public void onDeviceDisconnected(int uid, long deviceId) {
 
+        /*
+         * Called when device was disconnected. Stop peer and update call state.
+         */
+
+        Node node = nodes.remove(deviceId);
+        if (node == null) {
+            return;
+        }
+        stopPeer(deviceId);
+
+        if (node.isAnswered()) {
+            // If Node answered?
+        }
     }
 
     @Override
