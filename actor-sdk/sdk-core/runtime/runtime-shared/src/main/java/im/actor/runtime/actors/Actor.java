@@ -228,6 +228,10 @@ public class Actor {
         reply(new DeadLetter(message));
     }
 
+    public void forward(ActorRef dest) {
+        dest.send(context.message(), context.sender());
+    }
+
     public void halt(String message) {
         halt(message, null);
     }
