@@ -80,7 +80,6 @@ public class RequestPostToEventBus extends Request<ResponseVoid> {
         String res = "rpc PostToEventBus{";
         res += "id=" + this.id;
         res += ", destinations=" + this.destinations;
-        res += ", message=" + byteArrayToString(this.message);
         res += "}";
         return res;
     }
