@@ -1,5 +1,3 @@
-source 'https://github.com/CocoaPods/Specs'
-
 platform :ios, '8.0'
 use_frameworks!
 
@@ -13,6 +11,11 @@ link_with 'ActorApp'
 
 target 'ActorApp' do
     xcodeproj 'ActorApp.xcodeproj'
+    
+    # Tracking
+    pod 'HockeySDK', '~> 3.8-RC'
+    pod 'Fabric'
+    pod 'Crashlytics'
 
     # Core Tools
     pod 'RegexKitLite'
