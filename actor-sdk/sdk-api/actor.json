@@ -12021,7 +12021,7 @@
               {
                 "type": "reference",
                 "argument": "message",
-                "category": "full",
+                "category": "hidden",
                 "description": "Message"
               }
             ],
@@ -12189,7 +12189,7 @@
               {
                 "type": "reference",
                 "argument": "message",
-                "category": "compact",
+                "category": "hidden",
                 "description": "  Message"
               }
             ],
