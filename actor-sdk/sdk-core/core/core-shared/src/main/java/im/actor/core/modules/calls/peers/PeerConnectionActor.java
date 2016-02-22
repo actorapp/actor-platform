@@ -5,7 +5,6 @@ import com.google.j2objc.annotations.Property;
 import org.jetbrains.annotations.NotNull;
 
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.calls.entity.PeerNodeSettings;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.WebRTC;
@@ -24,8 +23,8 @@ import im.actor.runtime.webrtc.WebRTCSettings;
 public class PeerConnectionActor extends ModuleActor {
 
     @NotNull
-    public static ActorCreator CONSTRUCTOR(@NotNull final PeerNodeSettings selfSettings,
-                                           @NotNull final PeerNodeSettings theirSettings,
+    public static ActorCreator CONSTRUCTOR(@NotNull final PeerSettings selfSettings,
+                                           @NotNull final PeerSettings theirSettings,
                                            @NotNull final WebRTCMediaStream mediaStream,
                                            @NotNull final PeerConnectionCallback callback,
                                            @NotNull final ModuleContext context) {
@@ -54,8 +53,8 @@ public class PeerConnectionActor extends ModuleActor {
     @NotNull
     private PeerConnectionState state = PeerConnectionState.INITIALIZATION;
 
-    public PeerConnectionActor(@NotNull PeerNodeSettings selfSettings,
-                               @NotNull PeerNodeSettings theirSettings,
+    public PeerConnectionActor(@NotNull PeerSettings selfSettings,
+                               @NotNull PeerSettings theirSettings,
                                @NotNull WebRTCMediaStream mediaStream,
                                @NotNull PeerConnectionCallback callback,
                                @NotNull ModuleContext context) {
@@ -69,8 +68,6 @@ public class PeerConnectionActor extends ModuleActor {
     @Override
     public void preStart() {
 
-        Log.d(TAG, "preStart");
-
         isReady = false;
 
         WebRTCIceServer[] iceServers = config().getWebRTCIceServers();
@@ -78,7 +75,6 @@ public class PeerConnectionActor extends ModuleActor {
         WebRTC.createPeerConnection(iceServers, settings).then(new Consumer<WebRTCPeerConnection>() {
             @Override
             public void apply(WebRTCPeerConnection webRTCPeerConnection) {
-                Log.d(TAG, "preStart:then");
                 PeerConnectionActor.this.peerConnection = webRTCPeerConnection;
                 PeerConnectionActor.this.peerConnection.addOwnStream(stream);
                 PeerConnectionActor.this.peerConnection.addCallback(new WebRTCPeerConnectionCallback() {
@@ -91,7 +87,7 @@ public class PeerConnectionActor extends ModuleActor {
                     public void onStreamAdded(WebRTCMediaStream stream) {
                         // Making stream as muted and make it needed to be explicitly enabled
                         // by parent actor
-                        // stream.setEnabled(false);
+                        stream.setEnabled(false);
                         callback.onStreamAdded(stream);
                     }
 
@@ -132,7 +128,6 @@ public class PeerConnectionActor extends ModuleActor {
         // 3. Send Offer
         //
 
-        Log.d(TAG, "onOfferNeeded");
         isReady = false;
         peerConnection.createOffer().map(OPTIMIZE_OWN_SDP).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
             @Override
@@ -142,7 +137,6 @@ public class PeerConnectionActor extends ModuleActor {
         }).then(new Consumer<WebRTCSessionDescription>() {
             @Override
             public void apply(WebRTCSessionDescription description) {
-                Log.d(TAG, "onOfferNeeded:then");
                 callback.onOffer(description.getSdp());
                 state = PeerConnectionState.WAITING_ANSWER;
                 isReady = true;
@@ -151,7 +145,6 @@ public class PeerConnectionActor extends ModuleActor {
         }).failure(new Consumer<Exception>() {
             @Override
             public void apply(Exception e) {
-                Log.d(TAG, "onOfferNeeded:failure");
                 e.printStackTrace();
                 onHandshakeFailure();
             }
@@ -173,8 +166,6 @@ public class PeerConnectionActor extends ModuleActor {
         // 5. Enter READY mode
         //
 
-        Log.d(TAG, "Received Offer");
-
         isReady = false;
         peerConnection.setRemoteDescription(new WebRTCSessionDescription("offer", sdp)).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
             @Override
@@ -195,7 +186,6 @@ public class PeerConnectionActor extends ModuleActor {
         }).failure(new Consumer<Exception>() {
             @Override
             public void apply(Exception e) {
-                Log.d(TAG, "onOffer:failure");
                 e.printStackTrace();
                 onHandshakeFailure();
             }
@@ -208,24 +198,20 @@ public class PeerConnectionActor extends ModuleActor {
             return;
         }
 
-        Log.d(TAG, "Received Answer");
-
         //
         // Stages
         // 1. Set Remote Description
         // 2. Enter READY mode
         //
-        Log.d(TAG, "onAnswer");
+
         peerConnection.setRemoteDescription(new WebRTCSessionDescription("answer", sdp)).then(new Consumer<WebRTCSessionDescription>() {
             @Override
             public void apply(WebRTCSessionDescription description) {
-                Log.d(TAG, "onAnswer:then");
                 onHandShakeCompleted();
             }
         }).failure(new Consumer<Exception>() {
             @Override
             public void apply(Exception e) {
-                Log.d(TAG, "onAnswer:failure");
                 e.printStackTrace();
                 onHandshakeFailure();
             }

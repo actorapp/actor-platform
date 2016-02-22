@@ -3,7 +3,6 @@ package im.actor.core.modules.calls.peers;
 import java.util.HashMap;
 
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.calls.entity.PeerNodeSettings;
 import im.actor.core.modules.calls.peers.messages.RTCAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCAnswer;
 import im.actor.core.modules.calls.peers.messages.RTCCandidate;
@@ -15,14 +14,11 @@ import im.actor.core.modules.calls.peers.messages.RTCStart;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.WebRTC;
-import im.actor.runtime.actors.Actor;
-import im.actor.runtime.actors.ActorCreator;
-import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 
-public class PeerCallActor extends ModuleActor implements PeerNodeCallback {
+public class PeerCallActor extends ModuleActor {
 
     private static final String TAG = "PeerCallActor";
 
@@ -30,7 +26,7 @@ public class PeerCallActor extends ModuleActor implements PeerNodeCallback {
     private final PeerCallCallback callback;
 
     // Peer Settings
-    private final PeerNodeSettings selfSettings;
+    private final PeerSettings selfSettings;
 
     // WebRTC objects
     private HashMap<Long, PeerNodeInt> refs = new HashMap<>();
@@ -38,9 +34,9 @@ public class PeerCallActor extends ModuleActor implements PeerNodeCallback {
 
     // State objects
     private boolean isOwnStarted = false;
-    private boolean isOutputEnabled = false;
+    private boolean isMuted = false;
 
-    public PeerCallActor(PeerCallCallback callback, PeerNodeSettings selfSettings, ModuleContext context) {
+    public PeerCallActor(PeerCallCallback callback, PeerSettings selfSettings, ModuleContext context) {
         super(context);
         this.callback = callback;
         this.selfSettings = selfSettings;
@@ -54,7 +50,7 @@ public class PeerCallActor extends ModuleActor implements PeerNodeCallback {
             @Override
             public void apply(WebRTCMediaStream webRTCMediaStream) {
                 PeerCallActor.this.webRTCMediaStream = webRTCMediaStream;
-                // PeerCallActor.this.webRTCMediaStream.setEnabled(!isOutputEnabled);
+                PeerCallActor.this.webRTCMediaStream.setEnabled(isOwnStarted && !isMuted);
                 for (PeerNodeInt node : refs.values()) {
                     node.setOwnStream(webRTCMediaStream);
                 }
@@ -68,61 +64,23 @@ public class PeerCallActor extends ModuleActor implements PeerNodeCallback {
         }).done(self());
     }
 
-
-    //
-    // Peer Node Callbacks
-    //
-
-    @Override
-    public void onOffer(long deviceId, String sdp) {
-        callback.onOffer(deviceId, sdp);
-    }
-
-    @Override
-    public void onAnswer(long deviceId, String sdp) {
-        callback.onAnswer(deviceId, sdp);
-    }
-
-    @Override
-    public void onCandidate(long deviceId, int mdpIndex, String id, String sdp) {
-        callback.onCandidate(deviceId, mdpIndex, id, sdp);
-    }
-
-    @Override
-    public void onConnectionStarted(long deviceId) {
-        callback.onConnectionStarted(deviceId);
-    }
-
-    @Override
-    public void onConnectionEstablished(long deviceId) {
-        callback.onConnectionEstablished(deviceId);
-    }
-
-    @Override
-    public void onStreamAdded(long deviceId, WebRTCMediaStream stream) {
-        callback.onStreamAdded(deviceId, stream);
-    }
-
-    @Override
-    public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
-        callback.onStreamRemoved(deviceId, stream);
-    }
-
-
     //
     // Media Settings
     //
 
-    public void onMediaOutputChanged(boolean isEnabled) {
-        this.isOutputEnabled = isEnabled;
+    public void onMuteChanged(boolean isMuted) {
+        this.isMuted = isMuted;
         if (webRTCMediaStream != null) {
-            // webRTCMediaStream.setEnabled(!isOutputEnabled);
+            webRTCMediaStream.setEnabled(isOwnStarted && !this.isMuted);
         }
     }
 
     public void onOwnStart() {
         if (!isOwnStarted) {
             isOwnStarted = true;
+            if (webRTCMediaStream != null) {
+                webRTCMediaStream.setEnabled(!isMuted);
+            }
             for (PeerNodeInt d : refs.values()) {
                 d.startOwn();
             }
@@ -141,13 +99,8 @@ public class PeerCallActor extends ModuleActor implements PeerNodeCallback {
     }
 
     public PeerNodeInt createNewPeer(final long deviceId) {
-        ActorRef ref = system().actorOf(getPath() + "/" + deviceId, new ActorCreator() {
-            @Override
-            public Actor create() {
-                return new PeerNodeActor(deviceId, selfSettings, new WrappedCallback(), context());
-            }
-        });
-        PeerNodeInt peerNodeInt = new PeerNodeInt(deviceId, ref);
+        PeerNodeInt peerNodeInt = new PeerNodeInt(deviceId, new NodeCallback(),
+                selfSettings, self(), context());
         if (webRTCMediaStream != null) {
             peerNodeInt.setOwnStream(webRTCMediaStream);
         }
@@ -201,81 +154,61 @@ public class PeerCallActor extends ModuleActor implements PeerNodeCallback {
         } else if (message instanceof RTCAdvertised) {
             RTCAdvertised advertised = (RTCAdvertised) message;
             getPeer(advertised.getDeviceId()).onAdvertised(advertised.getSettings());
+        } else if (message instanceof MuteChanged) {
+            MuteChanged muteChanged = (MuteChanged) message;
+            onMuteChanged(muteChanged.isMuted());
         } else {
             super.onReceive(message);
         }
     }
 
-    private class WrappedCallback implements PeerNodeCallback {
+    public static class MuteChanged {
+        private boolean isMuted;
+
+        public MuteChanged(boolean isMuted) {
+            this.isMuted = isMuted;
+        }
+
+        public boolean isMuted() {
+            return isMuted;
+        }
+    }
+
+    private class NodeCallback implements PeerNodeCallback {
 
         @Override
-        public void onOffer(final long deviceId, final String sdp) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    PeerCallActor.this.onOffer(deviceId, sdp);
-                }
-            });
+        public void onOffer(long deviceId, String sdp) {
+            callback.onOffer(deviceId, sdp);
         }
 
         @Override
-        public void onAnswer(final long deviceId, final String sdp) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    PeerCallActor.this.onAnswer(deviceId, sdp);
-                }
-            });
+        public void onAnswer(long deviceId, String sdp) {
+            callback.onAnswer(deviceId, sdp);
         }
 
         @Override
-        public void onCandidate(final long deviceId, final int mdpIndex, final String id, final String sdp) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    PeerCallActor.this.onCandidate(deviceId, mdpIndex, id, sdp);
-                }
-            });
+        public void onCandidate(long deviceId, int mdpIndex, String id, String sdp) {
+            callback.onCandidate(deviceId, mdpIndex, id, sdp);
         }
 
         @Override
-        public void onConnectionStarted(final long deviceId) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    PeerCallActor.this.onConnectionStarted(deviceId);
-                }
-            });
+        public void onConnectionStarted(long deviceId) {
+            callback.onConnectionStarted(deviceId);
         }
 
         @Override
-        public void onConnectionEstablished(final long deviceId) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    PeerCallActor.this.onConnectionEstablished(deviceId);
-                }
-            });
+        public void onConnectionEstablished(long deviceId) {
+            callback.onConnectionEstablished(deviceId);
         }
 
         @Override
-        public void onStreamAdded(final long deviceId, final WebRTCMediaStream stream) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    PeerCallActor.this.onStreamAdded(deviceId, stream);
-                }
-            });
+        public void onStreamAdded(long deviceId, WebRTCMediaStream stream) {
+            callback.onStreamAdded(deviceId, stream);
         }
 
         @Override
-        public void onStreamRemoved(final long deviceId, final WebRTCMediaStream stream) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    PeerCallActor.this.onStreamRemoved(deviceId, stream);
-                }
-            });
+        public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
+            callback.onStreamRemoved(deviceId, stream);
         }
     }
 }

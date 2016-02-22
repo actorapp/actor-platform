@@ -10,13 +10,14 @@ import im.actor.core.api.ApiCandidate;
 import im.actor.core.api.ApiMembersChanged;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.ApiOffer;
+import im.actor.core.api.ApiOnAnswer;
 import im.actor.core.api.ApiSwitchMaster;
 import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.calls.entity.PeerNodeSettings;
 import im.actor.core.modules.calls.peers.PeerCallActor;
 import im.actor.core.modules.calls.peers.PeerCallCallback;
 import im.actor.core.modules.calls.peers.PeerCallInt;
+import im.actor.core.modules.calls.peers.PeerSettings;
 import im.actor.core.modules.eventbus.EventBusActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;
@@ -27,12 +28,12 @@ import im.actor.runtime.webrtc.WebRTCMediaStream;
 public class CallBusActor extends EventBusActor {
 
     private HashMap<Long, Integer> deviceIds = new HashMap<>();
-    private final PeerNodeSettings selfSettings;
+    private final PeerSettings selfSettings;
     private final PeerCallCallback peerCallback;
     private final CallBusCallback callBusCallback;
     private PeerCallInt peerCall;
 
-    public CallBusActor(CallBusCallback callBusCallback, PeerNodeSettings selfSettings, ModuleContext context) {
+    public CallBusActor(CallBusCallback callBusCallback, PeerSettings selfSettings, ModuleContext context) {
         super(context);
 
         this.selfSettings = selfSettings;
@@ -119,18 +120,24 @@ public class CallBusActor extends EventBusActor {
             peerCall.onAnswer(senderDeviceId, answer.getSdp());
         } else if (signal instanceof ApiOffer) {
             ApiOffer offer = (ApiOffer) signal;
-            peerCall.onAdvertised(senderDeviceId, new PeerNodeSettings(offer.getOwnPeerSettings()));
+            peerCall.onAdvertised(senderDeviceId, new PeerSettings(offer.getOwnPeerSettings()));
             peerCall.onOffer(senderDeviceId, offer.getSdp());
-            peerCall.onTheirStarted(senderDeviceId);
+            // peerCall.onTheirStarted(senderDeviceId);
         } else if (signal instanceof ApiCandidate) {
             ApiCandidate candidate = (ApiCandidate) signal;
             peerCall.onCandidate(senderDeviceId, candidate.getIndex(), candidate.getId(), candidate.getSdp());
         } else if (signal instanceof ApiNeedOffer) {
             ApiNeedOffer needOffer = (ApiNeedOffer) signal;
             deviceIds.put(needOffer.getDevice(), needOffer.getUid());
-            peerCall.onAdvertised(needOffer.getDevice(), new PeerNodeSettings(needOffer.getPeerSettings()));
+            peerCall.onAdvertised(needOffer.getDevice(), new PeerSettings(needOffer.getPeerSettings()));
             peerCall.onOfferNeeded(needOffer.getDevice());
-            peerCall.onTheirStarted(needOffer.getDevice());
+//            if (needOffer.isSilent() != null && !needOffer.isSilent()) {
+//                peerCall.onTheirStarted(needOffer.getDevice());
+//            }
+        } else if (signal instanceof ApiOnAnswer) {
+            ApiOnAnswer onAnswer = (ApiOnAnswer) signal;
+            deviceIds.put(onAnswer.getDevice(), onAnswer.getUid());
+            peerCall.onTheirStarted(onAnswer.getDevice());
         } else {
             if (callBusCallback instanceof CallBusCallbackSlave) {
                 CallBusCallbackSlave slaveCallback = (CallBusCallbackSlave) callBusCallback;

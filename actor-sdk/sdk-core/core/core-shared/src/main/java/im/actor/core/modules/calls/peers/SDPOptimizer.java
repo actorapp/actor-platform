@@ -1,13 +1,11 @@
 package im.actor.core.modules.calls.peers;
 
-import im.actor.core.modules.calls.entity.PeerNodeSettings;
-
 public class SDPOptimizer {
 
-    private final PeerNodeSettings ownSettings;
-    private final PeerNodeSettings theirSettings;
+    private final PeerSettings ownSettings;
+    private final PeerSettings theirSettings;
 
-    public SDPOptimizer(PeerNodeSettings ownSettings, PeerNodeSettings theirSettings) {
+    public SDPOptimizer(PeerSettings ownSettings, PeerSettings theirSettings) {
         this.ownSettings = ownSettings;
         this.theirSettings = theirSettings;
     }
