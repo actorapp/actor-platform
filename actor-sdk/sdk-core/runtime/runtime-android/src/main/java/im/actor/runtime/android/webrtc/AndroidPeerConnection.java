@@ -30,6 +30,7 @@ import im.actor.runtime.webrtc.WebRTCSettings;
 public class AndroidPeerConnection implements WebRTCPeerConnection {
 
     private static final boolean LIBJINGLE_LOGS = false;
+    public static final String TAG = "AndroidPeerConnection";
 
     public AndroidPeerConnection(WebRTCIceServer[] webRTCIceServers, WebRTCSettings settings) {
 
@@ -41,11 +42,18 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         }
 
         ArrayList<PeerConnection.IceServer> servers = new ArrayList<>();
+        PeerConnection.IceServer ice;
         for (WebRTCIceServer webRTCIceServer : webRTCIceServers) {
-            servers.add(new PeerConnection.IceServer(
-                    webRTCIceServer.getUrl(),
-                    webRTCIceServer.getUsername(),
-                    webRTCIceServer.getCredential()));
+            if (webRTCIceServer.getUsername() != null) {
+                ice = new PeerConnection.IceServer(
+                        webRTCIceServer.getUrl(),
+                        webRTCIceServer.getUsername(),
+                        webRTCIceServer.getCredential() == null ? "" : webRTCIceServer.getCredential());
+            } else {
+                ice = new PeerConnection.IceServer(webRTCIceServer.getUrl());
+            }
+            servers.add(ice);
+
         }
         this.peerConnection = AndroidWebRTCRuntimeProvider.FACTORY.createPeerConnection(servers, new MediaConstraints(), new PeerConnection.Observer() {
             @Override
