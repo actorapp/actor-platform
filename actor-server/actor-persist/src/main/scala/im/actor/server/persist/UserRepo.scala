@@ -5,6 +5,7 @@ import java.time.{ ZoneOffset, LocalDateTime }
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.model.{ Sex, UserState, User }
 import im.actor.util.misc.PhoneNumberUtils
+import slick.lifted.ColumnOrdered
 
 import scala.concurrent.ExecutionContext
 
@@ -137,12 +138,15 @@ object UserRepo {
 
   def activeUsersIds = activeHumanUsers.map(_.id).result
 
-  def page(number: Int, size: Int) = {
-    val offset = (number - 1) * size
-    activeHumanUsers.
-      sortBy(_.name).
-      drop(offset).
-      take(size)
+  def fetchPagedNewest(pageNumber: Int, pageSize: Int): DBIO[Seq[User]] =
+    paged(pageNumber, pageSize, { ut ⇒ ut.createdAt.desc }).result
+
+  def paged[A](pageNumber: Int, pageSize: Int, sorting: UserTable ⇒ ColumnOrdered[A]): Query[UserTable, User, Seq] = {
+    val offset = (pageNumber - 1) * pageSize
+    activeHumanUsers
+      .sortBy(sorting)
+      .drop(offset)
+      .take(pageSize)
   }
 
   def isDeleted(userId: Int): DBIO[Boolean] =

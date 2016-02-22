@@ -4,7 +4,6 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ ResponseAuth, ResponseStartUsernameAuth }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.activation.common.ActivationConfig
-import im.actor.server.email.DummyEmailSender
 import im.actor.server.oauth.GoogleProvider
 import im.actor.server.persist.UserPasswordRepo
 import im.actor.server.user.UserExtension
