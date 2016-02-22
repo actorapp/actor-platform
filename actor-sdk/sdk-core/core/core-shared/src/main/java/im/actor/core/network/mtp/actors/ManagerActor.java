@@ -346,7 +346,7 @@ public class ManagerActor extends Actor {
                 EncryptedCBCPackage ruEncryptedPackage = new EncryptedCBCPackage(new DataInput(ruPackage));
                 byte[] plainText = serverRUDecryptor.decryptPackage(ByteStrings.longToBytes(seq), ruEncryptedPackage.getIv(), ruEncryptedPackage.getEncryptedContent());
 
-                Log.d(TAG, "Package decrypted in " + (Runtime.getActorTime() - start) + " ms, size: " + plainText.length);
+                // Log.d(TAG, "Package decrypted in " + (Runtime.getActorTime() - start) + " ms, size: " + plainText.length);
 
                 DataInput ptInput = new DataInput(plainText);
                 long messageId = ptInput.readLong();
