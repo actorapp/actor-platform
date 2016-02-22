@@ -14,10 +14,6 @@ link_with 'ActorApp'
 target 'ActorApp' do
     xcodeproj 'ActorApp.xcodeproj'
 
-    # Tracking
-    pod 'HockeySDK', '~> 3.8-RC'
-    pod 'Fabric'
-
     # Core Tools
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
