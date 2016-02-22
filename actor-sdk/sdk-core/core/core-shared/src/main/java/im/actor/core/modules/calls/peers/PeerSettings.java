@@ -1,17 +1,17 @@
-package im.actor.core.modules.calls.entity;
+package im.actor.core.modules.calls.peers;
 
 import im.actor.core.api.ApiPeerSettings;
 
-public class PeerNodeSettings {
+public class PeerSettings {
 
     private boolean isPreConnectionEnabled = false;
     private boolean isMobile = false;
 
-    public PeerNodeSettings() {
+    public PeerSettings() {
 
     }
 
-    public PeerNodeSettings(ApiPeerSettings peerSettings) {
+    public PeerSettings(ApiPeerSettings peerSettings) {
         if (peerSettings != null) {
             if (peerSettings.canPreConnect() != null) {
                 isPreConnectionEnabled = peerSettings.canPreConnect();
