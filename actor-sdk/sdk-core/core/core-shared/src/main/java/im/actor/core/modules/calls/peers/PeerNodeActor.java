@@ -12,6 +12,7 @@ import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOwnStart;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
 import im.actor.core.util.ModuleActor;
+import im.actor.runtime.Log;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 /**
@@ -20,7 +21,7 @@ import im.actor.runtime.webrtc.WebRTCMediaStream;
  */
 public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback {
 
-    private static final int STASH_CONNECTION = 1;
+    private static final String TAG = "PeerNodeActor";
 
     private final long deviceId;
     private final PeerNodeCallback callback;
@@ -64,6 +65,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         }
         this.theirSettings = settings;
         reconfigurePeerConnectionIfNeeded();
+        Log.d(TAG, "onAdvertised");
     }
 
     public void onEnableOwn() {
@@ -72,6 +74,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         }
         this.isOwnEnabled = true;
         reconfigurePeerConnectionIfNeeded();
+        Log.d(TAG, "onEnableOwn");
     }
 
     public void onEnableTheir() {
@@ -80,11 +83,13 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         }
         this.isTheirEnabled = true;
         reconfigurePeerConnectionIfNeeded();
+        Log.d(TAG, "onEnableTheir");
     }
 
     public void setOwnSetStream(WebRTCMediaStream mediaStream) {
         this.mediaStream = mediaStream;
         reconfigurePeerConnectionIfNeeded();
+        Log.d(TAG, "setOwnSetStream");
     }
 
     private void reconfigurePeerConnectionIfNeeded() {
@@ -101,11 +106,13 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         if ((isOwnEnabled && isTheirEnabled) ||
                 (theirSettings.isPreConnectionEnabled() && ownSettings.isPreConnectionEnabled())) {
 
+            Log.d(TAG, "Creating connection");
+
             peerConnection = new PeerConnectionInt(
                     ownSettings, theirSettings,
                     mediaStream, this, context(), self(), "connection");
 
-            unstashAll(STASH_CONNECTION);
+            unstashAll();
         }
     }
 
@@ -114,14 +121,20 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             return;
         }
         isEnabled = true;
+
+        Log.d(TAG, "Enabling connection");
+
         for (WebRTCMediaStream mediaStream : incomingStreams) {
-            mediaStream.setEnabled(true);
+            // mediaStream.setEnabled(true);
         }
     }
 
     private void startIfNeeded() {
         if (isEnabled && isConnected && !isStarted) {
             isStarted = true;
+
+            Log.d(TAG, "Starting connection");
+
             callback.onConnectionStarted(deviceId);
             for (WebRTCMediaStream mediaStream : incomingStreams) {
                 callback.onStreamAdded(deviceId, mediaStream);
@@ -152,7 +165,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     @Override
     public void onStreamAdded(WebRTCMediaStream stream) {
         incomingStreams.add(stream);
-        stream.setEnabled(isEnabled);
+        // stream.setEnabled(isEnabled);
         if (isStarted) {
             callback.onStreamAdded(deviceId, stream);
         }

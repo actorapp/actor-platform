@@ -91,7 +91,7 @@ public class PeerConnectionActor extends ModuleActor {
                     public void onStreamAdded(WebRTCMediaStream stream) {
                         // Making stream as muted and make it needed to be explicitly enabled
                         // by parent actor
-                        stream.setEnabled(false);
+                        // stream.setEnabled(false);
                         callback.onStreamAdded(stream);
                     }
 
