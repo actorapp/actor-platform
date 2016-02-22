@@ -198,7 +198,7 @@ public class CallFragment extends BaseFragment {
 
         audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         final TintImageView speaker = (TintImageView) cont.findViewById(R.id.speaker);
-        // speaker.setResource(R.drawable.ic_volume_up_white_36dp);
+        speaker.setResource(R.drawable.ic_volume_up_white_36dp);
         speaker.setTint(getResources().getColor(R.color.primary));
         speaker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,7 +216,7 @@ public class CallFragment extends BaseFragment {
         });
 
         final TintImageView muteCall = (TintImageView) cont.findViewById(R.id.mute);
-        // muteCall.setResource(R.drawable.ic_mic_off_white_36dp);
+        muteCall.setResource(R.drawable.ic_mic_off_white_36dp);
         muteCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
