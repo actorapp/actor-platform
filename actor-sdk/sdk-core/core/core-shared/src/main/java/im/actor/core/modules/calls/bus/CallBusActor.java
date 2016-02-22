@@ -119,14 +119,18 @@ public class CallBusActor extends EventBusActor {
             peerCall.onAnswer(senderDeviceId, answer.getSdp());
         } else if (signal instanceof ApiOffer) {
             ApiOffer offer = (ApiOffer) signal;
+            peerCall.onAdvertised(senderDeviceId, new PeerNodeSettings(offer.getOwnPeerSettings()));
             peerCall.onOffer(senderDeviceId, offer.getSdp());
+            peerCall.onTheirStarted(senderDeviceId);
         } else if (signal instanceof ApiCandidate) {
             ApiCandidate candidate = (ApiCandidate) signal;
             peerCall.onCandidate(senderDeviceId, candidate.getIndex(), candidate.getId(), candidate.getSdp());
         } else if (signal instanceof ApiNeedOffer) {
             ApiNeedOffer needOffer = (ApiNeedOffer) signal;
             deviceIds.put(needOffer.getDevice(), needOffer.getUid());
+            peerCall.onAdvertised(needOffer.getDevice(), new PeerNodeSettings(needOffer.getPeerSettings()));
             peerCall.onOfferNeeded(needOffer.getDevice());
+            peerCall.onTheirStarted(needOffer.getDevice());
         } else {
             if (callBusCallback instanceof CallBusCallbackSlave) {
                 CallBusCallbackSlave slaveCallback = (CallBusCallbackSlave) callBusCallback;
@@ -148,6 +152,7 @@ public class CallBusActor extends EventBusActor {
     }
 
     public final void sendSignal(int uid, long deviceId, ApiWebRTCSignaling signal) {
+        Log.d("CallBusActor", "Message Sent: " + signal);
         try {
             sendMessage(uid, deviceId, signal.buildContainer());
         } catch (IOException e) {

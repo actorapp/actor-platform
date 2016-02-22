@@ -29,6 +29,7 @@ public class CallActor extends ModuleActor implements CallBusCallbackSlave {
     private static final String TAG = "CallActor";
 
     private CallBusInt callBusInt;
+    private PeerCallInt peerCallInt;
     private final ActorRef callManager;
     private final long callId;
     private final PeerNodeSettings selfSettings;
@@ -66,6 +67,11 @@ public class CallActor extends ModuleActor implements CallBusCallbackSlave {
                 return new CallBusActor(new CallbackWrapper(), selfSettings, context());
             }
         }));
+    }
+
+    @Override
+    public void onBusCreated(PeerCallInt peerCallInt) {
+        this.peerCallInt = peerCallInt;
 
         api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
             @Override
@@ -79,11 +85,6 @@ public class CallActor extends ModuleActor implements CallBusCallbackSlave {
 
             }
         }).done(self());
-    }
-
-    @Override
-    public void onBusCreated(PeerCallInt peerCallInt) {
-
     }
 
     @Override
@@ -116,6 +117,7 @@ public class CallActor extends ModuleActor implements CallBusCallbackSlave {
 
     public void onAnswerCall() {
         callBusInt.sendSignal(masterUid, masterDeviceId, new ApiAnswerCall());
+        peerCallInt.onOwnStarted();
     }
 
     @Override
