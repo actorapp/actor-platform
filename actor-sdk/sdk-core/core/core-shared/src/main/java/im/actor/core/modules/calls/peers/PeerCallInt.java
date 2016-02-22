@@ -1,6 +1,5 @@
 package im.actor.core.modules.calls.peers;
 
-import im.actor.core.modules.calls.entity.PeerNodeSettings;
 import im.actor.core.modules.calls.peers.messages.RTCAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCAnswer;
 import im.actor.core.modules.calls.peers.messages.RTCCandidate;
@@ -27,7 +26,7 @@ public class PeerCallInt extends ActorInterface {
         send(new RTCOwnStart());
     }
 
-    public void onAdvertised(long deviceId, PeerNodeSettings settings) {
+    public void onAdvertised(long deviceId, PeerSettings settings) {
         send(new RTCAdvertised(deviceId, settings));
     }
 

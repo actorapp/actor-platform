@@ -12,8 +12,8 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.bus.CallBusActor;
 import im.actor.core.modules.calls.bus.CallBusCallbackSlave;
 import im.actor.core.modules.calls.bus.CallBusInt;
-import im.actor.core.modules.calls.entity.PeerNodeSettings;
 import im.actor.core.modules.calls.peers.PeerCallInt;
+import im.actor.core.modules.calls.peers.PeerSettings;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.runtime.Log;
@@ -32,7 +32,7 @@ public class CallActor extends ModuleActor implements CallBusCallbackSlave {
     private PeerCallInt peerCallInt;
     private final ActorRef callManager;
     private final long callId;
-    private final PeerNodeSettings selfSettings;
+    private final PeerSettings selfSettings;
 
     private Peer peer;
     private CallVM callVM;
@@ -52,7 +52,7 @@ public class CallActor extends ModuleActor implements CallBusCallbackSlave {
         this.callManager = context.getCallsModule().getCallManager();
         this.isAnswered = false;
         this.isConnected = false;
-        this.selfSettings = new PeerNodeSettings();
+        this.selfSettings = new PeerSettings();
         this.selfSettings.setIsPreConnectionEnabled(true);
     }
 
