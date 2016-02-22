@@ -54,7 +54,7 @@ public class PeerCallActor extends ModuleActor implements PeerNodeCallback {
             @Override
             public void apply(WebRTCMediaStream webRTCMediaStream) {
                 PeerCallActor.this.webRTCMediaStream = webRTCMediaStream;
-                PeerCallActor.this.webRTCMediaStream.setEnabled(!isOutputEnabled);
+                // PeerCallActor.this.webRTCMediaStream.setEnabled(!isOutputEnabled);
                 for (PeerNodeInt node : refs.values()) {
                     node.setOwnStream(webRTCMediaStream);
                 }
@@ -116,7 +116,7 @@ public class PeerCallActor extends ModuleActor implements PeerNodeCallback {
     public void onMediaOutputChanged(boolean isEnabled) {
         this.isOutputEnabled = isEnabled;
         if (webRTCMediaStream != null) {
-            webRTCMediaStream.setEnabled(!isOutputEnabled);
+            // webRTCMediaStream.setEnabled(!isOutputEnabled);
         }
     }
 
