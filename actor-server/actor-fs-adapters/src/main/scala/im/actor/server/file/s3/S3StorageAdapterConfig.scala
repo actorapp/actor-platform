@@ -5,7 +5,7 @@ import com.typesafe.config.{ ConfigFactory, Config }
 
 import scala.util.Try
 
-case class S3StorageAdapterConfig(bucketName: String, key: String, secret: String, endpoint: String)
+case class S3StorageAdapterConfig(bucketName: String, key: String, secret: String, endpoint: String, pathStyleAccess: Boolean)
 
 object S3StorageAdapterConfig {
   def load(config: Config): Try[S3StorageAdapterConfig] = {
@@ -14,7 +14,8 @@ object S3StorageAdapterConfig {
       key ← config.get[Try[String]]("access-key")
       secret ← config.get[Try[String]]("secret-key")
       endpoint ← config.get[Try[String]]("endpoint")
-    } yield S3StorageAdapterConfig(bucketName, key, secret, endpoint)
+      pathStyleAccess ← config.get[Try[Boolean]]("path-style-access")
+    } yield S3StorageAdapterConfig(bucketName, key, secret, endpoint, pathStyleAccess)
   }
 
   def load: Try[S3StorageAdapterConfig] = {
