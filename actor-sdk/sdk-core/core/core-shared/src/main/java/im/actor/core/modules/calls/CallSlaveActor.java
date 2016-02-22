@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiCallMember;
-import im.actor.core.api.ApiCallMemberStateHolder;
 import im.actor.core.api.rpc.RequestGetCallInfo;
 import im.actor.core.api.rpc.ResponseGetCallInfo;
 import im.actor.core.entity.Peer;
@@ -98,49 +97,7 @@ public class CallSlaveActor extends AbsCallActor {
             if (apiCallMember.getUserId() == myUid()) {
                 continue;
             }
-            ApiCallMemberStateHolder stateHolder = apiCallMember.getState();
-            CallMemberState state;
-            switch (stateHolder.getState()) {
-                case RINGING:
-                    state = CallMemberState.RINGING;
-                    break;
-                case RINGING_REACHED:
-                    state = CallMemberState.RINGING_REACHED;
-                    break;
-                case CONNECTING:
-                    state = CallMemberState.CONNECTING;
-                    break;
-                case CONNECTED:
-                    state = CallMemberState.IN_PROGRESS;
-                    break;
-                case ENDED:
-                    state = CallMemberState.ENDED;
-                    break;
-                default:
-                    if (stateHolder.fallbackIsRingingReached() != null && stateHolder.fallbackIsRingingReached()) {
-                        state = CallMemberState.RINGING_REACHED;
-                        break;
-                    }
-                    if (stateHolder.fallbackIsEnded() != null && stateHolder.fallbackIsEnded()) {
-                        state = CallMemberState.ENDED;
-                        break;
-                    }
-                    if (stateHolder.fallbackIsRinging() != null && stateHolder.fallbackIsRinging()) {
-                        state = CallMemberState.RINGING;
-                        break;
-                    }
-
-                    if (stateHolder.fallbackIsConnecting() != null && stateHolder.fallbackIsConnecting()) {
-                        state = CallMemberState.CONNECTING;
-                        break;
-                    }
-
-                    if (stateHolder.fallbackIsConnected() != null && stateHolder.fallbackIsConnected()) {
-                        state = CallMemberState.IN_PROGRESS;
-                        break;
-                    }
-                    state = CallMemberState.RINGING;
-            }
+            CallMemberState state = CallMemberState.from(apiCallMember.getState());
             members.add(new CallMember(apiCallMember.getUserId(), state));
         }
         callVM.getMembers().change(members);

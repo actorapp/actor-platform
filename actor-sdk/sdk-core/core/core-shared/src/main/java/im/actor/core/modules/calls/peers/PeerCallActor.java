@@ -124,6 +124,9 @@ public class PeerCallActor extends EventBusActor {
         if (wasAnswered) {
             wasAnswered = false;
             sendSignaling(uid, deviceId, new ApiAnswerCall());
+            for (PeerNodeInt node : refs.values()) {
+                node.onAnswered();
+            }
         }
 
         if (wasRejected) {
@@ -249,6 +252,13 @@ public class PeerCallActor extends EventBusActor {
             d.stop();
         }
         refs.clear();
+    }
+
+    public void stopPeer(long deviceId) {
+        PeerNodeInt peerNodeInt = refs.remove(deviceId);
+        if (peerNodeInt != null) {
+            peerNodeInt.stop();
+        }
     }
 
 

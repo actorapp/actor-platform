@@ -50,6 +50,9 @@ public class PeerNodeActor extends ModuleActor {
     @ActorMessage
     public void onAnswered() {
         this.isAnswered = true;
+        if (mediaStream != null) {
+            this.mediaStream.setEnabled(!isMuted);
+        }
         makePeerConnectionIfNeeded();
         enablePeerConnectionIfNeeded();
         if (isConnected) {
@@ -61,7 +64,7 @@ public class PeerNodeActor extends ModuleActor {
     public void setOwnSetStream(WebRTCMediaStream mediaStream) {
 
         this.mediaStream = mediaStream;
-        this.mediaStream.setEnabled(!isMuted);
+        this.mediaStream.setEnabled(!isMuted && isAnswered);
 
         makePeerConnectionIfNeeded();
         enablePeerConnectionIfNeeded();
