@@ -10386,7 +10386,7 @@
           <ref role="NX6Kv" node="3Tolai5MRez" resolve="destinations" />
         </node>
         <node concept="NX1gA" id="3Tolai5MYPI" role="1GBnQ6">
-          <property role="1GSvIU" value="full" />
+          <property role="1GSvIU" value="hidden" />
           <property role="NX6R2" value="Message" />
           <ref role="NX6Kv" node="3Tolai5MYPt" resolve="message" />
         </node>
@@ -10535,7 +10535,7 @@
           <ref role="NX6Kv" node="3Tolai5MASy" resolve="senderDeviceId" />
         </node>
         <node concept="NX1gA" id="3Tolai5MCWG" role="NXp_2">
-          <property role="1GSvIU" value="compact" />
+          <property role="1GSvIU" value="hidden" />
           <property role="NX6R2" value="Message" />
           <ref role="NX6Kv" node="3Tolai5MASH" resolve="message" />
         </node>
