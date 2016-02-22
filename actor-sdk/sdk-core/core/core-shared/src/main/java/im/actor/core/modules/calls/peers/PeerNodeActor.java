@@ -1,128 +1,195 @@
 package im.actor.core.modules.calls.peers;
 
-import com.google.j2objc.annotations.Property;
-
-import org.jetbrains.annotations.NotNull;
+import java.util.ArrayList;
 
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.calls.entity.PeerNodeSettings;
+import im.actor.core.modules.calls.peers.messages.RTCAdvertised;
+import im.actor.core.modules.calls.peers.messages.RTCAnswer;
+import im.actor.core.modules.calls.peers.messages.RTCCandidate;
+import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
+import im.actor.core.modules.calls.peers.messages.RTCOffer;
+import im.actor.core.modules.calls.peers.messages.RTCOwnStart;
+import im.actor.core.modules.calls.peers.messages.RTCStart;
 import im.actor.core.util.ModuleActor;
-import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.ActorSupervisor;
-import im.actor.runtime.actors.messages.PoisonPill;
-import im.actor.runtime.annotations.ActorMessage;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 
-public class PeerNodeActor extends ModuleActor {
+/**
+ * Proxy Actor for simplifying state of PeerConnection by careful peer connection initialization
+ * and handling case when we want to establish connection before call answering
+ */
+public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback {
 
     private static final int STASH_CONNECTION = 1;
 
     private final long deviceId;
-    private final int uid;
-    private final boolean isPreConnectEnabled;
-    private final ActorRef callActor;
-    private ActorRef peerConnection;
-    private PeerNodeSettings settings;
+    private final PeerNodeCallback callback;
+    private final PeerNodeSettings ownSettings;
+    private final ArrayList<WebRTCMediaStream> incomingStreams = new ArrayList<>();
+
+    private PeerConnectionInt peerConnection;
+    private PeerNodeSettings theirSettings;
     private WebRTCMediaStream mediaStream;
-    private boolean isAnswered = false;
-    private boolean isMuted = false;
+    private boolean isTheirEnabled = false;
+    private boolean isOwnEnabled = false;
+    private boolean isEnabled = false;
     private boolean isConnected = false;
+    private boolean isStarted = false;
 
-    public PeerNodeActor(int uid, long deviceId, boolean isPreConnectEnabled, ActorRef callActor, ModuleContext context) {
+    public PeerNodeActor(long deviceId,
+                         PeerNodeSettings ownSettings,
+                         PeerNodeCallback callback,
+                         ModuleContext context) {
         super(context);
-        this.isPreConnectEnabled = isPreConnectEnabled;
-        this.callActor = callActor;
-        this.uid = uid;
         this.deviceId = deviceId;
+        this.ownSettings = ownSettings;
+        this.callback = callback;
     }
 
-    @Override
-    public void preStart() {
 
-    }
+    //
+    // Starting up peer nodes
+    //
+    // Stages:
+    // 1. Waiting for advertise of a node
+    // 2. If both peers supports pre connection, create new connection
+    // 3. Enabling Own and Their peers
+    // 4. Setting own media stream
+    // 5. Creation of peer connection
+    //
 
-    @ActorMessage
     public void onAdvertised(PeerNodeSettings settings) {
-        this.settings = settings;
-        makePeerConnectionIfNeeded();
-        enablePeerConnectionIfNeeded();
+        if (this.theirSettings != null) {
+            return;
+        }
+        this.theirSettings = settings;
+        reconfigurePeerConnectionIfNeeded();
     }
 
-    @ActorMessage
-    public void onAnswered() {
-        this.isAnswered = true;
-        if (mediaStream != null) {
-            this.mediaStream.setEnabled(!isMuted);
+    public void onEnableOwn() {
+        if (this.isOwnEnabled) {
+            return;
         }
-        makePeerConnectionIfNeeded();
-        enablePeerConnectionIfNeeded();
-        if (isConnected) {
-            callActor.send(new PeerCallActor.ConnectionActive(uid, deviceId));
-        }
+        this.isOwnEnabled = true;
+        reconfigurePeerConnectionIfNeeded();
     }
 
-    @ActorMessage
+    public void onEnableTheir() {
+        if (this.isTheirEnabled) {
+            return;
+        }
+        this.isTheirEnabled = true;
+        reconfigurePeerConnectionIfNeeded();
+    }
+
     public void setOwnSetStream(WebRTCMediaStream mediaStream) {
-
         this.mediaStream = mediaStream;
-        this.mediaStream.setEnabled(!isMuted && isAnswered);
+        reconfigurePeerConnectionIfNeeded();
+    }
 
+    private void reconfigurePeerConnectionIfNeeded() {
         makePeerConnectionIfNeeded();
         enablePeerConnectionIfNeeded();
+        startIfNeeded();
     }
 
     private void makePeerConnectionIfNeeded() {
-        if (peerConnection == null
-                && settings != null
-                && mediaStream != null
-                && ((settings.isPreConnectionEnabled() && isPreConnectEnabled) || isAnswered)) {
+        if (peerConnection != null || theirSettings == null || mediaStream == null) {
+            return;
+        }
 
-            peerConnection = system().actorOf(getPath() + "/connection",
-                    PeerConnectionActor.CONSTRUCTOR(mediaStream, isAnswered, self(), context()),
-                    new ActorSupervisor() {
-                        @Override
-                        public void onActorStopped(ActorRef ref) {
-                            self().send(PoisonPill.INSTANCE);
-                        }
-                    });
+        if ((isOwnEnabled && isTheirEnabled) ||
+                (theirSettings.isPreConnectionEnabled() && ownSettings.isPreConnectionEnabled())) {
+
+            peerConnection = new PeerConnectionInt(
+                    ownSettings, theirSettings,
+                    mediaStream, this, context(), self(), "connection");
+
             unstashAll(STASH_CONNECTION);
-            callActor.send(new PeerCallActor.ConnectionCreated(uid, deviceId));
         }
     }
 
     private void enablePeerConnectionIfNeeded() {
-        if (peerConnection == null) {
+        if (peerConnection == null || !isOwnEnabled || !isTheirEnabled || isEnabled) {
             return;
         }
-        if (!isAnswered) {
-            return;
-        }
-
-        peerConnection.send(new PeerConnectionActor.DoEnable(true));
-    }
-
-    @ActorMessage
-    public void onStreamAdded() {
-        if (isConnected) {
-            return;
-        }
-        isConnected = true;
-        if (isAnswered) {
-            callActor.send(new PeerCallActor.ConnectionActive(uid, deviceId));
+        isEnabled = true;
+        for (WebRTCMediaStream mediaStream : incomingStreams) {
+            mediaStream.setEnabled(true);
         }
     }
 
-    @ActorMessage
-    public void onOfferNeeded() {
-        peerConnection.send(new PeerConnectionActor.OnOfferNeeded());
+    private void startIfNeeded() {
+        if (isEnabled && isConnected && !isStarted) {
+            isStarted = true;
+            callback.onConnectionStarted(deviceId);
+            for (WebRTCMediaStream mediaStream : incomingStreams) {
+                callback.onStreamAdded(deviceId, mediaStream);
+            }
+        }
     }
+
+
+    //
+    // Peer callbacks
+    //
+
+    @Override
+    public void onOffer(String sdp) {
+        callback.onOffer(deviceId, sdp);
+    }
+
+    @Override
+    public void onAnswer(String sdp) {
+        callback.onAnswer(deviceId, sdp);
+    }
+
+    @Override
+    public void onCandidate(int mdpIndex, String id, String sdp) {
+        callback.onCandidate(deviceId, mdpIndex, id, sdp);
+    }
+
+    @Override
+    public void onStreamAdded(WebRTCMediaStream stream) {
+        incomingStreams.add(stream);
+        stream.setEnabled(isEnabled);
+        if (isStarted) {
+            callback.onStreamAdded(deviceId, stream);
+        }
+
+        if (!isConnected) {
+            isConnected = true;
+            if (!isEnabled) {
+                callback.onConnectionEstablished(deviceId);
+            } else {
+                // This case is handled in start if needed
+            }
+        }
+
+        startIfNeeded();
+    }
+
+    @Override
+    public void onStreamRemoved(WebRTCMediaStream stream) {
+        incomingStreams.remove(stream);
+        if (isStarted) {
+            callback.onStreamRemoved(deviceId, stream);
+        }
+    }
+
+
+    //
+    // Stopping
+    //
 
     @Override
     public void postStop() {
         if (peerConnection != null) {
-            peerConnection.send(PoisonPill.INSTANCE);
+            peerConnection.kill();
             peerConnection = null;
         }
     }
+
 
     //
     // Messages
@@ -130,217 +197,46 @@ public class PeerNodeActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
-        if (message instanceof OnOfferReceived) {
-            if (peerConnection == null) {
-                stash(STASH_CONNECTION);
-                return;
-            }
-            OnOfferReceived offer = (OnOfferReceived) message;
-            peerConnection.send(new PeerConnectionActor.OnOffer(offer.getSdp()));
-        } else if (message instanceof DoOffer) {
-            DoOffer offer = (DoOffer) message;
-            callActor.send(new PeerCallActor.SendOffer(uid, deviceId, offer.getSdp()));
-        } else if (message instanceof OnAnswerReceived) {
-            if (peerConnection == null) {
-                stash(STASH_CONNECTION);
-                return;
-            }
-            OnAnswerReceived answer = (OnAnswerReceived) message;
-            peerConnection.send(new PeerConnectionActor.OnAnswer(answer.getSdp()));
-        } else if (message instanceof DoAnswer) {
-            DoAnswer answer = (DoAnswer) message;
-            callActor.send(new PeerCallActor.SendAnswer(uid, deviceId, answer.getSdp()));
-        } else if (message instanceof OnCandidateReceived) {
-            if (peerConnection == null) {
-                stash(STASH_CONNECTION);
-                return;
-            }
-            OnCandidateReceived candidate = (OnCandidateReceived) message;
-            peerConnection.send(new PeerConnectionActor.OnCandidate(candidate.getIndex(),
-                    candidate.getId(), candidate.getSdp()));
-        } else if (message instanceof DoCandidate) {
-            DoCandidate candidate = (DoCandidate) message;
-            callActor.send(new PeerCallActor.SendCandidate(uid, deviceId, candidate.getIndex(),
-                    candidate.getId(), candidate.getSdp()));
-        } else if (message instanceof OnOfferNeeded) {
-            if (peerConnection == null) {
-                stash(STASH_CONNECTION);
-                return;
-            }
-            onOfferNeeded();
-        } else if (message instanceof OnAdvertised) {
-            OnAdvertised nodeSettings = (OnAdvertised) message;
-            onAdvertised(nodeSettings.getSettings());
-        } else if (message instanceof OnAnswered) {
-            onAnswered();
-        } else if (message instanceof OnStreamAdded) {
-            onStreamAdded();
-        } else if (message instanceof OnStreamRemoved) {
-            // Do nothing
+        if (message instanceof RTCStart) {
+            onEnableTheir();
+        } else if (message instanceof RTCOwnStart) {
+            onEnableOwn();
+        } else if (message instanceof RTCAdvertised) {
+            RTCAdvertised advertised = (RTCAdvertised) message;
+            onAdvertised(advertised.getSettings());
         } else if (message instanceof SetOwnStream) {
-            setOwnSetStream(((SetOwnStream) message).getMediaStream());
+            SetOwnStream ownStream = (SetOwnStream) message;
+            setOwnSetStream(ownStream.getMediaStream());
+        } else if (message instanceof RTCOffer) {
+            if (peerConnection == null) {
+                stash();
+                return;
+            }
+            RTCOffer offer = (RTCOffer) message;
+            peerConnection.onOffer(offer.getSdp());
+        } else if (message instanceof RTCAnswer) {
+            if (peerConnection == null) {
+                stash();
+                return;
+            }
+            RTCAnswer answer = (RTCAnswer) message;
+            peerConnection.onAnswer(answer.getSdp());
+        } else if (message instanceof RTCNeedOffer) {
+            if (peerConnection == null) {
+                stash();
+                return;
+            }
+            peerConnection.onOfferNeeded();
+        } else if (message instanceof RTCCandidate) {
+            if (peerConnection == null) {
+                stash();
+                return;
+            }
+            RTCCandidate candidate = (RTCCandidate) message;
+            peerConnection.onCandidate(candidate.getMdpIndex(), candidate.getId(), candidate.getSdp());
         } else {
             super.onReceive(message);
         }
-    }
-
-    public static class OnAdvertised {
-
-        private PeerNodeSettings settings;
-
-        public OnAdvertised(PeerNodeSettings settings) {
-            this.settings = settings;
-        }
-
-        public PeerNodeSettings getSettings() {
-            return settings;
-        }
-    }
-
-    public static class OnAnswered {
-
-    }
-
-    public static class OnOfferNeeded {
-
-    }
-
-    public static class OnOfferReceived {
-
-        @NotNull
-        @Property("nonatomic, readonly")
-        private String sdp;
-
-        public OnOfferReceived(@NotNull String sdp) {
-            this.sdp = sdp;
-        }
-
-        @NotNull
-        public String getSdp() {
-            return sdp;
-        }
-    }
-
-    public static class OnAnswerReceived {
-
-        @NotNull
-        @Property("nonatomic, readonly")
-        private String sdp;
-
-        public OnAnswerReceived(@NotNull String sdp) {
-            this.sdp = sdp;
-        }
-
-        @NotNull
-        public String getSdp() {
-            return sdp;
-        }
-    }
-
-    public static class OnCandidateReceived {
-
-        @Property("nonatomic, readonly")
-        private final int index;
-        @NotNull
-        @Property("nonatomic, readonly")
-        private final String id;
-        @NotNull
-        @Property("nonatomic, readonly")
-        private final String sdp;
-
-        public OnCandidateReceived(int index, @NotNull String id, @NotNull String sdp) {
-            this.index = index;
-            this.id = id;
-            this.sdp = sdp;
-        }
-
-        public int getIndex() {
-            return index;
-        }
-
-        @NotNull
-        public String getId() {
-            return id;
-        }
-
-        @NotNull
-        public String getSdp() {
-            return sdp;
-        }
-    }
-
-
-    public static class DoOffer {
-
-        @NotNull
-        @Property("nonatomic, readonly")
-        private String sdp;
-
-        public DoOffer(@NotNull String sdp) {
-            this.sdp = sdp;
-        }
-
-        @NotNull
-        public String getSdp() {
-            return sdp;
-        }
-    }
-
-    public static class DoAnswer {
-
-        @NotNull
-        @Property("nonatomic, readonly")
-        private String sdp;
-
-        public DoAnswer(@NotNull String sdp) {
-            this.sdp = sdp;
-        }
-
-        @NotNull
-        public String getSdp() {
-            return sdp;
-        }
-    }
-
-    public static class DoCandidate {
-
-        @Property("nonatomic, readonly")
-        private final int index;
-        @NotNull
-        @Property("nonatomic, readonly")
-        private final String id;
-        @NotNull
-        @Property("nonatomic, readonly")
-        private final String sdp;
-
-        public DoCandidate(int index, @NotNull String id, @NotNull String sdp) {
-            this.index = index;
-            this.id = id;
-            this.sdp = sdp;
-        }
-
-        public int getIndex() {
-            return index;
-        }
-
-        @NotNull
-        public String getId() {
-            return id;
-        }
-
-        @NotNull
-        public String getSdp() {
-            return sdp;
-        }
-    }
-
-
-    public static class OnStreamAdded {
-
-    }
-
-    public static class OnStreamRemoved {
-
     }
 
     public static class SetOwnStream {

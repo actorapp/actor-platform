@@ -8,19 +8,19 @@ import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.calls.peers.PeerCallActor;
+import im.actor.core.modules.eventbus.EventBusActor;
 import im.actor.core.viewmodel.CallMember;
 import im.actor.core.viewmodel.CallMemberState;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 
-public class AbsCallActor extends PeerCallActor {
+public class AbsCallActor extends EventBusActor {
 
     private final HashMap<Long, CallVM> callModels;
     private CallVM callVM;
 
-    public AbsCallActor(boolean isSlaveMode, ModuleContext context) {
-        super(isSlaveMode, context);
+    public AbsCallActor(ModuleContext context) {
+        super(context);
 
         callModels = context().getCallsModule().getCallModels();
     }
@@ -30,7 +30,7 @@ public class AbsCallActor extends PeerCallActor {
     //
     public CallVM spawnNewVM(long callId, Peer peer, boolean isOutgoing, ArrayList<CallMember> members, CallState callState) {
         CallVM callVM = new CallVM(callId, peer, isOutgoing, members, callState);
-        callVM.getIsMuted().change(isMuted());
+        // callVM.getIsMuted().change(isMuted());
         synchronized (callModels) {
             callModels.put(callId, callVM);
         }
@@ -54,11 +54,11 @@ public class AbsCallActor extends PeerCallActor {
         return spawnNewVM(callId, peer, true, members, CallState.RINGING);
     }
 
-    @Override
-    public void onMute(boolean isMuted) {
-        super.onMute(isMuted);
-        if (callVM != null) {
-            callVM.getIsMuted().change(isMuted);
-        }
-    }
+//    @Override
+//    public void onMute(boolean isMuted) {
+//        super.onMute(isMuted);
+//        if (callVM != null) {
+//            callVM.getIsMuted().change(isMuted);
+//        }
+//    }
 }

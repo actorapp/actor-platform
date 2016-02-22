@@ -1,4 +1,4 @@
-package im.actor.core.modules.calls.peers;
+package im.actor.core.modules.calls.entity;
 
 import im.actor.core.api.ApiPeerSettings;
 
