@@ -4,21 +4,16 @@ import com.google.j2objc.annotations.Property;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.calls.entity.PeerNodeSettings;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
-import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
-import im.actor.runtime.function.FunctionTupled2;
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.promise.Promises;
 import im.actor.runtime.webrtc.WebRTCIceServer;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 import im.actor.runtime.webrtc.WebRTCPeerConnection;
@@ -29,45 +24,46 @@ import im.actor.runtime.webrtc.WebRTCSettings;
 public class PeerConnectionActor extends ModuleActor {
 
     @NotNull
-    public static ActorCreator CONSTRUCTOR(@NotNull final WebRTCMediaStream mediaStream,
-                                           final boolean isEnabled,
-                                           @NotNull final ActorRef nodeActor,
+    public static ActorCreator CONSTRUCTOR(@NotNull final PeerNodeSettings selfSettings,
+                                           @NotNull final PeerNodeSettings theirSettings,
+                                           @NotNull final WebRTCMediaStream mediaStream,
+                                           @NotNull final PeerConnectionCallback callback,
                                            @NotNull final ModuleContext context) {
         return new ActorCreator() {
             @Override
             public Actor create() {
-                return new PeerConnectionActor(mediaStream, isEnabled, nodeActor, context);
+                return new PeerConnectionActor(selfSettings, theirSettings, mediaStream, callback, context);
             }
         };
     }
 
 
     private final String TAG;
+
     @NotNull
-    private final ActorRef nodeActor;
+    private final PeerConnectionCallback callback;
     @NotNull
     private final WebRTCMediaStream stream;
 
     @NotNull
     private WebRTCPeerConnection peerConnection;
+    private SDPOptimizer sdpOptimizer;
 
-    private boolean isEnabled;
     private boolean isReady = false;
     private boolean isReadyForCandidates = false;
     @NotNull
     private PeerConnectionState state = PeerConnectionState.INITIALIZATION;
 
-    private ArrayList<WebRTCMediaStream> incomingStreams = new ArrayList<>();
-
-    public PeerConnectionActor(@NotNull WebRTCMediaStream mediaStream,
-                               boolean isEnabled,
-                               @NotNull ActorRef nodeActor,
+    public PeerConnectionActor(@NotNull PeerNodeSettings selfSettings,
+                               @NotNull PeerNodeSettings theirSettings,
+                               @NotNull WebRTCMediaStream mediaStream,
+                               @NotNull PeerConnectionCallback callback,
                                @NotNull ModuleContext context) {
         super(context);
-        TAG = "PeerConnection";
-        this.nodeActor = nodeActor;
-        this.isEnabled = isEnabled;
+        this.TAG = "PeerConnection";
+        this.callback = callback;
         this.stream = mediaStream;
+        this.sdpOptimizer = new SDPOptimizer(selfSettings, theirSettings);
     }
 
     @Override
@@ -88,21 +84,20 @@ public class PeerConnectionActor extends ModuleActor {
                 PeerConnectionActor.this.peerConnection.addCallback(new WebRTCPeerConnectionCallback() {
                     @Override
                     public void onCandidate(int label, String id, String candidate) {
-                        nodeActor.send(new PeerNodeActor.DoCandidate(label, id, candidate));
+                        callback.onCandidate(label, id, candidate);
                     }
 
                     @Override
                     public void onStreamAdded(WebRTCMediaStream stream) {
-                        stream.setEnabled(isEnabled);
-                        incomingStreams.add(stream);
-                        nodeActor.send(new PeerNodeActor.OnStreamAdded());
+                        // Making stream as muted and make it needed to be explicitly enabled
+                        // by parent actor
+                        stream.setEnabled(false);
+                        callback.onStreamAdded(stream);
                     }
 
                     @Override
                     public void onStreamRemoved(WebRTCMediaStream stream) {
-                        incomingStreams.remove(stream);
-                        nodeActor.send(new PeerNodeActor.OnStreamRemoved());
-                        // root.send(new OnStreamRemoved(uid, deviceId, stream));
+                        callback.onStreamRemoved(stream);
                     }
 
                     @Override
@@ -139,7 +134,7 @@ public class PeerConnectionActor extends ModuleActor {
 
         Log.d(TAG, "onOfferNeeded");
         isReady = false;
-        peerConnection.createOffer().map(OPTIMIZE_SDP).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
+        peerConnection.createOffer().map(OPTIMIZE_OWN_SDP).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
             @Override
             public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription description) {
                 return peerConnection.setLocalDescription(description);
@@ -148,7 +143,7 @@ public class PeerConnectionActor extends ModuleActor {
             @Override
             public void apply(WebRTCSessionDescription description) {
                 Log.d(TAG, "onOfferNeeded:then");
-                nodeActor.send(new PeerNodeActor.DoOffer(description.getSdp()));
+                callback.onOffer(description.getSdp());
                 state = PeerConnectionState.WAITING_ANSWER;
                 isReady = true;
                 unstashAll();
@@ -186,7 +181,7 @@ public class PeerConnectionActor extends ModuleActor {
             public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription description) {
                 return peerConnection.createAnswer();
             }
-        }).map(OPTIMIZE_SDP).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
+        }).map(OPTIMIZE_OWN_SDP).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
             @Override
             public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription description) {
                 return peerConnection.setLocalDescription(description);
@@ -194,7 +189,7 @@ public class PeerConnectionActor extends ModuleActor {
         }).then(new Consumer<WebRTCSessionDescription>() {
             @Override
             public void apply(WebRTCSessionDescription description) {
-                nodeActor.send(new PeerNodeActor.DoAnswer(description.getSdp()));
+                callback.onAnswer(description.getSdp());
                 onHandShakeCompleted();
             }
         }).failure(new Consumer<Exception>() {
@@ -245,7 +240,6 @@ public class PeerConnectionActor extends ModuleActor {
             peerConnection.close();
             peerConnection = null;
         }
-        self().send(PoisonPill.INSTANCE);
     }
 
     private void onHandShakeCompleted() {
@@ -259,58 +253,37 @@ public class PeerConnectionActor extends ModuleActor {
         peerConnection.addCandidate(index, id, sdp);
     }
 
-    public void onEnabled(boolean isEnabled) {
-        if (isEnabled == this.isEnabled) {
-            return;
-        }
-        this.isEnabled = isEnabled;
-        for (WebRTCMediaStream s : incomingStreams) {
-            s.setEnabled(isEnabled);
-        }
-    }
+    @Override
+    public void postStop() {
+        super.postStop();
 
-    public void onEnded() {
-        Log.d(TAG, "OnEnded");
         if (peerConnection != null) {
             peerConnection.close();
             peerConnection = null;
         }
         isReady = false;
         state = PeerConnectionState.CLOSED;
-        self().send(PoisonPill.INSTANCE);
     }
 
     //
     // Configuration
     //
 
-    private static Function<WebRTCSessionDescription, WebRTCSessionDescription> OPTIMIZE_SDP
+    private Function<WebRTCSessionDescription, WebRTCSessionDescription> OPTIMIZE_OWN_SDP
             = new Function<WebRTCSessionDescription, WebRTCSessionDescription>() {
         @Override
         public WebRTCSessionDescription apply(WebRTCSessionDescription description) {
-//            SDPScheme sdpScheme = SDP.parse(description.getSdp());
-//
-//            for (SDPMedia m : sdpScheme.getMediaLevel()) {
-//
-//                // Disabling media streams
-//                // m.setMode(SDPMediaMode.INACTIVE);
-//
-//                // Optimizing opus
-//                if ("audio".equals(m.getType())) {
-//                    for (SDPCodec codec : m.getCodecs()) {
-//                        if ("opus".equals(codec.getName())) {
-//                            codec.getFormat().put("maxcodedaudiobandwidth", "16000");
-//                            codec.getFormat().put("maxaveragebitrate", "20000");
-//                            codec.getFormat().put("stereo", "0");
-//                            codec.getFormat().put("useinbandfec", "1");
-//                            codec.getFormat().put("usedtx", "1");
-//                        }
-//                    }
-//                }
-//            }
-//
-//            return new WebRTCSessionDescription(description.getType(), sdpScheme.toSDP());
-            return description;
+            return new WebRTCSessionDescription(description.getType(),
+                    sdpOptimizer.optimizeOwnSDP(description.getSdp()));
+        }
+    };
+
+    private Function<WebRTCSessionDescription, WebRTCSessionDescription> OPTIMIZE_THEIR_SDP
+            = new Function<WebRTCSessionDescription, WebRTCSessionDescription>() {
+        @Override
+        public WebRTCSessionDescription apply(WebRTCSessionDescription description) {
+            return new WebRTCSessionDescription(description.getType(),
+                    sdpOptimizer.optimizeTheirSDP(description.getSdp()));
         }
     };
 
@@ -345,18 +318,6 @@ public class PeerConnectionActor extends ModuleActor {
                 return;
             }
             onOfferNeeded();
-        } else if (message instanceof DoStop) {
-            if (!isReady) {
-                stash();
-                return;
-            }
-            onEnded();
-        } else if (message instanceof DoEnable) {
-            if (!isReady) {
-                stash();
-                return;
-            }
-            onEnabled(((DoEnable) message).isEnabled());
         } else {
             super.onReceive(message);
         }
@@ -434,20 +395,7 @@ public class PeerConnectionActor extends ModuleActor {
         }
     }
 
-    public static class DoStop {
-
-    }
-
-    public static class DoEnable {
-
-        boolean isEnabled;
-
-        public DoEnable(boolean isEnabled) {
-            this.isEnabled = isEnabled;
-        }
-
-        public boolean isEnabled() {
-            return isEnabled;
-        }
+    private enum PeerConnectionState {
+        INITIALIZATION, WAITING_HANDSHAKE, WAITING_ANSWER, READY, CLOSED
     }
 }
