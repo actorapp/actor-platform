@@ -122,7 +122,7 @@ public class CallBusActor extends EventBusActor {
             ApiOffer offer = (ApiOffer) signal;
             peerCall.onAdvertised(senderDeviceId, new PeerSettings(offer.getOwnPeerSettings()));
             peerCall.onOffer(senderDeviceId, offer.getSdp());
-            // peerCall.onTheirStarted(senderDeviceId);
+            peerCall.onTheirStarted(senderDeviceId);
         } else if (signal instanceof ApiCandidate) {
             ApiCandidate candidate = (ApiCandidate) signal;
             peerCall.onCandidate(senderDeviceId, candidate.getIndex(), candidate.getId(), candidate.getSdp());
@@ -131,6 +131,7 @@ public class CallBusActor extends EventBusActor {
             deviceIds.put(needOffer.getDevice(), needOffer.getUid());
             peerCall.onAdvertised(needOffer.getDevice(), new PeerSettings(needOffer.getPeerSettings()));
             peerCall.onOfferNeeded(needOffer.getDevice());
+            peerCall.onTheirStarted(needOffer.getDevice());
 //            if (needOffer.isSilent() != null && !needOffer.isSilent()) {
 //                peerCall.onTheirStarted(needOffer.getDevice());
 //            }
