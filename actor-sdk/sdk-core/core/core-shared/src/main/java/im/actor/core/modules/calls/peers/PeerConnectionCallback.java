@@ -31,6 +31,11 @@ public interface PeerConnectionCallback {
     void onCandidate(int mdpIndex, String id, String sdp);
 
     /**
+     * Called when Answer/Offer finished successfully
+     */
+    void onHandshakeSuccessful();
+
+    /**
      * Called when peer stream was added
      *
      * @param stream added stream

@@ -37,6 +37,13 @@ public interface PeerNodeCallback {
     void onCandidate(long deviceId, int mdpIndex, String id, String sdp);
 
     /**
+     * Called when handshake was successful
+     *
+     * @param deviceId Device Id
+     */
+    void onHandshakeSuccessful(long deviceId);
+
+    /**
      * Called when connection started
      *
      * @param deviceId Device Id

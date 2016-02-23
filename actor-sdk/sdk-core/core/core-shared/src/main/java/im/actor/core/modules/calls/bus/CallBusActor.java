@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.HashMap;
 
+import im.actor.core.api.ApiAdvertiseSelf;
 import im.actor.core.api.ApiAnswer;
 import im.actor.core.api.ApiCandidate;
 import im.actor.core.api.ApiMembersChanged;
@@ -27,10 +28,15 @@ import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 public class CallBusActor extends EventBusActor {
 
+    private static final int STASH = 1;
+
     private HashMap<Long, Integer> deviceIds = new HashMap<>();
     private final PeerSettings selfSettings;
     private final PeerCallCallback peerCallback;
     private final CallBusCallback callBusCallback;
+    private boolean isMasterReady;
+    private int masterUid;
+    private long masterDeviceId;
     private PeerCallInt peerCall;
 
     public CallBusActor(CallBusCallback callBusCallback, PeerSettings selfSettings, ModuleContext context) {
@@ -52,6 +58,11 @@ public class CallBusActor extends EventBusActor {
             @Override
             public void onCandidate(long deviceId, int mdpIndex, String id, String sdp) {
                 sendSignal(deviceId, new ApiCandidate(0, mdpIndex, id, sdp));
+            }
+
+            @Override
+            public void onHandshakeSuccessful(long deviceId) {
+
             }
 
             @Override
@@ -98,6 +109,10 @@ public class CallBusActor extends EventBusActor {
         callBusCallback.onBusStarted(getBusId());
     }
 
+    public void onAnswerCall() {
+
+    }
+
     @Override
     public final void onMessageReceived(@Nullable Integer senderId, @Nullable Long senderDeviceId, byte[] data) {
         if (senderId == null || senderDeviceId == null) {
@@ -139,18 +154,27 @@ public class CallBusActor extends EventBusActor {
             ApiOnAnswer onAnswer = (ApiOnAnswer) signal;
             deviceIds.put(onAnswer.getDevice(), onAnswer.getUid());
             peerCall.onTheirStarted(onAnswer.getDevice());
-        } else {
-            if (callBusCallback instanceof CallBusCallbackSlave) {
-                CallBusCallbackSlave slaveCallback = (CallBusCallbackSlave) callBusCallback;
-                if (signal instanceof ApiSwitchMaster) {
-                    slaveCallback.onMasterSwitched(senderId, senderDeviceId);
-                } else if (signal instanceof ApiMembersChanged) {
-                    ApiMembersChanged membersChanged = (ApiMembersChanged) signal;
-                    slaveCallback.onMembersChanged(membersChanged.getAllMembers());
-                }
-            } else {
-                // Nothing?
+        } else if (signal instanceof ApiSwitchMaster) {
+            if (isMasterReady) {
+                return;
             }
+            isMasterReady = true;
+            masterUid = senderId;
+            masterDeviceId = senderDeviceId;
+            unstashAll(STASH);
+            sendSignal(masterUid, masterDeviceId, new ApiAdvertiseSelf(selfSettings.toApi()));
+        } else {
+//            if (callBusCallback instanceof CallBusCallbackSlave) {
+//                CallBusCallbackSlave slaveCallback = (CallBusCallbackSlave) callBusCallback;
+//                if (signal instanceof ApiSwitchMaster) {
+//                    slaveCallback.onMasterSwitched(senderId, senderDeviceId);
+//                } else if (signal instanceof ApiMembersChanged) {
+//                    ApiMembersChanged membersChanged = (ApiMembersChanged) signal;
+//                    slaveCallback.onMembersChanged(membersChanged.getAllMembers());
+//                }
+//            } else {
+//                // Nothing?
+//            }
         }
     }
 
@@ -177,6 +201,11 @@ public class CallBusActor extends EventBusActor {
         } else if (message instanceof SendSignal) {
             SendSignal signal = (SendSignal) message;
             sendSignal(signal.getUid(), signal.getDeviceId(), signal.getSignal());
+        } else if (message instanceof AnswerCall) {
+            if (!isMasterReady) {
+                stash(STASH);
+            }
+            onAnswerCall();
         } else {
             super.onReceive(message);
         }
@@ -224,6 +253,14 @@ public class CallBusActor extends EventBusActor {
         }
     }
 
+    public static class AnswerCall {
+
+    }
+
+    public static class RejectCall {
+
+    }
+
     public class CallbackWrapper implements PeerCallCallback {
 
         private final PeerCallCallback callCallback;
@@ -258,6 +295,16 @@ public class CallBusActor extends EventBusActor {
                 @Override
                 public void run() {
                     callCallback.onCandidate(deviceId, mdpIndex, id, sdp);
+                }
+            });
+        }
+
+        @Override
+        public void onHandshakeSuccessful(final long deviceId) {
+            self().send(new Runnable() {
+                @Override
+                public void run() {
+                    callCallback.onHandshakeSuccessful(deviceId);
                 }
             });
         }
