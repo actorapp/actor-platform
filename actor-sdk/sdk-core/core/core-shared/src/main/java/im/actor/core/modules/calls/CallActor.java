@@ -10,9 +10,11 @@ import im.actor.core.api.rpc.RequestGetCallInfo;
 import im.actor.core.api.rpc.ResponseGetCallInfo;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.calls.peers.PeerState;
 import im.actor.core.viewmodel.CallMember;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 
@@ -40,6 +42,7 @@ public class CallActor extends AbsCallActor {
 
     @Override
     public void callPreStart() {
+        Log.d(TAG, "callPreStart");
         api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
             @Override
             public void apply(final ResponseGetCallInfo responseGetCallInfo) {
@@ -57,9 +60,9 @@ public class CallActor extends AbsCallActor {
 
     @Override
     public void onBusStarted(String busId) {
-        super.onBusStarted(busId);
+        Log.d(TAG, "onBusStarted");
 
-        callManager.send(new CallManagerActor.OnIncomingCall(callId));
+        callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
     }
 
     @Override
@@ -67,6 +70,12 @@ public class CallActor extends AbsCallActor {
         //
         // Handle Members Update
         //
+    }
+
+    @Override
+    public void onPeerStateChanged(int uid, long deviceId, PeerState state) {
+        Log.d(TAG, "onPeerStateChanged " + deviceId + "(" + state + ")");
+
     }
 
     public void onAnswerCall() {
