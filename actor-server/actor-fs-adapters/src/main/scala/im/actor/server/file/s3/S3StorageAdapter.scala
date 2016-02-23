@@ -9,6 +9,7 @@ import akka.util.ByteString
 import com.amazonaws.HttpMethod
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.model.{ GeneratePresignedUrlRequest, ObjectMetadata }
+import com.amazonaws.services.s3.S3ClientOptions
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
@@ -38,6 +39,10 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   val s3Client = new AmazonS3ScalaClient(awsCredentials)
   if (!config.endpoint.isEmpty) {
     s3Client.client.setEndpoint(config.endpoint)
+
+    if (config.pathStyleAccess) {
+      s3Client.client.setS3ClientOptions(new S3ClientOptions().withPathStyleAccess(true));
+    }
   }
 
   val transferManager = new TransferManager(s3Client.client)
