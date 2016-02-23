@@ -1,8 +1,9 @@
 package im.actor.core.modules.calls;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
+import im.actor.core.api.ApiNeedOffer;
+import im.actor.core.api.ApiOnAnswer;
 import im.actor.core.api.rpc.RequestDoCall;
 import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.entity.GroupMember;
@@ -11,6 +12,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.AbsCallActor;
 import im.actor.core.modules.calls.peers.PeerSettings;
+import im.actor.core.modules.calls.peers.PeerState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.Log;
@@ -22,8 +24,7 @@ public class CallMasterActor extends AbsCallActor {
     private long callId;
     private CallVM callVM;
     private CommandCallback<Long> callback;
-    private HashMap<Long, PeerSettings> peerSettings = new HashMap<>();
-    private HashSet<Long> isAnswered = new HashSet<>();
+    private HashSet<Long> readyDevices = new HashSet<>();
 
     public CallMasterActor(Peer peer, ModuleContext context, CommandCallback<Long> callback) {
         super(context);
@@ -87,17 +88,44 @@ public class CallMasterActor extends AbsCallActor {
 
     @Override
     public void onAnswered(int uid, long deviceId, PeerSettings settings) {
+        Log.d("CallMasterActor", "onAnswered: " + deviceId);
         peerCall.onTheirStarted(deviceId);
-        if (!selfSettings.isPreConnectionEnabled() || !settings.isPreConnectionEnabled()) {
-            peerCall.onOfferNeeded(deviceId);
+        onPeerStarted(uid, deviceId, settings);
+        for (long d : readyDevices) {
+            if (d != deviceId) {
+                callBus.sendSignal(d, new ApiOnAnswer(uid, deviceId));
+            }
         }
     }
 
     @Override
     public void onAdvertised(int uid, long deviceId, PeerSettings settings) {
+        Log.d("CallMasterActor", "onAdvertised: " + deviceId);
         peerCall.onAdvertised(deviceId, settings);
         if (selfSettings.isPreConnectionEnabled() && settings.isPreConnectionEnabled()) {
-            peerCall.onOfferNeeded(deviceId);
+            onPeerStarted(uid, deviceId, settings);
+        }
+    }
+
+    private void onPeerStarted(int uid, long deviceId, PeerSettings settings) {
+        Log.d("CallMasterActor", "onPeerStarted: " + deviceId);
+
+        if (readyDevices.contains(deviceId)) {
+            return;
+        }
+
+        peerCall.onOfferNeeded(deviceId);
+        for (long d : readyDevices) {
+            callBus.sendSignal(d, new ApiNeedOffer(uid, deviceId, settings.toApi(), false));
+        }
+
+        readyDevices.add(deviceId);
+    }
+
+    @Override
+    public void onPeerStateChanged(int uid, long deviceId, PeerState state) {
+        if (state == PeerState.DISPOSED) {
+            readyDevices.remove(deviceId);
         }
     }
 

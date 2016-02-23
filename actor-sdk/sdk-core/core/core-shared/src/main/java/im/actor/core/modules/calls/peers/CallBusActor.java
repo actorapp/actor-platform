@@ -218,9 +218,9 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
             PeerSettings settings = new PeerSettings(advertiseSelf.getPeerSettings());
             peerSettings.put(senderDeviceId, settings);
-            peerCall.onAdvertised(senderDeviceId, settings);
+            callBusCallback.onAdvertised(senderId, senderDeviceId, settings);
             if (isAnswered.contains(senderDeviceId)) {
-                callBusCallback.onAnswered(senderId, senderDeviceId);
+                callBusCallback.onAnswered(senderId, senderDeviceId, settings);
             }
         } else if (signal instanceof ApiAnswerCall) {
             if (isAnswered.contains(senderDeviceId)) {
@@ -228,7 +228,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
             }
             isAnswered.add(senderDeviceId);
             if (peerSettings.containsKey(senderDeviceId)) {
-                callBusCallback.onAnswered(senderId, senderDeviceId);
+                callBusCallback.onAnswered(senderId, senderDeviceId, peerSettings.get(senderDeviceId));
             }
         }
     }
@@ -254,7 +254,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
             createMasterBus();
         } else if (message instanceof SendSignal) {
             SendSignal signal = (SendSignal) message;
-            sendSignal(signal.getUid(), signal.getDeviceId(), signal.getSignal());
+            sendSignal(signal.getDeviceId(), signal.getSignal());
         } else if (message instanceof AnswerCall) {
             if (isMasterMode) {
                 return;
@@ -297,18 +297,12 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     public static class SendSignal {
 
-        private int uid;
         private long deviceId;
         private ApiWebRTCSignaling signal;
 
-        public SendSignal(int uid, long deviceId, ApiWebRTCSignaling signal) {
-            this.uid = uid;
+        public SendSignal(long deviceId, ApiWebRTCSignaling signal) {
             this.deviceId = deviceId;
             this.signal = signal;
-        }
-
-        public int getUid() {
-            return uid;
         }
 
         public long getDeviceId() {
