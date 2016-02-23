@@ -18,8 +18,8 @@ public class CallBusInt extends ActorInterface {
         send(new CallBusActor.CreateBus());
     }
 
-    public void sendSignal(int uid, long deviceId, ApiWebRTCSignaling signal) {
-        send(new CallBusActor.SendSignal(uid, deviceId, signal));
+    public void sendSignal(long deviceId, ApiWebRTCSignaling signal) {
+        send(new CallBusActor.SendSignal(deviceId, signal));
     }
 
     public void answerCall() {
