@@ -7,11 +7,13 @@ import java.util.HashMap;
 
 import im.actor.core.api.ApiAdvertiseSelf;
 import im.actor.core.api.ApiAnswer;
+import im.actor.core.api.ApiAnswerCall;
 import im.actor.core.api.ApiCandidate;
 import im.actor.core.api.ApiMembersChanged;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.ApiOffer;
 import im.actor.core.api.ApiOnAnswer;
+import im.actor.core.api.ApiRejectCall;
 import im.actor.core.api.ApiSwitchMaster;
 import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.core.modules.ModuleContext;
@@ -19,6 +21,7 @@ import im.actor.core.modules.calls.peers.PeerCallActor;
 import im.actor.core.modules.calls.peers.PeerCallCallback;
 import im.actor.core.modules.calls.peers.PeerCallInt;
 import im.actor.core.modules.calls.peers.PeerSettings;
+import im.actor.core.modules.calls.peers.PeerState;
 import im.actor.core.modules.eventbus.EventBusActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;
@@ -39,7 +42,7 @@ public class CallBusActor extends EventBusActor {
     private long masterDeviceId;
     private PeerCallInt peerCall;
 
-    public CallBusActor(CallBusCallback callBusCallback, PeerSettings selfSettings, ModuleContext context) {
+    public CallBusActor(final CallBusCallback callBusCallback, PeerSettings selfSettings, ModuleContext context) {
         super(context);
 
         this.selfSettings = selfSettings;
@@ -61,18 +64,8 @@ public class CallBusActor extends EventBusActor {
             }
 
             @Override
-            public void onHandshakeSuccessful(long deviceId) {
-
-            }
-
-            @Override
-            public void onConnectionStarted(long deviceId) {
-
-            }
-
-            @Override
-            public void onConnectionEstablished(long deviceId) {
-
+            public void onPeerStateChanged(long deviceId, PeerState state) {
+                callBusCallback.onPeerStateChanged(deviceIds.get(deviceId), deviceId, state);
             }
 
             @Override
@@ -110,7 +103,11 @@ public class CallBusActor extends EventBusActor {
     }
 
     public void onAnswerCall() {
+        sendSignal(masterUid, masterDeviceId, new ApiAnswerCall());
+    }
 
+    public void onRejectCall() {
+        sendSignal(masterUid, masterDeviceId, new ApiRejectCall());
     }
 
     @Override
@@ -179,8 +176,7 @@ public class CallBusActor extends EventBusActor {
     }
 
     public final void sendSignal(long deviceId, ApiWebRTCSignaling signal) {
-        int uid = deviceIds.get(deviceId);
-        sendSignal(uid, deviceId, signal);
+        sendSignal(deviceIds.get(deviceId), deviceId, signal);
     }
 
     public final void sendSignal(int uid, long deviceId, ApiWebRTCSignaling signal) {
@@ -204,8 +200,15 @@ public class CallBusActor extends EventBusActor {
         } else if (message instanceof AnswerCall) {
             if (!isMasterReady) {
                 stash(STASH);
+                return;
             }
             onAnswerCall();
+        } else if (message instanceof RejectCall) {
+            if (!isMasterReady) {
+                stash(STASH);
+                return;
+            }
+            onRejectCall();
         } else {
             super.onReceive(message);
         }
@@ -300,31 +303,11 @@ public class CallBusActor extends EventBusActor {
         }
 
         @Override
-        public void onHandshakeSuccessful(final long deviceId) {
+        public void onPeerStateChanged(final long deviceId, final PeerState state) {
             self().send(new Runnable() {
                 @Override
                 public void run() {
-                    callCallback.onHandshakeSuccessful(deviceId);
-                }
-            });
-        }
-
-        @Override
-        public void onConnectionStarted(final long deviceId) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    callCallback.onConnectionStarted(deviceId);
-                }
-            });
-        }
-
-        @Override
-        public void onConnectionEstablished(final long deviceId) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    callCallback.onConnectionEstablished(deviceId);
+                    callCallback.onPeerStateChanged(deviceId, state);
                 }
             });
         }

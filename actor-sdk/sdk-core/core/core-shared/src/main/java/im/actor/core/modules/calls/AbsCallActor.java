@@ -9,6 +9,7 @@ import im.actor.core.modules.calls.bus.CallBusCallback;
 import im.actor.core.modules.calls.bus.CallBusInt;
 import im.actor.core.modules.calls.peers.PeerCallInt;
 import im.actor.core.modules.calls.peers.PeerSettings;
+import im.actor.core.modules.calls.peers.PeerState;
 import im.actor.core.modules.eventbus.EventBusActor;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
@@ -62,6 +63,11 @@ public abstract class AbsCallActor extends EventBusActor implements CallBusCallb
 
     }
 
+    @Override
+    public void onPeerStateChanged(int uid, long deviceId, PeerState state) {
+
+    }
+
     //
     // Wrapper
     //
@@ -94,6 +100,16 @@ public abstract class AbsCallActor extends EventBusActor implements CallBusCallb
                 @Override
                 public void run() {
                     AbsCallActor.this.onMembersChanged(members);
+                }
+            });
+        }
+
+        @Override
+        public void onPeerStateChanged(final int uid, final long deviceId, final PeerState state) {
+            self().send(new Runnable() {
+                @Override
+                public void run() {
+                    AbsCallActor.this.onPeerStateChanged(uid, deviceId, state);
                 }
             });
         }

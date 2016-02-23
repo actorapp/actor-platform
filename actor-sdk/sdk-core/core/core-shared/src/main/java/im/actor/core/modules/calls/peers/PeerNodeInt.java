@@ -145,31 +145,11 @@ public class PeerNodeInt extends ActorInterface {
         }
 
         @Override
-        public void onHandshakeSuccessful(final long deviceId) {
+        public void onPeerStateChanged(final long deviceId, final PeerState state) {
             callbackDest.send(new Runnable() {
                 @Override
                 public void run() {
-                    callback.onHandshakeSuccessful(deviceId);
-                }
-            });
-        }
-
-        @Override
-        public void onConnectionStarted(final long deviceId) {
-            callbackDest.send(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onConnectionStarted(deviceId);
-                }
-            });
-        }
-
-        @Override
-        public void onConnectionEstablished(final long deviceId) {
-            callbackDest.send(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onConnectionEstablished(deviceId);
+                    callback.onPeerStateChanged(deviceId, state);
                 }
             });
         }
