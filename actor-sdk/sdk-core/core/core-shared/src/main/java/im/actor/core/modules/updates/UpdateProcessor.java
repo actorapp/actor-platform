@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.core.api.ApiDialog;
+import im.actor.core.api.ApiDialogGroup;
+import im.actor.core.api.ApiDialogShort;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUser;
@@ -398,6 +401,17 @@ public class UpdateProcessor extends AbsModule {
         } else if (update instanceof UpdateUserLocalNameChanged) {
             UpdateUserLocalNameChanged localNameChanged = (UpdateUserLocalNameChanged) update;
             users.add(localNameChanged.getUid());
+        } else if (update instanceof UpdateChatGroupsChanged) {
+            UpdateChatGroupsChanged changed = (UpdateChatGroupsChanged) update;
+            for (ApiDialogGroup group : changed.getDialogs()) {
+                for (ApiDialogShort dialog : group.getDialogs()) {
+                    if (dialog.getPeer().getType() == ApiPeerType.PRIVATE) {
+                        users.add(dialog.getPeer().getId());
+                    } else if (dialog.getPeer().getType() == ApiPeerType.GROUP) {
+                        groups.add(dialog.getPeer().getId());
+                    }
+                }
+            }
         }
 
         if (!usersProcessor.hasUsers(users)) {
