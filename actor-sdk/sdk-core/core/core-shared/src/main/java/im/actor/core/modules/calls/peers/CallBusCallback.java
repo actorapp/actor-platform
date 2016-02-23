@@ -14,5 +14,9 @@ public interface CallBusCallback {
 
     void onMembersChanged(List<ApiCallMember> members);
 
+    void onPeerConnected(int uid, long deviceId);
+
     void onPeerStateChanged(int uid, long deviceId, PeerState state);
+
+    void onAnswered(int uid, long deviceId);
 }
