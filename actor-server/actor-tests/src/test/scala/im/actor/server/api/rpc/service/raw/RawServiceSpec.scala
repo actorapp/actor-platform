@@ -190,7 +190,7 @@ class RawServiceSpec
   private final class DictionaryService(system: ActorSystem) extends RawApiService(system) {
     import DictionaryMeanings._
     import ServiceErrors._
-    import im.actor.api.rpc.FutureResultRpcCats._
+    import im.actor.api.rpc.FutureResultRpc._
 
     private val kv = TrieMap.empty[String, String]
 
@@ -222,7 +222,7 @@ class RawServiceSpec
   private final class MapStyleDictionaryService(system: ActorSystem) extends MapStyleRawApiService(system) {
     import DictionaryMeanings._
     import ServiceErrors._
-    import im.actor.api.rpc.FutureResultRpcCats._
+    import im.actor.api.rpc.FutureResultRpc._
 
     sealed trait DictionaryRequest
     case class GetWord(word: String) extends DictionaryRequest
@@ -276,7 +276,7 @@ class RawServiceSpec
    */
   private final class ArrayStyleDictionaryService(system: ActorSystem) extends ArrayStyleRawApiService(system) {
     import DictionaryMeanings._
-    import im.actor.api.rpc.FutureResultRpcCats._
+    import im.actor.api.rpc.FutureResultRpc._
 
     sealed trait DictionaryRequest
     case class GetWord(word: String) extends DictionaryRequest

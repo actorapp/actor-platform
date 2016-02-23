@@ -29,7 +29,7 @@ private[rpc] object WebactionsKeyValues {
 
 final class WebactionsServiceImpl(implicit actorSystem: ActorSystem) extends WebactionsService {
   import WebactionsErrors._
-  import FutureResultRpcCats._
+  import FutureResultRpc._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout: Timeout = Timeout(5.seconds)

@@ -12,7 +12,7 @@ import scala.concurrent._
 private[messaging] trait MessagingHandlers extends PeersImplicits {
   this: MessagingServiceImpl ⇒
 
-  import FutureResultRpcCats._
+  import FutureResultRpc._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout: Timeout = ActorConfig.defaultTimeout
