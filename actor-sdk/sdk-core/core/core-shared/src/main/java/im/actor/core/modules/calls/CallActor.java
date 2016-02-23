@@ -45,7 +45,7 @@ public class CallActor extends AbsCallActor {
             @Override
             public void apply(final ResponseGetCallInfo responseGetCallInfo) {
                 peer = convert(responseGetCallInfo.getPeer());
-                callBus.joinBus(responseGetCallInfo.getEventBusId());
+                callBus.startSlaveBus(responseGetCallInfo.getEventBusId());
                 callVM = callViewModels.spawnNewIncomingVM(callId, peer, CallState.RINGING);
             }
         }).failure(new Consumer<Exception>() {

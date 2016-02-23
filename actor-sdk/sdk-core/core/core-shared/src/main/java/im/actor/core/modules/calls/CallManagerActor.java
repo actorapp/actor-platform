@@ -73,8 +73,7 @@ public class CallManagerActor extends ModuleActor {
         system().actorOf("actor/master/" + RandomUtils.nextRid(), new ActorCreator() {
             @Override
             public Actor create() {
-                //return new PeerCallMasterActor(peer, callback, context());
-                return null;
+                return new CallMasterActor(peer, context(), callback);
             }
         });
     }
