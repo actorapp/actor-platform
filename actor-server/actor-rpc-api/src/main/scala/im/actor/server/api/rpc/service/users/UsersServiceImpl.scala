@@ -2,6 +2,7 @@ package im.actor.server.api.rpc.service.users
 
 import akka.actor._
 import akka.util.Timeout
+import cats.data.Xor
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, UsersService }
@@ -15,7 +16,6 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
-import scalaz.{ -\/, \/- }
 
 object UserErrors {
   val NameInvalid = RpcError(400, "NAME_INVALID", "Invalid name. Valid nickname should not be empty and should consist of printable characters", false, None)
@@ -32,7 +32,7 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
   override def doHandleEditUserLocalName(userId: Int, accessHash: Long, name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
       StringUtils.validName(name) match {
-        case \/-(validName) ⇒
+        case Xor.Right(validName) ⇒
           db.run(UserRepo.find(userId)) flatMap {
             case Some(user) ⇒
               if (accessHash == ACLUtils.userAccessHash(client.authId, user)) {
@@ -51,7 +51,7 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
               }
             case None ⇒ Future.successful(Error(CommonRpcErrors.UserNotFound))
           }
-        case -\/(err) ⇒ Future.successful(Error(UserErrors.NameInvalid))
+        case Xor.Left(err) ⇒ Future.successful(Error(UserErrors.NameInvalid))
       }
     }
   }

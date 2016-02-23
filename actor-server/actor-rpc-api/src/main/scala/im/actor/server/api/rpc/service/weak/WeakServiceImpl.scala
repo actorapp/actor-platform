@@ -51,8 +51,8 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
     deviceCategory: Option[ApiDeviceType.Value],
     deviceType:     Option[String],
     clientData:     ClientData
-  ): Future[HandlerResult[ResponseVoid]] = {
-    val authorizedAction = requireAuth(clientData).map { client ⇒
+  ): Future[HandlerResult[ResponseVoid]] =
+    authorized(clientData) { client ⇒
 
       if (isOnline) {
         presenceExt.presenceSetOnline(client.userId, client.authId, timeout)
@@ -60,11 +60,8 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
         presenceExt.presenceSetOffline(client.userId, client.authId, timeout)
       }
 
-      DBIO.successful(Ok(ResponseVoid))
+      Future.successful(Ok(ResponseVoid))
     }
-
-    db.run(toDBIOAction(authorizedAction))
-  }
 
   override def doHandlePauseNotifications(timeout: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     Future.failed(new RuntimeException("Not implemented"))

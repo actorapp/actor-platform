@@ -2,7 +2,6 @@ package im.actor.server.api.rpc.service.profile
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import im.actor.api.rpc.FutureResultRpc._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
@@ -35,6 +34,8 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   import FileHelpers._
   import ImageUtils._
 
+  import FutureResultRpcCats._
+
   override implicit val ec: ExecutionContext = system.dispatcher
 
   private implicit val timeout = Timeout(5.seconds)
@@ -64,15 +65,13 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
       db.run(action)
     }
 
-  override def doHandleRemoveAvatar(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      for {
+  override def doHandleRemoveAvatar(clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { implicit client ⇒
+      val action = for {
         UserCommands.UpdateAvatarAck(_, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, None))
       } yield Ok(ResponseSeq(seq, state.toByteArray))
+      db.run(action)
     }
-
-    db.run(toDBIOAction(authorizedAction))
-  }
 
   override def doHandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
@@ -93,7 +92,7 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
       (for {
         _ ← fromBoolean(ProfileRpcErrors.NicknameInvalid)(StringUtils.validUsername(nickname))
         exists ← fromFuture(db.run(UserRepo.nicknameExists(nickname.trim)))
-      } yield ResponseBool(!exists)).run
+      } yield ResponseBool(!exists)).value
     }
 
   //todo: move validation inside of UserOffice
@@ -102,23 +101,23 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
       (for {
         trimmed ← point(about.map(_.trim))
         _ ← fromBoolean(ProfileRpcErrors.AboutTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
-        SeqState(seq, state) ← fromFuture(userExt.changeAbout(client.userId, trimmed))
-      } yield ResponseSeq(seq, state.toByteArray)).run
+        s ← fromFuture(userExt.changeAbout(client.userId, trimmed))
+      } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
   }
 
   override def doHandleEditMyTimeZone(tz: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       (for {
-        SeqState(seq, state) ← fromFuture(produceError)(userExt.changeTimeZone(client.userId, tz))
-      } yield ResponseSeq(seq, state.toByteArray)).run
+        s ← fromFuture(produceError)(userExt.changeTimeZone(client.userId, tz))
+      } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
 
   override def doHandleEditMyPreferredLanguages(preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       (for {
-        SeqState(seq, state) ← fromFuture(produceError)(userExt.changePreferredLanguages(client.userId, preferredLanguages))
-      } yield ResponseSeq(seq, state.toByteArray)).run
+        s ← fromFuture(produceError)(userExt.changePreferredLanguages(client.userId, preferredLanguages))
+      } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
 
   override def onFailure: PartialFunction[Throwable, RpcError] = {

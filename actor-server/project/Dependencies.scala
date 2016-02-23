@@ -11,7 +11,6 @@ object Dependencies {
     val cats = "0.3.0"
     val circe = "0.2.1"
     val kamon = "0.5.2"
-    val scalaz = "7.1.1"
     val slick = "3.1.1"
     val slickPg = "0.10.2"
     val scalatest = "2.2.4"
@@ -92,9 +91,6 @@ object Dependencies {
 
     val scodecBits              = "org.scodec"                    %% "scodec-bits"                   % "1.1.0"
     val scodecCore              = "org.scodec"                    %% "scodec-core"                   % "1.9.0"
-
-    val scalazCore              = "org.scalaz"                    %% "scalaz-core"                   % V.scalaz
-    val scalazConcurrent        = "org.scalaz"                    %% "scalaz-concurrent"             % V.scalaz
 
     val scopt                   = "com.github.scopt"              %% "scopt"                         % "3.3.0"
 
@@ -198,7 +194,7 @@ object Dependencies {
 
   val sms = shared ++ Seq(akkaActor, akkaHttp, dispatch)
 
-  val codecs = shared ++ Seq(scalazCore, scodecBits, scodecCore)
+  val codecs = shared ++ Seq(scodecBits, scodecCore)
   
   val models = shared ++ Seq(scodecBits, scodecCore, jodaTime, jodaConvert, slickPg)
 
@@ -207,17 +203,14 @@ object Dependencies {
   val frontend = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaStream,
     guava,
-    scodecBits, scodecCore,
-    scalazCore, scalazConcurrent
+    scodecBits, scodecCore
   )
-
-  val dashboard = shared :+ scalazCore
 
   val notifications = shared ++ Seq(akkaClusterTools, slick)
 
   val sdk = Seq(aspectj)
 
-  val runtime = shared ++ Seq(akkaActor, actorConcurrent, akkaHttp, akkaSlf4j, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, icu4j, libPhoneNumber, scalapbSer, scalazCore, akkaTestkit % "test", scalatest % "test")
+  val runtime = shared ++ Seq(akkaActor, actorConcurrent, akkaHttp, akkaSlf4j, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, icu4j, libPhoneNumber, scalapbSer, akkaTestkit % "test", scalatest % "test")
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
