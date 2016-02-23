@@ -148,6 +148,11 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     }
 
     @Override
+    public void onHandshakeSuccessful() {
+        callback.onHandshakeSuccessful(deviceId);
+    }
+
+    @Override
     public void onStreamAdded(WebRTCMediaStream stream) {
         theirMediaStreams.add(stream);
         stream.setEnabled(isEnabled);

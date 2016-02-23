@@ -229,6 +229,7 @@ public class PeerConnectionActor extends ModuleActor {
     }
 
     private void onHandShakeCompleted() {
+        callback.onHandshakeSuccessful();
         isReady = true;
         isReadyForCandidates = true;
         state = PeerConnectionState.READY;
