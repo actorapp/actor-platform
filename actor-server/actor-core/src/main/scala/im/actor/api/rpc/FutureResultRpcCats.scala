@@ -6,7 +6,6 @@ import cats.std.{ EitherInstances, FutureInstances }
 import cats.syntax.all._
 
 import scala.concurrent.{ ExecutionContext, Future }
-import scalaz.{ -\/, \/, \/- }
 
 object FutureResultRpcCats extends FutureInstances with EitherInstances {
   type Result[A] = XorT[Future, RpcError, A]
@@ -15,6 +14,9 @@ object FutureResultRpcCats extends FutureInstances with EitherInstances {
   def point[A](a: A): Result[A] = Result[A](Future.successful(right(a)))
 
   def fromFuture[A](fu: Future[A])(implicit ec: ExecutionContext): Result[A] = Result[A](fu.map(right))
+
+  def fromFuture[A](failure: Throwable ⇒ RpcError)(fu: Future[A])(implicit ec: ExecutionContext): Result[A] =
+    Result[A](fu.map(_.right) recover { case e ⇒ failure(e).left })
 
   def fromEither[A](va: RpcError Xor A): Result[A] = Result[A](Future.successful(va))
 
@@ -34,8 +36,4 @@ object FutureResultRpcCats extends FutureInstances with EitherInstances {
   def fromFutureEither[A](fva: Future[RpcError Xor A])(implicit ec: ExecutionContext): Result[A] = Result[A](fva)
 
   def fromBoolean[A](failure: RpcError)(oa: Boolean): Result[Unit] = Result[Unit](Future.successful(if (oa) right(()) else left(failure)))
-
-  implicit class ToScalaz[A](catsResult: RpcError Xor A) {
-    def toScalaz: RpcError \/ A = catsResult.fold(-\/(_), \/-(_))
-  }
 }

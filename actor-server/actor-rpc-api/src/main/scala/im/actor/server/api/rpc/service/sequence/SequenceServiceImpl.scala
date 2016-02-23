@@ -44,16 +44,14 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
       .withSubscribeToSeq(SubscribeToSeq(opts map (_.id)))
   }
 
-  override def doHandleGetState(optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+  override def doHandleGetState(optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { implicit client ⇒
       subscribeToSeq(optimizations)
-      for {
+      val action = for {
         seqstate ← DBIO.from(seqUpdExt.getSeqState(client.userId))
       } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+      db.run(action)
     }
-
-    db.run(toDBIOAction(authorizedAction))
-  }
 
   override def doHandleGetDifference(seq: Int, state: Array[Byte], optimizations: IndexedSeq[ApiUpdateOptimization.ApiUpdateOptimization], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
     authorized(clientData) { implicit client ⇒
@@ -111,15 +109,13 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
       } yield {
         val (groupStructs, userStructs) = res
         ResponseGetReferencedEntitites(userStructs.toVector, groupStructs.toVector)
-      }).value map (_.toScalaz)
+      }).value
     }
 
   override def doHandleSubscribeToOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val authorizedAction = requireAuth(clientData).map { client ⇒
-      DBIO.successful(Ok(ResponseVoid))
-    }
+    val authorizedAction = authorized(clientData) { client ⇒ Future.successful(Ok(ResponseVoid)) }
 
-    db.run(toDBIOAction(authorizedAction)) andThen {
+    authorizedAction andThen {
       case Success(_) ⇒
         // FIXME: #security check access hashes
         val userIds = users.map(_.userId).toSet
@@ -130,11 +126,9 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   }
 
   override def doHandleSubscribeFromOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val authorizedAction = requireAuth(clientData).map { client ⇒
-      DBIO.successful(Ok(ResponseVoid))
-    }
+    val authorizedAction = authorized(clientData) { client ⇒ Future.successful(Ok(ResponseVoid)) }
 
-    db.run(toDBIOAction(authorizedAction)) andThen {
+    authorizedAction andThen {
       case Success(_) ⇒
         // FIXME: #security check access hashes
         val userIds = users.map(_.userId).toSet

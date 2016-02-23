@@ -2,7 +2,6 @@ package im.actor.server.api.rpc.service.contacts
 
 import java.security.MessageDigest
 
-import akka.event.Logging
 import im.actor.api.rpc.peers.ApiUserOutPeer
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
@@ -18,28 +17,25 @@ import scala.concurrent.duration._
 import akka.actor._
 import akka.util.Timeout
 import scodec.bits.BitVector
-import shapeless._
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
 import im.actor.api.rpc.contacts._
 import im.actor.api.rpc.misc._
-import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, ApiUser }
+import im.actor.api.rpc.users.ApiUser
 import im.actor.server.db.DbExtension
 import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
 import im.actor.server.social.{ SocialExtension, SocialManager, SocialManagerRegion }
 import im.actor.server.user._
 import im.actor.util.misc.PhoneNumberUtils
 
-import scalaz.EitherT
-
 class ContactsServiceImpl(implicit actorSystem: ActorSystem)
   extends ContactsService {
 
   import SocialManager._
   import PeerHelpers._
+  import DBIOResultRpc._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   implicit val timeout = Timeout(5.seconds)
@@ -63,25 +59,27 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     BitVector(md.digest(uids.getBytes)).toHex
   }
 
-  override def doHandleImportContacts(phones: IndexedSeq[ApiPhoneToImport], emails: IndexedSeq[ApiEmailToImport], clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] = {
-    val action =
-      for {
-        client ← authorizedClient(clientData)
-        (clientPhones, clientEmails) ← fromFuture(userExt.getContactRecordsSet(client.userId))
+  override def doHandleImportContacts(phones: IndexedSeq[ApiPhoneToImport], emails: IndexedSeq[ApiEmailToImport], clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] =
+    authorized(clientData) { implicit client ⇒
+      val action = (for {
+        contacts ← fromFuture(userExt.getContactRecordsSet(client.userId))
+        (clientPhones, clientEmails) = contacts
         user ← fromDBIOOption(CommonRpcErrors.UserNotFound)(UserRepo.find(client.userId))
         optPhone ← fromDBIO(UserPhoneRepo.findByUserId(client.userId).headOption)
         optEmail ← fromDBIO(UserEmailRepo.findByUserId(client.userId).headOption)
 
-        (pUsers, pSeqstate) ← fromDBIO(importPhones(user, optPhone, phones.filterNot(p ⇒ clientPhones.contains(p.phoneNumber)))(client))
+        pUsersState ← fromDBIO(importPhones(user, optPhone, phones.filterNot(p ⇒ clientPhones.contains(p.phoneNumber)))(client))
+        (pUsers, pSeqstate) = pUsersState
 
-        (eUsers, eSeqstate) ← fromDBIO(importEmails(user, optEmail, emails.filterNot(e ⇒ clientEmails.contains(e.email)))(client))
-      } yield ResponseImportContacts((pUsers ++ eUsers).toVector, eSeqstate.seq, eSeqstate.state.toByteArray)
+        eUsersState ← fromDBIO(importEmails(user, optEmail, emails.filterNot(e ⇒ clientEmails.contains(e.email)))(client))
+        (eUsers, eSeqstate) = eUsersState
 
-    db.run(action.run)
-  }
+      } yield ResponseImportContacts((pUsers ++ eUsers).toVector, eSeqstate.seq, eSeqstate.state.toByteArray)).value
+      db.run(action)
+    }
 
-  override def doHandleGetContacts(contactsHash: String, clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+  override def doHandleGetContacts(contactsHash: String, clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] =
+    authorized(clientData) { implicit client ⇒
       val action = UserContactRepo.findContactIdsActive(client.userId).map(hashIds).flatMap { hash ⇒
         if (contactsHash == hash) {
           DBIO.successful(Ok(ResponseGetContacts(Vector.empty[users.ApiUser], isNotChanged = true)))
@@ -98,12 +96,8 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
           }
         }
       }
-
-      action
+      db.run(action)
     }
-
-    db.run(toDBIOAction(authorizedAction))
-  }
 
   override def doHandleRemoveContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
@@ -113,8 +107,8 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
       }
     }
 
-  override def doHandleAddContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+  override def doHandleAddContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { implicit client ⇒
       val action = (for {
         optUser ← UserRepo.find(userId)
         optNumber ← optUser.map(user ⇒ UserPhoneRepo.findByUserId(user.id).headOption).getOrElse(DBIO.successful(None))
@@ -135,17 +129,12 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
         case (None, _) ⇒ DBIO.successful(Error(CommonRpcErrors.UserNotFound))
         case (_, None) ⇒ DBIO.successful(Error(CommonRpcErrors.UserPhoneNotFound))
       }
-
-      action
+      db.run(action)
     }
 
-    db.run(toDBIOAction(authorizedAction))
-  }
-
-  override def doHandleSearchContacts(query: String, clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] = {
-    val action =
-      for {
-        client ← authorizedClient(clientData)
+  override def doHandleSearchContacts(query: String, clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] =
+    authorized(clientData) { implicit client ⇒
+      val action = (for {
         nicknameUsers ← findByNickname(query, client)
         emailUsers ← findByEmail(query, client)
         phoneUsers ← findByNumber(query, client)
@@ -153,32 +142,33 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
         val users = nicknameUsers ++ phoneUsers ++ emailUsers
         users foreach (u ⇒ recordRelation(u.id, client.userId))
         ResponseSearchContacts(users)
-      }
-    db.run(action.run)
-  }
+      }).value
+      db.run(action)
+    }
 
   override def onFailure: PartialFunction[Throwable, RpcError] = {
     case UserErrors.ContactNotFound ⇒ ContactsRpcErrors.ContactNotFound
   }
 
-  private def findByNickname(nickname: String, client: AuthorizedClientData): EitherT[DBIO, RpcError, Vector[ApiUser]] = {
+  private def findByNickname(nickname: String, client: AuthorizedClientData): Result[Vector[ApiUser]] = {
     for {
       users ← fromDBIO(UserRepo.findByNickname(nickname) map (_.toList))
       structs ← fromFuture(Future.sequence(users map (user ⇒ userExt.getApiStruct(user.id, client.userId, client.authId))))
     } yield structs.toVector
   }
 
-  private def findByEmail(email: String, client: AuthorizedClientData): EitherT[DBIO, RpcError, Vector[ApiUser]] = {
+  private def findByEmail(email: String, client: AuthorizedClientData): Result[Vector[ApiUser]] = {
     for {
       userIds ← fromDBIO(UserRepo.findIdsByEmail(email) map (_.toList))
       structs ← fromFuture(Future.sequence(userIds map (id ⇒ userExt.getApiStruct(id, client.userId, client.authId))))
     } yield structs.toVector
   }
 
-  private def findByNumber(rawNumber: String, client: AuthorizedClientData): EitherT[DBIO, RpcError, Vector[ApiUser]] = {
+  private def findByNumber(rawNumber: String, client: AuthorizedClientData): Result[Vector[ApiUser]] = {
     for {
       clientUser ← fromDBIOOption(CommonRpcErrors.UserNotFound)(UserRepo.find(client.userId))
-      (clientPhones, _) ← fromFuture(userExt.getContactRecordsSet(client.userId))
+      contacts ← fromFuture(userExt.getContactRecordsSet(client.userId))
+      (clientPhones, _) = contacts
       optPhone ← fromDBIO(UserPhoneRepo.findByUserId(client.userId).headOption map (_.filterNot(p ⇒ clientPhones.contains(p.number))))
       normalizedPhone ← point(PhoneNumberUtils.normalizeStr(rawNumber, clientUser.countryCode))
 
