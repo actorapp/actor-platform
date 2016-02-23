@@ -2,11 +2,11 @@ package im.actor.server.api.rpc.service
 
 import java.nio.file.{ Files, Paths }
 
+import cats.data.Xor
 import im.actor.server.file.{ UnsafeFileName, FileStorageExtension, ImageUtils }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scalaz.-\/
 
 import com.sksamuel.scrimage.Image
 
@@ -108,7 +108,7 @@ final class ProfileServiceSpec
 
       whenReady(service.handleEditAvatar(ApiFileLocation(invalidImageFileModel.fileId, invalidImageFileModel.accessHash))) { resp ⇒
         resp should matchPattern {
-          case -\/(RpcError(400, "LOCATION_INVALID", _, _, _)) ⇒
+          case Xor.Left(RpcError(400, "LOCATION_INVALID", _, _, _)) ⇒
         }
       }
     }
@@ -118,7 +118,7 @@ final class ProfileServiceSpec
 
       whenReady(service.handleEditAvatar(ApiFileLocation(tooLargeImageFileModel.fileId, tooLargeImageFileModel.accessHash))) { resp ⇒
         resp should matchPattern {
-          case -\/(RpcError(400, "FILE_TOO_LARGE", _, _, _)) ⇒
+          case Xor.Left(RpcError(400, "FILE_TOO_LARGE", _, _, _)) ⇒
         }
       }
     }
