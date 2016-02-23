@@ -40,7 +40,7 @@ final class WebactionsServiceImpl(implicit actorSystem: ActorSystem) extends Web
     authorized(clientData) { implicit client ⇒
       (for {
         fqn ← fromOption(WebactionNotFound)(Webaction.list.get(actionName))
-        webAction ← fromEither(createWebaction(fqn))
+        webAction ← fromXor(createWebaction(fqn))
         actionHash = generateActionHash()
         _ ← fromFuture(actionHashUserKV.upsert(actionHash, actionName))
       } yield ResponseInitWebaction(webAction.uri(params), webAction.regex, actionHash)).value
@@ -51,7 +51,7 @@ final class WebactionsServiceImpl(implicit actorSystem: ActorSystem) extends Web
       (for {
         actionName ← fromFutureOption(WrongActionHash)(actionHashUserKV.get(actionHash))
         fqn ← fromOption(WebactionNotFound)(Webaction.list.get(actionName))
-        webAction ← fromEither(createWebaction(fqn))
+        webAction ← fromXor(createWebaction(fqn))
         response ← fromFuture(webAction.complete(client.userId, completeUri))
         _ ← fromBoolean(actionFailed(response.content.toString))(response.isSuccess)
         _ ← fromFuture(actionHashUserKV.delete(actionHash))

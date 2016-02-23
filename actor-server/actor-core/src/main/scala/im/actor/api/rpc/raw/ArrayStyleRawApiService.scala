@@ -19,8 +19,8 @@ abstract class ArrayStyleRawApiService(system: ActorSystem) extends RawApiServic
 
     override def apply(name: String): Future[Response] = {
       (for {
-        request ← fromEither(validateRequests(params)(name))
-        result ← fromFutureEither(processRequests(client)(request))
+        request ← fromXor(validateRequests(params)(name))
+        result ← fromFutureXor(processRequests(client)(request))
       } yield result).value
     }
   }

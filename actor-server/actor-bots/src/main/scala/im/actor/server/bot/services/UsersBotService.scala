@@ -62,7 +62,7 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
     (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       ifIsAdmin(botUserId) {
         (for {
-          avatar ← fromFutureEither(_ ⇒ BotError(400, "LOCATION_INVALID"))(db.run(scaleAvatar(fileLocation.fileId)))
+          avatar ← fromFutureXor(_ ⇒ BotError(400, "LOCATION_INVALID"))(db.run(scaleAvatar(fileLocation.fileId)) map Xor.fromEither)
           _ ← fromFuture(userExt.updateAvatar(userId, Some(avatar)))
         } yield Void).value
       }

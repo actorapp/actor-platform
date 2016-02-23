@@ -1,50 +1,47 @@
 package im.actor.concurrent
 
+import cats.data.Xor._
 import cats.data.{ Xor, XorT }
+import cats.std.{ EitherInstances, FutureInstances }
+import cats.syntax.all._
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.language.implicitConversions
 
-trait FutureResult[ErrorCase] {
+trait FutureResult[ErrorCase] extends FutureInstances with EitherInstances {
   type Result[A] = XorT[Future, ErrorCase, A]
+  def Result[A] = XorT.apply[Future, ErrorCase, A] _
 
-  implicit def futureFunctor(implicit ec: ExecutionContext): cats.Functor[Future] = new cats.Functor[Future] {
-    def map[A, B](fa: Future[A])(f: (A) ⇒ B) = fa map f
-  }
-  implicit def futureMonad(implicit ec: ExecutionContext): cats.Monad[Future] = new cats.Monad[Future] {
-    def pure[A](x: A) = Future.successful(x)
-    def flatMap[A, B](fa: Future[A])(f: (A) ⇒ Future[B]) = fa flatMap f
-  }
+  def point[A](a: A): Result[A] = Result[A](Future.successful(a.right))
 
-  implicit class Boolean2Xor(val self: Boolean) {
-    def toXor[A](failure: A): A Xor Unit = if (self) Xor.right(()) else Xor.left(failure)
-  }
+  def fromXor[A](va: ErrorCase Xor A): Result[A] = Result[A](Future.successful(va))
 
+  def fromXor[A, B](errorHandle: B ⇒ ErrorCase)(va: B Xor A): Result[A] = Result[A](Future.successful(va leftMap errorHandle))
+
+  def fromOption[A](failure: ErrorCase)(oa: Option[A]): Result[A] = Result[A](Future.successful(oa toRightXor failure))
+
+  def fromBoolean[A](failure: ErrorCase)(oa: Boolean): Result[Unit] = Result[Unit](Future.successful(if (oa) ().right else failure.left))
+
+  def fromFuture[A](fa: Future[A])(implicit ec: ExecutionContext): Result[A] = Result[A](fa map right)
+
+  def fromFuture[A](errorHandle: Throwable ⇒ ErrorCase)(fu: Future[A])(implicit ec: ExecutionContext): Result[A] =
+    Result[A](fu.map(_.right) recover { case e ⇒ errorHandle(e).left })
+
+  def fromFutureXor[A](fva: Future[ErrorCase Xor A])(implicit ec: ExecutionContext): Result[A] = Result[A](fva)
+
+  def fromFutureXor[A](errorHandle: Throwable ⇒ ErrorCase)(fea: Future[Throwable Xor A])(implicit ec: ExecutionContext): Result[A] =
+    Result[A](fea map (either ⇒ either.leftMap(errorHandle)))
+
+  def fromFutureOption[A](failure: ErrorCase)(foa: Future[Option[A]])(implicit ec: ExecutionContext): Result[A] =
+    Result[A](foa.map(_ toRightXor failure))
+
+  def fromFutureBoolean(failure: ErrorCase)(foa: Future[Boolean])(implicit ec: ExecutionContext): Result[Unit] =
+    Result[Unit](foa.map(r ⇒ if (r) ().right else failure.left))
+}
+
+// TODO: find right place for it
+trait XorEitherConversions {
   implicit def toEither[E, A](xor: E Xor A): Either[E, A] = xor.toEither
 
   implicit def toEither[E, A](fxor: Future[E Xor A])(implicit ec: ExecutionContext): Future[Either[E, A]] = fxor map (_.toEither)
-
-  def point[A](a: A): Result[A] = XorT[Future, ErrorCase, A](Future.successful(Xor.right(a)))
-
-  def fromFuture[A](fa: Future[A])(implicit ec: ExecutionContext): Result[A] = XorT[Future, ErrorCase, A](fa map Xor.right)
-
-  def fromXor[A](va: ErrorCase Xor A): Result[A] = XorT[Future, ErrorCase, A](Future.successful(va))
-
-  def fromXor[A](errorHandle: Throwable ⇒ ErrorCase)(va: Throwable Xor A): Result[A] = XorT[Future, ErrorCase, A](Future.successful(va leftMap errorHandle))
-
-  def fromOption[A](failure: ErrorCase)(oa: Option[A]): Result[A] = XorT[Future, ErrorCase, A](Future.successful(Xor.fromOption(oa, failure)))
-
-  def fromFutureOption[A](failure: ErrorCase)(foa: Future[Option[A]])(implicit ec: ExecutionContext): Result[A] =
-    XorT[Future, ErrorCase, A](foa map (Xor.fromOption(_, failure)))
-
-  def fromFutureEither[A](errorHandle: Throwable ⇒ ErrorCase)(fea: Future[Either[Throwable, A]])(implicit ec: ExecutionContext): Result[A] =
-    XorT[Future, ErrorCase, A](fea map (either ⇒ Xor.fromEither(either.left.map(errorHandle))))
-
-  def fromFutureXor[A](errorHandle: Throwable ⇒ ErrorCase)(fea: Future[Throwable Xor A])(implicit ec: ExecutionContext): Result[A] =
-    XorT[Future, ErrorCase, A](fea map (either ⇒ either.leftMap(errorHandle)))
-
-  def fromFutureBoolean(failure: ErrorCase)(fa: Future[Boolean])(implicit ec: ExecutionContext): Result[Unit] =
-    XorT[Future, ErrorCase, Unit](fa map (_.toXor(failure)))
-
-  def fromBoolean(failure: ErrorCase)(oa: Boolean): Result[Unit] = XorT[Future, ErrorCase, Unit](Future.successful(oa.toXor(failure)))
 }
