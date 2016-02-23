@@ -24,6 +24,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     private final PeerSettings ownSettings;
     private final ArrayList<WebRTCMediaStream> theirMediaStreams = new ArrayList<>();
 
+    private PeerState state = PeerState.PENDING;
     private PeerConnectionInt peerConnection;
     private PeerSettings theirSettings;
     private WebRTCMediaStream ownMediaStream;
@@ -48,12 +49,18 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     // Starting up peer nodes
     //
     // Stages:
+    // 0. Notify about new peer node
     // 1. Waiting for advertise of a node
     // 2. If both peers supports pre connection, create new connection
     // 3. Enabling Own and Their peers
     // 4. Setting own media stream
     // 5. Creation of peer connection
     //
+
+    @Override
+    public void preStart() {
+        callback.onPeerStateChanged(deviceId, state);
+    }
 
     public void onAdvertised(PeerSettings settings) {
         if (this.theirSettings == null) {
@@ -96,7 +103,8 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
 
         if ((isOwnEnabled && isTheirEnabled) ||
                 (theirSettings.isPreConnectionEnabled() && ownSettings.isPreConnectionEnabled())) {
-
+            state = PeerState.CONNECTING;
+            callback.onPeerStateChanged(deviceId, state);
             peerConnection = new PeerConnectionInt(
                     ownSettings, theirSettings,
                     ownMediaStream, this, context(), self(), "connection");
@@ -120,7 +128,9 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         if (isEnabled && isConnected && !isStarted) {
             isStarted = true;
 
-            callback.onConnectionStarted(deviceId);
+            state = PeerState.ACTIVE;
+            callback.onPeerStateChanged(deviceId, state);
+
             for (WebRTCMediaStream mediaStream : theirMediaStreams) {
                 callback.onStreamAdded(deviceId, mediaStream);
             }
@@ -149,7 +159,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
 
     @Override
     public void onHandshakeSuccessful() {
-        callback.onHandshakeSuccessful(deviceId);
+
     }
 
     @Override
@@ -163,7 +173,8 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         if (!isConnected) {
             isConnected = true;
             if (!isEnabled) {
-                callback.onConnectionEstablished(deviceId);
+                state = PeerState.CONNECTED;
+                callback.onPeerStateChanged(deviceId, state);
             } else {
                 // This case is handled in startIfNeeded();
             }
@@ -191,6 +202,8 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             peerConnection.kill();
             peerConnection = null;
         }
+        state = PeerState.DISPOSED;
+        callback.onPeerStateChanged(deviceId, state);
     }
 
 
