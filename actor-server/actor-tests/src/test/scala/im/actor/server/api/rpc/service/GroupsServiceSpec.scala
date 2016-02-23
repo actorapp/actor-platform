@@ -5,7 +5,7 @@ import im.actor.api.rpc.counters.UpdateCountersChanged
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
-import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType, ApiUserOutPeer }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiOutPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupRpcErrors, GroupsServiceImpl }
@@ -53,6 +53,8 @@ final class GroupsServiceSpec
   it should "receive userJoined once" in userJoinedOnce
 
   it should "not allow to create group with empty name" in e13
+
+  it should "send UpdateChatGroupsChanged to all group members on group creation" in updateChatGroupsChanged
 
   "Creator of group" should "be groupAdminColor" in e14
 
@@ -582,6 +584,31 @@ final class GroupsServiceSpec
       inside(resp) {
         case Error(GroupRpcErrors.WrongGroupTitle) ⇒
       }
+    }
+  }
+
+  def updateChatGroupsChanged() = {
+    val sessionId = createSessionId()
+
+    val users = for (i ← 1 to 5) yield createUser()
+    val userIds = (users map (_._1.id)).toSet
+
+    val groupPeer = {
+      val (user, authId, authSid, _) = users.head
+      implicit val cd = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+      createGroup("Fun group", userIds).groupPeer
+    }
+
+    users foreach {
+      case (user, authId, authSid, _) ⇒
+        implicit val cd = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
+        expectUpdate(classOf[UpdateChatGroupsChanged]) { u ⇒
+          val groupDialogs = u.dialogs.find(_.key == "groups")
+          groupDialogs shouldBe defined
+          val dialogsShort = groupDialogs.get.dialogs
+          dialogsShort should have length 1
+          dialogsShort.head.peer shouldEqual ApiPeer(ApiPeerType.Group, groupPeer.groupId)
+        }
     }
   }
 
