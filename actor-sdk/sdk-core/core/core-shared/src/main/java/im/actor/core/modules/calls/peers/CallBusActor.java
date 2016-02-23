@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import im.actor.core.api.ApiAdvertiseSelf;
 import im.actor.core.api.ApiAnswer;
@@ -30,11 +31,15 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 
-public class CallBusActor extends EventBusActor {
+public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     private static final int STASH = 1;
 
     private HashMap<Long, Integer> deviceIds = new HashMap<>();
+
+    private HashMap<Long, PeerSettings> peerSettings = new HashMap<>();
+    private HashSet<Long> isAnswered = new HashSet<>();
+
     private final PeerSettings selfSettings;
     private final PeerCallCallback peerCallback;
     private final CallBusCallback callBusCallback;
@@ -49,37 +54,7 @@ public class CallBusActor extends EventBusActor {
 
         this.selfSettings = selfSettings;
         this.callBusCallback = callBusCallback;
-        this.peerCallback = new CallbackWrapper(new PeerCallCallback() {
-            @Override
-            public void onOffer(long deviceId, String sdp) {
-                sendSignal(deviceId, new ApiOffer(0, sdp, CallBusActor.this.selfSettings.toApi()));
-            }
-
-            @Override
-            public void onAnswer(long deviceId, String sdp) {
-                sendSignal(deviceId, new ApiAnswer(0, sdp));
-            }
-
-            @Override
-            public void onCandidate(long deviceId, int mdpIndex, String id, String sdp) {
-                sendSignal(deviceId, new ApiCandidate(0, mdpIndex, id, sdp));
-            }
-
-            @Override
-            public void onPeerStateChanged(long deviceId, PeerState state) {
-                callBusCallback.onPeerStateChanged(deviceIds.get(deviceId), deviceId, state);
-            }
-
-            @Override
-            public void onStreamAdded(long deviceId, WebRTCMediaStream stream) {
-
-            }
-
-            @Override
-            public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
-
-            }
-        });
+        this.peerCallback = new CallbackWrapper(this);
     }
 
 
@@ -109,6 +84,46 @@ public class CallBusActor extends EventBusActor {
         callBusCallback.onBusStarted(getBusId());
     }
 
+
+    //
+    // PeerCall callback
+    //
+
+    @Override
+    public void onOffer(long deviceId, String sdp) {
+        sendSignal(deviceId, new ApiOffer(0, sdp, CallBusActor.this.selfSettings.toApi()));
+    }
+
+    @Override
+    public void onAnswer(long deviceId, String sdp) {
+        sendSignal(deviceId, new ApiAnswer(0, sdp));
+    }
+
+    @Override
+    public void onCandidate(long deviceId, int mdpIndex, String id, String sdp) {
+        sendSignal(deviceId, new ApiCandidate(0, mdpIndex, id, sdp));
+    }
+
+    @Override
+    public void onPeerStateChanged(long deviceId, PeerState state) {
+        callBusCallback.onPeerStateChanged(deviceIds.get(deviceId), deviceId, state);
+    }
+
+    @Override
+    public void onStreamAdded(long deviceId, WebRTCMediaStream stream) {
+
+    }
+
+    @Override
+    public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
+
+    }
+
+
+    //
+    // Actions
+    //
+
     public void onAnswerCall() {
         sendSignal(masterUid, masterDeviceId, new ApiAnswerCall());
     }
@@ -116,6 +131,11 @@ public class CallBusActor extends EventBusActor {
     public void onRejectCall() {
         sendSignal(masterUid, masterDeviceId, new ApiRejectCall());
     }
+
+
+    //
+    // Event Bus handler
+    //
 
     @Override
     public void onDeviceConnected(int uid, long deviceId) {
@@ -155,7 +175,6 @@ public class CallBusActor extends EventBusActor {
             ApiOffer offer = (ApiOffer) signal;
             peerCall.onAdvertised(senderDeviceId, new PeerSettings(offer.getOwnPeerSettings()));
             peerCall.onOffer(senderDeviceId, offer.getSdp());
-            peerCall.onTheirStarted(senderDeviceId);
         } else if (signal instanceof ApiCandidate) {
             ApiCandidate candidate = (ApiCandidate) signal;
             peerCall.onCandidate(senderDeviceId, candidate.getIndex(), candidate.getId(), candidate.getSdp());
@@ -164,7 +183,6 @@ public class CallBusActor extends EventBusActor {
             deviceIds.put(needOffer.getDevice(), needOffer.getUid());
             peerCall.onAdvertised(needOffer.getDevice(), new PeerSettings(needOffer.getPeerSettings()));
             peerCall.onOfferNeeded(needOffer.getDevice());
-            peerCall.onTheirStarted(needOffer.getDevice());
         } else if (signal instanceof ApiOnAnswer) {
             ApiOnAnswer onAnswer = (ApiOnAnswer) signal;
             deviceIds.put(onAnswer.getDevice(), onAnswer.getUid());
@@ -181,12 +199,37 @@ public class CallBusActor extends EventBusActor {
             masterUid = senderId;
             masterDeviceId = senderDeviceId;
             unstashAll(STASH);
+
+            //
+            // Advertise own settings to master device
+            //
             sendSignal(masterUid, masterDeviceId, new ApiAdvertiseSelf(selfSettings.toApi()));
+
+            //
+            // Automatically start master device
+            //
+            peerCall.onTheirStarted(masterDeviceId);
+
         } else if (signal instanceof ApiAdvertiseSelf) {
             ApiAdvertiseSelf advertiseSelf = (ApiAdvertiseSelf) signal;
-            peerCall.onAdvertised(senderDeviceId, new PeerSettings(advertiseSelf.getPeerSettings()));
+            if (peerSettings.containsKey(senderDeviceId)) {
+                return;
+            }
+
+            PeerSettings settings = new PeerSettings(advertiseSelf.getPeerSettings());
+            peerSettings.put(senderDeviceId, settings);
+            peerCall.onAdvertised(senderDeviceId, settings);
+            if (isAnswered.contains(senderDeviceId)) {
+                callBusCallback.onAnswered(senderId, senderDeviceId);
+            }
         } else if (signal instanceof ApiAnswerCall) {
-            callBusCallback.onAnswered(senderId, senderDeviceId);
+            if (isAnswered.contains(senderDeviceId)) {
+                return;
+            }
+            isAnswered.add(senderDeviceId);
+            if (peerSettings.containsKey(senderDeviceId)) {
+                callBusCallback.onAnswered(senderId, senderDeviceId);
+            }
         }
     }
 

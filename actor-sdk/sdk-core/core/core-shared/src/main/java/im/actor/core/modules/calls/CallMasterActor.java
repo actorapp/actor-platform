@@ -1,5 +1,6 @@
 package im.actor.core.modules.calls;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 import im.actor.core.api.rpc.RequestDoCall;
@@ -9,6 +10,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.AbsCallActor;
+import im.actor.core.modules.calls.peers.PeerSettings;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.Log;
@@ -20,6 +22,8 @@ public class CallMasterActor extends AbsCallActor {
     private long callId;
     private CallVM callVM;
     private CommandCallback<Long> callback;
+    private HashMap<Long, PeerSettings> peerSettings = new HashMap<>();
+    private HashSet<Long> isAnswered = new HashSet<>();
 
     public CallMasterActor(Peer peer, ModuleContext context, CommandCallback<Long> callback) {
         super(context);
@@ -82,15 +86,19 @@ public class CallMasterActor extends AbsCallActor {
     }
 
     @Override
-    public void onAnswered(int uid, long deviceId) {
-        Log.d("CallMasterActor", "On Answered: " + uid + ", device: " + deviceId);
+    public void onAnswered(int uid, long deviceId, PeerSettings settings) {
         peerCall.onTheirStarted(deviceId);
+        if (!selfSettings.isPreConnectionEnabled() || !settings.isPreConnectionEnabled()) {
+            peerCall.onOfferNeeded(deviceId);
+        }
     }
 
     @Override
-    public void onPeerConnected(int uid, long deviceId) {
-        Log.d("CallMasterActor", "On Peer Connected: " + uid + ", device: " + deviceId);
-        peerCall.onOfferNeeded(deviceId);
+    public void onAdvertised(int uid, long deviceId, PeerSettings settings) {
+        peerCall.onAdvertised(deviceId, settings);
+        if (selfSettings.isPreConnectionEnabled() && settings.isPreConnectionEnabled()) {
+            peerCall.onOfferNeeded(deviceId);
+        }
     }
 
     @Override
