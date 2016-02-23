@@ -1,64 +1,101 @@
 package im.actor.core.modules.calls;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
-import im.actor.core.entity.Group;
-import im.actor.core.entity.GroupMember;
-import im.actor.core.entity.Peer;
-import im.actor.core.entity.PeerType;
+import im.actor.core.api.ApiCallMember;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.calls.bus.CallBusActor;
+import im.actor.core.modules.calls.bus.CallBusCallback;
+import im.actor.core.modules.calls.bus.CallBusInt;
+import im.actor.core.modules.calls.peers.PeerCallInt;
+import im.actor.core.modules.calls.peers.PeerSettings;
 import im.actor.core.modules.eventbus.EventBusActor;
-import im.actor.core.viewmodel.CallMember;
-import im.actor.core.viewmodel.CallMemberState;
-import im.actor.core.viewmodel.CallState;
-import im.actor.core.viewmodel.CallVM;
+import im.actor.runtime.actors.Actor;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
 
-public class AbsCallActor extends EventBusActor {
+public abstract class AbsCallActor extends EventBusActor implements CallBusCallback {
 
-    private final HashMap<Long, CallVM> callModels;
-    private CallVM callVM;
+    protected final PeerSettings selfSettings;
+    protected final CallViewModels callViewModels;
+    protected final ActorRef callManager;
+    protected CallBusInt callBus;
+    protected PeerCallInt peerCall;
 
     public AbsCallActor(ModuleContext context) {
         super(context);
 
-        callModels = context().getCallsModule().getCallModels();
+        this.callManager = context.getCallsModule().getCallManager();
+        this.callViewModels = context().getCallsModule().getCallViewModels();
+        this.selfSettings = new PeerSettings();
+        this.selfSettings.setIsPreConnectionEnabled(true);
     }
 
-    //
-    // Call Model helpers
-    //
-    public CallVM spawnNewVM(long callId, Peer peer, boolean isOutgoing, ArrayList<CallMember> members, CallState callState) {
-        CallVM callVM = new CallVM(callId, peer, isOutgoing, members, callState);
-        // callVM.getIsMuted().change(isMuted());
-        synchronized (callModels) {
-            callModels.put(callId, callVM);
-        }
-        this.callVM = callVM;
-        return callVM;
-    }
-
-    public CallVM spanNewOutgoingVM(long callId, Peer peer) {
-        ArrayList<CallMember> members = new ArrayList<>();
-        if (peer.getPeerType() == PeerType.PRIVATE ||
-                peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
-            members.add(new CallMember(peer.getPeerId(), CallMemberState.RINGING));
-        } else if (peer.getPeerType() == PeerType.GROUP) {
-            Group g = getGroup(peer.getPeerId());
-            for (GroupMember gm : g.getMembers()) {
-                if (gm.getUid() != myUid()) {
-                    members.add(new CallMember(gm.getUid(), CallMemberState.RINGING));
-                }
+    @Override
+    public void preStart() {
+        super.preStart();
+        callBus = new CallBusInt(system().actorOf(getPath() + "/bus", new ActorCreator() {
+            @Override
+            public Actor create() {
+                return new CallBusActor(new CallBusCallbackWrapper(), selfSettings, context());
             }
-        }
-        return spawnNewVM(callId, peer, true, members, CallState.RINGING);
+        }));
     }
 
-//    @Override
-//    public void onMute(boolean isMuted) {
-//        super.onMute(isMuted);
-//        if (callVM != null) {
-//            callVM.getIsMuted().change(isMuted);
-//        }
-//    }
+    @Override
+    public final void onBusCreated(PeerCallInt peerCallInt) {
+        this.peerCall = peerCallInt;
+        callPreStart();
+    }
+
+    public void callPreStart() {
+
+    }
+
+    @Override
+    public void onBusStarted(String busId) {
+
+    }
+
+    @Override
+    public void onMembersChanged(List<ApiCallMember> members) {
+
+    }
+
+    //
+    // Wrapper
+    //
+
+    private class CallBusCallbackWrapper implements CallBusCallback {
+
+        @Override
+        public void onBusCreated(final PeerCallInt peerCallInt) {
+            self().send(new Runnable() {
+                @Override
+                public void run() {
+                    AbsCallActor.this.onBusCreated(peerCallInt);
+                }
+            });
+        }
+
+        @Override
+        public void onBusStarted(final String busId) {
+            self().send(new Runnable() {
+                @Override
+                public void run() {
+                    AbsCallActor.this.onBusStarted(busId);
+                }
+            });
+        }
+
+        @Override
+        public void onMembersChanged(final List<ApiCallMember> members) {
+            self().send(new Runnable() {
+                @Override
+                public void run() {
+                    AbsCallActor.this.onMembersChanged(members);
+                }
+            });
+        }
+    }
 }
