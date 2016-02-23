@@ -176,8 +176,10 @@ public class CallMasterActor extends CallActor {
                 //
                 getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
                 for (MasterCallDevice device : state.getConnectedDevices()) {
-                    sendSignalingMessage(device.getUid(), device.getDeviceId(),
-                            new ApiNeedOffer(uid, deviceId, peerSettings, true));
+                    if (device.getUid() != uid && device.getDeviceId() != deviceId) {
+                        sendSignalingMessage(device.getUid(), device.getDeviceId(),
+                                new ApiNeedOffer(uid, deviceId, peerSettings, true));
+                    }
                 }
             }
         }
@@ -201,8 +203,10 @@ public class CallMasterActor extends CallActor {
                 // Notify all devices about answer
                 //
                 for (MasterCallDevice device : state.getConnectedDevices()) {
-                    sendSignalingMessage(device.getUid(), device.getDeviceId(),
-                            new ApiOnAnswer(uid, deviceId));
+                    if (device.getUid() != uid && device.getDeviceId() != deviceId) {
+                        sendSignalingMessage(device.getUid(), device.getDeviceId(),
+                                new ApiOnAnswer(uid, deviceId));
+                    }
                 }
             } else {
 
@@ -212,8 +216,10 @@ public class CallMasterActor extends CallActor {
                 ApiPeerSettings peerSettings = state.getPeerSettings(uid, deviceId);
                 getPeer(uid, deviceId).send(new PeerConnectionActor.OnOfferNeeded());
                 for (MasterCallDevice device : state.getConnectedDevices()) {
-                    sendSignalingMessage(device.getUid(), device.getDeviceId(),
-                            new ApiNeedOffer(uid, deviceId, peerSettings, false));
+                    if (device.getUid() != uid && device.getDeviceId() != deviceId) {
+                        sendSignalingMessage(device.getUid(), device.getDeviceId(),
+                                new ApiNeedOffer(uid, deviceId, peerSettings, false));
+                    }
                 }
             }
 
