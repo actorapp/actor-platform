@@ -1,5 +1,7 @@
 package im.actor.core.modules.calls;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import im.actor.core.api.ApiNeedOffer;
@@ -15,7 +17,6 @@ import im.actor.core.modules.calls.peers.PeerSettings;
 import im.actor.core.modules.calls.peers.PeerState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
-import im.actor.runtime.Log;
 import im.actor.runtime.function.Consumer;
 
 public class CallMasterActor extends AbsCallActor {
@@ -23,6 +24,8 @@ public class CallMasterActor extends AbsCallActor {
     private final Peer peer;
     private long callId;
     private CallVM callVM;
+    private ArrayList<PeerStateHolder> peerStates = new ArrayList<>();
+    private HashMap<Integer, PeerStateHolder> statesMap = new HashMap<>();
     private CommandCallback<Long> callback;
     private HashSet<Long> readyDevices = new HashSet<>();
 
@@ -53,11 +56,15 @@ public class CallMasterActor extends AbsCallActor {
                 if (peer.getPeerType() == PeerType.GROUP) {
                     for (GroupMember gm : getGroup(peer.getPeerId()).getMembers()) {
                         if (gm.getUid() != myUid()) {
-                            // state.addMember(gm.getUid(), MasterCallMemberState.RINGING);
+                            PeerStateHolder st = new PeerStateHolder(gm.getUid());
+                            peerStates.add(st);
+                            statesMap.put(st.getUid(), st);
                         }
                     }
                 } else if (peer.getPeerType() == PeerType.PRIVATE) {
-                    // state.addMember(peer.getPeerId(), MasterCallMemberState.RINGING);
+                    PeerStateHolder st = new PeerStateHolder(peer.getPeerId());
+                    peerStates.add(st);
+                    statesMap.put(st.getUid(), st);
                 } else {
                     throw new RuntimeException("Unsupported Peer Type group");
                 }
@@ -88,7 +95,14 @@ public class CallMasterActor extends AbsCallActor {
 
     @Override
     public void onAnswered(int uid, long deviceId, PeerSettings settings) {
-        Log.d("CallMasterActor", "onAnswered: " + deviceId);
+
+        // TODO: Handle own calls
+        PeerStateHolder peerState = statesMap.get(uid);
+        if (peerState == null) {
+            return;
+        }
+        peerState.setWasAnswered(true);
+
         peerCall.onTheirStarted(deviceId);
         onPeerStarted(uid, deviceId, settings);
         for (long d : readyDevices) {
@@ -96,19 +110,29 @@ public class CallMasterActor extends AbsCallActor {
                 callBus.sendSignal(d, new ApiOnAnswer(uid, deviceId));
             }
         }
+
+        broadcastMembers();
     }
 
     @Override
     public void onAdvertised(int uid, long deviceId, PeerSettings settings) {
-        Log.d("CallMasterActor", "onAdvertised: " + deviceId);
+
+        // TODO: Handle own calls
+        PeerStateHolder peerState = statesMap.get(uid);
+        if (peerState == null) {
+            return;
+        }
+        peerState.setIsConnected(true);
+
         peerCall.onAdvertised(deviceId, settings);
         if (selfSettings.isPreConnectionEnabled() && settings.isPreConnectionEnabled()) {
             onPeerStarted(uid, deviceId, settings);
         }
+
+        broadcastMembers();
     }
 
     private void onPeerStarted(int uid, long deviceId, PeerSettings settings) {
-        Log.d("CallMasterActor", "onPeerStarted: " + deviceId);
 
         if (readyDevices.contains(deviceId)) {
             return;
@@ -122,11 +146,37 @@ public class CallMasterActor extends AbsCallActor {
         readyDevices.add(deviceId);
     }
 
+    private void broadcastMembers() {
+
+    }
+
     @Override
     public void onPeerStateChanged(int uid, long deviceId, PeerState state) {
-        if (state == PeerState.DISPOSED) {
-            readyDevices.remove(deviceId);
+        PeerStateHolder peerState = statesMap.get(uid);
+        if (peerState == null) {
+            return;
         }
+
+        switch (state) {
+            case PENDING:
+                // Do Nothing
+                break;
+            case CONNECTING:
+                break;
+            case CONNECTED:
+                break;
+            case ACTIVE:
+                // peerState.setIsAnswered(true);
+                break;
+            case DISPOSED:
+//                if (peerState.isAnswered()) {
+//                    peerState.setIsRejected(true);
+//                }
+                readyDevices.remove(deviceId);
+                break;
+        }
+
+        broadcastMembers();
     }
 
     @Override
@@ -135,6 +185,46 @@ public class CallMasterActor extends AbsCallActor {
         if (callback != null) {
             callback.onError(new RuntimeException());
             callback = null;
+        }
+    }
+
+    private class PeerStateHolder {
+
+        private int uid;
+        private boolean isConnected = false;
+        private boolean wasAnswered = false;
+        private boolean isRejected = false;
+
+        public PeerStateHolder(int uid) {
+            this.uid = uid;
+        }
+
+        public int getUid() {
+            return uid;
+        }
+
+        public boolean isConnected() {
+            return isConnected;
+        }
+
+        public void setIsConnected(boolean isConnected) {
+            this.isConnected = isConnected;
+        }
+
+        public boolean isWasAnswered() {
+            return wasAnswered;
+        }
+
+        public void setWasAnswered(boolean wasAnswered) {
+            this.wasAnswered = wasAnswered;
+        }
+
+        public boolean isRejected() {
+            return isRejected;
+        }
+
+        public void setIsRejected(boolean isRejected) {
+            this.isRejected = isRejected;
         }
     }
 }
