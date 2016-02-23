@@ -37,25 +37,11 @@ public interface PeerNodeCallback {
     void onCandidate(long deviceId, int mdpIndex, String id, String sdp);
 
     /**
-     * Called when handshake was successful
+     * Called when peer state changed
      *
      * @param deviceId Device Id
      */
-    void onHandshakeSuccessful(long deviceId);
-
-    /**
-     * Called when connection started
-     *
-     * @param deviceId Device Id
-     */
-    void onConnectionStarted(long deviceId);
-
-    /**
-     * Called when connection established
-     *
-     * @param deviceId Device Id
-     */
-    void onConnectionEstablished(long deviceId);
+    void onPeerStateChanged(long deviceId, PeerState state);
 
     /**
      * Called when stream added
