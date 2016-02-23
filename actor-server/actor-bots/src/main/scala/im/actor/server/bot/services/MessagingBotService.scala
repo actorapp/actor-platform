@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageContentChanged }
 import im.actor.bots.BotMessages.BotError
-import im.actor.concurrent.FutureResultCats
+import im.actor.concurrent.FutureResult
 import im.actor.server.bot.{ BotServiceBase, BotToApiConversions }
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogExtension
@@ -20,7 +20,7 @@ private[bot] object MessagingBotErrors {
 }
 
 private[bot] final class MessagingBotService(system: ActorSystem) extends BotServiceBase(system)
-  with FutureResultCats[BotError]
+  with FutureResult[BotError]
   with BotToApiConversions
   with PeersImplicits {
 
