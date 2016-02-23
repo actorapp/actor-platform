@@ -10226,6 +10226,13 @@
               <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
             </node>
           </node>
+          <node concept="2m7Kf5" id="YOvM6E4WzM" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="rejoinToken" />
+            <node concept="2m5nlT" id="YOvM6E4WzS" role="2m7DVh">
+              <node concept="2m61tm" id="YOvM6E4W$1" role="3GH5xg" />
+            </node>
+          </node>
           <node concept="Nu42z" id="3Tolai5M$OS" role="NuuwV">
             <property role="Nu42W" value="A6D" />
           </node>
@@ -10233,6 +10240,11 @@
             <property role="NX6R2" value="Your Device Id" />
             <property role="1GSvIU" value="full" />
             <ref role="NX6Kv" node="3Tolai5M$OW" resolve="deviceId" />
+          </node>
+          <node concept="NX1gA" id="YOvM6E4W$7" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Token that can be used for rejoining event bus with same device id" />
+            <ref role="NX6Kv" node="YOvM6E4WzM" resolve="rejoinToken" />
           </node>
         </node>
         <node concept="NXeRC" id="3Tolai5ML1_" role="1GBnQ6">
@@ -10247,6 +10259,53 @@
           <property role="NX6R2" value="Join timeout" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3Tolai5M$P3" resolve="timeout" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="YOvM6E4XDN" role="2m5mJr">
+        <property role="TrG5h" value="ReJoinEventBus" />
+        <node concept="2m7Kf5" id="YOvM6E4XFU" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="wb0Ql" id="YOvM6E4XFY" role="2m7DVh">
+            <ref role="wb18D" node="3Tolai5MCV$" resolve="busId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E4XG1" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rejoinToken" />
+          <node concept="2m61tm" id="YOvM6E4XG7" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="YOvM6E4XDO" role="NuuwV">
+          <property role="Nu42W" value="A73" />
+        </node>
+        <node concept="2m1R6W" id="YOvM6E4XGa" role="2m6efq">
+          <node concept="2m7Kf5" id="YOvM6E4XGf" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="deviceId" />
+            <node concept="wb0Ql" id="YOvM6E4XGj" role="2m7DVh">
+              <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="YOvM6E4XGb" role="NuuwV">
+            <property role="Nu42W" value="A74" />
+          </node>
+          <node concept="NX1gA" id="YOvM6E4YKz" role="1y2DgH">
+            <property role="NX6R2" value="Your Device Id" />
+            <ref role="NX6Kv" node="YOvM6E4XGf" resolve="deviceId" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="YOvM6E4YKf" role="1GBnQ6">
+          <property role="NXePf" value="Rejoining to event bus after session was disposed" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E4YKk" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Event Bus Id" />
+          <ref role="NX6Kv" node="YOvM6E4XFU" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E4YKs" role="1GBnQ6">
+          <property role="NX6R2" value="Rejoin Token" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E4XG1" resolve="rejoinToken" />
         </node>
       </node>
       <node concept="2m6fVq" id="3Tolai5M_OS" role="2m5mJr">
@@ -10311,38 +10370,6 @@
           <ref role="NX6Kv" node="3Tolai5MzOv" resolve="id" />
         </node>
       </node>
-      <node concept="2m5naR" id="3Tolai5MQbH" role="2m5mJr">
-        <property role="TrG5h" value="EventBusDestination" />
-        <node concept="2m7Kf5" id="3Tolai5MQdl" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="userId" />
-          <node concept="wb0Ql" id="3Tolai5MQdp" role="2m7DVh">
-            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="3Tolai5MQds" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="deviceIds" />
-          <node concept="2m5nlk" id="3Tolai5MQdD" role="2m7DVh">
-            <node concept="wb0Ql" id="3Tolai5MQdJ" role="3GJlyp">
-              <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
-            </node>
-          </node>
-        </node>
-        <node concept="NXeRC" id="3Tolai5MQdM" role="NXodf">
-          <property role="NXePf" value="Event Bus Destination" />
-        </node>
-        <node concept="NX1gA" id="3Tolai5MQdR" role="NXodf">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="User's Id" />
-          <ref role="NX6Kv" node="3Tolai5MQdl" resolve="userId" />
-        </node>
-        <node concept="NX1gA" id="3Tolai5MQdZ" role="NXodf">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="If device Ids are empty broadcast to every device" />
-          <ref role="NX6Kv" node="3Tolai5MQds" resolve="deviceIds" />
-        </node>
-      </node>
       <node concept="2m6fVq" id="3Tolai5MQ7Q" role="2m5mJr">
         <property role="TrG5h" value="PostToEventBus" />
         <node concept="2m7Kf5" id="3Tolai5MQ9x" role="2m0hLx">
@@ -10356,8 +10383,8 @@
           <property role="2m7DUN" value="2" />
           <property role="TrG5h" value="destinations" />
           <node concept="2m5nlk" id="3Tolai5MReD" role="2m7DVh">
-            <node concept="2m5mGg" id="3Tolai5MReJ" role="3GJlyp">
-              <ref role="2m5mJy" node="3Tolai5MQbH" resolve="EventBusDestination" />
+            <node concept="wb0Ql" id="YOvM6E6fJA" role="3GJlyp">
+              <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
             </node>
           </node>
         </node>
@@ -10403,8 +10430,10 @@
         <node concept="2m7Kf5" id="3Tolai5M_Q0" role="2m0hLx">
           <property role="2m7DUN" value="2" />
           <property role="TrG5h" value="userId" />
-          <node concept="wb0Ql" id="3Tolai5M_Q9" role="2m7DVh">
-            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          <node concept="2m5nlT" id="YOvM6E6eE3" role="2m7DVh">
+            <node concept="wb0Ql" id="YOvM6E6eE9" role="3GH5xg">
+              <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+            </node>
           </node>
         </node>
         <node concept="2m7Kf5" id="3Tolai5M_Qc" role="2m0hLx">
@@ -10448,8 +10477,10 @@
         <node concept="2m7Kf5" id="3Tolai5MBUy" role="2m0hLx">
           <property role="2m7DUN" value="2" />
           <property role="TrG5h" value="userId" />
-          <node concept="wb0Ql" id="3Tolai5MBUC" role="2m7DVh">
-            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          <node concept="2m5nlT" id="YOvM6E6eEc" role="2m7DVh">
+            <node concept="wb0Ql" id="YOvM6E6eEi" role="3GH5xg">
+              <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+            </node>
           </node>
         </node>
         <node concept="2m7Kf5" id="3Tolai5MBUF" role="2m0hLx">
@@ -10562,6 +10593,202 @@
         </node>
       </node>
     </node>
+    <node concept="2m5mJO" id="YOvM6E5cel" role="2m5lHt">
+      <property role="TrG5h" value="Values" />
+      <property role="3XOG$Z" value="values" />
+      <node concept="1Dx9M1" id="YOvM6E5diw" role="1Dx9rD">
+        <property role="1Dx9K7" value="Synced Values" />
+      </node>
+      <node concept="2m5naR" id="YOvM6E5o9X" role="2m5mJr">
+        <property role="TrG5h" value="SyncedValue" />
+        <node concept="2m7Kf5" id="YOvM6E5oai" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="wb0Ql" id="YOvM6E5oam" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E5oap" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="value" />
+          <node concept="2m5nlT" id="YOvM6E5oav" role="2m7DVh">
+            <node concept="2m61tm" id="YOvM6E5oa_" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="YOvM6E5ob8" role="NXodf">
+          <property role="NXePf" value="Synced Value container" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5obd" role="NXodf">
+          <property role="NX6R2" value="Unique Id of a value. Unique in the scope of one named value." />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E5oai" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5obl" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional value" />
+          <ref role="NX6Kv" node="YOvM6E5oap" resolve="value" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="YOvM6E5obV" role="2m5mJr">
+        <property role="TrG5h" value="LoadSyncedSet" />
+        <node concept="2m7Kf5" id="YOvM6E5occ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="setName" />
+          <node concept="2m5ndX" id="YOvM6E5ocg" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="YOvM6E5obW" role="NuuwV">
+          <property role="Nu42W" value="A77" />
+        </node>
+        <node concept="2m1R6W" id="YOvM6E5ph8" role="2m6efq">
+          <node concept="2m7Kf5" id="YOvM6E5phd" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="values" />
+            <node concept="2m5nlk" id="YOvM6E5phh" role="2m7DVh">
+              <node concept="2m5mGg" id="YOvM6E5phn" role="3GJlyp">
+                <ref role="2m5mJy" node="YOvM6E5o9X" resolve="SyncedValue" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="YOvM6E5qmi" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="isStrong" />
+            <node concept="2m5nlT" id="YOvM6E5rsZ" role="2m7DVh">
+              <node concept="2m5ndN" id="YOvM6E5rt5" role="3GH5xg" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="YOvM6E5ph9" role="NuuwV">
+            <property role="Nu42W" value="A78" />
+          </node>
+          <node concept="NX1gA" id="YOvM6E5rrt" role="1y2DgH">
+            <property role="NX6R2" value="Current set values" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="YOvM6E5phd" resolve="values" />
+          </node>
+          <node concept="NX1gA" id="YOvM6E5rry" role="1y2DgH">
+            <property role="NX6R2" value="Is this value strong and stored in sequence. By default is true." />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="YOvM6E5qmi" resolve="isStrong" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="YOvM6E5ph6" role="1GBnQ6">
+          <property role="NXePf" value="Loading synced set" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5rrp" role="1GBnQ6">
+          <property role="NX6R2" value="readable name of the set" />
+          <ref role="NX6Kv" node="YOvM6E5occ" resolve="setName" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="YOvM6E5rs0" role="2m5mJr">
+        <property role="TrG5h" value="SynedSetUpdated" />
+        <node concept="2m7Kf5" id="YOvM6E5rst" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="setName" />
+          <node concept="2m5ndX" id="YOvM6E5rsx" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E5rs$" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="syncedValues" />
+          <node concept="2m5nlk" id="YOvM6E5rsE" role="2m7DVh">
+            <node concept="2m5mGg" id="YOvM6E5rsK" role="3GJlyp">
+              <ref role="2m5mJy" node="YOvM6E5o9X" resolve="SyncedValue" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E5rsN" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="isStrong" />
+          <node concept="2m5nlT" id="YOvM6E5rt8" role="2m7DVh">
+            <node concept="2m5ndN" id="YOvM6E5rte" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="YOvM6E5rs1" role="NuuwV">
+          <property role="Nu42W" value="48" />
+        </node>
+        <node concept="NXeRC" id="YOvM6E5rth" role="NXp_2">
+          <property role="NXePf" value="Update about synced set update" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5rtm" role="NXp_2">
+          <property role="NX6R2" value="Set Name" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E5rst" resolve="setName" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5rtu" role="NXp_2">
+          <property role="NX6R2" value="Current set values" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E5rs$" resolve="syncedValues" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5rtC" role="NXp_2">
+          <property role="NX6R2" value="Is this value strong and need to be stored on disk" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E5rsN" resolve="isStrong" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="YOvM6E5wSj" role="2m5mJr">
+        <property role="TrG5h" value="SyncedSetAddedOrUpdated" />
+        <node concept="2m7Kf5" id="YOvM6E5wSZ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="setName" />
+          <node concept="2m5ndX" id="YOvM6E5wT3" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E5wT6" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="addedOrUpdatedValues" />
+          <node concept="2m5nlk" id="YOvM6E5wTc" role="2m7DVh">
+            <node concept="2m5mGg" id="YOvM6E5wTi" role="3GJlyp">
+              <ref role="2m5mJy" node="YOvM6E5o9X" resolve="SyncedValue" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="YOvM6E5wSk" role="NuuwV">
+          <property role="Nu42W" value="49" />
+        </node>
+        <node concept="NXeRC" id="YOvM6E5xZ3" role="NXp_2">
+          <property role="NXePf" value="Update about added or updated values in the synced set" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5xZ8" role="NXp_2">
+          <property role="NX6R2" value="Set Name" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E5wSZ" resolve="setName" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5xZg" role="NXp_2">
+          <property role="NX6R2" value="Added or updated values" />
+          <ref role="NX6Kv" node="YOvM6E5wT6" resolve="addedOrUpdatedValues" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="YOvM6E5z5u" role="2m5mJr">
+        <property role="TrG5h" value="SyncedSetRemoved" />
+        <node concept="2m7Kf5" id="YOvM6E5z6k" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="setName" />
+          <node concept="2m5ndX" id="YOvM6E5z6o" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E5z6r" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="removedItems" />
+          <node concept="2m5nlk" id="YOvM6E5z6x" role="2m7DVh">
+            <node concept="wb0Ql" id="YOvM6E5z6B" role="3GJlyp">
+              <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="YOvM6E5z5v" role="NuuwV">
+          <property role="Nu42W" value="4A" />
+        </node>
+        <node concept="NXeRC" id="YOvM6E5z6E" role="NXp_2">
+          <property role="NXePf" value="Update about removed items from synced set" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5z6J" role="NXp_2">
+          <property role="NX6R2" value="Set Name" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E5z6k" resolve="setName" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5z6R" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Removed Items from the set" />
+          <ref role="NX6Kv" node="YOvM6E5z6r" resolve="removedItems" />
+        </node>
+      </node>
+    </node>
     <node concept="2m5mJO" id="6tgpW9bxo4d" role="2m5lHt">
       <property role="TrG5h" value="WebRTC" />
       <property role="3XOG$Z" value="webrtc" />
@@ -10601,6 +10828,37 @@
           <property role="NX6R2" value="Call Id" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3Tolai5NHBM" resolve="callId" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="YOvM6E4Vk$" role="2m5mJr">
+        <property role="TrG5h" value="CallUpgraded" />
+        <node concept="2m7Kf5" id="YOvM6E4VvH" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="YOvM6E4VvL" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E515g" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="YOvM6E515p" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="YOvM6E4Vk_" role="NuuwV">
+          <property role="Nu42W" value="38" />
+        </node>
+        <node concept="NXeRC" id="YOvM6E4VvX" role="NXp_2">
+          <property role="NXePf" value="Update about call moved to other peer" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E4Vw2" role="NXp_2">
+          <property role="NX6R2" value="Call Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E4VvH" resolve="callId" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E4Vwa" role="NXp_2">
+          <property role="NX6R2" value="Upgraded group id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E515g" resolve="groupId" />
         </node>
       </node>
       <node concept="2m6fVq" id="3Tolai5Njx7" role="2m5mJr">
@@ -10732,9 +10990,196 @@
           <ref role="NX6Kv" node="3Tolai5Np_j" resolve="eventBusId" />
         </node>
       </node>
+      <node concept="2m6fVq" id="YOvM6E4ZSf" role="2m5mJr">
+        <property role="TrG5h" value="UpgradeCall" />
+        <node concept="2m7Kf5" id="YOvM6E4ZWa" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="YOvM6E4ZWe" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E4ZWh" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="YOvM6E500W" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="YOvM6E4ZSg" role="NuuwV">
+          <property role="Nu42W" value="A75" />
+        </node>
+        <node concept="2m1Rp1" id="YOvM6E500R" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="YOvM6E500U" role="1GBnQ6">
+          <property role="NXePf" value="Method for upgrading a call from private call to group call" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5012" role="1GBnQ6">
+          <property role="NX6R2" value="Call Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E4ZWa" resolve="callId" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E501a" role="1GBnQ6">
+          <property role="NX6R2" value="Destination peer for upgrading" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E4ZWh" resolve="peer" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="YOvM6E52dq" role="2m5mJr">
+        <property role="TrG5h" value="DoCallAgain" />
+        <node concept="2m7Kf5" id="YOvM6E52hv" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="YOvM6E52hz" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E52hA" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="user" />
+          <node concept="2m5mGg" id="YOvM6E52hG" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="YOvM6E52dr" role="NuuwV">
+          <property role="Nu42W" value="A76" />
+        </node>
+        <node concept="2m1Rp1" id="YOvM6E52i1" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="YOvM6E52hJ" role="1GBnQ6">
+          <property role="NXePf" value="Call again to user" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E52hO" role="1GBnQ6">
+          <property role="NX6R2" value="Call Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E52hv" resolve="callId" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E52hW" role="1GBnQ6">
+          <property role="NX6R2" value="User to call again" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E52hA" resolve="user" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="YOvM6E5OJZ" role="2m5mJr">
+        <property role="TrG5h" value="JoinCall" />
+        <node concept="2m7Kf5" id="YOvM6E5OO9" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="YOvM6E5OOd" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="YOvM6E5OK0" role="NuuwV">
+          <property role="Nu42W" value="A7B" />
+        </node>
+        <node concept="2m1Rp1" id="YOvM6E5OOg" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="YOvM6E5OWP" role="1GBnQ6">
+          <property role="NXePf" value="Joining Call" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5OWU" role="1GBnQ6">
+          <property role="NX6R2" value="Call Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E5OO9" resolve="callId" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="YOvM6E5OSs" role="2m5mJr">
+        <property role="TrG5h" value="RejectCall" />
+        <node concept="2m7Kf5" id="YOvM6E5OWF" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="YOvM6E5OWJ" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="YOvM6E5OSt" role="NuuwV">
+          <property role="Nu42W" value="A7C" />
+        </node>
+        <node concept="2m1Rp1" id="YOvM6E5OWM" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="YOvM6E5OWY" role="1GBnQ6">
+          <property role="NXePf" value="Rejecting Call" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5OX3" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Call Id" />
+          <ref role="NX6Kv" node="YOvM6E5OWF" resolve="callId" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="YOvM6E5Q6C" role="2m5mJr">
+        <property role="TrG5h" value="OptimizeSDP" />
+        <node concept="2m7Kf5" id="YOvM6E5Rhk" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="type" />
+          <node concept="2m5ndX" id="YOvM6E5Rhu" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E5Qb0" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="sdp" />
+          <node concept="2m5ndX" id="YOvM6E5Qb4" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E5Qb7" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="ownSettings" />
+          <node concept="2m5mGg" id="YOvM6E5Qbd" role="2m7DVh">
+            <ref role="2m5mJy" node="3xEfKBqKruE" resolve="PeerSettings" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E5Qbg" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="theirSettings" />
+          <node concept="2m5mGg" id="YOvM6E5Qbo" role="2m7DVh">
+            <ref role="2m5mJy" node="3xEfKBqKruE" resolve="PeerSettings" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="YOvM6E5Q6D" role="NuuwV">
+          <property role="Nu42W" value="A7D" />
+        </node>
+        <node concept="2m1R6W" id="YOvM6E5Qbr" role="2m6efq">
+          <node concept="2m7Kf5" id="YOvM6E5Qbw" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="optimizedSDP" />
+            <node concept="2m5ndX" id="YOvM6E5Qb$" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="YOvM6E5Qbs" role="NuuwV">
+            <property role="Nu42W" value="A7E" />
+          </node>
+          <node concept="NX1gA" id="YOvM6E5Ri8" role="1y2DgH">
+            <property role="NX6R2" value="Optimized version of SDP" />
+            <ref role="NX6Kv" node="YOvM6E5Qbw" resolve="optimizedSDP" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="YOvM6E5Rh2" role="1GBnQ6">
+          <property role="NXePf" value="Optimizing SDP" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5Rh7" role="1GBnQ6">
+          <property role="NX6R2" value="SDP for optimization" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E5Qb0" resolve="sdp" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5Rhf" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Type of SDP (offer or answer)" />
+          <ref role="NX6Kv" node="YOvM6E5Rhk" resolve="type" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5RhA" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="SDP value" />
+          <ref role="NX6Kv" node="YOvM6E5Qb0" resolve="sdp" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5RhM" role="1GBnQ6">
+          <property role="NX6R2" value="Own Settings" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E5Qb7" resolve="ownSettings" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5Ri0" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Their Settings" />
+          <ref role="NX6Kv" node="YOvM6E5Qbg" resolve="theirSettings" />
+        </node>
+      </node>
       <node concept="w93zz" id="3Tolai5NMKi" role="2m5mJr">
         <property role="TrG5h" value="WebRTCSignaling" />
         <property role="1FaRnq" value="true" />
+      </node>
+      <node concept="NvWBy" id="YOvM6E640m" role="2m5mJr">
+        <property role="NvWrd" value="Advertising" />
       </node>
       <node concept="2m5naR" id="3xEfKBqKcEa" role="2m5mJr">
         <property role="TrG5h" value="AdvertiseSelf" />
@@ -10761,27 +11206,20 @@
           <property role="Nu42W" value="15" />
         </node>
       </node>
-      <node concept="2m5naR" id="3Tolai5NMLS" role="2m5mJr">
-        <property role="TrG5h" value="AnswerCall" />
+      <node concept="2m5naR" id="YOvM6E62ER" role="2m5mJr">
+        <property role="TrG5h" value="AdvertiseMaster" />
+        <property role="tsOgz" value="false" />
         <property role="w4tQU" value="true" />
         <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
-        <node concept="Nu42z" id="3Tolai5NMMG" role="3BtCOu">
-          <property role="Nu42W" value="01" />
+        <node concept="Nu42z" id="YOvM6E62IV" role="3BtCOu">
+          <property role="Nu42W" value="1A" />
         </node>
-        <node concept="NXeRC" id="3Tolai5NP1p" role="NXodf">
-          <property role="NXePf" value="Answer Call signal" />
+        <node concept="NXeRC" id="YOvM6E62IX" role="NXodf">
+          <property role="NXePf" value="Sent by master" />
         </node>
       </node>
-      <node concept="2m5naR" id="3Tolai5NMQT" role="2m5mJr">
-        <property role="TrG5h" value="RejectCall" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
-        <node concept="Nu42z" id="3Tolai5NMRJ" role="3BtCOu">
-          <property role="Nu42W" value="02" />
-        </node>
-        <node concept="NXeRC" id="3Tolai5NP1v" role="NXodf">
-          <property role="NXePf" value="Ending Call signal" />
-        </node>
+      <node concept="NvWBy" id="YOvM6E65hI" role="2m5mJr">
+        <property role="NvWrd" value="Web RTC signaling" />
       </node>
       <node concept="2m5naR" id="3Tolai5NNT3" role="2m5mJr">
         <property role="TrG5h" value="Candidate" />
@@ -10916,44 +11354,24 @@
           <ref role="NX6Kv" node="3Tolai5NNXM" resolve="sdp" />
         </node>
       </node>
-      <node concept="2m5naR" id="3Tolai5NNZp" role="2m5mJr">
-        <property role="TrG5h" value="NeedRenegotiate" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
-        <node concept="2m7Kf5" id="3Tolai5NO0z" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="sessionId" />
-          <node concept="wb0Ql" id="3Tolai5NO0B" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="3Tolai5NO0x" role="3BtCOu">
-          <property role="Nu42W" value="06" />
-        </node>
-        <node concept="NXeRC" id="3Tolai5NP1B" role="NXodf">
-          <property role="NXePf" value="Need renegotiate session. For example when streams are changed." />
-        </node>
-        <node concept="NX1gA" id="3Tolai5NR9V" role="NXodf">
-          <property role="NX6R2" value="Session Id for renegotiation" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="3Tolai5NO0z" resolve="sessionId" />
-        </node>
+      <node concept="NvWBy" id="YOvM6E6crf" role="2m5mJr">
+        <property role="NvWrd" value="Call Controlling events" />
       </node>
       <node concept="2m5naR" id="3Tolai5NUxj" role="2m5mJr">
         <property role="TrG5h" value="NeedOffer" />
         <property role="w4tQU" value="true" />
         <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
-        <node concept="2m7Kf5" id="3Tolai5NVBK" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="uid" />
-          <node concept="wb0Ql" id="3Tolai5NVBO" role="2m7DVh">
-            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
-          </node>
-        </node>
         <node concept="2m7Kf5" id="3Tolai5NVBR" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
+          <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="device" />
           <node concept="wb0Ql" id="3Tolai5NVBX" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E5VPI" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="sessionId" />
+          <node concept="wb0Ql" id="YOvM6E5VPW" role="2m7DVh">
             <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
@@ -10966,23 +11384,11 @@
             </node>
           </node>
         </node>
-        <node concept="2m7Kf5" id="3xEfKBqKJOQ" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="isSilent" />
-          <node concept="2m5nlT" id="3xEfKBqKJP1" role="2m7DVh">
-            <node concept="2m5ndN" id="3xEfKBqKJP7" role="3GH5xg" />
-          </node>
-        </node>
         <node concept="Nu42z" id="3Tolai5NVC0" role="3BtCOu">
           <property role="Nu42W" value="08" />
         </node>
         <node concept="NXeRC" id="3Tolai5NVC2" role="NXodf">
-          <property role="NXePf" value="Notification from owner that offer is required" />
-        </node>
-        <node concept="NX1gA" id="3Tolai5NVC7" role="NXodf">
-          <property role="NX6R2" value="User's Id" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="3Tolai5NVBK" resolve="uid" />
+          <property role="NXePf" value="Notification from master that offer is required" />
         </node>
         <node concept="NX1gA" id="3Tolai5NVCf" role="NXodf">
           <property role="1GSvIU" value="full" />
@@ -10994,37 +11400,62 @@
           <property role="NX6R2" value="Optional peer settings" />
           <ref role="NX6Kv" node="3xEfKBqKfPN" resolve="peerSettings" />
         </node>
-        <node concept="NX1gA" id="3xEfKBqKJPg" role="NXodf">
+      </node>
+      <node concept="2m5naR" id="YOvM6E5LoJ" role="2m5mJr">
+        <property role="TrG5h" value="NegotinationSuccessful" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
+        <node concept="2m7Kf5" id="YOvM6E5NAL" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="device" />
+          <node concept="wb0Ql" id="YOvM6E5NAR" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E5SnI" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="sessionId" />
+          <node concept="wb0Ql" id="YOvM6E5SnQ" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="YOvM6E5LsI" role="3BtCOu">
+          <property role="Nu42W" value="18" />
+        </node>
+        <node concept="NXeRC" id="YOvM6E5Ttv" role="NXodf">
+          <property role="NXePf" value="Notification about on negotiation is successful" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5TtG" role="NXodf">
+          <property role="NX6R2" value="Device Id" />
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Optional flag indicates that connection is established before real answer" />
-          <ref role="NX6Kv" node="3xEfKBqKJOQ" resolve="isSilent" />
+          <ref role="NX6Kv" node="YOvM6E5NAL" resolve="device" />
+        </node>
+        <node concept="NX1gA" id="YOvM6E5TtQ" role="NXodf">
+          <property role="NX6R2" value="Session Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="YOvM6E5SnI" resolve="sessionId" />
         </node>
       </node>
       <node concept="2m5naR" id="3xEfKBqKKVN" role="2m5mJr">
-        <property role="TrG5h" value="OnAnswer" />
+        <property role="TrG5h" value="EnableConnection" />
         <property role="w4tQU" value="true" />
         <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
-        <node concept="2m7Kf5" id="3xEfKBqKKZg" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="uid" />
-          <node concept="wb0Ql" id="3xEfKBqKKZk" role="2m7DVh">
-            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
-          </node>
-        </node>
         <node concept="2m7Kf5" id="3xEfKBqKKZn" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
+          <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="device" />
           <node concept="wb0Ql" id="3xEfKBqKKZt" role="2m7DVh">
             <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
-        <node concept="NXeRC" id="3xEfKBqKKZw" role="NXodf">
-          <property role="NXePf" value="Notification about call answer" />
+        <node concept="2m7Kf5" id="YOvM6E6aci" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="sessionId" />
+          <node concept="wb0Ql" id="YOvM6E6aco" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
         </node>
-        <node concept="NX1gA" id="3xEfKBqKKZ_" role="NXodf">
-          <property role="NX6R2" value="User Id" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="3xEfKBqKKZg" resolve="uid" />
+        <node concept="NXeRC" id="3xEfKBqKKZw" role="NXodf">
+          <property role="NXePf" value="Notification about enabling connection to peer" />
         </node>
         <node concept="NX1gA" id="3xEfKBqKKZH" role="NXodf">
           <property role="NX6R2" value="Device Id" />
@@ -11035,20 +11466,68 @@
           <property role="Nu42W" value="16" />
         </node>
       </node>
+      <node concept="2m5naR" id="YOvM6E5WZG" role="2m5mJr">
+        <property role="TrG5h" value="OnRenegotiationNeeded" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
+        <node concept="2m7Kf5" id="YOvM6E5X47" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="device" />
+          <node concept="wb0Ql" id="YOvM6E5X4d" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="YOvM6E6971" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="sessionId" />
+          <node concept="wb0Ql" id="YOvM6E6977" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="YOvM6E5X3Y" role="3BtCOu">
+          <property role="Nu42W" value="19" />
+        </node>
+        <node concept="NXeRC" id="YOvM6E66WJ" role="NXodf">
+          <property role="NXePf" value="Need renegotiate session. For example when streams are changed." />
+        </node>
+      </node>
+      <node concept="2m5naR" id="3Tolai5NNZp" role="2m5mJr">
+        <property role="TrG5h" value="CloseSession" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
+        <node concept="2m7Kf5" id="YOvM6E6bhF" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="device" />
+          <node concept="wb0Ql" id="YOvM6E6bhL" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3Tolai5NO0z" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="sessionId" />
+          <node concept="wb0Ql" id="3Tolai5NO0B" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="3Tolai5NO0x" role="3BtCOu">
+          <property role="Nu42W" value="06" />
+        </node>
+        <node concept="NXeRC" id="3Tolai5NP1B" role="NXodf">
+          <property role="NXePf" value="Close this session and be ready to " />
+        </node>
+        <node concept="NX1gA" id="3Tolai5NR9V" role="NXodf">
+          <property role="NX6R2" value="Session Id for renegotiation" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3Tolai5NO0z" resolve="sessionId" />
+        </node>
+      </node>
       <node concept="2m5naR" id="3xEfKBqKbxy" role="2m5mJr">
         <property role="TrG5h" value="NeedDisconnect" />
         <property role="tsOgz" value="false" />
         <property role="w4tQU" value="true" />
         <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
-        <node concept="2m7Kf5" id="3xEfKBqKb$k" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="uid" />
-          <node concept="wb0Ql" id="3xEfKBqKb$o" role="2m7DVh">
-            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
-          </node>
-        </node>
         <node concept="2m7Kf5" id="3xEfKBqKb$r" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
+          <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="device" />
           <node concept="wb0Ql" id="3xEfKBqKb$x" role="2m7DVh">
             <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
@@ -11060,156 +11539,9 @@
         <node concept="NXeRC" id="3xEfKBqKb$$" role="NXodf">
           <property role="NXePf" value="Notification about requirement about required disconnection from peer" />
         </node>
-        <node concept="NX1gA" id="3xEfKBqKb$D" role="NXodf">
-          <property role="NX6R2" value="User's Id" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="3xEfKBqKb$k" resolve="uid" />
-        </node>
         <node concept="NX1gA" id="3xEfKBqKb$L" role="NXodf">
           <property role="NX6R2" value="Device Id" />
           <ref role="NX6Kv" node="3xEfKBqKb$r" resolve="device" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="3Tolai5ObtG" role="2m5mJr">
-        <property role="TrG5h" value="SwitchMaster" />
-        <property role="tsOgz" value="false" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
-        <node concept="Nu42z" id="3Tolai5ObvS" role="3BtCOu">
-          <property role="Nu42W" value="09" />
-        </node>
-        <node concept="NXeRC" id="3Tolai5OcxF" role="NXodf">
-          <property role="NXePf" value="Switching master node" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="3xEfKBqJWWG" role="2m5mJr">
-        <property role="TrG5h" value="MembersChanged" />
-        <property role="tsOgz" value="false" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
-        <node concept="2m7Kf5" id="3xEfKBqJWZr" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="allMembers" />
-          <node concept="2m5nlk" id="3xEfKBqJWZv" role="2m7DVh">
-            <node concept="2m5mGg" id="3xEfKBqJWZ_" role="3GJlyp">
-              <ref role="2m5mJy" node="3xEfKBqJRkx" resolve="CallMember" />
-            </node>
-          </node>
-        </node>
-        <node concept="NXeRC" id="3xEfKBqJWZC" role="NXodf">
-          <property role="NXePf" value="Event Bus update about members changed" />
-        </node>
-        <node concept="NX1gA" id="3xEfKBqJY27" role="NXodf">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="All Members of call" />
-          <ref role="NX6Kv" node="3xEfKBqJWZr" resolve="allMembers" />
-        </node>
-        <node concept="Nu42z" id="3xEfKBqJWZE" role="3BtCOu">
-          <property role="Nu42W" value="10" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="3xEfKBqK1cA" role="2m5mJr">
-        <property role="TrG5h" value="MemberAdded" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
-        <node concept="2m7Kf5" id="3xEfKBqK1fu" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="memberAdded" />
-          <node concept="2m5mGg" id="3xEfKBqK1fy" role="2m7DVh">
-            <ref role="2m5mJy" node="3xEfKBqJRkx" resolve="CallMember" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="3xEfKBqK1fs" role="3BtCOu">
-          <property role="Nu42W" value="11" />
-        </node>
-        <node concept="NXeRC" id="3xEfKBqK1f_" role="NXodf">
-          <property role="NXePf" value="Event Bus update about member added" />
-        </node>
-        <node concept="NX1gA" id="3xEfKBqK1fE" role="NXodf">
-          <property role="NX6R2" value="Member Added" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="3xEfKBqK1fu" resolve="memberAdded" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="3xEfKBqK1iD" role="2m5mJr">
-        <property role="TrG5h" value="MemberRemoved" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
-        <node concept="2m7Kf5" id="3xEfKBqK1lD" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="uid" />
-          <node concept="wb0Ql" id="3xEfKBqK1lH" role="2m7DVh">
-            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="3xEfKBqK1lK" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="deviceId" />
-          <node concept="wb0Ql" id="3xEfKBqK1lQ" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="3xEfKBqK1lB" role="3BtCOu">
-          <property role="Nu42W" value="12" />
-        </node>
-        <node concept="NXeRC" id="3xEfKBqK1lT" role="NXodf">
-          <property role="NXePf" value="Event Bus update about member removed" />
-        </node>
-        <node concept="NX1gA" id="3xEfKBqK3ra" role="NXodf">
-          <property role="NX6R2" value="User Id" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="3xEfKBqK1lD" resolve="uid" />
-        </node>
-        <node concept="NX1gA" id="3xEfKBqK3ri" role="NXodf">
-          <property role="NX6R2" value="Device Id" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="3xEfKBqK1lK" resolve="deviceId" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="3xEfKBqK4x3" role="2m5mJr">
-        <property role="TrG5h" value="MemberStateUpdated" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
-        <node concept="2m7Kf5" id="3xEfKBqK4$a" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="uid" />
-          <node concept="wb0Ql" id="3xEfKBqK4$e" role="2m7DVh">
-            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="3xEfKBqK4$h" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="deviceId" />
-          <node concept="wb0Ql" id="3xEfKBqK4$n" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="3xEfKBqK4$q" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="newState" />
-          <node concept="2m5mGg" id="3xEfKBqK4$y" role="2m7DVh">
-            <ref role="2m5mJy" node="3xEfKBqJTzW" resolve="CallMemberStateHolder" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="3xEfKBqK4$8" role="3BtCOu">
-          <property role="Nu42W" value="13" />
-        </node>
-        <node concept="NXeRC" id="3xEfKBqK4$_" role="NXodf">
-          <property role="NXePf" value="Member state updated" />
-        </node>
-        <node concept="NX1gA" id="3xEfKBqK4$E" role="NXodf">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="User Id" />
-          <ref role="NX6Kv" node="3xEfKBqK4$a" resolve="uid" />
-        </node>
-        <node concept="NX1gA" id="3xEfKBqK4$M" role="NXodf">
-          <property role="NX6R2" value="Device Id" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="3xEfKBqK4$h" resolve="deviceId" />
-        </node>
-        <node concept="NX1gA" id="3xEfKBqK4$W" role="NXodf">
-          <property role="NX6R2" value="New State of member" />
-          <ref role="NX6Kv" node="3xEfKBqK4$q" resolve="newState" />
         </node>
       </node>
       <node concept="2m488m" id="3xEfKBqJSst" role="2m5mJr">
