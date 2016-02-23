@@ -34,7 +34,7 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   import FileHelpers._
   import ImageUtils._
 
-  import FutureResultRpcCats._
+  import FutureResultRpc._
 
   override implicit val ec: ExecutionContext = system.dispatcher
 
