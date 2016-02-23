@@ -69,7 +69,12 @@ public abstract class AbsCallActor extends EventBusActor implements CallBusCallb
     }
 
     @Override
-    public void onAnswered(int uid, long deviceId) {
+    public void onAnswered(int uid, long deviceId, PeerSettings settings) {
+
+    }
+
+    @Override
+    public void onAdvertised(int uid, long deviceId, PeerSettings settings) {
 
     }
 
@@ -156,11 +161,21 @@ public abstract class AbsCallActor extends EventBusActor implements CallBusCallb
         }
 
         @Override
-        public void onAnswered(final int uid, final long deviceId) {
+        public void onAnswered(final int uid, final long deviceId, final PeerSettings settings) {
             self().send(new Runnable() {
                 @Override
                 public void run() {
-                    AbsCallActor.this.onAnswered(uid, deviceId);
+                    AbsCallActor.this.onAnswered(uid, deviceId, settings);
+                }
+            });
+        }
+
+        @Override
+        public void onAdvertised(final int uid, final long deviceId, final PeerSettings settings) {
+            self().send(new Runnable() {
+                @Override
+                public void run() {
+                    AbsCallActor.this.onAdvertised(uid, deviceId, settings);
                 }
             });
         }
