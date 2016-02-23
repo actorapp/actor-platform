@@ -10,6 +10,7 @@ import im.actor.core.api.ApiAnswer;
 import im.actor.core.api.ApiAnswerCall;
 import im.actor.core.api.ApiCandidate;
 import im.actor.core.api.ApiMembersChanged;
+import im.actor.core.api.ApiNeedDisconnect;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.ApiOffer;
 import im.actor.core.api.ApiOnAnswer;
@@ -37,6 +38,7 @@ public class CallBusActor extends EventBusActor {
     private final PeerSettings selfSettings;
     private final PeerCallCallback peerCallback;
     private final CallBusCallback callBusCallback;
+    private boolean isMasterMode;
     private boolean isMasterReady;
     private int masterUid;
     private long masterDeviceId;
@@ -96,6 +98,11 @@ public class CallBusActor extends EventBusActor {
         callBusCallback.onBusCreated(peerCall);
     }
 
+    public void createMasterBus() {
+        isMasterMode = true;
+        createBus();
+    }
+
     @Override
     public void onBusStarted() {
         super.onBusStarted();
@@ -108,6 +115,20 @@ public class CallBusActor extends EventBusActor {
 
     public void onRejectCall() {
         sendSignal(masterUid, masterDeviceId, new ApiRejectCall());
+    }
+
+    @Override
+    public void onDeviceConnected(int uid, long deviceId) {
+        deviceIds.put(deviceId, uid);
+        if (isMasterMode) {
+            sendSignal(uid, deviceId, new ApiSwitchMaster());
+        }
+        callBusCallback.onPeerConnected(uid, deviceId);
+    }
+
+    @Override
+    public void onDeviceDisconnected(int uid, long deviceId) {
+        peerCall.disposePeer(deviceId);
     }
 
     @Override
@@ -144,15 +165,16 @@ public class CallBusActor extends EventBusActor {
             peerCall.onAdvertised(needOffer.getDevice(), new PeerSettings(needOffer.getPeerSettings()));
             peerCall.onOfferNeeded(needOffer.getDevice());
             peerCall.onTheirStarted(needOffer.getDevice());
-//            if (needOffer.isSilent() != null && !needOffer.isSilent()) {
-//                peerCall.onTheirStarted(needOffer.getDevice());
-//            }
         } else if (signal instanceof ApiOnAnswer) {
             ApiOnAnswer onAnswer = (ApiOnAnswer) signal;
             deviceIds.put(onAnswer.getDevice(), onAnswer.getUid());
             peerCall.onTheirStarted(onAnswer.getDevice());
+        } else if (signal instanceof ApiNeedDisconnect) {
+            ApiNeedDisconnect disconnect = (ApiNeedDisconnect) signal;
+            deviceIds.put(disconnect.getDevice(), disconnect.getUid());
+            peerCall.disposePeer(disconnect.getDevice());
         } else if (signal instanceof ApiSwitchMaster) {
-            if (isMasterReady) {
+            if (isMasterReady || isMasterMode) {
                 return;
             }
             isMasterReady = true;
@@ -160,18 +182,11 @@ public class CallBusActor extends EventBusActor {
             masterDeviceId = senderDeviceId;
             unstashAll(STASH);
             sendSignal(masterUid, masterDeviceId, new ApiAdvertiseSelf(selfSettings.toApi()));
-        } else {
-//            if (callBusCallback instanceof CallBusCallbackSlave) {
-//                CallBusCallbackSlave slaveCallback = (CallBusCallbackSlave) callBusCallback;
-//                if (signal instanceof ApiSwitchMaster) {
-//                    slaveCallback.onMasterSwitched(senderId, senderDeviceId);
-//                } else if (signal instanceof ApiMembersChanged) {
-//                    ApiMembersChanged membersChanged = (ApiMembersChanged) signal;
-//                    slaveCallback.onMembersChanged(membersChanged.getAllMembers());
-//                }
-//            } else {
-//                // Nothing?
-//            }
+        } else if (signal instanceof ApiAdvertiseSelf) {
+            ApiAdvertiseSelf advertiseSelf = (ApiAdvertiseSelf) signal;
+            peerCall.onAdvertised(senderDeviceId, new PeerSettings(advertiseSelf.getPeerSettings()));
+        } else if (signal instanceof ApiAnswerCall) {
+            callBusCallback.onAnswered(senderId, senderDeviceId);
         }
     }
 
@@ -193,17 +208,23 @@ public class CallBusActor extends EventBusActor {
         if (message instanceof JoinBus) {
             joinBus(((JoinBus) message).getBusId());
         } else if (message instanceof CreateBus) {
-            createBus();
+            createMasterBus();
         } else if (message instanceof SendSignal) {
             SendSignal signal = (SendSignal) message;
             sendSignal(signal.getUid(), signal.getDeviceId(), signal.getSignal());
         } else if (message instanceof AnswerCall) {
+            if (isMasterMode) {
+                return;
+            }
             if (!isMasterReady) {
                 stash(STASH);
                 return;
             }
             onAnswerCall();
         } else if (message instanceof RejectCall) {
+            if (isMasterMode) {
+                return;
+            }
             if (!isMasterReady) {
                 stash(STASH);
                 return;
