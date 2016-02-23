@@ -23,37 +23,32 @@ final class ConfigsServiceImpl(implicit actorSystem: ActorSystem) extends Config
   private implicit val timeout = Timeout(10.seconds)
   private val seqUpdExt = SeqUpdatesExtension(actorSystem)
 
-  override def doHandleEditParameter(rawKey: String, value: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+  override def doHandleEditParameter(rawKey: String, value: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { implicit client ⇒
       val key = rawKey.trim
 
       val update = UpdateParameterChanged(key, value)
 
-      for {
+      val action = for {
         _ ← ParameterRepo.createOrUpdate(Parameter(client.userId, key, value))
         SeqState(seq, state) ← DBIO.from(UserExtension(actorSystem).broadcastClientUpdate(update, None, isFat = false))
       } yield {
         seqUpdExt.reloadSettings(client.userId)
         Ok(ResponseSeq(seq, state.toByteArray))
       }
+      db.run(action)
     }
 
-    db.run(toDBIOAction(authorizedAction))
-  }
-
-  override def doHandleGetParameters(clientData: ClientData): Future[HandlerResult[ResponseGetParameters]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      for {
+  override def doHandleGetParameters(clientData: ClientData): Future[HandlerResult[ResponseGetParameters]] =
+    authorized(clientData) { implicit client ⇒
+      val action = for {
         params ← ParameterRepo.find(client.userId)
       } yield {
         val paramsStructs = params map { param ⇒
           ApiParameter(param.key, param.value.getOrElse(""))
         }
-
         Ok(ResponseGetParameters(paramsStructs.toVector))
       }
+      db.run(action)
     }
-
-    db.run(toDBIOAction(authorizedAction))
-  }
 }

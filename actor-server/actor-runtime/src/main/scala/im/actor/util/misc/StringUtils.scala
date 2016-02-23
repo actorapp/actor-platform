@@ -1,12 +1,12 @@
 package im.actor.util.misc
 
+import cats.syntax.all._
+import cats.data.{ Xor, NonEmptyList }
 import com.ibm.icu.text.Transliterator
 
 import java.nio.charset.Charset
 import java.text.Normalizer
 import java.util.regex.Pattern
-
-import scalaz._, Scalaz._
 
 object StringUtils {
 
@@ -24,17 +24,17 @@ object StringUtils {
 
   def transliterate(s: String): String = transliterator.transliterate(s)
 
-  def nonEmptyString(s: String): \/[NonEmptyList[String], String] = {
+  def nonEmptyString(s: String): NonEmptyList[String] Xor String = {
     val trimmed = s.trim
-    if (trimmed.isEmpty) "Should be nonempty".wrapNel.left else trimmed.right
+    if (trimmed.isEmpty) NonEmptyList("Should be nonempty").left else trimmed.right
   }
 
-  def printableString(s: String): \/[NonEmptyList[String], String] = {
+  def printableString(s: String): NonEmptyList[String] Xor String = {
     val p = Pattern.compile("\\p{Print}+", Pattern.UNICODE_CHARACTER_CLASS)
-    if (p.matcher(s).matches) s.right else "Should contain printable characters only".wrapNel.left
+    if (p.matcher(s).matches) s.right else NonEmptyList("Should contain printable characters only").left
   }
 
-  def validName(n: String): \/[NonEmptyList[String], String] =
+  def validName(n: String): NonEmptyList[String] Xor String =
     nonEmptyString(n).flatMap(printableString)
 
   def validUsername(username: String): Boolean = usernamePattern.matcher(username.trim).matches

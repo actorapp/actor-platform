@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.auth
 import java.net.URLEncoder
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import cats.data.Xor
 import com.google.protobuf.ByteString
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
@@ -24,7 +25,6 @@ import im.actor.server.user.UserExtension
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Random
-import scalaz.\/
 
 final class AuthServiceSpec
   extends BaseAppSuite
@@ -1004,7 +1004,7 @@ final class AuthServiceSpec
       }
     }
 
-    private def startPhoneAuth(phoneNumber: Long)(implicit clientData: ClientData): Future[\/[RpcError, ResponseStartPhoneAuth]] = {
+    private def startPhoneAuth(phoneNumber: Long)(implicit clientData: ClientData): Future[RpcError Xor ResponseStartPhoneAuth] = {
       service.handleStartPhoneAuth(
         phoneNumber = phoneNumber,
         appId = 42,
@@ -1016,7 +1016,7 @@ final class AuthServiceSpec
       )
     }
 
-    private def startEmailAuth(email: String)(implicit clientData: ClientData): Future[\/[RpcError, ResponseStartEmailAuth]] = {
+    private def startEmailAuth(email: String)(implicit clientData: ClientData): Future[RpcError Xor ResponseStartEmailAuth] = {
       service.handleStartEmailAuth(
         email = email,
         appId = 42,

@@ -1,10 +1,10 @@
 package im.actor.api.rpc
 
+import cats.data.Xor
 import im.actor.server.acl.ACLUtils
 import im.actor.server.persist.FileRepo
 
 import scala.concurrent.ExecutionContext
-import scalaz.\/
 
 import akka.actor.ActorSystem
 import slick.dbio.DBIO
@@ -19,7 +19,7 @@ object FileRpcErrors {
 
 object FileHelpers {
 
-  def withFileLocation[R <: RpcResponse](fileLocation: ApiFileLocation, maxSize: Long)(f: ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext, s: ActorSystem) = {
+  def withFileLocation[R <: RpcResponse](fileLocation: ApiFileLocation, maxSize: Long)(f: ⇒ DBIO[RpcError Xor R])(implicit ec: ExecutionContext, s: ActorSystem) = {
     FileRepo.find(fileLocation.fileId) flatMap {
       case Some(file) ⇒
         if (!file.isUploaded) {
