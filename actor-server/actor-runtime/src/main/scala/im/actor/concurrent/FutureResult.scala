@@ -5,7 +5,7 @@ import cats.data.{ Xor, XorT }
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.language.implicitConversions
 
-trait FutureResultCats[ErrorCase] {
+trait FutureResult[ErrorCase] {
   type Result[A] = XorT[Future, ErrorCase, A]
 
   implicit def futureFunctor(implicit ec: ExecutionContext): cats.Functor[Future] = new cats.Functor[Future] {

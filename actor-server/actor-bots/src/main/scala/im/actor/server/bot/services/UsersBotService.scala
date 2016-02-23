@@ -3,13 +3,13 @@ package im.actor.server.bot.services
 import akka.actor.ActorSystem
 import cats.data.Xor
 import im.actor.bots.BotMessages.BotError
-import im.actor.concurrent.FutureResultCats
+import im.actor.concurrent.FutureResult
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ ImageUtils, FileStorageExtension, FileStorageAdapter }
 import im.actor.server.user.{ UserErrors, UserUtils }
 
-private[bot] final class UsersBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResultCats[BotError] with ApiToBotConversions {
+private[bot] final class UsersBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResult[BotError] with ApiToBotConversions {
   import im.actor.bots.BotMessages._
   import system.dispatcher
   import ImageUtils._

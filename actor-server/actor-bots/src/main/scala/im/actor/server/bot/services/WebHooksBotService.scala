@@ -3,11 +3,11 @@ package im.actor.server.bot.services
 import akka.actor.ActorSystem
 import akka.util.Timeout
 import im.actor.bots.BotMessages
-import im.actor.concurrent.FutureResultCats
+import im.actor.concurrent.FutureResult
 import im.actor.config.ActorConfig
 import im.actor.server.bot.{ BotExtension, BotServiceBase }
 
-private[bot] final class WebHooksBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResultCats[BotMessages.BotError] {
+private[bot] final class WebHooksBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResult[BotMessages.BotError] {
 
   import BotMessages._
   import system.dispatcher

@@ -2,7 +2,7 @@ package im.actor.server.bot.services
 
 import akka.actor.ActorSystem
 import im.actor.bots.BotMessages._
-import im.actor.concurrent.FutureResultCats
+import im.actor.concurrent.FutureResult
 import im.actor.server.acl.ACLUtils
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
 import im.actor.server.db.DbExtension
@@ -16,7 +16,7 @@ private[bot] object FilesBotErrors {
   val FileTooBig = BotError(400, "FILE_TOO_BIG")
 }
 
-private[bot] final class FilesBotService(_system: ActorSystem) extends BotServiceBase(_system) with FutureResultCats[BotError] with ApiToBotConversions {
+private[bot] final class FilesBotService(_system: ActorSystem) extends BotServiceBase(_system) with FutureResult[BotError] with ApiToBotConversions {
 
   import FilesBotErrors._
 
