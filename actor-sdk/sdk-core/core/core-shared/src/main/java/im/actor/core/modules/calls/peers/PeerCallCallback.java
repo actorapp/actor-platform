@@ -10,6 +10,8 @@ public interface PeerCallCallback {
 
     void onCandidate(long deviceId, int mdpIndex, String id, String sdp);
 
+    void onHandshakeSuccessful(long deviceId);
+
     void onConnectionStarted(long deviceId);
 
     void onConnectionEstablished(long deviceId);

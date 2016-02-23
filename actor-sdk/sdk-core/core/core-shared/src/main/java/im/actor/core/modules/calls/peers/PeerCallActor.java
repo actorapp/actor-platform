@@ -192,6 +192,11 @@ public class PeerCallActor extends ModuleActor {
         }
 
         @Override
+        public void onHandshakeSuccessful(long deviceId) {
+            callback.onHandshakeSuccessful(deviceId);
+        }
+
+        @Override
         public void onConnectionStarted(long deviceId) {
             callback.onConnectionStarted(deviceId);
         }

@@ -113,6 +113,16 @@ public class PeerConnectionInt extends ActorInterface {
         }
 
         @Override
+        public void onHandshakeSuccessful() {
+            callbackDest.send(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onHandshakeSuccessful();
+                }
+            });
+        }
+
+        @Override
         public void onStreamAdded(final WebRTCMediaStream stream) {
             callbackDest.send(new Runnable() {
                 @Override

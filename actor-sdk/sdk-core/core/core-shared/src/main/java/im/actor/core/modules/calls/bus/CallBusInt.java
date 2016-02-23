@@ -21,4 +21,12 @@ public class CallBusInt extends ActorInterface {
     public void sendSignal(int uid, long deviceId, ApiWebRTCSignaling signal) {
         send(new CallBusActor.SendSignal(uid, deviceId, signal));
     }
+
+    public void answerCall() {
+        send(new CallBusActor.AnswerCall());
+    }
+
+    public void rejectCall() {
+        send(new CallBusActor.RejectCall());
+    }
 }

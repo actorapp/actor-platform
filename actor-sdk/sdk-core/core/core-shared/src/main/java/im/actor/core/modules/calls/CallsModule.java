@@ -19,28 +19,28 @@ public class CallsModule extends AbsModule {
 
     private CallsProvider provider;
     private ActorRef callManager;
-    private HashMap<Long, CallVM> callModels = new HashMap<>();
+    private CallViewModels callViewModels;
 
     public CallsModule(ModuleContext context) {
         super(context);
 
         provider = context().getConfiguration().getCallsProvider();
+        callViewModels = new CallViewModels(context());
     }
 
     public void run() {
         if (provider == null) {
             return;
         }
-
         callManager = system().actorOf("calls/manager", CallManagerActor.CONSTRUCTOR(context()));
     }
 
-    public HashMap<Long, CallVM> getCallModels() {
-        return callModels;
+    public CallViewModels getCallViewModels() {
+        return callViewModels;
     }
 
     public CallVM getCall(long id) {
-        return callModels.get(id);
+        return callViewModels.getCall(id);
     }
 
     public ActorRef getCallManager() {
