@@ -1,15 +1,10 @@
-package im.actor.core.modules.calls;
+package im.actor.core.modules.calls.peers;
 
 import java.util.List;
 
 import im.actor.core.api.ApiCallMember;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.calls.bus.CallBusActor;
-import im.actor.core.modules.calls.bus.CallBusCallback;
-import im.actor.core.modules.calls.bus.CallBusInt;
-import im.actor.core.modules.calls.peers.PeerCallInt;
-import im.actor.core.modules.calls.peers.PeerSettings;
-import im.actor.core.modules.calls.peers.PeerState;
+import im.actor.core.modules.calls.CallViewModels;
 import im.actor.core.modules.eventbus.EventBusActor;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
@@ -66,6 +61,32 @@ public abstract class AbsCallActor extends EventBusActor implements CallBusCallb
     @Override
     public void onPeerStateChanged(int uid, long deviceId, PeerState state) {
 
+    }
+
+    public void onMuteChanged(boolean isMuted) {
+        peerCall.onMuteChanged(isMuted);
+    }
+
+    @Override
+    public void onReceive(Object message) {
+        if (message instanceof MuteChanged) {
+            onMuteChanged(((MuteChanged) message).isMuted());
+        } else {
+            super.onReceive(message);
+        }
+    }
+
+    public static class MuteChanged {
+
+        private boolean isMuted;
+
+        public MuteChanged(boolean isMuted) {
+            this.isMuted = isMuted;
+        }
+
+        public boolean isMuted() {
+            return isMuted;
+        }
     }
 
     //

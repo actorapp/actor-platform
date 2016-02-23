@@ -1,4 +1,4 @@
-package im.actor.core.modules.calls.bus;
+package im.actor.core.modules.calls.peers;
 
 import java.util.List;
 

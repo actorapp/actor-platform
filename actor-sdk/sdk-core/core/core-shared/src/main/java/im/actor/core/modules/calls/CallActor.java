@@ -3,18 +3,17 @@ package im.actor.core.modules.calls;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.core.api.ApiAdvertiseSelf;
-import im.actor.core.api.ApiAnswerCall;
 import im.actor.core.api.ApiCallMember;
 import im.actor.core.api.rpc.RequestGetCallInfo;
 import im.actor.core.api.rpc.ResponseGetCallInfo;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.calls.peers.AbsCallActor;
 import im.actor.core.modules.calls.peers.PeerState;
 import im.actor.core.viewmodel.CallMember;
+import im.actor.core.viewmodel.CallMemberState;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
-import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 
@@ -42,7 +41,6 @@ public class CallActor extends AbsCallActor {
 
     @Override
     public void callPreStart() {
-        Log.d(TAG, "callPreStart");
         api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
             @Override
             public void apply(final ResponseGetCallInfo responseGetCallInfo) {
@@ -60,22 +58,33 @@ public class CallActor extends AbsCallActor {
 
     @Override
     public void onBusStarted(String busId) {
-        Log.d(TAG, "onBusStarted");
-
         callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
     }
 
     @Override
     public void onMembersChanged(List<ApiCallMember> members) {
-        //
-        // Handle Members Update
-        //
+        ArrayList<CallMember> vmMembers = new ArrayList<>();
+        for (ApiCallMember callMember : members) {
+            vmMembers.add(new CallMember(callMember.getUserId(),
+                    CallMemberState.from(callMember.getState())));
+        }
+        callVM.getMembers().change(vmMembers);
     }
 
     @Override
     public void onPeerStateChanged(int uid, long deviceId, PeerState state) {
-        Log.d(TAG, "onPeerStateChanged " + deviceId + "(" + state + ")");
+        if ((state == PeerState.CONNECTED || state == PeerState.ACTIVE) && !isConnected) {
+            isConnected = true;
+            if (isAnswered) {
+                callVM.getState().change(CallState.IN_PROGRESS);
+            }
+        }
+    }
 
+    @Override
+    public void onMuteChanged(boolean isMuted) {
+        super.onMuteChanged(isMuted);
+        callVM.getIsMuted().change(isMuted);
     }
 
     public void onAnswerCall() {
@@ -83,7 +92,11 @@ public class CallActor extends AbsCallActor {
             isAnswered = true;
             callBus.answerCall();
             peerCall.onOwnStarted();
-
+            if (isConnected) {
+                callVM.getState().change(CallState.IN_PROGRESS);
+            } else {
+                callVM.getState().change(CallState.CONNECTING);
+            }
         }
     }
 
@@ -93,6 +106,16 @@ public class CallActor extends AbsCallActor {
             callBus.rejectCall();
             peerCall.kill();
         }
+    }
+
+    @Override
+    public void postStop() {
+        super.postStop();
+        if (callVM != null) {
+            callVM.getState().change(CallState.ENDED);
+        }
+        callBus.kill();
+        peerCall.kill();
     }
 
     //
