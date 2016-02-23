@@ -56,8 +56,8 @@ abstract class MapStyleRawApiService(system: ActorSystem) extends RawApiService(
     override def isDefinedAt(name: String): Boolean = validateRequest(None).isDefinedAt(name)
 
     override def apply(name: String): Future[Response] = (for {
-      request ← fromEither(toRequest(name, params))
-      result ← fromFutureEither(handleInternal(client)(request))
+      request ← fromXor(toRequest(name, params))
+      result ← fromFutureXor(handleInternal(client)(request))
     } yield result).value
   }
 
