@@ -63,6 +63,16 @@ public abstract class AbsCallActor extends EventBusActor implements CallBusCallb
 
     }
 
+    @Override
+    public void onPeerConnected(int uid, long deviceId) {
+
+    }
+
+    @Override
+    public void onAnswered(int uid, long deviceId) {
+
+    }
+
     public void onMuteChanged(boolean isMuted) {
         peerCall.onMuteChanged(isMuted);
     }
@@ -126,11 +136,31 @@ public abstract class AbsCallActor extends EventBusActor implements CallBusCallb
         }
 
         @Override
+        public void onPeerConnected(final int uid, final long deviceId) {
+            self().send(new Runnable() {
+                @Override
+                public void run() {
+                    AbsCallActor.this.onPeerConnected(uid, deviceId);
+                }
+            });
+        }
+
+        @Override
         public void onPeerStateChanged(final int uid, final long deviceId, final PeerState state) {
             self().send(new Runnable() {
                 @Override
                 public void run() {
                     AbsCallActor.this.onPeerStateChanged(uid, deviceId, state);
+                }
+            });
+        }
+
+        @Override
+        public void onAnswered(final int uid, final long deviceId) {
+            self().send(new Runnable() {
+                @Override
+                public void run() {
+                    AbsCallActor.this.onAnswered(uid, deviceId);
                 }
             });
         }
