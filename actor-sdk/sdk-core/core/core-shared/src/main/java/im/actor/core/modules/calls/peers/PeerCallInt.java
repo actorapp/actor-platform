@@ -50,4 +50,8 @@ public class PeerCallInt extends ActorInterface {
     public void disposePeer(long deviceId) {
         send(new RTCDispose(deviceId));
     }
+
+    public void onMuteChanged(boolean isMuted) {
+        send(new PeerCallActor.MuteChanged(isMuted));
+    }
 }

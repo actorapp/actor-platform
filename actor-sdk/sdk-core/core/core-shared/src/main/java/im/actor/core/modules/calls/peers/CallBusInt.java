@@ -1,4 +1,4 @@
-package im.actor.core.modules.calls.bus;
+package im.actor.core.modules.calls.peers;
 
 import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.runtime.actors.ActorInterface;
