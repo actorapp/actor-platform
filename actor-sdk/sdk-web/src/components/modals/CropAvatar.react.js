@@ -57,10 +57,8 @@ class CropAvatarModal extends Component {
   }
 
   componentWillUnmount() {
-    const originalImage = findDOMNode(this.refs.originalImage);
     document.removeEventListener('keydown', this.onKeyDown, false);
     window.removeEventListener('resize', this.storeScaledSizes, false);
-    originalImage.removeEventListener('load', this.storeScaledSizes, false);
   }
 
   onClose = () => CropAvatarActionCreators.hide();
