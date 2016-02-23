@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import cats.data.{ Xor, XorT }
 import im.actor.api.rpc.messaging.ApiTextMessage
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.concurrent.FutureResultCats
+import im.actor.concurrent.FutureResult
 import im.actor.server.acl.ACLUtils
 import im.actor.server.activation.common._
 import im.actor.server.db.DbExtension
@@ -20,7 +20,7 @@ import scala.concurrent.Future
 private[activation] final class InternalCodeProvider(system: ActorSystem)
   extends ActivationProvider
   with CommonAuthCodes
-  with FutureResultCats[String] {
+  with FutureResult[String] {
 
   private val config = InternalActivationConfig.load.getOrElse(throw new RuntimeException("Failed to load InternalActivationConfig"))
   private val onlineTimeWindow = config.onlineWindow.toMillis
