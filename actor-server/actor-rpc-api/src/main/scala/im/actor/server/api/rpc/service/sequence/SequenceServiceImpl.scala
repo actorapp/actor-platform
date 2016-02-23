@@ -29,7 +29,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   actorSystem:   ActorSystem,
   materializer:  Materializer
 ) extends SequenceService {
-  import FutureResultRpcCats._
+  import FutureResultRpc._
 
   protected override implicit val ec: ExecutionContext = actorSystem.dispatcher
 

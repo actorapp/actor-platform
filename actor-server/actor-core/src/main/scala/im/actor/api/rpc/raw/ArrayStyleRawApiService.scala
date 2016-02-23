@@ -9,7 +9,7 @@ import scala.concurrent.Future
 
 // todo: find a better name. It is not array style already. Arrays just could be parsed to case classes for convinience
 abstract class ArrayStyleRawApiService(system: ActorSystem) extends RawApiService(system) with RawValueParserTypeclassInstances {
-  import im.actor.api.rpc.FutureResultRpcCats._
+  import im.actor.api.rpc.FutureResultRpc._
   import system.dispatcher
 
   type Request

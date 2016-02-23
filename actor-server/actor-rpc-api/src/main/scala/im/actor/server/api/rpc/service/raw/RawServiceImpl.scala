@@ -10,7 +10,7 @@ import im.actor.server.api.rpc.RawApiExtension
 import scala.concurrent.{ ExecutionContext, Future }
 
 final class RawServiceImpl(implicit system: ActorSystem) extends RawService {
-  import FutureResultRpcCats._
+  import FutureResultRpc._
 
   override implicit protected val ec: ExecutionContext = system.dispatcher
 

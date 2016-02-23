@@ -15,7 +15,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
 
-  import FutureResultRpcCats._
+  import FutureResultRpc._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 

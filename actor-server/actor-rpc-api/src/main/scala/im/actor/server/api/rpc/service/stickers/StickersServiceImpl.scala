@@ -21,7 +21,7 @@ object StickerPackErrors {
 
 class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersService with StickersImplicitConversions {
 
-  import FutureResultRpcCats._
+  import FutureResultRpc._
   import StickerPackErrors._
 
   override implicit protected val ec: ExecutionContext = actorSystem.dispatcher
