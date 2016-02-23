@@ -105,7 +105,6 @@ object Build extends sbt.Build with Versioning with Releasing {
     .settings(releaseSettings)
     .dependsOn(actorServerSdk)
     .aggregate(
-      //      actorDashboard,
       actorServerSdk,
       actorTestkit,
       actorTests
