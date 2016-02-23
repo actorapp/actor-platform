@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.calls.peers.AbsCallActor;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.providers.CallsProvider;
 import im.actor.core.util.RandomUtils;
@@ -174,7 +175,7 @@ public class CallManagerActor extends ModuleActor {
             //
             ActorRef ref = runningCalls.remove(callId);
             if (ref != null) {
-                // ref.send(new CallActor.EventBusShutdown());
+                ref.send(PoisonPill.INSTANCE);
             }
         }
     }
@@ -196,7 +197,7 @@ public class CallManagerActor extends ModuleActor {
             //
             ActorRef ref = runningCalls.get(callId);
             if (ref != null) {
-                // ref.send(new CallSlaveActor.DoAnswerCall());
+                ref.send(new CallActor.AnswerCall());
             }
 
             //
@@ -226,14 +227,14 @@ public class CallManagerActor extends ModuleActor {
     private void onCallMute(long callId) {
         ActorRef ref = runningCalls.get(callId);
         if (ref != null) {
-            // ref.send(new PeerCallActor.ChangeMute(true));
+            ref.send(new AbsCallActor.MuteChanged(true));
         }
     }
 
     private void onCallUnmute(long callId) {
         ActorRef ref = runningCalls.get(callId);
         if (ref != null) {
-            // ref.send(new PeerCallActor.ChangeMute(false));
+            ref.send(new AbsCallActor.MuteChanged(false));
         }
     }
 
