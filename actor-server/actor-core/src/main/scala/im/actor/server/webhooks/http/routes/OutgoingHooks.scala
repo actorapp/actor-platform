@@ -74,7 +74,7 @@ trait OutgoingHooks extends ReverseHookUnmarshaler with PlayJsonSupport {
   def register(token: String, uri: String): Future[(StatusCode, String) Xor Int] = {
     (for {
       groupId ← fromFutureOption(NotFound → OutgoingHooksErrors.WrongIntegrationToken)(integrationTokensKv.get(token))
-      uri ← fromXor(e ⇒ BadRequest → OutgoingHooksErrors.MalformedUri)(Xor.fromTry(Try(Uri(uri))))
+      uri ← fromXor((e: Throwable) ⇒ BadRequest → OutgoingHooksErrors.MalformedUri)(Xor.fromTry(Try(Uri(uri))))
       strUri = uri.toString()
 
       registeredUrs ← fromFuture(getHooks(token))

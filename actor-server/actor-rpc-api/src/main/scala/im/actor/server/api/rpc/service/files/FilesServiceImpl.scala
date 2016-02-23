@@ -42,7 +42,7 @@ class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
           } yield ApiFileUrlDescription(model.id, url, FileStorageAdapter.UrlExpirationTimeout.toSeconds.toInt, None, Vector.empty)).value
         })
         // FIXME: fail-fast here
-        urlDescs ← fromEither((e: RpcError) ⇒ e)(attempts.foldLeft(Xor.Right(Nil): Xor[RpcError, List[ApiFileUrlDescription]]) {
+        urlDescs ← fromXor((e: RpcError) ⇒ e)(attempts.foldLeft(Xor.Right(Nil): Xor[RpcError, List[ApiFileUrlDescription]]) {
           case (Xor.Right(acc), Xor.Right(fd)) ⇒ Xor.Right(fd :: acc)
           case (l: Xor.Left[_], _)             ⇒ l
           case (_, l: Xor.Left[_])             ⇒ l

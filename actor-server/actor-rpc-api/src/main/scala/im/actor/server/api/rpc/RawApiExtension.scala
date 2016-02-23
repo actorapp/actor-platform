@@ -31,7 +31,7 @@ private[rpc] final class RawApiExtensionImpl(system: ExtendedActorSystem) extend
     (for {
       serviceHandler ← fromOption(CommonRpcErrors.UnsupportedRequest)(services.get(service))
       response ← fromOption(CommonRpcErrors.UnsupportedRequest)(serviceHandler.handleRequests(client)(params).lift(method))
-      result ← fromFutureEither(response)
+      result ← fromFutureXor(response)
     } yield result).value
 }
 
