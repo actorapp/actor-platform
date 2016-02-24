@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="example_title_activity_test">صفحه تست</string>
+    <string name="example_app_name">انتخاب‌گر</string>
+    <string name="example_action_settings">تنظیمات</string>
+
+    <string name="picker_empty">چیزی اینجا نیست</string>
+    <string name="picker_loading">در حال بارگزاری</string>
+    <string name="picker_internalerror">خطایی اتفاق افتاد</string>
+    <string name="picker_search">جستجو</string>
+
+    <string name="picker_pick">انتخاب</string>
+    <string name="picker_cancel">بی‌خیال</string>
+
+    <!-- Files -->
+    <string name="picker_file_activity_title">انتخاب فایل</string>
+    <string name="picker_file_memory_phone">حافظه گوشی</string>
+    <string name="picker_file_memory_external">حافظه خارجی</string>
+    <string name="picker_file_memory_external_error">کارت حافظه جایگذاری نشده است</string>
+    <string name="picker_file_recent">اقلام جدیدن انتخاب شده</string>
+    <string name="picker_file_recent_empty">شما جدیدن فایلی را انتخاب نکردید</string>
+    <string name="picker_file_denied">اجازه دسترسی ندارید</string>
+    <string name="picker_file_directory_empty">فایلی اینجا نیست</string>
+    <string name="picker_file_search_activity_title">جستجو</string>
+    <string name="picker_file_search_query_text">جستجو</string>
+    <string name="picker_file_sort_name">مرتب‌سازی با نام </string>
+    <string name="picker_file_sort_date">مرتب‌سازی با تاریخ </string>
+    <string name="picker_file_camera">دوربین</string>
+    <string name="picker_file_header_recent">فایل‌های اخیر</string>
+    <string name="picker_file_header_main">شاخه‌های اصلی </string>
+
+    <!-- Images -->
+    <string name="picker_pictures_activity_title">انتخاب تصویر</string>
+    <string name="picker_pictures_empty_folder">این شاخه تصویری ندارد.</string>
+    <string name="picker_pictures_empty">هیچ تصویری روی دستگاه نیست</string>
+    <string name="picker_pictures_camera">دوربین</string>
+
+
+    <!-- Map -->
+    <string name="picker_map_activity_title">یک مکان انتخاب کنید</string>
+    <string name="picker_map_sory_notdefined">ما ابتدا بایستی موقعیت شما را تعیین کنیم. بعدش دنبال مکان‌های نزدیک بگردید </string>
+    <string name="picker_map_pick_my">موقعیت فعلی مرا بفرست</string>
+    <string name="picker_map_pick_my_fetching">پیدا کردن…</string>
+    <string name="picker_map_pick_my_accuracy">دقت تا %d متر</string>
+    <string name="picker_map_pick_my_wait">صبر کنید تا پیداکردن تمام بشود</string>
+    <string name="picker_map_nearby_header">یا از همین نزدیکی انتخاب کنید</string>
+    <string name="picker_map_nearby_empty">مکانی درین نزدیکی نیست</string>
+
+
+    <!-- Metrics -->
+    <plurals name="picker_time_minutes_ago">
+        <item quantity="one">%d دقیقه پیش</item>
+        <item quantity="two">%d دقیقه پیش</item>
+        <item quantity="few">%d دقیقه پیش</item>
+        <item quantity="many">%d دقیقه پیش</item>
+        <item quantity="other">%d عدد دیگر پیدا شد.</item>
+    </plurals>
+
+
+    <string name="picker_time_yesterday_at">دیروز در %s</string>
+    <string name="picker_time_today_at">امروز در %s</string>
+    <string name="picker_time_hour_ago">یک ساعت پیش</string>
+    <string name="picker_time_minute_ago">یک دقیقه پیش</string>
+    <string name="picker_time_at">%1$s در %2$s</string>
+
+    <string name="picker_bytes">%d بایت</string>
+    <string name="picker_kbytes">KB</string>
+    <string name="picker_mbytes">MB</string>
+    <string name="picker_gbytes">GB</string>
+</resources>

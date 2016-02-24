@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<resources>
+    <string name="app_name">اکتور</string>
+    <string name="app_locale">Fa</string>
+
+    <string name="dialog_ok">قبول</string>
+    <string name="dialog_cancel">بیخیال</string>
+    <string name="dialog_yes">آری</string>
+    <string name="dialog_no">خیر</string>
+    <string name="dialog_try_again">دوباره تلاش کن</string>
+
+    <string name="pick_photo_camera">عکس بگیر</string>
+    <string name="pick_photo_gallery">از گالری انتخاب کنید</string>
+    <string name="pick_photo_remove">تصویر را حذف کنید</string>
+    <string name="pick_downloading">در حال بارگزاری</string>
+
+    <string name="progress_common">آماده سازی…</string>
+
+    <string name="toast_no_sdcard">کارت حافظه وجود ندارد</string>
+    <string name="toast_phone_copied">شماره تلفن کپی شد</string>
+    <string name="toast_email_copied">ایمیل کپی شد</string>
+    <string name="toast_messages_copied">پیام کپی شد</string>
+    <string name="toast_unable_kick">حذف عضو از گروه ممکن نیست</string>
+    <string name="toast_unable_add">اضافه کردن کاربر به گروه ممکن نیست</string>
+    <string name="toast_already_member">کاربر هم‌اکنون نیز عضو گروه است</string>
+    <string name="toast_empty_name">اسم نمی‌تواند خالی باشد </string>
+    <string name="toast_unable_change">تغییر نام ممکن نیست</string>
+    <string name="toast_empty_nick">نام کاربری نمی‌تواند خالی باشد</string>
+    <string name="toast_unable_change_nick">تغییر نام کاربری با شکست مواجه شد(آیا شما از کاراکترهای مجاز استفاده کردید؟)</string>
+    <string name="toast_empty_about">معرفی نمی‌تواند خالی باشد </string>
+
+    <string name="menu_share">اشتراک</string>
+    <string name="menu_save">ذخیره در تلفن</string>
+    <string name="menu_saved">ذخیره شد</string>
+    <string name="menu_next">بعدی</string>
+
+    <string name="invite_message">سلام. به  {appName} بپیوند! {inviteUrl}</string>
+
+    <!-- Tour -->
+    <string name="tour_sign_up">ثبت نام</string>
+    <string name="tour_sign_in">ورود</string>
+    <string name="tour_sign_using_tel">با شماره موبایل</string>
+    <string name="tour_sign_using_email">با ایمیل</string>
+    <string name="tour_sign_using_oauth">با گوگل</string>
+    <string name="tour_back_to_top">برگشت به بالا</string>
+
+    <string name="tour_welcome_title">{appName}</string>
+    <string name="tour_welcome_subtitle">با دوستان هم‌سخن شوید</string>
+
+    <string name="tour_groups_title">گروه‌های بزرگ </string>
+    <string name="tour_groups_text">گرو‌های خیلی بزرگ. بیشتر از سیصد نفر باشید و با هم گپ و گفت کنید</string>
+
+    <string name="tour_everywhere_title">کار در همه جا</string>
+    <string name="tour_everywhere_text">مهم نیست کجایید. داخل مترو یا جاده‌های سفر. پیام‌هاتان به دست دوستان‌تان می‌رسد.</string>
+
+    <string name="tour_secure_title">امن و خصوصی</string>
+    <string name="tour_secure_text">فرد دیگری نمی‌تواند به پیام‌های شما دست‌رسی داشته باشد. اسناد و تصاویرتان را با دوستان‌تان با خیال آسوده به اشتراک بگذارید</string>
+
+    <!-- Phone Sign Fragment -->
+    <string name="auth_phone_title"> شناسایی شماره همراه</string>
+    <string name="auth_phone_hint">لطفن شماره‌تان را وارد کنید.</string>
+    <string name="auth_phone_number_hint">شماره همراه</string>
+    <string name="auth_phone_get_code">تایید شماره</string>
+    <string name="auth_phone_why">چه نیازی به شماره همراه‌تان هست؟</string>
+    <string name="auth_phone_why_description">ما از شماره همراه‌تان  برای شناسایی شما استفاده می‌کنیم. این امن‌ترین روش این‌روزهاست.\n\n رمزعبورها ضعیف‌اند و ایمیل‌ها هک می‌شوند.</string>
+    <string name="auth_phone_why_done">گرفتم چی شد!</string>
+    <string name="auth_phone_country_title">یک کشور را انتخاب کنید</string>
+    <string name="auth_phone_error_invalid_country">کد کشور نامعتبر</string>
+
+    <!-- Choose auth type-->
+    <string name="choose_auth_type_title">روش شناسایی را انتخاب کنید</string>
+    <string name="choose_auth_type_hint">لطفن انتخاب کنید</string>
+    <string name="choose_auth_type_sign_up">ثبت‌نام</string>
+    <string name="choose_auth_type_sign_in">ورود</string>
+    <string name="choose_auth_type_using_tel">با شماره همراه</string>
+    <string name="choose_auth_type_using_email">با ایمیل</string>
+
+
+    <!-- Email Sign Fragment -->
+    <string name="auth_email_title">شناسایی ایمیل</string>
+    <string name="auth_email_hint">لطفن ایمیل‌تان را وارد کنید</string>
+    <string name="auth_email_edit_text_hint">ایمیل</string>
+    <string name="auth_email_get_code">تایید ایمیل</string>
+
+    <!-- Sign In Fragment -->
+    <string name="auth_code_phone_hint">ما کد فعال‌سازی شما را به شماره همراه‌تان پیامک زدیم {0}</string>
+    <string name="auth_code_email_hint">ما کد فعال‌سازی شما را به ایمیل‌تان فرستادیم {0}</string>
+    <string name="auth_code_title">کد پیامک شده را وارد کنید</string>
+    <string name="auth_code_sms_hint">کد پیامک</string>
+    <string name="auth_code_done">تایید</string>
+    <string name="auth_code_wrong_number">شماره همراه نادرست؟</string>
+    <string name="auth_code_wrong_email">ایمیل نادرست؟</string>
+    <string name="auth_code_phone_change">می‌خواهید که شماره‌تان را عوض کنید؟</string>
+    <string name="auth_code_email_change">می‌خواهید که ایمیل‌تان را عوض کنید؟</string>
+    <string name="auth_code_change_yes">عوض کن</string>
+
+    <!-- Sign Up Fragment -->
+    <string name="auth_profile_title">مشخصات نمایه</string>
+    <string name="auth_profile_hint">لطفن یک نام برای خودتان انتخاب کنید \nو یک تصویر نمایه اختیاری</string>
+    <string name="auth_profile_name_hint">نام شما</string>
+    <string name="auth_profile_done">{appName} را شروع کنید</string>
+
+    <!-- Auth errors -->
+    <string name="auth_error_empty_phone">لطفن شماره همراه خودتان را وارد کنید</string>
+    <string name="auth_error_empty_email">لطفن ایمیل‌تان را وارد کنید</string>
+    <string name="auth_error_code_expired">زمان اعتبار کد فعال‌سازی گذشته است. لطفن از ابتدا شروع کنید..</string>
+
+    <string name="auth_error_code_invalid">کد نامعتبر است. لطفن دوباره تلاش کنید.</string>
+    <string name="auth_error_failed_get_oauth2_token">شناسایی کارگزار با خطا مواجه شد. لطفن دوباره تلاش کنید.</string>
+
+    <!-- Typing -->
+    <string name="typing_private">در حال تایپ</string>
+    <string name="typing_group">{0} در حال نوشتن است...</string>
+    <string name="typing_group_many">{0} نفر در حال نوشتن‌اند</string>
+
+    <!-- Main -->
+    <string name="main_search_hint">چیزی بنویسید تا جستجویش کنیم</string>
+    <string name="main_search_empty">چیزی پیدا نشد</string>
+    <string name="main_menu_help">راهنما</string>
+    <string name="main_menu_search">جستجو</string>
+
+    <string name="main_bar_chats">گفتگوها</string>
+    <string name="main_bar_contacts">مخاطبین</string>
+
+    <string name="main_fab_compose">ارسال پیام</string>
+    <string name="main_fab_new_group">ایجاد گروه</string>
+    <string name="main_fab_join_public_group">عضو گروه عمومی بشو</string>
+    <string name="main_fab_add_contact">افزون مخاطب</string>
+
+    <string name="main_sync_title">هم‌گام سازی در جریان است</string>
+    <string name="main_sync_message">لطفن اندکی صبر کنید تا نرم‌افزار را برایتان فعال کنیم.</string>
+
+    <string name="main_empty_title">دوستان‌تان را دعوت کنید</string>
+    <string name="main_empty_invite_hint">هنوز هیچ‌یک از دوستان‌تان {appName} نشده است. لطفن دعوت‌شان کنید.</string>
+    <string name="main_empty_invite_action">به یک دوست معرفی کنید.</string>
+    <string name="main_empty_add_hint">یا یک مخاطب را مستقیمن اضافه کنید</string>
+    <string name="main_empty_add_action">افزودن مخاطب</string>
+
+    <!-- Own profile/settings -->
+    <string name="settings_share_profile_title">مشخصات مرا بفرست...</string>
+    <string name="settings_share_text">شماره همراه من  {0} است </string>
+    <string name="settings_menu_edit_profile">ویرایش نمایه</string>
+    <string name="settings_menu_change_photo">تغییر تصویر</string>
+    <string name="settings_header">تنظیمات</string>
+    <string name="settings_help">راه‌نما</string>
+    <string name="settings_ask">سوال بپرسید</string>
+    <string name="settings_twitter">توییتر</string>
+    <string name="settings_home_page">پایگاه وب</string>
+    <string name="settings_notifications">اعلان‌ها</string>
+    <string name="settings_chat">تنظیمات گپ</string>
+    <string name="settings_security">امنیت</string>
+    <string name="nickname_empty">یک نام کاربری انتخاب کنید</string>
+    <string name="nickname_change">ویرایش نام کاربری</string>
+    <string name="nickname">نام کاربری</string>
+    <string name="nickname_hint">شما می‌توانید یک نام کاربری در {appName} انتخاب کنید. اگر این کار را بکنید دیگران قادر خواهند بود که شما را با این نام پیدا کنند بدون اینکه شماره تلفن شما با آنها به اشتراک گذاشته شود. \n \n نام کاربری می‌تواند شامل حروف انگلیسی کوچک و اعداد و زیرخط باشد و لااقل باید پنج کاراکتر باشد</string>
+    <string name="nickname_edittext_hint">نام کاربری خود را وارد کنید</string>
+    <string name="about_user_me">درباره من</string>
+    <string name="about_user">درباره کاربر</string>
+    <string name="wallpaper">پس زمینه‌ی چت</string>
+
+    <!-- Profile controls -->
+    <string name="phone_menu_call">با {0} تماس بگیرید</string>
+    <string name="phone_menu_email">به {0} ایمیل بزنید</string>
+    <string name="phone_menu_sms">به {0} پیامک بزنید</string>
+    <string name="phone_menu_share">با {0} اشتراک بگذارید</string>
+    <string name="phone_menu_copy">رونوشت بگیرید</string>
+
+    <!-- Dialogs -->
+    <string name="dialogs_title">گفت‌گوها</string>
+    <string name="dialogs_hint">کلیک طولانی برای گزینه‌های بیش‌تر</string>
+    <string name="dialogs_empty_title"> گپ و گفت را شروع کنید</string>
+    <string name="dialogs_empty">یک مخاطب را از فهرست مخاطبین انتخاب کنید یا دکمه افزودن را برای شروع گفتگو انتخاب کنید.</string>
+
+    <string name="dialogs_menu_contact_view">دیدن مخاطب</string>
+    <string name="dialogs_menu_contact_rename">تغییر نام مخاطب</string>
+    <string name="dialogs_menu_conversation_delete">پاک کردن گپ‌</string>
+
+    <string name="dialogs_menu_group_view">مشاهده مشخصات گروه</string>
+    <string name="dialogs_menu_group_rename">ویرایش نام گروه</string>
+    <string name="dialogs_menu_group_leave">ترک گروه</string>
+    <string name="dialogs_menu_group_delete">پاک‌کردن گروه </string>
+
+    <!-- Contacts -->
+    <string name="contacts_title">مخاطبین</string>
+    <string name="contacts_empty_short">هنوز مخاطبی وجود ندارد</string>
+    <string name="contacts_share"> {appName} را به دوستان‌تان معرفی کنید</string>
+    <string name="contacts_add">دوست‌تان را اضافه کنید </string>
+
+    <string name="contacts_empty_title">دوستان‌تان را دعوت کنید </string>
+    <string name="contacts_empty_invite_hint">هیچ‌کدام از مخاطبین شما در {appName} نیستند. از دکمه زیر برای دعوت‌شان استفاده کنید. </string>
+    <string name="contacts_empty_invite_action">به یک دوست معرفی کن</string>
+    <string name="contacts_empty_add_hint">یا یک مخاطب را مستقیمن اضافه کن</string>
+
+    <string name="contacts_menu_remove">{0} را از مخاطبین حذف کن</string>
+    <string name="contacts_menu_remove_progress">در حال حذف‌کردن ...</string>
+    <string name="contacts_menu_edit">ویرایش نام</string>
+
+    <string name="contacts_invite_via_link">دعوت با ارسال پیوند</string>
+
+    <!-- Chat -->
+    <string name="chat_menu_group_info">مشخصات گروه</string>
+    <string name="chat_menu_view_contact">دیدن مخاطب</string>
+    <string name="chat_menu_call">تماس</string>
+    <string name="chat_menu_files">فایل‌ها</string>
+    <string name="chat_menu_clear_chat">پاک کردن چت</string>
+    <string name="chat_menu_leave_group">ترک گروه</string>
+
+    <string name="chat_attach_place">موقعیت</string>
+    <string name="chat_attach_contact">مخاطب</string>
+    <string name="chat_attach_file">فایل</string>
+    <string name="chat_attach_take_video">گرفتن ویدیو</string>
+    <string name="chat_attach_take_photo">برداشت تصویر</string>
+    <string name="chat_attach_gallery">گالری</string>
+
+    <string name="chat_message_hint">پیام شما...</string>
+
+    <string name="chat_new_messages">پیام جدید</string>
+    <string name="chat_add_to_contacts">افزودن به مخاطبین</string>
+    <string name="chat_add_to_contacts_progress">در حال افزودن به مخاطبین...</string>
+
+    <string name="chat_doc_open">بازش کن</string>
+    <string name="chat_doc_send">بفرست</string>
+    <string name="chat_doc_stop">متوقفش کن</string>
+    <string name="chat_doc_download">بارگیری</string>
+    <string name="chat_voice_record_cancel">به طرف دیگر بکشید تا لغو شود</string>
+
+    <string name="chat_not_member">شما عضو گروه نیستید</string>
+
+    <string name="chat_unsupported">پیام پشتیبانی نمی‌شود</string>
+    <string name="online">\u25CF بر خط</string>
+
+    <!-- Share menu-->
+    <string name="share_menu_gallery">نگارخانه</string>
+    <string name="share_menu_video">ویدیو</string>
+    <string name="share_menu_file">فایل</string>
+    <string name="share_menu_camera">دوربین</string>
+    <string name="share_menu_contact">مخاطب</string>
+    <string name="share_menu_location">موقعیت</string>
+
+    <!-- Map -->
+    <string name="map_title">مکان</string>
+    <string name="map_type_normal">نقشه</string>
+    <string name="map_type_satellite">ماهواره‌</string>
+    <string name="map_type_hybrid">ترکیبی</string>
+
+    <!-- Profile -->
+    <string name="profile_title">نمایه</string>
+    <string name="profile_shared_header">اشتراک‌گذاری شده</string>
+    <string name="profile_shared_files">اسناد</string>
+    <string name="profile_shared_media">رسانه</string>
+    <string name="profile_settings_header">تنظیمات</string>
+    <string name="profile_settings_notifications">اعلان‌ها</string>
+    <string name="settings_mobile_phone">تلفن همراه</string>
+
+    <string name="profile_adding">در حال افزودن به مخاطبین…</string>
+    <string name="profile_removing">در حال حذف کردن از مخاطبین…</string>
+
+    <string name="profile_menu_rename">تغییر نام</string>
+    <string name="profile_menu_call">تماس</string>
+    <string name="profile_menu_remove">از مخاطبین حذفش کنید</string>
+    <string name="profile_menu_add">به مخاطبین اضافه کنید</string>
+    <string name="profile_menu_security">امنیت</string>
+    <string name="profile_cant_find_user">کاربر پیدا نمی‌شود</string>
+
+    <!-- Group -->
+    <string name="group_title">مشخصات گروه</string>
+    <string name="group_members_header">اعضا</string>
+    <string name="group_members_count">{0} از {1}</string>
+
+    <string name="group_admin">مدیر</string>
+
+    <string name="group_created_by">ایجاد شده توسط {0}</string>
+    <string name="group_created_by_you">شما ایجادش کرده‌اید</string>
+
+    <string name="group_adding">در حال افزودن به گروه…</string>
+    <string name="group_removing">در حال حذف کردن از گروه…</string>
+
+    <string name="group_context_message">به  {0} پیام بدهید</string>
+    <string name="group_context_call">تماس بگیرید با {0}</string>
+    <string name="group_context_view">را مشاهده کنید {0}</string>
+    <string name="group_context_remove">{0} را از گروه حذف کنید</string>
+
+    <string name="group_menu_add">افزودن عضو</string>
+    <string name="group_menu_leave">گروه را ترک کنید</string>
+    <string name="group_menu_change_theme">زمینه گروه را تغییر دهید</string>
+    <string name="group_menu_change_photo">تصویر گروه را عوض کنید</string>
+    <string name="group_menu_integration_token">کد یک‌پارچه‌سازی</string>
+
+    <string name="group_shared_header">اشتراک‌گذاشته شده</string>
+    <string name="group_shared_files">اسناد</string>
+
+    <string name="group_add_member">یک عضو اضافه کنید</string>
+
+    <string name="group_not_member">شما عضو این گروه نیستید.</string>
+
+    <string name="about_group">درباره گروه</string>
+    <string name="about_group_empty">متن درباره گروه را بنویسید</string>
+    <string name="theme_group">زمینه گروه</string>
+    <string name="theme_group_empty">زمینه گروه را مشخص کنید</string>
+
+    <!-- Avatar -->
+    <string name="avatar_title_your">نگاره شما</string>
+    <string name="avatar_title_person">نگاره</string>
+    <string name="avatar_title_group">نگاره گروه</string>
+    <string name="avatar_no_photo">بدون نگاره</string>
+    <string name="avatar_menu_edit">ویرایش</string>
+    <string name="avatar_menu_set_as">تنظیم به عنوان...</string>
+
+    <!-- Add Contact -->
+    <string name="add_contact_title">افزودن مخاطب</string>
+    <string name="add_contact_phone_hint">شماره همراه را وارد کنید</string>
+    <string name="add_contact_bar_cancel">بی‌خیال</string>
+    <string name="add_contact_bar_continue">ادامه بدهید</string>
+
+    <!-- Compose -->
+    <string name="compose_title">پیام جدید</string>
+
+    <!-- Create Group -->
+    <string name="create_group_title">یک گروه ایجاد کنید</string>
+    <string name="create_group_name_hint">نامی برای گروه برگزینید</string>
+    <string name="create_group_hint">زمینه گروه را مشخص کنید و یک نگاره برایش برگزینید</string>
+    <string name="create_group_search_hint">جستجو با نام</string>
+    <string name="create_group_done">انجام رفت</string>
+
+    <!-- Group add -->
+    <string name="group_add_title">عضوی اضافه کنید</string>
+
+    <!-- Join public group -->
+    <string name="join_public_group_title">گروه‌های عمومی</string>
+    <string name="join_public_group_members_count">اعضا: </string>
+    <string name="join_public_group_friends_count">دوستان: </string>
+    <string name="join">عضویت</string>
+    <string name="open">بازش کنید</string>
+    <string name="join_public_group_top_title">سلام!</string>
+    <string name="join_public_group_top_subtitle">گروه‌های عمومی خوب ما را بررسی کنید</string>
+    <string name="join_public_group_top_by_friends_title">با دوستان گپ بزنید</string>
+    <string name="join_public_group_top_by_friends_subtitle">گپ‌های خوب با دوستان</string>
+    <string name="join_public_group_all_groups">همه گروه‌ها</string>
+
+
+    <!-- Invite link-->
+    <string name="invite_link_title">پیوند دعوت</string>
+    <string name="invite_link_hint">هر فردی با داشتن این پیوند می‌تواند عضو گروه بشود</string>
+    <string name="invite_link_action_copy">از پیوند رونوشت بگیر</string>
+    <string name="invite_link_action_revoke">پیوند را باطل کنید</string>
+    <string name="invite_link_action_share">پیوند را به اشتراک بگذارید</string>
+    <string name="invite_link_copied">پیوند به حافظه رونوشت شد</string>
+    <string name="invite_link_chooser_title">با استفاده از پیوند به گروه دعوت کنید.</string>
+    <string name="invite_link_error_get_link">گرفتن پیوند دعوت ممکن نیست.</string>
+    <string name="invite_link_error_revoke_link">باطل کردن پیوند ممکن نیست</string>
+    <string name="invite_link_empty_view">در حال بارگزاری پیوند دعوت</string>
+
+    <!-- Integration token-->
+    <string name="integration_token_title">کد یکپارچه‌سازی</string>
+    <string name="integration_token_hint">این کد برای تنظیمات یکپارچه‌سازی این گروه به کار می‌رود</string>
+    <string name="integration_token_action_copy">از کد رونوشت بگیرید</string>
+    <string name="integration_token_action_revoke">کد را باطل کنید</string>
+    <string name="integration_token_action_share">کد را به اشتراک بگذارید</string>
+    <string name="integration_token_copied">کد در حافظه رونوشت شد</string>
+    <string name="integration_token_chooser_title">کد را بفرستید</string>
+    <string name="integration_token_error_get_token">گرفتن کد ممکن نیست</string>
+    <string name="integration_token_error_revoke_link">باطل کردن کد ممکن نیست</string>
+    <string name="integration_token_error_revoke_link_not_admin">باطل کردن کد ممکن نیست - شما مدیر گروه نیستید</string>
+    <string name="integration_token_empty_view">در حال بارگزاری کد</string>
+
+    <!-- Documents -->
+    <string name="documents_title">اسناد</string>
+    <string name="documents_empty">هنوز هیچ سندی وجود ندارد</string>
+
+    <!-- Edit name -->
+    <string name="edit_name_title_you">نام خود را بنویسید</string>
+    <string name="edit_name_title_contact">مشخصه تماس خود را بنویسید</string>
+    <string name="edit_name_title_group">نام گروه را وارد کنید</string>
+    <string name="edit_name_title_group_theme">زمینه گروه را مشخص کنید</string>
+    <string name="edit_name_title_nick">نام کاربری خود را وارد کنید</string>
+    <string name="edit_name_cancel">بی‌خیال</string>
+    <string name="edit_name_save">ذخیره کنید</string>
+    <string name="edit_name_process">در حال تغییر نام</string>
+    <string name="edit_nick_process">در حال تغییر نام کاربری ...</string>
+    <string name="edit_about_process">تغییر مشخصات</string>
+    <string name="edit_theme_process">تغییر زمینه</string>
+    <string name="edit_about_edittext_hint">می‌خواهید مردم در مورد شما چه بدانند؟</string>
+
+
+    <!-- Help -->
+    <string name="help_title">راهنما</string>
+    <string name="help_about_title">درباره</string>
+    <string name="help_about_subtitle">درباره برنامه</string>
+    <string name="help_faq_title">سوالات متداول</string>
+    <string name="help_faq_subtitle">سوالات متداول</string>
+    <string name="help_feedback_title">بازخورد</string>
+    <string name="help_feedback_subtitle">به ما بازخورد بدهید</string>
+    <string name="help_version_title">نسخه برنامه</string>
+    <string name="help_version_copy">نسخه برنامه در حافظه رونوشت شد</string>
+    <string name="help_email_title">ایمیلی بفرستید</string>
+    <string name="help_email_subject">بازخورد</string>
+
+    <!-- Notifications -->
+    <string name="not_title">اعلان‌ها</string>
+    <string name="not_conv_tones">صداهای گپ</string>
+    <string name="not_conv_tones_subtitle">صدایی برای آغاز و پایان گپ‌ها پخش کن</string>
+    <string name="not_sound">صدا</string>
+    <string name="not_sound_subtitle">فعال‌سازی صداهای اعلان‌ها</string>
+    <string name="not_vibration">لرزش</string>
+    <string name="not_vibration_subtitle">فعال‌سازی لرزش‌ اعلان‌ها</string>
+    <string name="not_group">گروه</string>
+    <string name="not_group_subtitle">فعال‌سازی اعلان‌های گروه</string>
+    <string name="not_group_mentions">فقط برای نام بردن</string>
+    <string name="not_group_mentions_subtitle">اعلان‌های گروه را فقط هنگام نام‌بردن از من فعال کن</string>
+    <string name="not_show_text">نام‌ها و پیام‌ها را نشان بده</string>
+    <string name="not_show_text_subtitle">نام فرستنده و پیام را در پانل اعلان‌ها نشان بده</string>
+
+    <!-- Pick user -->
+    <string name="pick_user_title">فردی را انتخاب کنید</string>
+
+    <!-- Chat Settings -->
+    <string name="settings_chat_title">تنظیمات گپ</string>
+    <string name="settings_chat_send_enter">ارسال با فشردن اینتر</string>
+    <string name="settings_chat_send_enter_subtitle">فشردن اینتر پیام شما را خواهد فرستاد</string>
+
+    <string name="settings_chat_markdown">مارک‌داون</string>
+    <string name="settings_chat_markdown_subtitle">آیا مارک دان فعال است؟</string>
+
+    <!-- Security -->
+    <string name="security_title">امنیت</string>
+    <string name="security_terminate_title">بستن همه جلسات باز</string>
+    <string name="security_terminate_subtitle">خارج شدن از همه جلسات</string>
+    <string name="security_terminate_message">شما دل‌اسوارید که از همه دستگاه‌ها خارج می‌شود؟ تمامی داده‌هاتان پاک خواهد شد.</string>
+    <string name="security_authorized_header">دست‌گاه‌های شناسایی شده </string>
+    <string name="security_authorized_loading">بارگیری...</string>
+
+    <!-- Alerts -->
+    <string name="alert_delete_messages_text">آیا برای پاک کردن این {0} گپ‌ دل‌استوارید؟</string>
+    <string name="alert_delete_messages_yes">پاک کنید</string>
+
+    <string name="alert_delete_all_messages_text">آیا برای پاک کردن تمامی گپ‌ها دل‌استوارید؟</string>
+    <string name="alert_delete_all_messages_yes">پاک کنید</string>
+
+    <string name="alert_remove_contact_text">آیا برای حذف کردن {0} از مخاطبین دل‌استوارید؟</string>
+    <string name="alert_remove_contact_yes">حذف کنید</string>
+
+    <string name="alert_group_add_text">آیا برای افزودن {0} به گروه دل‌استوارید؟</string>
+    <string name="alert_group_add_yes">اضافه کنید</string>
+
+    <string name="alert_group_remove_text">آیا برای حذف کردن {0} از گروه دل‌استوارید؟</string>
+    <string name="alert_group_remove_yes">حذف کنید</string>
+
+    <string name="alert_invite_text">"{0}" هنوز {appName}ی نشده است. می‌خواهید دعوتش کنید؟</string>
+    <string name="alert_invite_yes">دعوت</string>
+
+    <!-- Media -->
+    <string name="media">رسانه</string>
+    <string name="media_picture">تصویر</string>
+    <string name="media_pager" formatted="false">%d در %d</string>
+    <string name="emoji_no_recent">هنوز شکلک سابقی ندارید</string>
+
+    <!-- Calls -->
+    <string name="call_ended">تماس تمام شد</string>
+    <string name="call_incoming">تماس دریافتی</string>
+    <string name="call_outgoing">در حال زنگ خوردن...</string>
+    <string name="call_connecting">برقراری ارتباط...</string>
+
+    <!-- Dialogs -->
+    <string name="alert_leave_group_message">آیا برای خروج از گروه "%1$s" دل‌استوارید؟</string>
+    <string name="alert_leave_group_yes">خارج شوید</string>
+
+    <string name="alert_delete_group_title">"%1$s" را پاک می‌کنید؟</string>
+    <string name="alert_delete_group_yes">پاک کنید</string>
+
+    <string name="alert_delete_chat_message">گپ‌های با  "%1$s" را پاک می‌کنید؟</string>
+    <string name="alert_delete_chat_yes">پاک کنید</string>
+
+    <string name="alert_revoke_link_message">پیوند را باطل می‌کنید؟</string>
+    <string name="alert_revoke_link_yes">باطل کنید</string>
+
+    <string name="alert_revoke_integration_token_message">کد را باطل می‌کنید؟</string>
+    <string name="alert_revoke_integration_token_yes">باطل کنید</string>
+
+    <!-- Errors -->
+    <string name="error_connection">مشکل در ارتباط وجود دارد. لطفن اتصال اینترنت‌تان را بررسی کنید.
+
+    </string>
+    <string name="error_unknown">مشکلی در انجام درخواست شما پیش آمده است.
+
+    </string>
+    <string name="error_view_url">آدرس ناشناخته است</string>
+
+
+    <string name="messages_action_forward">بازارسال</string>
+    <string name="messages_action_quote">نقل</string>
+    <string name="messages_action_delete">حذف</string>
+    <string name="messages_action_copy">رونوشت</string>
+    <string name="messages_action_like">پسند</string>
+    <string name="notification_multiple_canversations_after_msg_count">" پیام در "</string>
+    <string name="notifications_multiple_canversations_after_coversations_count">" گپ‌"</string>
+    <string name="notifications_single_conversation_аfter_messages_count">" پیام"</string>
+</resources>
