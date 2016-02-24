@@ -95,13 +95,13 @@ class ActorSDK {
       window.messenger = Actor.create(this.endpoints);
     }
 
-    const Login = this.delegate.components.login || DefaultLogin;
-    const Deactivated = this.delegate.components.deactivated || DefaultDeactivated;
-    const Install = this.delegate.components.install || DefaultInstall;
-    const Archive = this.delegate.components.archive || DefaultArchive;
-    const Join = this.delegate.components.join || DefaultJoin;
-    const Empty = this.delegate.components.empty || DefaultEmpty;
-    const Dialog = this.delegate.components.dialog || DefaultDialog;
+    const Login = (typeof this.delegate.components.login == 'function') ? this.delegate.components.login : DefaultLogin;
+    const Deactivated = (typeof this.delegate.components.deactivated == 'function') ? this.delegate.components.deactivated : DefaultDeactivated;
+    const Install = (typeof this.delegate.components.install == 'function') ? this.delegate.components.install : DefaultInstall;
+    const Archive = (typeof this.delegate.components.archive == 'function') ? this.delegate.components.archive : DefaultArchive;
+    const Join = (typeof this.delegate.components.join == 'function') ? this.delegate.components.join : DefaultJoin;
+    const Empty = (typeof this.delegate.components.empty == 'function') ? this.delegate.components.empty : DefaultEmpty;
+    const Dialog = (typeof this.delegate.components.dialog == 'function') ? this.delegate.components.dialog : DefaultDialog;
     const intlData = getIntlData(this.forceLocale);
 
     const requireAuth = (nextState, replaceState) => {
