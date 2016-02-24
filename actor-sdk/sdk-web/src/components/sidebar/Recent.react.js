@@ -36,7 +36,7 @@ class Recent extends Component {
   }
 
   componentDidUpdate() {
-    setTimeout(() => this.checkInvisibleCounters(), 1)
+    setTimeout(() => this.checkInvisibleCounters(), 500)
   }
 
   handleCreateGroup = () => CreateGroupActionCreators.open();
