@@ -3,7 +3,10 @@
   "version": "1.0.15",
   "description": "Actor SDK for building messaging web apps on top of Actor platform",
   "homepage": "https://actor.im/",
-  "license": "Apache-2.0",
+  "license": {
+    "type": "Apache-2.0",
+    "url": "http://opensource.org/licenses/apache2.0.php"
+  },
   "main": "index.js",
   "contributors": [
     "Oleg Shilov <oleg@actor.im>",
@@ -66,7 +69,7 @@
     "js-emoji": "github:actorapp/js-emoji#develop",
     "jsonlylightbox": "github:actorapp/jsOnlyLightbox#develop",
     "keymirror": "0.1.1",
-    "lodash": "4.3.0",
+    "lodash": "4.5.1",
     "memoizee": "0.3.9",
     "normalize.css": "3.0.3",
     "object-assign": "4.0.1",
@@ -97,7 +100,7 @@
     "css-loader": "^0.23.0",
     "eslint": "^2.1.0",
     "eslint-loader": "^1.1.1",
-    "eslint-plugin-react": "^3.14.0",
+    "eslint-plugin-react": "^4.1.0",
     "file-loader": "^0.8.5",
     "gulp": "^3.9.0",
     "gulp-if": "^2.0.0",

@@ -4,7 +4,7 @@
 
 import { escape } from 'lodash';
 import emoji from 'js-emoji';
-import emojiDataCategories from 'emoji-data/build/emoji_categories.json';
+import emojiDataCategories from 'emoji-data/emoji_categories.json';
 import { Path } from '../constants/ActorAppConstants';
 
 emoji.include_title = true;
@@ -14,22 +14,22 @@ emoji.colons_mode = false;
 emoji.img_set = 'apple';
 emoji.img_sets = {
   'apple': {
-    'path': Path.toEmoji + '/img-apple-64/',
+    // 'path': Path.toEmoji + '/img-apple-64/',
     'sheet': Path.toEmoji + '/sheet_apple_64.png',
     'mask': 1
   },
   'google': {
-    'path': Path.toEmoji + '/img-google-64/',
+    // 'path': Path.toEmoji + '/img-google-64/',
     'sheet': Path.toEmoji + '/sheet_google_64.png',
     'mask': 2
   },
   'twitter': {
-    'path': Path.toEmoji + '/img-twitter-64/',
+    // 'path': Path.toEmoji + '/img-twitter-64/',
     'sheet': Path.toEmoji + '/sheet_twitter_64.png',
     'mask': 4
   },
   'emojione': {
-    'path': Path.toEmoji + '/img-emojione-64/',
+    // 'path': Path.toEmoji + '/img-emojione-64/',
     'sheet': Path.toEmoji + '/sheet_emojione_64.png',
     'mask': 8
   }
