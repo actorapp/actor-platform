@@ -17,7 +17,7 @@ public class JsCall extends JavaScriptObject {
         }
         String state;
         switch (model.getState().get()) {
-            case CALLING:
+            case RINGING:
                 state = "calling";
                 break;
             case CONNECTING:

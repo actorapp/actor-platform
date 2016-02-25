@@ -63,6 +63,8 @@ public class CallActor extends AbsCallActor {
                     self().send(PoisonPill.INSTANCE);
                 }
             }).done(self());
+        } else {
+            callBus.startMaster();
         }
     }
 

@@ -8,6 +8,7 @@ import im.actor.core.api.ApiAdvertiseMaster;
 import im.actor.core.api.ApiAdvertiseSelf;
 import im.actor.core.api.ApiAnswer;
 import im.actor.core.api.ApiCandidate;
+import im.actor.core.api.ApiEnableConnection;
 import im.actor.core.api.ApiNeedDisconnect;
 import im.actor.core.api.ApiNeedOffer;
 import im.actor.core.api.ApiOffer;
@@ -159,6 +160,10 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         } else if (signal instanceof ApiNeedDisconnect) {
             ApiNeedDisconnect disconnect = (ApiNeedDisconnect) signal;
             peerCall.disposePeer(disconnect.getDevice());
+        } else if (signal instanceof ApiEnableConnection) {
+            ApiEnableConnection connection = (ApiEnableConnection) signal;
+            peerCall.onOwnStarted();
+            peerCall.onTheirStarted(connection.getDevice());
         } else if (signal instanceof ApiAdvertiseMaster) {
             if (isMasterReady) {
                 return;
