@@ -1,6 +1,6 @@
 package im.actor.api.rpc
 
-import scalaz._
+import cats.{ Monad, Functor }
 
 sealed trait MaybeAuthorized[+A] {
   private def flatten[B](xs: MaybeAuthorized[MaybeAuthorized[B]]): MaybeAuthorized[B] =
@@ -36,10 +36,11 @@ case object MaybeAuthorized extends MaybeAuthorizedInstances
 
 trait MaybeAuthorizedInstances {
   implicit val maybeAuthorizedInstance = new Functor[MaybeAuthorized] with Monad[MaybeAuthorized] {
-    def point[A](a: ⇒ A): MaybeAuthorized[A] = Authorized(a)
-
-    def bind[A, B](fa: MaybeAuthorized[A])(f: A ⇒ MaybeAuthorized[B]): MaybeAuthorized[B] = fa.flatMap(f)
 
     override def map[A, B](fa: MaybeAuthorized[A])(f: A ⇒ B): MaybeAuthorized[B] = fa.map(f)
+
+    def pure[A](a: A): MaybeAuthorized[A] = Authorized(a)
+
+    def flatMap[A, B](fa: MaybeAuthorized[A])(f: A ⇒ MaybeAuthorized[B]): MaybeAuthorized[B] = fa.flatMap(f)
   }
 }

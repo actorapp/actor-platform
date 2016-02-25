@@ -2,12 +2,12 @@ package im.actor.server.api.rpc
 
 import akka.actor._
 import akka.pattern.pipe
+import cats.data.Xor
 import im.actor.api.rpc._
 import im.actor.api.rpc.codecs._
 import scodec.bits._
 
 import scala.concurrent._
-import scalaz._
 
 object RpcApiService {
 
@@ -27,7 +27,7 @@ private[rpc] final class RpcApiService(services: Seq[Service]) extends Actor wit
 
   import RpcApiService._
 
-  private type Chain = PartialFunction[RpcRequest, ClientData ⇒ Future[RpcError \/ RpcOk]]
+  private type Chain = PartialFunction[RpcRequest, ClientData ⇒ Future[RpcError Xor RpcOk]]
 
   // TODO: configurable
   private val DefaultErrorDelay = 5

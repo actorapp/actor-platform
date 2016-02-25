@@ -6,7 +6,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import cats.data.Xor
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import im.actor.concurrent.FutureResultCats
+import im.actor.concurrent.FutureResult
 import im.actor.server.KeyValueMappings
 import im.actor.server.api.http.json._
 import im.actor.util.misc.IdUtils
@@ -16,7 +16,7 @@ import shardakka.keyvalue.SimpleKeyValue
 import scala.concurrent.Future
 import scala.util.Try
 
-object FutureResultHttp extends FutureResultCats[(StatusCode, String)]
+object FutureResultHttp extends FutureResult[(StatusCode, String)]
 
 object OutgoingHooksErrors {
   val WrongIntegrationToken = "Wrong integration token"
@@ -74,7 +74,7 @@ trait OutgoingHooks extends ReverseHookUnmarshaler with PlayJsonSupport {
   def register(token: String, uri: String): Future[(StatusCode, String) Xor Int] = {
     (for {
       groupId ← fromFutureOption(NotFound → OutgoingHooksErrors.WrongIntegrationToken)(integrationTokensKv.get(token))
-      uri ← fromXor(e ⇒ BadRequest → OutgoingHooksErrors.MalformedUri)(Xor.fromTry(Try(Uri(uri))))
+      uri ← fromXor((e: Throwable) ⇒ BadRequest → OutgoingHooksErrors.MalformedUri)(Xor.fromTry(Try(Uri(uri))))
       strUri = uri.toString()
 
       registeredUrs ← fromFuture(getHooks(token))

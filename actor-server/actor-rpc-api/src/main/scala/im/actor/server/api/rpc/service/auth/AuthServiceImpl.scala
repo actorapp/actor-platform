@@ -6,7 +6,7 @@ import akka.actor.ActorSystem
 import akka.event.Logging
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
-import im.actor.api.rpc.DBIOResult._
+import cats.data.Xor
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth.ApiEmailActivationType._
 import im.actor.api.rpc.auth._
@@ -39,7 +39,6 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import scalaz._
 
 final class AuthServiceImpl(
   implicit
@@ -53,6 +52,7 @@ final class AuthServiceImpl(
 
   import AnyRefLogSource._
   import IdUtils._
+  import DBIOResultRpc._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
@@ -69,9 +69,9 @@ final class AuthServiceImpl(
 
   implicit protected val timeout = Timeout(10 seconds)
 
-  override def doHandleGetAuthSessions(clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] = {
-    val authorizedAction = requireAuth(clientData).map { client ⇒
-      for {
+  override def doHandleGetAuthSessions(clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] =
+    authorized(clientData) { client ⇒
+      val action = for {
         sessionModels ← AuthSessionRepo.findByUserId(client.userId)
       } yield {
         val sessionStructs = sessionModels map { sessionModel ⇒
@@ -97,10 +97,8 @@ final class AuthServiceImpl(
 
         Ok(ResponseGetAuthSessions(sessionStructs.toVector))
       }
+      db.run(action)
     }
-
-    db.run(toDBIOAction(authorizedAction))
-  }
 
   override def doHandleCompleteOAuth2(transactionHash: String, code: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
     val action: Result[ResponseAuth] =
@@ -137,7 +135,7 @@ final class AuthServiceImpl(
         _ ← fromDBIO(AuthTransactionRepo.delete(transactionHash))
         ack ← fromFuture(authorize(user.id, authSession.id, clientData))
       } yield ResponseAuth(userStruct, misc.ApiConfig(maxGroupSize))
-    db.run(action.run)
+    db.run(action.value)
   }
 
   override def doHandleGetOAuth2Params(transactionHash: String, redirectUrl: String, clientData: ClientData): Future[HandlerResult[ResponseGetOAuth2Params]] = {
@@ -147,7 +145,7 @@ final class AuthServiceImpl(
         url ← fromOption(AuthErrors.RedirectUrlInvalid)(oauth2Service.getAuthUrl(redirectUrl, transaction.email))
         _ ← fromDBIO(AuthEmailTransactionRepo.updateRedirectUri(transaction.transactionHash, redirectUrl))
       } yield ResponseGetOAuth2Params(url)
-    db.run(action.run)
+    db.run(action.value)
   }
 
   override def doHandleStartPhoneAuth(
@@ -187,7 +185,7 @@ final class AuthServiceImpl(
       _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), transactionHash))
       isRegistered = optPhone.isDefined
     } yield ResponseStartPhoneAuth(transactionHash, isRegistered, Some(ApiPhoneActivationType.CODE))
-    db.run(action.run)
+    db.run(action.value)
   }
 
   override def doHandleStartUsernameAuth(
@@ -227,7 +225,7 @@ final class AuthServiceImpl(
         }
       } yield ResponseStartUsernameAuth(transactionHash, optUser.isDefined)
 
-    db.run(action.run)
+    db.run(action.value)
   }
 
   override def doHandleStartAnonymousAuth(
@@ -262,7 +260,7 @@ final class AuthServiceImpl(
         _ ← handleUserCreate(user, transaction, clientData)
         userStruct ← authorizeT(user.id, "", transaction, clientData)
       } yield ResponseAuth(userStruct, ApiConfig(maxGroupSize))
-    db.run(action.run)
+    db.run(action.value)
   }
 
   override def doHandleSendCodeByPhoneCall(transactionHash: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
@@ -273,7 +271,7 @@ final class AuthServiceImpl(
       _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendCallCode(tx.phoneNumber, genSmsCode(tx.phoneNumber), transactionHash, lang))
     } yield ResponseVoid
 
-    db.run(action.run)
+    db.run(action.value)
   }
 
   override def doHandleSignUp(transactionHash: String, name: String, sex: Option[ApiSex], password: Option[String], clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
@@ -288,12 +286,12 @@ final class AuthServiceImpl(
           case p: AuthPhoneTransaction     ⇒ newUserPhoneSignUp(p, name, sex)
           case e: AuthEmailTransaction     ⇒ newUserEmailSignUp(e, name, sex)
           case u: AuthUsernameTransaction  ⇒ newUsernameSignUp(u, name, sex)
-          case _: AuthAnonymousTransaction ⇒ fromEither(-\/(AuthErrors.NotValidated))
+          case _: AuthAnonymousTransaction ⇒ fromEither(Xor.left(AuthErrors.NotValidated))
         }
         //fallback to sign up if user exists
         userStruct ← signInORsignUp match {
-          case -\/((userId, countryCode)) ⇒ authorizeT(userId, countryCode, transaction, clientData)
-          case \/-(user) ⇒
+          case Xor.Left((userId, countryCode)) ⇒ authorizeT(userId, countryCode, transaction, clientData)
+          case Xor.Right(user) ⇒
             for {
               _ ← handleUserCreate(user, transaction, clientData)
               userStruct ← authorizeT(user.id, "", transaction, clientData)
@@ -306,7 +304,7 @@ final class AuthServiceImpl(
           case None ⇒ DBIO.successful(0)
         })
       } yield ResponseAuth(userStruct, misc.ApiConfig(maxGroupSize))
-    db.run(action.run)
+    db.run(action.value)
   }
 
   override def doHandleStartEmailAuth(
@@ -366,7 +364,7 @@ final class AuthServiceImpl(
           }
       }
     } yield ResponseStartEmailAuth(transactionHash, isRegistered, activationType)
-    db.run(action.run)
+    db.run(action.value)
   }
 
   override def doHandleValidateCode(transactionHash: String, code: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
@@ -376,12 +374,13 @@ final class AuthServiceImpl(
         transaction ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(AuthTransactionRepo.findChildren(transactionHash))
 
         //validate code
-        (userId, countryCode) ← validateCode(transaction, code)
+        validate ← validateCode(transaction, code)
+        (userId, countryCode) = validate
 
         //sign in user and delete auth transaction
         userStruct ← authorizeT(userId, countryCode, transaction, clientData)
       } yield ResponseAuth(userStruct, misc.ApiConfig(maxGroupSize))
-    db.run(action.run)
+    db.run(action.value)
   }
 
   override def doHandleValidatePassword(
@@ -392,41 +391,38 @@ final class AuthServiceImpl(
     val action =
       for {
         transaction ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(AuthUsernameTransactionRepo.find(transactionHash))
-        (userId, countryCode) ← validateCode(transaction, password)
+        validate ← validateCode(transaction, password)
+        (userId, countryCode) = validate
         userStruct ← authorizeT(userId, countryCode, transaction, clientData)
       } yield ResponseAuth(userStruct, ApiConfig(maxGroupSize))
 
-    db.run(action.run)
+    db.run(action.value)
   }
 
-  override def doHandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val action = requireAuth(clientData) map { implicit client ⇒
-      AuthSessionRepo.findByAuthId(client.authId) flatMap {
+  override def doHandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    authorized(clientData) { implicit client ⇒
+      val action = AuthSessionRepo.findByAuthId(client.authId) flatMap {
         case Some(session) ⇒
           for (_ ← DBIO.from(userExt.logout(session))) yield Ok(misc.ResponseVoid)
         case None ⇒ throw new Exception(s"Cannot find AuthSession for authId: ${client.authId}")
       }
+      db.run(action)
     }
 
-    db.run(toDBIOAction(action))
-  }
-
-  override def doHandleTerminateAllSessions(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val authorizedAction = requireAuth(clientData).map { client ⇒
-      for {
+  override def doHandleTerminateAllSessions(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    authorized(clientData) { client ⇒
+      val action = for {
         sessions ← AuthSessionRepo.findByUserId(client.userId) map (_.filterNot(_.authId == client.authId))
         _ ← DBIO.from(Future.sequence(sessions map userExt.logout))
       } yield {
         Ok(ResponseVoid)
       }
+      db.run(action)
     }
 
-    db.run(toDBIOAction(authorizedAction))
-  }
-
-  override def doHandleTerminateSession(id: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val authorizedAction = requireAuth(clientData).map { client ⇒
-      AuthSessionRepo.find(client.userId, id).headOption flatMap {
+  override def doHandleTerminateSession(id: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    authorized(clientData) { client ⇒
+      val action = AuthSessionRepo.find(client.userId, id).headOption flatMap {
         case Some(session) ⇒
           if (session.authId != clientData.authId) {
             for (_ ← DBIO.from(userExt.logout(session))) yield Ok(ResponseVoid)
@@ -436,11 +432,8 @@ final class AuthServiceImpl(
         case None ⇒
           DBIO.successful(Error(AuthErrors.AuthSessionNotFound))
       }
-
+      db.run(action)
     }
-
-    db.run(toDBIOAction(authorizedAction))
-  }
 
   override def doHandleStartTokenAuth(token: String, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, timeZone: Option[String], preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
     Future.failed(new RuntimeException("Not implemented"))

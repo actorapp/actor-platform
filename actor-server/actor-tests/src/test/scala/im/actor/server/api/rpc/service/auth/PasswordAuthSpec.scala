@@ -4,7 +4,6 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ ResponseAuth, ResponseStartUsernameAuth }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.activation.common.ActivationConfig
-import im.actor.server.email.DummyEmailSender
 import im.actor.server.oauth.GoogleProvider
 import im.actor.server.persist.UserPasswordRepo
 import im.actor.server.user.UserExtension
@@ -25,7 +24,6 @@ final class PasswordAuthSpec extends BaseAppSuite with ImplicitSessionRegion {
     whenReady(userExt.changeNickname(user.id, Some("manickname")))(identity)
     val (hash, salt) = ACLUtils.hashPassword("ma password")
     whenReady(db.run(UserPasswordRepo.createOrReplace(user.id, hash, salt)))(identity)
-    println(s"=== hash ${BitVector(hash).toHex} salt ${BitVector(salt).toHex}")
 
     implicit val clientData = ClientData(authId, 1, None)
 

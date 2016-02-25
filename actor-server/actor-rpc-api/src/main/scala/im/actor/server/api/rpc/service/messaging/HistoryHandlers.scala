@@ -1,13 +1,12 @@
 package im.actor.server.api.rpc.service.messaging
 
 import com.google.protobuf.wrappers.Int32Value
-import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
-import im.actor.server.dialog.{ DialogErrors, HistoryUtils }
+import im.actor.server.dialog.HistoryUtils
 import im.actor.server.group.GroupUtils
 import im.actor.server.model.{ HistoryMessage, Dialog, PeerType, Peer }
 import im.actor.server.persist.contact.UserContactRepo
@@ -26,7 +25,8 @@ trait HistoryHandlers {
   self: MessagingServiceImpl ⇒
 
   import HistoryUtils._
-  import im.actor.api.rpc.Implicits._
+  import Implicits._
+  import DBIOResultRpc._
 
   override def doHandleMessageReceived(peer: ApiOutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
@@ -40,11 +40,11 @@ trait HistoryHandlers {
     }
   }
 
-  override def doHandleClearChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val action = requireAuth(clientData) map { implicit client ⇒
+  override def doHandleClearChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { implicit client ⇒
       val update = UpdateChatClear(peer.asPeer)
 
-      for {
+      val action = (for {
         _ ← fromDBIOBoolean(CommonRpcErrors.forbidden("Clearing of public chats is forbidden")) {
           if (peer.`type` == ApiPeerType.Private) {
             DBIO.successful(true)
@@ -54,11 +54,9 @@ trait HistoryHandlers {
         }
         _ ← fromDBIO(HistoryMessageRepo.deleteAll(client.userId, peer.asModel))
         seqstate ← fromFuture(userExt.broadcastClientUpdate(update, None, isFat = false))
-      } yield ResponseSeq(seqstate.seq, seqstate.state.toByteArray)
+      } yield ResponseSeq(seqstate.seq, seqstate.state.toByteArray)).value
+      db.run(action)
     }
-
-    db.run(toDBIOAction(action map (_.run)))
-  }
 
   override def doHandleDeleteChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
@@ -84,9 +82,9 @@ trait HistoryHandlers {
       )))
     }
 
-  override def doHandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      DialogRepo
+  override def doHandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] =
+    authorized(clientData) { implicit client ⇒
+      val action = DialogRepo
         .fetch(client.userId, endDateTimeFrom(endDate), limit, fetchArchived = true)
         .map(_ filterNot (dialogExt.dialogWithSelf(client.userId, _)))
         .flatMap { dialogModels ⇒
@@ -101,10 +99,8 @@ trait HistoryHandlers {
             ))
           }
         }
+      db.run(action)
     }
-
-    db.run(toDBIOAction(authorizedAction))
-  }
 
   override def doHandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] =
     authorized(clientData) { implicit client ⇒
@@ -190,11 +186,10 @@ trait HistoryHandlers {
       db.run(action)
     }
 
-  override def doHandleDeleteMessage(outPeer: ApiOutPeer, randomIds: IndexedSeq[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val action = requireAuth(clientData).map { implicit client ⇒
-      withOutPeer(outPeer) {
+  override def doHandleDeleteMessage(outPeer: ApiOutPeer, randomIds: IndexedSeq[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { implicit client ⇒
+      val action = withOutPeer(outPeer) {
         val peer = outPeer.asModel
-
         withHistoryOwner(peer, client.userId) { historyOwner ⇒
           if (isSharedUser(historyOwner)) {
             HistoryMessageRepo.find(historyOwner, peer, randomIds.toSet) flatMap { messages ⇒
@@ -219,10 +214,8 @@ trait HistoryHandlers {
           }
         }
       }
+      db.run(action)
     }
-
-    db.run(toDBIOAction(action))
-  }
 
   private val ZeroDate = new DateTime(0)
   private val MaxDate = new DateTime(294276, 1, 1, 0, 0).getMillis
