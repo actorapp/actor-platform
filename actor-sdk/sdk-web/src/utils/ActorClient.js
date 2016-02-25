@@ -470,5 +470,17 @@ export default {
 
   unfavoriteChat(peer) {
     return window.messenger.unfavoriteChat(peer);
+  },
+
+  archiveChat(peer) {
+    return window.messenger.archiveChat(peer);
+  },
+
+  loadArchivedDialogs() {
+    return window.messenger.loadArchivedDialogs();
+  },
+
+  loadMoreArchivedDialogs() {
+    return window.messenger.loadMoreArchivedDialogs();
   }
 }
