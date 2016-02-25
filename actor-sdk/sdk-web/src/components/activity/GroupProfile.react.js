@@ -23,6 +23,7 @@ import CallActionCreators from '../../actions/CallActionCreators';
 import DialogStore from '../../stores/DialogStore';
 import NotificationsStore from '../../stores/NotificationsStore';
 import GroupStore from '../../stores/GroupStore';
+import UserStore from '../../stores/UserStore';
 import OnlineStore from '../../stores/OnlineStore';
 
 import AvatarItem from '../common/AvatarItem.react';
