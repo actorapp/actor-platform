@@ -21,7 +21,7 @@ object StickerPackErrors {
 
 class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersService with StickersImplicitConversions {
 
-  import FutureResultRpcCats._
+  import FutureResultRpc._
   import StickerPackErrors._
 
   override implicit protected val ec: ExecutionContext = actorSystem.dispatcher
@@ -36,7 +36,7 @@ class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersSer
         pack ← fromFutureOption(PackNotFound)(db.run(StickerPackRepo.find(id)))
         _ ← fromBoolean(CommonRpcErrors.InvalidAccessHash)(stickerPackAccessHash(pack) == accessHash)
         stickers ← fromFuture(db.run(StickerDataRepo.findByPack(pack.id)))
-      } yield ResponseLoadStickerCollection(ApiStickerCollection(pack.id, accessHash, stickers))).value map (_.toScalaz)
+      } yield ResponseLoadStickerCollection(ApiStickerCollection(pack.id, accessHash, stickers))).value
     }
 
   override def doHandleRemoveStickerCollection(id: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseStickersReponse]] =
@@ -50,7 +50,7 @@ class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersSer
         stickers ← fromFuture(db.run(stickersExt.getOwnApiStickerPacks(client.userId)))
         seqState ← fromFuture(seqUpdExt.deliverSingleUpdate(client.userId, UpdateOwnStickersChanged(stickers)))
         SeqState(seq, state) = seqState
-      } yield ResponseStickersReponse(stickers, seq, state.toByteArray)).value map (_.toScalaz)
+      } yield ResponseStickersReponse(stickers, seq, state.toByteArray)).value
     }
 
   override def doHandleAddStickerCollection(id: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseStickersReponse]] =
@@ -64,14 +64,14 @@ class StickersServiceImpl(implicit actorSystem: ActorSystem) extends StickersSer
         stickers ← fromFuture(db.run(stickersExt.getOwnApiStickerPacks(client.userId)))
         seqState ← fromFuture(seqUpdExt.deliverSingleUpdate(client.userId, UpdateOwnStickersChanged(stickers)))
         SeqState(seq, state) = seqState
-      } yield ResponseStickersReponse(stickers, seq, state.toByteArray)).value map (_.toScalaz)
+      } yield ResponseStickersReponse(stickers, seq, state.toByteArray)).value
     }
 
   override def doHandleLoadOwnStickers(clientData: ClientData): Future[HandlerResult[ResponseLoadOwnStickers]] = {
-    val action = requireAuth(clientData) map { implicit client ⇒
-      stickersExt.getOwnApiStickerPacks(client.userId) map (stickers ⇒ Ok(ResponseLoadOwnStickers(stickers)))
+    authorized(clientData) { implicit client ⇒
+      val action = stickersExt.getOwnApiStickerPacks(client.userId) map (stickers ⇒ Ok(ResponseLoadOwnStickers(stickers)))
+      db.run(action)
     }
-    db.run(toDBIOAction(action))
   }
 
 }

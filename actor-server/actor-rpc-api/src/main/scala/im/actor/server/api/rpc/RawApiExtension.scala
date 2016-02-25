@@ -3,7 +3,7 @@ package im.actor.server.api.rpc
 import akka.actor._
 import cats.data.Xor
 import im.actor.api.rpc.collections.ApiRawValue
-import im.actor.api.rpc.FutureResultRpcCats
+import im.actor.api.rpc.FutureResultRpc
 import im.actor.api.rpc.raw.RawApiService
 import im.actor.api.rpc.{ AuthorizedClientData, CommonRpcErrors, RpcError }
 
@@ -13,7 +13,7 @@ import scala.concurrent.Future
 sealed trait RawApiExtension extends Extension
 
 private[rpc] final class RawApiExtensionImpl(system: ExtendedActorSystem) extends RawApiExtension {
-  import FutureResultRpcCats._
+  import FutureResultRpc._
   import system.dispatcher
 
   private val services = TrieMap.empty[String, RawApiService]
@@ -31,7 +31,7 @@ private[rpc] final class RawApiExtensionImpl(system: ExtendedActorSystem) extend
     (for {
       serviceHandler ← fromOption(CommonRpcErrors.UnsupportedRequest)(services.get(service))
       response ← fromOption(CommonRpcErrors.UnsupportedRequest)(serviceHandler.handleRequests(client)(params).lift(method))
-      result ← fromFutureEither(response)
+      result ← fromFutureXor(response)
     } yield result).value
 }
 

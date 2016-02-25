@@ -4,7 +4,7 @@ import akka.actor._
 import akka.event.Logging
 import cats.data.Xor
 import im.actor.api.rpc.stickers.{ ApiStickerCollection, UpdateOwnStickersChanged, UpdateStickerCollectionsChanged }
-import im.actor.concurrent.{ FutureExt, FutureResultCats }
+import im.actor.concurrent.{ FutureExt, FutureResult }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.model.{ StickerData, StickerPack }
@@ -37,7 +37,7 @@ sealed trait StickersExtension extends Extension
 
 final class StickersExtensionImpl(_system: ActorSystem)
   extends StickersExtension
-  with FutureResultCats[StickerError]
+  with FutureResult[StickerError]
   with StickersImplicitConversions {
 
   StickerMessages.register()

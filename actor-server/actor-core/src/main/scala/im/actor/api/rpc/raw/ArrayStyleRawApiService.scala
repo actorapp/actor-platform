@@ -9,7 +9,7 @@ import scala.concurrent.Future
 
 // todo: find a better name. It is not array style already. Arrays just could be parsed to case classes for convinience
 abstract class ArrayStyleRawApiService(system: ActorSystem) extends RawApiService(system) with RawValueParserTypeclassInstances {
-  import im.actor.api.rpc.FutureResultRpcCats._
+  import im.actor.api.rpc.FutureResultRpc._
   import system.dispatcher
 
   type Request
@@ -19,8 +19,8 @@ abstract class ArrayStyleRawApiService(system: ActorSystem) extends RawApiServic
 
     override def apply(name: String): Future[Response] = {
       (for {
-        request ← fromEither(validateRequests(params)(name))
-        result ← fromFutureEither(processRequests(client)(request))
+        request ← fromXor(validateRequests(params)(name))
+        result ← fromFutureXor(processRequests(client)(request))
       } yield result).value
     }
   }

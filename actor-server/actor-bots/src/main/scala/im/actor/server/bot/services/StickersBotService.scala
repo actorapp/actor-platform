@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.stream.{ Materializer, ActorMaterializer }
 import akka.util.ByteString
 import im.actor.bots.BotMessages._
-import im.actor.concurrent.FutureResultCats
+import im.actor.concurrent.FutureResult
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
 import im.actor.server.file.{ UnsafeFileName, FileStorageAdapter, FileStorageExtension, FileUtils }
 import im.actor.server.sticker.{ Sticker, StickerImage }
@@ -33,7 +33,7 @@ private[bot] object StickersBotErrors {
   }
 }
 
-private[bot] final class StickersBotService(_system: ActorSystem) extends BotServiceBase(_system) with FutureResultCats[BotError] with ApiToBotConversions {
+private[bot] final class StickersBotService(_system: ActorSystem) extends BotServiceBase(_system) with FutureResult[BotError] with ApiToBotConversions {
 
   import StickersBotErrors._
 
