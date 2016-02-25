@@ -18,8 +18,7 @@ import DialogActionCreators from '../../actions/DialogActionCreators';
 import NotificationsActionCreators from '../../actions/NotificationsActionCreators';
 import CallActionCreators from '../../actions/CallActionCreators';
 
-import PeerStore from '../../stores/PeerStore';
-import DialogStore from '../../stores/DialogStore';
+import UserStore from '../../stores/UserStore';
 import NotificationsStore from '../../stores/NotificationsStore';
 import OnlineStore from '../../stores/OnlineStore';
 
@@ -27,9 +26,9 @@ import AvatarItem from '../common/AvatarItem.react';
 import Fold from '../common/Fold.react';
 
 const getStateFromStores = (uid) => {
-  const thisPeer = uid ? GroupStore.getGroup(uid) : null;
+  const thisPeer = uid ? UserStore.getUser(uid) : null;
   return {
-    thisPeer: thisPeer,
+    thisPeer,
     isNotificationsEnabled: thisPeer ? NotificationsStore.isNotificationsEnabled(thisPeer) : true,
     message: OnlineStore.getMessage()
   };
@@ -44,8 +43,8 @@ class UserProfile extends Component {
     return [NotificationsStore, OnlineStore];
   }
 
-  static calculateState(prevState) {
-    return getStateFromStores((prevState && prevState.user) ? prevState.user.id : null);
+  static calculateState(prevState, nextProps) {
+    return getStateFromStores(nextProps.user.id);
   }
 
   static contextTypes = {
@@ -57,7 +56,6 @@ class UserProfile extends Component {
 
     this.state = {
       isMoreDropdownOpen: false,
-      user: props.user // hack to be able to access userId in getStateFromStores
     }
   }
 
@@ -72,13 +70,9 @@ class UserProfile extends Component {
   };
 
   onNotificationChange = (event) => {
+    console.debug('onNotificationChange', this.state);
     const { thisPeer } = this.state;
     NotificationsActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
-  };
-
-  onChange = () => {
-    const { user } = this.props;
-    this.setState(getStateFromStores(user.id));
   };
 
   toggleActionsDropdown = () => {
@@ -258,4 +252,4 @@ class UserProfile extends Component {
   }
 }
 
-export default Container.create(UserProfile);
+export default Container.create(UserProfile, {pure:false, withProps: true});
