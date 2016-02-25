@@ -16,11 +16,9 @@ import java.util.ArrayList;
 
 public class ApiNeedDisconnect extends ApiWebRTCSignaling {
 
-    private int uid;
     private long device;
 
-    public ApiNeedDisconnect(int uid, long device) {
-        this.uid = uid;
+    public ApiNeedDisconnect(long device) {
         this.device = device;
     }
 
@@ -32,30 +30,23 @@ public class ApiNeedDisconnect extends ApiWebRTCSignaling {
         return 20;
     }
 
-    public int getUid() {
-        return this.uid;
-    }
-
     public long getDevice() {
         return this.device;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.uid = values.getInt(1);
-        this.device = values.getLong(2);
+        this.device = values.getLong(1);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.uid);
-        writer.writeLong(2, this.device);
+        writer.writeLong(1, this.device);
     }
 
     @Override
     public String toString() {
         String res = "struct NeedDisconnect{";
-        res += "uid=" + this.uid;
         res += "}";
         return res;
     }

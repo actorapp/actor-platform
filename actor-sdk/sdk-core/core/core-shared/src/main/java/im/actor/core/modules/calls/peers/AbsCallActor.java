@@ -1,22 +1,18 @@
 package im.actor.core.modules.calls.peers;
 
-import java.util.List;
-
-import im.actor.core.api.ApiCallMember;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.CallViewModels;
-import im.actor.core.modules.eventbus.EventBusActor;
+import im.actor.core.util.ModuleActor;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 
-public abstract class AbsCallActor extends EventBusActor implements CallBusCallback {
+public abstract class AbsCallActor extends ModuleActor implements CallBusCallback {
 
     protected final PeerSettings selfSettings;
     protected final CallViewModels callViewModels;
     protected final ActorRef callManager;
     protected CallBusInt callBus;
-    protected PeerCallInt peerCall;
 
     public AbsCallActor(ModuleContext context) {
         super(context);
@@ -38,48 +34,8 @@ public abstract class AbsCallActor extends EventBusActor implements CallBusCallb
         }));
     }
 
-    @Override
-    public final void onBusCreated(PeerCallInt peerCallInt) {
-        this.peerCall = peerCallInt;
-        callPreStart();
-    }
-
-    public void callPreStart() {
-
-    }
-
-    @Override
-    public void onBusStarted(String busId) {
-
-    }
-
-    @Override
-    public void onMembersChanged(List<ApiCallMember> members) {
-
-    }
-
-    @Override
-    public void onPeerStateChanged(int uid, long deviceId, PeerState state) {
-
-    }
-
-    @Override
-    public void onPeerConnected(int uid, long deviceId) {
-
-    }
-
-    @Override
-    public void onAnswered(int uid, long deviceId, PeerSettings settings) {
-
-    }
-
-    @Override
-    public void onAdvertised(int uid, long deviceId, PeerSettings settings) {
-
-    }
-
     public void onMuteChanged(boolean isMuted) {
-        peerCall.onMuteChanged(isMuted);
+        callBus.changeMute(isMuted);
     }
 
     @Override
@@ -111,71 +67,11 @@ public abstract class AbsCallActor extends EventBusActor implements CallBusCallb
     private class CallBusCallbackWrapper implements CallBusCallback {
 
         @Override
-        public void onBusCreated(final PeerCallInt peerCallInt) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    AbsCallActor.this.onBusCreated(peerCallInt);
-                }
-            });
-        }
-
-        @Override
         public void onBusStarted(final String busId) {
             self().send(new Runnable() {
                 @Override
                 public void run() {
                     AbsCallActor.this.onBusStarted(busId);
-                }
-            });
-        }
-
-        @Override
-        public void onMembersChanged(final List<ApiCallMember> members) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    AbsCallActor.this.onMembersChanged(members);
-                }
-            });
-        }
-
-        @Override
-        public void onPeerConnected(final int uid, final long deviceId) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    AbsCallActor.this.onPeerConnected(uid, deviceId);
-                }
-            });
-        }
-
-        @Override
-        public void onPeerStateChanged(final int uid, final long deviceId, final PeerState state) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    AbsCallActor.this.onPeerStateChanged(uid, deviceId, state);
-                }
-            });
-        }
-
-        @Override
-        public void onAnswered(final int uid, final long deviceId, final PeerSettings settings) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    AbsCallActor.this.onAnswered(uid, deviceId, settings);
-                }
-            });
-        }
-
-        @Override
-        public void onAdvertised(final int uid, final long deviceId, final PeerSettings settings) {
-            self().send(new Runnable() {
-                @Override
-                public void run() {
-                    AbsCallActor.this.onAdvertised(uid, deviceId, settings);
                 }
             });
         }

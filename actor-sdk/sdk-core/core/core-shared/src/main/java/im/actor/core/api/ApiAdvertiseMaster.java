@@ -14,15 +14,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiRejectCall extends ApiWebRTCSignaling {
+public class ApiAdvertiseMaster extends ApiWebRTCSignaling {
 
 
-    public ApiRejectCall() {
+    public ApiAdvertiseMaster() {
 
     }
 
     public int getHeader() {
-        return 2;
+        return 26;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class ApiRejectCall extends ApiWebRTCSignaling {
 
     @Override
     public String toString() {
-        String res = "struct RejectCall{";
+        String res = "struct AdvertiseMaster{";
         res += "}";
         return res;
     }
