@@ -23,7 +23,6 @@ import CallActionCreators from '../../actions/CallActionCreators';
 import DialogStore from '../../stores/DialogStore';
 import NotificationsStore from '../../stores/NotificationsStore';
 import GroupStore from '../../stores/GroupStore';
-import UserStore from '../../stores/UserStore';
 import OnlineStore from '../../stores/OnlineStore';
 
 import AvatarItem from '../common/AvatarItem.react';
@@ -52,8 +51,8 @@ class GroupProfile extends Component {
     return [NotificationsStore, GroupStore, OnlineStore];
   }
 
-  static calculateState(prevState) {
-    return getStateFromStores((prevState && prevState.group) ? prevState.group.id : null);
+  static calculateState(prevState, nextProps) {
+    return getStateFromStores(nextProps.group.id || null);
   }
 
   static contextTypes = {
@@ -64,14 +63,8 @@ class GroupProfile extends Component {
     super(props);
 
     this.state = {
-      isMoreDropdownOpen: false,
-      group: props.group // hack to be able to access groupId in getStateFromStores
+      isMoreDropdownOpen: false
     }
-  }
-
-  // hack for groupId in getStateFromStores
-  componentWillReceiveProps(nextProps) {
-    this.setState({group: nextProps.group});
   }
 
   onAddMemberClick = group => InviteUserActions.show(group);
@@ -308,4 +301,4 @@ class GroupProfile extends Component {
   }
 }
 
-export default Container.create(GroupProfile);
+export default Container.create(GroupProfile, {pure:false, withProps: true});
