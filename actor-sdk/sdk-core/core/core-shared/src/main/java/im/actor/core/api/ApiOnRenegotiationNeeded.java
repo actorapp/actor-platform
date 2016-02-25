@@ -14,45 +14,47 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiMembersChanged extends ApiWebRTCSignaling {
+public class ApiOnRenegotiationNeeded extends ApiWebRTCSignaling {
 
-    private List<ApiCallMember> allMembers;
+    private long device;
+    private long sessionId;
 
-    public ApiMembersChanged(@NotNull List<ApiCallMember> allMembers) {
-        this.allMembers = allMembers;
+    public ApiOnRenegotiationNeeded(long device, long sessionId) {
+        this.device = device;
+        this.sessionId = sessionId;
     }
 
-    public ApiMembersChanged() {
+    public ApiOnRenegotiationNeeded() {
 
     }
 
     public int getHeader() {
-        return 16;
+        return 25;
     }
 
-    @NotNull
-    public List<ApiCallMember> getAllMembers() {
-        return this.allMembers;
+    public long getDevice() {
+        return this.device;
+    }
+
+    public long getSessionId() {
+        return this.sessionId;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<ApiCallMember> _allMembers = new ArrayList<ApiCallMember>();
-        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _allMembers.add(new ApiCallMember());
-        }
-        this.allMembers = values.getRepeatedObj(1, _allMembers);
+        this.device = values.getLong(1);
+        this.sessionId = values.getLong(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeRepeatedObj(1, this.allMembers);
+        writer.writeLong(1, this.device);
+        writer.writeLong(2, this.sessionId);
     }
 
     @Override
     public String toString() {
-        String res = "struct MembersChanged{";
-        res += "allMembers=" + this.allMembers;
+        String res = "struct OnRenegotiationNeeded{";
         res += "}";
         return res;
     }
