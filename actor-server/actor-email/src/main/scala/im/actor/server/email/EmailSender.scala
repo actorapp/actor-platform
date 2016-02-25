@@ -26,7 +26,7 @@ trait EmailSender {
   def send(message: Message): Future[Unit]
 }
 
-final class DummyEmailSender extends EmailSender {
+object DummyEmailSender extends EmailSender {
   override def send(message: Message): Future[Unit] = Future.successful(())
 }
 

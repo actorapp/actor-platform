@@ -5,12 +5,10 @@ import java.time.{ LocalDateTime, ZoneOffset }
 import akka.actor.ActorSystem
 import akka.pattern.ask
 import cats.data.Xor
-import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
 import im.actor.api.rpc.users.ApiSex._
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.acl.ACLUtils
-import im.actor.server.activation._
 import im.actor.server.activation.common._
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.model._
@@ -27,33 +25,33 @@ import slick.dbio._
 
 import scala.concurrent.Future
 import scala.util.Try
-import scalaz.{ -\/, \/, \/- }
 
 trait AuthHelpers extends Helpers {
   self: AuthServiceImpl ⇒
 
-  //expiration of code won't work
-  protected def newUserPhoneSignUp(transaction: AuthPhoneTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) \/ User] = {
+  import DBIOResultRpc._
+
+  protected def newUserPhoneSignUp(transaction: AuthPhoneTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) Xor User] = {
     val phone = transaction.phoneNumber
     for {
       optPhone ← fromDBIO(UserPhoneRepo.findByPhoneNumber(phone).headOption)
       phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone).headOption)
       (_, countryCode) = phoneAndCode
       result ← optPhone match {
-        case Some(userPhone) ⇒ point(-\/((userPhone.userId, countryCode)))
+        case Some(userPhone) ⇒ point(Xor.left((userPhone.userId, countryCode)))
         case None            ⇒ newUser(name, countryCode, sex, username = None)
       }
     } yield result
   }
 
-  protected def newUserEmailSignUp(transaction: AuthEmailTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) \/ User] = {
+  protected def newUserEmailSignUp(transaction: AuthEmailTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) Xor User] = {
     val email = transaction.email
     for {
       optEmail ← fromDBIO(UserEmailRepo.find(email))
       result ← optEmail match {
-        case Some(existingEmail) ⇒ point(-\/((existingEmail.userId, "")))
+        case Some(existingEmail) ⇒ point(Xor.left((existingEmail.userId, "")))
         case None ⇒
-          val userResult: Result[(Int, String) \/ User] =
+          val userResult: Result[(Int, String) Xor User] =
             for {
               optToken ← fromDBIO(OAuth2TokenRepo.findByUserId(email))
               locale ← optToken.map { token ⇒
@@ -67,12 +65,12 @@ trait AuthHelpers extends Helpers {
     } yield result
   }
 
-  protected def newUsernameSignUp(transaction: AuthUsernameTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) \/ User] = {
+  protected def newUsernameSignUp(transaction: AuthUsernameTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) Xor User] = {
     val username = transaction.username
     for {
       optUser ← fromDBIO(UserRepo.findByNickname(username))
       result ← optUser match {
-        case Some(existingUser) ⇒ point(-\/((existingUser.id, "")))
+        case Some(existingUser) ⇒ point(Xor.left((existingUser.id, "")))
         case None               ⇒ newUser(name, "", sex, username = Some(username))
       }
     } yield result
@@ -129,7 +127,7 @@ trait AuthHelpers extends Helpers {
             _ ← validationResponse match {
               case ExpiredCode                     ⇒ cleanupAndError(transactionHash, codeExpired)
               case InvalidHash                     ⇒ cleanupAndError(transactionHash, AuthErrors.InvalidAuthCodeHash)
-              case InvalidCode                     ⇒ fromEither[Unit](-\/(codeInvalid))
+              case InvalidCode                     ⇒ fromEither[Unit](Xor.left(codeInvalid))
               case InvalidResponse | InternalError ⇒ cleanupAndError(transactionHash, AuthErrors.ActivationServiceError)
               case Validated                       ⇒ point(())
             }
@@ -151,7 +149,7 @@ trait AuthHelpers extends Helpers {
               log.error("AuthUsernameTransaction with not set userId and not checked")
               point(DBIO.successful(AuthErrors.PasswordInvalid))
           }
-        case tx: AuthAnonymousTransaction ⇒ fromEither(-\/(AuthErrors.NotValidated))
+        case tx: AuthAnonymousTransaction ⇒ fromEither(Xor.left(AuthErrors.NotValidated))
       }
 
       userAndCountry ← transaction match {
@@ -174,7 +172,7 @@ trait AuthHelpers extends Helpers {
             userModel ← fromDBIOOption(AuthErrors.UsernameUnoccupied)(UserRepo.findByNickname(u.username))
           } yield (userModel.id, "")
         case _: AuthAnonymousTransaction ⇒
-          fromEither(-\/(AuthErrors.NotValidated))
+          fromEither(Xor.left(AuthErrors.NotValidated))
       }
     } yield userAndCountry
   }
@@ -231,19 +229,19 @@ trait AuthHelpers extends Helpers {
     } yield userStruct
   }
 
-  protected def sendSmsCode(phoneNumber: Long, code: String, txHash: String)(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
+  protected def sendSmsCode(phoneNumber: Long, code: String, txHash: String)(implicit system: ActorSystem): DBIO[CodeFailure Xor Unit] = {
     log.info("Sending sms code {} to {}", code, phoneNumber)
-    DBIO.from(activationContext.send(txHash, SmsCode(phoneNumber, code)) map toScalaz)
+    DBIO.from(activationContext.send(txHash, SmsCode(phoneNumber, code)))
   }
 
-  protected def sendCallCode(phoneNumber: Long, code: String, txHash: String, language: String)(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
+  protected def sendCallCode(phoneNumber: Long, code: String, txHash: String, language: String)(implicit system: ActorSystem): DBIO[CodeFailure Xor Unit] = {
     log.info("Sending call code {} to {}", code, phoneNumber)
-    DBIO.from(activationContext.send(txHash, CallCode(phoneNumber, code, language)) map toScalaz)
+    DBIO.from(activationContext.send(txHash, CallCode(phoneNumber, code, language)))
   }
 
-  protected def sendEmailCode(email: String, code: String, txHash: String)(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
+  protected def sendEmailCode(email: String, code: String, txHash: String)(implicit system: ActorSystem): DBIO[CodeFailure Xor Unit] = {
     log.info("Sending email code {} to {}", code, email)
-    DBIO.from(activationContext.send(txHash, EmailCode(email, code)) map toScalaz)
+    DBIO.from(activationContext.send(txHash, EmailCode(email, code)))
   }
 
   protected def genSmsHash() = ThreadLocalSecureRandom.current.nextLong().toString
@@ -256,7 +254,7 @@ trait AuthHelpers extends Helpers {
     case _                               ⇒ genCode()
   }
 
-  protected def newUser(name: String, countryCode: String, optSex: Option[ApiSex], username: Option[String]): Result[\/-[User]] = {
+  protected def newUser(name: String, countryCode: String, optSex: Option[ApiSex], username: Option[String]): Result[Xor.Right[User]] = {
     val rng = ThreadLocalSecureRandom.current()
     val sex = optSex.map(s ⇒ Sex.fromInt(s.id)).getOrElse(NoSex)
     for {
@@ -272,7 +270,7 @@ trait AuthHelpers extends Helpers {
         external = None,
         nickname = username
       )
-    } yield \/-(user)
+    } yield Xor.Right(user)
   }
 
   protected def newUser(name: String): Result[User] = {
@@ -305,7 +303,5 @@ trait AuthHelpers extends Helpers {
     (email replaceAll (""".*acme""", "")) replaceAll (".com", "")
 
   private def genCode() = ThreadLocalSecureRandom.current.nextLong().toString.dropWhile(c ⇒ c == '0' || c == '-').take(5)
-
-  private def toScalaz[A, B](xor: A Xor B) = xor.fold(f ⇒ -\/(f), s ⇒ \/-(s))
 
 }

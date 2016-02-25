@@ -100,6 +100,8 @@ services {
       default-bucket: <put_your_bucket_here>
       # S3 Endpoint
       # endpoint: <put_your_custom_endpoint_here>
+      # Enable S3 URLs with path-style access
+      # path-style-access: true / false
     }
   }
 

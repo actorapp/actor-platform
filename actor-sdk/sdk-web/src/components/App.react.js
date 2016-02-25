@@ -3,6 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import LocationContainer from '../utils/LocationContainer';
 
 /**
  * Root react component
@@ -14,7 +15,8 @@ class App extends Component {
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
-    ])
+    ]),
+    location: PropTypes.object
   };
 
   static childContextTypes = {
@@ -31,6 +33,8 @@ class App extends Component {
 
   constructor(props) {
     super(props);
+
+    LocationContainer.set(props.location);
   }
 
   render() {

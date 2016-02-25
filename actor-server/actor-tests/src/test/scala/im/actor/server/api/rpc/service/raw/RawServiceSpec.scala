@@ -11,7 +11,6 @@ import play.api.libs.json.Json
 
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.Future
-import scalaz.\/-
 
 class RawServiceSpec
   extends BaseAppSuite
@@ -65,7 +64,7 @@ class RawServiceSpec
   def e3() = {
     whenReady(service.handleRawRequest("dictionary", "getWord", Some(ApiMapValue(Vector(ApiMapValueItem("word", ApiStringValue("culture"))))))) { resp ⇒
       inside(resp) {
-        case \/-(rawValue) ⇒ inside(rawValue.result) {
+        case Xor.Right(rawValue) ⇒ inside(rawValue.result) {
           case ApiMapValue(items) ⇒
             items should have length 1
             items.head shouldEqual ApiMapValueItem("meaning", ApiStringValue(DictionaryMeanings.Culture))
@@ -75,7 +74,7 @@ class RawServiceSpec
 
     whenReady(service.handleRawRequest("dictionary", "getWord", Some(ApiMapValue(Vector(ApiMapValueItem("word", ApiStringValue("UNKNOWN"))))))) { resp ⇒
       inside(resp) {
-        case \/-(rawValue) ⇒ inside(rawValue.result) {
+        case Xor.Right(rawValue) ⇒ inside(rawValue.result) {
           case ApiMapValue(items) ⇒
             items shouldBe empty
         }
@@ -94,7 +93,7 @@ class RawServiceSpec
 
     whenReady(service.handleRawRequest("echo", "makeEcho", Some(ApiMapValue(Vector(ApiMapValueItem("query", ApiStringValue("Hello"))))))) { resp ⇒
       inside(resp) {
-        case \/-(rawValue) ⇒ inside(rawValue.result) {
+        case Xor.Right(rawValue) ⇒ inside(rawValue.result) {
           case ApiMapValue(items) ⇒
             items should have length 1
             items.head shouldEqual ApiMapValueItem("echo", ApiStringValue("Hello you back!"))
@@ -108,7 +107,7 @@ class RawServiceSpec
 
     whenReady(service.handleRawRequest("mapDictionary", "getWord", Some(ApiMapValue(Vector(ApiMapValueItem("word", ApiStringValue("culture"))))))) { resp ⇒
       inside(resp) {
-        case \/-(rawValue) ⇒ inside(rawValue.result) {
+        case Xor.Right(rawValue) ⇒ inside(rawValue.result) {
           case ApiMapValue(items) ⇒
             items should have length 1
             items.head shouldEqual ApiMapValueItem("meaning", ApiStringValue(DictionaryMeanings.Culture))
@@ -122,7 +121,7 @@ class RawServiceSpec
       ApiMapValueItem("meaning", ApiStringValue(newWord._2))
     ))))) { resp ⇒
       inside(resp) {
-        case \/-(rawValue) ⇒ inside(rawValue.result) {
+        case Xor.Right(rawValue) ⇒ inside(rawValue.result) {
           case ApiMapValue(items) ⇒
             items should have length 1
             items.head shouldEqual ApiMapValueItem("result", ApiStringValue("true"))
@@ -132,7 +131,7 @@ class RawServiceSpec
 
     whenReady(service.handleRawRequest("mapDictionary", "getWord", Some(ApiMapValue(Vector(ApiMapValueItem("word", ApiStringValue(newWord._1))))))) { resp ⇒
       inside(resp) {
-        case \/-(rawValue) ⇒ inside(rawValue.result) {
+        case Xor.Right(rawValue) ⇒ inside(rawValue.result) {
           case ApiMapValue(items) ⇒
             items should have length 1
             items.head shouldEqual ApiMapValueItem("meaning", ApiStringValue(newWord._2))
@@ -147,7 +146,7 @@ class RawServiceSpec
 
     whenReady(service.handleRawRequest("arrayDictionary", "getWord", Some(ApiStringValue("culture")))) { resp ⇒
       inside(resp) {
-        case \/-(rawValue) ⇒ inside(rawValue.result) {
+        case Xor.Right(rawValue) ⇒ inside(rawValue.result) {
           case ApiArrayValue(items) ⇒
             items should have length 1
             items.head shouldEqual ApiStringValue(DictionaryMeanings.Culture)
@@ -161,13 +160,13 @@ class RawServiceSpec
       ApiStringValue(newWord._2)
     ))))) { resp ⇒
       inside(resp) {
-        case \/-(rawValue) ⇒ rawValue.result shouldEqual ApiStringValue("true")
+        case Xor.Right(rawValue) ⇒ rawValue.result shouldEqual ApiStringValue("true")
       }
     }
 
     whenReady(service.handleRawRequest("arrayDictionary", "getWord", Some(ApiStringValue(newWord._1)))) { resp ⇒
       inside(resp) {
-        case \/-(rawValue) ⇒ inside(rawValue.result) {
+        case Xor.Right(rawValue) ⇒ inside(rawValue.result) {
           case ApiArrayValue(items) ⇒
             items should have length 1
             items.head shouldEqual ApiStringValue(newWord._2)
@@ -191,7 +190,7 @@ class RawServiceSpec
   private final class DictionaryService(system: ActorSystem) extends RawApiService(system) {
     import DictionaryMeanings._
     import ServiceErrors._
-    import im.actor.api.rpc.FutureResultRpcCats._
+    import im.actor.api.rpc.FutureResultRpc._
 
     private val kv = TrieMap.empty[String, String]
 
@@ -223,7 +222,7 @@ class RawServiceSpec
   private final class MapStyleDictionaryService(system: ActorSystem) extends MapStyleRawApiService(system) {
     import DictionaryMeanings._
     import ServiceErrors._
-    import im.actor.api.rpc.FutureResultRpcCats._
+    import im.actor.api.rpc.FutureResultRpc._
 
     sealed trait DictionaryRequest
     case class GetWord(word: String) extends DictionaryRequest
@@ -277,7 +276,7 @@ class RawServiceSpec
    */
   private final class ArrayStyleDictionaryService(system: ActorSystem) extends ArrayStyleRawApiService(system) {
     import DictionaryMeanings._
-    import im.actor.api.rpc.FutureResultRpcCats._
+    import im.actor.api.rpc.FutureResultRpc._
 
     sealed trait DictionaryRequest
     case class GetWord(word: String) extends DictionaryRequest

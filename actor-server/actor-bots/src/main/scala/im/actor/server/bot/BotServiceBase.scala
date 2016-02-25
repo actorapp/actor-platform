@@ -2,6 +2,7 @@ package im.actor.server.bot
 
 import akka.actor.ActorSystem
 import im.actor.bots.BotMessages
+import im.actor.concurrent.XorEitherConversions
 import im.actor.server.user.UserExtension
 import upickle.Js
 import upickle.default._
@@ -39,7 +40,7 @@ trait BotServiceTypes extends BotToInternalConversions {
   case class WeakRequestHandler(handle: (BotUserId, BotAuthId, BotAuthSid) ⇒ Future[BotResponseBody])
 }
 
-abstract class BotServiceBase(system: ActorSystem) extends BotServiceTypes {
+abstract class BotServiceBase(system: ActorSystem) extends BotServiceTypes with XorEitherConversions {
   import BotMessages._
   import system.dispatcher
 

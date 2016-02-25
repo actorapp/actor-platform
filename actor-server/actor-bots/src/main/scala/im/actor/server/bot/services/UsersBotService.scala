@@ -3,13 +3,13 @@ package im.actor.server.bot.services
 import akka.actor.ActorSystem
 import cats.data.Xor
 import im.actor.bots.BotMessages.BotError
-import im.actor.concurrent.FutureResultCats
+import im.actor.concurrent.FutureResult
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ ImageUtils, FileStorageExtension, FileStorageAdapter }
 import im.actor.server.user.{ UserErrors, UserUtils }
 
-private[bot] final class UsersBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResultCats[BotError] with ApiToBotConversions {
+private[bot] final class UsersBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResult[BotError] with ApiToBotConversions {
   import im.actor.bots.BotMessages._
   import system.dispatcher
   import ImageUtils._
@@ -62,7 +62,7 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
     (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       ifIsAdmin(botUserId) {
         (for {
-          avatar ← fromFutureEither(_ ⇒ BotError(400, "LOCATION_INVALID"))(db.run(scaleAvatar(fileLocation.fileId)))
+          avatar ← fromFutureXor(_ ⇒ BotError(400, "LOCATION_INVALID"))(db.run(scaleAvatar(fileLocation.fileId)) map Xor.fromEither)
           _ ← fromFuture(userExt.updateAvatar(userId, Some(avatar)))
         } yield Void).value
       }

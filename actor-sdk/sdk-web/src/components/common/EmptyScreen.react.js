@@ -14,15 +14,19 @@ class EmptyScreen extends Component {
 
   render() {
     return (
-      <section className="dialog dialog--empty row center-xs middle-xs">
-        <ConnectionState/>
+      <section className="main">
+        <div className="flexrow">
+          <section className="dialog dialog--empty row center-xs middle-xs">
+            <ConnectionState/>
 
-        <div className="advice">
-          <div className="logo">
-            <svg className="icon icon--gray"
-                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#star"/>'}}/>
-          </div>
-          <h2><FormattedMessage id="main.empty"/></h2>
+            <div className="advice">
+              <div className="logo">
+                <svg className="icon icon--gray"
+                     dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#star"/>'}}/>
+              </div>
+              <h2><FormattedMessage id="main.empty"/></h2>
+            </div>
+          </section>
         </div>
       </section>
     );

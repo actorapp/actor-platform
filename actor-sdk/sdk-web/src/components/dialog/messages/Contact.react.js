@@ -33,11 +33,11 @@ class Contact extends Component {
 
     let emaislList = [], phonesList = [];
     if (emails.length > 0) {
-      emaislList = map(emails, (email) => <li className="contact__emails__item"><a href={'mailto:' + email}>{email}</a></li>)
+      emaislList = map(emails, (email, index) => <li className="contact__emails__item" key={index}><a href={'mailto:' + email}>{email}</a></li>)
     }
     // TODO: `pones` must be renamed to `phones` in library
     if (pones.length > 0) {
-      phonesList = map(pones, (phone) => <li className="contact__phones__item"><a href={'tel:' + phone}>{phone}</a></li>)
+      phonesList = map(pones, (phone, index) => <li className="contact__phones__item" key={index}><a href={'tel:' + phone}>{phone}</a></li>)
     }
 
     return (

@@ -83,6 +83,7 @@
                         android:id="@+id/notAnswer"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
+                        android:src="@drawable/ic_call_end_white_36dp"
                         android:background="@drawable/end_call_background"
                         />
                 </FrameLayout>
@@ -109,6 +110,7 @@
                 android:id="@+id/end_call"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:src="@drawable/ic_call_end_white_36dp"
                 android:background="@drawable/end_call_background"
                 android:layout_marginBottom="20dp"/>
 

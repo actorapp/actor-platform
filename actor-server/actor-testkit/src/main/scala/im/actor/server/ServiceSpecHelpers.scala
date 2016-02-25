@@ -3,6 +3,7 @@ package im.actor.server
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import akka.util.Timeout
+import cats.data.Xor
 import eu.codearte.jfairy.Fairy
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.auth.AuthService
@@ -21,7 +22,6 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.Random
-import scalaz.{ -\/, \/- }
 
 trait PersistenceHelpers {
   implicit val timeout = Timeout(5.seconds)
@@ -83,8 +83,8 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
     val res = Await.result(service.handleValidateCode(txHash, code), 5.seconds)
 
     res match {
-      case \/-(rsp) ⇒ rsp
-      case -\/(e)   ⇒ fail(s"Got RpcError ${e}")
+      case Xor.Right(rsp) ⇒ rsp
+      case Xor.Left(e)    ⇒ fail(s"Got RpcError ${e}")
     }
 
     (authId, Await.result(db.run(AuthSessionRepo.findByAuthId(authId)), 5.seconds).get.id)

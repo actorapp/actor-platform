@@ -97,6 +97,7 @@ $sticker-max-size: 180px;
   bottom: 182px;
 
   width: 100%;
+  overflow-x: hidden;
   &__list {
     width: 100%;
     max-height: 100%;
@@ -108,12 +109,30 @@ $sticker-max-size: 180px;
 
   .scroll-wrapper {
     .ss-wrapper {
-      .ss-content {
+      .ss-scrollarea {
+        overflow-x: hidden;
         position: absolute;
         bottom: 0;
 
         height: auto;
         max-height: 100%;
+      }
+    }
+    .ss-scroll {
+      right: 4px;
+      width: 4px;
+      opacity: .2;
+      background-color: $dusk;
+      &:hover,
+      &:active {
+        width: 8px;
+        right: 2px;
+        opacity: 1 !important;
+      }
+    }
+    &:hover {
+      .ss-scroll {
+        opacity: .4;
       }
     }
   }
