@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { forEach, map, throttle } from 'lodash';
+import { forEach, map, debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
@@ -21,6 +21,10 @@ import RecentItem from './RecentItem.react';
 class Recent extends Component {
   constructor(props) {
     super(props);
+    this.checkInvisibleCounters = debounce(this.checkInvisibleCounters, 50, {
+      maxWait: 150,
+      leading: true
+    });
   }
 
   static contextTypes = {
@@ -47,9 +51,7 @@ class Recent extends Component {
 
   handlePrivateListClick = () => ContactActionCreators.open();
 
-  handleRecentScroll = throttle((event) => {
-    this.checkInvisibleCounters();
-  }, 100, {trailing: true});
+  handleRecentScroll = () => this.checkInvisibleCounters();
 
   checkInvisibleCounters = () => {
     const unreadNodes = document.getElementsByClassName('sidebar__list__item--unread');
@@ -75,7 +77,7 @@ class Recent extends Component {
       }
     });
 
-    this.setState({haveUnreadAbove, haveUnreadBelow, firstUnreadAbove, lastUnreadBelow})
+    this.setState({haveUnreadAbove, haveUnreadBelow, firstUnreadAbove, lastUnreadBelow});
   };
 
   scrollToFirstHiddenAbove = () => {
