@@ -6,41 +6,44 @@ import { forEach, map, debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
-import { Container } from 'flux/utils';
-import Scrollbar from '../common/Scrollbar.react';
 
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 import ContactActionCreators from '../../actions/ContactActionCreators';
 import GroupListActionCreators from '../../actions/GroupListActionCreators';
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
 
-import AllDialogsStore from '../../stores/AllDialogsStore';
-
+import Scrollbar from '../common/Scrollbar.react';
 import RecentItem from './RecentItem.react';
 
 class Recent extends Component {
   constructor(props) {
     super(props);
+
     this.checkInvisibleCounters = debounce(this.checkInvisibleCounters, 50, {
       maxWait: 150,
       leading: true
     });
+
+    this.state = {
+      haveUnreadAbove: false,
+      haveUnreadBelow: false,
+      lastUnreadBelow: null,
+      firstUnreadAbove: null
+    }
   }
 
   static contextTypes = {
     intl: PropTypes.object
   };
 
-  static getStores = () => [AllDialogsStore];
+  static propTypes = {
+    dialogs: PropTypes.array.isRequired
+  };
 
-  static calculateState() {
-    return {
-      allDialogs: AllDialogsStore.getAllDialogs()
-    };
-  }
-
-  componentDidUpdate() {
-    setTimeout(() => this.checkInvisibleCounters(), 500)
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      this.checkInvisibleCounters();
+    }
   }
 
   handleCreateGroup = () => CreateGroupActionCreators.open();
@@ -60,8 +63,8 @@ class Recent extends Component {
 
     let haveUnreadAbove = false,
         haveUnreadBelow = false,
-        lastUnreadBelow,
-        firstUnreadAbove;
+        lastUnreadBelow = null,
+        firstUnreadAbove = null;
 
     forEach(unreadNodes, (node) => {
       const rect = node.getBoundingClientRect();
@@ -77,13 +80,13 @@ class Recent extends Component {
       }
     });
 
-    this.setState({haveUnreadAbove, haveUnreadBelow, firstUnreadAbove, lastUnreadBelow});
+    this.setState({ haveUnreadAbove, haveUnreadBelow, firstUnreadAbove, lastUnreadBelow });
   };
 
   scrollToFirstHiddenAbove = () => {
     const { firstUnreadAbove } = this.state;
     const rect = firstUnreadAbove.getBoundingClientRect();
-    const scrollNode = findDOMNode(this.refs.container).getElementsByClassName('ss-content')[0];
+    const scrollNode = findDOMNode(this.refs.container).getElementsByClassName('ss-scrollarea')[0];
     const scrollNodeRect = scrollNode.getBoundingClientRect();
 
     this.refs.container.scrollTo(scrollNode.scrollTop + rect.top - scrollNodeRect.top)
@@ -92,17 +95,18 @@ class Recent extends Component {
   scrollToLastHiddenBelow = () => {
     const { lastUnreadBelow } = this.state;
     const rect = lastUnreadBelow.getBoundingClientRect();
-    const scrollNode = findDOMNode(this.refs.container).getElementsByClassName('ss-content')[0];
+    const scrollNode = findDOMNode(this.refs.container).getElementsByClassName('ss-scrollarea')[0];
     const scrollNodeRect = scrollNode.getBoundingClientRect();
 
     this.refs.container.scrollTo(scrollNode.scrollTop + rect.top - (scrollNodeRect.top + scrollNodeRect.height - rect.height));
   };
 
   render() {
-    const { allDialogs, haveUnreadAbove, haveUnreadBelow } = this.state;
+    const { dialogs } = this.props;
+    const { haveUnreadAbove, haveUnreadBelow } = this.state;
     const { intl } = this.context;
 
-    const recentGroups = map(allDialogs, (dialogGroup, index) => {
+    const recentGroups = map(dialogs, (dialogGroup, index) => {
       let groupTitle;
       switch (dialogGroup.key) {
         case 'groups':
@@ -144,8 +148,8 @@ class Recent extends Component {
         {
           haveUnreadAbove
             ? <div className="sidebar__recent__unread sidebar__recent__unread--above" onClick={this.scrollToFirstHiddenAbove}>
-            <i className="material-icons">keyboard_arrow_up</i>
-          </div>
+                <i className="material-icons">keyboard_arrow_up</i>
+              </div>
             : null
         }
         <Scrollbar ref="container" onScroll={this.handleRecentScroll}>
@@ -154,8 +158,8 @@ class Recent extends Component {
         {
           haveUnreadBelow
             ? <div className="sidebar__recent__unread sidebar__recent__unread--below" onClick={this.scrollToLastHiddenBelow}>
-            <i className="material-icons">keyboard_arrow_down</i>
-          </div>
+                <i className="material-icons">keyboard_arrow_down</i>
+              </div>
             : null
         }
       </section>
@@ -163,4 +167,4 @@ class Recent extends Component {
   }
 }
 
-export default Container.create(Recent, {pure: false});
+export default Recent;
