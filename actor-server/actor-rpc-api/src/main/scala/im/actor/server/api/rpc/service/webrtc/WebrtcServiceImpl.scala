@@ -1,9 +1,11 @@
 package im.actor.server.api.rpc.service.webrtc
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc._
-import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer, ApiOutPeer }
-import im.actor.api.rpc.webrtc.{ ResponseGetCallInfo, ResponseDoCall, WebrtcService }
+import im.actor.api.rpc.misc.ResponseVoid
+import im.actor.api.rpc.peers._
+import im.actor.api.rpc.webrtc._
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
 import im.actor.server.session._
@@ -13,8 +15,9 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 object WebrtcErrors {
   val CallNotStarted = RpcError(400, "CALL_NOT_STARTED", "Call not started.", canTryAgain = false, None)
-  val CallAlreadyStareted = RpcError(400, "CALL_ALREADY_STARTED", "Call already started", canTryAgain = false, None)
-  val NotAParticipant = RpcError(403, "NOT_A_PARTICIPANT", "Not a participant", canTryAgain = false, None)
+  val CallAlreadyStareted = RpcError(400, "CALL_ALREADY_STARTED", "Call already started.", canTryAgain = false, None)
+  val NotAParticipant = RpcError(403, "NOT_A_PARTICIPANT", "Not a participant.", canTryAgain = false, None)
+  val NotJoinedToEventBus = RpcError(400, "NOT_JOINED_TO_EVENT_BUS", "Not joined to event bus.", canTryAgain = false, None)
 }
 
 final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: SessionRegion) extends WebrtcService {
@@ -41,9 +44,80 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
       }
     }
 
+  /**
+   * Rejecting Call
+   *
+   * @param callId Call Id
+   */
+  override protected def doHandleRejectCall(
+    callId:     Long,
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseVoid]] =
+    authorized(clientData) { implicit client ⇒
+      for {
+        callId ← webrtcExt.rejectCall(client.userId, client.authId, callId)
+      } yield Ok(ResponseVoid)
+    }
+
+  /**
+   * Joining Call
+   *
+   * @param callId Call Id
+   */
+  override protected def doHandleJoinCall(
+    callId:     Long,
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseVoid]] =
+    authorized(clientData) { implicit client ⇒
+      for {
+        callId ← webrtcExt.joinCall(client.userId, client.authId, callId)
+      } yield Ok(ResponseVoid)
+    }
+
+  /**
+   * Method for upgrading a call from private call to group call
+   *
+   * @param callId Call Id
+   * @param peer   Destination peer for upgrading
+   */
+  override protected def doHandleUpgradeCall(
+    callId:     Long,
+    peer:       ApiGroupOutPeer,
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseVoid]] = FastFuture.failed(new RuntimeException("Not implemented"))
+
+  /**
+   * Call again to user
+   *
+   * @param callId Call Id
+   * @param user   User to call again
+   */
+  override protected def doHandleDoCallAgain(
+    callId:     Long,
+    user:       ApiUserOutPeer,
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseVoid]] = FastFuture.failed(new RuntimeException("Not implemented"))
+
+  /**
+   * Optimizing SDP
+   *
+   * @param type          Type of SDP (offer or answer)
+   * @param sdp           SDP value
+   * @param ownSettings   Own Settings
+   * @param theirSettings Their Settings
+   */
+  override protected def doHandleOptimizeSDP(
+    `type`:        String,
+    sdp:           String,
+    ownSettings:   ApiPeerSettings,
+    theirSettings: ApiPeerSettings,
+    clientData:    ClientData
+  ): Future[HandlerResult[ResponseOptimizeSDP]] = FastFuture.failed(new RuntimeException("Not implemented"))
+
   override def onFailure: PartialFunction[Throwable, RpcError] = {
-    case WebrtcCallErrors.CallAlreadyStarted ⇒ WebrtcErrors.CallAlreadyStareted
-    case WebrtcCallErrors.CallNotStarted     ⇒ WebrtcErrors.CallNotStarted
-    case WebrtcCallErrors.NotAParticipant    ⇒ WebrtcErrors.NotAParticipant
+    case WebrtcCallErrors.CallAlreadyStarted  ⇒ WebrtcErrors.CallAlreadyStareted
+    case WebrtcCallErrors.CallNotStarted      ⇒ WebrtcErrors.CallNotStarted
+    case WebrtcCallErrors.NotAParticipant     ⇒ WebrtcErrors.NotAParticipant
+    case WebrtcCallErrors.NotJoinedToEventBus ⇒ WebrtcErrors.NotJoinedToEventBus
   }
 }
