@@ -4,7 +4,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import im.actor.core.api.ApiEventBusDestination;
 import im.actor.core.api.rpc.RequestCreateNewEventBus;
 import im.actor.core.api.rpc.RequestJoinEventBus;
 import im.actor.core.api.rpc.RequestKeepAliveEventBus;
@@ -145,21 +144,17 @@ public class EventBusActor extends ModuleActor {
     }
 
     public void sendMessage(byte[] data) {
-        request(new RequestPostToEventBus(busId, new ArrayList<ApiEventBusDestination>(), data));
+        request(new RequestPostToEventBus(busId, new ArrayList<Long>(), data));
     }
 
-    public void sendMessage(int uid, byte[] data) {
-        ArrayList<ApiEventBusDestination> destinations = new ArrayList<>();
-        destinations.add(new ApiEventBusDestination(uid, new ArrayList<Long>()));
-        request(new RequestPostToEventBus(busId, destinations, data));
+    public void sendMessage(ArrayList<Long> deviceIds, byte[] data) {
+        request(new RequestPostToEventBus(busId, deviceIds, data));
     }
 
-    public void sendMessage(int uid, long deviceId, byte[] data) {
-        ArrayList<ApiEventBusDestination> destinations = new ArrayList<>();
-        ArrayList<Long> deviceIds = new ArrayList<>();
-        deviceIds.add(deviceId);
-        destinations.add(new ApiEventBusDestination(uid, deviceIds));
-        request(new RequestPostToEventBus(busId, destinations, data));
+    public void sendMessage(long deviceId, byte[] data) {
+        ArrayList<Long> devices = new ArrayList<>();
+        devices.add(deviceId);
+        request(new RequestPostToEventBus(busId, devices, data));
     }
 
 

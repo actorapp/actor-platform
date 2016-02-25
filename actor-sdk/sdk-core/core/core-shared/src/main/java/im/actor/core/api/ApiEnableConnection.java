@@ -14,46 +14,48 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiEventBusDestination extends BserObject {
+public class ApiEnableConnection extends ApiWebRTCSignaling {
 
-    private int userId;
-    private List<Long> deviceIds;
+    private long device;
+    private long sessionId;
 
-    public ApiEventBusDestination(int userId, @NotNull List<Long> deviceIds) {
-        this.userId = userId;
-        this.deviceIds = deviceIds;
+    public ApiEnableConnection(long device, long sessionId) {
+        this.device = device;
+        this.sessionId = sessionId;
     }
 
-    public ApiEventBusDestination() {
+    public ApiEnableConnection() {
 
     }
 
-    public int getUserId() {
-        return this.userId;
+    public int getHeader() {
+        return 22;
     }
 
-    @NotNull
-    public List<Long> getDeviceIds() {
-        return this.deviceIds;
+    public long getDevice() {
+        return this.device;
+    }
+
+    public long getSessionId() {
+        return this.sessionId;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.userId = values.getInt(1);
-        this.deviceIds = values.getRepeatedLong(2);
+        this.device = values.getLong(1);
+        this.sessionId = values.getLong(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.userId);
-        writer.writeRepeatedLong(2, this.deviceIds);
+        writer.writeLong(1, this.device);
+        writer.writeLong(2, this.sessionId);
     }
 
     @Override
     public String toString() {
-        String res = "struct EventBusDestination{";
-        res += "userId=" + this.userId;
-        res += ", deviceIds=" + this.deviceIds;
+        String res = "struct EnableConnection{";
+        res += "device=" + this.device;
         res += "}";
         return res;
     }

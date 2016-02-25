@@ -1,6 +1,5 @@
 package im.actor.core.modules.calls.peers;
 
-import im.actor.core.api.ApiWebRTCSignaling;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
 
@@ -18,8 +17,8 @@ public class CallBusInt extends ActorInterface {
         send(new CallBusActor.CreateBus());
     }
 
-    public void sendSignal(long deviceId, ApiWebRTCSignaling signal) {
-        send(new CallBusActor.SendSignal(deviceId, signal));
+    public void changeMute(boolean isMuted){
+        send(new CallBusActor.Mute(isMuted));
     }
 
     public void answerCall() {

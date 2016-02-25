@@ -15,51 +15,58 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class ResponseJoinEventBus extends Response {
+public class RequestReJoinEventBus extends Request<ResponseReJoinEventBus> {
 
-    public static final int HEADER = 0xa6d;
-    public static ResponseJoinEventBus fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ResponseJoinEventBus(), data);
+    public static final int HEADER = 0xa73;
+    public static RequestReJoinEventBus fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestReJoinEventBus(), data);
     }
 
-    private long deviceId;
+    private String id;
     private byte[] rejoinToken;
 
-    public ResponseJoinEventBus(long deviceId, @Nullable byte[] rejoinToken) {
-        this.deviceId = deviceId;
+    public RequestReJoinEventBus(@NotNull String id, @NotNull byte[] rejoinToken) {
+        this.id = id;
         this.rejoinToken = rejoinToken;
     }
 
-    public ResponseJoinEventBus() {
+    public RequestReJoinEventBus() {
 
     }
 
-    public long getDeviceId() {
-        return this.deviceId;
+    @NotNull
+    public String getId() {
+        return this.id;
     }
 
-    @Nullable
+    @NotNull
     public byte[] getRejoinToken() {
         return this.rejoinToken;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.deviceId = values.getLong(1);
-        this.rejoinToken = values.optBytes(2);
+        this.id = values.getString(1);
+        this.rejoinToken = values.getBytes(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, this.deviceId);
-        if (this.rejoinToken != null) {
-            writer.writeBytes(2, this.rejoinToken);
+        if (this.id == null) {
+            throw new IOException();
         }
+        writer.writeString(1, this.id);
+        if (this.rejoinToken == null) {
+            throw new IOException();
+        }
+        writer.writeBytes(2, this.rejoinToken);
     }
 
     @Override
     public String toString() {
-        String res = "tuple JoinEventBus{";
+        String res = "rpc ReJoinEventBus{";
+        res += "id=" + this.id;
+        res += ", rejoinToken=" + byteArrayToString(this.rejoinToken);
         res += "}";
         return res;
     }
