@@ -36,23 +36,23 @@ gulp.task('webpack:dev', ['sdk'], () => {
 gulp.task('assets', ['html', 'sounds', 'images']);
 
 gulp.task('sounds', ['sdk'], () => {
-  gulp.src(['build/assets/sound/**/*'])
+  return gulp.src(['build/assets/sound/**/*'])
     .pipe(gulp.dest('./dist/assets/sound'));
 });
 
 gulp.task('images', ['sdk'], () => {
-  gulp.src(['build/assets/images/**/*'])
+  return gulp.src(['build/assets/images/**/*'])
     .pipe(gulpif(isProduction, image({svgo: false})))
     .pipe(gulp.dest('./dist/assets/images'));
 });
 
 gulp.task('html', () => {
-  gulp.src(['devapp/index.html'])
+  return gulp.src(['devapp/index.html'])
     .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('workers', ['sdk'], () => {
-  gulp.src([
+  return gulp.src([
     //'build/workers/offline-worker.*',
     //'build/workers/serviceworker-cache-polyfill.*',
     'node_modules/opus-recorder/libopus.js',
@@ -65,7 +65,7 @@ gulp.task('workers', ['sdk'], () => {
 
 gulp.task('lib:build', shell.task('./gradlew :actor-sdk:sdk-core:core:core-js:buildPackage', {cwd: '../..'}));
 gulp.task('lib:copy', ['lib:build'], () => {
-  gulp.src(['../sdk-core/core/core-js/build/package/actor.nocache.js'])
+  return gulp.src(['../sdk-core/core/core-js/build/package/actor.nocache.js'])
     .pipe(rename('actor.js'))
     .pipe(gulp.dest('./node_modules/actor-js/'));
 });
