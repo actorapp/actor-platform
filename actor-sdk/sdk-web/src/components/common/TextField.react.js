@@ -18,6 +18,7 @@ class TextField extends Component {
     value: PropTypes.string,
     ref: PropTypes.string,
     disabled: PropTypes.bool,
+    errorText: PropTypes.string,
 
     onChange: PropTypes.func,
     onFocus: PropTypes.func,
@@ -34,13 +35,14 @@ class TextField extends Component {
   }
 
   render() {
-    const { className, floatingLabel, type, value, ref, disabled } = this.props;
+    const { className, floatingLabel, type, value, ref, disabled, errorText } = this.props;
     const { isFocused, inputId } = this.state;
 
     const inputClassName = classnames('input input__material', className, {
       'input__material--focus': isFocused,
       'input__material--filled': value && value.length > 0,
-      'input__material--disabled': disabled
+      'input__material--disabled': disabled,
+      'input__material--with-error': errorText
     });
 
     const inputProps = {
@@ -62,6 +64,11 @@ class TextField extends Component {
             : null
         }
         <input {...inputProps}/>
+        {
+          errorText
+            ? <span className="error">{errorText}</span>
+            : null
+        }
       </div>
     );
   }
