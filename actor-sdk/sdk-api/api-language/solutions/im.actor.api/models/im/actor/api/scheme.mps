@@ -11544,6 +11544,48 @@
           <ref role="NX6Kv" node="3xEfKBqKb$r" resolve="device" />
         </node>
       </node>
+      <node concept="2m5naR" id="5Wm9DsmkEkp" role="2m5mJr">
+        <property role="TrG5h" value="ActiveCall" />
+        <node concept="2m7Kf5" id="5Wm9DsmkEoF" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndQ" id="5Wm9DsmkEoJ" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5Wm9DsmkEoM" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="5Wm9DsmkEoS" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5Wm9DsmkEoV" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="callMembers" />
+          <node concept="2m5nlk" id="5Wm9DsmkEp3" role="2m7DVh">
+            <node concept="2m5mGg" id="5Wm9DsmkEp9" role="3GJlyp">
+              <ref role="2m5mJy" node="3xEfKBqJRkx" resolve="CallMember" />
+            </node>
+          </node>
+        </node>
+        <node concept="NXeRC" id="5Wm9DsmkEpc" role="NXodf">
+          <property role="NXePf" value="Active Calls. Used in broadcasting states of current calls." />
+        </node>
+        <node concept="NX1gA" id="5Wm9DsmkEph" role="NXodf">
+          <property role="NX6R2" value="Call Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5Wm9DsmkEoF" resolve="callId" />
+        </node>
+        <node concept="NX1gA" id="5Wm9DsmkEpp" role="NXodf">
+          <property role="NX6R2" value="Call's peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5Wm9DsmkEoM" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="5Wm9DsmkEpz" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Call Members" />
+          <ref role="NX6Kv" node="5Wm9DsmkEoV" resolve="callMembers" />
+        </node>
+      </node>
       <node concept="2m488m" id="3xEfKBqJSst" role="2m5mJr">
         <property role="TrG5h" value="CallMemberState" />
         <node concept="2m7y0F" id="3xEfKBqJSsv" role="2m7ymf">
