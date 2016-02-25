@@ -14,28 +14,49 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiAnswerCall extends ApiWebRTCSignaling {
+public class ApiNegotinationSuccessful extends ApiWebRTCSignaling {
 
+    private long device;
+    private long sessionId;
 
-    public ApiAnswerCall() {
+    public ApiNegotinationSuccessful(long device, long sessionId) {
+        this.device = device;
+        this.sessionId = sessionId;
+    }
+
+    public ApiNegotinationSuccessful() {
 
     }
 
     public int getHeader() {
-        return 1;
+        return 24;
+    }
+
+    public long getDevice() {
+        return this.device;
+    }
+
+    public long getSessionId() {
+        return this.sessionId;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
+        this.device = values.getLong(1);
+        this.sessionId = values.getLong(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
+        writer.writeLong(1, this.device);
+        writer.writeLong(2, this.sessionId);
     }
 
     @Override
     public String toString() {
-        String res = "struct AnswerCall{";
+        String res = "struct NegotinationSuccessful{";
+        res += "device=" + this.device;
+        res += ", sessionId=" + this.sessionId;
         res += "}";
         return res;
     }

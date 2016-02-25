@@ -23,10 +23,10 @@ public class UpdateEventBusDeviceDisconnected extends Update {
     }
 
     private String id;
-    private int userId;
+    private Integer userId;
     private long deviceId;
 
-    public UpdateEventBusDeviceDisconnected(@NotNull String id, int userId, long deviceId) {
+    public UpdateEventBusDeviceDisconnected(@NotNull String id, @Nullable Integer userId, long deviceId) {
         this.id = id;
         this.userId = userId;
         this.deviceId = deviceId;
@@ -41,7 +41,8 @@ public class UpdateEventBusDeviceDisconnected extends Update {
         return this.id;
     }
 
-    public int getUserId() {
+    @Nullable
+    public Integer getUserId() {
         return this.userId;
     }
 
@@ -52,7 +53,7 @@ public class UpdateEventBusDeviceDisconnected extends Update {
     @Override
     public void parse(BserValues values) throws IOException {
         this.id = values.getString(1);
-        this.userId = values.getInt(2);
+        this.userId = values.optInt(2);
         this.deviceId = values.getLong(3);
     }
 
@@ -62,7 +63,9 @@ public class UpdateEventBusDeviceDisconnected extends Update {
             throw new IOException();
         }
         writer.writeString(1, this.id);
-        writer.writeInt(2, this.userId);
+        if (this.userId != null) {
+            writer.writeInt(2, this.userId);
+        }
         writer.writeLong(3, this.deviceId);
     }
 

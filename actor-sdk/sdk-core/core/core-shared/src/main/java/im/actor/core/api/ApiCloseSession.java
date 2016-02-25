@@ -14,28 +14,48 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiSwitchMaster extends ApiWebRTCSignaling {
+public class ApiCloseSession extends ApiWebRTCSignaling {
 
+    private long device;
+    private long sessionId;
 
-    public ApiSwitchMaster() {
+    public ApiCloseSession(long device, long sessionId) {
+        this.device = device;
+        this.sessionId = sessionId;
+    }
+
+    public ApiCloseSession() {
 
     }
 
     public int getHeader() {
-        return 9;
+        return 6;
+    }
+
+    public long getDevice() {
+        return this.device;
+    }
+
+    public long getSessionId() {
+        return this.sessionId;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
+        this.device = values.getLong(1);
+        this.sessionId = values.getLong(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
+        writer.writeLong(1, this.device);
+        writer.writeLong(2, this.sessionId);
     }
 
     @Override
     public String toString() {
-        String res = "struct SwitchMaster{";
+        String res = "struct CloseSession{";
+        res += "sessionId=" + this.sessionId;
         res += "}";
         return res;
     }

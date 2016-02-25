@@ -14,44 +14,48 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiMemberAdded extends ApiWebRTCSignaling {
+public class ApiSyncedValue extends BserObject {
 
-    private ApiCallMember memberAdded;
+    private long id;
+    private byte[] value;
 
-    public ApiMemberAdded(@NotNull ApiCallMember memberAdded) {
-        this.memberAdded = memberAdded;
+    public ApiSyncedValue(long id, @Nullable byte[] value) {
+        this.id = id;
+        this.value = value;
     }
 
-    public ApiMemberAdded() {
+    public ApiSyncedValue() {
 
     }
 
-    public int getHeader() {
-        return 17;
+    public long getId() {
+        return this.id;
     }
 
-    @NotNull
-    public ApiCallMember getMemberAdded() {
-        return this.memberAdded;
+    @Nullable
+    public byte[] getValue() {
+        return this.value;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.memberAdded = values.getObj(2, new ApiCallMember());
+        this.id = values.getLong(1);
+        this.value = values.optBytes(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.memberAdded == null) {
-            throw new IOException();
+        writer.writeLong(1, this.id);
+        if (this.value != null) {
+            writer.writeBytes(2, this.value);
         }
-        writer.writeObject(2, this.memberAdded);
     }
 
     @Override
     public String toString() {
-        String res = "struct MemberAdded{";
-        res += "memberAdded=" + this.memberAdded;
+        String res = "struct SyncedValue{";
+        res += "id=" + this.id;
+        res += ", value=" + this.value;
         res += "}";
         return res;
     }
