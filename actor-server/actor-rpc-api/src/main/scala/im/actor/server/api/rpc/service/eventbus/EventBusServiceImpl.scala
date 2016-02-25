@@ -4,9 +4,9 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc._
-import im.actor.api.rpc.eventbus.{ ApiEventBusDestination, ResponseCreateNewEventBus, ResponseJoinEventBus, EventbusService }
+import im.actor.api.rpc.eventbus._
 import im.actor.api.rpc.misc.ResponseVoid
-import im.actor.server.eventbus.{ EventBusErrors, EventBusExtension }
+import im.actor.server.eventbus.{ EventBus, EventBusErrors, EventBusExtension }
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -31,20 +31,39 @@ final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
 
   override def doHandleDisposeEventBus(id: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     authorized(clientData) { client ⇒
-      for (_ ← ext.dispose(client.userId, id)) yield Ok(ResponseVoid)
+      for (_ ← ext.dispose(client.userId, client.authId, id)) yield Ok(ResponseVoid)
     } recover {
       case EventBusErrors.EventBusNotFound ⇒ EventBusRpcErrors.EventBusNotFound
     }
 
-  override def doHandlePostToEventBus(
+  /**
+   * Rejoining to event bus after session was disposed
+   *
+   * @param id          Event Bus Id
+   * @param rejoinToken Rejoin Token
+   */
+  override protected def doHandleReJoinEventBus(
+    id:          String,
+    rejoinToken: Array[Byte],
+    clientData:  ClientData
+  ): Future[HandlerResult[ResponseReJoinEventBus]] = FastFuture.failed(new RuntimeException("Not implemented"))
+
+  /**
+   * Event Bus Destination
+   *
+   * @param id           Bus Id
+   * @param destinations If Empty need to broadcase message to everyone
+   * @param message      Message
+   */
+  override protected def doHandlePostToEventBus(
     id:           String,
-    destinations: IndexedSeq[ApiEventBusDestination],
+    destinations: IndexedSeq[Long],
     message:      Array[Byte],
     clientData:   ClientData
   ): Future[HandlerResult[ResponseVoid]] =
     authorized(clientData) { client ⇒
       for {
-        _ ← ext.post(client.userId, client.authId, id, destinations, message)
+        _ ← ext.post(EventBus.ExternalClient(client.userId, client.authId), id, destinations, message)
       } yield Ok(ResponseVoid)
     } recover {
       case EventBusErrors.EventBusNotFound ⇒ EventBusRpcErrors.EventBusNotFound
@@ -56,7 +75,7 @@ final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
     clientData: ClientData
   ): Future[HandlerResult[ResponseVoid]] =
     authorized(clientData) { client ⇒
-      for (_ ← ext.keepAlive(client.authId, id, timeout))
+      for (_ ← ext.keepAlive(EventBus.ExternalClient(client.userId, client.authId), id, timeout))
         yield Ok(ResponseVoid)
     } recover {
       case EventBusErrors.EventBusNotFound ⇒ EventBusRpcErrors.EventBusNotFound
@@ -69,8 +88,8 @@ final class EventbusServiceImpl(system: ActorSystem) extends EventbusService {
   ): Future[HandlerResult[ResponseJoinEventBus]] =
     authorized(clientData) { client ⇒
       for {
-        deviceId ← ext.join(client.userId, client.authId, id, timeout)
-      } yield Ok(ResponseJoinEventBus(deviceId))
+        deviceId ← ext.join(EventBus.ExternalClient(client.userId, client.authId), id, timeout)
+      } yield Ok(ResponseJoinEventBus(deviceId, None))
     } recover {
       case EventBusErrors.EventBusNotFound ⇒ EventBusRpcErrors.EventBusNotFound
     }
