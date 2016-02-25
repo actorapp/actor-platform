@@ -38,16 +38,18 @@ public class ArchivedDialogsActor extends ModuleActor {
             //
             // notify old callback replaced
             //
-            lastCallback.onError(new RpcException(TAG, 0, "callback replaced", false, null));
+            if (lastCallback != null) {
+                lastCallback.onError(new RpcException(TAG, 0, "callback replaced", false, null));
+            }
         }
         lastCallback = callback;
 
-        if(isLoading && !init){
+        if (isLoading && !init) {
             return;
         }
 
-        if(init){
-            if(lastRequest!=-1){
+        if (init) {
+            if (lastRequest != -1) {
                 cancelRequest(lastRequest);
             }
             nextOffset = null;
@@ -94,6 +96,7 @@ public class ArchivedDialogsActor extends ModuleActor {
     public static class LoadMore {
         RpcCallback<ResponseLoadArchived> callback;
         boolean init;
+
         public LoadMore(boolean init, RpcCallback<ResponseLoadArchived> callback) {
             this.callback = callback;
             this.init = init;

@@ -1,17 +1,14 @@
 package im.actor.api
 
-import im.actor.server.db.ActorPostgresDriver.api._
+import cats.data.Xor
 import im.actor.server.group.GroupErrors.GroupNotFound
 import im.actor.server.office.EntityNotFoundError
 import im.actor.server.user.UserErrors.UserNotFound
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.reflect.ClassTag
-import scalaz._, Scalaz._
 
 package object rpc extends PeersImplicits with HistoryImplicits {
-
-  import slick.dbio.NoStream
 
   object Implicits extends PeersImplicits with HistoryImplicits
 
@@ -37,103 +34,39 @@ package object rpc extends PeersImplicits with HistoryImplicits {
   type OkResp[+A] = A
 
   object Error {
-    def apply[A](e: RpcError)(implicit ev: A <:< RpcResponse): RpcError \/ A =
-      -\/(e)
+    def apply[A](e: RpcError)(implicit ev: A <:< RpcResponse): RpcError Xor A = Xor.left(e)
 
-    def unapply(v: RpcError \/ _) =
+    def unapply(v: RpcError Xor _) =
       v match {
-        case -\/(e) ⇒ Some(e)
-        case _      ⇒ None
+        case Xor.Left(e) ⇒ Some(e)
+        case _           ⇒ None
       }
   }
 
   object Ok {
-    def apply[A](rsp: A)(implicit ev: A <:< RpcResponse): RpcError \/ A =
-      \/-(rsp)
+    def apply[A](rsp: A)(implicit ev: A <:< RpcResponse): RpcError Xor A =
+      Xor.Right(rsp)
 
-    def unapply[T <: OkResp[RpcResponse]](v: _ \/ T)(implicit m: ClassTag[T]) =
+    def unapply[T <: OkResp[RpcResponse]](v: _ Xor T)(implicit m: ClassTag[T]) =
       v match {
-        case \/-(t) ⇒ Some(t)
-        case -\/(_) ⇒ None
+        case Xor.Right(t) ⇒ Some(t)
+        case Xor.Left(_)  ⇒ None
       }
   }
 
-  def authorizedAction[R](clientData: ClientData)(f: AuthorizedClientData ⇒ DBIOAction[RpcError \/ R, NoStream, Nothing])(implicit db: Database, ec: ExecutionContext): Future[RpcError \/ R] = {
-    val authorizedAction = requireAuth(clientData).map(f)
-    recover(db.run(toDBIOAction(authorizedAction)))
+  def authorized[R](clientData: ClientData)(fa: AuthorizedClientData ⇒ Future[RpcError Xor R])(implicit ec: ExecutionContext): Future[RpcError Xor R] = {
+    toResult(requireAuth(clientData) map fa)
   }
 
-  def requireAuth(implicit clientData: ClientData): MaybeAuthorized[AuthorizedClientData] =
+  private def requireAuth(implicit clientData: ClientData): MaybeAuthorized[AuthorizedClientData] =
     clientData.authData match {
       case Some(AuthData(userId, authSid)) ⇒ Authorized(AuthorizedClientData(clientData.authId, clientData.sessionId, userId, authSid))
       case None                            ⇒ NotAuthorized
     }
 
-  object Result {
-    val UserNotAuthorized = -\/(RpcError(403, "USER_NOT_AUTHORIZED", "", false, None))
-  }
+  private def toResult[R](authorizedFuture: MaybeAuthorized[Future[RpcError Xor R]])(implicit ec: ExecutionContext): Future[RpcError Xor R] =
+    recover(authorizedFuture.getOrElse(Future.successful(Error(CommonRpcErrors.UserNotAuthorized))))
 
-  def toDBIOAction[R](
-    authorizedAction: MaybeAuthorized[DBIOAction[RpcError \/ R, NoStream, Nothing]]
-  ): DBIOAction[RpcError \/ R, NoStream, Nothing] = {
-    authorizedAction.getOrElse(DBIO.successful(Result.UserNotAuthorized))
-  }
+  private def recover[A](f: Future[RpcError Xor A])(implicit ec: ExecutionContext): Future[RpcError Xor A] = f recover (recoverCommon andThen { e ⇒ Error(e) })
 
-  def toResult[R](authorizedFuture: MaybeAuthorized[Future[RpcError \/ R]])(implicit ec: ExecutionContext): Future[RpcError \/ R] =
-    recover(authorizedFuture.getOrElse(Future.successful(Result.UserNotAuthorized)))
-
-  def recover[A](f: Future[\/[RpcError, A]])(implicit ec: ExecutionContext): Future[\/[RpcError, A]] = f recover (recoverCommon andThen { e ⇒ Error(e) })
-
-  def authorized[R](clientData: ClientData)(fa: AuthorizedClientData ⇒ Future[RpcError \/ R])(implicit ec: ExecutionContext): Future[RpcError \/ R] =
-    toResult(requireAuth(clientData) map fa)
-
-  def authorizedClient(clientData: ClientData): Result[AuthorizedClientData] =
-    DBIOResult.fromOption(CommonRpcErrors.UserNotFound)(clientData.authData.map(data ⇒ AuthorizedClientData(clientData.authId, clientData.sessionId, data.userId, data.authSid)))
-
-  type Result[A] = EitherT[DBIO, RpcError, A]
-
-  object DBIOResult {
-    implicit def dbioFunctor(implicit ec: ExecutionContext) = new Functor[DBIO] {
-      def map[A, B](fa: DBIO[A])(f: A ⇒ B): DBIO[B] = fa map f
-    }
-
-    implicit def dbioMonad(implicit ec: ExecutionContext) = new Monad[DBIO] {
-      def point[A](a: ⇒ A) = DBIO.successful(a)
-
-      def bind[A, B](fa: DBIO[A])(f: (A) ⇒ DBIO[B]) = fa flatMap f
-    }
-
-    implicit def rpcErrorMonoid = new Monoid[RpcError] {
-      override def zero: RpcError = throw new Exception()
-      override def append(f1: RpcError, f2: ⇒ RpcError): RpcError = throw new Exception()
-    }
-
-    def point[A](a: A): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(a.right))
-
-    def fromDBIO[A](fa: DBIO[A])(implicit ec: ExecutionContext): Result[A] = EitherT[DBIO, RpcError, A](fa.map(_.right))
-
-    def fromEither[A](va: RpcError \/ A): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(va))
-
-    def fromEither[A, B](failure: B ⇒ RpcError)(va: B \/ A): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(va.leftMap(failure)))
-
-    def fromOption[A](failure: RpcError)(oa: Option[A]): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(oa \/> failure))
-
-    def fromDBIOOption[A](failure: RpcError)(foa: DBIO[Option[A]])(implicit ec: ExecutionContext): Result[A] =
-      EitherT[DBIO, RpcError, A](foa.map(_ \/> failure))
-
-    def fromDBIOBoolean(failure: RpcError)(foa: DBIO[Boolean])(implicit ec: ExecutionContext): Result[Unit] =
-      EitherT[DBIO, RpcError, Unit](foa.map(r ⇒ if (r) ().right else failure.left))
-
-    def fromDBIOEither[A, B](failure: B ⇒ RpcError)(fva: DBIO[B \/ A])(implicit ec: ExecutionContext): Result[A] =
-      EitherT[DBIO, RpcError, A](fva.map(_.leftMap(failure)))
-
-    def fromFuture[A](fu: Future[A])(implicit ec: ExecutionContext): Result[A] = EitherT[DBIO, RpcError, A](DBIO.from(fu.map(_.right)))
-
-    def fromFutureOption[A](failure: RpcError)(fu: Future[Option[A]])(implicit ec: ExecutionContext): Result[A] = EitherT[DBIO, RpcError, A](DBIO.from(fu.map(_ \/> failure)))
-
-    def fromBoolean[A](failure: RpcError)(oa: Boolean): Result[Unit] = EitherT[DBIO, RpcError, Unit](DBIO.successful(if (oa) ().right else failure.left))
-  }
-
-  def constructResult(result: Result[RpcResult])(implicit ec: ExecutionContext): DBIO[RpcResult] =
-    result.run.map { _.fold(identity, identity) }
 }

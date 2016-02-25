@@ -254,8 +254,6 @@ public class SHA256Digest extends GeneralDigest {
         for (int i = 0; i < 16; i++) {
             X[i] = 0;
         }
-
-        logState();
     }
 
     /* SHA-256 functions */
@@ -285,15 +283,6 @@ public class SHA256Digest extends GeneralDigest {
 
     private int jsWrap(int val) {
         return val & 0xFFFFFFFF;
-    }
-
-    private void logState() {
-        log("H1=" + H1 + ", H2=" + H2 + ", H3=" + H3 + ", H4=" + H4
-                + ", H5=" + H5 + ", H6=" + H6 + ", H7=" + H7 + ", H8=" + H8);
-    }
-
-    private void log(String log) {
-        System.out.println(log);
     }
 
     /* SHA-256 Constants

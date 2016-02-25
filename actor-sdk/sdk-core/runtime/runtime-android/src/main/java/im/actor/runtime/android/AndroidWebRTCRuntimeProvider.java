@@ -1,5 +1,8 @@
 package im.actor.runtime.android;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+
 import org.jetbrains.annotations.NotNull;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
@@ -19,10 +22,20 @@ import im.actor.runtime.webrtc.WebRTCSettings;
 public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
 
     public static final PeerConnectionFactory FACTORY;
+    private static Object sVcLock = new Object();
+    private static Handler sVcHandler = null;
 
     static {
         PeerConnectionFactory.initializeAndroidGlobals(AndroidContext.getContext(), true, true, true);
         FACTORY = new PeerConnectionFactory();
+        synchronized (sVcLock) {
+            if (sVcHandler == null) {
+                HandlerThread vcthread = new HandlerThread(
+                        "PeerConnectionConnectionThread");
+                vcthread.start();
+                sVcHandler = new Handler(vcthread.getLooper());
+            }
+        }
     }
 
     @NotNull
@@ -30,8 +43,9 @@ public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
     public Promise<WebRTCPeerConnection> createPeerConnection(final WebRTCIceServer[] webRTCIceServers, final WebRTCSettings settings) {
         return new Promise<>(new PromiseFunc<WebRTCPeerConnection>() {
             @Override
-            public void exec(@NotNull PromiseResolver<WebRTCPeerConnection> resolver) {
+            public void exec(@NotNull final PromiseResolver<WebRTCPeerConnection> resolver) {
                 resolver.result(new AndroidPeerConnection(webRTCIceServers, settings));
+
             }
         });
     }
@@ -42,8 +56,17 @@ public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
         return new Promise<>(new PromiseFunc<WebRTCMediaStream>() {
             @Override
             public void exec(@NotNull final PromiseResolver<WebRTCMediaStream> resolver) {
-                resolver.result(new AndroidMediaStream(FACTORY.createLocalMediaStream("ARDAMS"), true, true));
+                sVcHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        resolver.result(new AndroidMediaStream(FACTORY.createLocalMediaStream("ARDAMS"), true, true));
+                    }
+                });
             }
         });
+    }
+
+    public static void postToHandler(Runnable r){
+        sVcHandler.post(r);
     }
 }

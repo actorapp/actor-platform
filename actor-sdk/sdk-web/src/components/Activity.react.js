@@ -31,6 +31,9 @@ class ActivitySection extends Component {
 
   render() {
     const { peer, info, isOpen } = this.state;
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 0);
 
     if (peer !== null) {
       const activityClassName = classnames('activity', {

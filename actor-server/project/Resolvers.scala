@@ -6,7 +6,6 @@ object Resolvers {
   lazy val seq = Seq(
     DefaultMavenRepository,
     Resolver.sonatypeRepo("releases"),
-    Resolver.bintrayRepo("scalaz", "releases"),
     Resolver.bintrayRepo("dnvriend", "maven"),
     Resolver.bintrayRepo("dwhjames", "maven"),
     Resolver.bintrayRepo("krasserm", "maven"),

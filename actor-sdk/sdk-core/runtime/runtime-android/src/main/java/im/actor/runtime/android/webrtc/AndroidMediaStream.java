@@ -20,15 +20,21 @@ public class AndroidMediaStream implements WebRTCMediaStream {
         this(stream, true, false);
     }
 
-    public AndroidMediaStream(MediaStream stream, boolean autoPlay, boolean local) {
+    public AndroidMediaStream(final MediaStream stream, boolean autoPlay, boolean local) {
         this.local = local;
         this.stream = stream;
         if (!local) {
             audioTrack = stream.audioTracks.get(0);
         } else {
-            AudioSource audioSource = AndroidWebRTCRuntimeProvider.FACTORY.createAudioSource(new MediaConstraints());
-            audioTrack = AndroidWebRTCRuntimeProvider.FACTORY.createAudioTrack("ARDAMSa0", audioSource);
-            stream.addTrack(audioTrack);
+            AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
+                @Override
+                public void run() {
+                    AudioSource audioSource = AndroidWebRTCRuntimeProvider.FACTORY.createAudioSource(new MediaConstraints());
+                    audioTrack = AndroidWebRTCRuntimeProvider.FACTORY.createAudioTrack("ARDAMSa0", audioSource);
+                    stream.addTrack(audioTrack);
+                }
+            });
+
         }
         setEnabled(autoPlay);
     }

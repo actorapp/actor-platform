@@ -20,15 +20,14 @@ class PubgroupsServiceImpl(
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   override def doHandleGetPublicGroups(clientData: ClientData): Future[HandlerResult[ResponseGetPublicGroups]] = {
-    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
-      for {
+    authorized(clientData) { implicit client ⇒
+      val action = for {
         groups ← GroupRepo.findPublic
         pubGroupStructs ← DBIO.sequence(groups.view map getPubgroupStructUnsafe)
         sorted = pubGroupStructs.sortWith((g1, g2) ⇒ g1.friendsCount >= g2.friendsCount && g1.membersCount >= g2.membersCount)
       } yield Ok(ResponseGetPublicGroups(sorted.toVector))
+      db.run(action)
     }
-
-    db.run(toDBIOAction(authorizedAction))
   }
 }
 

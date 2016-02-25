@@ -31,12 +31,12 @@ export default {
     }
   },
 
-  makeCall(uid) {
-    dispatchAsync(ActorClient.makeCall(uid), {
+  makeCall(peerId) {
+    dispatchAsync(ActorClient.makeCall(peerId), {
       request: ActionTypes.CALL,
       success: ActionTypes.CALL_SUCCESS,
       failure: ActionTypes.CALL_ERROR
-    }, { uid });
+    }, { peerId });
   },
 
   setCall(call) {
