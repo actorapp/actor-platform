@@ -90,6 +90,10 @@ class DialogSection extends Component {
     }
   }
 
+  componentDidUpdate() {
+    this.fixScroll();
+  }
+
   componentWillUnmount() {
     DialogActionCreators.selectDialogPeer(null);
   }
@@ -176,7 +180,7 @@ class DialogSection extends Component {
     }
 
     const mainScreen = peer ? (
-      <section className="dialog" key={0}>
+      <section className="dialog">
         <ConnectionState/>
         <div className="messages">
           <MessagesSection messages={messagesToRender}
