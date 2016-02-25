@@ -1,14 +1,15 @@
 package im.actor.server.api.rpc.service.push
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import com.google.protobuf.ByteString
 import im.actor.api.rpc._
 import im.actor.api.rpc.encryption.ApiEncryptionKey
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.push.PushService
 import im.actor.server.db.DbExtension
-import im.actor.server.model.push.{ GooglePushCredentials, ApplePushCredentials, ActorPushCredentials }
-import im.actor.server.persist.push.{ GooglePushCredentialsRepo, ApplePushCredentialsRepo, ActorPushCredentialsRepo }
+import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, GooglePushCredentials }
+import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, GooglePushCredentialsRepo }
 import im.actor.server.sequence.SeqUpdatesExtension
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
@@ -71,4 +72,15 @@ final class PushServiceImpl(
     } yield Ok(ResponseVoid))
   }
 
+  /**
+   * Registration of a new Apple's PushKit tokens
+   *
+   * @param apnsKey APNS key id
+   * @param token   token value @note Contains sensitive data!!!
+   */
+  override protected def doHandleRegisterApplePushKit(
+    apnsKey:    Int,
+    token:      String,
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseVoid]] = FastFuture.failed(new RuntimeException("Not implemented"))
 }
