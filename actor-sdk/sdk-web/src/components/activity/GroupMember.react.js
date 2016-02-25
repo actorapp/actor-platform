@@ -3,6 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
 import confirm from '../../utils/confirm'
 import { escapeWithEmoji } from '../../utils/EmojiUtils'
@@ -16,15 +17,11 @@ import KickUserStore from '../../stores/KickUserStore'
 import AvatarItem from '../common/AvatarItem.react';
 import Stateful from '../common/Stateful';
 
-const getStateFromStore = (uid) => {
-  const kickUserState = KickUserStore.getKickUserState(uid);
-
-  return {
-    kickUserState: kickUserState
-  }
-};
-
 class GroupMember extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   static propTypes = {
     peerInfo: PropTypes.object.isRequired,
     canKick: PropTypes.bool.isRequired,
@@ -35,22 +32,19 @@ class GroupMember extends Component {
     intl: PropTypes.object
   };
 
-  constructor(props) {
-    super(props);
+  static getStores() {
+    return [KickUserStore];
+  }
 
-    this.state = getStateFromStore(props.peerInfo.peer.id);
+  static calculateState(prevState, nextProps) {
+    return {
+      kickUserState: KickUserStore.getKickUserState(nextProps.peerInfo.peer.id)
+    };
   }
 
   componentWillUnmount() {
     const { peerInfo } = this.props;
-
     KickUserStore.resetKickUserState(peerInfo.peer.id);
-    KickUserStore.removeChangeListener(this.onChange);
-  };
-
-  onChange = () => {
-    const { peerInfo } = this.props;
-    this.setState(getStateFromStore(peerInfo.peer.id));
   };
 
   onClick = (id) => DialogActionCreators.selectDialogPeerUser(id);
@@ -59,14 +53,8 @@ class GroupMember extends Component {
     const { peerInfo } = this.props;
     const { intl } = this.context;
 
-    confirm(<FormattedMessage id="modal.confirm.kick" values={{name: peerInfo.title}}/>, {
-      abortLabel: intl.messages['button.cancel'],
-      confirmLabel: intl.messages['button.ok']
-    }).then(
-      () => {
-        KickUserStore.addChangeListener(this.onChange);
-        KickUserActionCreators.kickMember(gid, uid);
-      },
+    confirm(<FormattedMessage id="modal.confirm.kick" values={{name: peerInfo.title}}/>).then(
+      () => KickUserActionCreators.kickMember(gid, uid),
       () => {}
     );
   };
@@ -118,4 +106,4 @@ class GroupMember extends Component {
   }
 }
 
-export default GroupMember;
+export default Container.create(GroupMember, {pure: false, withProps: true});
