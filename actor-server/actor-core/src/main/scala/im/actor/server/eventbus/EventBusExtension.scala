@@ -18,16 +18,21 @@ object EventBus {
   sealed trait Client {
     def isInternal: Boolean
     def isExternal: Boolean
+    def externalUserId: Option[UserId]
   }
   final case class InternalClient(ref: ActorRef) extends Client {
     override def isInternal: Boolean = true
 
     override def isExternal: Boolean = false
+
+    override def externalUserId: Option[UserId] = None
   }
   final case class ExternalClient(userId: UserId, authId: AuthId) extends Client {
     override def isInternal: Boolean = false
 
     override def isExternal: Boolean = true
+
+    override def externalUserId: Option[UserId] = Some(userId)
   }
 
   final case class Message(id: String, client: Client, deviceId: Option[Long], message: Array[Byte])
