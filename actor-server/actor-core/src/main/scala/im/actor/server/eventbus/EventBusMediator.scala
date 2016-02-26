@@ -23,28 +23,27 @@ private[eventbus] trait EventBusMessage
 private[eventbus] final case class EventBusEnvelope(id: String, message: EventBusMessage)
 
 private[eventbus] object EventBusMessages {
-  final case class Create(clientUserId: UserId, clientAuthId: AuthId, timeout: Option[Long], isOwned: Option[Boolean]) extends EventBusMessage
+  final case class Create(client: Client, timeout: Option[Long], isOwned: Option[Boolean]) extends EventBusMessage
   final case class CreateAck(deviceId: Long)
 
-  final case class Dispose(clientUserId: UserId) extends EventBusMessage
+  final case class Dispose(client: Client) extends EventBusMessage
   case object DisposeAck
 
   final case class Post(
-    clientUserId: UserId,
-    clientAuthId: AuthId,
-    destinations: Seq[ApiEventBusDestination],
+    client:       Client,
+    destinations: Seq[Long],
     message:      Array[Byte]
   ) extends EventBusMessage
   case object PostAck
 
-  final case class KeepAlive(clientAuthId: AuthId, timeout: Option[Long]) extends EventBusMessage
+  final case class KeepAlive(client: Client, timeout: Option[Long]) extends EventBusMessage
   case object KeepAliveAck
 
-  final case class Join(clientUserId: UserId, clientAuthId: AuthId, timeout: Option[Long]) extends EventBusMessage
+  final case class Join(client: Client, timeout: Option[Long]) extends EventBusMessage
   final case class JoinAck(deviceId: DeviceId)
 
-  final case class Subscribe(ref: ActorRef) extends EventBusMessage
-  final case class SubscribeAck(subscribe: Subscribe)
+  case object FetchInfo extends EventBusMessage
+  final case class FetchInfoAck(ownerDeviceId: Long)
 }
 
 object EventBusMediator {
@@ -58,7 +57,7 @@ object EventBusMediator {
 
   def props = Props(classOf[EventBusMediator])
 
-  private case class ConsumerTimedOut(authId: Long)
+  private case class ConsumerTimedOut(client: Client)
 }
 
 final class EventBusMediator extends Actor with ActorLogging {
@@ -73,128 +72,173 @@ final class EventBusMediator extends Actor with ActorLogging {
 
   val id = self.path.name
 
-  var owner: Option[Int] = None
-  val internalConsumers = mutable.Set.empty[ActorRef]
+  var owner: Option[Client] = None
 
   object consumers {
-    private val a2d = mutable.Map.empty[AuthId, (UserId, DeviceId)]
-    private val d2a = mutable.Map.empty[DeviceId, (UserId, AuthId)]
-    val ownerAuthIds = mutable.Set.empty[AuthId]
-    private val a2timeouts = mutable.Map.empty[AuthId, Cancellable]
+    private val a2c = mutable.Map.empty[AuthId, (UserId, DeviceId)]
+    private val r2c = mutable.Map.empty[ActorRef, DeviceId]
+    val devices = mutable.Map.empty[DeviceId, Client]
+    val owners = mutable.Set.empty[Client]
+    private val c2timeouts = mutable.Map.empty[Client, Cancellable]
 
-    def isOwnerConnected = ownerAuthIds.nonEmpty
+    def isOwnerConnected = owners.nonEmpty
 
-    def isEmpty = a2d.isEmpty
+    def isEmpty = a2c.isEmpty
 
-    def put(userId: UserId, authId: AuthId, deviceId: DeviceId) = {
-      a2d.put(authId, (userId, deviceId))
-      d2a.put(deviceId, (userId, authId))
-      if (owner.contains(userId)) ownerAuthIds += authId
-    }
+    def put(client: Client, deviceId: DeviceId) = {
+      devices.put(deviceId, client)
 
-    def authIds = a2d.keySet
-    def byAuthId(authId: AuthId) = a2d.get(authId)
-    def byDeviceId(deviceId: DeviceId) = d2a.get(deviceId)
-    def keepAlive(authId: AuthId, timeout: Long) = {
-      a2timeouts.get(authId) foreach (_.cancel())
-      val scheduled = context.system.scheduler.scheduleOnce(timeout.millis, self, ConsumerTimedOut(authId))
-      a2timeouts.put(authId, scheduled)
-    }
+      if (owner.contains(client)) owners += client
 
-    def stopKeepAlive(authId: AuthId) = a2timeouts.remove(authId) foreach (_.cancel())
-
-    def remove(authId: AuthId): Option[(UserId, DeviceId)] = {
-      a2d.get(authId) map {
-        case (userId, deviceId) ⇒
-          a2timeouts.remove(authId) foreach (_.cancel)
-          a2d.remove(authId)
-          d2a.remove(deviceId)
-          ownerAuthIds -= authId
-          (userId, deviceId)
+      client match {
+        case ec @ ExternalClient(userId, authId) ⇒
+          a2c.put(authId, userId → deviceId)
+        case InternalClient(ref) ⇒
+          r2c.put(ref, deviceId)
       }
     }
+
+    def authIds = a2c.keySet
+    def actorRefs = r2c.keySet
+    def byAuthId(authId: AuthId) = a2c.get(authId)
+    def byActorRef(ref: ActorRef) = r2c.get(ref)
+    def byDeviceId(deviceId: DeviceId) = devices.get(deviceId)
+    def keepAlive(client: Client, timeout: Long) = {
+      c2timeouts.get(client) foreach (_.cancel())
+      val scheduled = context.system.scheduler.scheduleOnce(timeout.millis, self, ConsumerTimedOut(client))
+      c2timeouts.put(client, scheduled)
+    }
+
+    def stopKeepAlive(client: Client) = c2timeouts.remove(client) foreach (_.cancel())
+
+    def remove(client: Client): Option[(DeviceId, Client)] =
+      client match {
+        case ExternalClient(userId, authId) ⇒
+          a2c.get(authId) map {
+            case (_, deviceId) ⇒
+              val client = ExternalClient(userId, authId)
+              c2timeouts.remove(client) foreach (_.cancel())
+              a2c.remove(authId)
+              devices.remove(deviceId)
+              owners -= client
+              deviceId → client
+          }
+        case InternalClient(ref) ⇒
+          r2c.remove(ref) map { deviceId ⇒
+            val client = InternalClient(ref)
+            c2timeouts.remove(client) foreach (_.cancel())
+            devices.remove(deviceId)
+            owners -= client
+            deviceId → client
+          }
+      }
   }
 
   def receive = {
-    case Create(clientUserId, clientAuthId, timeoutOpt, isOwned) ⇒
-      if (isOwned.contains(true)) this.owner = Some(clientUserId)
+    case Create(client, timeoutOpt, isOwned) ⇒
+      if (isOwned.contains(true))
+        this.owner = Some(client)
       val deviceId = Random.nextLong()
-      consumers.put(clientUserId, clientAuthId, deviceId)
-      timeoutOpt foreach (consumers.keepAlive(clientAuthId, _))
+      consumers.put(client, deviceId)
+      timeoutOpt foreach (consumers.keepAlive(client, _))
       sender() ! CreateAck(deviceId)
-      context become created
+      context become created(deviceId)
     case _ ⇒
       sender() ! Status.Failure(EventBusErrors.EventBusNotFound)
       context stop self
   }
 
-  def created: Receive = {
-    case Post(clientUserId, clientAuthId, dests, message) ⇒
-      val update = UpdateEventBusMessage(
-        id = id,
-        senderId = Some(clientUserId),
-        senderDeviceId = consumers.byAuthId(clientAuthId) map (_._2),
-        message = message
-      )
+  def created(ownerDeviceId: Long): Receive = {
+    case FetchInfo ⇒ sender() ! FetchInfoAck(ownerDeviceId)
+    case Post(client, dests, message) ⇒
+      val (update, deviceId) =
+        client match {
+          case e: ExternalClient ⇒
+            val deviceId = consumers.byAuthId(e.authId) map (_._2)
 
-      val authIds = dests match {
-        case Nil ⇒ consumers.authIds
-        case _ ⇒
-          dests flatMap {
-            case ApiEventBusDestination(destUserId, deviceIds) ⇒
-              deviceIds flatMap { deviceId ⇒
-                consumers.byDeviceId(deviceId) map {
-                  case (userId, authId) ⇒ authId
-                }
-              }
-          }
+            (UpdateEventBusMessage(
+              id = id,
+              senderId = Some(e.userId),
+              senderDeviceId = deviceId,
+              message = message
+            ), deviceId)
+          case i: InternalClient ⇒
+            val deviceId = consumers.byActorRef(i.ref)
+
+            (UpdateEventBusMessage(
+              id = id,
+              senderId = None,
+              senderDeviceId = deviceId,
+              message = message
+            ), deviceId)
+        }
+
+      val clients =
+        (dests match {
+          case Nil ⇒ consumers.devices.values
+          case _   ⇒ consumers.devices.filter(did ⇒ dests.contains(did._1)).values
+        }) filterNot (_ == client)
+
+      clients foreach {
+        case InternalClient(ref) ⇒
+          ref ! EventBus.Message(id, client, deviceId, message)
+        case ExternalClient(_, authId) ⇒
+          weakExt.pushUpdate(authId, update, None, None)
       }
-
-      authIds filterNot (_ == clientAuthId) foreach (weakExt.pushUpdate(_, update, None, None))
-
-      val msg = EventBus.Message(id, clientUserId, clientAuthId, message)
-      this.internalConsumers foreach (_ ! msg)
 
       sender() ! PostAck
-    case KeepAlive(clientAuthId, timeoutOpt) ⇒
+    case KeepAlive(client, timeoutOpt) ⇒
       timeoutOpt match {
-        case Some(timeout) ⇒ consumers.keepAlive(clientAuthId, timeout)
-        case None          ⇒ consumers.stopKeepAlive(clientAuthId)
+        case Some(timeout) ⇒ consumers.keepAlive(client, timeout)
+        case None          ⇒ consumers.stopKeepAlive(client)
       }
       sender() ! KeepAliveAck
-    case ConsumerTimedOut(authId) ⇒
-      if ((owner.isDefined && consumers.ownerAuthIds == Set(authId)) || consumers.authIds == Set(authId)) {
-        log.debug("Disposing as no more clients connected")
-        dispose()
-      } else {
-        consumers.remove(authId) match {
-          case Some((userId, deviceId)) ⇒
-            broadcast(UpdateEventBusDeviceDisconnected(id, userId, deviceId))
-          case None ⇒ log.error("Consumer timed out with unknown authId: {}", authId)
-        }
-      }
-    case Join(clientUserId, clientAuthId, timeoutOpt) ⇒
+    case ConsumerTimedOut(client) ⇒
+      disconnect(client)
+    case Join(client, timeoutOpt) ⇒
       val deviceId = Random.nextLong()
-      consumers.put(clientUserId, clientAuthId, deviceId)
-      broadcast(UpdateEventBusDeviceConnected(id, clientUserId, deviceId))
-      timeoutOpt foreach (consumers.keepAlive(clientAuthId, _))
+
+      val update = client match {
+        case ExternalClient(userId, _) ⇒ UpdateEventBusDeviceConnected(id, Some(userId), deviceId)
+        case InternalClient(_)         ⇒ UpdateEventBusDeviceConnected(id, None, deviceId)
+      }
+
+      broadcast(update)
+      this.consumers.actorRefs foreach (_ ! EventBus.Joined(id, client, deviceId))
+      consumers.put(client, deviceId)
+
+      timeoutOpt foreach (consumers.keepAlive(client, _))
       sender() ! JoinAck(deviceId)
-    case Dispose(clientUserId) ⇒
-      if (owner.contains(clientUserId)) {
+    case Dispose(client: Client) ⇒
+      if (owner.contains(client)) {
         log.debug("Disposing by owner request")
         dispose()
       } else sender() ! Status.Failure(new RuntimeException("Attempt to dispose by not an owner"))
-    case subscribe @ Subscribe(ref) ⇒
-      this.internalConsumers.add(ref)
-      context watch ref
-      sender() ! SubscribeAck(subscribe)
     case Terminated(ref) ⇒
-      this.internalConsumers.remove(ref)
+      disconnect(InternalClient(ref))
+  }
+
+  private def disconnect(client: Client) = {
+    if ((owner.isDefined && consumers.owners == Set(client)) || consumers.devices.toSet == Set(client)) {
+      log.debug("Disposing as no more clients connected")
+      dispose()
+    } else {
+      consumers.remove(client) match {
+        case Some((deviceId, _)) ⇒
+          client match {
+            case EventBus.ExternalClient(userId, _) ⇒
+              broadcast(UpdateEventBusDeviceDisconnected(id, Some(userId), deviceId))
+            case _ ⇒
+          }
+          this.consumers.actorRefs foreach (_ ! EventBus.Disconnected(id, client, deviceId))
+        case None ⇒ log.error("Consumer timed out with unknown client: {}", client)
+      }
+    }
   }
 
   private def dispose(): Unit = {
     broadcast(UpdateEventBusDisposed(id))
-    internalConsumers foreach (_ ! EventBus.Disposed(id))
+    consumers.actorRefs foreach (_ ! EventBus.Disposed(id))
     context stop self
   }
 

@@ -3,10 +3,9 @@ package im.actor.server.eventbus
 import java.util.UUID
 
 import akka.actor._
-import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding }
+import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings }
 import akka.pattern.ask
 import akka.util.Timeout
-import im.actor.api.rpc.eventbus.ApiEventBusDestination
 import im.actor.config.ActorConfig
 import im.actor.types._
 
@@ -16,8 +15,25 @@ object EventBus {
   type EventBusId = String
   type DeviceId = Long
 
-  final case class Message(id: String, userId: Int, authId: Long, message: Array[Byte])
+  sealed trait Client {
+    def isInternal: Boolean
+    def isExternal: Boolean
+  }
+  final case class InternalClient(ref: ActorRef) extends Client {
+    override def isInternal: Boolean = true
+
+    override def isExternal: Boolean = false
+  }
+  final case class ExternalClient(userId: UserId, authId: AuthId) extends Client {
+    override def isInternal: Boolean = false
+
+    override def isExternal: Boolean = true
+  }
+
+  final case class Message(id: String, client: Client, deviceId: Option[Long], message: Array[Byte])
   final case class Disposed(id: String)
+  final case class Joined(id: String, client: Client, deviceId: Long)
+  final case class Disconnected(id: String, client: Client, deviceId: Long)
 }
 
 final class EventBusExtension(system: ActorSystem) extends Extension {
@@ -36,9 +52,6 @@ final class EventBusExtension(system: ActorSystem) extends Extension {
       EventBusMediator.extractShardId
     )
 
-  def subscribe(id: String, consumer: ActorRef): Future[Unit] =
-    (region ? EventBusEnvelope(id, Subscribe(consumer))) map (_ ⇒ ())
-
   def create(
     clientUserId: UserId,
     clientAuthId: AuthId,
@@ -46,25 +59,27 @@ final class EventBusExtension(system: ActorSystem) extends Extension {
     isOwned:      Option[Boolean]
   ): Future[(EventBusId, DeviceId)] = {
     val id = UUID.randomUUID().toString
-    (region ? EventBusEnvelope(id, Create(clientUserId, clientAuthId, timeout, isOwned))).mapTo[CreateAck] map (ack ⇒ (id, ack.deviceId))
+    (region ? EventBusEnvelope(id, Create(ExternalClient(clientUserId, clientAuthId), timeout, isOwned))).mapTo[CreateAck] map (ack ⇒ (id, ack.deviceId))
   }
 
-  def dispose(clientUserId: UserId, id: String): Future[Unit] =
-    (region ? EventBusEnvelope(id, Dispose(clientUserId))) map (_ ⇒ ())
+  def dispose(clientUserId: UserId, clientAuthId: AuthId, id: String): Future[Unit] =
+    (region ? EventBusEnvelope(id, Dispose(ExternalClient(clientUserId, clientAuthId)))) map (_ ⇒ ())
 
   def post(
-    clientUserId: UserId,
-    clientAuthId: AuthId,
+    client:       Client,
     id:           String,
-    destinations: Seq[ApiEventBusDestination],
+    destinations: Seq[Long],
     message:      Array[Byte]
-  ): Future[Unit] = (region ? EventBusEnvelope(id, Post(clientUserId, clientAuthId, destinations, message))) map (_ ⇒ ())
+  ): Future[Unit] = (region ? EventBusEnvelope(id, Post(client, destinations, message))) map (_ ⇒ ())
 
-  def keepAlive(clientAuthId: AuthId, id: String, timeout: Option[Long]): Future[Unit] =
-    region ? EventBusEnvelope(id, KeepAlive(clientAuthId, timeout)) map (_ ⇒ ())
+  def keepAlive(client: Client, id: String, timeout: Option[Long]): Future[Unit] =
+    region ? EventBusEnvelope(id, KeepAlive(client, timeout)) map (_ ⇒ ())
 
-  def join(clientUserId: UserId, clientAuthId: AuthId, id: String, timeout: Option[Long]): Future[DeviceId] =
-    (region ? EventBusEnvelope(id, Join(clientUserId, clientAuthId, timeout))).mapTo[JoinAck] map (_.deviceId)
+  def join(client: Client, id: String, timeout: Option[Long]): Future[DeviceId] =
+    (region ? EventBusEnvelope(id, Join(client, timeout))).mapTo[JoinAck] map (_.deviceId)
+
+  def fetchOwner(id: String): Future[DeviceId] =
+    (region ? EventBusEnvelope(id, FetchInfo)).mapTo[FetchInfoAck] map (_.ownerDeviceId)
 }
 
 object EventBusExtension extends ExtensionId[EventBusExtension] with ExtensionIdProvider {
