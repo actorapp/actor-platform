@@ -78,21 +78,26 @@ class Archive extends Component {
         <ConnectionState/>
         <div className="flexrow">
           <section className={archiveClassname}>
-            {
-              isLoading
-                ? <div className="preloader"/>
-                : null
-            }
-
-            {
-              dialogs.length !== 0
-                ? <Scrollbar>
-                    <div className="archive-section__list row">{dialogsList}</div>
-                  </Scrollbar>
-                : <div className="archive-section__list archive-section__list--empty row">
-                    <h3>No dialogs in archive</h3>
-                  </div>
-            }
+            <Scrollbar>
+              <div className="archive-section__list row">
+                {
+                  dialogs.length !== 0
+                    ? dialogsList
+                    : !isLoading
+                        ? <div className="archive-section__list__item archive-section__list__item--empty col-xs-12">
+                            <h3>No dialogs in archive</h3>
+                          </div>
+                        : null
+                }
+                {
+                  isLoading
+                    ? <div className="archive-section__list__item archive-section__list__item--loading col-xs-12">
+                        <div className="preloader"><div/><div/><div/><div/><div/></div>
+                      </div>
+                    : null
+                }
+              </div>
+            </Scrollbar>
           </section>
         </div>
       </section>
