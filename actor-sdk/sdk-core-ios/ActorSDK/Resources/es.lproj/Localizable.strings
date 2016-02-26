@@ -393,11 +393,11 @@
 
 "AuthStarButton" = "Empieza a chatear";
 
-
 "AuthTermsOfServiceFull" = "Al inscribirte,aceptas las Condiciones del servicio.";
 
 "AuthTermsOfService" = "Condiciones del servicio";
 
+"AuthTermsOfServiceTitle" = "Condiciones";
 
 "AuthPhoneTitle" = "Registrarse";
 
