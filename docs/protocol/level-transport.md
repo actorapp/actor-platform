@@ -18,23 +18,52 @@ In reference protocol implementation only single active connection is used. This
 Each transport level package is a structure
 
 ```javascript
-// Message Container
-Message {
-    // message identifier
-    messageId: long
-    // message body
-    message: byte
-}
 
 Package {
     // unique identifier that is constant thru all application lifetime
     authId: long
     // random identifier of current session
     sessionId: long
-    // message
-    message: Message
+    // message header
+    messageHeader: int
+    // message contents
+    message: PlainTextMessage/EncryptedMessage/Drop/AuthIdInvalid
+}
+
+// Plain Text message Container
+PlainTextMessage {
+    HEADER = 0x01
+    // message identifier
+    messageId: long
+    // message body
+    message: byte
+}
+
+// Encrypted message container
+EncryptedMessage {
+  HEADER = 0x02
+  // Sequence number starting from zero for each direction
+  seqNumber: long
+  // First encryption level
+  encryptedPackage: bytes
+}
+
+// Drop Container
+Drop {
+    HEADER = 0x03
+    // Message Id of message that causes Drop. May be zero if not available
+    messageId: long
+    // Error Message
+    errorMessage: String
+}
+
+// Drop because of auth id invalid
+AuthIdInvalid {
+    HEADER = 0x04
 }
 ```
+
+
 
 ## Requesting Auth Id
 
@@ -169,28 +198,6 @@ Notification about session of connection is lost. Client need to perform any req
 ```javascript
 SessionLost {
     HEADER = 0x10
-}
-```
-
-### AuthIdInvalid
-
-Client's AuthId dies and connection is closed after sending this message
-
-```javascript
-AuthIdInvalid {
-    HEADER = 0x11
-}
-```
-
-### Drop
-Drop is a package for notification about some problem with processing package. After sending Drop server close connection.
-```javascript
-Drop {
-    HEADER = 0x0D
-    // Message Id of message that causes Drop. May be zero if not available
-    messageId: long
-    // Error Message
-    errorMessage: String
 }
 ```
 
