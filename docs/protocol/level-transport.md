@@ -53,17 +53,10 @@ Drop {
     HEADER = 0x03
     // Message Id of message that causes Drop. May be zero if not available
     messageId: long
-    // Error Message
-    errorMessage: String
-}
-
-// Drop because of auth id invalid
-AuthIdInvalid {
-    HEADER = 0x04
+    // Error Tag
+    errorTag: String
 }
 ```
-
-
 
 ## Requesting Auth Id
 
