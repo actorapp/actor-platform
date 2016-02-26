@@ -11,8 +11,10 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -324,14 +326,15 @@ public class ChatActivity extends ActorEditTextActivity {
                     intent.setType("image/* video/*");
                     startActivityForResult(intent, REQUEST_GALLERY);
                 } else if (item.getId() == R.id.share_camera) {
-                    File externalFile = getExternalFilesDir(null);
+                    File externalFile = Environment.getExternalStorageDirectory();
                     if (externalFile == null) {
                         Toast.makeText(ChatActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
-                    }
-                    String externalPath = externalFile.getAbsolutePath();
-                    new File(externalPath + "/actor/").mkdirs();
+                    }else{
+                        String externalPath = externalFile.getAbsolutePath();
+                        new File(externalPath + "/Actor/capture/").mkdirs();
 
-                    pending_fileName = externalPath + "/actor/capture_" + Randoms.randomId() + ".jpg";
+                        pending_fileName = externalPath + "/Actor/capture/capture_" + Randoms.randomId() + ".jpg";
+                    }
                     if (ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         Log.d("Permissions", "camera - no permission :c");
                         ActivityCompat.requestPermissions(ChatActivity.this,
@@ -343,18 +346,19 @@ public class ChatActivity extends ActorEditTextActivity {
                     }
                 } else if (item.getId() == R.id.share_video) {
 
-                    File externalFile = getExternalFilesDir(null);
+                    File externalFile = Environment.getExternalStorageDirectory();
                     if (externalFile == null) {
                         Toast.makeText(ChatActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
+                    }else{
+                        String externalPath = externalFile.getAbsolutePath();
+                        new File(externalPath + "/Actor/capture/").mkdirs();
+
+                        pending_fileName = externalPath + "/Actor/capture/capture_" + Randoms.randomId() + ".mp4";
+
+                        Intent i = new Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+                                .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName)));
+                        startActivityForResult(i, REQUEST_VIDEO);
                     }
-                    String externalPath = externalFile.getAbsolutePath();
-                    new File(externalPath + "/actor/").mkdirs();
-
-                    pending_fileName = externalPath + "/actor/capture_" + Randoms.randomId() + ".mp4";
-
-                    Intent i = new Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-                            .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName)));
-                    startActivityForResult(i, REQUEST_VIDEO);
                 } else if (item.getId() == R.id.share_file) {
                     startActivityForResult(Intents.pickFile(ChatActivity.this), REQUEST_DOC);
                 } else if (item.getId() == R.id.share_location) {
@@ -810,8 +814,10 @@ public class ChatActivity extends ActorEditTextActivity {
                 }
             } else if (requestCode == REQUEST_PHOTO) {
                 messenger().sendPhoto(peer, pending_fileName);
+                MediaScannerConnection.scanFile(this, new String[]{pending_fileName}, new String[]{"image/jpeg"}, null);
             } else if (requestCode == REQUEST_VIDEO) {
                 messenger().sendVideo(peer, pending_fileName);
+                MediaScannerConnection.scanFile(this, new String[]{pending_fileName}, new String[]{"image/jpeg"}, null);
             } else if (requestCode == REQUEST_DOC) {
                 if (data.getData() != null) {
                     execute(messenger().sendUri(peer, data.getData()), R.string.pick_downloading);

@@ -365,6 +365,8 @@
     <!-- Documents -->
     <string name="documents_title">Документы</string>
     <string name="documents_empty">Еще нет документов</string>
+    <string name="file_saved">Файл сохранен:</string>
+
 
     <!-- Edit name -->
     <string name="edit_name_title_you">Введите Ваше имя</string>
@@ -472,4 +474,5 @@
     <string name="error_unknown">Невозможно произвести операцию.\n\nПожалуйста, проверьте свой телефон и выключите и включите его, если проблема не будет решена.
     </string>
     <string name="error_view_url">Неизвестный тип ссылки</string>
+    <string name="confirm_share">Поделиться с</string>
 </resources>
