@@ -15,6 +15,9 @@ export default {
         'codeInvalid': 'Неправильный код',
         'codeExpired': 'Время действия кода истекло',
         'codeWait': 'Попытайтесь запросить код позже'
+      },
+      'welcome': {
+        'header': 'Добро пожаловать в <strong>{appName}</strong>'
       }
     },
 
@@ -46,7 +49,8 @@ export default {
       'addMembers': 'Добавить пользователей',
       'quickSearch': 'Быстрый поиск',
       'close': 'Закрыть',
-      'save': 'Сохранить'
+      'save': 'Сохранить',
+      'call': 'Позвонить'
     },
 
     // Messages
@@ -120,6 +124,7 @@ export default {
       'contacts': {
         'title': 'Люди',
         'search': 'Поиск контактов',
+        'loading': 'Загружается',
         'notFound': 'Извините, ничего не найдено.'
       },
       'groups': {
@@ -242,6 +247,8 @@ export default {
     // Sidebar
     'sidebar': {
       'recents': {
+        'groups': 'Группы',
+        'privates': 'Диалоги',
         'empty': {
           'first': 'В данный момент у вас нет открытых диалогов.',
           'second': {
@@ -251,6 +258,7 @@ export default {
           }
         },
         'newDialog': 'создать диалог',
+        'favourites': 'Избранное',
         'addPeople': 'добавить контакт'
       }
     },

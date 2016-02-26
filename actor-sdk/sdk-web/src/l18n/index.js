@@ -28,12 +28,30 @@ addLocaleData(zhLocaleData);
 let language = navigator.language.toLocaleLowerCase() || navigator.browserLanguage.toLocaleLowerCase();
 if (language === 'zh-cn') language = 'zh';
 
+function buildMessages(defaultLanguage, language) {
+  if (process.env.NODE_ENV === 'development') {
+    const flattenDefault = flattenMessages(defaultLanguage.messages);
+    const flattenLanguage = flattenMessages(language.messages);
+    const missingKeys = Object.keys(flattenDefault).filter((key) => !flattenLanguage[key])
+    if (missingKeys.length) {
+      const groupMessage = `There are missing transations for "${language.locale}" locale.`;
+      console.groupCollapsed(groupMessage);
+      missingKeys.forEach((key) => {
+        console.warn(`${key}: ${flattenDefault[key]}`);
+      });
+      console.groupEnd(groupMessage);
+    }
+  }
+
+  language.messages = assignDeep({}, defaultLanguage.messages, language.messages);
+}
+
 // Fallback to default language
 const defaultLanguage = english;
-russian.messages = assignDeep({}, defaultLanguage.messages, russian.messages);
-spanish.messages = assignDeep({}, defaultLanguage.messages, spanish.messages);
-portuguese.messages = assignDeep({}, defaultLanguage.messages, portuguese.messages);
-chinese.messages = assignDeep({}, defaultLanguage.messages, chinese.messages);
+buildMessages(defaultLanguage, russian);
+buildMessages(defaultLanguage, spanish);
+buildMessages(defaultLanguage, portuguese);
+buildMessages(defaultLanguage, chinese);
 
 // Set language data
 const languageData = {
@@ -56,24 +74,24 @@ export function extendL18n() {
   chinese.messages = delegate.l18n.chinese ? assignDeep({}, chinese.messages, delegate.l18n.default.messages, delegate.l18n.chinese.messages) : chinese.messages;
 }
 
+function flattenMessages(nestedMessages, prefix = '') {
+  return Object.keys(nestedMessages).reduce((messages, key) => {
+    let value = nestedMessages[key];
+    let prefixedKey = prefix ? `${prefix}.${key}` : key;
+
+    if (typeof value === 'string') {
+      messages[prefixedKey] = value;
+    } else {
+      Object.assign(messages, flattenMessages(value, prefixedKey));
+    }
+
+    return messages;
+  }, {});
+}
+
 export function getIntlData(locale) {
   const lang = locale ? locale : language;
   const currentLanguage = languageData[lang] || languageData[lang.split('-')[0]] || languageData['default']
-
-  const flattenMessages = (nestedMessages, prefix = '') => {
-    return Object.keys(nestedMessages).reduce((messages, key) => {
-      let value = nestedMessages[key];
-      let prefixedKey = prefix ? `${prefix}.${key}` : key;
-
-      if (typeof value === 'string') {
-        messages[prefixedKey] = value;
-      } else {
-        Object.assign(messages, flattenMessages(value, prefixedKey));
-      }
-
-      return messages;
-    }, {});
-  };
 
   return {
     locale: currentLanguage.locale,
