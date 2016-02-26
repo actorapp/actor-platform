@@ -11148,11 +11148,6 @@
         <node concept="NXeRC" id="YOvM6E5Rh2" role="1GBnQ6">
           <property role="NXePf" value="Optimizing SDP" />
         </node>
-        <node concept="NX1gA" id="YOvM6E5Rh7" role="1GBnQ6">
-          <property role="NX6R2" value="SDP for optimization" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="YOvM6E5Qb0" resolve="sdp" />
-        </node>
         <node concept="NX1gA" id="YOvM6E5Rhf" role="1GBnQ6">
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Type of SDP (offer or answer)" />
