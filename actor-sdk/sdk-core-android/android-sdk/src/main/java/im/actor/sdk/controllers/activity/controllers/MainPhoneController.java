@@ -1,6 +1,7 @@
 package im.actor.sdk.controllers.activity.controllers;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.ChatLinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -104,7 +106,29 @@ public class MainPhoneController extends MainBaseController {
     }
 
     @Override
-    public void onItemClicked(Dialog item) {
+    public void onItemClicked(final Dialog item) {
+        if((sendUriMultiple!= null && !sendUriMultiple.isEmpty()) || (sendUriString!= null && !sendUriString.isEmpty())){
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(getActivity().getString(R.string.confirm_share) + " " + item.getDialogTitle() + "?")
+                    .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            openDialog(item);
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+        }else{
+            openDialog(item);
+        }
+    }
+
+    public void openDialog(Dialog item) {
         startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUriString)
                 .putExtra("send_uri_multiple", sendUriMultiple)
                 .putExtra("send_text", sendText)

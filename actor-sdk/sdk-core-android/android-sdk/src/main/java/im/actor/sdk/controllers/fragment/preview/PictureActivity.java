@@ -5,8 +5,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -19,12 +23,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.droidkit.progress.CircularView;
+
+import java.io.File;
+import java.io.IOException;
 
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
+import im.actor.sdk.util.Files;
+import im.actor.sdk.util.Randoms;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.images.common.ImageLoadException;
 import im.actor.sdk.util.images.ops.ImageLoading;
@@ -463,25 +473,24 @@ public class PictureActivity extends BaseActivity {
                     .putExtra(Intent.EXTRA_STREAM,Uri.parse(path)));*/
                 return true;
             } else if (item.getItemId() == R.id.save) {
-//                getImageLoader().createReceiver(new ReceiverCallback() {
-//                    @Override
-//                    public void onImageLoaded(BitmapReference bitmap) {
-//                        Intents.savePicture(getActivity(), bitmap.getBitmap());
-//                    }
-//
-//                    @Override
-//                    public void onImageCleared() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onImageError() {
-//
-//                    }
-//                }).request(new RawFileTask(path));
+                File externalFile = Environment.getExternalStorageDirectory();
+                if (externalFile == null) {
+                    Toast.makeText(getActivity(), R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
+                }else{
+                    String externalPath = externalFile.getAbsolutePath();
+                    new File(externalPath + "/Actor/exported/").mkdirs();
+                    try {
+                        String exportPath = externalPath + "/Actor/exported/" + (fileName!=null?fileName:"exported") + "_" + Randoms.randomId() + ".jpg";
+                        Files.copy(new File(this.path), new File(exportPath));
+                        MediaScannerConnection.scanFile(getActivity(), new String[]{exportPath}, new String[]{"image/jpeg"}, null);
+                        Toast.makeText(getActivity(), getString(R.string.file_saved)+ " " + exportPath, Toast.LENGTH_LONG).show();
+                        item.setEnabled(false);
+                        item.setTitle(R.string.menu_saved);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-                item.setEnabled(false);
-                item.setTitle(R.string.menu_saved);
 
                 return true;
             }
