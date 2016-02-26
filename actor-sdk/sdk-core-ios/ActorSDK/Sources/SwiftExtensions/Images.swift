@@ -81,6 +81,7 @@ public extension UIImage {
         return image;
     }
     
+    
     public func roundCorners(w: CGFloat, h: CGFloat, roundSize: CGFloat) -> UIImage {
         let nSize = CGSize(width: w, height: h)
         UIGraphicsBeginImageContextWithOptions(nSize, false, UIScreen.mainScreen().scale);
@@ -147,13 +148,28 @@ public class Imaging {
     public class func roundedImage(color: UIColor, size: CGSize, radius: CGFloat) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         let path = UIBezierPath(roundedRect: CGRectMake(0, 0, size.width, size.height), cornerRadius: radius)
+        path.lineWidth = 1
         color.setFill()
         path.fill()
         let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return image
-            .resizableImageWithCapInsets(UIEdgeInsetsMake(radius, radius, radius, radius))
+        return image.resizableImageWithCapInsets(UIEdgeInsetsMake(radius, radius, radius, radius))
+    }
+    
+    public class func circleImage(color: UIColor, radius: CGFloat) -> UIImage {
+        return circleImage(color, size: CGSizeMake(radius * 2, radius * 2), radius: radius)
+    }
+    
+    public class func circleImage(color: UIColor, size: CGSize, radius: CGFloat) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        let path = UIBezierPath(roundedRect: CGRectMake(1, 1, size.width - 2, size.height - 2), cornerRadius: radius)
+        color.setStroke()
+        path.stroke()
+        let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return image.resizableImageWithCapInsets(UIEdgeInsetsMake(radius, radius, radius, radius))
     }
     
     public class func imageWithColor(color: UIColor, size: CGSize) -> UIImage {
