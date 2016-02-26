@@ -8,12 +8,13 @@ import im.actor.core.api.ApiAdvertiseMaster;
 import im.actor.core.api.ApiAdvertiseSelf;
 import im.actor.core.api.ApiAnswer;
 import im.actor.core.api.ApiCandidate;
+import im.actor.core.api.ApiCloseSession;
 import im.actor.core.api.ApiEnableConnection;
 import im.actor.core.api.ApiNeedDisconnect;
 import im.actor.core.api.ApiNeedOffer;
+import im.actor.core.api.ApiNegotinationSuccessful;
 import im.actor.core.api.ApiOffer;
 import im.actor.core.api.ApiWebRTCSignaling;
-import im.actor.core.api.rpc.RequestJoinCall;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.eventbus.EventBusActor;
 import im.actor.runtime.Log;
@@ -67,18 +68,27 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     //
 
     @Override
-    public void onOffer(long deviceId, String sdp) {
-        sendSignal(deviceId, new ApiOffer(0, sdp, CallBusActor.this.selfSettings.toApi()));
+    public void onOffer(long deviceId, long sessionId, String sdp) {
+        sendSignal(deviceId, new ApiOffer(sessionId, sdp, CallBusActor.this.selfSettings.toApi()));
     }
 
     @Override
-    public void onAnswer(long deviceId, String sdp) {
-        sendSignal(deviceId, new ApiAnswer(0, sdp));
+    public void onAnswer(long deviceId, long sessionId, String sdp) {
+        sendSignal(deviceId, new ApiAnswer(sessionId, sdp));
     }
 
     @Override
     public void onCandidate(long deviceId, int mdpIndex, String id, String sdp) {
         sendSignal(deviceId, new ApiCandidate(0, mdpIndex, id, sdp));
+    }
+
+    @Override
+    public void onNegotiationSuccessful(long deviceId, long sessionId) {
+        if (isMasterReady) {
+            sendSignal(masterDeviceId, new ApiNegotinationSuccessful(deviceId, sessionId));
+        } else {
+            stash(STASH);
+        }
     }
 
     @Override
@@ -100,14 +110,6 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     //
     // Actions
     //
-
-    public void onAnswerCall() {
-        // sendSignal(masterDeviceId, new ApiAnswerCall());
-    }
-
-    public void onRejectCall() {
-        // sendSignal(masterDeviceId, new ApiRejectCall());
-    }
 
     public void onChangeMute(boolean isMuted) {
         peerCall.onMuteChanged(isMuted);
@@ -145,18 +147,18 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
         if (signal instanceof ApiAnswer) {
             ApiAnswer answer = (ApiAnswer) signal;
-            peerCall.onAnswer(senderDeviceId, answer.getSdp());
+            peerCall.onAnswer(senderDeviceId, answer.getSessionId(), answer.getSdp());
         } else if (signal instanceof ApiOffer) {
             ApiOffer offer = (ApiOffer) signal;
             peerCall.onAdvertised(senderDeviceId, new PeerSettings(offer.getOwnPeerSettings()));
-            peerCall.onOffer(senderDeviceId, offer.getSdp());
+            peerCall.onOffer(senderDeviceId, offer.getSessionId(), offer.getSdp());
         } else if (signal instanceof ApiCandidate) {
             ApiCandidate candidate = (ApiCandidate) signal;
             peerCall.onCandidate(senderDeviceId, candidate.getIndex(), candidate.getId(), candidate.getSdp());
         } else if (signal instanceof ApiNeedOffer) {
             ApiNeedOffer needOffer = (ApiNeedOffer) signal;
             peerCall.onAdvertised(needOffer.getDevice(), new PeerSettings(needOffer.getPeerSettings()));
-            peerCall.onOfferNeeded(needOffer.getDevice());
+            peerCall.onOfferNeeded(needOffer.getDevice(), needOffer.getSessionId());
         } else if (signal instanceof ApiNeedDisconnect) {
             ApiNeedDisconnect disconnect = (ApiNeedDisconnect) signal;
             peerCall.disposePeer(disconnect.getDevice());
@@ -164,6 +166,9 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
             ApiEnableConnection connection = (ApiEnableConnection) signal;
             peerCall.onOwnStarted();
             peerCall.onTheirStarted(connection.getDevice());
+        } else if (signal instanceof ApiCloseSession) {
+            ApiCloseSession closeSession = (ApiCloseSession) signal;
+            peerCall.closeSession(closeSession.getDevice(), closeSession.getSessionId());
         } else if (signal instanceof ApiAdvertiseMaster) {
             if (isMasterReady) {
                 return;
@@ -202,18 +207,6 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         } else if (message instanceof SendSignal) {
             SendSignal signal = (SendSignal) message;
             sendSignal(signal.getDeviceId(), signal.getSignal());
-        } else if (message instanceof AnswerCall) {
-            if (!isMasterReady) {
-                stash(STASH);
-                return;
-            }
-            onAnswerCall();
-        } else if (message instanceof RejectCall) {
-            if (!isMasterReady) {
-                stash(STASH);
-                return;
-            }
-            onRejectCall();
         } else if (message instanceof Mute) {
             onChangeMute(((Mute) message).isMuted());
         } else {
@@ -257,14 +250,6 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         }
     }
 
-    public static class AnswerCall {
-
-    }
-
-    public static class RejectCall {
-
-    }
-
     public static class Mute {
         private boolean isMuted;
 
@@ -286,21 +271,21 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         }
 
         @Override
-        public void onOffer(final long deviceId, final String sdp) {
+        public void onOffer(final long deviceId, final long sessionId, final String sdp) {
             self().send(new Runnable() {
                 @Override
                 public void run() {
-                    callCallback.onOffer(deviceId, sdp);
+                    callCallback.onOffer(deviceId, sessionId, sdp);
                 }
             });
         }
 
         @Override
-        public void onAnswer(final long deviceId, final String sdp) {
+        public void onAnswer(final long deviceId, final long sessionId, final String sdp) {
             self().send(new Runnable() {
                 @Override
                 public void run() {
-                    callCallback.onAnswer(deviceId, sdp);
+                    callCallback.onAnswer(deviceId, sessionId, sdp);
                 }
             });
         }
@@ -311,6 +296,16 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
                 @Override
                 public void run() {
                     callCallback.onCandidate(deviceId, mdpIndex, id, sdp);
+                }
+            });
+        }
+
+        @Override
+        public void onNegotiationSuccessful(final long deviceId, final long sessionId) {
+            self().send(new Runnable() {
+                @Override
+                public void run() {
+                    callCallback.onNegotiationSuccessful(deviceId, sessionId);
                 }
             });
         }

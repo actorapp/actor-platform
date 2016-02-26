@@ -10,6 +10,7 @@ import im.actor.runtime.Log;
 import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
@@ -47,7 +48,6 @@ public class PeerConnectionActor extends ModuleActor {
     @NotNull
     private WebRTCPeerConnection peerConnection;
     private SDPOptimizer sdpOptimizer;
-
     private boolean isReady = false;
     private boolean isReadyForCandidates = false;
     @NotNull
@@ -102,8 +102,7 @@ public class PeerConnectionActor extends ModuleActor {
                     }
                 });
                 state = PeerConnectionState.WAITING_HANDSHAKE;
-                isReady = true;
-                unstashAll();
+                onReady();
             }
         }).failure(new Consumer<Exception>() {
             @Override
@@ -115,7 +114,15 @@ public class PeerConnectionActor extends ModuleActor {
         }).done(self());
     }
 
-    public void onOfferNeeded() {
+    public void onResetState() {
+
+        //
+        // Just Reset current state
+        //
+        state = PeerConnectionState.WAITING_HANDSHAKE;
+    }
+
+    public void onOfferNeeded(final long sessionId) {
         // Ignore if we are not waiting for handshake
         if (state != PeerConnectionState.WAITING_HANDSHAKE) {
             return;
@@ -137,10 +144,9 @@ public class PeerConnectionActor extends ModuleActor {
         }).then(new Consumer<WebRTCSessionDescription>() {
             @Override
             public void apply(WebRTCSessionDescription description) {
-                callback.onOffer(description.getSdp());
+                callback.onOffer(sessionId, description.getSdp());
                 state = PeerConnectionState.WAITING_ANSWER;
-                isReady = true;
-                unstashAll();
+                onReady();
             }
         }).failure(new Consumer<Exception>() {
             @Override
@@ -151,7 +157,7 @@ public class PeerConnectionActor extends ModuleActor {
         }).done(self());
     }
 
-    public void onOffer(@NotNull String sdp) {
+    public void onOffer(final long sessionId, @NotNull String sdp) {
         // Ignore if we are not waiting for handshake
         if (state != PeerConnectionState.WAITING_HANDSHAKE) {
             return;
@@ -180,8 +186,9 @@ public class PeerConnectionActor extends ModuleActor {
         }).then(new Consumer<WebRTCSessionDescription>() {
             @Override
             public void apply(WebRTCSessionDescription description) {
-                callback.onAnswer(description.getSdp());
-                onHandShakeCompleted();
+                callback.onAnswer(sessionId, description.getSdp());
+                onHandShakeCompleted(sessionId);
+                onReady();
             }
         }).failure(new Consumer<Exception>() {
             @Override
@@ -192,7 +199,7 @@ public class PeerConnectionActor extends ModuleActor {
         }).done(self());
     }
 
-    public void onAnswer(@NotNull String sdp) {
+    public void onAnswer(final long sessionId, @NotNull String sdp) {
         // Ignore if we are not waiting for answer
         if (state != PeerConnectionState.WAITING_ANSWER) {
             return;
@@ -207,7 +214,8 @@ public class PeerConnectionActor extends ModuleActor {
         peerConnection.setRemoteDescription(new WebRTCSessionDescription("answer", sdp)).then(new Consumer<WebRTCSessionDescription>() {
             @Override
             public void apply(WebRTCSessionDescription description) {
-                onHandShakeCompleted();
+                onHandShakeCompleted(sessionId);
+                onReady();
             }
         }).failure(new Consumer<Exception>() {
             @Override
@@ -216,6 +224,11 @@ public class PeerConnectionActor extends ModuleActor {
                 onHandshakeFailure();
             }
         }).done(self());
+    }
+
+    private void onReady() {
+        isReady = true;
+        unstashAll();
     }
 
     private void onHandshakeFailure() {
@@ -228,9 +241,8 @@ public class PeerConnectionActor extends ModuleActor {
         }
     }
 
-    private void onHandShakeCompleted() {
-        callback.onHandshakeSuccessful();
-        isReady = true;
+    private void onHandShakeCompleted(long sessionId) {
+        callback.onNegotiationSuccessful(sessionId);
         isReadyForCandidates = true;
         state = PeerConnectionState.READY;
         unstashAll();
@@ -285,13 +297,15 @@ public class PeerConnectionActor extends ModuleActor {
                 stash();
                 return;
             }
-            onOffer(((OnOffer) message).getSdp());
+            OnOffer offer = (OnOffer) message;
+            onOffer(offer.getSessionId(), offer.getSdp());
         } else if (message instanceof OnAnswer) {
             if (!isReady) {
                 stash();
                 return;
             }
-            onAnswer(((OnAnswer) message).getSdp());
+            OnAnswer answer = (OnAnswer) message;
+            onAnswer(answer.getSessionId(), answer.getSdp());
         } else if (message instanceof OnCandidate) {
             if (!isReady || !isReadyForCandidates) {
                 stash();
@@ -304,7 +318,14 @@ public class PeerConnectionActor extends ModuleActor {
                 stash();
                 return;
             }
-            onOfferNeeded();
+            OnOfferNeeded offerNeeded = (OnOfferNeeded) message;
+            onOfferNeeded(offerNeeded.getSessionId());
+        } else if (message instanceof ResetState) {
+            if (!isReady) {
+                stash();
+                return;
+            }
+            onResetState();
         } else {
             super.onReceive(message);
         }
@@ -316,16 +337,34 @@ public class PeerConnectionActor extends ModuleActor {
 
     public static class OnOfferNeeded {
 
+        @Property("nonatomic, readonly")
+        private final long sessionId;
+
+        public OnOfferNeeded(long sessionId) {
+            this.sessionId = sessionId;
+        }
+
+        public long getSessionId() {
+            return sessionId;
+        }
     }
 
     public static class OnOffer {
 
+        @Property("nonatomic, readonly")
+        private final long sessionId;
+
         @NotNull
         @Property("nonatomic, readonly")
-        private String sdp;
+        private final String sdp;
 
-        public OnOffer(@NotNull String sdp) {
+        public OnOffer(long sessionId, @NotNull String sdp) {
+            this.sessionId = sessionId;
             this.sdp = sdp;
+        }
+
+        public long getSessionId() {
+            return sessionId;
         }
 
         @NotNull
@@ -336,12 +375,20 @@ public class PeerConnectionActor extends ModuleActor {
 
     public static class OnAnswer {
 
+        @Property("nonatomic, readonly")
+        private final long sessionId;
+
         @NotNull
         @Property("nonatomic, readonly")
-        private String sdp;
+        private final String sdp;
 
-        public OnAnswer(@NotNull String sdp) {
+        public OnAnswer(long sessionId, @NotNull String sdp) {
             this.sdp = sdp;
+            this.sessionId = sessionId;
+        }
+
+        public long getSessionId() {
+            return sessionId;
         }
 
         @NotNull
@@ -380,6 +427,10 @@ public class PeerConnectionActor extends ModuleActor {
         public String getSdp() {
             return sdp;
         }
+    }
+
+    public static class ResetState {
+
     }
 
     private enum PeerConnectionState {
