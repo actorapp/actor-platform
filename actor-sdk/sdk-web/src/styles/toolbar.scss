@@ -20,6 +20,13 @@
     overflow: hidden;
 
     width: 0; // Strange fix for firefox
+
+    header {
+      width: 100%;
+      height: 20px;
+      margin-top: 12px;
+    }
+
     &__title {
       font-size: 16px;
       font-weight: 500;
@@ -27,15 +34,36 @@
 
       display: inline-block;
 
-      width: 100%;
-      margin-top: 12px;
-
       @include text-elipsis();
       .emoji-outer {
         width: 20px;
         height: 20px;
 
         vertical-align: top;
+      }
+    }
+    &__favorite {
+      display: inline-block;
+
+      margin-left: 4px;
+
+      vertical-align: top;
+
+      .material-icons {
+        font-size: 22px;
+        line-height: 20px;
+
+        cursor: pointer;
+
+        color: rgba(black, .3);
+        &:hover {
+          color: $squash;
+        }
+      }
+      &--active {
+        .material-icons {
+          color: $squash;
+        }
       }
     }
     &__message {
@@ -47,6 +75,8 @@
       margin-top: 2px;
 
       color: $toolbar-secodary-text-color;
+
+      @include text-elipsis();
     }
   }
 
