@@ -9,18 +9,18 @@ import DefaultHeaderSection from './sidebar/HeaderSection.react';
 import DefaultRecent from './sidebar/Recent.react';
 import QuickSearchButton from './sidebar/QuickSearchButton.react';
 
-import AllDialogsStore from '../stores/AllDialogsStore';
+import DialogStore from '../stores/DialogStore';
 
 class SidebarSection extends Component {
   constructor(props){
     super(props);
   }
 
-  static getStores = () => [AllDialogsStore];
+  static getStores = () => [DialogStore];
 
   static calculateState() {
     return {
-      allDialogs: AllDialogsStore.getAllDialogs()
+      dialogs: DialogStore.getDialogs()
     }
   };
 
@@ -30,7 +30,7 @@ class SidebarSection extends Component {
 
   render() {
     const { delegate } = this.context;
-    const { allDialogs } = this.state;
+    const { dialogs } = this.state;
 
     let HeaderSection, Recent, FooterSection;
     if (delegate.components.sidebar !== null && typeof delegate.components.sidebar !== 'function') {
@@ -46,7 +46,7 @@ class SidebarSection extends Component {
     return (
       <aside className="sidebar">
         <HeaderSection/>
-        <Recent dialogs={allDialogs}/>
+        <Recent dialogs={dialogs}/>
         <FooterSection/>
       </aside>
     );
