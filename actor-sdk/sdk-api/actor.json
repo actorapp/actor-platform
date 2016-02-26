@@ -12947,12 +12947,6 @@
               "Optimizing SDP",
               {
                 "type": "reference",
-                "argument": "sdp",
-                "category": "full",
-                "description": "SDP for optimization"
-              },
-              {
-                "type": "reference",
                 "argument": "type",
                 "category": "full",
                 "description": "Type of SDP (offer or answer)"

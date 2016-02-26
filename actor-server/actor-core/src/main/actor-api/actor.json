@@ -12947,12 +12947,6 @@
               "Optimizing SDP",
               {
                 "type": "reference",
-                "argument": "sdp",
-                "category": "full",
-                "description": "SDP for optimization"
-              },
-              {
-                "type": "reference",
                 "argument": "type",
                 "category": "full",
                 "description": "Type of SDP (offer or answer)"
@@ -13458,6 +13452,59 @@
                 },
                 "id": 1,
                 "name": "device"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ActiveCall",
+            "doc": [
+              "Active Calls. Used in broadcasting states of current calls.",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "  Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Call's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "callMembers",
+                "category": "full",
+                "description": "  Call Members"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 2,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "CallMember"
+                  }
+                },
+                "id": 3,
+                "name": "callMembers"
               }
             ]
           }
