@@ -1,0 +1,86 @@
+/*
+ * Copyright (C) 2016 Actor LLC. <https://actor.im>
+ */
+
+.archive-section {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+
+  .preloader {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: white;
+    display: block;
+
+  }
+
+  &__list {
+    padding: 8px;
+    &__item {
+      padding: 8px;
+    }
+  }
+
+  .archive-item {
+    border-radius: $default-border-radius;
+    box-shadow: 0 0 0 1px rgba($dove-gray, .1);
+    padding: 8px 16px;
+    text-decoration: none;
+
+    &__avatar {
+      position: relative;
+      .avatar {
+        margin-right: 8px;
+      }
+    }
+
+    &__title {
+      margin: 0;
+      padding: 10px 0;
+      font-weight: 500;
+      line-height: 24px;
+      color: rgba(0, 0, 0, 0.6);
+    }
+    &__counter {
+      position: absolute;
+      bottom: -6px;
+      right: -6px;;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 24px;
+
+      display: inline-block;
+
+      box-sizing: border-box;
+      min-width: 24px;
+      height: 24px;
+      margin: 0 0 0 2px;
+      padding: 0 4px;
+
+      text-align: center;
+
+      color: white;
+      border-radius: 12px;
+      background-color: $coral;
+
+      @include no-select();
+    }
+
+    &:hover {
+      background-color: $dark-sky-blue;
+      color: white;
+      box-shadow: none;
+      .archive-item {
+        &__title {
+          color: white !important;
+          text-shadow: 0 1px 1px $dark-sky-blue;
+        }
+      }
+    }
+  }
+}
