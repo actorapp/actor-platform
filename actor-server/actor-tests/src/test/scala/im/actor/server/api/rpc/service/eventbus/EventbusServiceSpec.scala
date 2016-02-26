@@ -50,7 +50,7 @@ final class EventbusServiceSpec
         case Ok(_) ⇒
       }
 
-      service.handlePostToEventBus(id, Vector(ApiEventBusDestination(alice.id, Vector(aliceDeviceId))), Array[Byte](123))
+      service.handlePostToEventBus(id, Vector(aliceDeviceId), Array[Byte](123))
     }
 
     expectWeakUpdate(aliceAuthId, aliceSessionId)(aliceProbe).updateHeader shouldBe UpdateEventBusDeviceConnected.header
