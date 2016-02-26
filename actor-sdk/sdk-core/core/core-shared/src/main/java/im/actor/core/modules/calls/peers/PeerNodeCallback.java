@@ -13,18 +13,27 @@ public interface PeerNodeCallback {
     /**
      * Called when new offer arrived
      *
-     * @param deviceId Device Id
-     * @param sdp      sdp of the offer
+     * @param deviceId  Device Id
+     * @param sessionId Session Id
+     * @param sdp       sdp of the offer
      */
-    void onOffer(long deviceId, String sdp);
+    void onOffer(long deviceId, long sessionId, String sdp);
 
     /**
      * Called when new answer arrived
      *
-     * @param deviceId Device Id
-     * @param sdp      sdp of the answer
+     * @param deviceId  Device Id
+     * @param sessionId Session Id
+     * @param sdp       sdp of the answer
      */
-    void onAnswer(long deviceId, String sdp);
+    void onAnswer(long deviceId, long sessionId, String sdp);
+
+    /**
+     * Called when negotiation finished successfully
+     *
+     * @param sessionId Session If
+     */
+    void onNegotiationSuccessful(long deviceId, long sessionId);
 
     /**
      * Called when candidate arrived

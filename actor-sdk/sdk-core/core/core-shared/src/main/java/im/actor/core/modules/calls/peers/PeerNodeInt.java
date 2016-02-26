@@ -6,7 +6,7 @@ import im.actor.core.modules.calls.peers.messages.RTCAnswer;
 import im.actor.core.modules.calls.peers.messages.RTCCandidate;
 import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
-import im.actor.core.modules.calls.peers.messages.RTCOwnStart;
+import im.actor.core.modules.calls.peers.messages.RTCCloseSession;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
@@ -48,7 +48,7 @@ public class PeerNodeInt extends ActorInterface {
      * @param stream own stream
      */
     public void setOwnStream(WebRTCMediaStream stream) {
-        send(new PeerNodeActor.SetOwnStream(stream));
+        send(new PeerNodeActor.AddOwnStream(stream));
     }
 
     /**
@@ -61,43 +61,40 @@ public class PeerNodeInt extends ActorInterface {
     }
 
     /**
-     * Call this method when own user explicitly enables (answers) a call
+     * Call this method when both users explicitly enables (answers) a call
      */
-    public void startOwn() {
-        send(new RTCOwnStart());
-    }
-
-    /**
-     * Call this method when their user explicitly enables (answers) a call
-     */
-    public void startTheir() {
+    public void startConnection() {
         send(new RTCStart(deviceId));
     }
 
 
     /**
      * Call this method when new offer is needed
+     *
+     * @param sessionId Session Id
      */
-    public void onOfferNeeded() {
-        send(new RTCNeedOffer(deviceId));
+    public void onOfferNeeded(long sessionId) {
+        send(new RTCNeedOffer(deviceId, sessionId));
     }
 
     /**
      * Call this method when offer is received
      *
-     * @param sdp sdp of the offer
+     * @param sessionId Session Id of offer
+     * @param sdp       sdp of the offer
      */
-    public void onOffer(String sdp) {
-        send(new RTCOffer(deviceId, sdp));
+    public void onOffer(long sessionId, String sdp) {
+        send(new RTCOffer(deviceId, sessionId, sdp));
     }
 
     /**
      * Call this method when answer is received
      *
-     * @param sdp sdp of the answer
+     * @param sessionId Session Id
+     * @param sdp       sdp of the answer
      */
-    public void onAnswer(String sdp) {
-        send(new RTCAnswer(deviceId, sdp));
+    public void onAnswer(long sessionId, String sdp) {
+        send(new RTCAnswer(deviceId, sessionId, sdp));
     }
 
     /**
@@ -111,25 +108,44 @@ public class PeerNodeInt extends ActorInterface {
         send(new RTCCandidate(deviceId, index, id, sdp));
     }
 
+    /**
+     * Resetting handshake state of the node
+     *
+     * @param sessionId Sesison Id
+     */
+    public void closeSession(long sessionId) {
+        send(new RTCCloseSession(deviceId, sessionId));
+    }
+
 
     private class WrappedCallback implements PeerNodeCallback {
 
         @Override
-        public void onOffer(final long deviceId, final String sdp) {
+        public void onOffer(final long deviceId, final long sessionId, final String sdp) {
             callbackDest.send(new Runnable() {
                 @Override
                 public void run() {
-                    callback.onOffer(deviceId, sdp);
+                    callback.onOffer(deviceId, sessionId, sdp);
                 }
             });
         }
 
         @Override
-        public void onAnswer(final long deviceId, final String sdp) {
+        public void onAnswer(final long deviceId, final long sessionId, final String sdp) {
             callbackDest.send(new Runnable() {
                 @Override
                 public void run() {
-                    callback.onAnswer(deviceId, sdp);
+                    callback.onAnswer(deviceId, sessionId, sdp);
+                }
+            });
+        }
+
+        @Override
+        public void onNegotiationSuccessful(final long deviceId, final long sessionId) {
+            callbackDest.send(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onNegotiationSuccessful(deviceId, sessionId);
                 }
             });
         }
