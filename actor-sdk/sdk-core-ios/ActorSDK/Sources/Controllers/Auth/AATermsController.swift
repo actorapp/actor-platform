@@ -81,7 +81,7 @@ class AATermsController: UIViewController,UIViewControllerTransitioningDelegate 
         self.alertTitleLabel = UILabel()
         self.alertTitleLabel.font = UIFont(name: "HelveticaNeue-Bold", size: 17)
         self.alertTitleLabel.frame = CGRectMake(10,10,220,30)
-        self.alertTitleLabel.text = AALocalized("AuthTermsOfService")
+        self.alertTitleLabel.text = AALocalized("AuthTermsOfServiceTitle")
         self.alertTitleLabel.backgroundColor = UIColor.clearColor()
         self.alertTitleLabel.textAlignment = .Center
         self.alertView.addSubview(self.alertTitleLabel)
@@ -101,7 +101,7 @@ class AATermsController: UIViewController,UIViewControllerTransitioningDelegate 
         self.alertView.addSubview(separatorView)
         
         self.buttonOk = UIButton(type: UIButtonType.System)
-        self.buttonOk.setTitle("OK", forState: UIControlState.Normal)
+        self.buttonOk.setTitle(AALocalized("AlertOk"), forState: UIControlState.Normal)
         self.buttonOk.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
         self.buttonOk.frame = CGRectMake(0,291,240,39)
         self.buttonOk.addTarget(self, action: "closeController", forControlEvents: UIControlEvents.TouchUpInside)
