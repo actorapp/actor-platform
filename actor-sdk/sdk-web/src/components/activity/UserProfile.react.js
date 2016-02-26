@@ -70,7 +70,6 @@ class UserProfile extends Component {
   };
 
   onNotificationChange = (event) => {
-    console.debug('onNotificationChange', this.state);
     const { thisPeer } = this.state;
     NotificationsActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
   };
