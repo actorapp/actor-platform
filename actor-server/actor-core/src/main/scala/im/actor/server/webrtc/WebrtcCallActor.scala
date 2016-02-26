@@ -13,6 +13,7 @@ import im.actor.server.eventbus.{ EventBus, EventBusExtension }
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.{ Peer, PeerType }
 import im.actor.server.sequence.WeakUpdatesExtension
+import im.actor.server.values.ValuesExtension
 import im.actor.types._
 
 import scala.concurrent.duration._
@@ -64,6 +65,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
   private lazy val dialogExt = DialogExtension(context.system)
   private lazy val eventBusExt = EventBusExtension(context.system)
   private lazy val groupExt = GroupExtension(context.system)
+  private lazy val valuesExt = ValuesExtension(context.system)
 
   case class Device(
     deviceId:     EventBus.DeviceId,
@@ -76,20 +78,37 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
         (peerSettings.map(_.canConnect).isDefined && pairPeerSettings.map(_.canConnect).isDefined)
   }
 
+  object Pair {
+    def apply(d1: EventBus.DeviceId, d2: EventBus.DeviceId) = {
+      require(d1 != d2)
+      if (d1 < d2) new Pair(d1, d2)
+      else new Pair(d2, d1)
+    }
+  }
+  class Pair private (val left: EventBus.DeviceId, val right: EventBus.DeviceId)
+
+  type SessionId = Long
+
   private var scheduledUpds = Map.empty[UserId, Cancellable]
   private var devices = Map.empty[EventBus.DeviceId, Device]
   private var clients = Map.empty[EventBus.Client, EventBus.DeviceId]
+  private var participants = Map.empty[UserId, ApiCallMemberState.Value]
+  private var sessions = Map.empty[Pair, SessionId]
+  private var peer = Peer()
+  private var callerUserId: Int = _
 
   def receive = waitForStart
 
   def waitForStart: Receive = {
-    case StartCall(callerUserId, peer, eventBusId) ⇒
+    case s: StartCall ⇒
       case class Res(callees: Seq[Int], callerDeviceId: EventBus.DeviceId)
+      this.peer = s.peer
+      this.callerUserId = s.callerUserId
 
       (for {
         callees ← fetchParticipants(callerUserId, peer) map (_ filterNot (_ == callerUserId))
-        callerDeviceId ← eventBusExt.fetchOwner(eventBusId)
-        _ ← eventBusExt.join(EventBus.InternalClient(self), eventBusId, None)
+        callerDeviceId ← eventBusExt.fetchOwner(s.eventBusId)
+        _ ← eventBusExt.join(EventBus.InternalClient(self), s.eventBusId, None)
       } yield Res(callees, callerDeviceId)) pipeTo self
 
       becomeStashing(replyTo ⇒ {
@@ -97,9 +116,13 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
           scheduleIncomingCallUpdates(callees)
           replyTo ! StartCallAck
 
-          eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(callerDeviceId), ApiAdvertiseMaster.toByteArray)
+          eventBusExt.post(EventBus.InternalClient(self), s.eventBusId, Seq(callerDeviceId), ApiAdvertiseMaster.toByteArray)
 
-          context become callInProgress(peer, eventBusId, callerDeviceId, System.currentTimeMillis(), callerUserId, callees :+ callerUserId)
+          callees foreach (putParticipant(_, ApiCallMemberState.RINGING))
+          putParticipant(callerUserId, ApiCallMemberState.CONNECTED)
+          broadcastSyncedSet()
+
+          context become callInProgress(peer, s.eventBusId, callerDeviceId, System.currentTimeMillis(), callerUserId)
           unstashAll()
         case failure: Status.Failure ⇒
           replyTo forward failure
@@ -113,8 +136,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
     eventBusId:     String,
     callerDeviceId: EventBus.DeviceId,
     startTime:      Long,
-    callerUserId:   Int,
-    participants:   Seq[Int]
+    callerUserId:   Int
   ): Receive = {
     def end(): Unit = {
       val duration = ((System.currentTimeMillis() - startTime) / 1000).toInt
@@ -122,7 +144,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
       val smsg = ApiServiceMessage("Call ended", Some(ApiServiceExPhoneCall(duration)))
 
       (for {
-        _ ← if (peer.`type`.isPrivate) FutureExt.ftraverse(participants)(userId ⇒ dialogExt.sendMessage(
+        _ ← if (peer.`type`.isPrivate) FutureExt.ftraverse(participants.keySet.toSeq)(userId ⇒ dialogExt.sendMessage(
           peer = ApiPeer(ApiPeerType.Private, userId),
           senderUserId = callerUserId,
           senderAuthId = None,
@@ -145,13 +167,16 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
       }
     }
 
-    def connect(device: Device, pairDevice: Device): Unit = {
+    def connect(device: Device, pairDevice: Device): SessionId = {
+      val sessionId = Random.nextLong()
       eventBusExt.post(
         EventBus.InternalClient(self),
         eventBusId,
         Seq(device.deviceId),
-        ApiNeedOffer(pairDevice.deviceId, Random.nextLong(), pairDevice.peerSettings).toByteArray
+        ApiNeedOffer(pairDevice.deviceId, sessionId, pairDevice.peerSettings).toByteArray
       )
+      sessions += Pair(device.deviceId, pairDevice.deviceId) → sessionId
+      sessionId
     }
 
     {
@@ -165,25 +190,33 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
           case Some(device) ⇒
             putDevice(device.deviceId, client, device.copy(isJoined = true))
             cancelIncomingCallUpdates(userId)
+
             weakUpdExt.broadcastUserWeakUpdate(userId, UpdateCallHandled(id), excludeAuthIds = Set(authId))
             devices.view filterNot (_._1 == device.deviceId) filter (_._2.isJoined) foreach {
               case (_, pairDevice) ⇒
-                if (!device.canConnect(pairDevice.peerSettings)) // if we didn't connect them in AdvertiseSelf
-                  connect(device, pairDevice)
+                val sessionId =
+                  sessions.getOrElse(Pair(device.deviceId, pairDevice.deviceId), connect(device, pairDevice))
 
                 eventBusExt.post(
                   EventBus.InternalClient(self),
                   eventBusId,
                   Seq(device.deviceId),
-                  ApiEnableConnection(pairDevice.deviceId, 1L).toByteArray
+                  ApiEnableConnection(pairDevice.deviceId, sessionId).toByteArray
                 )
                 eventBusExt.post(
                   EventBus.InternalClient(self),
                   eventBusId,
                   Seq(pairDevice.deviceId),
-                  ApiEnableConnection(device.deviceId, 1L).toByteArray
+                  ApiEnableConnection(device.deviceId, sessionId).toByteArray
                 )
             }
+
+            val userDevices = devices.filter(_._2.client.externalUserId.contains(userId)).values.map(_.deviceId).toSet
+            if (!sessions.keySet.exists(pair ⇒ userDevices.contains(pair.left) || userDevices.contains(pair.right))) {
+              putParticipant(userId, ApiCallMemberState.CONNECTING)
+              broadcastSyncedSet()
+            }
+
             sender() ! JoinCallAck
           case None ⇒
             sender() ! Status.Failure(WebrtcCallErrors.NotJoinedToEventBus)
@@ -191,9 +224,10 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
       case RejectCall(userId, authId) ⇒
         cancelIncomingCallUpdates(userId)
         weakUpdExt.broadcastUserWeakUpdate(userId, UpdateCallHandled(id), excludeAuthIds = Set(authId))
+        broadcastSyncedSet()
         sender() ! RejectCallAck
       case GetInfo ⇒
-        sender() ! GetInfoAck(eventBusId, callerUserId, participants)
+        sender() ! GetInfoAck(eventBusId, callerUserId, participants.keySet.toSeq)
       case EventBus.Joined(_, client, deviceId) ⇒
         if (client.isExternal)
           eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(deviceId), ApiAdvertiseMaster.toByteArray)
@@ -208,12 +242,41 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
                     connect(newDevice, pairDevice)
               }
               putDevice(deviceId, ebMessage.client, newDevice)
+
+              for {
+                userId ← ebMessage.client.externalUserId
+                state ← participants.get(userId)
+              } yield if (state == ApiCallMemberState.RINGING) putParticipant(userId, ApiCallMemberState.RINGING_REACHED)
+            }
+          case msg: ApiNegotinationSuccessful ⇒
+            ebMessage.client.externalUserId foreach { userId ⇒
+              putParticipant(userId, ApiCallMemberState.CONNECTED)
+              broadcastSyncedSet()
             }
           case _ ⇒
         }
-      case EventBus.Disconnected(_, client, deviceId) ⇒ removeDevice(deviceId)
-      case EventBus.Disposed(_)                       ⇒ end()
-      case _: StartCall                               ⇒ sender() ! WebrtcCallErrors.CallAlreadyStarted
+      case EventBus.Disconnected(_, client, deviceId) ⇒
+        removeDevice(deviceId)
+        client.externalUserId foreach { userId ⇒
+          putParticipant(userId, ApiCallMemberState.ENDED)
+          broadcastSyncedSet()
+        }
+      case EventBus.Disposed(_) ⇒
+        end()
+        deleteSyncedSet()
+      case _: StartCall ⇒ sender() ! WebrtcCallErrors.CallAlreadyStarted
+    }
+  }
+
+  private def putParticipant(userId: Int, state: ApiCallMemberState.Value): Unit = {
+    participants get userId match {
+      case Some(oldState) ⇒
+        if (oldState != state) {
+          log.debug("Changing participant {} state from {} to {}", userId, oldState, state)
+          participants += userId → state
+        } else log.error("Attempt to change participant state to the same value {}", state)
+      case None ⇒
+        log.error("Attempt to change state of a non-participant {}", userId)
     }
   }
 
@@ -253,6 +316,28 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
     scheduledUpds get callee foreach { c ⇒
       c.cancel()
       scheduledUpds -= callee
+    }
+
+  private def broadcastSyncedSet(): Unit = {
+    val activeCall =
+      ApiActiveCall(id, peer.asStruct, participants.toVector map {
+        case (userId, state) ⇒
+
+          ApiCallMember(userId, ApiCallMemberStateHolder(
+            state = state,
+            fallbackIsRinging = Some(state == ApiCallMemberState.RINGING),
+            fallbackIsConnected = Some(state == ApiCallMemberState.CONNECTED),
+            fallbackIsConnecting = Some(state == ApiCallMemberState.CONNECTING),
+            fallbackIsRingingReached = Some(state == ApiCallMemberState.RINGING_REACHED),
+            fallbackIsEnded = Some(state == ApiCallMemberState.ENDED)
+          ))
+      }).toByteArray
+    participants.keySet foreach (valuesExt.syncedSet.put(_, Webrtc.SyncedSetName, id, activeCall))
+  }
+
+  private def deleteSyncedSet(): Unit =
+    participants.keySet foreach { userId ⇒
+      valuesExt.syncedSet.delete(userId, Webrtc.SyncedSetName, id)
     }
 
   override def postStop(): Unit = {
