@@ -15,12 +15,12 @@ class ArchiveStore extends Store {
     this.archiveChatState = [];
   }
 
-  isLoading() {
-    return _isLoading;
+  isArchiveLoading() {
+    return this.isLoading;
   }
 
   getDialogs() {
-    return _dialogs;
+    return this.dialogs;
   }
 
   getArchiveChatState(id) {

@@ -191,7 +191,8 @@
           color: white;
         }
       }
-      .favorite {
+      .favorite,
+      .archive {
         height: 24px;
         text-align: center;
         display: none;
@@ -201,6 +202,15 @@
           line-height: 24px;
           color: rgba(white, .5);
           &:hover {
+            color: white;
+          }
+        }
+      }
+      .archive {
+        &--in-progress,
+        &--failure {
+          display: block;
+          .icon {
             color: white;
           }
         }
@@ -216,9 +226,8 @@
         .counter {
           display: none;
         }
-        .delete {
-          display: block;
-        }
+        .archive,
+        .delete,
         .favorite {
           display: block;
         }
