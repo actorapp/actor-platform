@@ -41,28 +41,39 @@ public class PeerConnectionInt extends ActorInterface {
     }
 
     /**
-     * Call this method when peer connection need to generate new offer
+     * Call this method to reset current negotiation state
      */
-    public void onOfferNeeded() {
-        send(new PeerConnectionActor.OnOfferNeeded());
+    public void onResetState() {
+        send(new PeerConnectionActor.ResetState());
+    }
+
+    /**
+     * Call this method when peer connection need to generate new offer
+     *
+     * @param sessionId Session Id
+     */
+    public void onOfferNeeded(long sessionId) {
+        send(new PeerConnectionActor.OnOfferNeeded(sessionId));
     }
 
     /**
      * Call this method when offer arrived from other peer
      *
-     * @param sdp sdp of the offer
+     * @param sessionId Session Id
+     * @param sdp       sdp of the offer
      */
-    public void onOffer(String sdp) {
-        send(new PeerConnectionActor.OnOffer(sdp));
+    public void onOffer(long sessionId, String sdp) {
+        send(new PeerConnectionActor.OnOffer(sessionId, sdp));
     }
 
     /**
      * Call this method when answer arrived from other peer
      *
-     * @param sdp sdp of the answer
+     * @param sessionId Session Id
+     * @param sdp       sdp of the answer
      */
-    public void onAnswer(String sdp) {
-        send(new PeerConnectionActor.OnAnswer(sdp));
+    public void onAnswer(long sessionId, String sdp) {
+        send(new PeerConnectionActor.OnAnswer(sessionId, sdp));
     }
 
     /**
@@ -83,21 +94,21 @@ public class PeerConnectionInt extends ActorInterface {
     private class WrappedCallback implements PeerConnectionCallback {
 
         @Override
-        public void onOffer(final String sdp) {
+        public void onOffer(final long sessionId, final String sdp) {
             callbackDest.send(new Runnable() {
                 @Override
                 public void run() {
-                    callback.onOffer(sdp);
+                    callback.onOffer(sessionId, sdp);
                 }
             });
         }
 
         @Override
-        public void onAnswer(final String sdp) {
+        public void onAnswer(final long sessionId, final String sdp) {
             callbackDest.send(new Runnable() {
                 @Override
                 public void run() {
-                    callback.onAnswer(sdp);
+                    callback.onAnswer(sessionId, sdp);
                 }
             });
         }
@@ -113,11 +124,11 @@ public class PeerConnectionInt extends ActorInterface {
         }
 
         @Override
-        public void onHandshakeSuccessful() {
+        public void onNegotiationSuccessful(final long sessionId) {
             callbackDest.send(new Runnable() {
                 @Override
                 public void run() {
-                    callback.onHandshakeSuccessful();
+                    callback.onNegotiationSuccessful(sessionId);
                 }
             });
         }

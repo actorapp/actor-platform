@@ -1,7 +1,5 @@
 package im.actor.core.modules.calls;
 
-import java.util.HashMap;
-
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;

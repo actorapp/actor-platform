@@ -4,11 +4,13 @@ import im.actor.runtime.webrtc.WebRTCMediaStream;
 
 public interface PeerCallCallback {
 
-    void onOffer(long deviceId, String sdp);
+    void onOffer(long deviceId, long sessionId, String sdp);
 
-    void onAnswer(long deviceId, String sdp);
+    void onAnswer(long deviceId, long sessionId, String sdp);
 
     void onCandidate(long deviceId, int mdpIndex, String id, String sdp);
+
+    void onNegotiationSuccessful(long deviceId, long sessionId);
 
     void onPeerStateChanged(long deviceId, PeerState state);
 

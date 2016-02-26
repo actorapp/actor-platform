@@ -1,14 +1,15 @@
 package im.actor.core.modules.calls.peers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.messages.RTCAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCAnswer;
 import im.actor.core.modules.calls.peers.messages.RTCCandidate;
+import im.actor.core.modules.calls.peers.messages.RTCCloseSession;
 import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
-import im.actor.core.modules.calls.peers.messages.RTCOwnStart;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
@@ -24,12 +25,14 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     private final PeerSettings ownSettings;
     private final ArrayList<WebRTCMediaStream> theirMediaStreams = new ArrayList<>();
 
+    private final HashSet<Long> closedSessions = new HashSet<>();
+    private final ArrayList<PendingSession> pendingSessions = new ArrayList<>();
+
+    private long currentSession = 0;
     private PeerState state = PeerState.PENDING;
     private PeerConnectionInt peerConnection;
     private PeerSettings theirSettings;
     private WebRTCMediaStream ownMediaStream;
-    private boolean isTheirEnabled = false;
-    private boolean isOwnEnabled = false;
     private boolean isEnabled = false;
     private boolean isConnected = false;
     private boolean isStarted = false;
@@ -69,21 +72,19 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         }
     }
 
-    public void onEnableOwn() {
-        if (!this.isOwnEnabled) {
-            this.isOwnEnabled = true;
+    public void onEnabled() {
+        if (!isEnabled) {
+            isEnabled = true;
+
             reconfigurePeerConnectionIfNeeded();
+
+            for (WebRTCMediaStream mediaStream : theirMediaStreams) {
+                mediaStream.setEnabled(true);
+            }
         }
     }
 
-    public void onEnableTheir() {
-        if (!this.isTheirEnabled) {
-            this.isTheirEnabled = true;
-            reconfigurePeerConnectionIfNeeded();
-        }
-    }
-
-    public void setOwnSetStream(WebRTCMediaStream mediaStream) {
+    public void addOwnStream(WebRTCMediaStream mediaStream) {
         if (this.ownMediaStream == null) {
             this.ownMediaStream = mediaStream;
             reconfigurePeerConnectionIfNeeded();
@@ -92,7 +93,6 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
 
     private void reconfigurePeerConnectionIfNeeded() {
         makePeerConnectionIfNeeded();
-        enablePeerConnectionIfNeeded();
         startIfNeeded();
     }
 
@@ -101,8 +101,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             return;
         }
 
-        if ((isOwnEnabled && isTheirEnabled) ||
-                (theirSettings.isPreConnectionEnabled() && ownSettings.isPreConnectionEnabled())) {
+        if (isEnabled || (theirSettings.isPreConnectionEnabled() && ownSettings.isPreConnectionEnabled())) {
             state = PeerState.CONNECTING;
             callback.onPeerStateChanged(deviceId, state);
             peerConnection = new PeerConnectionInt(
@@ -110,17 +109,6 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
                     ownMediaStream, this, context(), self(), "connection");
 
             unstashAll();
-        }
-    }
-
-    private void enablePeerConnectionIfNeeded() {
-        if (peerConnection == null || !isOwnEnabled || !isTheirEnabled || isEnabled) {
-            return;
-        }
-        isEnabled = true;
-
-        for (WebRTCMediaStream mediaStream : theirMediaStreams) {
-            mediaStream.setEnabled(true);
         }
     }
 
@@ -143,13 +131,13 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     //
 
     @Override
-    public void onOffer(String sdp) {
-        callback.onOffer(deviceId, sdp);
+    public void onOffer(long sessionId, String sdp) {
+        callback.onOffer(deviceId, sessionId, sdp);
     }
 
     @Override
-    public void onAnswer(String sdp) {
-        callback.onAnswer(deviceId, sdp);
+    public void onAnswer(long sessionId, String sdp) {
+        callback.onAnswer(deviceId, sessionId, sdp);
     }
 
     @Override
@@ -158,8 +146,8 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     }
 
     @Override
-    public void onHandshakeSuccessful() {
-
+    public void onNegotiationSuccessful(long sessionId) {
+        callback.onNegotiationSuccessful(deviceId, sessionId);
     }
 
     @Override
@@ -192,6 +180,29 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     }
 
 
+    public void onCloseSession(long sessionId) {
+        if (!closedSessions.contains(sessionId)) {
+            closedSessions.add(sessionId);
+
+            currentSession = 0;
+
+            for (PendingSession p : pendingSessions) {
+                if (p.getSessionId() == sessionId) {
+                    pendingSessions.remove(p);
+                    break;
+                }
+            }
+            peerConnection.onResetState();
+
+            PendingSession p = pendingSessions.remove(0);
+            if (p != null) {
+                for (Object o : p.getMessages()) {
+                    self().sendFirst(o, self());
+                }
+            }
+        }
+    }
+
     //
     // Stopping
     //
@@ -214,57 +225,111 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     @Override
     public void onReceive(Object message) {
         if (message instanceof RTCStart) {
-            onEnableTheir();
-        } else if (message instanceof RTCOwnStart) {
-            onEnableOwn();
+            onEnabled();
         } else if (message instanceof RTCAdvertised) {
             RTCAdvertised advertised = (RTCAdvertised) message;
             onAdvertised(advertised.getSettings());
-        } else if (message instanceof SetOwnStream) {
-            SetOwnStream ownStream = (SetOwnStream) message;
-            setOwnSetStream(ownStream.getMediaStream());
-        } else if (message instanceof RTCOffer) {
-            if (peerConnection == null) {
-                stash();
-                return;
-            }
-            RTCOffer offer = (RTCOffer) message;
-            peerConnection.onOffer(offer.getSdp());
-        } else if (message instanceof RTCAnswer) {
-            if (peerConnection == null) {
-                stash();
-                return;
-            }
-            RTCAnswer answer = (RTCAnswer) message;
-            peerConnection.onAnswer(answer.getSdp());
+        } else if (message instanceof AddOwnStream) {
+            AddOwnStream ownStream = (AddOwnStream) message;
+            addOwnStream(ownStream.getMediaStream());
         } else if (message instanceof RTCNeedOffer) {
-            if (peerConnection == null) {
+            RTCNeedOffer needOffer = (RTCNeedOffer) message;
+            if (peerConnection != null) {
+                if (receiveSessionMessage(needOffer.getSessionId(), message)) {
+                    peerConnection.onOfferNeeded(needOffer.getSessionId());
+                }
+            } else {
                 stash();
-                return;
             }
-            peerConnection.onOfferNeeded();
+        } else if (message instanceof RTCOffer) {
+            RTCOffer offer = (RTCOffer) message;
+            if (peerConnection != null) {
+                if (receiveSessionMessage(offer.getSessionId(), message)) {
+                    peerConnection.onOffer(offer.getSessionId(), offer.getSdp());
+                }
+            } else {
+                stash();
+            }
+        } else if (message instanceof RTCAnswer) {
+            RTCAnswer answer = (RTCAnswer) message;
+            if (peerConnection != null) {
+                if (receiveSessionMessage(answer.getSessionId(), message)) {
+                    peerConnection.onAnswer(answer.getSessionId(), answer.getSdp());
+                }
+            } else {
+                stash();
+            }
         } else if (message instanceof RTCCandidate) {
-            if (peerConnection == null) {
-                stash();
-                return;
-            }
             RTCCandidate candidate = (RTCCandidate) message;
-            peerConnection.onCandidate(candidate.getMdpIndex(), candidate.getId(), candidate.getSdp());
+            if (peerConnection != null) {
+                peerConnection.onCandidate(candidate.getMdpIndex(), candidate.getId(), candidate.getSdp());
+            } else {
+                stash();
+            }
+        } else if (message instanceof RTCCloseSession) {
+            RTCCloseSession closeSession = (RTCCloseSession) message;
+            if (peerConnection != null) {
+                onCloseSession(closeSession.getSessionId());
+            } else {
+                stash();
+            }
         } else {
             super.onReceive(message);
         }
     }
 
-    public static class SetOwnStream {
+    private boolean receiveSessionMessage(long sessionId, Object msg) {
+        if (currentSession == sessionId || currentSession == 0) {
+            currentSession = sessionId;
+            return true;
+        } else {
+            if (!closedSessions.contains(sessionId)) {
+                boolean found = false;
+                for (PendingSession p : pendingSessions) {
+                    if (p.getSessionId() == sessionId) {
+                        p.getMessages().add(msg);
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    PendingSession p = new PendingSession(sessionId);
+                    p.getMessages().add(msg);
+                    pendingSessions.add(p);
+                }
+            }
+            return false;
+        }
+    }
+
+    public static class AddOwnStream {
 
         private WebRTCMediaStream mediaStream;
 
-        public SetOwnStream(WebRTCMediaStream mediaStream) {
+        public AddOwnStream(WebRTCMediaStream mediaStream) {
             this.mediaStream = mediaStream;
         }
 
         public WebRTCMediaStream getMediaStream() {
             return mediaStream;
+        }
+    }
+
+    private class PendingSession {
+
+        private long sessionId;
+        private ArrayList<Object> messages;
+
+        public PendingSession(long sessionId) {
+            this.sessionId = sessionId;
+            this.messages = new ArrayList<>();
+        }
+
+        public long getSessionId() {
+            return sessionId;
+        }
+
+        public ArrayList<Object> getMessages() {
+            return messages;
         }
     }
 }

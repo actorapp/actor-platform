@@ -40,6 +40,7 @@ import im.actor.runtime.mtproto.Connection;
 import im.actor.runtime.mtproto.ConnectionCallback;
 import im.actor.runtime.mtproto.CreateConnectionCallback;
 import im.actor.runtime.threading.AtomicIntegerCompat;
+import im.actor.runtime.util.Hex;
 
 /**
  * Possible problems
@@ -332,8 +333,8 @@ public class ManagerActor extends Actor {
                 throw new IOException("Incorrect header");
             }
 
-
             if (authKey != null) {
+                Log.d(TAG, "Package: " + Hex.toHex(data));
                 EncryptedPackage encryptedPackage = new EncryptedPackage(bis);
                 int seq = (int) encryptedPackage.getSeqNumber();
                 if (seq != inSeq) {
