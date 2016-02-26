@@ -6,10 +6,10 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.messages.RTCAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCAnswer;
 import im.actor.core.modules.calls.peers.messages.RTCCandidate;
+import im.actor.core.modules.calls.peers.messages.RTCCloseSession;
 import im.actor.core.modules.calls.peers.messages.RTCDispose;
 import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
-import im.actor.core.modules.calls.peers.messages.RTCOwnStart;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.Log;
@@ -75,15 +75,13 @@ public class PeerCallActor extends ModuleActor {
         }
     }
 
-    public void onOwnStart() {
-        if (!isOwnStarted) {
-            isOwnStarted = true;
-            if (webRTCMediaStream != null) {
-                webRTCMediaStream.setEnabled(!isMuted);
-            }
-            for (PeerNodeInt d : refs.values()) {
-                d.startOwn();
-            }
+    public void onOwnStarted() {
+        if (isOwnStarted) {
+            return;
+        }
+        isOwnStarted = true;
+        if (webRTCMediaStream != null) {
+            webRTCMediaStream.setEnabled(!isMuted);
         }
     }
 
@@ -103,9 +101,6 @@ public class PeerCallActor extends ModuleActor {
                 selfSettings, self(), context());
         if (webRTCMediaStream != null) {
             peerNodeInt.setOwnStream(webRTCMediaStream);
-        }
-        if (isOwnStarted) {
-            peerNodeInt.startOwn();
         }
         refs.put(deviceId, peerNodeInt);
         return peerNodeInt;
@@ -130,33 +125,36 @@ public class PeerCallActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
-        if (message instanceof RTCOwnStart) {
-            onOwnStart();
-        } else if (message instanceof RTCStart) {
+        if (message instanceof RTCStart) {
             RTCStart start = (RTCStart) message;
-            getPeer(start.getDeviceId()).startTheir();
+            getPeer(start.getDeviceId()).startConnection();
         } else if (message instanceof RTCDispose) {
             RTCDispose dispose = (RTCDispose) message;
             disposePeer(dispose.getDeviceId());
         } else if (message instanceof RTCOffer) {
             RTCOffer offer = (RTCOffer) message;
-            getPeer(offer.getDeviceId()).onOffer(offer.getSdp());
+            getPeer(offer.getDeviceId()).onOffer(offer.getSessionId(), offer.getSdp());
         } else if (message instanceof RTCAnswer) {
             RTCAnswer answer = (RTCAnswer) message;
-            getPeer(answer.getDeviceId()).onAnswer(answer.getSdp());
+            getPeer(answer.getDeviceId()).onAnswer(answer.getSessionId(), answer.getSdp());
         } else if (message instanceof RTCCandidate) {
             RTCCandidate candidate = (RTCCandidate) message;
             getPeer(candidate.getDeviceId()).onCandidate(candidate.getMdpIndex(),
                     candidate.getId(), candidate.getSdp());
         } else if (message instanceof RTCNeedOffer) {
             RTCNeedOffer needOffer = (RTCNeedOffer) message;
-            getPeer(needOffer.getDeviceId()).onOfferNeeded();
+            getPeer(needOffer.getDeviceId()).onOfferNeeded(needOffer.getSessionId());
         } else if (message instanceof RTCAdvertised) {
             RTCAdvertised advertised = (RTCAdvertised) message;
             getPeer(advertised.getDeviceId()).onAdvertised(advertised.getSettings());
+        } else if (message instanceof RTCCloseSession) {
+            RTCCloseSession closeSession = (RTCCloseSession) message;
+            getPeer(closeSession.getDeviceId()).closeSession(closeSession.getSessionId());
         } else if (message instanceof MuteChanged) {
             MuteChanged muteChanged = (MuteChanged) message;
             onMuteChanged(muteChanged.isMuted());
+        } else if (message instanceof OwnStarted) {
+            onOwnStarted();
         } else {
             super.onReceive(message);
         }
@@ -174,16 +172,25 @@ public class PeerCallActor extends ModuleActor {
         }
     }
 
+    public static class OwnStarted {
+
+    }
+
     private class NodeCallback implements PeerNodeCallback {
 
         @Override
-        public void onOffer(long deviceId, String sdp) {
-            callback.onOffer(deviceId, sdp);
+        public void onOffer(long deviceId, long sessionId, String sdp) {
+            callback.onOffer(deviceId, sessionId, sdp);
         }
 
         @Override
-        public void onAnswer(long deviceId, String sdp) {
-            callback.onAnswer(deviceId, sdp);
+        public void onAnswer(long deviceId, long sessionId, String sdp) {
+            callback.onAnswer(deviceId, sessionId, sdp);
+        }
+
+        @Override
+        public void onNegotiationSuccessful(long deviceId, long sessionId) {
+            callback.onNegotiationSuccessful(deviceId, sessionId);
         }
 
         @Override

@@ -11,7 +11,7 @@ const l18n = {};
 
 const options = {
   endpoints: [
-    'ws://192.168.1.189:9080'
+    'ws://192.168.1.184:9080'
   ],
   delegate: new ActorSDKDelegate(components, actions, l18n),
   isExperimental: true

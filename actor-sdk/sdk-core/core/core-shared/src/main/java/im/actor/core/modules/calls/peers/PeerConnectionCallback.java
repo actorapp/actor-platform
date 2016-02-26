@@ -12,14 +12,14 @@ public interface PeerConnectionCallback {
      *
      * @param sdp sdp of the offer
      */
-    void onOffer(String sdp);
+    void onOffer(long sessionId, String sdp);
 
     /**
      * Called when answer need to be sent to other peer
      *
      * @param sdp sdp of the answer
      */
-    void onAnswer(String sdp);
+    void onAnswer(long sessionId, String sdp);
 
     /**
      * Called when new ICE candidate was found
@@ -31,9 +31,9 @@ public interface PeerConnectionCallback {
     void onCandidate(int mdpIndex, String id, String sdp);
 
     /**
-     * Called when Answer/Offer finished successfully
+     * Called when negotiation finished successfully
      */
-    void onHandshakeSuccessful();
+    void onNegotiationSuccessful(long sessionId);
 
     /**
      * Called when peer stream was added
