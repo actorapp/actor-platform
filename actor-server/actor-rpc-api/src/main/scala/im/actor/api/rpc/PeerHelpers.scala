@@ -38,8 +38,7 @@ object PeerHelpers {
         (for {
           optGroup ← GroupRepo.find(outPeer.id)
           grouperrOrGroup ← validGroup(optGroup)
-          usererrOrGroup ← validateGroupAccess(optGroup, client.userId)(ec)
-          hasherrOrGroup ← DBIO.successful(usererrOrGroup.map(validGroupAccessHash(outPeer.accessHash, _)))
+          hasherrOrGroup ← DBIO.successful(grouperrOrGroup.map(validGroupAccessHash(outPeer.accessHash, _)))
         } yield hasherrOrGroup).flatMap {
           case Error(err) ⇒ DBIO.successful(Error(err))
           case _          ⇒ f
@@ -194,19 +193,6 @@ object PeerHelpers {
     }
   }
 
-  def validateGroupAccess(optGroup: Option[Group], userId: Int)(implicit ec: ExecutionContext) = optGroup match {
-    case Some(group) ⇒
-      (for (user ← GroupUserRepo.find(group.id, userId)) yield user).flatMap {
-        case Some(user) ⇒ DBIO.successful(Xor.Right(group))
-        case None ⇒
-          (for (bot ← GroupBotRepo.find(group.id, userId)) yield bot).flatMap {
-            case Some(bot) ⇒ DBIO.successful(Xor.right(group))
-            case None      ⇒ DBIO.successful(Error(CommonRpcErrors.forbidden("No access to the group.")))
-          }
-      }
-    case None ⇒ DBIO.successful(Error(CommonRpcErrors.GroupNotFound))
-  }
-
   private def withGroupOutPeer[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: FullGroup ⇒ DBIO[RpcError Xor R])(implicit ec: ExecutionContext): DBIO[RpcError Xor R] = {
     GroupRepo.findFull(groupOutPeer.groupId) flatMap {
       case Some(group) ⇒
@@ -225,14 +211,6 @@ object PeerHelpers {
       case Some(group) ⇒
         DBIO.successful(Xor.right(group))
       case None ⇒ DBIO.successful(Error(CommonRpcErrors.GroupNotFound))
-    }
-  }
-
-  private def validUserAccessHash(accessHash: Long, user: User)(implicit client: BaseClientData, actorSystem: ActorSystem) = {
-    if (accessHash == ACLUtils.userAccessHash(client.authId, user)) {
-      Xor.right(user)
-    } else {
-      Error(CommonRpcErrors.InvalidAccessHash)
     }
   }
 
