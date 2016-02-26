@@ -1061,6 +1061,17 @@ public class Messenger {
         return modules.getCallsModule().getCall(callId);
     }
 
+    /**
+     * Call this method when user is pobabbly want to end call. For example when power button
+     * was pressed on iOS device
+     */
+    @ObjectiveCName("probablyEndCall")
+    public void probablyEndCall() {
+        if (modules.getCallsModule() != null) {
+            modules.getCallsModule().probablyEndCall();
+        }
+    }
+
     //////////////////////////////////////
     //         Peer operations
     //////////////////////////////////////

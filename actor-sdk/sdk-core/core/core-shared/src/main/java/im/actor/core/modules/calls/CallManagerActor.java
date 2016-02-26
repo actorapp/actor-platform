@@ -291,6 +291,12 @@ public class CallManagerActor extends ModuleActor {
         }
     }
 
+    private void probablyEndCall() {
+        if (currentCall != null) {
+            doEndCall(currentCall);
+        }
+    }
+
 
     //
     // Messages
@@ -326,6 +332,8 @@ public class CallManagerActor extends ModuleActor {
             onCallMute(((MuteCall) message).getCallId());
         } else if (message instanceof UnmuteCall) {
             onCallUnmute(((UnmuteCall) message).getCallId());
+        } else if (message instanceof ProbablyEndCall) {
+            probablyEndCall();
         } else {
             super.onReceive(message);
         }
@@ -481,5 +489,9 @@ public class CallManagerActor extends ModuleActor {
         public long getCallId() {
             return callId;
         }
+    }
+
+    public static class ProbablyEndCall {
+
     }
 }

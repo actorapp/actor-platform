@@ -334,7 +334,6 @@ public class ManagerActor extends Actor {
             }
 
             if (authKey != null) {
-                Log.d(TAG, "Package: " + Hex.toHex(data));
                 EncryptedPackage encryptedPackage = new EncryptedPackage(bis);
                 int seq = (int) encryptedPackage.getSeqNumber();
                 if (seq != inSeq) {
@@ -347,7 +346,7 @@ public class ManagerActor extends Actor {
                 EncryptedCBCPackage ruEncryptedPackage = new EncryptedCBCPackage(new DataInput(ruPackage));
                 byte[] plainText = serverRUDecryptor.decryptPackage(ByteStrings.longToBytes(seq), ruEncryptedPackage.getIv(), ruEncryptedPackage.getEncryptedContent());
 
-                // Log.d(TAG, "Package decrypted in " + (Runtime.getActorTime() - start) + " ms, size: " + plainText.length);
+                Log.d(TAG, "Package decrypted in " + (Runtime.getActorTime() - start) + " ms, size: " + len);
 
                 DataInput ptInput = new DataInput(plainText);
                 long messageId = ptInput.readLong();
@@ -395,6 +394,7 @@ public class ManagerActor extends Actor {
             if (currentConnection != null) {
                 if (authKey != null) {
                     int seq = outSeq++;
+                    long start = Runtime.getActorTime();
                     byte[] ruIv = new byte[16];
                     Crypto.nextBytes(ruIv);
                     byte[] usIv = new byte[16];
@@ -413,6 +413,8 @@ public class ManagerActor extends Actor {
                     bos.writeBytes(cipherData, 0, cipherData.length);
                     byte[] pkg = bos.toByteArray();
                     currentConnection.post(pkg, 0, pkg.length);
+
+                    Log.d(TAG, "Package encrypted in " + (Runtime.getActorTime() - start) + " ms, size: " + len);
                 } else {
                     DataOutput bos = new DataOutput();
                     bos.writeLong(authId);

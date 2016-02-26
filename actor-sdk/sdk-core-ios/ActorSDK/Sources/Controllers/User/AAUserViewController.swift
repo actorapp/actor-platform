@@ -65,7 +65,7 @@ class AAUserViewController: AAContentTableController {
             }
             
             // Profile: Send messages
-            s.action("Do Call") { (r) -> () in
+            s.action("CallsStartAudio") { (r) -> () in
                 r.selectAction = { () -> Bool in
                     self.execute(Actor.doCallWithUid(jint(self.uid)))
                     return false
