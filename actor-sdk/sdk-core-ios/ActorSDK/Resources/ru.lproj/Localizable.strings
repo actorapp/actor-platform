@@ -100,6 +100,24 @@
 "SettingsMobilePhone"  = "Мобильный телефон";
 
 /*
+ * Calls
+ */
+
+"CallsStartAudio" = "Аудио звонок";
+
+"CallsStartGroupAudio" = "Групповой аудио звонок";
+
+"CallsAnswer" = "ответить";
+
+"CallsDecline" = "отменить";
+
+"CallsMute" = "выкл. звук";
+
+"CallsSpeaker" = "громкая связь";
+
+"CallsVideo" = "видео";
+
+/*
  * Profile
  */
 

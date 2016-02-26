@@ -70,7 +70,17 @@ public extension UIView {
 //    public var bottom: CGFloat { get { return frame.maxY } }
     
     public func centerIn(rect: CGRect) {
-        self.frame = CGRectMake((rect.width - self.bounds.width) / 2, (rect.height - self.bounds.height) / 2,
+        self.frame = CGRectMake(rect.origin.x + (rect.width - self.bounds.width) / 2, rect.origin.y + (rect.height - self.bounds.height) / 2,
+            self.bounds.width, self.bounds.height)
+    }
+    
+    public func under(rect: CGRect, offset: CGFloat) {
+        self.frame = CGRectMake(rect.origin.x + (rect.width - self.bounds.width) / 2, rect.origin.y + rect.height + offset,
+            self.bounds.width, self.bounds.height)
+    }
+    
+    public func topIn(rect: CGRect) {
+        self.frame = CGRectMake(rect.origin.x + (rect.width - self.bounds.width) / 2, rect.origin.y,
             self.bounds.width, self.bounds.height)
     }
 }

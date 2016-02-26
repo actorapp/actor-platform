@@ -25,8 +25,6 @@ import ActorSDK
         // Enabling experimental features
         ActorSDK.sharedActor().enableExperimentalFeatures = true
         
-        ActorSDK.sharedActor().endpoints = [ "tcp://192.168.1.184:9070" ]
-        
         // Creating Actor
         ActorSDK.sharedActor().createActor()
         
