@@ -25,11 +25,14 @@ class ToolbarSection extends Component {
   static getStores = () => [DialogInfoStore, ActivityStore, OnlineStore, DialogStore];
 
   static calculateState() {
+    const thisPeer = DialogStore.getCurrentPeer();
+
     return {
-      thisPeer: DialogStore.getCurrentPeer(),
+      thisPeer,
       dialogInfo: DialogInfoStore.getInfo(),
       isActivityOpen: ActivityStore.isOpen(),
-      message: OnlineStore.getMessage()
+      message: OnlineStore.getMessage(),
+      isFavorite: DialogStore.isFavorite(thisPeer.id)
     };
   }
 
@@ -56,16 +59,15 @@ class ToolbarSection extends Component {
   };
 
   render() {
-    const { dialogInfo, isActivityOpen, message } = this.state;
+    const { dialogInfo, isActivityOpen, message, isFavorite } = this.state;
     const { isExperimental } = this.context;
-    const isFavorited = false;
 
     const infoButtonClassName = classnames('button button--icon', {
       'active': isActivityOpen
     });
 
     const favoriteClassName = classnames('toolbar__peer__favorite', {
-      'toolbar__peer__favorite--active': isFavorited
+      'toolbar__peer__favorite--active': isFavorite
     });
 
     if (dialogInfo !== null) {
@@ -83,7 +85,7 @@ class ToolbarSection extends Component {
               <span className={favoriteClassName}>
                 {
                   isExperimental
-                    ? isFavorited
+                    ? isFavorite
                         ? <i className="material-icons" onClick={this.handleUnfavorite}>star</i>
                         : <i className="material-icons" onClick={this.handleFavorite}>star_border</i>
                     : null
