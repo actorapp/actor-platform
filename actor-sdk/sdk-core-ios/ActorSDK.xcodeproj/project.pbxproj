@@ -179,6 +179,7 @@
 		06E323151C6A7AC000D66F53 /* AACallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E323141C6A7AC000D66F53 /* AACallViewController.swift */; };
 		06E3C58B1C746CCC004776CD /* tone.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 06E3C58A1C746AAC004776CD /* tone.m4a */; };
 		06E3C58D1C749320004776CD /* ringtone.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 06E3C58C1C74931F004776CD /* ringtone.m4a */; };
+		06E3C5B81C80EE21004776CD /* AACircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E3C5B71C80EE20004776CD /* AACircleButton.swift */; };
 		06E7B2471C0F8D7A0090660C /* AALocationPickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2461C0F8D7A0090660C /* AALocationPickerController.swift */; };
 		06E7B24A1C0F92140090660C /* AABubbleLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */; };
 		06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7B24B1C0FAB500090660C /* AAMapFastView.swift */; };
@@ -479,6 +480,7 @@
 		06E323141C6A7AC000D66F53 /* AACallViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AACallViewController.swift; path = Calls/AACallViewController.swift; sourceTree = "<group>"; };
 		06E3C58A1C746AAC004776CD /* tone.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = tone.m4a; sourceTree = "<group>"; };
 		06E3C58C1C74931F004776CD /* ringtone.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ringtone.m4a; sourceTree = "<group>"; };
+		06E3C5B71C80EE20004776CD /* AACircleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AACircleButton.swift; sourceTree = "<group>"; };
 		06E7B2461C0F8D7A0090660C /* AALocationPickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AALocationPickerController.swift; sourceTree = "<group>"; };
 		06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleLocationCell.swift; sourceTree = "<group>"; };
 		06E7B24B1C0FAB500090660C /* AAMapFastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMapFastView.swift; sourceTree = "<group>"; };
@@ -804,6 +806,7 @@
 				066A52461BC4EED5000E606E /* AAProgressView.swift */,
 				066A523C1BC4EECD000E606E /* AATableViewHeader.swift */,
 				066A523D1BC4EECD000E606E /* AATableViewSeparator.swift */,
+				06E3C5B71C80EE20004776CD /* AACircleButton.swift */,
 				065974A61BC62B3600B8C7DF /* ViewExtensions.swift */,
 			);
 			path = Views;
@@ -1828,6 +1831,7 @@
 				066A51801BC4C373000E606E /* FMDatabasePool.m in Sources */,
 				066A518F1BC4C383000E606E /* iOSPhoneBookProvider.swift in Sources */,
 				066A530B1BC531A2000E606E /* AAUserViewController.swift in Sources */,
+				06E3C5B81C80EE21004776CD /* AACircleButton.swift in Sources */,
 				153F6B5B1C2B109400C0B960 /* AABubbleVoiceCell.swift in Sources */,
 				15D35F251C20186200E3717A /* bitwise.c in Sources */,
 				066A531A1BC533E7000E606E /* AAAutoCompleteCell.swift in Sources */,

@@ -45,6 +45,10 @@ public class CallsModule extends AbsModule {
         return callManager;
     }
 
+    public void probablyEndCall() {
+        callManager.send(new CallManagerActor.ProbablyEndCall());
+    }
+
     public Command<Long> makeCall(final Peer peer) {
         return new Command<Long>() {
             @Override
