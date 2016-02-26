@@ -11825,6 +11825,12 @@
                   "argument": "deviceId",
                   "category": "full",
                   "description": "  Your Device Id"
+                },
+                {
+                  "type": "reference",
+                  "argument": "rejoinToken",
+                  "category": "full",
+                  "description": "  Token that can be used for rejoining event bus with same device id"
                 }
               ],
               "attributes": [
@@ -11835,6 +11841,14 @@
                   },
                   "id": 1,
                   "name": "deviceId"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bytes"
+                  },
+                  "id": 2,
+                  "name": "rejoinToken"
                 }
               ]
             },
@@ -11849,7 +11863,7 @@
               {
                 "type": "reference",
                 "argument": "timeout",
-                "category": "hidden",
+                "category": "full",
                 "description": "Join timeout"
               }
             ],
@@ -11879,6 +11893,65 @@
         {
           "type": "rpc",
           "content": {
+            "name": "ReJoinEventBus",
+            "header": 2675,
+            "response": {
+              "type": "anonymous",
+              "header": 2676,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "deviceId",
+                  "category": "hidden",
+                  "description": "  Your Device Id"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  },
+                  "id": 1,
+                  "name": "deviceId"
+                }
+              ]
+            },
+            "doc": [
+              "Rejoining to event bus after session was disposed",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "Event Bus Id"
+              },
+              {
+                "type": "reference",
+                "argument": "rejoinToken",
+                "category": "full",
+                "description": "Rejoin Token"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "busId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "rejoinToken"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "KeepAliveEventBus",
             "header": 2670,
             "response": {
@@ -11896,7 +11969,7 @@
               {
                 "type": "reference",
                 "argument": "timeout",
-                "category": "hidden",
+                "category": "full",
                 "description": "Optional timeout for keep alive"
               }
             ],
@@ -11954,48 +12027,6 @@
           }
         },
         {
-          "type": "struct",
-          "content": {
-            "name": "EventBusDestination",
-            "doc": [
-              "Event Bus Destination",
-              {
-                "type": "reference",
-                "argument": "userId",
-                "category": "full",
-                "description": "  User's Id"
-              },
-              {
-                "type": "reference",
-                "argument": "deviceIds",
-                "category": "full",
-                "description": "  If device Ids are empty broadcast to every device"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 1,
-                "name": "userId"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "alias",
-                    "childType": "randomId"
-                  }
-                },
-                "id": 2,
-                "name": "deviceIds"
-              }
-            ]
-          }
-        },
-        {
           "type": "rpc",
           "content": {
             "name": "PostToEventBus",
@@ -12038,8 +12069,8 @@
                 "type": {
                   "type": "list",
                   "childType": {
-                    "type": "struct",
-                    "childType": "EventBusDestination"
+                    "type": "alias",
+                    "childType": "randomId"
                   }
                 },
                 "id": 2,
@@ -12090,8 +12121,11 @@
               },
               {
                 "type": {
-                  "type": "alias",
-                  "childType": "userId"
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
                 },
                 "id": 2,
                 "name": "userId"
@@ -12144,8 +12178,11 @@
               },
               {
                 "type": {
-                  "type": "alias",
-                  "childType": "userId"
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
                 },
                 "id": 2,
                 "name": "userId"
@@ -12261,6 +12298,250 @@
       ]
     },
     {
+      "title": "Values",
+      "package": "values",
+      "doc": [
+        "Synced Values"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "SyncedValue",
+            "doc": [
+              "Synced Value container",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Unique Id of a value. Unique in the scope of one named value."
+              },
+              {
+                "type": "reference",
+                "argument": "value",
+                "category": "full",
+                "description": "  Optional value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bytes"
+                },
+                "id": 2,
+                "name": "value"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadSyncedSet",
+            "header": 2679,
+            "response": {
+              "type": "anonymous",
+              "header": 2680,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "values",
+                  "category": "full",
+                  "description": "  Current set values"
+                },
+                {
+                  "type": "reference",
+                  "argument": "isStrong",
+                  "category": "full",
+                  "description": "  Is this value strong and stored in sequence. By default is true."
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "SyncedValue"
+                    }
+                  },
+                  "id": 1,
+                  "name": "values"
+                },
+                {
+                  "type": {
+                    "type": "opt",
+                    "childType": "bool"
+                  },
+                  "id": 2,
+                  "name": "isStrong"
+                }
+              ]
+            },
+            "doc": [
+              "Loading synced set",
+              {
+                "type": "reference",
+                "argument": "setName",
+                "category": "hidden",
+                "description": "readable name of the set"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "setName"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "SynedSetUpdated",
+            "header": 72,
+            "doc": [
+              "Update about synced set update",
+              {
+                "type": "reference",
+                "argument": "setName",
+                "category": "full",
+                "description": "  Set Name"
+              },
+              {
+                "type": "reference",
+                "argument": "syncedValues",
+                "category": "full",
+                "description": "  Current set values"
+              },
+              {
+                "type": "reference",
+                "argument": "isStrong",
+                "category": "full",
+                "description": "  Is this value strong and need to be stored on disk"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "setName"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "SyncedValue"
+                  }
+                },
+                "id": 2,
+                "name": "syncedValues"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 3,
+                "name": "isStrong"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "SyncedSetAddedOrUpdated",
+            "header": 73,
+            "doc": [
+              "Update about added or updated values in the synced set",
+              {
+                "type": "reference",
+                "argument": "setName",
+                "category": "full",
+                "description": "  Set Name"
+              },
+              {
+                "type": "reference",
+                "argument": "addedOrUpdatedValues",
+                "category": "hidden",
+                "description": "  Added or updated values"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "setName"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "SyncedValue"
+                  }
+                },
+                "id": 2,
+                "name": "addedOrUpdatedValues"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "SyncedSetRemoved",
+            "header": 74,
+            "doc": [
+              "Update about removed items from synced set",
+              {
+                "type": "reference",
+                "argument": "setName",
+                "category": "full",
+                "description": "  Set Name"
+              },
+              {
+                "type": "reference",
+                "argument": "removedItems",
+                "category": "full",
+                "description": "  Removed Items from the set"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "setName"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  }
+                },
+                "id": 2,
+                "name": "removedItems"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "WebRTC",
       "package": "webrtc",
       "doc": [
@@ -12309,6 +12590,43 @@
                 "type": "int64",
                 "id": 1,
                 "name": "callId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "CallUpgraded",
+            "header": 56,
+            "doc": [
+              "Update about call moved to other peer",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "  Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Upgraded group id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 2,
+                "name": "groupId"
               }
             ]
           }
@@ -12437,6 +12755,12 @@
                 "argument": "peer",
                 "category": "full",
                 "description": "destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "eventBusId",
+                "category": "full",
+                "description": "Call Event Bus Id"
               }
             ],
             "attributes": [
@@ -12460,6 +12784,229 @@
           }
         },
         {
+          "type": "rpc",
+          "content": {
+            "name": "UpgradeCall",
+            "header": 2677,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Method for upgrading a call from private call to group call",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Destination peer for upgrading"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 2,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "DoCallAgain",
+            "header": 2678,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Call again to user",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "user",
+                "category": "full",
+                "description": "User to call again"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 2,
+                "name": "user"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "JoinCall",
+            "header": 2683,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Joining Call",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "Call Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RejectCall",
+            "header": 2684,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Rejecting Call",
+              {
+                "type": "reference",
+                "argument": "callId",
+                "category": "full",
+                "description": "Call Id"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "callId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "OptimizeSDP",
+            "header": 2685,
+            "response": {
+              "type": "anonymous",
+              "header": 2686,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "optimizedSDP",
+                  "category": "hidden",
+                  "description": "  Optimized version of SDP"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "optimizedSDP"
+                }
+              ]
+            },
+            "doc": [
+              "Optimizing SDP",
+              {
+                "type": "reference",
+                "argument": "sdp",
+                "category": "full",
+                "description": "SDP for optimization"
+              },
+              {
+                "type": "reference",
+                "argument": "type",
+                "category": "full",
+                "description": "Type of SDP (offer or answer)"
+              },
+              {
+                "type": "reference",
+                "argument": "sdp",
+                "category": "full",
+                "description": "SDP value"
+              },
+              {
+                "type": "reference",
+                "argument": "ownSettings",
+                "category": "full",
+                "description": "Own Settings"
+              },
+              {
+                "type": "reference",
+                "argument": "theirSettings",
+                "category": "full",
+                "description": "Their Settings"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "type"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "sdp"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "PeerSettings"
+                },
+                "id": 3,
+                "name": "ownSettings"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "PeerSettings"
+                },
+                "id": 4,
+                "name": "theirSettings"
+              }
+            ]
+          }
+        },
+        {
           "type": "trait",
           "content": {
             "isContainer": "true",
@@ -12468,32 +13015,58 @@
           }
         },
         {
+          "type": "comment",
+          "content": "Advertising"
+        },
+        {
           "type": "struct",
           "content": {
-            "name": "AnswerCall",
+            "name": "AdvertiseSelf",
             "doc": [
-              "Answer Call signal"
+              "Advertizing self to a master mode",
+              {
+                "type": "reference",
+                "argument": "peerSettings",
+                "category": "full",
+                "description": "  Optional peer Settings"
+              }
             ],
             "trait": {
               "name": "WebRTCSignaling",
-              "key": 1
+              "key": 21
             },
-            "attributes": []
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "PeerSettings"
+                  }
+                },
+                "id": 1,
+                "name": "peerSettings"
+              }
+            ]
           }
         },
         {
           "type": "struct",
           "content": {
-            "name": "EndCall",
+            "name": "AdvertiseMaster",
             "doc": [
-              "Ending Call signal"
+              "Sent by master"
             ],
             "trait": {
               "name": "WebRTCSignaling",
-              "key": 2
+              "key": 26
             },
             "attributes": []
           }
+        },
+        {
+          "type": "comment",
+          "content": "Web RTC signaling"
         },
         {
           "type": "struct",
@@ -12506,6 +13079,24 @@
                 "argument": "sessionId",
                 "category": "full",
                 "description": "  Session Id of candidate"
+              },
+              {
+                "type": "reference",
+                "argument": "index",
+                "category": "full",
+                "description": "  Index of candidate"
+              },
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Id of candidate"
+              },
+              {
+                "type": "reference",
+                "argument": "sdp",
+                "category": "full",
+                "description": "  SDP of candidate"
               }
             ],
             "trait": {
@@ -12520,6 +13111,21 @@
                 },
                 "id": 1,
                 "name": "sessionId"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "index"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "id"
+              },
+              {
+                "type": "string",
+                "id": 4,
+                "name": "sdp"
               }
             ]
           }
@@ -12541,6 +13147,12 @@
                 "argument": "sdp",
                 "category": "full",
                 "description": "  Offer SDP"
+              },
+              {
+                "type": "reference",
+                "argument": "ownPeerSettings",
+                "category": "full",
+                "description": "  Optional Own Peer settings"
               }
             ],
             "trait": {
@@ -12560,6 +13172,17 @@
                 "type": "string",
                 "id": 2,
                 "name": "sdp"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "PeerSettings"
+                  }
+                },
+                "id": 3,
+                "name": "ownPeerSettings"
               }
             ]
           }
@@ -12605,11 +13228,180 @@
           }
         },
         {
+          "type": "comment",
+          "content": "Call Controlling events"
+        },
+        {
           "type": "struct",
           "content": {
-            "name": "NeedRenegotiate",
+            "name": "NeedOffer",
             "doc": [
-              "Need renegotiate session. For example when streams are changed.",
+              "Notification from master that offer is required",
+              {
+                "type": "reference",
+                "argument": "device",
+                "category": "full",
+                "description": "  Destination Device Id"
+              },
+              {
+                "type": "reference",
+                "argument": "peerSettings",
+                "category": "full",
+                "description": "  Optional peer settings"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 8
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "device"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "sessionId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "PeerSettings"
+                  }
+                },
+                "id": 3,
+                "name": "peerSettings"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "NegotinationSuccessful",
+            "doc": [
+              "Notification about on negotiation is successful",
+              {
+                "type": "reference",
+                "argument": "device",
+                "category": "full",
+                "description": "  Device Id"
+              },
+              {
+                "type": "reference",
+                "argument": "sessionId",
+                "category": "full",
+                "description": "  Session Id"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 24
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "device"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "sessionId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EnableConnection",
+            "doc": [
+              "Notification about enabling connection to peer",
+              {
+                "type": "reference",
+                "argument": "device",
+                "category": "full",
+                "description": "  Device Id"
+              }
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 22
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "device"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "sessionId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "OnRenegotiationNeeded",
+            "doc": [
+              "Need renegotiate session. For example when streams are changed."
+            ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 25
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "device"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "sessionId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "CloseSession",
+            "doc": [
+              "Close this session and be ready to",
               {
                 "type": "reference",
                 "argument": "sessionId",
@@ -12628,6 +13420,14 @@
                   "childType": "randomId"
                 },
                 "id": 1,
+                "name": "device"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
                 "name": "sessionId"
               }
             ]
@@ -12636,28 +13436,20 @@
         {
           "type": "struct",
           "content": {
-            "name": "ConnectedDevice",
+            "name": "NeedDisconnect",
             "doc": [
-              "Connected Device",
+              "Notification about requirement about required disconnection from peer",
               {
                 "type": "reference",
                 "argument": "device",
-                "category": "full",
+                "category": "hidden",
                 "description": "  Device Id"
-              },
-              {
-                "type": "reference",
-                "argument": "isConnecting",
-                "category": "full",
-                "description": "  Is Connecting to device. Default is false."
-              },
-              {
-                "type": "reference",
-                "argument": "isConnected",
-                "category": "full",
-                "description": "  Is Connected to device. Default is false."
               }
             ],
+            "trait": {
+              "name": "WebRTCSignaling",
+              "key": 20
+            },
             "attributes": [
               {
                 "type": {
@@ -12666,6 +13458,89 @@
                 },
                 "id": 1,
                 "name": "device"
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "CallMemberState",
+            "values": [
+              {
+                "name": "RINGING",
+                "id": 1
+              },
+              {
+                "name": "RINGING_REACHED",
+                "id": 4
+              },
+              {
+                "name": "CONNECTING",
+                "id": 2
+              },
+              {
+                "name": "CONNECTED",
+                "id": 3
+              },
+              {
+                "name": "ENDED",
+                "id": 5
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "CallMemberStateHolder",
+            "doc": [
+              "Call Member state holder",
+              {
+                "type": "reference",
+                "argument": "state",
+                "category": "full",
+                "description": "  State Value"
+              },
+              {
+                "type": "reference",
+                "argument": "fallbackIsRinging",
+                "category": "full",
+                "description": "  Fallback flag for future compatibility of state"
+              },
+              {
+                "type": "reference",
+                "argument": "fallbackIsConnected",
+                "category": "full",
+                "description": "  Fallback flag for future compatibility of state"
+              },
+              {
+                "type": "reference",
+                "argument": "fallbackIsConnecting",
+                "category": "full",
+                "description": "  Fallback flag for future compatibility of state"
+              },
+              {
+                "type": "reference",
+                "argument": "fallbackIsRingingReached",
+                "category": "full",
+                "description": "  Fallback flag for future compatibility of state"
+              },
+              {
+                "type": "reference",
+                "argument": "fallbackIsEnded",
+                "category": "full",
+                "description": "  Fallback flag for future compatibility of state"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "CallMemberState"
+                },
+                "id": 1,
+                "name": "state"
               },
               {
                 "type": {
@@ -12673,7 +13548,7 @@
                   "childType": "bool"
                 },
                 "id": 2,
-                "name": "isConnecting"
+                "name": "fallbackIsRinging"
               },
               {
                 "type": {
@@ -12681,44 +13556,7 @@
                   "childType": "bool"
                 },
                 "id": 3,
-                "name": "isConnected"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "ConnectedUser",
-            "doc": [
-              "Connected User",
-              {
-                "type": "reference",
-                "argument": "uid",
-                "category": "full",
-                "description": "  Device uid"
-              },
-              {
-                "type": "reference",
-                "argument": "isConnecting",
-                "category": "full",
-                "description": "  Is Connecting to user. Default is false."
-              },
-              {
-                "type": "reference",
-                "argument": "isConnected",
-                "category": "full",
-                "description": "  Is connected to user. Default is false."
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "userId"
-                },
-                "id": 1,
-                "name": "uid"
+                "name": "fallbackIsConnected"
               },
               {
                 "type": {
@@ -12726,7 +13564,7 @@
                   "childType": "bool"
                 },
                 "id": 4,
-                "name": "isConnecting"
+                "name": "fallbackIsConnecting"
               },
               {
                 "type": {
@@ -12734,39 +13572,15 @@
                   "childType": "bool"
                 },
                 "id": 5,
-                "name": "isConnected"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "ActiveDevices",
-            "doc": [
-              "List of current memb",
-              {
-                "type": "reference",
-                "argument": "users",
-                "category": "full",
-                "description": "  Currently active users"
-              }
-            ],
-            "trait": {
-              "name": "WebRTCSignaling",
-              "key": 7
-            },
-            "attributes": [
+                "name": "fallbackIsRingingReached"
+              },
               {
                 "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "ConnectedUser"
-                  }
+                  "type": "opt",
+                  "childType": "bool"
                 },
-                "id": 2,
-                "name": "users"
+                "id": 6,
+                "name": "fallbackIsEnded"
               }
             ]
           }
@@ -12774,26 +13588,22 @@
         {
           "type": "struct",
           "content": {
-            "name": "NeedOffer",
+            "name": "CallMember",
             "doc": [
-              "Notification from owner that offer is required",
+              "Call Member",
               {
                 "type": "reference",
-                "argument": "uid",
+                "argument": "userId",
                 "category": "full",
-                "description": "  User's Id"
+                "description": "  Member User Id"
               },
               {
                 "type": "reference",
-                "argument": "device",
+                "argument": "state",
                 "category": "full",
-                "description": "  Destination Device Id"
+                "description": "  State of member"
               }
             ],
-            "trait": {
-              "name": "WebRTCSignaling",
-              "key": 8
-            },
             "attributes": [
               {
                 "type": {
@@ -12801,15 +13611,76 @@
                   "childType": "userId"
                 },
                 "id": 1,
-                "name": "uid"
+                "name": "userId"
               },
               {
                 "type": {
-                  "type": "alias",
-                  "childType": "randomId"
+                  "type": "struct",
+                  "childType": "CallMemberStateHolder"
+                },
+                "id": 3,
+                "name": "state"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "PeerSettings",
+            "doc": [
+              "Peer Settings",
+              {
+                "type": "reference",
+                "argument": "is3DESSupported",
+                "category": "full",
+                "description": "  Marking if 3DES supported. Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "isMobile",
+                "category": "full",
+                "description": "  Is Peer a mobile phone. Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "canBeAudioRelay",
+                "category": "full",
+                "description": "  If peer can audio relay. Default is false."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 1,
+                "name": "is3DESSupported"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
                 },
                 "id": 2,
-                "name": "device"
+                "name": "isMobile"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 3,
+                "name": "canBeAudioRelay"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 4,
+                "name": "canConnect"
               }
             ]
           }
@@ -13478,6 +14349,44 @@
                 "argument": "apnsKey",
                 "category": "hidden",
                 "description": "apns key id"
+              },
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "danger",
+                "description": "token value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "apnsKey"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "token"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RegisterApplePushKit",
+            "header": 2576,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Registration of a new Apple's PushKit tokens",
+              {
+                "type": "reference",
+                "argument": "apnsKey",
+                "category": "hidden",
+                "description": "APNS key id"
               },
               {
                 "type": "reference",
