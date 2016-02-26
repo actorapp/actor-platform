@@ -409,6 +409,8 @@
 
 "AuthTermsOfService" = "Terms of Service";
 
+"AuthTermsOfServiceTitle" = "Terms of Service";
+
 "AuthPhoneTooShort" = "Phone number too short";
 
 "AuthCodeFieldHint" = "Code";
