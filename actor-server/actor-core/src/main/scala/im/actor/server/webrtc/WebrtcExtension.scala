@@ -14,6 +14,7 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 
 object Webrtc {
   val WeakGroup = "webrtc_calls"
+  val SyncedSetName = "messaging.calls"
 }
 
 final class WebrtcExtension(system: ActorSystem) extends Extension {
