@@ -27,21 +27,13 @@ This repository contains all of the source code you need to start your own serve
 * [iPhone/iPad 7.0+](https://actor.im/ios)
 * [Web](https://app.actor.im/)
 
-# Installation
+# Documentation
 
-To build your own server with apps, visit [Actor Bootstrap repository](https://github.com/actorapp/actor-bootstrap).
+Documentation is available at our [Actor Developer Hub](https://developer.actor.im/)
 
-# Bots
-
-Actor have built-in bots. You can find them at [Actor Bots repository](https://github.com/actorapp/actor-bots).
-
-# Live demo
+# Community Support
 
 Keep in touch with the Actor community in its [group chat](https://quit.email/join/0d43e6a90d108ad9608514b5c17b76d5b2721d5e2ea51058d6ca43a66befe7f4).
-
-# Why Open Source?
-
-It is very hard to find any open source messaging servers that have awesome mobile apps and are good for everyday use, so we started working on Actor. At some point, we realized that the quality of our code was good enough to share it with the open source community.
 
 # Contacts
 
