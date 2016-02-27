@@ -143,7 +143,7 @@ export default {
       },
       'addContact': {
         'title': 'Добавить контакт',
-        'query': 'Никнейм, емайл или телефон',
+        'query': 'Никнейм, email или телефон',
         'phone': 'Номер телефона',
         'notFound': 'Пользователь с такими данными не найден.',
         'empty': 'Начните печатать для поиска людей',
@@ -180,7 +180,7 @@ export default {
 
     // Profiles
     'profile': {
-      'email': 'емайл',
+      'email': 'email',
       'phone': 'телефон',
       'nickname': 'ник'
     },
@@ -217,7 +217,7 @@ export default {
     'inviteModalNotFound': 'Извините, ничего не найдено',
     'inviteByLink': 'Ссылка для приглашения в группу',
     'inviteByLinkModalTitle': 'Пригласить по ссылке',
-    'inviteByLinkModalDescription': 'Любой в интернете теперь может присоедениться к ”{groupName}” открыв эту ссылку:',
+    'inviteByLinkModalDescription': 'Любой в интернете теперь может присоедениться к ”{groupName}”, открыв эту ссылку:',
     'inviteByLinkModalCopyButton': 'Скопировать',
     'inviteByLinkModalRevokeButton': 'Отменить',
     'inviteLinkCopied': 'Ссылка скопирована.',
@@ -234,7 +234,7 @@ export default {
     'preferencesNotificationsTitle': 'Уведомления',
     'preferencesNotificationsGroup': 'Включить уведомления для групп',
     'preferencesNotificationsOnlyMention': 'Включить уведомления только для упоминаний',
-    'preferencesNotificationsOnlyMentionHint': 'Вы можете включить уведомления только для сообщений в которых вы упомянуты.',
+    'preferencesNotificationsOnlyMentionHint': 'Вы можете включить уведомления только для сообщений, в которых вы упомянуты.',
     'preferencesPrivacyTitle': 'Конфиденциальность',
     'preferencesMessagePreview': 'Предварительный просмотр сообщений',
     'preferencesMessagePreviewHint': 'Удаляет текст сообщений из уведомлений.',
@@ -263,7 +263,7 @@ export default {
       }
     },
     'main': {
-      'empty': 'Старайся быть лучше чем был вчера!',
+      'empty': 'Старайся быть лучше, чем был вчера!',
       'deactivated': {
         'header': 'Вкладка деактивирована',
         'text': 'Упс, похоже что вы открыли еще одну вкладку с {appName}, поэтому мы вынуждены деактивировать эту вкладку чтобы избежать ошибок.'
