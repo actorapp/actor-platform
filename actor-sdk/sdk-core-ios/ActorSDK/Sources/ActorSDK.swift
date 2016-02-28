@@ -4,8 +4,9 @@
 
 import Foundation
 import JDStatusBarNotification
+import PushKit
 
-public class ActorSDK {
+@objc public class ActorSDK: NSObject, PKPushRegistryDelegate {
 
     //
     // Shared instance
@@ -314,11 +315,48 @@ public class ActorSDK {
         }
     }
     
+    func pushRegisterKitToken(token: String) {
+        if !isStarted {
+            fatalError("Messenger not started")
+        }
+        
+        if apiPushId != nil {
+            messenger.registerApplePushKitWithApnsId(jint(apiPushId!), withToken: token)
+        }
+
+    }
+    
     private func requestPush() {
         let types: UIUserNotificationType = [.Alert, .Badge, .Sound]
         let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
         UIApplication.sharedApplication().registerUserNotificationSettings(settings)
         UIApplication.sharedApplication().registerForRemoteNotifications()
+    }
+    
+    private func requestPushKit() {
+        let voipRegistry = PKPushRegistry(queue: dispatch_get_main_queue())
+        voipRegistry.delegate = self        
+        voipRegistry.desiredPushTypes = Set([PKPushTypeVoIP])
+    }
+    
+    @objc public func pushRegistry(registry: PKPushRegistry!, didUpdatePushCredentials credentials: PKPushCredentials!, forType type: String!) {
+        if (type == PKPushTypeVoIP) {
+            let tokenString = "\(credentials.token)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
+            print("PushKit: \(tokenString)")
+            pushRegisterKitToken(tokenString)
+        }
+    }
+    
+    @objc public func pushRegistry(registry: PKPushRegistry!, didInvalidatePushTokenForType type: String!) {
+        if (type == PKPushTypeVoIP) {
+            
+        }
+    }
+    
+    @objc public func pushRegistry(registry: PKPushRegistry!, didReceiveIncomingPushWithPayload payload: PKPushPayload!, forType type: String!) {
+        if (type == PKPushTypeVoIP) {
+            print("PushKit Payload: \(payload)")
+        }
     }
     
     /// Get main navigations with check in delegate for customize from SDK
@@ -668,6 +706,10 @@ public class ActorSDK {
     
     public func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         // Nothing?
+    }
+    
+    public func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+        requestPushKit()
     }
     
     //
