@@ -9,13 +9,15 @@ import com.relayrides.pushy.apns.util.{ SSLContextUtil, SimpleApnsPushNotificati
 import com.typesafe.config.Config
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.db.DbExtension
+import im.actor.server.model.push.ApplePushCredentials
+import im.actor.server.persist.push.ApplePushCredentialsRepo
 
 import scala.collection.JavaConversions._
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.util.Try
 
-case class ApplePushManagerConfig(certs: List[ApnsCert])
+final case class ApplePushManagerConfig(certs: List[ApnsCert])
 
 object ApplePushManagerConfig {
   def load(config: Config): ApplePushManagerConfig = {
@@ -26,7 +28,7 @@ object ApplePushManagerConfig {
   }
 }
 
-case class ApnsCert(key: Int, path: String, password: String, isSandbox: Boolean, isVoip: Boolean)
+final case class ApnsCert(key: Int, path: String, password: String, isSandbox: Boolean, isVoip: Boolean)
 
 object ApnsCert {
   def fromConfig(config: Config): ApnsCert = {
@@ -49,6 +51,8 @@ object ApplePushExtension extends ExtensionId[ApplePushExtension] with Extension
 final class ApplePushExtension(system: ActorSystem) extends Extension {
   import system.dispatcher
 
+  private lazy val db = DbExtension(system).db
+
   private val config = ApplePushManagerConfig.load(
     Try(system.settings.config.getConfig("services.apple.push"))
       .getOrElse(system.settings.config.getConfig("push.apple"))
@@ -63,6 +67,12 @@ final class ApplePushExtension(system: ActorSystem) extends Extension {
   def getInstance(key: Int): Option[PushManager[SimpleApnsPushNotification]] = managers.get(key)
 
   def getVoipInstance(key: Int): Option[PushManager[SimpleApnsPushNotification]] = voipManagers.get(key)
+
+  def findCreds(authId: Long): Future[Option[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authId))
+
+  def findCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authIds))
+
+  def findVoipCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = findCreds(authIds) map (_ filter (_.isVoip))
 
   private def createManager(cert: ApnsCert) = {
     val env = cert.isSandbox match {
