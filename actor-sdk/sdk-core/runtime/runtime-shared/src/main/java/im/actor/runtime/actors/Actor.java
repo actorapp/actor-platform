@@ -5,6 +5,7 @@
 package im.actor.runtime.actors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import im.actor.runtime.actors.ask.AskCallback;
 import im.actor.runtime.actors.ask.AskIntRequest;
@@ -29,8 +30,8 @@ public class Actor {
     private ActorContext context;
     private Mailbox mailbox;
 
-    private ArrayList<Receiver> receivers = new ArrayList<Receiver>();
-    private ArrayList<StashedMessage> stashed = new ArrayList<StashedMessage>();
+    private ArrayList<Receiver> receivers;
+    private HashMap<Integer, ArrayList<StashedMessage>> stashed;
 
     public Actor() {
 
@@ -61,24 +62,51 @@ public class Actor {
     }
 
     public void stash() {
-        stashed.add(new StashedMessage(context.message(), context.sender()));
+        stash(0);
+    }
+
+    public void stash(int index) {
+        if (stashed == null) {
+            stashed = new HashMap<>();
+        }
+
+        ArrayList<StashedMessage> stashedMessages = stashed.get(index);
+        if (stashedMessages == null) {
+            stashedMessages = new ArrayList<>();
+            stashed.put(index, stashedMessages);
+        }
+        stashedMessages.add(new StashedMessage(context.message(), context.sender()));
     }
 
     public void unstashAll() {
-        if (stashed.size() > 0) {
-            StashedMessage[] msgs = stashed.toArray(new StashedMessage[stashed.size()]);
-            stashed.clear();
-            for (int i = msgs.length - 1; i >= 0; i--) {
-                self().sendFirst(msgs[i].getMessage(), msgs[i].getSender());
-            }
+        unstashAll(0);
+    }
+
+    public void unstashAll(int index) {
+        if (stashed == null) {
+            return;
         }
+        ArrayList<StashedMessage> stashedMessages = stashed.get(index);
+        if (stashedMessages == null || stashedMessages.size() == 0) {
+            return;
+        }
+        for (StashedMessage stashedMessage : stashedMessages) {
+            self().sendFirst(stashedMessage.getMessage(), stashedMessage.getSender());
+        }
+        stashedMessages.clear();
     }
 
     public void become(Receiver receiver) {
+        if (receivers == null) {
+            receivers = new ArrayList<>();
+        }
         receivers.add(receiver);
     }
 
     public void unbecome() {
+        if (receivers == null) {
+            receivers = new ArrayList<>();
+        }
         receivers.remove(receivers.size() - 1);
     }
 
@@ -86,7 +114,7 @@ public class Actor {
         context.setSender(sender);
         context.setMessage(message);
 
-        if (receivers.size() > 0) {
+        if (receivers != null && receivers.size() > 0) {
             receivers.get(receivers.size() - 1).onReceive(message);
             return;
         }
@@ -178,13 +206,6 @@ public class Actor {
     }
 
     /**
-     * finally-like method before actor death
-     */
-    public void finallyStop() {
-
-    }
-
-    /**
      * Reply message to sender of last message
      *
      * @param message reply message
@@ -205,6 +226,10 @@ public class Actor {
             system().getTraceInterface().onDrop(sender(), message, this);
         }
         reply(new DeadLetter(message));
+    }
+
+    public void forward(ActorRef dest) {
+        dest.send(context.message(), context.sender());
     }
 
     public void halt(String message) {

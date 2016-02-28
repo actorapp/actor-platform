@@ -19,13 +19,13 @@ public class ApiPeerSettings extends BserObject {
     private Boolean is3DESSupported;
     private Boolean isMobile;
     private Boolean canBeAudioRelay;
-    private Boolean canConnect;
+    private Boolean canPreConnect;
 
-    public ApiPeerSettings(@Nullable Boolean is3DESSupported, @Nullable Boolean isMobile, @Nullable Boolean canBeAudioRelay, @Nullable Boolean canConnect) {
+    public ApiPeerSettings(@Nullable Boolean is3DESSupported, @Nullable Boolean isMobile, @Nullable Boolean canBeAudioRelay, @Nullable Boolean canPreConnect) {
         this.is3DESSupported = is3DESSupported;
         this.isMobile = isMobile;
         this.canBeAudioRelay = canBeAudioRelay;
-        this.canConnect = canConnect;
+        this.canPreConnect = canPreConnect;
     }
 
     public ApiPeerSettings() {
@@ -48,8 +48,8 @@ public class ApiPeerSettings extends BserObject {
     }
 
     @Nullable
-    public Boolean canConnect() {
-        return this.canConnect;
+    public Boolean canPreConnect() {
+        return this.canPreConnect;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ApiPeerSettings extends BserObject {
         this.is3DESSupported = values.optBool(1);
         this.isMobile = values.optBool(2);
         this.canBeAudioRelay = values.optBool(3);
-        this.canConnect = values.optBool(4);
+        this.canPreConnect = values.optBool(4);
     }
 
     @Override
@@ -71,8 +71,8 @@ public class ApiPeerSettings extends BserObject {
         if (this.canBeAudioRelay != null) {
             writer.writeBool(3, this.canBeAudioRelay);
         }
-        if (this.canConnect != null) {
-            writer.writeBool(4, this.canConnect);
+        if (this.canPreConnect != null) {
+            writer.writeBool(4, this.canPreConnect);
         }
     }
 
@@ -82,6 +82,7 @@ public class ApiPeerSettings extends BserObject {
         res += "is3DESSupported=" + this.is3DESSupported;
         res += ", isMobile=" + this.isMobile;
         res += ", canBeAudioRelay=" + this.canBeAudioRelay;
+        res += ", canPreConnect=" + this.canPreConnect;
         res += "}";
         return res;
     }

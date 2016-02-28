@@ -83,23 +83,17 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
     
     public func showSmsInvitation(phone: String?) {
         if MFMessageComposeViewController.canSendText() {
-
-//            // Silently ignore if not configured
-//            if AppConfig.appInviteUrl == nil {
-//                return
-//            }
-//            
-//            let messageComposeController = MFMessageComposeViewController()
-//            messageComposeController.messageComposeDelegate = self
-//            if (phone != nil) {
-//                 messageComposeController.recipients = [phone!]
-//            }
-//            messageComposeController.body = localized("InviteText")
-//                .replace("{link}", dest: AppConfig.appInviteUrl!)
-//            messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
-//            presentViewController(messageComposeController, animated: true, completion: { () -> Void in
-//                MainAppTheme.navigation.applyStatusBarFast()
-//            })
+            let messageComposeController = MFMessageComposeViewController()
+            messageComposeController.messageComposeDelegate = self
+            if (phone != nil) {
+                 messageComposeController.recipients = [phone!]
+            }
+            messageComposeController.body = AALocalized("InviteText")
+                .replace("{link}", dest: ActorSDK.sharedActor().inviteUrl)
+            messageComposeController.navigationBar.tintColor = ActorSDK.sharedActor().style.navigationTitleColor
+            presentViewController(messageComposeController, animated: true, completion: { () -> Void in
+//                ActorSDK.sharedActor().style.appl
+            })
         } else {
             UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK").show()
         }

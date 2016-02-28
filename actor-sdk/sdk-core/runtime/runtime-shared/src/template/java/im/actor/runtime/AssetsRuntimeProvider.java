@@ -11,4 +11,9 @@ public class AssetsRuntimeProvider implements AssetsRuntime {
     public String loadAsset(String name) {
         return null;
     }
+
+    @Override
+    public byte[] loadBinAsset(String name) {
+        return new byte[0];
+    }
 }
