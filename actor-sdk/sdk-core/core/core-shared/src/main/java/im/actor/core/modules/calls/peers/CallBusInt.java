@@ -17,7 +17,11 @@ public class CallBusInt extends ActorInterface {
         send(new CallBusActor.CreateBus());
     }
 
-    public void changeMute(boolean isMuted){
+    public void changeMute(boolean isMuted) {
         send(new CallBusActor.Mute(isMuted));
+    }
+
+    public void startOwn() {
+        send(new CallBusActor.OnAnswered());
     }
 }
