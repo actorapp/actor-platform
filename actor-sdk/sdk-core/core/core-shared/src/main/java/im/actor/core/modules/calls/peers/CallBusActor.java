@@ -124,6 +124,10 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         peerCall.onMuteChanged(isMuted);
     }
 
+    public void onOwnAnswered() {
+        peerCall.onOwnStarted();
+    }
+
     //
     // Event Bus handler
     //
@@ -223,11 +227,10 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
             joinBus(((JoinBus) message).getBusId());
         } else if (message instanceof CreateBus) {
             createBus();
-        } else if (message instanceof SendSignal) {
-            SendSignal signal = (SendSignal) message;
-            sendSignal(signal.getDeviceId(), signal.getSignal());
         } else if (message instanceof Mute) {
             onChangeMute(((Mute) message).isMuted());
+        } else if (message instanceof OnAnswered) {
+            onOwnAnswered();
         } else {
             super.onReceive(message);
         }
@@ -250,25 +253,6 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     }
 
-    public static class SendSignal {
-
-        private long deviceId;
-        private ApiWebRTCSignaling signal;
-
-        public SendSignal(long deviceId, ApiWebRTCSignaling signal) {
-            this.deviceId = deviceId;
-            this.signal = signal;
-        }
-
-        public long getDeviceId() {
-            return deviceId;
-        }
-
-        public ApiWebRTCSignaling getSignal() {
-            return signal;
-        }
-    }
-
     public static class Mute {
         private boolean isMuted;
 
@@ -279,6 +263,10 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         public boolean isMuted() {
             return isMuted;
         }
+    }
+
+    public static class OnAnswered {
+
     }
 
     public class CallbackWrapper implements PeerCallCallback {
