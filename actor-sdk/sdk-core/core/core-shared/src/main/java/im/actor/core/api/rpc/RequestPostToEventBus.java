@@ -23,10 +23,10 @@ public class RequestPostToEventBus extends Request<ResponseVoid> {
     }
 
     private String id;
-    private List<ApiEventBusDestination> destinations;
+    private List<Long> destinations;
     private byte[] message;
 
-    public RequestPostToEventBus(@NotNull String id, @NotNull List<ApiEventBusDestination> destinations, @NotNull byte[] message) {
+    public RequestPostToEventBus(@NotNull String id, @NotNull List<Long> destinations, @NotNull byte[] message) {
         this.id = id;
         this.destinations = destinations;
         this.message = message;
@@ -42,7 +42,7 @@ public class RequestPostToEventBus extends Request<ResponseVoid> {
     }
 
     @NotNull
-    public List<ApiEventBusDestination> getDestinations() {
+    public List<Long> getDestinations() {
         return this.destinations;
     }
 
@@ -54,11 +54,7 @@ public class RequestPostToEventBus extends Request<ResponseVoid> {
     @Override
     public void parse(BserValues values) throws IOException {
         this.id = values.getString(1);
-        List<ApiEventBusDestination> _destinations = new ArrayList<ApiEventBusDestination>();
-        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
-            _destinations.add(new ApiEventBusDestination());
-        }
-        this.destinations = values.getRepeatedObj(2, _destinations);
+        this.destinations = values.getRepeatedLong(2);
         this.message = values.getBytes(3);
     }
 
@@ -68,7 +64,7 @@ public class RequestPostToEventBus extends Request<ResponseVoid> {
             throw new IOException();
         }
         writer.writeString(1, this.id);
-        writer.writeRepeatedObj(2, this.destinations);
+        writer.writeRepeatedLong(2, this.destinations);
         if (this.message == null) {
             throw new IOException();
         }
@@ -80,7 +76,6 @@ public class RequestPostToEventBus extends Request<ResponseVoid> {
         String res = "rpc PostToEventBus{";
         res += "id=" + this.id;
         res += ", destinations=" + this.destinations;
-        res += ", message=" + byteArrayToString(this.message);
         res += "}";
         return res;
     }

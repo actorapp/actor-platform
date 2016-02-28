@@ -115,11 +115,18 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 2590: return RequestCheckFeatureEnabled.fromBytes(payload);
             case 2665: return RequestCreateNewEventBus.fromBytes(payload);
             case 2668: return RequestJoinEventBus.fromBytes(payload);
+            case 2675: return RequestReJoinEventBus.fromBytes(payload);
             case 2670: return RequestKeepAliveEventBus.fromBytes(payload);
             case 2667: return RequestDisposeEventBus.fromBytes(payload);
             case 2671: return RequestPostToEventBus.fromBytes(payload);
+            case 2679: return RequestLoadSyncedSet.fromBytes(payload);
             case 2600: return RequestGetCallInfo.fromBytes(payload);
             case 2597: return RequestDoCall.fromBytes(payload);
+            case 2677: return RequestUpgradeCall.fromBytes(payload);
+            case 2678: return RequestDoCallAgain.fromBytes(payload);
+            case 2683: return RequestJoinCall.fromBytes(payload);
+            case 2684: return RequestRejectCall.fromBytes(payload);
+            case 2685: return RequestOptimizeSDP.fromBytes(payload);
             case 134: return RequestGetParameters.fromBytes(payload);
             case 128: return RequestEditParameter.fromBytes(payload);
             case 243: return RequestStoreEvents.fromBytes(payload);
@@ -127,6 +134,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 241: return RequestLoadWallpappers.fromBytes(payload);
             case 51: return RequestRegisterGooglePush.fromBytes(payload);
             case 76: return RequestRegisterApplePush.fromBytes(payload);
+            case 2576: return RequestRegisterApplePushKit.fromBytes(payload);
             case 2575: return RequestRegisterActorPush.fromBytes(payload);
             case 52: return RequestUnregisterPush.fromBytes(payload);
             case 2601: return RequestLoadPublicKeyGroups.fromBytes(payload);
@@ -191,8 +199,11 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 141: return ResponseGetFileUploadPartUrl.fromBytes(payload);
             case 2666: return ResponseCreateNewEventBus.fromBytes(payload);
             case 2669: return ResponseJoinEventBus.fromBytes(payload);
+            case 2676: return ResponseReJoinEventBus.fromBytes(payload);
+            case 2680: return ResponseLoadSyncedSet.fromBytes(payload);
             case 2606: return ResponseGetCallInfo.fromBytes(payload);
             case 2598: return ResponseDoCall.fromBytes(payload);
+            case 2686: return ResponseOptimizeSDP.fromBytes(payload);
             case 135: return ResponseGetParameters.fromBytes(payload);
             case 2570: return ResponseRawRequest.fromBytes(payload);
             case 242: return ResponseLoadWallpappers.fromBytes(payload);

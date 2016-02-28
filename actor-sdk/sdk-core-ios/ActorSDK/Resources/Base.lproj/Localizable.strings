@@ -96,8 +96,25 @@
 
 "SettingsLastSeenNone"    = "Nobody";
 
-
 "SettingsMobilePhone"    = "Mobile Phone";
+
+/*
+ * Calls
+ */
+
+"CallsStartAudio" = "Audio Call";
+
+"CallsStartGroupAudio" = "Group Audio Call";
+
+"CallsAnswer" = "answer";
+
+"CallsDecline" = "decline";
+
+"CallsMute" = "mute";
+
+"CallsSpeaker" = "speaker";
+
+"CallsVideo" = "video";
 
 /*
  * Profile

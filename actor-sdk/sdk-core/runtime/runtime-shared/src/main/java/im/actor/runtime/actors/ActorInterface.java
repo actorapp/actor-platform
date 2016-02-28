@@ -4,17 +4,30 @@ import im.actor.runtime.Log;
 import im.actor.runtime.actors.ask.AskIntRequest;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.ask.AskResult;
+import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
 
-public class ActorInterface {
+public abstract class ActorInterface {
 
     private ActorRef dest;
 
     public ActorInterface(ActorRef dest) {
         this.dest = dest;
+    }
+
+    protected ActorInterface() {
+
+    }
+
+    protected void setDest(ActorRef ref) {
+        this.dest = ref;
+    }
+
+    public ActorRef getDest() {
+        return dest;
     }
 
     protected void send(Object message) {
@@ -39,5 +52,9 @@ public class ActorInterface {
                 Log.w("IPC", "[" + dest.getPath() + "] <- " + message + " <- " + e);
             }
         });
+    }
+
+    public void kill() {
+        dest.send(PoisonPill.INSTANCE);
     }
 }

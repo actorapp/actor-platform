@@ -12052,7 +12052,7 @@
               {
                 "type": "reference",
                 "argument": "message",
-                "category": "full",
+                "category": "hidden",
                 "description": "Message"
               }
             ],
@@ -12226,7 +12226,7 @@
               {
                 "type": "reference",
                 "argument": "message",
-                "category": "compact",
+                "category": "hidden",
                 "description": "  Message"
               }
             ],
@@ -13694,6 +13694,12 @@
                 "argument": "canBeAudioRelay",
                 "category": "full",
                 "description": "  If peer can audio relay. Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "canPreConnect",
+                "category": "full",
+                "description": "  If peer can preconnect before answer"
               }
             ],
             "attributes": [
@@ -13727,7 +13733,7 @@
                   "childType": "bool"
                 },
                 "id": 4,
-                "name": "canConnect"
+                "name": "canPreConnect"
               }
             ]
           }

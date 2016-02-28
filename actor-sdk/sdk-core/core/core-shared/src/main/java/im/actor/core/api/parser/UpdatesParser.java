@@ -67,8 +67,12 @@ public class UpdatesParser extends BaseParser<Update> {
             case 2563: return UpdateEventBusDeviceDisconnected.fromBytes(payload);
             case 2562: return UpdateEventBusMessage.fromBytes(payload);
             case 2564: return UpdateEventBusDisposed.fromBytes(payload);
+            case 72: return UpdateSynedSetUpdated.fromBytes(payload);
+            case 73: return UpdateSyncedSetAddedOrUpdated.fromBytes(payload);
+            case 74: return UpdateSyncedSetRemoved.fromBytes(payload);
             case 52: return UpdateIncomingCall.fromBytes(payload);
             case 53: return UpdateCallHandled.fromBytes(payload);
+            case 56: return UpdateCallUpgraded.fromBytes(payload);
             case 131: return UpdateParameterChanged.fromBytes(payload);
             case 103: return UpdatePublicKeyGroupChanged.fromBytes(payload);
             case 112: return UpdateKeysAdded.fromBytes(payload);
