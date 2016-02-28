@@ -17,6 +17,7 @@ import im.actor.server.persist.UserRepo
 import im.actor.server.pubsub.PubSubExtension
 import im.actor.server.sequence.{ PushData, PushRules, SeqUpdatesExtension, SeqState }
 import im.actor.server.{ model, persist ⇒ p }
+import im.actor.types._
 import im.actor.util.misc.IdUtils
 import slick.driver.PostgresDriver.api.Database
 
@@ -246,6 +247,9 @@ private[user] sealed trait Queries {
 
   def getAuthIds(userIds: Set[Int]): Future[Seq[Long]] =
     Future.sequence(userIds map getAuthIds) map (_.toSeq.flatten)
+
+  def getAuthIdsMap(userIds: Set[Int]): Future[Map[UserId, Seq[AuthId]]] =
+    Future.sequence(userIds map (uid ⇒ getAuthIds(uid) map (uid → _))) map (_.toMap)
 
   def getApiStruct(userId: Int, clientUserId: Int, clientAuthId: Long): Future[ApiUser] =
     (viewRegion.ref ? GetApiStruct(userId, clientUserId, clientAuthId)).mapTo[GetApiStructResponse] map (_.struct)
