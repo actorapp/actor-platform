@@ -16,6 +16,10 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.{ ExecutionContext, Future }
 
+object PushRpcErrors {
+  val WrongToken = RpcError(400, "WRONG_TOKEN", "Wrong APNS Token", false, None)
+}
+
 final class PushServiceImpl(
   implicit
   actorSystem: ActorSystem
@@ -46,7 +50,7 @@ final class PushServiceImpl(
     BitVector.fromHex(token) match {
       case Some(tokenBits) ⇒
         val tokenBytes = tokenBits.toByteArray
-        val creds = ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes))
+        val creds = ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes), isVoip = false)
         val action: DBIO[HandlerResult[ResponseVoid]] = for {
           _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
           _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
@@ -54,7 +58,7 @@ final class PushServiceImpl(
         } yield Ok(ResponseVoid)
         db.run(action)
       case None ⇒
-        Future.successful(Error(RpcError(400, "WRONG_TOKEN", "Wrong APNS Token", false, None)))
+        Future.successful(Error(PushRpcErrors.WrongToken))
     }
   }
 
@@ -82,5 +86,16 @@ final class PushServiceImpl(
     apnsKey:    Int,
     token:      String,
     clientData: ClientData
-  ): Future[HandlerResult[ResponseVoid]] = FastFuture.failed(new RuntimeException("Not implemented"))
+  ): Future[HandlerResult[ResponseVoid]] =
+    BitVector.fromHex(token) match {
+      case Some(tokenBits) ⇒
+        val tokenBytes = tokenBits.toByteArray
+        val creds = ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes), isVoip = true)
+        val action: DBIO[HandlerResult[ResponseVoid]] = for {
+          _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
+          _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
+        } yield Ok(ResponseVoid)
+        db.run(action)
+      case None ⇒ Future.successful(Error(PushRpcErrors.WrongToken))
+    }
 }

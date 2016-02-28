@@ -1,0 +1,1 @@
+ALTER TABLE apple_push_credentials ADD COLUMN is_voip BOOL NOT NULL DEFAULT FALSE;

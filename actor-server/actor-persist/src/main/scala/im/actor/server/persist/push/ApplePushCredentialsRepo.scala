@@ -15,7 +15,9 @@ final class ApplePushCredentialsTable(tag: Tag) extends Table[ApplePushCredentia
 
   def token = column[ByteString]("token")
 
-  def * = (authId, apnsKey, token) <> ((ApplePushCredentials.apply _).tupled, ApplePushCredentials.unapply)
+  def isVoip = column[Boolean]("is_voip")
+
+  def * = (authId, apnsKey, token, isVoip) <> ((ApplePushCredentials.apply _).tupled, ApplePushCredentials.unapply)
 }
 
 object ApplePushCredentialsRepo {
