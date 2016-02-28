@@ -342,7 +342,6 @@ import PushKit
     @objc public func pushRegistry(registry: PKPushRegistry!, didUpdatePushCredentials credentials: PKPushCredentials!, forType type: String!) {
         if (type == PKPushTypeVoIP) {
             let tokenString = "\(credentials.token)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
-            print("PushKit: \(tokenString)")
             pushRegisterKitToken(tokenString)
         }
     }
@@ -355,7 +354,10 @@ import PushKit
     
     @objc public func pushRegistry(registry: PKPushRegistry!, didReceiveIncomingPushWithPayload payload: PKPushPayload!, forType type: String!) {
         if (type == PKPushTypeVoIP) {
-            print("PushKit Payload: \(payload)")
+            let aps = payload.dictionaryPayload["aps"] as! [NSString: AnyObject]
+            if let callId = aps["callId"] as? String {
+                Actor.checkCall(jlong(callId)!)
+            }
         }
     }
     
