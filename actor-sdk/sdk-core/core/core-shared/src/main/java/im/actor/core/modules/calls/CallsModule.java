@@ -7,6 +7,7 @@ import im.actor.core.providers.CallsProvider;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.Command;
+import im.actor.runtime.*;
 import im.actor.runtime.actors.ActorRef;
 
 import static im.actor.runtime.actors.ActorSystem.system;
@@ -42,6 +43,10 @@ public class CallsModule extends AbsModule {
 
     public ActorRef getCallManager() {
         return callManager;
+    }
+
+    public void checkCall(long callId) {
+        callManager.send(new CallManagerActor.OnIncomingCallLocked(callId, im.actor.runtime.Runtime.makeWakeLock()));
     }
 
     public void probablyEndCall() {

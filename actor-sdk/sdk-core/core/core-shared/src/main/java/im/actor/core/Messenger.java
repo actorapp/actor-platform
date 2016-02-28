@@ -1072,6 +1072,18 @@ public class Messenger {
         }
     }
 
+    /**
+     * Checking incoming call from push notification
+     *
+     * @param callId Call Id
+     */
+    @ObjectiveCName("checkCall:")
+    public void checkCall(long callId) {
+        if (modules.getCallsModule() != null) {
+            modules.getCallsModule().checkCall(callId);
+        }
+    }
+
     //////////////////////////////////////
     //         Peer operations
     //////////////////////////////////////

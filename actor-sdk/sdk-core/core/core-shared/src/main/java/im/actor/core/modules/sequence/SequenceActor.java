@@ -22,10 +22,12 @@ import im.actor.core.modules.updates.internal.ExecuteAfter;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
-import im.actor.runtime.Log;
+import im.actor.runtime.*;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.function.Constructor;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.power.WakeLock;
 
 public class SequenceActor extends ModuleActor {
 
@@ -59,6 +61,8 @@ public class SequenceActor extends ModuleActor {
 
     private SequenceHandlerInt handler;
 
+    private WakeLock currentWakeLock;
+
     public SequenceActor(ModuleContext modules) {
         super(modules);
     }
@@ -70,6 +74,8 @@ public class SequenceActor extends ModuleActor {
         state = preferences().getBytes(KEY_STATE);
 
         handler = context().getUpdatesModule().getUpdateHandler();
+
+        currentWakeLock = im.actor.runtime.Runtime.makeWakeLock();
 
         self().send(new Invalidate());
     }
@@ -127,6 +133,7 @@ public class SequenceActor extends ModuleActor {
         }
 
         Log.d(TAG, "Handling update #" + seq);
+        startWakeLock();
         handler.onSeqUpdate(type, body, users, groups).then(new Consumer<SequenceHandlerActor.UpdateProcessed>() {
             @Override
             public void apply(SequenceHandlerActor.UpdateProcessed updateProcessed) {
@@ -157,6 +164,8 @@ public class SequenceActor extends ModuleActor {
         }
         isValidated = false;
 
+        startWakeLock();
+
         if (seq < 0) {
             Log.d(TAG, "Loading fresh state...");
             ArrayList<ApiUpdateOptimization> optimizations = new ArrayList<>();
@@ -173,6 +182,9 @@ public class SequenceActor extends ModuleActor {
                     seq = response.getSeq();
                     state = response.getState();
                     persistState(seq, state);
+
+                    stopWakeLock();
+
                     onBecomeValid(response.getSeq(), response.getState());
                 }
 
@@ -237,6 +249,7 @@ public class SequenceActor extends ModuleActor {
             persistState(seq, state);
             if (this.seq == seq) {
                 Log.d(TAG, "All updates applied {seq:" + seq + "}");
+                stopWakeLock();
             } else {
                 Log.d(TAG, "Updates applied {seq:" + seq + ", finishedSeq: " + finishedSeq + "}");
             }
@@ -313,6 +326,27 @@ public class SequenceActor extends ModuleActor {
         forceInvalidateCancellable = schedule(new ForceInvalidate(), 0);
         isTimerStarted = false;
     }
+
+
+    //
+    // Weak Locks
+    //
+
+    private void startWakeLock() {
+        if (currentWakeLock == null) {
+            currentWakeLock = Runtime.makeWakeLock();
+            Log.w(TAG, "Starting Wake Lock");
+        }
+    }
+
+    private void stopWakeLock() {
+        if (currentWakeLock != null) {
+            currentWakeLock.releaseLock();
+            currentWakeLock = null;
+            Log.w(TAG, "Released Wake Lock");
+        }
+    }
+
 
     //
     // Messages

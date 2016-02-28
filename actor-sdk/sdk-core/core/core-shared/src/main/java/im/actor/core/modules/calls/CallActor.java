@@ -14,12 +14,14 @@ import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.power.WakeLock;
 
 import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
 
 public class CallActor extends AbsCallActor {
 
     private final boolean isMaster;
+    private final WakeLock wakeLock;
     private long callId;
     private Peer peer;
     private CallVM callVM;
@@ -29,16 +31,18 @@ public class CallActor extends AbsCallActor {
     private boolean isAnswered;
     private boolean isRejected;
 
-    public CallActor(long callId, ModuleContext context) {
+    public CallActor(long callId, WakeLock wakeLock, ModuleContext context) {
         super(context);
+        this.wakeLock = wakeLock;
         this.isMaster = false;
         this.callId = callId;
         this.isAnswered = false;
         this.isActive = false;
     }
 
-    public CallActor(Peer peer, CommandCallback<Long> callback, ModuleContext context) {
+    public CallActor(Peer peer, CommandCallback<Long> callback, WakeLock wakeLock, ModuleContext context) {
         super(context);
+        this.wakeLock = wakeLock;
         this.isMaster = true;
         this.callback = callback;
         this.peer = peer;
@@ -154,6 +158,7 @@ public class CallActor extends AbsCallActor {
         if (callId != 0) {
             callManager.send(new CallManagerActor.OnCallEnded(callId), self());
         }
+        wakeLock.releaseLock();
     }
 
     //
