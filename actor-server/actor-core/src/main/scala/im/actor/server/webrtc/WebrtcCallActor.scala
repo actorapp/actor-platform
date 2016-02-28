@@ -259,7 +259,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
               broadcastSyncedSet()
             }
           case msg: ApiOnRenegotiationNeeded ⇒
-            // TODO: #perf remove filterNot
+            // TODO: #perf remove sessions.find and sessions.filterNot
             for {
               deviceId ← ebMessage.deviceId
               (pair, sessionId) ← sessions find (_ == msg.sessionId)
@@ -267,7 +267,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
               rightDevice ← devices get pair.right
             } yield {
               if (pair == Pair(deviceId, msg.device)) {
-                sessions -= sessionId
+                sessions = sessions filterNot (_ == sessionId)
                 eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.left), ApiCloseSession(pair.right, sessionId).toByteArray)
                 eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.right), ApiCloseSession(pair.left, sessionId).toByteArray)
                 connect(leftDevice, rightDevice)
