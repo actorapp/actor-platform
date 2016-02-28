@@ -9,7 +9,6 @@ import im.actor.api.rpc.messaging.{ ApiServiceExPhoneCall, ApiServiceMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.webrtc._
 import im.actor.concurrent.{ ActorStashing, FutureExt }
-import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogExtension
 import im.actor.server.eventbus.{ EventBus, EventBusExtension }
 import im.actor.server.group.GroupExtension
@@ -262,11 +261,12 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
             // TODO: #perf remove sessions.find and sessions.filterNot
             for {
               deviceId ← ebMessage.deviceId
-              (pair, sessionId) ← sessions find (_ == msg.sessionId)
+              (pair, sessionId) ← sessions find (_._2 == msg.sessionId)
               leftDevice ← devices get pair.left
               rightDevice ← devices get pair.right
             } yield {
-              if (pair == Pair(deviceId, msg.device)) {
+              val chkPair = Pair(deviceId, msg.device)
+              if (pair.left == chkPair.left && pair.right == chkPair.right) {
                 sessions = sessions filterNot (_ == sessionId)
                 eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.left), ApiCloseSession(pair.right, sessionId).toByteArray)
                 eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.right), ApiCloseSession(pair.left, sessionId).toByteArray)
@@ -301,7 +301,8 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
           participants += userId → state
         } else log.error("Attempt to change participant state to the same value {}", state)
       case None ⇒
-        log.error("Attempt to change state of a non-participant {}", userId)
+        log.debug("Adding participant {} with state {}", userId, state)
+        participants += userId -> state
     }
   }
 
