@@ -693,7 +693,6 @@
 			children = (
 				069CF4151BCA5DB500C66E12 /* Sources */,
 				065975081BC7C4F300B8C7DF /* Resources */,
-				06E323091C693A4E00D66F53 /* Libs */,
 			);
 			path = ActorSDK;
 			sourceTree = "<group>";
@@ -1171,13 +1170,6 @@
 				15D35F0A1C20182900E3717A /* AudioRecorder */,
 				06E3230D1C6942C400D66F53 /* WebRTC.h */,
 				06E323101C694C1D00D66F53 /* WebRTCExt.swift */,
-			);
-			name = Libs;
-			sourceTree = "<group>";
-		};
-		06E323091C693A4E00D66F53 /* Libs */ = {
-			isa = PBXGroup;
-			children = (
 			);
 			name = Libs;
 			sourceTree = "<group>";
