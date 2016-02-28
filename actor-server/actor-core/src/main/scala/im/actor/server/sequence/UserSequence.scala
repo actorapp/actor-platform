@@ -21,7 +21,7 @@ object UserSequence {
 
   private[sequence] def props(
     googlePushManager: GooglePushManager,
-    applePushManager:  ApplePushManager
+    applePushManager:  ApplePushExtension
   ) =
     Props(new UserSequence(googlePushManager, applePushManager))
 }
@@ -42,7 +42,7 @@ private trait SeqControl {
 
 private[sequence] final class UserSequence(
   googlePushManager: GooglePushManager,
-  applePushManager:  ApplePushManager
+  applePushManager:  ApplePushExtension
 ) extends Actor with ActorLogging with Stash with SeqControl {
 
   import UserSequence._

@@ -45,7 +45,7 @@ object SeqUpdatesManagerRegion {
     implicit
     system:            ActorSystem,
     googlePushManager: GooglePushManager,
-    applePushManager:  ApplePushManager
+    applePushManager:  ApplePushExtension
   ): SeqUpdatesManagerRegion =
     start(UserSequence.props(googlePushManager, applePushManager))
 

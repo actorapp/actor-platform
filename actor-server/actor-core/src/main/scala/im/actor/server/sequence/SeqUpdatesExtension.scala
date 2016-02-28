@@ -25,8 +25,7 @@ import scala.util.Try
 
 final class SeqUpdatesExtension(
   _system: ActorSystem,
-  gpm:     GooglePushManager,
-  apm:     ApplePushManager
+  gpm:     GooglePushManager
 ) extends Extension {
 
   import UserSequenceCommands._
@@ -35,6 +34,7 @@ final class SeqUpdatesExtension(
   private val log = Logging(_system, getClass)
   private implicit val OperationTimeout = Timeout(20.seconds)
   private implicit val system: ActorSystem = _system
+  private lazy val apm = ApplePushExtension(system)
 
   log.debug("Getting DbExtension")
   private implicit lazy val db = DbExtension(system).db
@@ -274,20 +274,15 @@ object SeqUpdatesExtension extends ExtensionId[SeqUpdatesExtension] with Extensi
 
     try {
       log.debug("Initiating SeqUpdatesExtension")
-      val applePushConfig = ApplePushManagerConfig.load(
-        Try(system.settings.config.getConfig("services.apple.push"))
-          .getOrElse(system.settings.config.getConfig("push.apple"))
-      )
-      log.debug("Apple Push Config: {}", applePushConfig)
+
       val googlePushConfig = GooglePushManagerConfig.load(system.settings.config.getConfig("services.google.push")).get
       log.debug("Google Push Config: {}", googlePushConfig)
 
       val gpm = new GooglePushManager(googlePushConfig)
-      val apm = new ApplePushManager(applePushConfig, system)
 
       log.debug("Starting up")
 
-      new SeqUpdatesExtension(system, gpm, apm)
+      new SeqUpdatesExtension(system, gpm)
     } catch {
       case e: Throwable ⇒
         log.error(e, "Failed to start up SeqUpdatesExtension")

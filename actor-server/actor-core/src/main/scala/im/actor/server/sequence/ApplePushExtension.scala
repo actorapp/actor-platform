@@ -2,7 +2,7 @@ package im.actor.server.sequence
 
 import java.util
 
-import akka.actor.ActorSystem
+import akka.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import akka.event.Logging
 import com.relayrides.pushy.apns._
 import com.relayrides.pushy.apns.util.{ SSLContextUtil, SimpleApnsPushNotification }
@@ -40,8 +40,19 @@ object ApnsCert {
   }
 }
 
-final class ApplePushManager(config: ApplePushManagerConfig, system: ActorSystem) {
+object ApplePushExtension extends ExtensionId[ApplePushExtension] with ExtensionIdProvider {
+  override def createExtension(system: ExtendedActorSystem): ApplePushExtension = new ApplePushExtension(system)
+
+  override def lookup(): ExtensionId[_ <: Extension] = ApplePushExtension
+}
+
+final class ApplePushExtension(system: ActorSystem) extends Extension {
   import system.dispatcher
+
+  private val config = ApplePushManagerConfig.load(
+    Try(system.settings.config.getConfig("services.apple.push"))
+      .getOrElse(system.settings.config.getConfig("push.apple"))
+  )
 
   private val (managers, voipManagers): (Map[Int, PushManager[SimpleApnsPushNotification]], Map[Int, PushManager[SimpleApnsPushNotification]]) = {
     val (certs, voipCerts) = config.certs.partition(!_.isVoip)
