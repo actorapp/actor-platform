@@ -83,8 +83,8 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
           state = Array.empty,
           updates = diffUpdates,
           needMore = needMore,
-          users = users.toVector,
-          groups = groups.toVector,
+          users = users,
+          groups = groups,
           messages = Vector.empty,
           usersRefs = userRefs,
           groupsRefs = groupRefs
