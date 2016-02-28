@@ -14,7 +14,11 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     
     func createPeerConnectionWithServers(webRTCIceServers: IOSObjectArray!, withSettings settings: ARWebRTCSettings!) -> ARPromise {
         let servers: [ARWebRTCIceServer] = webRTCIceServers.toSwiftArray()
-        return ARPromises.success(CocoaWebRTCPeerConnection(servers: servers, peerConnectionFactory: peerConnectionFactory))
+        return ARPromise { (resolver) -> () in
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
+                resolver.result(CocoaWebRTCPeerConnection(servers: servers, peerConnectionFactory: self.peerConnectionFactory))
+            }
+        }
     }
     
     func getUserAudio() -> ARPromise {

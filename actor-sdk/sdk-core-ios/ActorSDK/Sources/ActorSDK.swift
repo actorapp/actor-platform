@@ -638,6 +638,13 @@ public class ActorSDK {
         if !automaticOnlineHandling || !isStarted {
             return
         }
+
+        //
+        // This event is fired when user press power button and lock screeen.
+        // In iOS power button also cancel ongoint call.
+        //
+        messenger.probablyEndCall()
+        
         checkAppState()
     }
     

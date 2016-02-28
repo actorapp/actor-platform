@@ -90,7 +90,6 @@ public class UpdateEventBusMessage extends Update {
         res += "id=" + this.id;
         res += ", senderId=" + this.senderId;
         res += ", senderDeviceId=" + this.senderDeviceId;
-        res += ", message=" + byteArrayToStringCompact(this.message);
         res += "}";
         return res;
     }

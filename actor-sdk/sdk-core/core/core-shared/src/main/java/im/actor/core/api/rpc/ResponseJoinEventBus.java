@@ -23,9 +23,11 @@ public class ResponseJoinEventBus extends Response {
     }
 
     private long deviceId;
+    private byte[] rejoinToken;
 
-    public ResponseJoinEventBus(long deviceId) {
+    public ResponseJoinEventBus(long deviceId, @Nullable byte[] rejoinToken) {
         this.deviceId = deviceId;
+        this.rejoinToken = rejoinToken;
     }
 
     public ResponseJoinEventBus() {
@@ -36,14 +38,23 @@ public class ResponseJoinEventBus extends Response {
         return this.deviceId;
     }
 
+    @Nullable
+    public byte[] getRejoinToken() {
+        return this.rejoinToken;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.deviceId = values.getLong(1);
+        this.rejoinToken = values.optBytes(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeLong(1, this.deviceId);
+        if (this.rejoinToken != null) {
+            writer.writeBytes(2, this.rejoinToken);
+        }
     }
 
     @Override

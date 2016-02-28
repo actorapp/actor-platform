@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.calls.peers.AbsCallActor;
 import im.actor.core.util.ModuleActor;
 import im.actor.core.providers.CallsProvider;
 import im.actor.core.util.RandomUtils;
@@ -13,6 +14,7 @@ import im.actor.runtime.*;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Constructor;
 
 public class CallManagerActor extends ModuleActor {
@@ -60,7 +62,7 @@ public class CallManagerActor extends ModuleActor {
         if (currentCall != null) {
             ActorRef dest = runningCalls.remove(currentCall);
             if (dest != null) {
-                dest.send(new CallActor.DoEndCall());
+                dest.send(PoisonPill.INSTANCE);
             }
             currentCall = null;
         }
@@ -71,7 +73,7 @@ public class CallManagerActor extends ModuleActor {
         system().actorOf("actor/master/" + RandomUtils.nextRid(), new ActorCreator() {
             @Override
             public Actor create() {
-                return new CallMasterActor(peer, context(), callback);
+                return new CallActor(peer, callback, context());
             }
         });
     }
@@ -84,7 +86,7 @@ public class CallManagerActor extends ModuleActor {
         if (currentCall != null) {
             ActorRef dest = runningCalls.remove(currentCall);
             if (dest != null) {
-                dest.send(new CallActor.DoEndCall());
+                dest.send(PoisonPill.INSTANCE);
             }
             if (isBeeping) {
                 isBeeping = false;
@@ -133,7 +135,7 @@ public class CallManagerActor extends ModuleActor {
         system().actorOf("actor/slave/" + RandomUtils.nextRid(), new ActorCreator() {
             @Override
             public Actor create() {
-                return new CallSlaveActor(callId, context());
+                return new CallActor(callId, context());
             }
         });
     }
@@ -172,7 +174,7 @@ public class CallManagerActor extends ModuleActor {
             //
             ActorRef ref = runningCalls.remove(callId);
             if (ref != null) {
-                ref.send(new CallActor.EventBusShutdown());
+                ref.send(PoisonPill.INSTANCE);
             }
         }
     }
@@ -194,7 +196,7 @@ public class CallManagerActor extends ModuleActor {
             //
             ActorRef ref = runningCalls.get(callId);
             if (ref != null) {
-                ref.send(new CallSlaveActor.DoAnswer());
+                ref.send(new CallActor.AnswerCall());
             }
 
             //
@@ -224,14 +226,14 @@ public class CallManagerActor extends ModuleActor {
     private void onCallMute(long callId) {
         ActorRef ref = runningCalls.get(callId);
         if (ref != null) {
-            ref.send(new CallActor.Mute());
+            ref.send(new AbsCallActor.MuteChanged(true));
         }
     }
 
     private void onCallUnmute(long callId) {
         ActorRef ref = runningCalls.get(callId);
         if (ref != null) {
-            ref.send(new CallActor.Unmute());
+            ref.send(new AbsCallActor.MuteChanged(false));
         }
     }
 
@@ -273,7 +275,7 @@ public class CallManagerActor extends ModuleActor {
         //
         ActorRef currentCallActor = runningCalls.remove(callId);
         if (currentCallActor != null) {
-            currentCallActor.send(new CallActor.DoEndCall());
+            currentCallActor.send(PoisonPill.INSTANCE);
         }
 
         //
@@ -286,6 +288,12 @@ public class CallManagerActor extends ModuleActor {
                 isBeeping = false;
                 provider.stopOutgoingBeep();
             }
+        }
+    }
+
+    private void probablyEndCall() {
+        if (currentCall != null) {
+            doEndCall(currentCall);
         }
     }
 
@@ -324,6 +332,8 @@ public class CallManagerActor extends ModuleActor {
             onCallMute(((MuteCall) message).getCallId());
         } else if (message instanceof UnmuteCall) {
             onCallUnmute(((UnmuteCall) message).getCallId());
+        } else if (message instanceof ProbablyEndCall) {
+            probablyEndCall();
         } else {
             super.onReceive(message);
         }
@@ -479,5 +489,9 @@ public class CallManagerActor extends ModuleActor {
         public long getCallId() {
             return callId;
         }
+    }
+
+    public static class ProbablyEndCall {
+
     }
 }
