@@ -16,15 +16,19 @@ public class CallsProcessor implements Processor {
     public boolean process(Object update) {
         if (update instanceof UpdateIncomingCall) {
             UpdateIncomingCall updateIncomingCall = (UpdateIncomingCall) update;
-            context.getCallsModule().getCallManager().send(
-                    new CallManagerActor.OnIncomingCall(
-                            updateIncomingCall.getCallId()));
+            if (context.getConfiguration().isVoiceCallsEnabled()) {
+                context.getCallsModule().getCallManager().send(
+                        new CallManagerActor.OnIncomingCall(
+                                updateIncomingCall.getCallId()));
+            }
             return true;
         } else if (update instanceof UpdateCallHandled) {
             UpdateCallHandled updateCallHandled = (UpdateCallHandled) update;
-            context.getCallsModule().getCallManager().send(
-                    new CallManagerActor.OnIncomingCallHandled(
-                            updateCallHandled.getCallId()));
+            if (context.getConfiguration().isVoiceCallsEnabled()) {
+                context.getCallsModule().getCallManager().send(
+                        new CallManagerActor.OnIncomingCallHandled(
+                                updateCallHandled.getCallId()));
+            }
             return true;
         }
         return false;

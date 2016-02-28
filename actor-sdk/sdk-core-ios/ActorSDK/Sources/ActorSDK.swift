@@ -115,6 +115,9 @@ public class ActorSDK {
     
     /// Web Invite Domain host
     public var inviteUrlHost: String? = nil
+
+    /// Enable voice calls feature
+    public var enableCalls: Bool = true
     
     /// Enable experimental features
     public var enableExperimentalFeatures: Bool = false
@@ -202,6 +205,7 @@ public class ActorSDK {
         
         // Config
         builder.setPhoneBookImportEnabled(jboolean(enablePhoneBookImport))
+        builder.setVoiceCallsEnabled(jboolean(enableCalls))
         
         // Creating messenger
         messenger = ACCocoaMessenger(configuration: builder.build())

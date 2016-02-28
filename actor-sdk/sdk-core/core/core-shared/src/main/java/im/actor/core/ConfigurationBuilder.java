@@ -32,6 +32,8 @@ public class ConfigurationBuilder {
 
     private PhoneBookProvider phoneBookProvider;
 
+    private boolean voiceCallsEnabled = true;
+
     private boolean enableContactsLogging = false;
     private boolean enableNetworkLogging = false;
     private boolean enableFilesLogging = false;
@@ -56,6 +58,18 @@ public class ConfigurationBuilder {
     private boolean isPhoneBookImportEnabled = true;
 
     private CallsProvider callsProvider;
+
+    /**
+     * Setting If Voice Calls enabled in App. By default is True.
+     *
+     * @param voiceCallsEnabled if voice calls enabled
+     * @return this
+     */
+    @ObjectiveCName("setVoiceCallsEnabled:")
+    public ConfigurationBuilder setVoiceCallsEnabled(boolean voiceCallsEnabled) {
+        this.voiceCallsEnabled = voiceCallsEnabled;
+        return this;
+    }
 
     /**
      * Setting if application need to upload phone book to server
@@ -382,6 +396,7 @@ public class ConfigurationBuilder {
                 trustedKeys.toArray(new TrustedKey[trustedKeys.size()]),
                 isPhoneBookImportEnabled,
                 callsProvider,
-                webRTCServers.toArray(new WebRTCIceServer[webRTCServers.size()]));
+                webRTCServers.toArray(new WebRTCIceServer[webRTCServers.size()]),
+                voiceCallsEnabled);
     }
 }
