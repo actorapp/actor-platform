@@ -59,7 +59,7 @@ private[sequence] object VendorPush {
 
   private final case class Initialized(creds: Seq[(PushCredentials, PushCredentialsInfo)])
 
-  def props(userId: Int, googlePushManager: GooglePushManager, applePushManager: ApplePushManager) =
+  def props(userId: Int, googlePushManager: GooglePushManager, applePushManager: ApplePushExtension) =
     Props(new VendorPush(userId, googlePushManager, applePushManager))
 }
 
@@ -125,7 +125,7 @@ private final class SettingsControl(userId: Int) extends Actor with ActorLogging
 private[sequence] final class VendorPush(
   userId:            Int,
   googlePushManager: GooglePushManager,
-  applePushManager:  ApplePushManager
+  applePushManager:  ApplePushExtension
 ) extends Actor with ActorLogging with Stash {
 
   import VendorPush._

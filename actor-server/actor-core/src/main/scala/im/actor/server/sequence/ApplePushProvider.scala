@@ -8,7 +8,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.model.push.ApplePushCredentials
 import im.actor.server.persist.HistoryMessageRepo
 
-private[sequence] final class ApplePushProvider(userId: Int, applePushManager: ApplePushManager, system: ActorSystem) extends PushProvider {
+private[sequence] final class ApplePushProvider(userId: Int, applePushManager: ApplePushExtension, system: ActorSystem) extends PushProvider {
   import system.dispatcher
 
   private val log = Logging(system, getClass)
