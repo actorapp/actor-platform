@@ -1,16 +1,17 @@
 package im.actor.server.user
 
-import akka.actor.{ ActorLogging, Actor, ActorRef, Props }
+import akka.actor.{ ActorRef, Props }
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.server.dialog.{ DirectDialogCommand, DialogProcessor, DialogCommand }
-import im.actor.server.model.{ Peer, PeerType }
+import im.actor.concurrent.AlertingActor
+import im.actor.server.dialog.{DialogCommand, DialogProcessor, DirectDialogCommand}
+import im.actor.server.model.{Peer, PeerType}
 
 private[user] object UserPeer {
   def props(userId: Int, extensions: Seq[ApiExtension]) = Props(classOf[UserPeer], userId, extensions)
 }
 
-private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) extends Actor with ActorLogging with PeersImplicits {
+private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) extends AlertingActor with PeersImplicits {
 
   private val selfPeer = Peer.privat(userId)
 
