@@ -4569,6 +4569,64 @@
         {
           "type": "rpc",
           "content": {
+            "name": "UpdateMessage",
+            "header": 2658,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Changing Message content",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Destination Peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Message random id"
+              },
+              {
+                "type": "reference",
+                "argument": "updatedMessage",
+                "category": "full",
+                "description": "Updated Message content"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
+                "id": 3,
+                "name": "updatedMessage"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "MessageReceived",
             "header": 55,
             "response": {
