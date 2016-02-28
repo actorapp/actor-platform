@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import im.actor.core.api.ApiEncryptionKey;
 import im.actor.core.api.rpc.RequestRegisterActorPush;
 import im.actor.core.api.rpc.RequestRegisterApplePush;
+import im.actor.core.api.rpc.RequestRegisterApplePushKit;
 import im.actor.core.api.rpc.RequestRegisterGooglePush;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.modules.ModuleContext;
@@ -38,6 +39,13 @@ public class PushRegisterActor extends ModuleActor {
                 registerApplePush(apnsId, token);
             }
         }
+        if (preferences().getBool("push.apple_pushkit", false)) {
+            if (!preferences().getBool("push.apple_pushkit.registered", false)) {
+                int apnsId = preferences().getInt("push.apple_pushkit.id", 0);
+                String token = preferences().getString("push.apple_pushkit.token");
+                registerApplePushKit(apnsId, token);
+            }
+        }
         if (preferences().getBool("push.actor", false)) {
             if (!preferences().getBool("push.actor.registered", false)) {
                 String endpoint = preferences().getString("push.actor.endpoint");
@@ -47,6 +55,15 @@ public class PushRegisterActor extends ModuleActor {
     }
 
     private void registerGooglePush(long projectId, String token) {
+
+        if (preferences().getBool("push.google", false)
+                && preferences().getBool("push.google.registered", false)
+                && token.equals(preferences().getString("push.google.token"))
+                && projectId == preferences().getLong("push.apple.id", 0)) {
+            return;
+        }
+
+
         preferences().putBool("push.google", true);
         preferences().putBool("push.google.registered", false);
         preferences().putLong("push.google.id", projectId);
@@ -66,6 +83,14 @@ public class PushRegisterActor extends ModuleActor {
     }
 
     private void registerApplePush(int apnsId, String token) {
+
+        if (preferences().getBool("push.apple", false)
+                && preferences().getBool("push.apple.registered", false)
+                && token.equals(preferences().getString("push.apple.token"))
+                && apnsId == preferences().getInt("push.apple.id", 0)) {
+            return;
+        }
+
         preferences().putBool("push.apple", true);
         preferences().putBool("push.apple.registered", false);
         preferences().putInt("push.apple.id", apnsId);
@@ -84,7 +109,41 @@ public class PushRegisterActor extends ModuleActor {
         });
     }
 
+    private void registerApplePushKit(int apnsId, String token) {
+
+        if (preferences().getBool("push.apple_puskkit", false)
+                && preferences().getBool("push.apple_puskkit.registered", false)
+                && token.equals(preferences().getString("push.apple_puskkit.token"))
+                && apnsId == preferences().getInt("push.apple_puskkit.id", 0)) {
+            return;
+        }
+
+        preferences().putBool("push.apple_puskkit", true);
+        preferences().putBool("push.apple_puskkit.registered", false);
+        preferences().putInt("push.apple_puskkit.id", apnsId);
+        preferences().putString("push.apple_puskkit.token", token);
+
+        request(new RequestRegisterApplePushKit(apnsId, token), new RpcCallback<ResponseVoid>() {
+            @Override
+            public void onResult(ResponseVoid response) {
+                preferences().putBool("push.apple_puskkit.registered", true);
+            }
+
+            @Override
+            public void onError(RpcException e) {
+
+            }
+        });
+    }
+
     private void registerActorPush(String endpoint) {
+
+        if (preferences().getBool("push.actor", false)
+                && preferences().getBool("push.actor.registered", false)
+                && endpoint.equals(preferences().getString("push.actor.endpoint"))) {
+            return;
+        }
+
         preferences().putBool("push.actor", true);
         preferences().putBool("push.actor.registered", false);
         preferences().putString("push.actor.endpoint", endpoint);
@@ -102,23 +161,6 @@ public class PushRegisterActor extends ModuleActor {
         });
     }
 
-    private void resendPush() {
-        if (preferences().getBool("push.google", false)) {
-            preferences().putBool("push.google.registered", false);
-
-            long projectId = preferences().getLong("push.google.id", 0);
-            String token = preferences().getString("push.google.token");
-            registerGooglePush(projectId, token);
-        }
-        if (preferences().getBool("push.apple", false)) {
-            preferences().putBool("push.apple.registered", false);
-
-            int apnsId = preferences().getInt("push.apple.id", 0);
-            String token = preferences().getString("push.apple.token");
-            registerApplePush(apnsId, token);
-        }
-    }
-
     @Override
     public void onReceive(Object message) {
         if (message instanceof RegisterGooglePush) {
@@ -131,8 +173,9 @@ public class PushRegisterActor extends ModuleActor {
         } else if (message instanceof RegisterActorPush) {
             RegisterActorPush actorPush = (RegisterActorPush) message;
             registerActorPush(actorPush.getEndpoint());
-        } else if (message instanceof ResendPush) {
-            resendPush();
+        } else if (message instanceof RegisterAppleVoipPush) {
+            RegisterAppleVoipPush appleVoipPush = (RegisterAppleVoipPush) message;
+            registerApplePushKit(appleVoipPush.getApnsKey(), appleVoipPush.getToken());
         } else {
             drop(message);
         }
@@ -174,6 +217,24 @@ public class PushRegisterActor extends ModuleActor {
         }
     }
 
+    public static class RegisterAppleVoipPush {
+        private int apnsKey;
+        private String token;
+
+        public RegisterAppleVoipPush(int apnsKey, String token) {
+            this.apnsKey = apnsKey;
+            this.token = token;
+        }
+
+        public int getApnsKey() {
+            return apnsKey;
+        }
+
+        public String getToken() {
+            return token;
+        }
+    }
+
     public static class RegisterActorPush {
         private String endpoint;
 
@@ -184,9 +245,5 @@ public class PushRegisterActor extends ModuleActor {
         public String getEndpoint() {
             return endpoint;
         }
-    }
-
-    public static class ResendPush {
-
     }
 }

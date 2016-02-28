@@ -41,6 +41,10 @@ public class ActorApplicationDelegate: ActorSDKDelegateDefault, UIApplicationDel
         ActorSDK.sharedActor().application(application, didReceiveRemoteNotification: userInfo)
     }
     
+    public func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+        ActorSDK.sharedActor().application(application, didRegisterUserNotificationSettings: notificationSettings)
+    }
+    
     public func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         let tokenString = "\(deviceToken)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
         ActorSDK.sharedActor().pushRegisterToken(tokenString)
