@@ -111,7 +111,7 @@ final class UserSequenceSpec extends BaseAppSuite(
   }
 
   def reduceUpdates() = {
-    val (user, _, _, _) = createUser()
+    val (user, _, authSid, _) = createUser()
 
     val update = UpdateContactsAdded(Vector(1, 2, 3))
     val deliverUpd = DeliverUpdate(
@@ -145,7 +145,7 @@ final class UserSequenceSpec extends BaseAppSuite(
 
     whenReady(region.ref ? Envelope(user.id).withDeliverUpdate(deliverUpdSame))(identity)
 
-    whenReady(db.run(UserSequenceRepo.fetchAfterSeq(user.id, 0, 100L))) { updates ⇒
+    whenReady(SeqUpdatesExtension(system).getDifference(user.id, 0, authSid, Long.MaxValue) map (_._1)) { updates ⇒
       updates.map(_.mapping.get.default.get.header) shouldBe Seq(
         UpdateContactsAdded.header,
         UpdateContactsAdded.header,

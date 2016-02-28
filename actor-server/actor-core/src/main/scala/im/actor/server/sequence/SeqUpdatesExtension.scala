@@ -12,16 +12,16 @@ import im.actor.api.rpc.Update
 import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.server.db.DbExtension
 import im.actor.server.model._
-import im.actor.server.model.push.{ ApplePushCredentials ⇒ ApplePushCredentialsModel, GooglePushCredentials ⇒ GooglePushCredentialsModel, ActorPushCredentials ⇒ ActorPushCredentialsModel, PushCredentials }
+import im.actor.server.model.push.{ PushCredentials, ActorPushCredentials ⇒ ActorPushCredentialsModel, ApplePushCredentials ⇒ ApplePushCredentialsModel, GooglePushCredentials ⇒ GooglePushCredentialsModel }
 import im.actor.server.persist.AuthSessionRepo
 import im.actor.server.persist.push.ApplePushCredentialsRepo
 import im.actor.server.persist.sequence.UserSequenceRepo
 import slick.dbio.DBIO
 
 import scala.annotation.tailrec
+import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.concurrent.{ Future, Promise }
-import scala.util.Try
 
 final class SeqUpdatesExtension(
   _system: ActorSystem,
@@ -35,17 +35,9 @@ final class SeqUpdatesExtension(
   private implicit val OperationTimeout = Timeout(20.seconds)
   private implicit val system: ActorSystem = _system
   private lazy val apm = ApplePushExtension(system)
-
-  log.debug("Getting DbExtension")
   private implicit lazy val db = DbExtension(system).db
-
-  log.debug("Starting region")
   lazy val region: SeqUpdatesManagerRegion = SeqUpdatesManagerRegion.start()(system, gpm, apm)
-
-  log.debug("Starting BatchUpdatesWriter")
   private val writer = system.actorOf(BatchUpdatesWriter.props, "batch-updates-writer")
-
-  log.debug("Getting mediator")
   private val mediator = DistributedPubSub(system).mediator
 
   def getSeqState(userId: Int): Future[SeqState] =
@@ -151,15 +143,27 @@ final class SeqUpdatesExtension(
 
   val DiffStep = 100L
 
+  private type ReduceKey = String
+  private case class DiffAcc(
+    generic: immutable.SortedMap[Int, SeqUpdate] = immutable.TreeMap.empty,
+    reduced: Map[ReduceKey, (Int, SeqUpdate)]    = Map.empty
+  ) {
+    def nonEmpty = generic.nonEmpty && reduced.nonEmpty
+
+    def isEmpty = generic.isEmpty && reduced.isEmpty
+
+    lazy val toVector = (generic ++ reduced.values).values.toVector
+  }
+
   def getDifference(userId: Int, seq: Int, authSid: Int, maxSizeInBytes: Long): Future[(IndexedSeq[SeqUpdate], Boolean)] = {
-    def run(seq: Int, acc: IndexedSeq[SeqUpdate], currentSize: Long): DBIO[(IndexedSeq[SeqUpdate], Boolean)] = {
+    def run(seq: Int, acc: DiffAcc, currentSize: Long): DBIO[(DiffAcc, Boolean)] = {
       UserSequenceRepo.fetchAfterSeq(userId, seq, DiffStep).flatMap { updates ⇒
         if (updates.isEmpty) {
           DBIO.successful(acc → false)
         } else {
-          val (newAcc, newSize, allFit) = append(updates.toVector, currentSize, maxSizeInBytes, acc, authSid)
+          val (newAcc, newSize, allFit) = append(updates.toList, currentSize, maxSizeInBytes, acc, authSid)
           if (allFit) {
-            newAcc.lastOption match {
+            newAcc.toVector.lastOption match {
               case Some(u) ⇒ run(u.seq, newAcc, newSize)
               case None    ⇒ DBIO.successful(acc → false)
             }
@@ -169,22 +173,36 @@ final class SeqUpdatesExtension(
         }
       }
     }
-    db.run(run(seq, Vector.empty[SeqUpdate], 0L))
+    for {
+      (acc, needMore) ← db.run(run(seq, DiffAcc(), 0L))
+    } yield (acc.toVector, needMore)
   }
 
-  private def append(updates: IndexedSeq[SeqUpdate], currentSize: Long, maxSizeInBytes: Long, updateAcc: IndexedSeq[SeqUpdate], authSid: Int): (IndexedSeq[SeqUpdate], Long, Boolean) = {
+  private def append(
+    updates:        List[SeqUpdate],
+    currentSize:    Long,
+    maxSizeInBytes: Long,
+    updateAcc:      DiffAcc,
+    authSid:        Int
+  ): (DiffAcc, Long, Boolean) = {
     @tailrec
-    def run(updLeft: IndexedSeq[SeqUpdate], acc: IndexedSeq[SeqUpdate], currSize: Long): (IndexedSeq[SeqUpdate], Long, Boolean) = {
+    def run(updLeft: List[SeqUpdate], acc: DiffAcc, currSize: Long): (DiffAcc, Long, Boolean) = {
       updLeft match {
-        case h +: t ⇒
+        case h :: t ⇒
           val upd = h.getMapping.custom.getOrElse(authSid, h.getMapping.getDefault)
           val newSize = currSize + upd.body.size()
           if (newSize > maxSizeInBytes && acc.nonEmpty) {
             (acc, currSize, false)
           } else {
-            run(t, acc :+ h, newSize)
+            val reduceKeyOpt = h.reduceKey map (_.value)
+            val newAcc = reduceKeyOpt match {
+              case None            ⇒ acc.copy(generic = acc.generic + (h.seq → h))
+              case Some(reduceKey) ⇒ acc.copy(reduced = acc.reduced + (reduceKey → (h.seq → h)))
+            }
+
+            run(t, newAcc, newSize)
           }
-        case Vector() ⇒ (acc, currSize, true)
+        case Nil ⇒ (acc, currSize, true)
       }
     }
     run(updates, updateAcc, currentSize)

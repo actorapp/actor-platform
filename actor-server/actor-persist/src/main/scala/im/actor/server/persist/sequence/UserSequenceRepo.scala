@@ -43,15 +43,6 @@ object UserSequenceRepo {
     byUser(userId)
       .filter(_.seq > seq)
       .sortBy(_.seq.asc)
-      .filter { notReduced ⇒
-        notReduced.reduceKey.isEmpty ||
-          notReduced.seq.in(
-            byUser(userId)
-              .filter(u ⇒ u.seq >= notReduced.seq && u.reduceKey === notReduced.reduceKey)
-              .groupBy(_.reduceKey)
-              .map(_._2.map(_.seq).max)
-          )
-      }
       .take(limit)
 
   private val userSequence = Compiled(byUserAfterSeq _)
