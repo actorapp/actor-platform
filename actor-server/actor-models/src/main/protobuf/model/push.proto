@@ -18,6 +18,7 @@ message ApplePushCredentials {
     int64 auth_id = 1;
     int32 apns_key = 2;
     bytes token = 3;
+    bool is_voip = 4;
 }
 
 message ActorPushCredentials {
