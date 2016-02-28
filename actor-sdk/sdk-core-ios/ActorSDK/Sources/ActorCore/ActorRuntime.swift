@@ -20,5 +20,6 @@ class AAActorRuntime {
         ARCocoaNetworkProxyProvider.setNetworkRuntime(CocoaNetworkRuntime())
         ARCocoaAssetsProxyProvider.setAssetsRuntimeWithARAssetsRuntime(CocoaAssetsRuntime())
         ARCocoaWebRTCProxyProvider.setWebRTCRuntime(CocoaWebRTCRuntime())
+        ARCocoaLifecycleProxyProvider.setLifecycleRuntime(CocoaLifecycleRuntime())
     }
 }
