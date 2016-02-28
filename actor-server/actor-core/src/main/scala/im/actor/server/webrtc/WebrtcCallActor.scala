@@ -211,8 +211,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
                 )
             }
 
-            val userDevices = devices.filter(_._2.client.externalUserId.contains(userId)).values.map(_.deviceId).toSet
-            if (!sessions.keySet.exists(pair ⇒ userDevices.contains(pair.left) || userDevices.contains(pair.right))) {
+            if (!isConnected(userId)) {
               putParticipant(userId, ApiCallMemberState.CONNECTING)
               broadcastSyncedSet()
             }
@@ -266,6 +265,11 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
         deleteSyncedSet()
       case _: StartCall ⇒ sender() ! WebrtcCallErrors.CallAlreadyStarted
     }
+  }
+
+  private def isConnected(userId: UserId): Boolean = {
+    val userDevices = devices.filter(_._2.client.externalUserId.contains(userId)).values.map(_.deviceId).toSet
+    sessions.keySet.exists(pair ⇒ userDevices.contains(pair.left) || userDevices.contains(pair.right))
   }
 
   private def putParticipant(userId: Int, state: ApiCallMemberState.Value): Unit = {
