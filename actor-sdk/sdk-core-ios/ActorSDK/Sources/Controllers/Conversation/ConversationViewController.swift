@@ -181,7 +181,12 @@ public class ConversationViewController: AAConversationContentController, UIDocu
         avatarView.addGestureRecognizer(avatarTapGesture)
         
         let barItem = UIBarButtonItem(customView: avatarView)
-        self.navigationItem.rightBarButtonItem = barItem
+        if (ActorSDK.sharedActor().enableCalls) {
+            let callButton = UIBarButtonItem(image: UIImage.bundled("ic_call_outline_22"), style: UIBarButtonItemStyle.Plain, target: self, action: "onCallTap")
+            self.navigationItem.rightBarButtonItems = [barItem, callButton]
+        } else {
+            self.navigationItem.rightBarButtonItem = barItem
+        }
     }
     
     required public init(coder aDecoder: NSCoder!) {
@@ -400,6 +405,14 @@ public class ConversationViewController: AAConversationContentController, UIDocu
                 animated: true)
         } else {
             navigateNext(controller, removeCurrent: false)
+        }
+    }
+    
+    func onCallTap() {
+        if (self.peer.isGroup) {
+            execute(ActorSDK.sharedActor().messenger.doCallWithGid(self.peer.peerId))
+        } else if (self.peer.isPrivate) {
+            execute(ActorSDK.sharedActor().messenger.doCallWithUid(self.peer.peerId))
         }
     }
     

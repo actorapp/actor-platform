@@ -23,6 +23,8 @@ public class Configuration {
 
     private PhoneBookProvider phoneBookProvider;
 
+    private boolean voiceCallsEnabled;
+
     private boolean enableContactsLogging = false;
     private boolean enableNetworkLogging = false;
     private boolean enableFilesLogging = false;
@@ -68,7 +70,8 @@ public class Configuration {
                   TrustedKey[] trustedKeys,
                   boolean enablePhoneBookImport,
                   CallsProvider callsProvider,
-                  WebRTCIceServer[] webRTCIceServers) {
+                  WebRTCIceServer[] webRTCIceServers,
+                  boolean voiceCallsEnabled) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
         this.enableContactsLogging = enableContactsLogging;
@@ -88,6 +91,16 @@ public class Configuration {
         this.enablePhoneBookImport = enablePhoneBookImport;
         this.callsProvider = callsProvider;
         this.webRTCIceServers = webRTCIceServers;
+        this.voiceCallsEnabled = voiceCallsEnabled;
+    }
+
+    /**
+     * Getting If Voice Calls Enabled
+     *
+     * @return voice calls enabled
+     */
+    public boolean isVoiceCallsEnabled() {
+        return voiceCallsEnabled;
     }
 
     /**
