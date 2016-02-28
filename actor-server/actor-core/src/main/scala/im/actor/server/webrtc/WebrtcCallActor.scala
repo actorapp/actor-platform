@@ -72,7 +72,6 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
   private val groupExt = GroupExtension(context.system)
   private val valuesExt = ValuesExtension(context.system)
   private val apnsExt = ApplePushExtension(context.system)
-  private val db = DbExtension(context.system).db
 
   case class Device(
     deviceId:     EventBus.DeviceId,
@@ -258,6 +257,21 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
             ebMessage.client.externalUserId foreach { userId ⇒
               putParticipant(userId, ApiCallMemberState.CONNECTED)
               broadcastSyncedSet()
+            }
+          case msg: ApiOnRenegotiationNeeded ⇒
+            // TODO: #perf remove filterNot
+            for {
+              deviceId ← ebMessage.deviceId
+              (pair, sessionId) ← sessions find (_ == msg.sessionId)
+              leftDevice ← devices get pair.left
+              rightDevice ← devices get pair.right
+            } yield {
+              if (pair == Pair(deviceId, msg.device)) {
+                sessions -= sessionId
+                eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.left), ApiCloseSession(pair.right, sessionId).toByteArray)
+                eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.right), ApiCloseSession(pair.left, sessionId).toByteArray)
+                connect(leftDevice, rightDevice)
+              } else log.warning("Received OnRenegotiationNeeded for a wrong deviceId")
             }
           case _ ⇒
         }
