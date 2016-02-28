@@ -25,6 +25,9 @@ import ActorSDK
         // Enabling experimental features
         ActorSDK.sharedActor().enableExperimentalFeatures = true
         
+        // Setting Development Push Id
+        ActorSDK.sharedActor().apiPushId = 868547
+        
         // Creating Actor
         ActorSDK.sharedActor().createActor()
         

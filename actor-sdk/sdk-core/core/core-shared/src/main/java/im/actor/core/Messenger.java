@@ -2043,6 +2043,17 @@ public class Messenger {
     }
 
     /**
+     * Register apple push kit tokens
+     *
+     * @param apnsId internal APNS cert key
+     * @param token  APNS token
+     */
+    @ObjectiveCName("registerApplePushKitWithApnsId:withToken:")
+    public void registerApplePushKit(int apnsId, String token) {
+        modules.getPushesModule().registerApplePushKit(apnsId, token);
+    }
+
+    /**
      * Register actor push
      *
      * @param endpoint push endpoint
