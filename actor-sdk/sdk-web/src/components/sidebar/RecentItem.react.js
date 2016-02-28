@@ -71,7 +71,7 @@ class RecentItem extends Component {
     event.stopPropagation();
     const { peer } = this.props.dialog.peer;
     ArchiveActionCreators.archiveChat(peer);
-  }
+  };
 
   render() {
     const { dialog, type } = this.props;
