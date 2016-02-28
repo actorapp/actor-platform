@@ -98,7 +98,7 @@ final class V20160128142000__AkkaPersistence extends JdbcMigration {
               ps.setLong(2, ser.sequenceNr)
               ps.setLong(3, ser.created)
               ps.setString(4, ser.tags.orNull)
-              ps.setBytes(5, ser.serialized.array())
+              ps.setBytes(5, ser.serialized)
               ps.addBatch()
             }
             ps.execute()
