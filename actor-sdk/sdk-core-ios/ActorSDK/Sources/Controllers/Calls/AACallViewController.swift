@@ -13,16 +13,18 @@ public class AACallViewController: AAViewController {
     public let senderAvatar: AAAvatarView = AAAvatarView(frameSize: 120, type: .Rounded)
     public let peerTitle = UILabel()
     public let callState = UILabel()
+    
     public let answerCallButton = UIButton()
+    public let answerCallButtonText = UILabel()
     public let declineCallButton = UIButton()
+    public let declineCallButtonText = UILabel()
     
-    public let muteButton = UIButton()
-    public let speakerButton = UIButton()
-    public let videoButton = UIButton()
-    
-    public let debugLabel = UILabel()
+    public let muteButton = AACircleButton(size: 72)
+    public let speakerButton = AACircleButton(size: 72)
+    public let videoButton = AACircleButton(size: 72)
     
     var isScheduledDispose = false
+    var timer: NSTimer?
     
     public init(callId: jlong) {
         self.callId = callId
@@ -40,85 +42,98 @@ public class AACallViewController: AAViewController {
         //
         // Buttons
         //
-        answerCallButton.setImage(UIImage.bundled("ic_call_36pt")!.tintImage(UIColor.whiteColor()), forState: .Normal)
-        answerCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(rgb: 0x54dd64), size: CGSizeMake(72, 72), radius: 36), forState: .Normal)
+        answerCallButton.setImage(UIImage.bundled("ic_call_answer_44")!.tintImage(UIColor.whiteColor()), forState: .Normal)
+        answerCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 61/255.0, green: 217/255.0, blue: 90/255.0, alpha: 1.0), size: CGSizeMake(74, 74), radius: 37), forState: .Normal)
         answerCallButton.viewDidTap = {
             Actor.answerCallWithCallId(self.callId)
         }
+        answerCallButtonText.font = UIFont.thinSystemFontOfSize(16)
+        answerCallButtonText.textColor = UIColor.whiteColor()
+        answerCallButtonText.textAlignment = NSTextAlignment.Center
+        answerCallButtonText.text = AALocalized("CallsAnswer")
+        answerCallButtonText.bounds = CGRectMake(0, 0, 72, 19)
         
-        declineCallButton.setImage(UIImage.bundled("ic_call_end_36pt")!.tintImage(UIColor.whiteColor()), forState: .Normal)
-        declineCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(rgb: 0xfc2c31), size: CGSizeMake(72, 72), radius: 36), forState: .Normal)
+        declineCallButton.setImage(UIImage.bundled("ic_call_end_44")!.tintImage(UIColor.whiteColor()), forState: .Normal)
+        declineCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 217/255.0, green: 80/255.0, blue:61/255.0, alpha: 1.0), size: CGSizeMake(74, 74), radius: 37), forState: .Normal)
         declineCallButton.viewDidTap = {
             Actor.endCallWithCallId(self.callId)
         }
+        declineCallButtonText.font = UIFont.thinSystemFontOfSize(16)
+        declineCallButtonText.textColor = UIColor.whiteColor()
+        declineCallButtonText.textAlignment = NSTextAlignment.Center
+        declineCallButtonText.text = AALocalized("CallsDecline")
+        declineCallButtonText.bounds = CGRectMake(0, 0, 72, 19)
         
-        muteButton.viewDidTap = {
+        muteButton.image = UIImage.bundled("ic_mic_off_44")
+        muteButton.title = AALocalized("CallsMute")
+        muteButton.button.viewDidTap = {
             Actor.toggleCallMuteWithCallId(self.callId)
         }
         
-        speakerButton.setImage(UIImage.bundled("ic_call_36pt")!.tintImage(ActorSDK.sharedActor().style.vcTintColor), forState: .Normal)
-        speakerButton.setImage(UIImage.bundled("ic_call_36pt")!.tintImage(ActorSDK.sharedActor().style.vcHintColor), forState: .Disabled)
+        speakerButton.image = UIImage.bundled("ic_speaker_44")
+        speakerButton.title = AALocalized("CallsSpeaker")
+        speakerButton.enabled = false
         
-        videoButton.setImage(UIImage.bundled("ic_call_36pt")!.tintImage(ActorSDK.sharedActor().style.vcTintColor), forState: .Normal)
-        videoButton.setImage(UIImage.bundled("ic_call_36pt")!.tintImage(ActorSDK.sharedActor().style.vcHintColor), forState: .Disabled)
+        videoButton.image = UIImage.bundled("ic_video_44")
+        videoButton.title = AALocalized("CallsVideo")
         videoButton.enabled = false
         
         //
         // Peer Info
         //
         
-        peerTitle.textColor = ActorSDK.sharedActor().style.vcTextColor
+        peerTitle.textColor = UIColor.whiteColor().alpha(0.87)
         peerTitle.textAlignment = NSTextAlignment.Center
-        peerTitle.font = UIFont.thinSystemFontOfSize(32)
+        peerTitle.font = UIFont.thinSystemFontOfSize(42)
         
-        callState.textColor = ActorSDK.sharedActor().style.vcHintColor
+        callState.textColor = UIColor.whiteColor()
         callState.textAlignment = NSTextAlignment.Center
-        callState.font = UIFont.thinSystemFontOfSize(32)
+        callState.font = UIFont.systemFontOfSize(19)
         
-        debugLabel.textColor = ActorSDK.sharedActor().style.vcTextColor
-        debugLabel.lineBreakMode = .ByWordWrapping
-        debugLabel.numberOfLines = 0
-        
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor(rgb: 0x2a4463)
         
         self.view.addSubview(senderAvatar)
         self.view.addSubview(peerTitle)
         self.view.addSubview(callState)
+        
         self.view.addSubview(answerCallButton)
+        self.view.addSubview(answerCallButtonText)
         self.view.addSubview(declineCallButton)
+        self.view.addSubview(declineCallButtonText)
         self.view.addSubview(muteButton)
         self.view.addSubview(speakerButton)
         self.view.addSubview(videoButton)
-        self.view.addSubview(debugLabel)
     }
     
     public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
-        senderAvatar.frame = CGRectMake((self.view.width - 90) / 2, 100, 90, 90)
-        peerTitle.frame = CGRectMake(60, senderAvatar.bottom + 20, view.width - 120, 34)
-        callState.frame = CGRectMake(60, peerTitle.bottom + 20, view.width - 120, 34)
-        debugLabel.frame = view.bounds
+        senderAvatar.frame = CGRectMake((self.view.width - 104) / 2, 60, 104, 104)
+        peerTitle.frame = CGRectMake(60, senderAvatar.bottom + 22, view.width - 120, 42)
+        callState.frame = CGRectMake(0, peerTitle.bottom + 8, view.width, 22)
         
         layoutButtons()
     }
     
     private func layoutButtons() {
-        muteButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 226, 72, 72)
-//        muteButton.frame = CGRectMake((self.view.width / 3 - 72) / 2, self.view.height - 226, 72, 72)
-//        speakerButton.frame = CGRectMake( self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 226, 72, 72)
-//        videoButton.frame = CGRectMake( 2 * self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 226, 72, 72)
+        muteButton.frame = CGRectMake((self.view.width / 3 - 72) / 2, self.view.height - 270, 72, 97)
+        speakerButton.frame = CGRectMake( self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 270, 72, 97)
+        videoButton.frame = CGRectMake( 2 * self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 270, 72, 97)
         
         if !declineCallButton.hidden || !answerCallButton.hidden {
             if !declineCallButton.hidden && !answerCallButton.hidden {
-                declineCallButton.frame = CGRectMake((self.view.width / 2 - 72) / 2, self.view.height - 96, 72, 72)
-                answerCallButton.frame = CGRectMake( (self.view.width / 2) + (self.view.width / 2 - 72) / 2, self.view.height - 96, 72, 72)
+                declineCallButton.frame = CGRectMake(25, self.view.height - 72 - 49, 72, 72)
+                declineCallButtonText.under(declineCallButton.frame, offset: 5)
+                answerCallButton.frame = CGRectMake(self.view.width - 72 - 25, self.view.height - 72 - 49, 72, 72)
+                answerCallButtonText.under(answerCallButton.frame, offset: 5)
             } else {
                 if !answerCallButton.hidden {
-                    answerCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 96, 72, 72)
+                    answerCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 72 - 49, 72, 72)
+                    answerCallButtonText.under(answerCallButton.frame, offset: 5)
                 }
                 if !declineCallButton.hidden {
-                    declineCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 96, 72, 72)
+                    declineCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 72 - 49, 72, 72)
+                    declineCallButtonText.under(declineCallButton.frame, offset: 5)
                 }
             }
         }
@@ -131,31 +146,44 @@ public class AACallViewController: AAViewController {
         // Binding State
         //
         binder.bind(call.state) { (value: ACCallState!) -> () in
-            if (ACCallState_Enum.CALLING == value.toNSEnum()) {
+            if (ACCallState_Enum.RINGING == value.toNSEnum()) {
                 if (self.call.isOutgoing) {
                     self.answerCallButton.hidden = true
+                    self.answerCallButtonText.hidden = true
                     self.declineCallButton.hidden = false
+                    self.declineCallButtonText.hidden = true
                     self.callState.text = "Ringing..."
                 } else {
                     self.answerCallButton.hidden = false
+                    self.answerCallButtonText.hidden = false
                     self.declineCallButton.hidden = false
+                    self.declineCallButtonText.hidden = false
                     self.callState.text = "Incoming call..."
                 }
                 self.layoutButtons()
             } else if (ACCallState_Enum.CONNECTING == value.toNSEnum()) {
                 self.answerCallButton.hidden = true
+                self.answerCallButtonText.hidden = true
                 self.declineCallButton.hidden = false
+                self.declineCallButtonText.hidden = true
                 self.callState.text = "Connecting"
                 self.layoutButtons()
             } else if (ACCallState_Enum.IN_PROGRESS == value.toNSEnum()) {
                 self.answerCallButton.hidden = true
+                self.answerCallButtonText.hidden = true
                 self.declineCallButton.hidden = false
-                self.callState.text = "0:00"
+                self.declineCallButtonText.hidden = true
+                self.startTimer()
                 self.layoutButtons()
             } else if (ACCallState_Enum.ENDED == value.toNSEnum()) {
-                self.callState.text = "Call Ended"
+                self.stopTimer()
+                self.muteButton.hidden = true
+                self.speakerButton.hidden = true
+                self.videoButton.hidden = true
                 self.answerCallButton.hidden = true
+                self.answerCallButtonText.hidden = true
                 self.declineCallButton.hidden = true
+                self.declineCallButtonText.hidden = true
                 self.layoutButtons()
                 if (!self.isScheduledDispose) {
                     self.isScheduledDispose = true
@@ -164,51 +192,17 @@ public class AACallViewController: AAViewController {
                     }
                 }
             } else {
-                self.answerCallButton.hidden = false
-                self.declineCallButton.hidden = false
+                self.answerCallButton.hidden = true
+                self.answerCallButtonText.hidden = true
+                self.declineCallButton.hidden = true
+                self.declineCallButtonText.hidden = true
                 self.callState.text = ""
                 self.layoutButtons()
             }
         }
         
         binder.bind(call.isMuted) { (value: JavaLangBoolean!) -> () in
-            if (value.booleanValue()) {
-                self.muteButton.setImage(UIImage.bundled("ic_mic_off_36pt")!.tintImage(UIColor.whiteColor()), forState: .Normal)
-                self.muteButton.setBackgroundImage(Imaging.roundedImage(ActorSDK.sharedActor().style.vcTintColor, radius: 36), forState: .Normal)
-            } else {
-                self.muteButton.setImage(UIImage.bundled("ic_mic_off_36pt")!.tintImage(ActorSDK.sharedActor().style.vcTintColor), forState: .Normal)
-                self.muteButton.setBackgroundImage(Imaging.roundedImage(UIColor.whiteColor(), radius: 36), forState: .Normal)
-            }
-        }
-        
-        binder.bind(call.members) { (value: JavaUtilArrayList!) -> () in
-            var debugStr = ""
-            for i in 0..<value.size() {
-                let member = value.getWithInt(i) as! ACCallMember
-                debugStr += "\(member.uid)"
-                switch(member.state.toNSEnum()) {
-                case ACCallMemberState_Enum.ENDED:
-                    debugStr += " - Ended"
-                    break
-                case ACCallMemberState_Enum.RINGING:
-                    debugStr += " - Ringing"
-                    break
-                case ACCallMemberState_Enum.IN_PROGRESS:
-                    debugStr += " - In Progress"
-                    break
-                case ACCallMemberState_Enum.CONNECTING:
-                    debugStr += " - Connecting"
-                    break
-                case ACCallMemberState_Enum.RINGING_REACHED:
-                    debugStr += " - Reached"
-                    break
-                default:
-                    debugStr += " - Unknown"
-                    break
-                }
-                debugStr += "\n"
-            }
-            self.debugLabel.text = debugStr
+            self.muteButton.filled = value.booleanValue()
         }
         
         //
@@ -232,12 +226,43 @@ public class AACallViewController: AAViewController {
             })
         }
         
+        UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
+        
         UIDevice.currentDevice().proximityMonitoringEnabled = true
+    }
+    
+    func startTimer() {
+        timer?.invalidate()
+        timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateTimer", userInfo: nil, repeats: true)
+        updateTimer()
+    }
+    
+    func updateTimer() {
+        if call.callStart > 0 {
+            let end = call.callEnd > 0 ? call.callEnd : jlong(NSDate().timeIntervalSince1970 * 1000)
+            let secs = Int((end - call.callStart) / 1000)
+            
+            let seconds = secs % 60
+            let minutes = secs / 60
+            
+            self.callState.text = NSString(format: "%0.2d:%0.2d", minutes, seconds) as String
+        } else {
+            self.callState.text = "0:00"
+        }
+    }
+    
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+        updateTimer()
+//        self.callState.text = "Call Ended"
     }
     
     public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         UIDevice.currentDevice().proximityMonitoringEnabled = false
         binder.unbindAll()
+        
+        UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
     }
 }

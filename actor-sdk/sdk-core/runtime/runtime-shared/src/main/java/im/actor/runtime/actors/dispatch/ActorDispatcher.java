@@ -94,6 +94,7 @@ public class ActorDispatcher {
 
         long start = ActorTime.currentTime();
         if (scope.getActor() == null) {
+
             if (envelope.getMessage() == PoisonPill.INSTANCE) {
                 // Not creating actor for PoisonPill
                 return;
@@ -126,6 +127,7 @@ public class ActorDispatcher {
             if (actorSystem.getTraceInterface() != null) {
                 actorSystem.getTraceInterface().onActorDie(scope.getActorRef(), envelope, e);
             }
+            scope.getActor().postStop();
             onActorDie(scope);
         } finally {
             if (actorSystem.getTraceInterface() != null) {
@@ -136,6 +138,9 @@ public class ActorDispatcher {
 
     private void onActorDie(ActorScope scope) {
         scope.onActorDie();
+        if (scope.getProps().getSupervisor() != null) {
+            scope.getProps().getSupervisor().onActorStopped(scope.getActorRef());
+        }
         Envelope[] deadLetters;
         synchronized (LOCK) {
             scopes.remove(scope.getPath());

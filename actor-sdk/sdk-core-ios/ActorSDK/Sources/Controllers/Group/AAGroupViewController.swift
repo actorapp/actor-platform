@@ -117,9 +117,11 @@ public class AAGroupViewController: AAContentTableController {
                     return true
                 }
             }
-            
-            // Header: Change title
-            s.action("Do Call") { (r) -> () in
+        }
+        
+        // Calls
+        section { (s) -> () in
+            s.action("CallsStartGroupAudio") { (r) -> () in
                 r.selectAction = { () -> Bool in
                     self.execute(Actor.doCallWithGid(jint(self.gid)))
                     return true

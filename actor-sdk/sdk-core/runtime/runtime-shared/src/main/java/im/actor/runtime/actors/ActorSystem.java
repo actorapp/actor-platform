@@ -64,7 +64,7 @@ public class ActorSystem {
                 return;
             }
 
-            ActorDispatcher dispatcher = new ActorDispatcher(dispatcherId, ThreadPriority.LOW, this,
+            ActorDispatcher dispatcher = new ActorDispatcher(dispatcherId, ThreadPriority.NORMAL, this,
                     Runtime.isSingleThread() ? 1 : threadsCount);
 
             dispatchers.put(dispatcherId, dispatcher);
@@ -115,6 +115,11 @@ public class ActorSystem {
         return actorOf(Props.create(creator), path);
     }
 
+    public ActorRef actorOf(String path, ActorCreator creator, ActorSupervisor supervisor) {
+        return actorOf(Props.create(creator)
+                .changeSupervisor(supervisor), path);
+    }
+
     public ActorRef actorOf(String path, final Constructor<? extends Actor> constructor) {
         return actorOf(Props.create(new ActorCreator() {
             @Override
@@ -126,6 +131,12 @@ public class ActorSystem {
 
     public ActorRef actorOf(String path, String dispatcher, ActorCreator creator) {
         return actorOf(Props.create(creator).changeDispatcher(dispatcher), path);
+    }
+
+    public ActorRef actorOf(String path, String dispatcher, ActorCreator creator, ActorSupervisor supervisor) {
+        return actorOf(Props.create(creator)
+                .changeDispatcher(dispatcher)
+                .changeSupervisor(supervisor), path);
     }
 
     public ActorRef actorOf(String path, String dispatcher, final Constructor<? extends Actor> constructor) {

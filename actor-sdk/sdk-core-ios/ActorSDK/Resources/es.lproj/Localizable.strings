@@ -96,6 +96,23 @@
 
 "SettingsMobilePhone"    = "Móvil";
 
+/*
+ * Calls
+ */
+
+"CallsStartAudio" = "Audio Call";
+
+"CallsStartGroupAudio" = "Group Audio Call";
+
+"CallsAnswer" = "answer";
+
+"CallsDecline" = "decline";
+
+"CallsMute" = "mute";
+
+"CallsSpeaker" = "speaker";
+
+"CallsVideo" = "video";
 
 /*
  * Profile
@@ -326,6 +343,7 @@
 "ChatReleaseToSend" = "Dejar de pulsar para enviar";
 
 "ChatSlideUpToCancel" = "Deslizar para cancelar";
+
 
 /*
  * Chat attachment menu

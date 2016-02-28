@@ -1,247 +1,158 @@
 package im.actor.core.modules.calls;
 
-import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import im.actor.core.DeviceCategory;
-import im.actor.core.api.ApiAnswer;
-import im.actor.core.api.ApiCandidate;
-import im.actor.core.api.ApiOffer;
-import im.actor.core.api.ApiPeerSettings;
-import im.actor.core.api.ApiWebRTCSignaling;
-import im.actor.core.entity.Group;
-import im.actor.core.entity.GroupMember;
+import im.actor.core.api.rpc.RequestDoCall;
+import im.actor.core.api.rpc.RequestGetCallInfo;
+import im.actor.core.api.rpc.RequestJoinCall;
+import im.actor.core.api.rpc.RequestRejectCall;
+import im.actor.core.api.rpc.ResponseDoCall;
+import im.actor.core.api.rpc.ResponseGetCallInfo;
 import im.actor.core.entity.Peer;
-import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.eventbus.EventBusActor;
-import im.actor.core.viewmodel.CallMember;
-import im.actor.core.viewmodel.CallMemberState;
+import im.actor.core.modules.calls.peers.AbsCallActor;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
-import im.actor.runtime.Log;
-import im.actor.runtime.actors.Actor;
-import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.webrtc.WebRTCMediaStream;
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.runtime.actors.messages.PoisonPill;
+import im.actor.runtime.function.Consumer;
 
-public class CallActor extends EventBusActor {
+import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
 
-    private static final String TAG = "CallActor";
+public class CallActor extends AbsCallActor {
 
-    private HashMap<Integer, HashMap<Long, ActorRef>> peerConnections = new HashMap<>();
-    private HashMap<Long, CallVM> callModels;
-    private boolean isMuted = false;
-    private ApiPeerSettings peerSettings;
-    private boolean isSilentEnabled = false;
+    private final boolean isMaster;
+    private long callId;
+    private Peer peer;
+    private CallVM callVM;
+    private CommandCallback<Long> callback;
 
-    public CallActor(ModuleContext context) {
+    private boolean isActive;
+    private boolean isAnswered;
+    private boolean isRejected;
+
+    public CallActor(long callId, ModuleContext context) {
         super(context);
+        this.isMaster = false;
+        this.callId = callId;
+        this.isAnswered = false;
+        this.isActive = false;
+    }
+
+    public CallActor(Peer peer, CommandCallback<Long> callback, ModuleContext context) {
+        super(context);
+        this.isMaster = true;
+        this.callback = callback;
+        this.peer = peer;
+        this.isAnswered = true;
+        this.isActive = false;
     }
 
     @Override
     public void preStart() {
         super.preStart();
-        callModels = context().getCallsModule().getCallModels();
-        boolean isMobile = config().getDeviceCategory() == DeviceCategory.MOBILE ||
-                config().getDeviceCategory() == DeviceCategory.TABLET;
-        boolean isSupportsFastConnect = true;
-        peerSettings = new ApiPeerSettings(true, isMobile, false, isSupportsFastConnect);
-    }
-
-    public boolean isSilentEnabled() {
-        return isSilentEnabled;
-    }
-
-    public void setIsSilentEnabled(boolean isSilentEnabled) {
-        this.isSilentEnabled = isSilentEnabled;
-    }
-
-    public ApiPeerSettings getPeerSettings() {
-        return peerSettings;
-    }
-
-    public boolean isMuted() {
-        return isMuted;
-    }
-
-    //
-    // Call Model helpers
-    //
-    public CallVM spawnNewVM(long callId, Peer peer, boolean isOutgoing, ArrayList<CallMember> members, CallState callState) {
-        CallVM callVM = new CallVM(callId, peer, isOutgoing, members, callState);
-        synchronized (callModels) {
-            callModels.put(callId, callVM);
-        }
-        return callVM;
-    }
-
-    public CallVM spanNewOutgoingVM(long callId, Peer peer) {
-        ArrayList<CallMember> members = new ArrayList<>();
-        if (peer.getPeerType() == PeerType.PRIVATE ||
-                peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
-            members.add(new CallMember(peer.getPeerId(), CallMemberState.RINGING));
-        } else if (peer.getPeerType() == PeerType.GROUP) {
-            Group g = getGroup(peer.getPeerId());
-            for (GroupMember gm : g.getMembers()) {
-                if (gm.getUid() != myUid()) {
-                    members.add(new CallMember(gm.getUid(), CallMemberState.RINGING));
+        if (!isMaster) {
+            api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
+                @Override
+                public void apply(final ResponseGetCallInfo responseGetCallInfo) {
+                    peer = convert(responseGetCallInfo.getPeer());
+                    callBus.startSlaveBus(responseGetCallInfo.getEventBusId());
+                    callVM = callViewModels.spawnNewIncomingVM(callId, peer, CallState.RINGING);
                 }
-            }
-        }
-        return spawnNewVM(callId, peer, true, members, CallState.CALLING);
-    }
-
-    //
-    // Signaling Wrappers
-    //
-
-    public void onSignalingMessage(int fromUid, long fromDeviceId, ApiWebRTCSignaling signaling) {
-        if (signaling instanceof ApiOffer) {
-            ApiOffer offer = (ApiOffer) signaling;
-            getPeer(fromUid, fromDeviceId).send(new PeerConnectionActor.OnOffer(offer.getSdp()));
-        } else if (signaling instanceof ApiAnswer) {
-            ApiAnswer answer = (ApiAnswer) signaling;
-            getPeer(fromUid, fromDeviceId).send(new PeerConnectionActor.OnAnswer(answer.getSdp()));
-        } else if (signaling instanceof ApiCandidate) {
-            ApiCandidate candidate = (ApiCandidate) signaling;
-            getPeer(fromUid, fromDeviceId).send(new PeerConnectionActor.OnCandidate(candidate.getIndex(),
-                    candidate.getId(), candidate.getSdp()));
-        }
-    }
-
-    public void onStreamAdded(int uid, long deviceId, WebRTCMediaStream stream) {
-
-    }
-
-    public void onStreamRemoved(int uid, long deviceId, WebRTCMediaStream stream) {
-
-    }
-
-    public final void sendSignalingMessage(int uid, long deviceId, ApiWebRTCSignaling signaling) {
-        try {
-            sendMessage(uid, deviceId, signaling.buildContainer());
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Ignore
-        }
-    }
-
-    public final void sendSignalingMessage(int uid, ApiWebRTCSignaling signaling) {
-        try {
-            sendMessage(uid, signaling.buildContainer());
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Ignore
-        }
-    }
-
-    public final void sendSignalingMessage(ApiWebRTCSignaling signaling) {
-        try {
-            sendMessage(signaling.buildContainer());
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Ignore
-        }
-    }
-
-    public void onMute() {
-        if (isMuted) {
-            return;
-        }
-        isMuted = true;
-
-        for (int uid : peerConnections.keySet()) {
-            HashMap<Long, ActorRef> peers = peerConnections.get(uid);
-            for (ActorRef p : peers.values()) {
-                p.send(new PeerConnectionActor.DoMute());
-            }
-        }
-    }
-
-    public void onUnmute() {
-        if (!isMuted) {
-            return;
-        }
-        isMuted = false;
-
-        for (int uid : peerConnections.keySet()) {
-            HashMap<Long, ActorRef> peers = peerConnections.get(uid);
-            for (ActorRef p : peers.values()) {
-                p.send(new PeerConnectionActor.DoUnmute());
-            }
+            }).failure(new Consumer<Exception>() {
+                @Override
+                public void apply(Exception e) {
+                    self().send(PoisonPill.INSTANCE);
+                }
+            }).done(self());
+        } else {
+            callBus.startMaster();
         }
     }
 
     @Override
-    public final void onMessageReceived(@Nullable Integer senderId, @Nullable Long senderDeviceId, byte[] data) {
-        if (senderId == null || senderDeviceId == null) {
-            return;
+    public void onBusStarted(String busId) {
+        if (isMaster) {
+            api(new RequestDoCall(buidOutPeer(peer), busId)).then(new Consumer<ResponseDoCall>() {
+                @Override
+                public void apply(ResponseDoCall responseDoCall) {
+                    callId = responseDoCall.getCallId();
+                    callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer);
+                    callManager.send(new CallManagerActor.DoCallComplete(responseDoCall.getCallId()), self());
+                    callback.onResult(responseDoCall.getCallId());
+                    callback = null;
+                }
+            }).failure(new Consumer<Exception>() {
+                @Override
+                public void apply(Exception e) {
+                    callback.onError(e);
+                    callback = null;
+                }
+            }).done(self());
+        } else {
+            callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
         }
+    }
 
-        ApiWebRTCSignaling signaling;
-        try {
-            signaling = ApiWebRTCSignaling.fromBytes(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d(TAG, "onMessageReceived:ignoring");
-            return;
+    @Override
+    public void onCallConnected() {
+        // callVM.getState().change()
+    }
+
+    @Override
+    public void onCallEnabled() {
+        isActive = true;
+        if (isAnswered) {
+            callVM.getState().change(CallState.IN_PROGRESS);
+            callVM.setCallStart(im.actor.runtime.Runtime.getCurrentTime());
         }
-
-        Log.d(TAG, "onMessageReceived: " + signaling);
-        onSignalingMessage(senderId, senderDeviceId, signaling);
+        if (isMaster) {
+            callManager.send(new CallManagerActor.OnCallAnswered(callId), self());
+        }
     }
 
     @Override
     public void onBusStopped() {
-        super.onBusStopped();
-        for (int uid : peerConnections.keySet()) {
-            HashMap<Long, ActorRef> peers = peerConnections.get(uid);
-            for (ActorRef p : peers.values()) {
-                p.send(new PeerConnectionActor.DoStop());
+        self().send(PoisonPill.INSTANCE);
+    }
+
+
+    @Override
+    public void onMuteChanged(boolean isMuted) {
+        super.onMuteChanged(isMuted);
+        callVM.getIsMuted().change(isMuted);
+    }
+
+    public void onAnswerCall() {
+        if (!isAnswered && !isRejected) {
+            isAnswered = true;
+            callBus.startOwn();
+            request(new RequestJoinCall(callId));
+
+            if (isActive) {
+                callVM.getState().change(CallState.IN_PROGRESS);
+                callVM.setCallStart(im.actor.runtime.Runtime.getCurrentTime());
+            } else {
+                callVM.getState().change(CallState.CONNECTING);
             }
         }
-        peerConnections.clear();
     }
 
-    public void doEndCall() {
-        shutdown();
+    public void onRejectCall() {
+        if (!isAnswered && !isRejected) {
+            isRejected = true;
+            request(new RequestRejectCall(callId));
+        }
     }
 
-    protected ActorRef getPeer(int uid, long deviceId) {
-        if (!peerConnections.containsKey(uid)) {
-            peerConnections.put(uid, new HashMap<Long, ActorRef>());
+    @Override
+    public void postStop() {
+        super.postStop();
+        if (callVM != null) {
+            callVM.getState().change(CallState.ENDED);
+            callVM.setCallEnd(im.actor.runtime.Runtime.getCurrentTime());
         }
-        HashMap<Long, ActorRef> refs = peerConnections.get(uid);
-        if (refs.containsKey(deviceId)) {
-            return refs.get(deviceId);
-        }
-        ActorRef ref = system().actorOf(getPath() + "/uid:" + uid + "/" + deviceId,
-                PeerConnectionActor.CONSTRUCTOR(self(), uid, deviceId, isMuted, isSilentEnabled, context()));
-        refs.put(deviceId, ref);
-        return ref;
-    }
-
-    protected void disconnectPeer(int uid, long deviceId) {
-        HashMap<Long, ActorRef> deviceRefs = peerConnections.get(uid);
-        if (deviceRefs == null) {
-            return;
-        }
-        ActorRef ref = deviceRefs.get(deviceId);
-        if (ref == null) {
-            return;
-        }
-        ref.send(new PeerConnectionActor.DoStop());
-    }
-
-    protected void unsilencePeers() {
-        setIsSilentEnabled(false);
-        for (HashMap<Long, ActorRef> deviceRefs : peerConnections.values()) {
-            for (ActorRef ref : deviceRefs.values()) {
-                ref.send(new PeerConnectionActor.DoUnsilence());
-            }
+        callBus.kill();
+        if (callId != 0) {
+            callManager.send(new CallManagerActor.OnCallEnded(callId), self());
         }
     }
 
@@ -251,44 +162,20 @@ public class CallActor extends EventBusActor {
 
     @Override
     public void onReceive(Object message) {
-        if (message instanceof PeerConnectionActor.DoAnswer) {
-            PeerConnectionActor.DoAnswer answer = (PeerConnectionActor.DoAnswer) message;
-            sendSignalingMessage(answer.getUid(), answer.getDeviceId(),
-                    new ApiAnswer(0, answer.getSdp()));
-        } else if (message instanceof PeerConnectionActor.DoOffer) {
-            PeerConnectionActor.DoOffer offer = (PeerConnectionActor.DoOffer) message;
-            sendSignalingMessage(offer.getUid(), offer.getDeviceId(),
-                    new ApiOffer(0, offer.getSdp(), null));
-        } else if (message instanceof PeerConnectionActor.DoCandidate) {
-            PeerConnectionActor.DoCandidate candidate = (PeerConnectionActor.DoCandidate) message;
-            sendSignalingMessage(candidate.getUid(), candidate.getDeviceId(),
-                    new ApiCandidate(0, candidate.getIndex(), candidate.getId(), candidate.getSdp()));
-        } else if (message instanceof DoEndCall) {
-            doEndCall();
-        } else if (message instanceof PeerConnectionActor.OnStreamAdded) {
-            PeerConnectionActor.OnStreamAdded streamAdded = (PeerConnectionActor.OnStreamAdded) message;
-            onStreamAdded(streamAdded.getUid(), streamAdded.getDeviceId(), streamAdded.getStream());
-        } else if (message instanceof PeerConnectionActor.OnStreamRemoved) {
-            PeerConnectionActor.OnStreamRemoved streamRemoved = (PeerConnectionActor.OnStreamRemoved) message;
-            onStreamRemoved(streamRemoved.getUid(), streamRemoved.getDeviceId(), streamRemoved.getStream());
-        } else if (message instanceof Mute) {
-            onMute();
-        } else if (message instanceof Unmute) {
-            onUnmute();
+        if (message instanceof AnswerCall) {
+            onAnswerCall();
+        } else if (message instanceof RejectCall) {
+            onRejectCall();
         } else {
             super.onReceive(message);
         }
     }
 
-    public static class DoEndCall {
+    public static class AnswerCall {
 
     }
 
-    public static class Mute {
-
-    }
-
-    public static class Unmute {
+    public static class RejectCall {
 
     }
 }
