@@ -660,6 +660,27 @@ public class JsFacade implements Exportable {
         });
     }
 
+    public JsPromise doGroupCall(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.doGroupCall(gid).start(new CommandCallback<Long>() {
+                    @Override
+                    public void onResult(Long res) {
+                        Log.d(TAG, "doGroupCall:result");
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "doGroupCall:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
     public void answerCall(String callId) {
         messenger.answerCall(Long.parseLong(callId));
     }
