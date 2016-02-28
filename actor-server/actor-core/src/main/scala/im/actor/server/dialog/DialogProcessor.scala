@@ -108,12 +108,10 @@ object DialogProcessor {
 }
 
 private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, extensions: Seq[ApiExtension])
-  extends Actor
-  with ActorLogging
+  extends AlertingActor
   with DialogCommandHandlers
   with ActorFutures
-  with ActorStashing
-  with AlertingActor {
+  with ActorStashing {
   import DialogCommands._
   import DialogProcessor._
 
