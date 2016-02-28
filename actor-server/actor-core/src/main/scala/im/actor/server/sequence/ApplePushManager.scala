@@ -26,7 +26,7 @@ object ApplePushManagerConfig {
   }
 }
 
-case class ApnsCert(key: Int, path: String, password: String, isSandbox: Boolean)
+case class ApnsCert(key: Int, path: String, password: String, isSandbox: Boolean, isVoip: Boolean)
 
 object ApnsCert {
   def fromConfig(config: Config): ApnsCert = {
@@ -34,6 +34,7 @@ object ApnsCert {
       config.getInt("key"),
       config.getString("path"),
       config.getString("password"),
+      Try(config.getBoolean("voip")).getOrElse(false),
       Try(config.getBoolean("sandbox")).getOrElse(false)
     )
   }
@@ -42,38 +43,49 @@ object ApnsCert {
 final class ApplePushManager(config: ApplePushManagerConfig, system: ActorSystem) {
   import system.dispatcher
 
-  private val managers: Map[Int, PushManager[SimpleApnsPushNotification]] =
-    config.certs.map { cert ⇒
-      val env = cert.isSandbox match {
-        case false ⇒ ApnsEnvironment.getProductionEnvironment
-        case true  ⇒ ApnsEnvironment.getSandboxEnvironment
-      }
+  private val (managers, voipManagers): (Map[Int, PushManager[SimpleApnsPushNotification]], Map[Int, PushManager[SimpleApnsPushNotification]]) = {
+    val (certs, voipCerts) = config.certs.partition(!_.isVoip)
 
-      val mgr = new PushManager[SimpleApnsPushNotification](
-        env,
-        SSLContextUtil.createDefaultSSLContext(cert.path, cert.password),
-        null,
-        null,
-        null,
-        new PushManagerConfiguration(),
-        s"ActorPushManager-${cert.key}"
-      )
+    ((certs map createManager).toMap, (voipCerts map createManager).toMap)
+  }
 
-      mgr.registerRejectedNotificationListener(new LoggingRejectedNotificationListener(system))
+  def getInstance(key: Int): Option[PushManager[SimpleApnsPushNotification]] = managers.get(key)
 
-      mgr.registerExpiredTokenListener(new CleanExpiredTokenListener(system))
+  def getVoipInstance(key: Int): Option[PushManager[SimpleApnsPushNotification]] = voipManagers.get(key)
 
-      mgr.start()
+  private def createManager(cert: ApnsCert) = {
+    val env = cert.isSandbox match {
+      case false ⇒ ApnsEnvironment.getProductionEnvironment
+      case true  ⇒ ApnsEnvironment.getSandboxEnvironment
+    }
 
-      system.scheduler.schedule(10.seconds, 1.hour) {
-        mgr.requestExpiredTokens()
-      }
+    cert.isSandbox match {
+      case false ⇒ ApnsEnvironment.getProductionEnvironment
+      case true  ⇒ ApnsEnvironment.getSandboxEnvironment
+    }
 
-      (cert.key, mgr)
-    }.toMap
+    val mgr = new PushManager[SimpleApnsPushNotification](
+      env,
+      SSLContextUtil.createDefaultSSLContext(cert.path, cert.password),
+      null,
+      null,
+      null,
+      new PushManagerConfiguration(),
+      s"ActorPushManager-${cert.key}"
+    )
 
-  def getInstance(key: Int): Option[PushManager[SimpleApnsPushNotification]] =
-    managers.get(key)
+    mgr.registerRejectedNotificationListener(new LoggingRejectedNotificationListener(system))
+
+    mgr.registerExpiredTokenListener(new CleanExpiredTokenListener(system))
+
+    mgr.start()
+
+    system.scheduler.schedule(10.seconds, 1.hour) {
+      mgr.requestExpiredTokens()
+    }
+
+    (cert.key, mgr)
+  }
 }
 
 private class LoggingRejectedNotificationListener(_system: ActorSystem) extends RejectedNotificationListener[SimpleApnsPushNotification] {
