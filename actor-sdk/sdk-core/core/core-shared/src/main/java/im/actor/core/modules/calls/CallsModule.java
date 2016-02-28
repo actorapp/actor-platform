@@ -15,22 +15,21 @@ public class CallsModule extends AbsModule {
 
     public static final String TAG = "CALLS";
 
-    private CallsProvider provider;
     private ActorRef callManager;
     private CallViewModels callViewModels;
 
     public CallsModule(ModuleContext context) {
         super(context);
 
-        provider = context().getConfiguration().getCallsProvider();
-        callViewModels = new CallViewModels(context());
+        if (context().getConfiguration().isVoiceCallsEnabled()) {
+            callViewModels = new CallViewModels(context());
+        }
     }
 
     public void run() {
-        if (provider == null) {
-            return;
+        if (context().getConfiguration().isVoiceCallsEnabled()) {
+            callManager = system().actorOf("calls/manager", CallManagerActor.CONSTRUCTOR(context()));
         }
-        callManager = system().actorOf("calls/manager", CallManagerActor.CONSTRUCTOR(context()));
     }
 
     public CallViewModels getCallViewModels() {

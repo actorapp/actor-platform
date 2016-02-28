@@ -120,11 +120,13 @@ public class AAGroupViewController: AAContentTableController {
         }
         
         // Calls
-        section { (s) -> () in
-            s.action("CallsStartGroupAudio") { (r) -> () in
-                r.selectAction = { () -> Bool in
-                    self.execute(Actor.doCallWithGid(jint(self.gid)))
-                    return true
+        if (ActorSDK.sharedActor().enableCalls) {
+            section { (s) -> () in
+                s.action("CallsStartGroupAudio") { (r) -> () in
+                    r.selectAction = { () -> Bool in
+                        self.execute(Actor.doCallWithGid(jint(self.gid)))
+                        return true
+                    }
                 }
             }
         }
