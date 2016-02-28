@@ -24,6 +24,7 @@ public class AACallViewController: AAViewController {
     public let videoButton = AACircleButton(size: 72)
     
     var isScheduledDispose = false
+    var timer: NSTimer?
     
     public init(callId: jlong) {
         self.callId = callId
@@ -172,10 +173,10 @@ public class AACallViewController: AAViewController {
                 self.answerCallButtonText.hidden = true
                 self.declineCallButton.hidden = false
                 self.declineCallButtonText.hidden = true
-                self.callState.text = "0:00"
+                self.startTimer()
                 self.layoutButtons()
             } else if (ACCallState_Enum.ENDED == value.toNSEnum()) {
-                self.callState.text = "Call Ended"
+                self.stopTimer()
                 self.muteButton.hidden = true
                 self.speakerButton.hidden = true
                 self.videoButton.hidden = true
@@ -228,6 +229,33 @@ public class AACallViewController: AAViewController {
         UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
         
         UIDevice.currentDevice().proximityMonitoringEnabled = true
+    }
+    
+    func startTimer() {
+        timer?.invalidate()
+        timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateTimer", userInfo: nil, repeats: true)
+        updateTimer()
+    }
+    
+    func updateTimer() {
+        if call.callStart > 0 {
+            let end = call.callEnd > 0 ? call.callEnd : jlong(NSDate().timeIntervalSince1970 * 1000)
+            let secs = Int((end - call.callStart) / 1000)
+            
+            let seconds = secs % 60
+            let minutes = secs / 60
+            
+            self.callState.text = NSString(format: "%0.2d:%0.2d", minutes, seconds) as String
+        } else {
+            self.callState.text = "0:00"
+        }
+    }
+    
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+        updateTimer()
+//        self.callState.text = "Call Ended"
     }
     
     public override func viewWillDisappear(animated: Bool) {

@@ -75,5 +75,35 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
                 }
             });
         }
+
+        @Override
+        public void onCallConnected() {
+            self().send(new Runnable() {
+                @Override
+                public void run() {
+                    AbsCallActor.this.onCallConnected();
+                }
+            });
+        }
+
+        @Override
+        public void onCallEnabled() {
+            self().send(new Runnable() {
+                @Override
+                public void run() {
+                    AbsCallActor.this.onCallEnabled();
+                }
+            });
+        }
+
+        @Override
+        public void onBusStopped() {
+            self().send(new Runnable() {
+                @Override
+                public void run() {
+                    AbsCallActor.this.onBusStopped();
+                }
+            });
+        }
     }
 }
