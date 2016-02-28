@@ -4211,6 +4211,54 @@
           <ref role="NX6Kv" node="GBscvBBqBq" resolve="message" />
         </node>
       </node>
+      <node concept="2m6fVq" id="5Wm9DsmkMGN" role="2m5mJr">
+        <property role="TrG5h" value="UpdateMessage" />
+        <node concept="2m7Kf5" id="5Wm9DsmkMSx" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="5Wm9DsmkMS_" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5Wm9DsmkMSC" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="5Wm9DsmkMSI" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5Wm9DsmkMSL" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="updatedMessage" />
+          <node concept="3BlaRf" id="5Wm9DsmkMST" role="2m7DVh">
+            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5Wm9DsmkMGO" role="NuuwV">
+          <property role="Nu42W" value="A62" />
+        </node>
+        <node concept="2m1Rp1" id="5Wm9DsmkMSW" role="2m6efq">
+          <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
+        </node>
+        <node concept="NXeRC" id="5Wm9DsmkMSZ" role="1GBnQ6">
+          <property role="NXePf" value="Changing Message content" />
+        </node>
+        <node concept="NX1gA" id="5Wm9DsmkMT4" role="1GBnQ6">
+          <property role="NX6R2" value="Destination Peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5Wm9DsmkMSx" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="5Wm9DsmkMTc" role="1GBnQ6">
+          <property role="NX6R2" value="Message random id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5Wm9DsmkMSC" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="5Wm9DsmkMTm" role="1GBnQ6">
+          <property role="NX6R2" value="Updated Message content" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5Wm9DsmkMSL" resolve="updatedMessage" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="GBscvBBr4E" role="2m5mJr">
         <property role="TrG5h" value="MessageReceived" />
         <node concept="2m7Kf5" id="GBscvBBr8q" role="2m0hLx">
