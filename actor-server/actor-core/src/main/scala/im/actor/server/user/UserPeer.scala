@@ -4,8 +4,8 @@ import akka.actor.{ ActorRef, Props }
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.concurrent.AlertingActor
-import im.actor.server.dialog.{DialogCommand, DialogProcessor, DirectDialogCommand}
-import im.actor.server.model.{Peer, PeerType}
+import im.actor.server.dialog.{ DialogCommand, DialogProcessor, DirectDialogCommand }
+import im.actor.server.model.{ Peer, PeerType }
 
 private[user] object UserPeer {
   def props(userId: Int, extensions: Seq[ApiExtension]) = Props(classOf[UserPeer], userId, extensions)

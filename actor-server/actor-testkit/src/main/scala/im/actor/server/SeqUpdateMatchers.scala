@@ -5,8 +5,9 @@ import akka.event.Logging
 import com.google.protobuf.CodedInputStream
 import im.actor.api.rpc.{ ClientData, Update }
 import im.actor.server.db.DbExtension
-import im.actor.server.model.{ SerializedUpdate, SeqUpdate }
+import im.actor.server.model.{ SeqUpdate, SerializedUpdate }
 import im.actor.server.persist.sequence.UserSequenceRepo
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.util.log.AnyRefLogSource
 import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures
@@ -157,10 +158,10 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
       }
     }
 
-  private def findSeqUpdateAfter(seq: Int)(implicit client: ClientData): Future[Seq[SeqUpdate]] = {
-    val query = UserSequenceRepo.fetchAfterSeq(client.authData.get.userId, seq, Long.MaxValue)
-    DbExtension(system).db.run(query)
-  }
+  private def findSeqUpdateAfter(seq: Int)(implicit client: ClientData): Future[Seq[SeqUpdate]] =
+    SeqUpdatesExtension(system)
+      .getDifference(client.authData.get.userId, seq, client.authData.get.authSid, Long.MaxValue)
+      .map(_._1)(system.dispatcher)
 
   @tailrec
   private def repeatAfterSleep[T](times: Int)(f: ⇒ T): T = {
