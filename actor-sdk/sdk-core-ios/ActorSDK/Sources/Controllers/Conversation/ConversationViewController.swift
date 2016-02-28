@@ -175,17 +175,22 @@ public class ConversationViewController: AAConversationContentController, UIDocu
         // Navigation Avatar
         
         avatarView.frame = CGRectMake(0, 0, 36, 36)
-        let avatarTapGesture = UITapGestureRecognizer(target: self, action: "onAvatarTap")
-        avatarTapGesture.numberOfTapsRequired = 1
-        avatarTapGesture.numberOfTouchesRequired = 1
-        avatarView.addGestureRecognizer(avatarTapGesture)
+        avatarView.viewDidTap = onAvatarTap
         
         let barItem = UIBarButtonItem(customView: avatarView)
-        if (ActorSDK.sharedActor().enableCalls) {
-            let callButton = UIBarButtonItem(image: UIImage.bundled("ic_call_outline_22"), style: UIBarButtonItemStyle.Plain, target: self, action: "onCallTap")
-            self.navigationItem.rightBarButtonItems = [barItem, callButton]
+        let isBot: Bool
+        if (peer.isPrivate) {
+            isBot = Bool(Actor.getUserWithUid(peer.peerId).isBot())
         } else {
-            self.navigationItem.rightBarButtonItem = barItem
+            isBot = false
+        }
+        if (ActorSDK.sharedActor().enableCalls && !isBot && peer.isPrivate) {
+            let callButtonView = AACallButton(image: UIImage.bundled("ic_call_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
+            callButtonView.viewDidTap = onCallTap
+            let callButtonItem = UIBarButtonItem(customView: callButtonView)
+            self.navigationItem.rightBarButtonItems = [barItem, callButtonItem]
+        } else {
+            self.navigationItem.rightBarButtonItems = [barItem]
         }
     }
     
@@ -959,4 +964,33 @@ public class ConversationViewController: AAConversationContentController, UIDocu
     }
 
     
+}
+
+class AABarAvatarView : AAAvatarView {
+    
+    override init(frameSize: Int, type: AAAvatarType) {
+        super.init(frameSize: frameSize, type: type)
+    }
+    
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func alignmentRectInsets() -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
+    }
+}
+
+class AACallButton: UIImageView {
+    override init(image: UIImage?) {
+        super.init(image: image)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func alignmentRectInsets() -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: -2, bottom: 0, right: 0)
+    }
 }
