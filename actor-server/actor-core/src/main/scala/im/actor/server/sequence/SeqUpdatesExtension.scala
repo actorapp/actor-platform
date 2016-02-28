@@ -148,7 +148,7 @@ final class SeqUpdatesExtension(
     generic: immutable.SortedMap[Int, SeqUpdate] = immutable.TreeMap.empty,
     reduced: Map[ReduceKey, (Int, SeqUpdate)]    = Map.empty
   ) {
-    def nonEmpty = generic.nonEmpty && reduced.nonEmpty
+    def nonEmpty = generic.nonEmpty || reduced.nonEmpty
 
     def isEmpty = generic.isEmpty && reduced.isEmpty
 
