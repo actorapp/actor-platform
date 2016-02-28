@@ -38,8 +38,6 @@ object Dependencies {
     val akkaHttpCirce           = "de.heikoseeberger"             %% "akka-http-circe"               % V.akkaHttpJson
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
-    val aspectj                 = "org.aspectj"                   %  "aspectjweaver"                 % "1.8.7"
-
     val sprayClient             = "io.spray"                      %% "spray-client"                  % "1.3.3"
     val sprayWebsocket          = "com.wandoulabs.akka"           %% "spray-websocket"               % "0.1.4"
 
@@ -81,9 +79,6 @@ object Dependencies {
     val bcprov                  = "org.bouncycastle"              %  "bcprov-jdk15on"                % "1.50"
 
     val kamonCore               = "io.kamon"                      %% "kamon-core"                    % V.kamon
-    val kamonScala              = "io.kamon"                      %% "kamon-scala"                   % V.kamon
-    val kamonAkka               = "io.kamon"                      %% "kamon-akka"                    % V.kamon
-    val kamonSystemMetrics      = "io.kamon"                      %% "kamon-system-metrics"          % V.kamon
     val kamonDatadog            = "io.kamon"                      %% "kamon-datadog"                 % V.kamon
 
     val libPhoneNumber          = "com.googlecode.libphonenumber" % "libphonenumber"                 % "7.0.+"
@@ -136,9 +131,6 @@ object Dependencies {
     scalaLogging,
     tyrex,
     kamonCore,
-    kamonScala,
-    kamonAkka,
-    kamonSystemMetrics,
     kamonDatadog
   )
 
@@ -208,7 +200,7 @@ object Dependencies {
 
   val notifications = shared ++ Seq(akkaClusterTools, slick)
 
-  val sdk = Seq(aspectj)
+  val sdk = Seq.empty
 
   val runtime = shared ++ Seq(akkaActor, actorConcurrent, akkaHttp, akkaSlf4j, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, icu4j, libPhoneNumber, scalapbSer, akkaTestkit % "test", scalatest % "test")
 
