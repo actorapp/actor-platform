@@ -6,7 +6,11 @@ import java.util.ArrayList;
 
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
+import im.actor.core.viewmodel.generics.IntValueModel;
+import im.actor.runtime.*;
+import im.actor.runtime.actors.ActorTime;
 import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.threading.CommonTimer;
 
 public class CallVM {
 
@@ -21,7 +25,13 @@ public class CallVM {
     @Property("nonatomic, readonly")
     private final BooleanValueModel isMuted;
     @Property("nonatomic, readonly")
+    private long callStart;
+    @Property("nonatomic, readonly")
+    private long callEnd;
+    @Property("nonatomic, readonly")
     private final boolean isOutgoing;
+
+    private CommonTimer presenceTimer;
 
     public CallVM(long callId, Peer peer, boolean isOutgoing, ArrayList<CallMember> initialMembers, CallState state) {
         this.callId = callId;
@@ -30,6 +40,7 @@ public class CallVM {
         this.state = new ValueModel<>("calls." + callId + ".state", state);
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
         this.isMuted = new BooleanValueModel("calls." + callId + ".state", false);
+        this.callStart = 0;
     }
 
     public boolean isOutgoing() {
@@ -54,5 +65,21 @@ public class CallVM {
 
     public ValueModel<ArrayList<CallMember>> getMembers() {
         return members;
+    }
+
+    public void setCallStart(long callStart) {
+        this.callStart = callStart;
+    }
+
+    public long getCallStart() {
+        return callStart;
+    }
+
+    public long getCallEnd() {
+        return callEnd;
+    }
+
+    public void setCallEnd(long callEnd) {
+        this.callEnd = callEnd;
     }
 }

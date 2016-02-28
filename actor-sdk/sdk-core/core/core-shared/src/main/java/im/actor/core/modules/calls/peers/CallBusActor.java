@@ -33,6 +33,8 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     private boolean isMasterReady;
     private long masterDeviceId;
     private PeerCallInt peerCall;
+    private boolean isConnected = false;
+    private boolean isEnabled = false;
 
     public CallBusActor(final CallBusCallback callBusCallback, PeerSettings selfSettings, ModuleContext context) {
         super(context);
@@ -93,7 +95,14 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     @Override
     public void onPeerStateChanged(long deviceId, PeerState state) {
-
+        if (state == PeerState.CONNECTED && !isConnected && !isEnabled) {
+            isConnected = true;
+            callBusCallback.onCallConnected();
+        }
+        if (state == PeerState.ACTIVE && !isEnabled) {
+            isEnabled = true;
+            callBusCallback.onCallEnabled();
+        }
     }
 
     @Override
@@ -196,6 +205,16 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void postStop() {
+        super.postStop();
+        if (peerCall != null) {
+            peerCall.kill();
+            peerCall = null;
+        }
+        callBusCallback.onBusStopped();
     }
 
     @Override

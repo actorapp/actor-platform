@@ -25,7 +25,7 @@ public class CallActor extends AbsCallActor {
     private CallVM callVM;
     private CommandCallback<Long> callback;
 
-    private boolean isConnected;
+    private boolean isActive;
     private boolean isAnswered;
     private boolean isRejected;
 
@@ -34,7 +34,7 @@ public class CallActor extends AbsCallActor {
         this.isMaster = false;
         this.callId = callId;
         this.isAnswered = false;
-        this.isConnected = false;
+        this.isActive = false;
     }
 
     public CallActor(Peer peer, CommandCallback<Long> callback, ModuleContext context) {
@@ -43,7 +43,7 @@ public class CallActor extends AbsCallActor {
         this.callback = callback;
         this.peer = peer;
         this.isAnswered = true;
-        this.isConnected = false;
+        this.isActive = false;
     }
 
     @Override
@@ -92,6 +92,25 @@ public class CallActor extends AbsCallActor {
         }
     }
 
+    @Override
+    public void onCallConnected() {
+        // callVM.getState().change()
+    }
+
+    @Override
+    public void onCallEnabled() {
+        isActive = true;
+        if (isAnswered) {
+            callVM.getState().change(CallState.IN_PROGRESS);
+            callVM.setCallStart(im.actor.runtime.Runtime.getCurrentTime());
+        }
+    }
+
+    @Override
+    public void onBusStopped() {
+        self().send(PoisonPill.INSTANCE);
+    }
+
 
     @Override
     public void onMuteChanged(boolean isMuted) {
@@ -103,8 +122,10 @@ public class CallActor extends AbsCallActor {
         if (!isAnswered && !isRejected) {
             isAnswered = true;
             request(new RequestJoinCall(callId));
-            if (isConnected) {
+
+            if (isActive) {
                 callVM.getState().change(CallState.IN_PROGRESS);
+                callVM.setCallStart(im.actor.runtime.Runtime.getCurrentTime());
             } else {
                 callVM.getState().change(CallState.CONNECTING);
             }
@@ -123,8 +144,12 @@ public class CallActor extends AbsCallActor {
         super.postStop();
         if (callVM != null) {
             callVM.getState().change(CallState.ENDED);
+            callVM.setCallEnd(im.actor.runtime.Runtime.getCurrentTime());
         }
         callBus.kill();
+        if (callId != 0) {
+            callManager.send(new CallManagerActor.OnCallEnded(callId), self());
+        }
     }
 
     //

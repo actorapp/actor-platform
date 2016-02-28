@@ -16,16 +16,21 @@ public class CommonTimer {
             return new Actor();
         }
     });
-    private static final  Scheduler COMMON_SCHEDULER = new Scheduler(COMMON_TIMER_ACTOR);
+    private static final Scheduler COMMON_SCHEDULER = new Scheduler(COMMON_TIMER_ACTOR);
 
     private final Runnable runnable;
     private Cancellable lastSchedule;
+    private boolean isDisposed;
 
     public CommonTimer(Runnable runnable) {
         this.runnable = runnable;
     }
 
     public void schedule(long time) {
+        if (isDisposed) {
+            return;
+        }
+
         if (lastSchedule != null) {
             lastSchedule.cancel();
         }
@@ -37,5 +42,10 @@ public class CommonTimer {
         if (lastSchedule != null) {
             lastSchedule.cancel();
         }
+    }
+
+    public void dispose() {
+        isDisposed = true;
+        cancel();
     }
 }
