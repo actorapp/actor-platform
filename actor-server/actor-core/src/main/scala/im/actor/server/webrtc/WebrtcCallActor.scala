@@ -3,19 +3,23 @@ package im.actor.server.webrtc
 import akka.actor._
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
+import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.{ ApiServiceExPhoneCall, ApiServiceMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.webrtc._
 import im.actor.concurrent.{ ActorStashing, FutureExt }
+import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogExtension
 import im.actor.server.eventbus.{ EventBus, EventBusExtension }
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.{ Peer, PeerType }
-import im.actor.server.sequence.WeakUpdatesExtension
+import im.actor.server.sequence.{ ApplePushExtension, WeakUpdatesExtension }
+import im.actor.server.user.UserExtension
 import im.actor.server.values.ValuesExtension
 import im.actor.types._
 
+import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.Random
@@ -61,11 +65,14 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
 
   private val id = self.path.name.toLong
 
-  private lazy val weakUpdExt = WeakUpdatesExtension(context.system)
-  private lazy val dialogExt = DialogExtension(context.system)
-  private lazy val eventBusExt = EventBusExtension(context.system)
-  private lazy val groupExt = GroupExtension(context.system)
-  private lazy val valuesExt = ValuesExtension(context.system)
+  private val weakUpdExt = WeakUpdatesExtension(context.system)
+  private val dialogExt = DialogExtension(context.system)
+  private val eventBusExt = EventBusExtension(context.system)
+  private val userExt = UserExtension(context.system)
+  private val groupExt = GroupExtension(context.system)
+  private val valuesExt = ValuesExtension(context.system)
+  private val apnsExt = ApplePushExtension(context.system)
+  private val db = DbExtension(context.system).db
 
   case class Device(
     deviceId:     EventBus.DeviceId,
@@ -109,11 +116,11 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
         callees ← fetchParticipants(callerUserId, peer) map (_ filterNot (_ == callerUserId))
         callerDeviceId ← eventBusExt.fetchOwner(s.eventBusId)
         _ ← eventBusExt.join(EventBus.InternalClient(self), s.eventBusId, None)
+        _ ← scheduleIncomingCallUpdates(callees)
       } yield Res(callees, callerDeviceId)) pipeTo self
 
       becomeStashing(replyTo ⇒ {
         case Res(callees, callerDeviceId) ⇒
-          scheduleIncomingCallUpdates(callees)
           replyTo ! StartCallAck
 
           eventBusExt.post(EventBus.InternalClient(self), s.eventBusId, Seq(callerDeviceId), ApiAdvertiseMaster.toByteArray)
@@ -303,18 +310,36 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
       case _                              ⇒ FastFuture.failed(new RuntimeException(s"Unknown peer type: ${peer.`type`}"))
     }
 
-  private def scheduleIncomingCallUpdates(callees: Seq[UserId]): Unit =
-    scheduledUpds =
-      callees
-        .map { callee ⇒
-          (
-            callee,
-            context.system.scheduler.schedule(0.seconds, 5.seconds) {
-              weakUpdExt.broadcastUserWeakUpdate(callee, UpdateIncomingCall(id), reduceKey = Some(s"call_$id"))
-            }
-          )
-        }
-        .toMap
+  private def scheduleIncomingCallUpdates(callees: Seq[UserId]): Future[Unit] = {
+    for {
+      authIdsMap ← userExt.getAuthIdsMap(callees.toSet)
+      credsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
+        case (userId, authIds) ⇒
+          apnsExt.findVoipCreds(authIds.toSet) map (userId → _)
+      }
+    } yield {
+      scheduledUpds =
+        credsMap
+          .map {
+            case (userId, creds) ⇒
+              (
+                userId,
+                context.system.scheduler.schedule(0.seconds, 5.seconds) {
+                  weakUpdExt.broadcastUserWeakUpdate(userId, UpdateIncomingCall(id), reduceKey = Some(s"call_$id"))
+
+                  val payload = (new ApnsPayloadBuilder).addCustomProperty("callId", id).buildWithDefaultMaximumLength()
+
+                  val instanceCreds = creds flatMap (c ⇒ apnsExt.getVoipInstance(c.apnsKey) map (_ → c))
+                  for ((instance, cred) ← instanceCreds) {
+                    val notif = new SimpleApnsPushNotification(cred.token.toByteArray, payload)
+                    instance.getQueue.add(notif)
+                  }
+                }
+              )
+          }
+          .toMap
+    }
+  }
 
   private def cancelIncomingCallUpdates(callee: UserId) =
     scheduledUpds get callee foreach { c ⇒
