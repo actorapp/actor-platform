@@ -121,6 +121,10 @@ public class PeerCallActor extends ModuleActor {
             d.kill();
         }
         refs.clear();
+        if (webRTCMediaStream != null) {
+            webRTCMediaStream.setEnabled(false);
+            webRTCMediaStream.close();
+        }
     }
 
     @Override

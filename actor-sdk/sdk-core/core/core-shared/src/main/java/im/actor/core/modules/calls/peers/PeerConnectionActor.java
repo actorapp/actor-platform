@@ -47,7 +47,6 @@ public class PeerConnectionActor extends ModuleActor {
 
     @NotNull
     private WebRTCPeerConnection peerConnection;
-    private SDPOptimizer sdpOptimizer;
     private boolean isReady = false;
     private boolean isReadyForCandidates = false;
     @NotNull
@@ -62,7 +61,6 @@ public class PeerConnectionActor extends ModuleActor {
         this.TAG = "PeerConnection";
         this.callback = callback;
         this.stream = mediaStream;
-        this.sdpOptimizer = new SDPOptimizer(selfSettings, theirSettings);
     }
 
     @Override
@@ -136,7 +134,7 @@ public class PeerConnectionActor extends ModuleActor {
         //
 
         isReady = false;
-        peerConnection.createOffer().map(OPTIMIZE_OWN_SDP).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
+        peerConnection.createOffer().mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
             @Override
             public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription description) {
                 return peerConnection.setLocalDescription(description);
@@ -178,7 +176,7 @@ public class PeerConnectionActor extends ModuleActor {
             public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription description) {
                 return peerConnection.createAnswer();
             }
-        }).map(OPTIMIZE_OWN_SDP).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
+        }).mapPromise(new Function<WebRTCSessionDescription, Promise<WebRTCSessionDescription>>() {
             @Override
             public Promise<WebRTCSessionDescription> apply(WebRTCSessionDescription description) {
                 return peerConnection.setLocalDescription(description);
@@ -263,28 +261,6 @@ public class PeerConnectionActor extends ModuleActor {
         isReady = false;
         state = PeerConnectionState.CLOSED;
     }
-
-    //
-    // Configuration
-    //
-
-    private Function<WebRTCSessionDescription, WebRTCSessionDescription> OPTIMIZE_OWN_SDP
-            = new Function<WebRTCSessionDescription, WebRTCSessionDescription>() {
-        @Override
-        public WebRTCSessionDescription apply(WebRTCSessionDescription description) {
-            return new WebRTCSessionDescription(description.getType(),
-                    sdpOptimizer.optimizeOwnSDP(description.getSdp()));
-        }
-    };
-
-    private Function<WebRTCSessionDescription, WebRTCSessionDescription> OPTIMIZE_THEIR_SDP
-            = new Function<WebRTCSessionDescription, WebRTCSessionDescription>() {
-        @Override
-        public WebRTCSessionDescription apply(WebRTCSessionDescription description) {
-            return new WebRTCSessionDescription(description.getType(),
-                    sdpOptimizer.optimizeTheirSDP(description.getSdp()));
-        }
-    };
 
     //
     // Messages
