@@ -121,11 +121,14 @@ public class AAGroupViewController: AAContentTableController {
         
         // Calls
         if (ActorSDK.sharedActor().enableCalls) {
-            section { (s) -> () in
-                s.action("CallsStartGroupAudio") { (r) -> () in
-                    r.selectAction = { () -> Bool in
-                        self.execute(Actor.doCallWithGid(jint(self.gid)))
-                        return true
+            let members = (group.members.get() as! JavaUtilArrayList).size()
+            if (members <= 20) { // Temporary limitation
+                section { (s) -> () in
+                    s.action("CallsStartGroupAudio") { (r) -> () in
+                        r.selectAction = { () -> Bool in
+                            self.execute(Actor.doCallWithGid(jint(self.gid)))
+                            return true
+                        }
                     }
                 }
             }
