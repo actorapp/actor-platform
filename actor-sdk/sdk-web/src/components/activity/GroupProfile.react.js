@@ -129,7 +129,7 @@ class GroupProfile extends Component {
 
   makeCall = () => {
     const { group } = this.props;
-    CallActionCreators.makeCall(group.id);
+    CallActionCreators.makeGroupCall(group.id);
   };
 
   render() {

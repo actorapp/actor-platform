@@ -38,6 +38,13 @@ export default {
       failure: ActionTypes.CALL_ERROR
     }, { peerId });
   },
+  makeGroupCall(peerId) {
+    dispatchAsync(ActorClient.makeGroupCall(peerId), {
+      request: ActionTypes.CALL,
+      success: ActionTypes.CALL_SUCCESS,
+      failure: ActionTypes.CALL_ERROR
+    }, { peerId });
+  },
 
   setCall(call) {
     dispatch(ActionTypes.CALL_CHANGED, { call });
