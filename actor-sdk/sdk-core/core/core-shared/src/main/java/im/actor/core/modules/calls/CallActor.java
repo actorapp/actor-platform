@@ -104,6 +104,9 @@ public class CallActor extends AbsCallActor {
             callVM.getState().change(CallState.IN_PROGRESS);
             callVM.setCallStart(im.actor.runtime.Runtime.getCurrentTime());
         }
+        if (isMaster) {
+            callManager.send(new CallManagerActor.OnCallAnswered(callId), self());
+        }
     }
 
     @Override
@@ -121,6 +124,7 @@ public class CallActor extends AbsCallActor {
     public void onAnswerCall() {
         if (!isAnswered && !isRejected) {
             isAnswered = true;
+            callBus.startOwn();
             request(new RequestJoinCall(callId));
 
             if (isActive) {
