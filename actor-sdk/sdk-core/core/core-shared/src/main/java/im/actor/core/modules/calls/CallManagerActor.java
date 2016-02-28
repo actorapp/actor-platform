@@ -11,11 +11,13 @@ import im.actor.core.providers.CallsProvider;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.*;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Constructor;
+import im.actor.runtime.power.WakeLock;
 
 public class CallManagerActor extends ModuleActor {
 
@@ -70,10 +72,11 @@ public class CallManagerActor extends ModuleActor {
         //
         // Spawning new Actor for call
         //
+        final WakeLock wakeLock = Runtime.makeWakeLock();
         system().actorOf("actor/master/" + RandomUtils.nextRid(), new ActorCreator() {
             @Override
             public Actor create() {
-                return new CallActor(peer, callback, context());
+                return new CallActor(peer, callback, wakeLock, context());
             }
         });
     }
@@ -118,24 +121,31 @@ public class CallManagerActor extends ModuleActor {
     // Incoming call
     //
 
-    private void onIncomingCall(final long callId) {
+    private void onIncomingCall(final long callId, WakeLock wakeLock) {
         Log.d(TAG, "onIncomingCall (" + callId + ")");
 
         //
         // Filter double updates about incoming call
         //
         if (handledCalls.contains(callId)) {
+            if (wakeLock != null) {
+                wakeLock.releaseLock();
+            }
             return;
         }
         handledCalls.add(callId);
+        if (wakeLock == null) {
+            wakeLock = Runtime.makeWakeLock();
+        }
 
         //
         // Spawning new Actor for call
         //
-        system().actorOf("actor/slave/" + RandomUtils.nextRid(), new ActorCreator() {
+        final WakeLock finalWakeLock = wakeLock;
+        system().actorOf("actor/call" + RandomUtils.nextRid(), new ActorCreator() {
             @Override
             public Actor create() {
-                return new CallActor(callId, context());
+                return new CallActor(callId, finalWakeLock, context());
             }
         });
     }
@@ -306,7 +316,10 @@ public class CallManagerActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof OnIncomingCall) {
             OnIncomingCall call = (OnIncomingCall) message;
-            onIncomingCall(call.getCallId());
+            onIncomingCall(call.getCallId(), null);
+        } else if (message instanceof OnIncomingCallLocked) {
+            OnIncomingCallLocked locked = (OnIncomingCallLocked) message;
+            onIncomingCall(locked.getCallId(), locked.getWakeLock());
         } else if (message instanceof OnIncomingCallHandled) {
             OnIncomingCallHandled incomingCallHandled = (OnIncomingCallHandled) message;
             onIncomingCallHandled(incomingCallHandled.getCallId());
@@ -349,6 +362,25 @@ public class CallManagerActor extends ModuleActor {
 
         public long getCallId() {
             return callId;
+        }
+    }
+
+    public static class OnIncomingCallLocked {
+
+        private long callId;
+        private WakeLock wakeLock;
+
+        public OnIncomingCallLocked(long callId, WakeLock wakeLock) {
+            this.callId = callId;
+            this.wakeLock = wakeLock;
+        }
+
+        public long getCallId() {
+            return callId;
+        }
+
+        public WakeLock getWakeLock() {
+            return wakeLock;
         }
     }
 
