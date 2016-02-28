@@ -64,11 +64,13 @@ class AAUserViewController: AAContentTableController {
                 }
             }
             
-            // Profile: Send messages
-            s.action("CallsStartAudio") { (r) -> () in
-                r.selectAction = { () -> Bool in
-                    self.execute(Actor.doCallWithUid(jint(self.uid)))
-                    return false
+            if (ActorSDK.sharedActor().enableCalls) {
+                // Profile: Starting Voice Call
+                s.action("CallsStartAudio") { (r) -> () in
+                    r.selectAction = { () -> Bool in
+                        self.execute(Actor.doCallWithUid(jint(self.uid)))
+                        return false
+                    }
                 }
             }
             
