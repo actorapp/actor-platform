@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import im.actor.core.api.ApiDocumentExVoice;
@@ -59,8 +60,10 @@ import im.actor.core.util.ModuleActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
-import im.actor.runtime.Storage;
+import im.actor.runtime.*;
+import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ask.AskCallback;
+import im.actor.runtime.power.WakeLock;
 
 public class SenderActor extends ModuleActor {
 
@@ -69,6 +72,7 @@ public class SenderActor extends ModuleActor {
     private PendingMessagesStorage pendingMessages;
 
     private long lastSendDate = 0;
+    private HashMap<Long, WakeLock> fileUplaodingWakeLocks = new HashMap<>();
 
     public SenderActor(ModuleContext context) {
         super(context);
@@ -321,6 +325,7 @@ public class SenderActor extends ModuleActor {
     }
 
     private void performUploadFile(long rid, String descriptor, String fileName) {
+        fileUplaodingWakeLocks.put(rid, Runtime.makeWakeLock());
         context().getFilesModule().requestUpload(rid, descriptor, fileName, self());
     }
 
@@ -354,8 +359,8 @@ public class SenderActor extends ModuleActor {
 
         pendingMessages.getPendingMessages().add(new PendingMessage(msg.getPeer(), msg.getRid(), nContent));
         context().getMessagesModule().getConversationActor(msg.getPeer()).send(new ConversationActor.MessageContentUpdated(msg.getRid(), nContent));
-
         performSendContent(msg.getPeer(), rid, nContent);
+        fileUplaodingWakeLocks.remove(rid).releaseLock();
     }
 
     private void onFileUploadError(long rid) {
@@ -365,11 +370,13 @@ public class SenderActor extends ModuleActor {
         }
 
         self().send(new MessageError(msg.getPeer(), msg.getRid()));
+        fileUplaodingWakeLocks.remove(rid).releaseLock();
     }
 
     // Sending content
 
     private void performSendContent(final Peer peer, final long rid, AbsContent content) {
+        WakeLock wakeLock = im.actor.runtime.Runtime.makeWakeLock();
 
         ApiMessage message;
         if (content instanceof TextContent) {
@@ -420,10 +427,10 @@ public class SenderActor extends ModuleActor {
             return;
         }
 
-        performSendApiContent(peer, rid, message);
+        performSendApiContent(peer, rid, message, wakeLock);
     }
 
-    private void performSendApiContent(final Peer peer, final long rid, ApiMessage message) {
+    private void performSendApiContent(final Peer peer, final long rid, ApiMessage message, final WakeLock wakeLock) {
         final ApiOutPeer outPeer = buidOutPeer(peer);
         final ApiPeer apiPeer = buildApiPeer(peer);
         if (outPeer == null || apiPeer == null) {
@@ -438,11 +445,13 @@ public class SenderActor extends ModuleActor {
                                 response.getState(),
                                 UpdateMessageSent.HEADER,
                                 new UpdateMessageSent(apiPeer, rid, response.getDate()).toByteArray()));
+                        wakeLock.releaseLock();
                     }
 
                     @Override
                     public void onError(RpcException e) {
                         self().send(new MessageError(peer, rid));
+                        wakeLock.releaseLock();
                     }
                 });
     }

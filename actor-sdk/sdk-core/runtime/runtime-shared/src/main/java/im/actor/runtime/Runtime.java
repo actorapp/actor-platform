@@ -1,6 +1,7 @@
 package im.actor.runtime;
 
 import im.actor.runtime.actors.ThreadPriority;
+import im.actor.runtime.power.WakeLock;
 import im.actor.runtime.threading.Dispatcher;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
@@ -78,5 +79,9 @@ public class Runtime {
 
     public static void killApp() {
         lifecycleRuntime.killApp();
+    }
+
+    public static WakeLock makeWakeLock() {
+        return lifecycleRuntime.makeWakeLock();
     }
 }
