@@ -1,7 +1,7 @@
 package im.actor.runtime;
 
-import im.actor.runtime.cocoa.CocoaLifecycleProvider;
+import im.actor.runtime.cocoa.CocoaLifecycleProxyProvider;
 
-public class LifecycleRuntimeProvider extends CocoaLifecycleProvider {
+public class LifecycleRuntimeProvider extends CocoaLifecycleProxyProvider {
 
 }

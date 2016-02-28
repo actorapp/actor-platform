@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06129AA61C8359FB0099286B /* CocoaLifecycleRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */; };
 		06230F411BC95BD200A4807B /* RMPhoneFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 06230F3F1BC95BD200A4807B /* RMPhoneFormat.m */; };
 		06230F421BC95BD200A4807B /* RMPhoneFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 06230F401BC95BD200A4807B /* RMPhoneFormat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06230F451BC95C0E00A4807B /* ABPhoneFieldCodes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 06230F431BC95C0E00A4807B /* ABPhoneFieldCodes.txt */; };
@@ -302,6 +303,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLifecycleRuntime.swift; sourceTree = "<group>"; };
 		06230F3F1BC95BD200A4807B /* RMPhoneFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMPhoneFormat.m; sourceTree = "<group>"; };
 		06230F401BC95BD200A4807B /* RMPhoneFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMPhoneFormat.h; sourceTree = "<group>"; };
 		06230F431BC95C0E00A4807B /* ABPhoneFieldCodes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ABPhoneFieldCodes.txt; sourceTree = "<group>"; };
@@ -772,6 +774,7 @@
 				066A51891BC4C383000E606E /* CocoaNetworkRuntime.swift */,
 				066A51861BC4C383000E606E /* CocoaStorageRuntime.swift */,
 				065A06B51C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift */,
+				06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */,
 				066A51871BC4C383000E606E /* iOSNotificationProvider.swift */,
 				066A51881BC4C383000E606E /* iOSPhoneBookProvider.swift */,
 				06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */,
@@ -1891,6 +1894,7 @@
 				06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */,
 				BED5A1F11C48396A0045FDB0 /* NYTPhotoCaptionView.m in Sources */,
 				BED5A20F1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m in Sources */,
+				06129AA61C8359FB0099286B /* CocoaLifecycleRuntime.swift in Sources */,
 				066A516D1BC4C366000E606E /* ActorCoreExt.swift in Sources */,
 				066A517E1BC4C373000E606E /* FMDatabaseAdditions.m in Sources */,
 				066A519A1BC4C390000E606E /* FMDBList.swift in Sources */,
