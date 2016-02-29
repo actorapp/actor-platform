@@ -5,7 +5,7 @@ import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
 import im.actor.api.rpc._
-import im.actor.api.rpc.messaging.{ ApiServiceExPhoneCall, ApiServiceMessage }
+import im.actor.api.rpc.messaging.{ ApiServiceExPhoneCall, ApiServiceExPhoneMissed, ApiServiceMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.webrtc._
 import im.actor.concurrent.{ ActorStashing, FutureExt }
@@ -147,7 +147,10 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
     def end(): Unit = {
       val duration = ((System.currentTimeMillis() - startTime) / 1000).toInt
       val randomId = ThreadLocalRandom.current().nextLong()
-      val smsg = ApiServiceMessage("Call ended", Some(ApiServiceExPhoneCall(duration)))
+
+      val smsg =
+        if (isConversationStarted) ApiServiceMessage("Call ended", Some(ApiServiceExPhoneCall(duration)))
+        else ApiServiceMessage("Missed call", Some(ApiServiceExPhoneMissed))
 
       (for {
         _ ← if (peer.`type`.isPrivate) FutureExt.ftraverse(participants.keySet.toSeq)(userId ⇒ dialogExt.sendMessage(
