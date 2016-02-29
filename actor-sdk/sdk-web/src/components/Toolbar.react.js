@@ -84,11 +84,9 @@ class ToolbarSection extends Component {
               <span className="toolbar__peer__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialogInfo.name)}}/>
               <span className={favoriteClassName}>
                 {
-                  isExperimental
-                    ? isFavorite
-                        ? <i className="material-icons" onClick={this.handleUnfavorite}>star</i>
-                        : <i className="material-icons" onClick={this.handleFavorite}>star_border</i>
-                    : null
+                  isFavorite
+                    ? <i className="material-icons" onClick={this.handleUnfavorite}>star</i>
+                    : <i className="material-icons" onClick={this.handleFavorite}>star_border</i>
                 }
               </span>
             </header>

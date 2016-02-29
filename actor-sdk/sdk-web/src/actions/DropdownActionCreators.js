@@ -8,12 +8,22 @@ import ComposeActionCreators from '../actions/ComposeActionCreators';
 
 export default {
   openMessageActions(targetRect, message) {
-    dispatch(ActionTypes.DROPDOWN_SHOW, { targetRect, message });
+    dispatch(ActionTypes.MESSAGE_DROPDOWN_SHOW, { targetRect, message });
     ComposeActionCreators.toggleAutoFocus(false);
   },
 
-  hide() {
-    dispatch(ActionTypes.DROPDOWN_HIDE);
+  openRecentContextMenu(contextPos, peer) {
+    dispatch(ActionTypes.RECENT_CONTEXT_MENU_SHOW, { contextPos, peer });
+    ComposeActionCreators.toggleAutoFocus(false);
+  },
+
+  hideMessageDropdown() {
+    dispatch(ActionTypes.MESSAGE_DROPDOWN_HIDE);
+    ComposeActionCreators.toggleAutoFocus(true);
+  },
+
+  hideRecentContext() {
+    dispatch(ActionTypes.RECENT_CONTEXT_MENU_HIDE);
     ComposeActionCreators.toggleAutoFocus(true);
   }
 }

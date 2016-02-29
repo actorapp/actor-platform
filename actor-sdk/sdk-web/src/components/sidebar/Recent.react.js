@@ -157,7 +157,9 @@ class Recent extends Component {
             return (
               <li className="sidebar__list__item sidebar__list__item--empty">
                 <FormattedMessage id="sidebar.private.empty"/>
-                <button className="button button--outline button--wide hide"><FormattedMessage id="button.invite"/></button>
+                <button className="button button--outline button--wide hide">
+                  <FormattedMessage id="button.invite"/>
+                </button>
               </li>
             )
           default:
