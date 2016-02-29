@@ -194,10 +194,12 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             }
             peerConnection.onResetState();
 
-            PendingSession p = pendingSessions.remove(0);
-            if (p != null) {
-                for (Object o : p.getMessages()) {
-                    self().sendFirst(o, self());
+            if (pendingSessions.size() > 0) {
+                PendingSession p = pendingSessions.remove(0);
+                if (p != null) {
+                    for (Object o : p.getMessages()) {
+                        self().sendFirst(o, self());
+                    }
                 }
             }
         }
