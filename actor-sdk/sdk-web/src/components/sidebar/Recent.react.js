@@ -6,6 +6,9 @@ import { forEach, map, debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
+import { Link } from 'react-router';
+import { FormattedMessage } from 'react-intl';
+import  classnames from 'classnames';
 
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 import ContactActionCreators from '../../actions/ContactActionCreators';
@@ -107,7 +110,9 @@ class Recent extends Component {
     const { intl } = this.context;
 
     const recentGroups = map(dialogs, (dialogGroup, index) => {
+      const isEmpty = dialogGroup.shorts.length === 0;
       let groupTitle;
+
       switch (dialogGroup.key) {
         case 'groups':
           groupTitle = (
@@ -135,10 +140,41 @@ class Recent extends Component {
                                                                                key={index}
                                                                                type={dialogGroup.key}/>);
 
+      const groupClassname = classnames(`sidebar__list sidebar__list--${dialogGroup.key}`, {
+       'sidebar__list--empty': isEmpty
+      });
+
+      const getEmptyMessage = () => {
+        switch (dialogGroup.key) {
+          case 'groups':
+            return (
+              <li className="sidebar__list__item sidebar__list__item--empty">
+                <FormattedMessage id="sidebar.group.empty"/>
+                <div className="stem"/>
+              </li>
+            )
+          case 'privates':
+            return (
+              <li className="sidebar__list__item sidebar__list__item--empty">
+                <FormattedMessage id="sidebar.private.empty"/>
+                <button className="button button--outline button--wide hide">
+                  <FormattedMessage id="button.invite"/>
+                </button>
+              </li>
+            )
+          default:
+            return null;
+        }
+      }
+
       return (
-        <ul className={`sidebar__list sidebar__list--${dialogGroup.key}`} key={index}>
+        <ul className={groupClassname} key={index}>
           {groupTitle}
-          {groupList}
+          {
+            isEmpty
+              ? getEmptyMessage()
+              : groupList
+          }
         </ul>
       )
     });
@@ -153,7 +189,15 @@ class Recent extends Component {
             : null
         }
         <Scrollbar ref="container" onScroll={this.handleRecentScroll}>
-          <div>{recentGroups}</div>
+          <div>
+            {recentGroups}
+
+            <footer>
+              <Link to="/im/archive" className="button button--rised button--wide">
+                <FormattedMessage id="button.archive"/>
+              </Link>
+            </footer>
+          </div>
         </Scrollbar>
         {
           haveUnreadBelow
