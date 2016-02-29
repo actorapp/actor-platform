@@ -45,8 +45,8 @@ object WebrtcCallMessages {
   case object RejectCallAck
 
   case object GetInfo extends WebrtcCallMessage
-  final case class GetInfoAck(eventBusId: String, callerUserId: UserId, participantUserIds: Seq[UserId]) {
-    val tupled = (eventBusId, callerUserId, participantUserIds)
+  final case class GetInfoAck(eventBusId: String, peer: Peer, participantUserIds: Seq[UserId]) {
+    val tupled = (eventBusId, peer, participantUserIds)
   }
 }
 
@@ -99,6 +99,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
   private var clients = Map.empty[EventBus.Client, EventBus.DeviceId]
   private var participants = Map.empty[UserId, ApiCallMemberState.Value]
   private var sessions = Map.empty[Pair, SessionId]
+  private var isConversationStarted: Boolean = false
   private var peer = Peer()
   private var callerUserId: Int = _
 
@@ -197,24 +198,30 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
             cancelIncomingCallUpdates(userId)
 
             weakUpdExt.broadcastUserWeakUpdate(userId, UpdateCallHandled(id), excludeAuthIds = Set(authId))
-            devices.view filterNot (_._1 == device.deviceId) filter (_._2.isJoined) foreach {
-              case (_, pairDevice) ⇒
-                val sessionId =
-                  sessions.getOrElse(Pair(device.deviceId, pairDevice.deviceId), connect(device, pairDevice))
 
-                eventBusExt.post(
-                  EventBus.InternalClient(self),
-                  eventBusId,
-                  Seq(device.deviceId),
-                  ApiEnableConnection(pairDevice.deviceId, sessionId).toByteArray
-                )
-                eventBusExt.post(
-                  EventBus.InternalClient(self),
-                  eventBusId,
-                  Seq(pairDevice.deviceId),
-                  ApiEnableConnection(device.deviceId, sessionId).toByteArray
-                )
-            }
+            val connectedDevices =
+              devices.view filterNot (_._1 == device.deviceId) map (_._2) filter (_.isJoined) map {
+                case pairDevice ⇒
+                  val sessionId =
+                    sessions.getOrElse(Pair(device.deviceId, pairDevice.deviceId), connect(device, pairDevice))
+
+                  eventBusExt.post(
+                    EventBus.InternalClient(self),
+                    eventBusId,
+                    Seq(device.deviceId),
+                    ApiEnableConnection(pairDevice.deviceId, sessionId).toByteArray
+                  )
+                  eventBusExt.post(
+                    EventBus.InternalClient(self),
+                    eventBusId,
+                    Seq(pairDevice.deviceId),
+                    ApiEnableConnection(device.deviceId, sessionId).toByteArray
+                  )
+                  pairDevice
+              }
+
+            if (connectedDevices.nonEmpty)
+              this.isConversationStarted = true
 
             if (!isConnected(userId)) {
               putParticipant(userId, ApiCallMemberState.CONNECTING)
@@ -230,8 +237,15 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
         weakUpdExt.broadcastUserWeakUpdate(userId, UpdateCallHandled(id), excludeAuthIds = Set(authId))
         broadcastSyncedSet()
         sender() ! RejectCallAck
+
+        if ( // If caller changed his mind until anyone picked up
+        (!this.isConversationStarted && userId == callerUserId) ||
+          // If everyone rejected dialing, there will no any conversation ;(
+          (!this.isConversationStarted &&
+            devices.size == 1 &&
+            devices.headOption.exists(_._2.deviceId == callerDeviceId))) end()
       case GetInfo ⇒
-        sender() ! GetInfoAck(eventBusId, callerUserId, participants.keySet.toSeq)
+        sender() ! GetInfoAck(eventBusId, peer, participants.keySet.toSeq)
       case EventBus.Joined(_, client, deviceId) ⇒
         if (client.isExternal)
           eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(deviceId), ApiAdvertiseMaster.toByteArray)
@@ -282,7 +296,8 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
           broadcastSyncedSet()
         }
 
-        if (devices.get(deviceId).exists(_.isJoined) && devices.size == 1) end()
+        if ((!isConversationStarted && client.externalUserId.contains(callerUserId)) ||
+          (isConversationStarted && !devices.exists(_._2.isJoined))) end()
       case EventBus.Disposed(_) ⇒
         end()
         deleteSyncedSet()
@@ -304,7 +319,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
         } else log.error("Attempt to change participant state to the same value {}", state)
       case None ⇒
         log.debug("Adding participant {} with state {}", userId, state)
-        participants += userId -> state
+        participants += userId → state
     }
   }
 
