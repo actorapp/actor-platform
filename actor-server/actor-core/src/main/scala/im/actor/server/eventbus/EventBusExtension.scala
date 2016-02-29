@@ -19,6 +19,8 @@ object EventBus {
     def isInternal: Boolean
     def isExternal: Boolean
     def externalUserId: Option[UserId]
+    def externalAuthId: Option[AuthId]
+    def internalActorRef: Option[ActorRef]
   }
   final case class InternalClient(ref: ActorRef) extends Client {
     override def isInternal: Boolean = true
@@ -26,6 +28,10 @@ object EventBus {
     override def isExternal: Boolean = false
 
     override def externalUserId: Option[UserId] = None
+
+    override def externalAuthId: Option[AuthId] = None
+
+    override def internalActorRef = Some(ref)
   }
   final case class ExternalClient(userId: UserId, authId: AuthId) extends Client {
     override def isInternal: Boolean = false
@@ -33,6 +39,10 @@ object EventBus {
     override def isExternal: Boolean = true
 
     override def externalUserId: Option[UserId] = Some(userId)
+
+    override def externalAuthId: Option[AuthId] = Some(authId)
+
+    override def internalActorRef = None
   }
 
   final case class Message(id: String, client: Client, deviceId: Option[Long], message: Array[Byte])

@@ -35,11 +35,11 @@ final class WebrtcServiceImpl(implicit system: ActorSystem, sessionRegion: Sessi
       } yield Ok(ResponseGetCallInfo(peer.asStruct, Vector.empty, users.toVector, eventBusId))
     }
 
-  override def doHandleDoCall(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDoCall]] =
+  override def doHandleDoCall(peer: ApiOutPeer, timeout: Option[Long], clientData: ClientData): Future[HandlerResult[ResponseDoCall]] =
     authorized(clientData) { implicit client ⇒
       withOutPeerF(peer) {
         for {
-          (callId, eventBusId, callerDeviceId) ← webrtcExt.doCall(client.userId, client.authId, peer.asModel)
+          (callId, eventBusId, callerDeviceId) ← webrtcExt.doCall(client.userId, client.authId, peer.asModel, timeout)
         } yield Ok(ResponseDoCall(callId, eventBusId, callerDeviceId))
       }
     }
