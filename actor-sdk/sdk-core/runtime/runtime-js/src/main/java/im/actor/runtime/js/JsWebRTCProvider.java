@@ -4,9 +4,9 @@ import com.google.gwt.core.client.JsArray;
 
 import org.jetbrains.annotations.NotNull;
 
-import im.actor.core.js.modules.JsScheduller;
 import im.actor.runtime.WebRTCRuntime;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.js.threading.JsScheduller;
 import im.actor.runtime.js.webrtc.JsIceServer;
 import im.actor.runtime.js.webrtc.JsMediaStream;
 import im.actor.runtime.js.webrtc.JsPeerConnection;
