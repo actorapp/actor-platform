@@ -121,7 +121,7 @@ public class AAGroupViewController: AAContentTableController {
         
         // Calls
         if (ActorSDK.sharedActor().enableCalls) {
-            let members = (group.members.get() as! JavaUtilArrayList).size()
+            let members = (group.members.get() as! JavaUtilHashSet).size()
             if (members <= 20) { // Temporary limitation
                 section { (s) -> () in
                     s.action("CallsStartGroupAudio") { (r) -> () in
