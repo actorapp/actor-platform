@@ -61,7 +61,7 @@ class MessageActions extends Component {
   };
 
 
-  handleDropdownClose = () => DropdownActionCreators.hide();
+  handleDropdownClose = () => DropdownActionCreators.hideMessageDropdown();
 
   handleDelete = () => {
     const { peer, message } = this.props;
@@ -128,7 +128,6 @@ class MessageActions extends Component {
           </li>
         </ul>
       </div>
-
     );
   }
 }

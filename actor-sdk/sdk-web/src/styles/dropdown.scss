@@ -3,7 +3,7 @@
  */
 
 
-.dropdown-wrapper {
+.menu-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -72,6 +72,7 @@
       line-height: 22px;
 
       padding: 10px 16px 10px 50px;
+      overflow: hidden;
 
       cursor: pointer !important;
 
@@ -124,6 +125,11 @@
         background-color: transparent;
       }
     }
+
+    &--context {
+      right: -4px;
+      top: 6px;
+    }
   }
 
   &--mentions {
@@ -163,11 +169,12 @@
       &__item {
         line-height: 20px;
         font-size: 12px;
-        padding: 4px 16px 4px 40px;
+        padding: 4px 16px 4px 32px;
         color: rgba(black, .4);
         .icon {
           font-size: 18px;
           line-height: 20px;
+          margin-left: -24px;
         }
         &:hover {
           color: white;

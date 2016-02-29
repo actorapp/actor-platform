@@ -186,8 +186,8 @@ export const ActionTypes = keymirror({
   GROUP_ONLINE_CHANGE: null,
   USER_ONLINE_CHANGE: null,
 
-  DROPDOWN_SHOW: null,
-  DROPDOWN_HIDE: null,
+  MESSAGE_DROPDOWN_SHOW: null,
+  MESSAGE_DROPDOWN_HIDE: null,
 
   CALL_MODAL_OPEN: null,
   CALL_MODAL_HIDE: null,
@@ -213,7 +213,10 @@ export const ActionTypes = keymirror({
   FAVORITE_ADD_ERROR: null,
   FAVORITE_REMOVE: null,
   FAVORITE_REMOVE_SUCCESS: null,
-  FAVORITE_REMOVE_ERROR: null
+  FAVORITE_REMOVE_ERROR: null,
+
+  RECENT_CONTEXT_MENU_SHOW: null,
+  RECENT_CONTEXT_MENU_HIDE: null
 });
 
 export const EventTypes = {

@@ -3,6 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import { FormattedMessage } from 'react-intl';
@@ -12,8 +13,7 @@ import confirm from '../../utils/confirm';
 import { Link } from 'react-router';
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
-import FavoriteActionCreators from '../../actions/FavoriteActionCreators';
-import ArchiveActionCreators from '../../actions/ArchiveActionCreators';
+import DropdownActionCreators from '../../actions/DropdownActionCreators';
 
 import UserStore from '../../stores/UserStore';
 import ArchiveStore from '../../stores/ArchiveStore';
@@ -45,33 +45,25 @@ class RecentItem extends Component {
     };
   }
 
-  onClick = () => DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
+  componentDidMount() {
+    const recentNode = findDOMNode(this.refs.recentItem);
+    recentNode.addEventListener('contextmenu', this.openContextMenu);
+  }
 
-  // handleHideChat = (event) => {
-  //   event.stopPropagation();
-  //   event.preventDefault();
-  //   const { dialog } = this.props;
-  //   const { intl } = this.context;
-  //
-  //   if (UserStore.isContact(dialog.peer.peer.id)) {
-  //     DialogActionCreators.hideChat(dialog.peer.peer);
-  //   } else {
-  //     confirm(intl.messages['modal.confirm.nonContactHide.title'], {
-  //       description: <FormattedMessage id="modal.confirm.nonContactHide.body"
-  //                                      values={{name: dialog.peer.title}}/>
-  //     }).then(
-  //       () => DialogActionCreators.hideChat(dialog.peer.peer),
-  //       () => {}
-  //     );
-  //   }
-  // };
+  componentWillUnmount() {
+    const recentNode = findDOMNode(this.refs.recentItem);
+    recentNode.removeEventListener('contextmenu', this.openContextMenu);
+  }
 
-  handleAddToArchive = (event) => {
+  openContextMenu = (event) => {
     event.preventDefault();
-    event.stopPropagation();
     const { peer } = this.props.dialog.peer;
-    ArchiveActionCreators.archiveChat(peer);
-  };
+    const contextPos = {
+      x: event.pageX || event.clientX,
+      y: event.pageY || event.clientY
+    };
+    DropdownActionCreators.openRecentContextMenu(contextPos, peer);
+  }
 
   render() {
     const { dialog, type } = this.props;
@@ -83,7 +75,7 @@ class RecentItem extends Component {
     });
 
     return (
-      <li>
+      <li ref="recentItem">
         <Link to={`/im/${toPeer}`} className={recentClassName} activeClassName="sidebar__list__item--active">
 
           <AvatarItem image={dialog.peer.avatar}
@@ -100,11 +92,6 @@ class RecentItem extends Component {
           }
 
           <Stateful.Root currentState={archiveChatState}>
-            <Stateful.Pending>
-              <div className="archive" onClick={this.handleAddToArchive}>
-                <i className="icon material-icons">archive</i>
-              </div>
-            </Stateful.Pending>
             <Stateful.Processing>
               <div className="archive archive--in-progress">
                 <i className="icon material-icons spin">autorenew</i>
