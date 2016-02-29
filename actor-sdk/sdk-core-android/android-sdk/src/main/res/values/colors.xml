@@ -154,4 +154,6 @@
     <color name="conv_offline">@android:color/darker_gray</color>
     <color name="conv_online">#ff7ea8ef</color>
 
+    <color name="end_call">#d9513f</color>
+
 </resources>

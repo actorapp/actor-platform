@@ -25,4 +25,7 @@
     <dimen name="keyboard_height">250dp</dimen>
     <dimen name="share_btn_size">60dp</dimen>
 
+    <dimen name="call_btn_size">40dp</dimen>
+    <dimen name="end_call_btn_size">70dp</dimen>
+
 </resources>
