@@ -2,12 +2,15 @@ package im.actor.core.modules.calls.peers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
+import im.actor.core.api.ApiICEServer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.messages.RTCAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCAnswer;
 import im.actor.core.modules.calls.peers.messages.RTCCandidate;
 import im.actor.core.modules.calls.peers.messages.RTCCloseSession;
+import im.actor.core.modules.calls.peers.messages.RTCMasterAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
@@ -32,6 +35,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     private PeerState state = PeerState.PENDING;
     private PeerConnectionInt peerConnection;
     private PeerSettings theirSettings;
+    private List<ApiICEServer> iceServers;
     private WebRTCMediaStream ownMediaStream;
     private boolean isEnabled = false;
     private boolean isConnected = false;
@@ -53,16 +57,24 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     //
     // Stages:
     // 0. Notify about new peer node
-    // 1. Waiting for advertise of a node
-    // 2. If both peers supports pre connection, create new connection
-    // 3. Enabling Own and Their peers
-    // 4. Setting own media stream
-    // 5. Creation of peer connection
+    // 1. Waiting for master advertise
+    // 2. Waiting for advertise of a node
+    // 3. If both peers supports pre connection, create new connection
+    // 4. Enabling Own and Their peers
+    // 5. Setting own media stream
+    // 6. Creation of peer connection
     //
 
     @Override
     public void preStart() {
         callback.onPeerStateChanged(deviceId, state);
+    }
+
+    public void onMasterAdvertised(List<ApiICEServer> iceServers) {
+        if (this.iceServers == null) {
+            this.iceServers = iceServers;
+            reconfigurePeerConnectionIfNeeded();
+        }
     }
 
     public void onAdvertised(PeerSettings settings) {
@@ -97,7 +109,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
     }
 
     private void makePeerConnectionIfNeeded() {
-        if (peerConnection != null || theirSettings == null || ownMediaStream == null) {
+        if (peerConnection != null || theirSettings == null || ownMediaStream == null || this.iceServers == null) {
             return;
         }
 
@@ -105,7 +117,7 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
             state = PeerState.CONNECTING;
             callback.onPeerStateChanged(deviceId, state);
             peerConnection = new PeerConnectionInt(
-                    ownSettings, theirSettings,
+                    iceServers, ownSettings, theirSettings,
                     ownMediaStream, this, context(), self(), "connection");
 
             unstashAll();
@@ -234,6 +246,9 @@ public class PeerNodeActor extends ModuleActor implements PeerConnectionCallback
         } else if (message instanceof AddOwnStream) {
             AddOwnStream ownStream = (AddOwnStream) message;
             addOwnStream(ownStream.getMediaStream());
+        } else if (message instanceof RTCMasterAdvertised) {
+            RTCMasterAdvertised advertisedMaster = (RTCMasterAdvertised) message;
+            onMasterAdvertised(advertisedMaster.getIceServers());
         } else if (message instanceof RTCNeedOffer) {
             RTCNeedOffer needOffer = (RTCNeedOffer) message;
             if (peerConnection != null) {

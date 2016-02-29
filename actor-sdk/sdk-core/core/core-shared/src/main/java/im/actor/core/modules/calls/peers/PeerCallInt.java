@@ -1,10 +1,15 @@
 package im.actor.core.modules.calls.peers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import im.actor.core.api.ApiICEServer;
 import im.actor.core.modules.calls.peers.messages.RTCAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCAnswer;
 import im.actor.core.modules.calls.peers.messages.RTCCandidate;
 import im.actor.core.modules.calls.peers.messages.RTCCloseSession;
 import im.actor.core.modules.calls.peers.messages.RTCDispose;
+import im.actor.core.modules.calls.peers.messages.RTCMasterAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
@@ -17,6 +22,10 @@ public class PeerCallInt extends ActorInterface {
         super(dest);
     }
 
+
+    public void onConfigurationReady(List<ApiICEServer> iceServers) {
+        send(new RTCMasterAdvertised(new ArrayList<>(iceServers)));
+    }
 
     public void onTheirStarted(long deviceId) {
         send(new RTCStart(deviceId));

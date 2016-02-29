@@ -9,12 +9,8 @@ public class CallBusInt extends ActorInterface {
         super(dest);
     }
 
-    public void startSlaveBus(String busId) {
+    public void joinBus(String busId) {
         send(new CallBusActor.JoinBus(busId));
-    }
-
-    public void startMaster() {
-        send(new CallBusActor.CreateBus());
     }
 
     public void changeMute(boolean isMuted) {

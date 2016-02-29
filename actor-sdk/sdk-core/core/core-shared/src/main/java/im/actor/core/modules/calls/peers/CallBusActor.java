@@ -183,6 +183,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
             ApiCloseSession closeSession = (ApiCloseSession) signal;
             peerCall.closeSession(closeSession.getDevice(), closeSession.getSessionId());
         } else if (signal instanceof ApiAdvertiseMaster) {
+            ApiAdvertiseMaster advertiseMaster = (ApiAdvertiseMaster) signal;
             if (isMasterReady) {
                 return;
             }
@@ -196,9 +197,9 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
             sendSignal(masterDeviceId, new ApiAdvertiseSelf(selfSettings.toApi()));
 
             //
-            // Automatically start master device
+            // Sending Configuration to Peer Call
             //
-            peerCall.onTheirStarted(masterDeviceId);
+            peerCall.onConfigurationReady(advertiseMaster.getServer());
         }
     }
 
@@ -225,8 +226,6 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     public void onReceive(Object message) {
         if (message instanceof JoinBus) {
             joinBus(((JoinBus) message).getBusId());
-        } else if (message instanceof CreateBus) {
-            createBus();
         } else if (message instanceof Mute) {
             onChangeMute(((Mute) message).isMuted());
         } else if (message instanceof OnAnswered) {
@@ -247,10 +246,6 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         public String getBusId() {
             return busId;
         }
-    }
-
-    public static class CreateBus {
-
     }
 
     public static class Mute {

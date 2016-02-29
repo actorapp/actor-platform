@@ -23,11 +23,9 @@ public class RequestDoCall extends Request<ResponseDoCall> {
     }
 
     private ApiOutPeer peer;
-    private String eventBusId;
 
-    public RequestDoCall(@NotNull ApiOutPeer peer, @NotNull String eventBusId) {
+    public RequestDoCall(@NotNull ApiOutPeer peer) {
         this.peer = peer;
-        this.eventBusId = eventBusId;
     }
 
     public RequestDoCall() {
@@ -39,15 +37,9 @@ public class RequestDoCall extends Request<ResponseDoCall> {
         return this.peer;
     }
 
-    @NotNull
-    public String getEventBusId() {
-        return this.eventBusId;
-    }
-
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiOutPeer());
-        this.eventBusId = values.getString(2);
     }
 
     @Override
@@ -56,17 +48,12 @@ public class RequestDoCall extends Request<ResponseDoCall> {
             throw new IOException();
         }
         writer.writeObject(1, this.peer);
-        if (this.eventBusId == null) {
-            throw new IOException();
-        }
-        writer.writeString(2, this.eventBusId);
     }
 
     @Override
     public String toString() {
         String res = "rpc DoCall{";
         res += "peer=" + this.peer;
-        res += ", eventBusId=" + this.eventBusId;
         res += "}";
         return res;
     }
