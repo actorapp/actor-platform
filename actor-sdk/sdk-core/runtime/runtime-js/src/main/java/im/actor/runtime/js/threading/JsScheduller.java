@@ -1,4 +1,4 @@
-package im.actor.core.js.modules;
+package im.actor.runtime.js.threading;
 
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
