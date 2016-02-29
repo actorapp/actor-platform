@@ -8,7 +8,7 @@ import scala.collection.JavaConversions._
 
 import akka.actor.ActorSystem
 import akka.stream.Materializer
-import com.github.kxbmap.configs._
+import com.github.kxbmap.configs.syntax._
 import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api._
 
@@ -39,7 +39,7 @@ object Endpoint {
       typ ← config.get[Either[Throwable, String]]("type").right.flatMap(EndpointType.fromString).right
       host ← config.get[Either[Throwable, String]]("interface").right
       port ← config.get[Either[Throwable, Int]]("port").right
-      keystore ← Right(config.opt[String]("keystore")).right
+      keystore ← Right(config.getOpt[String]("keystore")).right
     } yield Endpoint(
       typ, host, port, keystore
     )

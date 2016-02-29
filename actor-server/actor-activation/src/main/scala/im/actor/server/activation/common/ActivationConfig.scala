@@ -1,6 +1,6 @@
 package im.actor.server.activation.common
 
-import com.github.kxbmap.configs._
+import com.github.kxbmap.configs.syntax._
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import scala.concurrent.duration._

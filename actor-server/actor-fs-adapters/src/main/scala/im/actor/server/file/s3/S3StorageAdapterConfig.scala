@@ -1,6 +1,6 @@
 package im.actor.server.file.s3
 
-import com.github.kxbmap.configs._
+import com.github.kxbmap.configs.syntax._
 import com.typesafe.config.{ ConfigFactory, Config }
 
 import scala.util.Try
