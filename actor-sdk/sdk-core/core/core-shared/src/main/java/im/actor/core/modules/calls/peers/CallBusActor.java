@@ -226,6 +226,9 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     public void onReceive(Object message) {
         if (message instanceof JoinBus) {
             joinBus(((JoinBus) message).getBusId());
+        } else if (message instanceof JoinMasterBus) {
+            JoinMasterBus joinMasterBus = (JoinMasterBus) message;
+            connectBus(joinMasterBus.getBusId(), joinMasterBus.getDeviceId(), true);
         } else if (message instanceof Mute) {
             onChangeMute(((Mute) message).isMuted());
         } else if (message instanceof OnAnswered) {
@@ -245,6 +248,25 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
         public String getBusId() {
             return busId;
+        }
+    }
+
+    public static class JoinMasterBus {
+
+        private String busId;
+        private long deviceId;
+
+        public JoinMasterBus(String busId, long deviceId) {
+            this.busId = busId;
+            this.deviceId = deviceId;
+        }
+
+        public String getBusId() {
+            return busId;
+        }
+
+        public long getDeviceId() {
+            return deviceId;
         }
     }
 
