@@ -281,7 +281,8 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
           putParticipant(userId, ApiCallMemberState.ENDED)
           broadcastSyncedSet()
         }
-        if (devices.size == 1) end()
+
+        if (devices.get(deviceId).exists(_.isJoined) && devices.size == 1) end()
       case EventBus.Disposed(_) ⇒
         end()
         deleteSyncedSet()
