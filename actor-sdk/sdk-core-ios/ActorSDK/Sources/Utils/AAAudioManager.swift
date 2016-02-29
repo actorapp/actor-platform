@@ -66,6 +66,16 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
             print("Unable to start Ringtone: \(error.description)")
             self.ringtonePlayer = nil
         }
+        vibrate()
+    }
+    
+    private func vibrate() {
+        AudioServicesPlaySystemSound(1352)
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_SEC)), dispatch_get_main_queue()) { () -> Void in
+            if self.ringtonePlaying {
+                self.vibrate()
+            }
+        }
     }
     
     private func ringtoneEnd() {
