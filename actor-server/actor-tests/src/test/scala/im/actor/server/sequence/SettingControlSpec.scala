@@ -3,7 +3,7 @@ package im.actor.server.sequence
 import akka.actor.{ Props, Actor }
 import akka.pattern.ask
 import im.actor.api.rpc.PeersImplicits
-import im.actor.concurrent.ActorStashing
+import im.actor.concurrent.StashingActor
 import im.actor.server.db.DbExtension
 import im.actor.server.model.Peer
 import im.actor.server.model.configs.Parameter
@@ -45,7 +45,7 @@ class SettingControlSpec extends BaseAppSuite
     def props(userId: Int) = Props(new SettingControlWrapper(userId))
   }
 
-  private final class SettingControlWrapper(userId: Int) extends Actor with ActorStashing {
+  private final class SettingControlWrapper(userId: Int) extends Actor with StashingActor {
 
     private val settingsControl = context.actorOf(SettingsControl.props(userId), "test-settings")
     private var settings: AllNotificationSettings = _
