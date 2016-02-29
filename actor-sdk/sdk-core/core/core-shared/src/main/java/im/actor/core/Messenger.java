@@ -2013,7 +2013,19 @@ public class Messenger {
      */
     @ObjectiveCName("rawRequestCommandWithService:withMethod:WithParams:")
     public Command<ResponseRawRequest> rawRequestCommand(String service, String method, ApiRawValue params) {
-        return modules.getExternalModule().rawRequest(service, method, params);
+        return modules.getExternalModule().rawRequestCommand(service, method, params);
+    }
+
+    /**
+     * Command for raw api request
+     *
+     * @param service service name
+     * @param method  method name
+     * @param params  request params
+     */
+    @ObjectiveCName("rawRequestWithService:withMethod:WithParams:")
+    public void rawRequest(String service, String method, ApiRawValue params) {
+        modules.getExternalModule().rawRequest(service, method, params);
     }
 
     /**
