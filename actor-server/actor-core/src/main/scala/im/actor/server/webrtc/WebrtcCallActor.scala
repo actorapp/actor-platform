@@ -35,7 +35,7 @@ object WebrtcCallErrors {
 private[webrtc] sealed trait WebrtcCallMessage
 
 private[webrtc] object WebrtcCallMessages {
-  final case class StartCall(callerUserId: UserId, callerAuthId: AuthId, peer: Peer) extends WebrtcCallMessage
+  final case class StartCall(callerUserId: UserId, callerAuthId: AuthId, peer: Peer, timeout: Option[Long]) extends WebrtcCallMessage
   final case class StartCallAck(eventBusId: String, callerDeviceId: EventBus.DeviceId)
 
   final case class JoinCall(calleeUserId: UserId, authId: AuthId) extends WebrtcCallMessage
@@ -108,6 +108,8 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
 
   def receive = waitForStart
 
+  // FIXME: set receive timeout
+
   def waitForStart: Receive = {
     case s: StartCall ⇒
       case class Res(eventBusId: String, callees: Seq[Int], callerDeviceId: EventBus.DeviceId)
@@ -117,7 +119,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
       (for {
         callees ← fetchParticipants(callerUserId, peer) map (_ filterNot (_ == callerUserId))
         eventBusId ← eventBusExt.create(eventBusClient, timeout = None, isOwned = Some(true)) map (_._1)
-        callerDeviceId ← eventBusExt.join(EventBus.ExternalClient(s.callerUserId, s.callerAuthId), eventBusId, Some(16000))
+        callerDeviceId ← eventBusExt.join(EventBus.ExternalClient(s.callerUserId, s.callerAuthId), eventBusId, s.timeout)
         _ ← scheduleIncomingCallUpdates(callees)
       } yield Res(eventBusId, callees, callerDeviceId)) pipeTo self
 

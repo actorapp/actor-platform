@@ -12845,6 +12845,17 @@
                 },
                 "id": 1,
                 "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "msec"
+                  }
+                },
+                "id": 2,
+                "name": "timeout"
               }
             ]
           }
