@@ -58,7 +58,7 @@ private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) e
 
   private def archive(): Unit = {
     for {
-      dialogs ← dialogExt.getGroupedDialogs(userId) map (_ flatMap (_.dialogs))
+      dialogs ← dialogExt.getGroupedDialogs(userId) map (_ filterNot (_.key == DialogGroups.Favourites.key) flatMap (_.dialogs))
     } yield {
       val toArchive = dialogs filter (d ⇒ d.counter == 0 && d.date <= Instant.now().minus(Period.ofDays(5)).toEpochMilli)
       for (dialog ← toArchive) {
