@@ -2016,6 +2016,18 @@ public class Messenger {
         return modules.getExternalModule().rawRequest(service, method, params);
     }
 
+    /**
+     * Command for persistent raw api requests
+     *
+     * @param service service name
+     * @param method  method name
+     * @param params  request params
+     */
+    @ObjectiveCName("rawPersistentRequestWithService:withMethod:WithParams:")
+    public void rawPersistentRequest(String service, String method, ApiRawValue params) {
+        modules.getExternalModule().rawPersistentRequest(service, method, params);
+    }
+
 
     //////////////////////////////////////
     //        Tools and Tech
