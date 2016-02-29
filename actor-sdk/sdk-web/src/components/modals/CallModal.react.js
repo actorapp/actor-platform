@@ -59,7 +59,7 @@ class CallModal extends Component {
 
   render() {
     const { isOpen, isOutgoing, callPeer, callMembers, callState } = this.state;
-    const peerInfo = callPeer ? ( callPeer.type == "user" ? UserStore.getUser(callPeer.id) : null) : null;
+    const peerInfo = callPeer ? ( callPeer.type == 'user' ? UserStore.getUser(callPeer.id) : null) : null;
 
     const modalStyles = {
       content : {
