@@ -10,7 +10,7 @@ import classnames from 'classnames';
 import { lightbox } from '../../utils/ImageUtils';
 
 import ActorClient from '../../utils/ActorClient';
-import confirm from '../../utils/confirm'
+import confirm from '../../utils/confirm';
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
 
 import ContactActionCreators from '../../actions/ContactActionCreators';
