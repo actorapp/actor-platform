@@ -126,6 +126,7 @@ public class AvatarView extends SimpleDraweeView {
             @Override
             public void onDownloaded(FileSystemReference reference) {
 
+
                 ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(new File(reference.getDescriptor())))
                         .setResizeOptions(new ResizeOptions(size, size))
                         .build();

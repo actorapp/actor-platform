@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -62,6 +64,7 @@ import im.actor.sdk.view.avatar.AvatarView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class CallFragment extends BaseFragment {
@@ -85,6 +88,8 @@ public class CallFragment extends BaseFragment {
     private AudioManager audioManager;
     private AvatarView avatarView;
     private ListView membersList;
+    private CallAvatarLayerAnimator animator;
+    private View[] avatarLayers;
 
     public CallFragment() {
 
@@ -94,7 +99,11 @@ public class CallFragment extends BaseFragment {
     public CallFragment(long callId, boolean incoming) {
         this.callId = callId;
         this.call = messenger().getCall(callId);
-        this.peer = call.getPeer();
+        if(call == null){
+            this.peer = Peer.user(myUid());
+        }else{
+            this.peer = call.getPeer();
+        }
         this.incoming = incoming;
     }
 
@@ -104,11 +113,31 @@ public class CallFragment extends BaseFragment {
                              Bundle savedInstanceState) {
 
 
-
         manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
         FrameLayout cont = (FrameLayout) inflater.inflate(R.layout.fragment_call, container, false);
         v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+
+//        animator = new CallAvatarLayerAnimator(cont.findViewById(R.id.layer),
+//                cont.findViewById(R.id.layer1),
+//                cont.findViewById(R.id.layer2),
+//                cont.findViewById(R.id.layer3),
+//                cont.findViewById(R.id.layer4)
+//                );
+        
+        avatarLayers = new View[]{
+                cont.findViewById(R.id.layer),
+                cont.findViewById(R.id.layer1),
+                cont.findViewById(R.id.layer2),
+                cont.findViewById(R.id.layer3),
+                cont.findViewById(R.id.layer4)
+        };
+
+        for (int i = 0; i<avatarLayers.length; i++){
+            View layer = avatarLayers[i];
+            ((GradientDrawable)layer.getBackground()).setColor(Color.WHITE);
+            ((GradientDrawable)layer.getBackground()).setAlpha(150);
+        }
 
         answerContainer = cont.findViewById(R.id.answer_container);
         ImageButton answer = (ImageButton) cont.findViewById(R.id.answer);
@@ -140,7 +169,7 @@ public class CallFragment extends BaseFragment {
         avatarView.init(Screen.dp(130), 50);
 
         TextView nameTV = (TextView) cont.findViewById(R.id.name);
-        nameTV.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        nameTV.setTextColor(ActorSDK.sharedActor().style.getProfileTitleColor());
         if(peer.getPeerType() == PeerType.PRIVATE){
             UserVM user = users().get(peer.getPeerId());
             avatarView.bind(user);
@@ -155,8 +184,10 @@ public class CallFragment extends BaseFragment {
         // Members list
         //
         membersList  = (ListView) cont.findViewById(R.id.members_list);
-        CallMembersAdapter membersAdapter = new CallMembersAdapter(getActivity(), call.getMembers());
-        membersList.setAdapter(membersAdapter);
+        if(call!=null){
+            CallMembersAdapter membersAdapter = new CallMembersAdapter(getActivity(), call.getMembers());
+            membersList.setAdapter(membersAdapter);
+        }
 
         //
         // Members list/ avatar switch
@@ -168,7 +199,7 @@ public class CallFragment extends BaseFragment {
             }
         };
         avatarView.setOnClickListener(listener);
-        cont.findViewById(R.id.background).setOnClickListener(listener);
+//        cont.findViewById(R.id.background).setOnClickListener(listener);
 
         membersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -181,9 +212,9 @@ public class CallFragment extends BaseFragment {
 
 
         statusTV = (TextView) cont.findViewById(R.id.status);
-        statusTV.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+//        statusTV.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
 
-        //
+
         // Check permission
         //
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
@@ -198,83 +229,95 @@ public class CallFragment extends BaseFragment {
 
         audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         final TintImageView speaker = (TintImageView) cont.findViewById(R.id.speaker);
-        speaker.setResource(R.drawable.ic_volume_up_white_36dp);
-        speaker.setTint(getResources().getColor(R.color.primary));
-        speaker.setOnClickListener(new View.OnClickListener() {
+        speaker.setResource(R.drawable.ic_volume_up_white_24dp);
+        final TextView speakerTV = (TextView) cont.findViewById(R.id.speaker_tv);
+        cont.findViewById(R.id.speaker_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               speakerOn = !speakerOn;
-               audioManager.setSpeakerphoneOn(speakerOn);
-                if(speakerOn){
-                    speaker.setBackgroundResource(R.drawable.call_action_background_active);
+                speakerOn = !speakerOn;
+                audioManager.setSpeakerphoneOn(speakerOn);
+                if (speakerOn) {
                     speaker.setTint(Color.WHITE);
-                }else{
-                    speaker.setBackgroundResource(R.drawable.call_action_background);
-                    speaker.setTint(getResources().getColor(R.color.primary));
+                    speakerTV.setTextColor(Color.WHITE);
+                } else {
+                    speaker.setTint(getResources().getColor(R.color.picker_grey));
+                    speakerTV.setTextColor(getResources().getColor(R.color.picker_grey));
                 }
             }
         });
 
         final TintImageView muteCall = (TintImageView) cont.findViewById(R.id.mute);
-        muteCall.setResource(R.drawable.ic_mic_off_white_36dp);
-        muteCall.setOnClickListener(new View.OnClickListener() {
+        muteCall.setResource(R.drawable.ic_mic_off_white_24dp);
+        cont.findViewById(R.id.mute_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 messenger().toggleCallMute(callId);
             }
         });
 
+        final TintImageView video = (TintImageView) cont.findViewById(R.id.video);
+        video.setResource(R.drawable.ic_videocam_white_24dp);
+
+        final TintImageView back = (TintImageView) cont.findViewById(R.id.back);
+        back.setResource(R.drawable.ic_message_white_24dp);
+
+        final TintImageView add = (TintImageView) cont.findViewById(R.id.add);
+        add.setResource(R.drawable.ic_person_add_white_24dp);
 
 
-        call.getIsMuted().subscribe(new ValueChangedListener<Boolean>() {
-            @Override
-            public void onChanged(Boolean val, Value<Boolean> valueModel) {
-                if(val){
-                    muteCall.setBackgroundResource(R.drawable.call_action_background_active);
-                    muteCall.setTint(Color.WHITE);
-                }else{
-                    muteCall.setBackgroundResource(R.drawable.call_action_background);
-                    muteCall.setTint(getResources().getColor(R.color.primary));
-                }
-            }
-        });
-
-        call.getState().subscribe(new ValueChangedListener<CallState>() {
-            @Override
-            public void onChanged(CallState val, Value<CallState> valueModel) {
-                if(currentState!=val){
-                    currentState = val;
-                    switch (val){
-
-                        case RINGING:
-                            if(call.isOutgoing()){
-                                statusTV.setText(R.string.call_outgoing);
-                            }else{
-                                statusTV.setText(R.string.call_incoming);
-                                initIncoming();
-                            }
-                            enableWakeLock();
-                            break;
-
-                        case CONNECTING:
-                            statusTV.setText(R.string.call_connecting);
-                            break;
-
-                        case IN_PROGRESS:
-                            onConnected();
-                            startTimer();
-                            break;
-
-                        case ENDED:
-                        statusTV.setText(R.string.call_ended);
-                        onCallEnd();
-                        break;
-
+        if(call!=null){
+            call.getIsMuted().subscribe(new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    if(val){
+                        muteCall.setBackgroundResource(R.drawable.call_action_background_active);
+                        muteCall.setTint(Color.WHITE);
+                    }else{
+                        muteCall.setBackgroundResource(R.drawable.call_action_background);
+                        muteCall.setTint(getResources().getColor(R.color.primary));
                     }
                 }
+            });
 
-            }
-        }, true);
+            call.getState().subscribe(new ValueChangedListener<CallState>() {
+                @Override
+                public void onChanged(CallState val, Value<CallState> valueModel) {
+                    if(currentState!=val){
+                        currentState = val;
+                        switch (val){
+
+                            case RINGING:
+                                if(call.isOutgoing()){
+                                    statusTV.setText(R.string.call_outgoing);
+                                }else{
+                                    statusTV.setText(R.string.call_incoming);
+                                    initIncoming();
+                                }
+                                enableWakeLock();
+                                break;
+
+                            case CONNECTING:
+                                statusTV.setText(R.string.call_connecting);
+                                break;
+
+                            case IN_PROGRESS:
+                                onConnected();
+                                startTimer();
+                                break;
+
+                            case ENDED:
+                                statusTV.setText(R.string.call_ended);
+                                onCallEnd();
+                                break;
+
+                        }
+                    }
+
+                }
+            }, true);
+        }
+
+
 
 
         return cont;
@@ -440,7 +483,7 @@ public class CallFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if(call.getState().get()!=CallState.ENDED){
+        if(call!=null && call.getState().get()!=CallState.ENDED){
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity());
             builder.setAutoCancel(true);
             builder.setSmallIcon(R.drawable.ic_app_notify);
@@ -467,6 +510,8 @@ public class CallFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         manager.cancel(NOTIFICATION_ID);
+//        animator.popAnimation(true);
+
     }
 
     class CallMembersAdapter extends HolderAdapter<CallMember>{

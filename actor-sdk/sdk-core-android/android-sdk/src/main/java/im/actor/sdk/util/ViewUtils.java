@@ -186,13 +186,21 @@ public class ViewUtils {
         elevateView(view, true);
     }
 
+
+    public static void elevateView(final View view, float scale) {
+        elevateView(view, true, scale);
+    }
+
     public static void elevateView(final View view, boolean isAnimated) {
+        elevateView(view, isAnimated, 1.1f);
+    }
+    public static void elevateView(final View view, boolean isAnimated, float scale) {
         if (view == null) {
             return;
         }
 
 
-        ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation.RELATIVE_TO_SELF, (float) 0.5, Animation.RELATIVE_TO_SELF, (float) 0.5);
+        ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, scale, 1.0f, scale, Animation.RELATIVE_TO_SELF, (float) 0.5, Animation.RELATIVE_TO_SELF, (float) 0.5);
         scaleAnimation.setDuration(isAnimated ? 150 : 0);
         scaleAnimation.setInterpolator(MaterialInterpolator.getInstance());
         scaleAnimation.setFillAfter(true);
