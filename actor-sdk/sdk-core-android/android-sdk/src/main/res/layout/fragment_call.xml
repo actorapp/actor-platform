@@ -4,16 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <im.actor.sdk.controllers.conversation.view.ChatBackgroundView
-        android:id="@+id/background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:weightSum="2"
+        android:background="@android:color/black"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_marginTop="40dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:text="Ringing..."/>
 
         <RelativeLayout
 
@@ -23,12 +31,55 @@
             android:orientation="vertical"
             android:layout_weight="1">
 
+            <View
+                android:id="@+id/layer"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/call_avatar_background"/>
+
+            <View
+                android:id="@+id/layer1"
+                android:layout_width="102dp"
+                android:layout_height="102dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/call_avatar_background"/>
+
+            <View
+                android:id="@+id/layer2"
+                android:layout_width="122dp"
+                android:layout_height="122dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/call_avatar_background"/>
+
+            <View
+                android:id="@+id/layer3"
+                android:layout_width="142dp"
+                android:layout_height="142dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/call_avatar_background"/>
+
+            <View
+                android:id="@+id/layer4"
+                android:layout_width="162dp"
+                android:layout_height="162dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/call_avatar_background"/>
+
+
             <im.actor.sdk.view.avatar.AvatarView
                 android:id="@+id/avatar"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"/>
+
+
 
             <ListView
                 android:paddingLeft="20dp"
@@ -41,15 +92,18 @@
                 android:layout_height="130dp"/>
 
             <TextView
-                android:gravity="center"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/avatar"
+                android:textColor="@android:color/white"
+                android:paddingTop="5dp"
+                android:gravity="center_horizontal|bottom"
+
+                android:fontFamily="sans-serif-thin"
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:lines="1"
-                android:textSize="26sp"
-                android:layout_alignParentBottom="true" />
+                android:textSize="32sp"
+                android:layout_below="@+id/layer4"
+                android:layout_centerHorizontal="true" />
 
 
 
@@ -104,64 +158,162 @@
 
             </LinearLayout>
 
-            <ImageButton
-                android:visibility="visible"
-                android:layout_gravity="bottom|center_horizontal"
-                android:id="@+id/end_call"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_call_end_white_36dp"
-                android:background="@drawable/end_call_background"
-                android:layout_marginBottom="20dp"/>
-
-            <TextView
-                android:layout_gravity="center_horizontal|top"
-                android:id="@+id/status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp" />
-
-            <LinearLayout
+            <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                android:layout_gravity="center">
-
-
-                <FrameLayout
+                android:layout_height="match_parent"
+                android:stretchColumns="*">
+                <TableRow
                     android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
-                    <im.actor.sdk.view.TintImageView
-                        android:id="@+id/speaker"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_height="60dp"
-                        android:scaleType="centerInside"
-                        android:layout_width="60dp"
-                        android:background="@drawable/call_action_background"
-                        />
-                </FrameLayout>
+                    android:gravity="center">
+                    <LinearLayout
+                        android:id="@+id/mute_btn"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/mute"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_height="@dimen/call_btn_size"
+                            android:scaleType="centerInside"
+                            android:layout_width="@dimen/call_btn_size"
+                            
+                            />
+                        <TextView
+                            android:id="@+id/mute_tv"
+                            android:layout_gravity="center"
+                            android:textColor="@android:color/white"
+                            android:text="mute"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
 
-                <FrameLayout
+                    <LinearLayout
+                        android:id="@+id/speaker_btn"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/speaker"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_height="@dimen/call_btn_size"
+                            android:scaleType="centerInside"
+                            android:layout_width="@dimen/call_btn_size"
+                            
+                            />
+                        <TextView
+                            android:id="@+id/speaker_tv"
+                            android:layout_gravity="center"
+                            android:textColor="@android:color/white"
+                            android:text="speaker"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/video_btn"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/video"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_height="@dimen/call_btn_size"
+                            android:scaleType="centerInside"
+                            android:layout_width="@dimen/call_btn_size"
+                            
+                            />
+                        <TextView
+                            android:id="@+id/video_tv"
+                            android:layout_gravity="center"
+                            android:textColor="@android:color/white"
+                            android:text="video"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                </TableRow>
+
+                <TableRow
                     android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
-                    <im.actor.sdk.view.TintImageView
-                        android:id="@+id/mute"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_height="60dp"
-                        android:scaleType="centerInside"
-                        android:layout_width="60dp"
-                        android:background="@drawable/call_action_background"
-                        />
-                </FrameLayout>
+                    android:gravity="center">
 
-            </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/back_btn"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/back"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_height="@dimen/call_btn_size"
+                            android:scaleType="centerInside"
+                            android:layout_width="@dimen/call_btn_size"
+                            
+                            />
+                        <TextView
+                            android:id="@+id/back_tv"
+                            android:layout_gravity="center"
+                            android:textColor="@android:color/white"
+                            android:text="messages"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <ImageButton
+                            android:layout_gravity="center"
+                            android:visibility="visible"
+                            android:id="@+id/end_call"
+                            android:layout_width="@dimen/end_call_btn_size"
+                            android:layout_height="@dimen/end_call_btn_size"
+                            android:src="@drawable/ic_call_end_white_36dp"
+                            android:background="@drawable/end_call_background"/>
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:id="@+id/add_user_btn"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <im.actor.sdk.view.TintImageView
+                            android:id="@+id/add"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_height="@dimen/call_btn_size"
+                            android:scaleType="centerInside"
+                            android:layout_width="@dimen/call_btn_size"
+                            
+                            />
+                        <TextView
+                            android:id="@+id/add_user_tv"
+                            android:layout_gravity="center"
+                            android:textColor="@android:color/white"
+                            android:text="add user"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+
+                </TableRow>
+            </TableLayout>
+
+
+
+
 
         </FrameLayout>
-
-
 
     </LinearLayout>
 

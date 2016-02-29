@@ -58,6 +58,14 @@ public class BaseFragment extends BinderCompatFragment {
         ViewUtils.elevateView(view);
     }
 
+    public void elevateView(View view, float scale) {
+        ViewUtils.elevateView(view, scale);
+    }
+
+    public void elevateView(View view, boolean isAnamated, float scale) {
+        ViewUtils.elevateView(view, isAnamated, scale);
+    }
+
     public void elevateView(final View view, boolean isAnimated) {
         ViewUtils.elevateView(view, isAnimated);
     }

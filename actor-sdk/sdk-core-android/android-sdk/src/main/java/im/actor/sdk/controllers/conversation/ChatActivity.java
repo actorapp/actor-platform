@@ -59,6 +59,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.calls.CallActivity;
 import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
 import im.actor.sdk.controllers.conversation.messages.AudioHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
@@ -1102,6 +1103,13 @@ public class ChatActivity extends ActorEditTextActivity {
                     startCall();
                 }
             }
+
+//            Context context = ActorSDK.sharedActor().getMessenger().getContext();
+//            Intent callIntent = new Intent(context, CallActivity.class);
+//            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+//            callIntent.putExtra("callId", 0);
+//            context.startActivity(callIntent);
+//            context.startActivity(callIntent);
         }
 
         return super.onOptionsItemSelected(item);

@@ -285,7 +285,7 @@
 
         <activity
             android:name=".controllers.calls.CallActivity"
-            android:theme="@style/CommonActivityTheme"
+            android:theme="@style/CallTheme"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:showOnLockScreen="true" />
