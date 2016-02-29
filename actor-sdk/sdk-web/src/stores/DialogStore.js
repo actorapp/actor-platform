@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { find, forEach } from 'lodash';
+import { find, some } from 'lodash';
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
@@ -39,15 +39,10 @@ class DialogStore extends Store {
   }
 
   isFavorite(id) {
-    let isFavorite = false;
     const favoriteDialogs = find(this.dialogs, {key: 'favourites'});
     if (!favoriteDialogs) return false;
 
-    forEach(favoriteDialogs.shorts, (dialog) => {
-      if (dialog.peer.peer.id === id) isFavorite = true;
-    });
-
-    return isFavorite;
+    return some(favoriteDialogs.shorts, (dialog) => dialog.peer.peer.id === id);
   }
 
   __onDispatch(action) {
