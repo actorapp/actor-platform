@@ -85,6 +85,7 @@ public class AACallViewController: AAViewController {
         peerTitle.textColor = UIColor.whiteColor().alpha(0.87)
         peerTitle.textAlignment = NSTextAlignment.Center
         peerTitle.font = UIFont.thinSystemFontOfSize(42)
+        peerTitle.minimumScaleFactor = 0.3
         
         callState.textColor = UIColor.whiteColor()
         callState.textAlignment = NSTextAlignment.Center
@@ -109,7 +110,7 @@ public class AACallViewController: AAViewController {
         super.viewWillLayoutSubviews()
         
         senderAvatar.frame = CGRectMake((self.view.width - 104) / 2, 60, 104, 104)
-        peerTitle.frame = CGRectMake(60, senderAvatar.bottom + 22, view.width - 120, 42)
+        peerTitle.frame = CGRectMake(22, senderAvatar.bottom + 22, view.width - 44, 42)
         callState.frame = CGRectMake(0, peerTitle.bottom + 8, view.width, 22)
         
         layoutButtons()
