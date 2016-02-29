@@ -32,11 +32,11 @@ object WebrtcCallErrors {
   object NotJoinedToEventBus extends WebrtcCallError("Not joined to EventBus")
 }
 
-sealed trait WebrtcCallMessage
+private[webrtc] sealed trait WebrtcCallMessage
 
-object WebrtcCallMessages {
-  final case class StartCall(callerUserId: UserId, peer: Peer, eventBusId: String) extends WebrtcCallMessage
-  case object StartCallAck
+private[webrtc] object WebrtcCallMessages {
+  final case class StartCall(callerUserId: UserId, callerAuthId: AuthId, peer: Peer) extends WebrtcCallMessage
+  final case class StartCallAck(eventBusId: String, callerDeviceId: EventBus.DeviceId)
 
   final case class JoinCall(calleeUserId: UserId, authId: AuthId) extends WebrtcCallMessage
   case object JoinCallAck
@@ -50,7 +50,7 @@ object WebrtcCallMessages {
   }
 }
 
-final case class WebrtcCallEnvelope(id: Long, message: WebrtcCallMessage)
+private[webrtc] final case class WebrtcCallEnvelope(id: Long, message: WebrtcCallMessage)
 
 object WebrtcCallActor {
   val RegionTypeName = "WebrtcCall"
@@ -71,6 +71,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
   private val groupExt = GroupExtension(context.system)
   private val valuesExt = ValuesExtension(context.system)
   private val apnsExt = ApplePushExtension(context.system)
+  private val webrtcExt = WebrtcExtension(context.system)
 
   case class Device(
     deviceId:     EventBus.DeviceId,
@@ -78,9 +79,9 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
     peerSettings: Option[ApiPeerSettings],
     isJoined:     Boolean
   ) {
-    def canConnect(pairPeerSettings: Option[ApiPeerSettings]): Boolean =
+    def canPreConnect(pairPeerSettings: Option[ApiPeerSettings]): Boolean =
       isJoined ||
-        (peerSettings.map(_.canConnect).isDefined && pairPeerSettings.map(_.canConnect).isDefined)
+        (peerSettings.map(_.canPreConnect).isDefined && pairPeerSettings.map(_.canPreConnect).isDefined)
   }
 
   object Pair {
@@ -93,6 +94,8 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
   class Pair private (val left: EventBus.DeviceId, val right: EventBus.DeviceId)
 
   type SessionId = Long
+
+  private val eventBusClient = EventBus.InternalClient(self)
 
   private var scheduledUpds = Map.empty[UserId, Cancellable]
   private var devices = Map.empty[EventBus.DeviceId, Device]
@@ -107,28 +110,28 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
 
   def waitForStart: Receive = {
     case s: StartCall ⇒
-      case class Res(callees: Seq[Int], callerDeviceId: EventBus.DeviceId)
+      case class Res(eventBusId: String, callees: Seq[Int], callerDeviceId: EventBus.DeviceId)
       this.peer = s.peer
       this.callerUserId = s.callerUserId
 
       (for {
         callees ← fetchParticipants(callerUserId, peer) map (_ filterNot (_ == callerUserId))
-        callerDeviceId ← eventBusExt.fetchOwner(s.eventBusId)
-        _ ← eventBusExt.join(EventBus.InternalClient(self), s.eventBusId, None)
+        eventBusId ← eventBusExt.create(eventBusClient, timeout = None, isOwned = Some(true)) map (_._1)
+        callerDeviceId ← eventBusExt.join(EventBus.ExternalClient(s.callerUserId, s.callerAuthId), eventBusId, Some(16000))
         _ ← scheduleIncomingCallUpdates(callees)
-      } yield Res(callees, callerDeviceId)) pipeTo self
+      } yield Res(eventBusId, callees, callerDeviceId)) pipeTo self
 
       becomeStashing(replyTo ⇒ {
-        case Res(callees, callerDeviceId) ⇒
-          replyTo ! StartCallAck
+        case Res(eventBusId, callees, callerDeviceId) ⇒
+          replyTo ! StartCallAck(eventBusId, callerDeviceId)
 
-          eventBusExt.post(EventBus.InternalClient(self), s.eventBusId, Seq(callerDeviceId), ApiAdvertiseMaster.toByteArray)
+          advertiseMaster(eventBusId, callerDeviceId)
 
           callees foreach (putParticipant(_, ApiCallMemberState.RINGING))
           putParticipant(callerUserId, ApiCallMemberState.CONNECTED)
           broadcastSyncedSet()
 
-          context become callInProgress(peer, s.eventBusId, callerDeviceId, System.currentTimeMillis(), callerUserId)
+          context become callInProgress(peer, eventBusId, callerDeviceId, System.currentTimeMillis(), callerUserId)
           unstashAll()
         case failure: Status.Failure ⇒
           replyTo forward failure
@@ -251,7 +254,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
         sender() ! GetInfoAck(eventBusId, peer, participants.keySet.toSeq)
       case EventBus.Joined(_, client, deviceId) ⇒
         if (client.isExternal)
-          eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(deviceId), ApiAdvertiseMaster.toByteArray)
+          advertiseMaster(eventBusId, deviceId)
       case ebMessage: EventBus.Message ⇒
         ApiWebRTCSignaling.parseFrom(ebMessage.message).right foreach {
           case msg: ApiAdvertiseSelf ⇒
@@ -259,7 +262,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
               val newDevice = Device(deviceId, ebMessage.client, msg.peerSettings, isJoined = deviceId == callerDeviceId)
               devices foreach {
                 case (pairDeviceId, pairDevice) ⇒
-                  if (pairDevice.canConnect(msg.peerSettings))
+                  if (pairDevice.canPreConnect(msg.peerSettings))
                     connect(newDevice, pairDevice)
               }
               putDevice(deviceId, ebMessage.client, newDevice)
@@ -306,6 +309,14 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
         deleteSyncedSet()
       case _: StartCall ⇒ sender() ! WebrtcCallErrors.CallAlreadyStarted
     }
+  }
+
+  private def advertiseMaster(eventBusId: String, deviceId: EventBus.DeviceId): Unit = {
+    val advMaster =
+      ApiAdvertiseMaster(
+        server = webrtcExt.config.iceServers.toVector map (s ⇒ ApiICEServer(s.url, s.username, s.credential))
+      )
+    eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(deviceId), advMaster.toByteArray)
   }
 
   private def isConnected(userId: UserId): Boolean = {
