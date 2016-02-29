@@ -12796,6 +12796,12 @@
                   "argument": "callId",
                   "category": "full",
                   "description": "  Call Id"
+                },
+                {
+                  "type": "reference",
+                  "argument": "eventBusId",
+                  "category": "full",
+                  "description": "  Call Event Bus Id"
                 }
               ],
               "attributes": [
@@ -12803,6 +12809,14 @@
                   "type": "int64",
                   "id": 1,
                   "name": "callId"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "busId"
+                  },
+                  "id": 2,
+                  "name": "eventBusId"
                 }
               ]
             },
@@ -12813,12 +12827,6 @@
                 "argument": "peer",
                 "category": "full",
                 "description": "destination peer"
-              },
-              {
-                "type": "reference",
-                "argument": "eventBusId",
-                "category": "full",
-                "description": "Call Event Bus Id"
               }
             ],
             "attributes": [
@@ -12829,14 +12837,6 @@
                 },
                 "id": 1,
                 "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "busId"
-                },
-                "id": 2,
-                "name": "eventBusId"
               }
             ]
           }
@@ -13059,6 +13059,56 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "ICEServer",
+            "doc": [
+              "ICE Server description",
+              {
+                "type": "reference",
+                "argument": "url",
+                "category": "full",
+                "description": "  Url to server"
+              },
+              {
+                "type": "reference",
+                "argument": "username",
+                "category": "full",
+                "description": "  Optional username"
+              },
+              {
+                "type": "reference",
+                "argument": "credential",
+                "category": "danger",
+                "description": "  Optional credential"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "url"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "username"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "credential"
+              }
+            ]
+          }
+        },
+        {
           "type": "trait",
           "content": {
             "isContainer": "true",
@@ -13113,7 +13163,19 @@
               "name": "WebRTCSignaling",
               "key": 26
             },
-            "attributes": []
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ICEServer"
+                  }
+                },
+                "id": 1,
+                "name": "server"
+              }
+            ]
           }
         },
         {
