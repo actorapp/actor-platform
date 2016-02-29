@@ -30,6 +30,7 @@ public class PromisesArray<T> {
      * @param <T>        type of array
      * @return array
      */
+    @SuppressWarnings("unchecked")
     public static <T> PromisesArray<T> of(Collection<T> collection) {
         final ArrayList<Promise<T>> res = new ArrayList<>();
         for (T t : collection) {
