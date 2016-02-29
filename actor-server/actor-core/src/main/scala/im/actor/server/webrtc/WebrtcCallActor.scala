@@ -223,7 +223,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
                   pairDevice
               }
 
-            if (connectedDevices.nonEmpty)
+            if (connectedDevices.force.nonEmpty)
               this.isConversationStarted = true
 
             if (!isConnected(userId)) {
