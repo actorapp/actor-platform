@@ -85,7 +85,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     }
 
     @Override
-    public void onNegotiationSuccessful(long deviceId, long sessionId) {
+    public void onNegotiationSuccessful(final long deviceId, final long sessionId) {
         if (isMasterReady) {
             sendSignal(masterDeviceId, new ApiNegotinationSuccessful(deviceId, sessionId));
         } else {
