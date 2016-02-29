@@ -23,9 +23,13 @@ public class ResponseDoCall extends Response {
     }
 
     private long callId;
+    private String eventBusId;
+    private long deviceId;
 
-    public ResponseDoCall(long callId) {
+    public ResponseDoCall(long callId, @NotNull String eventBusId, long deviceId) {
         this.callId = callId;
+        this.eventBusId = eventBusId;
+        this.deviceId = deviceId;
     }
 
     public ResponseDoCall() {
@@ -36,14 +40,30 @@ public class ResponseDoCall extends Response {
         return this.callId;
     }
 
+    @NotNull
+    public String getEventBusId() {
+        return this.eventBusId;
+    }
+
+    public long getDeviceId() {
+        return this.deviceId;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.callId = values.getLong(1);
+        this.eventBusId = values.getString(2);
+        this.deviceId = values.getLong(3);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeLong(1, this.callId);
+        if (this.eventBusId == null) {
+            throw new IOException();
+        }
+        writer.writeString(2, this.eventBusId);
+        writer.writeLong(3, this.deviceId);
     }
 
     @Override

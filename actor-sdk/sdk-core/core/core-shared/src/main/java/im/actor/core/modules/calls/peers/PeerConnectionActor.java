@@ -4,6 +4,9 @@ import com.google.j2objc.annotations.Property;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
+import im.actor.core.api.ApiICEServer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.util.ModuleActor;
 import im.actor.runtime.Log;
@@ -11,6 +14,7 @@ import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.messages.PoisonPill;
+import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.promise.Promise;
@@ -24,7 +28,8 @@ import im.actor.runtime.webrtc.WebRTCSettings;
 public class PeerConnectionActor extends ModuleActor {
 
     @NotNull
-    public static ActorCreator CONSTRUCTOR(@NotNull final PeerSettings selfSettings,
+    public static ActorCreator CONSTRUCTOR(@NotNull final List<ApiICEServer> iceServers,
+                                           @NotNull final PeerSettings selfSettings,
                                            @NotNull final PeerSettings theirSettings,
                                            @NotNull final WebRTCMediaStream mediaStream,
                                            @NotNull final PeerConnectionCallback callback,
@@ -32,7 +37,8 @@ public class PeerConnectionActor extends ModuleActor {
         return new ActorCreator() {
             @Override
             public Actor create() {
-                return new PeerConnectionActor(selfSettings, theirSettings, mediaStream, callback, context);
+                return new PeerConnectionActor(iceServers, selfSettings, theirSettings, mediaStream,
+                        callback, context);
             }
         };
     }
@@ -40,6 +46,8 @@ public class PeerConnectionActor extends ModuleActor {
 
     private final String TAG;
 
+    @NotNull
+    private final List<ApiICEServer> iceServers;
     @NotNull
     private final PeerConnectionCallback callback;
     @NotNull
@@ -52,7 +60,8 @@ public class PeerConnectionActor extends ModuleActor {
     @NotNull
     private PeerConnectionState state = PeerConnectionState.INITIALIZATION;
 
-    public PeerConnectionActor(@NotNull PeerSettings selfSettings,
+    public PeerConnectionActor(@NotNull List<ApiICEServer> iceServers,
+                               @NotNull PeerSettings selfSettings,
                                @NotNull PeerSettings theirSettings,
                                @NotNull WebRTCMediaStream mediaStream,
                                @NotNull PeerConnectionCallback callback,
@@ -61,6 +70,7 @@ public class PeerConnectionActor extends ModuleActor {
         this.TAG = "PeerConnection";
         this.callback = callback;
         this.stream = mediaStream;
+        this.iceServers = iceServers;
     }
 
     @Override
@@ -68,9 +78,14 @@ public class PeerConnectionActor extends ModuleActor {
 
         isReady = false;
 
-        WebRTCIceServer[] iceServers = config().getWebRTCIceServers();
+        WebRTCIceServer[] rtcIceServers = ManagedList.of(iceServers).map(new Function<ApiICEServer, WebRTCIceServer>() {
+            @Override
+            public WebRTCIceServer apply(ApiICEServer apiICEServer) {
+                return new WebRTCIceServer(apiICEServer.getUrl(), apiICEServer.getUsername(), apiICEServer.getCredential());
+            }
+        }).toArray(new WebRTCIceServer[0]);
         WebRTCSettings settings = new WebRTCSettings(false, false);
-        WebRTC.createPeerConnection(iceServers, settings).then(new Consumer<WebRTCPeerConnection>() {
+        WebRTC.createPeerConnection(rtcIceServers, settings).then(new Consumer<WebRTCPeerConnection>() {
             @Override
             public void apply(WebRTCPeerConnection webRTCPeerConnection) {
                 PeerConnectionActor.this.peerConnection = webRTCPeerConnection;

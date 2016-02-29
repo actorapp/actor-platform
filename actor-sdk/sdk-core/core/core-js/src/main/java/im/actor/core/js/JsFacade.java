@@ -68,19 +68,6 @@ public class JsFacade implements Exportable {
             "wss://front2-ws-mtproto-api-rev2.actor.im/"
     };
 
-    private WebRTCIceServer[] webRTCIceServers = {
-            new WebRTCIceServer("stun:turn1.actor.im:443"),
-            new WebRTCIceServer("stun:turn2.actor.im:443"),
-            new WebRTCIceServer("stun:turn3.actor.im:443"),
-
-            new WebRTCIceServer("turn:turn1.actor.im:443?transport=tcp", "actor", "password"),
-            new WebRTCIceServer("turn:turn1.actor.im:443?transport=udp", "actor", "password"),
-            new WebRTCIceServer("turn:turn2.actor.im:443?transport=tcp", "actor", "password"),
-            new WebRTCIceServer("turn:turn2.actor.im:443?transport=udp", "actor", "password"),
-            new WebRTCIceServer("turn:turn3.actor.im:443?transport=tcp", "actor", "password"),
-            new WebRTCIceServer("turn:turn3.actor.im:443?transport=udp", "actor", "password"),
-    };
-
     private static final String[] EndpointsDev1 = {
             "wss://front1-ws-mtproto-api-rev2-dev1.actor.im/"
     };
@@ -146,11 +133,6 @@ public class JsFacade implements Exportable {
         // Adding endpoints
         for (String endpoint : endpoints) {
             configuration.addEndpoint(endpoint);
-        }
-
-        // Adding WebRTC ICE servers
-        for (WebRTCIceServer iceServer : webRTCIceServers) {
-            configuration.addWebRTCServer(iceServer.getUrl(), iceServer.getUsername(), iceServer.getCredential());
         }
 
         messenger = new JsMessenger(configuration.build());
