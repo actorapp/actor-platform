@@ -77,7 +77,7 @@ public class PushRegisterActor extends ModuleActor {
 
             @Override
             public void onError(RpcException e) {
-
+                e.printStackTrace();
             }
         });
     }
