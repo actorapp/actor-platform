@@ -36,7 +36,7 @@ class MessageItem extends Component {
 
   static calculateState(prevState, props) {
     return {
-      isHighlighted: props && props.message ? DropdownStore.isOpen(props.message.rid) : false
+      isHighlighted: props && props.message ? DropdownStore.isMessageDropdownOpen(props.message.rid) : false
     }
   }
 

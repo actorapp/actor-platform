@@ -10,7 +10,7 @@ import classnames from 'classnames';
 import { lightbox } from '../../utils/ImageUtils';
 
 import ActorClient from '../../utils/ActorClient';
-import confirm from '../../utils/confirm'
+import confirm from '../../utils/confirm';
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
 
 import ContactActionCreators from '../../actions/ContactActionCreators';
@@ -70,7 +70,6 @@ class UserProfile extends Component {
   };
 
   onNotificationChange = (event) => {
-    console.debug('onNotificationChange', this.state);
     const { thisPeer } = this.state;
     NotificationsActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
   };
