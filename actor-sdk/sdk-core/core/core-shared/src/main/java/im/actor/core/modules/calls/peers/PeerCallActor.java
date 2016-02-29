@@ -1,13 +1,16 @@
 package im.actor.core.modules.calls.peers;
 
 import java.util.HashMap;
+import java.util.List;
 
+import im.actor.core.api.ApiICEServer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.messages.RTCAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCAnswer;
 import im.actor.core.modules.calls.peers.messages.RTCCandidate;
 import im.actor.core.modules.calls.peers.messages.RTCCloseSession;
 import im.actor.core.modules.calls.peers.messages.RTCDispose;
+import im.actor.core.modules.calls.peers.messages.RTCMasterAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCStart;
@@ -29,6 +32,7 @@ public class PeerCallActor extends ModuleActor {
     private final PeerSettings selfSettings;
 
     // WebRTC objects
+    private List<ApiICEServer> iceServers;
     private HashMap<Long, PeerNodeInt> refs = new HashMap<>();
     private WebRTCMediaStream webRTCMediaStream;
 
@@ -85,6 +89,15 @@ public class PeerCallActor extends ModuleActor {
         }
     }
 
+    public void onMasterAdvertised(List<ApiICEServer> iceServers) {
+        if (this.iceServers == null) {
+            this.iceServers = iceServers;
+            for (PeerNodeInt node : refs.values()) {
+                node.onAdvertisedMaster(iceServers);
+            }
+        }
+    }
+
     //
     // Peer Collection
     //
@@ -101,6 +114,9 @@ public class PeerCallActor extends ModuleActor {
                 selfSettings, self(), context());
         if (webRTCMediaStream != null) {
             peerNodeInt.setOwnStream(webRTCMediaStream);
+        }
+        if (this.iceServers != null) {
+            peerNodeInt.onAdvertisedMaster(iceServers);
         }
         refs.put(deviceId, peerNodeInt);
         return peerNodeInt;
@@ -154,6 +170,9 @@ public class PeerCallActor extends ModuleActor {
         } else if (message instanceof RTCCloseSession) {
             RTCCloseSession closeSession = (RTCCloseSession) message;
             getPeer(closeSession.getDeviceId()).closeSession(closeSession.getSessionId());
+        } else if (message instanceof RTCMasterAdvertised) {
+            RTCMasterAdvertised masterAdvertised = (RTCMasterAdvertised) message;
+            onMasterAdvertised(masterAdvertised.getIceServers());
         } else if (message instanceof MuteChanged) {
             MuteChanged muteChanged = (MuteChanged) message;
             onMuteChanged(muteChanged.isMuted());
@@ -177,6 +196,10 @@ public class PeerCallActor extends ModuleActor {
     }
 
     public static class OwnStarted {
+
+    }
+
+    public static class MasterAdvertised {
 
     }
 

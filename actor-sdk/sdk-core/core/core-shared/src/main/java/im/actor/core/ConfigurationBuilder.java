@@ -28,7 +28,6 @@ public class ConfigurationBuilder {
 
     private ArrayList<TrustedKey> trustedKeys = new ArrayList<>();
     private ArrayList<ConnectionEndpoint> endpoints = new ArrayList<>();
-    private ArrayList<WebRTCIceServer> webRTCServers = new ArrayList<>();
 
     private PhoneBookProvider phoneBookProvider;
 
@@ -346,21 +345,6 @@ public class ConfigurationBuilder {
     }
 
     /**
-     * Adding WebRTC signaling server
-     *
-     * @param url        Url to server
-     * @param userName   optional username
-     * @param credential optional credential
-     * @return this
-     */
-    @NotNull
-    @ObjectiveCName("addWebRTCServer:withUserName:withCredential:")
-    public ConfigurationBuilder addWebRTCServer(@NotNull String url, @Nullable String userName, @Nullable String credential) {
-        webRTCServers.add(new WebRTCIceServer(url, userName, credential));
-        return this;
-    }
-
-    /**
      * Build configuration
      *
      * @return result configuration
@@ -396,7 +380,6 @@ public class ConfigurationBuilder {
                 trustedKeys.toArray(new TrustedKey[trustedKeys.size()]),
                 isPhoneBookImportEnabled,
                 callsProvider,
-                webRTCServers.toArray(new WebRTCIceServer[webRTCServers.size()]),
                 voiceCallsEnabled);
     }
 }

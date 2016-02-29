@@ -53,13 +53,16 @@ public class CallActor extends AbsCallActor {
     @Override
     public void preStart() {
         super.preStart();
-        if (!isMaster) {
-            api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
+        if (isMaster) {
+            api(new RequestDoCall(buidOutPeer(peer))).then(new Consumer<ResponseDoCall>() {
                 @Override
-                public void apply(final ResponseGetCallInfo responseGetCallInfo) {
-                    peer = convert(responseGetCallInfo.getPeer());
-                    callBus.startSlaveBus(responseGetCallInfo.getEventBusId());
-                    callVM = callViewModels.spawnNewIncomingVM(callId, peer, CallState.RINGING);
+                public void apply(ResponseDoCall responseDoCall) {
+
+                    callId = responseDoCall.getCallId();
+                    callBus.joinBus(responseDoCall.getEventBusId());
+                    callBus.startOwn();
+                    callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer);
+
                 }
             }).failure(new Consumer<Exception>() {
                 @Override
@@ -68,29 +71,31 @@ public class CallActor extends AbsCallActor {
                 }
             }).done(self());
         } else {
-            callBus.startMaster();
+            api(new RequestGetCallInfo(callId)).then(new Consumer<ResponseGetCallInfo>() {
+                @Override
+                public void apply(final ResponseGetCallInfo responseGetCallInfo) {
+
+                    peer = convert(responseGetCallInfo.getPeer());
+                    callBus.joinBus(responseGetCallInfo.getEventBusId());
+                    callVM = callViewModels.spawnNewIncomingVM(callId, peer, CallState.RINGING);
+
+                }
+            }).failure(new Consumer<Exception>() {
+                @Override
+                public void apply(Exception e) {
+                    self().send(PoisonPill.INSTANCE);
+                }
+            }).done(self());
         }
     }
 
     @Override
     public void onBusStarted(String busId) {
         if (isMaster) {
-            api(new RequestDoCall(buidOutPeer(peer), busId)).then(new Consumer<ResponseDoCall>() {
-                @Override
-                public void apply(ResponseDoCall responseDoCall) {
-                    callId = responseDoCall.getCallId();
-                    callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer);
-                    callManager.send(new CallManagerActor.DoCallComplete(responseDoCall.getCallId()), self());
-                    callback.onResult(responseDoCall.getCallId());
-                    callback = null;
-                }
-            }).failure(new Consumer<Exception>() {
-                @Override
-                public void apply(Exception e) {
-                    callback.onError(e);
-                    callback = null;
-                }
-            }).done(self());
+            callManager.send(new CallManagerActor.DoCallComplete(callId), self());
+
+            callback.onResult(callId);
+            callback = null;
         } else {
             callManager.send(new CallManagerActor.IncomingCallReady(callId), self());
         }
