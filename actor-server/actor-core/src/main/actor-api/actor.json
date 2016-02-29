@@ -4569,6 +4569,64 @@
         {
           "type": "rpc",
           "content": {
+            "name": "UpdateMessage",
+            "header": 2658,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Changing Message content",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Destination Peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Message random id"
+              },
+              {
+                "type": "reference",
+                "argument": "updatedMessage",
+                "category": "full",
+                "description": "Updated Message content"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
+                "id": 3,
+                "name": "updatedMessage"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "MessageReceived",
             "header": 55,
             "response": {
@@ -12052,7 +12110,7 @@
               {
                 "type": "reference",
                 "argument": "message",
-                "category": "full",
+                "category": "hidden",
                 "description": "Message"
               }
             ],
@@ -12226,7 +12284,7 @@
               {
                 "type": "reference",
                 "argument": "message",
-                "category": "compact",
+                "category": "hidden",
                 "description": "  Message"
               }
             ],
@@ -12738,6 +12796,12 @@
                   "argument": "callId",
                   "category": "full",
                   "description": "  Call Id"
+                },
+                {
+                  "type": "reference",
+                  "argument": "eventBusId",
+                  "category": "full",
+                  "description": "  Call Event Bus Id"
                 }
               ],
               "attributes": [
@@ -12745,6 +12809,22 @@
                   "type": "int64",
                   "id": 1,
                   "name": "callId"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "busId"
+                  },
+                  "id": 2,
+                  "name": "eventBusId"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  },
+                  "id": 3,
+                  "name": "deviceId"
                 }
               ]
             },
@@ -12755,12 +12835,6 @@
                 "argument": "peer",
                 "category": "full",
                 "description": "destination peer"
-              },
-              {
-                "type": "reference",
-                "argument": "eventBusId",
-                "category": "full",
-                "description": "Call Event Bus Id"
               }
             ],
             "attributes": [
@@ -12771,14 +12845,6 @@
                 },
                 "id": 1,
                 "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "busId"
-                },
-                "id": 2,
-                "name": "eventBusId"
               }
             ]
           }
@@ -13001,6 +13067,56 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "ICEServer",
+            "doc": [
+              "ICE Server description",
+              {
+                "type": "reference",
+                "argument": "url",
+                "category": "full",
+                "description": "  Url to server"
+              },
+              {
+                "type": "reference",
+                "argument": "username",
+                "category": "full",
+                "description": "  Optional username"
+              },
+              {
+                "type": "reference",
+                "argument": "credential",
+                "category": "danger",
+                "description": "  Optional credential"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "url"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "username"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "credential"
+              }
+            ]
+          }
+        },
+        {
           "type": "trait",
           "content": {
             "isContainer": "true",
@@ -13055,7 +13171,19 @@
               "name": "WebRTCSignaling",
               "key": 26
             },
-            "attributes": []
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ICEServer"
+                  }
+                },
+                "id": 1,
+                "name": "server"
+              }
+            ]
           }
         },
         {
@@ -13694,6 +13822,12 @@
                 "argument": "canBeAudioRelay",
                 "category": "full",
                 "description": "  If peer can audio relay. Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "canPreConnect",
+                "category": "full",
+                "description": "  If peer can preconnect before answer"
               }
             ],
             "attributes": [
@@ -13727,7 +13861,7 @@
                   "childType": "bool"
                 },
                 "id": 4,
-                "name": "canConnect"
+                "name": "canPreConnect"
               }
             ]
           }

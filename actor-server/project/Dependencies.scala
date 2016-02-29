@@ -55,7 +55,7 @@ object Dependencies {
     val circeGeneric            = "io.circe"                      %% "circe-generic"                 % V.circe
     val circeParse              = "io.circe"                      %% "circe-parse"                   % V.circe
 
-    val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.2.4"
+    val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.3.0"
 
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.3"
     val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.7.0"
