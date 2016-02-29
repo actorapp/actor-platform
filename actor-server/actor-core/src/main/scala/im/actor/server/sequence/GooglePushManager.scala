@@ -10,7 +10,7 @@ import akka.stream.actor.ActorPublisher
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import cats.data.Xor
-import com.github.kxbmap.configs._
+import com.github.kxbmap.configs.syntax._
 import com.typesafe.config.Config
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.push.GooglePushCredentialsRepo

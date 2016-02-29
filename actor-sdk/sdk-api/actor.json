@@ -12817,6 +12817,14 @@
                   },
                   "id": 2,
                   "name": "eventBusId"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  },
+                  "id": 3,
+                  "name": "deviceId"
                 }
               ]
             },

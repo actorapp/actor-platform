@@ -4,7 +4,7 @@ import im.actor.config.ActorConfig
 
 import scala.util.{ Success, Try }
 
-import com.github.kxbmap.configs._
+import com.github.kxbmap.configs.syntax._
 import com.typesafe.config.Config
 
 case class HttpApiConfig(interface: String, port: Int, baseUri: String, staticFiles: String, keystore: Option[String])
@@ -16,7 +16,7 @@ object HttpApiConfig {
       port ← config.get[Try[Int]]("port")
       baseUri ← config.get[Try[String]]("base-uri")
       staticFiles ← config.get[Try[String]]("static-files-directory")
-      keystore ← Success(config.opt[String]("keystore"))
+      keystore ← Success(config.getOpt[String]("keystore"))
     } yield HttpApiConfig(interface, port, baseUri, staticFiles, keystore)
 
   def load: Try[HttpApiConfig] = load(ActorConfig.load().getConfig("http"))

@@ -62,9 +62,15 @@ final class EventBusExtension(system: ActorSystem) extends Extension {
     clientAuthId: AuthId,
     timeout:      Option[Long],
     isOwned:      Option[Boolean]
-  ): Future[(EventBusId, DeviceId)] = {
+  ): Future[(EventBusId, DeviceId)] =
+    create(EventBus.ExternalClient(clientUserId, clientAuthId), timeout, isOwned)
+
+  def create(ref: ActorRef, timeout: Option[Long], isOwned: Option[Boolean]): Future[(String, EventBus.DeviceId)] =
+    create(EventBus.InternalClient(ref), timeout, isOwned)
+
+  def create(client: EventBus.Client, timeout: Option[Long], isOwned: Option[Boolean]): Future[(String, EventBus.DeviceId)] = {
     val id = UUID.randomUUID().toString
-    (region ? EventBusEnvelope(id, Create(ExternalClient(clientUserId, clientAuthId), timeout, isOwned))).mapTo[CreateAck] map (ack ⇒ (id, ack.deviceId))
+    (region ? EventBusEnvelope(id, Create(client, timeout, isOwned))).mapTo[CreateAck] map (ack ⇒ (id, ack.deviceId))
   }
 
   def dispose(clientUserId: UserId, clientAuthId: AuthId, id: String): Future[Unit] =

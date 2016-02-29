@@ -1,6 +1,6 @@
 package im.actor.server.file.local
 
-import com.github.kxbmap.configs._
+import com.github.kxbmap.configs.syntax._
 import com.typesafe.config.Config
 import im.actor.config.ActorConfig
 

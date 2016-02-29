@@ -2,7 +2,7 @@ package im.actor.server.db
 
 import akka.actor._
 import akka.event.Logging
-import com.github.kxbmap.configs._
+import com.github.kxbmap.configs.syntax._
 import com.typesafe.config.{ Config, ConfigFactory }
 import im.actor.server.JNDI
 import org.flywaydb.core.Flyway
