@@ -49,7 +49,7 @@
     &__avatar {
       position: relative;
       .avatar {
-        margin-right: 8px;
+        margin-right: 16px;
       }
     }
 
@@ -58,12 +58,12 @@
       padding: 10px 0;
       font-weight: 500;
       line-height: 24px;
-      color: rgba(0, 0, 0, 0.6);
+      color: rgba(black, .6);
     }
     &__counter {
       position: absolute;
-      bottom: -6px;
-      right: -6px;;
+      top: -2px;
+      right: 8px;
       font-size: 14px;
       font-weight: 500;
       line-height: 24px;

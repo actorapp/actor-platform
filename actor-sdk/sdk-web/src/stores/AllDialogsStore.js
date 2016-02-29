@@ -2,27 +2,8 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { Store } from 'flux/utils';
-import Dispatcher from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
-import ActorClient from '../utils/ActorClient';
+import DialogStore from './DialogStore';
 
-let _dialogs = [];
+console.warn('AllDialogsStore is deprecated and will be remove in near future. Use DialogStore instead this.');
 
-class DialogStore extends Store {
-  getAllDialogs() {
-    return _dialogs;
-  }
-
-  __onDispatch(action) {
-    switch(action.type) {
-      case ActionTypes.DIALOGS_CHANGED:
-        _dialogs = action.dialogs;
-        this.__emitChange();
-        break;
-      default:
-    }
-  }
-}
-
-export default new DialogStore(Dispatcher);
+export default DialogStore;
