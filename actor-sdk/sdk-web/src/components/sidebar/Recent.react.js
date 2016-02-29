@@ -7,6 +7,7 @@ import { forEach, map, debounce } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Link } from 'react-router';
+import { FormattedMessage } from 'react-intl';
 import  classnames from 'classnames';
 
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
@@ -148,15 +149,15 @@ class Recent extends Component {
           case 'groups':
             return (
               <li className="sidebar__list__item sidebar__list__item--empty">
+                <FormattedMessage id="sidebar.group.empty"/>
                 <div className="stem"/>
-                Create your first group conversation
               </li>
             )
           case 'privates':
             return (
               <li className="sidebar__list__item sidebar__list__item--empty">
-                There is no one in your network
-                <button className="button button--outline button--wide hide">+ Invite people</button>
+                <FormattedMessage id="sidebar.private.empty"/>
+                <button className="button button--outline button--wide hide"><FormattedMessage id="button.invite"/></button>
               </li>
             )
           default:
@@ -191,7 +192,7 @@ class Recent extends Component {
 
             <footer>
               <Link to="/im/archive" className="button button--rised button--wide">
-                Archive
+                <FormattedMessage id="button.archive"/>
               </Link>
             </footer>
           </div>
