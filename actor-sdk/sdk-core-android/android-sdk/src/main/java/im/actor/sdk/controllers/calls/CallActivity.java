@@ -1,10 +1,14 @@
 package im.actor.sdk.controllers.calls;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.WindowManager;
 
 import im.actor.core.entity.PeerType;
+import im.actor.core.viewmodel.CallVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 
@@ -22,6 +26,8 @@ public class CallActivity extends BaseFragmentActivity {
         super.onCreate(savedInstanceState);
 
         getSupportActionBar().setTitle("Call");
+        getSupportActionBar().hide();
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         if (savedInstanceState == null) {
             boolean incoming = getIntent().getBooleanExtra("incoming", false);
@@ -40,7 +46,8 @@ public class CallActivity extends BaseFragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflating menu
         getMenuInflater().inflate(R.menu.call_menu, menu);
-        if(messenger().getCall(callId).getPeer().getPeerType() != PeerType.GROUP){
+        CallVM call = messenger().getCall(callId);
+        if(call!=null && call.getPeer().getPeerType() != PeerType.GROUP){
             menu.findItem(R.id.members).setVisible(false);
         }
         return super.onCreateOptionsMenu(menu);
