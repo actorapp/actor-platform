@@ -28,7 +28,6 @@ target 'ActorApp' do
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
     pod 'Neon'
-    pod 'Cartography'
 
     # Small UI
     pod 'VBFPopFlatButton'
@@ -59,7 +58,6 @@ target 'ActorSDK' do
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
     pod 'YYKit'
-    pod 'Cartography'
 
     # Main UI
     pod 'TTTAttributedLabel'
