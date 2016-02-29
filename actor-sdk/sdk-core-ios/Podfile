@@ -22,7 +22,6 @@ target 'ActorApp' do
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
     pod 'YYKit'
-    pod 'BrightFutures'
 
     # Main UI
     pod 'TTTAttributedLabel'
@@ -30,7 +29,6 @@ target 'ActorApp' do
     pod 'JDStatusBarNotification'
     pod 'Neon'
     pod 'Cartography'
-    pod 'PureLayout'
 
     # Small UI
     pod 'VBFPopFlatButton'
@@ -61,9 +59,7 @@ target 'ActorSDK' do
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
     pod 'YYKit'
-    pod 'BrightFutures'
     pod 'Cartography'
-    pod 'PureLayout'
 
     # Main UI
     pod 'TTTAttributedLabel'
