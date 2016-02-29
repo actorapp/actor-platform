@@ -46,7 +46,7 @@ final class WebrtcExtension(system: ActorSystem) extends Extension {
   def rejectCall(calleeUserId: Int, calleeAuthId: Long, callId: Long): Future[Unit] =
     region ? WebrtcCallEnvelope(callId, RejectCall(calleeUserId, calleeAuthId)) map (_ ⇒ ())
 
-  def getInfo(callId: Long): Future[(String, UserId, Seq[UserId])] =
+  def getInfo(callId: Long): Future[(String, Peer, Seq[UserId])] =
     (region ? WebrtcCallEnvelope(callId, GetInfo)).mapTo[GetInfoAck] map (_.tupled)
 }
 
