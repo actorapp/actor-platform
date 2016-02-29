@@ -59,7 +59,7 @@ public class CallActor extends AbsCallActor {
                 public void apply(ResponseDoCall responseDoCall) {
 
                     callId = responseDoCall.getCallId();
-                    callBus.joinBus(responseDoCall.getEventBusId());
+                    callBus.joinMasterBus(responseDoCall.getEventBusId(), responseDoCall.getDeviceId());
                     callBus.startOwn();
                     callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer);
 

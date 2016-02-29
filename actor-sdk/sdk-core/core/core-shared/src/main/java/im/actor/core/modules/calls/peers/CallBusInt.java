@@ -13,6 +13,10 @@ public class CallBusInt extends ActorInterface {
         send(new CallBusActor.JoinBus(busId));
     }
 
+    public void joinMasterBus(String busId, long deviceId) {
+        send(new CallBusActor.JoinMasterBus(busId, deviceId));
+    }
+
     public void changeMute(boolean isMuted) {
         send(new CallBusActor.Mute(isMuted));
     }
