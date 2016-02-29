@@ -50,7 +50,9 @@ export default {
       'quickSearch': 'Быстрый поиск',
       'close': 'Закрыть',
       'save': 'Сохранить',
-      'call': 'Позвонить'
+      'call': 'Позвонить',
+      'archive': 'Архив',
+      'invite': '+ Пригласить людей'
     },
 
     // Messages
@@ -260,6 +262,12 @@ export default {
         'newDialog': 'создать диалог',
         'favourites': 'Избранное',
         'addPeople': 'добавить контакт'
+      },
+      'group': {
+        'empty': 'Создайте ваш первый групповой диалог'
+      },
+      'private': {
+        'empty': 'В вашей сети пока никого нет'
       }
     },
     'main': {
