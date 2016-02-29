@@ -105,7 +105,7 @@ trait HistoryHandlers {
   override def doHandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] =
     authorized(clientData) { implicit client ⇒
       for {
-        dialogGroups ← dialogExt.getGroupedDialogs(client.userId)
+        dialogGroups ← dialogExt.fetchGroupedDialogShorts(client.userId)
         (userIds, groupIds) = dialogGroups.view.flatMap(_.dialogs).foldLeft((Seq.empty[Int], Seq.empty[Int])) {
           case ((uids, gids), dialog) ⇒
             dialog.peer.`type` match {
@@ -129,7 +129,7 @@ trait HistoryHandlers {
     authorized(clientData) { implicit client ⇒
       for {
         seqstate ← dialogExt.archive(client.userId, peer.asModel)
-        groups ← dialogExt.getGroupedDialogs(client.userId)
+        groups ← dialogExt.fetchGroupedDialogShorts(client.userId)
       } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.state.toByteArray, groups = groups))
     }
 
@@ -137,7 +137,7 @@ trait HistoryHandlers {
     authorized(clientData) { implicit client ⇒
       for {
         seqstate ← dialogExt.show(client.userId, peer.asModel)
-        groups ← dialogExt.getGroupedDialogs(client.userId)
+        groups ← dialogExt.fetchGroupedDialogShorts(client.userId)
       } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.toByteArray, groups = groups))
     }
 

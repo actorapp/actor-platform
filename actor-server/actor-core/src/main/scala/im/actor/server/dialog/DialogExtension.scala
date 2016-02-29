@@ -246,12 +246,12 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   def isSharedUser(userId: Int): Boolean = userId == 0
 
-  def getGroupedDialogs(userId: Int) = {
+  def fetchGroupedDialogs(userId: Int): Future[Map[DialogGroup, Vector[Dialog]]] =
     db.run {
       DialogRepo
         .fetchSortByLastMessageData(userId, None, Int.MaxValue)
         .map(_ filterNot (dialogWithSelf(userId, _)))
-        .flatMap { dialogs ⇒
+        .map { dialogs ⇒
           val (groupModels, privateModels, favouriteModels) =
             dialogs.foldLeft((Vector.empty[Dialog], Vector.empty[Dialog], Vector.empty[Dialog])) {
               case ((groupModels, privateModels, favouriteModels), dialog) ⇒
@@ -264,21 +264,36 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
                 else throw new RuntimeException("Unknown dialog type")
             }
 
-          for {
-            groupDialogs ← DBIO.sequence(groupModels map getDialogShort)
-            privateDialogs ← DBIO.sequence(privateModels map getDialogShort)
-            favouriteDialogs ← DBIO.sequence(favouriteModels map getDialogShort)
-          } yield {
-            val default = Vector(
-              ApiDialogGroup(DialogGroups.Groups.title, DialogGroups.Groups.key, groupDialogs),
-              ApiDialogGroup(DialogGroups.Privates.title, DialogGroups.Privates.key, privateDialogs.toVector)
-            )
-
-            if (favouriteDialogs.nonEmpty)
-              ApiDialogGroup(DialogGroups.Favourites.title, DialogGroups.Favourites.key, favouriteDialogs) +: default
-            else default
-          }
+          Map(
+            DialogGroups.Favourites → favouriteModels,
+            DialogGroups.Privates → privateModels,
+            DialogGroups.Groups → groupModels
+          )
         }
+    }
+
+  def fetchGroupedDialogShorts(userId: Int): Future[Vector[ApiDialogGroup]] = {
+    fetchGroupedDialogs(userId) flatMap { dialogsMap ⇒
+      db.run {
+        val groupModels = dialogsMap.getOrElse(DialogGroups.Groups, Vector.empty)
+        val privateModels = dialogsMap.getOrElse(DialogGroups.Privates, Vector.empty)
+        val favouriteModels = dialogsMap.getOrElse(DialogGroups.Favourites, Vector.empty)
+
+        for {
+          groupDialogs ← DBIO.sequence(groupModels map getDialogShortDBIO)
+          privateDialogs ← DBIO.sequence(privateModels map getDialogShortDBIO)
+          favouriteDialogs ← DBIO.sequence(favouriteModels map getDialogShortDBIO)
+        } yield {
+          val default = Vector(
+            ApiDialogGroup(DialogGroups.Groups.title, DialogGroups.Groups.key, groupDialogs),
+            ApiDialogGroup(DialogGroups.Privates.title, DialogGroups.Privates.key, privateDialogs)
+          )
+
+          if (favouriteDialogs.nonEmpty)
+            ApiDialogGroup(DialogGroups.Favourites.title, DialogGroups.Favourites.key, favouriteDialogs) +: default
+          else default
+        }
+      }
     }
   }
 
@@ -299,7 +314,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }).toSeq
   }
 
-  private def getDialogShort(dialog: Dialog)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] =
+  def getDialogShortDBIO(dialog: Dialog)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] =
     for {
       historyOwner ← DBIO.from(HistoryUtils.getHistoryOwner(dialog.peer, dialog.userId))
       messageOpt ← HistoryMessageRepo.findNewest(historyOwner, dialog.peer) map (_.map(_.ofUser(dialog.userId)))
@@ -309,6 +324,9 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       counter = unreadCount,
       date = messageOpt.map(_.date.getMillis).getOrElse(0)
     )
+
+  def getDialogShort(dialog: Dialog)(implicit ec: ExecutionContext): Future[ApiDialogShort] =
+    db.run(getDialogShortDBIO(dialog))
 
   private def processorRegion(peer: Peer): ActorRef = peer.typ match {
     case PeerType.Private ⇒
