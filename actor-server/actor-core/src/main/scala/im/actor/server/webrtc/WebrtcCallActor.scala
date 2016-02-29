@@ -8,7 +8,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.{ ApiServiceExPhoneCall, ApiServiceExPhoneMissed, ApiServiceMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.webrtc._
-import im.actor.concurrent.{ ActorStashing, FutureExt }
+import im.actor.concurrent.{ StashingActor, FutureExt }
 import im.actor.server.dialog.DialogExtension
 import im.actor.server.eventbus.{ EventBus, EventBusExtension }
 import im.actor.server.group.GroupExtension
@@ -58,7 +58,7 @@ object WebrtcCallActor {
   def props = Props(classOf[WebrtcCallActor])
 }
 
-private final class WebrtcCallActor extends ActorStashing with ActorLogging {
+private final class WebrtcCallActor extends StashingActor with ActorLogging {
   import WebrtcCallMessages._
   import context.dispatcher
 
