@@ -114,4 +114,8 @@ public class ExternalModule extends AbsModule {
             }
         };
     }
+
+    public void rawPersistentRequest(String service, String method, ApiRawValue params) {
+        context().getApiModule().performPersistRequest(new RequestRawRequest(service, method, params));
+    }
 }
