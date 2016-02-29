@@ -150,7 +150,7 @@ private final class WebrtcCallActor extends ActorStashing with ActorLogging {
 
       (for {
         _ ← if (peer.`type`.isPrivate) FutureExt.ftraverse(participants.keySet.toSeq)(userId ⇒ dialogExt.sendMessage(
-          peer = ApiPeer(ApiPeerType.Private, userId),
+          peer = ApiPeer(ApiPeerType.Private, callerUserId),
           senderUserId = callerUserId,
           senderAuthId = None,
           senderAuthSid = 0,
