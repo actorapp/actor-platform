@@ -10999,13 +10999,6 @@
             <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
           </node>
         </node>
-        <node concept="2m7Kf5" id="3Tolai5Np_j" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="eventBusId" />
-          <node concept="wb0Ql" id="3Tolai5Np_s" role="2m7DVh">
-            <ref role="wb18D" node="3Tolai5MCV$" resolve="busId" />
-          </node>
-        </node>
         <node concept="Nu42z" id="201xLeQvfQP" role="NuuwV">
           <property role="Nu42W" value="A25" />
         </node>
@@ -11015,6 +11008,13 @@
             <property role="TrG5h" value="callId" />
             <node concept="2m5ndQ" id="201xLeQvfSh" role="2m7DVh" />
           </node>
+          <node concept="2m7Kf5" id="5Wm9DsmkRfo" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="eventBusId" />
+            <node concept="wb0Ql" id="5Wm9DsmkRfu" role="2m7DVh">
+              <ref role="wb18D" node="3Tolai5MCV$" resolve="busId" />
+            </node>
+          </node>
           <node concept="Nu42z" id="201xLeQvfS9" role="NuuwV">
             <property role="Nu42W" value="A26" />
           </node>
@@ -11022,6 +11022,11 @@
             <property role="1GSvIU" value="full" />
             <property role="NX6R2" value="Call Id" />
             <ref role="NX6Kv" node="201xLeQvfSd" resolve="callId" />
+          </node>
+          <node concept="NX1gA" id="5Wm9DsmkRf$" role="1y2DgH">
+            <property role="NX6R2" value="Call Event Bus Id" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="5Wm9DsmkRfo" resolve="eventBusId" />
           </node>
         </node>
         <node concept="NXeRC" id="201xLeQvfSk" role="1GBnQ6">
@@ -11031,11 +11036,6 @@
           <property role="NX6R2" value="destination peer" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="201xLeQvfRW" resolve="peer" />
-        </node>
-        <node concept="NX1gA" id="3Tolai5O2bn" role="1GBnQ6">
-          <property role="NX6R2" value="Call Event Bus Id" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="3Tolai5Np_j" resolve="eventBusId" />
         </node>
       </node>
       <node concept="2m6fVq" id="YOvM6E4ZSf" role="2m5mJr">
@@ -11217,6 +11217,46 @@
           <ref role="NX6Kv" node="YOvM6E5Qbg" resolve="theirSettings" />
         </node>
       </node>
+      <node concept="2m5naR" id="5Wm9DsmkVl5" role="2m5mJr">
+        <property role="TrG5h" value="ICEServer" />
+        <node concept="2m7Kf5" id="5Wm9DsmkVpy" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="url" />
+          <node concept="2m5ndX" id="5Wm9DsmkVpA" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5Wm9DsmkVpD" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="username" />
+          <node concept="2m5nlT" id="5Wm9DsmkVpJ" role="2m7DVh">
+            <node concept="2m5ndX" id="5Wm9DsmkVpP" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5Wm9DsmkVpS" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="credential" />
+          <node concept="2m5nlT" id="5Wm9DsmkVq1" role="2m7DVh">
+            <node concept="2m5ndX" id="5Wm9DsmkVq7" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="5Wm9DsmkVqa" role="NXodf">
+          <property role="NXePf" value="ICE Server description" />
+        </node>
+        <node concept="NX1gA" id="5Wm9DsmkVqf" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Url to server" />
+          <ref role="NX6Kv" node="5Wm9DsmkVpy" resolve="url" />
+        </node>
+        <node concept="NX1gA" id="5Wm9DsmkVqn" role="NXodf">
+          <property role="NX6R2" value="Optional username" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5Wm9DsmkVpD" resolve="username" />
+        </node>
+        <node concept="NX1gA" id="5Wm9DsmkVqx" role="NXodf">
+          <property role="NX6R2" value="Optional credential" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="5Wm9DsmkVpS" resolve="credential" />
+        </node>
+      </node>
       <node concept="w93zz" id="3Tolai5NMKi" role="2m5mJr">
         <property role="TrG5h" value="WebRTCSignaling" />
         <property role="1FaRnq" value="true" />
@@ -11254,6 +11294,15 @@
         <property role="tsOgz" value="false" />
         <property role="w4tQU" value="true" />
         <ref role="w4$XZ" node="3Tolai5NMKi" resolve="WebRTCSignaling" />
+        <node concept="2m7Kf5" id="5Wm9DsmkX_Z" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="server" />
+          <node concept="2m5nlk" id="5Wm9DsmkXA3" role="2m7DVh">
+            <node concept="2m5mGg" id="5Wm9DsmkXA9" role="3GJlyp">
+              <ref role="2m5mJy" node="5Wm9DsmkVl5" resolve="ICEServer" />
+            </node>
+          </node>
+        </node>
         <node concept="Nu42z" id="YOvM6E62IV" role="3BtCOu">
           <property role="Nu42W" value="1A" />
         </node>
