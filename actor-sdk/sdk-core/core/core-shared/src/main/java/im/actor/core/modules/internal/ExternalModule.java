@@ -96,7 +96,7 @@ public class ExternalModule extends AbsModule {
         };
     }
 
-    public Command<ResponseRawRequest> rawRequest(final String service, final String method, final ApiRawValue params) {
+    public Command<ResponseRawRequest> rawRequestCommand(final String service, final String method, final ApiRawValue params) {
         return new Command<ResponseRawRequest>() {
             @Override
             public void start(final CommandCallback<ResponseRawRequest> callback) {
@@ -117,5 +117,9 @@ public class ExternalModule extends AbsModule {
 
     public void rawPersistentRequest(String service, String method, ApiRawValue params) {
         context().getApiModule().performPersistRequest(new RequestRawRequest(service, method, params));
+    }
+
+    public void rawRequest(String service, String method, ApiRawValue params) {
+        request(new RequestRawRequest(service, method, params));
     }
 }
