@@ -75,7 +75,7 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
     }
   }
 
-  val baseUri = Uri(httpConfig.baseUri)
+  val baseUri = Uri(s"${httpConfig.baseUri}:${httpConfig.port}")
 
   override def uploadFile(name: UnsafeFileName, data: Array[Byte]): DBIO[FileLocation] = {
     val rng = ThreadLocalSecureRandom.current()
