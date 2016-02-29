@@ -59,19 +59,6 @@ import PushKit
         "6709b8b733a9f20a96b9091767ac19fd6a2a978ba0dccc85a9ac8f6b6560ac1a"
     ]
     
-    /// WebRTC Servers
-    public var webRTCServers: [ARWebRTCIceServer] = [
-        ARWebRTCIceServer(url: "stun:turn1.actor.im:443"),
-        ARWebRTCIceServer(url: "stun:turn2.actor.im:443"),
-        ARWebRTCIceServer(url: "stun:turn3.actor.im:443"),
-        ARWebRTCIceServer(url: "turn:turn1.actor.im:443?transport=tcp", withUserName: "actor", withCredential: "password"),
-        ARWebRTCIceServer(url: "turn:turn1.actor.im:443?transport=udp", withUserName: "actor", withCredential: "password"),
-        ARWebRTCIceServer(url: "turn:turn2.actor.im:443?transport=tcp", withUserName: "actor", withCredential: "password"),
-        ARWebRTCIceServer(url: "turn:turn2.actor.im:443?transport=udp", withUserName: "actor", withCredential: "password"),
-        ARWebRTCIceServer(url: "turn:turn3.actor.im:443?transport=tcp", withUserName: "actor", withCredential: "password"),
-        ARWebRTCIceServer(url: "turn:turn3.actor.im:443?transport=udp", withUserName: "actor", withCredential: "password")
-    ]
-    
     /// API ID
     public var apiId = 2
     
@@ -167,9 +154,6 @@ import PushKit
         let appTitle = "Actor iOS"
         for url in endpoints {
             builder.addEndpoint(url)
-        }
-        for s in webRTCServers {
-            builder.addWebRTCServer(s.url, withUserName: s.username, withCredential: s.credential)
         }
         for key in trustedKeys {
             builder.addTrustedKey(key)

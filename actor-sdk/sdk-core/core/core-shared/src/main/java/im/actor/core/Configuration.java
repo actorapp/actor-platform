@@ -17,7 +17,6 @@ import im.actor.runtime.webrtc.WebRTCIceServer;
 public class Configuration {
 
     private final ConnectionEndpoint[] endpoints;
-    private final WebRTCIceServer[] webRTCIceServers;
 
     private final TrustedKey[] trustedKeys;
 
@@ -70,7 +69,6 @@ public class Configuration {
                   TrustedKey[] trustedKeys,
                   boolean enablePhoneBookImport,
                   CallsProvider callsProvider,
-                  WebRTCIceServer[] webRTCIceServers,
                   boolean voiceCallsEnabled) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
@@ -90,7 +88,6 @@ public class Configuration {
         this.trustedKeys = trustedKeys;
         this.enablePhoneBookImport = enablePhoneBookImport;
         this.callsProvider = callsProvider;
-        this.webRTCIceServers = webRTCIceServers;
         this.voiceCallsEnabled = voiceCallsEnabled;
     }
 
@@ -110,15 +107,6 @@ public class Configuration {
      */
     public CallsProvider getCallsProvider() {
         return callsProvider;
-    }
-
-    /**
-     * Getting WebRTC ICE servers
-     *
-     * @return ice servers
-     */
-    public WebRTCIceServer[] getWebRTCIceServers() {
-        return webRTCIceServers;
     }
 
     /**

@@ -1,5 +1,8 @@
 package im.actor.core.modules.calls.peers;
 
+import java.util.List;
+
+import im.actor.core.api.ApiICEServer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
@@ -18,6 +21,7 @@ public class PeerConnectionInt extends ActorInterface {
     /**
      * Default constructor for new peer connection
      *
+     * @param iceServers    ICE Servers
      * @param ownSettings   setting of own peer
      * @param theirSettings settings of theirs peer
      * @param mediaStream   own media stream
@@ -26,7 +30,8 @@ public class PeerConnectionInt extends ActorInterface {
      * @param dest          parent actor (used for dispatching callback)
      * @param path          relative path of an actor
      */
-    public PeerConnectionInt(PeerSettings ownSettings,
+    public PeerConnectionInt(List<ApiICEServer> iceServers,
+                             PeerSettings ownSettings,
                              PeerSettings theirSettings,
                              WebRTCMediaStream mediaStream,
                              PeerConnectionCallback callback,
@@ -35,7 +40,7 @@ public class PeerConnectionInt extends ActorInterface {
         this.callbackDest = dest;
         this.callback = callback;
         ActorRef ref = system().actorOf(dest.getPath() + "/" + path,
-                PeerConnectionActor.CONSTRUCTOR(ownSettings, theirSettings, mediaStream,
+                PeerConnectionActor.CONSTRUCTOR(iceServers, ownSettings, theirSettings, mediaStream,
                         new WrappedCallback(), context));
         setDest(ref);
     }

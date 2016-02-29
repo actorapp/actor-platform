@@ -1,9 +1,14 @@
 package im.actor.core.modules.calls.peers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import im.actor.core.api.ApiICEServer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.messages.RTCAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCAnswer;
 import im.actor.core.modules.calls.peers.messages.RTCCandidate;
+import im.actor.core.modules.calls.peers.messages.RTCMasterAdvertised;
 import im.actor.core.modules.calls.peers.messages.RTCNeedOffer;
 import im.actor.core.modules.calls.peers.messages.RTCOffer;
 import im.actor.core.modules.calls.peers.messages.RTCCloseSession;
@@ -49,6 +54,15 @@ public class PeerNodeInt extends ActorInterface {
      */
     public void setOwnStream(WebRTCMediaStream stream) {
         send(new PeerNodeActor.AddOwnStream(stream));
+    }
+
+    /**
+     * Call this method when master was advertised
+     *
+     * @param iceServers ice servers
+     */
+    public void onAdvertisedMaster(List<ApiICEServer> iceServers) {
+        send(new RTCMasterAdvertised(new ArrayList<>(iceServers)));
     }
 
     /**
