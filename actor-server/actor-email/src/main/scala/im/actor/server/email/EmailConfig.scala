@@ -15,7 +15,7 @@ case class EmailConfig(
 )
 
 object EmailConfig {
-  def load(config: Config): Try[EmailConfig] = Try(config.get[EmailConfig](""))
+  def load(config: Config): Try[EmailConfig] = Try(config.extract[EmailConfig])
 
   def load: Try[EmailConfig] = load(ActorConfig.load().getConfig("services.email"))
 }
