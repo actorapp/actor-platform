@@ -599,6 +599,9 @@ import PushKit
                 // Mark app as visible
                 messenger.onAppVisible()
                 
+                // Notify Audio Manager about app visiblity change
+                AAAudioManager.sharedAudio().appVisible()
+                
                 // Notify analytics about visibilibty change
                 // Analytics.track(ACAllEvents.APP_VISIBLEWithBoolean(true))
                 
@@ -608,6 +611,9 @@ import PushKit
         } else {
             if isUserOnline {
                 isUserOnline = false
+                
+                // Notify Audio Manager about app visiblity change
+                AAAudioManager.sharedAudio().appHidden()
                 
                 // Mark app as hidden
                 messenger.onAppHidden()

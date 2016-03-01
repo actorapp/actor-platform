@@ -35,4 +35,12 @@ public interface WebRTCRuntime {
     @NotNull
     @ObjectiveCName("getUserAudio")
     Promise<WebRTCMediaStream> getUserAudio();
+
+    /**
+     * Return if implementation supports pre-connection technique
+     *
+     * @return true if preconnections are supported
+     */
+    @ObjectiveCName("supportsPreConnections")
+    boolean supportsPreConnections();
 }
