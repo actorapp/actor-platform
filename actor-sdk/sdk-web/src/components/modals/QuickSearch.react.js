@@ -11,6 +11,9 @@ import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import Modal from 'react-modal';
 import classnames from 'classnames';
 import isInside from '../../utils/isInside';
+import history from '../../utils/history';
+import PeerUtils from '../../utils/PeerUtils';
+import Scrollbar from '../common/Scrollbar.react';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
@@ -69,7 +72,8 @@ class QuickSearch extends Component {
   };
 
   handleDialogSelect = (peer) => {
-    DialogActionCreators.selectDialogPeer(peer);
+    const peerStr = PeerUtils.peerToString(peer);
+    history.push(`/im/${peerStr}`);
     this.handleClose();
   };
 
@@ -134,10 +138,7 @@ class QuickSearch extends Component {
     }
   };
 
-  handleScroll = (top) => {
-    const resultsNode = findDOMNode(this.refs.results);
-    resultsNode.scrollTop = top;
-  };
+  handleScroll = (top) => this.refs.results.scrollTo(top);
 
   handleDocumentClick = (event) => {
     const modal = findDOMNode(this.refs.modal);
@@ -217,18 +218,19 @@ class QuickSearch extends Component {
                    ref="query"/>
           </div>
 
-          <ul className="results" ref="results">
-            {
-              resultsList.length > 0
-                ? resultsList
-                : <li className="results__item results__item--suggestion row">
-                    <FormattedHTMLMessage id="modal.quickSearch.notFound"
-                                          values={{query}}/>
-                    <button className="button button--rised hide">Create new dialog {query}</button>
-                  </li>
-            }
-          </ul>
-
+          <Scrollbar style={{height: RESULT_ITEM_HEIGHT * 8}} ref="results">
+            <ul className="results">
+              {
+                resultsList.length > 0
+                  ? resultsList
+                  : <li className="results__item results__item--suggestion row">
+                      <FormattedHTMLMessage id="modal.quickSearch.notFound"
+                                            values={{query}}/>
+                      <button className="button button--rised hide">Create new dialog {query}</button>
+                    </li>
+              }
+            </ul>
+          </Scrollbar>
         </div>
       </Modal>
     );
