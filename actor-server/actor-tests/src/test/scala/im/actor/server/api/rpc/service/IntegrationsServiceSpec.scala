@@ -59,7 +59,7 @@ final class IntegrationsServiceSpec
         val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
         ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
-      whenReady(service.handleGetIntegrationToken(outPeer)(clientData2))(_ should matchNotAuthorized)
+      whenReady(service.handleGetIntegrationToken(outPeer)(clientData2))(_ should matchForbidden)
     }
 
     def e2(): Unit = {
@@ -87,7 +87,7 @@ final class IntegrationsServiceSpec
       }
 
       whenReady(service.handleRevokeIntegrationToken(outPeer)(clientData2)) { resp ⇒
-        resp should matchNotAuthorized
+        resp should matchForbidden
       }
 
       whenReady(service.handleGetIntegrationToken(outPeer)(clientData2)) { resp ⇒

@@ -146,7 +146,7 @@ trait HistoryHandlers {
     clientData: im.actor.api.rpc.ClientData
   ): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
-      withOutPeerF(peer) {
+      withOutPeer(peer) {
         for (seqstate ← dialogExt.archive(client.userId, peer.asModel))
           yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
       }
@@ -160,7 +160,7 @@ trait HistoryHandlers {
     clientData: ClientData
   ): Future[HandlerResult[ResponseLoadHistory]] =
     authorized(clientData) { implicit client ⇒
-      val action = withOutPeer(peer) {
+      val action = withOutPeerDBIO(peer) {
         val modelPeer = peer.asModel
         for {
           historyOwner ← DBIO.from(getHistoryOwner(modelPeer, client.userId))
@@ -199,7 +199,7 @@ trait HistoryHandlers {
 
   override def doHandleDeleteMessage(outPeer: ApiOutPeer, randomIds: IndexedSeq[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
-      val action = withOutPeer(outPeer) {
+      val action = withOutPeerDBIO(outPeer) {
         val peer = outPeer.asModel
         withHistoryOwner(peer, client.userId) { historyOwner ⇒
           if (isSharedUser(historyOwner)) {

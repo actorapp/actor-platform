@@ -131,13 +131,33 @@ object HistoryMessageRepo {
       .map(_.userId)
       .result
 
-  def findNewest(userId: Int, peer: Peer): SqlAction[Option[HistoryMessage], NoStream, Read] =
+  def findNewest(userId: Int, peer: Peer): SqlAction[Option[HistoryMessage], NoStream, Read] = {
+    val filter = { m: HistoryMessageTable ⇒
+      m.userId === userId &&
+        m.peerType === peer.typ.value &&
+        m.peerId === peer.id
+    }
+    findNewestFilter(userId, peer, filter)
+  }
+
+  def findNewestSentBy(userId: Int, peer: Peer): SqlAction[Option[HistoryMessage], NoStream, Read] = {
+    val filter = { m: HistoryMessageTable ⇒
+      m.userId === userId &&
+        m.senderUserId === userId &&
+        m.peerType === peer.typ.value &&
+        m.peerId === peer.id
+    }
+    findNewestFilter(userId, peer, filter)
+  }
+
+  private def findNewestFilter(userId: Int, peer: Peer, filterClause: HistoryMessageTable ⇒ Rep[Boolean]) = {
     notDeletedMessages
-      .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.value && m.peerId === peer.id)
+      .filter(filterClause)
       .sortBy(_.date.desc)
       .take(1)
       .result
       .headOption
+  }
 
   def find(userId: Int, peer: Peer): FixedSqlStreamingAction[Seq[HistoryMessage], HistoryMessage, Read] =
     notDeletedMessages
