@@ -19,6 +19,7 @@ class ActivityStore extends Store {
 
   __onDispatch(action) {
     switch(action.type) {
+      case ActionTypes.CALL_MODAL_OPEN:
       case ActionTypes.ACTIVITY_HIDE:
         _isOpen = false;
         this.__emitChange();
