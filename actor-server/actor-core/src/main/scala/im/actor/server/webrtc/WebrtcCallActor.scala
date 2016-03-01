@@ -360,31 +360,28 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
 
   private def scheduleIncomingCallUpdates(callees: Seq[UserId]): Future[Unit] = {
     for {
-      authIdsMap ← userExt.getAuthIdsMap(callees.toSet)
-      credsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
-        case (userId, authIds) ⇒
-          apnsExt.findVoipCreds(authIds.toSet) map (userId → _)
-      }
+      authIds ← userExt.getAuthIds(callees.toSet)
+      credss ← apnsExt.findVoipCreds(authIds.toSet)
     } yield {
+      credss foreach { creds ⇒
+        val payload = (new ApnsPayloadBuilder).addCustomProperty("callId", id).buildWithDefaultMaximumLength()
+
+        val instanceCreds = apnsExt.getVoipInstance(creds.apnsKey) map (_ → creds)
+        for ((instance, cred) ← instanceCreds) {
+          val notif = new SimpleApnsPushNotification(cred.token.toByteArray, payload)
+          instance.getQueue.add(notif)
+        }
+      }
+
       scheduledUpds =
-        credsMap
-          .map {
-            case (userId, creds) ⇒
-              (
-                userId,
-                context.system.scheduler.schedule(0.seconds, 5.seconds) {
-                  weakUpdExt.broadcastUserWeakUpdate(userId, UpdateIncomingCall(id), reduceKey = Some(s"call_$id"))
-
-                  val payload = (new ApnsPayloadBuilder).addCustomProperty("callId", id).buildWithDefaultMaximumLength()
-
-                  val instanceCreds = creds flatMap (c ⇒ apnsExt.getVoipInstance(c.apnsKey) map (_ → c))
-                  for ((instance, cred) ← instanceCreds) {
-                    val notif = new SimpleApnsPushNotification(cred.token.toByteArray, payload)
-                    instance.getQueue.add(notif)
-                  }
-                }
-              )
-          }
+        callees.map { userId ⇒
+          (
+            userId,
+            context.system.scheduler.schedule(0.seconds, 5.seconds) {
+              weakUpdExt.broadcastUserWeakUpdate(userId, UpdateIncomingCall(id), reduceKey = Some(s"call_$id"))
+            }
+          )
+        }
           .toMap
     }
   }
