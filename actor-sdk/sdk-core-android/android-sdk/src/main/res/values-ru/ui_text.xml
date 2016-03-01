@@ -131,7 +131,7 @@
     <string name="main_sync_message">Пожалуйста, подождите пока мы инициализируем приложение.</string>
 
     <string name="main_empty_title">Пригласите своих друзей</string>
-    <string name="main_empty_invite_hint">Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.</string>
+    <string name="main_empty_invite_hint">Никто из ваших контактов не использует {appName}. Используйте кнопку ниже что бы пригласить их.</string>
     <string name="main_empty_invite_action">РАССКАЗАТЬ ДРУЗЬЯМ</string>
     <string name="main_empty_add_hint">или добавьте контакт вручную</string>
     <string name="main_empty_add_action">ДОБАВИТЬ КОНТАКТ</string>
@@ -149,7 +149,7 @@
     <string name="settings_home_page">Домашняя страница</string>
     <string name="settings_security">Безопасность</string>
     <string name="nickname_empty">Добавить ник</string>
-    <string name="nickname_hint">Вы можете выбрать ник в Акторе. Если вы это сделаете, то другие люди смогут найти вас без номера телефона.\n\nВы можете использовать латинские буквы, цифры и подчеркивание. Минимальная длинна - 5 символов.</string>
+    <string name="nickname_hint">Вы можете выбрать ник в {appName}. Если вы это сделаете, то другие люди смогут найти вас без номера телефона.\n\nВы можете использовать латинские буквы, цифры и подчеркивание. Минимальная длинна - 5 символов.</string>
     <string name="nickname_edittext_hint">Введите свой ник</string>
     <string name="nickname">Ник</string>
     <string name="nickname_change">Изменить ник</string>
@@ -183,7 +183,7 @@
     <!-- Contacts -->
     <string name="contacts_title">Контакты</string>
     <string name="contacts_empty_short">Еще нет контактов</string>
-    <string name="contacts_share">Рассказать друзьям об Акторе</string>
+    <string name="contacts_share">Рассказать друзьям об {appName}</string>
     <string name="contacts_add">Добавить друга...</string>
 
     <string name="contacts_menu_remove">Удалить {0} из контактов</string>
@@ -191,7 +191,7 @@
     <string name="contacts_menu_edit">Переименовать</string>
 
     <string name="contacts_empty_title">Пригласите своих друзей</string>
-    <string name="contacts_empty_invite_hint">Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.</string>
+    <string name="contacts_empty_invite_hint">Никто из ваших контактов не использует {appName}. Используйте кнопку ниже что бы пригласить их.</string>
     <string name="contacts_empty_invite_action">РАССКАЗАТЬ ДРУЗЬЯМ</string>
     <string name="contacts_empty_add_hint">или добавьте контакт вручную, нажав кнопку плюс ниже</string>
 

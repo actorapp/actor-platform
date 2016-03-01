@@ -48,6 +48,8 @@ private[webrtc] object WebrtcCallMessages {
   final case class GetInfoAck(eventBusId: String, peer: Peer, participantUserIds: Seq[UserId]) {
     val tupled = (eventBusId, peer, participantUserIds)
   }
+
+  private[webrtc] case class SendIncomingCall(userId: UserId)
 }
 
 private[webrtc] final case class WebrtcCallEnvelope(id: Long, message: WebrtcCallMessage)
@@ -97,9 +99,11 @@ private trait Members {
 
   def setMemberJoined(userId: UserId, isJoined: Boolean = true): Unit =
     members get userId match {
-      case Some(member) if !member.isJoined ⇒ members += userId → member.copy(isJoined = true)
-      case Some(_)                          ⇒ throw new RuntimeException("Attempt to set member joined who is already joined")
-      case None                             ⇒ throw new RuntimeException("Attempt to set an unexistent member joined")
+      case Some(member) if isJoined != member.isJoined ⇒ members += userId → member.copy(isJoined = isJoined)
+      case Some(_) ⇒
+        throw new RuntimeException(s"Attempt to set member joined to $isJoined who is already $isJoined")
+      case None ⇒
+        throw new RuntimeException("Attempt to set an unexistent member joined")
     }
 
   def setMemberState(userId: UserId, state: MemberState): Unit =
@@ -126,7 +130,7 @@ private trait Members {
     val ringing = members.values.filter(_.state == MemberStates.Ringing)
     val joined = members.values.filter(_.isJoined)
 
-    joined.isEmpty && ringing.isEmpty
+    joined.size <= 1 && ringing.isEmpty
   }
 }
 
@@ -329,7 +333,11 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
           // If everyone rejected dialing, there will no any conversation ;(
           (!this.isConversationStarted && everyoneRejected(callerUserId))) end()
       case GetInfo ⇒
-        sender() ! GetInfoAck(eventBusId, peer, memberUserIds.toSeq)
+        if (peer.typ.isPrivate) {
+          sender() ! GetInfoAck(eventBusId, Peer(PeerType.Private, memberUserIds.filterNot(_ == peer.id).head), memberUserIds.toSeq)
+        } else {
+          sender() ! GetInfoAck(eventBusId, peer, memberUserIds.toSeq)
+        }
       case EventBus.Joined(_, client, deviceId) ⇒
         if (client.isExternal)
           advertiseMaster(eventBusId, deviceId)
@@ -381,6 +389,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
         client.externalUserId foreach { userId ⇒
           if (!devices.values.exists(_.client.externalUserId.contains(userId))) {
             setMemberState(userId, MemberStates.Ended)
+            setMemberJoined(userId, isJoined = false)
             broadcastSyncedSet()
           }
         }
@@ -392,6 +401,17 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
       case EventBus.Disposed(_) ⇒
         end()
         deleteSyncedSet()
+      case SendIncomingCall(userId) ⇒
+        if (System.currentTimeMillis() - startTime < 30000)
+          weakUpdExt.broadcastUserWeakUpdate(userId, UpdateIncomingCall(id), reduceKey = Some(s"call_$id"))
+        else {
+          cancelIncomingCallUpdates(userId)
+          setMemberState(userId, MemberStates.Ended)
+          for {
+            deviceId ← clients.filter(_._1.externalUserId.contains(userId)).map(_._2)
+          } yield removeDevice(deviceId)
+          broadcastSyncedSet()
+        }
       case _: StartCall ⇒ sender() ! WebrtcCallErrors.CallAlreadyStarted
     }
   }
@@ -447,9 +467,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
         callees.map { userId ⇒
           (
             userId,
-            context.system.scheduler.schedule(0.seconds, 5.seconds) {
-              weakUpdExt.broadcastUserWeakUpdate(userId, UpdateIncomingCall(id), reduceKey = Some(s"call_$id"))
-            }
+            context.system.scheduler.schedule(0.seconds, 5.seconds, self, SendIncomingCall(userId))
           )
         }
           .toMap
