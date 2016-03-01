@@ -9,6 +9,7 @@ import im.actor.core.api.rpc.ResponseGetCallInfo;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.peers.AbsCallActor;
+import im.actor.core.modules.calls.peers.CallBusActor;
 import im.actor.core.viewmodel.CallState;
 import im.actor.core.viewmodel.CallVM;
 import im.actor.core.viewmodel.CommandCallback;
@@ -54,7 +55,7 @@ public class CallActor extends AbsCallActor {
     public void preStart() {
         super.preStart();
         if (isMaster) {
-            api(new RequestDoCall(buidOutPeer(peer))).then(new Consumer<ResponseDoCall>() {
+            api(new RequestDoCall(buidOutPeer(peer), CallBusActor.TIMEOUT)).then(new Consumer<ResponseDoCall>() {
                 @Override
                 public void apply(ResponseDoCall responseDoCall) {
 
