@@ -2,6 +2,7 @@ package im.actor.server.api.rpc.service
 
 import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import akka.testkit.TestProbe
+import cats.data.Xor
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
 import im.actor.api.rpc.counters.UpdateCountersChanged
@@ -13,6 +14,7 @@ import im.actor.api.rpc.sequence.{ ApiUpdateContainer, ResponseGetDifference }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
+import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.pubsub.PeerMessage
 
 import scala.concurrent.Future
@@ -41,6 +43,10 @@ class MessagingServiceSpec
   it should "not repeat message sending with same authId and RandomId" in s.group.cached
 
   "Any Messaging" should "keep original order of sent messages" in s.generic.rightOrder
+
+  it should "allow user to edit own message" in s.generic.editOwnMessage
+
+  it should "not allow user to edit alien messages" in s.generic.notEditAlienMessage
 
   object s {
     implicit val ec = system.dispatcher
@@ -211,31 +217,31 @@ class MessagingServiceSpec
         val alienClientData = ClientData(user1AuthId1, sessionId, Some(AuthData(alien.id, authSidAlien)))
 
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi again", Vector.empty, None))(alienClientData)) { resp ⇒
-          resp should matchNotAuthorized
+          resp should matchForbidden
         }
 
         whenReady(groupsService.handleEditGroupTitle(groupOutPeer, 4L, "Loosers")(alienClientData)) { resp ⇒
-          resp should matchNotAuthorized
+          resp should matchForbidden
         }
 
         val (user3, authId3, _, _) = createUser()
         val user3OutPeer = ApiUserOutPeer(user3.id, 11)
 
         whenReady(groupsService.handleInviteUser(groupOutPeer, 4L, user3OutPeer)(alienClientData)) { resp ⇒
-          resp should matchNotAuthorized
+          resp should matchForbidden
         }
 
         val fileLocation = ApiFileLocation(1L, 1L)
         whenReady(groupsService.handleEditGroupAvatar(groupOutPeer, 5L, fileLocation)(alienClientData)) { resp ⇒
-          resp should matchNotAuthorized
+          resp should matchForbidden
         }
 
         whenReady(groupsService.handleRemoveGroupAvatar(groupOutPeer, 5L)(alienClientData)) { resp ⇒
-          resp should matchNotAuthorized
+          resp should matchForbidden
         }
 
         whenReady(groupsService.handleLeaveGroup(groupOutPeer, 5L)(alienClientData)) { resp ⇒
-          resp should matchNotAuthorized
+          resp should matchForbidden
         }
 
       }
@@ -384,6 +390,115 @@ class MessagingServiceSpec
           }
         }
 
+      }
+
+      def notEditAlienMessage() = {
+        val sessionId = createSessionId()
+        val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+        val (bob, bobAuthId, bobAuthSid, _) = createUser()
+
+        val aliceCD = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid)))
+        val bobCD = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid)))
+
+        val alicePeer = ApiPeer(ApiPeerType.Private, alice.id)
+        val bobPeer = ApiPeer(ApiPeerType.Private, bob.id)
+
+        val aliceOutPeer = whenReady(ACLUtils.getOutPeer(alicePeer, bobAuthId))(identity)
+        val bobOutPeer = whenReady(ACLUtils.getOutPeer(bobPeer, aliceAuthId))(identity)
+
+        val messRandomId = {
+          implicit val cd = aliceCD
+          sendMessageToUser(bob.id, ApiTextMessage("hello bob", Vector.empty, None))
+        }
+
+        {
+          implicit val cd = bobCD
+          whenReady(service.handleUpdateMessage(aliceOutPeer, messRandomId, ApiTextMessage("XXXXXXXXX", Vector.empty, None))) { resp ⇒
+            resp should matchForbidden
+          }
+          expectNoUpdate(0, classOf[UpdateMessageContentChanged])
+        }
+
+        {
+          implicit val cd = aliceCD
+          expectNoUpdate(0, classOf[UpdateMessageContentChanged])
+        }
+
+        val messages = for {
+          a ← HistoryMessageRepo.findNewest(alice.id, bobPeer.asModel)
+          b ← HistoryMessageRepo.findNewest(bob.id, alicePeer.asModel)
+        } yield List(a, b).flatten
+
+        whenReady(db.run(messages)) { messages ⇒
+          messages should have length 2
+          messages foreach { mess ⇒
+            inside(parseMessage(mess.messageContentData)) {
+              case Right(ApiTextMessage("hello bob", _, _)) ⇒
+            }
+          }
+        }
+      }
+
+      def editOwnMessage() = {
+        val sessionId = createSessionId()
+        val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+        val (bob, bobAuthId, bobAuthSid, _) = createUser()
+
+        val aliceCD = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid)))
+        val bobCD = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid)))
+
+        val alicePeer = ApiPeer(ApiPeerType.Private, alice.id)
+        val bobPeer = ApiPeer(ApiPeerType.Private, bob.id)
+
+        val aliceOutPeer = whenReady(ACLUtils.getOutPeer(alicePeer, bobAuthId))(identity)
+        val bobOutPeer = whenReady(ACLUtils.getOutPeer(bobPeer, aliceAuthId))(identity)
+
+        val messRandomId = {
+          implicit val cd = aliceCD
+          sendMessageToUser(bob.id, ApiTextMessage("hello bob", Vector.empty, None))
+        }
+
+        {
+          implicit val cd = aliceCD
+          whenReady(service.handleUpdateMessage(bobOutPeer, messRandomId, ApiTextMessage("XXXXXXXXX", Vector.empty, None))) { resp ⇒
+            resp should matchPattern {
+              case Xor.Right(ResponseSeqDate(_, _, _)) ⇒
+            }
+            //            resp.toOption.get.seq
+          }
+          expectUpdate(classOf[UpdateMessageContentChanged]) { upd ⇒
+            upd.randomId shouldEqual messRandomId
+            upd.peer shouldEqual bobPeer
+            inside(parseMessage(upd.message.toByteArray)) {
+              case Right(ApiTextMessage("XXXXXXXXX", _, _)) ⇒
+            }
+          }
+        }
+
+        {
+          implicit val cd = bobCD
+          expectUpdate(classOf[UpdateMessageContentChanged]) { upd ⇒
+            upd.randomId shouldEqual messRandomId
+            upd.peer shouldEqual alicePeer
+            inside(parseMessage(upd.message.toByteArray)) {
+              case Right(ApiTextMessage("XXXXXXXXX", _, _)) ⇒
+            }
+          }
+        }
+
+        val messages = for {
+          a ← HistoryMessageRepo.findNewest(alice.id, bobPeer.asModel)
+          b ← HistoryMessageRepo.findNewest(bob.id, alicePeer.asModel)
+        } yield List(a, b).flatten
+
+        whenReady(db.run(messages)) { messages ⇒
+          messages should have length 2
+          messages foreach { mess ⇒
+            inside(parseMessage(mess.messageContentData)) {
+              case Right(ApiTextMessage("XXXXXXXXX", _, _)) ⇒
+            }
+          }
+        }
       }
 
     }

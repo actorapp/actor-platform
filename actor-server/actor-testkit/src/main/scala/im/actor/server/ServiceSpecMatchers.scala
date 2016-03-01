@@ -6,7 +6,7 @@ import org.scalatest.Matchers
 import org.scalatest.matchers.Matcher
 
 trait ServiceSpecMatchers extends Matchers {
-  def matchNotAuthorized[T]: Matcher[RpcError Xor T] = matchPattern {
+  def matchForbidden[T]: Matcher[RpcError Xor T] = matchPattern {
     case Xor.Left(RpcError(403, "FORBIDDEN", _, _, _)) ⇒
   }
 }

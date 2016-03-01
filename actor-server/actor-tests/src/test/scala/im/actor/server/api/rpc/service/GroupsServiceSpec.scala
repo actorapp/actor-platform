@@ -355,7 +355,7 @@ final class GroupsServiceSpec
     {
       implicit val clientData = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
       whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
-        resp should matchNotAuthorized
+        resp should matchForbidden
       }
     }
 
