@@ -1,8 +1,10 @@
 package im.actor.sdk.util;
 
+import android.os.Handler;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.CycleInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.Transformation;
 import android.widget.AbsListView;
@@ -186,7 +188,6 @@ public class ViewUtils {
         elevateView(view, true);
     }
 
-
     public static void elevateView(final View view, float scale) {
         elevateView(view, true, scale);
     }
@@ -246,6 +247,26 @@ public class ViewUtils {
             v.setVisibility(View.VISIBLE);
         }
     }
+
+    public static void wave(View[] layers, float scale, int duration, int stepOffset){
+        int step = 0;
+
+        for (View l:layers) {
+            wave(l, scale, duration, ((float)1/layers.length) * step);
+            step++;
+        }
+    }
+
+    public static void wave(final View layer, float scale, int duration, float stepOffset){
+        final ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, scale, 1.0f, scale, Animation.RELATIVE_TO_SELF, (float) 0.5, Animation.RELATIVE_TO_SELF, (float) 0.5);
+        scaleAnimation.setDuration(duration);
+
+        scaleAnimation.setInterpolator(new OffsetCycleInterpolator(stepOffset));
+        scaleAnimation.setRepeatCount(Animation.INFINITE);
+        layer.clearAnimation();
+        layer.startAnimation(scaleAnimation);
+    }
+
 
 
 
