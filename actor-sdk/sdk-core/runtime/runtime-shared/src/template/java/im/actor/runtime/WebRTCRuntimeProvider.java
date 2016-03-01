@@ -22,4 +22,9 @@ public class WebRTCRuntimeProvider implements WebRTCRuntime {
     public Promise<WebRTCMediaStream> getUserAudio() {
         return Promises.failure(new RuntimeException("Dumb"));
     }
+
+    @Override
+    public boolean supportsPreConnections() {
+        throw new RuntimeException("Dumb");
+    }
 }

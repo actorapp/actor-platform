@@ -3,6 +3,7 @@ package im.actor.core.modules.calls.peers;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.calls.CallViewModels;
 import im.actor.core.util.ModuleActor;
+import im.actor.runtime.WebRTC;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
@@ -20,7 +21,7 @@ public abstract class AbsCallActor extends ModuleActor implements CallBusCallbac
         this.callManager = context.getCallsModule().getCallManager();
         this.callViewModels = context().getCallsModule().getCallViewModels();
         this.selfSettings = new PeerSettings();
-        this.selfSettings.setIsPreConnectionEnabled(true);
+        this.selfSettings.setIsPreConnectionEnabled(WebRTC.isSupportsPreConnections());
     }
 
     @Override

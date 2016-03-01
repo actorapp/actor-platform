@@ -117,6 +117,20 @@
 
 "CallsVideo" = "видео";
 
+"CallStateRinging" = "Исходящий звонок";
+
+"CallStateConnecting" = "Подключаемся";
+
+"CallStateIncoming" = "Входящий звонок";
+
+"CallPrivateTitle" = "Входящий звонок";
+
+"CallPrivatelText" = "Вам звонит {name}";
+
+"CallGroupTitle" = "Входящий звонок";
+
+"CallGroupText" = "Групповой звонок {name}";
+
 /*
  * Profile
  */

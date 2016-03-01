@@ -66,7 +66,12 @@ public class AndroidWebRTCRuntimeProvider implements WebRTCRuntime {
         });
     }
 
-    public static void postToHandler(Runnable r){
+    @Override
+    public boolean supportsPreConnections() {
+        return true;
+    }
+
+    public static void postToHandler(Runnable r) {
         sVcHandler.post(r);
     }
 }
