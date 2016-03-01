@@ -116,6 +116,21 @@
 
 "CallsVideo" = "video";
 
+"CallStateRinging" = "Ringing...";
+
+"CallStateConnecting" = "Connecting...";
+
+"CallStateIncoming" = "Incoming call...";
+
+"CallPrivateTitle" = "Private Call";
+
+"CallPrivatelText" = "Call from {name}";
+
+"CallGroupTitle" = "Group Call";
+
+"CallGroupText" = "Group call {name}";
+
+
 /*
  * Profile
  */

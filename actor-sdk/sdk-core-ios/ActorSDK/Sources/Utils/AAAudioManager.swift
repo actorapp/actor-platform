@@ -13,36 +13,55 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
         return sharedManager
     }
     
-    private var isCalling = false
-    private var isCallStarted = false
+    private var isRinging = false
     private var ringtonePlaying = false
     private var ringtonePlayer: AVAudioPlayer! = nil
     private var audioRouter = AAAudioRouter()
     
+    private var ringtoneSound:SystemSoundID = 0
+    private var isVisible = false
+    
     public override init() {
         super.init()
+        
     }
     
-    public func callStart(isOut: Bool) {
-        audioRouter.category = AVAudioSessionCategoryPlayAndRecord
-        if !isOut {
-            audioRouter.mode = AVAudioSessionModeDefault
-            audioRouter.currentRoute = .Speaker
-            ringtoneStart()
+    public func appVisible() {
+        isVisible = true
+    }
+    
+    public func appHidden() {
+        isVisible = false
+    }
+    
+    public func callStart(call: ACCallVM) {
+        if !call.isOutgoing {
+            isRinging = true
+            if isVisible {
+                audioRouter.mode = AVAudioSessionModeDefault
+                audioRouter.currentRoute = .Speaker
+                ringtoneStart()
+            } else {
+                notificationRingtone(call)
+            }
+            vibrate()
         } else {
+            audioRouter.category = AVAudioSessionCategoryPlayAndRecord
             audioRouter.mode = AVAudioSessionModeVoiceChat
             audioRouter.currentRoute = .Receiver
         }
     }
     
-    public func callAnswered() {
+    public func callAnswered(call: ACCallVM) {
         ringtoneEnd()
+        isRinging = false
         audioRouter.mode = AVAudioSessionModeVoiceChat
         audioRouter.currentRoute = .Receiver
     }
     
-    public func callEnd() {
+    public func callEnd(call: ACCallVM) {
         ringtoneEnd()
+        isRinging = false
         audioRouter.category = AVAudioSessionCategorySoloAmbient
         audioRouter.mode = AVAudioSessionModeDefault
         audioRouter.currentRoute = .Receiver
@@ -66,14 +85,52 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
             print("Unable to start Ringtone: \(error.description)")
             self.ringtonePlayer = nil
         }
-        vibrate()
     }
     
     private func vibrate() {
-        AudioServicesPlaySystemSound(1352)
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_SEC)), dispatch_get_main_queue()) { () -> Void in
-            if self.ringtonePlaying {
-                self.vibrate()
+        
+        if #available(iOS 9.0, *) {
+            AudioServicesPlayAlertSoundWithCompletion(1352) {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_SEC)), dispatch_get_main_queue()) { () -> Void in
+                    if self.isRinging {
+                        self.vibrate()
+                    }
+                }
+            }
+        } else {
+            AudioServicesPlayAlertSound(1352)
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_SEC)), dispatch_get_main_queue()) { () -> Void in
+                if self.isRinging {
+                    self.vibrate()
+                }
+            }
+        }
+    }
+    
+    private func notificationRingtone(call: ACCallVM) {
+        
+        dispatchOnUi() {
+            let notification = UILocalNotification()
+            if call.peer.isGroup {
+                let groupName = Actor.getGroupWithGid(call.peer.peerId).getNameModel().get()
+                notification.alertBody = AALocalized("CallGroupText").replace("{name}", dest: groupName)
+                if #available(iOS 8.2, *) {
+                    notification.alertTitle = AALocalized("CallGroupTitle")
+                }
+            } else if call.peer.isPrivate {
+                let userName = Actor.getUserWithUid(call.peer.peerId).getNameModel().get()
+                notification.alertBody = AALocalized("CallPrivateText").replace("{name}", dest: userName)
+                if #available(iOS 8.2, *) {
+                    notification.alertTitle = AALocalized("CallPrivateTitle")
+                }
+            }
+            notification.soundName = "ringtone.m4a"
+            UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+        }
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(10 * NSEC_PER_SEC)), dispatch_get_main_queue()) { () -> Void in
+            if self.isRinging {
+                self.notificationRingtone(call)
             }
         }
     }
@@ -87,7 +144,6 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
             ringtonePlayer.stop()
             ringtonePlayer = nil
         }
-        
         ringtonePlaying = false
     }
 }

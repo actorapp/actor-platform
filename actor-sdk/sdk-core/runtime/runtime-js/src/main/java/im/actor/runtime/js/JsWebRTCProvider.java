@@ -63,4 +63,9 @@ public class JsWebRTCProvider implements WebRTCRuntime {
             }
         });
     }
+
+    @Override
+    public boolean supportsPreConnections() {
+        return true;
+    }
 }

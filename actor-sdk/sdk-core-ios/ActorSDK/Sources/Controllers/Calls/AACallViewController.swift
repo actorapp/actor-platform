@@ -152,13 +152,13 @@ public class AACallViewController: AAViewController {
                     self.answerCallButtonText.hidden = true
                     self.declineCallButton.hidden = false
                     self.declineCallButtonText.hidden = true
-                    self.callState.text = "Ringing..."
+                    self.callState.text = AALocalized("CallStateRinging")
                 } else {
                     self.answerCallButton.hidden = false
                     self.answerCallButtonText.hidden = false
                     self.declineCallButton.hidden = false
                     self.declineCallButtonText.hidden = false
-                    self.callState.text = "Incoming call..."
+                    self.callState.text = AALocalized("CallStateIncoming")
                 }
                 self.layoutButtons()
             } else if (ACCallState_Enum.CONNECTING == value.toNSEnum()) {
@@ -166,7 +166,7 @@ public class AACallViewController: AAViewController {
                 self.answerCallButtonText.hidden = true
                 self.declineCallButton.hidden = false
                 self.declineCallButtonText.hidden = true
-                self.callState.text = "Connecting"
+                self.callState.text = AALocalized("CallStateConnecting")
                 self.layoutButtons()
             } else if (ACCallState_Enum.IN_PROGRESS == value.toNSEnum()) {
                 self.answerCallButton.hidden = true

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		06230F091BC7FF3500A4807B /* ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F081BC7FF3000A4807B /* ActorSDK.framework */; };
 		06230F0A1BC7FF3500A4807B /* ActorSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F081BC7FF3000A4807B /* ActorSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		068B397B1C85386A002BFF73 /* ringtone.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 068B397A1C85386A002BFF73 /* ringtone.m4a */; };
 		068C6E4F1BBC4BF900182516 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */; };
 		06CE898E1BD841D0005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898D1BD841D0005A5530 /* SystemConfiguration.framework */; };
 		06E7B24F1C109C4B0090660C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06E7B24E1C109C4B0090660C /* MapKit.framework */; };
@@ -53,6 +54,7 @@
 /* Begin PBXFileReference section */
 		06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ActorSDK.xcodeproj; sourceTree = "<group>"; };
 		065974E11BC6926C00B8C7DF /* ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = ActorSDK.framework; path = "/Users/ex3ndr/Library/Developer/Xcode/DerivedData/ActorApp-clcqncodqhdxutfqgjvteqywzxue/Build/Products/Debug-iphoneos/ActorSDK.framework"; sourceTree = "<absolute>"; };
+		068B397A1C85386A002BFF73 /* ringtone.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; name = ringtone.m4a; path = Resources/ringtone.m4a; sourceTree = "<group>"; };
 		068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "Supporting Files/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		06CE898D1BD841D0005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		06E7B24E1C109C4B0090660C /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -117,6 +119,7 @@
 		75DC9F2DE93F0AFA6A85B53C4B694EAE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				068B397A1C85386A002BFF73 /* ringtone.m4a */,
 				2ACD33B73078EB46A22D2D4C45BF1E6E /* Images.xcassets */,
 				13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */,
 				068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */,
@@ -262,6 +265,7 @@
 			files = (
 				2CE3FEBEF881B465BDE1045A959BFB0A /* Images.xcassets in Resources */,
 				F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */,
+				068B397B1C85386A002BFF73 /* ringtone.m4a in Resources */,
 				068C6E4F1BBC4BF900182516 /* Launch Screen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

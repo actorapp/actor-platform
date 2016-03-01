@@ -31,6 +31,7 @@ public class AAAudioRouter {
     }
     
     public init() {
+        fixSession()
         NSNotificationCenter.defaultCenter().addObserverForName(AVAudioSessionRouteChangeNotification,
             object: nil, queue: NSOperationQueue.mainQueue()) { (note) -> Void in
             let notification: NSNotification = note as NSNotification
@@ -41,7 +42,6 @@ public class AAAudioRouter {
                 }
             }
         }
-        fixSession()
     }
     
     func isHeadsetPluggedIn() -> Bool {
@@ -56,34 +56,6 @@ public class AAAudioRouter {
     }
     
     private func routeChanged(reason: AVAudioSessionRouteChangeReason) {
-    
-//        switch(reason) {
-//        case .NewDeviceAvailable:
-//            print("Reason: device add")
-//            break
-//        case .OldDeviceUnavailable:
-//            print("Reason: device remove")
-//            break
-//        case .CategoryChange:
-//            print("Reason: category change to \(AVAudioSession.sharedInstance().category)")
-//            break
-//        case .Override:
-//            print("Reason: override to \(AVAudioSession.sharedInstance().currentRoute)")
-//            break
-//        case .RouteConfigurationChange:
-//            print("Reason: route config change to \(AVAudioSession.sharedInstance().currentRoute)")
-//            break
-//        case .Unknown:
-//            print("Reason: unknown")
-//            break
-//        case .WakeFromSleep:
-//            print("Reason: wake from sleep")
-//            break
-//        default:
-//            print("Reason: default")
-//            break
-//        }
-
         if reason == .NewDeviceAvailable {
             if isHeadsetPluggedIn() {
                 self.currentRoute = .Receiver
@@ -103,11 +75,13 @@ public class AAAudioRouter {
     
     private func fixSession() {
         let session = AVAudioSession.sharedInstance()
+        
         do {
             
             if session.category != category {
                 try session.setCategory(category)
             }
+            
             if session.mode != mode {
                 try AVAudioSession.sharedInstance().setMode(mode)
             }
