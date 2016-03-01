@@ -48,6 +48,8 @@ private[webrtc] object WebrtcCallMessages {
   final case class GetInfoAck(eventBusId: String, peer: Peer, participantUserIds: Seq[UserId]) {
     val tupled = (eventBusId, peer, participantUserIds)
   }
+
+  private[webrtc] case class SendIncomingCall(userId: UserId)
 }
 
 private[webrtc] final case class WebrtcCallEnvelope(id: Long, message: WebrtcCallMessage)
@@ -396,6 +398,17 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
       case EventBus.Disposed(_) ⇒
         end()
         deleteSyncedSet()
+      case SendIncomingCall(userId) =>
+        if (System.currentTimeMillis() - startTime < 30000)
+          weakUpdExt.broadcastUserWeakUpdate(userId, UpdateIncomingCall(id), reduceKey = Some(s"call_$id"))
+        else {
+          cancelIncomingCallUpdates(userId)
+          setMemberState(userId, MemberStates.Ended)
+          for {
+            deviceId <- clients.filter(_._1.externalUserId.contains(userId)).map(_._2)
+          } yield removeDevice(deviceId)
+          broadcastSyncedSet()
+        }
       case _: StartCall ⇒ sender() ! WebrtcCallErrors.CallAlreadyStarted
     }
   }
@@ -451,9 +464,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
         callees.map { userId ⇒
           (
             userId,
-            context.system.scheduler.schedule(0.seconds, 5.seconds) {
-              weakUpdExt.broadcastUserWeakUpdate(userId, UpdateIncomingCall(id), reduceKey = Some(s"call_$id"))
-            }
+            context.system.scheduler.schedule(0.seconds, 5.seconds, self, SendIncomingCall(userId))
           )
         }
           .toMap
