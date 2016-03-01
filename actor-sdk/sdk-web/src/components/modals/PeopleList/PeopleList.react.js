@@ -7,6 +7,9 @@ import { map, debounce } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
+import history from '../../../utils/history';
+import PeerUtils from '../../../utils/PeerUtils';
+import Scrollbar from '../../common/Scrollbar.react';
 
 import { KeyCodes } from '../../../constants/ActorAppConstants';
 
@@ -75,7 +78,7 @@ class PeopleList extends Component {
 
       this.setState({selectedIndex: index});
 
-      const scrollContainerNode = findDOMNode(this.refs.results);
+      const scrollContainerNode = findDOMNode(this.refs.results).getElementsByClassName('ss-scrollarea')[0];
       const selectedNode = findDOMNode(this.refs.selected);
       const scrollContainerNodeRect = scrollContainerNode.getBoundingClientRect();
       const selectedNodeRect = selectedNode.getBoundingClientRect();
@@ -95,7 +98,7 @@ class PeopleList extends Component {
 
       this.setState({selectedIndex: index});
 
-      const scrollContainerNode = findDOMNode(this.refs.results);
+      const scrollContainerNode = findDOMNode(this.refs.results).getElementsByClassName('ss-scrollarea')[0];
       const selectedNode = findDOMNode(this.refs.selected);
       const scrollContainerNodeRect = scrollContainerNode.getBoundingClientRect();
       const selectedNodeRect = selectedNode.getBoundingClientRect();
@@ -137,10 +140,7 @@ class PeopleList extends Component {
     }
   };
 
-  handleScroll = (top) => {
-    const resultsNode = findDOMNode(this.refs.results);
-    resultsNode.scrollTop = top;
-  };
+  handleScroll = (top) => this.refs.results.scrollTo(top);
 
   render() {
     const { query, results, selectedIndex, list } = this.state;
@@ -167,21 +167,22 @@ class PeopleList extends Component {
                  value={query}/>
         </section>
 
-        <ul className="newmodal__result contacts__list" ref="results">
-          {
-            list.length === 0
-              ? <div>{intl.messages['modal.contacts.loading']}</div>
-              : results.length === 0
-              ? <li className="contacts__list__item contacts__list__item--empty text-center">
-                  {intl.messages['modal.contacts.notFound']}
-                </li>
-              : peopleList
-          }
-        </ul>
+        <Scrollbar ref="results">
+          <ul className="newmodal__result contacts__list">
+            {
+              list.length === 0
+                ? <div>{intl.messages['modal.contacts.loading']}</div>
+                : results.length === 0
+                ? <li className="contacts__list__item contacts__list__item--empty text-center">
+                    {intl.messages['modal.contacts.notFound']}
+                  </li>
+                : peopleList
+            }
+          </ul>
+        </Scrollbar>
       </div>
     )
   }
 }
 
 export default Container.create(PeopleList, {pure: false});
-
