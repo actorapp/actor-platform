@@ -27,6 +27,8 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     private static final int STASH = 1;
 
+    public static final long TIMEOUT = 6000;
+
     private final PeerSettings selfSettings;
     private final PeerCallCallback peerCallback;
     private final CallBusCallback callBusCallback;
@@ -225,10 +227,10 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     @Override
     public void onReceive(Object message) {
         if (message instanceof JoinBus) {
-            joinBus(((JoinBus) message).getBusId());
+            joinBus(((JoinBus) message).getBusId(), TIMEOUT);
         } else if (message instanceof JoinMasterBus) {
             JoinMasterBus joinMasterBus = (JoinMasterBus) message;
-            connectBus(joinMasterBus.getBusId(), joinMasterBus.getDeviceId(), true);
+            connectBus(joinMasterBus.getBusId(), joinMasterBus.getDeviceId(), TIMEOUT, true);
         } else if (message instanceof Mute) {
             onChangeMute(((Mute) message).isMuted());
         } else if (message instanceof OnAnswered) {
