@@ -23,9 +23,11 @@ public class RequestDoCall extends Request<ResponseDoCall> {
     }
 
     private ApiOutPeer peer;
+    private Long timeout;
 
-    public RequestDoCall(@NotNull ApiOutPeer peer) {
+    public RequestDoCall(@NotNull ApiOutPeer peer, @Nullable Long timeout) {
         this.peer = peer;
+        this.timeout = timeout;
     }
 
     public RequestDoCall() {
@@ -37,9 +39,15 @@ public class RequestDoCall extends Request<ResponseDoCall> {
         return this.peer;
     }
 
+    @Nullable
+    public Long getTimeout() {
+        return this.timeout;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiOutPeer());
+        this.timeout = values.optLong(2);
     }
 
     @Override
@@ -48,6 +56,9 @@ public class RequestDoCall extends Request<ResponseDoCall> {
             throw new IOException();
         }
         writer.writeObject(1, this.peer);
+        if (this.timeout != null) {
+            writer.writeLong(2, this.timeout);
+        }
     }
 
     @Override
