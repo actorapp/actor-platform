@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -136,7 +135,7 @@ public class CallFragment extends BaseFragment {
         for (int i = 0; i<avatarLayers.length; i++){
             View layer = avatarLayers[i];
             ((GradientDrawable)layer.getBackground()).setColor(Color.WHITE);
-            ((GradientDrawable)layer.getBackground()).setAlpha(150);
+            ((GradientDrawable)layer.getBackground()).setAlpha(50);
         }
 
         answerContainer = cont.findViewById(R.id.answer_container);
@@ -179,6 +178,8 @@ public class CallFragment extends BaseFragment {
             avatarView.bind(g);
             bind(nameTV, g.getName());
         }
+
+        nameTV.setSelected(true);
 
         //
         // Members list
@@ -234,19 +235,13 @@ public class CallFragment extends BaseFragment {
         cont.findViewById(R.id.speaker_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                speakerOn = !speakerOn;
-                audioManager.setSpeakerphoneOn(speakerOn);
-                if (speakerOn) {
-                    speaker.setTint(Color.WHITE);
-                    speakerTV.setTextColor(Color.WHITE);
-                } else {
-                    speaker.setTint(getResources().getColor(R.color.picker_grey));
-                    speakerTV.setTextColor(getResources().getColor(R.color.picker_grey));
-                }
+                toggleSpeaker(speaker, speakerTV);
             }
         });
+        checkSpeaker(speaker, speakerTV);
 
         final TintImageView muteCall = (TintImageView) cont.findViewById(R.id.mute);
+        final TextView muteCallTv = (TextView) cont.findViewById(R.id.mute_tv);
         muteCall.setResource(R.drawable.ic_mic_off_white_24dp);
         cont.findViewById(R.id.mute_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,24 +252,35 @@ public class CallFragment extends BaseFragment {
 
         final TintImageView video = (TintImageView) cont.findViewById(R.id.video);
         video.setResource(R.drawable.ic_videocam_white_24dp);
+        TextView videoTv = (TextView) cont.findViewById(R.id.video_tv);
+        videoTv.setTextColor(getResources().getColor(R.color.picker_grey));
+        video.setTint(getResources().getColor(R.color.picker_grey));
 
         final TintImageView back = (TintImageView) cont.findViewById(R.id.back);
         back.setResource(R.drawable.ic_message_white_24dp);
+        cont.findViewById(R.id.back_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
 
         final TintImageView add = (TintImageView) cont.findViewById(R.id.add);
         add.setResource(R.drawable.ic_person_add_white_24dp);
-
+        TextView addTv = (TextView) cont.findViewById(R.id.add_user_tv);
+        addTv.setTextColor(getResources().getColor(R.color.picker_grey));
+        add.setTint(getResources().getColor(R.color.picker_grey));
 
         if(call!=null){
             call.getIsMuted().subscribe(new ValueChangedListener<Boolean>() {
                 @Override
                 public void onChanged(Boolean val, Value<Boolean> valueModel) {
                     if(val){
-                        muteCall.setBackgroundResource(R.drawable.call_action_background_active);
-                        muteCall.setTint(Color.WHITE);
+                        muteCallTv.setTextColor(getResources().getColor(R.color.picker_grey));
+                        muteCall.setTint(getResources().getColor(R.color.picker_grey));
                     }else{
-                        muteCall.setBackgroundResource(R.drawable.call_action_background);
-                        muteCall.setTint(getResources().getColor(R.color.primary));
+                        muteCallTv.setTextColor(Color.WHITE);
+                        muteCall.setTint(Color.WHITE);
                     }
                 }
             });
@@ -321,6 +327,22 @@ public class CallFragment extends BaseFragment {
 
 
         return cont;
+    }
+
+    public void toggleSpeaker(TintImageView speaker, TextView speakerTV) {
+        speakerOn = !speakerOn;
+        audioManager.setSpeakerphoneOn(speakerOn);
+        checkSpeaker(speaker, speakerTV);
+    }
+
+    public void checkSpeaker(TintImageView speaker, TextView speakerTV) {
+        if (speakerOn) {
+            speaker.setTint(Color.WHITE);
+            speakerTV.setTextColor(Color.WHITE);
+        } else {
+            speaker.setTint(getResources().getColor(R.color.picker_grey));
+            speakerTV.setTextColor(getResources().getColor(R.color.picker_grey));
+        }
     }
 
     public void switchAvatarMembers() {

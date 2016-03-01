@@ -58,7 +58,79 @@ object WebrtcCallActor {
   def props = Props(classOf[WebrtcCallActor])
 }
 
-private final class WebrtcCallActor extends StashingActor with ActorLogging {
+private trait Members {
+  this: ActorLogging ⇒
+
+  private var members = Map.empty[UserId, Member]
+
+  sealed trait MemberState
+
+  object MemberStates {
+    object Ringing extends MemberState
+    object RingingReached extends MemberState
+    object Connecting extends MemberState
+    object Connected extends MemberState
+    object Ended extends MemberState
+  }
+
+  case class Member(userId: UserId, state: MemberState, isJoined: Boolean) {
+    import MemberStates._
+
+    lazy val apiState = state match {
+      case Ringing        ⇒ ApiCallMemberState.RINGING
+      case RingingReached ⇒ ApiCallMemberState.RINGING_REACHED
+      case Connecting     ⇒ ApiCallMemberState.CONNECTING
+      case Connected      ⇒ ApiCallMemberState.CONNECTED
+      case Ended          ⇒ ApiCallMemberState.ENDED
+    }
+  }
+
+  def addMember(userId: UserId, initState: MemberState, isJoined: Boolean = false): Unit = {
+    members get userId match {
+      case Some(_) ⇒ throw new RuntimeException("Attempt to add already existing member")
+      case None ⇒
+        val member = Member(userId, initState, isJoined)
+        log.debug("Adding member: {}", member)
+        members += (userId → member)
+    }
+  }
+
+  def setMemberJoined(userId: UserId, isJoined: Boolean = true): Unit =
+    members get userId match {
+      case Some(member) if !member.isJoined ⇒ members += userId → member.copy(isJoined = true)
+      case Some(_)                          ⇒ throw new RuntimeException("Attempt to set member joined who is already joined")
+      case None                             ⇒ throw new RuntimeException("Attempt to set an unexistent member joined")
+    }
+
+  def setMemberState(userId: UserId, state: MemberState): Unit =
+    members get userId match {
+      case Some(member) ⇒
+        log.debug("Changing member[userId: {}] state from: {} to: {}", userId, member.state, state)
+        members += userId → member.copy(state = state)
+      case None ⇒ throw new RuntimeException("Attempt to change an unexistend member state")
+    }
+
+  def getMember(userId: UserId) = members get userId
+
+  def memberUserIds = members.keySet
+
+  def getMembers = members
+
+  def everyoneRejected(callerUserId: Int) =
+    members.values
+      .filterNot(_.userId == callerUserId)
+      .filterNot(_.state == MemberStates.Ended)
+      .isEmpty
+
+  def everyoneLeft(callerUserId: Int) = {
+    val ringing = members.values.filter(_.state == MemberStates.Ringing)
+    val joined = members.values.filter(_.isJoined)
+
+    joined.isEmpty && ringing.isEmpty
+  }
+}
+
+private final class WebrtcCallActor extends StashingActor with ActorLogging with Members {
   import WebrtcCallMessages._
   import context.dispatcher
 
@@ -100,7 +172,6 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
   private var scheduledUpds = Map.empty[UserId, Cancellable]
   private var devices = Map.empty[EventBus.DeviceId, Device]
   private var clients = Map.empty[EventBus.Client, EventBus.DeviceId]
-  private var participants = Map.empty[UserId, ApiCallMemberState.Value]
   private var sessions = Map.empty[Pair, SessionId]
   private var isConversationStarted: Boolean = false
   private var peer = Peer()
@@ -129,8 +200,8 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
 
           advertiseMaster(eventBusId, callerDeviceId)
 
-          callees foreach (putParticipant(_, ApiCallMemberState.RINGING))
-          putParticipant(callerUserId, ApiCallMemberState.CONNECTED)
+          callees foreach (userId ⇒ addMember(userId, MemberStates.Ringing))
+          addMember(callerUserId, MemberStates.Connected, isJoined = true)
           broadcastSyncedSet()
 
           context become callInProgress(peer, eventBusId, callerDeviceId, System.currentTimeMillis(), callerUserId)
@@ -158,7 +229,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
         else ApiServiceMessage("Missed call", Some(ApiServiceExPhoneMissed))
 
       (for {
-        _ ← if (peer.`type`.isPrivate) FutureExt.ftraverse(participants.keySet.toSeq)(userId ⇒ dialogExt.sendMessage(
+        _ ← if (peer.`type`.isPrivate) FutureExt.ftraverse(memberUserIds.toSeq)(userId ⇒ dialogExt.sendMessage(
           peer = ApiPeer(ApiPeerType.Private, callerUserId),
           senderUserId = callerUserId,
           senderAuthId = None,
@@ -203,6 +274,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
         } yield device) match {
           case Some(device) ⇒
             putDevice(device.deviceId, client, device.copy(isJoined = true))
+            setMemberJoined(userId)
             cancelIncomingCallUpdates(userId)
 
             weakUpdExt.broadcastUserWeakUpdate(userId, UpdateCallHandled(id), excludeAuthIds = Set(authId))
@@ -232,7 +304,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
               this.isConversationStarted = true
 
             if (!isConnected(userId)) {
-              putParticipant(userId, ApiCallMemberState.CONNECTING)
+              setMemberState(userId, MemberStates.Connecting)
               broadcastSyncedSet()
             }
 
@@ -242,6 +314,12 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
         }
       case RejectCall(userId, authId) ⇒
         cancelIncomingCallUpdates(userId)
+        setMemberState(userId, MemberStates.Ended)
+        val client = EventBus.ExternalClient(userId, authId)
+        for (deviceId ← clients get client) {
+          clients -= client
+          devices -= deviceId
+        }
         weakUpdExt.broadcastUserWeakUpdate(userId, UpdateCallHandled(id), excludeAuthIds = Set(authId))
         broadcastSyncedSet()
         sender() ! RejectCallAck
@@ -249,11 +327,9 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
         if ( // If caller changed his mind until anyone picked up
         (!this.isConversationStarted && userId == callerUserId) ||
           // If everyone rejected dialing, there will no any conversation ;(
-          (!this.isConversationStarted &&
-            devices.size == 1 &&
-            devices.headOption.exists(_._2.deviceId == callerDeviceId))) end()
+          (!this.isConversationStarted && everyoneRejected(callerUserId))) end()
       case GetInfo ⇒
-        sender() ! GetInfoAck(eventBusId, peer, participants.keySet.toSeq)
+        sender() ! GetInfoAck(eventBusId, peer, memberUserIds.toSeq)
       case EventBus.Joined(_, client, deviceId) ⇒
         if (client.isExternal)
           advertiseMaster(eventBusId, deviceId)
@@ -271,12 +347,15 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
 
               for {
                 userId ← ebMessage.client.externalUserId
-                state ← participants.get(userId)
-              } yield if (state == ApiCallMemberState.RINGING) putParticipant(userId, ApiCallMemberState.RINGING_REACHED)
+                member ← getMember(userId)
+              } yield {
+                if (member.state == MemberStates.Ringing)
+                  setMemberState(userId, MemberStates.RingingReached)
+              }
             }
           case msg: ApiNegotinationSuccessful ⇒
             ebMessage.client.externalUserId foreach { userId ⇒
-              putParticipant(userId, ApiCallMemberState.CONNECTED)
+              setMemberState(userId, MemberStates.Connected)
               broadcastSyncedSet()
             }
           case msg: ApiOnRenegotiationNeeded ⇒
@@ -300,12 +379,16 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
       case EventBus.Disconnected(_, client, deviceId) ⇒
         removeDevice(deviceId)
         client.externalUserId foreach { userId ⇒
-          putParticipant(userId, ApiCallMemberState.ENDED)
-          broadcastSyncedSet()
+          if (!devices.values.exists(_.client.externalUserId.contains(userId))) {
+            setMemberState(userId, MemberStates.Ended)
+            broadcastSyncedSet()
+          }
         }
 
-        if ((!isConversationStarted && client.externalUserId.contains(callerUserId)) ||
-          (isConversationStarted && !devices.exists(_._2.isJoined))) end()
+        if ( // no one have been reached and caller left
+        (!isConversationStarted && client.externalUserId.contains(callerUserId)) ||
+          // there is no one left who can have a conversation
+          (isConversationStarted && everyoneLeft(callerUserId))) end()
       case EventBus.Disposed(_) ⇒
         end()
         deleteSyncedSet()
@@ -324,19 +407,6 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
   private def isConnected(userId: UserId): Boolean = {
     val userDevices = devices.filter(_._2.client.externalUserId.contains(userId)).values.map(_.deviceId).toSet
     sessions.keySet.exists(pair ⇒ userDevices.contains(pair.left) || userDevices.contains(pair.right))
-  }
-
-  private def putParticipant(userId: Int, state: ApiCallMemberState.Value): Unit = {
-    participants get userId match {
-      case Some(oldState) ⇒
-        if (oldState != state) {
-          log.debug("Changing participant {} state from {} to {}", userId, oldState, state)
-          participants += userId → state
-        } else log.error("Attempt to change participant state to the same value {}", state)
-      case None ⇒
-        log.debug("Adding participant {} with state {}", userId, state)
-        participants += userId → state
-    }
   }
 
   private def putDevice(deviceId: EventBus.DeviceId, client: EventBus.Client, device: Device): Unit = {
@@ -360,31 +430,28 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
 
   private def scheduleIncomingCallUpdates(callees: Seq[UserId]): Future[Unit] = {
     for {
-      authIdsMap ← userExt.getAuthIdsMap(callees.toSet)
-      credsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
-        case (userId, authIds) ⇒
-          apnsExt.findVoipCreds(authIds.toSet) map (userId → _)
-      }
+      authIds ← userExt.getAuthIds(callees.toSet)
+      credss ← apnsExt.findVoipCreds(authIds.toSet)
     } yield {
+      credss foreach { creds ⇒
+        val payload = (new ApnsPayloadBuilder).addCustomProperty("callId", id).buildWithDefaultMaximumLength()
+
+        val instanceCreds = apnsExt.getVoipInstance(creds.apnsKey) map (_ → creds)
+        for ((instance, cred) ← instanceCreds) {
+          val notif = new SimpleApnsPushNotification(cred.token.toByteArray, payload)
+          instance.getQueue.add(notif)
+        }
+      }
+
       scheduledUpds =
-        credsMap
-          .map {
-            case (userId, creds) ⇒
-              (
-                userId,
-                context.system.scheduler.schedule(0.seconds, 5.seconds) {
-                  weakUpdExt.broadcastUserWeakUpdate(userId, UpdateIncomingCall(id), reduceKey = Some(s"call_$id"))
-
-                  val payload = (new ApnsPayloadBuilder).addCustomProperty("callId", id).buildWithDefaultMaximumLength()
-
-                  val instanceCreds = creds flatMap (c ⇒ apnsExt.getVoipInstance(c.apnsKey) map (_ → c))
-                  for ((instance, cred) ← instanceCreds) {
-                    val notif = new SimpleApnsPushNotification(cred.token.toByteArray, payload)
-                    instance.getQueue.add(notif)
-                  }
-                }
-              )
-          }
+        callees.map { userId ⇒
+          (
+            userId,
+            context.system.scheduler.schedule(0.seconds, 5.seconds) {
+              weakUpdExt.broadcastUserWeakUpdate(userId, UpdateIncomingCall(id), reduceKey = Some(s"call_$id"))
+            }
+          )
+        }
           .toMap
     }
   }
@@ -397,8 +464,9 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
 
   private def broadcastSyncedSet(): Unit = {
     val activeCall =
-      ApiActiveCall(id, peer.asStruct, participants.toVector map {
-        case (userId, state) ⇒
+      ApiActiveCall(id, peer.asStruct, getMembers.toVector map {
+        case (userId, member) ⇒
+          val state = member.apiState
 
           ApiCallMember(userId, ApiCallMemberStateHolder(
             state = state,
@@ -409,11 +477,11 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging {
             fallbackIsEnded = Some(state == ApiCallMemberState.ENDED)
           ))
       }).toByteArray
-    participants.keySet foreach (valuesExt.syncedSet.put(_, Webrtc.SyncedSetName, id, activeCall))
+    memberUserIds foreach (valuesExt.syncedSet.put(_, Webrtc.SyncedSetName, id, activeCall))
   }
 
   private def deleteSyncedSet(): Unit =
-    participants.keySet foreach { userId ⇒
+    memberUserIds foreach { userId ⇒
       valuesExt.syncedSet.delete(userId, Webrtc.SyncedSetName, id)
     }
 

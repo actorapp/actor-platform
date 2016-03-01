@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,14 +13,14 @@
 
         <TextView
             android:id="@+id/status"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="37.5dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textColor="@android:color/white"
-            android:text="Ringing..."/>
+            android:textSize="17.3sp"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@android:color/white"/>
 
         <RelativeLayout
 
@@ -71,15 +70,12 @@
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/call_avatar_background"/>
 
-
             <im.actor.sdk.view.avatar.AvatarView
                 android:id="@+id/avatar"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"/>
-
-
 
             <ListView
                 android:paddingLeft="20dp"
@@ -94,20 +90,21 @@
             <TextView
                 android:textColor="@android:color/white"
                 android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
                 android:gravity="center_horizontal|bottom"
-
-                android:fontFamily="sans-serif-thin"
+                android:ellipsize="marquee"
+                android:scrollHorizontally="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:fontFamily="sans-serif-light"
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:lines="1"
-                android:textSize="32sp"
+                android:textSize="30sp"
                 android:layout_below="@+id/layer4"
                 android:layout_centerHorizontal="true" />
-
-
-
-
 
         </RelativeLayout>
 
@@ -138,14 +135,15 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:src="@drawable/ic_call_end_white_36dp"
-                        android:background="@drawable/end_call_background"
-                        />
+                        android:background="@drawable/end_call_background"/>
+
                 </FrameLayout>
 
                 <FrameLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="60dp">
+
                     <ImageButton
                         android:layout_gravity="center"
                         android:id="@+id/answer"
@@ -159,26 +157,33 @@
             </LinearLayout>
 
             <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:paddingBottom="15dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:stretchColumns="*">
+
                 <TableRow
+                    android:minHeight="110dp"
                     android:layout_weight="1"
                     android:gravity="center">
+
                     <LinearLayout
                         android:id="@+id/mute_btn"
                         android:orientation="vertical"
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content">
+
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/mute"
                             android:layout_gravity="center_horizontal"
                             android:layout_height="@dimen/call_btn_size"
                             android:scaleType="centerInside"
-                            android:layout_width="@dimen/call_btn_size"
-                            
-                            />
+                            android:layout_width="@dimen/call_btn_size"/>
+
                         <TextView
                             android:id="@+id/mute_tv"
                             android:layout_gravity="center"
@@ -195,14 +200,14 @@
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content">
+
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/speaker"
                             android:layout_gravity="center_horizontal"
                             android:layout_height="@dimen/call_btn_size"
                             android:scaleType="centerInside"
-                            android:layout_width="@dimen/call_btn_size"
-                            
-                            />
+                            android:layout_width="@dimen/call_btn_size"/>
+
                         <TextView
                             android:id="@+id/speaker_tv"
                             android:layout_gravity="center"
@@ -219,14 +224,14 @@
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content">
+
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/video"
                             android:layout_gravity="center_horizontal"
                             android:layout_height="@dimen/call_btn_size"
                             android:scaleType="centerInside"
-                            android:layout_width="@dimen/call_btn_size"
-                            
-                            />
+                            android:layout_width="@dimen/call_btn_size"/>
+
                         <TextView
                             android:id="@+id/video_tv"
                             android:layout_gravity="center"
@@ -234,12 +239,14 @@
                             android:text="video"
                             android:gravity="center"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"/>
+
                     </LinearLayout>
 
                 </TableRow>
 
                 <TableRow
+                    android:minHeight="110dp"
                     android:layout_weight="1"
                     android:gravity="center">
 
@@ -249,14 +256,14 @@
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content">
+
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/back"
                             android:layout_gravity="center_horizontal"
                             android:layout_height="@dimen/call_btn_size"
                             android:scaleType="centerInside"
-                            android:layout_width="@dimen/call_btn_size"
-                            
-                            />
+                            android:layout_width="@dimen/call_btn_size"/>
+
                         <TextView
                             android:id="@+id/back_tv"
                             android:layout_gravity="center"
@@ -265,12 +272,14 @@
                             android:gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
+
                     </LinearLayout>
 
                     <FrameLayout
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content">
+
                         <ImageButton
                             android:layout_gravity="center"
                             android:visibility="visible"
@@ -287,14 +296,14 @@
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content">
+
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/add"
                             android:layout_gravity="center_horizontal"
                             android:layout_height="@dimen/call_btn_size"
                             android:scaleType="centerInside"
-                            android:layout_width="@dimen/call_btn_size"
-                            
-                            />
+                            android:layout_width="@dimen/call_btn_size"/>
+
                         <TextView
                             android:id="@+id/add_user_tv"
                             android:layout_gravity="center"
@@ -305,17 +314,12 @@
                             android:layout_height="wrap_content" />
                     </LinearLayout>
 
-
                 </TableRow>
+
             </TableLayout>
-
-
-
-
 
         </FrameLayout>
 
     </LinearLayout>
-
 
 </FrameLayout>
