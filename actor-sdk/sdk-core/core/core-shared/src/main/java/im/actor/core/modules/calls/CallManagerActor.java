@@ -104,6 +104,11 @@ public class CallManagerActor extends ModuleActor {
         runningCalls.put(callId, ref);
 
         //
+        // Marking outgoing call as answered to avoid call rejects on call ending
+        //
+        answeredCalls.add(callId);
+
+        //
         // Setting Current Call
         //
         currentCall = callId;
@@ -285,7 +290,11 @@ public class CallManagerActor extends ModuleActor {
         //
         ActorRef currentCallActor = runningCalls.remove(callId);
         if (currentCallActor != null) {
-            currentCallActor.send(PoisonPill.INSTANCE);
+            if (answeredCalls.contains(callId)) {
+                currentCallActor.send(PoisonPill.INSTANCE);
+            } else {
+                currentCallActor.send(new CallActor.RejectCall());
+            }
         }
 
         //
