@@ -22,10 +22,6 @@ import AvatarItem from '../common/AvatarItem.react';
 import Stateful from '../common/Stateful';
 
 class RecentItem extends Component {
-  constructor(props){
-    super(props);
-  }
-
   static propTypes = {
     dialog: PropTypes.object.isRequired,
     type: PropTypes.string
@@ -45,17 +41,7 @@ class RecentItem extends Component {
     };
   }
 
-  componentDidMount() {
-    const recentNode = findDOMNode(this.refs.recentItem);
-    recentNode.addEventListener('contextmenu', this.openContextMenu);
-  }
-
-  componentWillUnmount() {
-    const recentNode = findDOMNode(this.refs.recentItem);
-    recentNode.removeEventListener('contextmenu', this.openContextMenu);
-  }
-
-  openContextMenu = (event) => {
+  onContextMenu = (event) => {
     event.preventDefault();
     const { peer } = this.props.dialog.peer;
     const contextPos = {
@@ -75,7 +61,7 @@ class RecentItem extends Component {
     });
 
     return (
-      <li ref="recentItem">
+      <li onContextMenu={this.onContextMenu}>
         <Link to={`/im/${toPeer}`} className={recentClassName} activeClassName="sidebar__list__item--active">
 
           <AvatarItem image={dialog.peer.avatar}
