@@ -99,9 +99,11 @@ private trait Members {
 
   def setMemberJoined(userId: UserId, isJoined: Boolean = true): Unit =
     members get userId match {
-      case Some(member) if !member.isJoined ⇒ members += userId → member.copy(isJoined = true)
-      case Some(_)                          ⇒ throw new RuntimeException("Attempt to set member joined who is already joined")
-      case None                             ⇒ throw new RuntimeException("Attempt to set an unexistent member joined")
+      case Some(member) if isJoined != member.isJoined ⇒ members += userId → member.copy(isJoined = isJoined)
+      case Some(_) ⇒
+        throw new RuntimeException(s"Attempt to set member joined to $isJoined who is already $isJoined")
+      case None ⇒
+        throw new RuntimeException("Attempt to set an unexistent member joined")
     }
 
   def setMemberState(userId: UserId, state: MemberState): Unit =
@@ -387,6 +389,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
         client.externalUserId foreach { userId ⇒
           if (!devices.values.exists(_.client.externalUserId.contains(userId))) {
             setMemberState(userId, MemberStates.Ended)
+            setMemberJoined(userId, isJoined = false)
             broadcastSyncedSet()
           }
         }
@@ -398,14 +401,14 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
       case EventBus.Disposed(_) ⇒
         end()
         deleteSyncedSet()
-      case SendIncomingCall(userId) =>
+      case SendIncomingCall(userId) ⇒
         if (System.currentTimeMillis() - startTime < 30000)
           weakUpdExt.broadcastUserWeakUpdate(userId, UpdateIncomingCall(id), reduceKey = Some(s"call_$id"))
         else {
           cancelIncomingCallUpdates(userId)
           setMemberState(userId, MemberStates.Ended)
           for {
-            deviceId <- clients.filter(_._1.externalUserId.contains(userId)).map(_._2)
+            deviceId ← clients.filter(_._1.externalUserId.contains(userId)).map(_._2)
           } yield removeDevice(deviceId)
           broadcastSyncedSet()
         }
