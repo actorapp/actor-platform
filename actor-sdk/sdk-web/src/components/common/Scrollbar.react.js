@@ -14,6 +14,7 @@ class Scrollbar extends Component {
       PropTypes.array
     ]),
     className: PropTypes.string,
+    style: PropTypes.object,
 
     onScroll: PropTypes.func
   };
@@ -39,11 +40,11 @@ class Scrollbar extends Component {
   };
 
   render() {
-    const { children, className } = this.props;
+    const { children, className, style } = this.props;
     const wrapperClassName = classnames('scroll-wrapper', className);
 
     return (
-      <div className={wrapperClassName} ref="scroll" onScroll={this.handleScroll}>
+      <div className={wrapperClassName} ref="scroll" onScroll={this.handleScroll} style={{...style}}>
         {children}
       </div>
     );
