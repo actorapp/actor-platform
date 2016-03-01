@@ -671,6 +671,10 @@ public class JsFacade implements Exportable {
         messenger.endCall(Long.parseLong(callId));
     }
 
+    public void toggleCallMute(String callId) {
+        messenger.toggleCallMute(Long.parseLong(callId));
+    }
+
     public void bindCall(String id, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
