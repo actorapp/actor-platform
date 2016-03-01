@@ -8,6 +8,9 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
 import { FormattedHTMLMessage } from 'react-intl';
+import history from '../../../utils/history';
+import PeerUtils from '../../../utils/PeerUtils';
+import Scrollbar from '../../common/Scrollbar.react';
 
 import { KeyCodes } from '../../../constants/ActorAppConstants';
 
@@ -58,7 +61,8 @@ class GroupList extends Component {
   searchGroups = debounce((query) => GroupListActionCreators.search(query), 300, {trailing: true});
 
   handleGroupSelect = (peer) => {
-    DialogActionCreators.selectDialogPeer(peer);
+    const peerStr = PeerUtils.peerToString(peer);
+    history.push(`/im/${peerStr}`);
     this.handleClose()
   };
 
@@ -75,7 +79,7 @@ class GroupList extends Component {
 
       this.setState({selectedIndex: index});
 
-      const scrollContainerNode = findDOMNode(this.refs.results);
+      const scrollContainerNode = findDOMNode(this.refs.results).getElementsByClassName('ss-scrollarea')[0];
       const selectedNode = findDOMNode(this.refs.selected);
       const scrollContainerNodeRect = scrollContainerNode.getBoundingClientRect();
       const selectedNodeRect = selectedNode.getBoundingClientRect();
@@ -95,7 +99,7 @@ class GroupList extends Component {
 
       this.setState({selectedIndex: index});
 
-      const scrollContainerNode = findDOMNode(this.refs.results);
+      const scrollContainerNode = findDOMNode(this.refs.results).getElementsByClassName('ss-scrollarea')[0];
       const selectedNode = findDOMNode(this.refs.selected);
       const scrollContainerNodeRect = scrollContainerNode.getBoundingClientRect();
       const selectedNodeRect = selectedNode.getBoundingClientRect();
@@ -137,10 +141,7 @@ class GroupList extends Component {
     }
   };
 
-  handleScroll = (top) => {
-    const resultsNode = findDOMNode(this.refs.results);
-    resultsNode.scrollTop = top;
-  };
+  handleScroll = (top) => this.refs.results.scrollTo(top);
 
   render() {
     const { query, results, selectedIndex, list } = this.state;
@@ -167,18 +168,20 @@ class GroupList extends Component {
                  value={query}/>
         </section>
 
-        <ul className="newmodal__result group__list" ref="results">
-          {
-            list.length === 0
-              ? <div>{intl.messages['modal.groups.loading']}</div>
-              : results.length === 0
-                  ? <li className="group__list__item group__list__item--empty text-center">
-                      <FormattedHTMLMessage id="modal.groups.notFound"
-                                            values={{query}} />
-                    </li>
-                  : groupList
-          }
-        </ul>
+        <Scrollbar ref="results">
+          <ul className="newmodal__result group__list">
+            {
+              list.length === 0
+                ? <div>{intl.messages['modal.groups.loading']}</div>
+                : results.length === 0
+                    ? <li className="group__list__item group__list__item--empty text-center">
+                        <FormattedHTMLMessage id="modal.groups.notFound"
+                                              values={{query}} />
+                      </li>
+                    : groupList
+            }
+          </ul>
+        </Scrollbar>
       </div>
     )
   }

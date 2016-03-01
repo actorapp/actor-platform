@@ -1342,14 +1342,6 @@
     }
   }
   &__result {
-    position: absolute;
-    top: 262px;
-    bottom: 0;
-
-    overflow-x: hidden;
-    overflow-y: auto;
-
-    width: 100%;
     margin: 0;
     padding: 0 0 32px;
   }
@@ -1369,6 +1361,18 @@
         .title {
           line-height: 44px;
         }
+      }
+    }
+    .scroll-wrapper {
+      position: absolute;
+      top: 262px;
+      bottom: 0;
+      width: 100%;
+      height: auto;
+      .ss-scroll {
+        opacity: 1;
+        height: 4px;
+        right: -8px;
       }
     }
   }
@@ -1471,6 +1475,18 @@
             }
           }
         }
+      }
+    }
+    .scroll-wrapper {
+      position: absolute;
+      top: 262px;
+      bottom: 0;
+      width: 100%;
+      height: auto;
+      .ss-scroll {
+        opacity: 1;
+        height: 4px;
+        right: -8px;
       }
     }
   }
