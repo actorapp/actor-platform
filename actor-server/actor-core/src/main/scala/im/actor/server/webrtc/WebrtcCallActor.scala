@@ -329,7 +329,11 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
           // If everyone rejected dialing, there will no any conversation ;(
           (!this.isConversationStarted && everyoneRejected(callerUserId))) end()
       case GetInfo ⇒
-        sender() ! GetInfoAck(eventBusId, peer, memberUserIds.toSeq)
+        if (peer.typ.isPrivate) {
+          sender() ! GetInfoAck(eventBusId, Peer(PeerType.Private, memberUserIds.filterNot(_ == peer.id).head), memberUserIds.toSeq)
+        } else {
+          sender() ! GetInfoAck(eventBusId, peer, memberUserIds.toSeq)
+        }
       case EventBus.Joined(_, client, deviceId) ⇒
         if (client.isExternal)
           advertiseMaster(eventBusId, deviceId)
