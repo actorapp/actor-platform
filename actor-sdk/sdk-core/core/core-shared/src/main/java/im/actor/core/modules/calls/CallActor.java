@@ -149,6 +149,7 @@ public class CallActor extends AbsCallActor {
         if (!isAnswered && !isRejected) {
             isRejected = true;
             request(new RequestRejectCall(callId));
+            self().send(PoisonPill.INSTANCE);
         }
     }
 
