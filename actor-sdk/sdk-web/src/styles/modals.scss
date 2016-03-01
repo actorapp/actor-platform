@@ -985,7 +985,6 @@
   }
   &--quick-search {
     box-sizing: border-box;
-    //padding: 8px 16px 0;
     padding: 0;
 
     background-color: white;
@@ -1041,10 +1040,6 @@
       }
     }
     .results {
-      overflow-x: hidden;
-      overflow-y: auto;
-
-      max-height: 352px;
       margin: 0;
       padding: 0;
       &__item {
@@ -1119,6 +1114,17 @@
     }
     & > div {
       padding-bottom: 10px;
+    }
+
+    .ss-container {
+      .ss-scroll {
+        width: 6px;
+        opacity: 1;
+        &:active,
+        &:hover {
+          width: 8px;
+        }
+      }
     }
   }
 }
