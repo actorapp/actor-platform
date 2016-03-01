@@ -132,6 +132,8 @@ public class CallFragment extends BaseFragment {
                 cont.findViewById(R.id.layer4)
         };
 
+        wave(avatarLayers, 1.1f ,1200, 200);
+
         for (int i = 0; i<avatarLayers.length; i++){
             View layer = avatarLayers[i];
             ((GradientDrawable)layer.getBackground()).setColor(Color.WHITE);
