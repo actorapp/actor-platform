@@ -128,7 +128,7 @@ private trait Members {
     val ringing = members.values.filter(_.state == MemberStates.Ringing)
     val joined = members.values.filter(_.isJoined)
 
-    joined.isEmpty && ringing.isEmpty
+    joined.size <= 1 && ringing.isEmpty
   }
 }
 
