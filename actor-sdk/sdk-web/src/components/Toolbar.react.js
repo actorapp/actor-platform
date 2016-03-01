@@ -60,7 +60,6 @@ class ToolbarSection extends Component {
 
   render() {
     const { dialogInfo, isActivityOpen, message, isFavorite } = this.state;
-    const { isExperimental } = this.context;
 
     const infoButtonClassName = classnames('button button--icon', {
       'active': isActivityOpen

@@ -1,0 +1,68 @@
+$ring-size: 120px;
+$ring-step: 15px;
+
+@keyframes scale {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.1);
+  }
+}
+
+.call {
+  width: 350px;
+  border-left: 1px solid rgba(black, .03);
+
+  &__header {
+    text-align: center;
+    padding-top: 48px;
+  }
+  &__footer {}
+
+  &__avatar {
+    padding: 16px;
+    margin-bottom: 16px;
+    position: relative;
+    .avatar {
+      z-index: 15;
+    }
+    &__rings {
+      & > div {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background-color: rgba(black, .075);
+        // margin-left: - $ring-size / 2;
+        // margin-top: - $ring-size / 2;
+        // height: $ring-size;
+        // width: $ring-size;
+        display: block;
+        border-radius: 50%;
+        animation: scale 1.5s infinite ease;
+        @for $i from 1 through 3 {
+          &:nth-child(#{$i}) {
+            margin-left: - ($ring-size + ($ring-step * ($i - 1))) / 2;
+            margin-top: - ($ring-size + ($ring-step * ($i - 1))) / 2;
+            height: $ring-size + ($ring-step * ($i - 1));
+            width: $ring-size + ($ring-step * ($i - 1));
+            z-index: 10 - $i;
+            animation-delay: 125ms * $i;
+          }
+        }
+      }
+    }
+  }
+
+  &__title {
+    margin: 16px 8px 8px;
+    color: rgba(black, .6);
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+  }
+
+  &__state {
+
+  }
+}
