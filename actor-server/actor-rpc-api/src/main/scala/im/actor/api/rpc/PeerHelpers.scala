@@ -1,50 +1,49 @@
 package im.actor.api.rpc
 
+import akka.actor._
 import cats.data.Xor
+import im.actor.api.rpc.CommonRpcErrors.InvalidAccessHash
+import im.actor.api.rpc.peers._
 import im.actor.server.acl.ACLUtils
+import im.actor.server.api.rpc.service.groups.GroupRpcErrors
 import im.actor.server.db.DbExtension
+import im.actor.server.group.GroupErrors.GroupNotFound
 import im.actor.server.model._
 import im.actor.server.persist._
-
-import scala.concurrent.{ Future, ExecutionContext }
-
-import akka.actor._
+import im.actor.server.user.UserErrors.UserNotFound
+import im.actor.util.misc.StringUtils
 import slick.dbio.DBIO
 
-import im.actor.api.rpc.peers._
-import im.actor.server.api.rpc.service.groups.GroupRpcErrors
-import im.actor.util.misc.StringUtils
+import scala.concurrent.{ ExecutionContext, Future }
 
 object PeerHelpers {
-  def withOutPeerF[R <: RpcResponse](
-    outPeer: ApiOutPeer
-  )(
-    f: ⇒ Future[RpcError Xor R]
-  )(implicit client: AuthorizedClientData, actorSystem: ActorSystem, ec: ExecutionContext): Future[RpcError Xor R] =
-    DbExtension(actorSystem).db.run(withOutPeer(outPeer)(DBIO.from(f)))
 
-  def withOutPeer[R <: RpcResponse](
-    outPeer: ApiOutPeer
-  )(
-    f: ⇒ DBIO[RpcError Xor R]
-  )(implicit client: AuthorizedClientData, actorSystem: ActorSystem, ec: ExecutionContext): DBIO[RpcError Xor R] = {
-    outPeer.`type` match {
-      case ApiPeerType.Private ⇒
-        DBIO.from(ACLUtils.checkOutPeer(outPeer, client.authId)) flatMap {
-          case false ⇒ DBIO.successful(Error(CommonRpcErrors.InvalidAccessHash))
-          case true  ⇒ f
-        }
-      case ApiPeerType.Group ⇒
-        (for {
-          optGroup ← GroupRepo.find(outPeer.id)
-          grouperrOrGroup ← validGroup(optGroup)
-          hasherrOrGroup ← DBIO.successful(grouperrOrGroup.map(validGroupAccessHash(outPeer.accessHash, _)))
-        } yield hasherrOrGroup).flatMap {
-          case Error(err) ⇒ DBIO.successful(Error(err))
-          case _          ⇒ f
-        }
-    }
+  def withOutPeer[R <: RpcResponse](outPeer: ApiOutPeer)(f: ⇒ Future[RpcError Xor R])(
+    implicit
+    client: AuthorizedClientData,
+    system: ActorSystem
+  ): Future[RpcError Xor R] = {
+    import FutureResultRpc._
+    import system.dispatcher
+    val action: Result[R] = for {
+      valid ← fromFuture(handleNotFound)(ACLUtils.checkOutPeer(outPeer, client.authId))
+      result ← if (valid) fromFutureXor(f) else fromXor(Xor.left(InvalidAccessHash))
+    } yield result
+    action.value
   }
+
+  private def handleNotFound: PartialFunction[Throwable, RpcError] = {
+    case _: UserNotFound  ⇒ CommonRpcErrors.UserNotFound
+    case _: GroupNotFound ⇒ CommonRpcErrors.GroupNotFound
+    case e                ⇒ throw e
+  }
+
+  def withOutPeerDBIO[R <: RpcResponse](outPeer: ApiOutPeer)(f: ⇒ DBIO[RpcError Xor R])(
+    implicit
+    client: AuthorizedClientData,
+    system: ActorSystem
+  ): DBIO[RpcError Xor R] =
+    DBIO.from(withOutPeer(outPeer)(DbExtension(system).db.run(f)))
 
   def withOutPeerAsGroupPeer[R <: RpcResponse](outPeer: ApiOutPeer)(
     f: ApiGroupOutPeer ⇒ DBIO[RpcError Xor R]
@@ -77,15 +76,6 @@ object PeerHelpers {
       (for (user ← GroupUserRepo.find(group.id, userId)) yield user).flatMap {
         case Some(user) ⇒ f(group)
         case None       ⇒ DBIO.successful(Error(CommonRpcErrors.forbidden("You are not a group member.")))
-      }
-    }
-  }
-
-  def withGroupAdmin[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: FullGroup ⇒ DBIO[RpcError Xor R])(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIO[RpcError Xor R] = {
-    withOwnGroupMember(groupOutPeer, client.userId) { group ⇒
-      (for (user ← GroupUserRepo.find(group.id, client.userId)) yield user).flatMap {
-        case Some(gu) if gu.isAdmin ⇒ f(group)
-        case _                      ⇒ DBIO.successful(Error(CommonRpcErrors.forbidden("Only admin can perform this action.")))
       }
     }
   }
@@ -197,28 +187,12 @@ object PeerHelpers {
     GroupRepo.findFull(groupOutPeer.groupId) flatMap {
       case Some(group) ⇒
         if (group.accessHash != groupOutPeer.accessHash) {
-          DBIO.successful(Error(CommonRpcErrors.InvalidAccessHash))
+          DBIO.successful(Error(InvalidAccessHash))
         } else {
           f(group)
         }
       case None ⇒
         DBIO.successful(Error(CommonRpcErrors.GroupNotFound))
-    }
-  }
-
-  private def validGroup(optGroup: Option[Group]) = {
-    optGroup match {
-      case Some(group) ⇒
-        DBIO.successful(Xor.right(group))
-      case None ⇒ DBIO.successful(Error(CommonRpcErrors.GroupNotFound))
-    }
-  }
-
-  private def validGroupAccessHash(accessHash: Long, group: Group)(implicit client: BaseClientData, actorSystem: ActorSystem) = {
-    if (accessHash == group.accessHash) {
-      Xor.right(group)
-    } else {
-      Error(CommonRpcErrors.InvalidAccessHash)
     }
   }
 
