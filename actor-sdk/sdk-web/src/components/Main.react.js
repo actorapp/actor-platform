@@ -15,7 +15,6 @@ import Favicon from './common/Favicon.react';
 
 import ModalsWrapper from './modals/ModalsWrapper.react';
 import MenuOverlay from './common/MenuOverlay.react';
-import CallModal from './modals/CallModal.react';
 import InviteUser from './modals/InviteUser.react';
 import InviteByLink from './modals/invite-user/InviteByLink.react';
 import EditGroup from './modals/EditGroup.react';
@@ -81,7 +80,6 @@ class Main extends Component {
         <InviteUser/>
         <InviteByLink/>
         <EditGroup/>
-        <CallModal/>
       </div>
     );
   }
