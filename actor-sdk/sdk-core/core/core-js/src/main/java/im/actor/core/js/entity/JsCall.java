@@ -31,11 +31,11 @@ public class JsCall extends JavaScriptObject {
                 state = "ended";
                 break;
         }
-        return create(JsPeer.create(model.getPeer()), model.isOutgoing(), members, state);
+        return create(JsPeer.create(model.getPeer()), model.isOutgoing(), members, state, model.getIsMuted().get());
     }
 
-    public static native JsCall create(JsPeer peer, boolean isOutgoing, JsArray<JsPeerInfo> members, String state)/*-{
-        return {peer: peer, isOutgoing: isOutgoing, members: members, state: state};
+    public static native JsCall create(JsPeer peer, boolean isOutgoing, JsArray<JsPeerInfo> members, String state, boolean isMuted)/*-{
+        return {peer: peer, isOutgoing: isOutgoing, members: members, state: state, isMuted: isMuted};
     }-*/;
 
     protected JsCall() {
