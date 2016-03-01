@@ -13,12 +13,8 @@ class iOSCallsProvider: NSObject, ACCallsProvider {
     
     func onCallStartWithCallId(callId: jlong) {
         
-        AAAudioManager.sharedAudio().callStart(Actor.getCallWithCallId(callId).isOutgoing)
+        AAAudioManager.sharedAudio().callStart(Actor.getCallWithCallId(callId))
        
-        if !Actor.getCallWithCallId(callId).isOutgoing {
-            showNotification(callId)
-        }
-        
         dispatchOnUi() {
             let rootController = ActorSDK.sharedActor().bindedToWindow.rootViewController!
             rootController.presentViewController(AACallViewController(callId: callId), animated: true, completion: nil)
@@ -26,42 +22,11 @@ class iOSCallsProvider: NSObject, ACCallsProvider {
     }
     
     func onCallAnsweredWithCallId(callId: jlong) {
-        AAAudioManager.sharedAudio().callAnswered()
-        hideNotification()
+        AAAudioManager.sharedAudio().callAnswered(Actor.getCallWithCallId(callId))
     }
     
     func onCallEndWithCallId(callId: jlong) {
-        AAAudioManager.sharedAudio().callEnd()
-        hideNotification()
-    }
-    
-    private func showNotification(callId: jlong) {
-        dispatchOnUi() {
-            let callVm = Actor.getCallWithCallId(callId)
-            if (self.latestNotification != nil) {
-                UIApplication.sharedApplication().cancelLocalNotification(self.latestNotification)
-                self.latestNotification = nil
-            }
-            self.latestNotification = UILocalNotification()
-            if callVm.peer.isGroup {
-                let groupName = Actor.getGroupWithGid(callVm.peer.peerId).getNameModel().get()
-                self.latestNotification.alertBody = "Group Call \(groupName)"
-            } else if callVm.peer.isPrivate {
-                let userName = Actor.getUserWithUid(callVm.peer.peerId).getNameModel().get()
-                self.latestNotification.alertBody = "Call from \(userName)"
-            }
-            self.latestNotification.soundName = "ringtone.m4a"
-            UIApplication.sharedApplication().presentLocalNotificationNow(self.latestNotification)
-        }
-    }
-    
-    private func hideNotification() {
-        dispatchOnUi() {
-            if (self.latestNotification != nil) {
-                UIApplication.sharedApplication().cancelLocalNotification(self.latestNotification)
-                self.latestNotification = nil
-            }
-        }
+        AAAudioManager.sharedAudio().callEnd(Actor.getCallWithCallId(callId))
     }
     
     func startOutgoingBeep() {

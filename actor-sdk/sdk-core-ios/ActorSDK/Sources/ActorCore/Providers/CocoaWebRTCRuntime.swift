@@ -22,11 +22,14 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     }
     
     func getUserAudio() -> ARPromise {
-        print("📱getUserAudio")
         let audio = peerConnectionFactory.audioTrackWithID("audio0")
         let mediaStream = peerConnectionFactory.mediaStreamWithLabel("ARDAMSa0")
         mediaStream.addAudioTrack(audio)
         return ARPromises.success(MediaStream(stream: mediaStream))
+    }
+    
+    func supportsPreConnections() -> jboolean {
+        return false
     }
 }
 
@@ -161,37 +164,34 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     //
     
     func peerConnection(peerConnection: RTCPeerConnection!, signalingStateChanged stateChanged: RTCSignalingState) {
-        print("📱signalingStateChanged \(stateChanged)")
+
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, addedStream stream: RTCMediaStream!) {
-        print("📱onStreamAdded")
         for c in callbacks {
             c.onStreamAdded(MediaStream(stream: stream!))
         }
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, removedStream stream: RTCMediaStream!) {
-        print("📱onStreamRemoved")
         for c in callbacks {
             c.onStreamRemoved(MediaStream(stream: stream!))
         }
     }
     
     func peerConnectionOnRenegotiationNeeded(peerConnection: RTCPeerConnection!) {
-        print("📱onRenegotiationNeeded")
+        
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, iceConnectionChanged newState: RTCICEConnectionState) {
-        print("📱iceConnectionChanged \(newState)")
+        
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, iceGatheringChanged newState: RTCICEGatheringState) {
-        print("📱iceGatheringChanged \(newState)")
+        
     }
     
     func peerConnection(peerConnection: RTCPeerConnection!, gotICECandidate candidate: RTCICECandidate!) {
-        print("📱gotICECandidate \(candidate)")
         for c in callbacks {
             c.onCandidateWithLabel(jint(candidate.sdpMLineIndex), withId: candidate.sdpMid, withCandidate: candidate.sdp)
         }

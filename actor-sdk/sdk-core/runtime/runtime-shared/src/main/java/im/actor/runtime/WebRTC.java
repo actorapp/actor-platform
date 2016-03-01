@@ -18,4 +18,8 @@ public final class WebRTC {
     public static Promise<WebRTCMediaStream> getUserAudio() {
         return rtcRuntime.getUserAudio();
     }
+
+    public static boolean isSupportsPreConnections() {
+        return rtcRuntime.supportsPreConnections();
+    }
 }
