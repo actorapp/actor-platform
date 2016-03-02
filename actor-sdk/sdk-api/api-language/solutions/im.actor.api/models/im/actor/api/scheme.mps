@@ -10847,6 +10847,13 @@
           <property role="TrG5h" value="callId" />
           <node concept="2m5ndQ" id="6tgpW9bxta0" role="2m7DVh" />
         </node>
+        <node concept="2m7Kf5" id="5Wm9Dsml5ez" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="attemptIndex" />
+          <node concept="2m5nlT" id="5Wm9Dsml5eD" role="2m7DVh">
+            <node concept="2m5ndE" id="5Wm9Dsml5eJ" role="3GH5xg" />
+          </node>
+        </node>
         <node concept="Nu42z" id="6tgpW9bxsju" role="NuuwV">
           <property role="Nu42W" value="34" />
         </node>
@@ -10858,6 +10865,11 @@
           <property role="NX6R2" value="Call Id" />
           <ref role="NX6Kv" node="6tgpW9bxt9W" resolve="callId" />
         </node>
+        <node concept="NX1gA" id="5Wm9Dsml5eQ" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional attempt Index" />
+          <ref role="NX6Kv" node="5Wm9Dsml5ez" resolve="attemptIndex" />
+        </node>
       </node>
       <node concept="NpBTk" id="3Tolai5NHAS" role="2m5mJr">
         <property role="TrG5h" value="CallHandled" />
@@ -10865,6 +10877,13 @@
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="callId" />
           <node concept="2m5ndQ" id="3Tolai5NHBQ" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5Wm9Dsml5eV" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="attemptIndex" />
+          <node concept="2m5nlT" id="5Wm9Dsml5f1" role="2m7DVh">
+            <node concept="2m5ndE" id="5Wm9Dsml5f7" role="3GH5xg" />
+          </node>
         </node>
         <node concept="Nu42z" id="3Tolai5NHAT" role="NuuwV">
           <property role="Nu42W" value="35" />
@@ -10876,6 +10895,11 @@
           <property role="NX6R2" value="Call Id" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3Tolai5NHBM" resolve="callId" />
+        </node>
+        <node concept="NX1gA" id="5Wm9Dsml5fe" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional attempt Index" />
+          <ref role="NX6Kv" node="5Wm9Dsml5eV" resolve="attemptIndex" />
         </node>
       </node>
       <node concept="NpBTk" id="YOvM6E4Vk$" role="2m5mJr">
