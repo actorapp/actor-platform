@@ -63,7 +63,8 @@ private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) e
   private def startArchiving(): Unit = {
     for {
       dialogs ← dialogExt.fetchGroupedDialogs(userId) map (_ filterNot (_._1 == DialogGroups.Favourites) flatMap (_._2))
-    } self ! ArchiveIfExpired(dialogs.toList)
+    } if (dialogs.size > 12)
+      self ! ArchiveIfExpired(dialogs.toList)
   }
 
   private def archiveIfExpired(dialogs: Seq[Dialog]): Unit = {
