@@ -36,7 +36,7 @@ final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService 
       }
     }
 
-    whenReady(msgService.handleLoadHistory(getOutPeer(bob.authData.get.userId, clientData.authId), 0, 100)) { resp ⇒
+    whenReady(msgService.handleLoadHistory(getOutPeer(bob.authData.get.userId, clientData.authId), 0, None, 100)) { resp ⇒
       inside(resp) {
         case Ok(ResponseLoadHistory(Vector(hm), _)) ⇒
           inside(hm.message) {
@@ -75,7 +75,7 @@ final class ContactRegisteredSpec extends BaseAppSuite with ImplicitAuthService 
         }
       }
 
-      whenReady(msgService.handleLoadHistory(getOutPeer(alice.authData.get.userId, bob.authId), 0, 100)) { resp ⇒
+      whenReady(msgService.handleLoadHistory(getOutPeer(alice.authData.get.userId, bob.authId), 0, None, 100)) { resp ⇒
         inside(resp) {
           case Ok(ResponseLoadHistory(Vector(), Vector())) ⇒
         }
