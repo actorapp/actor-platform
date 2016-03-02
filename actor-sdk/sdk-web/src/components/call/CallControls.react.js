@@ -49,7 +49,7 @@ class CallControls extends Component {
     }
 
     return (
-      <div>
+      <div className="call__controls">
         {controls}
       </div>
     );
