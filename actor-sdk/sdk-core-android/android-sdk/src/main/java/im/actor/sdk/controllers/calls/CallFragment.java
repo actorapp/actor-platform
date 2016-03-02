@@ -90,6 +90,9 @@ public class CallFragment extends BaseFragment {
     private ListView membersList;
     private CallAvatarLayerAnimator animator;
     private View[] avatarLayers;
+    private View layer1;
+    private View layer2;
+    private View layer3;
 
     public CallFragment() {
 
@@ -124,16 +127,22 @@ public class CallFragment extends BaseFragment {
 //                cont.findViewById(R.id.layer3),
 //                cont.findViewById(R.id.layer4)
 //                );
-        
+
+        layer1 = cont.findViewById(R.id.layer1);
+        layer2 = cont.findViewById(R.id.layer2);
+        layer3 = cont.findViewById(R.id.layer3);
         avatarLayers = new View[]{
 //                cont.findViewById(R.id.layer),
-                cont.findViewById(R.id.layer1),
-                cont.findViewById(R.id.layer2),
-                cont.findViewById(R.id.layer3),
+                layer1,
+                layer2,
+                layer3,
 //                cont.findViewById(R.id.layer4)
         };
 
-        wave(avatarLayers, 1.5f ,1900, -2f);
+        showView(layer1);
+        showView(layer2);
+        showView(layer3);
+        wave(avatarLayers, 1.135f ,1900, -2f);
 
         for (int i = 0; i<avatarLayers.length; i++){
             View layer = avatarLayers[i];
