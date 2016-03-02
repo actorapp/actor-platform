@@ -31,6 +31,10 @@ export default {
     }
   },
 
+  muteCall(peerId) {
+    console.info('mute', {peerId});
+  },
+
   makeCall(peerId) {
     dispatchAsync(ActorClient.makeCall(peerId), {
       request: ActionTypes.CALL,
@@ -38,6 +42,7 @@ export default {
       failure: ActionTypes.CALL_ERROR
     }, { peerId });
   },
+
   makeGroupCall(peerId) {
     dispatchAsync(ActorClient.makeGroupCall(peerId), {
       request: ActionTypes.CALL,
