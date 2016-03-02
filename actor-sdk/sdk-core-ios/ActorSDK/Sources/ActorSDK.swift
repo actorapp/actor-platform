@@ -521,7 +521,11 @@ import PushKit
                     let tabBarController = bindedController as! UITabBarController
                     let index = tabBarController.selectedIndex
                     let navController = tabBarController.viewControllers![index] as! UINavigationController
-                    navController.pushViewController(ConversationViewController(peer: ACPeer.groupWithInt(groupId.intValue)), animated: true)
+                    if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.groupWithInt(groupId.intValue)) {
+                        navController.pushViewController(customController, animated: true)
+                    } else {
+                        navController.pushViewController(ConversationViewController(peer: ACPeer.groupWithInt(groupId.intValue)), animated: true)
+                    }
                     
                 }, failureBlock: nil)
             })
