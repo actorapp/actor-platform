@@ -117,7 +117,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
       {
         implicit val clientData = clientData1
 
-        whenReady(service.handleLoadHistory(user2Peer, message3Date, 100)) { resp ⇒
+        whenReady(service.handleLoadHistory(user2Peer, message3Date, None, 100)) { resp ⇒
           resp should matchPattern {
             case Ok(_) ⇒
           }
@@ -190,7 +190,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
         Thread.sleep(2000)
 
-        whenReady(service.handleLoadHistory(groupOutPeer.asOutPeer, 0, 100)) { resp ⇒
+        whenReady(service.handleLoadHistory(groupOutPeer.asOutPeer, 0, None, 100)) { resp ⇒
           val history = resp.toOption.get.history
           //history does not contain message about group creation, as group was not created by Zero user
           history.length shouldEqual 4
