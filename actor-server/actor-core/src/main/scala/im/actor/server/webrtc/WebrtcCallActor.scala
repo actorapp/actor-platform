@@ -99,7 +99,7 @@ private trait Members {
 
   def setMemberJoined(userId: UserId, isJoined: Boolean = true): Unit =
     members get userId match {
-      case Some(member) => members += userId → member.copy(isJoined = isJoined)
+      case Some(member) ⇒ members += userId → member.copy(isJoined = isJoined)
       case None ⇒
         throw new RuntimeException("Attempt to set an unexistent member joined")
     }
