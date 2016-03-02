@@ -137,12 +137,14 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
             }
         }), "actor/dialogs/archived");
 
-        this.dialogsGroupedActor = system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public GroupedDialogsActor create() {
-                return new GroupedDialogsActor(context());
-            }
-        }), "actor/dialogs/grouped");
+        if (context().getConfiguration().isEnabledGroupedChatList()) {
+            this.dialogsGroupedActor = system().actorOf(Props.create(new ActorCreator() {
+                @Override
+                public GroupedDialogsActor create() {
+                    return new GroupedDialogsActor(context());
+                }
+            }), "actor/dialogs/grouped");
+        }
 
         this.ownReadActor = system().actorOf(Props.create(new ActorCreator() {
             @Override

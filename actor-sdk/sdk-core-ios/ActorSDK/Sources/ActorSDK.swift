@@ -195,6 +195,7 @@ import PushKit
         // Config
         builder.setPhoneBookImportEnabled(jboolean(enablePhoneBookImport))
         builder.setVoiceCallsEnabled(jboolean(enableCalls))
+        builder.setIsEnabledGroupedChatList(false)
         
         // Creating messenger
         messenger = ACCocoaMessenger(configuration: builder.build())

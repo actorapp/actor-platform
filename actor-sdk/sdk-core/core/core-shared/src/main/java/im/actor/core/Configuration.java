@@ -4,6 +4,8 @@
 
 package im.actor.core;
 
+import com.google.j2objc.annotations.Property;
+
 import im.actor.core.network.TrustedKey;
 import im.actor.core.providers.NotificationProvider;
 import im.actor.core.providers.PhoneBookProvider;
@@ -16,40 +18,46 @@ import im.actor.runtime.webrtc.WebRTCIceServer;
  */
 public class Configuration {
 
+    @Property("readonly, nonatomic")
     private final ConnectionEndpoint[] endpoints;
-
+    @Property("readonly, nonatomic")
     private final TrustedKey[] trustedKeys;
-
-    private PhoneBookProvider phoneBookProvider;
-
-    private boolean voiceCallsEnabled;
-
-    private boolean enableContactsLogging = false;
-    private boolean enableNetworkLogging = false;
-    private boolean enableFilesLogging = false;
-
-    private NotificationProvider notificationProvider;
-
-    private ApiConfiguration apiConfiguration;
-
-    private DeviceCategory deviceCategory;
-
-    private PlatformType platformType;
-
-    private String timeZone;
-    private String[] preferredLanguages;
-
-    private int minDelay;
-
-    private int maxDelay;
-
-    private int maxFailureCount;
-
-    private String customAppName;
-
-    private boolean enablePhoneBookImport;
-
-    private CallsProvider callsProvider;
+    @Property("readonly, nonatomic")
+    private final PhoneBookProvider phoneBookProvider;
+    @Property("readonly, nonatomic")
+    private final boolean voiceCallsEnabled;
+    @Property("readonly, nonatomic")
+    private final boolean enableContactsLogging;
+    @Property("readonly, nonatomic")
+    private final boolean enableNetworkLogging;
+    @Property("readonly, nonatomic")
+    private final boolean enableFilesLogging;
+    @Property("readonly, nonatomic")
+    private final NotificationProvider notificationProvider;
+    @Property("readonly, nonatomic")
+    private final ApiConfiguration apiConfiguration;
+    @Property("readonly, nonatomic")
+    private final DeviceCategory deviceCategory;
+    @Property("readonly, nonatomic")
+    private final PlatformType platformType;
+    @Property("readonly, nonatomic")
+    private final String timeZone;
+    @Property("readonly, nonatomic")
+    private final String[] preferredLanguages;
+    @Property("readonly, nonatomic")
+    private final int minDelay;
+    @Property("readonly, nonatomic")
+    private final int maxDelay;
+    @Property("readonly, nonatomic")
+    private final int maxFailureCount;
+    @Property("readonly, nonatomic")
+    private final String customAppName;
+    @Property("readonly, nonatomic")
+    private final boolean enablePhoneBookImport;
+    @Property("readonly, nonatomic")
+    private final CallsProvider callsProvider;
+    @Property("readonly, nonatomic")
+    private final boolean isEnabledGroupedChatList;
 
     Configuration(ConnectionEndpoint[] endpoints,
                   PhoneBookProvider phoneBookProvider,
@@ -69,7 +77,8 @@ public class Configuration {
                   TrustedKey[] trustedKeys,
                   boolean enablePhoneBookImport,
                   CallsProvider callsProvider,
-                  boolean voiceCallsEnabled) {
+                  boolean voiceCallsEnabled,
+                  boolean isEnabledGroupedChatList) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
         this.enableContactsLogging = enableContactsLogging;
@@ -89,6 +98,7 @@ public class Configuration {
         this.enablePhoneBookImport = enablePhoneBookImport;
         this.callsProvider = callsProvider;
         this.voiceCallsEnabled = voiceCallsEnabled;
+        this.isEnabledGroupedChatList = isEnabledGroupedChatList;
     }
 
     /**
@@ -260,5 +270,14 @@ public class Configuration {
      */
     public String[] getPreferredLanguages() {
         return preferredLanguages;
+    }
+
+    /**
+     * Get If Grouped Chat List enabled
+     *
+     * @return is grouped chat list enabled
+     */
+    public boolean isEnabledGroupedChatList() {
+        return isEnabledGroupedChatList;
     }
 }
