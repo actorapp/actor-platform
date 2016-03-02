@@ -82,11 +82,6 @@ class MessagesSection extends Component {
     }
   };
 
-  handleScroll = () => {
-    const { onScroll } = this.props;
-    onScroll && onScroll();
-  };
-
   render() {
     const { messages, peer } = this.props;
     const { delegate } = this.context;
@@ -126,7 +121,7 @@ class MessagesSection extends Component {
     });
 
     return (
-      <Scrollbar onScroll={this.handleScroll} ref="messagesScroll">
+      <Scrollbar onScroll={this.props.onScroll} ref="messagesScroll">
         <ul className="messages__list">
           {
             (isMember && isAllMessagesLoaded) || (isMember && messagesList.length < 30)
