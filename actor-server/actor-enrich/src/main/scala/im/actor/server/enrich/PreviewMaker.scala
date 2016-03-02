@@ -1,20 +1,20 @@
 package im.actor.server.enrich
 
-import scala.concurrent.{ ExecutionContextExecutor, Future }
-
 import akka.actor._
 import akka.http.scaladsl.model.HttpMethods.GET
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers._
-import akka.http.scaladsl.{ Http, HttpExt }
 import akka.pattern.pipe
-import akka.stream.Materializer
+import akka.stream.{ ActorMaterializer, Materializer }
 import akka.util.ByteString
+import im.actor.server.model.Peer
+
+import scala.concurrent.{ ExecutionContext, Future }
 
 object PreviewMaker {
 
-  def apply(config: RichMessageConfig, name: String)(implicit system: ActorSystem, materializer: Materializer): ActorRef =
-    system.actorOf(Props(classOf[PreviewMaker], config, materializer), name)
+  def apply(config: RichMessageConfig, name: String)(implicit system: ActorSystem): ActorRef =
+    system.actorOf(Props(classOf[PreviewMaker], config), name)
 
   object Failures {
     object Messages {
@@ -22,38 +22,49 @@ object PreviewMaker {
       val ContentTooLong = "content is too long"
       val Failed = "failed to make preview"
     }
-    def notAnImage(handler: UpdateHandler) = PreviewFailure(Messages.NotAnImage, handler)
-    def contentTooLong(handler: UpdateHandler) = PreviewFailure(Messages.ContentTooLong, handler)
-    def failedToMakePreview(handler: UpdateHandler, cause: String = Messages.Failed) = PreviewFailure(cause, handler)
-    def failedWith(status: StatusCode, handler: UpdateHandler): PreviewFailure = PreviewFailure(s"failed to make preview with http status code ${status.value}", handler)
+    def notAnImage(randomId: Long) = PreviewFailure(Messages.NotAnImage, randomId)
+    def contentTooLong(randomId: Long) = PreviewFailure(Messages.ContentTooLong, randomId)
+    def failedToMakePreview(randomId: Long, cause: String = Messages.Failed) = PreviewFailure(cause, randomId)
+    def failedWith(status: StatusCode, randomId: Long): PreviewFailure = PreviewFailure(s"failed to make preview with http status code ${status.value}", randomId)
   }
 
-  case class GetPreview(url: String, handler: UpdateHandler)
+  final case class GetPreview(
+    url:          String,
+    clientUserId: Int,
+    peer:         Peer,
+    randomId:     Long
+  )
 
   sealed trait PreviewResult
-  case class PreviewSuccess(content: ByteString, fileName: Option[String], contentType: String, handler: UpdateHandler) extends PreviewResult
-  case class PreviewFailure(message: String, handler: UpdateHandler) extends PreviewResult
+  final case class PreviewSuccess(
+    content:      ByteString,
+    fileName:     Option[String],
+    contentType:  String,
+    clientUserId: Int,
+    peer:         Peer,
+    randomId:     Long
+  ) extends PreviewResult
+  final case class PreviewFailure(message: String, randomId: Long) extends PreviewResult
 
   private def getFileName(cdOption: Option[`Content-Disposition`]) = cdOption.flatMap(_.params.get("filename"))
 }
 
-class PreviewMaker(config: RichMessageConfig)(implicit materializer: Materializer) extends Actor with ActorLogging {
+class PreviewMaker(config: RichMessageConfig) extends Actor with ActorLogging with PreviewHelpers {
 
-  import PreviewHelpers._
   import PreviewMaker._
 
-  implicit val system: ActorSystem = context.system
-  implicit val ec: ExecutionContextExecutor = context.dispatcher
-  implicit val http: HttpExt = Http()
+  protected implicit val system: ActorSystem = context.system
+  protected implicit val ec: ExecutionContext = system.dispatcher
+  protected implicit val mat: Materializer = ActorMaterializer()
 
   def receive = {
-    case GetPreview(url, handler) ⇒
-      val result: Future[PreviewResult] = withRequest(HttpRequest(GET, url), handler) { response ⇒
+    case gp: GetPreview ⇒
+      val result: Future[PreviewResult] = withRequest(HttpRequest(GET, gp.url), gp.randomId) { response ⇒
         val cd: Option[`Content-Disposition`] = response.header[`Content-Disposition`]
         response match {
-          case HttpResponse(_: StatusCodes.Success, _, entity: HttpEntity.Default, _) ⇒ downloadDefault(entity, getFileName(cd), handler, config)
-          case HttpResponse(_: StatusCodes.Success, _, entity: HttpEntity.Chunked, _) ⇒ downloadChunked(entity, getFileName(cd), handler, config)
-          case HttpResponse(status, _, _, _) ⇒ Future.successful(Failures.failedWith(status, handler))
+          case HttpResponse(_: StatusCodes.Success, _, entity: HttpEntity.Default, _) ⇒ downloadDefault(entity, getFileName(cd), gp, config.maxSize)
+          case HttpResponse(_: StatusCodes.Success, _, entity: HttpEntity.Chunked, _) ⇒ downloadChunked(entity, getFileName(cd), gp, config.maxSize)
+          case HttpResponse(status, _, _, _) ⇒ Future.successful(Failures.failedWith(status, gp.randomId))
         }
       }
       result pipeTo sender()

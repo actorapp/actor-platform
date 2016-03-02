@@ -1,5 +1,7 @@
 package im.actor.server.enrich
 
+import im.actor.server.model.{ PeerType, Peer }
+
 import scala.concurrent.duration._
 
 import akka.actor.ActorRef
@@ -61,7 +63,7 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
       sendGetPreview(previewMaker, image.url)
       probe watch previewMaker
       probe.expectMsgPF(10.seconds) {
-        case PreviewSuccess(content, fileName, mimeType, _) ⇒
+        case PreviewSuccess(content, fileName, mimeType, _, _, _) ⇒
           content should not be empty
           content.length shouldEqual image.contentLength
           fileName shouldEqual image.fileName
@@ -75,7 +77,7 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
       sendGetPreview(previewMaker, image.url)
       probe watch previewMaker
       probe.expectMsgPF(10.seconds) {
-        case PreviewSuccess(content, fileName, mimeType, _) ⇒
+        case PreviewSuccess(content, fileName, mimeType, _, _, _) ⇒
           content should not be empty
           content.length shouldEqual image.contentLength
           fileName shouldEqual image.fileName
@@ -101,7 +103,7 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
       sendGetPreview(previewMaker, image.url)
       probe watch previewMaker
       probe.expectMsgPF(10.seconds) {
-        case PreviewSuccess(content, fileName, mimeType, _) ⇒
+        case PreviewSuccess(content, fileName, mimeType, _, _, _) ⇒
           content should not be empty
           fileName shouldEqual image.fileName
           mimeType shouldEqual image.mimeType
@@ -114,7 +116,7 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
       sendGetPreview(previewMaker, image.url)
       probe watch previewMaker
       probe.expectMsgPF(10.seconds) {
-        case PreviewSuccess(content, fileName, mimeType, _) ⇒
+        case PreviewSuccess(content, fileName, mimeType, _, _, _) ⇒
           content should not be empty
           fileName shouldEqual image.fileName
           mimeType shouldEqual image.mimeType
@@ -124,14 +126,9 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
       }
     }
 
-    class DummyUpdateHandler extends UpdateHandler(0L) {
-      def handleDbUpdate(message: ApiMessage) = ???
-      def handleUpdate(message: ApiMessage) = ???
-    }
-
     protected def sendGetPreview(previewMaker: ActorRef, url: String)(implicit probe: TestProbe) = {
       previewMaker.tell(
-        GetPreview(url, new DummyUpdateHandler()),
+        GetPreview(url, 0, Peer(PeerType.Private, 0), 0L),
         probe.ref
       )
     }

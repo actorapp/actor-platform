@@ -4,51 +4,43 @@ import akka.actor._
 import akka.cluster.pubsub.DistributedPubSubMediator.{ Subscribe, SubscribeAck }
 import akka.event.Logging
 import akka.http.scaladsl.model.Uri
-import akka.stream.Materializer
 import akka.util.Timeout
 import com.sksamuel.scrimage.Image
 import com.sksamuel.scrimage.nio.JpegWriter
 import im.actor.api.rpc.files.ApiFastThumb
 import im.actor.api.rpc.messaging._
-import im.actor.server.db.DbExtension
 import im.actor.server.file._
+import im.actor.server.messaging.MessageUpdating
 import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
 import im.actor.util.log.AnyRefLogSource
 import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
 
 object RichMessageWorker {
   val groupId = Some("RichMessageWorker")
 
-  def startWorker(config: RichMessageConfig)(
-    implicit
-    system:       ActorSystem,
-    materializer: Materializer
-  ): ActorRef = system.actorOf(Props(classOf[RichMessageWorker], config, materializer), "rich-message-worker")
+  def startWorker(config: RichMessageConfig)(implicit system: ActorSystem): ActorRef =
+    system.actorOf(Props(classOf[RichMessageWorker], config), "rich-message-worker")
 }
 
-final class RichMessageWorker(config: RichMessageConfig)(implicit materializer: Materializer) extends Actor with ActorLogging {
+final class RichMessageWorker(config: RichMessageConfig) extends Actor with ActorLogging with MessageUpdating {
 
   import AnyRefLogSource._
   import PreviewMaker._
   import RichMessageWorker._
 
   private implicit val system: ActorSystem = context.system
-  private implicit val ec: ExecutionContextExecutor = system.dispatcher
+  import system.dispatcher
   private implicit val timeout: Timeout = Timeout(10.seconds)
 
-  private val db = DbExtension(system).db
   private val pubSubExt = PubSubExtension(system)
-
   private val fsAdapter: FileStorageAdapter = FileStorageExtension(context.system).fsAdapter
 
   override val log = Logging(system, this)
 
-  val previewMaker = PreviewMaker(config, "previewMaker")
+  private val previewMaker = PreviewMaker(config, "previewMaker")
 
   private val privateSubscribe = Subscribe(pubSubExt.privateMessagesTopic, groupId, self)
   private val publicSubscribe = Subscribe(pubSubExt.groupMessagesTopic, None, self)
@@ -63,12 +55,12 @@ final class RichMessageWorker(config: RichMessageConfig)(implicit materializer: 
       if (groupAckReceived)
         context.become(ready)
       else
-        context.become(subscribing(true, groupAckReceived))
+        context.become(subscribing(privateAckReceived = true, groupAckReceived = groupAckReceived))
     case SubscribeAck(`publicSubscribe`) ⇒
       if (privateAckReceived)
         context.become(ready)
       else
-        context.become(subscribing(privateAckReceived, true))
+        context.become(subscribing(privateAckReceived, groupAckReceived = true))
   }
 
   def ready: Receive = {
@@ -78,43 +70,40 @@ final class RichMessageWorker(config: RichMessageConfig)(implicit materializer: 
           Try(Uri(text.trim)) match {
             case Success(uri) ⇒
               log.debug("TextMessage with uri: {}", uri)
-              previewMaker ! GetPreview(uri.toString(), UpdateHandler.getHandler(fromPeer, toPeer, randomId))
+              previewMaker ! GetPreview(uri.toString(), fromPeer.id, toPeer, randomId)
             case Failure(_) ⇒
           }
         case _ ⇒
       }
-    case PreviewSuccess(imageBytes, optFileName, mimeType, handler) ⇒
-      log.debug("PreviewSuccess for message with randomId: {}, fileName: {}, mimeType: {}", handler.randomId, optFileName, mimeType)
+    case PreviewSuccess(imageBytes, optFileName, mimeType, clientUserId, peer, randomId) ⇒
+      log.debug("PreviewSuccess for message with randomId: {}, fileName: {}, mimeType: {}", randomId, optFileName, mimeType)
       val fullName = optFileName getOrElse {
         val name = (new DateTime).toString("yyyyMMddHHmmss")
         val ext = Try(mimeType.split("/").last).getOrElse("tmp")
         s"$name.$ext"
       }
       val image = Image(imageBytes.toArray).toPar
-      db.run {
-        for {
-          location ← fsAdapter.uploadFile(UnsafeFileName(fullName), imageBytes.toArray)
-          thumb ← DBIO.from(ImageUtils.scaleTo(image, 90))
-          thumbBytes = thumb.toImage.forWriter(JpegWriter()).bytes
+      for {
+        location ← fsAdapter.uploadFileF(UnsafeFileName(fullName), imageBytes.toArray)
+        thumb ← ImageUtils.scaleTo(image, 90)
+        thumbBytes = thumb.toImage.forWriter(JpegWriter()).bytes
 
-          _ = log.debug("uploaded file to location {}", location)
-          _ = log.debug("image with width: {}, height: {}", image.width, image.height)
+        _ = log.debug("uploaded file to location {}", location)
+        _ = log.debug("image with width: {}, height: {}", image.width, image.height)
 
-          updated = ApiDocumentMessage(
-            fileId = location.fileId,
-            accessHash = location.accessHash,
-            fileSize = imageBytes.size,
-            name = fullName,
-            mimeType = mimeType,
-            thumb = Some(ApiFastThumb(thumb.width, thumb.height, thumbBytes)),
-            ext = Some(ApiDocumentExPhoto(image.width, image.height))
-          )
-          _ ← handler.handleDbUpdate(updated)
-          _ ← handler.handleUpdate(updated)
-        } yield ()
-      }
-    case PreviewFailure(mess, handler) ⇒
-      log.debug("failed to make preview for message with randomId: {}, cause: {} ", handler.randomId, mess)
+        updated = ApiDocumentMessage(
+          fileId = location.fileId,
+          accessHash = location.accessHash,
+          fileSize = imageBytes.size,
+          name = fullName,
+          mimeType = mimeType,
+          thumb = Some(ApiFastThumb(thumb.width, thumb.height, thumbBytes)),
+          ext = Some(ApiDocumentExPhoto(image.width, image.height))
+        )
+        _ ← updateMessageContent(clientUserId, peer, randomId, updated)
+      } yield ()
+    case PreviewFailure(mess, randomId) ⇒
+      log.debug("failed to make preview for message with randomId: {}, cause: {} ", randomId, mess)
   }
 
 }
