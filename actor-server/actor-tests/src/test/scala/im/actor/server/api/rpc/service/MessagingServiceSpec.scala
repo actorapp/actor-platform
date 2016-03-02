@@ -339,7 +339,7 @@ class MessagingServiceSpec
         {
           implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
 
-          whenReady(service.handleLoadHistory(bobOutPeer, 0L, Int.MaxValue)) { resp ⇒
+          whenReady(service.handleLoadHistory(bobOutPeer, 0L, None, Int.MaxValue)) { resp ⇒
             inside(resp) {
               case Ok(ResponseLoadHistory(history, _)) ⇒
                 val textMessages = history map { e ⇒
