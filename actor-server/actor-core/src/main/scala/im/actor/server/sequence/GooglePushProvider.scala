@@ -3,7 +3,9 @@ package im.actor.server.sequence
 import akka.actor.ActorSystem
 import im.actor.server.model.push.GooglePushCredentials
 
-private[sequence] final class GooglePushProvider(userId: Int, googlePushManager: GooglePushManager, system: ActorSystem) extends PushProvider {
+private[sequence] final class GooglePushProvider(userId: Int, system: ActorSystem) extends PushProvider {
+  private val googlePushExt = GooglePushExtension(system)
+
   def deliverInvisible(seq: Int, creds: GooglePushCredentials): Unit = {
     val message = GooglePushMessage(
       to = creds.regId,
@@ -11,7 +13,7 @@ private[sequence] final class GooglePushProvider(userId: Int, googlePushManager:
       data = Some(Map("seq" → seq.toString))
     )
 
-    googlePushManager.send(creds.projectId, message)
+    googlePushExt.send(creds.projectId, message)
   }
 
   def deliverVisible(
@@ -34,6 +36,6 @@ private[sequence] final class GooglePushProvider(userId: Int, googlePushManager:
       ))
     )
 
-    googlePushManager.send(creds.projectId, message)
+    googlePushExt.send(creds.projectId, message)
   }
 }
