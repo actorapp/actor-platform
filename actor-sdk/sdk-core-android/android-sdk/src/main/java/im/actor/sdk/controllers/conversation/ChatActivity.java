@@ -1091,25 +1091,25 @@ public class ChatActivity extends ActorEditTextActivity {
         }
 
         if (ActorSDK.sharedActor().isCallsEnabled()) {
-//            if (item.getItemId() == R.id.call) {
-//                if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
-//                        ContextCompat.checkSelfPermission(this, Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED ||
-//                        ContextCompat.checkSelfPermission(this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED) {
-//                    Log.d("Permissions", "call - no permission :c");
-//                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.VIBRATE, Manifest.permission.WAKE_LOCK},
-//                            PERMISSIONS_REQUEST_FOR_CALL);
-//
-//                }else{
-//                    startCall();
-//                }
-//            }
+            if (item.getItemId() == R.id.call) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED) {
+                    Log.d("Permissions", "call - no permission :c");
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.VIBRATE, Manifest.permission.WAKE_LOCK},
+                            PERMISSIONS_REQUEST_FOR_CALL);
 
-            Context context = ActorSDK.sharedActor().getMessenger().getContext();
-            Intent callIntent = new Intent(context, CallActivity.class);
-            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-            callIntent.putExtra("callId", 0);
-            context.startActivity(callIntent);
-            context.startActivity(callIntent);
+                }else{
+                    startCall();
+                }
+            }
+
+//            Context context = ActorSDK.sharedActor().getMessenger().getContext();
+//            Intent callIntent = new Intent(context, CallActivity.class);
+//            callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+//            callIntent.putExtra("callId", 0);
+//            context.startActivity(callIntent);
+//            context.startActivity(callIntent);
         }
 
         return super.onOptionsItemSelected(item);
