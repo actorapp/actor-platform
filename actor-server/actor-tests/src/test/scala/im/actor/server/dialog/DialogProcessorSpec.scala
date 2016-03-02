@@ -50,7 +50,7 @@ final class DialogProcessorSpec extends BaseAppSuite
     {
       implicit val clientData = ClientData(bobAuthId, 2, Some(AuthData(bob.id, bobAuthSid)))
       val aliceOutPeer = whenReady(ACLUtils.getOutPeer(alicePeer, bobAuthId))(identity)
-      whenReady(messService.handleLoadHistory(aliceOutPeer, 0L, Int.MaxValue)) { resp ⇒
+      whenReady(messService.handleLoadHistory(aliceOutPeer, 0L, None, Int.MaxValue)) { resp ⇒
         inside(resp) {
           case Ok(ResponseLoadHistory(messages, _)) ⇒
             val (aliceMessages, bobsMessages) = messages map { mess ⇒
@@ -92,7 +92,7 @@ final class DialogProcessorSpec extends BaseAppSuite
     {
       implicit val clientData = ClientData(bobAuthId, 2, Some(AuthData(bob.id, bobAuthSid)))
       val aliceOutPeer = whenReady(ACLUtils.getOutPeer(alicePeer, bobAuthId))(identity)
-      whenReady(messService.handleLoadHistory(aliceOutPeer, 0L, Int.MaxValue)) { resp ⇒
+      whenReady(messService.handleLoadHistory(aliceOutPeer, 0L, None, Int.MaxValue)) { resp ⇒
         inside(resp) {
           case Ok(ResponseLoadHistory(messages, _)) ⇒
             val (aliceMessages, bobsMessages) = messages partition (m ⇒ m.senderUserId == alice.id)
