@@ -338,7 +338,11 @@ public class AASettingsViewController: AAContentTableController {
                                     }
                                 }
                             }
-                            self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
+                            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.userWithInt(user.getId())) {
+                                self.navigateDetail(customController)
+                            } else {
+                                self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
+                            }
                         }
                         return true
                     }
