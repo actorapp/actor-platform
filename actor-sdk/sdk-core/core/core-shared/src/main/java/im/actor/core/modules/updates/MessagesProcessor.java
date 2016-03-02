@@ -383,8 +383,10 @@ public class MessagesProcessor extends AbsModule {
     }
 
     public void onChatGroupsChanged(List<ApiDialogGroup> groups) {
-        context().getMessagesModule().getDialogsGroupedActor()
-                .send(new GroupedDialogsActor.GroupedDialogsChanged(groups));
+        if (context().getConfiguration().isEnabledGroupedChatList()) {
+            context().getMessagesModule().getDialogsGroupedActor()
+                    .send(new GroupedDialogsActor.GroupedDialogsChanged(groups));
+        }
     }
 
     public void onArchivedDialogsLoaded(ResponseLoadArchived responseLoadArchived) {
