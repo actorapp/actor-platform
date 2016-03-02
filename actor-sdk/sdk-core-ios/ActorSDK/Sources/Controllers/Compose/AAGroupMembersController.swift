@@ -81,7 +81,11 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
             if self.groupImage != nil {
                 Actor.changeGroupAvatar(gid, image: self.groupImage!)
             }
-            self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(gid)))
+            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.groupWithInt(gid)) {
+                self.navigateDetail(customController)
+            } else {
+                self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(gid)))
+            }
         }
     }
     
