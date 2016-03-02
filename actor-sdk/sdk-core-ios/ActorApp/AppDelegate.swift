@@ -28,6 +28,8 @@ import ActorSDK
         // Setting Development Push Id
         ActorSDK.sharedActor().apiPushId = 868547
         
+        ActorSDK.sharedActor().authStrategy = .EmailOnly
+        
         // Creating Actor
         ActorSDK.sharedActor().createActor()
         

@@ -443,6 +443,17 @@
 
 "AuthTerms" = "By signing up to {app_name}, you agree not to: \n\n - use our service to send spam and scam users.\n\n- promote violence on publicly viewable {app_name} bots or channels.\n\nWe reserve the right to update these Terms of Service later.";
 
+"AuthEmailTitle" = "Your Email";
+
+"AuthEmailHint" = "Please, confirm your corporate email address and press next";
+
+"AuthEmailFieldHint" = "Your corporate email adress";
+
+
+"AuthEmailCodeFieldHint" = "Activation Code";
+
+"AuthEmailCodeHint" = "We sent activation code to your email.";
+
 /*
  * Common Elements
  */
