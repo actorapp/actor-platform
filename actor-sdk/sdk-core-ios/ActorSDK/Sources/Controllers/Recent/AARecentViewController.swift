@@ -95,11 +95,19 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
     // Handling selections
     
     public func recentsDidTap(controller: AADialogsListContentController, dialog: ACDialog) -> Bool {
-        navigateDetail(ConversationViewController(peer: dialog.peer))
+        if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(dialog.peer) {
+            self.navigateDetail(customController)
+        } else {
+            self.navigateDetail(ConversationViewController(peer: dialog.peer))
+        }
         return false
     }
     
     public func searchDidTap(controller: AADialogsListContentController, entity: ACSearchEntity) {
-        navigateDetail(ConversationViewController(peer: entity.peer))
+        if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(entity.peer) {
+            self.navigateDetail(customController)
+        } else {
+            self.navigateDetail(ConversationViewController(peer: entity.peer))
+        }
     }
 }
