@@ -13,6 +13,7 @@ import DefaultTyping from './dialog/TypingSection.react';
 import DefaultCompose from './dialog/ComposeSection.react';
 import DefaultToolbar from './Toolbar.react';
 import DefaultActivity from './Activity.react';
+import DefaultCall from './Call.react';
 import ConnectionState from './common/ConnectionState.react';
 
 import ActivityStore from '../stores/ActivityStore';
@@ -173,6 +174,7 @@ class DialogSection extends Component {
       TypingSection = DefaultTyping;
       ComposeSection = DefaultCompose;
       activity.push(<DefaultActivity key={1}/>);
+      activity.push(<DefaultCall key={2} />);
     }
 
     const mainScreen = peer ? (
