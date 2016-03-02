@@ -158,10 +158,18 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                     
                     if user != nil {
                         c.execute(Actor.addContactCommandWithUid(user!.getId())!, successBlock: { (val) -> Void in
-                            self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(user!.getId())) {
+                                self.navigateDetail(customController)
+                            } else {
+                                self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            }
                             c.dismiss()
                         }, failureBlock: { (val) -> Void in
-                            self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(user!.getId())) {
+                                self.navigateDetail(customController)
+                            } else {
+                                self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            }
                             c.dismiss()
                         })
                     } else {
@@ -190,7 +198,11 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                     }
                     if user != nil {
                         self.execute(Actor.addContactCommandWithUid(user!.getId())!, successBlock: { (val) -> () in
-                                self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                                if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(user!.getId())) {
+                                    self.navigateDetail(customController)
+                                } else {
+                                    self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                                }
                             }, failureBlock: { (val) -> () in
                                 self.showSmsInvitation([textField.text!])
                         })
