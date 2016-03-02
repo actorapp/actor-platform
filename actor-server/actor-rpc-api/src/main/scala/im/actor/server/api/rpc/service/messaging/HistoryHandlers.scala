@@ -152,14 +152,25 @@ trait HistoryHandlers {
       }
     }
 
-  override def doHandleLoadHistory(peer: ApiOutPeer, endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadHistory]] =
+  override def doHandleLoadHistory(
+    peer:       ApiOutPeer,
+    date:       Long,
+    mode:       Option[ApiListLoadMode.Value],
+    limit:      Int,
+    clientData: ClientData
+  ): Future[HandlerResult[ResponseLoadHistory]] =
     authorized(clientData) { implicit client ⇒
       val action = withOutPeer(peer) {
         val modelPeer = peer.asModel
         for {
           historyOwner ← DBIO.from(getHistoryOwner(modelPeer, client.userId))
           (lastReceivedAt, lastReadAt) ← getLastReceiveReadDates(modelPeer)
-          messageModels ← HistoryMessageRepo.find(historyOwner, modelPeer, endDateTimeFrom(endDate), limit)
+          messageModels ← mode match {
+            case Some(ApiListLoadMode.Forward)  ⇒ HistoryMessageRepo.findAfter(historyOwner, modelPeer, dateTimeFrom(date), limit.toLong)
+            case Some(ApiListLoadMode.Backward) ⇒ HistoryMessageRepo.findBefore(historyOwner, modelPeer, dateTimeFrom(date), limit.toLong)
+            case Some(ApiListLoadMode.Both)     ⇒ HistoryMessageRepo.findBidi(historyOwner, modelPeer, dateTimeFrom(date), limit.toLong)
+            case _                              ⇒ HistoryMessageRepo.find(historyOwner, modelPeer, endDateTimeFrom(date), limit)
+          }
           reactions ← dialogExt.fetchReactions(modelPeer, client.userId, messageModels.map(_.randomId).toSet)
 
           (messages, userIds) = messageModels.view
@@ -218,7 +229,8 @@ trait HistoryHandlers {
     }
 
   private val ZeroDate = new DateTime(0)
-  private val MaxDate = new DateTime(294276, 1, 1, 0, 0).getMillis
+  private val MaxDateTime = new DateTime(294276, 1, 1, 0, 0)
+  private val MaxDate = MaxDateTime.getMillis
 
   private def endDateTimeFrom(date: Long): Option[DateTime] = {
     if (date == 0l) {
@@ -226,12 +238,15 @@ trait HistoryHandlers {
     } else {
       Some(new DateTime(
         if (date >= MaxDate)
-          new DateTime(294276, 1, 1, 0, 0)
+          MaxDateTime
         else
           date
       ))
     }
   }
+
+  private def dateTimeFrom(date: Long): DateTime =
+    if (date >= MaxDate) MaxDateTime else new DateTime(date)
 
   /**
    * returns correct receive and read dates to calculate message states(Sent/Received/Read).
@@ -253,6 +268,7 @@ trait HistoryHandlers {
       for {
         (lastReceivedAt, lastReadAt) ← getLastReceiveReadDates(dialogModel.peer)
         messageOpt ← HistoryMessageRepo.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
+        firstUnreadOpt ← HistoryMessageRepo.findAfter(historyOwner, dialogModel.peer, lastReadAt, 1) map (_.headOption map (_.ofUser(client.userId)))
         reactions ← messageOpt map (m ⇒ dialogExt.fetchReactions(dialogModel.peer, client.userId, m.randomId)) getOrElse DBIO.successful(Vector.empty)
         unreadCount ← dialogExt.getUnreadCount(client.userId, historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
       } yield {
@@ -267,7 +283,8 @@ trait HistoryHandlers {
             randomId = message.randomId,
             date = message.date,
             message = message.message,
-            state = message.state
+            state = message.state,
+            firstUnreadDate = firstUnreadOpt map (_.date.getMillis)
           )
         }
       }
