@@ -12618,6 +12618,12 @@
                 "argument": "callId",
                 "category": "full",
                 "description": "  Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "attemptIndex",
+                "category": "full",
+                "description": "  Optional attempt Index"
               }
             ],
             "attributes": [
@@ -12625,6 +12631,14 @@
                 "type": "int64",
                 "id": 1,
                 "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 2,
+                "name": "attemptIndex"
               }
             ]
           }
@@ -12641,6 +12655,12 @@
                 "argument": "callId",
                 "category": "full",
                 "description": "  Call Id"
+              },
+              {
+                "type": "reference",
+                "argument": "attemptIndex",
+                "category": "full",
+                "description": "  Optional attempt Index"
               }
             ],
             "attributes": [
@@ -12648,6 +12668,14 @@
                 "type": "int64",
                 "id": 1,
                 "name": "callId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 2,
+                "name": "attemptIndex"
               }
             ]
           }
