@@ -1075,12 +1075,13 @@ public class Messenger {
     /**
      * Checking incoming call from push notification
      *
-     * @param callId Call Id
+     * @param callId  Call Id
+     * @param attempt Call Attempt
      */
-    @ObjectiveCName("checkCall:")
-    public void checkCall(long callId) {
+    @ObjectiveCName("checkCall:withAttempt:")
+    public void checkCall(long callId, int attempt) {
         if (modules.getCallsModule() != null) {
-            modules.getCallsModule().checkCall(callId);
+            modules.getCallsModule().checkCall(callId, attempt);
         }
     }
 
