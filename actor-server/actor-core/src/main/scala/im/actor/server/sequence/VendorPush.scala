@@ -59,8 +59,8 @@ private[sequence] object VendorPush {
 
   private final case class Initialized(creds: Seq[(PushCredentials, PushCredentialsInfo)])
 
-  def props(userId: Int, googlePushManager: GooglePushManager, applePushManager: ApplePushExtension) =
-    Props(new VendorPush(userId, googlePushManager, applePushManager))
+  def props(userId: Int) =
+    Props(new VendorPush(userId))
 }
 
 private object SettingsControl {
@@ -122,11 +122,7 @@ private final class SettingsControl(userId: Int) extends Actor with ActorLogging
   }
 }
 
-private[sequence] final class VendorPush(
-  userId:            Int,
-  googlePushManager: GooglePushManager,
-  applePushManager:  ApplePushExtension
-) extends Actor with ActorLogging with Stash {
+private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLogging with Stash {
 
   import VendorPush._
   import context.dispatcher
@@ -135,8 +131,8 @@ private[sequence] final class VendorPush(
   protected val db = DbExtension(context.system).db
 
   private val settingsControl = context.actorOf(SettingsControl.props(userId), "settings")
-  private val googlePushProvider = new GooglePushProvider(userId, googlePushManager, context.system)
-  private val applePushProvider = new ApplePushProvider(userId, applePushManager, context.system)
+  private val googlePushProvider = new GooglePushProvider(userId, context.system)
+  private val applePushProvider = new ApplePushProvider(userId, context.system)
 
   private var mapping: Map[PushCredentials, PushCredentialsInfo] = Map.empty
   private var notificationSettings = AllNotificationSettings()

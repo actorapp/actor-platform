@@ -8,11 +8,12 @@ import im.actor.server.db.DbExtension
 import im.actor.server.model.push.ApplePushCredentials
 import im.actor.server.persist.HistoryMessageRepo
 
-private[sequence] final class ApplePushProvider(userId: Int, applePushManager: ApplePushExtension, system: ActorSystem) extends PushProvider {
+private[sequence] final class ApplePushProvider(userId: Int, system: ActorSystem) extends PushProvider {
   import system.dispatcher
 
   private val log = Logging(system, getClass)
   private val db = DbExtension(system).db
+  private val applePushExt = ApplePushExtension(system)
 
   def deliverInvisible(seq: Int, creds: ApplePushCredentials): Unit = {
     withMgr(creds.apnsKey) { mgr ⇒
@@ -61,7 +62,7 @@ private[sequence] final class ApplePushProvider(userId: Int, applePushManager: A
   }
 
   private def withMgr[A](key: Int)(f: PushManager[SimpleApnsPushNotification] ⇒ A): Unit = {
-    applePushManager.getInstance(key) match {
+    applePushExt.getInstance(key) match {
       case Some(mgr) ⇒ f(mgr)
       case None ⇒
         log.warning("No apple push configured for apns-key: {}", key)
