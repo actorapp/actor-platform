@@ -1,0 +1,87 @@
+$ring-size: 120px;
+$ring-step: 20px;
+
+@keyframes scale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+.call {
+  padding-right: 16px;
+
+  &__header {
+    text-align: center;
+    h2 {
+      font-weight: 500;
+      /* text-transform: uppercase; */
+
+      margin-bottom: 36px;
+
+      color: rgba(0,0,0,.7);
+    }
+  }
+
+  &__body {
+    text-align: center;
+  }
+
+
+  &__avatar {
+    position: relative;
+
+    margin-bottom: 16px;
+    padding: 16px;
+    .avatar {
+      z-index: 15;
+    }
+    &__rings {
+      & > div {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        display: block;
+
+        animation: scale 1.75s infinite ease;
+
+        border-radius: 50%;
+        background-color: rgba(black, .05);
+        box-shadow: inset 0 0 0 1px rgba(black, .02);
+        @for $i from 1 through 3 {
+          &:nth-child(#{$i}) {
+            z-index: 10 - $i;
+
+            width: $ring-size + ($ring-step * ($i - 1));
+            height: $ring-size + ($ring-step * ($i - 1));
+            margin-top: - ($ring-size + ($ring-step * ($i - 1))) / 2;
+            margin-left: - ($ring-size + ($ring-step * ($i - 1))) / 2;
+
+            animation-delay: 125ms * $i;
+          }
+        }
+      }
+    }
+  }
+
+  &__title {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+
+    margin: 36px 8px 24px;
+
+    color: rgba(black, .6);
+  }
+
+  &__controls {
+    text-align: center;
+    .button {
+      max-width: 250px;
+      margin-bottom: 8px;
+    }
+  }
+}
