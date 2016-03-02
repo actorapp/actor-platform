@@ -60,6 +60,7 @@ import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.adapters.HolderAdapter;
 import im.actor.sdk.view.adapters.ViewHolder;
 import im.actor.sdk.view.avatar.AvatarView;
+import im.actor.sdk.view.avatar.CallBackgroundAvatarView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -120,6 +121,8 @@ public class CallFragment extends BaseFragment {
 
         FrameLayout cont = (FrameLayout) inflater.inflate(R.layout.fragment_call, container, false);
         v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+
+        CallBackgroundAvatarView backgroundAvatarView = (CallBackgroundAvatarView) cont.findViewById(R.id.background);
 
 //        animator = new CallAvatarLayerAnimator(cont.findViewById(R.id.layer),
 //                cont.findViewById(R.id.layer1),
@@ -185,10 +188,12 @@ public class CallFragment extends BaseFragment {
         if(peer.getPeerType() == PeerType.PRIVATE){
             UserVM user = users().get(peer.getPeerId());
             avatarView.bind(user);
+            backgroundAvatarView.bind(user);
             bind(nameTV, user.getName());
         }else if(peer.getPeerType() == PeerType.GROUP){
             GroupVM g = groups().get(peer.getPeerId());
             avatarView.bind(g);
+            backgroundAvatarView.bind(g);
             bind(nameTV, g.getName());
         }
 
