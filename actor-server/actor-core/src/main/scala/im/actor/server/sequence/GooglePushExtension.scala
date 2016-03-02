@@ -13,6 +13,7 @@ import cats.data.Xor
 import com.github.kxbmap.configs.syntax._
 import com.typesafe.config.Config
 import im.actor.server.db.DbExtension
+import im.actor.server.model.push.GooglePushCredentials
 import im.actor.server.persist.push.GooglePushCredentialsRepo
 import io.circe.generic.auto._
 import io.circe.jawn._
@@ -119,6 +120,9 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
       case None ⇒
         log.warning("Key not found for projectId: {}", projectId)
     }
+
+  def fetchCreds(authIds: Set[Long]): Future[Seq[GooglePushCredentials]] =
+    db.run(GooglePushCredentialsRepo.find(authIds))
 }
 
 private object GooglePushDelivery {
