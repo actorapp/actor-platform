@@ -128,8 +128,8 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
     private var stickersPacks   = Array<AAStickersPack>()
     
     private let binder = AABinder()
-    
-    init(frame: CGRect,convContrller:ConversationViewController) {
+
+    init(frame: CGRect, convController: ConversationViewController) {
         
         // one item size
         let widthHightItem = frame.width/4-15;
@@ -149,7 +149,7 @@ class AAStickersView: UIView , UICollectionViewDelegate, UICollectionViewDataSou
         
         // bind convController
         
-        self.conv = convContrller
+        self.conv = convController
         
         // delegate/datasource
         
