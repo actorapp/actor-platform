@@ -17,17 +17,21 @@ public class CallsProcessor implements Processor {
         if (update instanceof UpdateIncomingCall) {
             UpdateIncomingCall updateIncomingCall = (UpdateIncomingCall) update;
             if (context.getConfiguration().isVoiceCallsEnabled()) {
+                int index = updateIncomingCall.getAttemptIndex() != null ? updateIncomingCall.getAttemptIndex() : 0;
                 context.getCallsModule().getCallManager().send(
                         new CallManagerActor.OnIncomingCall(
-                                updateIncomingCall.getCallId()));
+                                updateIncomingCall.getCallId(),
+                                index));
             }
             return true;
         } else if (update instanceof UpdateCallHandled) {
             UpdateCallHandled updateCallHandled = (UpdateCallHandled) update;
             if (context.getConfiguration().isVoiceCallsEnabled()) {
+                int index = updateCallHandled.getAttemptIndex() != null ? updateCallHandled.getAttemptIndex() : 0;
                 context.getCallsModule().getCallManager().send(
                         new CallManagerActor.OnIncomingCallHandled(
-                                updateCallHandled.getCallId()));
+                                updateCallHandled.getCallId(),
+                                index));
             }
             return true;
         }
