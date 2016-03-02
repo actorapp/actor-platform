@@ -165,6 +165,8 @@
 		066A53331BC534F5000E606E /* AAFileTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53311BC534F5000E606E /* AAFileTypes.swift */; };
 		066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53361BC537CA000E606E /* ConversationViewController.swift */; };
 		066A53391BC5456B000E606E /* ActorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53381BC5456B000E606E /* ActorStyle.swift */; };
+		068B39831C876AF5002BFF73 /* AAEmailAuthCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068B39811C876AF5002BFF73 /* AAEmailAuthCodeViewController.swift */; };
+		068B39841C876AF5002BFF73 /* AAEmailAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068B39821C876AF5002BFF73 /* AAEmailAuthViewController.swift */; };
 		069CF4CC1BCB909A00C66E12 /* CLBackspaceDetectingTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = 069CF4C41BCB909A00C66E12 /* CLBackspaceDetectingTextField.h */; };
 		069CF4CD1BCB909A00C66E12 /* CLBackspaceDetectingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4C51BCB909A00C66E12 /* CLBackspaceDetectingTextField.m */; };
 		069CF4CE1BCB909A00C66E12 /* CLToken.h in Headers */ = {isa = PBXBuildFile; fileRef = 069CF4C61BCB909A00C66E12 /* CLToken.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -469,6 +471,8 @@
 		066A53311BC534F5000E606E /* AAFileTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAFileTypes.swift; sourceTree = "<group>"; };
 		066A53361BC537CA000E606E /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		066A53381BC5456B000E606E /* ActorStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorStyle.swift; sourceTree = "<group>"; };
+		068B39811C876AF5002BFF73 /* AAEmailAuthCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAEmailAuthCodeViewController.swift; sourceTree = "<group>"; };
+		068B39821C876AF5002BFF73 /* AAEmailAuthViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAEmailAuthViewController.swift; sourceTree = "<group>"; };
 		069CF4C41BCB909A00C66E12 /* CLBackspaceDetectingTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLBackspaceDetectingTextField.h; sourceTree = "<group>"; };
 		069CF4C51BCB909A00C66E12 /* CLBackspaceDetectingTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLBackspaceDetectingTextField.m; sourceTree = "<group>"; };
 		069CF4C61BCB909A00C66E12 /* CLToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLToken.h; sourceTree = "<group>"; };
@@ -891,6 +895,8 @@
 				066A52651BC50E7B000E606E /* AAAuthViewController.swift */,
 				153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */,
 				153F6B8D1C2D868100C0B960 /* AATermsController.swift */,
+				068B39811C876AF5002BFF73 /* AAEmailAuthCodeViewController.swift */,
+				068B39821C876AF5002BFF73 /* AAEmailAuthViewController.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -1141,8 +1147,8 @@
 		069CF4151BCA5DB500C66E12 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				066A511D1BC4B4BD000E606E /* ActorCore */,
 				066A525F1BC50E53000E606E /* Controllers */,
+				066A511D1BC4B4BD000E606E /* ActorCore */,
 				066A51201BC4B53C000E606E /* SwiftExtensions */,
 				066A51571BC4C112000E606E /* Utils */,
 				06E322CB1C69392F00D66F53 /* Libs */,
@@ -1726,6 +1732,7 @@
 				15D35F161C20185500E3717A /* diag_range.c in Sources */,
 				066A525E1BC503BB000E606E /* ActorApplicationDelegate.swift in Sources */,
 				BED5A1F91C48396A0045FDB0 /* NYTPhotosViewController.m in Sources */,
+				068B39841C876AF5002BFF73 /* AAEmailAuthViewController.swift in Sources */,
 				066A53101BC53317000E606E /* AAWallpapperPreviewController.swift in Sources */,
 				152AA8B91C2989270030DEEE /* UIView+SLKAdditions.m in Sources */,
 				066A52F21BC52B02000E606E /* AASettingsPrivacyViewController.swift in Sources */,
@@ -1862,6 +1869,7 @@
 				15D35F1B1C20185500E3717A /* opusenc.m in Sources */,
 				152AA8BD1C298BF00030DEEE /* AASettingsSessionsController.swift in Sources */,
 				066A515B1BC4C178000E606E /* AAHashMap.swift in Sources */,
+				068B39831C876AF5002BFF73 /* AAEmailAuthCodeViewController.swift in Sources */,
 				066A52811BC51ED0000E606E /* AANoSelectionViewController.swift in Sources */,
 				BEE6EB041C4D9A4900A2280E /* AAWallpapersCell.swift in Sources */,
 				152AA8B21C2989270030DEEE /* SLKTypingIndicatorView.m in Sources */,
