@@ -32,8 +32,8 @@
 
             <View
                 android:id="@+id/layer"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="82dp"
+                android:layout_height="82dp"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/call_avatar_background"/>
@@ -63,6 +63,7 @@
                 android:background="@drawable/call_avatar_background"/>
 
             <View
+                android:visibility="invisible"
                 android:id="@+id/layer4"
                 android:layout_width="162dp"
                 android:layout_height="162dp"
@@ -114,47 +115,6 @@
             android:layout_gravity="top|center_horizontal"
             android:orientation="vertical"
             android:layout_weight="1">
-
-            <LinearLayout
-                android:id="@+id/answer_container"
-                android:visibility="invisible"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="horizontal"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="20dp">
-
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="60dp">
-
-                    <ImageButton
-                        android:layout_gravity="center"
-                        android:id="@+id/notAnswer"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/ic_call_end_white_36dp"
-                        android:background="@drawable/end_call_background"/>
-
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="60dp">
-
-                    <ImageButton
-                        android:layout_gravity="center"
-                        android:id="@+id/answer"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/answer_background"
-                        android:src="@drawable/ic_call_white_36dp" />
-
-                </FrameLayout>
-
-            </LinearLayout>
 
             <TableLayout
                 android:paddingBottom="15dp"
@@ -246,6 +206,7 @@
                 </TableRow>
 
                 <TableRow
+                    android:id="@+id/end_call_container"
                     android:minHeight="110dp"
                     android:layout_weight="1"
                     android:gravity="center">
@@ -314,6 +275,54 @@
                             android:layout_height="wrap_content" />
                     </LinearLayout>
 
+                </TableRow>
+
+                <TableRow
+                    android:minHeight="110dp"
+                    android:layout_weight="1"
+                    android:id="@+id/answer_container"
+                    android:visibility="gone"
+                    android:gravity="center">
+
+                    <LinearLayout
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_column="0"
+                        android:layout_span="3">
+
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="@dimen/end_call_btn_size">
+
+                            <ImageButton
+                                android:layout_gravity="center"
+                                android:id="@+id/notAnswer"
+                                android:layout_width="@dimen/end_call_btn_size"
+                                android:layout_height="@dimen/end_call_btn_size"
+                                android:src="@drawable/ic_call_end_white_36dp"
+                                android:background="@drawable/end_call_background"/>
+
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="@dimen/end_call_btn_size">
+
+                            <ImageButton
+                                android:layout_gravity="center"
+                                android:id="@+id/answer"
+                                android:layout_width="@dimen/end_call_btn_size"
+                                android:layout_height="@dimen/end_call_btn_size"
+                                android:background="@drawable/answer_background"
+                                android:src="@drawable/ic_call_white_36dp" />
+
+                        </FrameLayout>
+
+                    </LinearLayout>
                 </TableRow>
 
             </TableLayout>
