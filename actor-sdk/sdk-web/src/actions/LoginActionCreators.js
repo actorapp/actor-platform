@@ -87,7 +87,7 @@ const LoginActionCreators = {
     } else {
       if (opts.redirect) {
         const location = LocationContainer.get();
-        const { nextPathname } = location.state;
+        const nextPathname = location.state ? location.state.nextPathname : null;
 
         if (nextPathname) {
           history.replace(nextPathname);
