@@ -30,8 +30,8 @@ public class PushReceiver extends WakefulBroadcastReceiver {
                 } else if (extras.containsKey("callId")) {
                     long callId = Long.parseLong(extras.getString("callId"));
                     int attempt = 0;
-                    if (extras.containsKey("attempt")) {
-                        attempt = Integer.parseInt(extras.getString("attempt"));
+                    if (extras.containsKey("attemptIndex")) {
+                        attempt = Integer.parseInt(extras.getString("attemptIndex"));
                     }
                     Log.d(TAG, "Received Call #" + callId + " (" + attempt + ")");
                     ActorSDK.sharedActor().getMessenger().checkCall(callId, attempt);

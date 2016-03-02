@@ -20,8 +20,8 @@ public class SDKPushReceiver extends ActorPushReceiver {
                 } else if (data.has("callId")) {
                     Long callId = Long.parseLong(data.getString("callId"));
                     int attempt = 0;
-                    if (data.has("attempt")) {
-                        attempt = data.getInt("attempt");
+                    if (data.has("attemptIndex")) {
+                        attempt = data.getInt("attemptIndex");
                     }
                     Log.d("SDKPushReceiver", "Received Call #" + callId + " (" + attempt + ")");
                     ActorSDK.sharedActor().getMessenger().checkCall(callId, attempt);
