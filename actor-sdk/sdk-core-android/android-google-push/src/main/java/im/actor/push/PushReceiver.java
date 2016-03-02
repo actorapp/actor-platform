@@ -24,10 +24,18 @@ public class PushReceiver extends WakefulBroadcastReceiver {
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 if (extras.containsKey("seq")) {
                     int seq = Integer.parseInt(extras.getString("seq"));
+                    Log.d(TAG, "Push received #" + seq);
                     ActorSDK.sharedActor().getMessenger().onPushReceived(seq);
-
                     setResultCode(Activity.RESULT_OK);
-                    Log.d(TAG, "Push received");
+                } else if (extras.containsKey("callId")) {
+                    long callId = Long.parseLong(extras.getString("callId"));
+                    int attempt = 0;
+                    if (extras.containsKey("attempt")) {
+                        attempt = Integer.parseInt(extras.getString("attempt"));
+                    }
+                    Log.d(TAG, "Received Call #" + callId + " (" + attempt + ")");
+                    ActorSDK.sharedActor().getMessenger().checkCall(callId, attempt);
+                    setResultCode(Activity.RESULT_OK);
                 }
             }
         }
