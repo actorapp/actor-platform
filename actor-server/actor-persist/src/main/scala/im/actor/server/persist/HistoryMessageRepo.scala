@@ -64,6 +64,10 @@ object HistoryMessageRepo {
 
   val withoutServiceMessages = notDeletedMessages.filter(_.messageContentHeader =!= 2)
 
+  def byUserIdPeer(userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int]) =
+    notDeletedMessages
+      .filter(m ⇒ m.userId === userId && m.peerType === peerType && m.peerId === peerId)
+
   def create(message: HistoryMessage): FixedSqlAction[Int, NoStream, Write] =
     messagesC += message
 
@@ -86,6 +90,37 @@ object HistoryMessageRepo {
 
     query.take(limit).result
   }
+
+  private val afterC = Compiled { (userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int], date: Rep[DateTime], limit: ConstColumn[Long]) ⇒
+    byUserIdPeer(userId, peerType, peerId)
+      .filter(_.date >= date)
+      .sortBy(_.date.asc)
+      .take(limit)
+  }
+
+  def findAfter(userId: Int, peer: Peer, date: DateTime, limit: Long) =
+    afterC((userId, peer.typ.value, peer.id, date, limit)).result
+
+  private val beforeC = Compiled { (userId: Rep[Int], peerId: Rep[Int], peerType: Rep[Int], date: Rep[DateTime], limit: ConstColumn[Long]) ⇒
+    byUserIdPeer(userId, peerType, peerId)
+      .filter(_.date <= date)
+      .sortBy(_.date.asc)
+      .take(limit)
+  }
+
+  private val beforeExclC = Compiled { (userId: Rep[Int], peerId: Rep[Int], peerType: Rep[Int], date: Rep[DateTime], limit: ConstColumn[Long]) ⇒
+    byUserIdPeer(userId, peerType, peerId)
+      .filter(_.date < date)
+      .sortBy(_.date.asc)
+      .take(limit)
+  }
+
+  def findBefore(userId: Int, peer: Peer, date: DateTime, limit: Long) =
+    beforeC((userId, peer.typ.value, peer.id, date, limit)).result
+
+  def findBidi(userId: Int, peer: Peer, date: DateTime, limit: Long) =
+    (beforeExclC.applied((userId, peer.typ.value, peer.id, date, limit)) ++
+      afterC.applied((userId, peer.typ.value, peer.id, date, limit))).result
 
   def findBySender(senderUserId: Int, peer: Peer, randomId: Long): FixedSqlStreamingAction[Seq[HistoryMessage], HistoryMessage, Read] =
     notDeletedMessages.filter(m ⇒ m.senderUserId === senderUserId && m.peerType === peer.typ.value && m.peerId === peer.id && m.randomId === randomId).result
@@ -155,6 +190,7 @@ object HistoryMessageRepo {
 
   /**
    * Fetch unread messages count
+   *
    * @param userId user to fetch unread messages for
    * @param historyOwner user owns history(user itself or SharedUserId in case of public groups)
    * @return Unread messages count
