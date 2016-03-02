@@ -19,14 +19,19 @@ class CallBody extends Component {
     }
 
     return (
-      <div>
-        <AvatarItem
-          size="big"
-          image={peerInfo.avatar}
-          title={peerInfo.name}
-          placeholder={peerInfo.placeholder}
-        />
-        <h4 className="caller-name">{peerInfo.name}</h4>
+      <div className="call__body">
+        <div className="call__avatar">
+          <AvatarItem
+            size="big"
+            image={peerInfo.avatar}
+            title={peerInfo.name}
+            placeholder={peerInfo.placeholder}
+          />
+          <div className="call__avatar__rings">
+            <div/><div/><div/>
+          </div>
+        </div>
+        <h3 className="call__title">{peerInfo.name}</h3>
       </div>
     );
   }
