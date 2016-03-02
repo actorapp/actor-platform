@@ -212,7 +212,7 @@ public class ConversationViewController: AAConversationContentController, UIDocu
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
         
         let frame = CGRectMake(0, 0, self.view.frame.size.width, 216)
-        self.stickersView = AAStickersView(frame: frame, convContrller: self)
+        self.stickersView = AAStickersView(frame: frame, convController: self)
         
         
         NSNotificationCenter.defaultCenter().addObserver(
