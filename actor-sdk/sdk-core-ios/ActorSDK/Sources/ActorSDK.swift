@@ -71,6 +71,9 @@ import PushKit
     /// Push token registration id. Required for sending push tokens
     public var apiPushId: Int? = nil
     
+    /// Strategy about authentication
+    public var authStrategy = AAAuthStrategy.PhoneOnly
+    
     /// Enable phone book import
     public var enablePhoneBookImport = true
     
@@ -106,6 +109,7 @@ import PushKit
 
     /// Enable voice calls feature
     public var enableCalls: Bool = true
+    
     
     /// Enable experimental features
     public var enableExperimentalFeatures: Bool = false
@@ -428,8 +432,13 @@ import PushKit
         } else {
             var controller: UIViewController! = delegate.actorControllerForAuthStart()
             if controller == nil {
-                //controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
-                controller = AAAuthNavigationController(rootViewController: AAWelcomeController())
+                if self.authStrategy == .PhoneOnly {
+                    controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
+                } else if self.authStrategy == .EmailOnly {
+                    controller = AAAuthNavigationController(rootViewController: AAEmailAuthViewController())
+                } else {
+                    // ???
+                }
             }
             window.rootViewController = controller!
         }
@@ -752,4 +761,9 @@ public enum AAAutoPush {
     case None
     case FromStart
     case AfterLogin
+}
+
+public enum AAAuthStrategy {
+    case PhoneOnly
+    case EmailOnly
 }
