@@ -39,6 +39,7 @@
                 android:background="@drawable/call_avatar_background"/>
 
             <View
+                android:visibility="invisible"
                 android:id="@+id/layer1"
                 android:layout_width="102dp"
                 android:layout_height="102dp"
@@ -47,6 +48,7 @@
                 android:background="@drawable/call_avatar_background"/>
 
             <View
+                android:visibility="invisible"
                 android:id="@+id/layer2"
                 android:layout_width="122dp"
                 android:layout_height="122dp"
@@ -55,6 +57,7 @@
                 android:background="@drawable/call_avatar_background"/>
 
             <View
+                android:visibility="invisible"
                 android:id="@+id/layer3"
                 android:layout_width="142dp"
                 android:layout_height="142dp"
