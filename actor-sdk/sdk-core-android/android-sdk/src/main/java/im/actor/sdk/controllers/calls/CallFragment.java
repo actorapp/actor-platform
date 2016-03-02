@@ -83,6 +83,7 @@ public class CallFragment extends BaseFragment {
     private NotificationManager manager;
     private CallState currentState;
     private ImageButton endCall;
+    private View endCallContainer;
     private boolean speakerOn = false;
     private AudioManager audioManager;
     private AvatarView avatarView;
@@ -125,14 +126,14 @@ public class CallFragment extends BaseFragment {
 //                );
         
         avatarLayers = new View[]{
-                cont.findViewById(R.id.layer),
+//                cont.findViewById(R.id.layer),
                 cont.findViewById(R.id.layer1),
                 cont.findViewById(R.id.layer2),
                 cont.findViewById(R.id.layer3),
-                cont.findViewById(R.id.layer4)
+//                cont.findViewById(R.id.layer4)
         };
 
-        wave(avatarLayers, 1.1f ,1200, 200);
+        wave(avatarLayers, 1.5f ,1900, -2f);
 
         for (int i = 0; i<avatarLayers.length; i++){
             View layer = avatarLayers[i];
@@ -140,6 +141,7 @@ public class CallFragment extends BaseFragment {
             ((GradientDrawable)layer.getBackground()).setAlpha(50);
         }
 
+        endCallContainer = cont.findViewById(R.id.end_call_container);
         answerContainer = cont.findViewById(R.id.answer_container);
         ImageButton answer = (ImageButton) cont.findViewById(R.id.answer);
         answer.setOnClickListener(new View.OnClickListener() {
@@ -404,7 +406,7 @@ public class CallFragment extends BaseFragment {
 
     private void initIncoming() {
         answerContainer.setVisibility(View.VISIBLE);
-        endCall.setVisibility(View.INVISIBLE);
+        endCallContainer.setVisibility(View.GONE);
 
         new Thread(new Runnable() {
             @Override
@@ -429,8 +431,8 @@ public class CallFragment extends BaseFragment {
 
     private void onAnswer() {
 
-        endCall.setVisibility(View.VISIBLE);
-        answerContainer.setVisibility(View.INVISIBLE);
+        endCallContainer.setVisibility(View.VISIBLE);
+        answerContainer.setVisibility(View.GONE);
         if (ringtone != null) {
             ringtone.stop();
         }

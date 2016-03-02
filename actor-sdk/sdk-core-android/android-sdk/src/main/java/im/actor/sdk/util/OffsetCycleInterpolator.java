@@ -20,6 +20,6 @@ public class OffsetCycleInterpolator extends CycleInterpolator {
 
     @Override
     public float getInterpolation(float input) {
-        return (float)(Math.sin(2 * Math.PI * input + offset));
+        return (float)(Math.sin(2 * Math.PI * input + offset)) + 1f;
     }
 }
