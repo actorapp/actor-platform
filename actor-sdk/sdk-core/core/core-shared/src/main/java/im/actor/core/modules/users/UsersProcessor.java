@@ -18,6 +18,7 @@ import im.actor.core.modules.sequence.Processor;
 import im.actor.core.modules.internal.contacts.ContactsSyncActor;
 import im.actor.core.modules.internal.messages.DialogsActor;
 import im.actor.core.modules.internal.messages.GroupedDialogsActor;
+import im.actor.runtime.Log;
 import im.actor.runtime.annotations.Verified;
 
 import static im.actor.core.util.JavaUtil.equalsE;
@@ -44,6 +45,12 @@ public class UsersProcessor extends AbsModule implements Processor {
                 if (!upd.getName().equals(saved.getName()) ||
                         !equalsE(upd.getAvatar(), saved.getAvatar())) {
                     onUserDescChanged(upd);
+                }
+            }
+
+            if (saved != null) {
+                if (saved.getAccessHash() != u.getAccessHash()) {
+                    Log.w("UsersProcessor", "User's Access Hash changed!");
                 }
             }
         }
