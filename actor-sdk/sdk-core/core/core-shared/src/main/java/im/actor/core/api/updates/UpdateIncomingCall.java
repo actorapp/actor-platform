@@ -23,9 +23,11 @@ public class UpdateIncomingCall extends Update {
     }
 
     private long callId;
+    private Integer attemptIndex;
 
-    public UpdateIncomingCall(long callId) {
+    public UpdateIncomingCall(long callId, @Nullable Integer attemptIndex) {
         this.callId = callId;
+        this.attemptIndex = attemptIndex;
     }
 
     public UpdateIncomingCall() {
@@ -36,20 +38,30 @@ public class UpdateIncomingCall extends Update {
         return this.callId;
     }
 
+    @Nullable
+    public Integer getAttemptIndex() {
+        return this.attemptIndex;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.callId = values.getLong(1);
+        this.attemptIndex = values.optInt(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeLong(1, this.callId);
+        if (this.attemptIndex != null) {
+            writer.writeInt(2, this.attemptIndex);
+        }
     }
 
     @Override
     public String toString() {
         String res = "update IncomingCall{";
         res += "callId=" + this.callId;
+        res += ", attemptIndex=" + this.attemptIndex;
         res += "}";
         return res;
     }

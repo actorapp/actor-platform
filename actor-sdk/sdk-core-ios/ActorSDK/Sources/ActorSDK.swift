@@ -340,7 +340,11 @@ import PushKit
         if (type == PKPushTypeVoIP) {
             let aps = payload.dictionaryPayload["aps"] as! [NSString: AnyObject]
             if let callId = aps["callId"] as? String {
-                Actor.checkCall(jlong(callId)!)
+                if let attempt = aps["attempt"] as? String {
+                    Actor.checkCall(jlong(callId)!, withAttempt: jint(attempt)!)
+                } else {
+                    Actor.checkCall(jlong(callId)!, withAttempt: 0)
+                }
             }
         }
     }
