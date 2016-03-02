@@ -5150,6 +5150,21 @@
           </node>
         </node>
       </node>
+      <node concept="2m488m" id="5Wm9DsmlaT4" role="2m5mJr">
+        <property role="TrG5h" value="ListLoadMode" />
+        <node concept="2m7y0F" id="5Wm9DsmlaT6" role="2m7ymf">
+          <property role="TrG5h" value="Forward" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="5Wm9Dsmlb4X" role="2m7ymf">
+          <property role="TrG5h" value="Backward" />
+          <property role="2m7y0m" value="2" />
+        </node>
+        <node concept="2m7y0F" id="5Wm9Dsmlb50" role="2m7ymf">
+          <property role="TrG5h" value="Both" />
+          <property role="2m7y0m" value="3" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="gbd4oSj4vN" role="2m5mJr">
         <property role="TrG5h" value="LoadHistory" />
         <node concept="2m7Kf5" id="gbd4oSj4vO" role="2m0hLx">
@@ -5161,9 +5176,18 @@
         </node>
         <node concept="2m7Kf5" id="gbd4oSj4vQ" role="2m0hLx">
           <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="minDate" />
+          <property role="TrG5h" value="date" />
           <node concept="wb0Ql" id="gbd4oSj4vR" role="2m7DVh">
             <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5Wm9Dsmlb54" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="loadMode" />
+          <node concept="2m5nlT" id="5Wm9Dsmlb5e" role="2m7DVh">
+            <node concept="3GJkcs" id="5Wm9Dsmlb5k" role="3GH5xg">
+              <ref role="3GJkik" node="5Wm9DsmlaT4" resolve="ListLoadMode" />
+            </node>
           </node>
         </node>
         <node concept="2m7Kf5" id="gbd4oSj4vS" role="2m0hLx">
@@ -5221,7 +5245,12 @@
         <node concept="NX1gA" id="gbd4oSj4w8" role="1GBnQ6">
           <property role="NX6R2" value="start date of messages for loading or 0 for loading from start" />
           <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="gbd4oSj4vQ" resolve="minDate" />
+          <ref role="NX6Kv" node="gbd4oSj4vQ" resolve="date" />
+        </node>
+        <node concept="NX1gA" id="5Wm9Dsmlb5B" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Loading mode: Forward loading, backward or both ways" />
+          <ref role="NX6Kv" node="5Wm9Dsmlb54" resolve="loadMode" />
         </node>
         <node concept="NX1gA" id="gbd4oSj4w9" role="1GBnQ6">
           <property role="NX6R2" value="maximum amount of messages (max is 100)" />
@@ -5268,6 +5297,11 @@
           <property role="NX6R2" value="Content of message" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="gbd4oSj4ww" resolve="message" />
+        </node>
+        <node concept="NX1gA" id="5Wm9Dsmlccu" role="NXodf">
+          <property role="NX6R2" value="Date of first unread message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5Wm9DsmlcbM" resolve="firstUnreadDate" />
         </node>
         <node concept="2m7Kf5" id="gbd4oSj4wk" role="2m0hLx">
           <property role="2m7DUN" value="1" />
@@ -5322,6 +5356,15 @@
           <node concept="2m5nlT" id="gbd4oSj4wz" role="2m7DVh">
             <node concept="3GJkcs" id="gbd4oSj4w$" role="3GH5xg">
               <ref role="3GJkik" node="gbd4oSj4vu" resolve="MessageState" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5Wm9DsmlcbM" role="2m0hLx">
+          <property role="TrG5h" value="firstUnreadDate" />
+          <property role="2m7DUN" value="10" />
+          <node concept="2m5nlT" id="5Wm9Dsmlccb" role="2m7DVh">
+            <node concept="wb0Ql" id="5Wm9Dsmlcch" role="3GH5xg">
+              <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
             </node>
           </node>
         </node>
