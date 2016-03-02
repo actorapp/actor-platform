@@ -248,11 +248,11 @@ public class ViewUtils {
         }
     }
 
-    public static void wave(View[] layers, float scale, int duration, int stepOffset){
+    public static void wave(View[] layers, float scale, int duration, float offset){
         int step = 0;
 
         for (View l:layers) {
-            wave(l, scale, duration, ((float)1/layers.length) * step);
+            wave(l, scale, duration, ((float)1/layers.length) * step * offset);
             step++;
         }
     }

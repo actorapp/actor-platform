@@ -54,8 +54,8 @@ public class BaseFragment extends BinderCompatFragment {
         ViewUtils.showView(view, isAnimated, isSlow);
     }
 
-    public void wave(View[] layers, float scale, int duration, int stepOffset){
-        ViewUtils.wave(layers, scale, duration, stepOffset);
+    public void wave(View[] layers, float scale, int duration, float offset){
+        ViewUtils.wave(layers, scale, duration, offset);
     }
 
     public void elevateView(View view) {
