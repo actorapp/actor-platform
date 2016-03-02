@@ -75,7 +75,9 @@ public class ConversationActor extends ModuleActor {
         readerActor = context().getMessagesModule().getOwnReadActor();
 
         dialogsActor = context().getMessagesModule().getDialogsActor();
-        dialogsGroupedActor = context().getMessagesModule().getDialogsGroupedActor();
+        if (context().getConfiguration().isEnabledGroupedChatList()) {
+            dialogsGroupedActor = context().getMessagesModule().getDialogsGroupedActor();
+        }
         outPendingIndex = new IndexEngine(Storage.createIndex("out_pending_" + peer.getPeerType() + "_" + peer.getPeerId()));
         inPendingIndex = new IndexEngine(Storage.createIndex("in_pending_" + peer.getPeerType() + "_" + peer.getPeerId()));
 
@@ -200,7 +202,9 @@ public class ConversationActor extends ModuleActor {
             if (!isHiddenPeer) {
                 dialogsActor.send(new DialogsActor.InMessage(peer, topMessage, inPendingIndex.getCount()));
             }
-            dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+            if (dialogsGroupedActor!=null) {
+                dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+            }
         }
     }
 
@@ -260,7 +264,9 @@ public class ConversationActor extends ModuleActor {
             if (!isHiddenPeer) {
                 dialogsActor.send(new DialogsActor.InMessage(peer, message, inPendingIndex.getCount()));
             }
-            dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+            if (dialogsGroupedActor!=null) {
+                dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+            }
         }
     }
 
@@ -333,7 +339,9 @@ public class ConversationActor extends ModuleActor {
             if (!isHiddenPeer) {
                 // Updating dialog
                 dialogsActor.send(new DialogsActor.InMessage(peer, updatedMsg, inPendingIndex.getCount()));
-                dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+                if (dialogsGroupedActor!=null) {
+                    dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+                }
             }
 
             // Updating pending index
@@ -363,7 +371,9 @@ public class ConversationActor extends ModuleActor {
                 dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
                         MessageState.ERROR));
             }
-            dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+            if (dialogsGroupedActor!=null) {
+                dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+            }
         }
     }
 
@@ -460,7 +470,9 @@ public class ConversationActor extends ModuleActor {
         if (!isHiddenPeer) {
             dialogsActor.send(new DialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
         }
-        dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+        if (dialogsGroupedActor!=null) {
+            dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+        }
     }
 
     private void checkReadState(boolean updateDialogs) {
@@ -476,7 +488,9 @@ public class ConversationActor extends ModuleActor {
                 if (!isHiddenPeer) {
                     dialogsActor.send(new DialogsActor.CounterChanged(peer, 0));
                 }
-                dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, 0));
+                if (dialogsGroupedActor!=null) {
+                    dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, 0));
+                }
             }
         }
     }
