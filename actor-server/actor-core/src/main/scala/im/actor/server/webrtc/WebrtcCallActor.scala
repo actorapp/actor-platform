@@ -13,7 +13,7 @@ import im.actor.server.dialog.DialogExtension
 import im.actor.server.eventbus.{ EventBus, EventBusExtension }
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.{ Peer, PeerType }
-import im.actor.server.sequence.{ ApplePushExtension, WeakUpdatesExtension }
+import im.actor.server.sequence.{ GooglePushMessage, GooglePushExtension, ApplePushExtension, WeakUpdatesExtension }
 import im.actor.server.user.UserExtension
 import im.actor.server.values.ValuesExtension
 import im.actor.types._
@@ -151,6 +151,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
   private val groupExt = GroupExtension(context.system)
   private val valuesExt = ValuesExtension(context.system)
   private val apnsExt = ApplePushExtension(context.system)
+  private val gcmExt = GooglePushExtension(context.system)
   private val webrtcExt = WebrtcExtension(context.system)
 
   case class Device(
@@ -472,10 +473,14 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
 
   private def scheduleIncomingCallUpdates(callees: Seq[UserId]): Future[Unit] = {
     for {
-      authIds ← userExt.getAuthIds(callees.toSet)
-      credss ← apnsExt.findVoipCreds(authIds.toSet)
+      authIdsMap ← userExt.getAuthIdsMap(callees.toSet)
+      acredss ← apnsExt.fetchVoipCreds(authIdsMap.values.flatten.toSet)
+      gcredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
+        case (userId, authIds) ⇒
+          gcmExt.fetchCreds(authIds.toSet) map (userId → _)
+      }
     } yield {
-      credss foreach { creds ⇒
+      acredss foreach { creds ⇒
         val payload = (new ApnsPayloadBuilder).addCustomProperty("callId", id).buildWithDefaultMaximumLength()
 
         val instanceCreds = apnsExt.getVoipInstance(creds.apnsKey) map (_ → creds)
@@ -483,6 +488,17 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
           val notif = new SimpleApnsPushNotification(cred.token.toByteArray, payload)
           instance.getQueue.add(notif)
         }
+      }
+
+      gcredsMap foreach {
+        case (userId, credss) ⇒
+          for {
+            member ← getMember(userId)
+            creds ← credss
+          } {
+            val message = new GooglePushMessage(creds.regId, None, Some(Map("callId" → id.toString, "attemptIndex" → member.callAttempts.toString)))
+            gcmExt.send(creds.projectId, message)
+          }
       }
 
       scheduledUpds =
