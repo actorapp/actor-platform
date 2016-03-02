@@ -305,7 +305,9 @@ public class GroupsProcessor extends AbsModule {
     private void onGroupDescChanged(Group group) {
         context().getMessagesModule().getDialogsActor()
                 .send(new DialogsActor.GroupChanged(group));
-        context().getMessagesModule().getDialogsGroupedActor().send(
-                new GroupedDialogsActor.PeerInformationChanged(Peer.group(group.getGroupId())));
+        if (context().getConfiguration().isEnabledGroupedChatList()) {
+            context().getMessagesModule().getDialogsGroupedActor().send(
+                    new GroupedDialogsActor.PeerInformationChanged(Peer.group(group.getGroupId())));
+        }
     }
 }
