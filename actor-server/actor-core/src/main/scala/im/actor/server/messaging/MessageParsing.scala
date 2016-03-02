@@ -1,4 +1,4 @@
-package im.actor.server.api.rpc.service.messaging
+package im.actor.server.messaging
 
 import com.google.protobuf.CodedInputStream
 import im.actor.api.rpc.messaging.ApiMessage
