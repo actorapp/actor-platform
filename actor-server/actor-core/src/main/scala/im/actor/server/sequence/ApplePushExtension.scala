@@ -70,9 +70,9 @@ final class ApplePushExtension(system: ActorSystem) extends Extension {
 
   def findCreds(authId: Long): Future[Option[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authId))
 
-  def findCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authIds))
+  def fetchCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = db.run(ApplePushCredentialsRepo.find(authIds))
 
-  def findVoipCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = findCreds(authIds) map (_ filter (_.isVoip))
+  def fetchVoipCreds(authIds: Set[Long]): Future[Seq[ApplePushCredentials]] = fetchCreds(authIds) map (_ filter (_.isVoip))
 
   private def createManager(cert: ApnsCert) = {
     val env = cert.isSandbox match {
