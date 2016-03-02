@@ -228,23 +228,21 @@ public class AABubbleCell: UICollectionViewCell {
         isOut = message.senderId == Actor.myUid();
         bindedMessage = message
         self.isShowNewMessages = isShowNewMessages
-        if (!reuse) {
-            if (!isFullSize) {
-                if (!isOut && isGroup) {
-                    let user = Actor.getUserWithUid(message.senderId)
+        if !reuse && !isFullSize {
+            if (!isOut && isGroup) {
+                let user = Actor.getUserWithUid(message.senderId)
                         
-                    // Small hack for replacing senter name and title
-                    // with current group title
-                    if user.isBot() && user.getNameModel().get() == "Bot" {
-                        let group = Actor.getGroupWithGid(self.peer.peerId)
-                        let avatar: ACAvatar? = group.getAvatarModel().get()
-                        let name = group.getNameModel().get()
-                        avatarView.bind(name, id: user.getId(), avatar: avatar)
-                    } else {
-                        let avatar: ACAvatar? = user.getAvatarModel().get()
-                        let name = user.getNameModel().get()
-                        avatarView.bind(name, id: user.getId(), avatar: avatar)
-                    }
+                // Small hack for replacing senter name and title
+                // with current group title
+                if user.isBot() && user.getNameModel().get() == "Bot" {
+                    let group = Actor.getGroupWithGid(self.peer.peerId)
+                    let avatar: ACAvatar? = group.getAvatarModel().get()
+                    let name = group.getNameModel().get()
+                    avatarView.bind(name, id: user.getId(), avatar: avatar)
+                } else {
+                    let avatar: ACAvatar? = user.getAvatarModel().get()
+                    let name = user.getNameModel().get()
+                    avatarView.bind(name, id: user.getId(), avatar: avatar)
                 }
                 if !avatarAdded {
                     contentView.addSubview(avatarView)
