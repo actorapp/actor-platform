@@ -411,24 +411,28 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
         end()
         deleteSyncedSet()
       case SendIncomingCall(userId) ⇒
-        if (System.currentTimeMillis() - startTime < 30000) {
-          getMember(userId) match {
-            case Some(member) ⇒
+        getMember(userId) match {
+          case Some(member) ⇒
+            if (System.currentTimeMillis() - startTime < 30000) {
               weakUpdExt.broadcastUserWeakUpdate(
                 userId,
                 UpdateIncomingCall(id, Some(member.callAttempts)),
                 reduceKey = Some(s"call_${id}_${member.callAttempts}")
               )
-            case None ⇒ throw new IllegalStateException("Attempted to send incoming call update of a non-existent member")
-          }
-        } else {
-          log.debug(s"Auto-rejecting member[userId=$userId] due to timeout")
-          cancelIncomingCallUpdates(userId)
-          setMemberState(userId, MemberStates.Ended)
-          for {
-            deviceId ← clients.filter(_._1.externalUserId.contains(userId)).map(_._2)
-          } yield removeDevice(deviceId)
-          broadcastSyncedSet()
+            } else {
+              log.debug(s"Auto-rejecting member[userId=$userId] due to timeout")
+              cancelIncomingCallUpdates(userId)
+              weakUpdExt.broadcastUserWeakUpdate(
+                userId,
+                UpdateCallHandled(id, Some(member.callAttempts))
+              )
+              setMemberState(userId, MemberStates.Ended)
+              for {
+                deviceId ← clients.filter(_._1.externalUserId.contains(userId)).values
+              } yield removeDevice(deviceId)
+              broadcastSyncedSet()
+            }
+          case None ⇒ throw new IllegalStateException("Attempted to send incoming call update of a non-existent member")
         }
       case _: StartCall ⇒ sender() ! WebrtcCallErrors.CallAlreadyStarted
     }
