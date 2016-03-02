@@ -19,11 +19,8 @@ object UserSequence {
 
   private final case class Initialized(seq: Int)
 
-  private[sequence] def props(
-    googlePushManager: GooglePushManager,
-    applePushManager:  ApplePushExtension
-  ) =
-    Props(new UserSequence(googlePushManager, applePushManager))
+  private[sequence] def props =
+    Props(new UserSequence)
 }
 
 private trait SeqControl {
@@ -40,10 +37,7 @@ private trait SeqControl {
   protected def setSeq(s: Int): Unit = this.seq = s
 }
 
-private[sequence] final class UserSequence(
-  googlePushManager: GooglePushManager,
-  applePushManager:  ApplePushExtension
-) extends Actor with ActorLogging with Stash with SeqControl {
+private[sequence] final class UserSequence extends Actor with ActorLogging with Stash with SeqControl {
 
   import UserSequence._
   import UserSequenceCommands._
@@ -58,7 +52,7 @@ private[sequence] final class UserSequence(
 
   private val deliveryCache = Caffeine.newBuilder().maximumSize(100).executor(context.dispatcher).build[String, SeqState]()
 
-  private lazy val vendorPush = context.actorOf(VendorPush.props(userId, googlePushManager, applePushManager), "vendor-push")
+  private lazy val vendorPush = context.actorOf(VendorPush.props(userId), "vendor-push")
 
   init()
 

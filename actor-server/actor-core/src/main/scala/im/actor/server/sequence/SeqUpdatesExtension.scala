@@ -23,10 +23,7 @@ import scala.collection.immutable
 import scala.concurrent.duration._
 import scala.concurrent.{ Future, Promise }
 
-final class SeqUpdatesExtension(
-  _system: ActorSystem,
-  gpm:     GooglePushManager
-) extends Extension {
+final class SeqUpdatesExtension(_system: ActorSystem) extends Extension {
 
   import UserSequenceCommands._
   import system.dispatcher
@@ -34,9 +31,8 @@ final class SeqUpdatesExtension(
   private val log = Logging(_system, getClass)
   private implicit val OperationTimeout = Timeout(20.seconds)
   private implicit val system: ActorSystem = _system
-  private lazy val apm = ApplePushExtension(system)
   private implicit lazy val db = DbExtension(system).db
-  lazy val region: SeqUpdatesManagerRegion = SeqUpdatesManagerRegion.start()(system, gpm, apm)
+  lazy val region: SeqUpdatesManagerRegion = SeqUpdatesManagerRegion.start()(system)
   private val writer = system.actorOf(BatchUpdatesWriter.props, "batch-updates-writer")
   private val mediator = DistributedPubSub(system).mediator
 
@@ -289,22 +285,6 @@ object SeqUpdatesExtension extends ExtensionId[SeqUpdatesExtension] with Extensi
     implicit val _system = system
     implicit val mat = ActorMaterializer()
     val log = Logging(system, getClass)
-
-    try {
-      log.debug("Initiating SeqUpdatesExtension")
-
-      val googlePushConfig = GooglePushManagerConfig.load(system.settings.config.getConfig("services.google.push")).get
-      log.debug("Google Push Config: {}", googlePushConfig)
-
-      val gpm = new GooglePushManager(googlePushConfig)
-
-      log.debug("Starting up")
-
-      new SeqUpdatesExtension(system, gpm)
-    } catch {
-      case e: Throwable ⇒
-        log.error(e, "Failed to start up SeqUpdatesExtension")
-        throw e
-    }
+    new SeqUpdatesExtension(system)
   }
 }

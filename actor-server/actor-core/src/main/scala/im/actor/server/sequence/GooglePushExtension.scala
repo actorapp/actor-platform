@@ -5,7 +5,7 @@ import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.settings.ConnectionPoolSettings
-import akka.stream.Materializer
+import akka.stream.{ ActorMaterializer, Materializer }
 import akka.stream.actor.ActorPublisher
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
@@ -49,13 +49,23 @@ final case class GooglePushMessage(
   data:        Option[Map[String, String]]
 )
 
-final class GooglePushManager(config: GooglePushManagerConfig)(implicit system: ActorSystem, mat: Materializer) {
+object GooglePushExtension extends ExtensionId[GooglePushExtension] with ExtensionIdProvider {
+  override def createExtension(system: ExtendedActorSystem): GooglePushExtension = new GooglePushExtension(system)
+
+  override def lookup(): ExtensionId[_ <: Extension] = GooglePushExtension
+}
+
+final class GooglePushExtension(system: ActorSystem) extends Extension {
 
   import system.dispatcher
+
+  private implicit val mat = ActorMaterializer()(system)
+  private implicit val _system = system
 
   private val log = Logging(system, getClass)
   private val db = DbExtension(system).db
 
+  private val config = GooglePushManagerConfig.load(system.settings.config.getConfig("services.google.push")).get
   private val deliveryPublisher = system.actorOf(GooglePushDelivery.props, "google-push-delivery")
 
   // TODO: flatten
