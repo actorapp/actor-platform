@@ -11,9 +11,22 @@ public class SDKPushReceiver extends ActorPushReceiver {
     public void onPushReceived(String payload) {
         try {
             JSONObject object = new JSONObject(payload);
-            int seq = object.getJSONObject("data").getInt("seq");
-            Log.d("SDKPushReceiver", "Seq Received: " + seq);
-            ActorSDK.sharedActor().getMessenger().onPushReceived(seq);
+            if (object.has("data")) {
+                JSONObject data = object.getJSONObject("data");
+                if (data.has("seq")) {
+                    int seq = data.getInt("seq");
+                    Log.d("SDKPushReceiver", "Seq Received: " + seq);
+                    ActorSDK.sharedActor().getMessenger().onPushReceived(seq);
+                } else if (data.has("callId")) {
+                    Long callId = Long.parseLong(data.getString("callId"));
+                    int attempt = 0;
+                    if (data.has("attempt")) {
+                        attempt = data.getInt("attempt");
+                    }
+                    Log.d("SDKPushReceiver", "Received Call #" + callId + " (" + attempt + ")");
+                    ActorSDK.sharedActor().getMessenger().checkCall(callId, attempt);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
