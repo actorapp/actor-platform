@@ -20,8 +20,10 @@ class CallHeader extends Component {
 
   render() {
     return (
-      <header>
-        {this.renderLabel()}
+      <header className="call__header">
+        <h2>
+          {this.renderLabel()}
+        </h2>
       </header>
     );
   }

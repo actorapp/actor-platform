@@ -81,16 +81,18 @@ class Call extends Component {
 
     return (
       <div className="activity__body">
-        <CallHeader isOutgoing={isOutgoing} />
-        <CallBody peerInfo={peerInfo} />
-        <CallControls
-          callState={callState}
-          isOutgoing={isOutgoing}
-          onEnd={this.onEnd}
-          onAnswer={this.onAnswer}
-          onMute={this.onMute}
-          onClose={this.onClose}
-        />
+        <section className="call">
+          <CallHeader isOutgoing={isOutgoing} />
+          <CallBody peerInfo={peerInfo} />
+          <CallControls
+            callState={callState}
+            isOutgoing={isOutgoing}
+            onEnd={this.onEnd}
+            onAnswer={this.onAnswer}
+            onMute={this.onMute}
+            onClose={this.onClose}
+          />
+      </section>
       </div>
     );
   }
