@@ -34,6 +34,7 @@ public class CallManagerActor extends ModuleActor {
 
     private CallsProvider provider;
     private HashSet<Long> handledCalls = new HashSet<>();
+    private HashMap<Long, Integer> handledCallAttempts = new HashMap<>();
     private HashSet<Long> answeredCalls = new HashSet<>();
 
     private Long currentCall;
@@ -62,10 +63,7 @@ public class CallManagerActor extends ModuleActor {
         // Stopping current call as we started new done
         //
         if (currentCall != null) {
-            ActorRef dest = runningCalls.remove(currentCall);
-            if (dest != null) {
-                dest.send(PoisonPill.INSTANCE);
-            }
+            terminalCall(currentCall);
             currentCall = null;
         }
 
@@ -87,15 +85,13 @@ public class CallManagerActor extends ModuleActor {
         // Stopping current call some are started during call establishing
         //
         if (currentCall != null) {
-            ActorRef dest = runningCalls.remove(currentCall);
-            if (dest != null) {
-                dest.send(PoisonPill.INSTANCE);
-            }
+            terminalCall(currentCall);
+            currentCall = null;
+
             if (isBeeping) {
                 isBeeping = false;
                 provider.stopOutgoingBeep();
             }
-            currentCall = null;
         }
 
         //
@@ -104,7 +100,7 @@ public class CallManagerActor extends ModuleActor {
         runningCalls.put(callId, ref);
 
         //
-        // Marking outgoing call as answered to avoid call rejects on call ending
+        // Marking outgoing call as answered
         //
         answeredCalls.add(callId);
 
@@ -126,19 +122,40 @@ public class CallManagerActor extends ModuleActor {
     // Incoming call
     //
 
-    private void onIncomingCall(final long callId, WakeLock wakeLock) {
+    private void onIncomingCall(final long callId, final int attempt, WakeLock wakeLock) {
         Log.d(TAG, "onIncomingCall (" + callId + ")");
 
         //
         // Filter double updates about incoming call
         //
         if (handledCalls.contains(callId)) {
+            if (handledCallAttempts.get(callId) >= attempt) {
+                if (wakeLock != null) {
+                    wakeLock.releaseLock();
+                }
+                return;
+            }
+        }
+
+        //
+        // Ignore any incoming call if we already have running call with such call id
+        //
+        if (runningCalls.containsKey(callId)) {
             if (wakeLock != null) {
                 wakeLock.releaseLock();
             }
             return;
         }
+
+        //
+        // Marking handled calls as handled
+        //
         handledCalls.add(callId);
+        handledCallAttempts.put(callId, attempt);
+
+        //
+        // Creating wake lock if needed
+        //
         if (wakeLock == null) {
             wakeLock = Runtime.makeWakeLock();
         }
@@ -187,10 +204,7 @@ public class CallManagerActor extends ModuleActor {
             //
             // Shutdown call actor
             //
-            ActorRef ref = runningCalls.remove(callId);
-            if (ref != null) {
-                ref.send(PoisonPill.INSTANCE);
-            }
+            terminalCall(callId);
         }
     }
 
@@ -207,7 +221,6 @@ public class CallManagerActor extends ModuleActor {
 
             //
             // Sending answer message to actor.
-            // Hint: If we will send message to master call actor nothing will happen
             //
             ActorRef ref = runningCalls.get(callId);
             if (ref != null) {
@@ -316,6 +329,20 @@ public class CallManagerActor extends ModuleActor {
         }
     }
 
+    private void terminalCall(long callId) {
+        ActorRef dest = runningCalls.remove(callId);
+        if (dest != null) {
+            dest.send(PoisonPill.INSTANCE);
+        }
+    }
+
+    private void sendToCall(long callId, Object message) {
+        ActorRef dest = runningCalls.get(callId);
+        if (dest != null) {
+            dest.send(message);
+        }
+    }
+
 
     //
     // Messages
@@ -325,10 +352,10 @@ public class CallManagerActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof OnIncomingCall) {
             OnIncomingCall call = (OnIncomingCall) message;
-            onIncomingCall(call.getCallId(), null);
+            onIncomingCall(call.getCallId(), call.getAttempt(), null);
         } else if (message instanceof OnIncomingCallLocked) {
             OnIncomingCallLocked locked = (OnIncomingCallLocked) message;
-            onIncomingCall(locked.getCallId(), locked.getWakeLock());
+            onIncomingCall(locked.getCallId(), locked.getAttempt(), locked.getWakeLock());
         } else if (message instanceof OnIncomingCallHandled) {
             OnIncomingCallHandled incomingCallHandled = (OnIncomingCallHandled) message;
             onIncomingCallHandled(incomingCallHandled.getCallId());
@@ -364,24 +391,32 @@ public class CallManagerActor extends ModuleActor {
     public static class OnIncomingCall {
 
         private long callId;
+        private int attempt;
 
-        public OnIncomingCall(long callId) {
+        public OnIncomingCall(long callId, int attempt) {
             this.callId = callId;
+            this.attempt = attempt;
         }
 
         public long getCallId() {
             return callId;
+        }
+
+        public int getAttempt() {
+            return attempt;
         }
     }
 
     public static class OnIncomingCallLocked {
 
         private long callId;
+        private int attempt;
         private WakeLock wakeLock;
 
-        public OnIncomingCallLocked(long callId, WakeLock wakeLock) {
+        public OnIncomingCallLocked(long callId, int attempt, WakeLock wakeLock) {
             this.callId = callId;
             this.wakeLock = wakeLock;
+            this.attempt = attempt;
         }
 
         public long getCallId() {
@@ -391,14 +426,24 @@ public class CallManagerActor extends ModuleActor {
         public WakeLock getWakeLock() {
             return wakeLock;
         }
+
+        public int getAttempt() {
+            return attempt;
+        }
     }
 
     public static class OnIncomingCallHandled {
 
         private long callId;
+        private int attempt;
 
-        public OnIncomingCallHandled(long callId) {
+        public OnIncomingCallHandled(long callId, int attempt) {
             this.callId = callId;
+            this.attempt = attempt;
+        }
+
+        public int getAttempt() {
+            return attempt;
         }
 
         public long getCallId() {

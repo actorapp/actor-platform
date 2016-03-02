@@ -45,8 +45,8 @@ public class CallsModule extends AbsModule {
         return callManager;
     }
 
-    public void checkCall(long callId) {
-        callManager.send(new CallManagerActor.OnIncomingCallLocked(callId, im.actor.runtime.Runtime.makeWakeLock()));
+    public void checkCall(long callId, int attempt) {
+        callManager.send(new CallManagerActor.OnIncomingCallLocked(callId, attempt, im.actor.runtime.Runtime.makeWakeLock()));
     }
 
     public void probablyEndCall() {
