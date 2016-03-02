@@ -36,7 +36,11 @@ public class AAComposeController: AAContactsListContentController, AAContactsLis
     }
     
     public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
-        navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(contact.uid)))
+        if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(contact.uid)) {
+            navigateDetail(customController)
+        } else {
+            navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(contact.uid)))
+        }
         return false
     }
 }
