@@ -212,6 +212,7 @@ public class ActorSDK {
         builder.setNotificationProvider(new AndroidNotifications(AndroidContext.getContext()));
         builder.setDeviceCategory(DeviceCategory.MOBILE);
         builder.setPlatformType(PlatformType.ANDROID);
+        builder.setIsEnabledGroupedChatList(false);
         builder.setApiConfiguration(new ApiConfiguration(
                 appName,
                 apiAppId,
