@@ -12,7 +12,7 @@ class AddUserButton extends Component {
 
   render() {
     return (
-      <button className="button button--square col-xs" onClick={this.props.onClick}>
+      <button className="button button--square col-xs" disabled onClick={this.props.onClick}>
         <i className="material-icons">person_add</i>
         <FormattedMessage id="call.addUser"/>
       </button>
