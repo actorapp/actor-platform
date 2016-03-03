@@ -15,16 +15,14 @@ import scala.concurrent.Future
 
 trait MessageUpdating extends PeersImplicits {
 
-  def updateMessageContent(clientUserId: Int, peer: Peer, randomId: Long, updatedMessage: ApiMessage)(implicit system: ActorSystem): Future[SeqState] = {
+  def updateMessageContent(clientUserId: Int, peer: Peer, randomId: Long, updatedMessage: ApiMessage, date: Long = System.currentTimeMillis)(implicit system: ActorSystem): Future[SeqState] = {
     peer match {
-      case Peer(PeerType.Private, _) ⇒
-        system.log.debug("Sending UpdateMessageContentChanged, client: {}, peer: {}, randomId: {}", clientUserId, peer, randomId)
-        updateContentPrivate(clientUserId, peer, randomId, updatedMessage)
-      case Peer(PeerType.Group, _) ⇒ updateContentGroup(clientUserId, peer, randomId, updatedMessage)
+      case Peer(PeerType.Private, _) ⇒ updateContentPrivate(clientUserId, peer, randomId, updatedMessage, date)
+      case Peer(PeerType.Group, _)   ⇒ updateContentGroup(clientUserId, peer, randomId, updatedMessage, date)
     }
   }
 
-  private def updateContentPrivate(userId: Int, peer: Peer, randomId: Long, updatedMessage: ApiMessage)(implicit system: ActorSystem): Future[SeqState] = {
+  private def updateContentPrivate(userId: Int, peer: Peer, randomId: Long, updatedMessage: ApiMessage, date: Long)(implicit system: ActorSystem): Future[SeqState] = {
     import system.dispatcher
     for {
       // update for client himself
@@ -34,7 +32,7 @@ trait MessageUpdating extends PeersImplicits {
         pushText = None,
         isFat = false,
         reduceKey = None,
-        deliveryId = Some(s"msgcontent_$randomId")
+        deliveryId = Some(s"msgcontent_${randomId}_${date}")
       )
       // update for peer user
       _ ← UserExtension(system).broadcastUserUpdate(
@@ -43,7 +41,7 @@ trait MessageUpdating extends PeersImplicits {
         pushText = None,
         isFat = false,
         reduceKey = None,
-        deliveryId = Some(s"msgcontent_$randomId")
+        deliveryId = Some(s"msgcontent_${randomId}_${date}")
       )
       _ ← DbExtension(system).db.run(HistoryMessageRepo.updateContentAll(
         userIds = Set(userId, peer.id),
@@ -56,7 +54,7 @@ trait MessageUpdating extends PeersImplicits {
     } yield seqState
   }
 
-  private def updateContentGroup(userId: Int, peer: Peer, randomId: Long, updatedMessage: ApiMessage)(implicit system: ActorSystem): Future[SeqState] = {
+  private def updateContentGroup(userId: Int, peer: Peer, randomId: Long, updatedMessage: ApiMessage, date: Long)(implicit system: ActorSystem): Future[SeqState] = {
     import system.dispatcher
     val upd = UpdateMessageContentChanged(peer.asStruct, randomId, updatedMessage)
     for {
@@ -67,7 +65,7 @@ trait MessageUpdating extends PeersImplicits {
         pushText = None,
         isFat = false,
         reduceKey = None,
-        deliveryId = Some(s"msgcontent_$randomId")
+        deliveryId = Some(s"msgcontent_${randomId}_${date}")
       )
       (memberIds, _, _) ← GroupExtension(system).getMemberIds(peer.id)
       membersSet = memberIds.toSet
@@ -77,7 +75,7 @@ trait MessageUpdating extends PeersImplicits {
         update = upd,
         pushText = None,
         isFat = false,
-        deliveryId = Some(s"msgcontent_$randomId")
+        deliveryId = Some(s"msgcontent_${randomId}_${date}")
       )
       _ ← DbExtension(system).db.run(HistoryMessageRepo.updateContentAll(
         userIds = membersSet + userId,
