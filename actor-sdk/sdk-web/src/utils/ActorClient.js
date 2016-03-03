@@ -8,13 +8,13 @@ export default {
 
   requestSms(phone) {
     return new Promise((resolve, reject) => {
-      window.messenger.requestSms(phone, resolve, reject);
+      window.messenger.requestSms(phone.trim(), resolve, reject);
     });
   },
 
   requestCodeEmail(email) {
     return new Promise((resolve, reject) => {
-      window.messenger.requestCodeEmail(email, resolve, reject);
+      window.messenger.requestCodeEmail(email.trim(), resolve, reject);
     });
   },
 
