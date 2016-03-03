@@ -54,10 +54,6 @@ class MessageItem extends Component {
     isExperimental: PropTypes.bool
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     return (this.props.message !== nextProps.message || this.props.isShortMessage != nextProps.isShortMessage);
   }
