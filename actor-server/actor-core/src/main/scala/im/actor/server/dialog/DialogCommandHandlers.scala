@@ -30,7 +30,8 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   protected def sendMessage(s: DialogState, sm: SendMessage): Unit = {
     withCreated(s) { state ⇒
-      becomeStashing(replyTo ⇒ ({
+      becomeStashing(
+        replyTo ⇒ ({
         case seq: SeqStateDate ⇒
           replyTo ! seq
           if (state.isArchived) {
@@ -43,7 +44,10 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
           replyTo forward fail
           context unbecome ()
           unstashAll()
-      }: Receive) orElse reactions(state), discardOld = false)
+      }: Receive) orElse reactions(state),
+        debugMessage = debugMessage("send message"),
+        discardOld = false
+      )
 
       validateAccessHash(sm.dest, sm.senderAuthId, sm.accessHash) map { valid ⇒
         if (valid) {

@@ -5,7 +5,7 @@ import akka.pattern.pipe
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.concurrent.{ ActorFutures, StashingActor, AlertingActor }
+import im.actor.concurrent.{ ActorFutures, AlertingActor }
 import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs.ProcessorState
 import im.actor.server.db.DbExtension
@@ -16,6 +16,7 @@ import im.actor.server.persist.{ GroupRepo, UserRepo }
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqStateDate }
 import im.actor.server.social.SocialExtension
 import im.actor.server.user.UserExtension
+import im.actor.util.actors.StashingActorDebug
 import im.actor.util.cache.CacheHelpers._
 import org.joda.time.DateTime
 import slick.dbio.DBIO
@@ -65,7 +66,7 @@ private[dialog] object DialogState {
 }
 
 private[dialog] final case class DialogState(
-  lastMessageDate: Long, //we don't use it now anywhere. should we remove it?
+  lastMessageDate: Long,
   lastReceiveDate: Long,
   lastReadDate:    Long,
   isFavourite:     Boolean,
@@ -111,7 +112,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
   extends AlertingActor
   with DialogCommandHandlers
   with ActorFutures
-  with StashingActor {
+  with StashingActorDebug {
   import DialogCommands._
   import DialogProcessor._
 
@@ -137,14 +138,17 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   def receive = initializing
 
-  def initializing: Receive = receiveStashing(replyTo ⇒ {
+  def initializing: Receive = receiveStashing(
+    replyTo ⇒ {
     case state: DialogState ⇒
       context become initialized(state)
       unstashAll()
     case Status.Failure(cause) ⇒
       log.error(cause, "Failed to init dialog")
       self ! Kill
-  })
+  },
+    debugMessage = debugMessage("initializing dialog")
+  )
 
   def initialized(state: DialogState): Receive = actions(state) orElse reactions(state)
 
@@ -227,15 +231,19 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
         _ ← DBIO.from(userExt.notifyDialogsChanged(userId))
       } yield DialogState.fromModel(dialog, isCreated = true)).to(self, replyTo)
 
-      becomeStashing(replyTo ⇒ {
-        case state: DialogState ⇒
-          context become initialized(state)
-          unstashAll()
-          f(state)
-        case Status.Failure(e) ⇒
-          log.error(e, "Failed to create dialog")
-          self ! Kill
-      }, discardOld = true)
+      becomeStashing(
+        replyTo ⇒ {
+          case state: DialogState ⇒
+            context become initialized(state)
+            unstashAll()
+            f(state)
+          case Status.Failure(e) ⇒
+            log.error(e, "Failed to create dialog")
+            self ! Kill
+        },
+        debugMessage = debugMessage("creating dialog"),
+        discardOld = true
+      )
     }
   }
 
