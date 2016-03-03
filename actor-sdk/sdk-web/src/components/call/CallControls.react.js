@@ -10,6 +10,9 @@ import AnswerButton from './AnswerButton.react';
 import EndButton from './EndButton.react';
 import MuteButton from './MuteButton.react';
 import CloseButton from './CloseButton.react';
+import FullScreenButton from './FullScreenButton.react';
+import VideoButton from './VideoButton.react';
+import AddUserButton from './AddUserButton.react';
 
 class CallControls extends Component {
   static propTypes = {
@@ -23,34 +26,50 @@ class CallControls extends Component {
     onEnd: PropTypes.func.isRequired,
     onAnswer: PropTypes.func.isRequired,
     onMuteToggle: PropTypes.func.isRequired,
+    onFullscreen: PropTypes.func.isRequired,
+    onUserAdd: PropTypes.func.isRequired,
+    onVideo: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired
   };
 
   render() {
     const {isOutgoing} = this.props;
 
-    const controls = [];
+    const mainControls = [];
+    const secondaryControls = [];
     switch (this.props.callState) {
       case CallStates.CALLING:
         if (!isOutgoing) {
-          controls.push(<AnswerButton onClick={this.props.onAnswer} key="answer" />)
+          mainControls.push(<AnswerButton onClick={this.props.onAnswer} key="answer" />);
         }
 
-        controls.push(<EndButton onClick={this.props.onEnd} isOutgoing={isOutgoing} key="end" />);
+        mainControls.push(<EndButton onClick={this.props.onEnd} isOutgoing={isOutgoing} key="end" />);
         break;
       case CallStates.IN_PROGRESS:
       case CallStates.CONNECTING:
-        controls.push(<MuteButton onClick={this.props.onMuteToggle} key="mute" />)
-        controls.push(<EndButton onClick={this.props.onEnd} isOutgoing={isOutgoing} key="end" />);
+        secondaryControls.push([
+          <FullScreenButton onClick={this.props.onFullscreen} key="fullscreen" />,
+          <MuteButton onClick={this.props.onMuteToggle} key="mute" />,
+          <VideoButton onClick={this.props.onVideo} key="video" />,
+          <AddUserButton onClick={this.props.onUserAdd} key="add" />,
+        ]);
+        mainControls.push(<EndButton onClick={this.props.onEnd} isOutgoing={isOutgoing} key="end" />);
         break;
       case CallStates.ENDED:
-        controls.push(<CloseButton onClick={this.props.onClose} key="close" />);
+        mainControls.push(<CloseButton onClick={this.props.onClose} key="close" />);
         break;
     }
 
     return (
       <div className="call__controls">
-        {controls}
+        <div className="call__controls__icons row">
+          <div className="col-xs"/>
+          {secondaryControls}
+          <div className="col-xs"/>
+        </div>
+        <div className="call__controls__buttons">
+          {mainControls}
+        </div>
       </div>
     );
   }

@@ -5,19 +5,19 @@
 import React, {Component, PropTypes} from 'react';
 import { FormattedMessage } from 'react-intl';
 
-class EndButton extends Component {
+class FullScreenButton extends Component {
   static propTypes = {
     onClick: PropTypes.func.isRequired
   };
 
   render() {
     return (
-      <button className="button button--rised button--pink button--wide" onClick={this.props.onClick}>
-        <i className="material-icons" key="icon">call_end</i>
-        <FormattedMessage id="call.end" key="message"/>
+      <button className="button button--square col-xs" onClick={this.props.onClick}>
+        <i className="material-icons">fullscreen</i>
+        <FormattedMessage id="call.fullScreen"/>
       </button>
     );
   }
 }
 
-export default EndButton;
+export default FullScreenButton;
