@@ -4,12 +4,20 @@
 
 import React, {Component, PropTypes} from 'react';
 import { FormattedMessage } from 'react-intl';
+import classnames from 'classnames';
+import { CallStates } from '../../constants/ActorAppConstants';
 
 import AvatarItem from '../common/AvatarItem.react';
 
 class CallBody extends Component {
   static propTypes = {
-    peerInfo: React.PropTypes.object
+    peerInfo: React.PropTypes.object,
+    callState: PropTypes.oneOf([
+      CallStates.CALLING,
+      CallStates.IN_PROGRESS,
+      CallStates.CONNECTING,
+      CallStates.ENDED
+    ])
   };
 
   render() {
@@ -17,6 +25,10 @@ class CallBody extends Component {
     if (!peerInfo) {
       return null;
     }
+
+    const avatarRingsClassName = classnames('call__avatar__rings', {
+      'call__avatar__rings--animated': this.props.callState === CallStates.CALLING || this.props.callState === CallStates.CONNECTING
+    });
 
     return (
       <div className="call__body">
@@ -27,7 +39,7 @@ class CallBody extends Component {
             title={peerInfo.name}
             placeholder={peerInfo.placeholder}
           />
-          <div className="call__avatar__rings">
+          <div className={avatarRingsClassName}>
             <div/><div/><div/>
           </div>
         </div>

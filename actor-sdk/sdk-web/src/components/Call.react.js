@@ -73,6 +73,18 @@ class Call extends Component {
     CallActionCreators.hide();
   }
 
+  onFullscreen() {
+    console.debug('onFullscreen');
+  }
+
+  onUserAdd() {
+    console.debug('onUserAdd');
+  }
+
+  onVideo() {
+    console.debug('onVideo');
+  }
+
   renderContent() {
     const {isOpen, callState, peerInfo, isOutgoing} = this.state;
     if (!isOpen) {
@@ -83,13 +95,16 @@ class Call extends Component {
       <div className="activity__body">
         <section className="call">
           <CallHeader isOutgoing={isOutgoing} />
-          <CallBody peerInfo={peerInfo} />
+          <CallBody peerInfo={peerInfo} callState={callState}/>
           <CallControls
             callState={callState}
             isOutgoing={isOutgoing}
             onEnd={this.onEnd}
             onAnswer={this.onAnswer}
             onMuteToggle={this.onMuteToggle}
+            onFullscreen={this.onFullscreen}
+            onUserAdd={this.onUserAdd}
+            onVideo={this.onVideo}
             onClose={this.onClose}
           />
       </section>

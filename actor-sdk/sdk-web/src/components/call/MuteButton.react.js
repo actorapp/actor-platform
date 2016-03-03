@@ -12,7 +12,8 @@ class MuteButton extends Component {
 
   render() {
     return (
-      <button className="button button--rised button--wide" onClick={this.props.onClick}>
+      <button className="button button--square col-xs" onClick={this.props.onClick}>
+        <i className="material-icons">mic_off</i>
         <FormattedMessage id="call.mute"/>
       </button>
     );
