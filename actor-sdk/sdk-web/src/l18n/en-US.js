@@ -287,7 +287,10 @@ export default {
       mute: 'Mute',
       answer: 'Answer',
       decline: 'Decline',
-      end: 'End call'
+      end: 'End call',
+      addUser: 'Add user',
+      fullScreen: 'Fullscreen',
+      video: 'Video'
     }
   }
 };
