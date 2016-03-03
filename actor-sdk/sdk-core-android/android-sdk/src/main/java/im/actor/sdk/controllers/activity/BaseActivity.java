@@ -204,6 +204,10 @@ public class BaseActivity extends AppCompatActivity {
         execute(cmd, R.string.progress_common);
     }
 
+    public <T> void execute(Command<T> cmd, final CommandCallback<T> callback) {
+        cmd.start(callback);
+    }
+
     public <T> void execute(Command<T> cmd, int title) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(title));

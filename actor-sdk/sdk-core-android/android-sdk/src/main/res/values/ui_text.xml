@@ -233,6 +233,15 @@
     <string name="chat_unsupported">Message is unsupported in this version. Please, wait for application update to see message.</string>
     <string name="online">\u25CF online</string>
 
+    <string name="messages_action_forward">Forward</string>
+    <string name="messages_action_quote">Quote</string>
+    <string name="messages_action_delete">Delete</string>
+    <string name="messages_action_copy">Copy</string>
+    <string name="messages_action_like">Like</string>
+    <string name="edit_message">Edit last message</string>
+    <string name="edit_message_error_not_last">You can edit only last message</string>
+    <string name="edit_message_error_slowpoke">Message is too old</string>
+
     <!-- Share menu-->
     <string name="share_menu_gallery">Gallery</string>
     <string name="share_menu_video">Video</string>
@@ -414,7 +423,9 @@
     <string name="not_group_mentions_subtitle">Enable group notifications only for mentions</string>
     <string name="not_show_text">Show names and messages</string>
     <string name="not_show_text_subtitle">Show message text and sender name in notification panel</string>
-
+    <string name="notification_multiple_canversations_after_msg_count">" messages in "</string>
+    <string name="notifications_multiple_canversations_after_coversations_count">" chats"</string>
+    <string name="notifications_single_conversation_аfter_messages_count">" messages"</string>
     <!-- Pick user -->
     <string name="pick_user_title">Pick person</string>
 
@@ -481,6 +492,8 @@
     <string name="alert_revoke_integration_token_message">Revoke token?</string>
     <string name="alert_revoke_integration_token_yes">Revoke</string>
 
+    <string name="confirm_share">Share with</string>
+
     <!-- Errors -->
     <string name="error_connection">Unable to connect. Please check that you are connected to the Internet and try
         again.\n\nPlease reboot your phone if your connection problem persists.
@@ -490,14 +503,4 @@
     </string>
     <string name="error_view_url">Unknown URL type</string>
 
-
-    <string name="messages_action_forward">Forward</string>
-    <string name="messages_action_quote">Quote</string>
-    <string name="messages_action_delete">Delete</string>
-    <string name="messages_action_copy">Copy</string>
-    <string name="messages_action_like">Like</string>
-    <string name="notification_multiple_canversations_after_msg_count">" messages in "</string>
-    <string name="notifications_multiple_canversations_after_coversations_count">" chats"</string>
-    <string name="notifications_single_conversation_аfter_messages_count">" messages"</string>
-    <string name="confirm_share">Share with</string>
 </resources>
