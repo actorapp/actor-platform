@@ -16,6 +16,8 @@ class ActorSDKDelegate {
       install: components.install || null,
       deactivated: components.deactivated || null,
       join: components.join || null,
+      archive: components.archive || null,
+      empty: components.empty || null,
 
       sidebar: components.sidebar || null,
       dialog: components.dialog || null
