@@ -66,7 +66,7 @@ class Call extends Component {
   }
 
   onMute() {
-    CallActionCreators.muteCall(this.state.callId);
+    CallActionCreators.toggleCallMute(this.state.callId);
   }
 
   onClose() {
@@ -83,7 +83,7 @@ class Call extends Component {
       <div className="activity__body">
         <section className="call">
           <CallHeader isOutgoing={isOutgoing} />
-          <CallBody peerInfo={peerInfo} />
+          <CallBody peerInfo={peerInfo} callState={callState}/>
           <CallControls
             callState={callState}
             isOutgoing={isOutgoing}
