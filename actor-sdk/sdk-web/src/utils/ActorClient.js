@@ -144,12 +144,12 @@ export default {
     window.messenger.unbindEventBus(callback);
   },
 
-  bindCall(id, callback) {
-    window.messenger.bindCall(id, callback);
+  bindCall(callId, callback) {
+    window.messenger.bindCall(callId, callback);
   },
 
-  unbindCall(id, callback) {
-    window.messenger.unbindCall(id, callback);
+  unbindCall(callId, callback) {
+    window.messenger.unbindCall(callId, callback);
   },
 
   makeCall(userId) {
@@ -160,12 +160,16 @@ export default {
       return window.messenger.doGroupCall(groupId);
   },
 
-  answerCall(id) {
-    window.messenger.answerCall(id);
+  answerCall(callId) {
+    window.messenger.answerCall(callId);
   },
 
-  endCall(id) {
-    window.messenger.endCall(id);
+  endCall(callId) {
+    window.messenger.endCall(callId);
+  },
+
+  toggleCallMute(callId) {
+    window.messenger.toggleCallMute(callId);
   },
 
   getUser(uid) {
