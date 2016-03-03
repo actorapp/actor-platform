@@ -2,7 +2,7 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { forEach, map, debounce } from 'lodash';
+import { forEach, map, debounce, isFunction } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
@@ -15,11 +15,10 @@ import DialogStore from '../../stores/DialogStore';
 import MessageStore from '../../stores/MessageStore';
 
 import DefaultMessageItem from './messages/MessageItem.react';
-import Welcome from './messages/Welcome.react';
-import Loading from './messages/Loading.react';
+import MessagesList from './MessagesList.react';
+
 
 let _delayed = [];
-
 let flushDelayed = () => {
   forEach(_delayed, (p) => MessageActionCreators.setMessageShown(p.peer, p.message));
   _delayed = [];
@@ -51,10 +50,6 @@ class MessagesSection extends Component {
     }
   }
 
-  constructor(props) {
-    super(props);
-  }
-
   componentDidUpdate() {
     const { isAppVisible } = this.state;
     if (isAppVisible) {
@@ -62,7 +57,7 @@ class MessagesSection extends Component {
     }
   };
 
-  handleMessageSelect = (rid) => {
+  onMessageSelect = (rid) => {
     const { selectedMessages } = this.state;
     if (selectedMessages.has(rid)) {
       MessageActionCreators.setSelected(selectedMessages.remove(rid));
@@ -82,59 +77,39 @@ class MessagesSection extends Component {
     }
   };
 
-  render() {
-    const { messages, peer } = this.props;
-    const { delegate } = this.context;
-    const { isAllMessagesLoaded } = this.state;
-    const isMember = DialogStore.isMember();
-
-    let MessageItem;
-    if (delegate.components.dialog !== null) {
-      if (delegate.components.dialog.messages && delegate.components.dialog.messages !== null && typeof delegate.components.messages !== 'function') {
-        MessageItem = (typeof delegate.components.dialog.messages.message === 'function') ? delegate.components.dialog.messages.message : DefaultMessageItem;
-      } else {
-        MessageItem = DefaultMessageItem;
-      }
-    } else {
-      MessageItem = DefaultMessageItem;
+  getComponents() {
+    const {dialog, messages} = this.context.delegate.components;
+    if (dialog && dialog.messages && isFunction(dialog.messages.message)) {
+      return {
+        MessageItem: dialog.messages.message
+      };
     }
 
-    const messagesList = map(messages, (message, index) => {
-      const { selectedMessages } = this.state;
-      const { peer, overlay } = this.props;
+    return {
+      MessageItem: DefaultMessageItem
+    };
+  }
 
-      const dateDivider = (overlay[index] && overlay[index].dateDivider)
-       ? <li className="date-divider">{overlay[index].dateDivider}</li>
-       : null;
+  render() {
+    const { peer, overlay, messages } = this.props;
+    const { selectedMessages, isAllMessagesLoaded } = this.state;
+    const isMember = DialogStore.isMember();
 
-      const messageItem = (
-        <MessageItem key={message.sortKey}
-                     message={message}
-                     overlay={overlay[index]}
-                     onSelect={this.handleMessageSelect}
-                     isSelected={selectedMessages.has(message.rid)}
-                     onVisibilityChange={this.onMessageVisibilityChange}
-                     peer={peer}/>
-      );
-
-      return dateDivider ? [dateDivider, messageItem] : messageItem;
-    });
+    const components = this.getComponents();
 
     return (
       <Scrollbar onScroll={this.props.onScroll} ref="messagesScroll">
-        <ul className="messages__list">
-          {
-            (isMember && isAllMessagesLoaded) || (isMember && messagesList.length < 30)
-              ? <Welcome peer={peer}/>
-              : null
-          }
-          {
-            !isAllMessagesLoaded && messagesList.length >= 30
-              ? <Loading/>
-              : null
-          }
-          {messagesList}
-        </ul>
+        <MessagesList
+          peer={peer}
+          overlay={overlay}
+          messages={messages}
+          selectedMessages={selectedMessages}
+          isMember={isMember}
+          isAllMessagesLoaded={isAllMessagesLoaded}
+          components={components}
+          onSelect={this.onMessageSelect}
+          onVisibilityChange={this.onMessageVisibilityChange}
+        />
       </Scrollbar>
     );
   }
