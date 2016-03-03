@@ -24,26 +24,21 @@
   },
   "scripts": {
     "deps": "npm install -g babel-cli webpack node-sass gulp eslint",
-
     "clean": "$(npm bin)/rimraf build && $(npm bin)/rimraf publish",
     "lint": "$(npm bin)/eslint src",
-
     "assets:fonts": "$(npm bin)/copyfiles 'assets/fonts/**/*' build",
     "assets:emojis": "$(npm bin)/copyfiles -f 'node_modules/emoji-data/sheet_*_64.png' build/assets/images/emoji",
     "assets:sounds": "$(npm bin)/copyfiles 'assets/sound/**/*' build",
     "assets:images": "$(npm bin)/copyfiles 'assets/images/**.png' build",
     "assets:sprite": "$(npm bin)/svg-sprite -w 24 -h 24 --symbol --symbol-sprite icons --symbol-dest images --dest build/assets assets/images/svg/*.svg",
     "assets": "npm run assets:fonts && npm run assets:emojis && npm run assets:sprite && npm run assets:sounds && npm run assets:images",
-
     "prebuild": "npm run clean && npm run lint && npm run assets",
     "build:babel": "babel src --out-dir build --source-maps",
     "build:sass": "$(npm bin)/node-sass src/styles/index.scss --include-path node_modules -o build/styles --output-style compressed",
     "build": "npm run build:babel && npm run build:sass",
-
     "watch:babel": "babel src --out-dir build --watch --source-maps",
     "watch:sass": "$(npm bin)/node-sass src/styles/index.scss --include-path node_modules -o build/styles --watch",
     "watch": "npm run watch:babel & npm run watch:sass",
-
     "prepare": "npm run build && $(npm bin)/copyfiles './*.js' '.gitignore' '.babelrc' '.eslintrc' 'package.json' './src/**/*' './assets/**/*' './example/**/*' './build/**/*' 'README' publish",
     "start": "npm run clean && npm run build && npm run watch"
   },
@@ -94,6 +89,7 @@
     "babel-loader": "^6.2.0",
     "babel-plugin-transform-strict-mode": "^6.2.0",
     "babel-preset-es2015": "^6.2.4",
+    "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-react": "^6.2.4",
     "babel-preset-stage-0": "^6.2.4",
     "copyfiles": "^0.2.1",
