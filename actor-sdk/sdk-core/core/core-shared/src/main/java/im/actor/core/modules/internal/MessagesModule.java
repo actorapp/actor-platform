@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import im.actor.core.api.ApiJsonMessage;
+import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
+import im.actor.core.api.ApiTextMessage;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestArchiveChat;
 import im.actor.core.api.rpc.RequestClearChat;
@@ -23,10 +25,12 @@ import im.actor.core.api.rpc.RequestHideDialog;
 import im.actor.core.api.rpc.RequestMessageRemoveReaction;
 import im.actor.core.api.rpc.RequestMessageSetReaction;
 import im.actor.core.api.rpc.RequestUnfavouriteDialog;
+import im.actor.core.api.rpc.RequestUpdateMessage;
 import im.actor.core.api.rpc.ResponseDialogsOrder;
 import im.actor.core.api.rpc.ResponseLoadArchived;
 import im.actor.core.api.rpc.ResponseReactionsResponse;
 import im.actor.core.api.rpc.ResponseSeq;
+import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateChatArchive;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
@@ -36,12 +40,14 @@ import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.DialogSpec;
 import im.actor.core.entity.Group;
+import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
+import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
@@ -322,6 +328,71 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
             }
         });
     }
+
+
+    public Command<ResponseSeqDate> updateMessage(final Peer peer, final String message, final long rid) {
+        context().getTypingModule().onMessageSent(peer);
+        return new Command<ResponseSeqDate>() {
+
+            @Override
+            public void start(final CommandCallback<ResponseSeqDate> callback) {
+                ArrayList<Integer> mentions = new ArrayList<Integer>();
+                TextContent content = TextContent.create(message, null, mentions);
+
+                if (peer.getPeerType() == PeerType.GROUP) {
+                    Group group = groups().getValue(peer.getPeerId());
+                    String lowText = message.toLowerCase();
+                    for (GroupMember member : group.getMembers()) {
+                        User user = users().getValue(member.getUid());
+                        if (user.getNick() != null) {
+                            String nick = "@" + user.getNick().toLowerCase();
+                            // TODO: Better filtering
+                            if (lowText.contains(nick + ":")
+                                    || lowText.contains(nick + " ")
+                                    || lowText.contains(" " + nick)
+                                    || lowText.endsWith(nick)
+                                    || lowText.equals(nick)) {
+                                mentions.add(user.getUid());
+                            }
+                        }
+                    }
+                }
+
+                ApiMessage editMessage = new ApiTextMessage(message, ((TextContent) content).getMentions(), ((TextContent) content).getTextMessageEx());
+                request(new RequestUpdateMessage(buidOutPeer(peer), rid, editMessage), new RpcCallback<ResponseSeqDate>() {
+                    @Override
+                    public void onResult(ResponseSeqDate response) {
+                        callback.onResult(response);
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        callback.onError(e);
+                    }
+                });
+            }
+        };
+
+    }
+
+    public ApiOutPeer buidOutPeer(Peer peer) {
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            User user = users().getValue(peer.getPeerId());
+            if (user == null) {
+                return null;
+            }
+            return new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(), user.getAccessHash());
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            Group group = groups().getValue(peer.getPeerId());
+            if (group == null) {
+                return null;
+            }
+            return new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash());
+        } else {
+            throw new RuntimeException("Unknown peer: " + peer);
+        }
+    }
+
 
     public void sendMessage(@NotNull Peer peer, @NotNull String message, @Nullable String markDownText,
                             @Nullable ArrayList<Integer> mentions, boolean autoDetect) {

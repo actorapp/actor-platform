@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +33,6 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.view.MentionSpan;
-import im.actor.sdk.util.Strings;
 import im.actor.sdk.view.BaseUrlSpan;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.markdown.AndroidMarkdown;
@@ -47,6 +47,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 public class ChatListProcessor implements ListProcessor<Message> {
 
     private HashMap<Long, PreprocessedTextData> preprocessedTexts = new HashMap<Long, PreprocessedTextData>();
+    private HashSet<Integer> updatedTexts = new HashSet<Integer>();
 
     private MessagesFragment fragment;
     private boolean isGroup;
@@ -128,7 +129,8 @@ public class ChatListProcessor implements ListProcessor<Message> {
 
             // Process Content
             if (msg.getContent() instanceof TextContent) {
-                if (!preprocessedTexts.containsKey(msg.getRid())) {
+                int updatedHash = msg.getContent().getUpdatedHash();
+                if (!preprocessedTexts.containsKey(msg.getRid()) || !updatedTexts.contains(updatedHash)) {
                     TextContent text = (TextContent) msg.getContent();
                     Spannable spannableString = new SpannableString(text.getText());
                     boolean hasSpannable = false;
@@ -189,7 +191,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
                         spannableString = emoji().processEmojiCompatMutable(spannableString, SmileProcessor.CONFIGURATION_BUBBLES);
                         hasSpannable = true;
                     }
-
+                    updatedTexts.add(updatedHash);
                     preprocessedTexts.put(msg.getRid(), new PreprocessedTextData(reactions, text.getText(),
                             hasSpannable ? spannableString : null));
                 } else {
