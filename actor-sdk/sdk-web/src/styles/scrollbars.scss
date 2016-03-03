@@ -3,6 +3,7 @@
  */
 
 $min-scrollbar-width: 4px;
+$min-scrollbar-height: 30px;
 $max-scrollbar-width: $min-scrollbar-width + 2;
 $default-scrollbar-color: $pigeon-post;
 
@@ -40,11 +41,12 @@ $default-scrollbar-color: $pigeon-post;
     right: 0;
 
     width: $min-scrollbar-width;
-    opacity: 0;
-    transition: opacity 100ms linear;
+    min-height: $min-scrollbar-height !important;
 
     cursor: pointer;
+    transition: opacity 100ms linear;
 
+    opacity: 0;
     background: $default-scrollbar-color;
     &:active,
     &:hover {
