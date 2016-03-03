@@ -57,7 +57,7 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
         (for {
           histMessage ← fromFutureOption(CommonRpcErrors.forbidden("Not allowed"))(db.run(HistoryMessageRepo.findNewestSentBy(client.userId, peer)))
           _ ← fromBoolean(NotLastMessage)(histMessage.randomId == randomId)
-          _ = fromBoolean(NotInTimeWindow)(inTimeWindow(histMessage.date.getMillis))
+          _ ← fromBoolean(NotInTimeWindow)(inTimeWindow(histMessage.date.getMillis))
           apiMessage ← fromXor((e: Any) ⇒ IntenalError)(Xor.fromEither(parseMessage(histMessage.messageContentData)))
           _ ← fromBoolean(NotTextMessage)(apiMessage match {
             case _: ApiTextMessage ⇒ true

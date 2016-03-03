@@ -17,8 +17,10 @@ trait MessageUpdating extends PeersImplicits {
 
   def updateMessageContent(clientUserId: Int, peer: Peer, randomId: Long, updatedMessage: ApiMessage)(implicit system: ActorSystem): Future[SeqState] = {
     peer match {
-      case Peer(PeerType.Private, _) ⇒ updateContentPrivate(clientUserId, peer, randomId, updatedMessage)
-      case Peer(PeerType.Group, _)   ⇒ updateContentGroup(clientUserId, peer, randomId, updatedMessage)
+      case Peer(PeerType.Private, _) ⇒
+        system.log.debug("Sending UpdateMessageContentChanged, client: {}, peer: {}, randomId: {}", clientUserId, peer, randomId)
+        updateContentPrivate(clientUserId, peer, randomId, updatedMessage)
+      case Peer(PeerType.Group, _) ⇒ updateContentGroup(clientUserId, peer, randomId, updatedMessage)
     }
   }
 
