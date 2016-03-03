@@ -192,13 +192,13 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     /**
      * Override for hacking custom messages view holders
      *
-     * @param id                id in same order as added to AbsContent.registerConverter()
+     * @param dataTypeHash                id in same order as added to AbsContent.registerConverter()
      * @param messagesAdapter   adapter to pass to holder
      * @param viewGroup         ViewGroup to pass to holder
      * @return custom view holder
      */
     @Override
-    public MessageHolder getCustomMessageViewHolder(int id, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
+    public MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
         return null;
     }
 
