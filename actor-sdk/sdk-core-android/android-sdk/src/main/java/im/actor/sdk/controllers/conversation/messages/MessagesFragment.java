@@ -271,6 +271,11 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                 actionMode.invalidate();
             }
             return true;
+        }else{
+            if(message.getContent() instanceof TextContent){
+                ((ChatActivity)getActivity()).onEditTextMessage(message.getRid(), ((TextContent) message.getContent()).getText());
+                return true;
+            }
         }
         return false;
     }
