@@ -173,7 +173,8 @@ class DialogSection extends Component {
       TypingSection: DefaultTyping,
       ComposeSection: DefaultCompose,
       activity: [
-        <DefaultActivity key={1} />
+        <DefaultActivity key={1} />,
+        <DefaultCall key={2} />
       ]
     };
   }

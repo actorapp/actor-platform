@@ -53,7 +53,7 @@ export default {
       test: /\.js$/,
       loaders: [
         'react-hot',
-        'babel?cacheDirectory=true'
+        'babel?cacheDirectory'
       ],
       exclude: /(node_modules)/
     }, {
