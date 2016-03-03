@@ -62,14 +62,11 @@ public class Application extends ActorSDKApplication {
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
 
         @Override
-        public BaseJsonHolder getCustomMessageViewHolder(int id, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
-            switch (id) {
-                case 0:
-                    return new TCMessageHolder(messagesAdapter, viewGroup, R.layout.tc_holder, false);
-
-                default:
-                    return null;
+        public BaseJsonHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
+            if(dataTypeHash == "tcmessage".hashCode()){
+                return new TCMessageHolder(messagesAdapter, viewGroup, R.layout.tc_holder, false);
             }
+            return null;
         }
 
         @Override

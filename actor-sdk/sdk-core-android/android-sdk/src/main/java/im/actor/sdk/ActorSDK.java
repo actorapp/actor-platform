@@ -810,8 +810,8 @@ public class ActorSDK {
     /**
      * Method is used internally for getting delegated list ViewHolder for custom messages types
      */
-    public MessageHolder getDelegatedCustomMessageViewHolder(int id, OnDelegateViewHolder<MessageHolder> callback, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
-        MessageHolder delegated = delegate.getCustomMessageViewHolder(id, messagesAdapter, viewGroup);
+    public MessageHolder getDelegatedCustomMessageViewHolder(int dataTypeHash, OnDelegateViewHolder<MessageHolder> callback, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
+        MessageHolder delegated = delegate.getCustomMessageViewHolder(dataTypeHash, messagesAdapter, viewGroup);
         if (delegated != null) {
             return delegated;
         } else {

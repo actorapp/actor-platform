@@ -21,6 +21,8 @@ import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
 import im.actor.core.entity.content.VoiceContent;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.runtime.json.JSONException;
+import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.runtime.android.view.BindedListAdapter;
@@ -83,15 +85,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
     @Override
     public int getItemViewType(int position) {
         AbsContent content = getItem(position).getContent();
-        for (int i = 0; i < AbsContent.getConverters().length; i++) {
-            ContentConverter converter = AbsContent.getConverters()[i];
-            if (content instanceof JsonContent) {
-                if (converter.validate(content)) {
-                    return 8 + i;
-                }
-            }
 
-        }
         if (content instanceof TextContent) {
             return 0;
         } else if (content instanceof ServiceContent) {
@@ -110,6 +104,13 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
             return 6;
         } else if (content instanceof StickerContent) {
             return 7;
+        }else if (content instanceof JsonContent) {
+            try {
+                String dataType = new JSONObject(((JsonContent) content).getRawJson()).getString("dataType");
+                return dataType.hashCode();
+            } catch (JSONException e) {
+                return -1;
+            }
         }
         return -1;
     }
@@ -179,17 +180,15 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
                         return new StickerHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_sticker, viewGroup));
                     }
                 }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_sticker, viewGroup));
+            case -1:
+                return new UnsupportedHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));
             default:
-                if (viewType - 8 >= 0 && viewType - 8 < AbsContent.getConverters().length) {
-                    return ActorSDK.sharedActor().getDelegatedCustomMessageViewHolder(viewType - 8, new ActorSDK.OnDelegateViewHolder<MessageHolder>() {
-                        @Override
-                        public MessageHolder onNotDelegated() {
-                            return new UnsupportedHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));
-                        }
-                    }, MessagesAdapter.this, viewGroup);
-                } else {
-                    return new UnsupportedHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));
-                }
+                return ActorSDK.sharedActor().getDelegatedCustomMessageViewHolder(viewType, new ActorSDK.OnDelegateViewHolder<MessageHolder>() {
+                    @Override
+                    public MessageHolder onNotDelegated() {
+                        return new UnsupportedHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));
+                    }
+                }, MessagesAdapter.this, viewGroup);
 
         }
     }
