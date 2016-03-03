@@ -168,6 +168,10 @@ export default {
     window.messenger.endCall(id);
   },
 
+  toggleCallMute(id) {
+    window.messenger.toggleCallMute(id);
+  },
+
   getUser(uid) {
     return window.messenger.getUser(uid);
   },

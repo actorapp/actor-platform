@@ -53,7 +53,7 @@ class Call extends Component {
     super(props);
     this.onAnswer = this.onAnswer.bind(this);
     this.onEnd = this.onEnd.bind(this);
-    this.onMute = this.onMute.bind(this);
+    this.onMuteToggle = this.onMuteToggle.bind(this);
     this.onClose = this.onClose.bind(this);
   }
 
@@ -65,8 +65,8 @@ class Call extends Component {
     CallActionCreators.endCall(this.state.callId);
   }
 
-  onMute() {
-    CallActionCreators.muteCall(this.state.callId);
+  onMuteToggle() {
+    CallActionCreators.toggleCallMute(this.state.callId);
   }
 
   onClose() {
@@ -89,7 +89,7 @@ class Call extends Component {
             isOutgoing={isOutgoing}
             onEnd={this.onEnd}
             onAnswer={this.onAnswer}
-            onMute={this.onMute}
+            onMuteToggle={this.onMuteToggle}
             onClose={this.onClose}
           />
       </section>
@@ -101,8 +101,6 @@ class Call extends Component {
     const className = classNames('activity', {
       'activity--shown': this.state.isOpen
     });
-
-    console.info(this.state);
 
     return (
       <section className={className}>
