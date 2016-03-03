@@ -22,7 +22,7 @@ class CallControls extends Component {
     isOutgoing: PropTypes.bool.isRequired,
     onEnd: PropTypes.func.isRequired,
     onAnswer: PropTypes.func.isRequired,
-    onMute: PropTypes.func.isRequired,
+    onMuteToggle: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired
   };
 
@@ -40,7 +40,7 @@ class CallControls extends Component {
         break;
       case CallStates.IN_PROGRESS:
       case CallStates.CONNECTING:
-        controls.push(<MuteButton onClick={this.props.onMute} key="mute" />)
+        controls.push(<MuteButton onClick={this.props.onMuteToggle} key="mute" />)
         controls.push(<EndButton onClick={this.props.onEnd} isOutgoing={isOutgoing} key="end" />);
         break;
       case CallStates.ENDED:
