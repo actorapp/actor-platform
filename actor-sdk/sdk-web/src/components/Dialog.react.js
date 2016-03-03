@@ -198,6 +198,7 @@ class DialogSection extends Component {
             <ConnectionState/>
             <div className="messages">
               <MessagesSection
+                isMember={isMember}
                 messages={messagesToRender}
                 overlay={overlayToRender}
                 peer={peer}
