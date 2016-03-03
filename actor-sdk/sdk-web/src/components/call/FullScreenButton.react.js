@@ -12,7 +12,7 @@ class FullScreenButton extends Component {
 
   render() {
     return (
-      <button className="button button--square col-xs" onClick={this.props.onClick}>
+      <button className="button button--square col-xs" disabled onClick={this.props.onClick}>
         <i className="material-icons">fullscreen</i>
         <FormattedMessage id="call.fullScreen"/>
       </button>
