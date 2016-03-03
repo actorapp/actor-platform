@@ -14,6 +14,7 @@ import DefaultCompose from './dialog/ComposeSection.react';
 import DialogFooter from './dialog/DialogFooter.react';
 import DefaultToolbar from './Toolbar.react';
 import DefaultActivity from './Activity.react';
+import DefaultCall from './Call.react';
 import ConnectionState from './common/ConnectionState.react';
 
 import ActivityStore from '../stores/ActivityStore';
@@ -152,6 +153,11 @@ class DialogSection extends Component {
   getComponents() {
     const {dialog} = this.context.delegate.components;
     if (dialog && !isFunction(dialog)) {
+      const activity = dialog.activity || [
+        DefaultActivity,
+        DefaultCall
+      ];
+
       return {
         ToolbarSection: dialog.toolbar || DefaultToolbar,
         MessagesSection: isFunction(dialog.messages) ? dialog.messages : DefaultMessages,

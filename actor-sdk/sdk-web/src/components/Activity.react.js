@@ -29,40 +29,41 @@ class ActivitySection extends Component {
     };
   }
 
+  renderBody() {
+    const { isOpen, peer, info } = this.state;
+    if (!isOpen) {
+      return null;
+    }
+
+    switch (peer.type) {
+      case PeerTypes.USER:
+        return <UserProfile user={info} />;
+      case PeerTypes.GROUP:
+        return <GroupProfile group={info}/>;
+      default:
+        return null;
+    }
+  }
+
   render() {
     const { peer, info, isOpen } = this.state;
+    if (peer === null) {
+      return null;
+    }
+
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
     }, 0);
 
-    if (peer !== null) {
-      const activityClassName = classnames('activity', {
-        'activity--shown': isOpen
-      });
-      let activityBody;
+    const activityClassName = classnames('activity', {
+      'activity--shown': isOpen
+    });
 
-      switch (peer.type) {
-        case PeerTypes.USER:
-          activityBody = <UserProfile user={info}/>;
-          break;
-        case PeerTypes.GROUP:
-          activityBody = <GroupProfile group={info}/>;
-          break;
-        default:
-      }
-
-      return (
-        <section className={activityClassName}>
-          {
-            isOpen
-              ? activityBody
-              : null
-          }
-        </section>
-      );
-    } else {
-      return null;
-    }
+    return (
+      <section className={activityClassName}>
+        {this.renderBody()}
+      </section>
+    );
   }
 }
 
