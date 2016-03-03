@@ -29,6 +29,7 @@ import OnlineStore from '../../stores/OnlineStore';
 import AvatarItem from '../common/AvatarItem.react';
 import GroupProfileMembers from '../activity/GroupProfileMembers.react';
 import Fold from '../common/Fold.react';
+import ToggleNotifications from '../common/ToggleNotifications.react';
 
 const MAX_GROUP_CALL_SIZE = 25;
 
@@ -261,18 +262,7 @@ class GroupProfile extends Component {
               </li>
 
               <li className="profile__list__item group_profile__notifications no-p">
-                <label htmlFor="notifications">
-                  <i className="material-icons icon icon--squash">notifications_none</i>
-                  {intl.messages['notifications']}
-
-                  <div className="switch pull-right">
-                    <input checked={isNotificationsEnabled}
-                           id="notifications"
-                           onChange={this.onNotificationChange}
-                           type="checkbox"/>
-                    <label htmlFor="notifications"/>
-                  </div>
-                </label>
+                <ToggleNotifications isNotificationsEnabled={isNotificationsEnabled} onNotificationChange={this.onNotificationChange}/>
               </li>
 
               <li className="profile__list__item group_profile__members no-p">

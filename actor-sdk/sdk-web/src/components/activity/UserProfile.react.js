@@ -23,6 +23,7 @@ import NotificationsStore from '../../stores/NotificationsStore';
 import OnlineStore from '../../stores/OnlineStore';
 
 import AvatarItem from '../common/AvatarItem.react';
+import ToggleNotifications from '../common/ToggleNotifications.react';
 import Fold from '../common/Fold.react';
 
 const getStateFromStores = (uid) => {
@@ -232,17 +233,7 @@ class UserProfile extends Component {
           </li>
 
           <li className="profile__list__item user_profile__notifications no-p">
-            <label htmlFor="notifications">
-              <i className="material-icons icon icon--squash">notifications_none</i>
-              {intl.messages['notifications']}
-              <div className="switch pull-right">
-                <input checked={isNotificationsEnabled}
-                       id="notifications"
-                       onChange={this.onNotificationChange}
-                       type="checkbox"/>
-                <label htmlFor="notifications"/>
-              </div>
-            </label>
+            <ToggleNotifications isNotificationsEnabled={isNotificationsEnabled} onNotificationChange={this.onNotificationChange}/>
           </li>
 
         </ul>
