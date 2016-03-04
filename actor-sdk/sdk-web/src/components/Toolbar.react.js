@@ -7,6 +7,7 @@ import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { escapeWithEmoji } from '../utils/EmojiUtils';
+import PeerUtils from '../utils/PeerUtils';
 
 import ActivityActionCreators from '../actions/ActivityActionCreators';
 import FavoriteActionCreators from '../actions/FavoriteActionCreators';
@@ -25,15 +26,29 @@ class ToolbarSection extends Component {
 
   static calculateState() {
     const thisPeer = DialogStore.getCurrentPeer();
-
     return {
       thisPeer,
       dialogInfo: DialogInfoStore.getInfo(),
       isActivityOpen: ActivityStore.isOpen(),
       message: OnlineStore.getMessage(),
       isFavorite: DialogStore.isFavorite(thisPeer.id),
-      isCalling: CallStore.isOpen(),
-      callState: CallStore.getState()
+      call: ToolbarSection.calculateCallState(thisPeer)
+    };
+  }
+
+  static calculateCallState(thisPeer) {
+    const isCalling = CallStore.isOpen();
+    if (!isCalling) {
+      return {isCalling};
+    }
+
+    const callPeer = CallStore.getPeer();
+
+    return {
+      isCalling,
+      isSamePeer: PeerUtils.equals(thisPeer, callPeer),
+      state: CallStore.getState(),
+      time: '00:00'
     };
   }
 
@@ -59,10 +74,10 @@ class ToolbarSection extends Component {
   };
 
   getMessage() {
-    const { isCalling, callState, message } = this.state;
-    if (isCalling) {
+    const { call, message } = this.state;
+    if (call.isCalling) {
       return (
-        <FormattedMessage id={`toolbar.callState.${callState}`} values={{time: '00:00'}} />
+        <FormattedMessage id={`toolbar.callState.${call.state}`} values={{time: call.time}} />
       );
     }
 
@@ -70,7 +85,7 @@ class ToolbarSection extends Component {
   }
 
   render() {
-    const { dialogInfo, isActivityOpen, isFavorite } = this.state;
+    const { dialogInfo, isActivityOpen, isFavorite, call } = this.state;
 
     if (!dialogInfo) {
       return <header className="toolbar" />;
@@ -79,7 +94,7 @@ class ToolbarSection extends Component {
     const message = this.getMessage();
 
     const headerClassName = classnames('toolbar row', {
-      toolbar__calling: this.state.isCalling
+      toolbar__calling: call.isCalling && call.isSamePeer
     });
 
     const infoButtonClassName = classnames('button button--icon', {
