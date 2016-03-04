@@ -17,7 +17,7 @@ sealed trait IncomingProtoMessage
 sealed trait OutgoingProtoMessage
 
 sealed trait ResendableProtoMessage {
-  def bodySize: Long
+  def bodySize: Int
 }
 
 @SerialVersionUID(1L)
