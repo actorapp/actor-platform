@@ -117,7 +117,7 @@ class DialogSection extends Component {
 
   onChange = () => {
     const nextState = getStateFromStores();
-    if (nextState.messages.length !== this.state.messages.length) {
+    if (nextState.peer !== this.state.peer || nextState.messages.length !== this.state.messages.length) {
       lastScrolledFromBottom = 0;
       renderMessagesCount = initialRenderMessagesCount;
     }
