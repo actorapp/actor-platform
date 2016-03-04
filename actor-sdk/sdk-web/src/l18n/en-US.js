@@ -291,6 +291,15 @@ export default {
       addUser: 'Add user',
       fullScreen: 'Fullscreen',
       video: 'Video'
+    },
+
+    toolbar: {
+      callState: {
+        calling: 'calling',
+        connecting: 'connecting',
+        in_progress: 'On call: {time}',
+        ended: 'ended'
+      }
     }
   }
 };

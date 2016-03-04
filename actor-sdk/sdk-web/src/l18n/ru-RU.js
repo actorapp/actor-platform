@@ -287,6 +287,15 @@ export default {
       addUser: 'Добавить пользователя',
       fullScreen: 'Полный экран',
       video: 'Видео'
+    },
+
+    toolbar: {
+      callState: {
+        calling: 'звоню',
+        connecting: 'соединение',
+        in_progress: 'Звонок: {time}',
+        ended: 'завершен'
+      }
     }
   }
 };

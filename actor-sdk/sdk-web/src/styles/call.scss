@@ -13,6 +13,11 @@ $ring-step: 20px;
 .call {
   padding-right: 16px;
 
+  &__container {
+    background-color: $call-background;
+    color: $call-color;
+  }
+
   &__header {
     text-align: center;
     h2 {
@@ -20,8 +25,6 @@ $ring-step: 20px;
       /* text-transform: uppercase; */
 
       margin-bottom: 36px;
-
-      color: rgba(0,0,0,.7);
     }
   }
 
@@ -47,11 +50,14 @@ $ring-step: 20px;
         display: block;
 
         border-radius: 50%;
-        background-color: rgba(black, .05);
-        box-shadow: inset 0 0 0 1px rgba(black, .02);
+        background-color: rgba(black, .1);
+        box-shadow: inset 0 0 0 1px rgba(black, .04);
         animation: scalePulse 1.75s infinite ease;
         animation-fill-mode: forwards;
-        animation-play-state: paused;
+        // animation: scalePulse 1.75s infinite ease;
+        // animation-fill-mode: forwards;
+        animation-play-state: running;
+
         @for $i from 1 through 3 {
           &:nth-child(#{$i}) {
             z-index: 10 - $i;
@@ -65,14 +71,6 @@ $ring-step: 20px;
           }
         }
       }
-
-      &--animated {
-        & > div {
-          // animation: scalePulse 1.75s infinite ease;
-          // animation-fill-mode: forwards;
-          animation-play-state: running;
-        }
-      }
     }
   }
 
@@ -82,8 +80,6 @@ $ring-step: 20px;
     line-height: 32px;
 
     margin: 36px 8px 24px;
-
-    color: rgba(black, .6);
   }
 
   &__controls {
@@ -92,6 +88,13 @@ $ring-step: 20px;
       margin-bottom: 16px;
       .button {
         height: auto;
+        color: $call-color;
+        transition: color 0.3s;
+        cursor: pointer;
+
+        &:hover {
+          color: $call-color-hover
+        }
       }
     }
     &__buttons {

@@ -92,9 +92,8 @@ class Call extends Component {
     }
 
     return (
-      <div className="activity__body">
+      <div className="activity__body call__container">
         <section className="call">
-          <CallHeader isOutgoing={isOutgoing} />
           <CallBody peerInfo={peerInfo} callState={callState}/>
           <CallControls
             callState={callState}
