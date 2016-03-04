@@ -190,7 +190,7 @@ class UserProfile extends Component {
           </li>
 
           <li className="profile__list__item user_profile__contact_info no-p">
-            <ContactDetails user={user}/>
+            <ContactDetails peerInfo={user}/>
           </li>
 
           <li className="profile__list__item user_profile__media no-p hide">

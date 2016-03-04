@@ -160,11 +160,13 @@
     }
   }
   &--square {
+    cursor: pointer !important;
     padding: 8px 0;
 
     text-align: center;
 
     opacity: .8;
+    transition: all 150ms ease-out;
     i {
       font-size: 24px !important;
       line-height: 24px;
@@ -179,7 +181,7 @@
       font-weight: 500;
       line-height: 16px;
 
-      display: inline-block;
+      display: block;
 
       margin-top: 8px;
 
@@ -193,7 +195,7 @@
     }
 
     &[disabled] {
-      cursor: not-allowed !important;
+      cursor: default !important;
 
       opacity: .6 !important;
       color: rgba(0, 0, 0, .5) !important;
@@ -205,8 +207,6 @@
   }
 
   &[disabled] {
-    // cursor: not-allowed;
-
     opacity: .3;
   }
 }
