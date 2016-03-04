@@ -116,9 +116,13 @@ class DialogSection extends Component {
   };
 
   onChange = () => {
-    lastScrolledFromBottom = 0;
-    renderMessagesCount = initialRenderMessagesCount;
-    this.setState(getStateFromStores());
+    const nextState = getStateFromStores();
+    if (nextState.messages.length !== this.state.messages.length) {
+      lastScrolledFromBottom = 0;
+      renderMessagesCount = initialRenderMessagesCount;
+    }
+
+    this.setState(nextState);
   };
 
   onMessagesChange = debounce(() => {
