@@ -143,13 +143,23 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
     }
 
     @Override
-    public void addCandidate(int index, @NotNull String id, @NotNull String sdp) {
-        peerConnection.addIceCandidate(new IceCandidate(id, index, sdp));
+    public void addCandidate(final int index, @NotNull final String id, @NotNull final String sdp) {
+        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
+            @Override
+            public void run() {
+                peerConnection.addIceCandidate(new IceCandidate(id, index, sdp));
+            }
+        });
     }
 
     @Override
-    public void addOwnStream(@NotNull WebRTCMediaStream stream) {
-        peerConnection.addStream(((AndroidMediaStream) stream).getStream());
+    public void addOwnStream(@NotNull final WebRTCMediaStream stream) {
+        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
+            @Override
+            public void run() {
+                peerConnection.addStream(((AndroidMediaStream) stream).getStream());
+            }
+        });
     }
 
     @NotNull
@@ -237,30 +247,30 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
                 AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
                     @Override
                     public void run() {
+                        peerConnection.createOffer(new SdpObserver() {
+                            @Override
+                            public void onCreateSuccess(SessionDescription sessionDescription) {
+                                resolver.result(new WebRTCSessionDescription(sessionDescription.type.name().toLowerCase(), sessionDescription.description));
+                            }
 
+                            @Override
+                            public void onSetSuccess() {
+                                //we are just creating here
+                            }
+
+                            @Override
+                            public void onCreateFailure(String s) {
+                                resolver.error(new Exception("createOffer:onCreateFailure"));
+                            }
+
+                            @Override
+                            public void onSetFailure(String s) {
+                                //we are just creating here
+                            }
+                        }, new MediaConstraints());
                     }
                 });
-                peerConnection.createOffer(new SdpObserver() {
-                    @Override
-                    public void onCreateSuccess(SessionDescription sessionDescription) {
-                        resolver.result(new WebRTCSessionDescription(sessionDescription.type.name().toLowerCase(), sessionDescription.description));
-                    }
 
-                    @Override
-                    public void onSetSuccess() {
-                        //we are just creating here
-                    }
-
-                    @Override
-                    public void onCreateFailure(String s) {
-                        resolver.error(new Exception("createOffer:onCreateFailure"));
-                    }
-
-                    @Override
-                    public void onSetFailure(String s) {
-                        //we are just creating here
-                    }
-                }, new MediaConstraints());
             }
         });
     }
@@ -271,41 +281,53 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         return new Promise<>(new PromiseFunc<WebRTCSessionDescription>() {
             @Override
             public void exec(@NotNull final PromiseResolver<WebRTCSessionDescription> resolver) {
-                peerConnection.createAnswer(new SdpObserver() {
+                AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
                     @Override
-                    public void onCreateSuccess(SessionDescription sessionDescription) {
-                        resolver.result(new WebRTCSessionDescription(sessionDescription.type.name().toLowerCase(), sessionDescription.description));
-                    }
+                    public void run() {
+                        peerConnection.createAnswer(new SdpObserver() {
+                            @Override
+                            public void onCreateSuccess(SessionDescription sessionDescription) {
+                                resolver.result(new WebRTCSessionDescription(sessionDescription.type.name().toLowerCase(), sessionDescription.description));
+                            }
 
-                    @Override
-                    public void onSetSuccess() {
-                        //we are just creating here
-                    }
+                            @Override
+                            public void onSetSuccess() {
+                                //we are just creating here
+                            }
 
-                    @Override
-                    public void onCreateFailure(String s) {
-                        resolver.error(new Exception("createAnswer:onCreateFailure"));
-                    }
+                            @Override
+                            public void onCreateFailure(String s) {
+                                resolver.error(new Exception("createAnswer:onCreateFailure"));
+                            }
 
-                    @Override
-                    public void onSetFailure(String s) {
-                        //we are just creating here
+                            @Override
+                            public void onSetFailure(String s) {
+                                //we are just creating here
+                            }
+                        }, new MediaConstraints());
                     }
-                }, new MediaConstraints());
+                });
+
             }
         });
     }
 
     @Override
     public void close() {
-        for (AndroidMediaStream m : streams.values()) {
-            if (m.isLocal()) {
-                peerConnection.removeStream(m.getStream());
-                m.getStream().dispose();
+        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
+            @Override
+            public void run() {
+                for (AndroidMediaStream m : streams.values()) {
+                    if (m.isLocal()) {
+                        peerConnection.removeStream(m.getStream());
+                        m.getStream().dispose();
+                    }
+                }
+                peerConnection.close();
+                peerConnection.dispose();
             }
-        }
-        peerConnection.close();
-        peerConnection.dispose();
+        });
+
 
     }
 }

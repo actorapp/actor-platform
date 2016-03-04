@@ -595,14 +595,14 @@ public class Messenger {
     }
 
     /**
-     * Send Markdown Message with mentions
+     * Update Message
      *
      * @param peer         destination peer
      * @param text         message text
      * @param rid          message rundom id
      *
      */
-    @ObjectiveCName("sendMessageWithPeer:withText:withRid:")
+    @ObjectiveCName("updateMessageWithPeer:withText:withRid:")
     public Command<ResponseSeqDate> updateMessage(@NotNull Peer peer, @NotNull String text, long rid) {
         return modules.getMessagesModule().updateMessage(peer, text, rid);
     }
