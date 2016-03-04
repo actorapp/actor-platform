@@ -18,6 +18,7 @@ import GroupStore from '../stores/GroupStore';
 import CallHeader from './call/CallHeader.react';
 import CallBody from './call/CallBody.react';
 import CallControls from './call/CallControls.react';
+import ContactDetails from './common/ContactDetails.react';
 
 class Call extends Component {
   static getStores = () => [CallStore];
@@ -86,6 +87,13 @@ class Call extends Component {
     console.debug('onVideo');
   }
 
+  renderContactInfo() {
+    const { peerInfo } = this.state;
+    if (!peerInfo) return null
+
+    return <ContactDetails peerInfo={peerInfo}/>
+  }
+
   renderContent() {
     const {isOpen, callState, peerInfo, isOutgoing, isMuted} = this.state;
     if (!isOpen) {
@@ -93,8 +101,8 @@ class Call extends Component {
     }
 
     return (
-      <div className="activity__body call__container">
-        <section className="call">
+      <div className="activity__body call">
+        <section className="call__container">
           <CallBody peerInfo={peerInfo} callState={callState}/>
           <CallControls
             callState={callState}
@@ -108,7 +116,10 @@ class Call extends Component {
             onVideo={this.onVideo}
             onClose={this.onClose}
           />
-      </section>
+        </section>
+        <div className="call__info">
+          <div>{this.renderContactInfo()}</div>
+        </div>
       </div>
     );
   }

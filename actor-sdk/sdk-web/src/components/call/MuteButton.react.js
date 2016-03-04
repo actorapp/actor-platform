@@ -11,13 +11,17 @@ class MuteButton extends Component {
     onToggle: PropTypes.func.isRequired
   };
 
+  renderText() {
+    return this.props.value ? <FormattedMessage id="call.unmute"/> : <FormattedMessage id="call.mute"/>
+  }
+
   render() {
     const glyph = this.props.value ? 'mic_off' : 'mic';
 
     return (
       <button className="button button--square col-xs" onClick={this.props.onToggle}>
         <i className="material-icons">{glyph}</i>
-        <FormattedMessage id="call.mute"/>
+        {this.renderText()}
       </button>
     );
   }

@@ -63,10 +63,8 @@ class CallControls extends Component {
 
     return (
       <div className="call__controls">
-        <div className="call__controls__icons row">
-          <div className="col-xs"/>
+        <div className="call__controls__icons row top-xs">
           {secondaryControls}
-          <div className="col-xs"/>
         </div>
         <div className="call__controls__buttons">
           {mainControls}
