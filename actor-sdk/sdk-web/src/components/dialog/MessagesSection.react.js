@@ -32,8 +32,7 @@ class MessagesSection extends Component {
     overlay: PropTypes.array.isRequired,
     peer: PropTypes.object.isRequired,
     isMember: PropTypes.bool.isRequired,
-    onScroll: PropTypes.func.isRequired,
-    onMessageShown: PropTypes.func.isRequired
+    onScroll: PropTypes.func.isRequired
   };
 
   static contextTypes = {
