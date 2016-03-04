@@ -3,8 +3,8 @@
  */
 
 import { escape } from 'lodash';
-import emoji from 'js-emoji';
-import emojiDataCategories from 'emoji-data/emoji_categories.json';
+import emoji from 'actor-emoji';
+import emojiDataCategories from 'actor-emoji/emoji_categories';
 import { Path } from '../constants/ActorAppConstants';
 
 emoji.include_title = true;
