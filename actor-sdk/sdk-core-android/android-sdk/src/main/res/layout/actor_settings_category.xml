@@ -5,14 +5,23 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/category_name"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_vertical|left"
-        android:paddingLeft="72dp"
-        android:text="@string/settings_header"
-        android:textSize="16sp" />
+        android:layout_height="48dp">
+        <im.actor.sdk.view.TintImageView
+            android:id="@+id/icon"
+            android:layout_width="72dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/category_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|left"
+            android:text="@string/settings_header"
+            android:textSize="16sp" />
+    </LinearLayout>
+
 
     <FrameLayout
         android:id="@+id/settings_container"
