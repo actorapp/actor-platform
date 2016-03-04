@@ -23,6 +23,7 @@ import NotificationsStore from '../../stores/NotificationsStore';
 import OnlineStore from '../../stores/OnlineStore';
 
 import AvatarItem from '../common/AvatarItem.react';
+import ContactDetails from '../common/ContactDetails.react';
 import ToggleNotifications from '../common/ToggleNotifications.react';
 import Fold from '../common/Fold.react';
 
@@ -129,32 +130,6 @@ class UserProfile extends Component {
       'dropdown--opened': isActionsDropdownOpen
     });
 
-    const nickname = user.nick ? (
-      <li>
-        <svg className="icon icon--pink"
-             dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#username"/>'}}/>
-        <span className="title">{user.nick}</span>
-        <span className="description">{intl.messages['profile.nickname']}</span>
-      </li>
-    ) : null;
-
-    const email = user.emails[0] ? (
-      <li>
-        <svg className="icon icon--blue"
-             dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#envelope"/>'}}/>
-        <span className="title"><a href={'mailto:' + user.emails[0].email}>{user.emails[0].email}</a></span>
-        <span className="description">{intl.messages['profile.email']}</span>
-      </li>
-    ) : null;
-
-    const phone = user.phones[0] ? (
-      <li>
-        <i className="material-icons icon icon--green">call</i>
-        <span className="title"><a href={'tel:+' + user.phones[0].number}>{'+' + user.phones[0].number}</a></span>
-        <span className="description">{intl.messages['profile.phone']}</span>
-      </li>
-    ) : null;
-
     return (
       <div className="activity__body user_profile">
 
@@ -215,11 +190,7 @@ class UserProfile extends Component {
           </li>
 
           <li className="profile__list__item user_profile__contact_info no-p">
-            <ul className="user_profile__contact_info__list">
-              {phone}
-              {email}
-              {nickname}
-            </ul>
+            <ContactDetails user={user}/>
           </li>
 
           <li className="profile__list__item user_profile__media no-p hide">
