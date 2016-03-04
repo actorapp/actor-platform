@@ -588,6 +588,18 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             TextView categoryName = (TextView) categoryContainer.findViewById(R.id.category_name);
             categoryName.setTextColor(ActorSDK.sharedActor().style.getSettingsMainTitleColor());
             categoryName.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
+
+            //Icon
+            TintImageView icon = (TintImageView) categoryContainer.findViewById(R.id.icon);
+            icon.setTint(ActorSDK.sharedActor().style.getSettingsIconColor());
+            if (category.getIconResourceId() != 0) {
+                icon.setResource(category.getIconResourceId());
+                if (category.getIconColor() != -1) {
+                    icon.setTint(category.getIconColor());
+                }
+            } else {
+                icon.setVisibility(View.INVISIBLE);
+            }
             categoryName.setText(category.getCategoryName());
             if (category.getView(context) != null) {
                 settingsContainer.addView(category.getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);

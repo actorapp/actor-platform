@@ -7,10 +7,10 @@ import android.widget.TextView;
 public class ActorSettingsField implements IActorSettingsField {
     private boolean addBottomDivider = true;
     private View view = null;
-    private int iconResourceId = 0;
     private String name = null;
     private View.OnClickListener onClickListener = null;
     private View rightView = null;
+    private int iconResourceId = 0;
     private int iconColor = -1;
     private TextView nameTextView;
 
