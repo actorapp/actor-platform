@@ -7,13 +7,16 @@ import { FormattedMessage } from 'react-intl';
 
 class MuteButton extends Component {
   static propTypes = {
-    onClick: PropTypes.func.isRequired
+    value: PropTypes.bool.isRequired,
+    onToggle: PropTypes.func.isRequired
   };
 
   render() {
+    const glyph = this.props.value ? 'mic_off' : 'mic';
+
     return (
-      <button className="button button--square col-xs" onClick={this.props.onClick}>
-        <i className="material-icons">mic_off</i>
+      <button className="button button--square col-xs" onClick={this.props.onToggle}>
+        <i className="material-icons">{glyph}</i>
         <FormattedMessage id="call.mute"/>
       </button>
     );

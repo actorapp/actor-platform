@@ -23,6 +23,7 @@ class CallControls extends Component {
       CallStates.ENDED
     ]).isRequired,
     isOutgoing: PropTypes.bool.isRequired,
+    isMuted: PropTypes.bool.isRequired,
     onEnd: PropTypes.func.isRequired,
     onAnswer: PropTypes.func.isRequired,
     onMuteToggle: PropTypes.func.isRequired,
@@ -49,7 +50,7 @@ class CallControls extends Component {
       case CallStates.CONNECTING:
         secondaryControls.push([
           <FullScreenButton onClick={this.props.onFullscreen} key="fullscreen" />,
-          <MuteButton onClick={this.props.onMuteToggle} key="mute" />,
+          <MuteButton value={this.props.isMuted} onToggle={this.props.onMuteToggle} key="mute" />,
           <VideoButton onClick={this.props.onVideo} key="video" />,
           <AddUserButton onClick={this.props.onUserAdd} key="add" />,
         ]);
