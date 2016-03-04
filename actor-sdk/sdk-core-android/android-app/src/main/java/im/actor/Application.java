@@ -130,6 +130,12 @@ public class Application extends ActorSDKApplication {
                         public ActorSettingsCategory[] getBeforeSettingsCategories() {
                             return new ActorSettingsCategory[]{
                                     new ActorSettingsCategory() {
+
+//                                        @Override
+//                                        public int getIconResourceId() {
+//                                            return R.drawable.ic_notifications_white_18dp;
+//                                        }
+
                                         @Override
                                         public String getCategoryName() {
                                             return "test";

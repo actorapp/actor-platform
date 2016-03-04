@@ -3,10 +3,12 @@ package im.actor.sdk.controllers.fragment.settings;
 import android.content.Context;
 import android.view.View;
 
-/**
- * Created by root on 10/27/15.
- */
 public abstract class ActorSettingsCategory implements IActorSettingsCategory {
+
+    private int iconResourceId = 0;
+    private int iconColor = -1;
+
+
     @Override
     public View getView(Context context) {
         return null;
@@ -15,5 +17,15 @@ public abstract class ActorSettingsCategory implements IActorSettingsCategory {
     @Override
     public ActorSettingsField[] getFields() {
         return null;
+    }
+
+    @Override
+    public int getIconResourceId() {
+        return iconResourceId;
+    }
+
+    @Override
+    public int getIconColor() {
+        return iconColor;
     }
 }
