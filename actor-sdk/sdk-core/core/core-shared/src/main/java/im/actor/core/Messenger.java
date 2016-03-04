@@ -16,6 +16,7 @@ import im.actor.core.api.ApiRawValue;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.rpc.ResponseRawRequest;
+import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.MentionFilterResult;
@@ -592,6 +593,21 @@ public class Messenger {
                             @Nullable ArrayList<Integer> mentions, boolean autoDetect) {
         modules.getMessagesModule().sendMessage(peer, text, markDownText, mentions, autoDetect);
     }
+
+    /**
+     * Update Message
+     *
+     * @param peer         destination peer
+     * @param text         message text
+     * @param rid          message rundom id
+     *
+     */
+    @ObjectiveCName("updateMessageWithPeer:withText:withRid:")
+    public Command<ResponseSeqDate> updateMessage(@NotNull Peer peer, @NotNull String text, long rid) {
+        return modules.getMessagesModule().updateMessage(peer, text, rid);
+    }
+
+
 
     /**
      * Send Markdown Message with mentions

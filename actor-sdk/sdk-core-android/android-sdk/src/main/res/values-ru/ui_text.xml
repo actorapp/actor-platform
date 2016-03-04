@@ -228,6 +228,10 @@
     <string name="chat_not_member">Вы не участник этой группы</string>
     <string name="chat_unsupported">Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновление приложения что бы увидеть его.</string>
 
+    <string name="edit_message">Редактирование последнего сообщения</string>
+    <string name="edit_message_error_not_last">Вы можете редактировать только последнее сообщение</string>
+    <string name="edit_message_error_slowpoke">Вы можете редактировать только недавно отправленные сообщения</string>
+
     <!-- Share menu-->
     <string name="share_menu_gallery">Галерея</string>
     <string name="share_menu_video">Видео</string>

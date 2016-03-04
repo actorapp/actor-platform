@@ -14,6 +14,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.DocumentContent;
+import im.actor.core.entity.content.TextContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.events.AppVisibleChanged;
 import im.actor.core.util.ModuleActor;
@@ -279,6 +280,9 @@ public class ConversationActor extends ModuleActor {
         }
 
         // Updating message
+        if(content instanceof TextContent){
+            content.setUpdatedHash(((TextContent) content).getText().hashCode());
+        }
         Message updatedMsg = message.changeContent(content);
         messages.addOrUpdateItem(updatedMsg);
         if (updatedMsg.getContent() instanceof DocumentContent) {

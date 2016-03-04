@@ -293,12 +293,15 @@ public class CallFragment extends BaseFragment {
             call.getIsMuted().subscribe(new ValueChangedListener<Boolean>() {
                 @Override
                 public void onChanged(Boolean val, Value<Boolean> valueModel) {
-                    if(val){
-                        muteCallTv.setTextColor(getResources().getColor(R.color.picker_grey));
-                        muteCall.setTint(getResources().getColor(R.color.picker_grey));
-                    }else{
-                        muteCallTv.setTextColor(Color.WHITE);
-                        muteCall.setTint(Color.WHITE);
+                    if(getActivity()!=null){
+                        if(val){
+
+                            muteCallTv.setTextColor(getResources().getColor(R.color.picker_grey));
+                            muteCall.setTint(getResources().getColor(R.color.picker_grey));
+                        }else{
+                            muteCallTv.setTextColor(Color.WHITE);
+                            muteCall.setTint(Color.WHITE);
+                        }
                     }
                 }
             });
