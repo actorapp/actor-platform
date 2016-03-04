@@ -20,15 +20,27 @@ class CallBody extends Component {
     ])
   };
 
+  renderAvatarAnimation() {
+    const {callState} = this.props;
+    switch (this.props.callState) {
+      case CallStates.CALLING:
+      case CallStates.CONNECTING:
+          return (
+            <div className="call__avatar__rings">
+              <div/><div/><div/>
+            </div>
+          );
+        break;
+      default:
+        return null;
+    }
+  }
+
   render() {
     const {peerInfo} = this.props;
     if (!peerInfo) {
       return null;
     }
-
-    const avatarRingsClassName = classnames('call__avatar__rings', {
-      'call__avatar__rings--animated': this.props.callState === CallStates.CALLING || this.props.callState === CallStates.CONNECTING
-    });
 
     return (
       <div className="call__body">
@@ -39,9 +51,7 @@ class CallBody extends Component {
             title={peerInfo.name}
             placeholder={peerInfo.placeholder}
           />
-          <div className={avatarRingsClassName}>
-            <div/><div/><div/>
-          </div>
+          {this.renderAvatarAnimation()}
         </div>
         <h3 className="call__title">{peerInfo.name}</h3>
       </div>
