@@ -1,19 +1,17 @@
 package im.actor.server.frontend
 
-import java.security.SecureRandom
-
 import akka.actor._
 import akka.pattern.pipe
 import akka.stream.actor.ActorPublisher
 import akka.stream.actor.ActorPublisherMessage.{ Cancel, Request }
 import com.google.protobuf.ByteString
 import im.actor.crypto.box.CBCHmacBox
-import im.actor.crypto.primitives.kuznechik.KuznechikCipher
+import im.actor.crypto.primitives.kuznechik.KuznechikFastEngine
 import im.actor.crypto.primitives.streebog.Streebog256
 import im.actor.crypto.primitives.aes.AESFastEngine
 import im.actor.crypto.primitives.digest.SHA256
 import im.actor.crypto.primitives.util.ByteStrings
-import im.actor.crypto.{ ActorProtoKey }
+import im.actor.crypto.ActorProtoKey
 import im.actor.server.db.DbExtension
 import im.actor.server.model.MasterKey
 import im.actor.server.mtproto.codecs.protocol._
@@ -23,7 +21,7 @@ import im.actor.server.mtproto.{ transport ⇒ T }
 import im.actor.server.persist.{ AuthIdRepo, MasterKeyRepo }
 import im.actor.server.session.{ HandleMessageBox, SessionEnvelope, SessionRegion }
 import im.actor.util.ThreadLocalSecureRandom
-import scodec.{ DecodeResult, Attempt }
+import scodec.{ Attempt, DecodeResult }
 import scodec.bits.BitVector
 import slick.dbio.DBIO
 
@@ -58,7 +56,7 @@ final class CryptoHelper(protoKeys: ActorProtoKey) {
       )
 
       val Russia = new CBCHmacBox(
-        new KuznechikCipher(protoKeys.getServerRussianKey),
+        new KuznechikFastEngine(protoKeys.getServerRussianKey),
         new Streebog256,
         protoKeys.getServerMacRussianKey
       )
@@ -72,7 +70,7 @@ final class CryptoHelper(protoKeys: ActorProtoKey) {
       )
 
       val Russia = new CBCHmacBox(
-        new KuznechikCipher(protoKeys.getClientRussianKey),
+        new KuznechikFastEngine(protoKeys.getClientRussianKey),
         new Streebog256,
         protoKeys.getClientMacRussianKey
       )
