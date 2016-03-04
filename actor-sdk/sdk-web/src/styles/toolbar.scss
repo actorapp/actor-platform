@@ -18,9 +18,22 @@
 
   &__calling {
     background-color: $call-background;
-    color: $call-color;
+    color: $call-title-color;
+    box-shadow: none;
+
+    .toolbar__peer__message {
+      color: $call-title-color;
+    }
     .button--icon {
-      color: $call-color;
+      i {
+        color: $call-title-color;
+      }
+
+      &.active {
+        i {
+          color: $dark-sky-blue;
+        }
+      }
     }
   }
 

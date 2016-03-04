@@ -285,6 +285,7 @@ export default {
       outgoing: 'Outgoing call',
       incoming: 'Incoming call',
       mute: 'Mute',
+      unmute: 'Unmute',
       answer: 'Answer',
       decline: 'Decline',
       end: 'End call',
