@@ -58,7 +58,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
             for {
               _ ← dialogExt.ackSendMessage(peer, sm.copy(date = Some(sendDate)))
               _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-              _ ← dialogExt.updateCounters(peer, userId)
+              _ = dialogExt.updateCounters(peer, userId)
               SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sendDate, message, sm.isFat)
             } yield SeqStateDate(seq, state, sendDate)
           } pipeTo self
