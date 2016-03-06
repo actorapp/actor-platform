@@ -1,19 +1,21 @@
 package im.actor.core.modules.calls.peers;
 
+import org.jetbrains.annotations.NotNull;
+
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.ActorRef;
 
 public class CallBusInt extends ActorInterface {
 
-    public CallBusInt(ActorRef dest) {
+    public CallBusInt(@NotNull ActorRef dest) {
         super(dest);
     }
 
-    public void joinBus(String busId) {
+    public void joinBus(@NotNull String busId) {
         send(new CallBusActor.JoinBus(busId));
     }
 
-    public void joinMasterBus(String busId, long deviceId) {
+    public void joinMasterBus(@NotNull String busId, long deviceId) {
         send(new CallBusActor.JoinMasterBus(busId, deviceId));
     }
 
