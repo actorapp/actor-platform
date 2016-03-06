@@ -11,6 +11,9 @@ public class AAAuthNavigationController: UINavigationController {
         
         navigationBar.setTransparentBackground()
         navigationBar.tintColor = ActorSDK.sharedActor().style.authTintColor
+        navigationBar.hairlineHidden = true
+        
+        view.backgroundColor = UIColor.whiteColor()
     }
 
     public override func viewWillAppear(animated: Bool) {

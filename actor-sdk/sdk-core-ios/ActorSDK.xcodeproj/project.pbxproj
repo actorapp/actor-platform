@@ -175,6 +175,8 @@
 		069CF4D11BCB909A00C66E12 /* CLTokenInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4C91BCB909A00C66E12 /* CLTokenInputView.m */; };
 		069CF4D21BCB909A00C66E12 /* CLTokenView.h in Headers */ = {isa = PBXBuildFile; fileRef = 069CF4CA1BCB909A00C66E12 /* CLTokenView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		069CF4D31BCB909A00C66E12 /* CLTokenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4CB1BCB909A00C66E12 /* CLTokenView.m */; };
+		06C1D0771C8BC9FC00B73632 /* AAAuthAskName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D0761C8BC9FC00B73632 /* AAAuthAskName.swift */; };
+		06C1D07B1C8BFE5C00B73632 /* AAAuthAskPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D07A1C8BFE5C00B73632 /* AAAuthAskPhone.swift */; };
 		06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE89891BD8401C005A5530 /* Reachability.swift */; };
 		06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */; };
 		06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */; };
@@ -481,6 +483,8 @@
 		069CF4C91BCB909A00C66E12 /* CLTokenInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLTokenInputView.m; sourceTree = "<group>"; };
 		069CF4CA1BCB909A00C66E12 /* CLTokenView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLTokenView.h; sourceTree = "<group>"; };
 		069CF4CB1BCB909A00C66E12 /* CLTokenView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLTokenView.m; sourceTree = "<group>"; };
+		06C1D0761C8BC9FC00B73632 /* AAAuthAskName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthAskName.swift; sourceTree = "<group>"; };
+		06C1D07A1C8BFE5C00B73632 /* AAAuthAskPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthAskPhone.swift; sourceTree = "<group>"; };
 		06CE89891BD8401C005A5530 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorSDKAnalytics.swift; sourceTree = "<group>"; };
@@ -521,7 +525,7 @@
 		153F6B3C1C2A9B1900C0B960 /* begin_record.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = begin_record.caf; sourceTree = "<group>"; };
 		153F6B5A1C2B109400C0B960 /* AABubbleVoiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleVoiceCell.swift; sourceTree = "<group>"; };
 		153F6B5C1C2B3AC500C0B960 /* AABubbleStickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleStickerCell.swift; sourceTree = "<group>"; };
-		153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthWelcomeController.swift; sourceTree = "<group>"; };
+		153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAuthWelcomeController.swift; path = Auth/AAAuthWelcomeController.swift; sourceTree = "<group>"; };
 		153F6B881C2D7BA300C0B960 /* AATapLabelDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATapLabelDelegate.swift; sourceTree = "<group>"; };
 		153F6B891C2D7BA300C0B960 /* AATapLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATapLabel.swift; sourceTree = "<group>"; };
 		153F6B8D1C2D868100C0B960 /* AATermsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATermsController.swift; sourceTree = "<group>"; };
@@ -865,6 +869,7 @@
 		066A525F1BC50E53000E606E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				06C1D0751C8BC55100B73632 /* Welcome */,
 				066A52601BC50E6B000E606E /* Auth */,
 				066A52F91BC52FA0000E606E /* Compose */,
 				066A53021BC53171000E606E /* Contacts */,
@@ -887,13 +892,14 @@
 			children = (
 				066A526B1BC50E83000E606E /* Cells */,
 				066A526E1BC51007000E606E /* Views */,
+				06C1D0761C8BC9FC00B73632 /* AAAuthAskName.swift */,
+				06C1D07A1C8BFE5C00B73632 /* AAAuthAskPhone.swift */,
 				066A52631BC50E7B000E606E /* AAAuthCodeViewController.swift */,
 				066A52611BC50E7B000E606E /* AAAuthCountriesViewController.swift */,
 				065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */,
 				066A52621BC50E7B000E606E /* AAAuthPhoneViewController.swift */,
 				066A52641BC50E7B000E606E /* AAAuthRegisterViewController.swift */,
 				066A52651BC50E7B000E606E /* AAAuthViewController.swift */,
-				153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */,
 				153F6B8D1C2D868100C0B960 /* AATermsController.swift */,
 				068B39811C876AF5002BFF73 /* AAEmailAuthCodeViewController.swift */,
 				068B39821C876AF5002BFF73 /* AAEmailAuthViewController.swift */,
@@ -1177,6 +1183,14 @@
 				069CF4CB1BCB909A00C66E12 /* CLTokenView.m */,
 			);
 			path = CLTokenInputView;
+			sourceTree = "<group>";
+		};
+		06C1D0751C8BC55100B73632 /* Welcome */ = {
+			isa = PBXGroup;
+			children = (
+				153F6B601C2BF8EC00C0B960 /* AAAuthWelcomeController.swift */,
+			);
+			name = Welcome;
 			sourceTree = "<group>";
 		};
 		06E322CB1C69392F00D66F53 /* Libs */ = {
@@ -1794,6 +1808,7 @@
 				065A06B61C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift in Sources */,
 				15D35F5A1C20187E00E3717A /* AATimer.m in Sources */,
 				066A52381BC4EEBA000E606E /* AAHeaderCell.swift in Sources */,
+				06C1D0771C8BC9FC00B73632 /* AAAuthAskName.swift in Sources */,
 				066A524B1BC4EF49000E606E /* AAViewController.swift in Sources */,
 				066A51521BC4BE34000E606E /* Logs.swift in Sources */,
 				066A52D71BC52378000E606E /* AAContactsListContentControllerDelegate.swift in Sources */,
@@ -1838,6 +1853,7 @@
 				066A53041BC53177000E606E /* AAContactsViewController.swift in Sources */,
 				066A51801BC4C373000E606E /* FMDatabasePool.m in Sources */,
 				06129AA91C8394700099286B /* AAAudioManager.swift in Sources */,
+				06C1D07B1C8BFE5C00B73632 /* AAAuthAskPhone.swift in Sources */,
 				066A518F1BC4C383000E606E /* iOSPhoneBookProvider.swift in Sources */,
 				066A530B1BC531A2000E606E /* AAUserViewController.swift in Sources */,
 				06E3C5B81C80EE21004776CD /* AACircleButton.swift in Sources */,
