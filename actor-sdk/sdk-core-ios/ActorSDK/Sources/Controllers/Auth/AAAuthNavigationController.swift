@@ -22,6 +22,12 @@ public class AAAuthNavigationController: UINavigationController {
         UIApplication.sharedApplication().setStatusBarStyle(.Default, animated: true)
     }
     
+    public override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        UIApplication.sharedApplication().setStatusBarStyle(.LightContent, animated: true)
+    }
+    
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .Default
     }
