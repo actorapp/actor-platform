@@ -66,12 +66,22 @@ public class AAWelcomeController: AAViewController {
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        logoView.frame = CGRectMake((view.width - 90) / 2, 145, 90, 90)
-        appNameLabel.frame = CGRectMake((view.width - 300) / 2, logoView.bottom + 35, 300, 29)
-        someInfoLabel.frame = CGRectMake((view.width - 300) / 2, appNameLabel.bottom + 8, 300, 46)
+        if AADevice.isiPhone4 {
+            logoView.frame = CGRectMake((view.width - 90) / 2, 90, 90, 90)
+            appNameLabel.frame = CGRectMake((view.width - 300) / 2, logoView.bottom + 30, 300, 29)
+            someInfoLabel.frame = CGRectMake((view.width - 300) / 2, appNameLabel.bottom + 8, 300, 46)
+            
+            signupButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 80, 136, 44)
+            signinButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 25, 136, 44)
+        } else {
+            
+            logoView.frame = CGRectMake((view.width - 90) / 2, 145, 90, 90)
+            appNameLabel.frame = CGRectMake((view.width - 300) / 2, logoView.bottom + 35, 300, 29)
+            someInfoLabel.frame = CGRectMake((view.width - 300) / 2, appNameLabel.bottom + 8, 300, 46)
         
-        signupButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 90, 136, 44)
-        signinButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 35, 136, 44)
+            signupButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 90, 136, 44)
+            signinButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 35, 136, 44)
+        }
     }
     
     public func signupAction() {

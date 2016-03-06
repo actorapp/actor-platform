@@ -1,5 +1,6 @@
 package im.actor.core.modules.calls.peers;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -29,16 +30,22 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     public static final long TIMEOUT = 6000;
 
+    @NotNull
     private final PeerSettings selfSettings;
+    @NotNull
     private final PeerCallCallback peerCallback;
+    @NotNull
     private final CallBusCallback callBusCallback;
+
     private boolean isMasterReady;
     private long masterDeviceId;
+    @Nullable
     private PeerCallInt peerCall;
     private boolean isConnected = false;
     private boolean isEnabled = false;
 
-    public CallBusActor(final CallBusCallback callBusCallback, PeerSettings selfSettings, ModuleContext context) {
+    public CallBusActor(@NotNull final CallBusCallback callBusCallback,
+                        @NotNull PeerSettings selfSettings, @NotNull ModuleContext context) {
         super(context);
 
         this.selfSettings = selfSettings;
@@ -72,17 +79,17 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     //
 
     @Override
-    public void onOffer(long deviceId, long sessionId, String sdp) {
+    public void onOffer(long deviceId, long sessionId, @NotNull String sdp) {
         sendSignal(deviceId, new ApiOffer(sessionId, sdp, CallBusActor.this.selfSettings.toApi()));
     }
 
     @Override
-    public void onAnswer(long deviceId, long sessionId, String sdp) {
+    public void onAnswer(long deviceId, long sessionId, @NotNull String sdp) {
         sendSignal(deviceId, new ApiAnswer(sessionId, sdp));
     }
 
     @Override
-    public void onCandidate(long deviceId, int mdpIndex, String id, String sdp) {
+    public void onCandidate(long deviceId, int mdpIndex, @NotNull String id, @NotNull String sdp) {
         sendSignal(deviceId, new ApiCandidate(0, mdpIndex, id, sdp));
     }
 
@@ -96,7 +103,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     }
 
     @Override
-    public void onPeerStateChanged(long deviceId, PeerState state) {
+    public void onPeerStateChanged(long deviceId, @NotNull PeerState state) {
         if (state == PeerState.CONNECTED && !isConnected && !isEnabled) {
             isConnected = true;
             callBusCallback.onCallConnected();
@@ -108,12 +115,12 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
     }
 
     @Override
-    public void onStreamAdded(long deviceId, WebRTCMediaStream stream) {
+    public void onStreamAdded(long deviceId, @NotNull WebRTCMediaStream stream) {
 
     }
 
     @Override
-    public void onStreamRemoved(long deviceId, WebRTCMediaStream stream) {
+    public void onStreamRemoved(long deviceId, @NotNull WebRTCMediaStream stream) {
 
     }
 
@@ -205,7 +212,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         }
     }
 
-    public final void sendSignal(long deviceId, ApiWebRTCSignaling signal) {
+    public final void sendSignal(long deviceId, @NotNull ApiWebRTCSignaling signal) {
         Log.d("CallBusActor", "Message Sent: " + signal);
         try {
             sendMessage(deviceId, signal.buildContainer());
@@ -242,12 +249,14 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     public static class JoinBus {
 
+        @NotNull
         private String busId;
 
-        public JoinBus(String busId) {
+        public JoinBus(@NotNull String busId) {
             this.busId = busId;
         }
 
+        @NotNull
         public String getBusId() {
             return busId;
         }
@@ -255,14 +264,16 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     public static class JoinMasterBus {
 
+        @NotNull
         private String busId;
         private long deviceId;
 
-        public JoinMasterBus(String busId, long deviceId) {
+        public JoinMasterBus(@NotNull String busId, long deviceId) {
             this.busId = busId;
             this.deviceId = deviceId;
         }
 
+        @NotNull
         public String getBusId() {
             return busId;
         }
@@ -290,14 +301,15 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     public class CallbackWrapper implements PeerCallCallback {
 
+        @NotNull
         private final PeerCallCallback callCallback;
 
-        public CallbackWrapper(PeerCallCallback callCallback) {
+        public CallbackWrapper(@NotNull PeerCallCallback callCallback) {
             this.callCallback = callCallback;
         }
 
         @Override
-        public void onOffer(final long deviceId, final long sessionId, final String sdp) {
+        public void onOffer(final long deviceId, final long sessionId, @NotNull final String sdp) {
             self().send(new Runnable() {
                 @Override
                 public void run() {
@@ -307,7 +319,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         }
 
         @Override
-        public void onAnswer(final long deviceId, final long sessionId, final String sdp) {
+        public void onAnswer(final long deviceId, final long sessionId, @NotNull final String sdp) {
             self().send(new Runnable() {
                 @Override
                 public void run() {
@@ -317,7 +329,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         }
 
         @Override
-        public void onCandidate(final long deviceId, final int mdpIndex, final String id, final String sdp) {
+        public void onCandidate(final long deviceId, final int mdpIndex, @NotNull final String id, @NotNull final String sdp) {
             self().send(new Runnable() {
                 @Override
                 public void run() {
@@ -337,7 +349,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         }
 
         @Override
-        public void onPeerStateChanged(final long deviceId, final PeerState state) {
+        public void onPeerStateChanged(final long deviceId, @NotNull final PeerState state) {
             self().send(new Runnable() {
                 @Override
                 public void run() {
@@ -347,7 +359,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         }
 
         @Override
-        public void onStreamAdded(final long deviceId, final WebRTCMediaStream stream) {
+        public void onStreamAdded(final long deviceId, @NotNull final WebRTCMediaStream stream) {
             self().send(new Runnable() {
                 @Override
                 public void run() {
@@ -357,7 +369,7 @@ public class CallBusActor extends EventBusActor implements PeerCallCallback {
         }
 
         @Override
-        public void onStreamRemoved(final long deviceId, final WebRTCMediaStream stream) {
+        public void onStreamRemoved(final long deviceId, @NotNull final WebRTCMediaStream stream) {
             self().send(new Runnable() {
                 @Override
                 public void run() {
