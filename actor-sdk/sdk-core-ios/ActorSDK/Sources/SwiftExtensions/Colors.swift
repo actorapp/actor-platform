@@ -20,6 +20,13 @@ public extension UIColor {
             alpha: CGFloat(alpha))
     }
     
+    public convenience init(red: UInt, green: UInt, blue: UInt) {
+        self.init(red: CGFloat(red) / 255.0,
+            green: CGFloat(green) / 255.0,
+            blue: CGFloat(blue) / 255.0,
+            alpha: CGFloat(1.0))
+    }
+    
     public class func alphaBlack(alpha: Double) -> UIColor {
         return UIColor(red: 0, green: 0, blue: 0, alpha: CGFloat(alpha))
     }

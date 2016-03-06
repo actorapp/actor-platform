@@ -28,6 +28,7 @@ target 'ActorApp' do
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
     pod 'Neon'
+    pod 'ElegantPresentations'
 
     # Small UI
     pod 'VBFPopFlatButton'
@@ -63,6 +64,7 @@ target 'ActorSDK' do
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
+    pod 'ElegantPresentations'
 
     # Small UI
     pod 'VBFPopFlatButton'

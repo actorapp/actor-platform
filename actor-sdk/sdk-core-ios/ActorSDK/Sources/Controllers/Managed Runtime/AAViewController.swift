@@ -5,8 +5,9 @@
 import UIKit
 import MobileCoreServices
 import RSKImageCropper
+import ElegantPresentations
 
-public class AAViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, RSKImageCropViewControllerDelegate  {
+public class AAViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, RSKImageCropViewControllerDelegate, UIViewControllerTransitioningDelegate  {
     
     // MARK: -
     // MARK: Public vars
@@ -214,5 +215,20 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
     public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         pendingPickClosure = nil
         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    public func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController, sourceViewController source: UIViewController) -> UIPresentationController? {
+        return ElegantPresentations.controller(presentedViewController: presented, presentingViewController: presenting, options: [])
+    }
+    
+    public func presentElegantViewController(controller: UIViewController) {
+        if AADevice.isiPad {
+            controller.modalPresentationStyle = .FormSheet
+            presentViewController(controller, animated: true, completion: nil) 
+        } else {
+            controller.modalPresentationStyle = .Custom
+            controller.transitioningDelegate = self
+            presentViewController(controller, animated: true, completion: nil)
+        }
     }
 }
