@@ -431,17 +431,17 @@ import PushKit
             }
             window.rootViewController = controller!
         } else {
-            var controller: UIViewController! = delegate.actorControllerForAuthStart()
-            if controller == nil {
-                if self.authStrategy == .PhoneOnly {
-                    controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
-                } else if self.authStrategy == .EmailOnly {
-                    controller = AAAuthNavigationController(rootViewController: AAEmailAuthViewController())
-                } else {
-                    // ???
-                }
-            }
-            window.rootViewController = controller!
+//            var controller: UIViewController! = delegate.actorControllerForAuthStart()
+//            if controller == nil {
+//                if self.authStrategy == .PhoneOnly {
+//                    controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
+//                } else if self.authStrategy == .EmailOnly {
+//                    controller = AAAuthNavigationController(rootViewController: AAEmailAuthViewController())
+//                } else {
+//                    // ???
+//                }
+//            }
+            window.rootViewController = AAWelcomeController()
         }
         
         // Bind Status Bar connecting
