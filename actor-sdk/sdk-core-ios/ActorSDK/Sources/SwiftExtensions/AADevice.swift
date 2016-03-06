@@ -28,6 +28,7 @@ public struct AADevice {
     //
     // iPhone sizes
     //
+    public static let isiPhone4 = isiPhone && screenHeight == 480.0
     public static let isiPhone5 = isiPhone && screenHeight == 568.0
     public static let isiPhone6 = isiPhone && screenHeight == 667.0
     public static let isiPhone6P = isiPhone && screenHeight == 736.0
