@@ -21,8 +21,6 @@ target 'ActorApp' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'YYImage'
-    pod 'YYText'
 
     # Main UI
     pod 'TTTAttributedLabel'
@@ -30,6 +28,10 @@ target 'ActorApp' do
     pod 'JDStatusBarNotification'
     pod 'Neon'
     pod 'ElegantPresentations'
+    pod 'YYImage'
+    pod 'YYText'
+    pod 'YYCategories'
+    pod 'DZNWebViewController'
 
     # Small UI
     pod 'VBFPopFlatButton'
@@ -59,14 +61,16 @@ target 'ActorSDK' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'YYImage'
-    pod 'YYText'
 
     # Main UI
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
     pod 'ElegantPresentations'
+    pod 'YYImage'
+    pod 'YYText'
+    pod 'YYCategories'
+    pod 'DZNWebViewController'
 
     # Small UI
     pod 'VBFPopFlatButton'

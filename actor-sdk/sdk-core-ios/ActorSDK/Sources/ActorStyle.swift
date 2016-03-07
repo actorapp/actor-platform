@@ -3,7 +3,8 @@
 //
 
 import Foundation
-import YYKit
+import YYText
+import YYImage
 
 public class ActorStyle {
     

@@ -5,7 +5,8 @@
 import Foundation
 import UIKit
 import TTTAttributedLabel
-import YYKit
+import YYText
+import YYImage
 
 public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
