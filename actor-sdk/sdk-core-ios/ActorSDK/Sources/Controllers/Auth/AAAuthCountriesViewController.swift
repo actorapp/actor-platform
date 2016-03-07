@@ -14,7 +14,6 @@ public class AAAuthCountriesViewController: AATableViewController {
     private var _letters: NSArray!
     
     var delegate: AAAuthCountriesViewControllerDelegate?
-    var currentIso: String = ""
     
     public init() {
         super.init(style: UITableViewStyle.Plain)
@@ -103,6 +102,7 @@ public class AAAuthCountriesViewController: AATableViewController {
         
         let letter = letters()[indexPath.section] as! String
         let countryData = (countries().objectForKey(letter) as! NSArray)[indexPath.row] as! [String]
+        
         delegate?.countriesController(self, didChangeCurrentIso: countryData[1])
 
         dismiss()

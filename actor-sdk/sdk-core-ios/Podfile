@@ -21,7 +21,8 @@ target 'ActorApp' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'YYKit'
+    pod 'YYImage'
+    pod 'YYText'
 
     # Main UI
     pod 'TTTAttributedLabel'
@@ -58,7 +59,8 @@ target 'ActorSDK' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'YYKit'
+    pod 'YYImage'
+    pod 'YYText'
 
     # Main UI
     pod 'TTTAttributedLabel'
