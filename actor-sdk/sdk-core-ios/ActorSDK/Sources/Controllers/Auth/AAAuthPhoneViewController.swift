@@ -9,6 +9,8 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
     
     let name: String
     
+    let scrollView = UIScrollView()
+    
     let welcomeLabel = UILabel()
     let hintLabel = UILabel()
     
@@ -34,9 +36,12 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
     }
 
     override func viewDidLoad() {
-        super.viewDidLoad()
         
         view.backgroundColor = UIColor.whiteColor()
+        
+        scrollView.keyboardDismissMode = .OnDrag
+        scrollView.scrollEnabled = true
+        scrollView.alwaysBounceVertical = true
         
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
         welcomeLabel.textColor = UIColor.alphaBlack(0.87)
@@ -68,6 +73,8 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
         phoneCodeLabel.textAlignment = .Center
         
         phoneNumberLabel.currentIso = currentCountry.iso
+        phoneNumberLabel.keyboardType = .PhonePad
+        phoneNumberLabel.placeholder = "Phone Number"
         
         phoneCodeLabelLine.backgroundColor = UIColor.alphaBlack(0.2)
         
@@ -114,40 +121,46 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
         useEmailButton.setTitleColor(UIColor.blueColor().alpha(0.56), forState: .Normal)
         useEmailButton.addTarget(self, action: "useEmailDidPressed", forControlEvents: .TouchUpInside)
         
-        view.addSubview(welcomeLabel)
-        view.addSubview(hintLabel)
-        view.addSubview(countryButton)
-        view.addSubview(countryButtonLine)
-        view.addSubview(phoneCodeLabel)
-        view.addSubview(phoneNumberLabel)
-        view.addSubview(phoneCodeLabelLine)
-        view.addSubview(termsLabel)
-        view.addSubview(useEmailButton)
+        scrollView.addSubview(welcomeLabel)
+        scrollView.addSubview(hintLabel)
+        scrollView.addSubview(countryButton)
+        scrollView.addSubview(countryButtonLine)
+        scrollView.addSubview(phoneCodeLabel)
+        scrollView.addSubview(phoneNumberLabel)
+        scrollView.addSubview(phoneCodeLabelLine)
+        scrollView.addSubview(termsLabel)
+        scrollView.addSubview(useEmailButton)
+        view.addSubview(scrollView)
+        
+        super.viewDidLoad()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        welcomeLabel.frame = CGRectMake(20, 90, view.width - 40, 28)
-        hintLabel.frame = CGRectMake(20, 127, view.width - 40, 34)
+        welcomeLabel.frame = CGRectMake(20, 90 - 66, view.width - 40, 28)
+        hintLabel.frame = CGRectMake(20, 127 - 66, view.width - 40, 34)
         
-        countryButton.frame = CGRectMake(10, 200, view.width - 20, 44)
-        countryButtonLine.frame = CGRectMake(10, 244, view.width - 20, 0.5)
+        countryButton.frame = CGRectMake(10, 200 - 66, view.width - 20, 44)
+        countryButtonLine.frame = CGRectMake(10, 244 - 66, view.width - 20, 0.5)
         
-        termsLabel.frame = CGRectMake(20, 314, view.width - 40, 55)
+        termsLabel.frame = CGRectMake(20, 314 - 66, view.width - 40, 55)
         
-        useEmailButton.frame = CGRectMake(20, 375, view.width - 40, 38)
+        useEmailButton.frame = CGRectMake(20, 375 - 66, view.width - 40, 38)
         
         resizePhoneLabels()
+        
+        scrollView.frame = view.bounds
+        scrollView.contentSize = CGSizeMake(view.width, 400)
     }
     
     private func resizePhoneLabels() {
-        phoneCodeLabel.frame = CGRectMake(10, 244, 80, 44)
+        phoneCodeLabel.frame = CGRectMake(10, 244 - 66, 80, 44)
         phoneCodeLabel.sizeToFit()
-        phoneCodeLabel.frame = CGRectMake(10, 244, phoneCodeLabel.width + 32, 44)
+        phoneCodeLabel.frame = CGRectMake(10, 244 - 66, phoneCodeLabel.width + 32, 44)
         
-        phoneNumberLabel.frame = CGRectMake(phoneCodeLabel.width + 10, 245, view.width - phoneCodeLabel.width, 44)
-        phoneCodeLabelLine.frame = CGRectMake(10, 288, view.width - 20, 0.5)
+        phoneNumberLabel.frame = CGRectMake(phoneCodeLabel.width + 10, 245 - 66, view.width - phoneCodeLabel.width, 44)
+        phoneCodeLabelLine.frame = CGRectMake(10, 288 - 66, view.width - 20, 0.5)
     }
     
     func countriesController(countriesController: AACountryViewController, didChangeCurrentIso currentIso: String) {
@@ -167,5 +180,26 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
         let controllers = self.navigationController!.viewControllers
         let updatedControllers = Array(controllers[0..<(controllers.count - 1)]) + [AAAuthEmailViewController(name: name)]
         self.navigationController?.setViewControllers(updatedControllers, animated: false)
+    }
+    
+    override func nextDidTap() {
+        let number = phoneNumberLabel.phoneNumber.toJLong()
+        executeSafeOnlySuccess(Actor.requestStartAuthCommandWithPhone(number)) { (val) -> Void in
+            self.navigateNext(AAAuthCodeViewController(phoneNumber: "\(number)"))
+        }
+    }
+    
+    override func keyboardWillAppear(height: CGFloat) {
+        scrollView.frame = CGRectMake(0, 0, view.width, view.height - height)
+        
+        let height = scrollView.height - height - 66
+        let offset: CGFloat = 245 + 44
+        let destOffset = height * 0.66  - offset / 2 + 66
+        
+        scrollView.setContentOffset(CGPoint(x: 0, y: -destOffset - 66), animated: true)
+    }
+    
+    override func keyboardWillDisappear() {
+        scrollView.frame = CGRectMake(0, 0, view.width, view.height)
     }
 }

@@ -6,6 +6,8 @@ import Foundation
 
 public class AAAuthNameViewController: AAAuthViewController {
     
+    let scrollView = UIScrollView()
+    
     let welcomeLabel = UILabel()
     let field = UITextField()
     let fieldLine = UIView()
@@ -24,9 +26,12 @@ public class AAAuthNameViewController: AAAuthViewController {
     }
     
     public override func viewDidLoad() {
-        super.viewDidLoad()
         
         view.backgroundColor = UIColor.whiteColor()
+        
+        scrollView.keyboardDismissMode = .OnDrag
+        scrollView.scrollEnabled = true
+        scrollView.alwaysBounceVertical = true
         
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
         welcomeLabel.text = "Hi! What's your name?"
@@ -40,24 +45,32 @@ public class AAAuthNameViewController: AAAuthViewController {
         fieldSuccess.hidden = true
         
         field.placeholder = "Your Name"
+        field.keyboardType = .Default
         field.addTarget(self, action: "fieldDidChanged", forControlEvents: .EditingChanged)
         
         fieldLine.backgroundColor = UIColor.blackColor().alpha(0.2)
         fieldLine.opaque = false
         
-        view.addSubview(welcomeLabel)
-        view.addSubview(fieldLine)
-        view.addSubview(field)
-        view.addSubview(fieldSuccess)
+        scrollView.addSubview(welcomeLabel)
+        scrollView.addSubview(fieldLine)
+        scrollView.addSubview(field)
+        scrollView.addSubview(fieldSuccess)
+        
+        view.addSubview(scrollView)
+        
+        super.viewDidLoad()
     }
     
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        welcomeLabel.frame = CGRectMake(15, 90, view.width - 30, 28)
-        fieldLine.frame = CGRectMake(10, 200, view.width - 20, 0.5)
-        field.frame = CGRectMake(20, 156, view.width - 40, 44)
+        welcomeLabel.frame = CGRectMake(15, 90 - 66, view.width - 30, 28)
+        fieldLine.frame = CGRectMake(10, 200 - 66, view.width - 20, 0.5)
+        field.frame = CGRectMake(20, 156 - 66, view.width - 40, 44)
         fieldSuccess.frame = CGRectMake(20, field.bottom + 15, view.width - 40, 44)
+        
+        scrollView.frame = view.bounds
+        scrollView.contentSize = CGSizeMake(view.width, 240 - 66)
     }
     
     func fieldDidChanged() {
