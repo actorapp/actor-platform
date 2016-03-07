@@ -4,14 +4,13 @@
 
 import Foundation
 
-public class AAAuthNameViewController: AAAuthViewController {
+public class AAAuthLogInViewController: AAAuthViewController {
     
     let scrollView = UIScrollView()
     
     let welcomeLabel = UILabel()
     let field = UITextField()
     let fieldLine = UIView()
-    let fieldSuccess = UILabel()
     
     var isFirstAppear = true
     
@@ -26,7 +25,7 @@ public class AAAuthNameViewController: AAAuthViewController {
     }
     
     public override func viewDidLoad() {
-        
+     
         view.backgroundColor = UIColor.whiteColor()
         
         scrollView.keyboardDismissMode = .OnDrag
@@ -34,31 +33,23 @@ public class AAAuthNameViewController: AAAuthViewController {
         scrollView.alwaysBounceVertical = true
         
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
-        welcomeLabel.text = "Hi! What's your name?"
+        welcomeLabel.text = "Log In to Actor"
         welcomeLabel.textColor = UIColor.blackColor().alpha(0.87)
         welcomeLabel.textAlignment = .Center
         
-        fieldSuccess.font = UIFont.systemFontOfSize(18)
-        fieldSuccess.text = "Name looks great!"
-        fieldSuccess.textColor = UIColor.greenColor()
-        fieldSuccess.textAlignment = .Left
-        fieldSuccess.hidden = true
-        
-        field.placeholder = "Your Name"
+        field.placeholder = "Phone or Email"
         field.keyboardType = .Default
-        field.autocapitalizationType = .Words
-        field.addTarget(self, action: "fieldDidChanged", forControlEvents: .EditingChanged)
+        field.autocapitalizationType = .None
+//        field.addTarget(self, action: "fieldDidChanged", forControlEvents: .EditingChanged)
         
         fieldLine.backgroundColor = UIColor.blackColor().alpha(0.2)
         fieldLine.opaque = false
         
         scrollView.addSubview(welcomeLabel)
-        scrollView.addSubview(fieldLine)
         scrollView.addSubview(field)
-        scrollView.addSubview(fieldSuccess)
-        
+        scrollView.addSubview(fieldLine)
         view.addSubview(scrollView)
-        
+
         super.viewDidLoad()
     }
     
@@ -66,20 +57,43 @@ public class AAAuthNameViewController: AAAuthViewController {
         super.viewDidLayoutSubviews()
         
         welcomeLabel.frame = CGRectMake(15, 90 - 66, view.width - 30, 28)
+        
         fieldLine.frame = CGRectMake(10, 200 - 66, view.width - 20, 0.5)
         field.frame = CGRectMake(20, 156 - 66, view.width - 40, 44)
-        fieldSuccess.frame = CGRectMake(20, field.bottom + 15, view.width - 40, 44)
         
         scrollView.frame = view.bounds
         scrollView.contentSize = CGSizeMake(view.width, 240 - 66)
     }
     
-    func fieldDidChanged() {
-//        if field.text!.trim().length > 0 {
-//            fieldSuccess.hidden = false
-//        } else {
-//            fieldSuccess.hidden = true
-//        }
+    public override func nextDidTap() {
+        let value = field.text!.trim()
+        if value.length == 0 {
+            shakeView(field, originalX: 20)
+            shakeView(fieldLine, originalX: 10)
+            return
+        }
+        if (AATools.isValidEmail(value)) {
+            executeSafeOnlySuccess(Actor.requestStartAuthCommandWithEmail(value), successBlock: { (val) -> Void in
+                self.navigateNext(AAEmailAuthCodeViewController(email: value))
+            })
+        } else {
+            let numbersSet = NSCharacterSet(charactersInString: "0123456789").invertedSet
+            let stripped = value.strip(numbersSet)
+            if let parsed = Int64(stripped) {
+                executeSafeOnlySuccess(Actor.requestStartAuthCommandWithPhone(jlong(parsed)), successBlock: { (val) -> Void in
+                    self.navigateNext(AAAuthCodeViewController(phoneNumber: value))
+                })
+            } else {
+                shakeView(field, originalX: 20)
+                shakeView(fieldLine, originalX: 10)
+            }
+        }
+    }
+    
+    public override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        field.resignFirstResponder()
     }
     
     public override func viewWillAppear(animated: Bool) {
@@ -89,21 +103,5 @@ public class AAAuthNameViewController: AAAuthViewController {
             isFirstAppear = false
             field.becomeFirstResponder()
         }
-    }
-    
-    public  override func nextDidTap() {
-        let name = field.text!.trim()
-        if name.length > 0 {
-            navigateNext(AAAuthPhoneViewController(name: name))
-        } else {
-            shakeView(field, originalX: 20)
-            shakeView(fieldLine, originalX: 10)
-        }
-    }
-    
-    public override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        field.resignFirstResponder()
     }
 }
