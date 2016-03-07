@@ -4,15 +4,23 @@
 
 import React, {Component, PropTypes} from 'react';
 import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 
 class AnswerButton extends Component {
   static propTypes = {
-    onClick: PropTypes.func.isRequired
+    onClick: PropTypes.func.isRequired,
+    small: PropTypes.bool
   };
 
   render() {
+    const className = classNames('button', {
+      'button--rised button--wide': !this.props.small,
+      'button--square col-xs': this.props.small
+    });
+
     return (
-      <button className="button button--rised button--wide" onClick={this.props.onClick}>
+      <button className={className} onClick={this.props.onClick}>
+        <i className="material-icons" key="icon">call</i>
         <FormattedMessage id="call.answer"/>
       </button>
     );
