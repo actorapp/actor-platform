@@ -7,6 +7,7 @@ package im.actor.core.network.mtp.actors;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import im.actor.runtime.actors.Actor;
@@ -45,7 +46,7 @@ public class PusherActor extends Actor {
     private MTProto proto;
     private ActorRef manager;
 
-    private HashMap<Long, ProtoMessage> unsentPackages;
+    private LinkedHashMap<Long, ProtoMessage> unsentPackages;
     private HashSet<Long> confirm;
 
     private HashSet<Long> pendingConfirm;
@@ -55,7 +56,7 @@ public class PusherActor extends Actor {
     public PusherActor(MTProto proto) {
         this.proto = proto;
         this.isEnableLog = proto.isEnableLog();
-        this.unsentPackages = new HashMap<>();
+        this.unsentPackages = new LinkedHashMap<>();
         this.pendingConfirm = new HashSet<>();
         this.confirm = new HashSet<>();
     }
