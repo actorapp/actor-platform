@@ -32,10 +32,10 @@ class DialogStore extends Store {
   isMember() {
     if (this.currentPeer !== null && this.currentPeer.type === PeerTypes.GROUP) {
       const group = ActorClient.getGroup(this.currentPeer.id);
-      return group.members.length !== 0;
-    } else {
-      return true;
+      return group && group.members.length !== 0;
     }
+
+    return true;
   }
 
   isFavorite(id) {
