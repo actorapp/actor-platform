@@ -6,6 +6,8 @@ import UIKit
 import MobileCoreServices
 import RSKImageCropper
 import ElegantPresentations
+import DZNWebViewController
+import SafariServices
 
 public class AAViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, RSKImageCropViewControllerDelegate, UIViewControllerTransitioningDelegate  {
     
@@ -175,6 +177,16 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         let navigation = AANavigationController()
         navigation.viewControllers = [controller]
         presentViewController(navigation, animated: true, completion: nil)
+    }
+    
+    public func openUrl(url: String) {
+        if let url = NSURL(string: url) {
+            if #available(iOS 9.0, *) {
+                self.presentElegantViewController(SFSafariViewController(URL: url))
+            } else {
+                self.presentElegantViewController(AANavigationController(rootViewController: DZNWebViewController(URL: url)))
+            }
+        }
     }
     
     // Image pick and crop

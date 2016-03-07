@@ -3,7 +3,8 @@
 //
 
 import UIKit
-import YYKit
+import YYText
+import YYImage
 
 public struct AAStickersPack {
     

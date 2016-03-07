@@ -4,16 +4,16 @@
 
 import UIKit
 
-public protocol AAAuthCountriesViewControllerDelegate {
-    func countriesController(countriesController: AAAuthCountriesViewController, didChangeCurrentIso currentIso: String)
+public protocol AACountryViewControllerDelegate {
+    func countriesController(countriesController: AACountryViewController, didChangeCurrentIso currentIso: String)
 }
 
-public class AAAuthCountriesViewController: AATableViewController {
+public class AACountryViewController: AATableViewController {
     
     private var _countries: NSDictionary!
     private var _letters: NSArray!
     
-    var delegate: AAAuthCountriesViewControllerDelegate?
+    var delegate: AACountryViewControllerDelegate?
     
     public init() {
         super.init(style: UITableViewStyle.Plain)

@@ -3,7 +3,7 @@
 //
 
 import UIKit
-import YYKit
+import YYText
 import ElegantPresentations
 
 public class AAWelcomeController: AAViewController {
@@ -88,7 +88,7 @@ public class AAWelcomeController: AAViewController {
     public func signupAction() {
         // TODO: Remove BG after auth?
         UIApplication.sharedApplication().keyWindow?.backgroundColor = UIColor(red: 94, green: 142, blue: 192)
-        self.presentElegantViewController(AAAuthNavigationController(rootViewController: AAAuthAskName()))
+        self.presentElegantViewController(AAAuthNavigationController(rootViewController: AAAuthNameViewController()))
     }
     
     public func signInAction() {
