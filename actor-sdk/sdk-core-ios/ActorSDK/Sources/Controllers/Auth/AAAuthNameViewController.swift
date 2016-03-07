@@ -4,7 +4,7 @@
 
 import Foundation
 
-class AAAuthAskName: AAAuthViewController {
+public class AAAuthNameViewController: AAAuthViewController {
     
     let welcomeLabel = UILabel()
     let field = UITextField()
@@ -13,17 +13,17 @@ class AAAuthAskName: AAAuthViewController {
     
     var isFirstAppear = true
     
-    override init() {
+    public override init() {
         super.init(nibName: nil, bundle: nil)
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: "dismiss")
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.whiteColor()
@@ -51,7 +51,7 @@ class AAAuthAskName: AAAuthViewController {
         view.addSubview(fieldSuccess)
     }
     
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         welcomeLabel.frame = CGRectMake(15, 90, view.width - 30, 28)
@@ -61,14 +61,14 @@ class AAAuthAskName: AAAuthViewController {
     }
     
     func fieldDidChanged() {
-        if field.text!.trim().length > 0 {
-            fieldSuccess.hidden = false
-        } else {
-            fieldSuccess.hidden = true
-        }
+//        if field.text!.trim().length > 0 {
+//            fieldSuccess.hidden = false
+//        } else {
+//            fieldSuccess.hidden = true
+//        }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         if isFirstAppear {
@@ -77,23 +77,23 @@ class AAAuthAskName: AAAuthViewController {
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    public  override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
         field.becomeFirstResponder()
     }
     
-    override func nextDidTap() {
+    public  override func nextDidTap() {
         let name = field.text!.trim()
         if name.length > 0 {
-            navigateNext(AAAuthAskPhone(name: name))
+            navigateNext(AAAuthPhoneViewController(name: name))
         } else {
             shakeView(field, originalX: 20)
             shakeView(fieldLine, originalX: 10)
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         field.resignFirstResponder()
