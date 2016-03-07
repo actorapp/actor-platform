@@ -21,6 +21,7 @@ public class AAAuthViewController: AAViewController {
         nextBarButton.addTarget(self, action: "nextDidTap", forControlEvents: .TouchUpInside)
         
         nextBarLine.backgroundColor = UIColor.alphaBlack(0.2)
+        nextBarLine.hidden = true
         
         nextBar.addSubview(nextBarButton)
         nextBar.addSubview(nextBarLine)
@@ -84,6 +85,8 @@ public class AAAuthViewController: AAViewController {
         super.viewWillDisappear(animated)
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        keyboardHeight = 0
+        layoutNextBar()
     }
     
     /// Call this method when authentication successful

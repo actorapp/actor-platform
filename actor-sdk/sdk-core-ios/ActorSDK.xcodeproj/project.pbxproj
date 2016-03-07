@@ -177,6 +177,7 @@
 		069CF4D31BCB909A00C66E12 /* CLTokenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4CB1BCB909A00C66E12 /* CLTokenView.m */; };
 		06C1D0771C8BC9FC00B73632 /* AAAuthAskName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D0761C8BC9FC00B73632 /* AAAuthAskName.swift */; };
 		06C1D07B1C8BFE5C00B73632 /* AAAuthAskPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D07A1C8BFE5C00B73632 /* AAAuthAskPhone.swift */; };
+		06C1D07E1C8D0DEA00B73632 /* Telephony.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D07D1C8D0DE900B73632 /* Telephony.swift */; };
 		06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE89891BD8401C005A5530 /* Reachability.swift */; };
 		06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */; };
 		06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */; };
@@ -485,6 +486,7 @@
 		069CF4CB1BCB909A00C66E12 /* CLTokenView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLTokenView.m; sourceTree = "<group>"; };
 		06C1D0761C8BC9FC00B73632 /* AAAuthAskName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthAskName.swift; sourceTree = "<group>"; };
 		06C1D07A1C8BFE5C00B73632 /* AAAuthAskPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthAskPhone.swift; sourceTree = "<group>"; };
+		06C1D07D1C8D0DE900B73632 /* Telephony.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Telephony.swift; sourceTree = "<group>"; };
 		06CE89891BD8401C005A5530 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorSDKAnalytics.swift; sourceTree = "<group>"; };
@@ -756,6 +758,7 @@
 				066A51641BC4C366000E606E /* AATools.swift */,
 				065975381BC7CA7B00B8C7DF /* Bundle.swift */,
 				06CE89891BD8401C005A5530 /* Reachability.swift */,
+				06C1D07D1C8D0DE900B73632 /* Telephony.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1862,6 +1865,7 @@
 				066A531A1BC533E7000E606E /* AAAutoCompleteCell.swift in Sources */,
 				065975051BC757A300B8C7DF /* ActorRuntime.swift in Sources */,
 				066A517B1BC4C373000E606E /* FMDatabase.m in Sources */,
+				06C1D07E1C8D0DEA00B73632 /* Telephony.swift in Sources */,
 				BE2621591C4656EE00A817AB /* AAThumbnailView.swift in Sources */,
 				066A52561BC4EF61000E606E /* AATableViewController.swift in Sources */,
 				152AA8AB1C2989270030DEEE /* SLKTextView.m in Sources */,
