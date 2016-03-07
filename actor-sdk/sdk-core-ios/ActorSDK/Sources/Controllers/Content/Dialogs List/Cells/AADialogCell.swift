@@ -3,7 +3,7 @@
 //
 
 import UIKit
-import YYText
+// import YYText
 
 public class AADialogCell: AATableViewCell, AABindedCell {
     
@@ -21,9 +21,9 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     // Views
     
     public let avatarView = AAAvatarView(frameSize: 48)
-    public let titleView = YYLabel()
-    public let messageView = YYLabel()
-    public let dateView = YYLabel()
+    public let titleView = UILabel()
+    public let messageView = UILabel()
+    public let dateView = UILabel()
     public let statusView = UIImageView()
     public let counterView = UILabel()
     public let counterViewBg = UIImageView()
@@ -31,9 +31,9 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        self.titleView.displaysAsynchronously = true
-        self.dateView.displaysAsynchronously = true
-        self.messageView.displaysAsynchronously = true
+//        self.titleView.displaysAsynchronously = true
+//        self.dateView.displaysAsynchronously = true
+//        self.messageView.displaysAsynchronously = true
         
         ////////////////////////////////////////////////
         
