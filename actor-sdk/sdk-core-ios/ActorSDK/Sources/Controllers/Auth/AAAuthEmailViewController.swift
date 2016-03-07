@@ -55,6 +55,7 @@ public class AAAuthEmailViewController: AAAuthViewController {
         emailField.textColor = UIColor.alphaBlack(0.64)
         emailField.placeholder = "Your email"
         emailField.keyboardType = .EmailAddress
+        emailField.autocapitalizationType = .None
         
         emailFieldLine.backgroundColor = UIColor.alphaBlack(0.2)
         
@@ -136,6 +137,13 @@ public class AAAuthEmailViewController: AAAuthViewController {
     
     public override func nextDidTap() {
         let email = emailField.text!
+        
+        if !AATools.isValidEmail(email) {
+            shakeView(emailField, originalX: view.width / 2)
+            shakeView(emailFieldLine, originalX: view.width / 2)
+            return
+        }
+        
         executeSafeOnlySuccess(Actor.requestStartAuthCommandWithEmail(email)) { (val) -> Void in
             self.navigateNext(AAEmailAuthCodeViewController(email: email))
         }
@@ -153,5 +161,11 @@ public class AAAuthEmailViewController: AAAuthViewController {
     
     public override func keyboardWillDisappear() {
         scrollView.frame = CGRectMake(0, 0, view.width, view.height)
+    }
+    
+    public override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        emailField.resignFirstResponder()
     }
 }

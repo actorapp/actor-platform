@@ -118,6 +118,8 @@ public class AAAuthCodeViewController: AAAuthViewController, UIAlertViewDelegate
             counterTimer.invalidate()
             counterTimer = nil
         }
+        
+        codeTextField.resignFirstResponder()
     }
     
     public override func viewWillLayoutSubviews() {

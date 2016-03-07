@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import im.actor.core.ApiConfiguration;
 import im.actor.core.AuthState;
 import im.actor.core.api.ApiEmailActivationType;
+import im.actor.core.api.ApiPhoneActivationType;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.rpc.RequestCompleteOAuth2;
 import im.actor.core.api.rpc.RequestGetOAuth2Params;
@@ -111,7 +112,7 @@ public class Authentication {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                ArrayList<String> langs = new ArrayList<String>();
+                ArrayList<String> langs = new ArrayList<>();
                 for (String s : modules.getConfiguration().getPreferredLanguages()) {
                     langs.add(s);
                 }
@@ -146,7 +147,7 @@ public class Authentication {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                ArrayList<String> langs = new ArrayList<String>();
+                ArrayList<String> langs = new ArrayList<>();
                 for (String s : modules.getConfiguration().getPreferredLanguages()) {
                     langs.add(s);
                 }
@@ -170,6 +171,8 @@ public class Authentication {
                             state = AuthState.CODE_VALIDATION_EMAIL;
                         } else if (emailActivationType.equals(ApiEmailActivationType.PASSWORD)) {
                             state = AuthState.PASSWORD_VALIDATION;
+                        } else {
+                            state = AuthState.CODE_VALIDATION_EMAIL;
                         }
 
                         im.actor.runtime.Runtime.postToMainThread(new Runnable() {
@@ -199,7 +202,7 @@ public class Authentication {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                ArrayList<String> langs = new ArrayList<String>();
+                ArrayList<String> langs = new ArrayList<>();
                 for (String s : modules.getConfiguration().getPreferredLanguages()) {
                     langs.add(s);
                 }
@@ -244,7 +247,7 @@ public class Authentication {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                ArrayList<String> langs = new ArrayList<String>();
+                ArrayList<String> langs = new ArrayList<>();
                 for (String s : modules.getConfiguration().getPreferredLanguages()) {
                     langs.add(s);
                 }
@@ -261,7 +264,13 @@ public class Authentication {
                         modules.getPreferences().putLong(KEY_PHONE, phone);
                         modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
 
-                        state = AuthState.CODE_VALIDATION_PHONE;
+                        if (response.getActivationType() == ApiPhoneActivationType.CODE) {
+                            state = AuthState.CODE_VALIDATION_PHONE;
+                        } else if (response.getActivationType() == ApiPhoneActivationType.PASSWORD) {
+                            state = AuthState.PASSWORD_VALIDATION;
+                        } else {
+                            state = AuthState.CODE_VALIDATION_PHONE;
+                        }
 
                         im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                             @Override
@@ -518,19 +527,8 @@ public class Authentication {
         modules.getUpdatesModule().onUpdateReceived(new LoggedIn(response, new Runnable() {
             @Override
             public void run() {
-
                 state = AuthState.LOGGED_IN;
-
                 callback.onResult(state);
-
-                // Notify ActorAnalytics
-                User user = modules.getUsersModule().getUsersStorage().getValue(myUid);
-                ArrayList<Long> records = new ArrayList<Long>();
-                for (ContactRecord contactRecord : user.getRecords()) {
-                    if (contactRecord.getRecordType() == ContactRecordType.PHONE) {
-                        records.add(Long.parseLong(contactRecord.getRecordData()));
-                    }
-                }
             }
         }));
     }

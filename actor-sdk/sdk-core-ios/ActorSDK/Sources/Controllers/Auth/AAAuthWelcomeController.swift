@@ -92,7 +92,9 @@ public class AAWelcomeController: AAViewController {
     }
     
     public func signInAction() {
-        
+        // TODO: Remove BG after auth?
+        UIApplication.sharedApplication().keyWindow?.backgroundColor = UIColor(red: 94, green: 142, blue: 192)
+        self.presentElegantViewController(AAAuthNavigationController(rootViewController: AAAuthLogInViewController()))
     }
     
     public override func viewWillAppear(animated: Bool) {
