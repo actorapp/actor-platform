@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import YYImage
 
 public enum AAAvatarType {
     case Rounded
@@ -147,7 +148,21 @@ public class AAAvatarView: UIImageView {
             
             requestId++
             
-            self.image = Placeholders.avatarPlaceholder(bindedId, size: self.frameSize, title: title, rounded: self.avatarType == .Rounded)
+            self.image = nil
+            let callbackRequestId = requestId
+            let callbackBindedId = bindedId
+            dispatchBackground() {
+                if callbackRequestId == self.requestId {
+                    
+                    let image = Placeholders.avatarPlaceholder(callbackBindedId, size: self.frameSize, title: title, rounded: self.avatarType == .Rounded)
+                    
+                    dispatchOnUi() {
+                        if callbackRequestId == self.requestId {
+                            self.image = image
+                        }
+                    }
+                }
+            }
             
             return
         }
