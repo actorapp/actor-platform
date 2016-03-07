@@ -12,11 +12,27 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.util.Collection;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManagerFactory;
 
 import im.actor.runtime.HttpRuntime;
 import im.actor.runtime.Log;
 import im.actor.runtime.http.FileDownloadCallback;
 import im.actor.runtime.http.FileUploadCallback;
+import im.actor.sdk.ActorSDK;
+import im.actor.sdk.R;
+import okio.Buffer;
 
 public class AndroidHttpProvider implements HttpRuntime {
 
@@ -25,6 +41,70 @@ public class AndroidHttpProvider implements HttpRuntime {
     private final OkHttpClient client = new OkHttpClient();
 
     private final MediaType MEDIA_TYPE = MediaType.parse("application/octet-stream");
+
+    public AndroidHttpProvider() {
+        String cert = AndroidContext.getContext().getResources().getString(R.string.trusted_pem);
+        if(!cert.equals("none")){
+            SSLContext sslContext = sslContextForTrustedCertificates(new Buffer()
+                    .writeUtf8(cert)
+                    .inputStream());
+            client.setSslSocketFactory(sslContext.getSocketFactory());
+        }
+
+        final String trustHostname = AndroidContext.getContext().getResources().getString(R.string.trusted_hostname);
+        if(!trustHostname.equals("none")){
+            client.setHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    return hostname.equals(trustHostname);
+                }
+            });
+        }
+    }
+
+    public SSLContext sslContextForTrustedCertificates(InputStream in) {
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            Collection<? extends Certificate> certificates = certificateFactory.generateCertificates(in);
+            if (certificates.isEmpty()) {
+                throw new IllegalArgumentException("expected non-empty set of trusted certificates");
+            }
+
+            // Put the certificates a key store.
+            char[] password = "password".toCharArray(); // Any password will work.
+            KeyStore keyStore = newEmptyKeyStore(password);
+            int index = 0;
+            for (Certificate certificate : certificates) {
+                String certificateAlias = Integer.toString(index++);
+                keyStore.setCertificateEntry(certificateAlias, certificate);
+            }
+
+            // Wrap it up in an SSL context.
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(
+                    KeyManagerFactory.getDefaultAlgorithm());
+            keyManagerFactory.init(keyStore, password);
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
+                    TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(keyStore);
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(),
+                    new SecureRandom());
+            return sslContext;
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private KeyStore newEmptyKeyStore(char[] password) throws GeneralSecurityException {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            InputStream in = null; // By convention, 'null' creates an empty key store.
+            keyStore.load(in, password);
+            return keyStore;
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+    }
 
     @Override
     public void getMethod(String url, int startOffset, int size, int totalSize, final FileDownloadCallback callback) {
