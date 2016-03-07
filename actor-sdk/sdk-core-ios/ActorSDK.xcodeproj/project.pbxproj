@@ -108,8 +108,7 @@
 		066A525A1BC4EF61000E606E /* Navigations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52531BC4EF61000E606E /* Navigations.swift */; };
 		066A525C1BC502EB000E606E /* ActorSDKDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A525B1BC502EB000E606E /* ActorSDKDelegate.swift */; };
 		066A525E1BC503BB000E606E /* ActorApplicationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A525D1BC503BB000E606E /* ActorApplicationDelegate.swift */; };
-		066A52661BC50E7B000E606E /* AAAuthCountriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52611BC50E7B000E606E /* AAAuthCountriesViewController.swift */; };
-		066A52671BC50E7B000E606E /* AAAuthPhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52621BC50E7B000E606E /* AAAuthPhoneViewController.swift */; };
+		066A52661BC50E7B000E606E /* AACountryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52611BC50E7B000E606E /* AACountryViewController.swift */; };
 		066A52681BC50E7B000E606E /* AAAuthCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52631BC50E7B000E606E /* AAAuthCodeViewController.swift */; };
 		066A52691BC50E7B000E606E /* AAAuthRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52641BC50E7B000E606E /* AAAuthRegisterViewController.swift */; };
 		066A526A1BC50E7B000E606E /* AAAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52651BC50E7B000E606E /* AAAuthViewController.swift */; };
@@ -165,6 +164,7 @@
 		066A53331BC534F5000E606E /* AAFileTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53311BC534F5000E606E /* AAFileTypes.swift */; };
 		066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53361BC537CA000E606E /* ConversationViewController.swift */; };
 		066A53391BC5456B000E606E /* ActorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53381BC5456B000E606E /* ActorStyle.swift */; };
+		066CBCDC1C8D419F004507E2 /* AAAuthEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066CBCDB1C8D419F004507E2 /* AAAuthEmailViewController.swift */; };
 		068B39831C876AF5002BFF73 /* AAEmailAuthCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068B39811C876AF5002BFF73 /* AAEmailAuthCodeViewController.swift */; };
 		068B39841C876AF5002BFF73 /* AAEmailAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068B39821C876AF5002BFF73 /* AAEmailAuthViewController.swift */; };
 		069CF4CC1BCB909A00C66E12 /* CLBackspaceDetectingTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = 069CF4C41BCB909A00C66E12 /* CLBackspaceDetectingTextField.h */; };
@@ -175,8 +175,8 @@
 		069CF4D11BCB909A00C66E12 /* CLTokenInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4C91BCB909A00C66E12 /* CLTokenInputView.m */; };
 		069CF4D21BCB909A00C66E12 /* CLTokenView.h in Headers */ = {isa = PBXBuildFile; fileRef = 069CF4CA1BCB909A00C66E12 /* CLTokenView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		069CF4D31BCB909A00C66E12 /* CLTokenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4CB1BCB909A00C66E12 /* CLTokenView.m */; };
-		06C1D0771C8BC9FC00B73632 /* AAAuthAskName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D0761C8BC9FC00B73632 /* AAAuthAskName.swift */; };
-		06C1D07B1C8BFE5C00B73632 /* AAAuthAskPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D07A1C8BFE5C00B73632 /* AAAuthAskPhone.swift */; };
+		06C1D0771C8BC9FC00B73632 /* AAAuthNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D0761C8BC9FC00B73632 /* AAAuthNameViewController.swift */; };
+		06C1D07B1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D07A1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift */; };
 		06C1D07E1C8D0DEA00B73632 /* Telephony.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D07D1C8D0DE900B73632 /* Telephony.swift */; };
 		06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE89891BD8401C005A5530 /* Reachability.swift */; };
 		06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */; };
@@ -417,8 +417,7 @@
 		066A52531BC4EF61000E606E /* Navigations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Navigations.swift; sourceTree = "<group>"; };
 		066A525B1BC502EB000E606E /* ActorSDKDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorSDKDelegate.swift; sourceTree = "<group>"; };
 		066A525D1BC503BB000E606E /* ActorApplicationDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorApplicationDelegate.swift; sourceTree = "<group>"; };
-		066A52611BC50E7B000E606E /* AAAuthCountriesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthCountriesViewController.swift; sourceTree = "<group>"; };
-		066A52621BC50E7B000E606E /* AAAuthPhoneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthPhoneViewController.swift; sourceTree = "<group>"; };
+		066A52611BC50E7B000E606E /* AACountryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AACountryViewController.swift; sourceTree = "<group>"; };
 		066A52631BC50E7B000E606E /* AAAuthCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthCodeViewController.swift; sourceTree = "<group>"; };
 		066A52641BC50E7B000E606E /* AAAuthRegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthRegisterViewController.swift; sourceTree = "<group>"; };
 		066A52651BC50E7B000E606E /* AAAuthViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthViewController.swift; sourceTree = "<group>"; };
@@ -474,6 +473,7 @@
 		066A53311BC534F5000E606E /* AAFileTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAFileTypes.swift; sourceTree = "<group>"; };
 		066A53361BC537CA000E606E /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		066A53381BC5456B000E606E /* ActorStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorStyle.swift; sourceTree = "<group>"; };
+		066CBCDB1C8D419F004507E2 /* AAAuthEmailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthEmailViewController.swift; sourceTree = "<group>"; };
 		068B39811C876AF5002BFF73 /* AAEmailAuthCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAEmailAuthCodeViewController.swift; sourceTree = "<group>"; };
 		068B39821C876AF5002BFF73 /* AAEmailAuthViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAEmailAuthViewController.swift; sourceTree = "<group>"; };
 		069CF4C41BCB909A00C66E12 /* CLBackspaceDetectingTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLBackspaceDetectingTextField.h; sourceTree = "<group>"; };
@@ -484,8 +484,8 @@
 		069CF4C91BCB909A00C66E12 /* CLTokenInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLTokenInputView.m; sourceTree = "<group>"; };
 		069CF4CA1BCB909A00C66E12 /* CLTokenView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLTokenView.h; sourceTree = "<group>"; };
 		069CF4CB1BCB909A00C66E12 /* CLTokenView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLTokenView.m; sourceTree = "<group>"; };
-		06C1D0761C8BC9FC00B73632 /* AAAuthAskName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthAskName.swift; sourceTree = "<group>"; };
-		06C1D07A1C8BFE5C00B73632 /* AAAuthAskPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthAskPhone.swift; sourceTree = "<group>"; };
+		06C1D0761C8BC9FC00B73632 /* AAAuthNameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthNameViewController.swift; sourceTree = "<group>"; };
+		06C1D07A1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthPhoneViewController.swift; sourceTree = "<group>"; };
 		06C1D07D1C8D0DE900B73632 /* Telephony.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Telephony.swift; sourceTree = "<group>"; };
 		06CE89891BD8401C005A5530 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -895,15 +895,12 @@
 			children = (
 				066A526B1BC50E83000E606E /* Cells */,
 				066A526E1BC51007000E606E /* Views */,
-				06C1D0761C8BC9FC00B73632 /* AAAuthAskName.swift */,
-				06C1D07A1C8BFE5C00B73632 /* AAAuthAskPhone.swift */,
+				066CBCDA1C8D4121004507E2 /* Controllers */,
+				06C1D0761C8BC9FC00B73632 /* AAAuthNameViewController.swift */,
+				06C1D07A1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift */,
+				066CBCDB1C8D419F004507E2 /* AAAuthEmailViewController.swift */,
 				066A52631BC50E7B000E606E /* AAAuthCodeViewController.swift */,
-				066A52611BC50E7B000E606E /* AAAuthCountriesViewController.swift */,
-				065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */,
-				066A52621BC50E7B000E606E /* AAAuthPhoneViewController.swift */,
 				066A52641BC50E7B000E606E /* AAAuthRegisterViewController.swift */,
-				066A52651BC50E7B000E606E /* AAAuthViewController.swift */,
-				153F6B8D1C2D868100C0B960 /* AATermsController.swift */,
 				068B39811C876AF5002BFF73 /* AAEmailAuthCodeViewController.swift */,
 				068B39821C876AF5002BFF73 /* AAEmailAuthViewController.swift */,
 			);
@@ -1151,6 +1148,17 @@
 				066A53361BC537CA000E606E /* ConversationViewController.swift */,
 			);
 			path = Conversation;
+			sourceTree = "<group>";
+		};
+		066CBCDA1C8D4121004507E2 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				066A52611BC50E7B000E606E /* AACountryViewController.swift */,
+				153F6B8D1C2D868100C0B960 /* AATermsController.swift */,
+				065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */,
+				066A52651BC50E7B000E606E /* AAAuthViewController.swift */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 		069CF4151BCA5DB500C66E12 /* Sources */ = {
@@ -1811,7 +1819,7 @@
 				065A06B61C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift in Sources */,
 				15D35F5A1C20187E00E3717A /* AATimer.m in Sources */,
 				066A52381BC4EEBA000E606E /* AAHeaderCell.swift in Sources */,
-				06C1D0771C8BC9FC00B73632 /* AAAuthAskName.swift in Sources */,
+				06C1D0771C8BC9FC00B73632 /* AAAuthNameViewController.swift in Sources */,
 				066A524B1BC4EF49000E606E /* AAViewController.swift in Sources */,
 				066A51521BC4BE34000E606E /* Logs.swift in Sources */,
 				066A52D71BC52378000E606E /* AAContactsListContentControllerDelegate.swift in Sources */,
@@ -1856,7 +1864,7 @@
 				066A53041BC53177000E606E /* AAContactsViewController.swift in Sources */,
 				066A51801BC4C373000E606E /* FMDatabasePool.m in Sources */,
 				06129AA91C8394700099286B /* AAAudioManager.swift in Sources */,
-				06C1D07B1C8BFE5C00B73632 /* AAAuthAskPhone.swift in Sources */,
+				06C1D07B1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift in Sources */,
 				066A518F1BC4C383000E606E /* iOSPhoneBookProvider.swift in Sources */,
 				066A530B1BC531A2000E606E /* AAUserViewController.swift in Sources */,
 				06E3C5B81C80EE21004776CD /* AACircleButton.swift in Sources */,
@@ -1881,7 +1889,6 @@
 				066A52261BC4EEAC000E606E /* ManagedCells.swift in Sources */,
 				066A53221BC533F5000E606E /* AAMessagesFlowLayout.swift in Sources */,
 				15D35F541C20187E00E3717A /* AAOpusAudioRecorder.m in Sources */,
-				066A52671BC50E7B000E606E /* AAAuthPhoneViewController.swift in Sources */,
 				06E322C91C69344A00D66F53 /* iOSCallsProvider.swift in Sources */,
 				066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */,
 				066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */,
@@ -1955,7 +1962,8 @@
 				066A52581BC4EF61000E606E /* Alerts.swift in Sources */,
 				066A51691BC4C366000E606E /* AATools.swift in Sources */,
 				066A53201BC533F5000E606E /* AABubbleBackgroundProcessor.swift in Sources */,
-				066A52661BC50E7B000E606E /* AAAuthCountriesViewController.swift in Sources */,
+				066CBCDC1C8D419F004507E2 /* AAAuthEmailViewController.swift in Sources */,
+				066A52661BC50E7B000E606E /* AACountryViewController.swift in Sources */,
 				066A53391BC5456B000E606E /* ActorStyle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

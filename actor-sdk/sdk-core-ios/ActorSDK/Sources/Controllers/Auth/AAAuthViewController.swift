@@ -14,7 +14,7 @@ public class AAAuthViewController: AAViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        nextBarButton.setTitle("Next", forState: .Normal)
+        nextBarButton.setTitle(AALocalized("NavigationNext"), forState: .Normal)
         nextBarButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         nextBarButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 94, green: 142, blue: 192), radius: 4), forState: .Normal)
         nextBarButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 94, green: 142, blue: 192).alpha(0.7), radius: 4), forState: .Highlighted)

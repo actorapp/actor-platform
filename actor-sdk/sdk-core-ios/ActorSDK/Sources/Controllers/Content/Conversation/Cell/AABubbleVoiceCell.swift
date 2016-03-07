@@ -4,7 +4,8 @@
 
 import UIKit
 import VBFPopFlatButton
-import YYKit
+import YYText
+import YYImage
 
 public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPlayerDelegate,AAModernViewInlineMediaContextDelegate {
 
