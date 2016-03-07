@@ -9,8 +9,6 @@ import im.actor.sdk.controllers.fragment.BaseFragment;
 
 public abstract class BaseAuthFragment extends BaseFragment {
 
-    private String authId;
-
     public BaseAuthFragment() {
 
     }
@@ -48,17 +46,4 @@ public abstract class BaseAuthFragment extends BaseFragment {
             }
         });
     }
-
-    public String getAuthId() {
-        return authId;
-    }
-
-    protected void setAuthId(String authId) {
-        this.authId = authId;
-    }
-
-    public String getHintText() {
-        return null;
-    }
-
 }
