@@ -236,7 +236,6 @@ AATapLabelDelegate{
     public func showCountriesList() {
         let countriesController = AAAuthCountriesViewController()
         countriesController.delegate = self
-        countriesController.currentIso = self.phoneTextField.currentIso
         let navigationController = AANavigationController(rootViewController: countriesController)
         presentViewController(navigationController, animated: true, completion: nil)
     }
