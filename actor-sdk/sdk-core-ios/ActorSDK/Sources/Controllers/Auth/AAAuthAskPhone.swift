@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import YYKit
+import YYText
 
 class AAAuthAskPhone: AAAuthViewController, AAAuthCountriesViewControllerDelegate {
     
@@ -75,6 +75,7 @@ class AAAuthAskPhone: AAAuthViewController, AAAuthCountriesViewControllerDelegat
         tosLink.tapAction = { (container, text, range, rect) in
             
         }
+        attributedTerms.yy_setTextHighlight(tosLink, range: NSRange(location: 0, length: 10))
         
         termsLabel.text = "By singing up, you agree with\nTerms of Service and Privacy Policy."
         termsLabel.font = UIFont.systemFontOfSize(14)
