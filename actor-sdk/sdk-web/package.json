@@ -20,7 +20,6 @@
     "url": "https://github.com/actorapp/actor-platform/issues"
   },
   "scripts": {
-    "deps": "npm install -g babel-cli webpack node-sass gulp eslint",
     "clean": "rimraf build && rimraf publish",
     "lint": "eslint src",
     "assets:fonts": "copyfiles 'assets/fonts/**/*' build",
@@ -80,6 +79,7 @@
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.1.0",
+    "babel-cli": "^6.6.5",
     "babel-core": "^6.4.0",
     "babel-eslint": "^5.0.0",
     "babel-loader": "^6.2.0",
