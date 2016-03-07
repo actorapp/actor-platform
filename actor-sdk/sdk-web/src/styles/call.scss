@@ -1,6 +1,3 @@
-$ring-size: 120px;
-$ring-step: 20px;
-
 @keyframes scalePulse {
   0% {
     transform: scale(1);
@@ -29,6 +26,18 @@ $ring-step: 20px;
     .title {
       color: $greyish-brown;
     }
+  }
+
+  &__draggable {
+    width: 240px;
+    height: 240px;
+    z-index: 1000;
+    background-color: $call-background;
+    color: $call-title-color;
+    border-radius: $default-border-radius;
+    cursor: move;
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, .1);
+    box-sizing: border-box;
   }
 
   &__header {
@@ -76,12 +85,27 @@ $ring-step: 20px;
           &:nth-child(#{$i}) {
             z-index: 10 - $i;
 
-            width: $ring-size + ($ring-step * ($i - 1));
-            height: $ring-size + ($ring-step * ($i - 1));
-            margin-top: - ($ring-size + ($ring-step * ($i - 1))) / 2;
-            margin-left: - ($ring-size + ($ring-step * ($i - 1))) / 2;
+            width: $call-rings-size + ($call-rings-step * ($i - 1));
+            height: $call-rings-size + ($call-rings-step * ($i - 1));
+            margin-top: - ($call-rings-size + ($call-rings-step * ($i - 1))) / 2;
+            margin-left: - ($call-rings-size + ($call-rings-step * ($i - 1))) / 2;
 
             animation-delay: 125ms * $i;
+          }
+        }
+      }
+
+      &--small {
+        $size: $call-rings-size / 1.5;
+        $step: $call-rings-step / 1.5;
+        & > div {
+          @for $i from 1 through 3 {
+            &:nth-child(#{$i}) {
+              width: $size + ($step * ($i - 1));
+              height: $size + ($step * ($i - 1));
+              margin-top: - ($size + ($step * ($i - 1))) / 2;
+              margin-left: - ($size + ($step * ($i - 1))) / 2;
+            }
           }
         }
       }
@@ -95,11 +119,21 @@ $ring-step: 20px;
     color: $call-title-color;
 
     margin: 36px 8px 24px;
+
+    &--small {
+      font-size: 18px;
+      margin: 18px 2px 6px;
+    }
   }
 
   &__controls {
     text-align: center;
-    padding: 0 16px;
+    padding: 0 $default-padding;
+
+    &--small {
+      padding: 0 $default-padding / 2;
+    }
+
     &__icons {
       margin-bottom: 16px;
       .button {
@@ -111,6 +145,7 @@ $ring-step: 20px;
         }
       }
     }
+
     &__buttons {
       .button {
         max-width: 250px;

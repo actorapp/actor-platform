@@ -22,6 +22,7 @@ class CallControls extends Component {
       CallStates.CONNECTING,
       CallStates.ENDED
     ]).isRequired,
+    small: PropTypes.bool,
     isOutgoing: PropTypes.bool.isRequired,
     isMuted: PropTypes.bool.isRequired,
     onEnd: PropTypes.func.isRequired,
@@ -34,32 +35,57 @@ class CallControls extends Component {
   };
 
   render() {
-    const {isOutgoing} = this.props;
+    const {isOutgoing, small} = this.props;
 
-    const mainControls = [];
     const secondaryControls = [];
+    const mainControls = small ? secondaryControls : [];
     switch (this.props.callState) {
       case CallStates.CALLING:
         if (!isOutgoing) {
-          mainControls.push(<AnswerButton onClick={this.props.onAnswer} key="answer" />);
+          mainControls.push(<AnswerButton small={small} onClick={this.props.onAnswer} key="answer" />);
         }
 
-        mainControls.push(<EndButton onClick={this.props.onEnd} isOutgoing={isOutgoing} key="end" />);
+        mainControls.push(
+          <EndButton small={small} onClick={this.props.onEnd} key="end" />
+        );
         break;
       case CallStates.IN_PROGRESS:
       case CallStates.CONNECTING:
-        secondaryControls.push([
-          <FullScreenButton onClick={this.props.onFullscreen} key="fullscreen" />,
-          <MuteButton value={this.props.isMuted} onToggle={this.props.onMuteToggle} key="mute" />,
-          <VideoButton onClick={this.props.onVideo} key="video" />,
-          <AddUserButton onClick={this.props.onUserAdd} key="add" />,
-        ]);
-        mainControls.push(<EndButton onClick={this.props.onEnd} isOutgoing={isOutgoing} key="end" />);
+        if (!small) {
+          secondaryControls.push(
+            <FullScreenButton onClick={this.props.onFullscreen} key="fullscreen" />
+          );
+        }
+
+        secondaryControls.push(
+          <MuteButton value={this.props.isMuted} onToggle={this.props.onMuteToggle} key="mute" />
+        );
+
+        if (!small) {
+          secondaryControls.push(
+            <VideoButton onClick={this.props.onVideo} key="video" />,
+            <AddUserButton onClick={this.props.onUserAdd} key="add" />
+          );
+        }
+
+        mainControls.push(
+          <EndButton small={small} onClick={this.props.onEnd} key="end" />
+        );
         break;
       case CallStates.ENDED:
         mainControls.push(<CloseButton onClick={this.props.onClose} key="close" />);
         break;
     }
+
+    if (small) {
+      return (
+        <div className="call__controls">
+          <div className="call__controls__icons row top-xs">
+            {secondaryControls}
+          </div>
+        </div>
+      );
+    };
 
     return (
       <div className="call__controls">

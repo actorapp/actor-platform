@@ -8,23 +8,25 @@ import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
 
 import { PeerTypes } from '../constants/ActorAppConstants';
+import PeerUtils from '../utils/PeerUtils';
 
 import CallActionCreators from '../actions/CallActionCreators';
 
 import CallStore from '../stores/CallStore';
+import DialogStore from '../stores/DialogStore';
 import UserStore from '../stores/UserStore';
 import GroupStore from '../stores/GroupStore';
 
+import CallDraggable from './call/CallDraggable.react';
 import CallHeader from './call/CallHeader.react';
 import CallBody from './call/CallBody.react';
 import CallControls from './call/CallControls.react';
 import ContactDetails from './common/ContactDetails.react';
 
 class Call extends Component {
-  static getStores = () => [CallStore];
+  static getStores = () => [CallStore, DialogStore];
 
-  static calculatePeerInfo() {
-    const peer = CallStore.getPeer();
+  static calculatePeerInfo(peer) {
     if (peer) {
       if (peer.type === PeerTypes.USER) {
         return UserStore.getUser(peer.id);
@@ -39,6 +41,9 @@ class Call extends Component {
   }
 
   static calculateState() {
+    const dialogPeer = DialogStore.getCurrentPeer();
+    const callPeer = CallStore.getPeer();
+
     return {
       isOpen: CallStore.isOpen(),
       isOutgoing: CallStore.isOutgoing(),
@@ -47,7 +52,8 @@ class Call extends Component {
       callMembers: CallStore.getMembers(),
       callPeer: CallStore.getPeer(),
       callState: CallStore.getState(),
-      peerInfo: Call.calculatePeerInfo()
+      peerInfo: Call.calculatePeerInfo(callPeer),
+      isSameDialog: PeerUtils.equals(dialogPeer, callPeer)
     };
   }
 
@@ -57,6 +63,9 @@ class Call extends Component {
     this.onEnd = this.onEnd.bind(this);
     this.onMuteToggle = this.onMuteToggle.bind(this);
     this.onClose = this.onClose.bind(this);
+    this.onFullscreen = this.onFullscreen.bind(this);
+    this.onUserAdd = this.onUserAdd.bind(this);
+    this.onVideo = this.onVideo.bind(this);
   }
 
   onAnswer() {
@@ -64,6 +73,7 @@ class Call extends Component {
   }
 
   onEnd() {
+    console.log(this.state.callId);
     CallActionCreators.endCall(this.state.callId);
   }
 
@@ -94,44 +104,52 @@ class Call extends Component {
     return <ContactDetails peerInfo={peerInfo}/>
   }
 
-  renderContent() {
-    const {isOpen, callState, peerInfo, isOutgoing, isMuted} = this.state;
+  render() {
+    const {isOpen, callState, peerInfo, isOutgoing, isMuted, isSameDialog} = this.state;
     if (!isOpen) {
       return null;
     }
 
+    if (!this.state.isSameDialog) {
+      return (
+        <CallDraggable
+          peerInfo={peerInfo}
+          callState={callState}
+          isOutgoing={isOutgoing}
+          isMuted={isMuted}
+          onEnd={this.onEnd}
+          onAnswer={this.onAnswer}
+          onMuteToggle={this.onMuteToggle}
+          onFullscreen={this.onFullscreen}
+          onUserAdd={this.onUserAdd}
+          onVideo={this.onVideo}
+          onClose={this.onClose}
+        />
+      );
+    }
+
     return (
-      <div className="activity__body call">
-        <section className="call__container">
-          <CallBody peerInfo={peerInfo} callState={callState}/>
-          <CallControls
-            callState={callState}
-            isOutgoing={isOutgoing}
-            isMuted={isMuted}
-            onEnd={this.onEnd}
-            onAnswer={this.onAnswer}
-            onMuteToggle={this.onMuteToggle}
-            onFullscreen={this.onFullscreen}
-            onUserAdd={this.onUserAdd}
-            onVideo={this.onVideo}
-            onClose={this.onClose}
-          />
-        </section>
-        <div className="call__info">
-          <div>{this.renderContactInfo()}</div>
+      <section className="activity activity--shown">
+        <div className="activity__body call__container">
+          <section className="call">
+            <CallBody peerInfo={peerInfo} callState={callState}/>
+            <CallControls
+              callState={callState}
+              isOutgoing={isOutgoing}
+              isMuted={isMuted}
+              onEnd={this.onEnd}
+              onAnswer={this.onAnswer}
+              onMuteToggle={this.onMuteToggle}
+              onFullscreen={this.onFullscreen}
+              onUserAdd={this.onUserAdd}
+              onVideo={this.onVideo}
+              onClose={this.onClose}
+            />
+          </section>
+          <section className="call__info">
+            {this.renderContactInfo()}
+          </section>
         </div>
-      </div>
-    );
-  }
-
-  render() {
-    const className = classNames('activity', {
-      'activity--shown': this.state.isOpen
-    });
-
-    return (
-      <section className={className}>
-        {this.renderContent()}
       </section>
     );
   }

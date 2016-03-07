@@ -4,56 +4,33 @@
 
 import React, {Component, PropTypes} from 'react';
 import { FormattedMessage } from 'react-intl';
-import classnames from 'classnames';
-import { CallStates } from '../../constants/ActorAppConstants';
+import classNames from 'classnames';
 
-import AvatarItem from '../common/AvatarItem.react';
+import CallAvatar from './CallAvatar.react';
 
 class CallBody extends Component {
   static propTypes = {
-    peerInfo: React.PropTypes.object,
-    callState: PropTypes.oneOf([
-      CallStates.CALLING,
-      CallStates.IN_PROGRESS,
-      CallStates.CONNECTING,
-      CallStates.ENDED
-    ])
+    small: PropTypes.bool,
+    peerInfo: PropTypes.object,
+    callState: PropTypes.string.isRequired
   };
 
-  renderAvatarAnimation() {
-    const {callState} = this.props;
-    switch (this.props.callState) {
-      case CallStates.CALLING:
-      case CallStates.CONNECTING:
-          return (
-            <div className="call__avatar__rings">
-              <div/><div/><div/>
-            </div>
-          );
-        break;
-      default:
-        return null;
-    }
-  }
-
   render() {
-    const {peerInfo} = this.props;
+    const {small, peerInfo, callState} = this.props;
     if (!peerInfo) {
       return null;
     }
 
+    const titleClassName = classNames('call__title', {
+      'call__title--small': small
+    });
+
     return (
       <div className="call__body">
-        <div className="call__avatar">
-          <AvatarItem
-            size="big"
-            image={peerInfo.avatar}
-            title={peerInfo.name}
-            placeholder={peerInfo.placeholder}
-          />
-          {this.renderAvatarAnimation()}
-        </div>
-        <h3 className="call__title">{peerInfo.name}</h3>
+        <CallAvatar peerInfo={peerInfo} callState={callState} small={small} />
+        <h3 className={titleClassName}>
+          {peerInfo.name}
+        </h3>
       </div>
     );
   }
