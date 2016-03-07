@@ -337,6 +337,7 @@ public class CallFragment extends BaseFragment {
                                     statusTV.setText(R.string.call_outgoing);
                                 }else{
                                     statusTV.setText(R.string.call_incoming);
+                                    toggleSpeaker(speaker, speakerTV, true);
                                     initIncoming();
                                 }
                                 enableWakeLock();
@@ -347,6 +348,7 @@ public class CallFragment extends BaseFragment {
                                 break;
 
                             case IN_PROGRESS:
+                                toggleSpeaker(speaker, speakerTV, false);
                                 onConnected();
                                 startTimer();
                                 break;
@@ -371,7 +373,11 @@ public class CallFragment extends BaseFragment {
     }
 
     public void toggleSpeaker(TintImageView speaker, TextView speakerTV) {
-        speakerOn = !speakerOn;
+        toggleSpeaker(speaker, speakerTV, !speakerOn);
+    }
+
+    public void toggleSpeaker(TintImageView speaker, TextView speakerTV, boolean speakerOn) {
+        this.speakerOn = speakerOn;
         audioManager.setSpeakerphoneOn(speakerOn);
         checkSpeaker(speaker, speakerTV);
     }
