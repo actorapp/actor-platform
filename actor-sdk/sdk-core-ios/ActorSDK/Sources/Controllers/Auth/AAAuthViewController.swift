@@ -6,9 +6,7 @@ import Foundation
 
 public class AAAuthViewController: AAViewController {
     
-    public let nextBar = UIView()
     public let nextBarButton = UIButton()
-    private let nextBarLine = UIView()
     private var keyboardHeight: CGFloat = 0
     
     override public func viewDidLoad() {
@@ -19,16 +17,10 @@ public class AAAuthViewController: AAViewController {
         nextBarButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 94, green: 142, blue: 192), radius: 4), forState: .Normal)
         nextBarButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 94, green: 142, blue: 192).alpha(0.7), radius: 4), forState: .Highlighted)
         nextBarButton.addTarget(self, action: "nextDidTap", forControlEvents: .TouchUpInside)
-        
-        nextBarLine.backgroundColor = UIColor.alphaBlack(0.2)
-        nextBarLine.hidden = true
-        
-        nextBar.addSubview(nextBarButton)
-        nextBar.addSubview(nextBarLine)
-        
-        view.addSubview(nextBar)
-    }
 
+        view.addSubview(nextBarButton)
+    }
+    
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         layoutNextBar()
@@ -40,11 +32,15 @@ public class AAAuthViewController: AAViewController {
         // Forcing initial layout before keyboard show to avoid weird animations
         layoutNextBar()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillAppear:", name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillDisappear:", name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillAppearInt:", name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillDisappearInt:", name: UIKeyboardWillHideNotification, object: nil)
     }
     
-    func keyboardWillAppear(notification: NSNotification) {
+    private func layoutNextBar() {
+        nextBarButton.frame = CGRectMake(view.width - 95, view.height - 44 - keyboardHeight + 6, 85, 32)
+    }
+    
+    func keyboardWillAppearInt(notification: NSNotification) {
         let dict = notification.userInfo!
         let rect = dict[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue
         
@@ -68,17 +64,22 @@ public class AAAuthViewController: AAViewController {
         
         keyboardHeight = max(0, heightCoveredByKeyboard)
         layoutNextBar()
+        keyboardWillAppear(keyboardHeight)
     }
     
-    private func layoutNextBar() {
-        nextBar.frame = CGRectMake(0, view.height - 44 - keyboardHeight, view.width, 44)
-        nextBarButton.frame = CGRectMake(nextBar.width - 95, 6, 85, 32)
-        nextBarLine.frame = CGRectMake(0, 0, nextBar.width, 0.5)
-    }
     
-    func keyboardWillDisappear(notification: NSNotification) {
+    func keyboardWillDisappearInt(notification: NSNotification) {
         keyboardHeight = 0
         layoutNextBar()
+        keyboardWillDisappear()
+    }
+    
+    public func keyboardWillAppear(height: CGFloat) {
+        
+    }
+    
+    public func keyboardWillDisappear() {
+        
     }
     
     override public func viewWillDisappear(animated: Bool) {
