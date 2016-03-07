@@ -184,6 +184,7 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
     
     override func nextDidTap() {
         let number = phoneNumberLabel.phoneNumber.toJLong()
+        
         executeSafeOnlySuccess(Actor.requestStartAuthCommandWithPhone(number)) { (val) -> Void in
             self.navigateNext(AAAuthCodeViewController(phoneNumber: "\(number)"))
         }
@@ -201,5 +202,11 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
     
     override func keyboardWillDisappear() {
         scrollView.frame = CGRectMake(0, 0, view.width, view.height)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        phoneNumberLabel.resignFirstResponder()
     }
 }

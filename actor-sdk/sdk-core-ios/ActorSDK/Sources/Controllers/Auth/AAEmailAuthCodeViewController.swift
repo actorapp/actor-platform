@@ -50,7 +50,7 @@ class AAEmailAuthCodeViewController: AAAuthViewController {
         codeTextField.font = UIFont.systemFontOfSize(20.0)
         codeTextField.backgroundColor = UIColor.whiteColor()
         codeTextField.placeholder = AALocalized("AuthEmailCodeFieldHint")
-        codeTextField.keyboardType = UIKeyboardType.EmailAddress
+        codeTextField.keyboardType = UIKeyboardType.NumberPad
         codeTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         codeTextField.textAlignment = .Center
         view.addSubview(codeTextField)
@@ -121,6 +121,11 @@ class AAEmailAuthCodeViewController: AAAuthViewController {
         codeTextField.becomeFirstResponder()
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        codeTextField.resignFirstResponder()
+    }
+    
     // Actions
     
     func nextButtonPressed() {
@@ -137,9 +142,10 @@ class AAEmailAuthCodeViewController: AAAuthViewController {
             let state = Actor.getAuthState().ordinal()
             
             if state == ACAuthState.LOGGED_IN().ordinal() {
-                
+                self.codeTextField.resignFirstResponder()
                 // If logged in state: end authentication
                 self.onAuthenticated()
+                
             } else if state == ACAuthState.SIGN_UP().ordinal() {
                 
                 // Is signup go to signup controller
