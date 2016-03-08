@@ -6,6 +6,7 @@ package im.actor.core.modules;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import im.actor.core.ApiConfiguration;
@@ -29,10 +30,11 @@ import im.actor.core.api.rpc.ResponseStartEmailAuth;
 import im.actor.core.api.rpc.ResponseStartPhoneAuth;
 import im.actor.core.api.rpc.ResponseStartUsernameAuth;
 import im.actor.core.api.rpc.ResponseVoid;
+import im.actor.core.entity.AuthCodeRes;
 import im.actor.core.entity.AuthMode;
+import im.actor.core.entity.AuthRes;
 import im.actor.core.entity.AuthStartRes;
-import im.actor.core.entity.ContactRecord;
-import im.actor.core.entity.ContactRecordType;
+import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.modules.updates.internal.LoggedIn;
 import im.actor.core.network.RpcCallback;
@@ -100,21 +102,10 @@ public class Authentication {
         return myUid;
     }
 
-    public AuthState getAuthState() {
-        return state;
-    }
-
     public boolean isLoggedIn() {
         return state == AuthState.LOGGED_IN;
     }
 
-    public long getPhone() {
-        return modules.getPreferences().getLong(KEY_PHONE, 0);
-    }
-
-    public String getEmail() {
-        return modules.getPreferences().getString(KEY_EMAIL);
-    }
 
     public void run() {
         if (modules.getPreferences().getBool(KEY_AUTH, false)) {
@@ -124,6 +115,11 @@ public class Authentication {
             state = AuthState.AUTH_START;
         }
     }
+
+
+    //
+    // Starting Authentication
+    //
 
     public Promise<AuthStartRes> doStartEmailAuth(final String email) {
         return new Promise<>(new PromiseFunc<AuthStartRes>() {
@@ -181,6 +177,97 @@ public class Authentication {
         });
     }
 
+
+    //
+    // Code And Password Validation
+    //
+
+    public Promise<AuthCodeRes> doValidateCode(final String transactionHash, final String code) {
+        return new Promise<>(new PromiseFunc<AuthCodeRes>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<AuthCodeRes> resolver) {
+                request(new RequestValidateCode(transactionHash, code), new RpcCallback<ResponseAuth>() {
+                    @Override
+                    public void onResult(ResponseAuth response) {
+                        resolver.result(new AuthCodeRes(new AuthRes(response.toByteArray())));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
+                            resolver.result(new AuthCodeRes(transactionHash));
+                        } else {
+                            resolver.error(e);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+
+    //
+    // Signup
+    //
+
+    public Promise<AuthRes> doSignup(final String name, final Sex sex, final String transactionHash) {
+        return new Promise<>(new PromiseFunc<AuthRes>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<AuthRes> resolver) {
+                request(new RequestSignUp(transactionHash, name, sex.toApi(), null), new RpcCallback<ResponseAuth>() {
+
+                    @Override
+                    public void onResult(ResponseAuth response) {
+                        resolver.result(new AuthRes(response.toByteArray()));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        resolver.error(e);
+                    }
+                });
+            }
+        });
+    }
+
+
+    //
+    // Complete Authentication
+    //
+
+    public Promise<Boolean> doCompleteAuth(final AuthRes authRes) {
+        return new Promise<>(new PromiseFunc<Boolean>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<Boolean> resolver) {
+                ResponseAuth auth;
+                try {
+                    auth = ResponseAuth.fromBytes(authRes.getData());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    resolver.error(e);
+                    return;
+                }
+                state = AuthState.LOGGED_IN;
+                myUid = auth.getUser().getId();
+                modules.getPreferences().putBool(KEY_AUTH, true);
+                modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
+                modules.onLoggedIn();
+                modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(auth.getUser()));
+                modules.getUpdatesModule().onUpdateReceived(new LoggedIn(auth, new Runnable() {
+                    @Override
+                    public void run() {
+                        resolver.result(true);
+                    }
+                }));
+            }
+        });
+    }
+
+
+    //
+    // Deprecated
+    //
+
     @Deprecated
     public Command<AuthState> requestStartAnonymousAuth(final String userName) {
         return new Command<AuthState>() {
@@ -211,6 +298,21 @@ public class Authentication {
                 });
             }
         };
+    }
+
+    @Deprecated
+    public AuthState getAuthState() {
+        return state;
+    }
+
+    @Deprecated
+    public long getPhone() {
+        return modules.getPreferences().getLong(KEY_PHONE, 0);
+    }
+
+    @Deprecated
+    public String getEmail() {
+        return modules.getPreferences().getString(KEY_EMAIL);
     }
 
     @Deprecated

@@ -6,6 +6,8 @@ import Foundation
 
 public class AAAuthNameViewController: AAAuthViewController {
     
+    let transactionHash: String?
+    
     let scrollView = UIScrollView()
     
     let welcomeLabel = UILabel()
@@ -15,7 +17,9 @@ public class AAAuthNameViewController: AAAuthViewController {
     
     var isFirstAppear = true
     
-    public override init() {
+    public init(transactionHash: String? = nil) {
+        self.transactionHash = transactionHash
+        
         super.init(nibName: nil, bundle: nil)
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: "dismiss")
@@ -94,6 +98,16 @@ public class AAAuthNameViewController: AAAuthViewController {
     public  override func nextDidTap() {
         let name = field.text!.trim()
         if name.length > 0 {
+            if transactionHash != nil {
+                let promise = Actor.doSignupWithName(name, withSex: ACSex.UNKNOWN(), withTransaction: transactionHash!)
+                promise.then { (r: ACAuthRes!) -> () in
+                    let promise = Actor.doCompleteAuth(r).startUserAction()
+                    promise.then { (r: JavaLangBoolean!) -> () in
+                        self.onAuthenticated()
+                    }
+                }
+                promise.startUserAction()
+            }
             navigateNext(AAAuthPhoneViewController(name: name))
         } else {
             shakeView(field, originalX: 20)
