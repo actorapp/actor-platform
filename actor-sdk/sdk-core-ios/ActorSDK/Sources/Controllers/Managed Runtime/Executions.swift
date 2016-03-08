@@ -65,13 +65,13 @@ public class AAExecutions {
                         if let exception = val as? ACRpcException {
                             
                             // If is in ignore list, just return to UI
-                            if ignore.contains(exception.getTag()) {
+                            if ignore.contains(exception.tag) {
                                 failureBlock?(val: val)
                                 return
                             }
                             
                             // Get error from
-                            tryAgain = exception.isCanTryAgain()
+                            tryAgain = exception.canTryAgain
                         }
                         
                         // Showing alert
@@ -115,7 +115,7 @@ public class AAExecutions {
                 delegate: d,
                 cancelButtonTitle: AALocalized("AlertCancel"),
                 otherButtonTitles: AALocalized("AlertTryAgain"))
-            // setAssociatedObject(alert, value: d, associativeKey: &alertViewBlockReference)
+            setAssociatedObject(alert, value: d, associativeKey: &alertViewBlockReference)
             alert.show()
         } else {
             let d = UIAlertViewBlock(clickedClosure: { (index) -> () in
@@ -125,7 +125,7 @@ public class AAExecutions {
                 message: message,
                 delegate: d,
                 cancelButtonTitle: AALocalized("AlertOk"))
-            // setAssociatedObject(alert, value: d, associativeKey: &alertViewBlockReference)
+            setAssociatedObject(alert, value: d, associativeKey: &alertViewBlockReference)
             alert.show()
         }
     }
