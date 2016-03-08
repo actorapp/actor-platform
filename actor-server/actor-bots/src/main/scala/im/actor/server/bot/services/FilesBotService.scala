@@ -6,7 +6,7 @@ import im.actor.concurrent.FutureResult
 import im.actor.server.acl.ACLUtils
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
 import im.actor.server.db.DbExtension
-import im.actor.server.file.FileStorageExtension
+import im.actor.server.file.{ FileStorageExtension, UnsafeFileName }
 import im.actor.server.persist.FileRepo
 
 private[bot] object FilesBotErrors {
@@ -30,6 +30,7 @@ private[bot] final class FilesBotService(_system: ActorSystem) extends BotServic
 
   override def handlers: Handlers = {
     case DownloadFile(location) ⇒ downloadFile(location).toWeak
+    case UploadFile(bytes)      ⇒ uploadFile(bytes).toWeak
   }
 
   private def downloadFile(location: FileLocation) = RequestHandler[DownloadFile, DownloadFile#Response] {
@@ -41,6 +42,17 @@ private[bot] final class FilesBotService(_system: ActorSystem) extends BotServic
           _ ← fromBoolean(FileTooBig)(f.size <= MaxSize)
           data ← fromFutureOption(DownloadFailed)(fsAdapter.downloadFileF(f.id))
         } yield ResponseDownloadFile(data)).value
+      }
+  }
+
+  private def uploadFile(bytes: Array[Byte]) = RequestHandler[UploadFile, UploadFile#Response] {
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
+      ifIsAdmin(botUserId) {
+        (for {
+          _ ← fromBoolean(FileTooBig)(bytes.length <= MaxSize)
+          fileName = UnsafeFileName(s"bot-upload-${System.currentTimeMillis.toString}")
+          _ ← fromFuture(fsAdapter.uploadFileF(fileName, bytes))
+        } yield Void).value
       }
   }
 
