@@ -110,4 +110,10 @@ public class AACountryViewController: AATableViewController {
     public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return letters()[section] as? String
     }
+    
+    public override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        UIApplication.sharedApplication().setStatusBarStyle(.LightContent, animated: true)
+    }
 }
