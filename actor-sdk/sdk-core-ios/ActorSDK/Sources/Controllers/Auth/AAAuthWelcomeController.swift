@@ -8,8 +8,6 @@ import ElegantPresentations
 
 public class AAWelcomeController: AAViewController {
     
-//    var backgroundImage : UIImageView!
-    
     let logoView : UIImageView = UIImageView()
     let appNameLabel : UILabel = UILabel()
     let someInfoLabel: UILabel = UILabel()
@@ -27,34 +25,34 @@ public class AAWelcomeController: AAViewController {
     public override func loadView() {
         super.loadView()
         
-        self.view.backgroundColor = UIColor(red: 94, green: 142, blue: 192)
+        self.view.backgroundColor = ActorSDK.sharedActor().style.welcomeBgColor
         
         self.logoView.image = UIImage.bundled("logo_welcome")
         
-        appNameLabel.text = "Welcome To Actor!"
+        appNameLabel.text = AALocalized("WelcomeTitle")
         appNameLabel.textAlignment = .Center
         appNameLabel.backgroundColor = UIColor.clearColor()
         appNameLabel.font = UIFont.mediumSystemFontOfSize(24)
-        appNameLabel.textColor = UIColor.whiteColor()
+        appNameLabel.textColor = ActorSDK.sharedActor().style.welcomeTitleColor
         
-        someInfoLabel.text = "\"Open messaging that respects you\""
+        someInfoLabel.text = AALocalized("WelcomeTagline")
         someInfoLabel.textAlignment = .Center
         someInfoLabel.backgroundColor = UIColor.clearColor()
         someInfoLabel.font = UIFont.systemFontOfSize(16)
-        someInfoLabel.numberOfLines = 1
-        someInfoLabel.textColor = UIColor.whiteColor()
+        someInfoLabel.numberOfLines = 2
+        someInfoLabel.textColor = ActorSDK.sharedActor().style.welcomeTaglineColor
         
-        signupButton.setTitle("Sign Up", forState: .Normal)
+        signupButton.setTitle(AALocalized("WelcomeSignUp"), forState: .Normal)
         signupButton.titleLabel?.font = UIFont.mediumSystemFontOfSize(17)
-        signupButton.setTitleColor(UIColor(red: 94, green: 142, blue: 192), forState: .Normal)
-        signupButton.setBackgroundImage(Imaging.roundedImage(UIColor.whiteColor(), radius: 22), forState: .Normal)
-        signupButton.setBackgroundImage(Imaging.roundedImage(UIColor.whiteColor().alpha(0.7), radius: 22), forState: .Highlighted)
+        signupButton.setTitleColor(ActorSDK.sharedActor().style.welcomeSignupTextColor, forState: .Normal)
+        signupButton.setBackgroundImage(Imaging.roundedImage(ActorSDK.sharedActor().style.welcomeSignupBgColor, radius: 22), forState: .Normal)
+        signupButton.setBackgroundImage(Imaging.roundedImage(ActorSDK.sharedActor().style.welcomeSignupBgColor.alpha(0.7), radius: 22), forState: .Highlighted)
         signupButton.addTarget(self, action: "signupAction", forControlEvents: UIControlEvents.TouchUpInside)
         
-        signinButton.setTitle("Sign In", forState: .Normal)
+        signinButton.setTitle(AALocalized("WelcomeLogIn"), forState: .Normal)
         signinButton.titleLabel?.font = UIFont.systemFontOfSize(17)
-        signinButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        signinButton.setTitleColor(UIColor.whiteColor().alpha(0.7), forState: .Highlighted)
+        signinButton.setTitleColor(ActorSDK.sharedActor().style.welcomeLoginTextColor, forState: .Normal)
+        signinButton.setTitleColor(ActorSDK.sharedActor().style.welcomeLoginTextColor.alpha(0.7), forState: .Highlighted)
         signinButton.addTarget(self, action: "signInAction", forControlEvents: UIControlEvents.TouchUpInside)
         
         self.view.addSubview(self.logoView)
@@ -70,7 +68,7 @@ public class AAWelcomeController: AAViewController {
         if AADevice.isiPhone4 {
             logoView.frame = CGRectMake((view.width - 90) / 2, 90, 90, 90)
             appNameLabel.frame = CGRectMake((view.width - 300) / 2, logoView.bottom + 30, 300, 29)
-            someInfoLabel.frame = CGRectMake((view.width - 300) / 2, appNameLabel.bottom + 8, 300, 46)
+            someInfoLabel.frame = CGRectMake((view.width - 300) / 2, appNameLabel.bottom + 8, 300, 56)
             
             signupButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 80, 136, 44)
             signinButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 25, 136, 44)
@@ -78,7 +76,7 @@ public class AAWelcomeController: AAViewController {
             
             logoView.frame = CGRectMake((view.width - 90) / 2, 145, 90, 90)
             appNameLabel.frame = CGRectMake((view.width - 300) / 2, logoView.bottom + 35, 300, 29)
-            someInfoLabel.frame = CGRectMake((view.width - 300) / 2, appNameLabel.bottom + 8, 300, 46)
+            someInfoLabel.frame = CGRectMake((view.width - 300) / 2, appNameLabel.bottom + 8, 300, 56)
         
             signupButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 90, 136, 44)
             signinButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 35, 136, 44)

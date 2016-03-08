@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import MessageUI
 import YYText
 
 public class AAAuthOTPViewController: AAAuthViewController {
@@ -60,7 +61,7 @@ public class AAAuthOTPViewController: AAAuthViewController {
     
     public override func viewDidLoad() {
         
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
         
         scrollView.keyboardDismissMode = .OnDrag
         scrollView.scrollEnabled = true
@@ -68,38 +69,39 @@ public class AAAuthOTPViewController: AAAuthViewController {
         
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
         if email != nil {
-            welcomeLabel.text = "Confirm your email"
+            welcomeLabel.text = AALocalized("AuthOTPEmailTitle")
         } else {
-            welcomeLabel.text = "Confirm your phone"
+            welcomeLabel.text = AALocalized("AuthOTPPhoneTitle")
         }
-        welcomeLabel.textColor = UIColor.blackColor().alpha(0.87)
+        welcomeLabel.textColor = ActorSDK.sharedActor().style.authTitleColor
         welcomeLabel.textAlignment = .Center
         
         validateLabel.font = UIFont.systemFontOfSize(14)
         validateLabel.text = email
-        validateLabel.textColor = UIColor(red: 94, green: 142, blue: 192)
+        validateLabel.textColor = ActorSDK.sharedActor().style.authTintColor
         validateLabel.textAlignment = .Center
         
         hintLabel.font = UIFont.systemFontOfSize(14)
-        hintLabel.text = "We’ve sent you an confirmation code.\nPlease enter it below."
-        hintLabel.textColor = UIColor.alphaBlack(0.56)
+        hintLabel.text = AALocalized("AuthOTPHint")
+        hintLabel.textColor = ActorSDK.sharedActor().style.authHintColor
         hintLabel.textAlignment = .Center
         
         codeField.font = UIFont.systemFontOfSize(17)
-        codeField.textColor = UIColor.alphaBlack(0.64)
-        codeField.placeholder = "Confirmation code"
+        codeField.textColor = ActorSDK.sharedActor().style.authTextColor
+        codeField.placeholder = AALocalized("AuthOTPPlaceholder")
         codeField.keyboardType = .EmailAddress
         codeField.autocapitalizationType = .None
         
-        codeFieldLine.backgroundColor = UIColor.alphaBlack(0.2)
+        codeFieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         
-        if email != nil {
-            haventReceivedCode.setTitle("Haven't received the code?", forState: .Normal)
+        if ActorSDK.sharedActor().supportEmail != nil {
+            haventReceivedCode.setTitle(AALocalized("AuthOTPNoCode"), forState: .Normal)
         } else {
-            haventReceivedCode.setTitle("Wrong number?", forState: .Normal)
+            haventReceivedCode.hidden = true
         }
         haventReceivedCode.titleLabel?.font = UIFont.systemFontOfSize(14)
-        haventReceivedCode.setTitleColor(UIColor.blueColor().alpha(0.56), forState: .Normal)
+        haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authTintColor, forState: .Normal)
+        haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.64), forState: .Highlighted)
         haventReceivedCode.addTarget(self, action: "haventReceivedCodeDidPressed", forControlEvents: .TouchUpInside)
         
         scrollView.addSubview(welcomeLabel)
@@ -130,7 +132,23 @@ public class AAAuthOTPViewController: AAAuthViewController {
     }
     
     func haventReceivedCodeDidPressed() {
-        
+        if ActorSDK.sharedActor().supportEmail != nil {
+            if self.email != nil {
+                let emailController = MFMailComposeViewController()
+                emailController.setSubject("Activation code problem (\(self.email))")
+                emailController.setToRecipients([ActorSDK.sharedActor().supportEmail!])
+                emailController.setMessageBody("Hello, Dear Support!\n\nI can't receive any activation codes to the email: \(self.email).\n\nHope, you will answer soon. Thank you!", isHTML: false)
+                emailController.delegate = self
+                self.presentElegantViewController(emailController)
+            } else if self.phone != nil {
+                let emailController = MFMailComposeViewController()
+                emailController.setSubject("Activation code problem (\(self.phone))")
+                emailController.setToRecipients([ActorSDK.sharedActor().supportEmail!])
+                emailController.setMessageBody("Hello, Dear Support!\n\nI can't receive any activation codes to the phone: \(self.phone).\n\nHope, you will answer soon. Thank you!", isHTML: false)
+                emailController.delegate = self
+                self.presentElegantViewController(emailController)
+            }
+        }
     }
     
     public override func nextDidTap() {
