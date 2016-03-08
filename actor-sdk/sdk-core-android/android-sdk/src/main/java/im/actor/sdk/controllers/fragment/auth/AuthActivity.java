@@ -107,17 +107,10 @@ public class AuthActivity extends BaseFragmentActivity {
                 showFragment(signFragment, false, false);
                 authType = AUTH_TYPE_PHONE;
                 break;
-            case CODE_VALIDATION_CUSTOM:
             case CODE_VALIDATION_PHONE:
-
                 Fragment signInFragment = new SignInFragment();
                 Bundle args = new Bundle();
                 args.putString("authType", SignInFragment.AUTH_TYPE_PHONE);
-                if (state == AuthState.CODE_VALIDATION_CUSTOM) {
-                    args.putString("authType", SignInFragment.AUTH_TYPE_CUSTOM);
-                    args.putString("authId", signFragment.getAuthId());
-                    args.putString("authHint", signFragment.getHintText());
-                }
                 signInFragment.setArguments(args);
                 showFragment(signInFragment, false, false);
                 break;

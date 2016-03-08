@@ -25,9 +25,9 @@ public class Promise<T> {
     // Dispatching parameters
     //
 
-    private final ArrayList<PromiseCallback<T>> callbacks = new ArrayList<PromiseCallback<T>>();
+    private final ArrayList<PromiseCallback<T>> callbacks = new ArrayList<>();
     private final PromiseFunc<T> executor;
-    private ActorRef dispatchActor;
+    private PromiseDispatcher dispatchActor;
 
     //
     // State of Promise
@@ -63,7 +63,7 @@ public class Promise<T> {
     public synchronized Promise<T> then(final Consumer<T> then) {
         if (isFinished) {
             if (exception == null) {
-                dispatchActor.send(new PromiseDispatch(this) {
+                dispatchActor.dispatch(this, new Runnable() {
                     @Override
                     public void run() {
                         then.apply(result);
@@ -96,7 +96,7 @@ public class Promise<T> {
     public synchronized Promise<T> failure(final Consumer<Exception> failure) {
         if (isFinished) {
             if (exception != null) {
-                dispatchActor.send(new PromiseDispatch(this) {
+                dispatchActor.dispatch(this, new Runnable() {
                     @Override
                     public void run() {
                         failure.apply(exception);
@@ -129,8 +129,7 @@ public class Promise<T> {
     @ObjectiveCName("complete:")
     public synchronized Promise<T> complete(final PromiseCallback<T> callback) {
         if (isFinished) {
-
-            dispatchActor.send(new PromiseDispatch(this) {
+            dispatchActor.dispatch(this, new Runnable() {
                 @Override
                 public void run() {
                     if (exception != null) {
@@ -140,7 +139,6 @@ public class Promise<T> {
                     }
                 }
             });
-
         } else {
             callbacks.add(callback);
         }
@@ -173,18 +171,30 @@ public class Promise<T> {
      * Call this method to start promise execution
      *
      * @param ref Scheduling actor
+     * @return this
+     */
+    @ObjectiveCName("doneWithRef:")
+    public Promise<T> done(ActorRef ref) {
+        return done(new PromiseActorDispatcher(ref));
+    }
+
+    /**
+     * Call this method to start promise execution
+     *
+     * @param dispatcher Scheduling dispatcher
+     * @return this
      */
     @ObjectiveCName("done:")
-    public Promise<T> done(ActorRef ref) {
+    public Promise<T> done(PromiseDispatcher dispatcher) {
         if (isStarted) {
             throw new RuntimeException("Promise already started!");
         }
         isStarted = true;
-        dispatchActor = ref;
-        dispatchActor.send(new PromiseDispatch(this) {
+        dispatchActor = dispatcher;
+        dispatchActor.dispatch(this, new Runnable() {
             @Override
             public void run() {
-                exec(new PromiseResolver<T>(Promise.this, dispatchActor));
+                exec(new PromiseResolver<>(Promise.this, dispatchActor));
             }
         });
         return this;
@@ -520,7 +530,7 @@ public class Promise<T> {
      */
     private void deliverResult() {
         if (callbacks.size() > 0) {
-            dispatchActor.send(new PromiseDispatch(this) {
+            dispatchActor.dispatch(this, new Runnable() {
                 @Override
                 public void run() {
                     if (exception != null) {
@@ -543,7 +553,6 @@ public class Promise<T> {
                 }
             });
         }
-
     }
 
     /**

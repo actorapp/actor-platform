@@ -6,6 +6,8 @@ package im.actor.core.entity;
 
 import org.jetbrains.annotations.NotNull;
 
+import im.actor.core.api.ApiSex;
+
 public enum Sex {
     UNKNOWN(1), MALE(2), FEMALE(3);
 
@@ -29,6 +31,18 @@ public enum Sex {
                 return MALE;
             case 3:
                 return FEMALE;
+        }
+    }
+
+    public ApiSex toApi() {
+        switch (this) {
+            case FEMALE:
+                return ApiSex.FEMALE;
+            case MALE:
+                return ApiSex.MALE;
+            default:
+            case UNKNOWN:
+                return ApiSex.UNKNOWN;
         }
     }
 }

@@ -1,5 +1,7 @@
 package im.actor.core.modules.calls.peers;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class PeerCallInt extends ActorInterface {
         send(new PeerCallActor.OwnStarted());
     }
 
-    public void onAdvertised(long deviceId, PeerSettings settings) {
+    public void onAdvertised(long deviceId, @NotNull PeerSettings settings) {
         send(new RTCAdvertised(deviceId, settings));
     }
 
