@@ -100,6 +100,7 @@ public class AAAuthOTPViewController: AAAuthViewController {
         hintLabel.textColor = ActorSDK.sharedActor().style.authHintColor
         hintLabel.textAlignment = .Center
         hintLabel.numberOfLines = 2
+        hintLabel.lineBreakMode = .ByWordWrapping
         
         codeField.font = UIFont.systemFontOfSize(17)
         codeField.textColor = ActorSDK.sharedActor().style.authTextColor
@@ -136,7 +137,7 @@ public class AAAuthOTPViewController: AAAuthViewController {
         
         welcomeLabel.frame = CGRectMake(15, 90 - 66, view.width - 30, 28)
         validateLabel.frame = CGRectMake(10, 127 - 66, view.width - 20, 17)
-        hintLabel.frame = CGRectMake(10, 154 - 66, view.width - 20, 17)
+        hintLabel.frame = CGRectMake(10, 154 - 66, view.width - 20, 56)
         
         codeField.frame = CGRectMake(20, 228 - 66, view.width - 40, 44)
         codeFieldLine.frame = CGRectMake(10, 228 + 44 - 66, view.width - 20, 0.5)

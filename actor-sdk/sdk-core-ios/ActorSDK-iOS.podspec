@@ -28,7 +28,11 @@ Pod::Spec.new do |s|
   s.dependency 'SZTextView'
   s.dependency 'RSKImageCropper'
   s.dependency 'JDStatusBarNotification'
-  s.dependency 'YYKit'
+  s.dependency 'ElegantPresentations'
+  s.dependency 'YYText'
+  s.dependency 'YYImage'
+  s.dependency 'YYCategories'
+  s.dependency 'DZNWebViewController'
 
   s.dependency 'BlockAlertsAnd-ActionSheets'
   s.dependency 'RMUniversalAlert'
