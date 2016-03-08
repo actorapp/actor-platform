@@ -435,17 +435,12 @@ import PushKit
             }
             window.rootViewController = controller!
         } else {
-//            var controller: UIViewController! = delegate.actorControllerForAuthStart()
-//            if controller == nil {
-//                if self.authStrategy == .PhoneOnly {
-//                    controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
-//                } else if self.authStrategy == .EmailOnly {
-//                    controller = AAAuthNavigationController(rootViewController: AAEmailAuthViewController())
-//                } else {
-//                    // ???
-//                }
-//            }
-            window.rootViewController = AAWelcomeController()
+            let controller: UIViewController! = delegate.actorControllerForAuthStart()
+            if controller == nil {
+                window.rootViewController = AAWelcomeController()
+            } else {
+                window.rootViewController = controller
+            }
         }
         
         // Bind Status Bar connecting
