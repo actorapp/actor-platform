@@ -529,6 +529,13 @@ object BotMessages {
     override val service: String = Services.Files
   }
 
+  @key("UploadFile")
+  final case class UploadFile(@beanGetter bytes: Array[Byte]) extends RequestBody {
+    override type Response = Void
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+    override val service: String = Services.Files
+  }
+
   final case class ResponseDownloadFile(fileBytes: Array[Byte]) extends ResponseBody
 
   @key("AddSticker")
