@@ -150,6 +150,8 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
         super.viewDidLoad()
     }
     
+
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -182,6 +184,7 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
         currentCountry = AATelephony.getCountry(currentIso)
         countryButton.setTitle(currentCountry.country, forState: .Normal)
         phoneCodeLabel.text = "+\(currentCountry.code)"
+        phoneNumberLabel.currentIso = currentIso
         resizePhoneLabels()
     }
     
@@ -228,5 +231,6 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
         super.viewWillDisappear(animated)
         
         phoneNumberLabel.resignFirstResponder()
+
     }
 }

@@ -170,6 +170,19 @@ public class Messenger {
         return modules.getAuthModule().doValidateCode(transactionHash, code);
     }
 
+
+    /**
+     * Sending activation code via voice
+     *
+     * @param transactionHash transaction hash
+     * @return promice of Boolean
+     */
+    @NotNull
+    @ObjectiveCName("doSendCodeViaCall:")
+    public Promise<Boolean> doSendCodeViaCall(String transactionHash) {
+        return modules.getAuthModule().doSendCall(transactionHash);
+    }
+
     /**
      * Signing Up
      *

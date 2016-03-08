@@ -481,6 +481,8 @@
 
 "AuthOTPNoCode" = "Haven't received code?";
 
+"AuthOTPCallHint" = "{app_name} will call you in {time}";
+
 /*
  * Common Elements
  */
