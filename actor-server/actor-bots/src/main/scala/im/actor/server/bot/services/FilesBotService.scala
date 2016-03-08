@@ -51,8 +51,8 @@ private[bot] final class FilesBotService(_system: ActorSystem) extends BotServic
         (for {
           _ ← fromBoolean(FileTooBig)(bytes.length <= MaxSize)
           fileName = UnsafeFileName(s"bot-upload-${System.currentTimeMillis.toString}")
-          _ ← fromFuture(fsAdapter.uploadFileF(fileName, bytes))
-        } yield Void).value
+          fl ← fromFuture(fsAdapter.uploadFileF(fileName, bytes))
+        } yield ResponseUploadFile(FileLocation(fl.fileId, fl.accessHash))).value
       }
   }
 
