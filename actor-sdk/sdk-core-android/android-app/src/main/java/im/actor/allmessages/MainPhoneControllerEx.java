@@ -62,7 +62,7 @@ public class MainPhoneControllerEx extends MainPhoneController{
 
         @Override
         public int getPageIconResId(int position, Context context) {
-            return (position == 2? R.drawable.ic_social_public_24dp:-1);
+            return (position == 2? R.drawable.ic_favorite_white_36dp    :-1);
         }
     }
 }

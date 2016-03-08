@@ -5,28 +5,61 @@ import java.util.ArrayList;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
+import im.actor.core.entity.Reaction;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.storage.ListEngine;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 
 public class OverHandlerActor extends Actor {
-    ListEngine<MessageEx> allMessages = messenger().getCustomConversationEngine(new Peer(PeerType.PRIVATE, 1), "all", MessageEx.CREATOR);
+    ListEngine<MessageEx> allMessages = messenger().getCustomConversationEngine(new Peer(PeerType.PRIVATE, 1), "favorite", MessageEx.CREATOR);
 
     public void onIncoming(Peer peer, ArrayList<Message> msgs) {
         ArrayList<MessageEx> msgex= new ArrayList<MessageEx>();
         for (Message m:msgs) {
-            msgex.add(new MessageEx(m, peer));
+            boolean containsMyLike = false;
+            for (Reaction r:m.getReactions()) {
+                if(r.getUids().contains(myUid())){
+                    containsMyLike = true;
+                    break;
+                }
+            }
+            if(containsMyLike){
+                msgex.add(new MessageEx(m, peer));
+            }
         }
         allMessages.addOrUpdateItems(msgex);
     }
 
     public void onIncoming(Peer peer, Message msg) {
-        allMessages.addOrUpdateItem(new MessageEx(msg, peer));
+        boolean containsMyLike = false;
+        for (Reaction r:msg.getReactions()) {
+            if(r.getUids().contains(myUid())){
+                containsMyLike = true;
+                break;
+            }
+        }
+        if(containsMyLike){
+            allMessages.addOrUpdateItem(new MessageEx(msg, peer));
+        }
     }
 
     public void onUpdate(Peer peer, Message msg) {
-        allMessages.addOrUpdateItem(new MessageEx(msg, peer));
+        boolean containsMyReaction = false;
+        for (Reaction r:msg.getReactions()) {
+            if(r.getUids().contains(myUid())){
+                containsMyReaction = true;
+                break;
+            }
+        }
+        if(containsMyReaction){
+            allMessages.addOrUpdateItem(new MessageEx(msg, peer));
+        }else{
+            allMessages.removeItem(msg.getEngineId());
+
+        }
+
     }
 
     public void onDelete(Peer peer, long[] rids) {
