@@ -35,7 +35,7 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
         appIsEmptyPlaceholder.setImage(
             UIImage.bundled("contacts_list_placeholder"),
             title: AALocalized("Placeholder_Empty_Title"),
-            subtitle: AALocalized("Placeholder_Empty_Message").replace("{appname}", dest: ActorSDK.sharedActor().appNameInLocStrings),
+            subtitle: AALocalized("Placeholder_Empty_Message").replace("{appname}", dest: ActorSDK.sharedActor().appName),
             actionTitle: AALocalized("Placeholder_Empty_Action"),
             subtitle2: AALocalized("Placeholder_Empty_Message2"),
             actionTarget: self, actionSelector: Selector("showSmsInvitation"),

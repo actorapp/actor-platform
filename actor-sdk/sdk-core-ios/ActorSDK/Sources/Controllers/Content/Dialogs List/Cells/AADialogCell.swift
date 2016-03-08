@@ -3,6 +3,7 @@
 //
 
 import UIKit
+// import YYText
 
 public class AADialogCell: AATableViewCell, AABindedCell {
     
@@ -30,12 +31,9 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        self.avatarView.layer.drawsAsynchronously       = true
-        self.titleView.layer.drawsAsynchronously        = true
-        self.dateView.layer.drawsAsynchronously         = true
-        self.statusView.layer.drawsAsynchronously       = true
-        self.counterViewBg.layer.drawsAsynchronously    = true
-        self.counterView.layer.drawsAsynchronously      = true
+//        self.titleView.displaysAsynchronously = true
+//        self.dateView.displaysAsynchronously = true
+//        self.messageView.displaysAsynchronously = true
         
         ////////////////////////////////////////////////
         
