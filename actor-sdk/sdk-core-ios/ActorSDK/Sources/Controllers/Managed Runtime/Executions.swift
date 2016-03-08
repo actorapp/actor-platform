@@ -34,6 +34,10 @@ public class AAMenuBuilder {
 
 public class AAExecutions {
     
+    public class func execute(promise: ARPromise) {
+
+    }
+    
     public class func execute(command: ACCommand) {
         execute(command, successBlock: nil, failureBlock: nil)
     }

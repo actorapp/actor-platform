@@ -73,16 +73,24 @@ public class AAAuthLogInViewController: AAAuthViewController {
             return
         }
         if (AATools.isValidEmail(value)) {
-            executeSafeOnlySuccess(Actor.requestStartAuthCommandWithEmail(value), successBlock: { (val) -> Void in
-                self.navigateNext(AAEmailAuthCodeViewController(email: value))
-            })
+            Actor.doStartAuthWithEmail(value).doneLoader().then { (res: ACAuthStartRes!) -> () in
+                if res.authMode.toNSEnum() == .OTP {
+                    self.navigateNext(AAEmailAuthCodeViewController(email: value))
+                } else {
+                    // TODO: Implement
+                }
+            }
         } else {
             let numbersSet = NSCharacterSet(charactersInString: "0123456789").invertedSet
             let stripped = value.strip(numbersSet)
             if let parsed = Int64(stripped) {
-                executeSafeOnlySuccess(Actor.requestStartAuthCommandWithPhone(jlong(parsed)), successBlock: { (val) -> Void in
-                    self.navigateNext(AAAuthCodeViewController(phoneNumber: value))
-                })
+                Actor.doStartAuthWithPhone(jlong(parsed)).doneLoader().then { (res: ACAuthStartRes!) -> () in
+                    if res.authMode.toNSEnum() == .OTP {
+                        self.navigateNext(AAAuthCodeViewController(phoneNumber: value))
+                    } else {
+                        // TODO: Implement
+                    }
+                }
             } else {
                 shakeView(field, originalX: 20)
                 shakeView(fieldLine, originalX: 10)
