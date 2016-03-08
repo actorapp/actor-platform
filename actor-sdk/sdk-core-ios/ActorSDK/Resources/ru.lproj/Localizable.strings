@@ -478,6 +478,8 @@
 
 "AuthOTPNoCode" = "Не получили код?";
 
+"AuthOTPCallHint" = "{app_name} позвонит вам через {time}";
+
 /*
  * Common Elements
  */

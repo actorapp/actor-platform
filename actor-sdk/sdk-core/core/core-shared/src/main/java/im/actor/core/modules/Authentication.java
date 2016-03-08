@@ -205,6 +205,25 @@ public class Authentication {
         });
     }
 
+    public Promise<Boolean> doSendCall(final String transactionHash) {
+        return new Promise<>(new PromiseFunc<Boolean>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<Boolean> resolver) {
+                request(new RequestSendCodeByPhoneCall(transactionHash), new RpcCallback<ResponseVoid>() {
+                    @Override
+                    public void onResult(ResponseVoid response) {
+                        resolver.result(true);
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        resolver.error(e);
+                    }
+                });
+            }
+        });
+    }
+
 
     //
     // Signup
