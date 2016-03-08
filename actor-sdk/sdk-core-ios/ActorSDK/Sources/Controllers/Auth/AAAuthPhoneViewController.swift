@@ -183,11 +183,12 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
     }
     
     override func nextDidTap() {
+        let numberStr = phoneNumberLabel.phoneNumber
         let number = phoneNumberLabel.phoneNumber.toJLong()
         
-        Actor.doStartAuthWithPhone(number).doneLoader().then { (res: ACAuthStartRes!) -> () in
+        Actor.doStartAuthWithPhone(number).startUserAction().then { (res: ACAuthStartRes!) -> () in
             if res.authMode.toNSEnum() == .OTP {
-                self.navigateNext(AAAuthCodeViewController(phoneNumber: "\(number)"))
+                self.navigateNext(AAAuthOTPViewController(phone: numberStr, name: self.name, transactionHash: res.transactionHash))
             } else {
                 self.alertUser("This account can't be authenticated in this version. Please, update app.")
             }

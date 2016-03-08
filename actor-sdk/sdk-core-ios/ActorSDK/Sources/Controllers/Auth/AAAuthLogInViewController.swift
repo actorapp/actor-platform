@@ -40,7 +40,6 @@ public class AAAuthLogInViewController: AAAuthViewController {
         field.placeholder = "Phone or Email"
         field.keyboardType = .Default
         field.autocapitalizationType = .None
-//        field.addTarget(self, action: "fieldDidChanged", forControlEvents: .EditingChanged)
         
         fieldLine.backgroundColor = UIColor.blackColor().alpha(0.2)
         fieldLine.opaque = false
@@ -73,22 +72,22 @@ public class AAAuthLogInViewController: AAAuthViewController {
             return
         }
         if (AATools.isValidEmail(value)) {
-            Actor.doStartAuthWithEmail(value).doneLoader().then { (res: ACAuthStartRes!) -> () in
+            Actor.doStartAuthWithEmail(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
                 if res.authMode.toNSEnum() == .OTP {
-                    self.navigateNext(AAEmailAuthCodeViewController(email: value))
+                    self.navigateNext(AAAuthOTPViewController(email: value, transactionHash: res.transactionHash))
                 } else {
-                    // TODO: Implement
+                    self.alertUser("This account can't be authenticated in this version. Please, update app.")
                 }
             }
         } else {
             let numbersSet = NSCharacterSet(charactersInString: "0123456789").invertedSet
             let stripped = value.strip(numbersSet)
             if let parsed = Int64(stripped) {
-                Actor.doStartAuthWithPhone(jlong(parsed)).doneLoader().then { (res: ACAuthStartRes!) -> () in
+                Actor.doStartAuthWithPhone(jlong(parsed)).startUserAction().then { (res: ACAuthStartRes!) -> () in
                     if res.authMode.toNSEnum() == .OTP {
-                        self.navigateNext(AAAuthCodeViewController(phoneNumber: value))
+                        self.navigateNext(AAAuthOTPViewController(phone: value, transactionHash: res.transactionHash))
                     } else {
-                        // TODO: Implement
+                        self.alertUser("This account can't be authenticated in this version. Please, update app.")
                     }
                 }
             } else {

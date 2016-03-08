@@ -17,6 +17,8 @@ import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.rpc.ResponseRawRequest;
 import im.actor.core.api.rpc.ResponseSeqDate;
+import im.actor.core.entity.AuthCodeRes;
+import im.actor.core.entity.AuthRes;
 import im.actor.core.entity.AuthStartRes;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
@@ -128,7 +130,7 @@ public class Messenger {
      * @return true if user is logged in
      */
     public boolean isLoggedIn() {
-        return getAuthState() == AuthState.LOGGED_IN;
+        return modules.getAuthModule().isLoggedIn();
     }
 
     /**
@@ -153,6 +155,45 @@ public class Messenger {
     @ObjectiveCName("doStartAuthWithPhone:")
     public Promise<AuthStartRes> doStartPhoneAuth(long phone) {
         return modules.getAuthModule().doStartPhoneAuth(phone);
+    }
+
+    /**
+     * Validating Confirmation Code
+     *
+     * @param code            code
+     * @param transactionHash transaction hash
+     * @return promise of AuthCodeRes
+     */
+    @NotNull
+    @ObjectiveCName("doValidateCode:withTransaction:")
+    public Promise<AuthCodeRes> doValidateCode(String code, String transactionHash) {
+        return modules.getAuthModule().doValidateCode(transactionHash, code);
+    }
+
+    /**
+     * Signing Up
+     *
+     * @param name            name
+     * @param sex             sex of user
+     * @param transactionHash transaction hash
+     * @return promise of AuthRes
+     */
+    @NotNull
+    @ObjectiveCName("doSignupWithName:withSex:withTransaction:")
+    public Promise<AuthRes> doSignup(String name, Sex sex, String transactionHash) {
+        return modules.getAuthModule().doSignup(name, sex, transactionHash);
+    }
+
+    /**
+     * Complete Authentication
+     *
+     * @param authRes authentication result for commiting
+     * @return promise of Boolean
+     */
+    @NotNull
+    @ObjectiveCName("doCompleteAuth:")
+    public Promise<Boolean> doCompleteAuth(AuthRes authRes) {
+        return modules.getAuthModule().doCompleteAuth(authRes);
     }
 
     /**
