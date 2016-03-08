@@ -470,6 +470,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestGetOAuth2Params() {
         return new Command<AuthState>() {
             @Override
@@ -506,6 +507,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestCompleteOauth(final String code) {
         return new Command<AuthState>() {
             @Override
@@ -540,6 +542,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath) {
         return new Command<AuthState>() {
             @Override
@@ -572,6 +575,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestValidateCode(final String code) {
         if (code == null) {
             throw new RuntimeException("Code couldn't be null!");
@@ -617,6 +621,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestValidatePassword(final String password) {
         return new Command<AuthState>() {
             @Override
@@ -656,6 +661,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<Boolean> requestCallActivation() {
         return new Command<Boolean>() {
             @Override
@@ -677,10 +683,12 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public void resetAuth() {
         state = AuthState.AUTH_START;
     }
 
+    @Deprecated
     public void resetModule() {
         // Clearing authentication
         state = AuthState.AUTH_START;
@@ -692,6 +700,7 @@ public class Authentication {
         modules.getPreferences().putInt(KEY_SMS_CODE, 0);
     }
 
+    @Deprecated
     private void onLoggedIn(final CommandCallback<AuthState> callback, ResponseAuth response) {
         state = AuthState.LOGGED_IN;
         myUid = response.getUser().getId();
