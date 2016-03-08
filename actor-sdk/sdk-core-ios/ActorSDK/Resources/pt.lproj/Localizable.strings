@@ -417,57 +417,57 @@
  * Auth
  */
 
-"AuthCountryTitle" = "Country Code";
+"AuthUnsupported" = "Essa conta não é suportada nesta versão do {app_name}. Favor atualizar para logar nessa conta.";
 
-"AuthUnsupported" = "This account is unsupported in this version of {app_name}. Please, update application for logging in to this account.";
+"AuthLoginTitle" = "Login no {app_name}";
 
-"AuthLoginTitle" = "Login to {app_name}";
+"AuthLoginPhone" = "Fone";
 
-"AuthLoginPhone" = "Phone";
+"AuthLoginEmail" = "E-mail";
 
-"AuthLoginEmail" = "Email";
+"AuthLoginPhoneEmail" = "Fone ou E-mail";
 
-"AuthLoginPhoneEmail" = "Phone or Email";
+"AuthNameTitle" = "Olá! Qual o seu nome?";
 
-"AuthNameTitle" = "Hi! What's your name?";
+"AuthNamePlaceholder" = "Nome completo";
 
-"AuthNamePlaceholder" = "Your full name";
+"AuthPhoneTitle" = "Qual é o seu número de telefone?";
 
-"AuthPhoneTitle" = "What's your phone number?";
+"AuthPhoneUseEmail" = "Use e-mail";
 
-"AuthPhoneHint" = "We need your phone number to grant security of your personal information.";
+"AuthPhoneHint" = "Nós precisamos do seu número de telefone para garantir a segurança de seus dados pessoais.";
 
-"AuthPhonePlaceholder" = "Phone Number";
+"AuthPhonePlaceholder" = "Número do Telefone";
 
-"AuthPhoneUseEmail" = "Use email instead";
+"AuthCountryTitle" = "Código do País";
 
-"AuthEmailTitle" = "What's your email?";
+"AuthEmailTitle" = "Qual é o seu e-mail?";
 
-"AuthEmailHint" = "We won't send you spam.";
+"AuthEmailHint" = "Nós não vamos te enviar spam.";
 
-"AuthEmailPlaceholder" = "Your email";
+"AuthEmailPlaceholder" = "Seu e-mail";
 
-"AuthEmailUsePhone" = "Use phone instead";
+"AuthEmailUsePhone" = "Use o telefone";
 
-"AuthDisclaimer" = "By signing up, you agree to the Terms of Service and Privacy Policy.";
+"AuthDisclaimer" = "Ao registrar-se, você concorda com os Termos de Serviço e a Política de Privacidade.";
 
-"AuthDisclaimerToS" = "Terms of Service";
+"AuthDisclaimerToS" = "Termos de Serviço";
 
-"AuthDisclaimerPrivacy" = "Privacy Policy";
+"AuthDisclaimerPrivacy" = "Política de Privacidade";
 
-"AuthOTPEmailTitle" = "Confirm your email";
+"AuthOTPEmailTitle" = "Confirme seu e-mail";
 
-"AuthOTPPhoneTitle" = "Confirm your phone";
+"AuthOTPPhoneTitle" = "Confirme seu telefone";
 
-"AuthOTPEmailHint" = "We’ve sent you email with confirmation code.\nPlease enter it below.";
+"AuthOTPEmailHint" = "Nós lhe enviamos um código de confirmação.\nDigite ele abaixo.";
 
-"AuthOTPPhoneHint" = "We’ve sent you SMS with confirmation code.\nPlease enter it below.";
+"AuthOTPPhoneHint" = "Nós lhe enviamos um código de confirmação.\nDigite ele abaixo.";
 
-"AuthOTPPlaceholder" = "Confirmation code";
+"AuthOTPPlaceholder" = "Código de Confirmação";
 
-"AuthOTPNoCode" = "Haven't received code?";
+"AuthOTPNoCode" = "Não recebeu o código?";
 
-"AuthOTPCallHint" = "{app_name} will call you in {time}";
+"AuthOTPCallHint" = "{app_name} irá ligar para você em {time}";
 
 /*
  * Common Elements
