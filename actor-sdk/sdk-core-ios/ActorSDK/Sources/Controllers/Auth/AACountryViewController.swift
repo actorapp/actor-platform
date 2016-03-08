@@ -13,12 +13,12 @@ public class AACountryViewController: AATableViewController {
     private var _countries: NSDictionary!
     private var _letters: NSArray!
     
-    var delegate: AACountryViewControllerDelegate?
+    public var delegate: AACountryViewControllerDelegate?
     
     public init() {
         super.init(style: UITableViewStyle.Plain)
         
-        self.title = "Country" // TODO: Localize
+        self.title = AALocalized("AuthCountryTitle")
         
         let cancelButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: "dismiss")
         self.navigationItem.setLeftBarButtonItem(cancelButtonItem, animated: false)
@@ -65,14 +65,11 @@ public class AACountryViewController: AATableViewController {
     }
     
     public func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
-        return [UITableViewIndexSearch] + letters() as [AnyObject]
+        return letters() as [AnyObject]
     }
     
     public func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
-        if title == UITableViewIndexSearch {
-            return 0
-        }
-        return index - 1
+        return index
     }
     
     public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -84,16 +81,14 @@ public class AACountryViewController: AATableViewController {
     }
     
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
         let cell: AAAuthCountryCell = tableView.dequeueCell(indexPath)
-        
-        cell.setSearchMode(false) // TODO: Add search bar
-        
         let letter = letters()[indexPath.section] as! String
         let countryData = (countries().objectForKey(letter) as! NSArray)[indexPath.row] as! [String]
+        
         cell.setTitle(countryData[0])
         cell.setCode("+\(countryData[2])")
-
+        cell.setSearchMode(false)
+        
         return cell
     }
     
@@ -113,7 +108,6 @@ public class AACountryViewController: AATableViewController {
     }
     
     public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let letter = letters()[section] as! String
-        return letter
+        return letters()[section] as? String
     }
 }

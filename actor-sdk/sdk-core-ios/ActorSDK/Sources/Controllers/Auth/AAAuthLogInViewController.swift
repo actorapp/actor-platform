@@ -26,22 +26,28 @@ public class AAAuthLogInViewController: AAAuthViewController {
     
     public override func viewDidLoad() {
      
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
         
         scrollView.keyboardDismissMode = .OnDrag
         scrollView.scrollEnabled = true
         scrollView.alwaysBounceVertical = true
         
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
-        welcomeLabel.text = "Log In to Actor"
-        welcomeLabel.textColor = UIColor.blackColor().alpha(0.87)
+        welcomeLabel.text = AALocalized("AuthLoginTitle").replace("{app_name}", dest: ActorSDK.sharedActor().appName)
+        welcomeLabel.textColor = ActorSDK.sharedActor().style.authTitleColor
         welcomeLabel.textAlignment = .Center
         
-        field.placeholder = "Phone or Email"
+        if ActorSDK.sharedActor().authStrategy == .PhoneOnly {
+            field.placeholder = AALocalized("AuthLoginPhone")
+        } else if ActorSDK.sharedActor().authStrategy == .EmailOnly {
+            field.placeholder = AALocalized("AuthLoginEmail")
+        } else if ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+            field.placeholder = AALocalized("AuthLoginPhoneEmail")
+        }
         field.keyboardType = .Default
         field.autocapitalizationType = .None
         
-        fieldLine.backgroundColor = UIColor.blackColor().alpha(0.2)
+        fieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         fieldLine.opaque = false
         
         scrollView.addSubview(welcomeLabel)
@@ -71,15 +77,21 @@ public class AAAuthLogInViewController: AAAuthViewController {
             shakeView(fieldLine, originalX: 10)
             return
         }
-        if (AATools.isValidEmail(value)) {
-            Actor.doStartAuthWithEmail(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
-                if res.authMode.toNSEnum() == .OTP {
-                    self.navigateNext(AAAuthOTPViewController(email: value, transactionHash: res.transactionHash))
-                } else {
-                    self.alertUser("This account can't be authenticated in this version. Please, update app.")
+        
+        if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+            if (AATools.isValidEmail(value)) {
+                Actor.doStartAuthWithEmail(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
+                    if res.authMode.toNSEnum() == .OTP {
+                        self.navigateNext(AAAuthOTPViewController(email: value, transactionHash: res.transactionHash))
+                    } else {
+                        self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
+                    }
                 }
+                return
             }
-        } else {
+        }
+        
+        if ActorSDK.sharedActor().authStrategy == .PhoneOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
             let numbersSet = NSCharacterSet(charactersInString: "0123456789").invertedSet
             let stripped = value.strip(numbersSet)
             if let parsed = Int64(stripped) {
@@ -87,14 +99,15 @@ public class AAAuthLogInViewController: AAAuthViewController {
                     if res.authMode.toNSEnum() == .OTP {
                         self.navigateNext(AAAuthOTPViewController(phone: value, transactionHash: res.transactionHash))
                     } else {
-                        self.alertUser("This account can't be authenticated in this version. Please, update app.")
+                        self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
                     }
                 }
-            } else {
-                shakeView(field, originalX: 20)
-                shakeView(fieldLine, originalX: 10)
+                return
             }
         }
+        
+        shakeView(field, originalX: 20)
+        shakeView(fieldLine, originalX: 10)
     }
     
     public override func viewWillDisappear(animated: Bool) {
