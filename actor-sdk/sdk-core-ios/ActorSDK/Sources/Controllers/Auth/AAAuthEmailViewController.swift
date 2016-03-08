@@ -67,7 +67,7 @@ public class AAAuthEmailViewController: AAAuthViewController {
             let privacyRange = NSRange(location: hintText.indexOf(privacyText)!, length: privacyText.length)
             
             let attributedTerms = NSMutableAttributedString(string: hintText)
-            attributedTerms.yy_color = ActorSDK.sharedActor().style.authTintColor.alpha(0.56)
+            attributedTerms.yy_color = ActorSDK.sharedActor().style.authHintColor
             
             
             //
