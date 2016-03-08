@@ -4,11 +4,15 @@
 
 package im.actor.core.modules;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 import im.actor.core.ApiConfiguration;
 import im.actor.core.AuthState;
 import im.actor.core.api.ApiEmailActivationType;
+import im.actor.core.api.ApiPhoneActivationType;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.rpc.RequestCompleteOAuth2;
 import im.actor.core.api.rpc.RequestGetOAuth2Params;
@@ -26,8 +30,11 @@ import im.actor.core.api.rpc.ResponseStartEmailAuth;
 import im.actor.core.api.rpc.ResponseStartPhoneAuth;
 import im.actor.core.api.rpc.ResponseStartUsernameAuth;
 import im.actor.core.api.rpc.ResponseVoid;
-import im.actor.core.entity.ContactRecord;
-import im.actor.core.entity.ContactRecordType;
+import im.actor.core.entity.AuthCodeRes;
+import im.actor.core.entity.AuthMode;
+import im.actor.core.entity.AuthRes;
+import im.actor.core.entity.AuthStartRes;
+import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.modules.updates.internal.LoggedIn;
 import im.actor.core.network.RpcCallback;
@@ -38,6 +45,9 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
+import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.PromiseResolver;
 
 public class Authentication {
 
@@ -58,45 +68,44 @@ public class Authentication {
     private Modules modules;
     private AuthState state;
 
-    private byte[] deviceHash;
-    private ApiConfiguration apiConfiguration;
+    private final ArrayList<String> langs;
+    private final byte[] deviceHash;
+    private final ApiConfiguration apiConfiguration;
 
     private int myUid;
 
     public Authentication(Modules modules) {
         this.modules = modules;
 
-        this.myUid = modules.getPreferences().getInt(KEY_AUTH_UID, 0);
-
         // Keep device hash always stable across launch
-        deviceHash = modules.getPreferences().getBytes(KEY_DEVICE_HASH);
-        if (deviceHash == null) {
-            deviceHash = Crypto.SHA256(modules.getConfiguration().getApiConfiguration().getDeviceString().getBytes());
-            modules.getPreferences().putBytes(KEY_DEVICE_HASH, deviceHash);
+        byte[] _deviceHash = modules.getPreferences().getBytes(KEY_DEVICE_HASH);
+        if (_deviceHash == null) {
+            _deviceHash = Crypto.SHA256(modules.getConfiguration().getApiConfiguration().getDeviceString().getBytes());
+            modules.getPreferences().putBytes(KEY_DEVICE_HASH, _deviceHash);
+        }
+        deviceHash = _deviceHash;
+
+        // Languages
+        langs = new ArrayList<>();
+        for (String s : modules.getConfiguration().getPreferredLanguages()) {
+            langs.add(s);
         }
 
+        // Api Configuration
         apiConfiguration = modules.getConfiguration().getApiConfiguration();
+
+        // Authenticated UID
+        myUid = modules.getPreferences().getInt(KEY_AUTH_UID, 0);
     }
 
     public int myUid() {
         return myUid;
     }
 
-    public AuthState getAuthState() {
-        return state;
-    }
-
     public boolean isLoggedIn() {
         return state == AuthState.LOGGED_IN;
     }
 
-    public long getPhone() {
-        return modules.getPreferences().getLong(KEY_PHONE, 0);
-    }
-
-    public String getEmail() {
-        return modules.getPreferences().getString(KEY_EMAIL);
-    }
 
     public void run() {
         if (modules.getPreferences().getBool(KEY_AUTH, false)) {
@@ -107,14 +116,182 @@ public class Authentication {
         }
     }
 
+
+    //
+    // Starting Authentication
+    //
+
+    public Promise<AuthStartRes> doStartEmailAuth(final String email) {
+        return new Promise<>(new PromiseFunc<AuthStartRes>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<AuthStartRes> resolver) {
+                request(new RequestStartEmailAuth(email,
+                        apiConfiguration.getAppId(),
+                        apiConfiguration.getAppKey(),
+                        deviceHash,
+                        apiConfiguration.getDeviceTitle(),
+                        modules.getConfiguration().getTimeZone(),
+                        langs), new RpcCallback<ResponseStartEmailAuth>() {
+                    @Override
+                    public void onResult(ResponseStartEmailAuth response) {
+                        resolver.result(new AuthStartRes(
+                                response.getTransactionHash(),
+                                AuthMode.fromApi(response.getActivationType()),
+                                response.isRegistered()));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        resolver.error(e);
+                    }
+                });
+            }
+        });
+    }
+
+    public Promise<AuthStartRes> doStartPhoneAuth(final long phone) {
+        return new Promise<>(new PromiseFunc<AuthStartRes>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<AuthStartRes> resolver) {
+                request(new RequestStartPhoneAuth(phone,
+                        apiConfiguration.getAppId(),
+                        apiConfiguration.getAppKey(),
+                        deviceHash,
+                        apiConfiguration.getDeviceTitle(),
+                        modules.getConfiguration().getTimeZone(),
+                        langs), new RpcCallback<ResponseStartPhoneAuth>() {
+                    @Override
+                    public void onResult(ResponseStartPhoneAuth response) {
+                        resolver.result(new AuthStartRes(
+                                response.getTransactionHash(),
+                                AuthMode.fromApi(response.getActivationType()),
+                                response.isRegistered()));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        resolver.error(e);
+                    }
+                });
+            }
+        });
+    }
+
+
+    //
+    // Code And Password Validation
+    //
+
+    public Promise<AuthCodeRes> doValidateCode(final String transactionHash, final String code) {
+        return new Promise<>(new PromiseFunc<AuthCodeRes>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<AuthCodeRes> resolver) {
+                request(new RequestValidateCode(transactionHash, code), new RpcCallback<ResponseAuth>() {
+                    @Override
+                    public void onResult(ResponseAuth response) {
+                        resolver.result(new AuthCodeRes(new AuthRes(response.toByteArray())));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
+                            resolver.result(new AuthCodeRes(transactionHash));
+                        } else {
+                            resolver.error(e);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    public Promise<Boolean> doSendCall(final String transactionHash) {
+        return new Promise<>(new PromiseFunc<Boolean>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<Boolean> resolver) {
+                request(new RequestSendCodeByPhoneCall(transactionHash), new RpcCallback<ResponseVoid>() {
+                    @Override
+                    public void onResult(ResponseVoid response) {
+                        resolver.result(true);
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        resolver.error(e);
+                    }
+                });
+            }
+        });
+    }
+
+
+    //
+    // Signup
+    //
+
+    public Promise<AuthRes> doSignup(final String name, final Sex sex, final String transactionHash) {
+        return new Promise<>(new PromiseFunc<AuthRes>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<AuthRes> resolver) {
+                request(new RequestSignUp(transactionHash, name, sex.toApi(), null), new RpcCallback<ResponseAuth>() {
+
+                    @Override
+                    public void onResult(ResponseAuth response) {
+                        resolver.result(new AuthRes(response.toByteArray()));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        resolver.error(e);
+                    }
+                });
+            }
+        });
+    }
+
+
+    //
+    // Complete Authentication
+    //
+
+    public Promise<Boolean> doCompleteAuth(final AuthRes authRes) {
+        return new Promise<>(new PromiseFunc<Boolean>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<Boolean> resolver) {
+                ResponseAuth auth;
+                try {
+                    auth = ResponseAuth.fromBytes(authRes.getData());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    resolver.error(e);
+                    return;
+                }
+                state = AuthState.LOGGED_IN;
+                myUid = auth.getUser().getId();
+                modules.getPreferences().putBool(KEY_AUTH, true);
+                modules.getPreferences().putInt(KEY_AUTH_UID, myUid);
+                modules.onLoggedIn();
+                modules.getUsersModule().getUsersStorage().addOrUpdateItem(new User(auth.getUser()));
+                modules.getUpdatesModule().onUpdateReceived(new LoggedIn(auth, new Runnable() {
+                    @Override
+                    public void run() {
+                        resolver.result(true);
+                    }
+                }));
+            }
+        });
+    }
+
+
+    //
+    // Deprecated
+    //
+
+    @Deprecated
     public Command<AuthState> requestStartAnonymousAuth(final String userName) {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                ArrayList<String> langs = new ArrayList<String>();
-                for (String s : modules.getConfiguration().getPreferredLanguages()) {
-                    langs.add(s);
-                }
                 request(new RequestStartAnonymousAuth(userName,
                         apiConfiguration.getAppId(),
                         apiConfiguration.getAppKey(),
@@ -142,11 +319,27 @@ public class Authentication {
         };
     }
 
+    @Deprecated
+    public AuthState getAuthState() {
+        return state;
+    }
+
+    @Deprecated
+    public long getPhone() {
+        return modules.getPreferences().getLong(KEY_PHONE, 0);
+    }
+
+    @Deprecated
+    public String getEmail() {
+        return modules.getPreferences().getString(KEY_EMAIL);
+    }
+
+    @Deprecated
     public Command<AuthState> requestStartEmailAuth(final String email) {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                ArrayList<String> langs = new ArrayList<String>();
+                ArrayList<String> langs = new ArrayList<>();
                 for (String s : modules.getConfiguration().getPreferredLanguages()) {
                     langs.add(s);
                 }
@@ -170,6 +363,8 @@ public class Authentication {
                             state = AuthState.CODE_VALIDATION_EMAIL;
                         } else if (emailActivationType.equals(ApiEmailActivationType.PASSWORD)) {
                             state = AuthState.PASSWORD_VALIDATION;
+                        } else {
+                            state = AuthState.CODE_VALIDATION_EMAIL;
                         }
 
                         im.actor.runtime.Runtime.postToMainThread(new Runnable() {
@@ -195,11 +390,12 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestStartUserNameAuth(final String userName) {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                ArrayList<String> langs = new ArrayList<String>();
+                ArrayList<String> langs = new ArrayList<>();
                 for (String s : modules.getConfiguration().getPreferredLanguages()) {
                     langs.add(s);
                 }
@@ -240,11 +436,12 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestStartPhoneAuth(final long phone) {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                ArrayList<String> langs = new ArrayList<String>();
+                ArrayList<String> langs = new ArrayList<>();
                 for (String s : modules.getConfiguration().getPreferredLanguages()) {
                     langs.add(s);
                 }
@@ -261,7 +458,13 @@ public class Authentication {
                         modules.getPreferences().putLong(KEY_PHONE, phone);
                         modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
 
-                        state = AuthState.CODE_VALIDATION_PHONE;
+                        if (response.getActivationType() == ApiPhoneActivationType.CODE) {
+                            state = AuthState.CODE_VALIDATION_PHONE;
+                        } else if (response.getActivationType() == ApiPhoneActivationType.PASSWORD) {
+                            state = AuthState.PASSWORD_VALIDATION;
+                        } else {
+                            state = AuthState.CODE_VALIDATION_PHONE;
+                        }
 
                         im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                             @Override
@@ -286,6 +489,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestGetOAuth2Params() {
         return new Command<AuthState>() {
             @Override
@@ -322,6 +526,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestCompleteOauth(final String code) {
         return new Command<AuthState>() {
             @Override
@@ -356,6 +561,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath) {
         return new Command<AuthState>() {
             @Override
@@ -388,6 +594,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestValidateCode(final String code) {
         if (code == null) {
             throw new RuntimeException("Code couldn't be null!");
@@ -433,6 +640,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestValidatePassword(final String password) {
         return new Command<AuthState>() {
             @Override
@@ -472,6 +680,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<Boolean> requestCallActivation() {
         return new Command<Boolean>() {
             @Override
@@ -493,10 +702,12 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public void resetAuth() {
         state = AuthState.AUTH_START;
     }
 
+    @Deprecated
     public void resetModule() {
         // Clearing authentication
         state = AuthState.AUTH_START;
@@ -508,6 +719,7 @@ public class Authentication {
         modules.getPreferences().putInt(KEY_SMS_CODE, 0);
     }
 
+    @Deprecated
     private void onLoggedIn(final CommandCallback<AuthState> callback, ResponseAuth response) {
         state = AuthState.LOGGED_IN;
         myUid = response.getUser().getId();
@@ -518,19 +730,8 @@ public class Authentication {
         modules.getUpdatesModule().onUpdateReceived(new LoggedIn(response, new Runnable() {
             @Override
             public void run() {
-
                 state = AuthState.LOGGED_IN;
-
                 callback.onResult(state);
-
-                // Notify ActorAnalytics
-                User user = modules.getUsersModule().getUsersStorage().getValue(myUid);
-                ArrayList<Long> records = new ArrayList<Long>();
-                for (ContactRecord contactRecord : user.getRecords()) {
-                    if (contactRecord.getRecordType() == ContactRecordType.PHONE) {
-                        records.add(Long.parseLong(contactRecord.getRecordData()));
-                    }
-                }
             }
         }));
     }

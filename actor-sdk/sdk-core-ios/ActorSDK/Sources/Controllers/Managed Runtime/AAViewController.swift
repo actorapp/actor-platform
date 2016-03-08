@@ -5,8 +5,11 @@
 import UIKit
 import MobileCoreServices
 import RSKImageCropper
+import ElegantPresentations
+import DZNWebViewController
+import SafariServices
 
-public class AAViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, RSKImageCropViewControllerDelegate  {
+public class AAViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, RSKImageCropViewControllerDelegate, UIViewControllerTransitioningDelegate  {
     
     // MARK: -
     // MARK: Public vars
@@ -176,6 +179,16 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         presentViewController(navigation, animated: true, completion: nil)
     }
     
+    public func openUrl(url: String) {
+        if let url = NSURL(string: url) {
+            if #available(iOS 9.0, *) {
+                self.presentElegantViewController(SFSafariViewController(URL: url))
+            } else {
+                self.presentElegantViewController(AANavigationController(rootViewController: DZNWebViewController(URL: url)))
+            }
+        }
+    }
+    
     // Image pick and crop
     
     public func cropImage(image: UIImage) {
@@ -214,5 +227,20 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
     public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         pendingPickClosure = nil
         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    public func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController, sourceViewController source: UIViewController) -> UIPresentationController? {
+        return ElegantPresentations.controller(presentedViewController: presented, presentingViewController: presenting, options: [])
+    }
+    
+    public func presentElegantViewController(controller: UIViewController) {
+        if AADevice.isiPad {
+            controller.modalPresentationStyle = .FormSheet
+            presentViewController(controller, animated: true, completion: nil) 
+        } else {
+            controller.modalPresentationStyle = .Custom
+            controller.transitioningDelegate = self
+            presentViewController(controller, animated: true, completion: nil)
+        }
     }
 }

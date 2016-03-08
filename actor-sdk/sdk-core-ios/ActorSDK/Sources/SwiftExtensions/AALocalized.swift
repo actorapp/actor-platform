@@ -58,7 +58,7 @@ public extension UILabel {
         
         set (value) {
             if value != nil {
-                self.text = AALocalized(value!).replace("{appname}", dest: ActorSDK.sharedActor().appNameInLocStrings)
+                self.text = AALocalized(value!).replace("{appname}", dest: ActorSDK.sharedActor().appName)
             } else {
                 self.text = nil
             }
