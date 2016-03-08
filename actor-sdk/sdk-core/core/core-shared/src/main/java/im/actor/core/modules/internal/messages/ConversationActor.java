@@ -325,6 +325,9 @@ public class ConversationActor extends ModuleActor {
         } else {
             docs.removeItem(rid);
         }
+        if(delegate!=null){
+            delegate.onUpdate(updatedMsg);
+        }
     }
 
     @Verified

@@ -49,7 +49,7 @@ public class AllMessagesFragment extends DisplayListFragment<MessageEx, AllMessa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View res = inflate(inflater, container, R.layout.fragment_all_messages,
-                messenger().getCustomDisplayList(new Peer(PeerType.PRIVATE, 1), "all", MessageEx.CREATOR));
+                messenger().getCustomDisplayList(new Peer(PeerType.PRIVATE, 1), "favorite", MessageEx.CREATOR));
         res.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
 
         return res;
