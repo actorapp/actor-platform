@@ -59,7 +59,7 @@ public class Message extends BserObject implements ListEngineItem {
         this.reactions = reactions;
     }
 
-    private Message() {
+    protected Message() {
 
     }
 

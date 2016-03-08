@@ -56,6 +56,7 @@ public class ConversationActor extends ModuleActor {
     private long inReadState;
     private long outReadState;
     private long outReceiveState;
+    ConversationActorDelegate delegate;
 
     private boolean isConversationVisible = false;
     private boolean isAppVisible = false;
@@ -90,7 +91,7 @@ public class ConversationActor extends ModuleActor {
         if (peer.getPeerType() == PeerType.GROUP) {
             isHiddenPeer = getGroup(peer.getPeerId()).isHidden();
         }
-
+        delegate = context().getMessenger().getConversationActorDelegate(peer);
         subscribe(AppVisibleChanged.EVENT);
     }
 
@@ -171,6 +172,9 @@ public class ConversationActor extends ModuleActor {
         // Adding message
         messages.addOrUpdateItems(updated);
         docs.addOrUpdateItems(updatedDocs);
+        if(delegate!=null){
+            delegate.onIncoming(updated);
+        }
 
         for (Message m : updated) {
             if (m.getSenderId() == myUid()) {
@@ -236,6 +240,9 @@ public class ConversationActor extends ModuleActor {
         if (message.getContent() instanceof DocumentContent) {
             docs.addOrUpdateItem(message);
         }
+        if(delegate!=null){
+            delegate.onIncoming(message);
+        }
 
         // Updating dialog if on server
         if (message.isOnServer()) {
@@ -274,6 +281,7 @@ public class ConversationActor extends ModuleActor {
     @Verified
     private void onMessageContentUpdated(long rid, AbsContent content) {
         Message message = messages.getValue(rid);
+
         // Ignore if we already doesn't have this message
         if (message == null) {
             return;
@@ -289,6 +297,9 @@ public class ConversationActor extends ModuleActor {
             docs.addOrUpdateItem(updatedMsg);
         } else {
             docs.removeItem(rid);
+        }
+        if(delegate!=null){
+            delegate.onUpdate(updatedMsg);
         }
 
         if (!isHiddenPeer) {
@@ -511,6 +522,9 @@ public class ConversationActor extends ModuleActor {
         }
         messages.removeItems(rids2);
         docs.removeItems(rids2);
+        if(delegate!=null){
+            delegate.onDelete(rids2);
+        }
 
         inPendingIndex.remove(rids);
         outPendingIndex.remove(rids);
@@ -581,6 +595,9 @@ public class ConversationActor extends ModuleActor {
 
         if (updatedDocs.size() > 0) {
             docs.addOrUpdateItems(updatedDocs);
+        }
+        if(delegate!=null){
+            delegate.onIncoming(updated);
         }
 
         inReadStateNew = Math.max(inReadStateNew, maxReadMessage);
@@ -798,5 +815,12 @@ public class ConversationActor extends ModuleActor {
 
     public static class ConversationHidden {
 
+    }
+
+    public interface ConversationActorDelegate {
+        void onIncoming(ArrayList<Message> msgs);
+        void onIncoming(Message msg);
+        void onUpdate(Message msg);
+        void onDelete(long[] rids);
     }
 }
