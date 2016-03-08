@@ -7,16 +7,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
-import im.actor.core.entity.content.AbsContent;
-import im.actor.core.entity.content.ContentConverter;
-import im.actor.core.entity.content.JsonContent;
-import im.actor.core.entity.content.internal.AbsContentContainer;
+import im.actor.allmessages.MainPhoneControllerEx;
+import im.actor.allmessages.MessagesHandler;
+import im.actor.allmessages.OverHandlerActor;
+import im.actor.core.entity.Peer;
+import im.actor.core.modules.internal.messages.ConversationActor;
+import im.actor.runtime.actors.Actor;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.actors.Props;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
+import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
 import im.actor.sdk.controllers.conversation.messages.BaseJsonHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.fragment.group.GroupInfoFragment;
@@ -28,7 +36,6 @@ import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
 import im.actor.sdk.controllers.fragment.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
-import im.actor.tc.TCMessageHolder;
 
 public class Application extends ActorSDKApplication {
 
@@ -61,13 +68,13 @@ public class Application extends ActorSDKApplication {
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
 
-        @Override
-        public BaseJsonHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
-            if(dataTypeHash == "tcmessage".hashCode()){
-                return new TCMessageHolder(messagesAdapter, viewGroup, R.layout.tc_holder, false);
-            }
-            return null;
-        }
+//        @Override
+//        public BaseJsonHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
+//            if(dataTypeHash == "tcmessage".hashCode()){
+//                return new TCMessageHolder(messagesAdapter, viewGroup, R.layout.tc_holder, false);
+//            }
+//            return null;
+//        }
 
         @Override
         public BaseActorProfileActivity getProfileIntent(int uid) {
@@ -176,6 +183,30 @@ public class Application extends ActorSDKApplication {
                     };
                 }
             };
+        }
+
+        @Override
+        public MainPhoneController getMainPhoneController(ActorMainActivity mainActivity) {
+            return new MainPhoneControllerEx(mainActivity);
+        }
+
+        HashMap<Peer, MessagesHandler> handlers = new HashMap<>();
+        ActorRef overHandler;
+
+        @Override
+        public ConversationActor.ConversationActorDelegate getConversationActorDelegate(Peer peer) {
+            if(overHandler == null){
+                overHandler = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
+                    @Override
+                    public Actor create() {
+                        return new OverHandlerActor();
+                    }
+                }), "actor/overhandler");
+            }
+            if(!handlers.containsKey(peer)){
+                handlers.put(peer, new MessagesHandler(peer, overHandler));
+            }
+            return handlers.get(peer);
         }
     }
 

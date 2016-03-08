@@ -23,6 +23,7 @@ import im.actor.core.entity.AuthStartRes;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.MentionFilterResult;
+import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
@@ -45,6 +46,7 @@ import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerInfoClosed;
 import im.actor.core.events.PeerInfoOpened;
 import im.actor.core.events.UserVisible;
+import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
@@ -67,10 +69,12 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.PreferencesStorage;
 
 /**
@@ -2208,5 +2212,13 @@ public class Messenger {
      */
     ModuleContext getModuleContext() {
         return modules;
+    }
+
+    public ConversationActor.ConversationActorDelegate getConversationActorDelegate(Peer peer) {
+        return null;
+    }
+
+    public ListEngine getCustomConversationEngine(Peer peer, String datatype, BserCreator creator){
+        return modules.getMessagesModule().getCustomConversationEngine(peer, datatype, creator);
     }
 }
