@@ -6,7 +6,7 @@ import Foundation
 import MessageUI
 import YYText
 
-public class AAAuthOTPViewController: AAAuthViewController {
+public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewControllerDelegate {
 
     private static let DIAL_SECONDS: Int = 60
     
@@ -166,6 +166,10 @@ public class AAAuthOTPViewController: AAAuthViewController {
                 self.presentElegantViewController(emailController)
             }
         }
+    }
+    
+    public func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
     public override func nextDidTap() {
