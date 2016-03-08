@@ -11,7 +11,7 @@ extension ARPromise {
         self.done(MainThreadPromiseDispatcher())
     }
     
-    func doneLoader() -> ARPromise {
+    func startUserAction(ignore: [String] = []) -> ARPromise {
         done()
         
         let window = UIApplication.sharedApplication().windows[1]
@@ -28,6 +28,12 @@ extension ARPromise {
         
         failure { (e) -> () in
             hud.hide(true)
+            if let rpc = e as? ACRpcException {
+                if ignore.contains(rpc.tag) {
+                    return
+                }
+            }
+            AAExecutions.errorWithError(e)
         }
         
         return self
