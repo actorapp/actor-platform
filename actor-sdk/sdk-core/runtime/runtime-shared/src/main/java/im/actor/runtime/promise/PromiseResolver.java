@@ -16,9 +16,9 @@ import im.actor.runtime.actors.ActorRef;
 public class PromiseResolver<T> {
 
     private Promise<T> promise;
-    private ActorRef dispatcher;
+    private PromiseDispatcher dispatcher;
 
-    PromiseResolver(Promise<T> promise, ActorRef dispatcher) {
+    PromiseResolver(Promise<T> promise, PromiseDispatcher dispatcher) {
         this.promise = promise;
         this.dispatcher = dispatcher;
     }
@@ -39,7 +39,7 @@ public class PromiseResolver<T> {
      * @return dispatcher actor
      */
     @ObjectiveCName("getDispatcher")
-    public ActorRef getDispatcher() {
+    public PromiseDispatcher getDispatcher() {
         return dispatcher;
     }
 
