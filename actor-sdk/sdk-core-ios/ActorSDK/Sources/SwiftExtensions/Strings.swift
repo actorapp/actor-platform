@@ -11,6 +11,14 @@ public extension String {
     
     public var length: Int { return self.characters.count }
     
+    public func indexOf(str: String) -> Int? {
+        if let range = rangeOfString(str) {
+            return startIndex.distanceTo(range.startIndex)
+        } else {
+            return nil
+        }
+    }
+    
     public func trim() -> String {
         return stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet());
     }

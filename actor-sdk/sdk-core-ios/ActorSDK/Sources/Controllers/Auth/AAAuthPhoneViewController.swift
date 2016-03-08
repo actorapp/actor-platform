@@ -37,89 +37,104 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
 
     override func viewDidLoad() {
         
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
         
         scrollView.keyboardDismissMode = .OnDrag
         scrollView.scrollEnabled = true
         scrollView.alwaysBounceVertical = true
         
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
-        welcomeLabel.textColor = UIColor.alphaBlack(0.87)
-        welcomeLabel.text = "What's your phone number?"
+        welcomeLabel.textColor = ActorSDK.sharedActor().style.authTitleColor
+        welcomeLabel.text = AALocalized("AuthPhoneTitle")
         welcomeLabel.numberOfLines = 1
         welcomeLabel.minimumScaleFactor = 0.3
         welcomeLabel.adjustsFontSizeToFitWidth = true
         welcomeLabel.textAlignment = .Center
         
         hintLabel.font = UIFont.systemFontOfSize(14)
-        hintLabel.textColor = UIColor.alphaBlack(0.64)
-        hintLabel.text = "We need your phone number to grant\nsecurity of your personal information."
+        hintLabel.textColor = ActorSDK.sharedActor().style.authHintColor
+        hintLabel.text = AALocalized("AuthPhoneHint")
         hintLabel.numberOfLines = 2
         hintLabel.textAlignment = .Center
         
         countryButton.setTitle(currentCountry.country, forState: .Normal)
-        countryButton.setTitleColor(UIColor.alphaBlack(0.87), forState: .Normal)
+        countryButton.setTitleColor(ActorSDK.sharedActor().style.authTextColor, forState: .Normal)
         countryButton.titleLabel!.font = UIFont.systemFontOfSize(17)
         countryButton.titleEdgeInsets = UIEdgeInsetsMake(11, 10, 11, 10)
         countryButton.contentHorizontalAlignment = .Left
         countryButton.setBackgroundImage(Imaging.imageWithColor(UIColor.alphaBlack(0.2), size: CGSizeMake(1, 1)), forState: .Highlighted)
         countryButton.addTarget(self, action: "countryDidPressed", forControlEvents: .TouchUpInside)
         
-        countryButtonLine.backgroundColor = UIColor.alphaBlack(0.2)
+        countryButtonLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         
         phoneCodeLabel.font = UIFont.systemFontOfSize(17)
-        phoneCodeLabel.textColor = UIColor.alphaBlack(0.56)
+        phoneCodeLabel.textColor = ActorSDK.sharedActor().style.authHintColor
         phoneCodeLabel.text = "+\(currentCountry.code)"
         phoneCodeLabel.textAlignment = .Center
         
         phoneNumberLabel.currentIso = currentCountry.iso
         phoneNumberLabel.keyboardType = .PhonePad
-        phoneNumberLabel.placeholder = "Phone Number"
+        phoneNumberLabel.placeholder = AALocalized("AuthPhonePlaceholder")
+        phoneNumberLabel.textColor = ActorSDK.sharedActor().style.authTextColor
         
-        phoneCodeLabelLine.backgroundColor = UIColor.alphaBlack(0.2)
+        phoneCodeLabelLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         
-        let hintText = "By singing up, you agree with\nTerms of Service and Privacy Policy."
-        let tosRange = NSRange(location: 30, length: 16)
-        let privacyRange = NSRange(location: 51, length: 14)
+        if ActorSDK.sharedActor().privacyPolicyUrl != nil && ActorSDK.sharedActor().termsOfServiceUrl != nil {
+            let tosText = AALocalized("AuthDisclaimerToS")
+            let privacyText = AALocalized("AuthDisclaimerPrivacy")
+            let hintText = AALocalized("AuthDisclaimer")
+            let tosRange = NSRange(location: hintText.indexOf(tosText)!, length: tosText.length)
+            let privacyRange = NSRange(location: hintText.indexOf(privacyText)!, length: privacyText.length)
 
-        let attributedTerms = NSMutableAttributedString(string: hintText)
-        attributedTerms.yy_color = UIColor.alphaBlack(0.56)
+            let attributedTerms = NSMutableAttributedString(string: hintText)
+            attributedTerms.yy_color = ActorSDK.sharedActor().style.authHintColor
         
-        //
-        // Terms Of Service
-        //
         
-        let tosLink = YYTextHighlight()
-        tosLink.setColor(UIColor.blueColor().alpha(0.2))
-        tosLink.tapAction = { (container, text, range, rect) in
-            self.openUrl("https://actor.im/tos")
+            //
+            // Terms Of Service
+            //
+        
+            let tosLink = YYTextHighlight()
+            tosLink.setColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56))
+            tosLink.tapAction = { (container, text, range, rect) in
+                self.openUrl(ActorSDK.sharedActor().termsOfServiceUrl!)
+            }
+            attributedTerms.yy_setColor(ActorSDK.sharedActor().style.authTintColor, range: tosRange)
+            attributedTerms.yy_setTextHighlight(tosLink, range: tosRange)
+        
+        
+            //
+            // Privacy Policy
+            //
+        
+            let privacyLink = YYTextHighlight()
+            privacyLink.setColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56))
+            privacyLink.tapAction = { (container, text, range, rect) in
+                self.openUrl(ActorSDK.sharedActor().privacyPolicyUrl!)
+            }
+            attributedTerms.yy_setColor(ActorSDK.sharedActor().style.authTintColor, range: privacyRange)
+            attributedTerms.yy_setTextHighlight(privacyLink, range: privacyRange)
+        
+        
+            termsLabel.attributedText = attributedTerms
+            termsLabel.font = UIFont.systemFontOfSize(14)
+            termsLabel.numberOfLines = 2
+            termsLabel.textAlignment = .Center
+        } else {
+            termsLabel.hidden = true
         }
-        attributedTerms.yy_setColor(UIColor.blueColor().alpha(0.56), range: tosRange)
-        attributedTerms.yy_setTextHighlight(tosLink, range: tosRange)
         
         
-        //
-        // Privacy Policy
-        //
-        
-        let privacyLink = YYTextHighlight()
-        privacyLink.setColor(UIColor.blueColor().alpha(0.2))
-        privacyLink.tapAction = { (container, text, range, rect) in
-            self.openUrl("https://actor.im/privacy")
+        if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+            useEmailButton.setTitle(AALocalized("AuthPhoneUseEmail"), forState: .Normal)
+            useEmailButton.titleLabel?.font = UIFont.systemFontOfSize(14)
+            useEmailButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor, forState: .Normal)
+            useEmailButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56), forState: .Highlighted)
+            useEmailButton.addTarget(self, action: "useEmailDidPressed", forControlEvents: .TouchUpInside)
+        } else {
+            useEmailButton.hidden = true
         }
-        attributedTerms.yy_setColor(UIColor.blueColor().alpha(0.56), range: privacyRange)
-        attributedTerms.yy_setTextHighlight(privacyLink, range: privacyRange)
         
-        
-        termsLabel.attributedText = attributedTerms
-        termsLabel.font = UIFont.systemFontOfSize(14)
-        termsLabel.numberOfLines = 2
-        termsLabel.textAlignment = .Center
-        
-        useEmailButton.setTitle("Use email isntead", forState: .Normal)
-        useEmailButton.titleLabel?.font = UIFont.systemFontOfSize(14)
-        useEmailButton.setTitleColor(UIColor.blueColor().alpha(0.56), forState: .Normal)
-        useEmailButton.addTarget(self, action: "useEmailDidPressed", forControlEvents: .TouchUpInside)
         
         scrollView.addSubview(welcomeLabel)
         scrollView.addSubview(hintLabel)
@@ -190,7 +205,7 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
             if res.authMode.toNSEnum() == .OTP {
                 self.navigateNext(AAAuthOTPViewController(phone: numberStr, name: self.name, transactionHash: res.transactionHash))
             } else {
-                self.alertUser("This account can't be authenticated in this version. Please, update app.")
+                self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
             }
         }
     }
