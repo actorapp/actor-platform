@@ -17,6 +17,7 @@ import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.rpc.ResponseRawRequest;
 import im.actor.core.api.rpc.ResponseSeqDate;
+import im.actor.core.entity.AuthStartRes;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.MentionFilterResult;
@@ -67,6 +68,7 @@ import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.PreferencesStorage;
 
 /**
@@ -84,6 +86,7 @@ public class Messenger {
      */
     @ObjectiveCName("initWithConfiguration:")
     public Messenger(@NotNull Configuration configuration) {
+
         // We assume that configuration is valid and all configuration verification
         // Must be implemented in Configuration object
 
@@ -114,6 +117,7 @@ public class Messenger {
      * @return current Authentication state
      */
     @NotNull
+    @Deprecated
     public AuthState getAuthState() {
         return modules.getAuthModule().getAuthState();
     }
@@ -128,12 +132,37 @@ public class Messenger {
     }
 
     /**
+     * Starting email auth
+     *
+     * @param email email for authentication
+     * @return promise of AuthStartRes
+     */
+    @NotNull
+    @ObjectiveCName("doStartAuthWithEmail:")
+    public Promise<AuthStartRes> doStartEmailAuth(String email) {
+        return modules.getAuthModule().doStartEmailAuth(email);
+    }
+
+    /**
+     * Starting phone auth
+     *
+     * @param phone phone for authentication
+     * @return promise of AuthStartRes
+     */
+    @NotNull
+    @ObjectiveCName("doStartAuthWithPhone:")
+    public Promise<AuthStartRes> doStartPhoneAuth(long phone) {
+        return modules.getAuthModule().doStartPhoneAuth(phone);
+    }
+
+    /**
      * Request email auth
      *
      * @param email email to authenticate
      * @return Command for execution
      */
     @NotNull
+    @Deprecated
     @ObjectiveCName("requestStartAuthCommandWithEmail:")
     public Command<AuthState> requestStartEmailAuth(final String email) {
         return modules.getAuthModule().requestStartEmailAuth(email);
@@ -146,6 +175,7 @@ public class Messenger {
      * @return Command for execution
      */
     @NotNull
+    @Deprecated
     @ObjectiveCName("requestStartAuthCommandWithPhone:")
     public Command<AuthState> requestStartPhoneAuth(final long phone) {
         return modules.getAuthModule().requestStartPhoneAuth(phone);
@@ -158,6 +188,7 @@ public class Messenger {
      * @return Command for execution
      */
     @NotNull
+    @Deprecated
     @ObjectiveCName("requestStartAnonymousAuthWithUserName:")
     public Command<AuthState> requestStartAnonymousAuth(String userName) {
         return modules.getAuthModule().requestStartAnonymousAuth(userName);
@@ -254,6 +285,7 @@ public class Messenger {
      * @return phone number in international format
      */
     @ObjectiveCName("getAuthPhone")
+    @Deprecated
     public long getAuthPhone() {
         return modules.getAuthModule().getPhone();
     }
@@ -265,6 +297,7 @@ public class Messenger {
      * @return email
      */
     @ObjectiveCName("getAuthEmail")
+    @Deprecated
     public String getAuthEmail() {
         return modules.getAuthModule().getEmail();
     }
@@ -273,10 +306,14 @@ public class Messenger {
      * Resetting authentication process
      */
     @ObjectiveCName("resetAuth")
+    @Deprecated
     public void resetAuth() {
         modules.getAuthModule().resetAuth();
     }
 
+    /**
+     * This method is called when messenger was logged in. Useful for subclasses
+     */
     public void onLoggedIn() {
 
     }
@@ -334,7 +371,6 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("getUserWithUid:")
     public UserVM getUser(int uid) {
-        //noinspection ConstantConditions
         return getUsers().get(uid);
     }
 
@@ -362,7 +398,6 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("getGroupWithGid:")
     public GroupVM getGroup(int gid) {
-        //noinspection ConstantConditions
         return getGroups().get(gid);
     }
 
@@ -597,16 +632,14 @@ public class Messenger {
     /**
      * Update Message
      *
-     * @param peer         destination peer
-     * @param text         message text
-     * @param rid          message rundom id
-     *
+     * @param peer destination peer
+     * @param text message text
+     * @param rid  message rundom id
      */
     @ObjectiveCName("updateMessageWithPeer:withText:withRid:")
     public Command<ResponseSeqDate> updateMessage(@NotNull Peer peer, @NotNull String text, long rid) {
         return modules.getMessagesModule().updateMessage(peer, text, rid);
     }
-
 
 
     /**
@@ -1760,27 +1793,6 @@ public class Messenger {
         modules.getSettingsModule().setPrivacy(privacy);
     }
 
-
-    /**
-     * Is markdown enabled.
-     *
-     * @return is markdown enabled
-     */
-    @ObjectiveCName("isMarkdownEnabled")
-    public boolean isMarkdownEnabled() {
-        return modules.getSettingsModule().isMarkdownEnabled();
-    }
-
-    /**
-     * Change if markdown enabled
-     *
-     * @param val is markdown enabled
-     */
-    @ObjectiveCName("changeMarkdownWithValue:")
-    public void changeMarkdown(boolean val) {
-        modules.getSettingsModule().changeMarkdown(val);
-    }
-
     /**
      * Is notifications enabled for peer
      *
@@ -1904,16 +1916,6 @@ public class Messenger {
     }
 
     /**
-     * Is Hint about contact rename shown to user and automatically mark as shown if not.
-     *
-     * @return is hint already shown
-     */
-    @ObjectiveCName("isRenameHintShown")
-    public boolean isRenameHintShown() {
-        return modules.getSettingsModule().isRenameHintShown();
-    }
-
-    /**
      * Getting selected wallpaper uri. local:[file_name] for local files
      *
      * @return not null if custom background set
@@ -1949,6 +1951,16 @@ public class Messenger {
     @ObjectiveCName("loadStickers")
     public void loadStickers() {
         modules.getStickersModule().loadStickers();
+    }
+
+    /**
+     * Is Hint about contact rename shown to user and automatically mark as shown if not.
+     *
+     * @return is hint already shown
+     */
+    @ObjectiveCName("isRenameHintShown")
+    public boolean isRenameHintShown() {
+        return modules.getSettingsModule().isRenameHintShown();
     }
 
     //////////////////////////////////////
@@ -2142,9 +2154,5 @@ public class Messenger {
      */
     ModuleContext getModuleContext() {
         return modules;
-    }
-
-    public long getAuthId() {
-        return modules.getApiModule().getActorApi().getKeyStorage().getAuthKey();
     }
 }

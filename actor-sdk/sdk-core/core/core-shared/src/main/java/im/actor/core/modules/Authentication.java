@@ -4,6 +4,8 @@
 
 package im.actor.core.modules;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 import im.actor.core.ApiConfiguration;
@@ -27,6 +29,8 @@ import im.actor.core.api.rpc.ResponseStartEmailAuth;
 import im.actor.core.api.rpc.ResponseStartPhoneAuth;
 import im.actor.core.api.rpc.ResponseStartUsernameAuth;
 import im.actor.core.api.rpc.ResponseVoid;
+import im.actor.core.entity.AuthMode;
+import im.actor.core.entity.AuthStartRes;
 import im.actor.core.entity.ContactRecord;
 import im.actor.core.entity.ContactRecordType;
 import im.actor.core.entity.User;
@@ -39,6 +43,9 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
+import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.PromiseResolver;
 
 public class Authentication {
 
@@ -59,24 +66,34 @@ public class Authentication {
     private Modules modules;
     private AuthState state;
 
-    private byte[] deviceHash;
-    private ApiConfiguration apiConfiguration;
+    private final ArrayList<String> langs;
+    private final byte[] deviceHash;
+    private final ApiConfiguration apiConfiguration;
 
     private int myUid;
 
     public Authentication(Modules modules) {
         this.modules = modules;
 
-        this.myUid = modules.getPreferences().getInt(KEY_AUTH_UID, 0);
-
         // Keep device hash always stable across launch
-        deviceHash = modules.getPreferences().getBytes(KEY_DEVICE_HASH);
-        if (deviceHash == null) {
-            deviceHash = Crypto.SHA256(modules.getConfiguration().getApiConfiguration().getDeviceString().getBytes());
-            modules.getPreferences().putBytes(KEY_DEVICE_HASH, deviceHash);
+        byte[] _deviceHash = modules.getPreferences().getBytes(KEY_DEVICE_HASH);
+        if (_deviceHash == null) {
+            _deviceHash = Crypto.SHA256(modules.getConfiguration().getApiConfiguration().getDeviceString().getBytes());
+            modules.getPreferences().putBytes(KEY_DEVICE_HASH, _deviceHash);
+        }
+        deviceHash = _deviceHash;
+
+        // Languages
+        langs = new ArrayList<>();
+        for (String s : modules.getConfiguration().getPreferredLanguages()) {
+            langs.add(s);
         }
 
+        // Api Configuration
         apiConfiguration = modules.getConfiguration().getApiConfiguration();
+
+        // Authenticated UID
+        myUid = modules.getPreferences().getInt(KEY_AUTH_UID, 0);
     }
 
     public int myUid() {
@@ -108,14 +125,67 @@ public class Authentication {
         }
     }
 
+    public Promise<AuthStartRes> doStartEmailAuth(final String email) {
+        return new Promise<>(new PromiseFunc<AuthStartRes>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<AuthStartRes> resolver) {
+                request(new RequestStartEmailAuth(email,
+                        apiConfiguration.getAppId(),
+                        apiConfiguration.getAppKey(),
+                        deviceHash,
+                        apiConfiguration.getDeviceTitle(),
+                        modules.getConfiguration().getTimeZone(),
+                        langs), new RpcCallback<ResponseStartEmailAuth>() {
+                    @Override
+                    public void onResult(ResponseStartEmailAuth response) {
+                        resolver.result(new AuthStartRes(
+                                response.getTransactionHash(),
+                                AuthMode.fromApi(response.getActivationType()),
+                                response.isRegistered()));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        resolver.error(e);
+                    }
+                });
+            }
+        });
+    }
+
+    public Promise<AuthStartRes> doStartPhoneAuth(final long phone) {
+        return new Promise<>(new PromiseFunc<AuthStartRes>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<AuthStartRes> resolver) {
+                request(new RequestStartPhoneAuth(phone,
+                        apiConfiguration.getAppId(),
+                        apiConfiguration.getAppKey(),
+                        deviceHash,
+                        apiConfiguration.getDeviceTitle(),
+                        modules.getConfiguration().getTimeZone(),
+                        langs), new RpcCallback<ResponseStartPhoneAuth>() {
+                    @Override
+                    public void onResult(ResponseStartPhoneAuth response) {
+                        resolver.result(new AuthStartRes(
+                                response.getTransactionHash(),
+                                AuthMode.fromApi(response.getActivationType()),
+                                response.isRegistered()));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        resolver.error(e);
+                    }
+                });
+            }
+        });
+    }
+
+    @Deprecated
     public Command<AuthState> requestStartAnonymousAuth(final String userName) {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                ArrayList<String> langs = new ArrayList<>();
-                for (String s : modules.getConfiguration().getPreferredLanguages()) {
-                    langs.add(s);
-                }
                 request(new RequestStartAnonymousAuth(userName,
                         apiConfiguration.getAppId(),
                         apiConfiguration.getAppKey(),
@@ -143,6 +213,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestStartEmailAuth(final String email) {
         return new Command<AuthState>() {
             @Override
@@ -198,6 +269,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestStartUserNameAuth(final String userName) {
         return new Command<AuthState>() {
             @Override
@@ -243,6 +315,7 @@ public class Authentication {
         };
     }
 
+    @Deprecated
     public Command<AuthState> requestStartPhoneAuth(final long phone) {
         return new Command<AuthState>() {
             @Override

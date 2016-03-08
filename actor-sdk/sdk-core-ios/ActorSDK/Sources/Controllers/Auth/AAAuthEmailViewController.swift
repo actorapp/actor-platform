@@ -144,8 +144,12 @@ public class AAAuthEmailViewController: AAAuthViewController {
             return
         }
         
-        executeSafeOnlySuccess(Actor.requestStartAuthCommandWithEmail(email)) { (val) -> Void in
-            self.navigateNext(AAEmailAuthCodeViewController(email: email))
+        Actor.doStartAuthWithEmail(email).doneLoader().then { (res: ACAuthStartRes!) -> () in
+            if res.authMode.toNSEnum() == .OTP {
+                self.navigateNext(AAEmailAuthCodeViewController(email: email))
+            } else {
+                self.alertUser("This account can't be authenticated in this version. Please, update app.")
+            }
         }
     }
     
