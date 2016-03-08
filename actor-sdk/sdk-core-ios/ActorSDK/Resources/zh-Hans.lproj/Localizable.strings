@@ -482,7 +482,9 @@
 
 "AuthOTPPhoneTitle" = "Confirm your phone";
 
-"AuthOTPHint" = "We’ve sent you a confirmation code.\nPlease enter it below.";
+"AuthOTPEmailHint" = "We’ve sent you email with confirmation code.\nPlease enter it below.";
+
+"AuthOTPPhoneHint" = "We’ve sent you SMS with confirmation code.\nPlease enter it below.";
 
 "AuthOTPPlaceholder" = "Confirmation code";
 

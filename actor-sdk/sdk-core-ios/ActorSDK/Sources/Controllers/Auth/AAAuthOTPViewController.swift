@@ -92,9 +92,14 @@ public class AAAuthOTPViewController: AAAuthViewController {
         validateLabel.textAlignment = .Center
         
         hintLabel.font = UIFont.systemFontOfSize(14)
-        hintLabel.text = AALocalized("AuthOTPHint")
+        if email != nil {
+            hintLabel.text = AALocalized("AuthOTPEmailHint")
+        } else {
+            hintLabel.text = AALocalized("AuthOTPPhoneHint")
+        }
         hintLabel.textColor = ActorSDK.sharedActor().style.authHintColor
         hintLabel.textAlignment = .Center
+        hintLabel.numberOfLines = 2
         
         codeField.font = UIFont.systemFontOfSize(17)
         codeField.textColor = ActorSDK.sharedActor().style.authTextColor
