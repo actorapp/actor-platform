@@ -80,6 +80,8 @@ import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.bser.BserCreator;
+import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.files.FileSystemReference;
@@ -105,6 +107,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<Peer, ListEngine<Message>>();
     private final HashMap<Peer, ListEngine<Message>> conversationDocsEngines = new HashMap<Peer, ListEngine<Message>>();
+    private final HashMap<String, ListEngine> customConversationEngines = new HashMap<String, ListEngine>();
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
     private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<Peer, ActorRef>();
 
@@ -269,6 +272,17 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                         Storage.createList(STORAGE_CHAT_DOCS_PREFIX + peer.getUnuqueId(), Message.CREATOR));
             }
             return conversationDocsEngines.get(peer);
+        }
+    }
+
+    public ListEngine getCustomConversationEngine(Peer peer, String dataType, BserCreator creator){
+        String key = peer.getUnuqueId()+dataType;
+        synchronized (customConversationEngines) {
+            if (!customConversationEngines.containsKey(key)) {
+                customConversationEngines.put(key,
+                        Storage.createList(STORAGE_CHAT_CUSTOM_PREFIX + "_" + dataType + "_" + peer.getUnuqueId() , creator));
+            }
+            return customConversationEngines.get(key);
         }
     }
 

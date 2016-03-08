@@ -495,7 +495,8 @@ public class I18nEngine {
         if (uid == modules.getAuthModule().myUid()) {
             return locale.get("Thee");
         } else {
-            return getUser(uid).getName();
+            User user = getUser(uid);
+            return user!=null?user.getName():"";
         }
     }
 
