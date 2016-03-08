@@ -8,6 +8,8 @@ import YYText
 
 public class AAAuthOTPViewController: AAAuthViewController {
 
+    private static let DIAL_SECONDS: Int = 60
+    
     let scrollView = UIScrollView()
     let welcomeLabel = UILabel()
     let validateLabel = UILabel()
@@ -22,6 +24,10 @@ public class AAAuthOTPViewController: AAAuthViewController {
     let name: String!
     let email: String!
     let phone: String!
+    
+    private var counterTimer: NSTimer!
+    private var dialed: Bool = false
+    private var counter = AAAuthOTPViewController.DIAL_SECONDS
     
     public init(email: String, transactionHash: String) {
         self.transactionHash = transactionHash
@@ -77,7 +83,11 @@ public class AAAuthOTPViewController: AAAuthViewController {
         welcomeLabel.textAlignment = .Center
         
         validateLabel.font = UIFont.systemFontOfSize(14)
-        validateLabel.text = email
+        if email != nil {
+            validateLabel.text = email
+        } else {
+            validateLabel.text = phone
+        }
         validateLabel.textColor = ActorSDK.sharedActor().style.authTintColor
         validateLabel.textAlignment = .Center
         
@@ -102,6 +112,7 @@ public class AAAuthOTPViewController: AAAuthViewController {
         haventReceivedCode.titleLabel?.font = UIFont.systemFontOfSize(14)
         haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authTintColor, forState: .Normal)
         haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.64), forState: .Highlighted)
+        haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authHintColor, forState: .Disabled)
         haventReceivedCode.addTarget(self, action: "haventReceivedCodeDidPressed", forControlEvents: .TouchUpInside)
         
         scrollView.addSubview(welcomeLabel)
@@ -125,7 +136,7 @@ public class AAAuthOTPViewController: AAAuthViewController {
         codeField.frame = CGRectMake(20, 228 - 66, view.width - 40, 44)
         codeFieldLine.frame = CGRectMake(10, 228 + 44 - 66, view.width - 20, 0.5)
         
-        haventReceivedCode.frame = CGRectMake(20, 297 - 66, view.width - 40, 38)
+        haventReceivedCode.frame = CGRectMake(20, 297 - 66, view.width - 40, 56)
         
         scrollView.frame = view.bounds
         scrollView.contentSize = CGSizeMake(view.width, 240 - 66)
@@ -198,6 +209,70 @@ public class AAAuthOTPViewController: AAAuthViewController {
     private func shakeField() {
         shakeView(codeField, originalX: 20)
         shakeView(codeFieldLine, originalX: 10)
+    }
+    
+    public override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if self.phone != nil {
+        
+            updateTimerText()
+        
+            if !dialed {
+                counterTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateTimer", userInfo: nil, repeats: true)
+            }
+        }
+    }
+    
+    func updateTimer() {
+        
+        counter--
+        
+        if counter == 0 {
+            dialed = true
+            if counterTimer != nil {
+                counterTimer.invalidate()
+                counterTimer = nil
+            }
+            
+            Actor.doSendCodeViaCall(self.transactionHash).done()
+        }
+        
+        updateTimerText()
+    }
+    
+    
+    func updateTimerText() {
+        if dialed {
+            if ActorSDK.sharedActor().supportEmail != nil {
+                haventReceivedCode.setTitle(AALocalized("AuthOTPNoCode"), forState: .Normal)
+                haventReceivedCode.hidden = false
+                haventReceivedCode.enabled = true
+            } else {
+                haventReceivedCode.hidden = true
+            }
+        } else {
+            let min = counter / 60
+            let sec = counter % 60
+            let minFormatted = min.format("02")
+            let secFormatted = sec.format("02")
+            let time = "\(minFormatted):\(secFormatted)"
+            let text = AALocalized("AuthOTPCallHint")
+                .replace("{app_name}", dest: ActorSDK.sharedActor().appName)
+                .replace("{time}", dest: time)
+            haventReceivedCode.setTitle(text, forState: .Normal)
+            haventReceivedCode.enabled = false
+            haventReceivedCode.hidden = false
+        }
+    }
+    
+    public override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if counterTimer != nil {
+            counterTimer.invalidate()
+            counterTimer = nil
+        }
     }
 }
 

@@ -39,12 +39,14 @@ public class AAAuthLogInViewController: AAAuthViewController {
         
         if ActorSDK.sharedActor().authStrategy == .PhoneOnly {
             field.placeholder = AALocalized("AuthLoginPhone")
+            field.keyboardType = .EmailAddress
         } else if ActorSDK.sharedActor().authStrategy == .EmailOnly {
             field.placeholder = AALocalized("AuthLoginEmail")
+            field.keyboardType = .PhonePad
         } else if ActorSDK.sharedActor().authStrategy == .PhoneEmail {
             field.placeholder = AALocalized("AuthLoginPhoneEmail")
+            field.keyboardType = .Default
         }
-        field.keyboardType = .Default
         field.autocapitalizationType = .None
         
         fieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
@@ -97,7 +99,8 @@ public class AAAuthLogInViewController: AAAuthViewController {
             if let parsed = Int64(stripped) {
                 Actor.doStartAuthWithPhone(jlong(parsed)).startUserAction().then { (res: ACAuthStartRes!) -> () in
                     if res.authMode.toNSEnum() == .OTP {
-                        self.navigateNext(AAAuthOTPViewController(phone: value, transactionHash: res.transactionHash))
+                        let formatted = RMPhoneFormat().format("\(parsed)")
+                        self.navigateNext(AAAuthOTPViewController(phone: formatted, transactionHash: res.transactionHash))
                     } else {
                         self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
                     }
