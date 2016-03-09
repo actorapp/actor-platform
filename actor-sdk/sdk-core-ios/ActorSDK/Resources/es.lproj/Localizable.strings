@@ -100,33 +100,33 @@
  * Calls
  */
 
-"CallsStartAudio" = "Audio Call";
+"CallsStartAudio" = "Llamada de voz";
 
-"CallsStartGroupAudio" = "Group Audio Call";
+"CallsStartGroupAudio" = "LLamada de voz grupo";
 
-"CallsAnswer" = "answer";
+"CallsAnswer" = "Responder";
 
-"CallsDecline" = "decline";
+"CallsDecline" = "Disminución";
 
-"CallsMute" = "mute";
+"CallsMute" = "silenciar";
 
-"CallsSpeaker" = "speaker";
+"CallsSpeaker" = "Altavoz";
 
 "CallsVideo" = "video";
 
-"CallStateRinging" = "Ringing...";
+"CallStateRinging" = "llamando...";
 
-"CallStateConnecting" = "Connecting...";
+"CallStateConnecting" = "Conectando...";
 
-"CallStateIncoming" = "Incoming call...";
+"CallStateIncoming" = "Llamada entrante...";
 
-"CallPrivateTitle" = "Private Call";
+"CallPrivateTitle" = "Llamada privada";
 
-"CallPrivateText" = "Call from {name}";
+"CallPrivatelText" = "Llamada de {name}";
 
-"CallGroupTitle" = "Group Call";
+"CallGroupTitle" = "Llamar grupo";
 
-"CallGroupText" = "Group call {name}";
+"CallGroupText" = "Llamar grupo {name}";
 
 /*
  * Profile
@@ -443,7 +443,7 @@
 
 "AuthLoginPhoneEmail" = "Móvil o Email";
 
-"AuthNameTitle" = "Hola! ¿tu nombre?”;
+"AuthNameTitle" = "Hola! ¿tu nombre?";
 
 "AuthNamePlaceholder" = "Tu nombre completo";
 
@@ -455,7 +455,7 @@
 
 "AuthPhonePlaceholder" = "Número de Teléfono";
 
-"AuthCountryTitle" = "Código país”;
+"AuthCountryTitle" = "Código país";
 
 "AuthEmailTitle" = "¿Tu correo electrónico?";
 
@@ -467,11 +467,11 @@
 
 "AuthDisclaimer" = "Al registrarte, estás de acuerdo con los Términos de uso y Política de privacidad.";
 
-"AuthDisclaimerToS" = "Términos de uso“;
+"AuthDisclaimerToS" = "Términos de uso";
 
 "AuthDisclaimerPrivacy" = "Política de privacidad";
 
-"AuthOTPEmailTitle" = "Confirma tu email“;
+"AuthOTPEmailTitle" = "Confirma tu email";
 
 "AuthOTPPhoneTitle" = "Confirma tu número de móvil";
 
