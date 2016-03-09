@@ -7,10 +7,6 @@ import ReactMixin from 'react-mixin';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 class Loading extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static contextTypes = {
     intl: PropTypes.object
   };
