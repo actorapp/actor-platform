@@ -32,7 +32,7 @@ export default {
       ActorClient.onTyping(peer);
     }
 
-    DraftActionCreators.saveDraft(text);
+    DraftActionCreators.changeDraft(text);
     dispatch(ActionTypes.COMPOSE_TYPING, { peer, text, caretPosition });
   },
 

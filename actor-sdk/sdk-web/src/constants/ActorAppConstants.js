@@ -126,6 +126,7 @@ export const ActionTypes = keymirror({
 
   DRAFT_LOAD: null,
   DRAFT_SAVE: null,
+  DRAFT_CHANGE: null,
 
   APP_UPDATE_MODAL_SHOW: null,
   APP_UPDATE_MODAL_HIDE: null,
