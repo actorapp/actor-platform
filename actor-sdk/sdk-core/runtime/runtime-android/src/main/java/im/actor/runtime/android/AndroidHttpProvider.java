@@ -4,6 +4,8 @@
 
 package im.actor.runtime.android;
 
+import android.content.res.Resources;
+
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -41,25 +43,29 @@ public class AndroidHttpProvider implements HttpRuntime {
     private final MediaType MEDIA_TYPE = MediaType.parse("application/octet-stream");
 
     public AndroidHttpProvider() {
-//        String cert = AndroidContext.getContext().getResources().getString(R.string.trusted_pem);
-        String cert = "none";
-        if(!cert.equals("none")){
+        Resources resources = AndroidContext.getContext().getResources();
+        try {
+            String cert = resources.getString(resources.getIdentifier("trusted_pem", "string", AndroidContext.getContext().getPackageName()));
             SSLContext sslContext = sslContextForTrustedCertificates(new Buffer()
                     .writeUtf8(cert)
                     .inputStream());
             client.setSslSocketFactory(sslContext.getSocketFactory());
+        } catch (Resources.NotFoundException e) {
+
         }
 
-//        final String trustHostname = AndroidContext.getContext().getResources().getString(R.string.trusted_hostname);
-        final String trustHostname = "none";
-        if(!trustHostname.equals("none")){
+        try {
+            final String trustHostname = resources.getString(resources.getIdentifier("trusted_hostname", "string", AndroidContext.getContext().getPackageName()));
             client.setHostnameVerifier(new HostnameVerifier() {
                 @Override
                 public boolean verify(String hostname, SSLSession session) {
                     return hostname.equals(trustHostname);
                 }
             });
+        } catch (Resources.NotFoundException e) {
+
         }
+
     }
 
     public SSLContext sslContextForTrustedCertificates(InputStream in) {
