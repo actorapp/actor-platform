@@ -9,10 +9,6 @@ import classnames from 'classnames';
  * Class that represents a component for display document message content
  */
 class Document extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static propTypes = {
     content: PropTypes.object.isRequired,
     className: PropTypes.string

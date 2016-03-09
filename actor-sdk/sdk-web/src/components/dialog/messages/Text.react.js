@@ -3,42 +3,35 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import memoize from 'memoizee';
+import { findDOMNode } from 'react-dom';
+import hljs from 'highlight.js';
 import ActorClient from '../../../utils/ActorClient';
 
-import { emoji } from '../../../utils/EmojiUtils';
+import { processEmojiText } from '../../../utils/EmojiUtils';
 
-const processText = (text) => {
-  const markedText = ActorClient.renderMarkdown(text);
-  let emojifiedText = markedText;
+function processText(text) {
+  let processedText = text;
+  processedText = ActorClient.renderMarkdown(processedText);
+  processedText = processEmojiText(processedText);
 
-  emoji.include_title = true;
-  emoji.include_text = true;
-  emoji.change_replace_mode('css');
-  emojifiedText = emoji.replace_colons(emojifiedText);
-  emojifiedText = emoji.replace_unified(emojifiedText);
-  return emojifiedText;
-};
+  return processedText;
+}
 
-const memoizedProcessText = memoize(processText, {
-  length: 1,
-  maxAge: 60 * 60 * 1000,
-  max: 10000
-});
-
-/**
- * Class that represents a component for display text message content
- * @param {string} text Message text
- * @param {string} className Component class name
- */
 class Text extends Component {
   static propTypes = {
     text: PropTypes.string.isRequired,
     className: PropTypes.string
   };
 
-  constructor(props) {
-    super(props);
+  componentDidMount() {
+    requestAnimationFrame(() => {
+      const node = findDOMNode(this);
+      const codeBlocks = node.getElementsByTagName('pre');
+      for (let i = 0; i < codeBlocks.length; i++) {
+        const codeBlock = codeBlocks[i];
+        hljs.highlightBlock(codeBlock.firstChild);
+      }
+    });
   }
 
   render() {
@@ -46,7 +39,7 @@ class Text extends Component {
 
     return (
       <div className={className}>
-        <div className="text" dangerouslySetInnerHTML={{__html: memoizedProcessText(text)}}/>
+        <div className="text" dangerouslySetInnerHTML={{__html: processText(text)}}/>
       </div>
     );
   }

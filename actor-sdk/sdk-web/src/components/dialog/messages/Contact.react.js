@@ -10,10 +10,6 @@ import classnames from 'classnames';
  * Class that represents a component for display contact message content
  */
 class Contact extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static propTypes = {
     name: PropTypes.string.isRequired,
     photo64: PropTypes.string.isRequired,

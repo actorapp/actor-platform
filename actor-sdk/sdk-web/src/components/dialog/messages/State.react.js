@@ -3,48 +3,59 @@
  */
 
 import React, { Component, PropTypes } from 'react';
-import { MessageContentTypes } from '../../../constants/ActorAppConstants';
+import { MessageContentTypes, MessageStates } from '../../../constants/ActorAppConstants';
 
 class State extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static propTypes = {
-    message: PropTypes.object.isRequired
+    message: PropTypes.shape({
+      state: PropTypes.oneOf([
+        MessageStates.PENDING,
+        MessageStates.SENT,
+        MessageStates.RECEIVED,
+        MessageStates.READ,
+        MessageStates.ERROR,
+        MessageStates.UNKNOWN
+      ]).isRequired
+    }).isRequired
   };
+
+  renderState() {
+    const {state} = this.props.message;
+
+    switch (state) {
+      case MessageStates.PENDING:
+        return <i className="status status--pending material-icons">access_time</i>;
+      case MessageStates.SENT:
+        return <i className="status status--sent material-icons">done</i>;
+      case MessageStates.RECEIVED:
+        return <i className="status status--received material-icons">done_all</i>;
+      case MessageStates.READ:
+        return <i className="status status--read material-icons">done_all</i>;
+      case MessageStates.ERROR:
+        return <i className="status status--error material-icons">report_problem</i>;
+      case MessageStates.UNKNOWN:
+      default:
+        return null;
+    }
+  }
 
   render() {
     const { message } = this.props;
 
     if (message.content.content === MessageContentTypes.SERVICE) {
       return null;
-    } else {
-      let icon = null;
-
-      switch (message.state) {
-        case 'pending':
-          icon = <i className="status status--pending material-icons">access_time</i>;
-          break;
-        case 'sent':
-          icon = <i className="status status--sent material-icons">done</i>;
-          break;
-        case 'received':
-          icon = <i className="status status--received material-icons">done_all</i>;
-          break;
-        case 'read':
-          icon = <i className="status status--read material-icons">done_all</i>;
-          break;
-        case 'error':
-          icon = <i className="status status--error material-icons">report_problem</i>;
-          break;
-        default:
-      }
-
-      return (
-        <div className="message__status">{icon}</div>
-      );
     }
+
+    const state = this.renderState();
+    if (!state) {
+      return null;
+    }
+
+    return (
+      <div className="message__status">
+        {state}
+      </div>
+    );
   }
 }
 
