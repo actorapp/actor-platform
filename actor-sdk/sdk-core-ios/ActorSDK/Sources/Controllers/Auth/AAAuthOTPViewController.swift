@@ -191,6 +191,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
                     let promise = Actor.doSignupWithName(self.name, withSex: ACSex.UNKNOWN(), withTransaction: r.transactionHash)
                     promise.then { (r: ACAuthRes!) -> () in
                         Actor.doCompleteAuth(r).startUserAction().then { (r: JavaLangBoolean!) -> () in
+                            self.codeField.resignFirstResponder()
                             self.onAuthenticated()
                         }
                     }
@@ -283,6 +284,8 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
             counterTimer.invalidate()
             counterTimer = nil
         }
+        
+        self.codeField.resignFirstResponder()
     }
 }
 
