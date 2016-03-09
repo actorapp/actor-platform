@@ -25,6 +25,7 @@ final class GroupedDialogsSpec
   it should "appear in bottom on new outgoing message" in outgoingGoBottom
 
   "Hidden dialogs" should "appear on new message" in appearHidden
+  it should "appear when peer sends message to dialog" in appearHidden2
   it should "appear on show" in appearShown
 
   "Favourited dialogs" should "appear on favourite" in appearFavourite
@@ -151,7 +152,7 @@ final class GroupedDialogsSpec
 
     implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
     val bobPeer = getOutPeer(bob.id, aliceAuthId)
-    sendMessageToUser(bob.id, textMessage("Hi Bob!"))
+    //    sendMessageToUser(bob.id, textMessage("Hi Bob!"))
 
     prepareDialogs(bob, eve)
     whenReady(service.handleHideDialog(bobPeer))(identity)
@@ -167,6 +168,41 @@ final class GroupedDialogsSpec
     }
   }
 
+  def appearHidden2() = {
+    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+    val (bob, bobAuthId, bobAuthSid, _) = createUser()
+    val (eve, _, _, _) = createUser()
+
+    val aliceCD = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
+    val bobCD = ClientData(bobAuthId, 1, Some(AuthData(bob.id, bobAuthSid)))
+
+    val bobPeer = getOutPeer(bob.id, aliceAuthId)
+
+    {
+      implicit val cd = aliceCD
+      prepareDialogs(bob, eve)
+
+      whenReady(service.handleHideDialog(bobPeer))(identity)
+      inside(getDialogGroups(Privates)) {
+        case Vector(d) ⇒ d.peer.id should equal(eve.id)
+      }
+    }
+
+    {
+      implicit val cd = bobCD
+      sendMessageToUser(alice.id, textMessage("Hi Alice!"))
+    }
+
+    {
+      implicit val cd = aliceCD
+      inside(getDialogGroups(Privates)) {
+        case Vector(d1, d2) ⇒
+          d1.peer.id should equal(eve.id)
+          d2.peer.id should equal(bob.id)
+      }
+    }
+  }
+
   def appearShown() = {
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, _, _, _) = createUser()
@@ -174,9 +210,9 @@ final class GroupedDialogsSpec
 
     implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
     val bobPeer = getOutPeer(bob.id, aliceAuthId)
-    sendMessageToUser(bob.id, textMessage("Hi Bob!"))
 
     prepareDialogs(bob, eve)
+
     whenReady(service.handleHideDialog(bobPeer))(identity)
     inside(getDialogGroups(Privates)) {
       case Vector(d) ⇒ d.peer.id should equal(eve.id)
