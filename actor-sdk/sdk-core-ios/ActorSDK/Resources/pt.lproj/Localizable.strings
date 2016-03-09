@@ -125,7 +125,7 @@
 
 "CallPrivateTitle" = "Private Call";
 
-"CallPrivatelText" = "Call from {name}";
+"CallPrivateText" = "Call from {name}";
 
 "CallGroupTitle" = "Group Call";
 
@@ -399,60 +399,77 @@
 
 "Placeholder_Location_Message" = "Ative os Serviços de Localização em configurações do dispositivo para partilhar a sua localização.";
 
+
+/*
+ * Welcome
+ */
+
+"WelcomeTitle" = "Welcome to {app_name}!";
+
+"WelcomeTagline" = "Free, fast and secure messaging.";
+
+"WelcomeSignUp" = "Sign Up";
+
+"WelcomeLogIn" = "Log In";
+
+
 /*
  * Auth
  */
 
-"AuthMoreInfo" = "Messaging gratuito, rápido e seguro.";
+"AuthUnsupported" = "Essa conta não é suportada nesta versão do {app_name}. Favor atualizar para logar nessa conta.";
 
-"AuthStarButton" = "Iniciar Messaging";
+"AuthLoginTitle" = "Login no {app_name}";
 
-"AuthPhoneTitle" = "Seu Telefone";
+"AuthLoginPhone" = "Fone";
 
-"AuthPhoneNumberHint" = "Seu número de telefone";
+"AuthLoginEmail" = "E-mail";
 
-"AuthPhoneHint" = "Por favor informe o código do país e em seguida seu número de telefone.";
+"AuthLoginPhoneEmail" = "Fone ou E-mail";
 
-"AuthTermsOfServiceFull" = "Ao inscrever-se, você concorda com os Termos de Serviço.";
+"AuthNameTitle" = "Olá! Qual o seu nome?";
 
-"AuthTermsOfService" = "Termos de Serviço";
+"AuthNamePlaceholder" = "Nome completo";
 
-"AuthTermsOfServiceTitle" = "Termos";
+"AuthPhoneTitle" = "Qual é o seu número de telefone?";
 
-"AuthPhoneTooShort" = "Número de telefone muito curto";
+"AuthPhoneUseEmail" = "Use e-mail";
 
-"AuthCodeFieldHint" = "Código";
+"AuthPhoneHint" = "Nós precisamos do seu número de telefone para garantir a segurança de seus dados pessoais.";
 
-"AuthCodeHint" = "Nós te enviamos um SMS com o código.";
+"AuthPhonePlaceholder" = "Número do Telefone";
 
-"AuthCallHint" = "{appname} will call you in {time}";
+"AuthCountryTitle" = "Código do País";
 
-"AuthCallDoneHint" = "{appname} dialed your number.";
+"AuthEmailTitle" = "Qual é o seu e-mail?";
 
-"AuthNoCodeHint" = "Doesn't get the code?";
+"AuthEmailHint" = "Nós não vamos te enviar spam.";
 
-"AuthProfileTitle" = "Suas Informações";
+"AuthEmailPlaceholder" = "Seu e-mail";
 
-"AuthProfileAddPhoto1" = "adicionar";
+"AuthEmailUsePhone" = "Use o telefone";
 
-"AuthProfileAddPhoto2" = "foto";
+"AuthDisclaimer" = "Ao registrar-se, você concorda com os Termos de Serviço e a Política de Privacidade.";
 
-"AuthProfileNameHint" = "Seu nome";
+"AuthDisclaimerToS" = "Termos de Serviço";
 
-"AuthProfileHint" = "Insira seu nome e adicione uma foto para o perfil";
+"AuthDisclaimerPrivacy" = "Política de Privacidade";
 
-"AuthTerms" = "By signing up to {app_name}, you agree not to: \n\n - use our service to send spam and scam users.\n\n- promote violence on publicly viewable {app_name} bots or channels.\n\nWe reserve the right to update these Terms of Service later.";
+"AuthOTPEmailTitle" = "Confirme seu e-mail";
 
-"AuthEmailTitle" = "Your Email";
+"AuthOTPPhoneTitle" = "Confirme seu telefone";
 
-"AuthEmailHint" = "Please, confirm your corporate email address and press next";
+"AuthOTPEmailHint" = "Nós lhe enviamos um código de confirmação.\nDigite ele abaixo.";
 
-"AuthEmailFieldHint" = "Your corporate email adress";
+"AuthOTPPhoneHint" = "Nós lhe enviamos um código de confirmação.\nDigite ele abaixo.";
+
+"AuthOTPPlaceholder" = "Código de Confirmação";
+
+"AuthOTPNoCode" = "Não recebeu o código?";
+
+"AuthOTPCallHint" = "{app_name} irá ligar para você em {time}";
 
 
-"AuthEmailCodeFieldHint" = "Activation Code";
-
-"AuthEmailCodeHint" = "We sent activation code to your email.";
 
 /*
  * Common Elements

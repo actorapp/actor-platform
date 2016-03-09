@@ -124,7 +124,7 @@
 
 "CallPrivateTitle" = "Private Call";
 
-"CallPrivatelText" = "Call from {name}";
+"CallPrivateText" = "Call from {name}";
 
 "CallGroupTitle" = "Group Call";
 
@@ -422,60 +422,75 @@
 
 "Placeholder_Location_Message" = "请启用定位服务的设备设置分享你的位置。";
 
+
+/*
+ * Welcome
+ */
+
+"WelcomeTitle" = "Welcome to {app_name}!";
+
+"WelcomeTagline" = "Free, fast and secure messaging.";
+
+"WelcomeSignUp" = "Sign Up";
+
+"WelcomeLogIn" = "Log In";
+
+
 /*
  * Auth
  */
 
-"AuthMoreInfo" = "免费，快速，安全的消息.";
+"AuthCountryTitle" = "Country Code";
 
-"AuthStarButton" = "开始";
+"AuthUnsupported" = "This account is unsupported in this version of {app_name}. Please, update application for logging in to this account.";
 
-"AuthPhoneTitle" = "你的电话";
+"AuthLoginTitle" = "Login to {app_name}";
 
-"AuthPhoneNumberHint" = "你的电话号码";
+"AuthLoginPhone" = "Phone";
 
-"AuthPhoneHint" = "请选择你的国家并输入你的电话号码。";
+"AuthLoginEmail" = "Email";
 
-"AuthTermsOfServiceFull" = "若使用此应用服务，您应当阅读并遵守服务条款.";
+"AuthLoginPhoneEmail" = "Phone or Email";
 
-"AuthTermsOfService" = "服务条款";
+"AuthNameTitle" = "Hi! What's your name?";
 
-"AuthTermsOfServiceTitle" = "服务条款";
+"AuthNamePlaceholder" = "Your name";
 
-"AuthPhoneTooShort" = "电话号码太短";
+"AuthPhoneTitle" = "What's your phone number?";
 
-"AuthCodeFieldHint" = "验证码";
+"AuthPhoneHint" = "We need your phone number to grant security of your personal information.";
 
-"AuthCodeHint" = "已经通过短信为你发送验证码，请稍侯。";
+"AuthPhonePlaceholder" = "Phone Number";
 
-"AuthCallHint" = "{appname} 将在 {time} 后拨打你的电话";
+"AuthPhoneUseEmail" = "Use email instead";
 
-"AuthCallDoneHint" = "{appname} 拨打了你的电话.";
+"AuthEmailTitle" = "What's your email?";
 
-"AuthNoCodeHint" = "没收到验证码?";
+"AuthEmailHint" = "We won't send you spam.";
 
-"AuthProfileTitle" = "你的信息";
+"AuthEmailPlaceholder" = "Your email";
 
-"AuthProfileAddPhoto1" = "添加";
+"AuthEmailUsePhone" = "Use phone instead";
 
-"AuthProfileAddPhoto2" = "头像";
+"AuthDisclaimer" = "By signing up, you agree to the Terms of Service and Privacy Policy.";
 
-"AuthProfileNameHint" = "你的名字";
+"AuthDisclaimerToS" = "Terms of Service";
 
-"AuthProfileHint" = "请输入你的名字并上传头像";
+"AuthDisclaimerPrivacy" = "Privacy Policy";
 
-"AuthTerms" = "By signing up to {app_name}, you agree not to: \n\n - use our service to send spam and scam users.\n\n- promote violence on publicly viewable {app_name} bots or channels.\n\nWe reserve the right to update these Terms of Service later.";
+"AuthOTPEmailTitle" = "Confirm your email";
 
-"AuthEmailTitle" = "Your Email";
+"AuthOTPPhoneTitle" = "Confirm your phone";
 
-"AuthEmailHint" = "Please, confirm your corporate email address and press next";
+"AuthOTPEmailHint" = "We’ve sent you email with confirmation code.\nPlease enter it below.";
 
-"AuthEmailFieldHint" = "Your corporate email adress";
+"AuthOTPPhoneHint" = "We’ve sent you SMS with confirmation code.\nPlease enter it below.";
 
+"AuthOTPPlaceholder" = "Confirmation code";
 
-"AuthEmailCodeFieldHint" = "Activation Code";
+"AuthOTPNoCode" = "Haven't received code?";
 
-"AuthEmailCodeHint" = "We sent activation code to your email.";
+"AuthOTPCallHint" = "{app_name} will call you in {time}";
 
 /*
  * Common Elements

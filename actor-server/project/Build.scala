@@ -8,7 +8,7 @@ import com.typesafe.sbt.SbtMultiJvm
 import com.typesafe.sbt.SbtMultiJvm.MultiJvmKeys.MultiJvm
 
 object Build extends sbt.Build with Versioning with Releasing {
-  val ScalaVersion = "2.11.7"
+  val ScalaVersion = "2.11.8"
   val BotKitVersion = getVersion
 
   lazy val buildSettings =
@@ -139,7 +139,7 @@ object Build extends sbt.Build with Versioning with Releasing {
       version := BotKitVersion,
       libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-reflect" % _),
       libraryDependencies ++= Dependencies.botShared,
-      addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
+      addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
 
@@ -149,7 +149,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     settings = defaultSettingsBotkit ++ Revolver.settings ++ Seq(
       version := BotKitVersion,
       libraryDependencies ++= Dependencies.botkit,
-      addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
+      addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     )
   )
     .dependsOn(actorBotsShared)

@@ -12,22 +12,21 @@ link_with 'ActorApp'
 target 'ActorApp' do
     xcodeproj 'ActorApp.xcodeproj'
 
-    # Tracking
-    pod 'HockeySDK', '~> 3.8-RC'
-    pod 'Fabric'
-    pod 'Crashlytics'
-
     # Core Tools
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'YYKit'
 
     # Main UI
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
     pod 'Neon'
+    pod 'ElegantPresentations'
+    pod 'YYImage', '0.9.3'
+    pod 'YYText'
+    pod 'YYCategories'
+    pod 'DZNWebViewController'
 
     # Small UI
     pod 'VBFPopFlatButton'
@@ -57,12 +56,16 @@ target 'ActorSDK' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'YYKit'
 
     # Main UI
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
+    pod 'ElegantPresentations'
+    pod 'YYImage', '0.9.3'
+    pod 'YYText'
+    pod 'YYCategories'
+    pod 'DZNWebViewController'
 
     # Small UI
     pod 'VBFPopFlatButton'

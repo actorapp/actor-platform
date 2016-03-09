@@ -4,7 +4,8 @@
 
 import UIKit
 import VBFPopFlatButton
-import YYKit
+import YYText
+import YYImage
 
 public class AABubbleStickerCell: AABubbleBaseFileCell {
 
@@ -82,16 +83,16 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
             fileLocation = sticker.getSticker().getFileReference512()
             
             self.callback = AAFileCallback(onDownloaded: { (reference) -> () in
-                
-                let data = NSFileManager.defaultManager().contentsAtPath(CocoaFiles.pathFromDescriptor(reference))
-                let image = YYImage(data: data!)
+                let path = CocoaFiles.pathFromDescriptor(reference)
+                let data = NSFileManager.defaultManager().contentsAtPath(path)!
+                let image = YYImage(data: data)
                 
                 if (image == nil) {
                     return
                 }
                 
                 dispatchOnUi {
-                    self.preview.image = image;
+                    self.preview.image = image
                 }
             });
             Actor.bindRawFileWithReference(fileLocation, autoStart: true, withCallback: self.callback)

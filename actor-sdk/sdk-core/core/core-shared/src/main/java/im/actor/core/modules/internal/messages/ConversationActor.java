@@ -90,7 +90,6 @@ public class ConversationActor extends ModuleActor {
         if (peer.getPeerType() == PeerType.GROUP) {
             isHiddenPeer = getGroup(peer.getPeerId()).isHidden();
         }
-
         subscribe(AppVisibleChanged.EVENT);
     }
 
@@ -274,6 +273,7 @@ public class ConversationActor extends ModuleActor {
     @Verified
     private void onMessageContentUpdated(long rid, AbsContent content) {
         Message message = messages.getValue(rid);
+
         // Ignore if we already doesn't have this message
         if (message == null) {
             return;

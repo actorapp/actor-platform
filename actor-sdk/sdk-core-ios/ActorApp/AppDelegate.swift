@@ -4,18 +4,12 @@
 
 import Foundation
 
-import Fabric
-import Crashlytics
 import ActorSDK
 
 @objc public class AppDelegate : ActorApplicationDelegate {
     
     override init() {
         super.init()
-        
-        // Even when Fabric/Crashlytics not configured
-        // this method doesn't crash
-        // Fabric.with([Crashlytics.self()])
         
         ActorSDK.sharedActor().inviteUrlHost = "quit.email"
         ActorSDK.sharedActor().inviteUrlScheme = "actor"
@@ -28,7 +22,7 @@ import ActorSDK
         // Setting Development Push Id
         ActorSDK.sharedActor().apiPushId = 868547
         
-        ActorSDK.sharedActor().authStrategy = .EmailOnly
+        ActorSDK.sharedActor().authStrategy = .PhoneEmail
         
         // Creating Actor
         ActorSDK.sharedActor().createActor()

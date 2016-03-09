@@ -1,268 +1,239 @@
 //
-//  Copyright (C) 2014-2016 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
-import UIKit
-import TTTAttributedLabel
+import Foundation
+import YYText
 
-public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegate, AAAuthCountriesViewControllerDelegate ,
-AATapLabelDelegate{
+class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDelegate {
     
-    // Views
+    let name: String
     
-    private var grayBackground: UIView!
-    private var titleLabel: UILabel!
-    private var countryButton: UIButton!
-    private var phoneBackgroundView: UIImageView!
-    private var countryCodeLabel: UILabel!
-    private var termsofuseLabel : TapLabel!
-    private var phoneTextField: ABPhoneField!
-    private var hintLabel: UILabel!
-    private var navigationBarSeparator: UIView!
-    //"AuthTermsOfServiceFull" = "By signing up, you agree to the Terms of Service.";
+    let scrollView = UIScrollView()
     
-    //"AuthTermsOfService" = "Terms of Service";
-    // Constructors
+    let welcomeLabel = UILabel()
+    let hintLabel = UILabel()
     
-    public override init() {
+    let countryButton = UIButton()
+    let countryButtonLine = UIView()
+    var currentCountry: CountryDesc
+    
+    let phoneCodeLabel = UILabel()
+    let phoneNumberLabel = ABPhoneField()
+    let phoneCodeLabelLine = UIView()
+    
+    let termsLabel = YYLabel()
+    let useEmailButton = UIButton()
+    
+    init(name: String) {
+        self.name = name
+        self.currentCountry = AATelephony.getCountry(AATelephony.loadDefaultISOCountry())
         super.init()
-        
-        self.content = ACAllEvents_Auth.AUTH_PHONE()
     }
     
-    public required init(coder aDecoder: NSCoder) {
+    required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // Layouting
-    
-    public override func loadView() {
-        super.loadView()
-        
-        view.backgroundColor = UIColor.whiteColor()
-        
-        grayBackground = UIView()
-        grayBackground.backgroundColor = UIColor(rgb: 0xf2f2f2)
-        view.addSubview(grayBackground)
-        
-        titleLabel = UILabel()
-        titleLabel.backgroundColor = UIColor.clearColor()
-        titleLabel.textColor = UIColor.blackColor()
-        titleLabel.font = AADevice.isiPad
-            ? UIFont.thinSystemFontOfSize(50.0)
-            : UIFont.lightSystemFontOfSize(30)
-        
-        titleLabel.textLocalized = "AuthPhoneTitle"
-        grayBackground.addSubview(titleLabel)
-        
-        let countryImage = UIImage.bundled("ModernAuthCountryButton")!
-        let countryImageHighlighted = UIImage.bundled("ModernAuthCountryButtonHighlighted")!
-        
-        countryButton = UIButton()
-        countryButton.setBackgroundImage(countryImage
-            .stretchableImageWithLeftCapWidth(Int(countryImage.size.width / 2), topCapHeight: 0), forState: UIControlState.Normal)
-        countryButton.setBackgroundImage(countryImageHighlighted.stretchableImageWithLeftCapWidth(Int(countryImageHighlighted.size.width / 2), topCapHeight: 0), forState: UIControlState.Highlighted)
-        countryButton.titleLabel?.font = UIFont.systemFontOfSize(20.0)
-        countryButton.titleLabel?.textAlignment = NSTextAlignment.Left
-        countryButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Left
-        countryButton.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
-        countryButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 14, bottom: 9, right: 14)
-        countryButton.addTarget(self, action: "showCountriesList", forControlEvents: UIControlEvents.TouchUpInside)
-        view.addSubview(countryButton)
-        
-        let phoneImage = UIImage.bundled("ModernAuthPhoneBackground")!
-        phoneBackgroundView = UIImageView(image: phoneImage.stretchableImageWithLeftCapWidth(Int(phoneImage.size.width / 2), topCapHeight: 0))
-        view.addSubview(phoneBackgroundView)
-        
-        countryCodeLabel = UILabel()
-        countryCodeLabel.font = UIFont.systemFontOfSize(20.0)
-        countryCodeLabel.backgroundColor = UIColor.clearColor()
-        countryCodeLabel.textAlignment = NSTextAlignment.Center
-        phoneBackgroundView.addSubview(countryCodeLabel)
-        
-        phoneTextField = ABPhoneField()
-        phoneTextField.font = UIFont.systemFontOfSize(20.0)
-        phoneTextField.backgroundColor = UIColor.whiteColor()
-        phoneTextField.placeholder = AALocalized("AuthPhoneNumberHint")
-        phoneTextField.keyboardType = UIKeyboardType.NumberPad;
-        phoneTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
-        phoneTextField.delegate = self
-        view.addSubview(phoneTextField)
-        
-        navigationBarSeparator = UIView()
-        navigationBarSeparator.backgroundColor = UIColor(rgb: 0xc8c7cc)
-        view.addSubview(navigationBarSeparator)
-        
-        hintLabel = UILabel()
-        hintLabel.font = UIFont.systemFontOfSize(17.0)
-        hintLabel.textColor = UIColor(rgb: 0x999999)
-        hintLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
-        hintLabel.backgroundColor = UIColor.whiteColor()
-        hintLabel.textAlignment = NSTextAlignment.Center
-        hintLabel.contentMode = UIViewContentMode.Center
-        hintLabel.numberOfLines = 0
-        hintLabel.textLocalized = "AuthPhoneHint"
-        view.addSubview(hintLabel)
-        
-        // terms of use
-        termsofuseLabel = TapLabel()
 
-        termsofuseLabel.delegate = self
-        termsofuseLabel.numberOfLines = 0
+    override func viewDidLoad() {
         
-        let termsFullString = AALocalized("AuthTermsOfServiceFull")
-        let termsString = AALocalized("AuthTermsOfService")
+        view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
         
-        let paragrahStyle = NSMutableParagraphStyle()
-        paragrahStyle.alignment = NSTextAlignment.Center
+        scrollView.keyboardDismissMode = .OnDrag
+        scrollView.scrollEnabled = true
+        scrollView.alwaysBounceVertical = true
         
-        let atrsPolicy = [NSFontAttributeName:UIFont.systemFontOfSize(11),
-            NSParagraphStyleAttributeName : paragrahStyle,
-            NSForegroundColorAttributeName : UIColor.lightGrayColor() ]
+        welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
+        welcomeLabel.textColor = ActorSDK.sharedActor().style.authTitleColor
+        welcomeLabel.text = AALocalized("AuthPhoneTitle")
+        welcomeLabel.numberOfLines = 1
+        welcomeLabel.minimumScaleFactor = 0.3
+        welcomeLabel.adjustsFontSizeToFitWidth = true
+        welcomeLabel.textAlignment = .Center
         
-        let policyMutText = NSMutableAttributedString(string: termsFullString,
-            attributes: atrsPolicy)
+        hintLabel.font = UIFont.systemFontOfSize(14)
+        hintLabel.textColor = ActorSDK.sharedActor().style.authHintColor
+        hintLabel.text = AALocalized("AuthPhoneHint")
+        hintLabel.numberOfLines = 2
+        hintLabel.textAlignment = .Center
         
-        termsofuseLabel.attributedText = policyMutText
+        countryButton.setTitle(currentCountry.country, forState: .Normal)
+        countryButton.setTitleColor(ActorSDK.sharedActor().style.authTextColor, forState: .Normal)
+        countryButton.titleLabel!.font = UIFont.systemFontOfSize(17)
+        countryButton.titleEdgeInsets = UIEdgeInsetsMake(11, 10, 11, 10)
+        countryButton.contentHorizontalAlignment = .Left
+        countryButton.setBackgroundImage(Imaging.imageWithColor(UIColor.alphaBlack(0.2), size: CGSizeMake(1, 1)), forState: .Highlighted)
+        countryButton.addTarget(self, action: "countryDidPressed", forControlEvents: .TouchUpInside)
         
-        let termsRangeSwift = termsofuseLabel.text?.rangeOfString(termsString)
-        let termsPos = termsofuseLabel.text?.startIndex.distanceTo(termsRangeSwift!.startIndex)
+        countryButtonLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
+        
+        phoneCodeLabel.font = UIFont.systemFontOfSize(17)
+        phoneCodeLabel.textColor = ActorSDK.sharedActor().style.authHintColor
+        phoneCodeLabel.text = "+\(currentCountry.code)"
+        phoneCodeLabel.textAlignment = .Center
+        
+        phoneNumberLabel.currentIso = currentCountry.iso
+        phoneNumberLabel.keyboardType = .PhonePad
+        phoneNumberLabel.placeholder = AALocalized("AuthPhonePlaceholder")
+        phoneNumberLabel.textColor = ActorSDK.sharedActor().style.authTextColor
+        
+        phoneCodeLabelLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
+        
+        if ActorSDK.sharedActor().privacyPolicyUrl != nil && ActorSDK.sharedActor().termsOfServiceUrl != nil {
+            let tosText = AALocalized("AuthDisclaimerToS")
+            let privacyText = AALocalized("AuthDisclaimerPrivacy")
+            let hintText = AALocalized("AuthDisclaimer")
+            let tosRange = NSRange(location: hintText.indexOf(tosText)!, length: tosText.length)
+            let privacyRange = NSRange(location: hintText.indexOf(privacyText)!, length: privacyText.length)
 
-        let termsRange = NSMakeRange(termsPos!, termsString.length)
-        
-        policyMutText.addAttribute(TapLabel.LinkContentName, value: "openterms", range: termsRange)
-        policyMutText.addAttribute(NSForegroundColorAttributeName, value: UIColor.blueColor(), range: termsRange)
-        policyMutText.addAttribute(TapLabel.SelectedForegroudColorName, value: UIColor.blueColor(), range: termsRange)
-        
-        termsofuseLabel.attributedText = policyMutText
-        
-        self.view.addSubview(termsofuseLabel)
+            let attributedTerms = NSMutableAttributedString(string: hintText)
+            attributedTerms.yy_color = ActorSDK.sharedActor().style.authHintColor
         
         
-        // Setting default country
-        let defaultIso = phoneTextField.currentIso
-        let countryCode = ABPhoneField.callingCodeByCountryCode()[defaultIso] as! String
-        let countryTitle = ABPhoneField.countryNameByCountryCode()[defaultIso] as! String
-        countryCodeLabel.text = "+\(countryCode)"
-        countryButton.setTitle(countryTitle, forState: UIControlState.Normal)
+            //
+            // Terms Of Service
+            //
         
-        // Configure navigation bar
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Done, target: self, action: "nextButtonPressed")
-    }
-    
-    public override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
+            let tosLink = YYTextHighlight()
+            tosLink.setColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56))
+            tosLink.tapAction = { (container, text, range, rect) in
+                self.openUrl(ActorSDK.sharedActor().termsOfServiceUrl!)
+            }
+            attributedTerms.yy_setColor(ActorSDK.sharedActor().style.authTintColor, range: tosRange)
+            attributedTerms.yy_setTextHighlight(tosLink, range: tosRange)
         
-        let screenSize = UIScreen.mainScreen().bounds.size
-        let isWidescreen = screenSize.width > 320 || screenSize.height > 480
-        let isPortraint = screenSize.width < screenSize.height
         
-        let bgSize = AADevice.isiPad
-            ? (isPortraint ? 304.0: 140)
-            : (isWidescreen ? 131.0 : 90.0)
-        grayBackground.frame = CGRect(x: 0.0, y: 0.0, width: screenSize.width, height: CGFloat(bgSize))
+            //
+            // Privacy Policy
+            //
         
-        let padding = AADevice.isiPad
-            ? (isPortraint ? 48 : 20)
-            : (20)
-        titleLabel.sizeToFit()
-        titleLabel.frame = CGRect(x: (screenSize.width - titleLabel.frame.size.width) / 2.0, y: grayBackground.frame.height - titleLabel.frame.size.height - CGFloat(padding), width: titleLabel.frame.size.width, height: titleLabel.frame.size.height)
+            let privacyLink = YYTextHighlight()
+            privacyLink.setColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56))
+            privacyLink.tapAction = { (container, text, range, rect) in
+                self.openUrl(ActorSDK.sharedActor().privacyPolicyUrl!)
+            }
+            attributedTerms.yy_setColor(ActorSDK.sharedActor().style.authTintColor, range: privacyRange)
+            attributedTerms.yy_setTextHighlight(privacyLink, range: privacyRange)
         
-        navigationBarSeparator.frame = CGRect(x: 0, y: grayBackground.bounds.size.height, width: screenSize.width, height: 0.5)
         
-        let fieldWidth : CGFloat = AADevice.isiPad
-            ? (520)
-            : (screenSize.width)
-        
-        let countryImage: UIImage! = UIImage.bundled("ModernAuthCountryButton")
-        countryButton.frame = CGRect(x: (screenSize.width - fieldWidth) / 2, y: grayBackground.frame.origin.y + grayBackground.bounds.size.height, width: fieldWidth, height: countryImage.size.height)
-        
-        let phoneImage: UIImage! = UIImage.bundled("ModernAuthPhoneBackground")
-        phoneBackgroundView.frame = CGRect(x: (screenSize.width - fieldWidth) / 2, y: countryButton.frame.origin.y + 57, width: fieldWidth, height: phoneImage.size.height)
-        
-        let countryCodeLabelTopSpacing: CGFloat = 3.0
-        countryCodeLabel.frame = CGRect(x: 14, y: countryCodeLabelTopSpacing, width: 68, height: phoneBackgroundView.frame.size.height - countryCodeLabelTopSpacing)
-        
-        phoneTextField.frame = CGRect(x: (screenSize.width - fieldWidth) / 2 + 96.0, y: phoneBackgroundView.frame.origin.y + 1, width: fieldWidth - 96.0 - 10.0, height: phoneBackgroundView.frame.size.height - 2)
-        
-        let hintPadding : CGFloat = AADevice.isiPad
-            ? (isPortraint ? 460.0: 274.0)
-            : (isWidescreen ? 274.0 : 214.0)
-        
-        let hintLabelSize = hintLabel.sizeThatFits(CGSize(width: 278.0, height: CGFloat.max))
-        hintLabel.frame = CGRect(x: (screenSize.width - hintLabelSize.width) / 2.0, y: hintPadding, width: hintLabelSize.width, height: hintLabelSize.height);
-        
-        let termsLabelSize = termsofuseLabel.sizeThatFits(CGSize(width: 278.0, height: CGFloat.max))
-        
-        termsofuseLabel.frame = CGRect(x: (screenSize.width - termsLabelSize.width) / 2.0, y: hintLabel.frame.maxY+5, width: termsLabelSize.width, height: termsLabelSize.height);
-        
-    }
-    
-    // Constoller states
-    
-    public override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        phoneTextField.becomeFirstResponder()
-    }
-    
-    public override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        phoneTextField.resignFirstResponder()
-    }
-    
-    // Actions
-    
-    public func nextButtonPressed() {
-        
-        let number = phoneTextField.phoneNumber.toJLong()
-        let numberLength = phoneTextField.phoneNumber.length
-        let numberRequiredLength = Int(ABPhoneField.phoneMinLengthByCountryCode()[self.phoneTextField.currentIso] as! String)!
-        
-        if (numberLength < numberRequiredLength) {
-            
-            // Show error about incorrect phone
-            AAExecutions.errorWithTag("LOCAL_INCORRECT_PHONE")
+            termsLabel.attributedText = attributedTerms
+            termsLabel.font = UIFont.systemFontOfSize(14)
+            termsLabel.numberOfLines = 2
+            termsLabel.textAlignment = .Center
         } else {
-            
-            // Safely executing command for starting activation
-            executeSafe(Actor.requestStartAuthCommandWithPhone(number)) { (val) -> Void in
-                // Showing code input controller
-                let phoneNumber = "+\(self.phoneTextField.formattedPhoneNumber)"
-                self.navigateNext(AAAuthCodeViewController(phoneNumber: phoneNumber), removeCurrent: false)
+            termsLabel.hidden = true
+        }
+        
+        
+        if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+            useEmailButton.setTitle(AALocalized("AuthPhoneUseEmail"), forState: .Normal)
+            useEmailButton.titleLabel?.font = UIFont.systemFontOfSize(14)
+            useEmailButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor, forState: .Normal)
+            useEmailButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56), forState: .Highlighted)
+            useEmailButton.addTarget(self, action: "useEmailDidPressed", forControlEvents: .TouchUpInside)
+        } else {
+            useEmailButton.hidden = true
+        }
+        
+        
+        scrollView.addSubview(welcomeLabel)
+        scrollView.addSubview(hintLabel)
+        scrollView.addSubview(countryButton)
+        scrollView.addSubview(countryButtonLine)
+        scrollView.addSubview(phoneCodeLabel)
+        scrollView.addSubview(phoneNumberLabel)
+        scrollView.addSubview(phoneCodeLabelLine)
+        scrollView.addSubview(termsLabel)
+        scrollView.addSubview(useEmailButton)
+        view.addSubview(scrollView)
+        
+        super.viewDidLoad()
+    }
+    
+
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        welcomeLabel.frame = CGRectMake(20, 90 - 66, view.width - 40, 28)
+        hintLabel.frame = CGRectMake(20, 127 - 66, view.width - 40, 34)
+        
+        countryButton.frame = CGRectMake(10, 200 - 66, view.width - 20, 44)
+        countryButtonLine.frame = CGRectMake(10, 244 - 66, view.width - 20, 0.5)
+        
+        termsLabel.frame = CGRectMake(20, 314 - 66, view.width - 40, 55)
+        
+        useEmailButton.frame = CGRectMake(20, 375 - 66, view.width - 40, 38)
+        
+        resizePhoneLabels()
+        
+        scrollView.frame = view.bounds
+        scrollView.contentSize = CGSizeMake(view.width, 400)
+    }
+    
+    private func resizePhoneLabels() {
+        phoneCodeLabel.frame = CGRectMake(10, 244 - 66, 80, 44)
+        phoneCodeLabel.sizeToFit()
+        phoneCodeLabel.frame = CGRectMake(10, 244 - 66, phoneCodeLabel.width + 32, 44)
+        
+        phoneNumberLabel.frame = CGRectMake(phoneCodeLabel.width + 10, 245 - 66, view.width - phoneCodeLabel.width, 44)
+        phoneCodeLabelLine.frame = CGRectMake(10, 288 - 66, view.width - 20, 0.5)
+    }
+    
+    func countriesController(countriesController: AACountryViewController, didChangeCurrentIso currentIso: String) {
+        currentCountry = AATelephony.getCountry(currentIso)
+        countryButton.setTitle(currentCountry.country, forState: .Normal)
+        phoneCodeLabel.text = "+\(currentCountry.code)"
+        phoneNumberLabel.currentIso = currentIso
+        resizePhoneLabels()
+    }
+    
+    func countryDidPressed() {
+        let countriesController = AACountryViewController()
+        countriesController.delegate = self
+        presentElegantViewController(AANavigationController(rootViewController: countriesController))
+    }
+    
+    func useEmailDidPressed() {
+        let controllers = self.navigationController!.viewControllers
+        let updatedControllers = Array(controllers[0..<(controllers.count - 1)]) + [AAAuthEmailViewController(name: name)]
+        self.navigationController?.setViewControllers(updatedControllers, animated: false)
+    }
+    
+    override func nextDidTap() {
+        let numberStr = phoneNumberLabel.phoneNumber
+        let number = phoneNumberLabel.phoneNumber.toJLong()
+        
+        Actor.doStartAuthWithPhone(number).startUserAction().then { (res: ACAuthStartRes!) -> () in
+            if res.authMode.toNSEnum() == .OTP {
+                self.navigateNext(AAAuthOTPViewController(phone: numberStr, name: self.name, transactionHash: res.transactionHash))
+            } else {
+                self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
             }
         }
     }
     
-    public func showCountriesList() {
-        let countriesController = AAAuthCountriesViewController()
-        countriesController.delegate = self
-        countriesController.currentIso = self.phoneTextField.currentIso
-        let navigationController = AANavigationController(rootViewController: countriesController)
-        presentViewController(navigationController, animated: true, completion: nil)
+    override func keyboardWillAppear(height: CGFloat) {
+        scrollView.frame = CGRectMake(0, 0, view.width, view.height - height)
+        
+        if AADevice.isiPhone4 || AADevice.isiPhone5 {
+            
+            let height = scrollView.height - height
+            let offset: CGFloat = 245 + 44
+            let destOffset = height * 0.66  - offset / 2
+        
+            scrollView.setContentOffset(CGPoint(x: 0, y: -destOffset), animated: true)
+        }
     }
     
-    // Callback
-    
-    public func countriesController(countriesController: AAAuthCountriesViewController, didChangeCurrentIso currentIso: String) {
-        
-        self.phoneTextField.currentIso = currentIso
-        
-        let countryCode: String = ABPhoneField.callingCodeByCountryCode()[currentIso] as! String
-        countryCodeLabel.text = "+\(countryCode)"
-        countryButton.setTitle(ABPhoneField.countryNameByCountryCode()[currentIso] as? String, forState: UIControlState.Normal)
+    override func keyboardWillDisappear() {
+        scrollView.frame = CGRectMake(0, 0, view.width, view.height)
     }
     
-    // Events
-    
-    public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        return true
-    }
-    
-    public func tapLabel(tapLabel: TapLabel, didSelectLink link: String) {
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
         
-        // open terms
-        
-        self.presentViewController(AATermsController(), animated: true, completion: nil)
-        
+        phoneNumberLabel.resignFirstResponder()
+
     }
 }

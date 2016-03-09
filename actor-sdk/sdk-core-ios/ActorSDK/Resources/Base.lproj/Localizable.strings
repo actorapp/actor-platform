@@ -124,7 +124,7 @@
 
 "CallPrivateTitle" = "Private Call";
 
-"CallPrivatelText" = "Call from {name}";
+"CallPrivateText" = "Call from {name}";
 
 "CallGroupTitle" = "Group Call";
 
@@ -423,60 +423,76 @@
 
 "Placeholder_Location_Message" = "Please enable Location Services in device settings to share your location.";
 
+
+/*
+ * Welcome
+ */
+
+"WelcomeTitle" = "Welcome to {app_name}!";
+
+"WelcomeTagline" = "Free, fast and secure messaging.";
+
+"WelcomeSignUp" = "Sign Up";
+
+"WelcomeLogIn" = "Log In";
+
+
 /*
  * Auth
  */
 
-"AuthMoreInfo" = "Free, fast and secure messaging.";
+"AuthCountryTitle" = "Country Code";
 
-"AuthStarButton" = "Start Messaging";
+"AuthUnsupported" = "This account is unsupported in this version of {app_name}. Please, update application for logging in to this account.";
 
-"AuthPhoneTitle" = "Your Phone";
+"AuthLoginTitle" = "Login to {app_name}";
 
-"AuthPhoneNumberHint" = "Your phone number";
+"AuthLoginPhone" = "Phone";
 
-"AuthPhoneHint" = "Please confirm your country code and enter your phone number.";
+"AuthLoginEmail" = "Email";
 
-"AuthTermsOfServiceFull" = "By signing up, you agree to the Terms of Service.";
+"AuthLoginPhoneEmail" = "Phone or Email";
 
-"AuthTermsOfService" = "Terms of Service";
+"AuthNameTitle" = "Hi! What's your name?";
 
-"AuthTermsOfServiceTitle" = "Terms of Service";
+"AuthNamePlaceholder" = "Your full name";
 
-"AuthPhoneTooShort" = "Phone number too short";
+"AuthPhoneTitle" = "What's your phone number?";
 
-"AuthCodeFieldHint" = "Code";
+"AuthPhoneUseEmail" = "Use email instead";
 
-"AuthCodeHint" = "We have sent you an SMS with the code.";
+"AuthPhoneHint" = "We need your phone number to grant security of your personal information.";
 
-"AuthCallHint" = "{appname} will call you in {time}";
+"AuthPhonePlaceholder" = "Phone Number";
 
-"AuthCallDoneHint" = "{appname} dialed your number.";
+"AuthEmailTitle" = "What's your email?";
 
-"AuthNoCodeHint" = "Doesn't get the code?";
+"AuthEmailHint" = "We won't send you spam.";
 
-"AuthProfileTitle" = "Your Info";
+"AuthEmailPlaceholder" = "Your email";
 
-"AuthProfileAddPhoto1" = "add";
+"AuthEmailUsePhone" = "Use phone instead";
 
-"AuthProfileAddPhoto2" = "photo";
+"AuthDisclaimer" = "By signing up, you agree to the Terms of Service and Privacy Policy.";
 
-"AuthProfileNameHint" = "Your name";
+"AuthDisclaimerToS" = "Terms of Service";
 
-"AuthProfileHint" = "Enter your name and add a pofile picture";
+"AuthDisclaimerPrivacy" = "Privacy Policy";
 
-"AuthTerms" = "By signing up to {app_name}, you agree not to: \n\n - use our service to send spam and scam users.\n\n- promote violence on publicly viewable {app_name} bots or channels.\n\nWe reserve the right to update these Terms of Service later.";
+"AuthOTPEmailTitle" = "Confirm your email";
 
-"AuthEmailTitle" = "Your Email";
+"AuthOTPPhoneTitle" = "Confirm your phone";
 
-"AuthEmailHint" = "Please, confirm your corporate email address and press next";
+"AuthOTPEmailHint" = "We’ve sent you email with confirmation code.\nPlease enter it below.";
 
-"AuthEmailFieldHint" = "Your corporate email adress";
+"AuthOTPPhoneHint" = "We’ve sent you SMS with confirmation code.\nPlease enter it below.";
 
+"AuthOTPPlaceholder" = "Confirmation code";
 
-"AuthEmailCodeFieldHint" = "Activation Code";
+"AuthOTPNoCode" = "Haven't received code?";
 
-"AuthEmailCodeHint" = "We sent activation code to your email.";
+"AuthOTPCallHint" = "{app_name} will call you in {time}";
+
 
 /*
  * Common Elements

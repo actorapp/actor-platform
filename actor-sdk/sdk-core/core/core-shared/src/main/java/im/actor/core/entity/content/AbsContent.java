@@ -205,8 +205,6 @@ public abstract class AbsContent {
         this.contentContainer = contentContainer;
     }
 
-    public void onIncoming(Peer peer, ModuleContext context) {
-    }
 
     public static ContentConverter[] getConverters() {
         return converters;

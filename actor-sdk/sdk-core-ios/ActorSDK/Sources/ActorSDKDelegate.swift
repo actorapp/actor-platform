@@ -13,7 +13,7 @@ public protocol ActorSDKDelegate {
     /// Create root logged in controller. With Navigation controller (if needed).
     func actorControllerForStart() -> UIViewController?
 
-    /// Create root controller after controller. With Navigation controller (if needed).
+    /// Create root controller after successful login. With Navigation controller (if needed).
     func actorControllerAfterLogIn() -> UIViewController?
     
     /// User profile controller

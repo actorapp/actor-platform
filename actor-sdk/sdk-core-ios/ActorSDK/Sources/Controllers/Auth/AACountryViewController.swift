@@ -4,22 +4,21 @@
 
 import UIKit
 
-public protocol AAAuthCountriesViewControllerDelegate {
-    func countriesController(countriesController: AAAuthCountriesViewController, didChangeCurrentIso currentIso: String)
+public protocol AACountryViewControllerDelegate {
+    func countriesController(countriesController: AACountryViewController, didChangeCurrentIso currentIso: String)
 }
 
-public class AAAuthCountriesViewController: AATableViewController {
+public class AACountryViewController: AATableViewController {
     
     private var _countries: NSDictionary!
     private var _letters: NSArray!
     
-    var delegate: AAAuthCountriesViewControllerDelegate?
-    var currentIso: String = ""
+    public var delegate: AACountryViewControllerDelegate?
     
     public init() {
         super.init(style: UITableViewStyle.Plain)
         
-        self.title = "Country" // TODO: Localize
+        self.title = AALocalized("AuthCountryTitle")
         
         let cancelButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: "dismiss")
         self.navigationItem.setLeftBarButtonItem(cancelButtonItem, animated: false)
@@ -66,14 +65,11 @@ public class AAAuthCountriesViewController: AATableViewController {
     }
     
     public func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
-        return [UITableViewIndexSearch] + letters() as [AnyObject]
+        return letters() as [AnyObject]
     }
     
     public func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
-        if title == UITableViewIndexSearch {
-            return 0
-        }
-        return index - 1
+        return index
     }
     
     public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -85,16 +81,14 @@ public class AAAuthCountriesViewController: AATableViewController {
     }
     
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
         let cell: AAAuthCountryCell = tableView.dequeueCell(indexPath)
-        
-        cell.setSearchMode(false) // TODO: Add search bar
-        
         let letter = letters()[indexPath.section] as! String
         let countryData = (countries().objectForKey(letter) as! NSArray)[indexPath.row] as! [String]
+        
         cell.setTitle(countryData[0])
         cell.setCode("+\(countryData[2])")
-
+        cell.setSearchMode(false)
+        
         return cell
     }
     
@@ -103,6 +97,7 @@ public class AAAuthCountriesViewController: AATableViewController {
         
         let letter = letters()[indexPath.section] as! String
         let countryData = (countries().objectForKey(letter) as! NSArray)[indexPath.row] as! [String]
+        
         delegate?.countriesController(self, didChangeCurrentIso: countryData[1])
 
         dismiss()
@@ -113,7 +108,12 @@ public class AAAuthCountriesViewController: AATableViewController {
     }
     
     public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let letter = letters()[section] as! String
-        return letter
+        return letters()[section] as? String
+    }
+    
+    public override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        UIApplication.sharedApplication().setStatusBarStyle(.LightContent, animated: true)
     }
 }

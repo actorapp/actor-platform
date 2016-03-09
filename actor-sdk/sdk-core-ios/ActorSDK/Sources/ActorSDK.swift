@@ -79,9 +79,15 @@ import PushKit
     
     /// Invitation URL for apps
     public var inviteUrl: String = "https://actor.im/dl"
+
+    /// Privacy Policy URL
+    public var privacyPolicyUrl: String? = "https://actor.im/privacy"
+    
+    /// Terms of Service URL
+    public var termsOfServiceUrl: String? = "https://actor.im/tos"
     
     /// App name in loc. strings
-    public var appNameInLocStrings: String = "Actor"
+    public var appName: String = "Actor"
     
     /// Use background on welcome screen
     public var useBackgroundOnWelcomeScreen: Bool? = false
@@ -188,9 +194,7 @@ import PushKit
         // builder.setEnableFilesLogging(true)
         
         // Application name
-        if (appNameInLocStrings != "Actor") {
-            builder.setCustomAppName(AALocalized(appNameInLocStrings))
-        }
+        builder.setCustomAppName(appName)
         
         // Config
         builder.setPhoneBookImportEnabled(jboolean(enablePhoneBookImport))
@@ -431,17 +435,12 @@ import PushKit
             }
             window.rootViewController = controller!
         } else {
-            var controller: UIViewController! = delegate.actorControllerForAuthStart()
+            let controller: UIViewController! = delegate.actorControllerForAuthStart()
             if controller == nil {
-                if self.authStrategy == .PhoneOnly {
-                    controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
-                } else if self.authStrategy == .EmailOnly {
-                    controller = AAAuthNavigationController(rootViewController: AAEmailAuthViewController())
-                } else {
-                    // ???
-                }
+                window.rootViewController = AAWelcomeController()
+            } else {
+                window.rootViewController = controller
             }
-            window.rootViewController = controller!
         }
         
         // Bind Status Bar connecting
@@ -767,4 +766,5 @@ public enum AAAutoPush {
 public enum AAAuthStrategy {
     case PhoneOnly
     case EmailOnly
+    case PhoneEmail
 }

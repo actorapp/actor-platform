@@ -3,112 +3,102 @@
 //
 
 import UIKit
+import YYText
+import ElegantPresentations
 
-class AAWelcomeController: UIViewController {
+public class AAWelcomeController: AAViewController {
     
-    var backgroundImage : UIImageView!
+    let logoView : UIImageView = UIImageView()
+    let appNameLabel : UILabel = UILabel()
+    let someInfoLabel: UILabel = UILabel()
+    let signupButton: UIButton = UIButton()
+    let signinButton: UIButton = UIButton()
     
-    var logoView : UIImageView!
-    var appNameLabel : UILabel!
-    var someInfoLabel: UILabel!
-    
-    var doneButton : UIButton!
-    
-    
-    override func loadView() {
+    public override init() {
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    public required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    public override func loadView() {
         super.loadView()
         
-        self.backgroundImage = UIImageView()
+        self.view.backgroundColor = ActorSDK.sharedActor().style.welcomeBgColor
         
-        self.logoView = UIImageView()
-        self.appNameLabel = UILabel()
-        self.someInfoLabel  = UILabel()
+        self.logoView.image = ActorSDK.sharedActor().style.welcomeLogo
         
-        self.doneButton = UIButton(type: UIButtonType.System)
+        appNameLabel.text = AALocalized("WelcomeTitle").replace("{app_name}", dest: ActorSDK.sharedActor().appName)
+        appNameLabel.textAlignment = .Center
+        appNameLabel.backgroundColor = UIColor.clearColor()
+        appNameLabel.font = UIFont.mediumSystemFontOfSize(24)
+        appNameLabel.textColor = ActorSDK.sharedActor().style.welcomeTitleColor
         
-        //////////////////////////////////////////
+        someInfoLabel.text = AALocalized("WelcomeTagline")
+        someInfoLabel.textAlignment = .Center
+        someInfoLabel.backgroundColor = UIColor.clearColor()
+        someInfoLabel.font = UIFont.systemFontOfSize(16)
+        someInfoLabel.numberOfLines = 2
+        someInfoLabel.textColor = ActorSDK.sharedActor().style.welcomeTaglineColor
         
-        let screenWidth = UIScreen.mainScreen().bounds.size.width
-        let screenHeight = UIScreen.mainScreen().bounds.size.height
+        signupButton.setTitle(AALocalized("WelcomeSignUp"), forState: .Normal)
+        signupButton.titleLabel?.font = UIFont.mediumSystemFontOfSize(17)
+        signupButton.setTitleColor(ActorSDK.sharedActor().style.welcomeSignupTextColor, forState: .Normal)
+        signupButton.setBackgroundImage(Imaging.roundedImage(ActorSDK.sharedActor().style.welcomeSignupBgColor, radius: 22), forState: .Normal)
+        signupButton.setBackgroundImage(Imaging.roundedImage(ActorSDK.sharedActor().style.welcomeSignupBgColor.alpha(0.7), radius: 22), forState: .Highlighted)
+        signupButton.addTarget(self, action: "signupAction", forControlEvents: UIControlEvents.TouchUpInside)
         
-        self.backgroundImage.frame = CGRectMake(0, 0, screenWidth, screenHeight)
-        self.backgroundImage.backgroundColor = UIColor.whiteColor()
-        
-        if ActorSDK.sharedActor().useBackgroundOnWelcomeScreen == true {
-            
-            self.backgroundImage.image = UIImage.bundled("bg_2.jpg")
-            
-        }
-        
-        self.logoView.frame = CGRectMake(screenWidth/2-screenWidth/4, 80, screenWidth/2, screenWidth/2)
-        
-        self.logoView.image = UIImage.bundled("main_logo")
-        
-        ///
-        
-        self.appNameLabel.text = ActorSDK.sharedActor().appNameInLocStrings
-        self.appNameLabel.textAlignment = .Center
-        self.appNameLabel.backgroundColor = UIColor.clearColor()
-        self.appNameLabel.font = UIFont(name: "HelveticaNeue-Light", size: 35)
-        self.appNameLabel.textColor = ActorSDK.sharedActor().style.vcStarInfoTextColor
-        
-        self.appNameLabel.frame =  CGRectMake(screenWidth/2-screenWidth/4, self.logoView.frame.maxY + 10, screenWidth/2, 40)
-        
-        ///
-        
-        self.someInfoLabel.text = AALocalized("AuthMoreInfo")
-        self.someInfoLabel.textAlignment = .Center
-        self.someInfoLabel.backgroundColor = UIColor.clearColor()
-        self.someInfoLabel.font = UIFont(name: "HelveticaNeue-Light", size: 17)
-        self.someInfoLabel.numberOfLines = 0
-        self.someInfoLabel.textColor = ActorSDK.sharedActor().style.vcStarInfoTextColor
-        
-        self.someInfoLabel.frame =  CGRectMake(screenWidth/2-screenWidth/4-45, self.appNameLabel.frame.maxY + 5, screenWidth/2+90, 60)
-        
-        ///
-        self.doneButton.setTitle(AALocalized("AuthStarButton"), forState: UIControlState.Normal)
-        self.doneButton.setTitleColor(ActorSDK.sharedActor().style.vcStarButton, forState: UIControlState.Normal)
-        self.doneButton.tintColor = ActorSDK.sharedActor().style.vcStarButton
-        self.doneButton.frame = CGRectMake(screenWidth/2-screenWidth/4-20, screenHeight-50, screenWidth/2, 30)
-        
-        self.doneButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Light", size: 17)
-        
-        self.doneButton.setImage(UIImage.bundled("OnboardNext"), forState: UIControlState.Normal)
-        self.doneButton.imageEdgeInsets = UIEdgeInsetsMake(5, screenWidth/2 + 20, 0, 0)
-        
-        self.doneButton.addTarget(self, action: "doneButtonAction", forControlEvents: UIControlEvents.TouchUpInside)
-        
-        
-        //////////////////////////////////////////
-        
-        self.view.addSubview(self.backgroundImage)
+        signinButton.setTitle(AALocalized("WelcomeLogIn"), forState: .Normal)
+        signinButton.titleLabel?.font = UIFont.systemFontOfSize(17)
+        signinButton.setTitleColor(ActorSDK.sharedActor().style.welcomeLoginTextColor, forState: .Normal)
+        signinButton.setTitleColor(ActorSDK.sharedActor().style.welcomeLoginTextColor.alpha(0.7), forState: .Highlighted)
+        signinButton.addTarget(self, action: "signInAction", forControlEvents: UIControlEvents.TouchUpInside)
         
         self.view.addSubview(self.logoView)
         self.view.addSubview(self.appNameLabel)
         self.view.addSubview(self.someInfoLabel)
-        
-        self.view.addSubview(self.doneButton)
-        
-        
+        self.view.addSubview(self.signupButton)
+        self.view.addSubview(self.signinButton)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    
-    func doneButtonAction() {
+    override public func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
-        self.navigationController?.pushViewController(AAAuthPhoneViewController(), animated: true)
+        if AADevice.isiPhone4 {
+            logoView.frame = CGRectMake((view.width - 90) / 2, 90, 90, 90)
+            appNameLabel.frame = CGRectMake((view.width - 300) / 2, logoView.bottom + 30, 300, 29)
+            someInfoLabel.frame = CGRectMake((view.width - 300) / 2, appNameLabel.bottom + 8, 300, 56)
+            
+            signupButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 80, 136, 44)
+            signinButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 25, 136, 44)
+        } else {
+            
+            logoView.frame = CGRectMake((view.width - 90) / 2, 145, 90, 90)
+            appNameLabel.frame = CGRectMake((view.width - 300) / 2, logoView.bottom + 35, 300, 29)
+            someInfoLabel.frame = CGRectMake((view.width - 300) / 2, appNameLabel.bottom + 8, 300, 56)
         
+            signupButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 90, 136, 44)
+            signinButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 35, 136, 44)
+        }
     }
     
-
+    public func signupAction() {
+        // TODO: Remove BG after auth?
+        UIApplication.sharedApplication().keyWindow?.backgroundColor = UIColor(red: 94, green: 142, blue: 192)
+        self.presentElegantViewController(AAAuthNavigationController(rootViewController: AAAuthNameViewController()))
+    }
+    
+    public func signInAction() {
+        // TODO: Remove BG after auth?
+        UIApplication.sharedApplication().keyWindow?.backgroundColor = UIColor(red: 94, green: 142, blue: 192)
+        self.presentElegantViewController(AAAuthNavigationController(rootViewController: AAAuthLogInViewController()))
+    }
+    
+    public override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+     
+        // TODO: Fix after cancel?
+        UIApplication.sharedApplication().setStatusBarStyle(.LightContent, animated: true)
+    }
 }

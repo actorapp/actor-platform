@@ -113,7 +113,7 @@
 
 "CallsMute" = "выкл. звук";
 
-"CallsSpeaker" = "громкая связь";
+"CallsSpeaker" = "громк. связь";
 
 "CallsVideo" = "видео";
 
@@ -125,7 +125,7 @@
 
 "CallPrivateTitle" = "Входящий звонок";
 
-"CallPrivatelText" = "Вам звонит {name}";
+"CallPrivateText" = "Вам звонит {name}";
 
 "CallGroupTitle" = "Входящий звонок";
 
@@ -414,59 +414,73 @@
 "Placeholder_Location_Message" = "Чтобы поделиться местоположением, пожалуйста, дайте приложению доступ к Службам геолокации в настройках вашего устройства.";
 
 /*
+ * Welcome
+ */
+
+"WelcomeTitle" = "Добро пожаловать!";
+
+"WelcomeTagline" = "Беслпатный, быстрый и безопасный месседжинг.";
+
+"WelcomeSignUp" = "Регистрация";
+
+"WelcomeLogIn" = "Вход";
+
+
+/*
  * Auth
  */
 
-"AuthMoreInfo" = "Бесплатный, быстрый и безопасный.";
+"AuthCountryTitle" = "Страна";
 
-"AuthStarButton" = "Начать общение";
+"AuthUnsupported" = "Этот аккаунт не поддерживается текущей версией {app_name}. Пожалуйста, обновите приложение для работы с этим аккаунтом.";
 
-"AuthPhoneTitle" = "Ваш телефон";
+"AuthLoginTitle" = "Вход в {app_name}";
 
-"AuthPhoneNumberHint" = "Ваш номер телефона";
+"AuthLoginPhone" = "Телефон";
 
-"AuthPhoneHint" = "Пожалуйста, укажите вашу страну и номер телефона.";
+"AuthLoginEmail" = "Почта";
 
-"AuthTermsOfServiceFull" = "Зарегистрировавшись, вы соглашаетесь с Условиями предоставления услуг.";
+"AuthLoginPhoneEmail" = "Телефон или Почта";
 
-"AuthTermsOfService" = "Условиями предоставления услуг";
+"AuthNameTitle" = "Привет! Как тебя зовут?";
 
-"AuthTermsOfServiceTitle" = "Условия";
+"AuthNamePlaceholder" = "Ваше полное имя";
 
-"AuthPhoneTooShort" = "Номер телефона слишком короткий";
+"AuthPhoneTitle" = "Какой у Вас номер телефона?";
 
-"AuthCodeFieldHint" = "Код активации";
+"AuthPhoneHint" = "Нам необходим Ваш номер телефона что бы защитить вашу персональную информацию.";
 
-"AuthCodeHint" = "Мы отправили вам SMS с кодом активации.";
+"AuthPhonePlaceholder" = "Ваш номер телефона";
 
-"AuthCallDoneHint" = "{appname} набрал ваш номер.";
+"AuthPhoneUseEmail" = "Взод через почту";
 
-"AuthCallHint" = "{appname} позвонит вам через {time}";
+"AuthEmailTitle" = "Какая у вас почта?";
 
-"AuthNoCodeHint" = "Не получили код?";
+"AuthEmailHint" = "Мы не нессылаем спам.";
 
-"AuthProfileTitle" = "Ваш профиль";
+"AuthEmailPlaceholder" = "Ваша почта";
 
-"AuthProfileAddPhoto1" = "добавить";
+"AuthEmailUsePhone" = "Вход через телефон";
 
-"AuthProfileAddPhoto2" = "фото";
+"AuthDisclaimer" = "Регистрируясь, вы соглашаетесь с Terms of Service и Privacy Policy.";
 
-"AuthProfileNameHint" = "Ваше имя";
+"AuthDisclaimerToS" = "Terms of Service";
 
-"AuthProfileHint" = "Введите свое имя и выберите фото";
+"AuthDisclaimerPrivacy" = "Privacy Policy";
 
-"AuthTerms" = "By signing up to {app_name}, you agree not to: \n\n - use our service to send spam and scam users.\n- promote violence on publicly viewable {app_name} bots or channels.\n\nWe reserve the right to update these Terms of Service later.";
+"AuthOTPEmailTitle" = "Подтвердите почту";
 
-"AuthEmailTitle" = "Ваша почта";
+"AuthOTPPhoneTitle" = "Подтвердите телефон";
 
-"AuthEmailHint" = "Пожалуйста, введите свою рабочую почту и нажмите далее";
+"AuthOTPEmailHint" = "Мы отправили вам письмо с кодом активации.\nПожалуйста, введите их ниже.";
 
-"AuthEmailFieldHint" = "Ваша рабочая почта";
+"AuthOTPPhoneHint" = "Мы отправили вам СМС с кодом активации.\nПожалуйста, введите их ниже.";
 
+"AuthOTPPlaceholder" = "Код активации";
 
-"AuthEmailCodeFieldHint" = "Код активации";
+"AuthOTPNoCode" = "Не получили код?";
 
-"AuthEmailCodeHint" = "Мы отправили вам код активации на почту.";
+"AuthOTPCallHint" = "{app_name} позвонит вам через {time}";
 
 /*
  * Common Elements

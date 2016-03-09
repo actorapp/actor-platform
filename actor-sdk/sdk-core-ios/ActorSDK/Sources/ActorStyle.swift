@@ -3,7 +3,8 @@
 //
 
 import Foundation
-import YYKit
+import YYText
+import YYImage
 
 public class ActorStyle {
     
@@ -677,11 +678,6 @@ public class ActorStyle {
         set(v) { _composeAvatarTextColor = v }
     }
     
-    //
-    // Auth Screen
-    //
-
-    public var authTintColor = UIColor(rgb: 0x007aff)
     
     //
     // Status Bar progress
@@ -691,36 +687,58 @@ public class ActorStyle {
     public var statusBarConnectingHidden = false
     
     /// Is Status Bar background color
+    private var _statusBarConnectingBgColor : UIColor?
     public var statusBarConnectingBgColor: UIColor {
         get { return _statusBarConnectingBgColor != nil ? _statusBarConnectingBgColor! : navigationBgColor }
         set(v) { _statusBarConnectingBgColor = v }
     }
-    public var _statusBarConnectingBgColor : UIColor?
 
     /// Is Status Bar background color
+    private var _statusBarConnectingTextColor : UIColor?
     public var statusBarConnectingTextColor: UIColor {
         get { return _statusBarConnectingTextColor != nil ? _statusBarConnectingTextColor! : navigationTitleColor }
         set(v) { _statusBarConnectingTextColor = v }
     }
-    public var _statusBarConnectingTextColor : UIColor?
-
+    
     // 
-    // Welcome Tour
+    // Welcome
     //
     
-    /// Text color 
-    public var vcStarInfoTextColor: UIColor {
-        get { return _vcStarInfoTextColor != nil ? _vcStarInfoTextColor! : vcTextColor }
-        set(v) { _vcStarInfoTextColor = v }
-    }
-    public var _vcStarInfoTextColor : UIColor?
+    /// Welcome Page Background color
+    public var welcomeBgColor = UIColor(red: 94, green: 142, blue: 192)
     
-    /// Welcome tour background color
-    public var vcWelcomeBackgroundColor: UIColor {
-        get { return _vcStarInfoTextColor != nil ? _vcWelcomeBackgroundColor! : vcDefaultBackgroundColor }
-        set(v) { _vcWelcomeBackgroundColor = v }
-    }
-    public var _vcWelcomeBackgroundColor : UIColor?
+    /// Welcome Page Title Color
+    public var welcomeTitleColor = UIColor.whiteColor()
+
+    /// Welcome Page Tagline Color
+    public var welcomeTaglineColor = UIColor.whiteColor()
+    
+    /// Welcome Page Signup Background Color
+    public var welcomeSignupBgColor = UIColor.whiteColor()
+    
+    /// Welcome Page Signup Text Color
+    public var welcomeSignupTextColor = UIColor(red: 94, green: 142, blue: 192)
+    
+    /// Welcome Page Login Text Color
+    public var welcomeLoginTextColor = UIColor.whiteColor()
+    
+    /// Welcome Logo
+    public var welcomeLogo: UIImage? = UIImage.bundled("logo_welcome")
+    
+    
+    //
+    // Auth Screen
+    //
+    
+    public var authTintColor = UIColor(rgb: 0x007aff)
+    
+    public var authTitleColor = UIColor.blackColor().alpha(0.87)
+    
+    public var authHintColor = UIColor.alphaBlack(0.64)
+    
+    public var authTextColor = UIColor.alphaBlack(0.87)
+    
+    public var authSeparatorColor = UIColor.blackColor().alpha(0.2)
     
     //
     // Settings VC
@@ -730,9 +748,7 @@ public class ActorStyle {
         get { return _vcSettingsContactsHeaderTextColor != nil ? _vcSettingsContactsHeaderTextColor! : vcTextColor }
         set(v) { _vcSettingsContactsHeaderTextColor = v }
     }
-    public var _vcSettingsContactsHeaderTextColor : UIColor?
-    
-    
+    private var _vcSettingsContactsHeaderTextColor : UIColor?
 }
 
 
