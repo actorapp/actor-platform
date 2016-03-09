@@ -156,7 +156,7 @@
                             android:id="@+id/mute_tv"
                             android:layout_gravity="center"
                             android:textColor="@android:color/white"
-                            android:text="mute"
+                            android:text="@string/call_enable_mute"
                             android:gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -180,7 +180,7 @@
                             android:id="@+id/speaker_tv"
                             android:layout_gravity="center"
                             android:textColor="@android:color/white"
-                            android:text="speaker"
+                            android:text="@string/call_enable_speaker"
                             android:gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -204,7 +204,7 @@
                             android:id="@+id/video_tv"
                             android:layout_gravity="center"
                             android:textColor="@android:color/white"
-                            android:text="video"
+                            android:text="@string/call_enable_video"
                             android:gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
@@ -237,7 +237,7 @@
                             android:id="@+id/back_tv"
                             android:layout_gravity="center"
                             android:textColor="@android:color/white"
-                            android:text="messages"
+                            android:text="@string/call_to_messages"
                             android:gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -277,7 +277,7 @@
                             android:id="@+id/add_user_tv"
                             android:layout_gravity="center"
                             android:textColor="@android:color/white"
-                            android:text="add user"
+                            android:text="@string/call_add_user"
                             android:gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
