@@ -256,6 +256,11 @@ export const PeerTypes = {
   GROUP: 'group'
 };
 
+export const PeerTypePrefixes = {
+  USER: 'u',
+  GROUP: 'g'
+};
+
 export const ActivityTypes = keymirror({
   USER_PROFILE: null,
   GROUP_PROFILE: null
