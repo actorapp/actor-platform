@@ -125,7 +125,7 @@
 
 "CallPrivateTitle" = "Входящий звонок";
 
-"CallPrivatelText" = "Вам звонит {name}";
+"CallPrivateText" = "Вам звонит {name}";
 
 "CallGroupTitle" = "Входящий звонок";
 

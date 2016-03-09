@@ -122,7 +122,7 @@
 
 "CallPrivateTitle" = "Private Call";
 
-"CallPrivatelText" = "Call from {name}";
+"CallPrivateText" = "Call from {name}";
 
 "CallGroupTitle" = "Group Call";
 
