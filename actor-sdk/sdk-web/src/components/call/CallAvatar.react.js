@@ -15,7 +15,7 @@ class CallAvatar extends Component {
     small: PropTypes.bool,
     peerInfo: PropTypes.shape({
       name: PropTypes.string.isRequired,
-      avatar: PropTypes.string.isRequired,
+      avatar: PropTypes.string,
       placeholder: PropTypes.string.isRequired
     }).isRequired,
     callState: PropTypes.oneOf([
