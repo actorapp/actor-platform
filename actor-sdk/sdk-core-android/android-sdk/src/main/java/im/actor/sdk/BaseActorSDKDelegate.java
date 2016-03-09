@@ -254,10 +254,4 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
         return null;
     }
 
-    @Override
-    public ConversationActor.ConversationActorDelegate getConversationActorDelegate(Peer peer) {
-        return null;
-    }
-
-
 }
