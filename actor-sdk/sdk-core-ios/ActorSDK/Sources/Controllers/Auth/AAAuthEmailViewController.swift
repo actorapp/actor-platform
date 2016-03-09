@@ -169,11 +169,13 @@ public class AAAuthEmailViewController: AAAuthViewController {
     public override func keyboardWillAppear(height: CGFloat) {
         scrollView.frame = CGRectMake(0, 0, view.width, view.height - height)
         
-        let height = scrollView.height - height - 66
-        let offset: CGFloat = 184 + 44
-        let destOffset = height * 0.8  - offset / 2 + 66
+        if AADevice.isiPhone4 || AADevice.isiPhone5 {
+            let height = scrollView.height - height
+            let offset: CGFloat = 184 + 44
+            let destOffset = height * 0.8  - offset / 2
         
-        scrollView.setContentOffset(CGPoint(x: 0, y: -destOffset - 66), animated: true)
+            scrollView.setContentOffset(CGPoint(x: 0, y: -destOffset), animated: true)
+        }
     }
     
     public override func keyboardWillDisappear() {
