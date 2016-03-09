@@ -12,11 +12,6 @@ link_with 'ActorApp'
 target 'ActorApp' do
     xcodeproj 'ActorApp.xcodeproj'
 
-    # Tracking
-    pod 'HockeySDK', '~> 3.8-RC'
-    pod 'Fabric'
-    pod 'Crashlytics'
-
     # Core Tools
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
@@ -28,7 +23,7 @@ target 'ActorApp' do
     pod 'JDStatusBarNotification'
     pod 'Neon'
     pod 'ElegantPresentations'
-    pod 'YYImage'
+    pod 'YYImage', '0.9.3'
     pod 'YYText'
     pod 'YYCategories'
     pod 'DZNWebViewController'
@@ -67,7 +62,7 @@ target 'ActorSDK' do
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
     pod 'ElegantPresentations'
-    pod 'YYImage'
+    pod 'YYImage', '0.9.3'
     pod 'YYText'
     pod 'YYCategories'
     pod 'DZNWebViewController'
