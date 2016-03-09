@@ -5,18 +5,22 @@
 import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ConnectionStateActionCreators from '../actions/ConnectionStateActionCreators';
+import DraftActionCreators from '../actions/DraftActionCreators';
 import ActorClient from '../utils/ActorClient';
+import DialogStore from '../stores/DialogStore';
 
 export default {
   createAppVisible() {
+    dispatch(ActionTypes.APP_VISIBLE);
     ActorClient.onAppVisible();
     ActorClient.bindConnectState(ConnectionStateActionCreators.setState);
-    dispatch(ActionTypes.APP_VISIBLE);
   },
 
   createAppHidden() {
+    dispatch(ActionTypes.APP_HIDDEN);
+    const currentPeer = DialogStore.getCurrentPeer();
     ActorClient.onAppHidden();
     ActorClient.unbindConnectState(ConnectionStateActionCreators.setState);
-    dispatch(ActionTypes.APP_HIDDEN);
+    DraftActionCreators.saveDraft(currentPeer);
   }
 };
