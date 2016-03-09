@@ -159,6 +159,4 @@ public interface ActorSDKDelegate {
 
     @Deprecated
     ActorSettingsCategory[] getAfterSettingsCategories();
-
-    ConversationActor.ConversationActorDelegate getConversationActorDelegate(Peer peer);
 }
