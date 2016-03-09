@@ -30,8 +30,6 @@ import im.actor.runtime.HttpRuntime;
 import im.actor.runtime.Log;
 import im.actor.runtime.http.FileDownloadCallback;
 import im.actor.runtime.http.FileUploadCallback;
-import im.actor.sdk.ActorSDK;
-import im.actor.sdk.R;
 import okio.Buffer;
 
 public class AndroidHttpProvider implements HttpRuntime {
@@ -43,7 +41,8 @@ public class AndroidHttpProvider implements HttpRuntime {
     private final MediaType MEDIA_TYPE = MediaType.parse("application/octet-stream");
 
     public AndroidHttpProvider() {
-        String cert = AndroidContext.getContext().getResources().getString(R.string.trusted_pem);
+//        String cert = AndroidContext.getContext().getResources().getString(R.string.trusted_pem);
+        String cert = "none";
         if(!cert.equals("none")){
             SSLContext sslContext = sslContextForTrustedCertificates(new Buffer()
                     .writeUtf8(cert)
@@ -51,7 +50,8 @@ public class AndroidHttpProvider implements HttpRuntime {
             client.setSslSocketFactory(sslContext.getSocketFactory());
         }
 
-        final String trustHostname = AndroidContext.getContext().getResources().getString(R.string.trusted_hostname);
+//        final String trustHostname = AndroidContext.getContext().getResources().getString(R.string.trusted_hostname);
+        final String trustHostname = "none";
         if(!trustHostname.equals("none")){
             client.setHostnameVerifier(new HostnameVerifier() {
                 @Override
