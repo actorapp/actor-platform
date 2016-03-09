@@ -50,6 +50,7 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
             audioRouter.mode = AVAudioSessionModeVoiceChat
             audioRouter.currentRoute = .Receiver
         }
+        audioRouter.isEnabled = true
     }
     
     public func callAnswered(call: ACCallVM) {
@@ -65,6 +66,7 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
         audioRouter.category = AVAudioSessionCategorySoloAmbient
         audioRouter.mode = AVAudioSessionModeDefault
         audioRouter.currentRoute = .Receiver
+        audioRouter.isEnabled = false
     }
     
     
