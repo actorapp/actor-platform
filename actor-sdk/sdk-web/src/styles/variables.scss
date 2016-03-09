@@ -101,8 +101,10 @@ $call-background: #2a384a;
 $call-title-color: #e3e5e7;
 $call-button-color: rgb(147, 155, 164);
 $call-button-color-hover: white;
-$call-rings-size: 120px;
+$call-rings-size: $avatar-big-size;
 $call-rings-step: 20px;
+$call-rings-size-small: $avatar-large-size + 5;
+$call-rings-step-small: 15px;
 
 // Modal
 $modal-default-width: 300px;
