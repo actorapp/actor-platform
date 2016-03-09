@@ -1,50 +1,49 @@
 import _ from 'lodash';
 
-import { PeerTypes } from '../constants/ActorAppConstants';
+import { PeerTypes, PeerTypePrefixes } from '../constants/ActorAppConstants';
 
 import ActorClient from './ActorClient';
 
 export default {
-  peerToString: (peer) => {
-    let str;
-
+  peerToString(peer) {
     switch (peer.type) {
       case PeerTypes.USER:
-            str = 'u' + peer.id;
-            break;
+        return PeerTypePrefixes.USER + peer.id;
       case PeerTypes.GROUP:
-            str = 'g' + peer.id;
-            break;
+        return PeerTypePrefixes.GROUP + peer.id;
       default:
-            throw('Unknown peer type' + peer.type + ' ' + peer.id);
+        throw new Error('Unknown peer type: ' + peer.type + ' ' + peer.id);
     }
-
-    return str;
   },
 
-  stringToPeer: (str) => {
-    let peer = null;
+  stringToPeer(str) {
+    const peerId = parseInt(str.substring(1), 10);
+    switch (str.substring(0, 1)) {
+      case PeerTypePrefixes.USER:
+        return ActorClient.getUserPeer(peerId);
+      case PeerTypePrefixes.GROUP:
+        return ActorClient.getGroupPeer(peerId);
+      default:
+        throw new Error('Unknown peer type: ' + str);
+    }
+  },
 
-    if (str) {
-      const peerId = parseInt(str.substring(1));
-
-      if (peerId > 0) {
-        switch (str.substring(0, 1)) {
-          case 'u':
-            peer = ActorClient.getUserPeer(peerId);
-            break;
-          case 'g':
-            peer = ActorClient.getGroupPeer(peerId);
-            break;
-          default:
-        }
+  hasPeer(peer) {
+    try {
+      switch (peer.type) {
+        case PeerTypes.USER:
+          return ActorClient.getUser(peer.id);
+        case PeerTypes.GROUP:
+          return ActorClient.getGroup(peer.id);
       }
+    } catch (e) {
+      console.error(e);
     }
 
-    return peer;
+    return false;
   },
 
-  equals: (peer1, peer2) => {
+  equals(peer1, peer2) {
     return (
       (_.isPlainObject(peer1) && !_.isPlainObject(peer2)) ||
       (!_.isPlainObject(peer1) && _.isPlainObject(peer2)) ||
