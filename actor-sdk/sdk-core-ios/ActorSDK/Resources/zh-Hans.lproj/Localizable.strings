@@ -427,7 +427,7 @@
  * Welcome
  */
 
-"WelcomeTitle" = "Welcome to Actor!";
+"WelcomeTitle" = "Welcome to {app_name}!";
 
 "WelcomeTagline" = "Free, fast and secure messaging.";
 

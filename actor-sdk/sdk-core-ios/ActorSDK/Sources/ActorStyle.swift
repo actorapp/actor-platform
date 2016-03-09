@@ -722,6 +722,9 @@ public class ActorStyle {
     /// Welcome Page Login Text Color
     public var welcomeLoginTextColor = UIColor.whiteColor()
     
+    /// Welcome Logo
+    public var welcomeLogo: UIImage? = UIImage.bundled("logo_welcome")
+    
     
     //
     // Auth Screen

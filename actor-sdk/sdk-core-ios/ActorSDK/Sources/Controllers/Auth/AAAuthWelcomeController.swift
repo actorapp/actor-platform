@@ -27,9 +27,9 @@ public class AAWelcomeController: AAViewController {
         
         self.view.backgroundColor = ActorSDK.sharedActor().style.welcomeBgColor
         
-        self.logoView.image = UIImage.bundled("logo_welcome")
+        self.logoView.image = ActorSDK.sharedActor().style.welcomeLogo
         
-        appNameLabel.text = AALocalized("WelcomeTitle")
+        appNameLabel.text = AALocalized("WelcomeTitle").replace("{app_name}", dest: ActorSDK.sharedActor().appName)
         appNameLabel.textAlignment = .Center
         appNameLabel.backgroundColor = UIColor.clearColor()
         appNameLabel.font = UIFont.mediumSystemFontOfSize(24)
