@@ -15,10 +15,6 @@ import UserStore from '../../../stores/UserStore';
 import GroupStore from '../../../stores/GroupStore';
 
 class Welcome extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static propTypes = {
     peer: PropTypes.object.isRequired
   };

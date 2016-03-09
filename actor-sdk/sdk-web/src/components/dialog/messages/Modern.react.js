@@ -131,10 +131,6 @@ class TextModern extends Component {
     className: PropTypes.string
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { paragraphStyle, attaches, text, className } = this.props;
     const modernClassName = classnames('modern', {

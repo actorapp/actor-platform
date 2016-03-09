@@ -11,10 +11,6 @@ const MAP_SIZE = '300x100';
  * Class that represent a component for display location messages content
  */
 class Location extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static propTypes = {
     content: PropTypes.object.isRequired,
     className: PropTypes.string

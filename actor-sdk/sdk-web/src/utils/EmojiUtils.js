@@ -92,6 +92,18 @@ export const escapeWithEmoji = (text) => {
   return emoji.replace_unified(escape(text));
 };
 
+export function processEmojiText(text) {
+  emoji.include_title = true;
+  emoji.include_text = true;
+  emoji.change_replace_mode('css');
+
+  let emojifiedText = text;
+  emojifiedText = emoji.replace_colons(text);
+  emojifiedText = emoji.replace_unified(emojifiedText);
+
+  return emojifiedText;
+}
+
 export default {
   emoji,
   emojiRegexp,

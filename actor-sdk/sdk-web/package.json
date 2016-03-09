@@ -36,7 +36,7 @@
     "watch:sass": "node-sass src/styles/index.scss --include-path node_modules -o build/styles --watch",
     "watch": "npm run watch:babel & npm run watch:sass",
     "prepare": "npm run build && copyfiles './*.js' '.gitignore' '.babelrc' '.eslintrc' 'package.json' './src/**/*' './assets/**/*' './example/**/*' './build/**/*' 'README' publish",
-    "start": "npm run clean && npm run build && npm run watch"
+    "start": "gulp dev"
   },
   "ignore": [
     "**/.*",
@@ -55,12 +55,12 @@
     "crosstab": "0.2.12",
     "flexboxgrid": "6.3.0",
     "flux": "2.1.1",
+    "highlight.js": "^9.2.0",
     "immutable": "3.7.6",
     "intl": "1.1.0",
     "jsonlylightbox": "github:actorapp/jsOnlyLightbox#develop",
     "keymirror": "0.1.1",
     "lodash": "4.5.1",
-    "memoizee": "0.3.9",
     "normalize.css": "3.0.3",
     "object-assign": "4.0.1",
     "opus-recorder": "github:actorapp/Recorderjs",
