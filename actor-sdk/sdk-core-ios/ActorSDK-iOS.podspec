@@ -30,7 +30,7 @@ Pod::Spec.new do |s|
   s.dependency 'JDStatusBarNotification'
   s.dependency 'ElegantPresentations'
   s.dependency 'YYText'
-  s.dependency 'YYImage'
+  s.dependency 'YYImage', '0.9.3'
   s.dependency 'YYCategories'
   s.dependency 'DZNWebViewController'
 
