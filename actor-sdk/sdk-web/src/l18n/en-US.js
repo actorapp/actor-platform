@@ -262,7 +262,7 @@ export default {
         'addPeople': 'add people',
         'favourites': 'Favorites',
         'groups': 'Groups',
-        'privates': 'Privates',
+        'privates': 'Direct Messages',
       },
       'group': {
         'empty': 'Create your first group conversation'
