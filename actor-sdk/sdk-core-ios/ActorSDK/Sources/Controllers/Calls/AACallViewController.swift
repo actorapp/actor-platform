@@ -50,7 +50,8 @@ public class AACallViewController: AAViewController {
         answerCallButtonText.textColor = UIColor.whiteColor()
         answerCallButtonText.textAlignment = NSTextAlignment.Center
         answerCallButtonText.text = AALocalized("CallsAnswer")
-        answerCallButtonText.bounds = CGRectMake(0, 0, 72, 19)
+        answerCallButtonText.bounds = CGRectMake(0, 0, 72, 44)
+        answerCallButtonText.numberOfLines = 2
         
         declineCallButton.setImage(UIImage.bundled("ic_call_end_44")!.tintImage(UIColor.whiteColor()), forState: .Normal)
         declineCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 217/255.0, green: 80/255.0, blue:61/255.0, alpha: 1.0), size: CGSizeMake(74, 74), radius: 37), forState: .Normal)
@@ -61,7 +62,8 @@ public class AACallViewController: AAViewController {
         declineCallButtonText.textColor = UIColor.whiteColor()
         declineCallButtonText.textAlignment = NSTextAlignment.Center
         declineCallButtonText.text = AALocalized("CallsDecline")
-        declineCallButtonText.bounds = CGRectMake(0, 0, 72, 19)
+        declineCallButtonText.bounds = CGRectMake(0, 0, 72, 44)
+        declineCallButtonText.numberOfLines = 2
         
         muteButton.image = UIImage.bundled("ic_mic_off_44")
         muteButton.title = AALocalized("CallsMute")
@@ -116,9 +118,9 @@ public class AACallViewController: AAViewController {
     }
     
     private func layoutButtons() {
-        muteButton.frame = CGRectMake((self.view.width / 3 - 72) / 2, self.view.height - 270, 72, 97)
-        speakerButton.frame = CGRectMake( self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 270, 72, 97)
-        videoButton.frame = CGRectMake( 2 * self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 270, 72, 97)
+        muteButton.frame = CGRectMake((self.view.width / 3 - 72) / 2, self.view.height - 270, 84, 72 + 5 + 44)
+        speakerButton.frame = CGRectMake( self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 270, 84, 72 + 5 + 44)
+        videoButton.frame = CGRectMake( 2 * self.view.width / 3 +  (self.view.width / 3 - 72) / 2, self.view.height - 270, 84, 72 + 5 + 44)
         
         if !declineCallButton.hidden || !answerCallButton.hidden {
             if !declineCallButton.hidden && !answerCallButton.hidden {
