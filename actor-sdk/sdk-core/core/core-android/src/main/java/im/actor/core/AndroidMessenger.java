@@ -50,7 +50,6 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.storage.ListEngineItem;
-import im.actor.sdk.ActorSDK;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static im.actor.runtime.actors.ActorSystem.system;
@@ -482,10 +481,5 @@ public class AndroidMessenger extends im.actor.core.Messenger {
 
     public EventBus getEvents() {
         return modules.getEvents();
-    }
-
-    @Override
-    public ConversationActor.ConversationActorDelegate getConversationActorDelegate(Peer peer) {
-        return ActorSDK.sharedActor().getConversationActorDelegate(peer);
     }
 }

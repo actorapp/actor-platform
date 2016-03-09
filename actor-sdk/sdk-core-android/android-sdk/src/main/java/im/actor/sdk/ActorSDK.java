@@ -820,10 +820,6 @@ public class ActorSDK {
         }
     }
 
-    public ConversationActor.ConversationActorDelegate getConversationActorDelegate(Peer peer) {
-        return delegate.getConversationActorDelegate(peer);
-    }
-
     /**
      * Used for handling delegated ViewHolders
      */
