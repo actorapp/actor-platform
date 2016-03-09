@@ -6,6 +6,4 @@
 <resources>
     <integer name="activity_switch_time">300</integer>
     <string name="messenger_domain" translatable="false">actor.cc</string>
-    <string name="trusted_hostname" translatable="false">none</string>
-    <string name="trusted_pem"  translatable="false">none</string>
 </resources>
