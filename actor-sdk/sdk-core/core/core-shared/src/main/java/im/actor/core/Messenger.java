@@ -2213,12 +2213,4 @@ public class Messenger {
     ModuleContext getModuleContext() {
         return modules;
     }
-
-    public ConversationActor.ConversationActorDelegate getConversationActorDelegate(Peer peer) {
-        return null;
-    }
-
-    public ListEngine getCustomConversationEngine(Peer peer, String datatype, BserCreator creator){
-        return modules.getMessagesModule().getCustomConversationEngine(peer, datatype, creator);
-    }
 }
