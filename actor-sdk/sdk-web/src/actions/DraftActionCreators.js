@@ -5,17 +5,22 @@
 import { debounce } from 'lodash';
 import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
+import ActorClient from '../utils/ActorClient';
+import DraftStore from '../stores/DraftStore';
 
-const DraftActionCreators = {
+export default {
   loadDraft(peer) {
-    dispatch(ActionTypes.DRAFT_LOAD, {
-      peer
-    });
+    const draft = ActorClient.loadDraft(peer);
+    dispatch(ActionTypes.DRAFT_LOAD, { draft });
   },
 
-  saveDraft: debounce((draft, saveNow = false) => {
-    dispatch(ActionTypes.DRAFT_SAVE, { draft, saveNow });
+  saveDraft(peer) {
+    const draft = DraftStore.getDraft();
+    ActorClient.saveDraft(peer, draft);
+    dispatch(ActionTypes.DRAFT_SAVE, { draft });
+  },
+
+  changeDraft: debounce((draft) => {
+    dispatch(ActionTypes.DRAFT_CHANGE, { draft });
   }, 300, {trailing: true})
 };
-
-export default DraftActionCreators;

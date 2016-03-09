@@ -52,12 +52,11 @@ class DialogStore extends Store {
         this.__emitChange();
         break;
       case ActionTypes.BIND_DIALOG_PEER:
-        this.lastPeer = this.currentPeer;
         this.currentPeer = action.peer;
         this.__emitChange();
         break;
       case ActionTypes.UNBIND_DIALOG_PEER:
-        this.lastPeer = this.currentPeer;
+        this.lastPeer = action.peer;
         this.currentPeer = null;
         this.__emitChange();
         break;
