@@ -56,7 +56,9 @@ public class AACircleButton: UIView {
         
         titleView.font = UIFont.thinSystemFontOfSize(17)
         titleView.textAlignment = .Center
-        titleView.bounds = CGRectMake(0, 0, size, 20)
+        titleView.bounds = CGRectMake(0, 0, 86, 44)
+        titleView.minimumScaleFactor = 0.3
+        titleView.adjustsFontSizeToFitWidth = true
         
         button.bounds = CGRectMake(0, 0, size, size)
         
