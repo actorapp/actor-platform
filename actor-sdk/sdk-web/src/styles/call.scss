@@ -76,10 +76,6 @@
         background-color: rgba(black, .1);
         box-shadow: inset 0 0 0 1px rgba(black, .04);
         animation: scalePulse 1.75s infinite ease;
-        animation-fill-mode: forwards;
-        // animation: scalePulse 1.75s infinite ease;
-        // animation-fill-mode: forwards;
-        animation-play-state: running;
 
         @for $i from 1 through 3 {
           &:nth-child(#{$i}) {
@@ -96,15 +92,13 @@
       }
 
       &--small {
-        $size: $call-rings-size / 1.5;
-        $step: $call-rings-step / 1.5;
         & > div {
           @for $i from 1 through 3 {
             &:nth-child(#{$i}) {
-              width: $size + ($step * ($i - 1));
-              height: $size + ($step * ($i - 1));
-              margin-top: - ($size + ($step * ($i - 1))) / 2;
-              margin-left: - ($size + ($step * ($i - 1))) / 2;
+              width: $call-rings-size-small + ($call-rings-step-small * ($i - 1));
+              height: $call-rings-size-small + ($call-rings-step-small * ($i - 1));
+              margin-top: - ($call-rings-size-small + ($call-rings-step-small * ($i - 1))) / 2;
+              margin-left: - ($call-rings-size-small + ($call-rings-step-small * ($i - 1))) / 2;
             }
           }
         }

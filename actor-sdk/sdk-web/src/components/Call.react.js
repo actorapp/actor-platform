@@ -130,8 +130,8 @@ class Call extends Component {
 
     return (
       <section className="activity activity--shown">
-        <div className="activity__body call__container">
-          <section className="call">
+        <div className="activity__body call">
+          <section className="call__container">
             <CallBody peerInfo={peerInfo} callState={callState}/>
             <CallControls
               callState={callState}
