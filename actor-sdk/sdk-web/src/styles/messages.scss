@@ -169,6 +169,7 @@ $sticker-max-size: 180px;
   }
   &__body {
     padding-right: 16px;
+    overflow: hidden;
   }
   &__sender {
     font-size: 15px;
@@ -707,6 +708,10 @@ $sticker-max-size: 180px;
       padding: 0;
 
       vertical-align: top;
+    }
+
+    .hljs {
+      background-color: transparent;
     }
   }
   .photo {
