@@ -99,8 +99,7 @@ class ComposeStore extends Store {
     this.__emitChange();
   };
 
-  onSelectDialogPeer = () => {
-    //waitFor([DraftStore.dispatchToken]);
+  onDraftLoad = () => {
     text = DraftStore.getDraft();
     this.__emitChange();
   };
@@ -134,8 +133,8 @@ class ComposeStore extends Store {
       case ActionTypes.COMPOSE_CLEAN:
         this.onComposeClean();
         break;
-      case ActionTypes.SELECT_DIALOG_PEER:
-        this.onSelectDialogPeer();
+      case ActionTypes.DRAFT_LOAD:
+        this.onDraftLoad();
         break;
       case ActionTypes.EMOJI_INSERT:
         this.onEmojiInsert(action);
