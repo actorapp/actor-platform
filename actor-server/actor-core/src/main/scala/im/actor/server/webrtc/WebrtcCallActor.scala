@@ -359,7 +359,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
             for (deviceId ← ebMessage.deviceId) yield {
               val newDevice = Device(deviceId, ebMessage.client, msg.peerSettings, isJoined = deviceId == callerDeviceId)
               devices foreach {
-                case (pairDeviceId, pairDevice) ⇒
+                case (pairDeviceId, pairDevice) if pairDeviceId != pairDevice.deviceId ⇒
                   if (pairDevice.canPreConnect(msg.peerSettings))
                     connect(newDevice, pairDevice)
               }
@@ -386,13 +386,15 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
               leftDevice ← devices get pair.left
               rightDevice ← devices get pair.right
             } yield {
-              val chkPair = Pair(deviceId, msg.device)
-              if (pair.left == chkPair.left && pair.right == chkPair.right) {
-                sessions = sessions filterNot (_ == sessionId)
-                eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.left), ApiCloseSession(pair.right, sessionId).toByteArray)
-                eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.right), ApiCloseSession(pair.left, sessionId).toByteArray)
-                connect(leftDevice, rightDevice)
-              } else log.warning("Received OnRenegotiationNeeded for a wrong deviceId")
+              if (deviceId != msg.device) {
+                val chkPair = Pair(deviceId, msg.device)
+                if (pair.left == chkPair.left && pair.right == chkPair.right) {
+                  sessions = sessions filterNot (_ == sessionId)
+                  eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.left), ApiCloseSession(pair.right, sessionId).toByteArray)
+                  eventBusExt.post(EventBus.InternalClient(self), eventBusId, Seq(pair.right), ApiCloseSession(pair.left, sessionId).toByteArray)
+                  connect(leftDevice, rightDevice)
+                } else log.warning("Received OnRenegotiationNeeded for a wrong deviceId")
+              }
             }
           case _ ⇒
         }
