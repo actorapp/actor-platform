@@ -8,7 +8,7 @@ import com.typesafe.sbt.SbtMultiJvm
 import com.typesafe.sbt.SbtMultiJvm.MultiJvmKeys.MultiJvm
 
 object Build extends sbt.Build with Versioning with Releasing {
-  val ScalaVersion = "2.11.7"
+  val ScalaVersion = "2.11.8"
   val BotKitVersion = getVersion
 
   lazy val buildSettings =
