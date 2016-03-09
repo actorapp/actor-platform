@@ -281,6 +281,7 @@ export default {
         'text': 'Oops, we have detected another tab with {appName}, so we had to deactivate this one to prevent some dangerous things happening.'
       }
     },
+
     call: {
       outgoing: 'Outgoing call',
       incoming: 'Incoming call',
