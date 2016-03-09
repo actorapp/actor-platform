@@ -557,7 +557,7 @@ public class CallFragment extends BaseFragment {
             builder.setAutoCancel(true);
             builder.setSmallIcon(R.drawable.ic_app_notify);
             builder.setPriority(NotificationCompat.PRIORITY_MAX);
-            builder.setContentTitle("return to call");
+            builder.setContentTitle(getActivity().getString(R.string.call_notification));
 
             Intent intent = new Intent(getActivity(), CallActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
