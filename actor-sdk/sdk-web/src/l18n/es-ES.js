@@ -251,6 +251,28 @@ export default {
         'header': 'Pestaña desactivada',
         'text': 'Vaya, ha abierto otra sesión con {appName}, así que tuvimos que desactivar ésta para evitar posibles errores.'
       }
+    },
+
+    call: {
+      outgoing: 'Llamada saliente',
+      incoming: 'Llamada entrante',
+      mute: 'Silenciar',
+      unmute: 'Activado',
+      answer: 'Responder',
+      decline: 'Disminución',
+      end: 'Llamada finalizada',
+      addUser: 'Añadir usury',
+      fullScreen: 'Pantalla completa',
+      video: 'Vídeo'
+    },
+
+    toolbar: {
+      callState: {
+        calling: 'Llamando',
+        connecting: 'Conectando',
+        in_progress: 'Llamada activa: {time}',
+        ended: 'Llamada finalizada'
+      }
     }
   }
 };
