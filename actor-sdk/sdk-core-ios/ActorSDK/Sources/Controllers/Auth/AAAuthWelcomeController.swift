@@ -8,6 +8,7 @@ import ElegantPresentations
 
 public class AAWelcomeController: AAViewController {
     
+    let bgImage : UIImageView = UIImageView()
     let logoView : UIImageView = UIImageView()
     let appNameLabel : UILabel = UILabel()
     let someInfoLabel: UILabel = UILabel()
@@ -26,6 +27,10 @@ public class AAWelcomeController: AAViewController {
         super.loadView()
         
         self.view.backgroundColor = ActorSDK.sharedActor().style.welcomeBgColor
+        
+        self.bgImage.image = ActorSDK.sharedActor().style.welcomeBgImage
+        self.bgImage.hidden = ActorSDK.sharedActor().style.welcomeBgImage == nil
+        self.bgImage.contentMode = .ScaleAspectFill
         
         self.logoView.image = ActorSDK.sharedActor().style.welcomeLogo
         
@@ -55,6 +60,7 @@ public class AAWelcomeController: AAViewController {
         signinButton.setTitleColor(ActorSDK.sharedActor().style.welcomeLoginTextColor.alpha(0.7), forState: .Highlighted)
         signinButton.addTarget(self, action: "signInAction", forControlEvents: UIControlEvents.TouchUpInside)
         
+        self.view.addSubview(self.bgImage)
         self.view.addSubview(self.logoView)
         self.view.addSubview(self.appNameLabel)
         self.view.addSubview(self.someInfoLabel)
@@ -81,6 +87,8 @@ public class AAWelcomeController: AAViewController {
             signupButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 90, 136, 44)
             signinButton.frame = CGRectMake((view.width - 136) / 2, view.height - 44 - 35, 136, 44)
         }
+        
+        self.bgImage.frame = view.bounds
     }
     
     public func signupAction() {
