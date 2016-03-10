@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { debounce } from 'lodash';
@@ -20,7 +20,7 @@ export default {
     dispatch(ActionTypes.DRAFT_SAVE, { draft });
   },
 
-  changeDraft: debounce((draft) => {
+  changeDraft(draft) {
     dispatch(ActionTypes.DRAFT_CHANGE, { draft });
-  }, 300, {trailing: true})
+  }
 };
