@@ -565,6 +565,10 @@
 
 "ActionCancel" = "Cancelar";
 
+"ActionAddPhoto1" = "añadir";
+
+"ActionAddPhoto2" = "foto";
+
 /*
  * Network
  */
