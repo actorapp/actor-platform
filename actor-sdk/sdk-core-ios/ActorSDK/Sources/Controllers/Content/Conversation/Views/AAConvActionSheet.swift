@@ -5,145 +5,109 @@
 import UIKit
 import Photos
 
-let screenWidth = UIScreen.mainScreen().bounds.size.width
-let screenHeigth = UIScreen.mainScreen().bounds.size.height
+public protocol AAConvActionSheetDelegate {
+    func actionSheetPickedImages(images: [UIImage])
+    func actionSheetPickCamera()
+    func actionSheetPickGallery()
+    func actionSheetPickDocument()
+    func actionSheetPickLocation()
+    func actionSheetPickContact()
+}
 
-class AAConvActionSheet: UIView {
+public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
     
-    var sheetView:UIView!
-    var backgroundView:UIView!
+    public var delegate: AAConvActionSheetDelegate?
     
-    var btnCamera:UIButton!
-    var btnLibrary:UIButton!
-    var btnDocuments:UIButton!
-    var btnLocation:UIButton!
-    var btnContact:UIButton!
-    var btnCancel:UIButton!
+    private let sheetView = UIView()
+    private let backgroundView = UIView()
     
-    var thumbnailView: AAThumbnailView!
+    private var thumbnailView: AAThumbnailView!
+    private var btnCamera = UIButton(type: UIButtonType.System)
+    private var btnLibrary = UIButton(type: UIButtonType.System)
+    private var btnDocuments = UIButton(type: UIButtonType.System)
+    private var btnLocation = UIButton(type: UIButtonType.System)
+    private var btnContact = UIButton(type: UIButtonType.System)
+    private var btnCancel = UIButton(type: UIButtonType.System)
     
-    weak var weakSuper : ConversationViewController!
+    private weak var presentedInController: UIViewController! = nil
     
-    var superWidth : CGFloat!
-    
-    init(maxSelected:Int,weakSuperIn:ConversationViewController) {
+    public init() {
         super.init(frame: CGRectZero)
         
-        superWidth = weakSuperIn.view.frame.size.width
-        self.setupAllViews()
-        self.configUI()
-        self.weakSuper = weakSuperIn
-        
+        self.backgroundColor = UIColor.clearColor()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    /////
-    
-    func configUI() {
+    public func presentInController(controller: UIViewController) {
         
-        self.alpha = 0
-        self.frame = CGRectMake(0, 0, screenWidth, screenHeigth)
-        self.backgroundColor = UIColor.clearColor()
+        if controller.navigationController != nil {
+            self.presentedInController = controller.navigationController
+        } else {
+            self.presentedInController = controller
+        }
         
-    }
-    
-    
-    deinit {
+        if let navigation = presentedInController as? UINavigationController {
+            navigation.interactivePopGestureRecognizer?.enabled = false
+        } else if let navigation = presentedInController.navigationController {
+            navigation.interactivePopGestureRecognizer?.enabled = false
+        }
         
-        self.weakSuper = nil
+        frame = presentedInController.view.bounds
+        presentedInController.view.addSubview(self)
         
-    }
-    
-    
-    func showAnimation() {
+        setupAllViews()
         
-        self.alpha = 1
+        self.sheetView.frame = CGRectMake(0, self.frame.height, self.frame.width, 400)
         self.backgroundView.alpha = 0
-        
-        var frame = self.sheetView.frame
-        frame.origin.y = screenHeigth - 400
-        
-        self.weakSuper.navigationController!.interactivePopGestureRecognizer!.enabled = false
-        
-        if (self.thumbnailView == nil) {
-            
-            self.thumbnailView = AAThumbnailView()
-            self.sheetView.addSubview(self.thumbnailView)
-            self.thumbnailView.frame    = CGRectMake(0, 5, superWidth, 90)
-            self.thumbnailView.bindedConvSheet = self
-            
+        dispatchOnUi { () -> Void in
+            UIView.animateWithDuration(0.4, delay: 0.0, usingSpringWithDamping: 0.7,
+                initialSpringVelocity: 0.6, options: .CurveEaseInOut, animations: {
+                    self.sheetView.frame = CGRectMake(0, self.frame.height - 400, self.frame.width, 400)
+                    self.backgroundView.alpha = 1
+                }, completion: nil)
         }
-        
-        self.thumbnailView.open()
-        
-        UIView.animateWithDuration(0.4, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.6, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
-            
-            self.sheetView.frame = frame
-            self.backgroundView.alpha = 1
-            
-            
-            }, completion: { (complite) -> Void in
-                
-                // animation complite
-                
-        })
-        
-        
     }
     
-    func cancelAnimation() {
+    public func dismiss() {
+        var nextFrame = self.sheetView.frame
+        nextFrame.origin.y = self.presentedInController.view.height
         
+        if let navigation = presentedInController as? UINavigationController {
+            navigation.interactivePopGestureRecognizer?.enabled = true
+        } else if let navigation = presentedInController.navigationController {
+            navigation.interactivePopGestureRecognizer?.enabled = true
+        }
         
-        var frame = self.sheetView.frame
-        frame.origin.y = screenHeigth
-        
-        self.weakSuper.rightButton.layoutIfNeeded()
         UIView.animateWithDuration(0.25, animations: { () -> Void in
-            self.weakSuper.rightButton.layoutIfNeeded()
-            self.sheetView.frame = frame
-            
-            self.backgroundView.alpha = 0
-            
-            }) { (bool) -> Void in
-                
-                self.weakSuper.navigationController!.interactivePopGestureRecognizer!.enabled = true
-                
-                self.alpha = 0
-                
-                self.thumbnailView.selectedAssets = [PHAsset]()
-                self.thumbnailView.reloadView()
-                self.updateSelectedPhotos()
-                
-                
+            self.sheetView.frame = nextFrame
+            self.backgroundView.alpha = 0}) { (bool) -> Void in
+            self.removeFromSuperview()
         }
-        
     }
-    
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        cancelAnimation()
-    }
-    
-    func setupAllViews() {
+
+    private func setupAllViews() {
         
         
         // sheet view
         
-        self.backgroundView = UIView()
-        self.backgroundView.frame = CGRectMake(0, 0, screenWidth, screenHeigth)
-        self.backgroundView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
-        self.backgroundView.alpha = 0
+        let superWidth = presentedInController.view.width
+        let superHeight = presentedInController.view.height
         
+        self.backgroundView.frame = presentedInController.view.bounds
+        self.backgroundView.backgroundColor = UIColor.alphaBlack(0.7)
+        self.backgroundView.alpha = 0
         self.addSubview(self.backgroundView)
         
-        let frame = CGRectMake(0, screenHeigth, screenWidth, 1000)
-        self.sheetView = UIView(frame: frame)
+        self.sheetView.frame = CGRectMake(0, superHeight - 400, superWidth, 400)
         self.sheetView.backgroundColor = UIColor.whiteColor()
-        
         self.addSubview(self.sheetView)
         
+        self.thumbnailView = AAThumbnailView(frame: CGRectMake(0, 5, superWidth, 90))
+        self.thumbnailView.delegate = self
+        self.thumbnailView.open()
         self.btnCamera      = UIButton(type: UIButtonType.System)
         self.btnLibrary     = UIButton(type: UIButtonType.System)
         self.btnDocuments   = UIButton(type: UIButtonType.System)
@@ -177,9 +141,9 @@ class AAConvActionSheet: UIView {
         self.sheetView.addSubview(self.btnLocation)
         self.sheetView.addSubview(self.btnContact)
         self.sheetView.addSubview(self.btnCancel)
-        //self.sheetView.addSubview(self.thumbnailView)
+        self.sheetView.addSubview(self.thumbnailView)
         
-        //self.thumbnailView.frame    = CGRectMake(0, 5, screenWidth, 90)
+        self.thumbnailView.frame    = CGRectMake(0, 5, superWidth, 90)
         self.btnCamera.frame        = CGRectMake(0, 100, superWidth, 50)
         self.btnLibrary.frame       = CGRectMake(0, 150, superWidth, 50)
         self.btnDocuments.frame     = CGRectMake(0, 200, superWidth, 50)
@@ -189,17 +153,17 @@ class AAConvActionSheet: UIView {
         
         // separators
         
-        let spearator1 = UIView(frame: CGRectMake(0, 99, screenWidth, 1))
+        let spearator1 = UIView(frame: CGRectMake(0, 99, superWidth, 1))
         spearator1.backgroundColor = UIColor(red: 223.9/255.0, green: 223.9/255.0, blue: 223.9/255.0, alpha: 0.6)
-        let spearator2 = UIView(frame: CGRectMake(10, 149, screenWidth-20, 1))
+        let spearator2 = UIView(frame: CGRectMake(10, 149, superWidth - 20, 1))
         spearator2.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
-        let spearator3 = UIView(frame: CGRectMake(10, 199, screenWidth-20, 1))
+        let spearator3 = UIView(frame: CGRectMake(10, 199, superWidth - 20, 1))
         spearator3.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
-        let spearator4 = UIView(frame: CGRectMake(10, 249, screenWidth-20, 1))
+        let spearator4 = UIView(frame: CGRectMake(10, 249, superWidth - 20, 1))
         spearator4.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
-        let spearator5 = UIView(frame: CGRectMake(10, 299, screenWidth-20, 1))
+        let spearator5 = UIView(frame: CGRectMake(10, 299, superWidth - 20, 1))
         spearator5.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
-        let spearator6 = UIView(frame: CGRectMake(10, 349, screenWidth-20, 1))
+        let spearator6 = UIView(frame: CGRectMake(10, 349, superWidth - 20, 1))
         spearator6.backgroundColor = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 0.6)
         
         // add separatos as subview
@@ -228,64 +192,26 @@ class AAConvActionSheet: UIView {
         self.btnLocation.addTarget(self, action: "btnLocationAction", forControlEvents: UIControlEvents.TouchUpInside)
         self.btnContact.addTarget(self, action: "btnContactAction", forControlEvents: UIControlEvents.TouchUpInside)
         self.btnCancel.addTarget(self, action: "btnCloseAction", forControlEvents: UIControlEvents.TouchUpInside)
-        
-        // bineded self
-        
-        //self.thumbnailView.bindedConvSheet = self
-    
     }
     
-    //MARK: - Button's actions
-    
-    func btnCameraAction() {
-        cancelAnimation()
-        self.weakSuper.pickImage(.Camera)
-    }
-    
-    func btnLibraryAction() {
-        cancelAnimation()
-        self.weakSuper.pickImage(.PhotoLibrary)
-    }
-    
-    func btnDocumentAction() {
-        cancelAnimation()
-        
-        if (NSFileManager.defaultManager().ubiquityIdentityToken != nil) {
-            self.weakSuper.pickDocument()
-        }
-        
-    }
-    
-    func btnLocationAction() {
-        cancelAnimation()
-        self.weakSuper.pickLocation()
-    }
-    
-    func btnContactAction() {
-        cancelAnimation()
-        self.weakSuper.pickContact()
-    }
-    
-    func btnCloseAction() {
-        cancelAnimation()
-    }
-    
-    func updateSelectedPhotos() {
-        
-        if self.thumbnailView.selectedAssets.count > 0 {
+    public func thumbnailSelectedUpdated(selectedAssets: [PHAsset]) {
+        if selectedAssets.count > 0 {
             
-            var sendString:String!
-            
-            if self.thumbnailView.selectedAssets.count == 1 {
-                sendString = AALocalized("AttachmentsSendPhoto").replace("{count}", dest: "\(self.thumbnailView.selectedAssets.count)")
+            var sendString:String
+            if selectedAssets.count == 1 {
+                sendString = AALocalized("AttachmentsSendPhoto").replace("{count}", dest: "\(selectedAssets.count)")
             } else {
-                sendString = AALocalized("AttachmentsSendPhotos").replace("{count}", dest: "\(self.thumbnailView.selectedAssets.count)")
+                sendString = AALocalized("AttachmentsSendPhotos").replace("{count}", dest: "\(selectedAssets.count)")
             }
             
+            //
             // remove target
+            //
             self.btnCamera.removeTarget(self, action: "btnCameraAction", forControlEvents: UIControlEvents.TouchUpInside)
             
+            //
             // add new target
+            //
             self.btnCamera.setTitle(sendString, forState: UIControlState.Normal)
             self.btnCamera.addTarget(self, action: "sendPhotos", forControlEvents: UIControlEvents.TouchUpInside)
             self.btnCamera.titleLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 17)
@@ -293,45 +219,62 @@ class AAConvActionSheet: UIView {
             
         } else {
             
+            //
             // remove target
+            //
             self.btnCamera.removeTarget(self, action: "sendPhotos", forControlEvents: UIControlEvents.TouchUpInside)
             
-            
+            //
             // add new target
+            //
             self.btnCamera.setTitle(AALocalized("PhotoCamera"), forState: UIControlState.Normal)
             self.btnCamera.addTarget(self, action: "btnCameraAction", forControlEvents: UIControlEvents.TouchUpInside)
             self.btnCamera.titleLabel?.font = UIFont.systemFontOfSize(17)
             
         }
-        
     }
+
+    //
+    // Actions
+    //
     
     func sendPhotos() {
-        
-        self.cancelAnimation()
-        
-        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-        dispatch_async(dispatch_get_global_queue(priority, 0)) {
-            
-            self.thumbnailView.getSelectedAsImages({ (images) -> () in
-                let arrayModelsForSend = images
-                self.thumbnailView.selectedAssets = [PHAsset]()
-                
-                for (_,image) in arrayModelsForSend.enumerate() {
-                    
-                    self.weakSuper.sendImageFromActionSheet(image)
-                    
-                }
-                
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.updateSelectedPhotos()
-                }
-            })
-            
-
+        self.thumbnailView.getSelectedAsImages { (images) -> () in
+            self.delegate?.actionSheetPickedImages(images)
         }
-        
+        dismiss()
+    }
+
+    func btnCameraAction() {
+        delegate?.actionSheetPickCamera()
+        dismiss()
     }
     
-
+    func btnLibraryAction() {
+        delegate?.actionSheetPickGallery()
+        dismiss()
+    }
+    
+    func btnDocumentAction() {
+        delegate?.actionSheetPickDocument()
+        dismiss()
+    }
+    
+    func btnLocationAction() {
+        delegate?.actionSheetPickLocation()
+        dismiss()
+    }
+    
+    func btnContactAction() {
+        delegate?.actionSheetPickContact()
+        dismiss()
+    }
+    
+    func btnCloseAction() {
+        dismiss()
+    }
+    
+    public override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        dismiss()
+    }
 }
