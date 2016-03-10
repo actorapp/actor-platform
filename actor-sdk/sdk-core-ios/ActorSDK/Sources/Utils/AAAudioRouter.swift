@@ -12,6 +12,12 @@ public enum Route {
 
 public class AAAudioRouter {
     
+    public var isManagingEnabled = false {
+        didSet(v) {
+            fixSession()
+        }
+    }
+    
     public var isEnabled = false {
         didSet(v) {
             fixSession()
@@ -82,10 +88,8 @@ public class AAAudioRouter {
     private func fixSession() {
         let session = AVAudioSession.sharedInstance()
         
-        do {
-            if isEnabled {
-                try session.setActive(true)
-                
+        if isManagingEnabled {
+            do {
                 if session.category != category {
                     try session.setCategory(category)
                 }
@@ -104,12 +108,15 @@ public class AAAudioRouter {
                         }
                     }
                 }
-            } else {
-                try session.setActive(false)
+            } catch let error as NSError {
+                print("Audio Session: \(error.description)")
             }
             
-        } catch let error as NSError {
-            print("Audio Session: \(error.description)")
+            do {
+                try session.setActive(isEnabled)
+            } catch let error as NSError {
+                print("Audio Session: \(error.description)")
+            }
         }
     }
 }

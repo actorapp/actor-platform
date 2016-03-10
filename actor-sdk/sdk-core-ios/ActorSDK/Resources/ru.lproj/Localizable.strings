@@ -564,6 +564,10 @@
 
 "ActionCancel" = "Отмена";
 
+"ActionAddPhoto1" = "добавить";
+
+"ActionAddPhoto2" = "фото";
+
 /*
  * Network
  */

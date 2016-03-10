@@ -49,7 +49,7 @@ class AAListProcessor: NSObject, ARListProcessor {
         self.peer = peer
     }
     
-    func processWithItems(items: JavaUtilList!, withPrevious previous: AnyObject!) -> AnyObject! {
+    func processWithItems(items: JavaUtilList, withPrevious previous: AnyObject?) -> AnyObject? {
         
         let start = CFAbsoluteTimeGetCurrent()
         var section = start
