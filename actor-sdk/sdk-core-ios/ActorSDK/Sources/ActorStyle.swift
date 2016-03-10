@@ -707,6 +707,9 @@ public class ActorStyle {
     /// Welcome Page Background color
     public var welcomeBgColor = UIColor(red: 94, green: 142, blue: 192)
     
+    /// Welcome Page Background image
+    public var welcomeBgImage: UIImage? = nil
+    
     /// Welcome Page Title Color
     public var welcomeTitleColor = UIColor.whiteColor()
 
