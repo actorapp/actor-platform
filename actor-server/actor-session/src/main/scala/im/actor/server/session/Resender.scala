@@ -54,19 +54,20 @@ private[session] object ReSender {
   private case class ScheduledResend(messageId: Long, item: ResendableItem)
 
   private sealed trait ResendableItem {
-    val size: Long
+    val bitsSize: Long
+    val size = bitsSize / 8
   }
   private final case class RpcItem(result: ApiRpcResult, requestMessageId: Long) extends ResendableItem {
     lazy val body = RpcResultCodec.encode(result).require
-    override lazy val size = body.size
+    override lazy val bitsSize = body.size
     val reduceKeyOpt = None
   }
   private final case class PushItem(ub: UpdateBox, reduceKeyOpt: Option[String]) extends ResendableItem {
     lazy val body = UpdateBoxCodec.encode(ub).require
-    override lazy val size = body.size
+    override lazy val bitsSize = body.size
   }
   private final case class NewSessionItem(newSession: NewSession) extends ResendableItem {
-    override val size = 0L
+    override val bitsSize = 0L
   }
 
   def props(authId: Long, sessionId: Long, firstMessageId: Long)(implicit config: ReSenderConfig) =
@@ -228,13 +229,15 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   private def increaseBufferSize(item: ResendableItem): Unit = {
     if (item.size <= MaxResendSize) {
       this.resendBufferSize += item.size
-      item match {
-        case p: PushItem ⇒
-          this.resendPushBufferSize += item.size
-          if (this.resendPushBufferSize > config.maxPushBufferSize)
-            clearPushBuffer()
-        case _ ⇒
-      }
+    }
+
+    item match {
+      case p: PushItem ⇒
+        this.resendPushBufferSize += item.size
+
+        if (this.resendPushBufferSize > config.maxPushBufferSize)
+          clearPushBuffer()
+      case _ ⇒
     }
   }
 
