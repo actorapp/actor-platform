@@ -14,7 +14,7 @@ import AddContactActionCreators from '../../actions/AddContactActionCreators';
 import AddContactStore from '../../stores/AddContactStore';
 
 import TextField from '../common/TextField.react';
-import ContactItem from './add-contact/ContactItem.react';
+import ContactItem from './AddContact/ContactItem.react';
 
 class AddContact extends Component {
   constructor(props) {
@@ -85,7 +85,7 @@ class AddContact extends Component {
 
     if (resultContacts.length === 0 && !isQueryEmpty) {
       resultContacts.push(
-        <li className="add-contact__results__item add-contact__results__item--not-found">
+        <li className="add-contact__results__item add-contact__results__item--not-found" key="not-found">
           {intl.messages['modal.addContact.notFound']}
         </li>
       );

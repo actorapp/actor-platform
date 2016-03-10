@@ -5,9 +5,8 @@
 import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
-
 import AvatarItem from '../../common/AvatarItem.react';
-
+import { FormattedMessage } from 'react-intl';
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
 
 class ContactItem extends Component {
@@ -59,23 +58,23 @@ class ContactItem extends Component {
           {
             about
               ? <div className="about">
-              <div className="title">about</div>
-              {about}
-            </div>
+                  <div className="title"><FormattedMessage id="profile.about"/>:</div>
+                  {about}
+                </div>
               : null
           }
           {
             emails[0]
               ? <div className="email">
-                  <div className="title">email:</div>
+                  <div className="title"><FormattedMessage id="profile.email"/>:</div>
                   <a href={'mailto:' + emails[0].email}>{emails[0].email}</a>
                 </div>
               : null
           }
           {
             phones[0]
-              ? <div className="email">
-                  <div className="title">phone:</div>
+              ? <div className="phone">
+                  <div className="title"><FormattedMessage id="profile.phone"/>:</div>
                   <a href={'tel:' + phones[0].email}>{phones[0].number}</a>
                 </div>
               : null
@@ -84,10 +83,9 @@ class ContactItem extends Component {
         <div className="controls">
           <button className="button button--rised" onClick={this.handleClick}>
           {
-            /* TODO: Need to translate */
             isContact
-              ? 'Open conversation'
-              : 'Add to contacts'
+              ? <FormattedMessage id="modal.quickSearch.openDialog"/>
+              : <FormattedMessage id="addToContacts"/>
           }
           </button>
         </div>
