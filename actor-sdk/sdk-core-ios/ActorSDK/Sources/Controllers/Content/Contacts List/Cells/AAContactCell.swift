@@ -4,6 +4,7 @@
 
 import Foundation
 import UIKit
+import YYText
 
 public class AAContactCell : AATableViewCell, AABindedCell, AABindedSearchCell {
     
@@ -18,18 +19,20 @@ public class AAContactCell : AATableViewCell, AABindedCell, AABindedSearchCell {
     }
     
     public let avatarView = AAAvatarView(frameSize: 40, type: .Rounded);
-    public let shortNameView = UILabel();
-    public let titleView = UILabel();
+    public let shortNameView = YYLabel()
+    public let titleView = YYLabel()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         titleView.font = UIFont.systemFontOfSize(18)
         titleView.textColor = appStyle.contactTitleColor
+        titleView.displaysAsynchronously = true
         
         shortNameView.font = UIFont.boldSystemFontOfSize(18)
         shortNameView.textAlignment = NSTextAlignment.Center
         shortNameView.textColor = appStyle.contactTitleColor
+        shortNameView.displaysAsynchronously = true
         
         self.contentView.addSubview(avatarView)
         self.contentView.addSubview(shortNameView)
