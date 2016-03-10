@@ -79,8 +79,6 @@ public class AABubbleTextCell : AABubbleCell {
             // Text Layout
             messageText.textLayout = self.cellLayout.textLayout
             
-            self.cellLayout.textLayout
-            
             // Setting sender name if needed
             if isGroup && !isOut {
                 senderNameLabel.hidden = false
