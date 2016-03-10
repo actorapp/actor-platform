@@ -67,7 +67,7 @@ class Login extends Component {
   // Form submit handlers
   onRequestCode = event => {
     event.preventDefault();
-    LoginActionCreators.requestSms(this.state.login);
+    LoginActionCreators.requestCode(this.state.login);
   };
   onSendCode = event => {
     event.preventDefault();
@@ -158,7 +158,7 @@ class Login extends Component {
               <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isCodeRequested || step !== AuthSteps.LOGIN_WAIT}
                          errorText={errors.login}
-                         floatingLabel={intl.messages['login.phone']}
+                         floatingLabel={intl.messages['login.phone_or_email']}
                          onChange={this.onLoginChange}
                          ref="login"
                          value={login}/>
