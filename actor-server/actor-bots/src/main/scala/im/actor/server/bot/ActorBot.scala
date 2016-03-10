@@ -17,7 +17,7 @@ object ActorBot {
 
   val ApiPeer = new ApiPeer(ApiPeerType.Private, UserId)
 
-  def start()(implicit system: ActorSystem) = system.actorOf(props, "ActorBot")
+  def start()(implicit system: ActorSystem) = InternalBot.start(props)
 
   private def props = Props(classOf[ActorBot])
 }
