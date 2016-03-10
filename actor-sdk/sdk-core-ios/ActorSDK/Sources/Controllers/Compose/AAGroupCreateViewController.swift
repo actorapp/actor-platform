@@ -18,6 +18,9 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
     public override init(){
         super.init(nibName: nil, bundle: nil)
         self.navigationItem.title = AALocalized("CreateGroupTitle")
+        if AADevice.isiPad {
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: "dismiss")
+        }
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Plain, target: self, action: "doNext")
     }
 
