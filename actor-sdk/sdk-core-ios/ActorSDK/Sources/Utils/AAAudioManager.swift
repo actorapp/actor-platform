@@ -40,6 +40,8 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
             if isVisible {
                 audioRouter.mode = AVAudioSessionModeDefault
                 audioRouter.currentRoute = .Speaker
+                audioRouter.isEnabled = true
+                audioRouter.isManagingEnabled = true
                 ringtoneStart()
             } else {
                 notificationRingtone(call)
@@ -49,8 +51,9 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
             audioRouter.category = AVAudioSessionCategoryPlayAndRecord
             audioRouter.mode = AVAudioSessionModeVoiceChat
             audioRouter.currentRoute = .Receiver
+            audioRouter.isEnabled = true
+            audioRouter.isManagingEnabled = true
         }
-        audioRouter.isEnabled = true
     }
     
     public func callAnswered(call: ACCallVM) {
@@ -67,6 +70,7 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
         audioRouter.mode = AVAudioSessionModeDefault
         audioRouter.currentRoute = .Receiver
         audioRouter.isEnabled = false
+        audioRouter.isManagingEnabled = false
     }
     
     

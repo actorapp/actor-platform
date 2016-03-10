@@ -558,6 +558,7 @@
 
 "UnsupportedContent" = "这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。";
 
+
 /*
  * Actions
  */
@@ -573,6 +574,10 @@
 "ActionOpenLink" = "打开链接";
 
 "ActionCancel" = "取消";
+
+"ActionAddPhoto1" = "添加";
+
+"ActionAddPhoto2" = "头像";
 
 /*
  *  Network
