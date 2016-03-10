@@ -358,9 +358,9 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
           case msg: ApiAdvertiseSelf ⇒
             for (deviceId ← ebMessage.deviceId) yield {
               val newDevice = Device(deviceId, ebMessage.client, msg.peerSettings, isJoined = deviceId == callerDeviceId)
-              devices.values.view filterNot (_.deviceId == newDevice.deviceId) foreach { pairDevice =>
-                  if (pairDevice.canPreConnect(msg.peerSettings))
-                    connect(newDevice, pairDevice)
+              devices.values.view filterNot (_.deviceId == newDevice.deviceId) foreach { pairDevice ⇒
+                if (pairDevice.canPreConnect(msg.peerSettings))
+                  connect(newDevice, pairDevice)
               }
               putDevice(deviceId, ebMessage.client, newDevice)
 
