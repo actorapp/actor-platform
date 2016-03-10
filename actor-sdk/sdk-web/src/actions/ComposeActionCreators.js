@@ -9,7 +9,7 @@ import ActorClient from '../utils/ActorClient';
 
 export default {
   cleanText() {
-    DraftActionCreators.saveDraft('', true);
+    DraftActionCreators.changeDraft('');
     dispatch(ActionTypes.COMPOSE_CLEAN);
   },
 

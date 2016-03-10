@@ -146,6 +146,7 @@
 
       color: rgba(white, .6);
       .avatar {
+        cursor: pointer;
         margin: 0 10px 0 0;
         //transition: filter $default-transition-duration $default-transition-timing;
 
@@ -155,6 +156,8 @@
       }
       .title {
         @include text-elipsis();
+        @include no-select();
+        cursor: pointer !important;
         .emoji-outer {
           width: 20px;
           height: 20px;
