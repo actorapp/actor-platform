@@ -3,7 +3,7 @@
 //
 
 import UIKit
-// import YYText
+import YYText
 
 public class AADialogCell: AATableViewCell, AABindedCell {
     
@@ -21,8 +21,8 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     // Views
     
     public let avatarView = AAAvatarView(frameSize: 48)
-    public let titleView = UILabel()
-    public let messageView = UILabel()
+    public let titleView = YYLabel()
+    public let messageView = YYLabel()
     public let dateView = UILabel()
     public let statusView = UIImageView()
     public let counterView = UILabel()
@@ -31,39 +31,34 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-//        self.titleView.displaysAsynchronously = true
-//        self.dateView.displaysAsynchronously = true
-//        self.messageView.displaysAsynchronously = true
-        
-        ////////////////////////////////////////////////
-        
-        self.contentView.addSubview(avatarView)
-        
         titleView.font = UIFont.mediumSystemFontOfSize(17)
         titleView.textColor = appStyle.dialogTitleColor
-        self.contentView.addSubview(titleView)
+        titleView.displaysAsynchronously = true
         
         messageView.font = UIFont.systemFontOfSize(16)
         messageView.textColor = appStyle.dialogTextColor
-        self.contentView.addSubview(messageView)
+        messageView.displaysAsynchronously = true
         
         dateView.font = UIFont.systemFontOfSize(14)
         dateView.textColor = appStyle.dialogDateColor
         dateView.textAlignment = .Right
-        self.contentView.addSubview(dateView)
         
         statusView.contentMode = .Center
-        self.contentView.addSubview(statusView)
-        
+
         counterViewBg.image = Imaging.imageWithColor(appStyle.dialogCounterBgColor, size: CGSizeMake(18, 18))
             .roundImage(18).resizableImageWithCapInsets(UIEdgeInsetsMake(9, 9, 9, 9))
-        self.contentView.addSubview(counterViewBg)
         
         counterView.font = UIFont.systemFontOfSize(14)
         counterView.textColor = appStyle.dialogCounterColor
         counterView.textAlignment = .Center
-        self.contentView.addSubview(counterView)
         
+        self.contentView.addSubview(avatarView)
+        self.contentView.addSubview(titleView)
+        self.contentView.addSubview(messageView)
+        self.contentView.addSubview(dateView)
+        self.contentView.addSubview(statusView)
+        self.contentView.addSubview(counterViewBg)
+        self.contentView.addSubview(counterView)
     }
 
     public required init(coder aDecoder: NSCoder) {
