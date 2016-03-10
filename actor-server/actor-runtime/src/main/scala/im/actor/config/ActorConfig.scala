@@ -69,7 +69,7 @@ object ActorConfig {
 
   val defaultTimeout: FiniteDuration = ActorConfig.load().getDuration("common.default-timeout", TimeUnit.MILLISECONDS).millis
 
-  def systemName(implicit system: ActorSystem) = system.settings.config.getString("name")
+  def projectName(implicit system: ActorSystem) = system.settings.config.getString("project-name")
 
   def baseUrl(implicit system: ActorSystem) = {
     val config = system.settings.config

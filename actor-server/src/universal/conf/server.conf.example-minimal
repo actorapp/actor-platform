@@ -15,4 +15,7 @@ services {
 }
 
 secret: <put a long random string here>
-
+project-name: <your application name>
+public-endpoints: [
+    <list of endpoints accessible by client applications>
+]
