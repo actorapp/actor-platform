@@ -172,10 +172,10 @@ public class Application extends ActorSDKApplication {
             };
         }
 
-        @Override
-        public MainPhoneController getMainPhoneController(ActorMainActivity mainActivity) {
-            return new MainPhoneControllerEx(mainActivity);
-        }
+//        @Override
+//        public MainPhoneController getMainPhoneController(ActorMainActivity mainActivity) {
+//            return new MainPhoneControllerEx(mainActivity);
+//        }
     }
 
     public static class ProfileFragmentEx extends ProfileFragment {
