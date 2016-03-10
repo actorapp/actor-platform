@@ -13,12 +13,12 @@ class ContactItem extends Component {
   static propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
-    nick: PropTypes.string.isRequired,
-    avatar: PropTypes.string.isRequired,
-    about: PropTypes.string.isRequired,
+    nick: PropTypes.string,
+    avatar: PropTypes.string,
+    about: PropTypes.string,
     placeholder: PropTypes.string.isRequired,
-    emails: PropTypes.array.isRequired,
-    phones: PropTypes.array.isRequired,
+    emails: PropTypes.array,
+    phones: PropTypes.array,
 
     isBot: PropTypes.bool.isRequired,
     isContact: PropTypes.bool.isRequired,
