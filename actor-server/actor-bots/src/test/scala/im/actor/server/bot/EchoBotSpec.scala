@@ -16,7 +16,7 @@ import scala.util.Random
 object EchoBot {
   val UserId = 100
 
-  def start()(implicit system: ActorSystem) = system.actorOf(props, "EchoBot")
+  def start()(implicit system: ActorSystem) = InternalBot.start(props)
 
   private def props = Props(classOf[EchoBot])
 }
@@ -48,6 +48,11 @@ final class EchoBotSpec
   private lazy val msgService = MessagingServiceImpl()
   private implicit lazy val groupsService = new GroupsServiceImpl(GroupInviteConfig(""))
 
+  override def beforeAll = {
+    super.beforeAll()
+    EchoBot.start()
+  }
+
   def replyPrivate() = {
     val (user, authId, authSid, _) = createUser()
 
@@ -69,7 +74,7 @@ final class EchoBotSpec
 
     val botOutPeer = getOutPeer(EchoBot.UserId, authId)
 
-    whenReady(msgService.handleLoadHistory(botOutPeer, 0, 100)) { rsp ⇒
+    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100)) { rsp ⇒
       inside(rsp) {
         case Ok(ResponseLoadHistory(history, _)) ⇒
           history.length shouldBe 2
@@ -97,7 +102,7 @@ final class EchoBotSpec
 
     Thread.sleep(2000)
 
-    whenReady(msgService.handleLoadHistory(outPeer, 0, 100)) { rsp ⇒
+    whenReady(msgService.handleLoadHistory(outPeer, 0, None, 100)) { rsp ⇒
       inside(rsp) {
         case Ok(ResponseLoadHistory(history, _)) ⇒
           history.length shouldBe 4
@@ -105,10 +110,5 @@ final class EchoBotSpec
           tm.text shouldBe "Hello"
       }
     }
-  }
-
-  override def beforeAll = {
-    db // init lazy db
-    EchoBot.start()
   }
 }

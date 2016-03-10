@@ -419,7 +419,7 @@
 
 "WelcomeTitle" = "Добро пожаловать!";
 
-"WelcomeTagline" = "Беслпатный, быстрый и безопасный месседжинг.";
+"WelcomeTagline" = "Беслпатное, быстрое и безопасное общение.";
 
 "WelcomeSignUp" = "Регистрация";
 
@@ -563,6 +563,10 @@
 "ActionOpenLink" = "Открыть ссылку";
 
 "ActionCancel" = "Отмена";
+
+"ActionAddPhoto1" = "добавить";
+
+"ActionAddPhoto2" = "фото";
 
 /*
  * Network

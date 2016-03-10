@@ -18,6 +18,9 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
     public override init(){
         super.init(nibName: nil, bundle: nil)
         self.navigationItem.title = AALocalized("CreateGroupTitle")
+        if AADevice.isiPad {
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: "dismiss")
+        }
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Plain, target: self, action: "doNext")
     }
 
@@ -50,14 +53,14 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         addPhotoButton.addTarget(self, action: "photoTap", forControlEvents: UIControlEvents.TouchUpInside)
         
         let addPhotoLabelFirst = UILabel()
-        addPhotoLabelFirst.text = AALocalized("AuthProfileAddPhoto1")
+        addPhotoLabelFirst.text = AALocalized("ActionAddPhoto1")
         addPhotoLabelFirst.font = UIFont.systemFontOfSize(15.0)
         addPhotoLabelFirst.backgroundColor = UIColor.clearColor()
         addPhotoLabelFirst.textColor = appStyle.composeAvatarTextColor
         addPhotoLabelFirst.sizeToFit()
         
         let addPhotoLabelSecond = UILabel()
-        addPhotoLabelSecond.text = AALocalized("AuthProfileAddPhoto2")
+        addPhotoLabelSecond.text = AALocalized("ActionAddPhoto2")
         addPhotoLabelSecond.font = UIFont.systemFontOfSize(15.0)
         addPhotoLabelSecond.backgroundColor = UIColor.clearColor()
         addPhotoLabelSecond.textColor = appStyle.composeAvatarTextColor

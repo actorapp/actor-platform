@@ -518,7 +518,7 @@ public class ActorStyle {
         set(v) { _chatAutocompleteHighlight = v }
     }
     
-    public lazy var chatBgColor = UIColor(patternImage: UIImage.bundled("bg_foggy_birds")!.tintBgImage(UIColor(rgb: 0xe7e0c4)))
+    public lazy var chatBgColor = UIColor(patternImage: UIImage.bundled("chat_bg")!)
     
     //
     // Dialogs styles
@@ -706,6 +706,9 @@ public class ActorStyle {
     
     /// Welcome Page Background color
     public var welcomeBgColor = UIColor(red: 94, green: 142, blue: 192)
+    
+    /// Welcome Page Background image
+    public var welcomeBgImage: UIImage? = nil
     
     /// Welcome Page Title Color
     public var welcomeTitleColor = UIColor.whiteColor()

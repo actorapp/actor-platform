@@ -105,7 +105,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         codeField.font = UIFont.systemFontOfSize(17)
         codeField.textColor = ActorSDK.sharedActor().style.authTextColor
         codeField.placeholder = AALocalized("AuthOTPPlaceholder")
-        codeField.keyboardType = .EmailAddress
+        codeField.keyboardType = .NumberPad
         codeField.autocapitalizationType = .None
         
         codeFieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
@@ -199,6 +199,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
                 }
             } else {
                 Actor.doCompleteAuth(r.result).startUserAction().then { (r: JavaLangBoolean!) -> () in
+                    self.codeField.resignFirstResponder()
                     self.onAuthenticated()
                 }
             }

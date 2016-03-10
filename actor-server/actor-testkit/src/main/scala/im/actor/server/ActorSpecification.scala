@@ -57,6 +57,5 @@ abstract class ActorSuite(system: ActorSystem = { Kamon.start(); ActorSpecificat
 
   override def afterAll(): Unit = {
     TestKit.shutdownActorSystem(system)
-    Await.result(system.whenTerminated, Duration.Inf)
   }
 }

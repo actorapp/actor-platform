@@ -114,6 +114,6 @@ public class AACountryViewController: AATableViewController {
     public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        UIApplication.sharedApplication().setStatusBarStyle(.LightContent, animated: true)
+        UIApplication.sharedApplication().setStatusBarStyle(.Default, animated: true)
     }
 }

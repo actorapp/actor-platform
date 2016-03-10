@@ -23,6 +23,11 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
         self.groupImage = image
         
         navigationItem.title = AALocalized("CreateGroupMembersTitle")
+        
+        if AADevice.isiPad {
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: "dismiss")
+        }
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: UIBarButtonItemStyle.Done, target: self, action: "doNext")
     }
 
@@ -86,6 +91,7 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
             } else {
                 self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(gid)))
             }
+            self.dismiss()
         }
     }
     
@@ -116,8 +122,13 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        tokenView.frame = CGRectMake(0, 64, view.frame.width, tokenViewHeight)
-        tableView.frame = CGRectMake(0, tokenViewHeight, view.frame.width, view.frame.height - tokenViewHeight)
+        if AADevice.isiPad {
+            tokenView.frame = CGRectMake(0, 44, view.frame.width, tokenViewHeight)
+            tableView.frame = CGRectMake(0, tokenViewHeight, view.frame.width, view.frame.height - tokenViewHeight)
+        } else {
+            tokenView.frame = CGRectMake(0, 64, view.frame.width, tokenViewHeight)
+            tableView.frame = CGRectMake(0, tokenViewHeight, view.frame.width, view.frame.height - tokenViewHeight)
+        }
     }
 }
 

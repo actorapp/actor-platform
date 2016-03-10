@@ -1,6 +1,7 @@
 package im.actor.server.bot
 
 import akka.actor._
+import akka.cluster.singleton.{ ClusterSingletonManager, ClusterSingletonManagerSettings }
 import akka.pattern.pipe
 import akka.stream.scaladsl.{ Sink, Source }
 import akka.stream.{ ActorMaterializer, OverflowStrategy }
@@ -16,15 +17,20 @@ private object InternalBot {
 
   final case class Initialized(authId: Long, authSid: Int)
 
+  def start(props: Props)(implicit system: ActorSystem) =
+    system.actorOf(ClusterSingletonManager.props(
+      props,
+      PoisonPill,
+      ClusterSingletonManagerSettings(system)
+    ))
 }
 
 abstract class InternalBot(userId: Int, nickname: String, name: String, isAdmin: Boolean) extends BotBase {
 
   import InternalBot._
+  import context.dispatcher
 
-  private implicit val mat = ActorMaterializer()
-
-  import context._
+  private implicit val mat = ActorMaterializer()(context.system)
 
   override protected implicit val timeout = Timeout(ActorConfig.defaultTimeout)
 
