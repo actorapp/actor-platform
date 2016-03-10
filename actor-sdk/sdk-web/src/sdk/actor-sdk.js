@@ -3,6 +3,7 @@
  */
 
 import 'babel-polyfill';
+import 'setimmediate';
 import initPollyfils from '../utils/polyfills';
 
 import Actor from 'actor-js';
