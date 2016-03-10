@@ -186,7 +186,8 @@ export default {
     'profile': {
       'email': 'email',
       'phone': 'phone',
-      'nickname': 'nickname'
+      'nickname': 'nickname',
+      'about': 'about'
     },
     'createdBy': 'сreated by',
     'addPeople': 'Add people',
