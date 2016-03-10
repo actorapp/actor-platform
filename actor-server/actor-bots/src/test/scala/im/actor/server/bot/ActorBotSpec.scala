@@ -1,11 +1,12 @@
 package im.actor.server.bot
 
 import im.actor.api.rpc.contacts.ResponseSearchContacts
-import im.actor.api.rpc.messaging.{ ResponseLoadHistory, ApiTextMessage }
+import im.actor.api.rpc.messaging.{ ApiTextMessage, ResponseLoadHistory }
 import im.actor.api.rpc._
 import im.actor.server._
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
+import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogExtension
 import org.scalatest.Inside._
 
@@ -50,7 +51,7 @@ final class ActorBotSpec
 
     val botOutPeer = getOutPeer(ActorBot.UserId, authId)
 
-    whenReady(msgService.handleLoadHistory(botOutPeer, 0, 100)) { rsp ⇒
+    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100)) { rsp ⇒
       inside(rsp) {
         case Ok(ResponseLoadHistory(history, _)) ⇒
           history.length shouldBe 2
@@ -81,7 +82,7 @@ final class ActorBotSpec
 
     val botOutPeer = getOutPeer(ActorBot.UserId, authId)
 
-    whenReady(msgService.handleLoadHistory(botOutPeer, 0, 100)) { rsp ⇒
+    whenReady(msgService.handleLoadHistory(botOutPeer, 0, None, 100)) { rsp ⇒
       inside(rsp) {
         case Ok(ResponseLoadHistory(history, _)) ⇒
           history.length shouldBe 2
