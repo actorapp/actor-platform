@@ -62,7 +62,11 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
             fatalError("Unsupported more than 1 section")
         }
 
-        contentHeight = 0.0
+        if AADevice.isiPad {
+            contentHeight = 16.0
+        } else {
+            contentHeight = 6.0
+        }
         items.removeAll(keepCapacity: true)
         frames.removeAll(keepCapacity: true)
         
@@ -90,6 +94,8 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
                 contentHeight += item.size.height
             }
         }
+        
+        contentHeight += 100
     }
     
     override func collectionViewContentSize() -> CGSize {
