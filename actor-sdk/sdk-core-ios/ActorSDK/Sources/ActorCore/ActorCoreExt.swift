@@ -359,9 +359,14 @@ public extension ARMarkdownParser {
             // Parsing url element
             let nsUrl = NSURL(string: url.getUrl())
             if nsUrl != nil {
-                let attributes = [NSLinkAttributeName: nsUrl as! AnyObject,
-                    NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
-                return NSAttributedString(string: url.getUrlTitle(), attributes: attributes)
+                let res = NSMutableAttributedString(string:  url.getUrlTitle())
+                let range = NSRange(location: 0, length: res.length)
+                res.yy_setTextHighlightRange(range, color: UIColor.redColor(), backgroundColor: nil, tapAction: nil)
+                res.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+                return res
+//                let attributes = [NSLinkAttributeName: nsUrl as! AnyObject,
+//                    NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
+//                return NSAttributedString(string: url.getUrlTitle(), attributes: attributes)
             } else {
                 // Unable to parse: show as text
                 return NSAttributedString(string: url.getUrlTitle(), font: UIFont.textFontOfSize(fontSize))
