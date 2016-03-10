@@ -77,7 +77,11 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
     }
     
     public func compose() {
-        navigateNext(AAComposeController())
+        if AADevice.isiPad {
+            self.presentElegantViewController(AANavigationController(rootViewController: AAComposeController()))
+        } else {
+            navigateNext(AAComposeController())
+        }
     }
     
     // Tracking app state
