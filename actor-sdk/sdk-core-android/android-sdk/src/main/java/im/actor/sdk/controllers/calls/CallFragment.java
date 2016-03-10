@@ -94,8 +94,6 @@ public class CallFragment extends BaseFragment {
     private View layer1;
     private View layer2;
     private View layer3;
-    private ActorRef audioVolumeListener;
-    private AudioStreamVolumeValueActor.VolumeValueListener volumeValueListener;
 
     public CallFragment() {
 
@@ -250,20 +248,8 @@ public class CallFragment extends BaseFragment {
 
         audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
-        audioVolumeListener = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
-            @Override
-            public AudioStreamVolumeValueActor create() {
-                return new AudioStreamVolumeValueActor();
-            }
-        }), "actor/calls/audioVolumeListener");
 
-        volumeValueListener = new AudioStreamVolumeValueActor.VolumeValueListener() {
-            @Override
-            public void onVolumeValue(int val) {
-                Log.d("VOLUME", val + "");
-            }
-        };
-        audioVolumeListener.send(new AudioStreamVolumeValueActor.Subscribe(volumeValueListener));
+
 
         audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
         final TintImageView speaker = (TintImageView) cont.findViewById(R.id.speaker);
@@ -355,7 +341,6 @@ public class CallFragment extends BaseFragment {
 
                             case ENDED:
                                 statusTV.setText(R.string.call_ended);
-                                audioVolumeListener.send(new AudioStreamVolumeValueActor.Unsubscribe(volumeValueListener));
                                 onCallEnd();
                                 break;
 
