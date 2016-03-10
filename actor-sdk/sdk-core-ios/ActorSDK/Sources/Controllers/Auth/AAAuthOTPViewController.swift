@@ -199,6 +199,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
                 }
             } else {
                 Actor.doCompleteAuth(r.result).startUserAction().then { (r: JavaLangBoolean!) -> () in
+                    self.codeField.resignFirstResponder()
                     self.onAuthenticated()
                 }
             }
