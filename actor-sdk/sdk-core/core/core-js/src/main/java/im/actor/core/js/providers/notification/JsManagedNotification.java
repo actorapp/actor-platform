@@ -14,9 +14,9 @@ public class JsManagedNotification {
         return true;
     }-*/;
 
-    public static native void show(String title, String message, String avatarUrl)/*-{
+    public static native void show(String key, String title, String message, String avatarUrl)/*-{
 
-        var showNotification = function(title, body, icon) {
+        var showNotification = function(key, title, body, icon) {
             var n = new Notification(title, {
                 body: body,
                 tag: 'new-message',
@@ -24,6 +24,9 @@ public class JsManagedNotification {
             });
             n.onclick = function() {
                 $wnd.focus();
+                if (key !== null) {
+                    $wnd.location.replace('#/im/' + key);
+                }
                 this.close();
             }
         };
@@ -33,7 +36,7 @@ public class JsManagedNotification {
         var deferStart = null;
         var deferredShow = null;
 
-        var createNotification = function(title, body, icon) {
+        var createNotification = function(key, title, body, icon) {
             if (deferredShow === null) {
                 deferStart = Date.now();
             } else {
@@ -43,14 +46,14 @@ public class JsManagedNotification {
             if (Date.now() - deferStart > MAX_DEFER) {
                 deferredShow = null;
                 deferStart = null;
-                showNotification(title, body, icon);
+                showNotification(key, title, body, icon);
             } else {
                 deferredShow = setTimeout(function () {
-                    showNotification(title, body, icon)
+                    showNotification(key, title, body, icon)
                 }, 300)
             }
         };
 
-        createNotification(title, message, avatarUrl);
+        createNotification(key, title, message, avatarUrl);
     }-*/;
 }
