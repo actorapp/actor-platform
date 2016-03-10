@@ -86,6 +86,7 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
             } else {
                 self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(gid)))
             }
+            self.dismiss()
         }
     }
     
@@ -116,8 +117,13 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        tokenView.frame = CGRectMake(0, 64, view.frame.width, tokenViewHeight)
-        tableView.frame = CGRectMake(0, tokenViewHeight, view.frame.width, view.frame.height - tokenViewHeight)
+        if AADevice.isiPad {
+            tokenView.frame = CGRectMake(0, 0, view.frame.width, tokenViewHeight)
+            tableView.frame = CGRectMake(0, tokenViewHeight, view.frame.width, view.frame.height - tokenViewHeight)
+        } else {
+            tokenView.frame = CGRectMake(0, 64, view.frame.width, tokenViewHeight)
+            tableView.frame = CGRectMake(0, tokenViewHeight, view.frame.width, view.frame.height - tokenViewHeight)
+        }
     }
 }
 
