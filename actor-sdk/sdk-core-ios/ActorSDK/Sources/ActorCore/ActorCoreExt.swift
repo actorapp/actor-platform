@@ -287,7 +287,11 @@ public extension ARMarkdownParser {
         
         let doc = self.processDocumentWithNSString(text)
         if doc.isTrivial() {
-            return ARMDFormattedText(attributedText: NSAttributedString(string: text), isTrivial: true, code: [])
+            let nAttrText = NSMutableAttributedString(string: text)
+            let range = NSRange(location: 0, length: nAttrText.length)
+            nAttrText.yy_setColor(textColor, range: range)
+            nAttrText.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+            return ARMDFormattedText(attributedText: nAttrText, isTrivial: true, code: [])
         }
         
         var sources = [String]()
@@ -316,13 +320,18 @@ public extension ARMarkdownParser {
             }
         }
         
-        nAttrText.appendColor(textColor)
+        let range = NSRange(location: 0, length: nAttrText.length)
+        nAttrText.yy_setColor(textColor, range: range)
+        nAttrText.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
         
         return ARMDFormattedText(attributedText: nAttrText, isTrivial: false, code: sources)
     }
     
     private func buildText(text: ARMDText, fontSize: CGFloat) -> NSAttributedString {
         if let raw = text as? ARMDRawText {
+//            let res = NSMutableAttributedString(string: raw.getRawText())
+//            res.yy_setFont(UIFont.textFontOfSize(fontSize), range: NSRange(location: 0, length: raw.getRawText().length))
+//            return res
             return NSAttributedString(string: raw.getRawText(), font: UIFont.textFontOfSize(fontSize))
         } else if let span = text as? ARMDSpan {
             let res = NSMutableAttributedString()
