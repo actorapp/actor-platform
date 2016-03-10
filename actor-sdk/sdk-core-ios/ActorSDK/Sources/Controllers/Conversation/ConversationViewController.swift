@@ -276,6 +276,7 @@ public class ConversationViewController: AAConversationContentController, UIDocu
             binder.bind(Actor.getGroupTypingWithGid(group.getId())!, valueModel2: group.getMembersModel(), valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
                 if (!group.isMemberModel().get().booleanValue()) {
                     self.subtitleView.text = AALocalized("ChatNoGroupAccess")
+                    self.subtitleView.textColor = self.appStyle.navigationSubtitleColor
                     self.setTextInputbarHidden(true, animated: true)
                     return
                 } else {
