@@ -11,18 +11,25 @@ public enum ImagePickerMediaType {
     case ImageAndVideo
 }
 
-class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSource {
+public protocol AAThumbnailViewDelegate {
+    func thumbnailSelectedUpdated(selectedAssets: [PHAsset])
+}
 
-    var collectionView:UICollectionView!
-    weak var bindedConvSheet : AAConvActionSheet!
-    let mediaType: ImagePickerMediaType = ImagePickerMediaType.Image
+public class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSource {
+
+    public var delegate : AAThumbnailViewDelegate?
+    
+    private var collectionView:UICollectionView!
+    private let mediaType: ImagePickerMediaType = ImagePickerMediaType.Image
     
     private var assets = [PHAsset]()
-    var selectedAssets = [PHAsset]()
+    private var selectedAssets = [PHAsset]()
     private var imageManager : PHCachingImageManager!
     
     private let minimumPreviewHeight: CGFloat = 90
     private var maximumPreviewHeight: CGFloat = 90
+    
+    private let previewCollectionViewInset: CGFloat = 5
     
     private lazy var requestOptions: PHImageRequestOptions = {
         let options = PHImageRequestOptions()
@@ -32,23 +39,20 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
         return options
     }()
     
-    private let previewCollectionViewInset: CGFloat = 5
     
-    
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         
         self.collectionViewSetup()
-        
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     ///
     
-    func open() {
+    public func open() {
         
         dispatchBackground { () -> Void in
             
@@ -162,15 +166,15 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     
     /// collection view delegate
     
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    public func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1
     }
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.assets.count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = self.collectionView.dequeueReusableCellWithReuseIdentifier("AAThumbnailCollectionCell", forIndexPath: indexPath) as! AAThumbnailCollectionCell
         
@@ -215,17 +219,16 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
     
     ///
     
-    func reloadView() {
+    public func reloadView() {
         self.collectionView.reloadData()
     }
     
-    func collectionViewSetup() {
+    public func collectionViewSetup() {
         
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .Horizontal
         flowLayout.minimumLineSpacing = 4
         flowLayout.sectionInset = UIEdgeInsetsMake(5.0, 4.0, 5.0, 4.0)
-        
         flowLayout.itemSize = CGSizeMake(90, 90)
         
         self.collectionView = UICollectionView(frame: self.bounds, collectionViewLayout: flowLayout)
@@ -233,15 +236,11 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
         self.collectionView.showsHorizontalScrollIndicator = false
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
-        self.collectionView.frame = CGRectMake(0,0,screenWidth,90)
-        
         self.collectionView.registerClass(AAThumbnailCollectionCell.self, forCellWithReuseIdentifier: "AAThumbnailCollectionCell")
-
         self.addSubview(self.collectionView)
-        
     }
 
-    func imageByCroppingImage(image:UIImage,toSize:CGSize) -> UIImage {
+    public func imageByCroppingImage(image:UIImage,toSize:CGSize) -> UIImage {
         
         let refWidth = CGImageGetWidth(image.CGImage)
         let refHeight = CGImageGetHeight(image.CGImage)
@@ -254,31 +253,28 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
         
         let cropped = UIImage(CGImage: imageRef, scale: 0.0, orientation: UIImageOrientation.Up)
         
-        return cropped;
+        return cropped
     }
     
-    func addSelectedModel(model:PHAsset) {
-        
+    public func addSelectedModel(model:PHAsset) {
         self.selectedAssets.append(model)
-        self.bindedConvSheet.updateSelectedPhotos()
-        
+        self.delegate?.thumbnailSelectedUpdated(self.selectedAssets)
     }
     
-    func removeSelectedModel(model:PHAsset) {
+    public func removeSelectedModel(model:PHAsset) {
         if let index = self.selectedAssets.indexOf(model) {
             self.selectedAssets.removeAtIndex(index)
-            self.bindedConvSheet.updateSelectedPhotos()
+            self.delegate?.thumbnailSelectedUpdated(self.selectedAssets)
         }
     }
    
-    func getSelectedAsImages(completion: (images: [UIImage]) -> ()){
+    public func getSelectedAsImages(completion: (images: [UIImage]) -> ()) {
         
         let arrayModelsForSend = self.selectedAssets
         
         var compliedArray = [UIImage]()
 
         for (_,model) in arrayModelsForSend.enumerate() {
-
             self.imageManager.requestImageDataForAsset(model, options: requestOptions, resultHandler: { (data, _, _, _) -> Void in
                 if data != nil {
                     compliedArray.append(UIImage(data: data!)!)
@@ -287,11 +283,11 @@ class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDataSou
                     }
                 }
             })
-            
         }
-        
     }
     
-    
-    
+    public func dismiss() {
+        self.selectedAssets = []
+        self.reloadView()
+    }
 }
