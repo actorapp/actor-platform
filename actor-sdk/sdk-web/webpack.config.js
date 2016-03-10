@@ -4,7 +4,7 @@ import webpack from 'webpack';
 export default {
   cache: true,
   debug: true,
-  devtool: 'inline-source-map',
+  devtool: '#eval-source-map',
   hotComponents: true,
   entry: {
     app: [
@@ -35,15 +35,12 @@ export default {
     fallback: [path.join(__dirname, 'node_modules')]
   },
   module: {
-    preLoaders: [{
-      test: /\.js$/,
-      loaders: ['eslint'],
-      include: [path.resolve(__dirname, 'src')]
-    }],
+    noParse: [
+      /languages\/autoit\.js/
+    ],
     loaders: [{
       test: /\.(scss|css)$/,
       loaders: [
-        'react-hot',
         'style',
         'css',
         'autoprefixer?browsers=last 3 versions',
@@ -52,7 +49,6 @@ export default {
     }, {
       test: /\.js$/,
       loaders: [
-        'react-hot',
         'babel?cacheDirectory'
       ],
       exclude: /(node_modules)/
