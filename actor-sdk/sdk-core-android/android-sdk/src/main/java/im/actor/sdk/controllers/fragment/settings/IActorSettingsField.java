@@ -14,6 +14,10 @@ public interface IActorSettingsField {
 
     View getRightView();
 
+    int getRightViewWidth();
+
+    int getRightViewHeight();
+
     boolean addBottomDivider();
 
     int getIconColor();

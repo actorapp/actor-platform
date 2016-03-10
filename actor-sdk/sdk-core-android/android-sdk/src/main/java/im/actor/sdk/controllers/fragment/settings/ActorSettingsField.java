@@ -2,15 +2,17 @@ package im.actor.sdk.controllers.fragment.settings;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public class ActorSettingsField implements IActorSettingsField {
     private boolean addBottomDivider = true;
     private View view = null;
+    private int iconResourceId = 0;
     private String name = null;
     private View.OnClickListener onClickListener = null;
     private View rightView = null;
-    private int iconResourceId = 0;
     private int iconColor = -1;
     private TextView nameTextView;
 
@@ -97,6 +99,16 @@ public class ActorSettingsField implements IActorSettingsField {
     @Override
     public View getRightView() {
         return rightView;
+    }
+
+    @Override
+    public int getRightViewWidth() {
+        return ViewGroup.LayoutParams.WRAP_CONTENT;
+    }
+
+    @Override
+    public int getRightViewHeight() {
+        return ViewGroup.LayoutParams.WRAP_CONTENT;
     }
 
 
