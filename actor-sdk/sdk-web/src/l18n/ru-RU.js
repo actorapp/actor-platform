@@ -7,6 +7,7 @@ export default {
       'wrong': 'Ошиблись?',
       'phone': 'Номер телефона',
       'email': 'Email адрес',
+      'phone_or_email': 'Номер телефона или Email адрес',
       'authCode': 'Код авторизации',
       'yourName': 'Ваше имя',
       'errors': {

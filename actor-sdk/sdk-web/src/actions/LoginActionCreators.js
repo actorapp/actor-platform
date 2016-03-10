@@ -30,6 +30,22 @@ const LoginActionCreators = {
     dispatch(ActionTypes.AUTH_CHANGE_NAME, { name })
   },
 
+  requestCode(phone) {
+    const isEmail = /@/.test(phone);
+    let promise;
+    if (/@/.test(phone)) {
+      promise = ActorClient.requestCodeEmail(phone);
+    } else {
+      promise = ActorClient.requestSms(phone);
+    }
+
+    dispatchAsync(promise, {
+      request: ActionTypes.AUTH_CODE_REQUEST,
+      success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
+      failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
+    }, { phone });
+  },
+
   requestSms(phone) {
     dispatchAsync(ActorClient.requestSms(phone), {
       request: ActionTypes.AUTH_CODE_REQUEST,
