@@ -23,6 +23,11 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
         self.groupImage = image
         
         navigationItem.title = AALocalized("CreateGroupMembersTitle")
+        
+        if AADevice.isiPad {
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: "dismiss")
+        }
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: UIBarButtonItemStyle.Done, target: self, action: "doNext")
     }
 
