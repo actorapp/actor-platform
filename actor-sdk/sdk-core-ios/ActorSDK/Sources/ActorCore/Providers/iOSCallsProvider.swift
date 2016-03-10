@@ -17,7 +17,11 @@ class iOSCallsProvider: NSObject, ACCallsProvider {
        
         dispatchOnUi() {
             let rootController = ActorSDK.sharedActor().bindedToWindow.rootViewController!
-            rootController.presentingViewController?.dismissViewControllerAnimated(true) {
+            if let presented = rootController.presentedViewController {
+                presented.dismissViewControllerAnimated(true, completion: { () -> Void in
+                    rootController.presentViewController(AACallViewController(callId: callId), animated: true, completion: nil)
+                })
+            } else {
                 rootController.presentViewController(AACallViewController(callId: callId), animated: true, completion: nil)
             }
         }
