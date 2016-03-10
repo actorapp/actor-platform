@@ -56,7 +56,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.collectionView.contentInset = UIEdgeInsets(top: 4, left: 0, bottom: 200, right: 0)
+        self.collectionView.contentInset = UIEdgeInsets(top: 32, left: 0, bottom: 200, right: 0)
         
         isVisible = true
         
@@ -83,11 +83,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             
             self.isStarted = true
             
-            UIView.animateWithDuration(0.6, animations: { () -> Void in
-                self.collectionView.alpha = 1
-                }, completion: { (comp) -> Void in
-                    self.navigationController?.view.layer.speed = 1
-            })
+            UIView.animateWithDuration(0.6, animations: { () -> Void in self.collectionView.alpha = 1 }, completion: { (comp) -> Void in })
             
             self.willUpdate()
             self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: self.unreadMessageId)
