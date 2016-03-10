@@ -410,4 +410,9 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
     log.warning(msg)
     onError(new RuntimeException(msg) with NoStackTrace)
   }
+
+  override def postStop(): Unit = {
+    super.postStop()
+    pushBuffer.values foreach (_._2.cancel())
+  }
 }
