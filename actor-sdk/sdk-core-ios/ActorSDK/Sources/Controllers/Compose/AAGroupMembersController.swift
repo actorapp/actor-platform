@@ -118,7 +118,7 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
         super.viewDidLayoutSubviews()
         
         if AADevice.isiPad {
-            tokenView.frame = CGRectMake(0, 0, view.frame.width, tokenViewHeight)
+            tokenView.frame = CGRectMake(0, 44, view.frame.width, tokenViewHeight)
             tableView.frame = CGRectMake(0, tokenViewHeight, view.frame.width, view.frame.height - tokenViewHeight)
         } else {
             tokenView.frame = CGRectMake(0, 64, view.frame.width, tokenViewHeight)
