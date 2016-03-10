@@ -23,15 +23,16 @@ public class AABubbleTextCell : AABubbleCell {
     static let bubbleFontUnsupported = fontItalic
     static let senderHeight = CGFloat(20)
     
-    let messageText = YYLabel()
-    let senderNameLabel = YYLabel();
-    let statusView = UIImageView();
+    private let messageText = YYLabel()
+    private let senderNameLabel = YYLabel()
+    private let dateText = YYLabel()
+    private let statusView = UIImageView()
     
     private var needRelayout = true
     private var isClanchTop:Bool = false
     private var isClanchBottom:Bool = false
     
-    private let dateText = AttributedLabel()
+    
     private var messageState = ACMessageState.UNKNOWN().ordinal()
     private var cellLayout: TextCellLayout!
     
@@ -45,10 +46,11 @@ public class AABubbleTextCell : AABubbleCell {
         senderNameLabel.ignoreCommonProperties = true
         
         dateText.font = AABubbleTextCell.dateFont
+        dateText.displaysAsynchronously = true
         dateText.lineBreakMode = .ByClipping
         dateText.numberOfLines = 1
-        dateText.contentMode = UIViewContentMode.TopLeft
-        dateText.contentAlignment = .Right
+//        dateText.contentMode = .TopLeft
+        dateText.textAlignment = .Right
         
         statusView.contentMode = UIViewContentMode.Center
         
@@ -224,7 +226,7 @@ public class AABubbleTextCell : AABubbleCell {
             self.statusView.hidden = false
         } else {
             self.messageText.frame.origin = CGPoint(x: insets.left, y: insets.top/* + topPadding*/)
-            self.dateText.frame = CGRectMake(insets.left + contentWidth - 47, bubbleHeight + insets.top - 20, 46, 26)
+            self.dateText.frame = CGRectMake(insets.left + bubbleWidth - 47, bubbleHeight + insets.top - 20, 46, 26)
             self.statusView.hidden = true
         }
         
