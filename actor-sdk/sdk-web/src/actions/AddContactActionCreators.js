@@ -1,13 +1,14 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import ActorClient from '../utils/ActorClient';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ContactActionCreators from './ContactActionCreators';
-import DialogActionCreators from './DialogActionCreators';
 import ComposeActionCreators from '../actions/ComposeActionCreators';
+import history from '../utils/history';
+import PeerUtils from '../utils/PeerUtils';
 
 export default {
   open() {
@@ -34,6 +35,6 @@ export default {
     if (!isContact) {
       ContactActionCreators.addContact(uid);
     }
-    DialogActionCreators.selectDialogPeer(peer);
+    history.push(`/im/${PeerUtils.peerToString(peer)}`);
   }
 };
