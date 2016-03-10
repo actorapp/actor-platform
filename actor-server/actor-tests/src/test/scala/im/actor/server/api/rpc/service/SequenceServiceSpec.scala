@@ -62,9 +62,9 @@ final class SequenceServiceSpec extends BaseAppSuite({
       (maxUpdateSize * (1 + 5.toDouble / example.getSerializedSize)).toInt
     }
 
-    //serialized update size is: 40 bytes for body + 4 bytes for header, 44 bytes total
-    //with max update size of 20 KiB 1281 updates should split into three parts
-    Await.result(Future.sequence((0L to 1280L) map { i ⇒
+    // serialized update size is: 40 bytes for body + 4 bytes for header, 44 bytes total
+    // with max update size of 60 KiB 3840 updates should split into three parts
+    Await.result(Future.sequence((0L to 3840) map { i ⇒
       val update = UpdateMessageContentChanged(user2Peer, i, message)
       seqUpdExt.deliverSingleUpdate(user.id, update)
     }), 10.seconds)
