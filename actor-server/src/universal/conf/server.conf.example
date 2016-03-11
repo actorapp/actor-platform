@@ -131,7 +131,7 @@ services {
 
     # Email template for email code activation
     # email {
-    #   template: ${actor.home}/templates/activation-email-template.html
+    #   template: templates/activation-email-template.html
     # }
     # Setting for internal activation(aka via actor bot)
     # internal {
