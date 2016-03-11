@@ -47,9 +47,9 @@ class Archive extends Component {
       const scrollNode = findDOMNode(this.refs.archiveScroll);
       const scrollContent = scrollNode.getElementsByClassName('ss-content')[0];
       if (scrollContent.scrollHeight < scrollNode.scrollHeight) {
-        setTimeout(() => {
+        setImmediate(() => {
           ArchiveActionCreators.loadMoreArchivedDialogs();
-        }, 0);
+        });
       }
     }
   }
