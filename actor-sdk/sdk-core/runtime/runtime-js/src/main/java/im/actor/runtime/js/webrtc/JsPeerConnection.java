@@ -21,6 +21,10 @@ public class JsPeerConnection extends JavaScriptObject {
         this.peerConnection.addStream(stream);
     }-*/;
 
+    public final native void removeStream(JsMediaStream stream)/*-{
+        this.peerConnection.removeStream(stream);
+    }-*/;
+
     public final native void addIceCandidate(int label, String candidate)/*-{
         this.peerConnection.addIceCandidate(new RTCIceCandidate({sdpMLineIndex: label, candidate: candidate}));
     }-*/;
