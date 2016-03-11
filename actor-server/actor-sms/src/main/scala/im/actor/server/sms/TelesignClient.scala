@@ -10,6 +10,7 @@ import akka.actor.ActorSystem
 import com.ning.http.client.Response
 import com.typesafe.config.Config
 import dispatch.{ Http, Req, url }
+import im.actor.config.ActorConfig
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Failure
@@ -44,7 +45,7 @@ final class TelesignClient(config: Config)(implicit system: ActorSystem) {
       "phone_number" → phoneNumber.toString,
       "ucid" → "BACS",
       "verify_code" → code,
-      "template" → template.replace("$$SERVER_NAME$$", system.settings.config.getString("name"))
+      "template" → template.replace("$$SERVER_NAME$$", ActorConfig.projectName)
     )) map { _ ⇒
       system.log.debug("Message sent via telesign")
     }
