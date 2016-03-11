@@ -11,6 +11,7 @@ import PeerUtils from '../utils/PeerUtils';
 
 import ActivityActionCreators from '../actions/ActivityActionCreators';
 import FavoriteActionCreators from '../actions/FavoriteActionCreators';
+import CallActionCreators from '../actions/CallActionCreators';
 
 import AvatarItem from './common/AvatarItem.react';
 import ToggleFavorite from './common/ToggleFavorite.react';
@@ -48,6 +49,7 @@ class ToolbarSection extends Component {
       isCalling,
       isSamePeer: PeerUtils.equals(thisPeer, callPeer),
       state: CallStore.getState(),
+      isFloating: CallStore.isFloating(),
       time: '00:00'
     };
   }
@@ -72,6 +74,8 @@ class ToolbarSection extends Component {
       ActivityActionCreators.hide();
     }
   };
+  
+  handleInCallClick = () => CallActionCreators.toggleFloating();
 
   getMessage() {
     const { call, message } = this.state;
@@ -82,6 +86,28 @@ class ToolbarSection extends Component {
     }
 
     return message;
+  }
+  
+  renderInfoButton() {
+    const { call, isActivityOpen } = this.state;
+    
+    const activityButtonClassName = classnames('button button--icon', {
+      'active': isActivityOpen || (call.isCalling && !call.isFloating)
+    });
+    
+    if (call.isCalling) {
+      return (
+        <button className={activityButtonClassName} onClick={this.handleInCallClick}>
+          <i className="material-icons">info</i>
+        </button>
+      )
+    }
+
+    return (
+      <button className={activityButtonClassName} onClick={this.onClick}>
+        <i className="material-icons">info</i>
+      </button>
+    )
   }
 
   render() {
@@ -95,10 +121,6 @@ class ToolbarSection extends Component {
 
     const headerClassName = classnames('toolbar row', {
       toolbar__calling: call.isCalling && call.isSamePeer
-    });
-
-    const infoButtonClassName = classnames('button button--icon', {
-      'active': isActivityOpen
     });
 
     const favoriteClassName = classnames('toolbar__peer__favorite', {
@@ -125,12 +147,7 @@ class ToolbarSection extends Component {
 
         <div className="toolbar__controls">
           <div className="toolbar__controls__buttons pull-right">
-            <button className={infoButtonClassName} onClick={this.onClick}>
-              <i className="material-icons">info</i>
-            </button>
-            <button className="button button--icon hide">
-              <i className="material-icons">more_vert</i>
-            </button>
+            {this.renderInfoButton()}
           </div>
         </div>
       </header>

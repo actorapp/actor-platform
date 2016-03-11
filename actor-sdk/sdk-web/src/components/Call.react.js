@@ -53,12 +53,14 @@ class Call extends Component {
       callPeer: CallStore.getPeer(),
       callState: CallStore.getState(),
       peerInfo: Call.calculatePeerInfo(callPeer),
-      isSameDialog: PeerUtils.equals(dialogPeer, callPeer)
+      isSameDialog: PeerUtils.equals(dialogPeer, callPeer),
+      isFloating: CallStore.isFloating()
     };
   }
 
   constructor(props) {
     super(props);
+
     this.onAnswer = this.onAnswer.bind(this);
     this.onEnd = this.onEnd.bind(this);
     this.onMuteToggle = this.onMuteToggle.bind(this);
@@ -109,12 +111,12 @@ class Call extends Component {
   }
 
   render() {
-    const {isOpen, callState, peerInfo, isOutgoing, isMuted, isSameDialog} = this.state;
+    const {isOpen, callState, peerInfo, isOutgoing, isMuted, isSameDialog, isFloating} = this.state;
     if (!isOpen) {
       return null;
     }
 
-    if (!this.state.isSameDialog) {
+    if (!isSameDialog || isFloating) {
       return (
         <CallDraggable
           peerInfo={peerInfo}

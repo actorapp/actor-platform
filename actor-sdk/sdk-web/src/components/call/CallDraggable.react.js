@@ -25,11 +25,11 @@ class CallDraggable extends Component {
   };
 
   render() {
-    const {peerInfo, callState} = this.props;
+    const { peerInfo, callState } = this.props;
 
     return (
       <Draggable>
-        <section className="call__draggable" style={{position: 'absolute', bottom: '100px', right: '100px'}}>
+        <section className="call__draggable" style={{position: 'absolute', top: 60, right: 60}}>
           <CallBody peerInfo={peerInfo} callState={callState} small />
           <CallControls
             callState={callState}
