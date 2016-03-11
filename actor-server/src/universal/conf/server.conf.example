@@ -6,6 +6,12 @@
 #   base-uri: "https://api.actor.im"
 # }
 
+# URIs of endpoints, accessible by client applications
+# public-endpoints: [
+#  "wss://front1-ws-mtproto-api-rev2.actor.im",
+#  "tls://front1-mtproto-api-rev2.actor.im",
+#  "tcp://front3-mtproto-api-rev3.actor.im:443"
+# ]
 # Endpoints for Mobile/Web API
 # It is strictly recommended to use 443 port
 # for all connections. There are a lot of problems
@@ -30,6 +36,9 @@
 #    port: 9080
 #  }
 #]
+
+# Name of your application.
+project-name: <your application name>
 
 # Secret is used to work with various secrets like password, auth hashes, etc
 # It have to be set once and never be changed in future
