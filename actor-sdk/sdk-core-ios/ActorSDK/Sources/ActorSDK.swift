@@ -5,6 +5,8 @@
 import Foundation
 import JDStatusBarNotification
 import PushKit
+import SafariServices
+import DZNWebViewController
 
 @objc public class ActorSDK: NSObject, PKPushRegistryDelegate {
 
@@ -517,7 +519,29 @@ import PushKit
                 return
             }
             
-            UIApplication.sharedApplication().openURL(u)
+            if let bindedController = bindedToWindow?.rootViewController {
+                // Dismiss Old Presented Controller to show new one
+                if let presented = bindedController.presentedViewController {
+                    presented.dismissViewControllerAnimated(true, completion: nil)
+                }
+                
+                // Building Controller for Web preview
+                let controller: UIViewController
+                if #available(iOS 9.0, *) {
+                    controller = SFSafariViewController(URL: u)
+                } else {
+                    controller = AANavigationController(rootViewController: DZNWebViewController(URL: u))
+                }
+                if AADevice.isiPad {
+                    controller.modalPresentationStyle = .FullScreen
+                }
+                
+                // Presenting controller
+                bindedController.presentViewController(controller, animated: true, completion: nil)
+            } else {
+                // Just Fallback. Might never happend
+                UIApplication.sharedApplication().openURL(u)
+            }
         }
     }
     
