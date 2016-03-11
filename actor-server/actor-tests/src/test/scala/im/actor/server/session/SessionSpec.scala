@@ -196,10 +196,12 @@ final class SessionSpec extends BaseSessionSpec {
     }
 
     def seq() = {
+      val phoneNumber = 75550000000L + Random.nextInt(100000)
+      val user = createUser(phoneNumber)._1
+
       val authId = createAuthId()
       val sessionId = Random.nextLong()
 
-      val phoneNumber = 75550000000L
       val code = phoneNumber.toString.charAt(4).toString * 4
 
       val firstMessageId = Random.nextLong()
@@ -239,8 +241,7 @@ final class SessionSpec extends BaseSessionSpec {
       }
 
       val update = UpdateContactRegistered(1, true, 1L, 2L)
-      Await.result(UserExtension(system).broadcastClientUpdate(update, None, isFat = false), 5.seconds)
-
+      seqUpdExt.deliverSingleUpdate(user.id, update)
       expectSeqUpdate(authId, sessionId).update should ===(update.toByteArray)
     }
 
