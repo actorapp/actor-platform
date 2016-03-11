@@ -245,6 +245,8 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
     fatUserIds:  Seq[Int],
     fatGroupIds: Seq[Int]
   )(implicit ec: ExecutionContext): Future[(Seq[ApiUser], Seq[ApiGroup])] = {
+    log.debug("Getting fat data for userId: {}, authId: {}, userIds: {}, groupIds: {}", userId, authId, fatUserIds, fatGroupIds)
+
     for {
       groups ← Future.sequence(fatGroupIds map (GroupExtension(system).getApiStruct(_, userId)))
       groupMemberIds = groups.view.flatMap(_.members.map(_.userId))
