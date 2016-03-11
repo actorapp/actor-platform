@@ -44,9 +44,11 @@ private[user] trait UserQueriesHandlers {
     context become {
       case rsp: GetApiStructResponse =>
         replyTo ! rsp
+        unstashAll()
         context become working(state)
       case fail: Status.Failure =>
         replyTo ! fail
+        unstashAll()
         context become working(state)
       case _ => stash
     }
