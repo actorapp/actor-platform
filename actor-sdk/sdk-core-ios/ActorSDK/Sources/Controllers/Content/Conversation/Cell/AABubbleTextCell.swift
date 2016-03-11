@@ -41,6 +41,14 @@ public class AABubbleTextCell : AABubbleCell {
         
         messageText.displaysAsynchronously = true
         messageText.ignoreCommonProperties = true
+        messageText.highlightTapAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
+            let attributes = text.attributesAtIndex(range.location, effectiveRange: nil)
+            if let attrs = attributes["YYTextHighlight"] as? YYTextHighlight {
+                if let url = attrs.userInfo!["url"] as? String {
+                    self.openUrl(NSURL(string: url)!)
+                }
+            }
+        }
         
         senderNameLabel.displaysAsynchronously = true
         senderNameLabel.ignoreCommonProperties = true
@@ -49,7 +57,6 @@ public class AABubbleTextCell : AABubbleCell {
         dateText.displaysAsynchronously = true
         dateText.lineBreakMode = .ByClipping
         dateText.numberOfLines = 1
-//        dateText.contentMode = .TopLeft
         dateText.textAlignment = .Right
         
         statusView.contentMode = UIViewContentMode.Center
@@ -194,16 +201,18 @@ public class AABubbleTextCell : AABubbleCell {
 //        openUrl(url)
 //    }
 //    
-//    public func openUrl(url: NSURL) {
-//        if url.scheme == "source" {
-//            let path = url.path!
-//            let index = Int(path.substringFromIndex(path.startIndex.advancedBy(1)))!
-//            let code = self.cellLayout.sources[index]
-//            self.controller.navigateNext(AACodePreviewController(code: code), removeCurrent: false)
-//        } else {
-//            ActorSDK.sharedActor().openUrl(url.absoluteString)
-//        }
-//    }
+    public func openUrl(url: NSURL) {
+        if url.scheme == "source" {
+            let path = url.path!
+            let index = Int(path.substringFromIndex(path.startIndex.advancedBy(1)))!
+            let code = self.cellLayout.sources[index]
+            self.controller.navigateNext(AACodePreviewController(code: code), removeCurrent: false)
+        } else if url.scheme == "send" {
+            Actor.sendMessageWithPeer(self.peer, withText: url.path!)
+        } else {
+            ActorSDK.sharedActor().openUrl(url.absoluteString)
+        }
+    }
     
     // Layouting
     
@@ -395,7 +404,8 @@ public class TextCellLayout: AACellLayout {
     public convenience init(senderId: Int, formattedText: String, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
         
         // Parsing markdown formatted text
-        let text = TextCellLayout.parser.parse(formattedText, textColor: textColor, fontSize: AABubbleTextCell.fontSize)
+        let parser = TextParser(textColor: textColor, linkColor: ActorSDK.sharedActor().style.chatUrlColor, fontSize: AABubbleTextCell.fontSize)        
+        let text = parser.parse(formattedText)
         
         // Creating attributed text layout
         self.init(senderId: senderId, text: formattedText, attributedText: text.attributedText, date: date, isOut: isOut, peer: peer, layoutKey: layoutKey)
