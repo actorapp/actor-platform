@@ -64,7 +64,7 @@ class AAUserViewController: AAContentTableController {
                 }
             }
             
-            if (ActorSDK.sharedActor().enableCalls) {
+            if (ActorSDK.sharedActor().enableCalls && !self.isBot) {
                 // Profile: Starting Voice Call
                 s.action("CallsStartAudio") { (r) -> () in
                     r.selectAction = { () -> Bool in
