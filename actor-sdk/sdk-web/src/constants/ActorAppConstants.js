@@ -218,7 +218,10 @@ export const ActionTypes = keymirror({
   FAVORITE_REMOVE_ERROR: null,
 
   RECENT_CONTEXT_MENU_SHOW: null,
-  RECENT_CONTEXT_MENU_HIDE: null
+  RECENT_CONTEXT_MENU_HIDE: null,
+
+  LOGGER_APPEND: null,
+  LOGGER_TOGGLE: null
 });
 
 export const EventTypes = {
@@ -303,6 +306,13 @@ export const AsyncActionStates = {
   PROCESSING: 1,
   SUCCESS: 2,
   FAILURE: 3
+};
+
+export const LoggerTypes = {
+  INFO: 'i',
+  ERROR: 'e',
+  WARNING: 'w',
+  DEBUG: 'd'
 };
 
 export const Path = {
