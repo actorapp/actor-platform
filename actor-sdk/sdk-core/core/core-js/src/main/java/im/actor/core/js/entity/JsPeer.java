@@ -21,7 +21,7 @@ public class JsPeer extends JavaScriptObject {
     }
 
     public static native JsPeer create(String peerType, int peerId, String peerKey)/*-{
-        return {type: peerType, id: peerId, key:peerKey};
+        return {type: peerType, id: peerId, key: peerKey};
     }-*/;
 
     protected JsPeer() {
@@ -30,6 +30,8 @@ public class JsPeer extends JavaScriptObject {
     public final native String getPeerType()/*-{ return this.type; }-*/;
 
     public final native int getPeerId()/*-{ return this.id; }-*/;
+
+    public final native String getPeerKey()/*-{ return this.key; }-*/;
 
     public final Peer convert() {
         if (getPeerType().equals("user")) {
