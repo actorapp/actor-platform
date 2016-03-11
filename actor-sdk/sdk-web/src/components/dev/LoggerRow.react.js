@@ -22,17 +22,17 @@ class LoggerRow extends Component {
   render() {
     const { tag, type, message } = this.props;
 
-    const className = classNames('logger__row', {
-      'logger__row--info': type === LoggerTypes.INFO,
-      'logger__row--error': type === LoggerTypes.ERROR,
-      'logger__row--warning': type === LoggerTypes.WARNING,
-      'logger__row--debug': type === LoggerTypes.DEBUG
+    const className = classNames('logger__container__row log-entry', {
+      'log-entry--info': type === LoggerTypes.INFO,
+      'log-entry--error': type === LoggerTypes.ERROR,
+      'log-entry--warning': type === LoggerTypes.WARNING,
+      'log-entry--debug': type === LoggerTypes.DEBUG
     });
 
     return (
       <div className={className}>
-        <span className="logger__row__tag">{tag}</span>
-        <span className="logger__row__message">{message}</span>
+        <span className="log-entry__tag">{tag}</span>
+        <span className="log-entry__message">{message}</span>
       </div>
     );
   }

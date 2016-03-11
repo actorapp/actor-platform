@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import classNames from 'classnames';
-
+import Scrollbar from '../common/Scrollbar.react';
 import LoggerStore from '../../stores/LoggerStore';
 
 import LoggerFilter from './LoggerFilter.react';
@@ -27,10 +27,14 @@ class LoggerSection extends Component {
   renderBody() {
     return (
       <div className="activity__body logger">
-        <LoggerFilter />
-        <div className="logger__row__container">
-          {this.renderLogs()}
-        </div>
+        <Scrollbar>
+          <div>
+            <LoggerFilter />
+            <div className="logger__container">
+              {this.renderLogs()}
+            </div>
+          </div>
+        </Scrollbar>
       </div>
     );
   }

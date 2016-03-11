@@ -7,8 +7,7 @@ import React, { Component } from 'react';
 class LoggerFilter extends Component {
   render() {
     return (
-      <form>
-      </form>
+      <form className="logger__filter"/>
     );
   }
 }
