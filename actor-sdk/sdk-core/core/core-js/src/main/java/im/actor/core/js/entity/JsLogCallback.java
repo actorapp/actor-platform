@@ -1,7 +1,10 @@
 package im.actor.core.js.entity;
 
-/**
- * Created by ex3ndr on 3/11/16.
- */
-public class JsLogCallback {
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportClosure;
+
+@Export
+@ExportClosure
+public interface JsLogCallback {
+    void log(String tag, String level, String message);
 }

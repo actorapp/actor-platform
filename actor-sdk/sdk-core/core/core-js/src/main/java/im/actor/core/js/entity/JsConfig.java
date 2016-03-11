@@ -1,7 +1,18 @@
 package im.actor.core.js.entity;
 
-/**
- * Created by ex3ndr on 3/11/16.
- */
-public class JsConfig {
+import com.google.gwt.core.client.JavaScriptObject;
+
+public class JsConfig extends JavaScriptObject {
+
+    public final native String[] getEndpoints()/*-{
+        return this.endpoints;
+    }-*/;
+
+    public final native JsLogCallback getLogHandler()/*-{
+        return this.logHandler;
+    }-*/;
+
+    protected JsConfig() {
+
+    }
 }
