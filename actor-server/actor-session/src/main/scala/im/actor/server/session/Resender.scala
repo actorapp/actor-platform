@@ -5,14 +5,14 @@ import java.util.concurrent.TimeUnit
 import akka.actor.{ ActorLogging, ActorRef, Cancellable, Props }
 import akka.stream.actor._
 import com.typesafe.config.Config
-import im.actor.api.rpc.{ RpcResult ⇒ ApiRpcResult, UpdateBox }
+import im.actor.api.rpc.{ UpdateBox, RpcResult ⇒ ApiRpcResult }
 import im.actor.api.rpc.codecs.UpdateBoxCodec
-import im.actor.api.rpc.sequence.{ FatSeqUpdate, WeakUpdate, SeqUpdate, ApiUpdateOptimization }
+import im.actor.api.rpc.sequence._
 import im.actor.server.api.rpc.RpcResultCodec
 import im.actor.server.mtproto.protocol._
 
 import scala.annotation.tailrec
-import scala.collection.{ mutable, immutable }
+import scala.collection.{ immutable, mutable }
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
@@ -36,14 +36,15 @@ private[session] object ReSenderMessage {
   final case class SetUpdateOptimizations(updateOptimizations: Set[ApiUpdateOptimization.Value]) extends ReSenderMessage
 }
 
-private[session] case class ReSenderConfig(ackTimeout: FiniteDuration, maxResendSize: Long, maxBufferSize: Long)
+private[session] case class ReSenderConfig(ackTimeout: FiniteDuration, maxResendSize: Long, maxBufferSize: Long, maxPushBufferSize: Long)
 
 private[session] object ReSenderConfig {
   def fromConfig(config: Config): ReSenderConfig = {
     ReSenderConfig(
       ackTimeout = config.getDuration("ack-timeout", TimeUnit.SECONDS).seconds,
       maxResendSize = config.getBytes("max-resend-size"),
-      maxBufferSize = config.getBytes("max-buffer-size")
+      maxBufferSize = config.getBytes("max-buffer-size"),
+      maxPushBufferSize = config.getBytes("max-push-buffer-size")
     )
   }
 }
@@ -53,19 +54,20 @@ private[session] object ReSender {
   private case class ScheduledResend(messageId: Long, item: ResendableItem)
 
   private sealed trait ResendableItem {
-    val size: Long
+    val bitsSize: Long
+    val size = bitsSize / 8
   }
   private final case class RpcItem(result: ApiRpcResult, requestMessageId: Long) extends ResendableItem {
     lazy val body = RpcResultCodec.encode(result).require
-    override lazy val size = body.size
+    override lazy val bitsSize = body.size
     val reduceKeyOpt = None
   }
   private final case class PushItem(ub: UpdateBox, reduceKeyOpt: Option[String]) extends ResendableItem {
     lazy val body = UpdateBoxCodec.encode(ub).require
-    override lazy val size = body.size
+    override lazy val bitsSize = body.size
   }
   private final case class NewSessionItem(newSession: NewSession) extends ResendableItem {
-    override val size = 0L
+    override val bitsSize = 0L
   }
 
   def props(authId: Long, sessionId: Long, firstMessageId: Long)(implicit config: ReSenderConfig) =
@@ -135,6 +137,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   }
 
   private[this] var resendBufferSize = 0L
+  private[this] var resendPushBufferSize = 0L
   private[this] var updateOptimizations = Set.empty[ApiUpdateOptimization.Value]
 
   private[this] var newSessionBuffer: Option[(Long, NewSessionItem, Cancellable)] = None
@@ -214,14 +217,48 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
     case ScheduledResend(messageId, item) ⇒
       log.debug("Scheduled resend for messageId: {}, item: {}", messageId, item)
 
-      if (item.size <= MaxResendSize)
-        resendBufferSize -= item.size
+      decreaseBufferSize(item)
 
       item match {
         case ni: NewSessionItem ⇒ enqueueNewSession(ni)
         case pi: PushItem       ⇒ enqueuePush(pi, Some(messageId))
         case ri: RpcItem        ⇒ enqueueRpc(ri, Some(messageId))
       }
+  }
+
+  private def increaseBufferSize(item: ResendableItem): Unit = {
+    if (item.size <= MaxResendSize) {
+      this.resendBufferSize += item.size
+    }
+
+    item match {
+      case p: PushItem ⇒
+        this.resendPushBufferSize += item.size
+
+        if (this.resendPushBufferSize > config.maxPushBufferSize)
+          clearPushBuffer()
+      case _ ⇒
+    }
+  }
+
+  private def decreaseBufferSize(item: ResendableItem): Unit = {
+    if (item.size <= MaxResendSize) this.resendBufferSize -= item.size
+    item match {
+      case _: PushItem ⇒ this.resendPushBufferSize -= item.size
+      case _           ⇒
+    }
+  }
+
+  private def clearPushBuffer(): Unit = {
+    pushBuffer foreach {
+      case (messageId, (pi: PushItem, resend)) ⇒
+        pushBuffer -= messageId
+        decreaseBufferSize(pi)
+        resend.cancel()
+      case _ ⇒
+    }
+
+    enqueueSeqUpdateTooLong()
   }
 
   // Publisher-related
@@ -282,8 +319,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   private def scheduleResend(item: ResendableItem, messageId: Long) = {
     log.debug("Scheduling resend of messageId: {}, timeout: {}", messageId, AckTimeout)
 
-    if (item.size <= MaxResendSize)
-      this.resendBufferSize += item.size
+    increaseBufferSize(item)
 
     // FIXME: increase resendBufferSize by real Unsent
 
@@ -299,8 +335,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
               (ritem, resend) ← pushBuffer.get(msgId)
             } yield {
               this.pushBuffer -= msgId
-              if (ritem.size <= MaxResendSize)
-                resendBufferSize -= ritem.size
+              decreaseBufferSize(ritem)
               resend.cancel()
             }
 
@@ -324,6 +359,9 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
     scheduleResend(item, messageId)
     enqueue(MessageBox(messageId, item.newSession), Priority.NewSession)
   }
+
+  private def enqueueSeqUpdateTooLong(): Unit =
+    enqueue(MessageBox(nextMessageId(), ProtoPush(UpdateBoxCodec.encode(SeqUpdateTooLong).require)), Priority.SeqPush)
 
   private def enqueueRpc(item: RpcItem, unsentMessageIdOpt: Option[Long], isNewClient: Boolean = false): Unit = {
     val messageId = unsentMessageIdOpt.getOrElse(nextMessageId())
@@ -371,5 +409,10 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
     val msg = "Completing stream due to maximum buffer size reached"
     log.warning(msg)
     onError(new RuntimeException(msg) with NoStackTrace)
+  }
+
+  override def postStop(): Unit = {
+    super.postStop()
+    pushBuffer.values foreach (_._2.cancel())
   }
 }

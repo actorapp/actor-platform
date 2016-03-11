@@ -8,7 +8,7 @@ import im.actor.api.rpc.contacts.{ RequestGetContacts, UpdateContactRegistered }
 import im.actor.api.rpc.messaging.RequestLoadDialogs
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.ApiUserOutPeer
-import im.actor.api.rpc.sequence.{ RequestGetDifference, RequestSubscribeToOnline, RequestGetState }
+import im.actor.api.rpc.sequence.{ RequestGetDifference, RequestGetState, RequestSubscribeToOnline, UpdateRawUpdate }
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.weak.UpdateUserOffline
 import im.actor.api.rpc.{ AuthorizedClientData, Request, RpcOk }
@@ -16,7 +16,7 @@ import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
 import im.actor.server.persist.AuthSessionRepo
-import im.actor.server.sequence.{ SeqUpdatesExtension, WeakUpdatesExtension }
+import im.actor.server.sequence.{ SeqUpdatesExtension, UserSequence, WeakUpdatesExtension }
 import im.actor.server.user.UserExtension
 import scodec.bits._
 
@@ -36,6 +36,7 @@ final class SessionSpec extends BaseSessionSpec {
   it should "subscribe to presences" in sessions().pres
   it should "receive fat updates" in sessions().fatSeq
   it should "react to SessionHello" in sessions().hello
+  it should "send SeqUpdateTooLong" in sessions().seqUpdateTooLong
 
   case class sessions() {
 
@@ -161,6 +162,37 @@ final class SessionSpec extends BaseSessionSpec {
       expectRpcResult(authId, sessionId) should matchPattern {
         case RpcOk(ResponseVoid) ⇒
       }
+    }
+
+    def seqUpdateTooLong() = {
+      val (user, authId, _, _) = createUser()
+      val sessionId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong(), SessionHello)
+      ignoreNewSession()
+
+      sendRequest(authId, sessionId, sessionRegion.ref, RequestGetState(Vector.empty))
+      expectMessageAck()
+      expectRpcResult(authId, sessionId)
+
+      val updatesCount = 31
+
+      // each update is 1024 bytes
+      val payload = Array(List.range(0, 1005).map(_.toByte): _*)
+      val update = UpdateRawUpdate(None, payload)
+
+      for (_ ← 1 to updatesCount) {
+        whenReady(seqUpdExt.deliverSingleUpdate(user.id, update))(identity)
+      }
+
+      // expect 30Kb of updates to be pushed, then SeqUpdateTooLong (no ack)
+      for (_ ← 1 until updatesCount) {
+        expectSeqUpdate(authId, sessionId, None)
+      }
+
+      expectSeqUpdateTooLong(authId, sessionId)
+      expectSeqUpdate(authId, sessionId)
+
+      probe.expectNoMsg(5.seconds)
     }
 
     def seq() = {
