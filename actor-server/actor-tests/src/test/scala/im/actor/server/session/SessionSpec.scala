@@ -174,7 +174,7 @@ final class SessionSpec extends BaseSessionSpec {
       expectMessageAck()
       expectRpcResult(authId, sessionId)
 
-      val updatesCount = 31
+      val updatesCount = 32
 
       // each update is 1024 bytes
       val payload = Array(List.range(0, 1005).map(_.toByte): _*)
