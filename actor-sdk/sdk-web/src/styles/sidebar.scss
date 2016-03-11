@@ -184,44 +184,44 @@
 
         @include no-select();
       }
-      .delete {
-        font-size: 18px;
-        line-height: 24px;
-
-        display: none;
-
-        margin-right: 3px;
-        margin-left: 6px;
-
-        color: rgba(white, .6);
-        &:hover {
-          color: white;
-        }
-      }
-      .favorite,
-      .archive {
-        height: 24px;
-        text-align: center;
-        display: none;
-        .icon {
-          vertical-align: top;
-          font-size: 20px;
-          line-height: 24px;
-          color: rgba(white, .5);
-          &:hover {
-            color: white;
-          }
-        }
-      }
-      .archive {
-        &--in-progress,
-        &--failure {
-          display: block;
-          .icon {
-            color: white;
-          }
-        }
-      }
+      //.delete {
+      //  font-size: 18px;
+      //  line-height: 24px;
+      //
+      //  display: none;
+      //
+      //  margin-right: 3px;
+      //  margin-left: 6px;
+      //
+      //  color: rgba(white, .6);
+      //  &:hover {
+      //    color: white;
+      //  }
+      //}
+      //.favorite,
+      //.archive {
+      //  height: 24px;
+      //  text-align: center;
+      //  display: none;
+      //  .icon {
+      //    vertical-align: top;
+      //    font-size: 20px;
+      //    line-height: 24px;
+      //    color: rgba(white, .5);
+      //    &:hover {
+      //      color: white;
+      //    }
+      //  }
+      //}
+      //.archive {
+      //  &--in-progress,
+      //  &--failure {
+      //    display: block;
+      //    .icon {
+      //      color: white;
+      //    }
+      //  }
+      //}
 
       &:hover {
         color: white;
@@ -251,6 +251,24 @@
         color: white;
         .avatar {
           filter: none;
+        }
+      }
+      &--new {
+        a {
+          font-style: italic;
+          font-weight: 500;
+          font-size: 13px;
+          display: inline-block;
+          &:hover {
+            color: white;
+          }
+          &:first-letter {
+            text-transform: uppercase !important;
+          }
+        }
+        &:hover {
+          background-color: transparent;
+          color: rgba(white, .6);
         }
       }
     }

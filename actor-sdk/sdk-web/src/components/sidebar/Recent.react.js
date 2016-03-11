@@ -108,12 +108,8 @@ class Recent extends Component {
     this.refs.container.scrollTo(scrollNode.scrollTop + rect.top - (scrollNodeRect.top + scrollNodeRect.height - rect.height));
   };
 
-  render() {
-    const { dialogs, archive, currentPeer } = this.props;
-    const { haveUnreadAbove, haveUnreadBelow } = this.state;
-    const { intl } = this.context;
-
-    const recentGroups = map(dialogs, (dialogGroup, index) => {
+  renderRecentGroups = () => {
+    const recentGroups = map(this.props.dialogs, (dialogGroup, index) => {
       const isEmpty = dialogGroup.shorts.length === 0;
       let groupTitle;
 
@@ -121,7 +117,7 @@ class Recent extends Component {
         case 'groups':
           groupTitle = (
             <li className="sidebar__list__title">
-              <a onClick={this.handleGroupListClick}>{intl.messages[`sidebar.recents.${dialogGroup.key}`]}</a>
+              <a onClick={this.handleGroupListClick}><FormattedMessage id={`sidebar.recents.${dialogGroup.key}`}/></a>
               <i className="material-icons sidebar__list__title__icon pull-right"
                  onClick={this.handleCreateGroup}>add_circle_outline</i>
             </li>
@@ -130,14 +126,14 @@ class Recent extends Component {
         case 'privates':
           groupTitle = (
             <li className="sidebar__list__title">
-              <a onClick={this.handlePrivateListClick}>{intl.messages[`sidebar.recents.${dialogGroup.key}`]}</a>
+              <a onClick={this.handlePrivateListClick}><FormattedMessage id={`sidebar.recents.${dialogGroup.key}`}/></a>
               <i className="material-icons sidebar__list__title__icon pull-right"
                  onClick={this.handleCreatePrivate}>add_circle_outline</i>
             </li>
           );
           break;
         default:
-          groupTitle = <li className="sidebar__list__title">{intl.messages[`sidebar.recents.${dialogGroup.key}`]}</li>;
+          groupTitle = <li className="sidebar__list__title"><FormattedMessage id={`sidebar.recents.${dialogGroup.key}`}/></li>;
       }
 
       const groupList = map(dialogGroup.shorts, (dialog, index) => {
@@ -155,10 +151,10 @@ class Recent extends Component {
       });
 
       const groupClassname = classnames(`sidebar__list sidebar__list--${dialogGroup.key}`, {
-       'sidebar__list--empty': isEmpty
+        'sidebar__list--empty': isEmpty
       });
 
-      const getEmptyMessage = () => {
+      const renderEmptyMessage = () => {
         switch (dialogGroup.key) {
           case 'groups':
             return (
@@ -181,45 +177,90 @@ class Recent extends Component {
         }
       };
 
+      const renderNewDialogButton = () => {
+        if (groupList.length < 5 && groupList.length !== 0) {
+          switch (dialogGroup.key) {
+            case 'groups':
+              return (
+                <li className="sidebar__list__item sidebar__list__item--new">
+                  <a onClick={this.handleCreateGroup}>
+                    <FormattedMessage id="sidebar.recents.newDialog"/>
+                  </a>
+                </li>
+              );
+            case 'privates':
+              return (
+                <li className="sidebar__list__item sidebar__list__item--new">
+                  <a onClick={this.handleCreatePrivate}>
+                    <FormattedMessage id="sidebar.recents.addPeople"/>
+                  </a>
+                </li>
+              );
+            default:
+              return null;
+          }
+        }
+      };
+
       return (
         <ul className={groupClassname} key={index}>
           {groupTitle}
           {
             isEmpty
-              ? getEmptyMessage()
+              ? renderEmptyMessage()
               : groupList
           }
+          {renderNewDialogButton()}
         </ul>
       )
     });
 
+    return recentGroups;
+  };
+
+  renderUnreadAbove = () => {
+    if (!this.state.haveUnreadAbove) return null;
+
+    return (
+      <div className="sidebar__recent__unread sidebar__recent__unread--above" onClick={this.scrollToFirstHiddenAbove}>
+        <i className="material-icons">keyboard_arrow_up</i>
+      </div>
+    )
+  };
+
+  renderUnreadBelow = () => {
+    if (!this.state.haveUnreadBelow) return null;
+
+    return (
+      <div className="sidebar__recent__unread sidebar__recent__unread--below" onClick={this.scrollToLastHiddenBelow}>
+        <i className="material-icons">keyboard_arrow_down</i>
+      </div>
+    )
+  };
+
+  render() {
     return (
       <section className="sidebar__recent">
-        {
-          haveUnreadAbove
-            ? <div className="sidebar__recent__unread sidebar__recent__unread--above" onClick={this.scrollToFirstHiddenAbove}>
-                <i className="material-icons">keyboard_arrow_up</i>
-              </div>
-            : null
-        }
+        {this.renderUnreadAbove()}
+
+        {this.renderRecentGroups()}
+
+        {/*
+
+        <footer>
+          <Link to="/im/archive" className="button button--rised button--wide">
+            <FormattedMessage id="button.archive"/>
+          </Link>
+        </footer>
+
         <Scrollbar ref="container" onScroll={this.handleRecentScroll}>
           <div>
-            {recentGroups}
-
-            <footer>
-              <Link to="/im/archive" className="button button--rised button--wide">
-                <FormattedMessage id="button.archive"/>
-              </Link>
-            </footer>
           </div>
         </Scrollbar>
-        {
-          haveUnreadBelow
-            ? <div className="sidebar__recent__unread sidebar__recent__unread--below" onClick={this.scrollToLastHiddenBelow}>
-                <i className="material-icons">keyboard_arrow_down</i>
-              </div>
-            : null
-        }
+
+        */}
+
+        {this.renderUnreadBelow()}
       </section>
     );
   }
