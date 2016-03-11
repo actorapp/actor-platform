@@ -12,6 +12,7 @@ import im.actor.core.Messenger;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Notification;
 import im.actor.core.entity.PeerType;
+import im.actor.core.js.entity.JsPeer;
 import im.actor.core.js.JsMessenger;
 import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.providers.notification.JsManagedNotification;
@@ -42,6 +43,7 @@ public class JsNotificationsProvider implements NotificationProvider {
     public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount) {
 
         String peerTitle;
+        String peerKey = null;
         String peerAvatarUrl = null;
         String contentMessage = "";
 
@@ -50,6 +52,7 @@ public class JsNotificationsProvider implements NotificationProvider {
         // Peer info
         if (conversationsCount == 1) {
             Avatar peerAvatar;
+            JsPeer jsPeer = JsPeer.create(notification.getPeer());
             if (notification.getPeer().getPeerType() == PeerType.PRIVATE) {
                 UserVM userVM = messenger.getUser(notification.getPeer().getPeerId());
                 peerTitle = userVM.getName().get();
@@ -62,6 +65,7 @@ public class JsNotificationsProvider implements NotificationProvider {
             if (peerAvatar != null && peerAvatar.getSmallImage() != null) {
                 peerAvatarUrl = ((JsMessenger) messenger).getFileUrl(peerAvatar.getSmallImage().getFileReference());
             }
+            peerKey = jsPeer.getPeerKey();
         } else {
             peerTitle = "New messages";
             peerAvatarUrl = "assets/img/notification_icon_512.png";
@@ -127,7 +131,7 @@ public class JsNotificationsProvider implements NotificationProvider {
             return;
         }
 
-        JsManagedNotification.show(peerTitle, contentMessage, peerAvatarUrl);
+        JsManagedNotification.show(peerKey, peerTitle, contentMessage, peerAvatarUrl);
     }
 
     @Override
