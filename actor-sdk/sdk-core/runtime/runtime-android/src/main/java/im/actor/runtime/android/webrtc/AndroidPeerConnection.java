@@ -327,13 +327,6 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
             @Override
             public void run() {
-                for (AndroidMediaStream m : streams.values()) {
-                    if (m.isLocal()) {
-                        peerConnection.removeStream(m.getStream());
-                        m.getStream().dispose();
-                    }
-                }
-                peerConnection.close();
                 peerConnection.dispose();
             }
         });

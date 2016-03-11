@@ -55,7 +55,7 @@ public class AndroidMediaStream implements WebRTCMediaStream {
 
     @Override
     public void close() {
-//        stream.dispose();
+        stream.dispose();
     }
 
     public MediaStream getStream() {
