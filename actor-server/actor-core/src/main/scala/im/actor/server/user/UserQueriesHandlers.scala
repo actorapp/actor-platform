@@ -1,6 +1,6 @@
 package im.actor.server.user
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorSystem, Status}
 import akka.pattern.pipe
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.ApiConversions._
@@ -37,7 +37,19 @@ private[user] trait UserQueriesHandlers {
       external = state.external,
       preferredLanguages = state.preferredLanguages.toVector,
       timeZone = state.timeZone
-    ))) pipeTo sender()
+    ))) pipeTo context.self
+
+    val replyTo = sender()
+
+    context become {
+      case rsp: GetApiStructResponse =>
+        replyTo ! rsp
+        context become working(state)
+      case fail: Status.Failure =>
+        replyTo ! fail
+        context become working(state)
+      case _ => stash
+    }
   }
 
   protected def getContactRecords(state: UserState): Unit =
