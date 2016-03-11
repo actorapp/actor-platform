@@ -14,7 +14,6 @@ import com.google.gwt.user.client.Event;
 import im.actor.core.*;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.ApiDialog;
-import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.api.rpc.ResponseLoadArchived;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.MessageSearchEntity;
@@ -45,7 +44,6 @@ import im.actor.runtime.js.mvvm.JsDisplayListCallback;
 import im.actor.runtime.js.utils.JsPromise;
 import im.actor.runtime.js.utils.JsPromiseExecutor;
 import im.actor.runtime.markdown.MarkdownParser;
-import im.actor.runtime.webrtc.WebRTCIceServer;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
@@ -69,7 +67,11 @@ public class JsFacade implements Exportable {
     private Peer lastVisiblePeer;
 
     @Export
-    public JsFacade(JsConfig config) {
+    public JsFacade() {
+
+    }
+
+    public void init(JsConfig config) {
 
         provider = (JsFileSystemProvider) Storage.getFileSystemRuntime();
 
