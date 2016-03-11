@@ -24,13 +24,13 @@ import Reactions from './Reactions.react';
 // Default message content components
 import DefaultService from './Service.react';
 import DefaultText from './Text.react';
-import DefaultPhoto from './Photo.react.js';
+import DefaultPhoto from './Photo.react';
 import DefaultDocument from './Document.react';
 import DefaultVoice from './Voice.react';
 import DefaultContact from './Contact.react';
-import DefaultLocation from './Location.react.js';
-import DefaultModern from './Modern.react.js';
-import DefaultSticker from './Sticker.react.js';
+import DefaultLocation from './Location.react';
+import DefaultModern from './Modern.react';
+import DefaultSticker from './Sticker.react';
 
 class MessageItem extends Component {
   static getStores() {

@@ -2,19 +2,17 @@
  * Copyright (C) 2016 Actor LLC. <https://actor.im>
  */
 
-.scroller {
-  &__wrapper {
-    display: flex;
-    overflow: hidden;
-  }
+.scroller__wrapper,
+.scroller__container {
+  width: 100%;
+  min-height: 1px;
+}
 
-  &__container {
-    overflow-y: scroll;
-  }
+.scroller__wrapper {
+  display: flex;
+  overflow: hidden;
+}
 
-  &__wrapper,
-  &__container {
-    width: 100%;
-    min-height: 1px;
-  }
+.scroller__container {
+  overflow-y: scroll;
 }

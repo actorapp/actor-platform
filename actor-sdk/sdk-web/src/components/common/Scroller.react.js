@@ -72,6 +72,10 @@ class Scroller extends Component {
       offsetHeight: this.container.offsetHeight
     };
   }
+
+  getBoundingClientRect() {
+    return this.container.getBoundingClientRect();
+  }
 }
 
 export default Scroller;
