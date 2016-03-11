@@ -22,5 +22,4 @@ object JsonFormatters {
 
   implicit val reverseHookResponseFormat: Format[ReverseHookResponse] = Json.format[ReverseHookResponse]
   implicit val statusFormat: Format[Status] = Json.format[Status]
-
 }
