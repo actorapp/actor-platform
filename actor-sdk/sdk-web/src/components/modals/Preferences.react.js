@@ -8,9 +8,12 @@ import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import Modal from 'react-modal';
 
-import { KeyCodes } from '../../constants/ActorAppConstants';
+import SharedContainer from '../../utils/SharedContainer'
+
+import { KeyCodes, appName } from '../../constants/ActorAppConstants';
 
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
+import {loggerToggle} from '../../actions/LoggerActionCreators';
 
 import PreferencesStore from '../../stores/PreferencesStore';
 
@@ -19,10 +22,16 @@ import Session from './preferences/Session.react'
 class PreferencesModal extends Component {
   constructor(props) {
     super(props);
+
+    const SharedActor = SharedContainer.get();
+    this.appName = SharedActor.appName ? SharedActor.appName : appName;
+    this.loggerToggleCount = 0;
+
+    this.onAppDetailClick = this.onAppDetailClick.bind(this);
   }
 
   static contextTypes = {
-    intl: PropTypes.object
+    intl: PropTypes.object.isRequired
   };
 
   static getStores = () => [PreferencesStore];
@@ -46,6 +55,14 @@ class PreferencesModal extends Component {
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown, false);
+  }
+
+  onAppDetailClick() {
+    this.loggerToggleCount++;
+    if (this.loggerToggleCount >= 15) {
+      loggerToggle();
+      this.loggerToggleCount = 0;
+    }
   }
 
   onClose = () => PreferencesActionCreators.hide();
@@ -167,6 +184,11 @@ class PreferencesModal extends Component {
                  onClick={() => this.changeTab('SECURITY')}>
                 {intl.messages['preferencesSecurityTab']}
               </a>
+              <footer className="preferences__tabs__footer">
+                <a className="preferences__tabs__tab" onClick={this.onAppDetailClick}>
+                  {this.appName} v1.0.123
+                </a>
+              </footer>
             </aside>
             <div className="preferences__body">
               <div className="preferences__list">

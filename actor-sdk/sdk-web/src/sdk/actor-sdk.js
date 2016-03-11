@@ -23,6 +23,7 @@ import crosstab from 'crosstab';
 import { lightbox } from '../utils/ImageUtils'
 
 import LoginActionCreators from '../actions/LoginActionCreators';
+import {loggerAppend} from '../actions/LoggerActionCreators';
 
 import LoginStore from '../stores/LoginStore';
 
@@ -94,7 +95,10 @@ class ActorSDK {
 
     if (window.location.hash !== '#/deactivated') {
       if (crosstab.supported) crosstab.broadcast(ACTOR_INIT_EVENT, {});
-      window.messenger = Actor.create({endpoints: this.endpoints});
+      window.messenger = Actor.create({
+        endpoints: this.endpoints,
+        logHandler: loggerAppend
+      });
     }
 
     const Login = (typeof this.delegate.components.login == 'function') ? this.delegate.components.login : DefaultLogin;

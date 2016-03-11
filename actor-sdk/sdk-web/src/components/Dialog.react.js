@@ -15,6 +15,7 @@ import DialogFooter from './dialog/DialogFooter.react';
 import DefaultToolbar from './Toolbar.react';
 import DefaultActivity from './Activity.react';
 import DefaultCall from './Call.react';
+import DefaultLogger from './dev/LoggerSection.react';
 import ConnectionState from './common/ConnectionState.react';
 
 import ActivityStore from '../stores/ActivityStore';
@@ -155,14 +156,17 @@ class DialogSection extends Component {
   }, 5, {maxWait: 30});
 
   getComponents() {
-    const {dialog} = this.context.delegate.components;
+    const {dialog, logger} = this.context.delegate.components;
+    const LoggerSection = logger || DefaultLogger;
     if (dialog && !isFunction(dialog)) {
       const activity = dialog.activity || [
         DefaultActivity,
-        DefaultCall
+        DefaultCall,
+        LoggerSection
       ];
 
       return {
+        LoggerSection,
         ToolbarSection: dialog.toolbar || DefaultToolbar,
         MessagesSection: isFunction(dialog.messages) ? dialog.messages : DefaultMessages,
         TypingSection: dialog.typing || DefaultTyping,
@@ -172,13 +176,15 @@ class DialogSection extends Component {
     }
 
     return {
+      LoggerSection,
       ToolbarSection: DefaultToolbar,
       MessagesSection: DefaultMessages,
       TypingSection: DefaultTyping,
       ComposeSection: DefaultCompose,
       activity: [
         <DefaultActivity key={1} />,
-        <DefaultCall key={2} />
+        <DefaultCall key={2} />,
+        <LoggerSection key={3} />
       ]
     };
   }
