@@ -354,6 +354,7 @@
         flex: 1;
         &__tabs {
           display: block;
+          position: relative;
 
           width: 200px;
           height: 100%;
@@ -371,6 +372,19 @@
             &--active {
               color: white;
               background-color: $dark-sky-blue2;
+            }
+          }
+
+          &__footer {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            padding: 10px 16px;
+            span {
+              cursor: default;
+              font-size: 12px;
+              color: rgba(black, .4);
             }
           }
         }
