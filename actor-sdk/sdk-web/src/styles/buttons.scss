@@ -32,7 +32,7 @@
   background-color: transparent;
 
   @include no-select();
-  apperance: none;
+  appearance: none;
   i {
     line-height: 20px;
 
@@ -198,7 +198,7 @@
       cursor: default !important;
 
       opacity: .6 !important;
-      color: rgba(0, 0, 0, .5) !important;
+      color: rgba(black, .5) !important;
     }
   }
 
