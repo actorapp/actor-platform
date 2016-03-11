@@ -116,8 +116,8 @@ final class SequenceServiceSpec extends BaseAppSuite({
         }
     }
 
-    totalUpdates.length shouldEqual 1281
-    finalSeq shouldEqual 1281
+    totalUpdates.length shouldEqual 3841
+    finalSeq shouldEqual 3841
 
   }
 
