@@ -189,7 +189,7 @@ private[user] sealed trait Commands extends AuthCommands {
     seqUpdExt.deliverSingleUpdate(
       userId = clientUserId,
       update = update,
-      pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse(""))),
+      pushRules = PushRules(isFat = isFat, excludeAuthSids = Seq(clientAuthSid)).withData(PushData().withText(pushText.getOrElse(""))),
       deliveryId = deliveryId.getOrElse("")
     )
 
