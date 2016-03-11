@@ -24,7 +24,7 @@ public class JsNotification extends JavaScriptObject {
         return true;
     }-*/;
 
-    public static native JsNotification create(String title, String message, String avatar)/*-{
+    public static native JsNotification create(String key, String title, String message, String avatar)/*-{
         return new Notification(title, { body: message, icon: avatar });
     }-*/;
 
