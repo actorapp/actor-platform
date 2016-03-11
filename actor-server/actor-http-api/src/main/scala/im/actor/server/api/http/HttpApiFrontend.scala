@@ -6,9 +6,10 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.Credentials
 import akka.http.scaladsl.settings.ServerSettings
-import akka.stream.{ ActorMaterializer, Materializer }
+import akka.stream.ActorMaterializer
 import com.typesafe.config.Config
 import im.actor.server.api.http.app.AppFilesHttpHandler
+import im.actor.server.api.http.info.AboutHttpHandler
 import im.actor.server.api.http.status.StatusHttpHandler
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.HttpApiTokenRepo
@@ -64,11 +65,7 @@ private object HttpApiFrontend {
 
   private val IdleTimeout = 15.minutes
 
-  def start(serverConfig: Config)(
-    implicit
-    system:       ActorSystem,
-    materializer: Materializer
-  ): Unit = {
+  def start(serverConfig: Config)(implicit system: ActorSystem): Unit = {
     HttpApiConfig.load(serverConfig.getConfig("http")) match {
       case Success(apiConfig) ⇒
         start(apiConfig)
@@ -81,9 +78,10 @@ private object HttpApiFrontend {
     implicit val mat = ActorMaterializer()
 
     val status = new StatusHttpHandler
+    val info = new AboutHttpHandler
     val app = new AppFilesHttpHandler(config.staticFiles)
 
-    def defaultRoutes: Route = app.routes ~ defaultVersion(status.routes)
+    def defaultRoutes: Route = app.routes ~ defaultVersion(status.routes ~ info.routes)
 
     def routes = HttpApi(system).customRoutes.foldLeft(defaultRoutes)(_ ~ _)
 

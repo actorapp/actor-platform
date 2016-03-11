@@ -57,8 +57,7 @@ object UserErrors {
 
 private object ServiceMessages {
   def contactRegistered(userId: Int, name: String)(implicit system: ActorSystem) = {
-    val systemName = ActorConfig.systemName
-    ApiServiceMessage(s"$name joined $systemName", Some(ApiServiceExContactRegistered(userId)))
+    ApiServiceMessage(s"$name joined ${ActorConfig.projectName}", Some(ApiServiceExContactRegistered(userId)))
   }
 }
 
