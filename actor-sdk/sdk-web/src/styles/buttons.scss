@@ -197,8 +197,7 @@
     &[disabled] {
       cursor: default !important;
 
-      opacity: .6 !important;
-      color: rgba(black, .5) !important;
+      color: rgba(black, .5);
     }
   }
 
@@ -207,6 +206,6 @@
   }
 
   &[disabled] {
-    opacity: .3;
+    opacity: .5;
   }
 }
