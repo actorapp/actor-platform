@@ -41,6 +41,8 @@ public class AABubbleTextCell : AABubbleCell {
         
         messageText.displaysAsynchronously = true
         messageText.ignoreCommonProperties = true
+        messageText.clearContentsBeforeAsynchronouslyDisplay = false
+        messageText.fadeOnAsynchronouslyDisplay = true
         messageText.highlightTapAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
             let attributes = text.attributesAtIndex(range.location, effectiveRange: nil)
             if let attrs = attributes["YYTextHighlight"] as? YYTextHighlight {
@@ -49,12 +51,26 @@ public class AABubbleTextCell : AABubbleCell {
                 }
             }
         }
+        messageText.highlightLongPressAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
+            let attributes = text.attributesAtIndex(range.location, effectiveRange: nil)
+            if let attrs = attributes["YYTextHighlight"] as? YYTextHighlight {
+                if let url = attrs.userInfo!["url"] as? String {
+                    self.urlLongTap(NSURL(string: url)!)
+                }
+            }
+        }
+
+        
         
         senderNameLabel.displaysAsynchronously = true
         senderNameLabel.ignoreCommonProperties = true
+        senderNameLabel.fadeOnAsynchronouslyDisplay = true
+        senderNameLabel.clearContentsBeforeAsynchronouslyDisplay = false
         
-        dateText.font = AABubbleTextCell.dateFont
         dateText.displaysAsynchronously = true
+        dateText.clearContentsBeforeAsynchronouslyDisplay = false
+        dateText.fadeOnAsynchronouslyDisplay = true
+        dateText.font = AABubbleTextCell.dateFont
         dateText.lineBreakMode = .ByClipping
         dateText.numberOfLines = 1
         dateText.textAlignment = .Right
@@ -101,7 +117,7 @@ public class AABubbleTextCell : AABubbleCell {
         // Always update bubble insets
         if (isOut) {
             bindBubbleType(.TextOut, isCompact: isClanchBottom)
-            dateText.textColor = appStyle.chatTextDateOutColor
+            // dateText.textColor = appStyle.chatTextDateOutColor
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
@@ -115,7 +131,7 @@ public class AABubbleTextCell : AABubbleCell {
                 right: (isClanchBottom ? 4 : 10))
         } else {
             bindBubbleType(.TextIn, isCompact: isClanchBottom)
-            dateText.textColor = appStyle.chatTextDateInColor
+            // dateText.textColor = appStyle.chatTextDateInColor
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
@@ -131,7 +147,7 @@ public class AABubbleTextCell : AABubbleCell {
 
         
         // Always update date and state
-        dateText.text = cellLayout.date
+        // dateText.text = cellLayout.date
         messageState = message.messageState.ordinal();
         
         if (isOut) {
@@ -164,6 +180,12 @@ public class AABubbleTextCell : AABubbleCell {
         }
     }
     
+    public override func prepareForReuse() {
+        super.prepareForReuse()
+        
+//        self.messageText.layer.contents = nil
+    }
+    
     // Menu for Text cell
     
     public override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
@@ -182,25 +204,21 @@ public class AABubbleTextCell : AABubbleCell {
         UIPasteboard.generalPasteboard().string = (bindedMessage!.content as! ACTextContent).text
     }
     
-    // Url open handling
+    public func urlLongTap(url: NSURL) {
+        if url.scheme != "source" && url.scheme == "send" {
+            let actionSheet: UIAlertController = UIAlertController(title: nil, message: url.absoluteString, preferredStyle: .ActionSheet)
+            actionSheet.addAction(UIAlertAction(title: AALocalized("ActionOpenLink"), style: .Default, handler: { action in
+                self.openUrl(url)
+            }))
+            actionSheet.addAction(UIAlertAction(title: AALocalized("ActionCopyLink"), style: .Default, handler: { action in
+                UIPasteboard.generalPasteboard().string = url.absoluteString
+                self.controller.alertUser("AlertLinkCopied")
+            }))
+            actionSheet.addAction(UIAlertAction(title: AALocalized("ActionCancel"), style: .Cancel, handler:nil))
+            self.controller.presentViewController(actionSheet, animated: true, completion: nil)
+        }
+    }
     
-//    public func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
-//        let actionSheet: UIAlertController = UIAlertController(title: nil, message: url.absoluteString, preferredStyle: .ActionSheet)
-//        actionSheet.addAction(UIAlertAction(title: AALocalized("ActionOpenLink"), style: .Default, handler: { action in
-//            self.openUrl(url)
-//        }))
-//        actionSheet.addAction(UIAlertAction(title: AALocalized("ActionCopyLink"), style: .Default, handler: { action in
-//            UIPasteboard.generalPasteboard().string = url.absoluteString
-//            self.controller.alertUser("AlertLinkCopied")
-//        }))
-//        actionSheet.addAction(UIAlertAction(title: AALocalized("ActionCancel"), style: .Cancel, handler:nil))
-//        self.controller.presentViewController(actionSheet, animated: true, completion: nil)
-//    }
-//    
-//    public func attributedLabel(label: TTTAttributedLabel!, didSelectLinkWithURL url: NSURL!) {
-//        openUrl(url)
-//    }
-//    
     public func openUrl(url: NSURL) {
         if url.scheme == "source" {
             let path = url.path!
