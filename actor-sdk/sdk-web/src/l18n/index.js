@@ -13,11 +13,11 @@ import chinese from './zh-CN';
 
 import { addLocaleData } from 'react-intl';
 
-import enLocaleData from 'react-intl/lib/locale-data/en';
-import ruLocaleData from 'react-intl/lib/locale-data/ru';
-import esLocaleData from 'react-intl/lib/locale-data/es';
-import ptLocaleData from 'react-intl/lib/locale-data/pt';
-import zhLocaleData from 'react-intl/lib/locale-data/zh';
+import enLocaleData from 'react-intl/locale-data/en';
+import ruLocaleData from 'react-intl/locale-data/ru';
+import esLocaleData from 'react-intl/locale-data/es';
+import ptLocaleData from 'react-intl/locale-data/pt';
+import zhLocaleData from 'react-intl/locale-data/zh';
 
 addLocaleData(enLocaleData);
 addLocaleData(ruLocaleData);
