@@ -87,6 +87,13 @@ public class PeerConnection implements WebRTCPeerConnection {
         }
     }
 
+    @Override
+    public void removeOwnStream(@NotNull WebRTCMediaStream stream) {
+        if (stream instanceof MediaStream) {
+            peerConnection.removeStream(((MediaStream) stream).getStream());
+        }
+    }
+
     @NotNull
     @Override
     public Promise<WebRTCSessionDescription> setLocalDescription(@NotNull final WebRTCSessionDescription description) {

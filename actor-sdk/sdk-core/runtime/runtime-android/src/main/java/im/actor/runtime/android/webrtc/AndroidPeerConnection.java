@@ -162,6 +162,16 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         });
     }
 
+    @Override
+    public void removeOwnStream(@NotNull final WebRTCMediaStream stream) {
+        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
+            @Override
+            public void run() {
+                peerConnection.removeStream(((AndroidMediaStream) stream).getStream());
+            }
+        });
+    }
+
     @NotNull
     @Override
     public Promise<WebRTCSessionDescription> setLocalDescription(@NotNull final WebRTCSessionDescription description) {

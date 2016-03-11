@@ -45,6 +45,15 @@ public interface WebRTCPeerConnection {
     @ObjectiveCName("addOwnStream:")
     void addOwnStream(@NotNull WebRTCMediaStream stream);
 
+
+    /**
+     * Removing Own Stream
+     *
+     * @param stream removed stream
+     */
+    @ObjectiveCName("removeOwnStream:")
+    void removeOwnStream(@NotNull WebRTCMediaStream stream);
+
     /**
      * Setting Local Description
      *
