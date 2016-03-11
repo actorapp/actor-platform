@@ -59,7 +59,7 @@ class PreferencesModal extends Component {
 
   onAppDetailClick() {
     this.loggerToggleCount++;
-    if (this.loggerToggleCount >= 15) {
+    if (this.loggerToggleCount >= 4) {
       loggerToggle();
       this.loggerToggleCount = 0;
     }
@@ -185,9 +185,9 @@ class PreferencesModal extends Component {
                 {intl.messages['preferencesSecurityTab']}
               </a>
               <footer className="preferences__tabs__footer">
-                <a className="preferences__tabs__tab" onClick={this.onAppDetailClick}>
+                <span onClick={this.onAppDetailClick}>
                   {this.appName} v1.0.123
-                </a>
+                </span>
               </footer>
             </aside>
             <div className="preferences__body">
