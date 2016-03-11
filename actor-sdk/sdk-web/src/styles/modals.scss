@@ -385,6 +385,8 @@
               cursor: default;
               font-size: 12px;
               color: rgba(black, .4);
+
+              @include no-select();
             }
           }
         }
