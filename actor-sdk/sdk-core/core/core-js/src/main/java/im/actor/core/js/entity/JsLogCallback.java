@@ -1,10 +1,14 @@
 package im.actor.core.js.entity;
 
-import org.timepedia.exporter.client.Export;
-import org.timepedia.exporter.client.ExportClosure;
+import com.google.gwt.core.client.JavaScriptObject;
 
-@Export
-@ExportClosure
-public interface JsLogCallback {
-    void log(String tag, String level, String message);
+public class JsLogCallback extends JavaScriptObject {
+
+    protected JsLogCallback() {
+
+    }
+
+    public native void log(String tag, String level, String message)/*-{
+        this(tag, level, message);
+    }-*/;
 }
