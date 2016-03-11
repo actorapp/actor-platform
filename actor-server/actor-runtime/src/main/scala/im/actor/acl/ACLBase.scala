@@ -4,11 +4,12 @@ import java.nio.ByteBuffer
 import java.security.MessageDigest
 
 import akka.actor.ActorSystem
+import im.actor.concurrent.ThreadLocalMD5
 import im.actor.util.ThreadLocalSecureRandom
 
 trait ACLBase {
 
-  def getMDInstance() = MessageDigest.getInstance("MD5")
+  def getMDInstance() = ThreadLocalMD5.current()
 
   def secretKey()(implicit s: ActorSystem) =
     s.settings.config.getString("secret")

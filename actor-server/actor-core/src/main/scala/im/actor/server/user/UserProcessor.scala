@@ -155,9 +155,6 @@ private[user] final class UserProcessor
   protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(system).region
 
-  // For GetApiStruct
-  protected val aclMD = ACLUtils.getMDInstance()
-
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 
   protected val userId = self.path.name.toInt
