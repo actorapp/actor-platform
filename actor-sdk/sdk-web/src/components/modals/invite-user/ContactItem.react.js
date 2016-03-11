@@ -52,12 +52,12 @@ class ContactItem extends Component {
   onChange = () => {
     this.setState(getStateFromStore(this.props));
 
-    setTimeout(() => {
+    setImmediate(() => {
       const { inviteUserState } = this.state;
       if (inviteUserState === AsyncActionStates.SUCCESS || inviteUserState === AsyncActionStates.FAILURE) {
         InviteUserStore.removeChangeListener(this.onChange);
       }
-    }, 0);
+    });
   };
 
   render() {

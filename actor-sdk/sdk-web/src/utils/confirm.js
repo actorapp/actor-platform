@@ -88,7 +88,7 @@ export default function confirm(message, options = {})  {
 
   function cleanup() {
     unmountComponentAtNode(wrapper);
-    setTimeout(() => wrapper.remove(), 0);
+    setImmediate(() => wrapper.remove());
   }
 
   // Unmount component and remove it from DOM
