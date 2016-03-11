@@ -9,6 +9,7 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 let _isOpen = false;
 let _isOutgoing = false;
 let _isMuted = false;
+let _isFloating = false;
 let _id, _members, _peer, _state;
 
 class CallStore extends Store {
@@ -26,6 +27,10 @@ class CallStore extends Store {
 
   isMuted() {
     return _isMuted;
+  }
+
+  isFloating() {
+    return _isFloating;
   }
 
   getId() {
@@ -53,6 +58,7 @@ class CallStore extends Store {
         break;
       case ActionTypes.CALL_MODAL_HIDE:
         _isOpen = false;
+        _isFloating = false;
         this.__emitChange();
         break;
       case ActionTypes.CALL_CHANGED:
@@ -66,6 +72,10 @@ class CallStore extends Store {
         break;
       case ActionTypes.CALL_MUTE_TOGGLE:
         _isMuted = !_isMuted;
+        this.__emitChange();
+        break;
+      case ActionTypes.CALL_FLOAT_TOGGLE:
+        _isFloating = !_isFloating;
         this.__emitChange();
         break;
       case ActionTypes.CALL:

@@ -64,5 +64,9 @@ export default {
   toggleCallMute(callId) {
     ActorClient.toggleCallMute(callId);
     dispatch(ActionTypes.CALL_MUTE_TOGGLE, { callId })
+  },
+  
+  toggleFloating() {
+    dispatch(ActionTypes.CALL_FLOAT_TOGGLE)
   }
 }
