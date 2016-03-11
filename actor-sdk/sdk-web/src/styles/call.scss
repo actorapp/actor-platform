@@ -137,6 +137,10 @@
         &:hover {
           color: $call-button-color-hover
         }
+        
+        &[disabled] {
+          color: rgba(white, .2);
+        }
       }
     }
 
