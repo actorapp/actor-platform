@@ -199,6 +199,7 @@ export const ActionTypes = keymirror({
   CALL_ANSWER: null,
   CALL_END: null,
   CALL_MUTE_TOGGLE: null,
+  CALL_FLOAT_TOGGLE: null,
 
   ARCHIVE_ADD: null,
   ARCHIVE_ADD_SUCCESS: null,
