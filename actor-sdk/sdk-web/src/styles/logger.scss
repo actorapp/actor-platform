@@ -1,8 +1,51 @@
 .logger {
-  overflow-y: scroll;
 
-  &__row {
-    &__container {
+  padding: 0;
+  font-size: 12px;
+  color: $mine-shaft;
+  .scroll-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  &__filter {}
+  &__container {
+    padding: 8px 0;
+    &__row {
+      padding: 2px 8px;
+      line-height: 16px;
+      &:hover {
+        background-color: rgba(black , .05);
+      }
+    }
+  }
+
+  .log-entry {
+    &__tag {
+      font-weight: 500;
+      &:after {
+        content: ': ';
+      }
+    }
+
+    &--info {}
+    &--error {
+      .log-entry__tag {
+        color: $coral;
+      }
+    }
+    &--warning {
+      .log-entry__tag {
+        color: $color-orange;
+      }
+    }
+    &--debug {
+      .log-entry__tag {
+        color: $dark-grey-blue;
+      }
     }
   }
 }
