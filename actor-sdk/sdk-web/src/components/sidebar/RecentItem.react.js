@@ -4,9 +4,8 @@
 
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
-import PeerUtils from '../../utils/PeerUtils';
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
-import { Link } from 'react-router';
+import history from '../../utils/history';
 
 import { AsyncActionStates } from '../../constants/ActorAppConstants';
 
@@ -23,12 +22,16 @@ class RecentItem extends Component {
   };
 
   static defaultProps = {
+    isActive: false,
     archiveState: AsyncActionStates.PENDING
   };
 
-  static contextTypes = {
-    intl: PropTypes.object
-  };
+  constructor(props) {
+    super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+    this.handleOpenContextMenu = this.handleOpenContextMenu.bind(this);
+  }
 
   shouldComponentUpdate(nextProps) {
     return nextProps.dialog !== this.props.dialog ||
@@ -36,7 +39,7 @@ class RecentItem extends Component {
            nextProps.archiveState !== this.props.archiveState;
   }
 
-  onContextMenu = (event) => {
+  handleOpenContextMenu(event) {
     event.preventDefault();
     const { peer } = this.props.dialog.peer;
     const contextPos = {
@@ -44,53 +47,75 @@ class RecentItem extends Component {
       y: event.pageY || event.clientY
     };
     DropdownActionCreators.openRecentContextMenu(contextPos, peer);
-  };
+  }
+
+  handleClick() {
+    const { dialog } = this.props;
+    history.push(`/im/${dialog.peer.peer.key}`);
+  }
+
+  renderCounter() {
+    const { dialog } = this.props;
+    if (dialog.counter === 0) {
+      return null;
+    }
+
+    return (
+      <span className="recent__item__counter">{dialog.counter}</span>
+    );
+  }
+
+  renderArchiveState() {
+    const { archiveState } = this.props;
+    if (archiveState === AsyncActionStates.PENDING) {
+      return null;
+    }
+
+    return (
+      <Stateful
+        currentState={archiveState}
+        processing={
+            <div className="archive archive--in-progress">
+              <i className="icon material-icons spin">autorenew</i>
+            </div>
+          }
+        success={
+            <div className="archive archive--in-progress">
+              <i className="icon material-icons">check</i>
+            </div>
+          }
+        failure={
+            <div className="archive archive--failure">
+              <i className="icon material-icons">warning</i>
+            </div>
+          }
+      />
+    );
+  }
 
   render() {
-    const { dialog, archiveState } = this.props;
-    const toPeer = PeerUtils.peerToString(dialog.peer.peer);
+    const { dialog, isActive } = this.props;
+    const title = escapeWithEmoji(dialog.peer.title);
 
-    const recentClassName = classnames('sidebar__list__item', 'row', {
-      'sidebar__list__item--unread': dialog.counter > 0
+    const recentItemClassName = classnames('recent__item', {
+      'recent__item--active': isActive,
+      'recent__item--unread': dialog.counter !== 0
     });
 
     return (
-      <li onContextMenu={this.onContextMenu}>
-        <Link to={`/im/${toPeer}`} className={recentClassName} activeClassName="sidebar__list__item--active">
-
-          <AvatarItem image={dialog.peer.avatar}
-                      placeholder={dialog.peer.placeholder}
-                      size="tiny"
-                      title={dialog.peer.title}/>
-
-          <div className="title col-xs" dangerouslySetInnerHTML={{ __html: escapeWithEmoji(dialog.peer.title) }}/>
-
-          {
-            dialog.counter > 0
-              ? <span className="counter">{dialog.counter}</span>
-              : null
-          }
-
-          <Stateful
-            currentState={archiveState}
-            processing={
-              <div className="archive archive--in-progress">
-                <i className="icon material-icons spin">autorenew</i>
-              </div>
-            }
-            success={
-              <div className="archive archive--in-progress">
-                <i className="icon material-icons">check</i>
-              </div>
-            }
-            failure={
-              <div className="archive archive--failure">
-                <i className="icon material-icons">warning</i>
-              </div>
-            }
+      <div onContextMenu={this.handleOpenContextMenu} onClick={this.handleClick} className={recentItemClassName}>
+        <div className="recent__item__avatar">
+          <AvatarItem
+            size="tiny"
+            image={dialog.peer.avatar}
+            placeholder={dialog.peer.placeholder}
+            title={dialog.peer.title}
           />
-        </Link>
-      </li>
+        </div>
+        <div className="recent__item__title col-xs" dangerouslySetInnerHTML={{ __html: title }}/>
+        {this.renderCounter()}
+        {this.renderArchiveState()}
+      </div>
     );
   }
 }

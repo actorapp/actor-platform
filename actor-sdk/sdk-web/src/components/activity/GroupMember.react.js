@@ -38,11 +38,6 @@ class GroupMember extends Component {
     };
   }
 
-  componentWillUnmount() {
-    const { peerInfo } = this.props;
-    KickUserStore.resetKickUserState(peerInfo.peer.id);
-  }
-
   onClick = (id) => DialogActionCreators.selectDialogPeerUser(id);
 
   onKick = (gid, uid) => {

@@ -17,7 +17,6 @@
 
 @import 'deactivated';
 @import 'login';
-@import 'sidebar';
 @import 'toolbar';
 
 @import 'messages';
@@ -41,8 +40,6 @@
 @import 'call';
 @import 'tooltip';
 @import 'sticker';
-@import 'components/common/index';
-@import 'components/message_art/index';
 @import 'chat/index';
 @import 'modals/index';
 
@@ -51,3 +48,6 @@
 @import 'logger';
 
 @import 'themes/dark';
+@import 'components/common/index';
+@import 'components/message_art/index';
+@import 'components/sidebar/index';
