@@ -233,10 +233,10 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
 
     item match {
       case p: PushItem ⇒
-        this.resendPushBufferSize += item.size
-
         if (this.resendPushBufferSize > config.maxPushBufferSize)
           clearPushBuffer()
+        else
+          this.resendPushBufferSize += item.size
       case _ ⇒
     }
   }
