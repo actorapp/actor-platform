@@ -1,0 +1,43 @@
+$scrollbar-color: $dusk;
+
+@mixin scrollbar($color) {
+  &::-webkit-scrollbar {
+    width: 12px;
+    background-color: transparent;
+    &:hover {
+      background-color: rgba($color, .02);
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+    }
+  }
+  &::-webkit-scrollbar-button {
+    /* 2 */
+  }
+  &::-webkit-scrollbar-track {
+    /* 3 */
+  }
+  &::-webkit-scrollbar-track-piece {
+    /* 4 */
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba($color, .8);
+    border-left: 4px solid white;
+    border-right: 4px solid white;
+    min-height: 80px;
+    &:hover {
+      background-color: $color;
+      border-left-width: 2px;
+      border-right-width: 2px;
+    }
+    &:active {
+      border-left-width: 4px;
+      border-right-width: 4px;
+    }
+  }
+  &::-webkit-scrollbar-corner {
+    /* 6 */
+  }
+  &::-webkit-resizer {
+    /* 7 */
+  }
+}

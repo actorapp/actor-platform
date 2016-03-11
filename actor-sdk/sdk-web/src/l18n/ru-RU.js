@@ -251,7 +251,8 @@ export default {
         },
         'newDialog': 'создать диалог',
         'favourites': 'Избранное',
-        'addPeople': 'добавить контакт'
+        'addPeople': 'добавить контакт',
+        history: 'История'
       },
       'group': {
         'empty': 'Создайте ваш первый групповой диалог'
@@ -347,10 +348,10 @@ export default {
         favorite: 'Добавить/удалить в избранное'
       },
       recent: {
-        groupList: 'Список групповых диалогов',
-        privateList: 'Список приватных диалогов',
-        addContact: 'Добавить новый контакт',
-        createGroup: 'Создать группу'
+        groupsList: 'Список групповых диалогов',
+        privatesList: 'Список приватных диалогов',
+        groupsCreate: 'Создать группу',
+        privatesCreate: 'Добавить новый контакт'
       },
       quicksearch: 'Быстрый поиск по приложению.'
     },

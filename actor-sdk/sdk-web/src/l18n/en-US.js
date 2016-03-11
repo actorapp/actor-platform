@@ -253,7 +253,8 @@ export default {
         'addPeople': 'add people',
         'favourites': 'Favorites',
         'groups': 'Groups',
-        'privates': 'Direct Messages'
+        'privates': 'Direct Messages',
+        'history': 'History'
       },
       'group': {
         'empty': 'Create your first group conversation'
@@ -352,10 +353,10 @@ export default {
         favorite: 'Toggle favorite'
       },
       recent: {
-        groupList: 'List of group conversations',
-        privateList: 'List of private conversation',
-        addContact: 'Add new contact',
-        createGroup: 'Create group'
+        groupsList: 'List of group conversations',
+        privatesList: 'List of private conversation',
+        groupsCreate: 'Create group',
+        privatesCreate: 'Add new contact'
       },
       quicksearch: 'The fastest way to find something'
     },

@@ -4,12 +4,10 @@
 
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
+import Tooltip from 'rc-tooltip';
 import EventListener from 'fbjs/lib/EventListener';
 import { KeyCodes } from '../../constants/ActorAppConstants';
-
 import QuickSearchActionCreators from '../../actions/QuickSearchActionCreators';
-
-import Tooltip from 'rc-tooltip';
 
 class QuickSearchButton extends Component {
   constructor(props) {
