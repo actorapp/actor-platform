@@ -1,6 +1,6 @@
 package im.actor.server.user
 
-import akka.actor.{ActorSystem, Status}
+import akka.actor.{ ActorSystem, Status }
 import akka.pattern.pipe
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.ApiConversions._
@@ -24,7 +24,7 @@ private[user] trait UserQueriesHandlers {
         userExt.getLocalName(clientUserId, state.id)
     } yield GetApiStructResponse(ApiUser(
       id = userId,
-      accessHash = ACLUtils.userAccessHash(clientAuthId, userId, state.accessSalt, aclMD),
+      accessHash = ACLUtils.userAccessHash(clientAuthId, userId, state.accessSalt),
       name = state.name,
       localName = UserUtils.normalizeLocalName(localName),
       sex = Some(state.sex),
@@ -37,21 +37,7 @@ private[user] trait UserQueriesHandlers {
       external = state.external,
       preferredLanguages = state.preferredLanguages.toVector,
       timeZone = state.timeZone
-    ))) pipeTo context.self
-
-    val replyTo = sender()
-
-    context become {
-      case rsp: GetApiStructResponse =>
-        replyTo ! rsp
-        unstashAll()
-        context become working(state)
-      case fail: Status.Failure =>
-        replyTo ! fail
-        unstashAll()
-        context become working(state)
-      case _ => stash
-    }
+    ))) pipeTo sender()
   }
 
   protected def getContactRecords(state: UserState): Unit =
