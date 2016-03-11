@@ -58,9 +58,9 @@ class QuickSearch extends Component {
   }
 
   setFocus = () => {
-    setTimeout(() => {
+    setImmediate(() => {
       findDOMNode(this.refs.query).focus();
-    }, 0);
+    });
   };
 
   handleClose = () => QuickSearchActionCreators.hide();

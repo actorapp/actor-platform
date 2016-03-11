@@ -51,9 +51,9 @@ class ActivitySection extends Component {
       return null;
     }
 
-    setTimeout(() => {
+    setImmediate(() => {
       window.dispatchEvent(new Event('resize'));
-    }, 0);
+    });
 
     const activityClassName = classnames('activity', {
       'activity--shown': isOpen
