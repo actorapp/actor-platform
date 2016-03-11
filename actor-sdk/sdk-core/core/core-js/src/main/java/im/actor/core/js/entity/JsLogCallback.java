@@ -8,7 +8,7 @@ public class JsLogCallback extends JavaScriptObject {
 
     }
 
-    public native void log(String tag, String level, String message)/*-{
+    public final native void log(String tag, String level, String message)/*-{
         this(tag, level, message);
     }-*/;
 }
