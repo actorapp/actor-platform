@@ -270,6 +270,7 @@ public class PeerConnectionActor extends ModuleActor {
         super.postStop();
 
         if (peerConnection != null) {
+            peerConnection.removeOwnStream(stream);
             peerConnection.close();
             peerConnection = null;
         }
