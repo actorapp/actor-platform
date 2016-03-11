@@ -392,7 +392,7 @@
 					"$(PROJECT_DIR)/Pods/J2ObjC-Framework/Frameworks",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
-				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				J2OBJC_VERSION = 0.9.8.2.1;
@@ -405,7 +405,7 @@
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
@@ -469,7 +469,7 @@
 					"$(PROJECT_DIR)/Pods/J2ObjC-Framework/Frameworks",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
-				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				J2OBJC_VERSION = 0.9.8.2.1;
@@ -481,7 +481,7 @@
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;

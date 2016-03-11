@@ -162,9 +162,9 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
     peerSettings: Option[ApiPeerSettings],
     isJoined:     Boolean
   ) {
-    def canPreConnect(pairPeerSettings: Option[ApiPeerSettings]): Boolean =
-      isJoined ||
-        (peerSettings.map(_.canPreConnect).isDefined && pairPeerSettings.map(_.canPreConnect).isDefined)
+    def canPreConnect(pairDevice: Device): Boolean =
+      (isJoined && pairDevice.isJoined) ||
+        (peerSettings.flatMap(_.canPreConnect).contains(true) && pairDevice.peerSettings.flatMap(_.canPreConnect).contains(true))
   }
 
   object Pair {
@@ -248,9 +248,11 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
         if (isConversationStarted) ApiServiceMessage("Call ended", Some(ApiServiceExPhoneCall(duration)))
         else ApiServiceMessage("Missed call", Some(ApiServiceExPhoneMissed))
 
+      log.debug("Senfing smsg {} {}", smsg, memberUserIds)
+
       (for {
         _ ← if (peer.`type`.isPrivate) FutureExt.ftraverse(memberUserIds.toSeq)(userId ⇒ dialogExt.sendMessage(
-          peer = ApiPeer(ApiPeerType.Private, callerUserId),
+          peer = ApiPeer(ApiPeerType.Private, (memberUserIds - userId).head),
           senderUserId = callerUserId,
           senderAuthId = None,
           senderAuthSid = 0,
@@ -274,6 +276,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
 
     def connect(device: Device, pairDevice: Device): SessionId = {
       val sessionId = Random.nextLong()
+      log.debug(s"Sending NeedOffer to ${device.deviceId} with ${pairDevice.deviceId}")
       eventBusExt.post(
         EventBus.InternalClient(self),
         eventBusId,
@@ -307,6 +310,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
                   val sessionId =
                     sessions.getOrElse(Pair.buildUnsafe(device.deviceId, pairDevice.deviceId), connect(device, pairDevice))
 
+                  log.debug("Sending EnableConnection to {} and {}", device.deviceId, pairDevice.deviceId)
                   eventBusExt.post(
                     EventBus.InternalClient(self),
                     eventBusId,
@@ -366,11 +370,15 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
       case ebMessage: EventBus.Message ⇒
         ApiWebRTCSignaling.parseFrom(ebMessage.message).right foreach {
           case msg: ApiAdvertiseSelf ⇒
+            log.debug("AdvertiseSelf {}", msg)
             for (deviceId ← ebMessage.deviceId) yield {
               val newDevice = Device(deviceId, ebMessage.client, msg.peerSettings, isJoined = deviceId == callerDeviceId)
+              log.debug(s"newDevice ${newDevice.deviceId} ${newDevice.peerSettings}")
               devices.values.view filterNot (_.deviceId == newDevice.deviceId) foreach { pairDevice ⇒
-                if (pairDevice.canPreConnect(msg.peerSettings))
+                if (pairDevice.canPreConnect(newDevice)) {
+                  log.debug(s"canPreConnect is true for device ${pairDevice.deviceId} ${pairDevice.peerSettings}")
                   connect(newDevice, pairDevice)
+                }
               }
               putDevice(deviceId, ebMessage.client, newDevice)
 

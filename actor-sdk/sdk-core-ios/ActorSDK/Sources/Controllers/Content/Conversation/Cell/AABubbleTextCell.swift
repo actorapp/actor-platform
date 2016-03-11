@@ -4,11 +4,10 @@
 
 import Foundation
 import UIKit
-import TTTAttributedLabel
 import YYText
 import YYImage
 
-public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
+public class AABubbleTextCell : AABubbleCell {
     
     // TODO: Better max width calculations
     
@@ -24,45 +23,64 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     static let bubbleFontUnsupported = fontItalic
     static let senderHeight = CGFloat(20)
     
-    let messageText = TTTAttributedLabel(frame: CGRectZero)
-    let statusView = UIImageView();
-    let senderNameLabel = AttributedLabel();
-    var needRelayout = true
-    var isClanchTop:Bool = false
-    var isClanchBottom:Bool = false
+    private let messageText = YYLabel()
+    private let senderNameLabel = YYLabel()
+    private let dateText = YYLabel()
+    private let statusView = UIImageView()
     
-    private let dateText = AttributedLabel()
+    private var needRelayout = true
+    private var isClanchTop:Bool = false
+    private var isClanchBottom:Bool = false
+    
+    
     private var messageState = ACMessageState.UNKNOWN().ordinal()
     private var cellLayout: TextCellLayout!
     
     public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
         
-        senderNameLabel.font = AABubbleTextCell.senderFont
+        messageText.displaysAsynchronously = true
+        messageText.ignoreCommonProperties = true
+        messageText.clearContentsBeforeAsynchronouslyDisplay = false
+        messageText.fadeOnAsynchronouslyDisplay = true
+        messageText.highlightTapAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
+            let attributes = text.attributesAtIndex(range.location, effectiveRange: nil)
+            if let attrs = attributes["YYTextHighlight"] as? YYTextHighlight {
+                if let url = attrs.userInfo!["url"] as? String {
+                    self.openUrl(NSURL(string: url)!)
+                }
+            }
+        }
+        messageText.highlightLongPressAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
+            let attributes = text.attributesAtIndex(range.location, effectiveRange: nil)
+            if let attrs = attributes["YYTextHighlight"] as? YYTextHighlight {
+                if let url = attrs.userInfo!["url"] as? String {
+                    self.urlLongTap(NSURL(string: url)!)
+                }
+            }
+        }
+
         
-        messageText.font = AABubbleTextCell.bubbleFont
-        messageText.lineBreakMode = .ByWordWrapping
-        messageText.numberOfLines = 0
-        messageText.userInteractionEnabled = true
-        messageText.delegate = self
-        messageText.linkAttributes = [kCTForegroundColorAttributeName: appStyle.chatUrlColor,
-            kCTUnderlineStyleAttributeName: NSNumber(bool: false)]
-        messageText.activeLinkAttributes = [kCTForegroundColorAttributeName: appStyle.chatUrlColor,
-            kCTUnderlineStyleAttributeName: NSNumber(bool: false)]
-        messageText.verticalAlignment = TTTAttributedLabelVerticalAlignment.Center
         
+        senderNameLabel.displaysAsynchronously = true
+        senderNameLabel.ignoreCommonProperties = true
+        senderNameLabel.fadeOnAsynchronouslyDisplay = true
+        senderNameLabel.clearContentsBeforeAsynchronouslyDisplay = false
         
+        dateText.displaysAsynchronously = true
+        dateText.clearContentsBeforeAsynchronouslyDisplay = false
+        dateText.fadeOnAsynchronouslyDisplay = true
         dateText.font = AABubbleTextCell.dateFont
         dateText.lineBreakMode = .ByClipping
         dateText.numberOfLines = 1
-        dateText.contentMode = UIViewContentMode.TopLeft
-        dateText.contentAlignment = .Right
+        dateText.textAlignment = .Right
         
         statusView.contentMode = UIViewContentMode.Center
         
         contentView.addSubview(messageText)
         contentView.addSubview(dateText)
         contentView.addSubview(statusView)
+        contentView.addSubview(senderNameLabel)
     }
     
     public required init(coder aDecoder: NSCoder) {
@@ -83,46 +101,23 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             // When not reusing force to relayout view
             needRelayout = true
 
-            // Setting text's font size and color
-            messageText.textColor = self.cellLayout.textColor
-            
-            if self.cellLayout.text != nil {
-
-                // Setting text
-                messageText.text = self.cellLayout.text
-            } else {
-                
-                // Setting attributed text
-                messageText.setText(self.cellLayout.attrText)
-            }
+            // Text Layout
+            messageText.textLayout = self.cellLayout.textLayout
             
             // Setting sender name if needed
             if isGroup && !isOut {
-
-                let user = Actor.getUserWithUid(message.senderId)
-                    
-                let colors = ActorSDK.sharedActor().style.nameColors
-                    
-                if user.isBot() && user.getNameModel().get() == "Bot" {
-                    let group = Actor.getGroupWithGid(self.peer.peerId)
-                    senderNameLabel.text = group.getNameModel().get()
-                    senderNameLabel.textColor = colors[Int(abs(group.getId())) % colors.count]
-                
-                } else {
-                    senderNameLabel.text = user.getNameModel().get()
-                    senderNameLabel.textColor = colors[Int(abs(user.getId())) % colors.count]
-                }
-                
-                contentView.addSubview(senderNameLabel)
+                senderNameLabel.hidden = false
+                senderNameLabel.textLayout = self.cellLayout.senderLayout
             } else {
-                senderNameLabel.removeFromSuperview()
+                senderNameLabel.hidden = true
+                senderNameLabel.textLayout = nil
             }
         }
         
         // Always update bubble insets
         if (isOut) {
             bindBubbleType(.TextOut, isCompact: isClanchBottom)
-            dateText.textColor = appStyle.chatTextDateOutColor
+            // dateText.textColor = appStyle.chatTextDateOutColor
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
@@ -136,7 +131,7 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
                 right: (isClanchBottom ? 4 : 10))
         } else {
             bindBubbleType(.TextIn, isCompact: isClanchBottom)
-            dateText.textColor = appStyle.chatTextDateInColor
+            // dateText.textColor = appStyle.chatTextDateInColor
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
@@ -152,7 +147,7 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
 
         
         // Always update date and state
-        dateText.text = cellLayout.date
+        // dateText.text = cellLayout.date
         messageState = message.messageState.ordinal();
         
         if (isOut) {
@@ -185,6 +180,12 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         }
     }
     
+    public override func prepareForReuse() {
+        super.prepareForReuse()
+        
+//        self.messageText.layer.contents = nil
+    }
+    
     // Menu for Text cell
     
     public override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
@@ -203,23 +204,19 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         UIPasteboard.generalPasteboard().string = (bindedMessage!.content as! ACTextContent).text
     }
     
-    // Url open handling
-    
-    public func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
-        let actionSheet: UIAlertController = UIAlertController(title: nil, message: url.absoluteString, preferredStyle: .ActionSheet)
-        actionSheet.addAction(UIAlertAction(title: AALocalized("ActionOpenLink"), style: .Default, handler: { action in
-            self.openUrl(url)
-        }))
-        actionSheet.addAction(UIAlertAction(title: AALocalized("ActionCopyLink"), style: .Default, handler: { action in
-            UIPasteboard.generalPasteboard().string = url.absoluteString
-            self.controller.alertUser("AlertLinkCopied")
-        }))
-        actionSheet.addAction(UIAlertAction(title: AALocalized("ActionCancel"), style: .Cancel, handler:nil))
-        self.controller.presentViewController(actionSheet, animated: true, completion: nil)
-    }
-    
-    public func attributedLabel(label: TTTAttributedLabel!, didSelectLinkWithURL url: NSURL!) {
-        openUrl(url)
+    public func urlLongTap(url: NSURL) {
+        if url.scheme != "source" && url.scheme == "send" {
+            let actionSheet: UIAlertController = UIAlertController(title: nil, message: url.absoluteString, preferredStyle: .ActionSheet)
+            actionSheet.addAction(UIAlertAction(title: AALocalized("ActionOpenLink"), style: .Default, handler: { action in
+                self.openUrl(url)
+            }))
+            actionSheet.addAction(UIAlertAction(title: AALocalized("ActionCopyLink"), style: .Default, handler: { action in
+                UIPasteboard.generalPasteboard().string = url.absoluteString
+                self.controller.alertUser("AlertLinkCopied")
+            }))
+            actionSheet.addAction(UIAlertAction(title: AALocalized("ActionCancel"), style: .Cancel, handler:nil))
+            self.controller.presentViewController(actionSheet, animated: true, completion: nil)
+        }
     }
     
     public func openUrl(url: NSURL) {
@@ -228,6 +225,8 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             let index = Int(path.substringFromIndex(path.startIndex.advancedBy(1)))!
             let code = self.cellLayout.sources[index]
             self.controller.navigateNext(AACodePreviewController(code: code), removeCurrent: false)
+        } else if url.scheme == "send" {
+            Actor.sendMessageWithPeer(self.peer, withText: url.path!)
         } else {
             ActorSDK.sharedActor().openUrl(url.absoluteString)
         }
@@ -236,40 +235,33 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     // Layouting
     
     public override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+        
         // Convenience
         let insets = fullContentInsets
         let contentWidth = self.contentView.frame.width
+        let textSize = self.cellLayout.textLayout.textBoundingSize
+        let bubbleWidth = round(self.cellLayout.bubbleSize.width)
+        let bubbleHeight = round(self.cellLayout.bubbleSize.height)
         
-        // Measure Text
-        let senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
-        
-        self.messageText.frame = CGRectMake(0, 0, self.cellLayout.textSize.width, self.cellLayout.textSize.height)
-        
-        var textWidth = round(self.cellLayout.textSizeWithPadding.width)
-        let textHeight = round(self.cellLayout.textSizeWithPadding.height)
-        
-        if textWidth < senderNameBounds.width {
-            textWidth = senderNameBounds.width + 5
-        }
-        
+        self.messageText.frame = CGRectMake(0, 0, textSize.width, textSize.height)
+
         // Layout elements
-        let topPadding : CGFloat = self.cellLayout.attrText != nil ? -0.5 : 0
         if (self.isOut) {
-            self.messageText.frame.origin = CGPoint(x: contentWidth - textWidth - insets.right, y: insets.top + topPadding)
-            self.dateText.frame = CGRectMake(contentWidth - insets.right - 70, textHeight + insets.top - 20, 46, 26)
-            self.statusView.frame = CGRectMake(contentWidth - insets.right - 24, textHeight + insets.top - 20, 20, 26)
+            self.messageText.frame.origin = CGPoint(x: contentWidth - bubbleWidth - insets.right, y: insets.top /*+ topPadding*/)
+            self.dateText.frame = CGRectMake(contentWidth - insets.right - 70, bubbleHeight + insets.top - 20, 46, 26)
+            self.statusView.frame = CGRectMake(contentWidth - insets.right - 24, bubbleHeight + insets.top - 20, 20, 26)
             self.statusView.hidden = false
         } else {
-            self.messageText.frame.origin = CGPoint(x: insets.left, y: insets.top + topPadding)
-            self.dateText.frame = CGRectMake(insets.left + textWidth - 47, textHeight + insets.top - 20, 46, 26)
+            self.messageText.frame.origin = CGPoint(x: insets.left, y: insets.top/* + topPadding*/)
+            self.dateText.frame = CGRectMake(insets.left + bubbleWidth - 47, bubbleHeight + insets.top - 20, 46, 26)
             self.statusView.hidden = true
         }
         
         if self.isGroup && !self.isOut {
-            self.senderNameLabel.frame = CGRect(x: insets.left, y: insets.top - 18, width: textWidth, height: 20)
+            self.senderNameLabel.frame = CGRect(x: insets.left, y: insets.top - 18, width: contentWidth, height: 20)
         }
 
-        layoutBubble(textWidth, contentHeight: textHeight)
+        layoutBubble(bubbleWidth, contentHeight: bubbleHeight)
     }
 }
 
@@ -294,6 +286,14 @@ public class TextCellLayout: AACellLayout {
         }
     }
     
+    private class func timeWidth(isOut: Bool) -> CGFloat {
+        if isOut {
+            return 60
+        } else {
+            return 36
+        }
+    }
+    
     private static let textKey = "text"
     private static let unsupportedKey = "unsupported"
     
@@ -301,69 +301,114 @@ public class TextCellLayout: AACellLayout {
     private static let stringInPadding = " " + ("_".repeatString(4));
     private static let parser = ARMarkdownParser(int: ARMarkdownParser_MODE_FULL)
     
-    var text: String?
-    var attrText: NSAttributedString?
-    var textColor: UIColor
+    var text: String
+    var attrText: NSAttributedString
+    var textLayout: YYTextLayout
+    var senderLayout: YYTextLayout?
     
     var isUnsupported: Bool = false
-    var textSizeWithPadding: CGSize
-    var textSize: CGSize
+    var bubbleSize: CGSize
     var sources = [String]()
     
     /**
-        Plain text layout
-    */
-    public init(text: String, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
-        
-        // Setting text
-        self.text = text
-        self.textColor = textColor
-        
-        // Calculating maximum text width
-        let maxTextWidth = TextCellLayout.maxTextWidth(isOut, peer: peer)
-        
-        // Building padded text to make place for date and status checkmark
-        let paddedText = (text + (isOut ? TextCellLayout.stringOutPadding : TextCellLayout.stringInPadding))
-        
-        // Measuring text and padded text heights
-        textSize = UIViewMeasure.measureText(text, width: maxTextWidth, font: AABubbleTextCell.bubbleFont)
-        textSizeWithPadding = UIViewMeasure.measureText(paddedText, width: maxTextWidth, font: AABubbleTextCell.bubbleFont)
-        
-        // Calculating bubble height
-        var height = textSizeWithPadding.height + AABubbleCell.bubbleContentTop + AABubbleCell.bubbleContentBottom
-        
-        if peer.isGroup && !isOut {
-            height += AABubbleTextCell.senderHeight
-        }
-        
-        // Creating layout
-        super.init(height: height, date: date, key: layoutKey)
-    }
-    
-    /**
-        NSAttributedString layout
-    */
-    public init(attributedText: NSAttributedString, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
+     NSAttributedString layout
+     */
+    public init(senderId: Int, text: String, attributedText: NSAttributedString, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
         
         // Setting attributed text
+        self.text = text
         self.attrText = attributedText
-        self.textColor = textColor
         self.isUnsupported = false
         
         // Calculating maximum text width
         let maxTextWidth = TextCellLayout.maxTextWidth(isOut, peer: peer)
+        let timeWidth = TextCellLayout.timeWidth(isOut)
         
-        // Building padded text
-        let paddedText = attributedText.append(isOut ? TextCellLayout.stringOutPadding : TextCellLayout.stringInPadding, font: AABubbleTextCell.bubbleFont)
+        let container = YYTextContainer(size: CGSizeMake(maxTextWidth, CGFloat.max))
+        
+        textLayout = YYTextLayout(container: container, text: attributedText)!
         
         // Measuring text and padded text heights
-        textSize = UIViewMeasure.measureText(attributedText, width: maxTextWidth)
-        textSizeWithPadding = UIViewMeasure.measureText(paddedText, width: maxTextWidth)
+        let textSize = textLayout.textBoundingSize
+        
+        if textLayout.lines.count == 1 {
+            if textLayout.textBoundingSize.width < maxTextWidth - timeWidth {
+                //
+                // <line_0> <date>
+                //
+                bubbleSize = CGSize(width: textSize.width + timeWidth, height: textSize.height)
+            } else {
+                
+                //
+                // <line_________0>
+                //           <date>
+                //
+                bubbleSize = CGSize(width: textSize.width, height: textSize.height + 16)
+            }
+        } else {
+            let maxWidth = textSize.width
+            let lastLine = textLayout.lines.last!.width
+            if lastLine + timeWidth < maxWidth {
+                //
+                // <line_________0>
+                // <line_________1>
+                // ..
+                // <line_n>  <date>
+                //
+                bubbleSize = textSize
+            } else if lastLine + timeWidth < maxTextWidth {
+                //
+                // |------------------|
+                // <line______0>
+                // <line______1>
+                // ..
+                // <line______n> <date>
+                //
+                bubbleSize = CGSize(width: max(lastLine + timeWidth, maxWidth), height: textSize.height)
+            } else {
+                //
+                // <line_________0>
+                // <line_________1>
+                // ..
+                // <line_________n>
+                //           <date>
+                //
+                bubbleSize = CGSize(width: max(timeWidth, maxWidth), height: textSize.height + 16)
+            }
+        }
+        
         
         // Calculating bubble height
-        var height = textSizeWithPadding.height + AABubbleCell.bubbleContentTop + AABubbleCell.bubbleContentBottom
+        var height = bubbleSize.height + AABubbleCell.bubbleContentTop + AABubbleCell.bubbleContentBottom
         
         if peer.isGroup && !isOut {
+            
+            // Getting Name of sender
+            let sender = Actor.getUserWithUid(jint(senderId))
+            let colors = ActorSDK.sharedActor().style.nameColors
+            var senderName: String
+            var color: UIColor
+            if sender.isBot() && sender.getNameModel().get() == "Bot" {
+                senderName = Actor.getGroupWithGid(peer.peerId).getNameModel().get()
+                color = colors[Int(abs(peer.peerId)) % colors.count]
+            } else {
+                senderName = sender.getNameModel().get()
+                color = colors[Int(abs(senderId)) % colors.count]
+            }
+            
+            // Building Layout
+            let attributedSender = NSMutableAttributedString(string: senderName)
+            let range = NSRange(location: 0, length: senderName.length)
+            attributedSender.yy_setFont(AABubbleTextCell.senderFont, range: range)
+            attributedSender.yy_setColor(color, range: range)
+            senderLayout = YYTextLayout(container: container, text: attributedSender)!
+            
+            // Fixing too small width
+            let senderWidth = senderLayout!.textBoundingSize.width
+            if bubbleSize.width < senderWidth + 5 {
+                bubbleSize = CGSize(width: senderWidth, height: bubbleSize.height)
+            }
+            
             height += AABubbleTextCell.senderHeight
         }
         
@@ -374,25 +419,17 @@ public class TextCellLayout: AACellLayout {
     /**
         Formatted text layout. Automatically parse text and detect formatting.
     */
-    public convenience init(formattedText: String, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
+    public convenience init(senderId: Int, formattedText: String, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
         
         // Parsing markdown formatted text
-        let text = TextCellLayout.parser.parse(formattedText, textColor: textColor, fontSize: AABubbleTextCell.fontSize)
+        let parser = TextParser(textColor: textColor, linkColor: ActorSDK.sharedActor().style.chatUrlColor, fontSize: AABubbleTextCell.fontSize)        
+        let text = parser.parse(formattedText)
         
-        // If text is trivial don't use NSAttributedText
-        if text.isTrivial {
-
-            // Creating simple text layout
-            self.init(text: formattedText, textColor: textColor, date: date, isOut: isOut, peer: peer, layoutKey: layoutKey)
-            
-        } else {
-            
-            // Creating attributed text layout
-            self.init(attributedText: text.attributedText, textColor: textColor, date: date, isOut: isOut, peer: peer, layoutKey: layoutKey)
-            
-            // Setting source code references
-            self.sources = text.code
-        }
+        // Creating attributed text layout
+        self.init(senderId: senderId, text: formattedText, attributedText: text.attributedText, date: date, isOut: isOut, peer: peer, layoutKey: layoutKey)
+        
+        // Setting source code references
+        self.sources = text.code
     }
 
     /**
@@ -405,6 +442,7 @@ public class TextCellLayout: AACellLayout {
             
             // Creating generic layout
             self.init(
+                senderId: Int(message.senderId),
                 formattedText: content.text,
                 textColor: message.isOut ? style.chatTextOutColor : style.chatTextInColor,
                 date: Int64(message.date),
@@ -418,6 +456,7 @@ public class TextCellLayout: AACellLayout {
             let unsupportedText = AALocalized("UnsupportedContent")
             
             self.init(
+                senderId: Int(message.senderId),
                 formattedText: "_\(unsupportedText)_",
                 textColor: message.isOut ? style.chatTextOutUnsupportedColor : style.chatTextInUnsupportedColor,
                 date: Int64(message.date),

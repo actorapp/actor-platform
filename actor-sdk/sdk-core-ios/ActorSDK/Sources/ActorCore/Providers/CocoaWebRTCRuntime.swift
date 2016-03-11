@@ -105,6 +105,12 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
         }
     }
     
+    func removeOwnStream(stream: ARWebRTCMediaStream) {
+        if let str = stream as? MediaStream {
+            peerConnection.removeStream(str.stream)
+        }
+    }
+    
     func createAnswer() -> ARPromise {
         return ARPromise(closure: { (resolver) -> () in
             self.peerConnection.createAnswer(RTCMediaConstraints(), didCreate: { (desc, error) -> () in

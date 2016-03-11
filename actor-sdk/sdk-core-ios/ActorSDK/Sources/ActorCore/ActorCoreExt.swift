@@ -4,6 +4,7 @@
 
 import Foundation
 import AVFoundation
+import YYText
 
 public var Actor : ACCocoaMessenger {
     get {
@@ -268,26 +269,42 @@ class AAFileCallback : NSObject, ACFileCallback {
 // Markdown
 //
 
-public class ARMDFormattedText {
-    
-    public let isTrivial: Bool
-    public let attributedText: NSAttributedString
-    public let code: [String]
-    
-    public init(attributedText: NSAttributedString, isTrivial: Bool, code: [String]) {
-        self.attributedText = attributedText
-        self.code = code
-        self.isTrivial = isTrivial
-    }
-}
+//public class ARMDFormattedText {
+//    
+//    public let isTrivial: Bool
+//    public let attributedText: NSAttributedString
+//    public let code: [String]
+//    
+//    public init(attributedText: NSAttributedString, isTrivial: Bool, code: [String]) {
+//        self.attributedText = attributedText
+//        self.code = code
+//        self.isTrivial = isTrivial
+//    }
+//}
 
-public extension ARMarkdownParser {
+public class TextParser {
     
-    public func parse(text: String, textColor: UIColor, fontSize: CGFloat) -> ARMDFormattedText {
+    public let textColor: UIColor
+    public let linkColor: UIColor
+    public let fontSize: CGFloat
+    
+    private let markdownParser = ARMarkdownParser(int: ARMarkdownParser_MODE_FULL)
+    
+    public init(textColor: UIColor, linkColor: UIColor, fontSize: CGFloat) {
+        self.textColor = textColor
+        self.linkColor = linkColor
+        self.fontSize = fontSize
+    }
+    
+    public func parse(text: String) -> ParsedText {
+        let doc = markdownParser.processDocumentWithNSString(text)
         
-        let doc = self.processDocumentWithNSString(text)
         if doc.isTrivial() {
-            return ARMDFormattedText(attributedText: NSAttributedString(string: text), isTrivial: true, code: [])
+            let nAttrText = NSMutableAttributedString(string: text)
+            let range = NSRange(location: 0, length: nAttrText.length)
+            nAttrText.yy_setColor(textColor, range: range)
+            nAttrText.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+            return ParsedText(attributedText: nAttrText, isTrivial: true, code: [])
         }
         
         var sources = [String]()
@@ -316,14 +333,18 @@ public extension ARMarkdownParser {
             }
         }
         
-        nAttrText.appendColor(textColor)
-        
-        return ARMDFormattedText(attributedText: nAttrText, isTrivial: false, code: sources)
+        return ParsedText(attributedText: nAttrText, isTrivial: false, code: sources)
     }
     
     private func buildText(text: ARMDText, fontSize: CGFloat) -> NSAttributedString {
         if let raw = text as? ARMDRawText {
-            return NSAttributedString(string: raw.getRawText(), font: UIFont.textFontOfSize(fontSize))
+            let res = NSMutableAttributedString(string: raw.getRawText())
+            let range = NSRange(location: 0, length: res.length)
+            res.beginEditing()
+            res.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+            res.yy_setColor(textColor, range: range)
+            res.endEditing()
+            return res
         } else if let span = text as? ARMDSpan {
             let res = NSMutableAttributedString()
             res.beginEditing()
@@ -350,12 +371,23 @@ public extension ARMarkdownParser {
             // Parsing url element
             let nsUrl = NSURL(string: url.getUrl())
             if nsUrl != nil {
-                let attributes = [NSLinkAttributeName: nsUrl as! AnyObject,
-                    NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
-                return NSAttributedString(string: url.getUrlTitle(), attributes: attributes)
+                let res = NSMutableAttributedString(string:  url.getUrlTitle())
+                let range = NSRange(location: 0, length: res.length)
+                let highlight = YYTextHighlight()
+                highlight.userInfo = ["url" : url.getUrl()]
+                res.yy_setTextHighlight(highlight, range: range)
+                res.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+                res.yy_setColor(linkColor, range: range)
+                return res
             } else {
                 // Unable to parse: show as text
-                return NSAttributedString(string: url.getUrlTitle(), font: UIFont.textFontOfSize(fontSize))
+                let res = NSMutableAttributedString(string: url.getUrlTitle())
+                let range = NSRange(location: 0, length: res.length)
+                res.beginEditing()
+                res.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+                res.yy_setColor(textColor, range: range)
+                res.endEditing()
+                return res
             }
         } else {
             fatalError("Unsupported text type")
@@ -363,6 +395,128 @@ public extension ARMarkdownParser {
     }
 }
 
+public class ParsedText {
+    
+    public let isTrivial: Bool
+    public let attributedText: NSAttributedString
+    public let code: [String]
+    
+    public init(attributedText: NSAttributedString, isTrivial: Bool, code: [String]) {
+        self.attributedText = attributedText
+        self.code = code
+        self.isTrivial = isTrivial
+    }
+}
+//
+//public extension ARMarkdownParser {
+//    
+//    public func parse(text: String, textColor: UIColor, fontSize: CGFloat) -> ARMDFormattedText {
+//        
+//        let doc = self.processDocumentWithNSString(text)
+//        if doc.isTrivial() {
+//            let nAttrText = NSMutableAttributedString(string: text)
+//            let range = NSRange(location: 0, length: nAttrText.length)
+//            nAttrText.yy_setColor(textColor, range: range)
+//            nAttrText.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+//            return ARMDFormattedText(attributedText: nAttrText, isTrivial: true, code: [])
+//        }
+//        
+//        var sources = [String]()
+//        
+//        let sections: [ARMDSection] = doc.getSections().toSwiftArray()
+//        let nAttrText = NSMutableAttributedString()
+//        var isFirst = true
+//        for s in sections {
+//            if !isFirst {
+//                nAttrText.appendAttributedString(NSAttributedString(string: "\n"))
+//            }
+//            isFirst = false
+//            
+//            if s.getType() == ARMDSection_TYPE_CODE {
+//                let attributes = [NSLinkAttributeName: NSURL(string: "source:///\(sources.count)") as! AnyObject,
+//                    NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
+//                nAttrText.appendAttributedString(NSAttributedString(string: "Open Code", attributes: attributes))
+//                sources.append(s.getCode().getCode())
+//            } else if s.getType() == ARMDSection_TYPE_TEXT {
+//                let child: [ARMDText] = s.getText().toSwiftArray()
+//                for c in child {
+//                    nAttrText.appendAttributedString(buildText(c, fontSize: fontSize))
+//                }
+//            } else {
+//                fatalError("Unsupported section type")
+//            }
+//        }
+//        
+////        let range = NSRange(location: 0, length: nAttrText.length)
+//        
+////        nAttrText.yy_setColor(textColor, range: range)
+////        nAttrText.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+//
+////        nAttrText.enumerateAttributesInRange(range, options:  NSAttributedStringEnumerationOptions.LongestEffectiveRangeNotRequired) { (attrs, range, objBool) -> Void in
+////            var attributeDictionary = NSDictionary(dictionary: attrs)
+////            
+////            for k in attributeDictionary.allKeys {
+////                let v = attributeDictionary.objectForKey(k)
+////                
+////                print("attr: \(k) -> \(v) at \(range)")
+////            }
+////        }
+////        
+//        return ARMDFormattedText(attributedText: nAttrText, isTrivial: false, code: sources)
+//    }
+//    
+//    private func buildText(text: ARMDText, fontSize: CGFloat) -> NSAttributedString {
+//        if let raw = text as? ARMDRawText {
+////            let res = NSMutableAttributedString(string: raw.getRawText())
+////            res.yy_setFont(UIFont.textFontOfSize(fontSize), range: NSRange(location: 0, length: raw.getRawText().length))
+////            return res
+//            return NSAttributedString(string: raw.getRawText(), font: UIFont.textFontOfSize(fontSize))
+//        } else if let span = text as? ARMDSpan {
+//            let res = NSMutableAttributedString()
+//            res.beginEditing()
+//            
+//            // Processing child texts
+//            let child: [ARMDText] = span.getChild().toSwiftArray()
+//            for c in child {
+//                res.appendAttributedString(buildText(c, fontSize: fontSize))
+//            }
+//            
+//            // Setting span elements
+//            if span.getSpanType() == ARMDSpan_TYPE_BOLD {
+//                res.appendFont(UIFont.boldSystemFontOfSize(fontSize))
+//            } else if span.getSpanType() == ARMDSpan_TYPE_ITALIC {
+//                res.appendFont(UIFont.italicSystemFontOfSize(fontSize))
+//            } else {
+//                fatalError("Unsupported span type")
+//            }
+//            
+//            res.endEditing()
+//            return res
+//        } else if let url = text as? ARMDUrl {
+//            
+//            // Parsing url element
+//            let nsUrl = NSURL(string: url.getUrl())
+//            if nsUrl != nil {
+//                let res = NSMutableAttributedString(string:  url.getUrlTitle())
+//                let range = NSRange(location: 0, length: res.length)
+//                let highlight = YYTextHighlight()
+////                res.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+////                res.yy_setTextHighlightRange(range, color: UIColor.redColor(), backgroundColor: nil, tapAction: nil)
+//                // res.yy_setColor(UIColor.greenColor(), range: range)
+//                return res
+////                let attributes = [NSLinkAttributeName: nsUrl as! AnyObject,
+////                    NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
+////                return NSAttributedString(string: url.getUrlTitle(), attributes: attributes)
+//            } else {
+//                // Unable to parse: show as text
+//                return NSAttributedString(string: url.getUrlTitle(), font: UIFont.textFontOfSize(fontSize))
+//            }
+//        } else {
+//            fatalError("Unsupported text type")
+//        }
+//    }
+//}
+//
 //
 // Promises
 //

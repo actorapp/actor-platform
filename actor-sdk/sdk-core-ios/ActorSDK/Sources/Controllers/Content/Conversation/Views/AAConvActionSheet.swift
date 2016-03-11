@@ -84,7 +84,10 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
         UIView.animateWithDuration(0.25, animations: { () -> Void in
             self.sheetView.frame = nextFrame
             self.backgroundView.alpha = 0}) { (bool) -> Void in
-            self.removeFromSuperview()
+                self.delegate = nil
+                self.thumbnailView.dismiss()
+                self.thumbnailView = nil
+                self.removeFromSuperview()
         }
     }
 

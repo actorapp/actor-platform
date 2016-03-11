@@ -14,7 +14,6 @@ import com.google.gwt.user.client.Event;
 import im.actor.core.*;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.ApiDialog;
-import im.actor.core.api.rpc.ResponseDoCall;
 import im.actor.core.api.rpc.ResponseLoadArchived;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.MessageSearchEntity;
@@ -38,13 +37,13 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.js.JsFileSystemProvider;
+import im.actor.runtime.js.JsLogProvider;
 import im.actor.runtime.js.fs.JsBlob;
 import im.actor.runtime.js.fs.JsFile;
 import im.actor.runtime.js.mvvm.JsDisplayListCallback;
 import im.actor.runtime.js.utils.JsPromise;
 import im.actor.runtime.js.utils.JsPromiseExecutor;
 import im.actor.runtime.markdown.MarkdownParser;
-import im.actor.runtime.webrtc.WebRTCIceServer;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
@@ -63,36 +62,16 @@ public class JsFacade implements Exportable {
     private static final int APP_ID = 3;
     private static final String APP_KEY = "278f13e07eee8398b189bced0db2cf66703d1746e2b541d85f5b42b1641aae0e";
 
-    private static final String[] EndpointsProduction = {
-            "wss://front1-ws-mtproto-api-rev2.actor.im/",
-            "wss://front2-ws-mtproto-api-rev2.actor.im/"
-    };
-
-    private static final String[] EndpointsDev1 = {
-            "wss://front1-ws-mtproto-api-rev2-dev1.actor.im/"
-    };
-
     private JsMessenger messenger;
     private JsFileSystemProvider provider;
     private Peer lastVisiblePeer;
 
     @Export
-    public static JsFacade production() {
-        return new JsFacade(EndpointsProduction);
-    }
-
-    @Export
-    public static JsFacade dev1() {
-        return new JsFacade(EndpointsDev1);
-    }
-
-    @Export
     public JsFacade() {
-        this(EndpointsProduction);
+
     }
 
-    @Export
-    public JsFacade(String[] endpoints) {
+    public void init(JsConfig config) {
 
         provider = (JsFileSystemProvider) Storage.getFileSystemRuntime();
 
@@ -131,8 +110,18 @@ public class JsFacade implements Exportable {
         configuration.setDeviceCategory(DeviceCategory.DESKTOP);
 
         // Adding endpoints
-        for (String endpoint : endpoints) {
+        for (String endpoint : config.getEndpoints()) {
             configuration.addEndpoint(endpoint);
+        }
+
+        if (config.getLogHandler() != null) {
+            final JsLogCallback callback = config.getLogHandler();
+            JsLogProvider.setLogCallback(new JsLogProvider.LogCallback() {
+                @Override
+                public void log(String tag, String level, String message) {
+                    callback.log(tag, level, message);
+                }
+            });
         }
 
         messenger = new JsMessenger(configuration.build());

@@ -162,6 +162,16 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         });
     }
 
+    @Override
+    public void removeOwnStream(@NotNull final WebRTCMediaStream stream) {
+        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
+            @Override
+            public void run() {
+                peerConnection.removeStream(((AndroidMediaStream) stream).getStream());
+            }
+        });
+    }
+
     @NotNull
     @Override
     public Promise<WebRTCSessionDescription> setLocalDescription(@NotNull final WebRTCSessionDescription description) {
@@ -317,13 +327,6 @@ public class AndroidPeerConnection implements WebRTCPeerConnection {
         AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
             @Override
             public void run() {
-                for (AndroidMediaStream m : streams.values()) {
-                    if (m.isLocal()) {
-                        peerConnection.removeStream(m.getStream());
-                        m.getStream().dispose();
-                    }
-                }
-                peerConnection.close();
                 peerConnection.dispose();
             }
         });
