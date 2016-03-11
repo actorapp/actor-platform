@@ -94,7 +94,7 @@ class ActorSDK {
 
     if (window.location.hash !== '#/deactivated') {
       if (crosstab.supported) crosstab.broadcast(ACTOR_INIT_EVENT, {});
-      window.messenger = Actor.create(this.endpoints);
+      window.messenger = Actor.create({endpoints: this.endpoints});
     }
 
     const Login = (typeof this.delegate.components.login == 'function') ? this.delegate.components.login : DefaultLogin;
