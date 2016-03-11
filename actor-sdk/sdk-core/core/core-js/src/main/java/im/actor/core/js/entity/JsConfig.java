@@ -8,7 +8,7 @@ public class JsConfig extends JavaScriptObject {
         return this.endpoints;
     }-*/;
 
-    public final native JsLogCallback getLogHandler()/*-{
+    public final native JavaScriptObject getLogHandler()/*-{
         return this.logHandler;
     }-*/;
 
