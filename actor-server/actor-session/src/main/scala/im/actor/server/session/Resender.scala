@@ -169,8 +169,8 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
       messageIds foreach { messageId ⇒
         getResendableItem(messageId) foreach {
           case (item, scheduledResend) ⇒
-            if (item.size <= MaxResendSize)
-              resendBufferSize -= item.size
+            decreaseBufferSize(item)
+
             scheduledResend.cancel()
 
             item match {
