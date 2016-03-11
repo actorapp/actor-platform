@@ -1,11 +1,13 @@
 package im.actor.server
 
+import java.nio.file.{ Files, Paths }
+
 import akka.actor._
 import akka.cluster.Cluster
 import akka.stream.ActorMaterializer
 import com.typesafe.config.{ Config, ConfigException, ConfigFactory }
 import im.actor.config.ActorConfig
-import im.actor.server.activation.ActivationContext
+import im.actor.env.ActorEnv
 import im.actor.server.api.http.{ HttpApi, HttpApiConfig }
 import im.actor.server.api.rpc.RpcApiExtension
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
@@ -75,8 +77,9 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
    * @return
    */
   def start(): ActorServer = {
-    Option(System.getProperty("actor.home")) foreach { home ⇒
-      System.setProperty("config.file", s"$home/conf/server.conf")
+    val configPath = ActorEnv.getAbsolutePath("conf/server.conf")
+    if (Files.exists(configPath)) {
+      System.setProperty("config.file", configPath.toString)
     }
 
     System.setProperty("sun.jnu.encoding", "UTF-8")
