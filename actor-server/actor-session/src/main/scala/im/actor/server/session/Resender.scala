@@ -250,6 +250,8 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   }
 
   private def clearPushBuffer(): Unit = {
+    log.debug("Push buffer exceeded, clearing and sending SeqUpdateTooLong")
+
     pushBuffer foreach {
       case (messageId, (pi: PushItem, resend)) ⇒
         pushBuffer -= messageId
