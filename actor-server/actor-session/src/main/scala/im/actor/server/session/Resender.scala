@@ -215,7 +215,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
       // TODO: cleanup scheduled resends
       context.stop(self)
     case ScheduledResend(messageId, item) ⇒
-      if (pushBuffer contains messageId) {
+      if (getResendableItem(messageId).isDefined) {
         log.debug("Scheduled resend for messageId: {}, item: {}, resending", messageId, item)
 
         decreaseBufferSize(item)
