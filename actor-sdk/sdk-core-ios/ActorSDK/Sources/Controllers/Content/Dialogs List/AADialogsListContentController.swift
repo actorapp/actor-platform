@@ -41,6 +41,9 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
             s.binded { (r:AABindedRows<AADialogCell>) -> () in
                 
                 r.displayList = Actor.getDialogsDisplayList()
+                if r.displayList.getListProcessor() == nil {
+                   r.displayList.setListProcessor(AADialogListProcessor())
+                }
                 
                 r.selectAction = { (dialog: ACDialog) -> Bool in
                     if let d = self.delegate {
