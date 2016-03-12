@@ -178,10 +178,10 @@ public class AABubbleCell: UICollectionViewCell {
         // Speed up animations
         self.layer.speed = 1.5
         
-        self.layer.shouldRasterize = true
-        self.layer.rasterizationScale = UIScreen.mainScreen().scale
-        self.layer.drawsAsynchronously = true
-        self.contentView.layer.drawsAsynchronously = true
+        //self.layer.shouldRasterize = true
+        //self.layer.rasterizationScale = UIScreen.mainScreen().scale
+        //self.layer.drawsAsynchronously = true
+        //self.contentView.layer.drawsAsynchronously = true
     }
     
     public required init(coder aDecoder: NSCoder) {
