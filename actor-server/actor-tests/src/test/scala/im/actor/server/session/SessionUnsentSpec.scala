@@ -69,30 +69,5 @@ final class SessionUnsentSpec extends BaseSessionSpec(
 
       expectNoMsg(6.seconds)
     }
-
-    def e2() = {
-      val watchProbe = TestProbe()
-
-      val authId = createAuthId()
-      val sessionId = Random.nextLong()
-      val session = system.actorOf(Session.props, s"${authId}_$sessionId")
-      watchProbe watch session
-
-      val encodedRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
-        phoneNumber = 75553333333L,
-        appId = 1,
-        apiKey = "apiKey",
-        deviceHash = Random.nextLong.toBinaryString.getBytes,
-        deviceTitle = "Specs Has You",
-        timeZone = None,
-        preferredLanguages = Vector.empty
-      ))).require
-
-      for (_ ← 1 to 100)
-        TestProbe().send(session, handleMessageBox(Random.nextLong(), ProtoRpcRequest(encodedRequest)))
-
-      watchProbe.expectTerminated(session)
-    }
   }
-
 }
