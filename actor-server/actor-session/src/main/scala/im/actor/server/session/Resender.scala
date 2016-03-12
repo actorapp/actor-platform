@@ -224,8 +224,8 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
           case ni: NewSessionItem ⇒ enqueueNewSession(ni)
           case pi: PushItem       ⇒ enqueuePush(pi, Some(messageId))
           case ri: RpcItem        ⇒ enqueueRpc(ri, Some(messageId))
-        } else log.debug("ScheduledResend for messageId: {}, item: {}, ignoring (absent in buffer)", messageId, item)
-      }
+        }
+      } else log.debug("ScheduledResend for messageId: {}, item: {}, ignoring (absent in buffer)", messageId, item)
   }
 
   private def increaseBufferSize(item: ResendableItem): Unit = {
