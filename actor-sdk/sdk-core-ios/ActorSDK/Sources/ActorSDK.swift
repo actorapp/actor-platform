@@ -42,9 +42,8 @@ import DZNWebViewController
 
     /// Server Endpoints
     public var endpoints = [
-        "tls://front1-mtproto-api-rev2.actor.im",
-        "tls://front2-mtproto-api-rev2.actor.im"
-        
+        "tcp://front1-mtproto-api-rev3.actor.im:443",
+        "tcp://front2-mtproto-api-rev3.actor.im:443"
     ] {
         didSet {
             trustedKeys = []
