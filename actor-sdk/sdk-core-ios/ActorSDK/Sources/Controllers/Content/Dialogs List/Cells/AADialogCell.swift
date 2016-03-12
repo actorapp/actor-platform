@@ -34,10 +34,12 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         titleView.font = UIFont.mediumSystemFontOfSize(17)
         titleView.textColor = appStyle.dialogTitleColor
         titleView.displaysAsynchronously = true
+        titleView.clearContentsBeforeAsynchronouslyDisplay = false
         
         messageView.font = UIFont.systemFontOfSize(16)
         messageView.textColor = appStyle.dialogTextColor
         messageView.displaysAsynchronously = true
+        messageView.clearContentsBeforeAsynchronouslyDisplay = false
         
         dateView.font = UIFont.systemFontOfSize(14)
         dateView.textColor = appStyle.dialogDateColor
@@ -130,7 +132,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     }
     
     public override func layoutSubviews() {
-        super.layoutSubviews();
+        super.layoutSubviews()
         
         // We expect height == 76;
         let width = self.contentView.frame.width
