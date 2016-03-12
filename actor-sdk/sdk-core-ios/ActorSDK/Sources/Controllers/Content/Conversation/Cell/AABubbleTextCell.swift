@@ -147,7 +147,7 @@ public class AABubbleTextCell : AABubbleCell {
 
         
         // Always update date and state
-        // dateText.text = cellLayout.date
+        dateText.text = cellLayout.date
         messageState = message.messageState.ordinal();
         
         if (isOut) {
