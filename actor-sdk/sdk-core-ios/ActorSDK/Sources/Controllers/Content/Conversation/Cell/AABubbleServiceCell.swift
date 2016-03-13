@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import YYText
 
 public class AABubbleServiceCell : AABubbleCell {
     

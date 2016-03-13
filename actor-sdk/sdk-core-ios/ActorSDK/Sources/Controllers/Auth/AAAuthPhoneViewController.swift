@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import YYText
 
 class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDelegate {
     

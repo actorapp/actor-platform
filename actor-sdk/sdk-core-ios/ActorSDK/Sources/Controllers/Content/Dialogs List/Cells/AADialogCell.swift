@@ -3,7 +3,6 @@
 //
 
 import UIKit
-import YYText
 
 public class AADialogCell: AATableViewCell, AABindedCell {
     
@@ -46,7 +45,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     
     public let dateView = YYLabel()
     public let statusView = UIImageView()
-    public let counterView = UILabel()
+    public let counterView = YYLabel()
     public let counterViewBg = UIImageView()
     
     // Binding Data
@@ -354,6 +353,26 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             self.messageView.frame = messageViewFrame
         }
         self.messageView.textLayout = render.messageLayout
+        
+        //
+        // Counter
+        //
+        
+        if render.counterLayout != nil {
+            self.counterView.textLayout = render.counterLayout
+            
+            self.counterView.hidden = false
+            self.counterViewBg.hidden = false
+            
+            let textW = render.counterLayout!.textBoundingSize.width
+            let unreadW = max(textW + 8, 18)
+            
+            counterView.frame = CGRectMake(width - 14 - unreadW + (unreadW - textW) / 2, 44, textW, 18)
+            counterViewBg.frame = CGRectMake(width - 14 - unreadW, 44, unreadW, 18)
+        } else {
+            self.counterView.hidden = true
+            self.counterViewBg.hidden = true
+        }
     }
     
     public override func prepareForReuse() {
