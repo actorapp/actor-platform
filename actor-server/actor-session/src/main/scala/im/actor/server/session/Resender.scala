@@ -215,15 +215,17 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
       // TODO: cleanup scheduled resends
       context.stop(self)
     case ScheduledResend(messageId, item) ⇒
-      log.debug("Scheduled resend for messageId: {}, item: {}", messageId, item)
+      if (getResendableItem(messageId).isDefined) {
+        log.debug("Scheduled resend for messageId: {}, item: {}, resending", messageId, item)
 
-      decreaseBufferSize(item)
+        decreaseBufferSize(item)
 
-      item match {
-        case ni: NewSessionItem ⇒ enqueueNewSession(ni)
-        case pi: PushItem       ⇒ enqueuePush(pi, Some(messageId))
-        case ri: RpcItem        ⇒ enqueueRpc(ri, Some(messageId))
-      }
+        item match {
+          case ni: NewSessionItem ⇒ enqueueNewSession(ni)
+          case pi: PushItem       ⇒ enqueuePush(pi, Some(messageId))
+          case ri: RpcItem        ⇒ enqueueRpc(ri, Some(messageId))
+        }
+      } else log.debug("ScheduledResend for messageId: {}, item: {}, ignoring (absent in buffer)", messageId, item)
   }
 
   private def increaseBufferSize(item: ResendableItem): Unit = {
@@ -279,6 +281,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   }
 
   @tailrec final def deliverBuf(): Unit = {
+    log.debug("Delivering buf, queue size: {}, bufferSize: {}, pushBufferSize: {}", mbQueue.size, resendBufferSize, resendPushBufferSize)
     if (isActive && totalDemand > 0 && mbQueue.nonEmpty)
       mbQueue.dequeue() match {
         case (mb, _) ⇒

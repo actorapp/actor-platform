@@ -57,8 +57,7 @@ object UserErrors {
 
 private object ServiceMessages {
   def contactRegistered(userId: Int, name: String)(implicit system: ActorSystem) = {
-    val systemName = ActorConfig.systemName
-    ApiServiceMessage(s"$name joined $systemName", Some(ApiServiceExContactRegistered(userId)))
+    ApiServiceMessage(s"$name joined ${ActorConfig.projectName}", Some(ApiServiceExContactRegistered(userId)))
   }
 }
 
@@ -303,10 +302,12 @@ private[user] trait UserCommandHandlers {
   }
 
   protected def notifyDialogsChanged(user: UserState): Unit = {
-    (for {
-      shortDialogs ← dialogExt.fetchGroupedDialogShorts(user.id)
-      seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, UpdateChatGroupsChanged(shortDialogs), reduceKey = Some("chat_groups_changed"))
-    } yield seqstate) pipeTo sender()
+    deferStashingReply(UserEvents.DialogsChanged(now()), user) { _ ⇒
+      for {
+        shortDialogs ← dialogExt.fetchGroupedDialogShorts(user.id)
+        seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, UpdateChatGroupsChanged(shortDialogs), reduceKey = Some("chat_groups_changed"))
+      } yield seqstate
+    }
   }
 
   protected def addContacts(

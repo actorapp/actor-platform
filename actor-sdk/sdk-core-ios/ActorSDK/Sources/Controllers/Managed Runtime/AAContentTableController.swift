@@ -61,6 +61,10 @@ public class AAContentTableController: AAManagedTableController, AAManagedTableC
     }
     
     // Implement it in subclass
+
+    public func tableWillLoad() {
+        
+    }
     
     public func tableDidLoad() {
         
@@ -91,5 +95,9 @@ public class AAContentTableController: AAManagedTableController, AAManagedTableC
     
     public func managedTableUnbind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
         tableWillUnbind(binder)
+    }
+    
+    public func managedTableWillLoad(controller: AAManagedTableController) {
+        tableWillLoad()
     }
 }

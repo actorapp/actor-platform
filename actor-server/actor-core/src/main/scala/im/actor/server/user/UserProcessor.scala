@@ -197,7 +197,8 @@ private[user] final class UserProcessor
         state.copy(timeZone = timeZone)
       case UserEvents.PreferredLanguagesChanged(_, preferredLanguages) ⇒
         state.copy(preferredLanguages = preferredLanguages)
-      case _: UserEvents.Created ⇒ state
+      case _: UserEvents.Created        ⇒ state
+      case _: UserEvents.DialogsChanged ⇒ state
     }
   }
 

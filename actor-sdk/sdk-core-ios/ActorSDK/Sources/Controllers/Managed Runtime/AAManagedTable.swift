@@ -31,6 +31,18 @@ public class AAManagedTable {
     
     public var sections: [AAManagedSection] = [AAManagedSection]()
     
+    // Fixed Height
+    
+    public var fixedHeight: CGFloat?
+    
+    // Can Edit All rows
+    
+    public var canEditAll: Bool?
+    
+    // Can Delete All rows
+    
+    public var canDeleteAll: Bool?
+    
     // Is Table in editing mode
     
     public var isEditing: Bool {
@@ -316,10 +328,16 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
     }
     
     @objc func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if data.fixedHeight != nil {
+            return data.fixedHeight!
+        }
         return data.sections[indexPath.section].cellHeightForItem(data, indexPath: indexPath)
     }
     
     @objc func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        if data.canEditAll != nil {
+            return data.canEditAll!
+        }
         return (data.sections[indexPath.section].numberOfItems(data) > 0 ? data.sections[indexPath.section].canDelete(data, indexPath: indexPath) : false)
     }
     
@@ -328,6 +346,15 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
     }
     
     @objc func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+        
+        if data.canDeleteAll != nil {
+            if data.canDeleteAll! {
+                return .Delete
+            } else {
+                return .None
+            }
+        }
+        
         return data.sections[indexPath.section].canDelete(data, indexPath: indexPath) ? .Delete : .None
     }
    

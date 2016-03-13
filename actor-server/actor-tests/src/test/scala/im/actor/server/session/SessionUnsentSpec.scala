@@ -11,14 +11,13 @@ import im.actor.server.mtproto.protocol._
 import scala.concurrent.duration._
 import scala.util.Random
 
-final class SessionResendLargeSpec extends BaseSessionSpec(
+final class SessionUnsentSpec extends BaseSessionSpec(
   ActorSpecification.createSystem(ConfigFactory.parseString(
     """
       |session {
       |  resend {
       |    ack-timeout = 5 seconds
-      |    max-resend-size = 1 KiB
-      |    max-buffer-size = 1 KiB
+      |    max-resend-size = 0
       |  }
       |}
     """.stripMargin
@@ -27,7 +26,6 @@ final class SessionResendLargeSpec extends BaseSessionSpec(
   behavior of "Session's ReSender with max-resend-size set to 0 KiB"
 
   it should "resend UnsentResponse instead of the full response" in Sessions().e1
-  it should "kill session on resend buffer overflow" in Sessions().e2
 
   case class Sessions() {
     def e1() = {
@@ -42,7 +40,7 @@ final class SessionResendLargeSpec extends BaseSessionSpec(
         appId = 1,
         apiKey = "apiKey",
         deviceHash = Random.nextLong.toBinaryString.getBytes,
-        deviceTitle = "Specs Has You",
+        deviceTitle = "Spec Has You",
         timeZone = None,
         preferredLanguages = Vector.empty
       ))).require
@@ -71,30 +69,5 @@ final class SessionResendLargeSpec extends BaseSessionSpec(
 
       expectNoMsg(6.seconds)
     }
-
-    def e2() = {
-      val watchProbe = TestProbe()
-
-      val authId = createAuthId()
-      val sessionId = Random.nextLong()
-      val session = system.actorOf(Session.props, s"${authId}_$sessionId")
-      watchProbe watch session
-
-      val encodedRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
-        phoneNumber = 75553333333L,
-        appId = 1,
-        apiKey = "apiKey",
-        deviceHash = Random.nextLong.toBinaryString.getBytes,
-        deviceTitle = "Specs Has You",
-        timeZone = None,
-        preferredLanguages = Vector.empty
-      ))).require
-
-      for (_ ← 1 to 100)
-        TestProbe().send(session, handleMessageBox(Random.nextLong(), ProtoRpcRequest(encodedRequest)))
-
-      watchProbe.expectTerminated(session)
-    }
   }
-
 }

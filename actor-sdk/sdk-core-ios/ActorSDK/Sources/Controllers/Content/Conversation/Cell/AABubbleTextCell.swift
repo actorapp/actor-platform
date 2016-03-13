@@ -117,7 +117,7 @@ public class AABubbleTextCell : AABubbleCell {
         // Always update bubble insets
         if (isOut) {
             bindBubbleType(.TextOut, isCompact: isClanchBottom)
-            // dateText.textColor = appStyle.chatTextDateOutColor
+            dateText.textColor = appStyle.chatTextDateOutColor
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
@@ -131,7 +131,7 @@ public class AABubbleTextCell : AABubbleCell {
                 right: (isClanchBottom ? 4 : 10))
         } else {
             bindBubbleType(.TextIn, isCompact: isClanchBottom)
-            // dateText.textColor = appStyle.chatTextDateInColor
+            dateText.textColor = appStyle.chatTextDateInColor
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
@@ -147,7 +147,7 @@ public class AABubbleTextCell : AABubbleCell {
 
         
         // Always update date and state
-        // dateText.text = cellLayout.date
+        dateText.text = cellLayout.date
         messageState = message.messageState.ordinal();
         
         if (isOut) {
