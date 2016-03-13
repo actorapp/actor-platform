@@ -15,6 +15,9 @@ class AADialogListProcessor: NSObject, ARListProcessor {
             if d.senderId != 0 {
                 uids.insert(d.senderId)
             }
+            if d.relatedUid != 0 {
+                uids.insert(d.relatedUid)
+            }
         }
         
         for i in uids {
