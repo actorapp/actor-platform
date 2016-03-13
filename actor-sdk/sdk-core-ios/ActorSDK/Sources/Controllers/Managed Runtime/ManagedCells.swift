@@ -59,6 +59,7 @@ public extension AAManagedSection {
         let r = AAEditRow()
         regions.append(r)
         closure(r: r)
+        r.initTable(self.table)
         return r
     }
 }
@@ -128,12 +129,14 @@ public extension AAManagedSection {
         regions.append(r)
         r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
         r.section = self
+        r.initTable(self.table)
         return r
     }
 
     public func titled(@noescape closure: (r: AATitledRow) -> ()) -> AATitledRow {
         let r = titled()
         closure(r: r)
+        r.initTable(self.table)
         return r
     }
     
@@ -141,6 +144,7 @@ public extension AAManagedSection {
         let r = titled()
         r.title = AALocalized(title)
         closure(r: r)
+        r.initTable(self.table)
         return r
     }
     
@@ -148,6 +152,7 @@ public extension AAManagedSection {
         let r = titled()
         r.title = AALocalized(title)
         r.subtitle = content
+        r.initTable(self.table)
         return r
     }
 }
@@ -205,6 +210,7 @@ public extension AAManagedSection {
         regions.append(r)
         r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
         r.section = self
+        r.initTable(self.table)
         return r
     }
     
@@ -212,6 +218,7 @@ public extension AAManagedSection {
         let r = text()
         closure(r: r)
         r.bindAction?(r: r)
+        r.initTable(self.table)
         return r
     }
     
@@ -220,6 +227,7 @@ public extension AAManagedSection {
         r.title = AALocalized(title)
         closure(r: r)
         r.bindAction?(r: r)
+        r.initTable(self.table)
         return r
     }
     
@@ -227,6 +235,7 @@ public extension AAManagedSection {
         let r = text()
         r.title = AALocalized(title)
         r.content = content
+        r.initTable(self.table)
         return r
     }
 }
@@ -271,12 +280,14 @@ public extension AAManagedSection {
         let r = AAHeaderRow()
         regions.append(r)
         r.section = self
+        r.initTable(self.table)
         return r
     }
     
     public func header(title: String) -> AAHeaderRow {
         let r = header()
         r.title = title
+        r.initTable(self.table)
         return r
     }
 }
@@ -347,6 +358,7 @@ public extension AAManagedSection {
         regions.append(r)
         r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
         r.section = self
+        r.initTable(self.table)
         return r
     }
     
@@ -354,6 +366,7 @@ public extension AAManagedSection {
         let r = common()
         closure(r: r)
         r.bindAction?(r: r)
+        r.initTable(self.table)
         return r
     }
     
@@ -364,6 +377,7 @@ public extension AAManagedSection {
         r.style = .Action
         closure(r: r)
         r.bindAction?(r: r)
+        r.initTable(self.table)
         return r
     }
     
@@ -373,6 +387,7 @@ public extension AAManagedSection {
         r.style = .Action
         closure(r: r)
         r.bindAction?(r: r)
+        r.initTable(self.table)
         return r
     }
     
@@ -383,6 +398,7 @@ public extension AAManagedSection {
         r.style = .Navigation
         closure(r: r)
         r.bindAction?(r: r)
+        r.initTable(self.table)
         return r
     }
     
@@ -392,6 +408,7 @@ public extension AAManagedSection {
         r.style = .Navigation
         closure(r: r)
         r.bindAction?(r: r)
+        r.initTable(self.table)
         return r
     }
     
@@ -404,6 +421,7 @@ public extension AAManagedSection {
             return false
         }
         r.bindAction?(r: r)
+        r.initTable(self.table)
         return r
     }
     
@@ -415,6 +433,7 @@ public extension AAManagedSection {
         r.style = .Destructive
         closure(r: r)
         r.bindAction?(r: r)
+        r.initTable(self.table)
         return r
     }
     
@@ -430,6 +449,7 @@ public extension AAManagedSection {
             }
             return true
         }
+        r.initTable(self.table)
         return r
     }
     
@@ -438,6 +458,7 @@ public extension AAManagedSection {
         r.content = AALocalized(content)
         r.style = .Hint
         r.bindAction?(r: r)
+        r.initTable(self.table)
         return r
     }
 
@@ -486,6 +507,7 @@ public extension AAManagedSection {
         regions.append(r)
         r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
         r.section = self
+        r.initTable(self.table)
         return r
     }
     
@@ -493,6 +515,7 @@ public extension AAManagedSection {
         let r: AACustomRow<T> = custom()
         closure(r: r)
         r.bindAction?(r: r)
+        r.initTable(self.table)
         return r
     }
 }
@@ -578,6 +601,7 @@ public extension AAManagedSection {
         regions.append(r)
         r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
         r.section = self
+        r.initTable(self.table)
         return r
     }
     
@@ -585,6 +609,7 @@ public extension AAManagedSection {
         let r: AAAvatarRow = addAvatar()
         closure(r: r)
         r.bindAction?(r: r)
+        r.initTable(self.table)
         return r
     }
 }
@@ -601,6 +626,10 @@ public class AAManagedArrayRows<T, R where R: UITableViewCell>: AAManagedRange {
     public var bindData: ((cell: R, item: T) -> ())?
     
     public var data = [T]()
+    
+    public func initTable(table: AAManagedTable) {
+        
+    }
     
     // Number of items
     
@@ -664,12 +693,14 @@ public extension AAManagedSection {
         let r = AAManagedArrayRows<T, R>()
         regions.append(r)
         r.section = self
+        r.initTable(self.table)
         return r
     }
     
     public func arrays<T, R where R: UITableViewCell>(@noescape closure: (r: AAManagedArrayRows<T,R>) -> ()) -> AAManagedArrayRows<T, R> {
         let res: AAManagedArrayRows<T, R> = addArrays()
         closure(r: res)
+        res.initTable(self.table)
         return res
     }
 }
@@ -683,6 +714,10 @@ public class AAManagedRow: NSObject, AAManagedRange {
     
     public var section: AAManagedSection?
     public var indexPath: NSIndexPath?
+    
+    public func initTable(table: AAManagedTable) {
+        
+    }
     
     // Number of items
     
