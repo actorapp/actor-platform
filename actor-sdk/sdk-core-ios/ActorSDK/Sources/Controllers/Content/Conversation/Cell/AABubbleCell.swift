@@ -89,7 +89,7 @@ public class AABubbleCell: UICollectionViewCell {
     // MARK: Public vars
     
     // Views
-    public let avatarView = AAAvatarView(frameSize: 39)
+    public let avatarView = AAAvatarView()
     public var avatarAdded: Bool = false
     
     public let bubble = UIImageView()
@@ -238,11 +238,11 @@ public class AABubbleCell: UICollectionViewCell {
                     let group = Actor.getGroupWithGid(self.peer.peerId)
                     let avatar: ACAvatar? = group.getAvatarModel().get()
                     let name = group.getNameModel().get()
-                    avatarView.bind(name, id: user.getId(), avatar: avatar)
+                    avatarView.bind(name, id: Int(user.getId()), avatar: avatar)
                 } else {
                     let avatar: ACAvatar? = user.getAvatarModel().get()
                     let name = user.getNameModel().get()
-                    avatarView.bind(name, id: user.getId(), avatar: avatar)
+                    avatarView.bind(name, id: Int(user.getId()), avatar: avatar)
                 }
                 if !avatarAdded {
                     contentView.addSubview(avatarView)
@@ -372,7 +372,7 @@ public class AABubbleCell: UICollectionViewCell {
     }
     
     func layoutAvatar() {
-        let avatarSize = CGFloat(self.avatarView.frameSize)
+        let avatarSize = CGFloat(39)
         avatarView.frame = CGRect(x: 5 + (AADevice.isiPad ? 16 : 0), y: self.contentView.frame.size.height - avatarSize - 2 - bubbleInsets.bottom, width: avatarSize, height: avatarSize)
     }
     

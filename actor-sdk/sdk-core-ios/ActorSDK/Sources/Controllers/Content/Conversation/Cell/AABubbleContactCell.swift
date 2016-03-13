@@ -8,7 +8,7 @@ import MessageUI
 
 public class AABubbleContactCell: AABubbleCell, ABNewPersonViewControllerDelegate, MFMailComposeViewControllerDelegate, UINavigationControllerDelegate {
     
-    private let avatar = AAAvatarView(frameSize: 44)
+    private let avatar = AAAvatarView()
     private let name = UILabel()
     private let contact = UILabel()
     private var bindedRecords = [String]()

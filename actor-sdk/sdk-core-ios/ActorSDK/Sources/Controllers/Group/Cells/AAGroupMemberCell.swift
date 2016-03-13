@@ -10,7 +10,7 @@ public class AAGroupMemberCell: AATableViewCell {
     
     public var nameLabel = UILabel()
     public var onlineLabel = UILabel()
-    public var avatarView = AAAvatarView(frameSize: 40, type: .Rounded)
+    public var avatarView = AAAvatarView()
     public var adminLabel = UILabel()
     
     // Binder
@@ -54,7 +54,7 @@ public class AAGroupMemberCell: AATableViewCell {
         // Bind name and avatar
         let name = user.getNameModel().get()
         nameLabel.text = name
-        avatarView.bind(name, id: user.getId(), avatar: user.getAvatarModel().get())
+        avatarView.bind(name, id: Int(user.getId()), avatar: user.getAvatarModel().get())
         
         // Bind admin flag
         adminLabel.hidden = !isAdmin
@@ -87,7 +87,7 @@ public class AAGroupMemberCell: AATableViewCell {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
-        let userAvatarViewFrameSize: CGFloat = CGFloat(avatarView.frameSize)
+        let userAvatarViewFrameSize: CGFloat = CGFloat(40)
         avatarView.frame = CGRect(x: 14.0, y: (contentView.bounds.size.height - userAvatarViewFrameSize) / 2.0, width: userAvatarViewFrameSize, height: userAvatarViewFrameSize)
         
         var w: CGFloat = contentView.bounds.size.width - 65.0 - 8.0
