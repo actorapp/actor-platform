@@ -56,6 +56,11 @@ public class AAManagedTableController: AAViewController {
         tableView.backgroundColor = style == .Plain ? appStyle.vcBgColor : appStyle.vcBackyardColor
         view.backgroundColor = tableView.backgroundColor
         
+        // Useful for making table view with fixed row height
+        if let d = managedTableDelegate {
+            d.managedTableWillLoad(self)
+        }
+        
         managedTable = AAManagedTable(style: style, tableView: tableView, controller: self)
         view.addSubview(tableView)
         
@@ -144,6 +149,7 @@ public class AAManagedTableController: AAViewController {
 }
 
 public protocol AAManagedTableControllerDelegate {
+    func managedTableWillLoad(controller: AAManagedTableController)
     func managedTableLoad(controller: AAManagedTableController, table: AAManagedTable)
     func managedTableBind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder)
     func managedTableUnbind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder)
