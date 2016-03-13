@@ -141,7 +141,9 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         
         avatarView.frame = CGRectMake(padding, padding, 48, 48)
         
-        titleView.frame = CGRectMake(leftPadding, 16, width - leftPadding - /*paddingRight*/(padding + 50), 21)
+        UIView.performWithoutAnimation {
+            self.titleView.frame = CGRectMake(leftPadding, 16, width - leftPadding - /*paddingRight*/(padding + 50), 21)
+        }
         
         var messagePadding:CGFloat = 0
         if (!self.statusView.hidden) {
@@ -159,7 +161,9 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             unreadPadding = unreadW
         }
 
-        messageView.frame = CGRectMake(leftPadding+messagePadding, 44, width - leftPadding - /*paddingRight*/padding - messagePadding - unreadPadding, 18)
+        UIView.performWithoutAnimation {
+            self.messageView.frame = CGRectMake(leftPadding+messagePadding, 44, width - leftPadding - /*paddingRight*/padding - messagePadding - unreadPadding, 18)
+        }
         
         dateView.frame = CGRectMake(width - /*width*/60 - /*paddingRight*/padding , 18, 60, 18)
     }

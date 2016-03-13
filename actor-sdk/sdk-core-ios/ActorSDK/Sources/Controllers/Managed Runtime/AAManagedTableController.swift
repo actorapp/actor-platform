@@ -89,10 +89,14 @@ public class AAManagedTableController: AAViewController {
             if !isBinded {
                 // Binding rows
                 m.bind(binder)
+                isBinded = true
             }
             
             // Passing event to table
             m.controllerViewWillAppear(animated)
+            
+            // Reloading data
+            tableView.reloadData()
         }
     }
     
