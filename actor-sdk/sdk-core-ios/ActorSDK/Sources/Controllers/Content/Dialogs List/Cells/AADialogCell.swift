@@ -39,7 +39,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
 
     private var cellRenderer: AABackgroundCellRenderer<AADialogCellConfig, AADialogCellLayout>!
     
-    public let avatarView = AAAvatarView(frameSize: 48)
+    public let avatarView = AAAvatarView()
     public let titleView = YYLabel()
     public let messageView = YYLabel()
     
@@ -111,7 +111,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         //
         // Avatar View
         //
-        avatarView.bind(item.dialogTitle, id: item.peer.peerId, avatar: item.dialogAvatar)
+        avatarView.bind(item.dialogTitle, id: Int(item.peer.peerId), avatar: item.dialogAvatar)
         
         
         // Forcing Async Rendering.

@@ -56,6 +56,7 @@ FOUNDATION_EXPORT const unsigned char ActorSDKVersionString[];
 
 #import "YYText.h"
 #import "YYDispatchQueuePool.h"
+#import "YYAsyncLayer.h"
 
 // WebRTC
 

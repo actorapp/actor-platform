@@ -13,7 +13,7 @@ public class AADialogSearchCell: AATableViewCell, AABindedSearchCell {
         return 76
     }
     
-    private let avatarView: AAAvatarView = AAAvatarView(frameSize: 48, type: .Rounded)
+    private let avatarView: AAAvatarView = AAAvatarView()
     private let titleView: UILabel = UILabel()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -32,7 +32,7 @@ public class AADialogSearchCell: AATableViewCell, AABindedSearchCell {
     }
     
     public func bind(item: ACSearchEntity, search: String?) {
-        avatarView.bind(item.title, id: item.peer.peerId, avatar: item.avatar)
+        avatarView.bind(item.title, id: Int(item.peer.peerId), avatar: item.avatar)
         titleView.text = item.title
     }
     

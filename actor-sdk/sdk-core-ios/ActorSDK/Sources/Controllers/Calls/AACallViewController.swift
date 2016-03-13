@@ -9,7 +9,7 @@ public class AACallViewController: AAViewController {
     public let binder = AABinder()
     public let callId: jlong
     public let call: ACCallVM
-    public let senderAvatar: AAAvatarView = AAAvatarView(frameSize: 120, type: .Rounded)
+    public let senderAvatar: AAAvatarView = AAAvatarView()
     public let peerTitle = UILabel()
     public let callState = UILabel()
     
@@ -216,7 +216,7 @@ public class AACallViewController: AAViewController {
                 self.peerTitle.text = value
             })
             binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar!) -> () in
-                self.senderAvatar.bind(user.getNameModel().get(), id: user.getId(), avatar: value)
+                self.senderAvatar.bind(user.getNameModel().get(), id: Int(user.getId()), avatar: value)
             })
         } else if (call.peer.peerType.toNSEnum() == ACPeerType_Enum.GROUP) {
             let group = Actor.getGroupWithGid(call.peer.peerId)
@@ -224,7 +224,7 @@ public class AACallViewController: AAViewController {
                 self.peerTitle.text = value
             })
             binder.bind(group.getAvatarModel(), closure: { (value: ACAvatar!) -> () in
-                self.senderAvatar.bind(group.getNameModel().get(), id: group.getId(), avatar: value)
+                self.senderAvatar.bind(group.getNameModel().get(), id: Int(group.getId()), avatar: value)
             })
         }
         
