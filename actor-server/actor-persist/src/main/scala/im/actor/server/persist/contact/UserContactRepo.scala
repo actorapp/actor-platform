@@ -76,7 +76,7 @@ object UserContactRepo {
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId).map(_.contactUserId).result
 
   def findContactIdsActive(ownerUserId: Int) =
-    byOwnerUserIdNotDeleted(ownerUserId).map(_.contactUserId).result
+    byOwnerUserIdNotDeleted(ownerUserId).map(_.contactUserId).distinct.result
 
   def updateName(ownerUserId: Int, contactUserId: Int, name: Option[String]): FixedSqlAction[Int, NoStream, Write] = {
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId).map(_.name).update(name)
