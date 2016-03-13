@@ -91,7 +91,7 @@ public class SequenceActor extends ModuleActor {
 
     @Deprecated
     private void onExecuteAfter(ExecuteAfter after) {
-        if (after.getSeq() <= this.seq) {
+        if (after.getSeq() <= this.finishedSeq) {
             after.getRunnable().run();
         } else {
             pendingRunnables.add(after);
