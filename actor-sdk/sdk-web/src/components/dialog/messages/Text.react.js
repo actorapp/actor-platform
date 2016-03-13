@@ -24,6 +24,7 @@ class Text extends Component {
   };
 
   componentDidMount() {
+    /*
     requestAnimationFrame(() => {
       const node = findDOMNode(this);
       const codeBlocks = node.getElementsByTagName('pre');
@@ -32,6 +33,7 @@ class Text extends Component {
         hljs.highlightBlock(codeBlock.firstChild);
       }
     });
+    */
   }
 
   render() {
