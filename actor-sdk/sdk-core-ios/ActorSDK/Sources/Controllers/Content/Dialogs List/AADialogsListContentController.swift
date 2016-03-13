@@ -13,6 +13,8 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
     
     public init() {
         super.init(style: .Plain)
+        
+        unbindOnDissapear = true
     }
 
     public required init(coder aDecoder: NSCoder) {
