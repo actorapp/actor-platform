@@ -294,7 +294,7 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate {
             
             let font = UIFont.systemFontOfSize(r)
             var rect = CGRectMake(0, 0, r * 2, r * 2)
-            rect.origin.y = round(CGFloat(r * 2 * 40 / 100) - font.pointSize / 2);
+            rect.origin.y = round(CGFloat(r * 2 * 47 / 100) - font.pointSize / 2);
             
             let style : NSMutableParagraphStyle = NSParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
             style.alignment = NSTextAlignment.Center
