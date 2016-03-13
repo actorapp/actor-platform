@@ -4,16 +4,12 @@
 
 import Foundation
 
+private let documentsFolder = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0].asNS.stringByDeletingLastPathComponent
+
 // Public methods for working with files
 class CocoaFiles {
     class func pathFromDescriptor(path: String) -> String {
-        var documentsFolders = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
-        if (documentsFolders.count > 0) {
-            let appPath = documentsFolders[0].asNS.stringByDeletingLastPathComponent
-            return appPath + path
-        } else {
-            fatalError("Unable to load Application path")
-        }
+        return documentsFolder + path
     }
 }
 
@@ -141,15 +137,18 @@ class CocoaOutputFile : NSObject, AROutputFile {
             srcBuffer++;
         }
         
+        NSLog("Write to file \(fileOffset)")
         fileHandle.seekToFileOffset(UInt64(fileOffset));
         fileHandle.writeData(toWrite)
-        
+        NSLog("Write to file \(fileOffset): end")
         return true;
     }
     
     func close() -> Bool {
+        NSLog("Close file")
         self.fileHandle.synchronizeFile()
         self.fileHandle.closeFile()
+        NSLog("Close file end")
         return true;
     }
 }

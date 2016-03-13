@@ -72,13 +72,14 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         dateView.fadeOnAsynchronouslyDisplay = false
         dateView.clearContentsBeforeAsynchronouslyDisplay = false
         
-        statusView.contentMode = .Center
+        counterView.displaysAsynchronously = true
+        counterView.ignoreCommonProperties = true
+        counterView.fadeOnAsynchronouslyDisplay = false
+        counterView.clearContentsBeforeAsynchronouslyDisplay = false
 
         counterViewBg.image = AADialogCell.counterBgImage
         
-        counterView.font = UIFont.systemFontOfSize(14)
-        counterView.textColor = appStyle.dialogCounterColor
-        counterView.textAlignment = .Center
+        statusView.contentMode = .Center
         
         self.contentView.addSubview(avatarView)
         self.contentView.addSubview(titleView)
@@ -118,11 +119,9 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         if !titleView.displaysAsynchronously {
             titleView.displaysAsynchronously = true
         }
+        
         if !messageView.displaysAsynchronously {
             messageView.displaysAsynchronously = true
-        }
-        if !dateView.displaysAsynchronously {
-            dateView.displaysAsynchronously = true
         }
 
         
@@ -142,26 +141,6 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             self.counterView.hidden = true
             self.counterViewBg.hidden = true
         }
-        
-        
-//        //
-//        // Counter View
-//        //
-//        if (item.unreadCount != 0) {
-//            self.counterView.text = "\(item.unreadCount)"
-//            if counterView.hidden {
-//                setNeedsLayout()
-//            }
-//            self.counterView.hidden = false
-//            self.counterViewBg.hidden = false
-//        } else {
-//            if !counterView.hidden {
-//                setNeedsLayout()
-//            }
-//            self.counterView.hidden = true
-//            self.counterViewBg.hidden = true
-//        }
-        
         
         //
         // Message State
@@ -248,8 +227,6 @@ public class AADialogCell: AATableViewCell, AABindedCell {
                 titleView.clearContentsBeforeAsynchronouslyDisplay = false
                 messageView.displaysAsynchronously = false
                 messageView.clearContentsBeforeAsynchronouslyDisplay = false
-                dateView.displaysAsynchronously = false
-                dateView.clearContentsBeforeAsynchronouslyDisplay = false
             }
         }
     }
