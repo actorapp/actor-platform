@@ -3,7 +3,6 @@
 //
 
 import UIKit
-import YYText
 
 public class AADialogCell: AATableViewCell, AABindedCell {
     

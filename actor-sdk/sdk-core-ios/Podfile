@@ -24,7 +24,6 @@ target 'ActorApp' do
     pod 'Neon'
     pod 'ElegantPresentations'
     pod 'YYImage', '0.9.3'
-    pod 'YYText'
     pod 'YYCategories'
     pod 'DZNWebViewController'
 
@@ -63,7 +62,6 @@ target 'ActorSDK' do
     pod 'JDStatusBarNotification'
     pod 'ElegantPresentations'
     pod 'YYImage', '0.9.3'
-    pod 'YYText'
     pod 'YYCategories'
     pod 'DZNWebViewController'
 

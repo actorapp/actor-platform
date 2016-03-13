@@ -11,6 +11,58 @@
 		06129AA91C8394700099286B /* AAAudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06129AA81C8394700099286B /* AAAudioManager.swift */; };
 		06129AAB1C83B80B0099286B /* AAAudioRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06129AAA1C83B80A0099286B /* AAAudioRouter.swift */; };
 		0618509E1C9582DD00C522D5 /* AABackgroundCellRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618509D1C9582DD00C522D5 /* AABackgroundCellRenderer.swift */; };
+		061850A01C95CA2600C522D5 /* CocoaDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618509F1C95CA2600C522D5 /* CocoaDispatcher.swift */; };
+		061850DA1C95CBF000C522D5 /* YYTextContainerView.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850A51C95CBF000C522D5 /* YYTextContainerView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850DB1C95CBF000C522D5 /* YYTextContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850A61C95CBF000C522D5 /* YYTextContainerView.m */; };
+		061850DC1C95CBF000C522D5 /* YYTextDebugOption.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850A71C95CBF000C522D5 /* YYTextDebugOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850DD1C95CBF000C522D5 /* YYTextDebugOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850A81C95CBF000C522D5 /* YYTextDebugOption.m */; };
+		061850DE1C95CBF000C522D5 /* YYTextEffectWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850A91C95CBF000C522D5 /* YYTextEffectWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850DF1C95CBF000C522D5 /* YYTextEffectWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850AA1C95CBF000C522D5 /* YYTextEffectWindow.m */; };
+		061850E01C95CBF000C522D5 /* YYTextInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850AB1C95CBF000C522D5 /* YYTextInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850E11C95CBF000C522D5 /* YYTextInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850AC1C95CBF000C522D5 /* YYTextInput.m */; };
+		061850E21C95CBF000C522D5 /* YYTextKeyboardManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850AD1C95CBF000C522D5 /* YYTextKeyboardManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850E31C95CBF000C522D5 /* YYTextKeyboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850AE1C95CBF000C522D5 /* YYTextKeyboardManager.m */; };
+		061850E41C95CBF000C522D5 /* YYTextLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850AF1C95CBF000C522D5 /* YYTextLayout.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850E51C95CBF000C522D5 /* YYTextLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850B01C95CBF000C522D5 /* YYTextLayout.m */; };
+		061850E61C95CBF000C522D5 /* YYTextLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850B11C95CBF000C522D5 /* YYTextLine.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850E71C95CBF000C522D5 /* YYTextLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850B21C95CBF000C522D5 /* YYTextLine.m */; };
+		061850E81C95CBF000C522D5 /* YYTextMagnifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850B31C95CBF000C522D5 /* YYTextMagnifier.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850E91C95CBF000C522D5 /* YYTextMagnifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850B41C95CBF000C522D5 /* YYTextMagnifier.m */; };
+		061850EA1C95CBF000C522D5 /* YYTextSelectionView.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850B51C95CBF000C522D5 /* YYTextSelectionView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850EB1C95CBF000C522D5 /* YYTextSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850B61C95CBF000C522D5 /* YYTextSelectionView.m */; };
+		061850EC1C95CBF000C522D5 /* YYTextArchiver.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850B81C95CBF000C522D5 /* YYTextArchiver.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850ED1C95CBF000C522D5 /* YYTextArchiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850B91C95CBF000C522D5 /* YYTextArchiver.m */; };
+		061850EE1C95CBF000C522D5 /* YYTextAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850BA1C95CBF000C522D5 /* YYTextAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850EF1C95CBF000C522D5 /* YYTextAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850BB1C95CBF000C522D5 /* YYTextAttribute.m */; };
+		061850F01C95CBF000C522D5 /* YYTextParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850BC1C95CBF000C522D5 /* YYTextParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850F11C95CBF000C522D5 /* YYTextParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850BD1C95CBF000C522D5 /* YYTextParser.m */; };
+		061850F21C95CBF000C522D5 /* YYTextRubyAnnotation.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850BE1C95CBF000C522D5 /* YYTextRubyAnnotation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850F31C95CBF000C522D5 /* YYTextRubyAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850BF1C95CBF000C522D5 /* YYTextRubyAnnotation.m */; };
+		061850F41C95CBF000C522D5 /* YYTextRunDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850C01C95CBF000C522D5 /* YYTextRunDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850F51C95CBF000C522D5 /* YYTextRunDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850C11C95CBF000C522D5 /* YYTextRunDelegate.m */; };
+		061850F61C95CBF000C522D5 /* NSAttributedString+YYText.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850C31C95CBF000C522D5 /* NSAttributedString+YYText.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850F71C95CBF000C522D5 /* NSAttributedString+YYText.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850C41C95CBF000C522D5 /* NSAttributedString+YYText.m */; };
+		061850F81C95CBF000C522D5 /* NSParagraphStyle+YYText.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850C51C95CBF000C522D5 /* NSParagraphStyle+YYText.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850F91C95CBF000C522D5 /* NSParagraphStyle+YYText.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850C61C95CBF000C522D5 /* NSParagraphStyle+YYText.m */; };
+		061850FA1C95CBF000C522D5 /* UIPasteboard+YYText.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850C71C95CBF000C522D5 /* UIPasteboard+YYText.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850FB1C95CBF000C522D5 /* UIPasteboard+YYText.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850C81C95CBF000C522D5 /* UIPasteboard+YYText.m */; };
+		061850FC1C95CBF000C522D5 /* UIView+YYText.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850C91C95CBF000C522D5 /* UIView+YYText.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850FD1C95CBF000C522D5 /* UIView+YYText.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850CA1C95CBF000C522D5 /* UIView+YYText.m */; };
+		061850FE1C95CBF000C522D5 /* YYTextAsyncLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850CB1C95CBF000C522D5 /* YYTextAsyncLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061850FF1C95CBF000C522D5 /* YYTextAsyncLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850CC1C95CBF000C522D5 /* YYTextAsyncLayer.m */; };
+		061851001C95CBF000C522D5 /* YYTextTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850CD1C95CBF000C522D5 /* YYTextTransaction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061851011C95CBF000C522D5 /* YYTextTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850CE1C95CBF000C522D5 /* YYTextTransaction.m */; };
+		061851021C95CBF000C522D5 /* YYTextUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850CF1C95CBF000C522D5 /* YYTextUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061851031C95CBF000C522D5 /* YYTextUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850D01C95CBF000C522D5 /* YYTextUtilities.m */; };
+		061851041C95CBF000C522D5 /* YYTextWeakProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850D11C95CBF000C522D5 /* YYTextWeakProxy.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061851051C95CBF000C522D5 /* YYTextWeakProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850D21C95CBF000C522D5 /* YYTextWeakProxy.m */; };
+		061851061C95CBF000C522D5 /* YYDispatchQueuePool.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850D31C95CBF000C522D5 /* YYDispatchQueuePool.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061851071C95CBF000C522D5 /* YYDispatchQueuePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850D41C95CBF000C522D5 /* YYDispatchQueuePool.m */; };
+		061851081C95CBF000C522D5 /* YYLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850D51C95CBF000C522D5 /* YYLabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		061851091C95CBF000C522D5 /* YYLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850D61C95CBF000C522D5 /* YYLabel.m */; };
+		0618510A1C95CBF000C522D5 /* YYText.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850D71C95CBF000C522D5 /* YYText.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0618510B1C95CBF000C522D5 /* YYTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 061850D81C95CBF000C522D5 /* YYTextView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0618510C1C95CBF000C522D5 /* YYTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 061850D91C95CBF000C522D5 /* YYTextView.m */; };
 		06230F411BC95BD200A4807B /* RMPhoneFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 06230F3F1BC95BD200A4807B /* RMPhoneFormat.m */; };
 		06230F421BC95BD200A4807B /* RMPhoneFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 06230F401BC95BD200A4807B /* RMPhoneFormat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06230F451BC95C0E00A4807B /* ABPhoneFieldCodes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 06230F431BC95C0E00A4807B /* ABPhoneFieldCodes.txt */; };
@@ -314,6 +366,58 @@
 		06129AA81C8394700099286B /* AAAudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAudioManager.swift; sourceTree = "<group>"; };
 		06129AAA1C83B80A0099286B /* AAAudioRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAudioRouter.swift; sourceTree = "<group>"; };
 		0618509D1C9582DD00C522D5 /* AABackgroundCellRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABackgroundCellRenderer.swift; sourceTree = "<group>"; };
+		0618509F1C95CA2600C522D5 /* CocoaDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaDispatcher.swift; sourceTree = "<group>"; };
+		061850A51C95CBF000C522D5 /* YYTextContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextContainerView.h; sourceTree = "<group>"; };
+		061850A61C95CBF000C522D5 /* YYTextContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextContainerView.m; sourceTree = "<group>"; };
+		061850A71C95CBF000C522D5 /* YYTextDebugOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextDebugOption.h; sourceTree = "<group>"; };
+		061850A81C95CBF000C522D5 /* YYTextDebugOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextDebugOption.m; sourceTree = "<group>"; };
+		061850A91C95CBF000C522D5 /* YYTextEffectWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextEffectWindow.h; sourceTree = "<group>"; };
+		061850AA1C95CBF000C522D5 /* YYTextEffectWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextEffectWindow.m; sourceTree = "<group>"; };
+		061850AB1C95CBF000C522D5 /* YYTextInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextInput.h; sourceTree = "<group>"; };
+		061850AC1C95CBF000C522D5 /* YYTextInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextInput.m; sourceTree = "<group>"; };
+		061850AD1C95CBF000C522D5 /* YYTextKeyboardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextKeyboardManager.h; sourceTree = "<group>"; };
+		061850AE1C95CBF000C522D5 /* YYTextKeyboardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextKeyboardManager.m; sourceTree = "<group>"; };
+		061850AF1C95CBF000C522D5 /* YYTextLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextLayout.h; sourceTree = "<group>"; };
+		061850B01C95CBF000C522D5 /* YYTextLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextLayout.m; sourceTree = "<group>"; };
+		061850B11C95CBF000C522D5 /* YYTextLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextLine.h; sourceTree = "<group>"; };
+		061850B21C95CBF000C522D5 /* YYTextLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextLine.m; sourceTree = "<group>"; };
+		061850B31C95CBF000C522D5 /* YYTextMagnifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextMagnifier.h; sourceTree = "<group>"; };
+		061850B41C95CBF000C522D5 /* YYTextMagnifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextMagnifier.m; sourceTree = "<group>"; };
+		061850B51C95CBF000C522D5 /* YYTextSelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextSelectionView.h; sourceTree = "<group>"; };
+		061850B61C95CBF000C522D5 /* YYTextSelectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextSelectionView.m; sourceTree = "<group>"; };
+		061850B81C95CBF000C522D5 /* YYTextArchiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextArchiver.h; sourceTree = "<group>"; };
+		061850B91C95CBF000C522D5 /* YYTextArchiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextArchiver.m; sourceTree = "<group>"; };
+		061850BA1C95CBF000C522D5 /* YYTextAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextAttribute.h; sourceTree = "<group>"; };
+		061850BB1C95CBF000C522D5 /* YYTextAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextAttribute.m; sourceTree = "<group>"; };
+		061850BC1C95CBF000C522D5 /* YYTextParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextParser.h; sourceTree = "<group>"; };
+		061850BD1C95CBF000C522D5 /* YYTextParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextParser.m; sourceTree = "<group>"; };
+		061850BE1C95CBF000C522D5 /* YYTextRubyAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextRubyAnnotation.h; sourceTree = "<group>"; };
+		061850BF1C95CBF000C522D5 /* YYTextRubyAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextRubyAnnotation.m; sourceTree = "<group>"; };
+		061850C01C95CBF000C522D5 /* YYTextRunDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextRunDelegate.h; sourceTree = "<group>"; };
+		061850C11C95CBF000C522D5 /* YYTextRunDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextRunDelegate.m; sourceTree = "<group>"; };
+		061850C31C95CBF000C522D5 /* NSAttributedString+YYText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+YYText.h"; sourceTree = "<group>"; };
+		061850C41C95CBF000C522D5 /* NSAttributedString+YYText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+YYText.m"; sourceTree = "<group>"; };
+		061850C51C95CBF000C522D5 /* NSParagraphStyle+YYText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSParagraphStyle+YYText.h"; sourceTree = "<group>"; };
+		061850C61C95CBF000C522D5 /* NSParagraphStyle+YYText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSParagraphStyle+YYText.m"; sourceTree = "<group>"; };
+		061850C71C95CBF000C522D5 /* UIPasteboard+YYText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIPasteboard+YYText.h"; sourceTree = "<group>"; };
+		061850C81C95CBF000C522D5 /* UIPasteboard+YYText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIPasteboard+YYText.m"; sourceTree = "<group>"; };
+		061850C91C95CBF000C522D5 /* UIView+YYText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+YYText.h"; sourceTree = "<group>"; };
+		061850CA1C95CBF000C522D5 /* UIView+YYText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+YYText.m"; sourceTree = "<group>"; };
+		061850CB1C95CBF000C522D5 /* YYTextAsyncLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextAsyncLayer.h; sourceTree = "<group>"; };
+		061850CC1C95CBF000C522D5 /* YYTextAsyncLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextAsyncLayer.m; sourceTree = "<group>"; };
+		061850CD1C95CBF000C522D5 /* YYTextTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextTransaction.h; sourceTree = "<group>"; };
+		061850CE1C95CBF000C522D5 /* YYTextTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextTransaction.m; sourceTree = "<group>"; };
+		061850CF1C95CBF000C522D5 /* YYTextUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextUtilities.h; sourceTree = "<group>"; };
+		061850D01C95CBF000C522D5 /* YYTextUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextUtilities.m; sourceTree = "<group>"; };
+		061850D11C95CBF000C522D5 /* YYTextWeakProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextWeakProxy.h; sourceTree = "<group>"; };
+		061850D21C95CBF000C522D5 /* YYTextWeakProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextWeakProxy.m; sourceTree = "<group>"; };
+		061850D31C95CBF000C522D5 /* YYDispatchQueuePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYDispatchQueuePool.h; sourceTree = "<group>"; };
+		061850D41C95CBF000C522D5 /* YYDispatchQueuePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYDispatchQueuePool.m; sourceTree = "<group>"; };
+		061850D51C95CBF000C522D5 /* YYLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYLabel.h; sourceTree = "<group>"; };
+		061850D61C95CBF000C522D5 /* YYLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYLabel.m; sourceTree = "<group>"; };
+		061850D71C95CBF000C522D5 /* YYText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYText.h; sourceTree = "<group>"; };
+		061850D81C95CBF000C522D5 /* YYTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextView.h; sourceTree = "<group>"; };
+		061850D91C95CBF000C522D5 /* YYTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextView.m; sourceTree = "<group>"; };
 		06230F3F1BC95BD200A4807B /* RMPhoneFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMPhoneFormat.m; sourceTree = "<group>"; };
 		06230F401BC95BD200A4807B /* RMPhoneFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMPhoneFormat.h; sourceTree = "<group>"; };
 		06230F431BC95C0E00A4807B /* ABPhoneFieldCodes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ABPhoneFieldCodes.txt; sourceTree = "<group>"; };
@@ -646,6 +750,89 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		061850A31C95CBF000C522D5 /* YYKit */ = {
+			isa = PBXGroup;
+			children = (
+				061850A41C95CBF000C522D5 /* Component */,
+				061850B71C95CBF000C522D5 /* String */,
+				061850C21C95CBF000C522D5 /* Utility */,
+				061850D31C95CBF000C522D5 /* YYDispatchQueuePool.h */,
+				061850D41C95CBF000C522D5 /* YYDispatchQueuePool.m */,
+				061850D51C95CBF000C522D5 /* YYLabel.h */,
+				061850D61C95CBF000C522D5 /* YYLabel.m */,
+				061850D71C95CBF000C522D5 /* YYText.h */,
+				061850D81C95CBF000C522D5 /* YYTextView.h */,
+				061850D91C95CBF000C522D5 /* YYTextView.m */,
+			);
+			name = YYKit;
+			path = Libs/YYKit;
+			sourceTree = "<group>";
+		};
+		061850A41C95CBF000C522D5 /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				061850A51C95CBF000C522D5 /* YYTextContainerView.h */,
+				061850A61C95CBF000C522D5 /* YYTextContainerView.m */,
+				061850A71C95CBF000C522D5 /* YYTextDebugOption.h */,
+				061850A81C95CBF000C522D5 /* YYTextDebugOption.m */,
+				061850A91C95CBF000C522D5 /* YYTextEffectWindow.h */,
+				061850AA1C95CBF000C522D5 /* YYTextEffectWindow.m */,
+				061850AB1C95CBF000C522D5 /* YYTextInput.h */,
+				061850AC1C95CBF000C522D5 /* YYTextInput.m */,
+				061850AD1C95CBF000C522D5 /* YYTextKeyboardManager.h */,
+				061850AE1C95CBF000C522D5 /* YYTextKeyboardManager.m */,
+				061850AF1C95CBF000C522D5 /* YYTextLayout.h */,
+				061850B01C95CBF000C522D5 /* YYTextLayout.m */,
+				061850B11C95CBF000C522D5 /* YYTextLine.h */,
+				061850B21C95CBF000C522D5 /* YYTextLine.m */,
+				061850B31C95CBF000C522D5 /* YYTextMagnifier.h */,
+				061850B41C95CBF000C522D5 /* YYTextMagnifier.m */,
+				061850B51C95CBF000C522D5 /* YYTextSelectionView.h */,
+				061850B61C95CBF000C522D5 /* YYTextSelectionView.m */,
+			);
+			path = Component;
+			sourceTree = "<group>";
+		};
+		061850B71C95CBF000C522D5 /* String */ = {
+			isa = PBXGroup;
+			children = (
+				061850B81C95CBF000C522D5 /* YYTextArchiver.h */,
+				061850B91C95CBF000C522D5 /* YYTextArchiver.m */,
+				061850BA1C95CBF000C522D5 /* YYTextAttribute.h */,
+				061850BB1C95CBF000C522D5 /* YYTextAttribute.m */,
+				061850BC1C95CBF000C522D5 /* YYTextParser.h */,
+				061850BD1C95CBF000C522D5 /* YYTextParser.m */,
+				061850BE1C95CBF000C522D5 /* YYTextRubyAnnotation.h */,
+				061850BF1C95CBF000C522D5 /* YYTextRubyAnnotation.m */,
+				061850C01C95CBF000C522D5 /* YYTextRunDelegate.h */,
+				061850C11C95CBF000C522D5 /* YYTextRunDelegate.m */,
+			);
+			path = String;
+			sourceTree = "<group>";
+		};
+		061850C21C95CBF000C522D5 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				061850C31C95CBF000C522D5 /* NSAttributedString+YYText.h */,
+				061850C41C95CBF000C522D5 /* NSAttributedString+YYText.m */,
+				061850C51C95CBF000C522D5 /* NSParagraphStyle+YYText.h */,
+				061850C61C95CBF000C522D5 /* NSParagraphStyle+YYText.m */,
+				061850C71C95CBF000C522D5 /* UIPasteboard+YYText.h */,
+				061850C81C95CBF000C522D5 /* UIPasteboard+YYText.m */,
+				061850C91C95CBF000C522D5 /* UIView+YYText.h */,
+				061850CA1C95CBF000C522D5 /* UIView+YYText.m */,
+				061850CB1C95CBF000C522D5 /* YYTextAsyncLayer.h */,
+				061850CC1C95CBF000C522D5 /* YYTextAsyncLayer.m */,
+				061850CD1C95CBF000C522D5 /* YYTextTransaction.h */,
+				061850CE1C95CBF000C522D5 /* YYTextTransaction.m */,
+				061850CF1C95CBF000C522D5 /* YYTextUtilities.h */,
+				061850D01C95CBF000C522D5 /* YYTextUtilities.m */,
+				061850D11C95CBF000C522D5 /* YYTextWeakProxy.h */,
+				061850D21C95CBF000C522D5 /* YYTextWeakProxy.m */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
 		065975081BC7C4F300B8C7DF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -793,6 +980,7 @@
 				066A51861BC4C383000E606E /* CocoaStorageRuntime.swift */,
 				065A06B51C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift */,
 				06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */,
+				0618509F1C95CA2600C522D5 /* CocoaDispatcher.swift */,
 				066A51871BC4C383000E606E /* iOSNotificationProvider.swift */,
 				066A51881BC4C383000E606E /* iOSPhoneBookProvider.swift */,
 				06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */,
@@ -1207,6 +1395,7 @@
 		06E322CB1C69392F00D66F53 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				061850A31C95CBF000C522D5 /* YYKit */,
 				15D35F0A1C20182900E3717A /* AudioRecorder */,
 				06E3230D1C6942C400D66F53 /* WebRTC.h */,
 				06E323101C694C1D00D66F53 /* WebRTCExt.swift */,
@@ -1552,39 +1741,64 @@
 				066A51811BC4C373000E606E /* FMDatabaseQueue.h in Headers */,
 				066A517A1BC4C373000E606E /* FMDatabase.h in Headers */,
 				069CF4CC1BCB909A00C66E12 /* CLBackspaceDetectingTextField.h in Headers */,
+				061850F21C95CBF000C522D5 /* YYTextRubyAnnotation.h in Headers */,
 				066A50D61BC4AE63000E606E /* ActorSDK.h in Headers */,
+				061850E01C95CBF000C522D5 /* YYTextInput.h in Headers */,
 				15D35F621C20187E00E3717A /* AAModernConversationAudioPlayer.h in Headers */,
 				066A517C1BC4C373000E606E /* FMDatabase+Private.h in Headers */,
 				15D35F5B1C20187E00E3717A /* AAAudioPlayer.h in Headers */,
 				152AA8B11C2989270030DEEE /* SLKTypingIndicatorView.h in Headers */,
 				152AA8A81C2989270030DEEE /* SLKTextInputbar.h in Headers */,
+				061850E81C95CBF000C522D5 /* YYTextMagnifier.h in Headers */,
+				061850DE1C95CBF000C522D5 /* YYTextEffectWindow.h in Headers */,
 				066A52731BC5101A000E606E /* ABPhoneField.h in Headers */,
+				061850FA1C95CBF000C522D5 /* UIPasteboard+YYText.h in Headers */,
+				061850E61C95CBF000C522D5 /* YYTextLine.h in Headers */,
+				061850F61C95CBF000C522D5 /* NSAttributedString+YYText.h in Headers */,
 				152AA8AA1C2989270030DEEE /* SLKTextView.h in Headers */,
 				152AA8B01C2989270030DEEE /* SLKTypingIndicatorProtocol.h in Headers */,
 				152AA8AC1C2989270030DEEE /* SLKTextView+SLKAdditions.h in Headers */,
 				152AA8AE1C2989270030DEEE /* SLKTextViewController.h in Headers */,
 				152AA8B31C2989270030DEEE /* SLKUIConstants.h in Headers */,
 				152AA8B61C2989270030DEEE /* UIScrollView+SLKAdditions.h in Headers */,
+				061850DA1C95CBF000C522D5 /* YYTextContainerView.h in Headers */,
 				BED5A2111C48413C0045FDB0 /* NYTPhotoCaptionViewLayoutWidthHinting.h in Headers */,
 				BED5A2121C48413C0045FDB0 /* NYTPhotoContainer.h in Headers */,
+				061850EE1C95CBF000C522D5 /* YYTextAttribute.h in Headers */,
+				061851081C95CBF000C522D5 /* YYLabel.h in Headers */,
 				BED5A2131C48413C0045FDB0 /* NYTPhotosViewControllerDataSource.h in Headers */,
+				061851041C95CBF000C522D5 /* YYTextWeakProxy.h in Headers */,
 				15D35F681C20187E00E3717A /* AAModernViewInlineMediaContext.h in Headers */,
 				152AA8B81C2989270030DEEE /* UIView+SLKAdditions.h in Headers */,
+				061850F41C95CBF000C522D5 /* YYTextRunDelegate.h in Headers */,
 				BED5A1FE1C48396A0045FDB0 /* NYTPhotoViewController.h in Headers */,
+				061850EC1C95CBF000C522D5 /* YYTextArchiver.h in Headers */,
+				061850E41C95CBF000C522D5 /* YYTextLayout.h in Headers */,
+				061850F01C95CBF000C522D5 /* YYTextParser.h in Headers */,
 				BED5A1F81C48396A0045FDB0 /* NYTPhotosViewController.h in Headers */,
+				061851001C95CBF000C522D5 /* YYTextTransaction.h in Headers */,
 				15D35F641C20187E00E3717A /* AAModernConversationAudioPlayerContext.h in Headers */,
+				061851021C95CBF000C522D5 /* YYTextUtilities.h in Headers */,
+				0618510A1C95CBF000C522D5 /* YYText.h in Headers */,
 				BED5A2071C4839790045FDB0 /* NYTPhoto.h in Headers */,
 				15D35F571C20187E00E3717A /* AAAudioRecorder.h in Headers */,
 				15F89F071C211FED00776ACD /* opus_defines.h in Headers */,
+				061850E21C95CBF000C522D5 /* YYTextKeyboardManager.h in Headers */,
 				15D35F341C20187200E3717A /* opusfile.h in Headers */,
 				15D35F661C20187E00E3717A /* NSObject+TGLock.h in Headers */,
+				061850EA1C95CBF000C522D5 /* YYTextSelectionView.h in Headers */,
+				061850FC1C95CBF000C522D5 /* UIView+YYText.h in Headers */,
 				15D35F281C20186200E3717A /* os_types.h in Headers */,
 				15D35F191C20185500E3717A /* opus_header.h in Headers */,
+				061850DC1C95CBF000C522D5 /* YYTextDebugOption.h in Headers */,
 				15F89F081C211FED00776ACD /* opus_multistream.h in Headers */,
 				15D35F1F1C20185500E3717A /* wav_io.h in Headers */,
 				15D35F171C20185500E3717A /* diag_range.h in Headers */,
 				15D35F5F1C20187E00E3717A /* AAOpusAudioPlayerAU.h in Headers */,
 				15D35F551C20187E00E3717A /* AAAlertView.h in Headers */,
+				0618510B1C95CBF000C522D5 /* YYTextView.h in Headers */,
+				061850F81C95CBF000C522D5 /* NSParagraphStyle+YYText.h in Headers */,
+				061850FE1C95CBF000C522D5 /* YYTextAsyncLayer.h in Headers */,
 				15D35F5D1C20187E00E3717A /* AANativeAudioPlayer.h in Headers */,
 				15D35F271C20186200E3717A /* ogg.h in Headers */,
 				15D35F321C20187200E3717A /* internal.h in Headers */,
@@ -1592,6 +1806,7 @@
 				15D35F591C20187E00E3717A /* AATimer.h in Headers */,
 				15D35F531C20187E00E3717A /* AAOpusAudioRecorder.h in Headers */,
 				15D35F611C20187E00E3717A /* AAAudioBuffer.h in Headers */,
+				061851061C95CBF000C522D5 /* YYDispatchQueuePool.h in Headers */,
 				15D35F6A1C20187E00E3717A /* AATimerTarget.h in Headers */,
 				15F89F0A1C211FED00776ACD /* opus.h in Headers */,
 				15D35F511C20187E00E3717A /* ASQueue.h in Headers */,
@@ -1753,14 +1968,18 @@
 				066A52F81BC52B13000E606E /* AAWallpapperSettingsCell.swift in Sources */,
 				BEFE68D51C4657360001F2D6 /* AAThumbnailCollectionCell.swift in Sources */,
 				066A51591BC4C14A000E606E /* AASwiftlyLRU.swift in Sources */,
+				061850F11C95CBF000C522D5 /* YYTextParser.m in Sources */,
 				BED5A1FB1C48396A0045FDB0 /* NYTPhotoTransitionAnimator.m in Sources */,
 				15D35F161C20185500E3717A /* diag_range.c in Sources */,
+				061850E11C95CBF000C522D5 /* YYTextInput.m in Sources */,
 				066A525E1BC503BB000E606E /* ActorApplicationDelegate.swift in Sources */,
+				061850F31C95CBF000C522D5 /* YYTextRubyAnnotation.m in Sources */,
 				BED5A1F91C48396A0045FDB0 /* NYTPhotosViewController.m in Sources */,
 				066A53101BC53317000E606E /* AAWallpapperPreviewController.swift in Sources */,
 				152AA8B91C2989270030DEEE /* UIView+SLKAdditions.m in Sources */,
 				066A52F21BC52B02000E606E /* AASettingsPrivacyViewController.swift in Sources */,
 				15D35F561C20187E00E3717A /* AAAlertView.m in Sources */,
+				061850DB1C95CBF000C522D5 /* YYTextContainerView.m in Sources */,
 				15D35F301C20187200E3717A /* info.c in Sources */,
 				066A532E1BC53406000E606E /* AABubbleBaseFileCell.swift in Sources */,
 				066A514A1BC4BCE0000E606E /* Dispatch.swift in Sources */,
@@ -1770,6 +1989,7 @@
 				066A53301BC53406000E606E /* AABubbleDocumentCell.swift in Sources */,
 				066A52FD1BC52FA8000E606E /* AAComposeController.swift in Sources */,
 				066A52351BC4EEBA000E606E /* AATextCell.swift in Sources */,
+				061850A01C95CA2600C522D5 /* CocoaDispatcher.swift in Sources */,
 				066A51461BC4BBC3000E606E /* Fonts.swift in Sources */,
 				066A52271BC4EEAC000E606E /* AAContentTableController.swift in Sources */,
 				066A51411BC4BB5C000E606E /* AssosiatedObject.swift in Sources */,
@@ -1778,10 +1998,13 @@
 				15D35F691C20187E00E3717A /* AAModernViewInlineMediaContext.m in Sources */,
 				066A52251BC4EEAC000E606E /* ManagedBindedCells.swift in Sources */,
 				15D35F601C20187E00E3717A /* AAOpusAudioPlayerAU.mm in Sources */,
+				061850EB1C95CBF000C522D5 /* YYTextSelectionView.m in Sources */,
 				15D35F1C1C20185500E3717A /* picture.c in Sources */,
 				066A532B1BC53406000E606E /* AABubbleCell.swift in Sources */,
+				061850E91C95CBF000C522D5 /* YYTextMagnifier.m in Sources */,
 				06E323151C6A7AC000D66F53 /* AACallViewController.swift in Sources */,
 				066A52C71BC521EA000E606E /* AAEditTextController.swift in Sources */,
+				061850FD1C95CBF000C522D5 /* UIView+YYText.m in Sources */,
 				153F6B5D1C2B3AC500C0B960 /* AABubbleStickerCell.swift in Sources */,
 				15D35F1E1C20185500E3717A /* wav_io.c in Sources */,
 				065974A51BC621F100B8C7DF /* AAAuthNavigationController.swift in Sources */,
@@ -1790,6 +2013,7 @@
 				066A518E1BC4C383000E606E /* iOSNotificationProvider.swift in Sources */,
 				06E7B2541C139B6F0090660C /* AABubbleContactCell.swift in Sources */,
 				066A52CC1BC521FA000E606E /* AADialogsListContentController.swift in Sources */,
+				061850E31C95CBF000C522D5 /* YYTextKeyboardManager.m in Sources */,
 				066A52571BC4EF61000E606E /* AACollectionViewController.swift in Sources */,
 				066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */,
 				15D35F631C20187E00E3717A /* AAModernConversationAudioPlayer.m in Sources */,
@@ -1805,17 +2029,21 @@
 				152AA8A91C2989270030DEEE /* SLKTextInputbar.m in Sources */,
 				BED5A1F31C48396A0045FDB0 /* NYTPhotoDismissalInteractionController.m in Sources */,
 				066A53071BC53183000E606E /* AARecentViewController.swift in Sources */,
+				061850EF1C95CBF000C522D5 /* YYTextAttribute.m in Sources */,
 				06230F411BC95BD200A4807B /* RMPhoneFormat.m in Sources */,
 				BE4DBE6C1C5723BE00A31894 /* AttributedLabel.swift in Sources */,
 				066A52361BC4EEBA000E606E /* AATitledCell.swift in Sources */,
 				066A52431BC4EECD000E606E /* AATableViewSeparator.swift in Sources */,
+				061851011C95CBF000C522D5 /* YYTextTransaction.m in Sources */,
 				066A52341BC4EEBA000E606E /* AACommonCell.swift in Sources */,
 				15D35F311C20187200E3717A /* internal.c in Sources */,
+				061850F91C95CBF000C522D5 /* NSParagraphStyle+YYText.m in Sources */,
 				066A52DF1BC5241F000E606E /* AAWebActionController.swift in Sources */,
 				066A51221BC4B55C000E606E /* AADevice.swift in Sources */,
 				066A532D1BC53406000E606E /* AABubbleServiceCell.swift in Sources */,
 				065974A71BC62B3600B8C7DF /* ViewExtensions.swift in Sources */,
 				066A52F11BC52B02000E606E /* AASettingsNotificationsViewController.swift in Sources */,
+				061850FF1C95CBF000C522D5 /* YYTextAsyncLayer.m in Sources */,
 				065A06B61C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift in Sources */,
 				15D35F5A1C20187E00E3717A /* AATimer.m in Sources */,
 				066A52381BC4EEBA000E606E /* AAHeaderCell.swift in Sources */,
@@ -1823,22 +2051,28 @@
 				066A524B1BC4EF49000E606E /* AAViewController.swift in Sources */,
 				066A51521BC4BE34000E606E /* Logs.swift in Sources */,
 				066A52D71BC52378000E606E /* AAContactsListContentControllerDelegate.swift in Sources */,
+				061850FB1C95CBF000C522D5 /* UIPasteboard+YYText.m in Sources */,
 				066A51241BC4B56D000E606E /* Colors.swift in Sources */,
 				066A53171BC533DD000E606E /* AABubbles.swift in Sources */,
 				153F6B8B1C2D7BA400C0B960 /* AATapLabel.swift in Sources */,
+				061850E71C95CBF000C522D5 /* YYTextLine.m in Sources */,
 				066A52081BC4E962000E606E /* Makefile in Sources */,
 				066A53231BC533F5000E606E /* Caches.swift in Sources */,
 				06E7B2471C0F8D7A0090660C /* AALocationPickerController.swift in Sources */,
+				061851031C95CBF000C522D5 /* YYTextUtilities.m in Sources */,
 				066A51501BC4BE06000E606E /* AARegex.swift in Sources */,
 				06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */,
+				061850DD1C95CBF000C522D5 /* YYTextDebugOption.m in Sources */,
 				15D35F6F1C20196E00E3717A /* AARecordAudioController.swift in Sources */,
 				069CF4D31BCB909A00C66E12 /* CLTokenView.m in Sources */,
 				066A52F71BC52B13000E606E /* AAWallpapperPreviewCell.swift in Sources */,
 				066A51541BC4BE95000E606E /* Images.swift in Sources */,
 				152AA8A71C2989270030DEEE /* SLKInputAccessoryView.m in Sources */,
 				066A52801BC51ED0000E606E /* AARootTabViewController.swift in Sources */,
+				061850E51C95CBF000C522D5 /* YYTextLayout.m in Sources */,
 				066A522A1BC4EEAC000E606E /* ManagedAlerts.swift in Sources */,
 				069CF4D11BCB909A00C66E12 /* CLTokenInputView.m in Sources */,
+				061851051C95CBF000C522D5 /* YYTextWeakProxy.m in Sources */,
 				066A52451BC4EECD000E606E /* AAAvatarCell.swift in Sources */,
 				BE237C9D1C422FFA00060648 /* AAStickersView.swift in Sources */,
 				066A52D21BC52204000E606E /* AADialogSearchCell.swift in Sources */,
@@ -1858,15 +2092,19 @@
 				066A519B1BC4C390000E606E /* FMDBKeyValue.swift in Sources */,
 				15D35F521C20187E00E3717A /* ASQueue.m in Sources */,
 				15D35F651C20187E00E3717A /* AAModernConversationAudioPlayerContext.m in Sources */,
+				061851071C95CBF000C522D5 /* YYDispatchQueuePool.m in Sources */,
 				066A52F31BC52B02000E606E /* AASettingsWallpapper.swift in Sources */,
 				066A53041BC53177000E606E /* AAContactsViewController.swift in Sources */,
 				066A51801BC4C373000E606E /* FMDatabasePool.m in Sources */,
+				061850F51C95CBF000C522D5 /* YYTextRunDelegate.m in Sources */,
 				06129AA91C8394700099286B /* AAAudioManager.swift in Sources */,
 				06C1D07B1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift in Sources */,
+				0618510C1C95CBF000C522D5 /* YYTextView.m in Sources */,
 				066A518F1BC4C383000E606E /* iOSPhoneBookProvider.swift in Sources */,
 				066A530B1BC531A2000E606E /* AAUserViewController.swift in Sources */,
 				06E3C5B81C80EE21004776CD /* AACircleButton.swift in Sources */,
 				153F6B5B1C2B109400C0B960 /* AABubbleVoiceCell.swift in Sources */,
+				061851091C95CBF000C522D5 /* YYLabel.m in Sources */,
 				15D35F251C20186200E3717A /* bitwise.c in Sources */,
 				066A531A1BC533E7000E606E /* AAAutoCompleteCell.swift in Sources */,
 				065975051BC757A300B8C7DF /* ActorRuntime.swift in Sources */,
@@ -1909,6 +2147,7 @@
 				BE281CC51C502B230042F6D4 /* AAVoiceRecorderView.swift in Sources */,
 				066A53211BC533F5000E606E /* BubbleLayouts.swift in Sources */,
 				066A51821BC4C373000E606E /* FMDatabaseQueue.m in Sources */,
+				061850F71C95CBF000C522D5 /* NSAttributedString+YYText.m in Sources */,
 				066A525A1BC4EF61000E606E /* Navigations.swift in Sources */,
 				066A51841BC4C373000E606E /* FMResultSet.m in Sources */,
 				066A514E1BC4BDE4000E606E /* Numbers.swift in Sources */,
@@ -1929,6 +2168,7 @@
 				152AA8B71C2989270030DEEE /* UIScrollView+SLKAdditions.m in Sources */,
 				BED5A2151C49504B0045FDB0 /* AABubbleVideoCell.swift in Sources */,
 				066A52241BC4EEAC000E606E /* AAManagedRange.swift in Sources */,
+				061850ED1C95CBF000C522D5 /* YYTextArchiver.m in Sources */,
 				066A50E21BC4AF9F000E606E /* ActorSDK.swift in Sources */,
 				15D35F761C201B6B00E3717A /* AACustomPresentationAnimationController.swift in Sources */,
 				06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */,
@@ -1963,6 +2203,7 @@
 				066A51691BC4C366000E606E /* AATools.swift in Sources */,
 				066A53201BC533F5000E606E /* AABubbleBackgroundProcessor.swift in Sources */,
 				066CBCDC1C8D419F004507E2 /* AAAuthEmailViewController.swift in Sources */,
+				061850DF1C95CBF000C522D5 /* YYTextEffectWindow.m in Sources */,
 				066A52661BC50E7B000E606E /* AACountryViewController.swift in Sources */,
 				066A53391BC5456B000E606E /* ActorStyle.swift in Sources */,
 			);
