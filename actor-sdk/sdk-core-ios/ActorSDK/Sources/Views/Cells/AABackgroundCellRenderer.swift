@@ -23,7 +23,15 @@ public class AABackgroundCellRenderer<P, T where T: AnyObject, P: AnyObject, P: 
         if requestedConfig == config {
             return false
         }
-        let wasConfig = requestedConfig != nil
+        let oldConfig = requestedConfig
+        let wasConfig = oldConfig != nil
+        
+        // Releasing in background
+        if wasConfig {
+            dispatchBackground {
+                let _ = oldConfig
+            }
+        }
         
         if wasPresented {
             // Do Sync rendering when is just resized
@@ -66,7 +74,15 @@ public class AABackgroundCellRenderer<P, T where T: AnyObject, P: AnyObject, P: 
     
     func cancelRender(wasPresented: Bool = false) {
         generation++
+        let oldConfig = requestedConfig
         requestedConfig = nil
+        
+        // Releasing in background
+        if oldConfig != nil {
+            dispatchBackground {
+                let _ = oldConfig
+            }
+        }
         self.wasPresented = wasPresented
     }
 }
