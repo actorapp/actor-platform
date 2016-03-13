@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import YYText
 import YYImage
 
 public class AAWallpapperSettingsCell: AATableViewCell {

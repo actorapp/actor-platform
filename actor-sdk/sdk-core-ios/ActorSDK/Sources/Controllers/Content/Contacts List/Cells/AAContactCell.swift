@@ -4,7 +4,6 @@
 
 import Foundation
 import UIKit
-import YYText
 
 public class AAContactCell : AATableViewCell, AABindedCell, AABindedSearchCell {
     

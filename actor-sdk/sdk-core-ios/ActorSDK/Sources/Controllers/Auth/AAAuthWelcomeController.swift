@@ -3,7 +3,6 @@
 //
 
 import UIKit
-import YYText
 import ElegantPresentations
 
 public class AAWelcomeController: AAViewController {

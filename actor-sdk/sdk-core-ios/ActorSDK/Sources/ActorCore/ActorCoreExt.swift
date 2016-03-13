@@ -4,7 +4,6 @@
 
 import Foundation
 import AVFoundation
-import YYText
 
 public var Actor : ACCocoaMessenger {
     get {

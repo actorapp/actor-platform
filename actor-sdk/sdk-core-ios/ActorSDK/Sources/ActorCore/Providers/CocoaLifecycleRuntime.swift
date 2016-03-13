@@ -1,9 +1,5 @@
 //
-//  CocoaLifecycleProvider.swift
-//  ActorSDK
-//
-//  Created by Steve Kite on 28.02.16.
-//  Copyright © 2016 Steve Kite. All rights reserved.
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
