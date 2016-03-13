@@ -30,6 +30,9 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     }
     
     func beginUpdates(disableAutoScroll: Bool, list: AAPreprocessedList?, unread: jlong?) {
+        
+        // NSLog("🙇 beginUpdates")
+        
         self.disableAutoScroll = disableAutoScroll
         self.list = list
         self.unread = unread
@@ -50,6 +53,12 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     
     override func prepareLayout() {
         super.prepareLayout()
+        
+//        if list != nil {
+//            NSLog("🙇 prepareLayout \(list!.items.count)")
+//        } else {
+//            NSLog("🙇 prepareLayout nil")
+//        }
         
         // Validate sections
         let sectionsCount = self.collectionView!.numberOfSections()
@@ -99,10 +108,16 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     }
     
     override func collectionViewContentSize() -> CGSize {
+        
+//        NSLog("🙇 collectionViewContentSize")
+        
         return CGSize(width: self.collectionView!.bounds.width, height: contentHeight)
     }
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        
+        // NSLog("🙇 layoutAttributesForElementsInRect")
+        
         var res = [UICollectionViewLayoutAttributes]()
         for i in 0..<items.count {
             if CGRectIntersectsRect(rect, frames[i]) {
@@ -113,6 +128,9 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     }
     
     override func prepareForCollectionViewUpdates(updateItems: [UICollectionViewUpdateItem]) {
+        
+//        NSLog("🙇 prepareForCollectionViewUpdates")
+        
         let start = CFAbsoluteTimeGetCurrent()
         super.prepareForCollectionViewUpdates(updateItems)
         
@@ -125,14 +143,20 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
                 deletedIndexPaths.append(update.indexPathBeforeUpdate!)
             }
         }
-        if ENABLE_LOGS { print("prepareForCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)") }
+        if ENABLE_LOGS { NSLog("🙇 prepareForCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)") }
     }
 
     override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+        
+//        NSLog("🙇 layoutAttributesForItemAtIndexPath")
+        
         return items[indexPath.item].attrs
     }    
     
     override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+        
+//        NSLog("🙇 initialLayoutAttributesForAppearingItemAtIndexPath")
+        
         let res = super.initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath)
         if insertedIndexPaths.contains(itemIndexPath) {
             res?.alpha = 0
@@ -145,6 +169,8 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     
     override func finalizeCollectionViewUpdates() {
         super.finalizeCollectionViewUpdates()
+        
+//        NSLog("🙇 finalizeCollectionViewUpdates")
         
         let start = CFAbsoluteTimeGetCurrent()
         
@@ -167,7 +193,7 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
             
         }
         
-        if ENABLE_LOGS { print("finalizeCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)") }
+        if ENABLE_LOGS { NSLog("🙇 finalizeCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)") }
     }
 }
 
