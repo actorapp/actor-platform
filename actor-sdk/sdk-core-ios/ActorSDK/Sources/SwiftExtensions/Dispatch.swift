@@ -4,6 +4,8 @@
 
 import Foundation
 
+private let backgroundQueue = YYDispatchQueueGetForQOS(NSQualityOfService.Background)
+
 public func dispatchOnUi(closure: () -> Void) {
     dispatch_async(dispatch_get_main_queue(), { () -> Void in
         closure()
@@ -17,7 +19,7 @@ public func dispatchAfterOnUi(delay:Double, closure: () -> Void) {
 }
 
 public func dispatchBackground(closure: () -> Void) {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
+    dispatch_async(backgroundQueue) {
         closure()
-    })
+    }
 }

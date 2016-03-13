@@ -4,7 +4,6 @@
 
 import Foundation
 import MessageUI
-import YYText
 
 public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewControllerDelegate {
 
