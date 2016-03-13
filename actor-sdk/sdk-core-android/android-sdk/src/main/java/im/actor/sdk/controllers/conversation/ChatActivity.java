@@ -342,9 +342,9 @@ public class ChatActivity extends ActorEditTextActivity {
                         Toast.makeText(ChatActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
                     }else{
                         String externalPath = externalFile.getAbsolutePath();
-                        new File(externalPath + "/Actor/capture/").mkdirs();
+                        new File(externalPath + "/"+ ActorSDK.sharedActor().getAppName() +"/capture/").mkdirs();
 
-                        pending_fileName = externalPath + "/Actor/capture/capture_" + Randoms.randomId() + ".jpg";
+                        pending_fileName = externalPath + "/"+ ActorSDK.sharedActor().getAppName() +"/capture/capture_" + Randoms.randomId() + ".jpg";
                     }
                     if (ContextCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         Log.d("Permissions", "camera - no permission :c");
@@ -362,9 +362,9 @@ public class ChatActivity extends ActorEditTextActivity {
                         Toast.makeText(ChatActivity.this, R.string.toast_no_sdcard, Toast.LENGTH_LONG).show();
                     }else{
                         String externalPath = externalFile.getAbsolutePath();
-                        new File(externalPath + "/Actor/capture/").mkdirs();
+                        new File(externalPath + "/"+ ActorSDK.sharedActor().getAppName() +"/capture/").mkdirs();
 
-                        pending_fileName = externalPath + "/Actor/capture/capture_" + Randoms.randomId() + ".mp4";
+                        pending_fileName = externalPath + "/"+ ActorSDK.sharedActor().getAppName() +"/capture/capture_" + Randoms.randomId() + ".mp4";
 
                         Intent i = new Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                                 .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName)));
