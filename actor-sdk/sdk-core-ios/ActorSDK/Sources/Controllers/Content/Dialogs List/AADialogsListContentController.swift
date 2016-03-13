@@ -23,7 +23,11 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
     
     public override func tableDidLoad() {
         
+        managedTable.canEditAll = true
+        managedTable.canDeleteAll = true
+        managedTable.fixedHeight = 76
         tableView.estimatedRowHeight = 76
+        tableView.rowHeight = 76
         
         if enableSearch {
             search(AADialogSearchCell.self) { (s) -> () in
