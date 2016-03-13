@@ -4,7 +4,6 @@
 
 import Foundation
 import UIKit
-import YYText
 import YYImage
 
 public class AABubbleTextCell : AABubbleCell {

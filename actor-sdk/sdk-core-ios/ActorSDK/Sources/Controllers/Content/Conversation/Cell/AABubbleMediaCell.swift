@@ -4,7 +4,6 @@
 
 import Foundation
 import VBFPopFlatButton
-import YYText
 import YYImage
 import YYCategories
 
