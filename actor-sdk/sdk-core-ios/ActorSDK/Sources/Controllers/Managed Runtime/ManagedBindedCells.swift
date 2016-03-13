@@ -43,10 +43,12 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
     
     private var lastItemsCount: Int = 0
     
+    private let cellReuseId = "Bind:\(BindCell.self)"
+    
     // Total items count
     
     public func rangeNumberOfItems(table: AAManagedTable) -> Int {
-        return Int(displayList.size())
+        return lastItemsCount
     }
     
     // Cells
@@ -58,8 +60,8 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
     
     public func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let data = displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData
-        let cell = table.dequeueCell(indexPath.indexPath) as BindCell
-        cell.bind(data, table: table, index: indexPath.item, totalCount: rangeNumberOfItems(table))
+        let cell = self.table.tableView.dequeueReusableCellWithIdentifier(cellReuseId) as! BindCell
+        cell.bind(data, table: table, index: indexPath.item, totalCount: lastItemsCount)
         displayList.touchWithIndex(jint(indexPath.item))
         didBind?(cell, data)
         return cell
@@ -95,6 +97,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
     public func rangeBind(table: AAManagedTable, binder: AABinder) {
         
         self.table = table
+        self.table.tableView.registerClass(BindCell.self, forCellReuseIdentifier: cellReuseId)
 
         if animated {
             displayList.addAppleListener(self)
