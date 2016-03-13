@@ -60,7 +60,7 @@ dependencies {
     compile 'io.pristine:libjingle:11139@aar'
 
     // UI
-    compile 'com.facebook.fresco:fresco:0.9.0'
+    compile 'com.facebook.fresco:fresco:0.7.0'
     compile 'com.facebook.rebound:rebound:0.3.8'
 
     compile 'com.soundcloud.android:android-crop:1.0.0@aar'
