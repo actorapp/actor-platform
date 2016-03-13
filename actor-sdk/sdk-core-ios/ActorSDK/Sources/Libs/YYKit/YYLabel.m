@@ -977,6 +977,14 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
 }
 
 - (void)setTextLayout:(YYTextLayout *)textLayout {
+    
+    if (_innerLayout != nil) {
+        YYTextLayout *oldLayout = _innerLayout;
+        dispatch_async(YYLabelGetReleaseQueue(), ^{
+            YYTextLayout *released = oldLayout;
+        });
+    }
+    
     _innerLayout = textLayout;
     _shrinkInnerLayout = nil;
     

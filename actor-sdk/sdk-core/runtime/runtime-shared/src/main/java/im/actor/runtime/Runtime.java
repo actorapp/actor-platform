@@ -61,6 +61,10 @@ public class Runtime {
     }
 
     public static void checkMainThread() {
+        if (RuntimeEnvironment.isProduction()) {
+            // Do Nothing in production mode
+            return;
+        }
         if (mainThreadRuntime.isSingleThread()) {
             return;
         }
