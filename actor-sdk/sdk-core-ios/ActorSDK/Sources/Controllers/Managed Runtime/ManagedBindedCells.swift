@@ -216,7 +216,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         if animated {
             displayList.removeAppleListener(self)
         } else {
-            displayList.addListener(self)
+            displayList.removeListener(self)
         }
     }
     
