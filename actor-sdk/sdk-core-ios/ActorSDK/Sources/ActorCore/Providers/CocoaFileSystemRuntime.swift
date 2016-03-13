@@ -163,7 +163,8 @@ class CocoaInputFile :NSObject, ARInputFile {
     }
     
     func readWithOffset(fileOffset: jint, withData data: IOSByteArray!, withDataOffset offset: jint, withLength len: jint, withCallback callback: ARFileReadCallback!) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
+        
+        dispatchBackground {
             self.fileHandle.seekToFileOffset(UInt64(fileOffset));
             let readed:NSData = self.fileHandle.readDataOfLength(Int(len));
             
