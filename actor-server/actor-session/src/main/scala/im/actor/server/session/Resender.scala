@@ -281,7 +281,6 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   }
 
   @tailrec final def deliverBuf(): Unit = {
-    log.debug("Delivering buf, queue size: {}, bufferSize: {}, pushBufferSize: {}", mbQueue.size, resendBufferSize, resendPushBufferSize)
     if (isActive && totalDemand > 0 && mbQueue.nonEmpty)
       mbQueue.dequeue() match {
         case (mb, _) ⇒
@@ -402,6 +401,8 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   }
 
   private def enqueue(mb: MessageBox, priority: Priority): Unit = {
+    log.debug("Queue size: {}, bufferSize: {}, pushBufferSize: {}", mbQueue.size, resendBufferSize, resendPushBufferSize)
+
     if (isActive && totalDemand > 0 && mbQueue.isEmpty) {
       onNext(mb)
     } else {
