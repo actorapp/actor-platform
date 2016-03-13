@@ -334,14 +334,14 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
         isLoadMoreForwardRequested = true;
         final int gen = currentGeneration;
-        Log.d(TAG, "Loading more items...");
+        // Log.d(TAG, "Loading more items...");
         final long start = System.currentTimeMillis();
         ListEngineDisplayLoadCallback<T> callback = cover(new ListEngineDisplayLoadCallback<T>() {
             @Override
             public void onLoaded(List<T> items, long topSortKey, long bottomSortKey) {
                 im.actor.runtime.Runtime.checkMainThread();
 
-                Log.d(TAG, "Items loaded in " + (System.currentTimeMillis() - start) + " ms");
+                // Log.d(TAG, "Items loaded in " + (System.currentTimeMillis() - start) + " ms");
 
                 window.completeForwardLoading();
 
