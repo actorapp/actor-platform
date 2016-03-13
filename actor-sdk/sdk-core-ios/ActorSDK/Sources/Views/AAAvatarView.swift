@@ -220,8 +220,12 @@ public class AAAvatarView: UIImageView {
                     self.image = image;
                 }
             }
-        });
-        Actor.bindRawFileWithReference(fileLocation, autoStart: true, withCallback: self.callback)
+        })
+        let fl = fileLocation
+        let c = callback
+        dispatchBackground {
+            Actor.bindRawFileWithReference(fl, autoStart: true, withCallback: c)
+        }
     }
     
     public func unbind() {
@@ -236,7 +240,11 @@ public class AAAvatarView: UIImageView {
         self.bindedTitle = nil
         
         if (bindedFileId != nil) {
-            Actor.unbindRawFileWithFileId(bindedFileId!, autoCancel: false, withCallback: callback)
+            let bfid = bindedFileId
+            let c = callback
+            dispatchBackground {
+                Actor.unbindRawFileWithFileId(bfid!, autoCancel: false, withCallback: c)
+            }
             bindedFileId = nil
             callback = nil
             requestId++;
