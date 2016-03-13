@@ -6,13 +6,17 @@ import Foundation
 
 class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     
-    private let peerConnectionFactory = RTCPeerConnectionFactory()
+    private var isInited: Bool = false
+    private var peerConnectionFactory: RTCPeerConnectionFactory!
     
     override init() {
-        RTCPeerConnectionFactory.initializeSSL()
+
     }
     
     func createPeerConnectionWithServers(webRTCIceServers: IOSObjectArray!, withSettings settings: ARWebRTCSettings!) -> ARPromise {
+        
+        initRTC()
+        
         let servers: [ARWebRTCIceServer] = webRTCIceServers.toSwiftArray()
         return ARPromise { (resolver) -> () in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { () -> Void in
@@ -22,10 +26,23 @@ class CocoaWebRTCRuntime: NSObject, ARWebRTCRuntime {
     }
     
     func getUserAudio() -> ARPromise {
+        
+        initRTC()
+        
         let audio = peerConnectionFactory.audioTrackWithID("audio0")
         let mediaStream = peerConnectionFactory.mediaStreamWithLabel("ARDAMSa0")
         mediaStream.addAudioTrack(audio)
         return ARPromises.success(MediaStream(stream: mediaStream))
+    }
+    
+    func initRTC() {
+        if !isInited {
+            isInited = true
+            
+            RTCPeerConnectionFactory.initializeSSL()
+            
+            peerConnectionFactory = RTCPeerConnectionFactory()
+        }
     }
     
     func supportsPreConnections() -> jboolean {
