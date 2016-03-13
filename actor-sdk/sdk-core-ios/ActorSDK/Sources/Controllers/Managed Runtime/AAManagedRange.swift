@@ -8,6 +8,10 @@ import Foundation
 
 public protocol AAManagedRange {
     
+    // Initing Table
+    
+    func initTable(table: AAManagedTable)
+    
     // Total items count
     
     func rangeNumberOfItems(table: AAManagedTable) -> Int
