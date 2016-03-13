@@ -17,7 +17,7 @@ public class AAContactCell : AATableViewCell, AABindedCell, AABindedSearchCell {
         return 56
     }
     
-    public let avatarView = AAAvatarView(frameSize: 40, type: .Rounded);
+    public let avatarView = AAAvatarView()
     public let shortNameView = YYLabel()
     public let titleView = YYLabel()
     
@@ -51,7 +51,7 @@ public class AAContactCell : AATableViewCell, AABindedCell, AABindedSearchCell {
     }
     
     func bind(item: ACContact) {
-        avatarView.bind(item.name, id: item.uid, avatar: item.avatar);
+        avatarView.bind(item.name, id: Int(item.uid), avatar: item.avatar);
         
         titleView.text = item.name;
         
