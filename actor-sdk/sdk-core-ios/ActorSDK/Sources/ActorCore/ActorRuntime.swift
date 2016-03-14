@@ -23,5 +23,6 @@ class AAActorRuntime {
         ARCocoaLifecycleProxyProvider.setLifecycleRuntime(CocoaLifecycleRuntime())
         ARCocoaDispatcher.setDispatcherProxy(CocoaDispatcher())
         ARRuntimeEnvironment.setIsProductionWithBoolean(true)
+        ARCocoaCryptoProvider.setProxyProviderWithARCocoaCryptoProxyProvider(CocoaCrypto())
     }
 }

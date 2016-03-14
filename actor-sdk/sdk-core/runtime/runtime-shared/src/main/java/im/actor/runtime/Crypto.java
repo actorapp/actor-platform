@@ -4,12 +4,9 @@
 
 package im.actor.runtime;
 
-import java.math.BigInteger;
-
+import im.actor.runtime.crypto.Digest;
 import im.actor.runtime.crypto.primitives.digest.KeyDigest;
 import im.actor.runtime.crypto.primitives.digest.MD5;
-import im.actor.runtime.crypto.primitives.digest.MD5Digest;
-import im.actor.runtime.crypto.primitives.digest.SHA256;
 import im.actor.runtime.util.Hex;
 
 public class Crypto {
@@ -22,6 +19,10 @@ public class Crypto {
 
     public static void waitForCryptoLoaded() {
         runtime.waitForCryptoLoaded();
+    }
+
+    public static Digest createSHA256() {
+        return runtime.SHA256();
     }
 
     public static byte[] MD5(byte[] data) {
@@ -47,8 +48,7 @@ public class Crypto {
      * @return SHA256 of data
      */
     public static byte[] SHA256(byte[] data) {
-        SHA256 sha256 = new SHA256();
-        sha256.reset();
+        Digest sha256 = createSHA256();
         sha256.update(data, 0, data.length);
         byte[] res = new byte[32];
         sha256.doFinal(res, 0);
@@ -77,14 +77,6 @@ public class Crypto {
 
     public static void nextBytes(byte[] data) {
         random.nextBytes(data);
-    }
-
-    public static BigInteger generateBigInteger(int numBits) {
-        return random.generateBigInteger(numBits);
-    }
-
-    public static BigInteger generateBigInteger(int numBits, int certanity) {
-        return random.generateBigInteger(numBits, certanity);
     }
 
     /**
