@@ -24,11 +24,10 @@ import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.bser.DataInput;
-import im.actor.runtime.bser.Utils;
 import im.actor.runtime.crypto.Cryptos;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.Curve25519KeyPair;
-import im.actor.runtime.crypto.primitives.digest.SHA256;
+import im.actor.runtime.crypto.Digest;
 import im.actor.runtime.crypto.primitives.prf.PRF;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.mtproto.Connection;
@@ -226,7 +225,7 @@ public class AuthKeyActor extends Actor {
                     if (!Curve25519.verifySignature(key, verify, r.getVerifySign())) {
                         throw new IOException("Incorrect Signature");
                     }
-                    SHA256 sha256 = new SHA256();
+                    Digest sha256 = Crypto.createSHA256();
                     sha256.update(master_secret, 0, master_secret.length);
                     byte[] authIdHash = new byte[32];
                     sha256.doFinal(authIdHash, 0);

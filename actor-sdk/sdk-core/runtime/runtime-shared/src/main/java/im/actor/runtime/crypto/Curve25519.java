@@ -1,9 +1,9 @@
 package im.actor.runtime.crypto;
 
+import im.actor.runtime.Crypto;
 import im.actor.runtime.crypto.primitives.curve25519.Sha512;
 import im.actor.runtime.crypto.primitives.curve25519.curve_sigs;
 import im.actor.runtime.crypto.primitives.curve25519.scalarmult;
-import im.actor.runtime.crypto.primitives.digest.SHA256;
 import im.actor.runtime.crypto.primitives.digest.SHA512;
 
 public final class Curve25519 {
@@ -35,7 +35,7 @@ public final class Curve25519 {
         // Hashing Random Bytes instead of using random bytes directly
         // Just in case as reference ed255519 implementation do same
         byte[] privateKey = new byte[32];
-        SHA256 sha256 = new SHA256();
+        Digest sha256 = Crypto.createSHA256();
         sha256.update(randomBytes, 0, randomBytes.length);
         sha256.doFinal(privateKey, 0);
 
