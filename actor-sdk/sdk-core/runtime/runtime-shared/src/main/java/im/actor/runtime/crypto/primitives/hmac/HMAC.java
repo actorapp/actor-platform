@@ -1,6 +1,6 @@
 package im.actor.runtime.crypto.primitives.hmac;
 
-import im.actor.runtime.crypto.primitives.Digest;
+import im.actor.runtime.crypto.Digest;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 
 public class HMAC implements Digest {

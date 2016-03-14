@@ -1,6 +1,6 @@
 package im.actor.runtime.crypto.primitives.kdf;
 
-import im.actor.runtime.crypto.primitives.Digest;
+import im.actor.runtime.crypto.Digest;
 import im.actor.runtime.crypto.primitives.hmac.HMAC;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 

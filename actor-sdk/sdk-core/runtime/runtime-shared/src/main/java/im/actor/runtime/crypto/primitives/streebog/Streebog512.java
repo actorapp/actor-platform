@@ -1,6 +1,6 @@
 package im.actor.runtime.crypto.primitives.streebog;
 
-import im.actor.runtime.crypto.primitives.Digest;
+import im.actor.runtime.crypto.Digest;
 
 public class Streebog512 implements Digest {
 
