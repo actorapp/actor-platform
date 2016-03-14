@@ -1,6 +1,6 @@
 package im.actor.runtime.crypto.primitives.kuznechik;
 
-import im.actor.runtime.crypto.primitives.BlockCipher;
+import im.actor.runtime.crypto.BlockCipher;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 
 /**
