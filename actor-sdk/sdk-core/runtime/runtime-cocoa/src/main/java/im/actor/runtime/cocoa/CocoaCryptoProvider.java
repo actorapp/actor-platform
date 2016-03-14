@@ -5,7 +5,9 @@
 package im.actor.runtime.cocoa;
 
 import im.actor.runtime.cocoa.crypto.CocoaCryptoProxyProvider;
+import im.actor.runtime.crypto.BlockCipher;
 import im.actor.runtime.crypto.Digest;
+import im.actor.runtime.crypto.primitives.ValidatedBlockCipher;
 import im.actor.runtime.generic.GenericCryptoProvider;
 
 public class CocoaCryptoProvider extends GenericCryptoProvider {
@@ -26,5 +28,14 @@ public class CocoaCryptoProvider extends GenericCryptoProvider {
             return proxyProvider.createSHA256();
         }
         return super.SHA256();
+    }
+
+    @Override
+    public BlockCipher AES128(byte[] key) {
+//        if (proxyProvider != null) {
+//            return new ValidatedBlockCipher(super.AES128(key), proxyProvider.createAES128(key));
+//            // return proxyProvider.createAES128(key);
+//        }
+        return super.AES128(key);
     }
 }
