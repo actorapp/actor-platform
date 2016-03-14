@@ -4,6 +4,8 @@
 
 package im.actor.runtime.bser;
 
+import com.google.j2objc.annotations.AutoreleasePool;
+
 import java.io.IOException;
 
 import im.actor.runtime.collections.SparseArray;
@@ -16,6 +18,7 @@ public abstract class BserObject {
 
     }
 
+    @AutoreleasePool
     protected void load(byte[] data) throws IOException {
         BserValues values = new BserValues(BserParser.deserialize(new DataInput(data, 0, data.length)));
         parse(values);

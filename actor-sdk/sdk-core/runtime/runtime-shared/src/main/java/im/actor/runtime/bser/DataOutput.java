@@ -7,6 +7,7 @@ package im.actor.runtime.bser;
 import java.io.IOException;
 
 public class DataOutput {
+
     private byte[] data = new byte[16];
     private int offset;
 

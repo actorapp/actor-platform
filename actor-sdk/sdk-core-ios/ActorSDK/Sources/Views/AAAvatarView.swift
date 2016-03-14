@@ -109,9 +109,9 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
             let fileRef = avatar!.smallImage.fileReference!
             self.fileId = fileRef.getFileId()
             self.showPlaceholder = false
-            Actor.startDownloadingWithReference(fileRef)
+            // Actor.startDownloadingWithReference(fileRef)
         } else {
-           self.fileId = nil
+            self.fileId = nil
             self.showPlaceholder = true
         }
         
@@ -185,6 +185,9 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                 filePath = _fileName
             } else if _fileId != nil {
                 let desc = Actor.findDownloadedDescriptorWithFileId(_fileId!)
+                if isCancelled() {
+                    return
+                }
                 if desc != nil {
                     filePath = CocoaFiles.pathFromDescriptor(desc!)
                 } else {
@@ -210,11 +213,23 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                 
                 CGContextAddArc(context, r, r, r, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0)
                 
+                if isCancelled() {
+                    return
+                }
+                
                 CGContextDrawPath(context, .Fill)
+                
+                if isCancelled() {
+                    return
+                }
                 
                 // Text
                 
                 UIColor.whiteColor().set()
+                
+                if isCancelled() {
+                    return
+                }
                 
                 let font = UIFont.systemFontOfSize(r)
                 var rect = CGRectMake(0, 0, r * 2, r * 2)
@@ -236,19 +251,31 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                 
                 // TODO: Load Image
                 
-                let image = UIImage(contentsOfFile: fp)
+                let image: UIImage? = nil//UIImage(contentsOfFile: fp)
                 
                 if isCancelled() {
                     return
                 }
                 
                 if image != nil {
-                    image!.resize(r * 2, h: r * 2).drawInRect(CGRectMake(0, 0, r * 2, r * 2))
+                    
+                    let resized = image!.resize(r * 2, h: r * 2)
+                    
+                    if isCancelled() {
+                        return
+                    }
+                    
+                    resized.drawInRect(CGRectMake(0, 0, r * 2, r * 2))
                 } else {
+                    
                     // Clean BG
                     CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor)
                     
                     CGContextAddArc(context, r, r, r, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0)
+                    
+                    if isCancelled() {
+                        return
+                    }
                     
                     CGContextDrawPath(context, .Fill)
                 }
@@ -260,7 +287,15 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                 // Clean BG
                 CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor)
                 
+                if isCancelled() {
+                    return
+                }
+                
                 CGContextAddArc(context, r, r, r, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0)
+                
+                if isCancelled() {
+                    return
+                }
                 
                 CGContextDrawPath(context, .Fill)
                 
@@ -272,7 +307,17 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
             // Border
             
             CGContextSetStrokeColorWithColor(context, UIColor(red: 0, green: 0, blue: 0, alpha: 0x10/255.0).CGColor)
+            
+            if isCancelled() {
+                return
+            }
+            
             CGContextAddArc(context, r, r, r, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0)
+            
+            if isCancelled() {
+                return
+            }
+            
             CGContextDrawPath(context, .Stroke)
         }
         return res

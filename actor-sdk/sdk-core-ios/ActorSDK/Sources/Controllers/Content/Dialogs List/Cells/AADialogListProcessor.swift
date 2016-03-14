@@ -12,11 +12,14 @@ class AADialogListProcessor: NSObject, ARListProcessor {
         
         for i in 0..<items.size() {
             let d = items.getWithInt(i) as! ACDialog
-            if d.senderId != 0 {
-                uids.insert(d.senderId)
-            }
-            if d.relatedUid != 0 {
-                uids.insert(d.relatedUid)
+            
+            if d.peer.isGroup {
+                if d.senderId != 0 {
+                    uids.insert(d.senderId)
+                }
+                if d.relatedUid != 0 {
+                    uids.insert(d.relatedUid)
+                }
             }
         }
         
