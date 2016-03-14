@@ -41,5 +41,5 @@ Pod::Spec.new do |s|
   s.dependency 'M13ProgressSuite'
 
   s.preserve_paths = 'Frameworks/ActorSDK.framework'
-  s.vendored_framework = 'Frameworks/ActorSDK.framework'
+  s.vendored_frameworks = ['Frameworks/ActorSDK.framework', 'Frameworks/CommonCrypto.framework']
 end
