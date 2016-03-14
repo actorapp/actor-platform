@@ -19,7 +19,7 @@ import UserStore from '../../stores/UserStore';
 import ArchiveStore from '../../stores/ArchiveStore';
 
 import AvatarItem from '../common/AvatarItem.react';
-import Stateful from '../common/Stateful';
+import Stateful from '../common/Stateful.react';
 
 class RecentItem extends Component {
   static propTypes = {
@@ -52,7 +52,7 @@ class RecentItem extends Component {
   };
 
   render() {
-    const { dialog, type } = this.props;
+    const { dialog } = this.props;
     const { archiveChatState } = this.state;
     const toPeer = PeerUtils.peerToString(dialog.peer.peer);
 
@@ -77,24 +77,24 @@ class RecentItem extends Component {
               : null
           }
 
-          <Stateful.Root currentState={archiveChatState}>
-            <Stateful.Processing>
+          <Stateful
+            currentState={archiveChatState}
+            processing={
               <div className="archive archive--in-progress">
                 <i className="icon material-icons spin">autorenew</i>
               </div>
-            </Stateful.Processing>
-            <Stateful.Success>
+            }
+            success={
               <div className="archive archive--in-progress">
                 <i className="icon material-icons">check</i>
               </div>
-            </Stateful.Success>
-            <Stateful.Failure>
+            }
+            failure={
               <div className="archive archive--failure">
                 <i className="icon material-icons">warning</i>
               </div>
-            </Stateful.Failure>
-          </Stateful.Root>
-
+            }
+          />
         </Link>
       </li>
     );
