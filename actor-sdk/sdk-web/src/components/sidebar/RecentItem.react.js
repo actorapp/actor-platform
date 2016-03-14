@@ -12,6 +12,8 @@ import { escapeWithEmoji } from '../../utils/EmojiUtils';
 import confirm from '../../utils/confirm';
 import { Link } from 'react-router';
 
+import { AsyncActionStates } from '../../constants/ActorAppConstants';
+
 import DialogActionCreators from '../../actions/DialogActionCreators';
 import DropdownActionCreators from '../../actions/DropdownActionCreators';
 
@@ -23,22 +25,23 @@ import Stateful from '../common/Stateful.react';
 
 class RecentItem extends Component {
   static propTypes = {
+    isActive: PropTypes.bool.isRequired,
     dialog: PropTypes.object.isRequired,
-    type: PropTypes.string
+    archiveState: PropTypes.number.isRequired
+  };
+
+  static defaultProps = {
+    archiveState: AsyncActionStates.PENDING
   };
 
   static contextTypes = {
     intl: PropTypes.object
   };
 
-  static getStores() {
-    return [ArchiveStore];
-  }
-
-  static calculateState(prevState, nextProps) {
-    return {
-      archiveChatState: ArchiveStore.getArchiveChatState(nextProps.dialog.peer.peer.id)
-    };
+  shouldComponentUpdate(nextProps) {
+    return nextProps.dialog !== this.props.dialog ||
+           nextProps.isActive !== this.props.isActive ||
+           nextProps.archiveState !== this.props.archiveState;
   }
 
   onContextMenu = (event) => {
@@ -52,8 +55,7 @@ class RecentItem extends Component {
   };
 
   render() {
-    const { dialog } = this.props;
-    const { archiveChatState } = this.state;
+    const { dialog, archiveState } = this.props;
     const toPeer = PeerUtils.peerToString(dialog.peer.peer);
 
     const recentClassName = classnames('sidebar__list__item', 'row', {
@@ -78,7 +80,7 @@ class RecentItem extends Component {
           }
 
           <Stateful
-            currentState={archiveChatState}
+            currentState={archiveState}
             processing={
               <div className="archive archive--in-progress">
                 <i className="icon material-icons spin">autorenew</i>
@@ -101,4 +103,4 @@ class RecentItem extends Component {
   }
 }
 
-export default Container.create(RecentItem, {pure: false, withProps: true});
+export default RecentItem;
