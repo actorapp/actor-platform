@@ -5,38 +5,11 @@
 import UIKit
 import YYImage
 
-public enum AAAvatarType {
-    case Rounded
-    case Square
-}
-
 public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
-    
-    var avatarTyle: AAAvatarType = .Rounded {
-        didSet(v) {
-            self.layer.setNeedsDisplay()
-        }
-    }
-    
-//    var frameSize: Int = 0
-//    var avatarType: AAAvatarType = .Rounded
-//    var placeholderImage: UIImage?
-//
-//    var enableAnimation: Bool = false
-//    
-//    private static let cacheSize = 10
-//    private static var avatarCache = Dictionary<Int, AASwiftlyLRU<Int64, UIImage>>()
-//    
-//    private var bindedFileId: jlong! = nil
-//    private var bindedTitle: String! = nil
-//    private var bindedId: jint! = nil
-//    
-//    private var requestId: Int = 0
-//    private var callback: AAFileCallback? = nil
-    
+
     private var title: String?
     private var id: Int?
-    private var fileId: jlong?
+    private var file: ACFileReference?
     private var fileName: String?
     private var showPlaceholder: Bool = false
     
@@ -48,7 +21,9 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
         self.backgroundColor = UIColor.clearColor()
         self.opaque = false
         self.contentMode = .Redraw;
-        Actor.subscribeToDownloads(self)
+        if Actor.isLoggedIn() {
+            Actor.subscribeToDownloads(self)
+        }
     }
 
     public required init?(coder aDecoder: NSCoder) {
@@ -56,13 +31,15 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
     }
     
     deinit {
-        Actor.unsubscribeFromDownloads(self)
+        if Actor.isLoggedIn() {
+            Actor.unsubscribeFromDownloads(self)
+        }
     }
     
     public func onDownloadedWithLong(fileId: jlong) {
-        if self.fileId == fileId {
+        if self.file?.getFileId() == fileId {
             dispatchOnUi {
-                if self.fileId == fileId {
+                if self.file?.getFileId() == fileId {
                     self.layer.setNeedsDisplay()
                 }
             }
@@ -74,44 +51,28 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
     //
     
     public func bind(title: String, id: Int, fileName: String?) {
-//        unbind()
-//        
-//        title = title.smallValue()
-//        
-//        self.bindedTitle = title
-//        self.bindedId = -1
-//        
-//        image = nil
-//        if (fileName != nil) {
-//            image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileName!))
-//            
-//            if (image != nil && self.avatarType == .Rounded) {
-//                image = image!.roundImage(self.frameSize)
-//            }
-//        }
-//        
-//        if (image == nil) {
-//            if (self.placeholderImage == nil) {
-//                self.image = Placeholders.avatarPlaceholder(bindedId, size: frameSize, title: title, rounded: avatarType == .Rounded);
-//            }
-//            return
-//        }
-    }
-    
-    public func bind(title: String, id: Int, avatar: ACAvatar?, clearPrev: Bool = true) {
-        
         
         self.title = title
         self.id = id
-        self.fileName = nil
         
+        self.fileName = fileName
+        self.file = nil
+        self.showPlaceholder = false
+        
+        self.layer.setNeedsDisplay()
+    }
+    
+    public func bind(title: String, id: Int, avatar: ACAvatar?) {
+        
+        self.title = title
+        self.id = id
+        
+        self.fileName = nil
         if avatar?.smallImage != nil {
-            let fileRef = avatar!.smallImage.fileReference!
-            self.fileId = fileRef.getFileId()
+            self.file = avatar!.smallImage.fileReference!
             self.showPlaceholder = false
-            Actor.startDownloadingWithReference(fileRef)
         } else {
-            self.fileId = nil
+            self.file = nil
             self.showPlaceholder = true
         }
         
@@ -119,51 +80,16 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
     }
     
     public func unbind() {
-        self.unbind(true)
+        self.title = nil
+        self.id = nil
+        
+        self.fileName = nil
+        self.file = nil
+        self.showPlaceholder = false
+        
+        self.layer.setNeedsDisplay()
     }
     
-    public func unbind(clearPrev: Bool) {
-//        if (clearPrev) {
-//            self.image = (self.placeholderImage != nil) ? self.placeholderImage : nil
-//        }
-//        self.bindedId = nil
-//        self.bindedTitle = nil
-//        
-//        if (bindedFileId != nil) {
-//            let bfid = bindedFileId
-//            let c = callback
-//            dispatchBackground {
-//                Actor.unbindRawFileWithFileId(bfid!, autoCancel: false, withCallback: c)
-//            }
-//            bindedFileId = nil
-//            callback = nil
-//            requestId++;
-//        }
-    }
-//    
-//    //
-//    // Caching
-//    //
-//
-//    private func checkCache(size: Int, id: Int64) -> UIImage? {
-//        if let cache = AAAvatarView.avatarCache[size] {
-//            if let img = cache[id] {
-//                return img
-//            }
-//        }
-//        return nil
-//    }
-//    
-//    private func putToCache(size: Int, id: Int64, image: UIImage) {
-//        if let cache = AAAvatarView.avatarCache[size] {
-//            cache[id] = image
-//        } else {
-//            let cache = AASwiftlyLRU<jlong, UIImage>(capacity: AAAvatarView.cacheSize);
-//            cache[id] = image
-//            AAAvatarView.avatarCache.updateValue(cache, forKey: size)
-//        }
-//    }
-
     public override class func layerClass() -> AnyClass {
         return YYAsyncLayer.self
     }
@@ -171,10 +97,10 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
     public func newAsyncDisplayTask() -> YYAsyncLayerDisplayTask {
         let res = YYAsyncLayerDisplayTask()
         
-        let _id = id!
-        let _title = title!
+        let _id = id
+        let _title = title
         let _fileName = fileName
-        let _fileId = fileId
+        let _file = file
         let _showPlaceholder = showPlaceholder
         
         res.display = { (context: CGContext,  size: CGSize, isCancelled: () -> Bool) -> () in
@@ -183,14 +109,16 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
             let filePath: String?
             if _fileName != nil {
                 filePath = _fileName
-            } else if _fileId != nil {
-                let desc = Actor.findDownloadedDescriptorWithFileId(_fileId!)
+            } else if _file != nil {
+                let desc = Actor.findDownloadedDescriptorWithFileId(_file!.getFileId())
                 if isCancelled() {
                     return
                 }
                 if desc != nil {
                     filePath = CocoaFiles.pathFromDescriptor(desc!)
                 } else {
+                    // Request if not available
+                    Actor.startDownloadingWithReference(_file!)
                     filePath = nil
                 }
             } else {
@@ -202,10 +130,10 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
             }
             
             
-            if filePath == nil && _showPlaceholder {
+            if filePath == nil && _showPlaceholder && _id != nil && _title != nil {
             
                 let colors = ActorSDK.sharedActor().style.avatarColors
-                let color = colors[_id % colors.count].CGColor
+                let color = colors[_id! % colors.count].CGColor
                 
                 // Background
                 
@@ -239,7 +167,7 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                 style.alignment = NSTextAlignment.Center
                 style.lineBreakMode = NSLineBreakMode.ByWordWrapping
                 
-                let short = _title.trim().smallValue()
+                let short = _title!.trim().smallValue()
                 
                 short.drawInRect(rect, withAttributes: [NSParagraphStyleAttributeName:style, NSFontAttributeName:font,
                     NSForegroundColorAttributeName:ActorSDK.sharedActor().style.avatarTextColor])
@@ -259,8 +187,6 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                     
                     // Background
                     UIBezierPath(roundedRect: CGRectMake(0, 0, r * 2,  r * 2), cornerRadius: r).addClip()
-                    
-//                    let resized = image!.resize(r * 2, h: r * 2)
                     
                     if isCancelled() {
                         return
@@ -324,62 +250,3 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
         return res
     }
 }
-//
-//class Placeholders {
-//    
-//    class func avatarPlaceholder(index: jint, size: Int, title: NSString, rounded: Bool) -> UIImage {
-//        let colors = ActorSDK.sharedActor().style.avatarColors
-//        let color = colors[Int(abs(index)) % colors.count].CGColor
-//        
-//        UIGraphicsBeginImageContextWithOptions(CGSize(width: size, height: size), false, UIScreen.mainScreen().scale);
-//        let context = UIGraphicsGetCurrentContext();
-//        
-//        // Background
-//        
-//        CGContextSetFillColorWithColor(context, color);
-//        
-//        if rounded {
-//            CGContextAddArc(context, CGFloat(size)/2, CGFloat(size)/2, CGFloat(size)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
-//        } else {
-//            CGContextAddRect(context, CGRect(x: 0, y: 0, width: size, height: size))
-//        }
-//        
-//        CGContextDrawPath(context, .Fill);
-//        
-//        // Text
-//        
-//        UIColor.whiteColor().set()
-//        
-//        let font = UIFont.systemFontOfSize(CGFloat(size / 2));
-//        var rect = CGRectMake(0, 0, CGFloat(size), CGFloat(size))
-//        rect.origin.y = round(CGFloat(size * 47 / 100) - font.pointSize / 2);
-//        
-//        let style : NSMutableParagraphStyle = NSParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
-//        style.alignment = NSTextAlignment.Center
-//        style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
-//        
-//        title.drawInRect(rect, withAttributes: [NSParagraphStyleAttributeName:style, NSFontAttributeName:font,
-//            NSForegroundColorAttributeName:ActorSDK.sharedActor().style.avatarTextColor])
-//        
-//        // Border
-//        
-//        if rounded {
-//            CGContextSetStrokeColorWithColor(context, UIColor(red: 0, green: 0, blue: 0, alpha: 0x10/255.0).CGColor);
-//            CGContextAddArc(context,CGFloat(size)/2, CGFloat(size)/2, CGFloat(size)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
-//            CGContextDrawPath(context, .Stroke);
-//        }
-//        
-//        let image = UIGraphicsGetImageFromCurrentImageContext();
-//        UIGraphicsEndImageContext();
-//        return image;
-//    }
-//    
-//}
-//
-//private class AvatarLayer: YYAsyncLayer {
-//    
-//}
-//
-//private class AvatarRender {
-//    
-//}
