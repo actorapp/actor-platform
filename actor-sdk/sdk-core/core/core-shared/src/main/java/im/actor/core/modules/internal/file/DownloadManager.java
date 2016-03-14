@@ -228,6 +228,13 @@ public class DownloadManager extends ModuleActor {
         if (LOG) {
             Log.d(TAG, "Starting download #" + fileReference.getFileId());
         }
+
+        Downloaded downloaded1 = downloaded.getValue(fileReference.getFileId());
+        if (downloaded1 != null) {
+            // Already downloaded
+            return;
+        }
+
         QueueItem queueItem = findItem(fileReference.getFileId());
         if (queueItem == null) {
             if (LOG) {
