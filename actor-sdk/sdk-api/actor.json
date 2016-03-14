@@ -11607,6 +11607,12 @@
                   "argument": "signatureSecret",
                   "category": "full",
                   "description": "  Signature Secret"
+                },
+                {
+                  "type": "reference",
+                  "argument": "timeout",
+                  "category": "full",
+                  "description": "  Timeout of url builder"
                 }
               ],
               "attributes": [
@@ -11624,6 +11630,14 @@
                   "type": "bytes",
                   "id": 3,
                   "name": "signatureSecret"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "sec"
+                  },
+                  "id": 4,
+                  "name": "timeout"
                 }
               ]
             },
