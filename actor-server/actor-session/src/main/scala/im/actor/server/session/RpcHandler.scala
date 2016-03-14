@@ -153,7 +153,7 @@ private[session] class RpcHandler(config: RpcConfig) extends ActorSubscriber wit
       case _             ⇒ 0
     }
 
-    size > config.maxCachedResultSize.value
+    size < config.maxCachedResultSize.value
   }
 
   private def enqueueAck(requestMessageId: Long): Unit = enqueue(None, requestMessageId)
