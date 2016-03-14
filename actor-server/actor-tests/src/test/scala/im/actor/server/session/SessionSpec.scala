@@ -45,7 +45,7 @@ final class SessionSpec extends BaseSessionSpec with BeforeAndAfterEach {
   it should "cache small results" in sessions().cacheSmallResults
   it should "not cache big requests" in sessions().notCacheBigRequests
 
-  var count = 0
+  @volatile var count = 0
 
   override def beforeEach = {
     RawApiExtension(system).register("echo", new EchoService(system) { override def onEcho() = count += 1 })
