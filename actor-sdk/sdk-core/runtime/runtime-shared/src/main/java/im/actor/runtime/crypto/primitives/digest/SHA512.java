@@ -1,6 +1,6 @@
 package im.actor.runtime.crypto.primitives.digest;
 
-import im.actor.runtime.crypto.primitives.Digest;
+import im.actor.runtime.crypto.Digest;
 
 public class SHA512 implements Digest {
 

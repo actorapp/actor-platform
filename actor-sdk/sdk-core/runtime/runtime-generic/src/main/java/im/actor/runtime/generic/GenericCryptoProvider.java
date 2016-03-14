@@ -4,7 +4,7 @@ import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 
-public class GenericCryptoProvider implements CryptoRuntime {
+public class GenericCryptoProvider extends DefaultCryptoRuntime {
 
     private static boolean isLoaded = false;
     private static final Object LOCk = new Object();

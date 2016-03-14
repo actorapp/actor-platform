@@ -16,6 +16,7 @@ target 'ActorApp' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
+    pod 'IDZSwiftCommonCrypto'
 
     # Main UI
     pod 'TTTAttributedLabel'
@@ -55,6 +56,7 @@ target 'ActorSDK' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
+    pod 'IDZSwiftCommonCrypto'
 
     # Main UI
     pod 'TTTAttributedLabel'
