@@ -158,7 +158,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   // to prevent response duplicates when client re-requests with same messageId
   type RequestMessageId = Long
   type ResponseMessageId = Long
-  private[this] var rpcMap = immutable.Map.empty[ResponseMessageId, RequestMessageId]
+  private[this] var rpcMap = immutable.Map.empty[RequestMessageId, ResponseMessageId]
 
   // Used to prevent scheduling multiple updates at the same millisecond and result out of order
   private[this] var lastScheduledResend = System.currentTimeMillis - 1
@@ -195,6 +195,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
                 pushBuffer -= messageId
               case _: RpcItem ⇒
                 responseBuffer -= messageId
+                rpcMap -= messageId
               case item: NewSessionItem ⇒
                 this.newSessionBuffer = None
             }
@@ -217,7 +218,21 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
           }
       }
     case OnNext(RpcResult(rsp, requestMessageId)) ⇒
-      enqueueRpc(RpcItem(rsp, requestMessageId), nextMessageId())
+      val item = RpcItem(rsp, requestMessageId)
+
+      this.rpcMap get requestMessageId match {
+        // we are trying to deliver this response already,
+        // so we cancel previous scheduled resend as client already requested a resend by doubling RPC request
+        case Some(responseMessageId) ⇒
+          for {
+            isResendCancelled ← responseBuffer.get(responseMessageId) map (_._2.cancel())
+          } if (isResendCancelled) enqueueRpc(item, responseMessageId)
+        // it's a new rpc response
+        case None ⇒
+          val responseMessageId = nextMessageId()
+          this.rpcMap += (requestMessageId → responseMessageId)
+          enqueueRpc(item, responseMessageId)
+      }
     case OnNext(p @ Push(_, reduceKey))       ⇒ enqueuePush(PushItem(p.ub, reduceKey), nextMessageId())
     case OnNext(SetUpdateOptimizations(opts)) ⇒ this.updateOptimizations = opts
     case OnComplete ⇒
