@@ -30,6 +30,13 @@ public struct AADevice {
     //
     public static let isiPhone4 = isiPhone && screenHeight == 480.0
     public static let isiPhone5 = isiPhone && screenHeight == 568.0
-    public static let isiPhone6 = isiPhone && screenHeight == 667.0
-    public static let isiPhone6P = isiPhone && screenHeight == 736.0
+    
+    public static let isStandardiPhone6 = isiPhone && screenHeight == 667.0 && UIScreen.mainScreen().nativeScale == UIScreen.mainScreen().scale
+    public static let isZoomediPhone6   = isiPhone && screenHeight == 568.0 && UIScreen.mainScreen().nativeScale > UIScreen.mainScreen().scale
+    
+    public static let isStandardiPhone6P = isiPhone && screenHeight == 736.0
+    public static let isZoomediPhone6P   = isiPhone && screenHeight == 667.0 && UIScreen.mainScreen().nativeScale < UIScreen.mainScreen().scale
+    
+    public static let isiPhone6  = isStandardiPhone6 || isZoomediPhone6
+    public static let isiPhone6P = isStandardiPhone6P || isZoomediPhone6P
 }

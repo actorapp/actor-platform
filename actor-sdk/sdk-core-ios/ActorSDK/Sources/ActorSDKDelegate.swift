@@ -51,6 +51,12 @@ public protocol ActorSDKDelegate {
     
     /// Called after header is created in settings page
     func actorSettingsSupportDidCreated(controller: AASettingsViewController, section: AAManagedSection)
+    
+    /// Add custom additional buttons to conversation attachment action sheet
+    func actorConvActionSheetAdditionalButtons() -> [AAConvActionSheetButton]
+    
+    /// Maximum allowed height for conversation attachment action sheet
+    func actorConvActionSheetMaxHeight() -> CGFloat?
 }
 
 /// Default empty implementation of SDK Delegate
@@ -114,5 +120,13 @@ public class ActorSDKDelegateDefault: NSObject, ActorSDKDelegate {
     
     public func actorSettingsSupportDidCreated(controller: AASettingsViewController, section: AAManagedSection) {
         
+    }
+    
+    public func actorConvActionSheetAdditionalButtons() -> [AAConvActionSheetButton] {
+        return []
+    }
+    
+    public func actorConvActionSheetMaxHeight() -> CGFloat? {
+        return nil
     }
 }
