@@ -257,13 +257,16 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                 
                 if image != nil {
                     
-                    let resized = image!.resize(r * 2, h: r * 2)
+                    // Background
+                    UIBezierPath(roundedRect: CGRectMake(0, 0, r * 2,  r * 2), cornerRadius: r).addClip()
+                    
+//                    let resized = image!.resize(r * 2, h: r * 2)
                     
                     if isCancelled() {
                         return
                     }
                     
-                    resized.drawInRect(CGRectMake(0, 0, r * 2, r * 2))
+                    image!.drawInRect(CGRectMake(0, 0, r * 2, r * 2))
                 } else {
                     
                     // Clean BG
