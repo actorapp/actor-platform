@@ -20,6 +20,14 @@ class LoggerSection extends Component {
     return LoggerStore.getState();
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!nextState.isOpen) {
+      return false;
+    }
+
+    return this.state.logs.length !== nextState.logs.length;
+  }
+
   onClose() {
     loggerToggle();
   }
@@ -30,7 +38,7 @@ class LoggerSection extends Component {
     const { logs } = this.state;
     for (let i = logs.length - 1; i >= 0; i--) {
       result.push(
-        <LoggerRow {...logs[i]} key={i} />
+        <LoggerRow data={logs[i]} key={i} />
       );
     }
 
