@@ -44,10 +44,13 @@ class ToolbarSection extends Component {
     }
 
     const callPeer = CallStore.getPeer();
+    const isSamePeer = PeerUtils.equals(thisPeer, callPeer);
+    if (!isSamePeer) {
+      return {isCalling: false};
+    }
 
     return {
       isCalling,
-      isSamePeer: PeerUtils.equals(thisPeer, callPeer),
       state: CallStore.getState(),
       isFloating: CallStore.isFloating(),
       time: '00:00'
@@ -74,7 +77,7 @@ class ToolbarSection extends Component {
       ActivityActionCreators.hide();
     }
   };
-  
+
   handleInCallClick = () => CallActionCreators.toggleFloating();
 
   getMessage() {
@@ -87,14 +90,14 @@ class ToolbarSection extends Component {
 
     return message;
   }
-  
+
   renderInfoButton() {
     const { call, isActivityOpen } = this.state;
-    
+
     const activityButtonClassName = classnames('button button--icon', {
       'active': isActivityOpen || (call.isCalling && !call.isFloating)
     });
-    
+
     if (call.isCalling) {
       return (
         <button className={activityButtonClassName} onClick={this.handleInCallClick}>
@@ -120,7 +123,7 @@ class ToolbarSection extends Component {
     const message = this.getMessage();
 
     const headerClassName = classnames('toolbar row', {
-      toolbar__calling: call.isCalling && call.isSamePeer
+      toolbar__calling: call.isCalling
     });
 
     const favoriteClassName = classnames('toolbar__peer__favorite', {
