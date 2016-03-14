@@ -59,23 +59,23 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         
         titleView.displaysAsynchronously = true
         titleView.ignoreCommonProperties = true
-        titleView.fadeOnAsynchronouslyDisplay = false
-        titleView.clearContentsBeforeAsynchronouslyDisplay = false
+//        titleView.fadeOnAsynchronouslyDisplay = true
+        titleView.clearContentsBeforeAsynchronouslyDisplay = true
     
         messageView.displaysAsynchronously = true
         messageView.ignoreCommonProperties = true
-        messageView.fadeOnAsynchronouslyDisplay = false
-        messageView.clearContentsBeforeAsynchronouslyDisplay = false
+//        messageView.fadeOnAsynchronouslyDisplay = true
+        messageView.clearContentsBeforeAsynchronouslyDisplay = true
         
         dateView.displaysAsynchronously = true
         dateView.ignoreCommonProperties = true
-        dateView.fadeOnAsynchronouslyDisplay = false
-        dateView.clearContentsBeforeAsynchronouslyDisplay = false
+//        dateView.fadeOnAsynchronouslyDisplay = true
+        dateView.clearContentsBeforeAsynchronouslyDisplay = true
         
         counterView.displaysAsynchronously = true
         counterView.ignoreCommonProperties = true
-        counterView.fadeOnAsynchronouslyDisplay = false
-        counterView.clearContentsBeforeAsynchronouslyDisplay = false
+//        counterView.fadeOnAsynchronouslyDisplay = true
+        counterView.clearContentsBeforeAsynchronouslyDisplay = true
 
         counterViewBg.image = AADialogCell.counterBgImage
         
@@ -99,6 +99,11 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         //
         // Checking dialog rebinding
         //
+        
+        // Nothing changed
+        if bindedItem == item {
+            return
+        }
         
         var isRebind: Bool = false
         if let b = bindedItem {
@@ -126,19 +131,25 @@ public class AADialogCell: AATableViewCell, AABindedCell {
 
         // Reseting Text Layout on new peer binding
         if !isRebind {
-            //
-            // Uncommenting this produces small lags
-            //
             
-            // titleView.textLayout = nil
-            // messageView.textLayout = nil
-            // dateView.textLayout = nil
+            counterView.alpha = 0
+            counterViewBg.alpha = 0
             
-            //
-            // Hiding Counter untill full layout is performed
-            //
-            self.counterView.alpha = 0
-            self.counterViewBg.alpha = 0
+            titleView.alpha = 0
+            messageView.alpha = 0
+            dateView.alpha = 0
+            
+//            titleView.clearContentsBeforeAsynchronouslyDisplay = true
+//            titleView.textLayout = nil
+//            titleView.clearContentsBeforeAsynchronouslyDisplay = false
+//            
+//            messageView.clearContentsBeforeAsynchronouslyDisplay = true
+//            messageView.textLayout = nil
+//            messageView.clearContentsBeforeAsynchronouslyDisplay = false
+//            
+//            dateView.clearContentsBeforeAsynchronouslyDisplay = true
+//            dateView.textLayout = nil
+//            dateView.clearContentsBeforeAsynchronouslyDisplay = false
         }
         
         //
@@ -309,6 +320,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         // Title
         //
         self.titleView.textLayout = render.titleLayout
+        self.titleView.alpha = 1
         
         //
         // Date
@@ -316,6 +328,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         
         dateView.textLayout = render.dateLayout
         dateView.frame = CGRectMake(contentView.width - render.dateLayout.textBoundingSize.width - 14, 18, render.dateLayout.textBoundingSize.width, 18)
+        dateView.alpha = 1
         
         //
         // Message
@@ -328,7 +341,8 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         UIView.performWithoutAnimation {
             self.messageView.frame = messageViewFrame
         }
-        self.messageView.textLayout = render.messageLayout
+        messageView.textLayout = render.messageLayout
+        messageView.alpha = 1
         
         //
         // Counter
