@@ -12,8 +12,7 @@ class CocoaCrypto: NSObject, ARCocoaCryptoProxyProvider {
     }
     
     func createAES128WithKey(key: IOSByteArray!) -> ARBlockCipher! {
-        //return AES128(key: key)
-        return nil
+        return AES128(key: key)
     }
 }
 
@@ -56,40 +55,59 @@ class SHA256Digest: NSObject, ARDigest {
     }
 }
 
-//class AES128: NSObject, ARBlockCipher {
-//    
-//    var key = [UInt8]()
-//    let encryptor: Cryptor
-//    let decryptor: Cryptor
-//    
-//    init(key: IOSByteArray) {
-//        for i in 0..<16 {
-//            let bt = key.byteAtIndex(UInt(i))
-//            self.key.append(UInt8(bitPattern: Int8(bt)))
-//        }
-//        encryptor = Cryptor(operation: .Encrypt , algorithm: .AES, options: .ECBMode, key: self.key, iv: [])
-//        decryptor = Cryptor(operation: .Decrypt , algorithm: .AES, options: .ECBMode, key: self.key, iv: [])
-//    }
-//    
-//    func encryptBlock(data: IOSByteArray!, withOffset offset: jint, toDest dest: IOSByteArray!, withOffset destOffset: jint) {
-//        let src = data.toNSData().subdataWithRange(NSRange(location: Int(offset), length: Int(16)))
-//        var res: [UInt8] = [UInt8](count: 16, repeatedValue: 0)
-//        encryptor.update(src, byteArrayOut: &res)
-//        for i: UInt in 0..<16 {
-//            dest.replaceByteAtIndex(UInt(destOffset) + i, withByte: jbyte(bitPattern: res[Int(i)]))
-//        }
-//    }
-//    
-//    func decryptBlock(data: IOSByteArray!, withOffset offset: jint, toDest dest: IOSByteArray!, withOffset destOffset: jint) {
-//        let src = data.toNSData().subdataWithRange(NSRange(location: Int(offset), length: Int(16)))
-//        decryptor.update(src)
-//        let res = decryptor.final()!
-//        for i: UInt in 0..<16 {
-//            dest.replaceByteAtIndex(UInt(destOffset) + i, withByte: jbyte(bitPattern: res[Int(i)]))
-//        }
-//    }
-//    
-//    func getBlockSize() -> jint {
-//        return 16
-//    }
-//}
+class AES128: NSObject, ARBlockCipher {
+    
+    var encryptor = UnsafeMutablePointer<CCCryptorRef>.alloc(1)
+    var decryptor = UnsafeMutablePointer<CCCryptorRef>.alloc(1)
+    
+    init(key: IOSByteArray) {
+        let res = CCCryptorCreate(
+            CCOperation(kCCEncrypt),
+            CCAlgorithm(kCCAlgorithmAES),
+            CCOptions(kCCOptionECBMode),
+            key.buffer(), 32,
+            nil,
+            encryptor)
+        
+        print("res: \(res) \(key.length())")
+        
+        CCCryptorCreate(
+            CCOperation(kCCDecrypt),
+            CCAlgorithm(kCCAlgorithmAES),
+            CCOptions(kCCOptionECBMode),
+            key.buffer(), 32,
+            nil,
+            decryptor)
+    }
+    
+    deinit {
+        encryptor.dealloc(1)
+        decryptor.dealloc(1)
+    }
+    
+    func encryptBlock(data: IOSByteArray!, withOffset offset: jint, toDest dest: IOSByteArray!, withOffset destOffset: jint) {
+        
+        let src = data.buffer()
+            .advancedBy(Int(offset))
+        let dst = dest.buffer()
+            .advancedBy(Int(destOffset))
+        var bytesOut: Int = 0
+        
+        CCCryptorUpdate(encryptor.memory, src, 16, dst, 32, &bytesOut)
+    }
+    
+    func decryptBlock(data: IOSByteArray!, withOffset offset: jint, toDest dest: IOSByteArray!, withOffset destOffset: jint) {
+        
+        let src = data.buffer()
+            .advancedBy(Int(offset))
+        let dst = dest.buffer()
+            .advancedBy(Int(destOffset))
+        var bytesOut: Int = 0
+        
+        CCCryptorUpdate(decryptor.memory, src, 16, dst, 32, &bytesOut)
+    }
+    
+    func getBlockSize() -> jint {
+        return 16
+    }
+}
