@@ -30,8 +30,8 @@ private[http] final class AboutHttpHandler()(implicit system: ActorSystem) exten
           el match {
             case e if e.startsWith("tcp") ⇒ Endpoints(e :: tcp, tls, ws, wss)
             case e if e.startsWith("tls") ⇒ Endpoints(tcp, e :: tls, ws, wss)
-            case e if e.startsWith("ws")  ⇒ Endpoints(tcp, tls, e :: ws, wss)
             case e if e.startsWith("wss") ⇒ Endpoints(tcp, tls, ws, e :: wss)
+            case e if e.startsWith("ws")  ⇒ Endpoints(tcp, tls, e :: ws, wss)
           }
       }
     ServerInfo(ActorConfig.projectName, publicEndPoints)
