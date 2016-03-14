@@ -5,11 +5,12 @@ import java.util.concurrent.TimeUnit
 import akka.actor.{ ActorLogging, ActorRef, Cancellable, Props }
 import akka.stream.actor._
 import com.typesafe.config.Config
-import im.actor.api.rpc.{ UpdateBox, RpcResult ⇒ ApiRpcResult }
+import im.actor.api.rpc.{ RpcOk, UpdateBox, RpcResult ⇒ ApiRpcResult }
 import im.actor.api.rpc.codecs.UpdateBoxCodec
 import im.actor.api.rpc.sequence._
 import im.actor.server.api.rpc.RpcResultCodec
 import im.actor.server.mtproto.protocol._
+import scodec.bits.BitVector
 
 import scala.annotation.tailrec
 import scala.collection.{ immutable, mutable }
@@ -58,19 +59,26 @@ private[session] object ReSender {
     val size = bitsSize / 8
     val priority: Priority
   }
-  private final case class RpcItem(result: ApiRpcResult, requestMessageId: Long) extends ResendableItem {
-    lazy val body = RpcResultCodec.encode(result).require
+
+  private object RpcItem {
+    def apply(result: ApiRpcResult, requestMessageId: Long): RpcItem =
+      RpcItem(RpcResultCodec.encode(result).require, requestMessageId)
+  }
+  private final case class RpcItem(body: BitVector, requestMessageId: Long) extends ResendableItem {
     override lazy val bitsSize = body.size
-    val reduceKeyOpt = None
     override val priority = Priority.RPC
   }
-  private final case class PushItem(ub: UpdateBox, reduceKeyOpt: Option[String]) extends ResendableItem {
-    lazy val body = UpdateBoxCodec.encode(ub).require
-    override lazy val bitsSize = body.size
-    override val priority = ub match {
-      case _: SeqUpdate | _: FatSeqUpdate ⇒ Priority.SeqPush
-      case _: WeakUpdate                  ⇒ Priority.WeakPush
+  private object PushItem {
+    def apply(ub: UpdateBox, reduceKeyOpt: Option[String]): PushItem = {
+      val priority = ub match {
+        case _: SeqUpdate | _: FatSeqUpdate ⇒ Priority.SeqPush
+        case _: WeakUpdate                  ⇒ Priority.WeakPush
+      }
+      PushItem(UpdateBoxCodec.encode(ub).require, reduceKeyOpt, priority)
     }
+  }
+  private final case class PushItem(body: BitVector, reduceKeyOpt: Option[String], priority: Priority) extends ResendableItem {
+    override lazy val bitsSize = body.size
   }
   private final case class NewSessionItem(newSession: NewSession) extends ResendableItem {
     override val bitsSize = 0L
@@ -187,7 +195,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
             scheduledResend.cancel()
 
             item match {
-              case PushItem(_, reduceKeyOpt) ⇒
+              case PushItem(_, reduceKeyOpt, _) ⇒
                 reduceKeyOpt foreach { reduceKey ⇒
                   if (pushReduceMap.get(reduceKey).contains(messageId))
                     pushReduceMap -= reduceKey
@@ -370,7 +378,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
       val scheduled = context.system.scheduler.scheduleOnce(delay, self, ScheduledResend(messageId, item))
 
       item match {
-        case pi @ PushItem(_, reduceKeyOpt) ⇒
+        case pi @ PushItem(_, reduceKeyOpt, _) ⇒
           reduceKeyOpt foreach { reduceKey ⇒
             for {
               msgId ← pushReduceMap.get(reduceKey)
