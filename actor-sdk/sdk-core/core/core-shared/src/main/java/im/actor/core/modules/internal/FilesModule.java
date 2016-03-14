@@ -16,7 +16,7 @@ import im.actor.core.util.BaseKeyValueEngine;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileEventCallback;
 import im.actor.core.viewmodel.UploadFileCallback;
-import im.actor.runtime.Storage;
+import im.actor.runtime.*;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
@@ -121,8 +121,13 @@ public class FilesModule extends AbsModule {
         }));
     }
 
-    public void startDownloading(FileReference location) {
-        downloadManager.send(new DownloadManager.StartDownload(location));
+    public void startDownloading(final FileReference location) {
+        im.actor.runtime.Runtime.dispatch(new Runnable() {
+            @Override
+            public void run() {
+                downloadManager.send(new DownloadManager.StartDownload(location));
+            }
+        });
     }
 
     public void cancelDownloading(long fileId) {
