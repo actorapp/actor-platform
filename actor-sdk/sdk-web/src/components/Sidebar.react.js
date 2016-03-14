@@ -20,8 +20,9 @@ class SidebarSection extends Component {
 
   static calculateState() {
     return {
+      currentPeer: DialogStore.getCurrentPeer(),
       dialogs: DialogStore.getDialogs()
-    }
+    };
   };
 
   static contextTypes = {
@@ -53,4 +54,4 @@ class SidebarSection extends Component {
   }
 }
 
-export default Container.create(SidebarSection, {pure: false});
+export default Container.create(SidebarSection);
