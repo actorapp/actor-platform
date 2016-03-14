@@ -124,7 +124,6 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             messageView.displaysAsynchronously = true
         }
 
-        
         // Reseting Text Layout on new peer binding
         if !isRebind {
             //
@@ -138,37 +137,37 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             //
             // Hiding Counter untill full layout is performed
             //
-            self.counterView.hidden = true
-            self.counterViewBg.hidden = true
+            self.counterView.alpha = 0
+            self.counterViewBg.alpha = 0
         }
         
         //
         // Message State
         //
-        let messageState = item.status.ordinal()
-        if (messageState == ACMessageState.PENDING().ordinal()) {
-            self.statusView.tintColor = dialogStatusSending
-            self.statusView.image = chatIconClock
-            self.statusView.hidden = false
-        } else if (messageState == ACMessageState.READ().ordinal()) {
-            self.statusView.tintColor = dialogStatusRead
-            self.statusView.image = chatIconCheck2
-            self.statusView.hidden = false
-        } else if (messageState == ACMessageState.RECEIVED().ordinal()) {
-            self.statusView.tintColor = dialogStatusReceived
-            self.statusView.image = chatIconCheck2
-            self.statusView.hidden = false
-        } else if (messageState == ACMessageState.SENT().ordinal()) {
-            self.statusView.tintColor = dialogStatusSent
-            self.statusView.image = chatIconCheck1
-            self.statusView.hidden = false
-        } else if (messageState == ACMessageState.ERROR().ordinal()) {
-            self.statusView.tintColor = dialogStatusError
-            self.statusView.image = chatIconError
-            self.statusView.hidden = false
-        } else {
-            self.statusView.hidden = true
-        }
+//        let messageState = item.status.ordinal()
+//        if (messageState == ACMessageState.PENDING().ordinal()) {
+//            self.statusView.tintColor = dialogStatusSending
+//            self.statusView.image = chatIconClock
+//            self.statusView.hidden = false
+//        } else if (messageState == ACMessageState.READ().ordinal()) {
+//            self.statusView.tintColor = dialogStatusRead
+//            self.statusView.image = chatIconCheck2
+//            self.statusView.hidden = false
+//        } else if (messageState == ACMessageState.RECEIVED().ordinal()) {
+//            self.statusView.tintColor = dialogStatusReceived
+//            self.statusView.image = chatIconCheck2
+//            self.statusView.hidden = false
+//        } else if (messageState == ACMessageState.SENT().ordinal()) {
+//            self.statusView.tintColor = dialogStatusSent
+//            self.statusView.image = chatIconCheck1
+//            self.statusView.hidden = false
+//        } else if (messageState == ACMessageState.ERROR().ordinal()) {
+//            self.statusView.tintColor = dialogStatusError
+//            self.statusView.image = chatIconError
+//            self.statusView.hidden = false
+//        } else {
+//            self.statusView.hidden = true
+//        }
         
         // Cancelling Renderer and forcing layouting to start new rendering
         cellRenderer.cancelRender()
@@ -338,8 +337,8 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         if render.counterLayout != nil {
             self.counterView.textLayout = render.counterLayout
             
-            self.counterView.hidden = false
-            self.counterViewBg.hidden = false
+            self.counterView.alpha = 1
+            self.counterViewBg.alpha = 1
             
             let textW = render.counterLayout!.textBoundingSize.width
             let unreadW = max(textW + 8, 18)
@@ -347,8 +346,8 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             counterView.frame = CGRectMake(width - 14 - unreadW + (unreadW - textW) / 2, 44, textW, 18)
             counterViewBg.frame = CGRectMake(width - 14 - unreadW, 44, unreadW, 18)
         } else {
-            self.counterView.hidden = true
-            self.counterViewBg.hidden = true
+            self.counterView.alpha = 0
+            self.counterViewBg.alpha = 0
         }
     }
     

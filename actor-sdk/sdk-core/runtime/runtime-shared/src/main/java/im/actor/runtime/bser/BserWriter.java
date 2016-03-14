@@ -10,12 +10,13 @@ import java.io.IOException;
 import java.util.List;
 
 import im.actor.runtime.collections.SparseArray;
+import im.actor.runtime.collections.SparseBooleanArray;
 
 public class BserWriter {
 
     private DataOutput stream;
-    // TODO: Replace to SparseBooleanArray
-    private SparseArray<Boolean> writtenFields = new SparseArray<Boolean>();
+    
+    private SparseBooleanArray writtenFields = new SparseBooleanArray();
 
     public BserWriter(DataOutput stream) {
         if (stream == null) {

@@ -12,13 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.runtime.collections.SparseArray;
+import im.actor.runtime.collections.SparseBooleanArray;
 
 public class BserValues {
 
     private SparseArray<Object> fields;
 
     // TODO: Replace with SparseBooleanArray
-    private SparseArray<Boolean> touched = new SparseArray<Boolean>();
+    private SparseBooleanArray touched = new SparseBooleanArray();
 
     public BserValues(@NotNull SparseArray<Object> fields) {
         this.fields = fields;
