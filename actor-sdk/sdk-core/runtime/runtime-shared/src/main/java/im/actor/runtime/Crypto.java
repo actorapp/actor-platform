@@ -4,6 +4,7 @@
 
 package im.actor.runtime;
 
+import im.actor.runtime.crypto.BlockCipher;
 import im.actor.runtime.crypto.Digest;
 import im.actor.runtime.crypto.primitives.digest.KeyDigest;
 import im.actor.runtime.crypto.primitives.digest.MD5;
@@ -23,6 +24,10 @@ public class Crypto {
 
     public static Digest createSHA256() {
         return runtime.SHA256();
+    }
+
+    public static BlockCipher createAES128(byte[] key) {
+        return runtime.AES128(key);
     }
 
     public static byte[] MD5(byte[] data) {

@@ -609,6 +609,7 @@
 		06D5C0591C8E9B3B002D5045 /* Promises.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promises.swift; sourceTree = "<group>"; };
 		06D5C05B1C8EA842002D5045 /* AAAuthOTPViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthOTPViewController.swift; sourceTree = "<group>"; };
 		06E1648E1C96D99F005AFB94 /* CocoaCrypto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaCrypto.swift; sourceTree = "<group>"; };
+		06E164931C96FF3D005AFB94 /* module.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.map; sourceTree = "<group>"; };
 		06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSCallsProvider.swift; sourceTree = "<group>"; };
 		06E3230D1C6942C400D66F53 /* WebRTC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebRTC.h; sourceTree = "<group>"; };
 		06E323101C694C1D00D66F53 /* WebRTCExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebRTCExt.swift; sourceTree = "<group>"; };
@@ -1413,9 +1414,19 @@
 			name = Welcome;
 			sourceTree = "<group>";
 		};
+		06E164921C96FF15005AFB94 /* CommonCrypto */ = {
+			isa = PBXGroup;
+			children = (
+				06E164931C96FF3D005AFB94 /* module.map */,
+			);
+			name = CommonCrypto;
+			path = Libs/CommonCrypto;
+			sourceTree = "<group>";
+		};
 		06E322CB1C69392F00D66F53 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				06E164921C96FF15005AFB94 /* CommonCrypto */,
 				061850A31C95CBF000C522D5 /* YYKit */,
 				15D35F0A1C20182900E3717A /* AudioRecorder */,
 				06E3230D1C6942C400D66F53 /* WebRTC.h */,
@@ -2392,6 +2403,7 @@
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/ActorSDK/Sources/Libs/CommonCrypto $(PROJECT_DIR)/IDZSwiftCommonCrypto/Frameworks/$(PLATFORM_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VALID_ARCHS = "arm64 armv7";
@@ -2445,6 +2457,7 @@
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/ActorSDK/Sources/Libs/CommonCrypto $(PROJECT_DIR)/IDZSwiftCommonCrypto/Frameworks/$(PLATFORM_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALID_ARCHS = "arm64 armv7";

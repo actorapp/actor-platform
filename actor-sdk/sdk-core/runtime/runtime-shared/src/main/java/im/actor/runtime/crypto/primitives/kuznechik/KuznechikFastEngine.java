@@ -1,7 +1,7 @@
 package im.actor.runtime.crypto.primitives.kuznechik;
 
 import im.actor.runtime.Crypto;
-import im.actor.runtime.crypto.primitives.BlockCipher;
+import im.actor.runtime.crypto.BlockCipher;
 import im.actor.runtime.crypto.primitives.util.Pack;
 
 public class KuznechikFastEngine implements BlockCipher {
