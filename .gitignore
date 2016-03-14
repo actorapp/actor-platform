@@ -141,3 +141,6 @@ actor-sdk/sdk-core/core/core-js/war
 actor-sdk/sdk-core/runtime/runtime-js/war
 node_modules
 dist
+actor-sdk/sdk-api/api-language/solutions/im.actor.api/source_gen
+actor-sdk/sdk-api/api-language/solutions/im.actor.api/source_gen.caches
+actor-sdk/sdk-api/api-language/solutions/im.actor.api/classes_gen
