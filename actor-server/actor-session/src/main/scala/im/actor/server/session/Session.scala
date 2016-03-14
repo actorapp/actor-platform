@@ -98,7 +98,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
   private[this] var authData: Option[AuthData] = None
   private[this] var clients = immutable.Set.empty[ActorRef]
-  private[this] var updateUptimizations = immutable.Set.empty[Int]
+  private[this] var updateOptimizations = immutable.Set.empty[Int]
 
   private val (authId, sessionId) = self.path.name.split("_").toList match {
     case a :: s :: Nil ⇒ (a.toLong, s.toLong)
@@ -217,13 +217,13 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
       idleControl.keepAlive()
 
       cmd match {
-        case SubscribeToSeq(opts) ⇒ this.updateUptimizations = opts.toSet
+        case SubscribeToSeq(opts) ⇒ this.updateOptimizations = opts.toSet
         case _                    ⇒
       }
 
       publisher ! cmd
     case GetUpdateOptimizations() ⇒
-      sender() ! GetUpdateOptimizationsAck(updateUptimizations.toSeq)
+      sender() ! GetUpdateOptimizationsAck(updateOptimizations.toSeq)
     case AuthorizeUser(userId, authSid) ⇒ authorize(userId, authSid, Some(sender()))
     case internal                       ⇒ handleInternal(internal, stashUnmatched = false)
   }
