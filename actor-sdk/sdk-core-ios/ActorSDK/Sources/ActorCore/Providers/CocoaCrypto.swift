@@ -61,15 +61,13 @@ class AES128: NSObject, ARBlockCipher {
     var decryptor = UnsafeMutablePointer<CCCryptorRef>.alloc(1)
     
     init(key: IOSByteArray) {
-        let res = CCCryptorCreate(
+        CCCryptorCreate(
             CCOperation(kCCEncrypt),
             CCAlgorithm(kCCAlgorithmAES),
             CCOptions(kCCOptionECBMode),
             key.buffer(), 32,
             nil,
             encryptor)
-        
-        print("res: \(res) \(key.length())")
         
         CCCryptorCreate(
             CCOperation(kCCDecrypt),
