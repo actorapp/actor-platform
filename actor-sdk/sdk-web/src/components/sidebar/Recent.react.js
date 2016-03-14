@@ -152,7 +152,7 @@ class Recent extends Component {
                 <FormattedMessage id="sidebar.group.empty"/>
                 <div className="stem"/>
               </li>
-            )
+            );
           case 'privates':
             return (
               <li className="sidebar__list__item sidebar__list__item--empty">
@@ -161,11 +161,11 @@ class Recent extends Component {
                   <FormattedMessage id="button.invite"/>
                 </button>
               </li>
-            )
+            );
           default:
             return null;
         }
-      }
+      };
 
       return (
         <ul className={groupClassname} key={index}>
