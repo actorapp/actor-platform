@@ -3,6 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import {shouldComponentUpdate} from 'react-addons-pure-render-mixin';
 import classNames from 'classnames';
 
 import { LoggerTypes } from '../../constants/ActorAppConstants';
@@ -18,6 +19,11 @@ class LoggerRow extends Component {
     ]).isRequired,
     message: PropTypes.string.isRequired
   };
+
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
+  }
 
   render() {
     const { tag, type, message } = this.props;
