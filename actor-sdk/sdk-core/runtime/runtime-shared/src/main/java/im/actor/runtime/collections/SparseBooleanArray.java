@@ -37,7 +37,7 @@ package im.actor.runtime.collections;
  * keys in ascending order, or the values corresponding to the keys in ascending
  * order in the case of <code>valueAt(int)</code>.</p>
  */
-public class SparseBooleanArray implements Cloneable {
+public class SparseBooleanArray {
     /**
      * Creates a new SparseBooleanArray containing no mappings.
      */
@@ -63,18 +63,6 @@ public class SparseBooleanArray implements Cloneable {
         mSize = 0;
     }
 
-    @Override
-    public SparseBooleanArray clone() {
-        SparseBooleanArray clone = null;
-        try {
-            clone = (SparseBooleanArray) super.clone();
-            clone.mKeys = mKeys.clone();
-            clone.mValues = mValues.clone();
-        } catch (CloneNotSupportedException cnse) {
-            /* ignore */
-        }
-        return clone;
-    }
 
     /**
      * Gets the boolean mapped from the specified key, or <code>false</code>
