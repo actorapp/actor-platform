@@ -10,18 +10,16 @@ import DefaultRecent from './sidebar/Recent.react';
 import QuickSearchButton from './sidebar/QuickSearchButton.react';
 
 import DialogStore from '../stores/DialogStore';
+import ArchiveStore from '../stores/ArchiveStore';
 
 class SidebarSection extends Component {
-  constructor(props){
-    super(props);
-  }
-
-  static getStores = () => [DialogStore];
+  static getStores = () => [DialogStore, ArchiveStore];
 
   static calculateState() {
     return {
       currentPeer: DialogStore.getCurrentPeer(),
-      dialogs: DialogStore.getDialogs()
+      dialogs: DialogStore.getDialogs(),
+      archive: ArchiveStore.getArchiveChatState()
     };
   };
 
@@ -31,7 +29,7 @@ class SidebarSection extends Component {
 
   render() {
     const { delegate } = this.context;
-    const { dialogs } = this.state;
+    const { currentPeer, dialogs, archive } = this.state;
 
     let HeaderSection, Recent, FooterSection;
     if (delegate.components.sidebar !== null && typeof delegate.components.sidebar !== 'function') {
@@ -47,7 +45,7 @@ class SidebarSection extends Component {
     return (
       <aside className="sidebar">
         <HeaderSection/>
-        <Recent dialogs={dialogs}/>
+        <Recent currentPeer={currentPeer} dialogs={dialogs} archive={archive} />
         <FooterSection/>
       </aside>
     );
