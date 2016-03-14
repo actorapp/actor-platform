@@ -56,10 +56,9 @@ public class DownloadManager extends ModuleActor {
 
         Downloaded downloaded1 = downloaded.getValue(fileId);
         if (downloaded1 != null) {
-            // FileSystemProvider provider = modules().getConfiguration().getFileSystemProvider();
             FileSystemReference reference = Storage.fileFromDescriptor(downloaded1.getDescriptor());
-            boolean isExist = true;// reference.isExist();
-            int fileSize = downloaded1.getFileSize(); // reference.getSize();
+            boolean isExist = reference.isExist();
+            int fileSize = reference.getSize();
             if (isExist && fileSize == downloaded1.getFileSize()) {
                 if (LOG) {
                     Log.d(TAG, "- Downloaded");

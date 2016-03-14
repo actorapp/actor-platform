@@ -187,7 +187,8 @@ public class Promise<T> {
     @ObjectiveCName("done:")
     public Promise<T> done(PromiseDispatcher dispatcher) {
         if (isStarted) {
-            throw new RuntimeException("Promise already started!");
+            // throw new RuntimeException("Promise already started!");
+            return this;
         }
         isStarted = true;
         dispatchActor = dispatcher;
