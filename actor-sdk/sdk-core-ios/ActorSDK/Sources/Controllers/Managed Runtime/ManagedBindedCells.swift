@@ -39,6 +39,8 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
     
     public var animated = false
     
+    public var differental = false
+    
     private var table: AAManagedTable!
     
     private var lastItemsCount: Int = 0
@@ -104,7 +106,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         
         self.table = table
 
-        if animated {
+        if differental {
             displayList.addAppleListener(self)
         } else {
             displayList.addListener(self)
@@ -145,9 +147,17 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         
         let tableView = self.table.tableView
         let section = 0
+        lastItemsCount = Int(displayList.size())
         
-        if (modification.isLoadMore) {
+        if (modification.isLoadMore || !animated) {
             UIView.setAnimationsEnabled(false)
+        }
+        
+        let animationType: UITableViewRowAnimation
+        if animated && !modification.isLoadMore {
+            animationType = UITableViewRowAnimation.Automatic
+        } else {
+            animationType = UITableViewRowAnimation.None
         }
         
         if modification.nonUpdateCount() > 0 {
@@ -159,7 +169,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
                 for i in 0..<modification.removedCount() {
                     rows.append(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))) + topOffset, inSection: section))
                 }
-                tableView.deleteRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Automatic)
+                tableView.deleteRowsAtIndexPaths(rows, withRowAnimation: animationType)
             }
             
             // Added rows
@@ -168,7 +178,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
                 for i in 0..<modification.addedCount() {
                     rows.append(NSIndexPath(forRow: Int(modification.getAdded(jint(i)) + topOffset), inSection: section))
                 }
-                tableView.insertRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Automatic)
+                tableView.insertRowsAtIndexPaths(rows, withRowAnimation: animationType)
             }
             
             // Moved rows
@@ -202,7 +212,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         
         updateVisibility()
         
-        if (modification.isLoadMore) {
+        if (modification.isLoadMore || !animated) {
             UIView.setAnimationsEnabled(true)
         }
     }
@@ -221,7 +231,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         
         self.table = nil
         
-        if animated {
+        if differental {
             displayList.removeAppleListener(self)
         } else {
             displayList.removeListener(self)
