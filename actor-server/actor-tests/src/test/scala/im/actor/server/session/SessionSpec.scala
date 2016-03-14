@@ -43,7 +43,7 @@ final class SessionSpec extends BaseSessionSpec with BeforeAndAfterEach {
   it should "react to SessionHello" in sessions().hello
   it should "send SeqUpdateTooLong" in sessions().seqUpdateTooLong
   it should "cache small results" in sessions().cacheSmallResults
-  it should "not cache big requests" in sessions().notCacheBigRequests
+  it should "not cache big results" in sessions().notCacheBigResults
 
   @volatile var count = 0
 
@@ -399,7 +399,7 @@ final class SessionSpec extends BaseSessionSpec with BeforeAndAfterEach {
       val messageId = Random.nextLong()
       count = 0
 
-      for (_ ← 1 to 3)
+      for (_ ← 1 to 3) {
         sendRequest(
           authId,
           sessionId,
@@ -407,14 +407,13 @@ final class SessionSpec extends BaseSessionSpec with BeforeAndAfterEach {
           messageId,
           RequestRawRequest("echo", "makeEcho", Some(ApiStringValue("...")))
         )
-
-      for (_ ← 1 to 3)
         expectRpcResult(authId, sessionId, ignoreAcks = true)
+      }
 
       count shouldBe 1
     }
 
-    def notCacheBigRequests(): Unit = {
+    def notCacheBigResults(): Unit = {
       implicit val probe = TestProbe()
 
       val authId = createAuthId()
@@ -430,7 +429,7 @@ final class SessionSpec extends BaseSessionSpec with BeforeAndAfterEach {
       val messageId = Random.nextLong()
       count = 0
 
-      for (_ ← 1 to 3)
+      for (_ ← 1 to 3) {
         sendRequest(
           authId,
           sessionId,
@@ -438,9 +437,8 @@ final class SessionSpec extends BaseSessionSpec with BeforeAndAfterEach {
           messageId,
           RequestRawRequest("echo", "makeEcho", Some(ApiStringValue(longString)))
         )
-
-      for (_ ← 1 to 3)
         expectRpcResult(authId, sessionId, ignoreAcks = true)
+      }
 
       count shouldBe 3
     }

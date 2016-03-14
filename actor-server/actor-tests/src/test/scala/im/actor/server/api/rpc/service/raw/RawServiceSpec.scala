@@ -94,9 +94,7 @@ class RawServiceSpec
     whenReady(service.handleRawRequest("echo", "makeEcho", Some(ApiMapValue(Vector(ApiMapValueItem("query", ApiStringValue("Hello"))))))) { resp ⇒
       inside(resp) {
         case Xor.Right(rawValue) ⇒ inside(rawValue.result) {
-          case ApiMapValue(items) ⇒
-            items should have length 1
-            items.head shouldEqual ApiMapValueItem("echo", ApiStringValue("Hello you back!"))
+          case ApiMapValue(Vector(ApiMapValueItem("query", ApiStringValue("Hello")))) ⇒
         }
       }
     }
@@ -190,17 +188,10 @@ class EchoService(val system: ActorSystem) extends RawApiService(system) {
 
   def echo(params: Option[ApiRawValue]): Future[Response] = {
     onEcho()
-    val resp = extractStringFromMap(params, "query") map { q ⇒
-      Xor.right(ApiMapValue(Vector(ApiMapValueItem("echo", ApiStringValue(s"$q you back!")))))
-    } getOrElse Xor.left(InvalidParams)
+    val resp =
+      params map (Xor.right(_)) getOrElse (Xor.left(InvalidParams))
     Future.successful(resp)
   }
-
-  private def extractStringFromMap(optParams: Option[ApiRawValue], key: String): Option[String] =
-    optParams flatMap {
-      case ApiMapValue(items) ⇒ items collectFirst { case ApiMapValueItem(_, ApiStringValue(str)) ⇒ str }
-      case _                  ⇒ None
-    }
 
   def onEcho(): Unit = {}
 }

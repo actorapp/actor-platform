@@ -224,9 +224,10 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
         // we are trying to deliver this response already,
         // so we cancel previous scheduled resend as client already requested a resend by doubling RPC request
         case Some(responseMessageId) ⇒
-          for {
-            isResendCancelled ← responseBuffer.get(responseMessageId) map (_._2.cancel())
-          } if (isResendCancelled) enqueueRpc(item, responseMessageId)
+          responseBuffer.get(responseMessageId) map (_._2.cancel()) match {
+            case Some(false) ⇒
+            case _           ⇒ enqueueRpc(item, responseMessageId)
+          }
         // it's a new rpc response
         case None ⇒
           val responseMessageId = nextMessageId()
