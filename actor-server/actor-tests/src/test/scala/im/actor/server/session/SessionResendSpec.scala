@@ -3,14 +3,16 @@ package im.actor.server.session
 import akka.testkit.TestProbe
 import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc._
-import im.actor.api.rpc.auth.{ ResponseStartPhoneAuth, RequestStartPhoneAuth }
+import im.actor.api.rpc.auth.{ RequestStartPhoneAuth, ResponseStartPhoneAuth }
 import im.actor.api.rpc.codecs.RequestCodec
-import im.actor.api.rpc.contacts.{ UpdateContactsAdded, UpdateContactRegistered }
+import im.actor.api.rpc.contacts.{ UpdateContactRegistered, UpdateContactsAdded }
 import im.actor.api.rpc.misc.ResponseSeq
+import im.actor.api.rpc.raw.RequestRawRequest
 import im.actor.api.rpc.sequence.RequestGetState
 import im.actor.api.rpc.weak.{ UpdateUserOffline, UpdateUserOnline }
-import im.actor.concurrent.FutureExt
 import im.actor.server.ActorSpecification
+import im.actor.server.api.rpc.RawApiExtension
+import im.actor.server.api.rpc.service.raw.EchoService
 import im.actor.server.mtproto.protocol._
 import im.actor.server.sequence.{ SeqUpdatesExtension, WeakUpdatesExtension }
 
@@ -36,7 +38,7 @@ final class SessionResendSpec extends BaseSessionSpec(
   it should "resend updates if no ack received within ack-timeout" in Sessions().resendUpdates
   it should "not resend messages when another came with the same reduceKey (weak)" in Sessions().reduceKeyWeak
   it should "not resend messages when another came with the same reduceKey (seq)" in Sessions().reduceKeySeq
-  it should "schedule one resend after subsequent requests with the same messageId" in Sessions().eee
+  it should "schedule one resend after subsequent requests with the same messageId" in Sessions().oneResendForCached
 
   case class Sessions() {
     val weakUpdatesExt = WeakUpdatesExtension(system)
@@ -304,7 +306,7 @@ final class SessionResendSpec extends BaseSessionSpec(
       expectContactsAdded(authId, sessionId, 4)
     }
 
-    def eee(): Unit = {
+    def oneResendForCached(): Unit = {
       implicit val probe = TestProbe()
 
       val authId = createAuthId()

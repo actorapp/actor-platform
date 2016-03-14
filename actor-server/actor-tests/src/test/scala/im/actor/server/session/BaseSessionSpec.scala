@@ -7,6 +7,7 @@ import im.actor.server.api.rpc.RpcApiExtension
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
+import im.actor.server.api.rpc.service.raw.RawServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.db.DbExtension
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
@@ -48,16 +49,17 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
 
   implicit val sessionRegion = Session.startRegionProxy()
 
-  protected val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
+  protected lazy val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   protected implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
   protected implicit val authService = new AuthServiceImpl
-  protected val sequenceConfig = SequenceServiceConfig.load().toOption.get
+  protected lazy val sequenceConfig = SequenceServiceConfig.load().toOption.get
   protected lazy val sequenceService = new SequenceServiceImpl(sequenceConfig)
   protected lazy val messagingService = MessagingServiceImpl()
   protected lazy val contactsService = new ContactsServiceImpl()
+  protected lazy val rawService = new RawServiceImpl()
 
   override def beforeAll = {
-    RpcApiExtension(system).register(Seq(authService, sequenceService, messagingService, contactsService))
+    RpcApiExtension(system).register(Seq(authService, sequenceService, messagingService, contactsService, rawService))
   }
 
   protected def createAuthId(): Long = {

@@ -3,7 +3,7 @@ package im.actor.api.rpc.raw
 import akka.actor.ActorSystem
 import cats.data.Xor
 import im.actor.api.rpc.collections._
-import im.actor.api.rpc.{ AuthorizedClientData, RpcError }
+import im.actor.api.rpc.{ ClientData, RpcError }
 import play.api.libs.json._
 
 import scala.concurrent.Future
@@ -63,7 +63,7 @@ abstract class MapStyleRawApiService(system: ActorSystem) extends RawApiService(
 
   protected def validateRequest: Option[JsObject] ⇒ PartialFunction[String, RpcError Xor Request]
 
-  protected def handleInternal: AuthorizedClientData ⇒ PartialFunction[Request, Future[Response]]
+  protected def handleInternal: ClientData ⇒ PartialFunction[Request, Future[Response]]
 
   private def toRequest(name: String, optParams: Option[ApiRawValue]): RpcError Xor Request = {
     val jsParams = optParams map { params ⇒
