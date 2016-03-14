@@ -10,6 +10,8 @@ import im.actor.core.entity.FileReference;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.file.DownloadManager;
+import im.actor.core.modules.internal.file.FileUrlInt;
+import im.actor.core.modules.internal.file.FileUrlLoader;
 import im.actor.core.modules.internal.file.UploadManager;
 import im.actor.core.modules.internal.file.entity.Downloaded;
 import im.actor.core.util.BaseKeyValueEngine;
@@ -17,6 +19,7 @@ import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileEventCallback;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.runtime.*;
+import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
@@ -30,6 +33,7 @@ public class FilesModule extends AbsModule {
     private KeyValueEngine<Downloaded> downloadedEngine;
     private ActorRef downloadManager;
     private ActorRef uploadManager;
+    private FileUrlInt fileUrlInt;
 
     public FilesModule(final ModuleContext context) {
         super(context);
@@ -53,6 +57,12 @@ public class FilesModule extends AbsModule {
     }
 
     public void run() {
+        fileUrlInt = new FileUrlInt(system().actorOf("actor/download/urls", new ActorCreator() {
+            @Override
+            public Actor create() {
+                return new FileUrlLoader(context());
+            }
+        }));
         downloadManager = system().actorOf(Props.create(new ActorCreator() {
             @Override
             public DownloadManager create() {
@@ -69,6 +79,10 @@ public class FilesModule extends AbsModule {
 
     public KeyValueEngine<Downloaded> getDownloadedEngine() {
         return downloadedEngine;
+    }
+
+    public FileUrlInt getFileUrlInt() {
+        return fileUrlInt;
     }
 
     public void subscribe(FileEventCallback callback) {

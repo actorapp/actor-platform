@@ -109,7 +109,7 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
             let fileRef = avatar!.smallImage.fileReference!
             self.fileId = fileRef.getFileId()
             self.showPlaceholder = false
-            // Actor.startDownloadingWithReference(fileRef)
+            Actor.startDownloadingWithReference(fileRef)
         } else {
             self.fileId = nil
             self.showPlaceholder = true
@@ -249,9 +249,7 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                 }
             } else if let fp = filePath {
                 
-                // TODO: Load Image
-                
-                let image: UIImage? = nil//UIImage(contentsOfFile: fp)
+                let image: UIImage? = UIImage(contentsOfFile: fp)
                 
                 if isCancelled() {
                     return
