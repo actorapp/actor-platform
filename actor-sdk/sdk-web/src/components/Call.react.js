@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import classNames from 'classnames';
 import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
@@ -70,6 +71,14 @@ class Call extends Component {
     this.onVideo = this.onVideo.bind(this);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!nextState.isOpen) {
+      return false;
+    }
+
+    return shallowCompare(this, nextProps, nextState);
+  }
+
   onAnswer() {
     CallActionCreators.answerCall(this.state.callId);
   }
@@ -113,7 +122,7 @@ class Call extends Component {
   render() {
     const {isOpen, callState, peerInfo, isOutgoing, isMuted, isSameDialog, isFloating} = this.state;
     if (!isOpen) {
-      return null;
+      return <section className="activity" />;
     }
 
     if (!isSameDialog || isFloating) {
