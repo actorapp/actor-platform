@@ -12,6 +12,8 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
 
     public let peer: ACPeer
     
+    private let delayLoad = false
+    
     private var displayList: ARBindedDisplayList!
     private var isStarted: Bool = AADevice.isiPad
     private var isVisible: Bool = false
@@ -64,27 +66,44 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         // Hack for delaying collection view init from first animation frame
         // This dramatically speed up controller opening
         
-        if (isStarted) {
-            if !isBinded {
-                isBinded = true
-                self.willUpdate()
-                self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: unreadMessageId)
-                self.collectionView.reloadData()
-                prevCount = getCount()
-                self.displayList.addAppleListener(self)
-                self.didUpdate()
-            }
-            return
-        } else {
-            self.collectionView.alpha = 0
-        }
-        
-        dispatch_async(dispatch_get_main_queue(),{
-            // What if controller is already closed?
-            if (!self.isVisible) {
+        if delayLoad {
+            
+            if (isStarted) {
+                if !isBinded {
+                    isBinded = true
+                    self.willUpdate()
+                    self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: unreadMessageId)
+                    self.collectionView.reloadData()
+                    prevCount = getCount()
+                    self.displayList.addAppleListener(self)
+                    self.didUpdate()
+                }
                 return
+            } else {
+                self.collectionView.alpha = 0
             }
             
+            dispatch_async(dispatch_get_main_queue(),{
+                // What if controller is already closed?
+                if (!self.isVisible) {
+                    return
+                }
+                
+                self.isStarted = true
+                
+                UIView.animateWithDuration(0.6, animations: { () -> Void in self.collectionView.alpha = 1 }, completion: { (comp) -> Void in })
+                
+                if !self.isBinded {
+                    self.isBinded = true
+                    self.willUpdate()
+                    self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: self.unreadMessageId)
+                    self.collectionView.reloadData()
+                    self.prevCount = self.getCount()
+                    self.displayList.addAppleListener(self)
+                    self.didUpdate()
+                }
+            })
+        } else {
             self.isStarted = true
             
             UIView.animateWithDuration(0.6, animations: { () -> Void in self.collectionView.alpha = 1 }, completion: { (comp) -> Void in })
@@ -98,7 +117,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
                 self.displayList.addAppleListener(self)
                 self.didUpdate()
             }
-        });
+        }
     }
     
     
