@@ -20,7 +20,7 @@ class MessagesList extends Component {
     }).isRequired,
     onSelect: PropTypes.func.isRequired,
     onVisibilityChange: PropTypes.func.isRequired
-  }
+  };
 
   renderWelcome() {
     const {peer, isMember, isAllMessagesLoaded} = this.props;
