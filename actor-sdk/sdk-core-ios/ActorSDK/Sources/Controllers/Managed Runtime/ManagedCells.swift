@@ -560,7 +560,7 @@ public class AAAvatarRow: AAManagedRow {
         if avatarPath != nil {
             res.avatarView.bind(title!, id: id!, fileName: avatarPath!)
         } else {
-            res.avatarView.bind(title!, id: id!, avatar: avatar, clearPrev: false)
+            res.avatarView.bind(title!, id: id!, avatar: avatar)
         }
         
         if subtitleColor != nil {

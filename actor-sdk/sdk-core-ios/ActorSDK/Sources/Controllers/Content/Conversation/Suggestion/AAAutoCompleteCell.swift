@@ -31,7 +31,8 @@ class AAAutoCompleteCell: AATableViewCell {
     }
 
     func bindData(user: ACMentionFilterResult, highlightWord: String) {
-        avatarView.bind(user.mentionString, id: Int(user.uid), avatar: user.avatar, clearPrev: true)
+        
+        avatarView.bind(user.mentionString, id: Int(user.uid), avatar: user.avatar)
         
         var nickText: String
         var nameText: String
