@@ -37,32 +37,26 @@ class LoggerSection extends Component {
     return result;
   }
 
-  renderBody() {
-    return (
-      <div className="activity__body logger__body">
-        <div className="logger__controls">
-          <button className="button button--icon" type="button" onClick={this.onClose}>
-            <i className="material-icons">close</i>
-          </button>
-        </div>
-        <LoggerFilter />
-        <Scrollbar>
-          <div className="logger__container">
-            {this.renderLogs()}
-          </div>
-        </Scrollbar>
-      </div>
-    );
-  }
-
   render() {
-    const className = classNames('activity logger', {
-      'activity--shown': this.state.isOpen
-    });
+    if (!this.state.isOpen) {
+      return <section className="activity logger" />;
+    }
 
     return (
-      <section className={className}>
-        {this.renderBody()}
+      <section className="activity logger activity--shown">
+        <div className="activity__body logger__body">
+          <div className="logger__controls">
+            <button className="button button--icon" type="button" onClick={this.onClose}>
+              <i className="material-icons">close</i>
+            </button>
+          </div>
+          <LoggerFilter />
+          <Scrollbar>
+            <div className="logger__container">
+              {this.renderLogs()}
+            </div>
+          </Scrollbar>
+        </div>
       </section>
     );
   }
