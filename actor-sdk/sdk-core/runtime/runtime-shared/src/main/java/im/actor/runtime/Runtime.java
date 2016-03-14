@@ -1,5 +1,7 @@
 package im.actor.runtime;
 
+import com.google.j2objc.annotations.AutoreleasePool;
+
 import im.actor.runtime.actors.ThreadPriority;
 import im.actor.runtime.power.WakeLock;
 import im.actor.runtime.threading.Dispatcher;
@@ -73,10 +75,12 @@ public class Runtime {
         }
     }
 
+    @AutoreleasePool
     public static void postToMainThread(Runnable runnable) {
         mainThreadRuntime.postToMainThread(runnable);
     }
 
+    @AutoreleasePool
     public static void dispatch(Runnable runnable) {
         dispatcherRuntime.dispatch(runnable);
     }

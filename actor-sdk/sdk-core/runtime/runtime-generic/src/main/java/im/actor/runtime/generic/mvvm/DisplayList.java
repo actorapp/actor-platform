@@ -4,6 +4,7 @@
 
 package im.actor.runtime.generic.mvvm;
 
+import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.ObjectiveCName;
 
 import java.util.ArrayList;
@@ -185,6 +186,7 @@ public class DisplayList<T> {
             this.displayList = displayList;
         }
 
+        @AutoreleasePool
         public void onEditList(final Modification<T> modification, final Runnable runnable, boolean isLoadMore) {
 
             if (modification != null) {
@@ -243,6 +245,7 @@ public class DisplayList<T> {
                     processedList);
         }
 
+        @AutoreleasePool
         private void requestListSwitch(final ModificationHolder<T>[] modifications,
                                        final ArrayList<T> initialList,
                                        final ArrayList<ChangeDescription<T>> androidChanges,
@@ -284,6 +287,7 @@ public class DisplayList<T> {
             });
         }
 
+        @AutoreleasePool
         public void onListSwitched(ModificationHolder<T>[] modifications) {
             isLocked = false;
 
