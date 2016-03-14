@@ -364,12 +364,6 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             self.counterViewBg.alpha = 0
         }
     }
-    
-    public override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        self.avatarView.unbind(true)
-    }
 }
 
 //
