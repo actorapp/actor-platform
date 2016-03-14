@@ -36,6 +36,7 @@ final class SessionResendSpec extends BaseSessionSpec(
   it should "resend updates if no ack received within ack-timeout" in Sessions().resendUpdates
   it should "not resend messages when another came with the same reduceKey (weak)" in Sessions().reduceKeyWeak
   it should "not resend messages when another came with the same reduceKey (seq)" in Sessions().reduceKeySeq
+  it should "schedule one resend after subsequent requests with the same messageId" in Sessions().eee
 
   case class Sessions() {
     val weakUpdatesExt = WeakUpdatesExtension(system)
@@ -301,6 +302,38 @@ final class SessionResendSpec extends BaseSessionSpec(
       expectContactsAdded(authId, sessionId, 2)
       expectContactsAdded(authId, sessionId, 3)
       expectContactsAdded(authId, sessionId, 4)
+    }
+
+    def eee(): Unit = {
+      implicit val probe = TestProbe()
+
+      val authId = createAuthId()
+      val sessionId = Random.nextLong()
+
+      val helloMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, helloMessageId, SessionHello)
+      expectNewSession(authId, sessionId, helloMessageId)
+      expectMessageAck()
+
+      val messageId = Random.nextLong()
+      val encodedRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+        phoneNumber = 75553333333L,
+        appId = 1,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong.toBinaryString.getBytes,
+        deviceTitle = "Spec Has You",
+        timeZone = None,
+        preferredLanguages = Vector.empty
+      ))).require
+      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
+
+      for (_ ← 1 to 3)
+        expectRpcResult(authId, sessionId, sendAckAt = None)
+
+      expectRpcResult(authId, sessionId)
+      probe.expectNoMsg(6.seconds)
     }
   }
 
