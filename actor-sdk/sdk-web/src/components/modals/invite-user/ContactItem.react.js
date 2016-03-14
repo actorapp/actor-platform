@@ -12,7 +12,7 @@ import InviteUserStore from '../../../stores/InviteUserStore';
 import { AsyncActionStates } from '../../../constants/ActorAppConstants';
 
 import AvatarItem from '../../common/AvatarItem.react';
-import Stateful from '../../common/Stateful';
+import Stateful from '../../common/Stateful.react';
 
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
 
@@ -60,30 +60,28 @@ class ContactItem extends Component {
     });
   };
 
+  getControls() {
+    const { isMember } = this.props;
+    if (isMember) return <i className="material-icons">check</i>;
+
+    const { inviteUserState } = this.state;
+    return (
+      <Stateful
+        currentState={inviteUserState}
+        pending={<a className="material-icons" onClick={this.onSelect}>person_add</a>}
+        processing={<i className="material-icons spin">autorenew</i>}
+        success={<i className="material-icons">check</i>}
+        failure={<i className="material-icons">warning</i>}
+      />
+    );
+  }
+
   render() {
     const { contact, isMember } = this.props;
-    const { inviteUserState } = this.state;
 
     const contactClassName = classnames('contacts__list__item row', {
       'contacts__list__item--member': isMember
     });
-
-    const controls = isMember
-      ? <i className="material-icons">check</i>
-      : <Stateful.Root currentState={inviteUserState}>
-          <Stateful.Pending>
-            <a className="material-icons" onClick={this.onSelect}>person_add</a>
-          </Stateful.Pending>
-          <Stateful.Processing>
-            <i className="material-icons spin">autorenew</i>
-          </Stateful.Processing>
-          <Stateful.Success>
-            <i className="material-icons">check</i>
-          </Stateful.Success>
-          <Stateful.Failure>
-            <i className="material-icons">warning</i>
-          </Stateful.Failure>
-        </Stateful.Root>;
 
     return (
       <li className={contactClassName}>
@@ -97,8 +95,9 @@ class ContactItem extends Component {
         </div>
 
         <div className="controls">
-          {controls}
+          {this.getControls()}
         </div>
+
       </li>
     );
   }
