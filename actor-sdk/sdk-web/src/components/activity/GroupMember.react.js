@@ -15,7 +15,7 @@ import KickUserActionCreators from '../../actions/KickUserActionCreators';
 import KickUserStore from '../../stores/KickUserStore'
 
 import AvatarItem from '../common/AvatarItem.react';
-import Stateful from '../common/Stateful';
+import Stateful from '../common/Stateful.react';
 
 class GroupMember extends Component {
   constructor(props) {
@@ -26,10 +26,6 @@ class GroupMember extends Component {
     peerInfo: PropTypes.object.isRequired,
     canKick: PropTypes.bool.isRequired,
     gid: PropTypes.number.isRequired
-  };
-
-  static contextTypes = {
-    intl: PropTypes.object
   };
 
   static getStores() {
@@ -51,7 +47,6 @@ class GroupMember extends Component {
 
   onKick = (gid, uid) => {
     const { peerInfo } = this.props;
-    const { intl } = this.context;
 
     confirm(<FormattedMessage id="modal.confirm.kick" values={{name: peerInfo.title}}/>).then(
       () => KickUserActionCreators.kickMember(gid, uid),
@@ -59,35 +54,27 @@ class GroupMember extends Component {
     );
   };
 
-  render() {
+  renderControls() {
     const { peerInfo, canKick, gid } = this.props;
     const { kickUserState } = this.state;
-    const { intl } = this.context;
     const myId = ActorClient.getUid();
 
-    let controls;
-    if (canKick && peerInfo.peer.id !== myId) {
-      controls = (
-        <div className="controls pull-right">
-          <Stateful.Root currentState={kickUserState}>
-            <Stateful.Pending>
-              <a onClick={() => this.onKick(gid, peerInfo.peer.id)}>{intl.messages['kick']}</a>
-            </Stateful.Pending>
-            <Stateful.Processing>
-              <i className="material-icons spin">autorenew</i>
-            </Stateful.Processing>
-            <Stateful.Success>
-              <i className="material-icons">check</i>
-            </Stateful.Success>
-            <Stateful.Failure>
-              <i className="material-icons">warning</i>
-            </Stateful.Failure>
-          </Stateful.Root>
-        </div>
-      );
-    } else {
-      controls = null;
-    }
+    if (!canKick || peerInfo.peer.id === myId) return <div/>;
+
+    return (
+      <Stateful
+        currentState={kickUserState}
+        pending={<a onClick={() => this.onKick(gid, peerInfo.peer.id)}><FormattedMessage id="kick"/></a>}
+        processing={<i className="material-icons spin">autorenew</i>}
+        success={<i className="material-icons">check</i>}
+        failure={<i className="material-icons">warning</i>}
+      />
+    );
+  }
+
+
+  render() {
+    const { peerInfo } = this.props;
 
     return (
       <li className="group_profile__members__list__item">
@@ -100,7 +87,9 @@ class GroupMember extends Component {
         <a onClick={() => this.onClick(peerInfo.peer.id)}
            dangerouslySetInnerHTML={{__html: escapeWithEmoji(peerInfo.title)}}/>
 
-        {controls}
+        <div className="controls pull-right">
+          {this.renderControls()}
+        </div>
       </li>
     )
   }

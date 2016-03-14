@@ -9,7 +9,7 @@ import PreferencesActionCreators from '../../../actions/PreferencesActionCreator
 
 import PreferencesStore from '../../../stores/PreferencesStore';
 
-import Stateful from '../../common/Stateful';
+import Stateful from '../../common/Stateful.react';
 
 class SessionItem extends Component {
   constructor(props) {
@@ -56,22 +56,23 @@ class SessionItem extends Component {
           <b>{intl.messages['preferencesSessionsAuthTime']}:</b> {authTime.toString()}
         </small>
 
-        <Stateful.Root currentState={terminateSessionState}>
-          <Stateful.Pending>
+        <Stateful
+          currentState={terminateSessionState}
+          pending={
             <a className="session-list__session__terminate link--blue" onClick={this.onTerminate}>
               {intl.messages['preferencesSessionsTerminate']}
             </a>
-          </Stateful.Pending>
-          <Stateful.Processing>
+          }
+          processing= {
             <i className="session-list__session__terminate material-icons spin">autorenew</i>
-          </Stateful.Processing>
-          <Stateful.Success>
+          }
+          success={
             <i className="session-list__session__terminate material-icons">check</i>
-          </Stateful.Success>
-          <Stateful.Failure>
+          }
+          failure={
             <i className="session-list__session__terminate material-icons">warning</i>
-          </Stateful.Failure>
-        </Stateful.Root>
+          }
+        />
       </li>
     )
   }
