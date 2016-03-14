@@ -3,7 +3,7 @@ package im.actor.api.rpc.raw
 import akka.actor.ActorSystem
 import cats.data.Xor
 import im.actor.api.rpc.collections._
-import im.actor.api.rpc.{ AuthorizedClientData, RpcError }
+import im.actor.api.rpc.{ ClientData, RpcError }
 
 import scala.concurrent.Future
 
@@ -27,7 +27,7 @@ abstract class ArrayStyleRawApiService(system: ActorSystem) extends RawApiServic
 
   protected def validateRequests: Option[ApiRawValue] ⇒ PartialFunction[String, RpcError Xor Request]
 
-  protected def processRequests: AuthorizedClientData ⇒ PartialFunction[Request, Future[Response]]
+  protected def processRequests: ClientData ⇒ PartialFunction[Request, Future[Response]]
 
   /**
    * Parse content of `optParams` to type T,

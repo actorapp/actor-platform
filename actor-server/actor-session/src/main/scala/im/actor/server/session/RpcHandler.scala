@@ -3,7 +3,8 @@ package im.actor.server.session
 import akka.actor._
 import akka.pattern.pipe
 import akka.stream.actor._
-import im.actor.api.rpc.{ RpcInternalError, RpcResult }
+import com.github.kxbmap.configs.Bytes
+import im.actor.api.rpc.{ RpcError, RpcInternalError, RpcOk, RpcResult }
 import im.actor.server.api.rpc.RpcApiService.RpcResponse
 import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService }
 import im.actor.util.cache.CacheHelpers._
@@ -28,7 +29,7 @@ private[session] object RpcHandler {
   type AckOrResult = Either[Long, RpcResult]
 }
 
-private[session] case class RpcConfig(maxCacheSize: Long, ackDelay: FiniteDuration)
+private[session] case class RpcConfig(maxCachedResults: Long, maxCachedResultSize: Bytes, ackDelay: FiniteDuration)
 
 private[session] object RequestHandler {
   private[session] def props(promise: Promise[RpcApiService.RpcResponse], service: ActorRef, request: RpcApiService.HandleRpcRequest) =
@@ -86,7 +87,9 @@ private[session] class RpcHandler(config: RpcConfig) extends ActorSubscriber wit
   private[this] var requestQueue = Map.empty[Long, Cancellable]
 
   private[this] var protoMessageQueue = immutable.Queue.empty[(Option[RpcResult], Long)]
-  private[this] val responseCache = createCache[java.lang.Long, Future[RpcApiService.RpcResponse]](config.maxCacheSize)
+
+  // FIXME: invalidate on incoming ack
+  private[this] val responseCache = createCache[java.lang.Long, Future[RpcApiService.RpcResponse]](config.maxCachedResults)
 
   def subscriber: Receive = {
     case OnNext(HandleRpcRequest(messageId, requestBytes, clientData)) ⇒
@@ -129,6 +132,9 @@ private[session] class RpcHandler(config: RpcConfig) extends ActorSubscriber wit
     case RpcApiService.RpcResponse(messageId, result) ⇒
       log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
 
+      if (!canCache(result))
+        responseCache.invalidate(messageId)
+
       requestQueue.get(messageId) foreach (_.cancel())
       requestQueue -= messageId
       enqueue(Some(result), messageId)
@@ -138,6 +144,16 @@ private[session] class RpcHandler(config: RpcConfig) extends ActorSubscriber wit
     case Ack(messageId) ⇒ enqueueAck(messageId)
     case Request(_)     ⇒ deliverBuf()
     case Cancel         ⇒ context.stop(self)
+  }
+
+  private def canCache(result: RpcResult): Boolean = {
+    val size = result match {
+      case RpcOk(res)    ⇒ res.getSerializedSize
+      case err: RpcError ⇒ err.data.map(_.getSerializedSize).getOrElse(0) + err.userMessage.length
+      case _             ⇒ 0
+    }
+
+    size > config.maxCachedResultSize.value
   }
 
   private def enqueueAck(requestMessageId: Long): Unit = enqueue(None, requestMessageId)

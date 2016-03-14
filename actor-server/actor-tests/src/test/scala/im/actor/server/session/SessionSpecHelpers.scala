@@ -55,7 +55,7 @@ trait SessionSpecHelpers extends AbstractPatienceConfiguration with Matchers {
     update.asInstanceOf[T]
   }
 
-  protected def expectRpcResult(authId: Long, sessionId: Long, sendAckAt: Option[Duration] = Some(0.seconds), expectAckFor: Set[Long] = Set.empty)(implicit probe: TestProbe, sessionRegion: SessionRegion): RpcResult = {
+  protected def expectRpcResult(authId: Long, sessionId: Long, sendAckAt: Option[Duration] = Some(0.seconds), expectAckFor: Set[Long] = Set.empty, ignoreAcks: Boolean = false)(implicit probe: TestProbe, sessionRegion: SessionRegion): RpcResult = {
     val messages = probe.receiveN(1 + expectAckFor.size, patienceConfig.timeout.totalNanos.nano).toSet
 
     if (messages.size != expectAckFor.size + 1) {
@@ -71,7 +71,8 @@ trait SessionSpecHelpers extends AbstractPatienceConfiguration with Matchers {
           }
       }
 
-      ackIds shouldEqual expectAckFor
+      if (!ignoreAcks)
+        ackIds shouldEqual expectAckFor
 
       rest match {
         case Vector((messageId, ProtoRpcResponse(_, rpcResultBytes))) ⇒
