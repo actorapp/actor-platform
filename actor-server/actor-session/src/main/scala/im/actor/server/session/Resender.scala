@@ -417,8 +417,13 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
     onError(new RuntimeException(msg) with NoStackTrace)
   }
 
+  private def pushBufferSize = responseBuffer.size + pushBuffer.size + newSessionBuffer.map(_ => 1).getOrElse(0)
+
   override def postStop(): Unit = {
     super.postStop()
+    log.debug("Clearing resend buffers ({} items)", pushBufferSize)
+    responseBuffer.values foreach (_._2.cancel())
     pushBuffer.values foreach (_._2.cancel())
+    newSessionBuffer foreach (_._3.cancel())
   }
 }
