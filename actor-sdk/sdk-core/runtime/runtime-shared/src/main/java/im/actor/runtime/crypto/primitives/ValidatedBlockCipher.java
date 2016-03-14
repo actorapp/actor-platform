@@ -1,6 +1,5 @@
 package im.actor.runtime.crypto.primitives;
 
-import im.actor.core.util.JavaUtil;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.crypto.BlockCipher;
 
