@@ -14,6 +14,7 @@ import im.actor.core.modules.internal.file.UploadManager;
 import im.actor.core.modules.internal.file.entity.Downloaded;
 import im.actor.core.util.BaseKeyValueEngine;
 import im.actor.core.viewmodel.FileCallback;
+import im.actor.core.viewmodel.FileEventCallback;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorCreator;
@@ -68,6 +69,14 @@ public class FilesModule extends AbsModule {
 
     public KeyValueEngine<Downloaded> getDownloadedEngine() {
         return downloadedEngine;
+    }
+
+    public void subscribe(FileEventCallback callback) {
+        downloadManager.send(new DownloadManager.SubscribeToDownloads(callback));
+    }
+
+    public void unsubscribe(FileEventCallback callback) {
+        downloadManager.send(new DownloadManager.UnsubscribeToDownloads(callback));
     }
 
     public void bindFile(FileReference fileReference, boolean isAutostart, FileCallback callback) {
