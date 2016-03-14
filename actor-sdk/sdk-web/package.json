@@ -55,7 +55,7 @@
     "crosstab": "0.2.12",
     "flexboxgrid": "6.3.0",
     "flux": "2.1.1",
-    "highlight.js": "^9.2.0",
+    "highlight.js": "9.2.0",
     "immutable": "3.7.6",
     "intl": "1.1.0",
     "jsonlylightbox": "github:actorapp/jsOnlyLightbox#develop",
@@ -76,7 +76,7 @@
     "react-router": "2.0.1",
     "react-scroll": "github:actorapp/react-scroll#develop",
     "react-visibility-sensor": "3.0.0",
-    "setimmediate": "^1.0.4",
+    "setimmediate": "1.0.4",
     "simple-scrollbar": "github:actorapp/simple-scrollbar"
   },
   "devDependencies": {
