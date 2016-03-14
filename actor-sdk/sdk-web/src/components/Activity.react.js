@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import { PeerTypes } from '../constants/ActorAppConstants';
@@ -29,11 +30,22 @@ class ActivitySection extends Component {
     };
   }
 
-  renderBody() {
-    const { isOpen, peer, info } = this.state;
-    if (!isOpen) {
-      return null;
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!nextState.isOpen) {
+      return false;
     }
+
+    return shallowCompare(this, nextProps, nextState);
+  }
+
+  componentDidUpdate() {
+    setImmediate(() => {
+      window.dispatchEvent(new Event('resize'));
+    });
+  }
+
+  renderBody() {
+    const { peer, info } = this.state;
 
     switch (peer.type) {
       case PeerTypes.USER:
@@ -47,24 +59,16 @@ class ActivitySection extends Component {
 
   render() {
     const { peer, info, isOpen } = this.state;
-    if (peer === null) {
-      return null;
+    if (!isOpen || !peer) {
+      return <section className="activity" />;
     }
 
-    setImmediate(() => {
-      window.dispatchEvent(new Event('resize'));
-    });
-
-    const activityClassName = classnames('activity', {
-      'activity--shown': isOpen
-    });
-
     return (
-      <section className={activityClassName}>
+      <section className="activity activity--shown">
         {this.renderBody()}
       </section>
     );
   }
 }
 
-export default Container.create(ActivitySection, {pure: false});
+export default Container.create(ActivitySection);

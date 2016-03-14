@@ -5,8 +5,10 @@ import java.util.concurrent.Executors
 
 import akka.actor.ActorSystem
 import akka.event.Logging
-import akka.http.scaladsl.model.{ StatusCodes, HttpResponse }
+import akka.http.scaladsl.model.{ HttpResponse, StatusCodes }
 import akka.http.scaladsl.model.StatusCodes.OK
+import akka.http.scaladsl.model.headers.ContentDispositionTypes.attachment
+import akka.http.scaladsl.model.headers.`Content-Disposition`
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server._
 import akka.stream.ActorMaterializer
@@ -14,7 +16,7 @@ import im.actor.server.api.http.HttpHandler
 import im.actor.server.file.local.{ FileStorageOperations, LocalFileStorageConfig, RequestSigning }
 import im.actor.util.log.AnyRefLogSource
 
-import scala.concurrent.{ Future, ExecutionContext }
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
 private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfig)(implicit val system: ActorSystem)
@@ -57,7 +59,11 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
                   onComplete(getFile(fileId)) {
                     case Success(Some(file)) =>
                       log.debug("Serving fileId: {}, file: {} parts", fileId, file)
-                      getFromFile(file.toJava)
+                      respondWithDefaultHeader(
+                        `Content-Disposition`(attachment, Map("filename" -> file.name))
+                      ) {
+                        getFromFile(file.toJava)
+                      }
                     case Success(None) =>
                       complete(HttpResponse(StatusCodes.NotFound))
                     case Failure(e) =>
