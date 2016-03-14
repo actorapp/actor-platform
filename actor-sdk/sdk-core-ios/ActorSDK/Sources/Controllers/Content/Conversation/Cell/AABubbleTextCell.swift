@@ -40,7 +40,7 @@ public class AABubbleTextCell : AABubbleCell {
         
         messageText.displaysAsynchronously = true
         messageText.ignoreCommonProperties = true
-        messageText.clearContentsBeforeAsynchronouslyDisplay = false
+        messageText.clearContentsBeforeAsynchronouslyDisplay = true
         messageText.fadeOnAsynchronouslyDisplay = true
         messageText.highlightTapAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
             let attributes = text.attributesAtIndex(range.location, effectiveRange: nil)
@@ -64,10 +64,10 @@ public class AABubbleTextCell : AABubbleCell {
         senderNameLabel.displaysAsynchronously = true
         senderNameLabel.ignoreCommonProperties = true
         senderNameLabel.fadeOnAsynchronouslyDisplay = true
-        senderNameLabel.clearContentsBeforeAsynchronouslyDisplay = false
+        senderNameLabel.clearContentsBeforeAsynchronouslyDisplay = true
         
         dateText.displaysAsynchronously = true
-        dateText.clearContentsBeforeAsynchronouslyDisplay = false
+        dateText.clearContentsBeforeAsynchronouslyDisplay = true
         dateText.fadeOnAsynchronouslyDisplay = true
         dateText.font = AABubbleTextCell.dateFont
         dateText.lineBreakMode = .ByClipping
@@ -147,42 +147,36 @@ public class AABubbleTextCell : AABubbleCell {
         
         // Always update date and state
         dateText.text = cellLayout.date
-        messageState = message.messageState.ordinal();
+        messageState = message.messageState.ordinal()
         
         if (isOut) {
             switch(self.messageState) {
             case ACMessageState.PENDING().ordinal():
-                self.statusView.image = appStyle.chatIconClock;
+                self.statusView.image = appStyle.chatIconClock
                 self.statusView.tintColor = appStyle.chatStatusSending
                 break;
             case ACMessageState.SENT().ordinal():
-                self.statusView.image = appStyle.chatIconCheck1;
+                self.statusView.image = appStyle.chatIconCheck1
                 self.statusView.tintColor = appStyle.chatStatusSent
                 break;
             case ACMessageState.RECEIVED().ordinal():
-                self.statusView.image = appStyle.chatIconCheck2;
+                self.statusView.image = appStyle.chatIconCheck2
                 self.statusView.tintColor = appStyle.chatStatusReceived
                 break;
             case ACMessageState.READ().ordinal():
-                self.statusView.image = appStyle.chatIconCheck2;
+                self.statusView.image = appStyle.chatIconCheck2
                 self.statusView.tintColor = appStyle.chatStatusRead
                 break;
             case ACMessageState.ERROR().ordinal():
-                self.statusView.image = appStyle.chatIconError;
+                self.statusView.image = appStyle.chatIconError
                 self.statusView.tintColor = appStyle.chatStatusError
                 break
             default:
-                self.statusView.image = appStyle.chatIconClock;
+                self.statusView.image = appStyle.chatIconClock
                 self.statusView.tintColor = appStyle.chatStatusSending
                 break;
             }
         }
-    }
-    
-    public override func prepareForReuse() {
-        super.prepareForReuse()
-        
-//        self.messageText.layer.contents = nil
     }
     
     // Menu for Text cell
