@@ -3,7 +3,7 @@ package im.actor.runtime.crypto.primitives.modes;
 import com.google.j2objc.annotations.AutoreleasePool;
 
 import im.actor.runtime.crypto.IntegrityException;
-import im.actor.runtime.crypto.primitives.BlockCipher;
+import im.actor.runtime.crypto.BlockCipher;
 
 /**
  * CBC Cipher implementation
