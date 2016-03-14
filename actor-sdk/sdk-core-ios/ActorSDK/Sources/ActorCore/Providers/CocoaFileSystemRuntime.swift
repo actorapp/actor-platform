@@ -17,24 +17,15 @@ class CocoaFiles {
 
 @objc class CocoaFileSystemRuntime : NSObject, ARFileSystemRuntime {
     
-    var appPath: String = ""
-    
     let manager = NSFileManager.defaultManager()
     
     override init() {
         super.init()
-        
-        var documentsFolders = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
-        if (documentsFolders.count > 0) {
-            appPath = documentsFolders[0].asNS.stringByDeletingLastPathComponent
-        } else {
-            fatalError("Unable to load Application path")
-        }
     }
     
     func createTempFile() -> ARFileSystemReference! {
         let fileName = "/tmp/\(NSUUID().UUIDString)"
-        NSFileManager.defaultManager().createFileAtPath(appPath + fileName, contents: NSData(), attributes: nil)
+        NSFileManager.defaultManager().createFileAtPath(documentsFolder + fileName, contents: nil, attributes: nil)
         return CocoaFile(path: fileName)
     }
     
@@ -42,14 +33,14 @@ class CocoaFiles {
 
         // Finding file available name
         var index = 0;
-        while(manager.fileExistsAtPath("\(appPath)/Documents/\(index)_\(fileName)")) {
-            index = index + 1;
+        while(manager.fileExistsAtPath("\(documentsFolder)/Documents/\(fileId)_\(index)_\(fileName)")) {
+            index = index + 1
         }
-        let resultPath = "/Documents/\(index)_\(fileName)";
+        let resultPath = "/Documents/\(fileId)_\(index)_\(fileName)"
         
         // Moving file to new place
         do {
-            try manager.moveItemAtPath(appPath + sourceFile.getDescriptor()!, toPath: appPath + resultPath)
+            try manager.moveItemAtPath(documentsFolder + sourceFile.getDescriptor()!, toPath: documentsFolder + resultPath)
             return CocoaFile(path: resultPath)
         } catch _ {
             return nil
@@ -137,18 +128,18 @@ class CocoaOutputFile : NSObject, AROutputFile {
             srcBuffer++;
         }
         
-        NSLog("Write to file \(fileOffset)")
+//        NSLog("Write to file \(fileOffset)")
         fileHandle.seekToFileOffset(UInt64(fileOffset));
         fileHandle.writeData(toWrite)
-        NSLog("Write to file \(fileOffset): end")
+//        NSLog("Write to file \(fileOffset): end")
         return true;
     }
     
     func close() -> Bool {
-        NSLog("Close file")
+//        NSLog("Close file")
         self.fileHandle.synchronizeFile()
         self.fileHandle.closeFile()
-        NSLog("Close file end")
+//        NSLog("Close file end")
         return true;
     }
 }

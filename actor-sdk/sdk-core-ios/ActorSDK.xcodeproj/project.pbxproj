@@ -1088,12 +1088,12 @@
 				066A53351BC537BF000E606E /* Conversation */,
 				066A52E11BC52A16000E606E /* Group */,
 				06E7B2451C0F8D410090660C /* Location */,
-				066A52181BC4EE9A000E606E /* Managed Runtime */,
 				066A53051BC5317B000E606E /* Recent */,
 				066A527B1BC51EC6000E606E /* Root */,
 				066A52EB1BC52AF8000E606E /* Settings */,
 				066A53091BC53197000E606E /* User */,
 				06E323131C6A7AA300D66F53 /* Calls */,
+				066A52181BC4EE9A000E606E /* Managed Runtime */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
