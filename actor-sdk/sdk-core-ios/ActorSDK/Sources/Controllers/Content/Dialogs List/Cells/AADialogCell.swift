@@ -144,30 +144,30 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         //
         // Message State
         //
-//        let messageState = item.status.ordinal()
-//        if (messageState == ACMessageState.PENDING().ordinal()) {
-//            self.statusView.tintColor = dialogStatusSending
-//            self.statusView.image = chatIconClock
-//            self.statusView.hidden = false
-//        } else if (messageState == ACMessageState.READ().ordinal()) {
-//            self.statusView.tintColor = dialogStatusRead
-//            self.statusView.image = chatIconCheck2
-//            self.statusView.hidden = false
-//        } else if (messageState == ACMessageState.RECEIVED().ordinal()) {
-//            self.statusView.tintColor = dialogStatusReceived
-//            self.statusView.image = chatIconCheck2
-//            self.statusView.hidden = false
-//        } else if (messageState == ACMessageState.SENT().ordinal()) {
-//            self.statusView.tintColor = dialogStatusSent
-//            self.statusView.image = chatIconCheck1
-//            self.statusView.hidden = false
-//        } else if (messageState == ACMessageState.ERROR().ordinal()) {
-//            self.statusView.tintColor = dialogStatusError
-//            self.statusView.image = chatIconError
-//            self.statusView.hidden = false
-//        } else {
-//            self.statusView.hidden = true
-//        }
+        let messageState = item.status.ordinal()
+        if (messageState == ACMessageState.PENDING().ordinal()) {
+            self.statusView.tintColor = dialogStatusSending
+            self.statusView.image = chatIconClock
+            self.statusView.hidden = false
+        } else if (messageState == ACMessageState.READ().ordinal()) {
+            self.statusView.tintColor = dialogStatusRead
+            self.statusView.image = chatIconCheck2
+            self.statusView.hidden = false
+        } else if (messageState == ACMessageState.RECEIVED().ordinal()) {
+            self.statusView.tintColor = dialogStatusReceived
+            self.statusView.image = chatIconCheck2
+            self.statusView.hidden = false
+        } else if (messageState == ACMessageState.SENT().ordinal()) {
+            self.statusView.tintColor = dialogStatusSent
+            self.statusView.image = chatIconCheck1
+            self.statusView.hidden = false
+        } else if (messageState == ACMessageState.ERROR().ordinal()) {
+            self.statusView.tintColor = dialogStatusError
+            self.statusView.image = chatIconError
+            self.statusView.hidden = false
+        } else {
+            self.statusView.hidden = true
+        }
         
         // Cancelling Renderer and forcing layouting to start new rendering
         cellRenderer.cancelRender()
