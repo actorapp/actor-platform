@@ -95,7 +95,9 @@ public class AATableViewCell: UITableViewCell {
     }
     
     public override func setHighlighted(highlighted: Bool, animated: Bool) {
-        super.setHighlighted(highlighted, animated: animated)
+        if self.highlighted != highlighted {
+            super.setHighlighted(highlighted, animated: animated)
+        }
         
         if !highlighted {
             if topSeparator.backgroundColor != AATableViewCell.separatorColor {
@@ -108,7 +110,9 @@ public class AATableViewCell: UITableViewCell {
     }
     
     public override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+        if self.selected != selected {
+            super.setSelected(selected, animated: animated)
+        }
         
         if !selected {
             if topSeparator.backgroundColor != AATableViewCell.separatorColor {

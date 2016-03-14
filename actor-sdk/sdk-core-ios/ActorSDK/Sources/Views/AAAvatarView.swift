@@ -243,7 +243,7 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                 }
                 
                 if image != nil {
-                    image!.drawInRect(CGRectMake(0, 0, r * 2, r * 2))
+                    image!.resize(r * 2, h: r * 2).drawInRect(CGRectMake(0, 0, r * 2, r * 2))
                 } else {
                     // Clean BG
                     CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor)
