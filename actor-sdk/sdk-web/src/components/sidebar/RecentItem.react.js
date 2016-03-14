@@ -49,7 +49,7 @@ class RecentItem extends Component {
       y: event.pageY || event.clientY
     };
     DropdownActionCreators.openRecentContextMenu(contextPos, peer);
-  }
+  };
 
   render() {
     const { dialog, type } = this.props;
