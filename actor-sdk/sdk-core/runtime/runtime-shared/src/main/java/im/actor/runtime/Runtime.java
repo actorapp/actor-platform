@@ -9,6 +9,7 @@ import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
 import im.actor.runtime.threading.ImmediateDispatcher;
 import im.actor.runtime.threading.ThreadLocalCompat;
+import im.actor.runtime.threading.WeakReferenceCompat;
 
 public class Runtime {
 
@@ -52,6 +53,10 @@ public class Runtime {
 
     public static <T> ThreadLocalCompat<T> createThreadLocal() {
         return threadingRuntime.createThreadLocal();
+    }
+
+    public static <T> WeakReferenceCompat<T> createWeakReference(T val) {
+        return threadingRuntime.createWeakReference(val);
     }
 
     public static boolean isSingleThread() {

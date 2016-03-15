@@ -6,10 +6,12 @@ import im.actor.runtime.generic.threading.GenericImmediateDispatcher;
 import im.actor.runtime.generic.threading.GenericThreadLocal;
 import im.actor.runtime.ThreadingRuntime;
 import im.actor.runtime.actors.ThreadPriority;
+import im.actor.runtime.generic.threading.GenericWeakReference;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
 import im.actor.runtime.threading.ImmediateDispatcher;
 import im.actor.runtime.threading.ThreadLocalCompat;
+import im.actor.runtime.threading.WeakReferenceCompat;
 
 public abstract class GenericThreadingProvider implements ThreadingRuntime {
 
@@ -40,6 +42,11 @@ public abstract class GenericThreadingProvider implements ThreadingRuntime {
     @Override
     public AtomicIntegerCompat createAtomicInt(int value) {
         return new GenericAtomicInteger(value);
+    }
+
+    @Override
+    public <T> WeakReferenceCompat<T> createWeakReference(T val) {
+        return new GenericWeakReference<>(val);
     }
 
     @Override
