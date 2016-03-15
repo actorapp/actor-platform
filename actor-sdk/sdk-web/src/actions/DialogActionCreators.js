@@ -143,6 +143,10 @@ const DialogActionCreators = {
       success: ActionTypes.GROUP_HIDE_SUCCESS,
       failure: ActionTypes.GROUP_HIDE_ERROR
     }, { peer });
+  },
+
+  loadMoreMessages(peer) {
+    dispatch(ActionTypes.MESSAGES_LOAD_MORE, { peer });
   }
 };
 

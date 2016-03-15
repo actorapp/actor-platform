@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
 import Immutable from 'immutable';
@@ -7,10 +7,10 @@ import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
-let _messages = [];
-let _overlay = [];
-let _isLoaded = false;
-let _selectedMessages = new Immutable.Set();
+import DialogActionCreators from '../actions/DialogActionCreators';
+
+const initialRenderMessagesCount = 20;
+const renderMessagesStep = 20;
 
 /**
  * Class representing a store for messages.
@@ -18,50 +18,108 @@ let _selectedMessages = new Immutable.Set();
 class MessageStore extends Store {
   constructor(dispatcher) {
     super(dispatcher);
+
+    this._renderMessagesCount = initialRenderMessagesCount;
+    this._messages = [];
+    this._messagesToRender = [];
+    this._overlay = [];
+    this._overlayToRender = [];
+    this._isLoaded = false;
+    this._selectedMessages = new Immutable.Set();
   }
 
   /**
    * @returns {Array} All messages stored for currently bound conversation
    */
   getAll() {
-    return _messages;
+    return this._messages;
   }
 
   /**
-   * @returns {Array} Meesages overlay
+   * @returns {Array} Messages to render
    */
-  getOverlay() {
-    return _overlay;
+  getMessagesToRender() {
+    return this._messagesToRender;
   }
 
+  /**
+   * @returns {Array} Messages overlay
+   */
+  getOverlay() {
+    return this._overlay;
+  }
+
+  /**
+   * @returns {Array} Messages overlay to render
+   */
+  getOverlayToRender() {
+    return this._overlayToRender;
+  }
+
+  /**
+   * @returns {Boolean} is all messages loaded for current conversation
+   */
   isLoaded() {
-    return _isLoaded;
+    return this._isLoaded;
   }
 
   /**
    * @returns {Array} Selected messages
    */
   getSelected() {
-    return _selectedMessages;
+    return this._selectedMessages;
+  }
+
+
+  updateMessagesToRender() {
+    this._messagesToRender = (this._messages.length > this._renderMessagesCount) ? this._messages.slice(this._messages.length - this._renderMessagesCount) : this._messages;
+  }
+
+  updateOverlayToRender() {
+    this._overlayToRender = (this._overlay.length > this._renderMessagesCount) ? this._overlay.slice(this._overlay.length - this._renderMessagesCount) : this._overlay;
   }
 
   __onDispatch(action) {
     switch(action.type) {
-      case ActionTypes.SELECT_DIALOG_PEER:
-        _selectedMessages = new Immutable.Set();
+      case ActionTypes.BIND_DIALOG_PEER:
+        this._renderMessagesCount = initialRenderMessagesCount;
+        this._messages = [];
+        this._messagesToRender = [];
+        this._overlay = [];
+        this._overlayToRender = [];
+        this._selectedMessages = new Immutable.Set();
         this.__emitChange();
         break;
 
       case ActionTypes.MESSAGES_CHANGED:
-        _messages = action.messages;
-        _overlay = action.overlay;
-        _isLoaded = action.isLoaded;
+        this._messages = action.messages;
+        this._overlay = action.overlay;
+        this.updateMessagesToRender();
+        this.updateOverlayToRender();
+        this._isLoaded = action.isLoaded;
         this.__emitChange();
         break;
 
       case ActionTypes.MESSAGES_SET_SELECTED:
-        _selectedMessages = action.selectedMesages;
+        this._selectedMessages = action.selectedMesages;
         this.__emitChange();
+        break;
+
+      case ActionTypes.MESSAGES_LOAD_MORE:
+        if (this._messages.length > this._messagesToRender.length) {
+          this._renderMessagesCount += renderMessagesStep;
+
+          if (this._renderMessagesCount > this._messages.length) {
+            this._renderMessagesCount = this._messages.length;
+          }
+
+          this.updateMessagesToRender();
+          this.updateOverlayToRender();
+
+          this.__emitChange();
+        } else {
+          DialogActionCreators.onChatEnd(action.peer);
+        }
         break;
 
       default:
