@@ -568,6 +568,8 @@
 
 "ActionAddPhoto2" = "фото";
 
+"ActionOpenCode" = "Посмотреть код";
+
 /*
  * Network
  */
