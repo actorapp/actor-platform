@@ -131,6 +131,8 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
       log.debug("New client, sending all scheduled for resend")
 
       this.mbQueue.clear()
+      this.resendBufferSize = 0
+      this.resendPushBufferSize = 0
 
       this.newSessionBuffer foreach {
         case (messageId, ni, scheduled) ⇒
@@ -275,9 +277,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   }
 
   private def increaseBufferSize(item: ResendableItem): Unit = {
-    if (item.size <= MaxResendSize) {
-      this.resendBufferSize += item.size
-    }
+    this.resendBufferSize += item.size
 
     item match {
       case p: PushItem ⇒
@@ -290,7 +290,8 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   }
 
   private def decreaseBufferSize(item: ResendableItem): Unit = {
-    if (item.size <= MaxResendSize) this.resendBufferSize -= item.size
+    this.resendBufferSize -= item.size
+
     item match {
       case _: PushItem ⇒ this.resendPushBufferSize -= item.size
       case _           ⇒
@@ -451,7 +452,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   private def bufferOverflow(): Unit = {
     val msg = "Completing stream due to maximum buffer size reached"
     log.warning(msg)
-    onError(new RuntimeException(msg) with NoStackTrace)
+    onErrorThenStop(new RuntimeException(msg) with NoStackTrace)
   }
 
   private def pushBufferSize = responseBuffer.size + pushBuffer.size + newSessionBuffer.map(_ ⇒ 1).getOrElse(0)
