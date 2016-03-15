@@ -2,6 +2,12 @@ package im.actor.runtime.crypto.primitives.util;
 
 import com.google.j2objc.annotations.AutoreleasePool;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 /**
  * Source: Bouncy Castle v1.54
  * <p>

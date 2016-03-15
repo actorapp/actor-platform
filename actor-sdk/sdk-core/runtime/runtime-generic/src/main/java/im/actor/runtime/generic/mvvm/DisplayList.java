@@ -21,6 +21,12 @@ import im.actor.runtime.generic.mvvm.alg.Modifications;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class DisplayList<T> {
 
     private static int NEXT_ID = 0;

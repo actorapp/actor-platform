@@ -3,6 +3,12 @@ package im.actor.runtime.crypto.primitives.digest;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.crypto.Digest;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 /**
  * Truncated SHA256 for public keys
  */

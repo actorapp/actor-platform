@@ -10,6 +10,12 @@ import java.util.List;
 
 import im.actor.runtime.collections.SparseArray;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public final class BserParser {
     public static SparseArray<Object> deserialize(DataInput is) throws IOException {
         SparseArray<Object> hashMap = new SparseArray<Object>();
