@@ -277,7 +277,7 @@ public class ActorSDK {
         //
 
         try {
-            if (pushId != 0 && !delegate.useActorPush()) {
+            if (pushId != 0) {
                 final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
                 pushManager.registerPush(application);
             }
