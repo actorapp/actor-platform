@@ -4,6 +4,12 @@ import im.actor.runtime.Crypto;
 import im.actor.runtime.crypto.BlockCipher;
 import im.actor.runtime.crypto.primitives.util.Pack;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class KuznechikFastEngine implements BlockCipher {
 
     private static final byte[] kuz_pi = new byte[]{

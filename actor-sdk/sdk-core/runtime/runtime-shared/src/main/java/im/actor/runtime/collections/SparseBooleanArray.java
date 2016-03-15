@@ -37,6 +37,13 @@ package im.actor.runtime.collections;
  * keys in ascending order, or the values corresponding to the keys in ascending
  * order in the case of <code>valueAt(int)</code>.</p>
  */
+
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class SparseBooleanArray {
     /**
      * Creates a new SparseBooleanArray containing no mappings.

@@ -15,6 +15,12 @@ import im.actor.core.api.ApiAvatarImage;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class AvatarImage extends WrapperEntity<ApiAvatarImage> {
 
     private static final int RECORD_ID = 10;

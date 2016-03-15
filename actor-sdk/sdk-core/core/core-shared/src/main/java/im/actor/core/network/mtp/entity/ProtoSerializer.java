@@ -14,6 +14,12 @@ import im.actor.core.network.mtp.entity.rpc.RpcInternalError;
 import im.actor.core.network.mtp.entity.rpc.RpcOk;
 import im.actor.core.network.mtp.entity.rpc.RpcRequest;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class ProtoSerializer {
     public static ProtoStruct readMessagePayload(byte[] bs) throws IOException {
         return readMessagePayload(new DataInput(bs, 0, bs.length));

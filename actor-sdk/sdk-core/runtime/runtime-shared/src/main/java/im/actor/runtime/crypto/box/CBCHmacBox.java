@@ -9,6 +9,12 @@ import im.actor.runtime.crypto.primitives.modes.CBCBlockCipher;
 import im.actor.runtime.crypto.primitives.padding.PKCS7Padding;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 /**
  * CBC-encrypted package with HMAC (MAC-THEN-ENCRYPT).
  * <p/>

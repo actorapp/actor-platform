@@ -6,6 +6,12 @@ import im.actor.runtime.crypto.primitives.curve25519.curve_sigs;
 import im.actor.runtime.crypto.primitives.curve25519.scalarmult;
 import im.actor.runtime.crypto.primitives.digest.SHA512;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public final class Curve25519 {
 
     /**

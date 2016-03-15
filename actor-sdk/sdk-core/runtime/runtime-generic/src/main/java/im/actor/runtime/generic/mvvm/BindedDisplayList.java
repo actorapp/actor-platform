@@ -20,6 +20,12 @@ import im.actor.runtime.storage.ListEngineDisplayListener;
 import im.actor.runtime.storage.ListEngineDisplayLoadCallback;
 import im.actor.runtime.storage.ListEngineItem;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class BindedDisplayList<T extends BserObject & ListEngineItem> extends DisplayList<T>
         implements im.actor.runtime.mvvm.PlatformDisplayList<T> {
 

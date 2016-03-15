@@ -5,6 +5,12 @@ import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.Digest;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class RatchetMasterSecret {
     public static byte[] calculateMasterSecret(
             RatchetPrivateKey ownIdentity,

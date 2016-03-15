@@ -10,6 +10,12 @@ import java.io.IOException;
 
 import im.actor.runtime.collections.SparseArray;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public abstract class BserObject {
 
     private SparseArray<Object> unmappedObjects;

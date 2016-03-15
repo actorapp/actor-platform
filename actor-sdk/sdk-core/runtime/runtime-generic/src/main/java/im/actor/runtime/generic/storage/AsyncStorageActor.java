@@ -17,6 +17,12 @@ import im.actor.runtime.storage.ListEngineItem;
 import im.actor.runtime.storage.ListEngineRecord;
 import im.actor.runtime.storage.ListStorageDisplayEx;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
     private final ListStorageDisplayEx storage;
     private final BserCreator<T> creator;
@@ -183,7 +189,7 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
         } else if (message instanceof LoadBackward) {
             loadBackward(((LoadBackward) message).getQuery(), ((LoadBackward) message).getTopSortKey(),
                     ((LoadBackward) message).getLimit(), ((LoadBackward) message).getCallback());
-        }else if (message instanceof LoadCenter) {
+        } else if (message instanceof LoadCenter) {
             loadCenter(((LoadCenter) message).getCenterSortKey(),
                     ((LoadCenter) message).getLimit(), ((LoadCenter) message).getCallback());
         } else {
@@ -343,6 +349,7 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
             this.limit = limit;
             this.callback = callback;
         }
+
         public Long getCenterSortKey() {
             return centerSortKey;
         }
