@@ -17,6 +17,12 @@ import im.actor.runtime.storage.ListEngineItem;
 import im.actor.runtime.storage.ListStorageDisplayEx;
 import im.actor.runtime.storage.ObjectCache;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class AsyncListEngine<T extends BserObject & ListEngineItem>
         implements ListEngineDisplayExt<T> {
 

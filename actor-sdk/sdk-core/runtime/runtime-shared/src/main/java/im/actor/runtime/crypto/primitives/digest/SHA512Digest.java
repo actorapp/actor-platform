@@ -2,9 +2,15 @@ package im.actor.runtime.crypto.primitives.digest;
 
 import im.actor.runtime.crypto.primitives.util.Pack;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 /**
  * FIPS 180-2 implementation of SHA-512.
- * <p/>
+ * <p>
  * <pre>
  *         block  word  digest
  * SHA-1   512    32    160

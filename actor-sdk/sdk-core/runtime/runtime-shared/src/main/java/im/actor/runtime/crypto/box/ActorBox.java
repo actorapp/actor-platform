@@ -9,6 +9,12 @@ import im.actor.runtime.crypto.primitives.padding.PKCS7Padding;
 import im.actor.runtime.crypto.primitives.streebog.Streebog256;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 /**
  * Encrypted Actor Box. Encrypted and HMACed with AES-128-CBC-HMAC-SHA256 and then again
  * with Kuznechik-128-CBC-HMAC-Streebog256. Cipher Text is padded with PKCS#7.

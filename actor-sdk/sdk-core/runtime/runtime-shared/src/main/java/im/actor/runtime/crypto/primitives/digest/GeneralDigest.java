@@ -3,6 +3,12 @@ package im.actor.runtime.crypto.primitives.digest;
 
 import im.actor.runtime.crypto.primitives.util.Pack;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 /**
  * base implementation of MD4 family style digest as outlined in
  * "Handbook of Applied Cryptography", pages 344 - 347.

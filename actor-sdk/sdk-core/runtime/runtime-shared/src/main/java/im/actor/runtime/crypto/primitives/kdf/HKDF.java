@@ -4,6 +4,12 @@ import im.actor.runtime.crypto.Digest;
 import im.actor.runtime.crypto.primitives.hmac.HMAC;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 /**
  * HKDF implementation based on RFC 5869: https://tools.ietf.org/html/rfc5869
  *
