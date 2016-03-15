@@ -15,7 +15,6 @@ import im.actor.server.persist.UserPasswordRepo
 import im.actor.server.user.UserExtension
 import im.actor.util.ThreadLocalSecureRandom
 import org.apache.commons.codec.digest.DigestUtils
-import scodec.bits.BitVector
 import slick.dbio.DBIO
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -27,26 +26,26 @@ object ACLUtils extends ACLBase with ACLFiles {
   type Hash = Array[Byte]
   type Salt = Array[Byte]
 
-  def userAccessHash(authId: Long, userId: Int, accessSalt: String, md: MessageDigest = getMDInstance())(implicit s: ActorSystem): Long =
-    hash(s"$authId:$userId:$accessSalt:${secretKey()}", md)
+  def userAccessHash(authId: Long, userId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
+    hashObsolete(s"$authId:$userId:$accessSalt:${secretKey()}")
 
   def userAccessHash(authId: Long, u: User)(implicit s: ActorSystem): Long =
     userAccessHash(authId, u.id, u.accessSalt)
 
   def phoneAccessHash(authId: Long, userId: Int, phoneId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
-    hash(s"$authId:$userId:$phoneId:$accessSalt:${secretKey()}")
+    hashObsolete(s"$authId:$userId:$phoneId:$accessSalt:${secretKey()}")
 
   def phoneAccessHash(authId: Long, p: UserPhone)(implicit s: ActorSystem): Long =
     phoneAccessHash(authId, p.userId, p.id, p.accessSalt)
 
   def emailAccessHash(authId: Long, userId: Int, emailId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
-    hash(s"$authId:$userId:$emailId:$accessSalt:${secretKey()}")
+    hashObsolete(s"$authId:$userId:$emailId:$accessSalt:${secretKey()}")
 
   def emailAccessHash(authId: Long, e: UserEmail)(implicit s: ActorSystem): Long =
     emailAccessHash(authId, e.userId, e.id, e.accessSalt)
 
   def stickerPackAccessHash(id: Int, ownerUserId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
-    hash(s"$id:$ownerUserId:$accessSalt:${secretKey()}")
+    hashObsolete(s"$id:$ownerUserId:$accessSalt:${secretKey()}")
 
   def stickerPackAccessHash(pack: StickerPack)(implicit s: ActorSystem): Long =
     stickerPackAccessHash(pack.id, pack.ownerUserId, pack.accessSalt)
