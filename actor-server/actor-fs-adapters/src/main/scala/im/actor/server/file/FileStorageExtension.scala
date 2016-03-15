@@ -4,6 +4,7 @@ import akka.actor._
 import im.actor.acl.ACLFiles
 import im.actor.config.ActorConfig
 import im.actor.serialization.ActorSerializer
+import im.actor.server.api.http.HttpApi
 import im.actor.server.file.local.LocalUploadKey
 import im.actor.server.file.s3.S3UploadKey
 
@@ -31,8 +32,12 @@ class FileStorageExtensionImpl(system: ActorSystem) extends FileStorageExtension
       _ = system.log.debug("File adapter is: {}", fqcn)
       clazz ← Try(Class.forName(fqcn).asSubclass(classOf[FileStorageAdapter]))
     } yield clazz.getDeclaredConstructor(classOf[ActorSystem]).newInstance(system)) match {
-      case Success(adapter) ⇒ adapter
-      case Failure(e)       ⇒ throw new RuntimeException("Failed to initialize FileStorageAdapter", e)
+      case Success(adapter) ⇒
+        HttpApi(system).registerHook("fileurlbuilder") { implicit system ⇒
+          new FileUrlBuilderHttpHandler(adapter).routes
+        }
+        adapter
+      case Failure(e) ⇒ throw new RuntimeException("Failed to initialize FileStorageAdapter", e)
     }
 }
 

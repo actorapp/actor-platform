@@ -1,17 +1,14 @@
-package im.actor.server.persist
+package im.actor.server.persist.files
 
 import im.actor.server.model.FilePart
 import slick.dbio.Effect.{ Read, Write }
 import slick.driver.PostgresDriver.api._
-import slick.profile.{ FixedSqlStreamingAction, FixedSqlAction }
+import slick.profile.{ FixedSqlAction, FixedSqlStreamingAction }
 
 final class FilePartTable(tag: Tag) extends Table[FilePart](tag, "file_parts") {
   def fileId = column[Long]("file_id", O.PrimaryKey)
-
   def number = column[Int]("number", O.PrimaryKey)
-
   def size = column[Int]("size")
-
   def uploadKey = column[String]("upload_key")
 
   def * = (fileId, number, size, uploadKey) <> (FilePart.tupled, FilePart.unapply)
