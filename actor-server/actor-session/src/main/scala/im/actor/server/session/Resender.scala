@@ -106,6 +106,8 @@ private[session] object ReSender {
     }
   }
 
+  private case object BufferOverflow
+
   def props(authId: Long, sessionId: Long, firstMessageId: Long)(implicit config: ReSenderConfig) =
     Props(classOf[ReSender], authId, sessionId, firstMessageId, config)
 }
@@ -172,6 +174,9 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
 
   // Used to prevent scheduling multiple updates at the same millisecond and result out of order
   private[this] var lastScheduledResend = System.currentTimeMillis - 1
+
+  // Holds scheduled task to send BufferOverflow to self
+  private[this] var scheduledBufferOverflow: Option[Cancellable] = None
 
   override def preStart(): Unit = {
     super.preStart()
@@ -274,6 +279,11 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
               enqueueRpc(ri, messageId)
         }
       } else log.debug("ScheduledResend for messageId: {}, item: {}, ignoring (absent in buffer)", messageId, item)
+    case BufferOverflow =>
+      if (this.resendBufferSize > config.maxBufferSize) {
+        log.warning("Buffer overflow, stopping session")
+        this.onCompleteThenStop()
+      } else this.scheduledBufferOverflow = None
   }
 
   private def increaseBufferSize(item: ResendableItem): Unit = {
@@ -450,9 +460,10 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   }
 
   private def bufferOverflow(): Unit = {
-    val msg = "Completing stream due to maximum buffer size reached"
-    log.warning(msg)
-    onErrorThenStop(new RuntimeException(msg) with NoStackTrace)
+    if (this.scheduledBufferOverflow.isDefined)
+      log.debug("Buffer overflow, stop is scheduled")
+    else
+      this.scheduledBufferOverflow = Some(context.system.scheduler.scheduleOnce(config.ackTimeout, self, BufferOverflow))
   }
 
   private def pushBufferSize = responseBuffer.size + pushBuffer.size + newSessionBuffer.map(_ ⇒ 1).getOrElse(0)
