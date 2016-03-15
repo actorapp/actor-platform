@@ -131,6 +131,8 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
       log.debug("New client, sending all scheduled for resend")
 
       this.mbQueue.clear()
+      this.resendBufferSize = 0
+      this.resendPushBufferSize = 0
 
       this.newSessionBuffer foreach {
         case (messageId, ni, scheduled) ⇒
