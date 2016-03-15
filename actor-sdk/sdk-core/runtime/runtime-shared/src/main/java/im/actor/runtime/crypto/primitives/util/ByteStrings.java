@@ -1,5 +1,11 @@
 package im.actor.runtime.crypto.primitives.util;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 /**
  * Various binary operation on binary strings
  *

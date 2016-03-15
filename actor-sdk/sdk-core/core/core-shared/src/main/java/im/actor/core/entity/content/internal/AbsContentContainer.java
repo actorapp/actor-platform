@@ -13,6 +13,12 @@ import im.actor.runtime.bser.BserWriter;
 import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.DataOutput;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public abstract class AbsContentContainer {
     private static final int TYPE_LOCAL = 0;
     private static final int TYPE_REMOTE = 1;

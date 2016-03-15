@@ -34,6 +34,12 @@ import im.actor.runtime.mtproto.Connection;
 import im.actor.runtime.mtproto.ConnectionCallback;
 import im.actor.runtime.mtproto.CreateConnectionCallback;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class AuthKeyActor extends Actor {
 
     private static final String TAG = "AuthKeyActor";

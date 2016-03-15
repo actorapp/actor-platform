@@ -46,6 +46,12 @@ import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.DataOutput;
 import im.actor.runtime.json.JSONObject;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public abstract class AbsContent {
 
     private static ContentConverter[] converters = new ContentConverter[0];

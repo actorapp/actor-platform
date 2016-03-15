@@ -9,6 +9,12 @@ import java.io.IOException;
 import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.DataOutput;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class ProtoPackage extends ProtoObject {
 
     private long authId;

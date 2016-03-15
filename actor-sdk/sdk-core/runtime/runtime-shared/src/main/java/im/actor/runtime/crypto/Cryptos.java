@@ -8,6 +8,12 @@ import im.actor.runtime.crypto.primitives.prf.PRF;
 import im.actor.runtime.crypto.primitives.streebog.Streebog256;
 import im.actor.runtime.crypto.primitives.streebog.Streebog512;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public final class Cryptos {
 
     public static HMAC HMAC_SHA256(byte[] secret) {
