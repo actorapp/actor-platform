@@ -580,6 +580,8 @@
 
 "ActionAddPhoto2" = "photo";
 
+"ActionOpenCode" = "View Code";
+
 /*
  *  Network
  */
