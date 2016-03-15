@@ -267,4 +267,8 @@ public class ChatListProcessor implements ListProcessor<Message> {
         }
         return res;
     }
+
+    public void setFragment(MessagesFragment fragment) {
+        this.fragment = fragment;
+    }
 }
