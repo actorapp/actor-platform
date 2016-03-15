@@ -451,7 +451,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   private def bufferOverflow(): Unit = {
     val msg = "Completing stream due to maximum buffer size reached"
     log.warning(msg)
-    onError(new RuntimeException(msg) with NoStackTrace)
+    onErrorThenStop(new RuntimeException(msg) with NoStackTrace)
   }
 
   private def pushBufferSize = responseBuffer.size + pushBuffer.size + newSessionBuffer.map(_ ⇒ 1).getOrElse(0)
