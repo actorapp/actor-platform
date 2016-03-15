@@ -48,6 +48,7 @@ public class AAAuthLogInViewController: AAAuthViewController {
             field.keyboardType = .Default
         }
         field.autocapitalizationType = .None
+        field.autocorrectionType = .No
         
         fieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         fieldLine.opaque = false
