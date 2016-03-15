@@ -92,13 +92,13 @@ public class AAWelcomeController: AAViewController {
     
     public func signupAction() {
         // TODO: Remove BG after auth?
-        UIApplication.sharedApplication().keyWindow?.backgroundColor = UIColor(red: 94, green: 142, blue: 192)
+        UIApplication.sharedApplication().keyWindow?.backgroundColor = ActorSDK.sharedActor().style.welcomeBgColor
         self.presentElegantViewController(AAAuthNavigationController(rootViewController: AAAuthNameViewController()))
     }
     
     public func signInAction() {
         // TODO: Remove BG after auth?
-        UIApplication.sharedApplication().keyWindow?.backgroundColor = UIColor(red: 94, green: 142, blue: 192)
+        UIApplication.sharedApplication().keyWindow?.backgroundColor = ActorSDK.sharedActor().style.welcomeBgColor
         self.presentElegantViewController(AAAuthNavigationController(rootViewController: AAAuthLogInViewController()))
     }
     
