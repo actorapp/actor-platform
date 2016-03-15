@@ -125,8 +125,9 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         BindedDisplayList<Message> res = messenger().getMessageDisplayList(peer);
         if (res.getListProcessor() == null) {
             res.setListProcessor(new ChatListProcessor(this));
+        }else{
+            ((ChatListProcessor)res.getListProcessor()).setFragment(this);
         }
-
         return res;
     }
 
