@@ -1,21 +1,16 @@
-package im.actor.server.persist
+package im.actor.server.persist.files
 
 import im.actor.server.model.File
 import slick.dbio.Effect.{ Read, Write }
 import slick.driver.PostgresDriver.api._
-import slick.profile.{ SqlAction, FixedSqlAction }
+import slick.profile.{ FixedSqlAction, SqlAction }
 
 final class FileTable(tag: Tag) extends Table[File](tag, "files") {
   def id = column[Long]("id", O.PrimaryKey)
-
   def accessSalt = column[String]("access_salt")
-
   def uploadKey = column[String]("upload_key")
-
   def isUploaded = column[Boolean]("is_uploaded")
-
   def size = column[Long]("size")
-
   def name = column[String]("name")
 
   def * = (id, accessSalt, uploadKey, isUploaded, size, name) <> (File.tupled, File.unapply)

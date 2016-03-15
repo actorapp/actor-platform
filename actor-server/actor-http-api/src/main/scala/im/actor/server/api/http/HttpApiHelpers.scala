@@ -2,7 +2,7 @@ package im.actor.server.api.http
 
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.{ PathMatcher, _ }
 
 object HttpApiHelpers extends HttpApiHelpers
 
@@ -20,5 +20,11 @@ trait HttpApiHelpers {
       route
     }
   }
+
+  val SignedLongNumber: PathMatcher1[Long] =
+    PathMatcher("""[+-]?\d+""".r) flatMap { string ⇒
+      try Some(java.lang.Long.parseLong(string))
+      catch { case _: NumberFormatException ⇒ None }
+    }
 
 }
