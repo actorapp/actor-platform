@@ -4,27 +4,32 @@ import akka.testkit.TestProbe
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.codecs._
+import im.actor.api.rpc.collections.ApiStringValue
 import im.actor.api.rpc.contacts.{ RequestGetContacts, UpdateContactRegistered }
 import im.actor.api.rpc.messaging.RequestLoadDialogs
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.ApiUserOutPeer
 import im.actor.api.rpc.sequence.{ RequestGetDifference, RequestGetState, RequestSubscribeToOnline, UpdateRawUpdate }
 import im.actor.api.rpc.misc.ResponseSeq
+import im.actor.api.rpc.raw.RequestRawRequest
 import im.actor.api.rpc.weak.UpdateUserOffline
 import im.actor.api.rpc.{ AuthorizedClientData, Request, RpcOk }
+import im.actor.server.api.rpc.RawApiExtension
 import im.actor.server.api.rpc.service.auth.AuthErrors
+import im.actor.server.api.rpc.service.raw.EchoService
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
 import im.actor.server.persist.AuthSessionRepo
 import im.actor.server.sequence.{ SeqUpdatesExtension, UserSequence, WeakUpdatesExtension }
 import im.actor.server.user.UserExtension
+import org.scalatest.BeforeAndAfterEach
 import scodec.bits._
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
 
-final class SessionSpec extends BaseSessionSpec {
+final class SessionSpec extends BaseSessionSpec with BeforeAndAfterEach {
   behavior of "Session actor"
 
   it should "send Drop on message on wrong message box" in sessions().wrongMessageBox
@@ -37,6 +42,14 @@ final class SessionSpec extends BaseSessionSpec {
   it should "receive fat updates" in sessions().fatSeq
   it should "react to SessionHello" in sessions().hello
   it should "send SeqUpdateTooLong" in sessions().seqUpdateTooLong
+  it should "cache small results" in sessions().cacheSmallResults
+  it should "not cache big results" in sessions().notCacheBigResults
+
+  @volatile var count = 0
+
+  override def beforeEach = {
+    RawApiExtension(system).register("echo", new EchoService(system) { override def onEcho() = count += 1 })
+  }
 
   case class sessions() {
 
@@ -370,6 +383,64 @@ final class SessionSpec extends BaseSessionSpec {
       expectNewSession(authId, sessionId, messageId)
       expectMessageAck(messageId)
       probe.expectNoMsg()
+    }
+
+    def cacheSmallResults(): Unit = {
+      implicit val probe = TestProbe()
+
+      val authId = createAuthId()
+      val sessionId = Random.nextLong()
+
+      val helloMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, helloMessageId, SessionHello)
+      expectNewSession(authId, sessionId, helloMessageId)
+      expectMessageAck()
+
+      val messageId = Random.nextLong()
+      count = 0
+
+      for (_ ← 1 to 3) {
+        sendRequest(
+          authId,
+          sessionId,
+          sessionRegion.ref,
+          messageId,
+          RequestRawRequest("echo", "makeEcho", Some(ApiStringValue("...")))
+        )
+        expectRpcResult(authId, sessionId, ignoreAcks = true)
+      }
+
+      count shouldBe 1
+    }
+
+    def notCacheBigResults(): Unit = {
+      implicit val probe = TestProbe()
+
+      val authId = createAuthId()
+      val sessionId = Random.nextLong()
+
+      val helloMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, helloMessageId, SessionHello)
+      expectNewSession(authId, sessionId, helloMessageId)
+      expectMessageAck()
+
+      val longString = List.range(1, 40000).map(_ ⇒ ".").mkString
+
+      val messageId = Random.nextLong()
+      count = 0
+
+      for (_ ← 1 to 3) {
+        sendRequest(
+          authId,
+          sessionId,
+          sessionRegion.ref,
+          messageId,
+          RequestRawRequest("echo", "makeEcho", Some(ApiStringValue(longString)))
+        )
+        expectRpcResult(authId, sessionId, ignoreAcks = true)
+      }
+
+      count shouldBe 3
     }
   }
 }

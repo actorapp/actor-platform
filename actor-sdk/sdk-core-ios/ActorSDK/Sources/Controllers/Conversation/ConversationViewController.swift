@@ -37,7 +37,7 @@ public class ConversationViewController:
     private let titleView: UILabel = UILabel()
     private let subtitleView: UILabel = UILabel()
     private let navigationView: UIView = UIView()
-    private let avatarView = AABarAvatarView(frameSize: 36, type: .Rounded)
+    private let avatarView = AABarAvatarView()
     private let backgroundView = UIImageView()
     private var audioButton: UIButton = UIButton()
     private var voiceRecorderView : AAVoiceRecorderView!
@@ -278,7 +278,7 @@ public class ConversationViewController:
                 self.navigationView.sizeToFit();
             })
             binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
-                self.avatarView.bind(user.getNameModel().get(), id: user.getId(), avatar: value)
+                self.avatarView.bind(user.getNameModel().get(), id: Int(user.getId()), avatar: value)
             })
             
             binder.bind(Actor.getTypingWithUid(peer.peerId)!, valueModel2: user.getPresenceModel(), closure:{ (typing:JavaLangBoolean?, presence:ACUserPresence?) -> () in
@@ -311,7 +311,7 @@ public class ConversationViewController:
                 self.navigationView.sizeToFit();
             })
             binder.bind(group.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
-                self.avatarView.bind(group.getNameModel().get(), id: group.getId(), avatar: value)
+                self.avatarView.bind(group.getNameModel().get(), id: Int(group.getId()), avatar: value)
             })
             binder.bind(Actor.getGroupTypingWithGid(group.getId())!, valueModel2: group.getMembersModel(), valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
                 if (!group.isMemberModel().get().booleanValue()) {
@@ -972,13 +972,13 @@ public class ConversationViewController:
 
 class AABarAvatarView : AAAvatarView {
     
-    override init(frameSize: Int, type: AAAvatarType) {
-        super.init(frameSize: frameSize, type: type)
-    }
-    
-    required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//    override init(frameSize: Int, type: AAAvatarType) {
+//        super.init(frameSize: frameSize, type: type)
+//    }
+//    
+//    required init(coder aDecoder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
     override func alignmentRectInsets() -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)

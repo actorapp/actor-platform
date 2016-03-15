@@ -66,7 +66,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
     
     public override func viewDidLoad() {
         
-        view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
+        view.backgroundColor = UIColor.whiteColor()
         
         scrollView.keyboardDismissMode = .OnDrag
         scrollView.scrollEnabled = true
@@ -106,6 +106,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         codeField.placeholder = AALocalized("AuthOTPPlaceholder")
         codeField.keyboardType = .NumberPad
         codeField.autocapitalizationType = .None
+        codeField.autocorrectionType = .No
         
         codeFieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         

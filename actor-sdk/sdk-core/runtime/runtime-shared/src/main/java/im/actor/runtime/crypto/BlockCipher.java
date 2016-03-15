@@ -1,4 +1,12 @@
-package im.actor.runtime.crypto.primitives;
+package im.actor.runtime.crypto;
+
+import com.google.j2objc.annotations.ObjectiveCName;
+
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
 
 /**
  * Block-based cipher
@@ -15,6 +23,7 @@ public interface BlockCipher {
      * @param dest       destination buffer
      * @param destOffset destination offset
      */
+    @ObjectiveCName("encryptBlock:withOffset:toDest:withOffset:")
     void encryptBlock(byte[] data, int offset, byte[] dest, int destOffset);
 
     /**
@@ -25,6 +34,7 @@ public interface BlockCipher {
      * @param dest       destination buffer
      * @param destOffset destination offset
      */
+    @ObjectiveCName("decryptBlock:withOffset:toDest:withOffset:")
     void decryptBlock(byte[] data, int offset, byte[] dest, int destOffset);
 
     /**
@@ -32,5 +42,6 @@ public interface BlockCipher {
      *
      * @return block size in bytes
      */
+    @ObjectiveCName("getBlockSize")
     int getBlockSize();
 }

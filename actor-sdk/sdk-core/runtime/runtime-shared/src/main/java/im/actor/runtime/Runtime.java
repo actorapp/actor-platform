@@ -1,5 +1,7 @@
 package im.actor.runtime;
 
+import com.google.j2objc.annotations.AutoreleasePool;
+
 import im.actor.runtime.actors.ThreadPriority;
 import im.actor.runtime.power.WakeLock;
 import im.actor.runtime.threading.Dispatcher;
@@ -7,6 +9,7 @@ import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
 import im.actor.runtime.threading.ImmediateDispatcher;
 import im.actor.runtime.threading.ThreadLocalCompat;
+import im.actor.runtime.threading.WeakReferenceCompat;
 
 public class Runtime {
 
@@ -52,6 +55,10 @@ public class Runtime {
         return threadingRuntime.createThreadLocal();
     }
 
+    public static <T> WeakReferenceCompat<T> createWeakReference(T val) {
+        return threadingRuntime.createWeakReference(val);
+    }
+
     public static boolean isSingleThread() {
         return mainThreadRuntime.isSingleThread();
     }
@@ -61,6 +68,10 @@ public class Runtime {
     }
 
     public static void checkMainThread() {
+        if (RuntimeEnvironment.isProduction()) {
+            // Do Nothing in production mode
+            return;
+        }
         if (mainThreadRuntime.isSingleThread()) {
             return;
         }
@@ -69,10 +80,12 @@ public class Runtime {
         }
     }
 
+    @AutoreleasePool
     public static void postToMainThread(Runnable runnable) {
         mainThreadRuntime.postToMainThread(runnable);
     }
 
+    @AutoreleasePool
     public static void dispatch(Runnable runnable) {
         dispatcherRuntime.dispatch(runnable);
     }

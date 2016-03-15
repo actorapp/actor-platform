@@ -1,9 +1,15 @@
 package im.actor.runtime.crypto.primitives.streebog;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ALL_CHECKS 1
+]-*/
+
 /**
  * Streebog Lookup tables by Markku-Juhani O. Saarinen <mjos@iki.fi>
  * https://github.com/mjosaarinen/stricat/blob/master/sbob_tab64.c
- * <p/>
+ * <p>
  * Ported by Steve Kite (steve@actor.im)
  */
 class StreebogTables {

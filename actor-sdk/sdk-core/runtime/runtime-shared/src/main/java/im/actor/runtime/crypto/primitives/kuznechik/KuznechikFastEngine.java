@@ -1,8 +1,14 @@
 package im.actor.runtime.crypto.primitives.kuznechik;
 
 import im.actor.runtime.Crypto;
-import im.actor.runtime.crypto.primitives.BlockCipher;
+import im.actor.runtime.crypto.BlockCipher;
 import im.actor.runtime.crypto.primitives.util.Pack;
+
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ALL_CHECKS 1
+]-*/
 
 public class KuznechikFastEngine implements BlockCipher {
 

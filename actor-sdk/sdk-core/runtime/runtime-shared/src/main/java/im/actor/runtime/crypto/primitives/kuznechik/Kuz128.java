@@ -2,6 +2,12 @@ package im.actor.runtime.crypto.primitives.kuznechik;
 
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ALL_CHECKS 1
+]-*/
+
 /**
  * 128-bit variable
  */

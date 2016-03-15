@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import im.actor.runtime.generic.mvvm.AppleListUpdate;
 import im.actor.runtime.generic.mvvm.ChangeDescription;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public final class ChangeBuilder {
 
     private static <T> ArrayList<ChangeDescription<T>> optimize(ArrayList<ChangeDescription<T>> modifications) {

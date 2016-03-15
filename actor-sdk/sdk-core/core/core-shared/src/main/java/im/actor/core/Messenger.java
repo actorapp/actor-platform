@@ -35,6 +35,7 @@ import im.actor.core.entity.WebActionDescriptor;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.events.PeerChatPreload;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Modules;
@@ -56,6 +57,7 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.core.viewmodel.DialogGroupsVM;
 import im.actor.core.viewmodel.FileCallback;
+import im.actor.core.viewmodel.FileEventCallback;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.GroupAvatarVM;
@@ -569,6 +571,16 @@ public class Messenger {
     @ObjectiveCName("onConversationOpenWithPeer:")
     public void onConversationOpen(@NotNull Peer peer) {
         modules.getEvents().post(new PeerChatOpened(peer));
+    }
+
+    /**
+     * Can be called for forcing conversation loading in background
+     *
+     * @param peer conversation's peer
+     */
+    @ObjectiveCName("onConversationPreLoadWithPeer:")
+    public void onConversationPreLoad(@NotNull Peer peer) {
+        modules.getEvents().post(new PeerChatPreload(peer));
     }
 
     /**
@@ -1665,6 +1677,26 @@ public class Messenger {
     @ObjectiveCName("findDownloadedDescriptorWithFileId:")
     public String findDownloadedDescriptor(long fileId) {
         return modules.getFilesModule().getDownloadedDescriptor(fileId);
+    }
+
+    /**
+     * Subscribing to download events
+     *
+     * @param callback subscribe callback
+     */
+    @ObjectiveCName("subscribeToDownloads:")
+    public void subscribeToDownloads(FileEventCallback callback) {
+        modules.getFilesModule().subscribe(callback);
+    }
+
+    /**
+     * Unsubscribing from download events
+     *
+     * @param callback unsubscribe callback
+     */
+    @ObjectiveCName("unsubscribeFromDownloads:")
+    public void unsubscribeFromDownloads(FileEventCallback callback) {
+        modules.getFilesModule().unsubscribe(callback);
     }
 
     //////////////////////////////////////

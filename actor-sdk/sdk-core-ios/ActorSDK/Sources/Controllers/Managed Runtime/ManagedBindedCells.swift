@@ -39,6 +39,8 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
     
     public var animated = false
     
+    public var differental = false
+    
     private var table: AAManagedTable!
     
     private var lastItemsCount: Int = 0
@@ -104,7 +106,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         
         self.table = table
 
-        if animated {
+        if differental {
             displayList.addAppleListener(self)
         } else {
             displayList.addListener(self)
@@ -146,54 +148,93 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         let tableView = self.table.tableView
         let section = 0
         
-        if (modification.isLoadMore) {
-            UIView.setAnimationsEnabled(false)
-        }
+        let useAnimatedUpdate = (modification.nonUpdateCount() <= 1)
         
-        if modification.nonUpdateCount() > 0 {
-            tableView.beginUpdates()
+        if useAnimatedUpdate {
             
-            // Removed rows
-            if modification.removedCount() > 0 {
-                var rows = [NSIndexPath]()
-                for i in 0..<modification.removedCount() {
-                    rows.append(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))) + topOffset, inSection: section))
-                }
-                tableView.deleteRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Automatic)
+            lastItemsCount = Int(displayList.size())
+            
+            if (modification.isLoadMore || !animated) {
+                UIView.setAnimationsEnabled(false)
             }
             
-            // Added rows
-            if modification.addedCount() > 0 {
-                var rows = [NSIndexPath]()
-                for i in 0..<modification.addedCount() {
-                    rows.append(NSIndexPath(forRow: Int(modification.getAdded(jint(i)) + topOffset), inSection: section))
-                }
-                tableView.insertRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Automatic)
+            let animationType: UITableViewRowAnimation
+            if animated && !modification.isLoadMore {
+                animationType = UITableViewRowAnimation.Automatic
+            } else {
+                animationType = UITableViewRowAnimation.None
             }
             
-            // Moved rows
-            if modification.movedCount() > 0 {
-                for i in 0..<modification.movedCount() {
-                    let mov = modification.getMoved(jint(i))
-                    tableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(mov.getSourceIndex()) + topOffset, inSection: section), toIndexPath: NSIndexPath(forRow: Int(mov.getDestIndex()) + topOffset, inSection: section))
+            if modification.nonUpdateCount() > 0 {
+                tableView.beginUpdates()
+                
+                // Removed rows
+                if modification.removedCount() > 0 {
+                    var rows = [NSIndexPath]()
+                    for i in 0..<modification.removedCount() {
+                        rows.append(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))) + topOffset, inSection: section))
+                    }
+                    tableView.deleteRowsAtIndexPaths(rows, withRowAnimation: animationType)
+                }
+                
+                // Added rows
+                if modification.addedCount() > 0 {
+                    var rows = [NSIndexPath]()
+                    for i in 0..<modification.addedCount() {
+                        rows.append(NSIndexPath(forRow: Int(modification.getAdded(jint(i)) + topOffset), inSection: section))
+                    }
+                    tableView.insertRowsAtIndexPaths(rows, withRowAnimation: animationType)
+                }
+                
+                // Moved rows
+                if modification.movedCount() > 0 {
+                    for i in 0..<modification.movedCount() {
+                        let mov = modification.getMoved(jint(i))
+                        tableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(mov.getSourceIndex()) + topOffset, inSection: section), toIndexPath: NSIndexPath(forRow: Int(mov.getDestIndex()) + topOffset, inSection: section))
+                    }
+                }
+                
+                tableView.endUpdates()
+            }
+            
+            // Updated rows
+            if modification.updatedCount() > 0 {
+                let visibleIndexes = tableView.indexPathsForVisibleRows!
+                for i in 0..<modification.updatedCount() {
+                    for visibleIndex in visibleIndexes {
+                        if (visibleIndex.row == Int(modification.getUpdated(jint(i))) + topOffset && visibleIndex.section == section) {
+                            
+                            // Need to rebind manually because we need to keep cell reference same
+                            if let item = displayList.itemWithIndex(jint(visibleIndex.row - topOffset)) as? BindCell.BindData,
+                                let cell = tableView.cellForRowAtIndexPath(visibleIndex) as? BindCell {
+                                    
+                                    cell.bind(item, table: table, index: visibleIndex.row, totalCount: Int(displayList.size()))
+                            }
+                        }
+                    }
                 }
             }
             
-            tableView.endUpdates()
-        }
-        
-        // Updated rows
-        if modification.updatedCount() > 0 {
-            let visibleIndexes = tableView.indexPathsForVisibleRows!
-            for i in 0..<modification.updatedCount() {
-                for visibleIndex in visibleIndexes {
-                    if (visibleIndex.row == Int(modification.getUpdated(jint(i))) + topOffset && visibleIndex.section == section) {
-
-                        // Need to rebind manually because we need to keep cell reference same
-                        if let item = displayList.itemWithIndex(jint(visibleIndex.row - topOffset)) as? BindCell.BindData,
-                            let cell = tableView.cellForRowAtIndexPath(visibleIndex) as? BindCell {
-                                
-                            cell.bind(item, table: table, index: visibleIndex.row, totalCount: Int(displayList.size()))
+            if (modification.isLoadMore || !animated) {
+                UIView.setAnimationsEnabled(true)
+            }
+        } else {
+            let oldCount = lastItemsCount
+            lastItemsCount = Int(displayList.size())
+            
+            if oldCount != lastItemsCount {
+                table.tableView.reloadData()
+            } else {
+                if let indexes = table.tableView.indexPathsForVisibleRows {
+                    let cells = table.tableView.visibleCells
+                    
+                    for i in 0..<indexes.count {
+                        let index = indexes[i]
+                        let cell = cells[i]
+                        
+                        if index.section == 0 && index.row >= topOffset {
+                            let data = displayList.itemWithIndex(jint(index.row - topOffset)) as! BindCell.BindData
+                            (cell as! BindCell).bind(data, table: table, index: index.row - topOffset, totalCount: Int(displayList.size()))
                         }
                     }
                 }
@@ -201,10 +242,6 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         }
         
         updateVisibility()
-        
-        if (modification.isLoadMore) {
-            UIView.setAnimationsEnabled(true)
-        }
     }
     
     public func updateVisibility() {
@@ -221,7 +258,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         
         self.table = nil
         
-        if animated {
+        if differental {
             displayList.removeAppleListener(self)
         } else {
             displayList.removeListener(self)

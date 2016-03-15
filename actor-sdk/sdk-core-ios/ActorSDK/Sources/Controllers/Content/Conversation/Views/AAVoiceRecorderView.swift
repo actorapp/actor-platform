@@ -69,16 +69,16 @@ class AAVoiceRecorderView: UIView {
         
         self.timeLabel.text = "0:00"
         self.timeLabel.font = UIFont.systemFontOfSize(15)
-        self.timeLabel.textColor = UIColor.blackColor()
+        self.timeLabel.textColor = appStyle.vcHintColor
         self.timeLabel.frame = CGRectMake(29, 12, 50, 20)
         
         self.sliderLabel.text = "Slide to cancel"
         self.sliderLabel.font = UIFont.systemFontOfSize(14)
         self.sliderLabel.textAlignment = .Left
         self.sliderLabel.frame = CGRectMake(140,12,100,20)
-        self.sliderLabel.textColor = UIColor(red: 0.7287, green: 0.7252, blue: 0.7322, alpha: 1.0)
+        self.sliderLabel.textColor = appStyle.vcHintColor
         
-        self.sliderArrow.image = UIImage.tinted("aa_recorderarrow", color: UIColor(red: 0.7287, green: 0.7252, blue: 0.7322, alpha: 1.0))
+        self.sliderArrow.image = UIImage.tinted("aa_recorderarrow", color: appStyle.vcHintColor)
         self.sliderArrow.frame = CGRectMake(110,12,20,20)
         
         self.recorderImageCircle.image = UIImage.tinted("aa_recordercircle", color: UIColor(red: 0.7287, green: 0.7252, blue: 0.7322, alpha: 1.0))

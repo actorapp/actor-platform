@@ -10004,6 +10004,83 @@
           <ref role="NX6Kv" node="6Fl2chwC6VL" resolve="files" />
         </node>
       </node>
+      <node concept="2m6fVq" id="4bVh48GphS6" role="2m5mJr">
+        <property role="TrG5h" value="GetFileUrlBuilder" />
+        <node concept="2m7Kf5" id="4bVh48Gpj1T" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="supportedSignatureAlgorithms" />
+          <node concept="2m5nlk" id="4bVh48Gpj20" role="2m7DVh">
+            <node concept="2m5ndX" id="4bVh48Gpj26" role="3GJlyp" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="4bVh48GphS7" role="NuuwV">
+          <property role="Nu42W" value="A13" />
+        </node>
+        <node concept="2m1R6W" id="4bVh48GphV8" role="2m6efq">
+          <node concept="2m7Kf5" id="4bVh48GphVd" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="baseUrl" />
+            <node concept="2m5ndX" id="4bVh48GphVh" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="4bVh48Gplfs" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="algo" />
+            <node concept="2m5ndX" id="4bVh48Gplf$" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="4bVh48Gpu_Z" role="2m0hLx">
+            <property role="2m7DUN" value="5" />
+            <property role="TrG5h" value="seed" />
+            <node concept="2m5ndX" id="4bVh48GpuAb" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="4bVh48GphVk" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="signatureSecret" />
+            <node concept="2m61tm" id="4bVh48Gpj29" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="4bVh48Gprig" role="2m0hLx">
+            <property role="2m7DUN" value="4" />
+            <property role="TrG5h" value="timeout" />
+            <node concept="wb0Ql" id="4bVh48Gpriq" role="2m7DVh">
+              <ref role="wb18D" node="6u8Nlnzqdrq" resolve="sec" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="4bVh48GphV9" role="NuuwV">
+            <property role="Nu42W" value="A14" />
+          </node>
+          <node concept="NX1gA" id="4bVh48Gpj2o" role="1y2DgH">
+            <property role="NX6R2" value="Base Url for files" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="4bVh48GphVd" resolve="baseUrl" />
+          </node>
+          <node concept="NX1gA" id="4bVh48GplfF" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Signature algorithm" />
+            <ref role="NX6Kv" node="4bVh48Gplfs" resolve="algo" />
+          </node>
+          <node concept="NX1gA" id="4bVh48GpuAk" role="1y2DgH">
+            <property role="NX6R2" value="Public-visible seed of signature" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="4bVh48Gpu_Z" resolve="seed" />
+          </node>
+          <node concept="NX1gA" id="4bVh48Gpj2_" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Signature Secret" />
+            <ref role="NX6Kv" node="4bVh48GphVk" resolve="signatureSecret" />
+          </node>
+          <node concept="NX1gA" id="4bVh48Gpriy" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Timeout of url builder" />
+            <ref role="NX6Kv" node="4bVh48Gprig" resolve="timeout" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="4bVh48Gpj2c" role="1GBnQ6">
+          <property role="NXePf" value="Get File URL Builder that allows to build file urls from client side" />
+        </node>
+        <node concept="NX1gA" id="4bVh48Gplfo" role="1GBnQ6">
+          <property role="NX6R2" value="Supported signature algorithms by client" />
+          <ref role="NX6Kv" node="4bVh48Gpj1T" resolve="supportedSignatureAlgorithms" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="3MpuFr6x8F5" role="2m5mJr">
         <property role="TrG5h" value="GetFileUploadUrl" />
         <node concept="NXeRC" id="3MpuFr6xfFT" role="1GBnQ6">

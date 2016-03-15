@@ -31,8 +31,6 @@ import im.actor.runtime.bser.DataOutput;
 import im.actor.runtime.crypto.ActorProtoKey;
 import im.actor.runtime.crypto.box.CBCHmacBox;
 import im.actor.runtime.crypto.primitives.aes.AESFastEngine;
-import im.actor.runtime.crypto.primitives.digest.SHA256;
-import im.actor.runtime.crypto.primitives.kuznechik.KuznechikCipher;
 import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 import im.actor.runtime.crypto.primitives.streebog.Streebog256;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
@@ -97,16 +95,16 @@ public class ManagerActor extends Actor {
         if (this.authKey != null) {
             this.authProtoKey = new ActorProtoKey(this.authKey);
             this.serverUSDecryptor = new CBCHmacBox(
-                    new AESFastEngine(this.authProtoKey.getServerKey()),
-                    new SHA256(),
+                    Crypto.createAES128(this.authProtoKey.getServerKey()),
+                    Crypto.createSHA256(),
                     this.authProtoKey.getServerMacKey());
             this.serverRUDecryptor = new CBCHmacBox(
                     new KuznechikFastEngine(this.authProtoKey.getServerRussianKey()),
                     new Streebog256(),
                     this.authProtoKey.getServerMacRussianKey());
             this.clientUSEncryptor = new CBCHmacBox(
-                    new AESFastEngine(this.authProtoKey.getClientKey()),
-                    new SHA256(),
+                    Crypto.createAES128(this.authProtoKey.getClientKey()),
+                    Crypto.createSHA256(),
                     this.authProtoKey.getClientMacKey());
             this.clientRUEncryptor = new CBCHmacBox(
                     new KuznechikFastEngine(this.authProtoKey.getClientRussianKey()),
@@ -340,13 +338,13 @@ public class ManagerActor extends Actor {
                     throw new IOException("Expected " + inSeq + ", got: " + seq);
                 }
                 inSeq++;
-                long start = Runtime.getActorTime();
+                // long start = Runtime.getActorTime();
                 EncryptedCBCPackage usEncryptedPackage = new EncryptedCBCPackage(new DataInput(encryptedPackage.getEncryptedPackage()));
                 byte[] ruPackage = serverUSDecryptor.decryptPackage(ByteStrings.longToBytes(seq), usEncryptedPackage.getIv(), usEncryptedPackage.getEncryptedContent());
                 EncryptedCBCPackage ruEncryptedPackage = new EncryptedCBCPackage(new DataInput(ruPackage));
                 byte[] plainText = serverRUDecryptor.decryptPackage(ByteStrings.longToBytes(seq), ruEncryptedPackage.getIv(), ruEncryptedPackage.getEncryptedContent());
 
-                Log.d(TAG, "Package decrypted in " + (Runtime.getActorTime() - start) + " ms, size: " + len);
+                // Log.d(TAG, "Package decrypted in " + (Runtime.getActorTime() - start) + " ms, size: " + len);
 
                 DataInput ptInput = new DataInput(plainText);
                 long messageId = ptInput.readLong();
@@ -394,7 +392,7 @@ public class ManagerActor extends Actor {
             if (currentConnection != null) {
                 if (authKey != null) {
                     int seq = outSeq++;
-                    long start = Runtime.getActorTime();
+                    // long start = Runtime.getActorTime();
                     byte[] ruIv = new byte[16];
                     Crypto.nextBytes(ruIv);
                     byte[] usIv = new byte[16];
@@ -414,7 +412,7 @@ public class ManagerActor extends Actor {
                     byte[] pkg = bos.toByteArray();
                     currentConnection.post(pkg, 0, pkg.length);
 
-                    Log.d(TAG, "Package encrypted in " + (Runtime.getActorTime() - start) + " ms, size: " + len);
+                    // Log.d(TAG, "Package encrypted in " + (Runtime.getActorTime() - start) + " ms, size: " + len);
                 } else {
                     DataOutput bos = new DataOutput();
                     bos.writeLong(authId);

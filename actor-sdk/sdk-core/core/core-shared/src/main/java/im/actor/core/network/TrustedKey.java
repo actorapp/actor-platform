@@ -1,7 +1,14 @@
 package im.actor.core.network;
 
-import im.actor.runtime.crypto.primitives.digest.SHA256;
+import im.actor.runtime.Crypto;
+import im.actor.runtime.crypto.Digest;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
+
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
 
 public class TrustedKey {
 
@@ -10,7 +17,7 @@ public class TrustedKey {
 
     public TrustedKey(byte[] key) {
         byte[] hash = new byte[32];
-        SHA256 sha256 = new SHA256();
+        Digest sha256 = Crypto.createSHA256();
         sha256.update(key, 0, key.length);
         sha256.doFinal(hash, 0);
         this.keyId = ByteStrings.bytesToLong(hash);

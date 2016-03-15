@@ -32,7 +32,7 @@ public class ContactsSyncActor extends ModuleActor {
 
     private final boolean ENABLE_LOG;
 
-    private ArrayList<Integer> contacts = new ArrayList<Integer>();
+    private ArrayList<Integer> contacts = new ArrayList<>();
 
     private boolean isInProgress = false;
     private boolean isInvalidated = false;
@@ -54,7 +54,10 @@ public class ContactsSyncActor extends ModuleActor {
                 DataInput dataInput = new DataInput(data, 0, data.length);
                 int count = dataInput.readInt();
                 for (int i = 0; i < count; i++) {
-                    contacts.add(dataInput.readInt());
+                    int uid = dataInput.readInt();
+                    if (!contacts.contains(uid)) {
+                        contacts.add(uid);
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -101,11 +104,19 @@ public class ContactsSyncActor extends ModuleActor {
         }
         String hashValue = Crypto.hex(Crypto.SHA256(hashData));
 
-        Log.d(TAG, "Performing sync with hash: " + hashValue);
+        if (ENABLE_LOG) {
+            Log.d(TAG, "Performing sync with hash: " + hashValue);
+            Log.d(TAG, "Performing sync with uids: " + hash);
+        }
 
         request(new RequestGetContacts(hashValue), new RpcCallback<ResponseGetContacts>() {
             @Override
             public void onResult(ResponseGetContacts response) {
+
+                if (ENABLE_LOG) {
+                    Log.d(TAG, "Sync received (0) " + response.getUsers().size() + " contacts");
+                }
+
                 updates().onUpdateReceived(
                         new im.actor.core.modules.updates.internal.ContactsLoaded(response));
             }
@@ -185,6 +196,9 @@ public class ContactsSyncActor extends ModuleActor {
         }
 
         for (int uid : uids) {
+            if (contacts.contains(uid)) {
+                continue;
+            }
             if (ENABLE_LOG) {
                 Log.d(TAG, "Adding: #" + uid);
             }

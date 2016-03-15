@@ -11584,6 +11584,98 @@
         {
           "type": "rpc",
           "content": {
+            "name": "GetFileUrlBuilder",
+            "header": 2579,
+            "response": {
+              "type": "anonymous",
+              "header": 2580,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "baseUrl",
+                  "category": "full",
+                  "description": "  Base Url for files"
+                },
+                {
+                  "type": "reference",
+                  "argument": "algo",
+                  "category": "full",
+                  "description": "  Signature algorithm"
+                },
+                {
+                  "type": "reference",
+                  "argument": "seed",
+                  "category": "full",
+                  "description": "  Public-visible seed of signature"
+                },
+                {
+                  "type": "reference",
+                  "argument": "signatureSecret",
+                  "category": "full",
+                  "description": "  Signature Secret"
+                },
+                {
+                  "type": "reference",
+                  "argument": "timeout",
+                  "category": "full",
+                  "description": "  Timeout of url builder"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "baseUrl"
+                },
+                {
+                  "type": "string",
+                  "id": 2,
+                  "name": "algo"
+                },
+                {
+                  "type": "string",
+                  "id": 5,
+                  "name": "seed"
+                },
+                {
+                  "type": "bytes",
+                  "id": 3,
+                  "name": "signatureSecret"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "sec"
+                  },
+                  "id": 4,
+                  "name": "timeout"
+                }
+              ]
+            },
+            "doc": [
+              "Get File URL Builder that allows to build file urls from client side",
+              {
+                "type": "reference",
+                "argument": "supportedSignatureAlgorithms",
+                "category": "hidden",
+                "description": "Supported signature algorithms by client"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "supportedSignatureAlgorithms"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "GetFileUploadUrl",
             "header": 97,
             "response": {

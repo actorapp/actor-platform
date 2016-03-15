@@ -12,13 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.runtime.collections.SparseArray;
+import im.actor.runtime.collections.SparseBooleanArray;
+
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
 
 public class BserValues {
 
     private SparseArray<Object> fields;
 
     // TODO: Replace with SparseBooleanArray
-    private SparseArray<Boolean> touched = new SparseArray<Boolean>();
+    private SparseBooleanArray touched = new SparseBooleanArray();
 
     public BserValues(@NotNull SparseArray<Object> fields) {
         this.fields = fields;

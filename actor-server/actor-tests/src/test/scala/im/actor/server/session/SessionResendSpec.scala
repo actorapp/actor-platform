@@ -3,14 +3,16 @@ package im.actor.server.session
 import akka.testkit.TestProbe
 import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc._
-import im.actor.api.rpc.auth.{ ResponseStartPhoneAuth, RequestStartPhoneAuth }
+import im.actor.api.rpc.auth.{ RequestStartPhoneAuth, ResponseStartPhoneAuth }
 import im.actor.api.rpc.codecs.RequestCodec
-import im.actor.api.rpc.contacts.{ UpdateContactsAdded, UpdateContactRegistered }
+import im.actor.api.rpc.contacts.{ UpdateContactRegistered, UpdateContactsAdded }
 import im.actor.api.rpc.misc.ResponseSeq
+import im.actor.api.rpc.raw.RequestRawRequest
 import im.actor.api.rpc.sequence.RequestGetState
 import im.actor.api.rpc.weak.{ UpdateUserOffline, UpdateUserOnline }
-import im.actor.concurrent.FutureExt
 import im.actor.server.ActorSpecification
+import im.actor.server.api.rpc.RawApiExtension
+import im.actor.server.api.rpc.service.raw.EchoService
 import im.actor.server.mtproto.protocol._
 import im.actor.server.sequence.{ SeqUpdatesExtension, WeakUpdatesExtension }
 
@@ -36,6 +38,7 @@ final class SessionResendSpec extends BaseSessionSpec(
   it should "resend updates if no ack received within ack-timeout" in Sessions().resendUpdates
   it should "not resend messages when another came with the same reduceKey (weak)" in Sessions().reduceKeyWeak
   it should "not resend messages when another came with the same reduceKey (seq)" in Sessions().reduceKeySeq
+  it should "schedule one resend after subsequent requests with the same messageId" in Sessions().oneResendForCached
 
   case class Sessions() {
     val weakUpdatesExt = WeakUpdatesExtension(system)
@@ -301,6 +304,38 @@ final class SessionResendSpec extends BaseSessionSpec(
       expectContactsAdded(authId, sessionId, 2)
       expectContactsAdded(authId, sessionId, 3)
       expectContactsAdded(authId, sessionId, 4)
+    }
+
+    def oneResendForCached(): Unit = {
+      implicit val probe = TestProbe()
+
+      val authId = createAuthId()
+      val sessionId = Random.nextLong()
+
+      val helloMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, helloMessageId, SessionHello)
+      expectNewSession(authId, sessionId, helloMessageId)
+      expectMessageAck()
+
+      val messageId = Random.nextLong()
+      val encodedRequest = RequestCodec.encode(Request(RequestStartPhoneAuth(
+        phoneNumber = 75553333333L,
+        appId = 1,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong.toBinaryString.getBytes,
+        deviceTitle = "Spec Has You",
+        timeZone = None,
+        preferredLanguages = Vector.empty
+      ))).require
+      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, ProtoRpcRequest(encodedRequest))
+
+      for (_ ← 1 to 3)
+        expectRpcResult(authId, sessionId, sendAckAt = None)
+
+      expectRpcResult(authId, sessionId)
+      probe.expectNoMsg(6.seconds)
     }
   }
 

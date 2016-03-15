@@ -19,6 +19,7 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Cancellable;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.OutputFile;
+import im.actor.runtime.function.Consumer;
 import im.actor.runtime.http.FileDownloadCallback;
 
 public class DownloadTask extends ModuleActor {
@@ -98,25 +99,26 @@ public class DownloadTask extends ModuleActor {
         if (LOG) {
             Log.d(TAG, "Loading url...");
         }
-        request(new RequestGetFileUrl(new ApiFileLocation(fileReference.getFileId(),
-                fileReference.getAccessHash())), new RpcCallback<ResponseGetFileUrl>() {
+
+        context().getFilesModule().getFileUrlInt().askForUrl(fileReference.getFileId(),
+                fileReference.getAccessHash()).then(new Consumer<String>() {
             @Override
-            public void onResult(ResponseGetFileUrl response) {
-                fileUrl = response.getUrl();
+            public void apply(String url) {
+                fileUrl = url;
                 if (LOG) {
                     Log.d(TAG, "Loaded file url: " + fileUrl);
                 }
                 startDownload();
             }
-
+        }).failure(new Consumer<Exception>() {
             @Override
-            public void onError(RpcException e) {
+            public void apply(Exception e) {
                 if (LOG) {
                     Log.d(TAG, "Unable to load file url");
                 }
                 reportError();
             }
-        });
+        }).done(self());
     }
 
     private void startDownload() {

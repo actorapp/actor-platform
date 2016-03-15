@@ -5,7 +5,9 @@ public final class Log {
     private static final LogRuntime logRuntime = new LogRuntimeProvider();
 
     public static void w(String tag, String message) {
-        logRuntime.w(tag, message);
+        if (!RuntimeEnvironment.isProduction()) {
+            logRuntime.w(tag, message);
+        }
     }
 
     public static void e(String tag, Throwable throwable) {
@@ -14,10 +16,14 @@ public final class Log {
     }
 
     public static void d(String tag, String message) {
-        logRuntime.d(tag, message);
+        if (!RuntimeEnvironment.isProduction()) {
+            logRuntime.d(tag, message);
+        }
     }
 
     public static void v(String tag, String message) {
-        logRuntime.v(tag, message);
+        if (!RuntimeEnvironment.isProduction()) {
+            logRuntime.v(tag, message);
+        }
     }
 }

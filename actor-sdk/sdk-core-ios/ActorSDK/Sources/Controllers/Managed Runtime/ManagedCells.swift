@@ -558,9 +558,9 @@ public class AAAvatarRow: AAManagedRow {
         res.subtitleLabel.text = subtitle
         
         if avatarPath != nil {
-            res.avatarView.bind(title!, id: jint(id!), fileName: avatarPath!)
+            res.avatarView.bind(title!, id: id!, fileName: avatarPath!)
         } else {
-            res.avatarView.bind(title!, id: jint(id!), avatar: avatar, clearPrev: false)
+            res.avatarView.bind(title!, id: id!, avatar: avatar)
         }
         
         if subtitleColor != nil {

@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		060135031C95ED4C00A18C4E /* YYAsyncLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 060134FD1C95ED4C00A18C4E /* YYAsyncLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		060135041C95ED4C00A18C4E /* YYAsyncLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 060134FE1C95ED4C00A18C4E /* YYAsyncLayer.m */; };
+		060135051C95ED4C00A18C4E /* YYSentinel.h in Headers */ = {isa = PBXBuildFile; fileRef = 060134FF1C95ED4C00A18C4E /* YYSentinel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		060135061C95ED4C00A18C4E /* YYSentinel.m in Sources */ = {isa = PBXBuildFile; fileRef = 060135001C95ED4C00A18C4E /* YYSentinel.m */; };
+		060135071C95ED4C00A18C4E /* YYTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = 060135011C95ED4C00A18C4E /* YYTransaction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		060135081C95ED4C00A18C4E /* YYTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 060135021C95ED4C00A18C4E /* YYTransaction.m */; };
 		06129AA61C8359FB0099286B /* CocoaLifecycleRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */; };
 		06129AA91C8394700099286B /* AAAudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06129AA81C8394700099286B /* AAAudioManager.swift */; };
 		06129AAB1C83B80B0099286B /* AAAudioRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06129AAA1C83B80A0099286B /* AAAudioRouter.swift */; };
@@ -234,6 +240,7 @@
 		06D5C0571C8D6E20002D5045 /* AAAuthLogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D5C0561C8D6E20002D5045 /* AAAuthLogInViewController.swift */; };
 		06D5C05A1C8E9B3B002D5045 /* Promises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D5C0591C8E9B3B002D5045 /* Promises.swift */; };
 		06D5C05C1C8EA842002D5045 /* AAAuthOTPViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D5C05B1C8EA842002D5045 /* AAAuthOTPViewController.swift */; };
+		06E1648F1C96D99F005AFB94 /* CocoaCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E1648E1C96D99F005AFB94 /* CocoaCrypto.swift */; };
 		06E322C91C69344A00D66F53 /* iOSCallsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */; };
 		06E3230E1C69445C00D66F53 /* WebRTC.h in Headers */ = {isa = PBXBuildFile; fileRef = 06E3230D1C6942C400D66F53 /* WebRTC.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06E323111C694C1D00D66F53 /* WebRTCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E323101C694C1D00D66F53 /* WebRTCExt.swift */; };
@@ -362,6 +369,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		060134FD1C95ED4C00A18C4E /* YYAsyncLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYAsyncLayer.h; sourceTree = "<group>"; };
+		060134FE1C95ED4C00A18C4E /* YYAsyncLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYAsyncLayer.m; sourceTree = "<group>"; };
+		060134FF1C95ED4C00A18C4E /* YYSentinel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYSentinel.h; sourceTree = "<group>"; };
+		060135001C95ED4C00A18C4E /* YYSentinel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYSentinel.m; sourceTree = "<group>"; };
+		060135011C95ED4C00A18C4E /* YYTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTransaction.h; sourceTree = "<group>"; };
+		060135021C95ED4C00A18C4E /* YYTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTransaction.m; sourceTree = "<group>"; };
 		06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLifecycleRuntime.swift; sourceTree = "<group>"; };
 		06129AA81C8394700099286B /* AAAudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAudioManager.swift; sourceTree = "<group>"; };
 		06129AAA1C83B80A0099286B /* AAAudioRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAudioRouter.swift; sourceTree = "<group>"; };
@@ -595,6 +608,8 @@
 		06D5C0561C8D6E20002D5045 /* AAAuthLogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthLogInViewController.swift; sourceTree = "<group>"; };
 		06D5C0591C8E9B3B002D5045 /* Promises.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promises.swift; sourceTree = "<group>"; };
 		06D5C05B1C8EA842002D5045 /* AAAuthOTPViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthOTPViewController.swift; sourceTree = "<group>"; };
+		06E1648E1C96D99F005AFB94 /* CocoaCrypto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaCrypto.swift; sourceTree = "<group>"; };
+		06E164931C96FF3D005AFB94 /* module.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.map; sourceTree = "<group>"; };
 		06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSCallsProvider.swift; sourceTree = "<group>"; };
 		06E3230D1C6942C400D66F53 /* WebRTC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebRTC.h; sourceTree = "<group>"; };
 		06E323101C694C1D00D66F53 /* WebRTCExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebRTCExt.swift; sourceTree = "<group>"; };
@@ -763,6 +778,12 @@
 				061850D71C95CBF000C522D5 /* YYText.h */,
 				061850D81C95CBF000C522D5 /* YYTextView.h */,
 				061850D91C95CBF000C522D5 /* YYTextView.m */,
+				060134FD1C95ED4C00A18C4E /* YYAsyncLayer.h */,
+				060134FE1C95ED4C00A18C4E /* YYAsyncLayer.m */,
+				060134FF1C95ED4C00A18C4E /* YYSentinel.h */,
+				060135001C95ED4C00A18C4E /* YYSentinel.m */,
+				060135011C95ED4C00A18C4E /* YYTransaction.h */,
+				060135021C95ED4C00A18C4E /* YYTransaction.m */,
 			);
 			name = YYKit;
 			path = Libs/YYKit;
@@ -981,6 +1002,7 @@
 				065A06B51C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift */,
 				06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */,
 				0618509F1C95CA2600C522D5 /* CocoaDispatcher.swift */,
+				06E1648E1C96D99F005AFB94 /* CocoaCrypto.swift */,
 				066A51871BC4C383000E606E /* iOSNotificationProvider.swift */,
 				066A51881BC4C383000E606E /* iOSPhoneBookProvider.swift */,
 				06E322C81C69344A00D66F53 /* iOSCallsProvider.swift */,
@@ -1066,16 +1088,16 @@
 				066A52601BC50E6B000E606E /* Auth */,
 				066A52F91BC52FA0000E606E /* Compose */,
 				066A53021BC53171000E606E /* Contacts */,
-				066A52C41BC521D5000E606E /* Content */,
 				066A53351BC537BF000E606E /* Conversation */,
 				066A52E11BC52A16000E606E /* Group */,
 				06E7B2451C0F8D410090660C /* Location */,
-				066A52181BC4EE9A000E606E /* Managed Runtime */,
 				066A53051BC5317B000E606E /* Recent */,
 				066A527B1BC51EC6000E606E /* Root */,
 				066A52EB1BC52AF8000E606E /* Settings */,
 				066A53091BC53197000E606E /* User */,
 				06E323131C6A7AA300D66F53 /* Calls */,
+				066A52C41BC521D5000E606E /* Content */,
+				066A52181BC4EE9A000E606E /* Managed Runtime */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1392,9 +1414,19 @@
 			name = Welcome;
 			sourceTree = "<group>";
 		};
+		06E164921C96FF15005AFB94 /* CommonCrypto */ = {
+			isa = PBXGroup;
+			children = (
+				06E164931C96FF3D005AFB94 /* module.map */,
+			);
+			name = CommonCrypto;
+			path = Libs/CommonCrypto;
+			sourceTree = "<group>";
+		};
 		06E322CB1C69392F00D66F53 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				06E164921C96FF15005AFB94 /* CommonCrypto */,
 				061850A31C95CBF000C522D5 /* YYKit */,
 				15D35F0A1C20182900E3717A /* AudioRecorder */,
 				06E3230D1C6942C400D66F53 /* WebRTC.h */,
@@ -1732,11 +1764,14 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				060135031C95ED4C00A18C4E /* YYAsyncLayer.h in Headers */,
 				069CF4D21BCB909A00C66E12 /* CLTokenView.h in Headers */,
 				066A51831BC4C373000E606E /* FMResultSet.h in Headers */,
 				15F89F091C211FED00776ACD /* opus_types.h in Headers */,
+				060135071C95ED4C00A18C4E /* YYTransaction.h in Headers */,
 				066A517D1BC4C373000E606E /* FMDatabaseAdditions.h in Headers */,
 				069CF4D01BCB909A00C66E12 /* CLTokenInputView.h in Headers */,
+				060135051C95ED4C00A18C4E /* YYSentinel.h in Headers */,
 				066A517F1BC4C373000E606E /* FMDatabasePool.h in Headers */,
 				066A51811BC4C373000E606E /* FMDatabaseQueue.h in Headers */,
 				066A517A1BC4C373000E606E /* FMDatabase.h in Headers */,
@@ -1979,6 +2014,7 @@
 				152AA8B91C2989270030DEEE /* UIView+SLKAdditions.m in Sources */,
 				066A52F21BC52B02000E606E /* AASettingsPrivacyViewController.swift in Sources */,
 				15D35F561C20187E00E3717A /* AAAlertView.m in Sources */,
+				060135061C95ED4C00A18C4E /* YYSentinel.m in Sources */,
 				061850DB1C95CBF000C522D5 /* YYTextContainerView.m in Sources */,
 				15D35F301C20187200E3717A /* info.c in Sources */,
 				066A532E1BC53406000E606E /* AABubbleBaseFileCell.swift in Sources */,
@@ -2024,6 +2060,7 @@
 				065975071BC7BB4000B8C7DF /* AANavigationBadge.swift in Sources */,
 				066A518D1BC4C383000E606E /* CocoaStorageRuntime.swift in Sources */,
 				066A52F01BC52B02000E606E /* AASettingsViewController.swift in Sources */,
+				060135081C95ED4C00A18C4E /* YYTransaction.m in Sources */,
 				066A52741BC5101A000E606E /* ABPhoneField.m in Sources */,
 				153F6B611C2BF8EC00C0B960 /* AAAuthWelcomeController.swift in Sources */,
 				152AA8A91C2989270030DEEE /* SLKTextInputbar.m in Sources */,
@@ -2038,6 +2075,7 @@
 				066A52341BC4EEBA000E606E /* AACommonCell.swift in Sources */,
 				15D35F311C20187200E3717A /* internal.c in Sources */,
 				061850F91C95CBF000C522D5 /* NSParagraphStyle+YYText.m in Sources */,
+				06E1648F1C96D99F005AFB94 /* CocoaCrypto.swift in Sources */,
 				066A52DF1BC5241F000E606E /* AAWebActionController.swift in Sources */,
 				066A51221BC4B55C000E606E /* AADevice.swift in Sources */,
 				066A532D1BC53406000E606E /* AABubbleServiceCell.swift in Sources */,
@@ -2101,6 +2139,7 @@
 				06C1D07B1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift in Sources */,
 				0618510C1C95CBF000C522D5 /* YYTextView.m in Sources */,
 				066A518F1BC4C383000E606E /* iOSPhoneBookProvider.swift in Sources */,
+				060135041C95ED4C00A18C4E /* YYAsyncLayer.m in Sources */,
 				066A530B1BC531A2000E606E /* AAUserViewController.swift in Sources */,
 				06E3C5B81C80EE21004776CD /* AACircleButton.swift in Sources */,
 				153F6B5B1C2B109400C0B960 /* AABubbleVoiceCell.swift in Sources */,
@@ -2364,6 +2403,7 @@
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/ActorSDK/Sources/Libs/CommonCrypto $(PROJECT_DIR)/IDZSwiftCommonCrypto/Frameworks/$(PLATFORM_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VALID_ARCHS = "arm64 armv7";
@@ -2417,6 +2457,7 @@
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/ActorSDK/Sources/Libs/CommonCrypto $(PROJECT_DIR)/IDZSwiftCommonCrypto/Frameworks/$(PLATFORM_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALID_ARCHS = "arm64 armv7";

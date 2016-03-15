@@ -94,9 +94,7 @@ class RawServiceSpec
     whenReady(service.handleRawRequest("echo", "makeEcho", Some(ApiMapValue(Vector(ApiMapValueItem("query", ApiStringValue("Hello"))))))) { resp ⇒
       inside(resp) {
         case Xor.Right(rawValue) ⇒ inside(rawValue.result) {
-          case ApiMapValue(items) ⇒
-            items should have length 1
-            items.head shouldEqual ApiMapValueItem("echo", ApiStringValue("Hello you back!"))
+          case ApiMapValue(Vector(ApiMapValueItem("query", ApiStringValue("Hello")))) ⇒
         }
       }
     }
@@ -175,169 +173,165 @@ class RawServiceSpec
     }
 
   }
+}
 
-  //===================================Dictionary service
+private object ServiceErrors {
+  val InvalidParams = RpcError(400, "INVALID_PARAMS", "", canTryAgain = true, None)
+}
 
-  private object DictionaryMeanings {
-    val Culture = "Anthropology. the sum total of ways of living built up by a group of human beings and transmitted from one generation to another."
-    val Science = "Knowledge, as of facts or principles; knowledge gained by systematic study."
-    val Software = "Computers. the programs used to direct the operation of a computer, as well as documentation giving instructions on how to use them."
+class EchoService(val system: ActorSystem) extends RawApiService(system) {
+  import ServiceErrors._
+
+  override def handleRequests: Handler = implicit client ⇒ params ⇒ {
+    case "makeEcho" ⇒ echo(params)
   }
 
-  /**
-   * Example raw api service that stores and retrieves words from dictionary.
-   */
-  private final class DictionaryService(system: ActorSystem) extends RawApiService(system) {
-    import DictionaryMeanings._
-    import ServiceErrors._
-    import im.actor.api.rpc.FutureResultRpc._
-
-    private val kv = TrieMap.empty[String, String]
-
-    kv.put("culture", Culture)
-    kv.put("science", Science)
-    kv.put("software", Software)
-
-    override def handleRequests: Handler = implicit client ⇒ params ⇒ {
-      case "getWord" ⇒ getWord(params)
-      //      case "putWord" => putWord()
-    }
-
-    def getWord(optParams: Option[ApiRawValue])(implicit client: AuthorizedClientData): Future[Response] = {
-      val ps = optParams flatMap {
-        case ApiMapValue(items) ⇒ items collectFirst { case ApiMapValueItem("word", ApiStringValue(str)) ⇒ str }
-        case _                  ⇒ None
-      }
-      (for {
-        key ← fromOption(InvalidParams)(ps)
-        optValue ← point(kv.get(key))
-        result = optValue map { e ⇒ Vector(ApiMapValueItem("meaning", ApiStringValue(e))) } getOrElse Vector.empty
-      } yield ApiMapValue(result)).value
-    }
+  def echo(params: Option[ApiRawValue]): Future[Response] = {
+    onEcho()
+    val resp =
+      params map (Xor.right(_)) getOrElse (Xor.left(InvalidParams))
+    Future.successful(resp)
   }
 
-  /**
-   * Example raw api service that stores and retrieves words from dictionary. Implemented with MapStyle arguments
-   */
-  private final class MapStyleDictionaryService(system: ActorSystem) extends MapStyleRawApiService(system) {
-    import DictionaryMeanings._
-    import ServiceErrors._
-    import im.actor.api.rpc.FutureResultRpc._
+  def onEcho(): Unit = {}
+}
 
-    sealed trait DictionaryRequest
-    case class GetWord(word: String) extends DictionaryRequest
-    case class PutWord(word: String, meaning: String) extends DictionaryRequest
+//===================================Dictionary service
 
-    implicit val getWordReads = Json.reads[GetWord]
-    implicit val putWordReads = Json.reads[PutWord]
+private object DictionaryMeanings {
+  val Culture = "Anthropology. the sum total of ways of living built up by a group of human beings and transmitted from one generation to another."
+  val Science = "Knowledge, as of facts or principles; knowledge gained by systematic study."
+  val Software = "Computers. the programs used to direct the operation of a computer, as well as documentation giving instructions on how to use them."
+}
 
-    private val kv = TrieMap.empty[String, String]
+/**
+ * Example raw api service that stores and retrieves words from dictionary.
+ */
+private final class DictionaryService(system: ActorSystem) extends RawApiService(system) {
+  import DictionaryMeanings._
+  import ServiceErrors._
+  import im.actor.api.rpc.FutureResultRpc._
+  import system.dispatcher
 
-    kv.put("culture", Culture)
-    kv.put("science", Science)
-    kv.put("software", Software)
+  private val kv = TrieMap.empty[String, String]
 
-    override type Request = DictionaryRequest
+  kv.put("culture", Culture)
+  kv.put("science", Science)
+  kv.put("software", Software)
 
-    override protected def validateRequest = optParams ⇒ {
-      case "getWord" ⇒
-        for {
-          params ← Xor.fromOption(optParams, InvalidParams)
-          result ← Xor.fromEither(params.validate[GetWord].asEither) leftMap (_ ⇒ InvalidParams)
-        } yield result
-      case "putWord" ⇒
-        for {
-          params ← Xor.fromOption(optParams, InvalidParams)
-          result ← Xor.fromEither(params.validate[PutWord].asEither) leftMap (_ ⇒ InvalidParams)
-        } yield result
-    }
-
-    override protected def handleInternal = implicit client ⇒ {
-      case GetWord(word)          ⇒ getWord(word)
-      case PutWord(word, meaning) ⇒ putWord(word, meaning)
-    }
-
-    def getWord(word: String)(implicit client: AuthorizedClientData): Future[Response] = {
-      (for {
-        optValue ← point(kv.get(word))
-        result = optValue map { e ⇒ Vector(ApiMapValueItem("meaning", ApiStringValue(e))) } getOrElse Vector.empty
-      } yield ApiMapValue(result)).value
-    }
-
-    def putWord(word: String, meaning: String)(implicit client: AuthorizedClientData): Future[Response] = {
-      (for {
-        _ ← point(kv.put(word, meaning))
-      } yield ApiMapValue(Vector(ApiMapValueItem("result", ApiStringValue("true"))))).value
-    }
+  override def handleRequests: Handler = implicit client ⇒ params ⇒ {
+    case "getWord" ⇒ getWord(params)
+    //      case "putWord" => putWord()
   }
 
-  /**
-   * Example raw api service that stores and retrieves words from dictionary. Implemented with Array-style arguments
-   */
-  private final class ArrayStyleDictionaryService(system: ActorSystem) extends ArrayStyleRawApiService(system) {
-    import DictionaryMeanings._
-    import im.actor.api.rpc.FutureResultRpc._
-
-    sealed trait DictionaryRequest
-    case class GetWord(word: String) extends DictionaryRequest
-    case class PutWord(word: String, meaning: String) extends DictionaryRequest
-
-    private val kv = TrieMap.empty[String, String]
-
-    kv.put("culture", Culture)
-    kv.put("science", Science)
-    kv.put("software", Software)
-
-    override type Request = DictionaryRequest
-
-    override protected def validateRequests = optParams ⇒ {
-      case "getWord" ⇒ parseParams[String](optParams) map GetWord
-      case "putWord" ⇒ parseParams[PutWord](optParams)
-    }
-
-    override protected def processRequests = implicit client ⇒ {
-      case GetWord(word)          ⇒ getWord(word)
-      case PutWord(word, meaning) ⇒ putWord(word, meaning)
-    }
-
-    def getWord(word: String)(implicit client: AuthorizedClientData): Future[Response] = {
-      (for {
-        optValue ← point(kv.get(word))
-        encodedArr = optValue map { e ⇒ Vector(ApiStringValue(e)) } getOrElse Vector.empty
-      } yield ApiArrayValue(encodedArr)).value
-    }
-
-    def putWord(word: String, meaning: String)(implicit client: AuthorizedClientData): Future[Response] = {
-      kv.put(word, meaning)
-      Future.successful(Xor.right(ApiStringValue("true")))
-    }
-  }
-
-  //===================================Echo service
-
-  private final class EchoService(val system: ActorSystem) extends RawApiService(system) {
-    import ServiceErrors._
-
-    override def handleRequests: Handler = implicit client ⇒ params ⇒ {
-      case "makeEcho" ⇒ echo(params)
-    }
-
-    def echo(params: Option[ApiRawValue]): Future[Response] = {
-      val resp = extractStringFromMap(params, "query") map { q ⇒
-        Xor.right(ApiMapValue(Vector(ApiMapValueItem("echo", ApiStringValue(s"$q you back!")))))
-      } getOrElse Xor.left(InvalidParams)
-      Future.successful(resp)
-    }
-  }
-
-  private def extractStringFromMap(optParams: Option[ApiRawValue], key: String): Option[String] =
-    optParams flatMap {
-      case ApiMapValue(items) ⇒ items collectFirst { case ApiMapValueItem(_, ApiStringValue(str)) ⇒ str }
+  def getWord(optParams: Option[ApiRawValue])(implicit client: ClientData): Future[Response] = {
+    val ps = optParams flatMap {
+      case ApiMapValue(items) ⇒ items collectFirst { case ApiMapValueItem("word", ApiStringValue(str)) ⇒ str }
       case _                  ⇒ None
     }
+    (for {
+      key ← fromOption(InvalidParams)(ps)
+      optValue ← point(kv.get(key))
+      result = optValue map { e ⇒ Vector(ApiMapValueItem("meaning", ApiStringValue(e))) } getOrElse Vector.empty
+    } yield ApiMapValue(result)).value
+  }
+}
 
-  private object ServiceErrors {
-    val InvalidParams = RpcError(400, "INVALID_PARAMS", "", canTryAgain = true, None)
+/**
+ * Example raw api service that stores and retrieves words from dictionary. Implemented with MapStyle arguments
+ */
+private final class MapStyleDictionaryService(system: ActorSystem) extends MapStyleRawApiService(system) {
+  import DictionaryMeanings._
+  import ServiceErrors._
+  import im.actor.api.rpc.FutureResultRpc._
+  import system.dispatcher
+
+  sealed trait DictionaryRequest
+  case class GetWord(word: String) extends DictionaryRequest
+  case class PutWord(word: String, meaning: String) extends DictionaryRequest
+
+  implicit val getWordReads = Json.reads[GetWord]
+  implicit val putWordReads = Json.reads[PutWord]
+
+  private val kv = TrieMap.empty[String, String]
+
+  kv.put("culture", Culture)
+  kv.put("science", Science)
+  kv.put("software", Software)
+
+  override type Request = DictionaryRequest
+
+  override protected def validateRequest = optParams ⇒ {
+    case "getWord" ⇒
+      for {
+        params ← Xor.fromOption(optParams, InvalidParams)
+        result ← Xor.fromEither(params.validate[GetWord].asEither) leftMap (_ ⇒ InvalidParams)
+      } yield result
+    case "putWord" ⇒
+      for {
+        params ← Xor.fromOption(optParams, InvalidParams)
+        result ← Xor.fromEither(params.validate[PutWord].asEither) leftMap (_ ⇒ InvalidParams)
+      } yield result
   }
 
+  override protected def handleInternal = implicit client ⇒ {
+    case GetWord(word)          ⇒ getWord(word)
+    case PutWord(word, meaning) ⇒ putWord(word, meaning)
+  }
+
+  def getWord(word: String)(implicit client: ClientData): Future[Response] = {
+    (for {
+      optValue ← point(kv.get(word))
+      result = optValue map { e ⇒ Vector(ApiMapValueItem("meaning", ApiStringValue(e))) } getOrElse Vector.empty
+    } yield ApiMapValue(result)).value
+  }
+
+  def putWord(word: String, meaning: String)(implicit client: ClientData): Future[Response] = {
+    (for {
+      _ ← point(kv.put(word, meaning))
+    } yield ApiMapValue(Vector(ApiMapValueItem("result", ApiStringValue("true"))))).value
+  }
+}
+
+/**
+ * Example raw api service that stores and retrieves words from dictionary. Implemented with Array-style arguments
+ */
+private final class ArrayStyleDictionaryService(system: ActorSystem) extends ArrayStyleRawApiService(system) {
+  import DictionaryMeanings._
+  import im.actor.api.rpc.FutureResultRpc._
+  import system.dispatcher
+
+  sealed trait DictionaryRequest
+  case class GetWord(word: String) extends DictionaryRequest
+  case class PutWord(word: String, meaning: String) extends DictionaryRequest
+
+  private val kv = TrieMap.empty[String, String]
+
+  kv.put("culture", Culture)
+  kv.put("science", Science)
+  kv.put("software", Software)
+
+  override type Request = DictionaryRequest
+
+  override protected def validateRequests = optParams ⇒ {
+    case "getWord" ⇒ parseParams[String](optParams) map GetWord
+    case "putWord" ⇒ parseParams[PutWord](optParams)
+  }
+
+  override protected def processRequests = implicit client ⇒ {
+    case GetWord(word)          ⇒ getWord(word)
+    case PutWord(word, meaning) ⇒ putWord(word, meaning)
+  }
+
+  def getWord(word: String)(implicit client: ClientData): Future[Response] = {
+    (for {
+      optValue ← point(kv.get(word))
+      encodedArr = optValue map { e ⇒ Vector(ApiStringValue(e)) } getOrElse Vector.empty
+    } yield ApiArrayValue(encodedArr)).value
+  }
+
+  def putWord(word: String, meaning: String)(implicit client: ClientData): Future[Response] = {
+    kv.put(word, meaning)
+    Future.successful(Xor.right(ApiStringValue("true")))
+  }
 }

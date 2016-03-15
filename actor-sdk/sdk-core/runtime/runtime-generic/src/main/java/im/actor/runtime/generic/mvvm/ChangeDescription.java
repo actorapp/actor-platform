@@ -7,6 +7,12 @@ package im.actor.runtime.generic.mvvm;
 import java.util.ArrayList;
 import java.util.List;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class ChangeDescription<T> {
 
     public static <T> ChangeDescription<T> mergeAdd(ChangeDescription<T> a, ChangeDescription<T> b) {

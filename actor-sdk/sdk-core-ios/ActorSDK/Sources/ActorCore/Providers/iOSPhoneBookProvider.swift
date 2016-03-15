@@ -9,7 +9,7 @@ class PhoneBookProvider: NSObject, ACPhoneBookProvider {
     
     func loadPhoneBookWithCallback(callback: ACPhoneBookProvider_Callback!) {
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(2.0 * Double(NSEC_PER_SEC))), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        dispatchBackgroundDelayed(5.0) {
             
             let rawBook = ABAddressBookCreateWithOptions(nil, nil);
             if (rawBook == nil) {

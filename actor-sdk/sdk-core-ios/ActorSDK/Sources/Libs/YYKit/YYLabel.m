@@ -438,8 +438,8 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
     [super setFrame:frame];
     CGSize newSize = self.bounds.size;
     if (!CGSizeEqualToSize(oldSize, newSize)) {
-        _innerContainer.size = self.bounds.size;
         if (!_ignoreCommonProperties) {
+            _innerContainer.size = self.bounds.size;
             _state.layoutNeedUpdate = YES;
         }
         if (_displaysAsynchronously && _clearContentsBeforeAsynchronouslyDisplay) {
@@ -977,12 +977,20 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
 }
 
 - (void)setTextLayout:(YYTextLayout *)textLayout {
+    
+    YYTextLayout *oldLayout = _innerLayout;
+    YYTextContainer *oldContainer = _innerContainer;
+    dispatch_async(YYLabelGetReleaseQueue(), ^{
+        YYTextLayout *released = oldLayout;
+        YYTextContainer *releasedCont = oldContainer;
+    });
+    
     _innerLayout = textLayout;
     _shrinkInnerLayout = nil;
     
     if (_ignoreCommonProperties) {
         _innerText = (NSMutableAttributedString *)textLayout.text;
-        _innerContainer = textLayout.container.copy;
+        _innerContainer = textLayout.container;
     } else {
         _innerText = textLayout.text.mutableCopy;
         if (!_innerText) {
@@ -990,7 +998,7 @@ static dispatch_queue_t YYLabelGetReleaseQueue() {
         }
         [self _updateOuterTextProperties];
         
-        _innerContainer = textLayout.container.copy;
+        _innerContainer = textLayout.container;
         if (!_innerContainer) {
             _innerContainer = [YYTextContainer new];
             _innerContainer.size = self.bounds.size;

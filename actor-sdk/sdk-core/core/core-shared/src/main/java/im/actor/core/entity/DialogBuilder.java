@@ -4,6 +4,12 @@
 
 package im.actor.core.entity;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class DialogBuilder {
     private Peer peer;
     private long sortKey;

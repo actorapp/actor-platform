@@ -10,12 +10,19 @@ import java.io.IOException;
 import java.util.List;
 
 import im.actor.runtime.collections.SparseArray;
+import im.actor.runtime.collections.SparseBooleanArray;
+
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
 
 public class BserWriter {
 
     private DataOutput stream;
-    // TODO: Replace to SparseBooleanArray
-    private SparseArray<Boolean> writtenFields = new SparseArray<Boolean>();
+
+    private SparseBooleanArray writtenFields = new SparseBooleanArray();
 
     public BserWriter(DataOutput stream) {
         if (stream == null) {

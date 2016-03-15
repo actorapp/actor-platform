@@ -1,13 +1,19 @@
 package im.actor.runtime.crypto.box;
 
 import im.actor.runtime.crypto.IntegrityException;
-import im.actor.runtime.crypto.primitives.BlockCipher;
-import im.actor.runtime.crypto.primitives.Digest;
+import im.actor.runtime.crypto.BlockCipher;
+import im.actor.runtime.crypto.Digest;
 import im.actor.runtime.crypto.primitives.Padding;
 import im.actor.runtime.crypto.primitives.hmac.HMAC;
 import im.actor.runtime.crypto.primitives.modes.CBCBlockCipher;
 import im.actor.runtime.crypto.primitives.padding.PKCS7Padding;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
+
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
 
 /**
  * CBC-encrypted package with HMAC (MAC-THEN-ENCRYPT).
@@ -24,17 +30,11 @@ import im.actor.runtime.crypto.primitives.util.ByteStrings;
 public class CBCHmacBox {
 
     private final CBCBlockCipher cbcBlockCipher;
-    private final BlockCipher baseCipher;
-    private final Digest baseDigest;
     private final HMAC hmac;
-    private final byte[] hmacKey;
     private final Padding padding;
 
     public CBCHmacBox(BlockCipher baseCipher, Digest baseDigest, byte[] hmacKey) {
         this.cbcBlockCipher = new CBCBlockCipher(baseCipher);
-        this.baseCipher = baseCipher;
-        this.baseDigest = baseDigest;
-        this.hmacKey = hmacKey;
         this.padding = new PKCS7Padding();
         this.hmac = new HMAC(hmacKey, baseDigest);
     }

@@ -2,6 +2,12 @@ package im.actor.runtime.crypto.primitives.streebog;
 
 import im.actor.runtime.crypto.primitives.util.Pack;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ALL_CHECKS 1
+]-*/
+
 public class StreebogFastDigest {
 
     private final int hashLength;

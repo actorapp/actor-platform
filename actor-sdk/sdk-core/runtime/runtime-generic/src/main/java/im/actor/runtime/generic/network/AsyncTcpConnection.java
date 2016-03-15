@@ -23,6 +23,12 @@ import im.actor.runtime.mtproto.AsyncConnectionInterface;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
 import im.actor.runtime.mtproto.ManagedConnection;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class AsyncTcpConnection extends AsyncConnection {
 
     private final ExecutorService connectExecutor = Executors.newSingleThreadExecutor();

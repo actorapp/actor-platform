@@ -26,7 +26,7 @@ public class AAAuthLogInViewController: AAAuthViewController {
     
     public override func viewDidLoad() {
      
-        view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
+        view.backgroundColor = UIColor.whiteColor()
         
         scrollView.keyboardDismissMode = .OnDrag
         scrollView.scrollEnabled = true
@@ -39,15 +39,16 @@ public class AAAuthLogInViewController: AAAuthViewController {
         
         if ActorSDK.sharedActor().authStrategy == .PhoneOnly {
             field.placeholder = AALocalized("AuthLoginPhone")
-            field.keyboardType = .EmailAddress
+            field.keyboardType = .PhonePad
         } else if ActorSDK.sharedActor().authStrategy == .EmailOnly {
             field.placeholder = AALocalized("AuthLoginEmail")
-            field.keyboardType = .PhonePad
+            field.keyboardType = .EmailAddress
         } else if ActorSDK.sharedActor().authStrategy == .PhoneEmail {
             field.placeholder = AALocalized("AuthLoginPhoneEmail")
             field.keyboardType = .Default
         }
         field.autocapitalizationType = .None
+        field.autocorrectionType = .No
         
         fieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         fieldLine.opaque = false

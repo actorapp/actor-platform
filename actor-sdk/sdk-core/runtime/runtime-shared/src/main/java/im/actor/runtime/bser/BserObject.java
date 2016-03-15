@@ -4,9 +4,17 @@
 
 package im.actor.runtime.bser;
 
+import com.google.j2objc.annotations.AutoreleasePool;
+
 import java.io.IOException;
 
 import im.actor.runtime.collections.SparseArray;
+
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
 
 public abstract class BserObject {
 
@@ -16,6 +24,7 @@ public abstract class BserObject {
 
     }
 
+    @AutoreleasePool
     protected void load(byte[] data) throws IOException {
         BserValues values = new BserValues(BserParser.deserialize(new DataInput(data, 0, data.length)));
         parse(values);

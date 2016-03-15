@@ -12,6 +12,8 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
 
     public let peer: ACPeer
     
+    private let delayLoad = false
+    
     private var displayList: ARBindedDisplayList!
     private var isStarted: Bool = AADevice.isiPad
     private var isVisible: Bool = false
@@ -23,6 +25,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     private var unreadMessageId: jlong = 0
     
     private var isUpdating: Bool = false
+    private var isBinded: Bool = false
     private var pendingUpdates = [ARAppleListUpdate]()
     
     // Audio notes
@@ -58,55 +61,63 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-//        self.collectionView.contentInset = UIEdgeInsets(top: 32, left: 0, bottom: 200, right: 0)
-        
         isVisible = true
         
         // Hack for delaying collection view init from first animation frame
         // This dramatically speed up controller opening
         
-//        NSLog("👮🏻 viewWillAppear")
-        
-        if (isStarted) {
-//            NSLog("👮🏻 isStarted: true")
-            self.willUpdate()
-//            NSLog("👮🏻 willUpdate Called")
-            self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: unreadMessageId)
-//            NSLog("👮🏻 beginUpdates called")
-            self.collectionView.reloadData()
-            prevCount = getCount()
-//            NSLog("👮🏻 count: \(prevCount)")
-            self.displayList.addAppleListener(self)
-            self.didUpdate()
-//            NSLog("👮🏻 didUpdate Called")
-            return
-        } else {
-            self.collectionView.alpha = 0
-        }
-        
-        dispatch_async(dispatch_get_main_queue(),{
-            // What if controller is already closed?
-            if (!self.isVisible) {
+        if delayLoad {
+            
+            if (isStarted) {
+                if !isBinded {
+                    isBinded = true
+                    self.willUpdate()
+                    self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: unreadMessageId)
+                    self.collectionView.reloadData()
+                    prevCount = getCount()
+                    self.displayList.addAppleListener(self)
+                    self.didUpdate()
+                }
                 return
+            } else {
+                self.collectionView.alpha = 0
             }
             
+            dispatch_async(dispatch_get_main_queue(),{
+                // What if controller is already closed?
+                if (!self.isVisible) {
+                    return
+                }
+                
+                self.isStarted = true
+                
+                UIView.animateWithDuration(0.6, animations: { () -> Void in self.collectionView.alpha = 1 }, completion: { (comp) -> Void in })
+                
+                if !self.isBinded {
+                    self.isBinded = true
+                    self.willUpdate()
+                    self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: self.unreadMessageId)
+                    self.collectionView.reloadData()
+                    self.prevCount = self.getCount()
+                    self.displayList.addAppleListener(self)
+                    self.didUpdate()
+                }
+            })
+        } else {
             self.isStarted = true
-            
-//            NSLog("👮🏻 isStarted: false")
             
             UIView.animateWithDuration(0.6, animations: { () -> Void in self.collectionView.alpha = 1 }, completion: { (comp) -> Void in })
             
-            self.willUpdate()
-//            NSLog("👮🏻 willUpdate Called")
-            self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: self.unreadMessageId)
-//            NSLog("👮🏻 beginUpdates called")
-            self.collectionView.reloadData()
-            self.prevCount = self.getCount()
-//            NSLog("👮🏻 count: \(self.prevCount)")
-            self.displayList.addAppleListener(self)
-            self.didUpdate()
-//            NSLog("👮🏻 didUpdate Called")
-        });
+            if !self.isBinded {
+                self.isBinded = true
+                self.willUpdate()
+                self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: self.unreadMessageId)
+                self.collectionView.reloadData()
+                self.prevCount = self.getCount()
+                self.displayList.addAppleListener(self)
+                self.didUpdate()
+            }
+        }
     }
     
     
@@ -174,13 +185,17 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         return cell
     }
     
-    public override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
+    public override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
         
         isVisible = false
         
-        // Remove listener on exit
-        self.displayList.removeAppleListener(self)
+        if isBinded {
+            isBinded = false
+            
+            // Remove listener on exit
+            self.displayList.removeAppleListener(self)
+        }
     }
     
     // Model updates

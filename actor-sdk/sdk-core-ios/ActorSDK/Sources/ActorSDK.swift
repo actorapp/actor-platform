@@ -201,6 +201,7 @@ import DZNWebViewController
         builder.setPhoneBookImportEnabled(jboolean(enablePhoneBookImport))
         builder.setVoiceCallsEnabled(jboolean(enableCalls))
         builder.setIsEnabledGroupedChatList(false)
+        // builder.setEnableFilesLogging(true)
         
         // Creating messenger
         messenger = ACCocoaMessenger(configuration: builder.build())

@@ -9,6 +9,12 @@ import im.actor.runtime.mtproto.AsyncConnectionFactory;
 import im.actor.runtime.mtproto.AsyncConnectionInterface;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class AsyncTcpConnectionFactory implements AsyncConnectionFactory {
 
     @Override

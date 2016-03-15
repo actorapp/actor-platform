@@ -1,8 +1,15 @@
 package im.actor.runtime.crypto.ratchet;
 
+import im.actor.runtime.Crypto;
 import im.actor.runtime.crypto.Curve25519;
-import im.actor.runtime.crypto.primitives.digest.SHA256;
+import im.actor.runtime.crypto.Digest;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
+
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
 
 public class RatchetMasterSecret {
     public static byte[] calculateMasterSecret(
@@ -39,7 +46,7 @@ public class RatchetMasterSecret {
                                     foreignEphermal.getKey())
                     );
         }
-        SHA256 sha256 = new SHA256();
+        Digest sha256 = Crypto.createSHA256();
         sha256.update(ecResult, 0, ecResult.length);
         byte[] res = new byte[32];
         sha256.doFinal(res, 0);

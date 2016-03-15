@@ -6,7 +6,14 @@ package im.actor.runtime.bser;
 
 import java.io.IOException;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class DataInput {
+
     private byte[] data;
     private int offset;
     private int maxOffset;
@@ -44,10 +51,6 @@ public class DataInput {
         return data;
     }
 
-    public int getMaxOffset() {
-        return maxOffset;
-    }
-
     public boolean isEOF() {
         return maxOffset <= offset;
     }
@@ -56,16 +59,16 @@ public class DataInput {
         return offset;
     }
 
-    public int getRemaining() {
-        return maxOffset - offset;
-    }
-
-    public void skip(int size) throws IOException {
-        if (offset + size > maxOffset) {
-            throw new IOException();
-        }
-        offset += size;
-    }
+//    public int getRemaining() {
+//        return maxOffset - offset;
+//    }
+//
+//    public void skip(int size) throws IOException {
+//        if (offset + size > maxOffset) {
+//            throw new IOException();
+//        }
+//        offset += size;
+//    }
 
     public int readByte() throws IOException {
         if (offset == maxOffset) {
@@ -213,85 +216,5 @@ public class DataInput {
 
     public boolean readProtoBool() throws IOException {
         return readByte() != 0;
-    }
-
-    public int readASN1Length() throws IOException {
-        int length = readByte();
-        if (length < 0) {
-            throw new IOException("EOF found when length expected");
-        }
-
-        if (length == 0x80) {
-            return -1;      // indefinite-length encoding
-        }
-
-        if (length > 127) {
-            int size = length & 0x7f;
-
-            // Note: The invalid long form "0xff" (see X.690 8.1.3.5c) will be caught here
-            if (size > 4) {
-                throw new IOException("DER length more than 4 bytes: " + size);
-            }
-
-            length = 0;
-            for (int i = 0; i < size; i++) {
-                int next = readByte();
-                length = (length << 8) + next;
-            }
-
-            if (length < 0) {
-                throw new IOException("corrupted stream - negative length found");
-            }
-
-            // after all we must have read at least 1 byte
-//            if (length >= limit) {
-//                throw new IOException("corrupted stream - out of bounds length found");
-//            }
-        }
-
-        return length;
-    }
-
-    public int readASN1Tag() throws IOException {
-        int tag = readByte();
-        if (tag == 0) {
-            throw new IOException();
-        }
-        return tag;
-    }
-
-    public int readASN1TagNumber(int tag) throws IOException {
-
-        int tagNo = tag & 0x1f;
-
-        //
-        // with tagged object tag number is bottom 5 bits, or stored at the start of the content
-        //
-        if (tagNo == 0x1f) {
-            tagNo = 0;
-
-            int b = readByte();
-
-            // X.690-0207 8.1.2.4.2
-            // "c) bits 7 to 1 of the first subsequent octet shall not all be zero."
-            if ((b & 0x7f) == 0) // Note: -1 will pass
-            {
-                throw new IOException("corrupted stream - invalid high tag number found");
-            }
-
-            while ((b >= 0) && ((b & 0x80) != 0)) {
-                tagNo |= (b & 0x7f);
-                tagNo <<= 7;
-                b = readByte();
-            }
-
-            if (b < 0) {
-                throw new IOException("EOF found inside tag value.");
-            }
-
-            tagNo |= (b & 0x7f);
-        }
-
-        return tagNo;
     }
 }

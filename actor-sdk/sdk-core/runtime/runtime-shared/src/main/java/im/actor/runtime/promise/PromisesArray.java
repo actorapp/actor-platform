@@ -87,6 +87,17 @@ public class PromisesArray<T> {
         });
     }
 
+    public static <T> PromisesArray<T> ofPromises(Collection<Promise<T>> items) {
+        ArrayList<Promise<T>> res = new ArrayList<>(items);
+        // Collections.addAll(res, items);
+        final Promise[] promises = res.toArray(new Promise[res.size()]);
+        return new PromisesArray<>(new PromiseFunc<Promise<T>[]>() {
+            @Override
+            public void exec(PromiseResolver<Promise<T>[]> executor) {
+                executor.result(promises);
+            }
+        });
+    }
 
     //
     // Constructors and methods

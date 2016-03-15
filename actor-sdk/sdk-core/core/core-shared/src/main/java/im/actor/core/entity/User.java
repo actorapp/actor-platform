@@ -22,6 +22,12 @@ import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 import im.actor.runtime.storage.KeyValueItem;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
+
 public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
 
     private static final int RECORD_ID = 10;

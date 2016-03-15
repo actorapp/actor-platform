@@ -30,7 +30,7 @@ public class AAAuthEmailViewController: AAAuthViewController {
     
     public override func viewDidLoad() {
         
-        view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
+        view.backgroundColor = UIColor.whiteColor()
         
         scrollView.keyboardDismissMode = .OnDrag
         scrollView.scrollEnabled = true
@@ -55,6 +55,7 @@ public class AAAuthEmailViewController: AAAuthViewController {
         emailField.placeholder = AALocalized("AuthEmailPlaceholder")
         emailField.keyboardType = .EmailAddress
         emailField.autocapitalizationType = .None
+        emailField.autocorrectionType = .No
         
         emailFieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         

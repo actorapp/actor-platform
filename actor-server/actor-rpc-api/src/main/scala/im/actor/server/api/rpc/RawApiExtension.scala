@@ -5,7 +5,7 @@ import cats.data.Xor
 import im.actor.api.rpc.collections.ApiRawValue
 import im.actor.api.rpc.FutureResultRpc
 import im.actor.api.rpc.raw.RawApiService
-import im.actor.api.rpc.{ AuthorizedClientData, CommonRpcErrors, RpcError }
+import im.actor.api.rpc.{ AuthorizedClientData, ClientData, CommonRpcErrors, RpcError }
 
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.Future
@@ -27,10 +27,10 @@ private[rpc] final class RawApiExtensionImpl(system: ExtendedActorSystem) extend
 
   def register(serviceSeq: Seq[(String, RawApiService)]): Unit = services ++= serviceSeq
 
-  def handle(service: String, method: String, params: Option[ApiRawValue])(implicit client: AuthorizedClientData): Future[RpcError Xor ApiRawValue] =
+  def handle(service: String, method: String, params: Option[ApiRawValue], clientData: ClientData): Future[RpcError Xor ApiRawValue] =
     (for {
       serviceHandler ← fromOption(CommonRpcErrors.UnsupportedRequest)(services.get(service))
-      response ← fromOption(CommonRpcErrors.UnsupportedRequest)(serviceHandler.handleRequests(client)(params).lift(method))
+      response ← fromOption(CommonRpcErrors.UnsupportedRequest)(serviceHandler.handleRequests(clientData)(params).lift(method))
       result ← fromFutureXor(response)
     } yield result).value
 }

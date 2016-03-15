@@ -46,6 +46,10 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
             
             s.binded { (r:AABindedRows<AADialogCell>) -> () in
                 
+                r.differental = true
+                
+                r.animated = true
+                
                 r.displayList = Actor.getDialogsDisplayList()
                 if r.displayList.getListProcessor() == nil {
                    r.displayList.setListProcessor(AADialogListProcessor())

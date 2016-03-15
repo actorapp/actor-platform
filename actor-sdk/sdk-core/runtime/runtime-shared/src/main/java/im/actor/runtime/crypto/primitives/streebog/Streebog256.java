@@ -1,6 +1,12 @@
 package im.actor.runtime.crypto.primitives.streebog;
 
-import im.actor.runtime.crypto.primitives.Digest;
+import im.actor.runtime.crypto.Digest;
+
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ALL_CHECKS 1
+]-*/
 
 public class Streebog256 implements Digest {
 

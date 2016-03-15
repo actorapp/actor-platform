@@ -1,13 +1,20 @@
 package im.actor.runtime.crypto.primitives.digest;
 
-import im.actor.runtime.crypto.primitives.Digest;
+import im.actor.runtime.Crypto;
+import im.actor.runtime.crypto.Digest;
+
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
 
 /**
  * Truncated SHA256 for public keys
  */
 public class KeyDigest implements Digest {
 
-    private SHA256 sha256 = new SHA256();
+    private Digest sha256 = Crypto.createSHA256();
 
     @Override
     public void reset() {

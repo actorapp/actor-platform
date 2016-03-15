@@ -4,6 +4,7 @@
 
 package im.actor.runtime.generic.mvvm;
 
+import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.ObjectiveCName;
 
 import java.util.ArrayList;
@@ -19,6 +20,12 @@ import im.actor.runtime.actors.Props;
 import im.actor.runtime.generic.mvvm.alg.Modifications;
 
 import static im.actor.runtime.actors.ActorSystem.system;
+
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ARRAY_BOUND_CHECKS 1
+]-*/
 
 public class DisplayList<T> {
 
@@ -185,6 +192,7 @@ public class DisplayList<T> {
             this.displayList = displayList;
         }
 
+        @AutoreleasePool
         public void onEditList(final Modification<T> modification, final Runnable runnable, boolean isLoadMore) {
 
             if (modification != null) {
@@ -243,6 +251,7 @@ public class DisplayList<T> {
                     processedList);
         }
 
+        @AutoreleasePool
         private void requestListSwitch(final ModificationHolder<T>[] modifications,
                                        final ArrayList<T> initialList,
                                        final ArrayList<ChangeDescription<T>> androidChanges,
@@ -284,6 +293,7 @@ public class DisplayList<T> {
             });
         }
 
+        @AutoreleasePool
         public void onListSwitched(ModificationHolder<T>[] modifications) {
             isLocked = false;
 

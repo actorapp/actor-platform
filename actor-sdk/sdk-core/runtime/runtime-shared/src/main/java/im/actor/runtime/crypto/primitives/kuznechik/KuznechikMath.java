@@ -1,8 +1,14 @@
 package im.actor.runtime.crypto.primitives.kuznechik;
 
+// Disabling Bounds checks for speeding up calculations
+
+/*-[
+#define J2OBJC_DISABLE_ALL_CHECKS 1
+]-*/
+
 /**
  * Mathematical methods for Kuzhechik encryption
- * <p/>
+ * <p>
  * Ported by Steven Kite (steve@actor.im) from
  * https://github.com/mjosaarinen/kuznechik/blob/master/kuznechik_8bit.c
  * Multiplication optimization from

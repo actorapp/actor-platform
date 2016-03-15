@@ -7,14 +7,14 @@ import TTTAttributedLabel
 
 class AAAutoCompleteCell: AATableViewCell {
     
-    var avatarView = AAAvatarView(frameSize: 32)
+    var avatarView = AAAvatarView()
     var nickView = TTTAttributedLabel(frame: CGRectZero)
     var nameView = TTTAttributedLabel(frame: CGRectZero)
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier)
         
-        avatarView.enableAnimation = false
+        // avatarView.enableAnimation = false
         nickView.font = UIFont.systemFontOfSize(14)
         nickView.textColor = ActorSDK.sharedActor().style.cellTextColor
         
@@ -31,7 +31,8 @@ class AAAutoCompleteCell: AATableViewCell {
     }
 
     func bindData(user: ACMentionFilterResult, highlightWord: String) {
-        avatarView.bind(user.mentionString, id: user.uid, avatar: user.avatar, clearPrev: true)
+        
+        avatarView.bind(user.mentionString, id: Int(user.uid), avatar: user.avatar)
         
         var nickText: String
         var nameText: String

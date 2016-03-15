@@ -7,11 +7,11 @@ import akka.cluster.pubsub.DistributedPubSubMediator.{ SubscribeAck, Subscribe }
 import akka.cluster.sharding.ShardRegion.Passivate
 import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding, ShardRegion }
 import akka.pattern.pipe
-import akka.stream.{ OverflowStrategy, ClosedShape, Materializer }
+import akka.stream.{ ClosedShape, Materializer }
 import akka.stream.actor._
 import akka.stream.scaladsl._
 import com.typesafe.config.Config
-import im.actor.api.rpc.sequence.ApiUpdateOptimization
+import com.github.kxbmap.configs.syntax._
 import im.actor.api.rpc.{ AuthData, ClientData }
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
@@ -29,13 +29,14 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.util.{ Success, Try }
 
-final case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig)
+final case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig, rpcConfig: RpcConfig)
 
 object SessionConfig {
   def load(config: Config): SessionConfig = {
     SessionConfig(
       idleTimeout = config.getDuration("idle-timeout", TimeUnit.SECONDS).seconds,
-      reSendConfig = ReSenderConfig.fromConfig(config.getConfig("resend"))
+      reSendConfig = ReSenderConfig.fromConfig(config.getConfig("resend")),
+      rpcConfig = config.get[RpcConfig]("rpc")
     )
   }
 }
@@ -98,7 +99,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
   private[this] var authData: Option[AuthData] = None
   private[this] var clients = immutable.Set.empty[ActorRef]
-  private[this] var updateUptimizations = immutable.Set.empty[Int]
+  private[this] var updateOptimizations = immutable.Set.empty[Int]
 
   private val (authId, sessionId) = self.path.name.split("_").toList match {
     case a :: s :: Nil ⇒ (a.toLong, s.toLong)
@@ -120,7 +121,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
   private val updatesHandler = context.actorOf(UpdatesHandler.props(authId), "updatesHandler")
 
   val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props(), "messagePublisher")
-  val rpcHandler = context.actorOf(RpcHandler.props, "rpcHandler")
+  val rpcHandler = context.actorOf(RpcHandler.props(config.rpcConfig), "rpcHandler")
 
   def receive = initializing
 
@@ -217,13 +218,13 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
       idleControl.keepAlive()
 
       cmd match {
-        case SubscribeToSeq(opts) ⇒ this.updateUptimizations = opts.toSet
+        case SubscribeToSeq(opts) ⇒ this.updateOptimizations = opts.toSet
         case _                    ⇒
       }
 
       publisher ! cmd
     case GetUpdateOptimizations() ⇒
-      sender() ! GetUpdateOptimizationsAck(updateUptimizations.toSeq)
+      sender() ! GetUpdateOptimizationsAck(updateOptimizations.toSeq)
     case AuthorizeUser(userId, authSid) ⇒ authorize(userId, authSid, Some(sender()))
     case internal                       ⇒ handleInternal(internal, stashUnmatched = false)
   }
