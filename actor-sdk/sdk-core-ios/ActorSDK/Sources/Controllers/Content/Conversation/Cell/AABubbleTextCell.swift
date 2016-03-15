@@ -219,7 +219,7 @@ public class AABubbleTextCell : AABubbleCell {
             let code = self.cellLayout.sources[index]
             self.controller.navigateNext(AACodePreviewController(code: code), removeCurrent: false)
         } else if url.scheme == "send" {
-            Actor.sendMessageWithPeer(self.peer, withText: url.path!)
+            Actor.sendMessageWithPeer(self.peer, withText: url.absoluteString.skip(5))
         } else {
             ActorSDK.sharedActor().openUrl(url.absoluteString)
         }
