@@ -277,9 +277,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   }
 
   private def increaseBufferSize(item: ResendableItem): Unit = {
-    if (item.size <= MaxResendSize) {
-      this.resendBufferSize += item.size
-    }
+    this.resendBufferSize += item.size
 
     item match {
       case p: PushItem ⇒
@@ -292,7 +290,8 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   }
 
   private def decreaseBufferSize(item: ResendableItem): Unit = {
-    if (item.size <= MaxResendSize) this.resendBufferSize -= item.size
+    this.resendBufferSize -= item.size
+
     item match {
       case _: PushItem ⇒ this.resendPushBufferSize -= item.size
       case _           ⇒
