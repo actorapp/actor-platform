@@ -48,7 +48,7 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
                 
                 r.differental = true
                 
-                r.animated = false
+                r.animated = true
                 
                 r.displayList = Actor.getDialogsDisplayList()
                 if r.displayList.getListProcessor() == nil {
