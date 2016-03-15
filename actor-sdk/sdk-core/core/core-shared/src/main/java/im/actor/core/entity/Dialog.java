@@ -39,6 +39,8 @@ public class Dialog extends BserObject implements ListEngineItem {
 
     public static final String ENTITY_NAME = "Dialog";
 
+    private static final int MAX_LENGTH = 32;
+
     @NotNull
     @SuppressWarnings("NullableProblems")
     @Property("readonly, nonatomic")
@@ -96,7 +98,11 @@ public class Dialog extends BserObject implements ListEngineItem {
         this.senderId = senderId;
         this.date = date;
         this.messageType = messageType;
-        this.text = text;
+        if (text.length() > MAX_LENGTH) {
+            this.text = text.substring(0, MAX_LENGTH) + "...";
+        } else {
+            this.text = text;
+        }
         this.status = status;
         this.relatedUid = relatedUid;
     }
@@ -182,6 +188,10 @@ public class Dialog extends BserObject implements ListEngineItem {
         date = values.getLong(8);
         messageType = ContentType.fromValue(values.getInt(9));
         text = values.getString(10);
+        if (text.length() > MAX_LENGTH) {
+            text = text.substring(0, MAX_LENGTH) + "...";
+        }
+
         status = MessageState.fromValue(values.getInt(11));
         relatedUid = values.getInt(12);
     }
