@@ -6,11 +6,11 @@ import akka.actor.ActorSystem
 import akka.event.Logging
 import akka.http.scaladsl.util.FastFuture
 import akka.stream.Materializer
-import akka.stream.scaladsl.{ Source, FileIO }
+import akka.stream.scaladsl.{ FileIO, Source }
 import akka.util.ByteString
 import better.files.{ File, _ }
 import im.actor.server.db.DbExtension
-import im.actor.server.persist.FileRepo
+import im.actor.server.persist.files.FileRepo
 
 import scala.concurrent.{ ExecutionContext, Future, blocking }
 import scala.util.{ Failure, Success }

@@ -12,6 +12,7 @@ import im.actor.server.file.ImageUtils.getAvatar
 import im.actor.server.file.{ FileLocation, FileStorageExtension }
 import im.actor.server.model.AvatarData
 import im.actor.server.persist._
+import im.actor.server.persist.files.FileRepo
 import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
 import scala.concurrent.Future

@@ -1,7 +1,6 @@
 package im.actor.server.file.local.http
 
 import java.time.{ Duration, Instant }
-import java.util.concurrent.Executors
 
 import akka.actor.ActorSystem
 import akka.event.Logging
@@ -31,12 +30,6 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
   protected val storageLocation = storageConfig.location
 
   private val log = Logging(system, this)
-
-  val SignedLongNumber: PathMatcher1[Long] =
-    PathMatcher("""[+-]?\d+""".r) flatMap { string ⇒
-      try Some(java.lang.Long.parseLong(string))
-      catch { case _: NumberFormatException ⇒ None }
-    }
 
   // format: OFF
   def routes: Route =

@@ -6,7 +6,7 @@ import java.time.{ Duration, Instant }
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.{ HttpMethods, Uri }
-import akka.stream.{ Materializer, ActorMaterializer }
+import akka.stream.{ ActorMaterializer, Materializer }
 import better.files._
 import im.actor.acl.ACLFiles
 import im.actor.server.api.http.{ HttpApi, HttpApiConfig }
@@ -15,7 +15,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.file._
 import im.actor.server.model.{ File ⇒ FileModel }
 import im.actor.server.file.local.http.FilesHttpHandler
-import im.actor.server.persist.FileRepo
+import im.actor.server.persist.files.FileRepo
 import im.actor.util.ThreadLocalSecureRandom
 
 import scala.concurrent.{ ExecutionContext, Future }
