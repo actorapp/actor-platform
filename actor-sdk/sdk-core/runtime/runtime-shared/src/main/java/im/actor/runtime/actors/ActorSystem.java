@@ -64,7 +64,7 @@ public class ActorSystem {
                 return;
             }
 
-            ActorDispatcher dispatcher = new ActorDispatcher(dispatcherId, ThreadPriority.NORMAL, this,
+            ActorDispatcher dispatcher = new ActorDispatcher(dispatcherId, ThreadPriority.LOW, this,
                     Runtime.isSingleThread() ? 1 : threadsCount);
 
             dispatchers.put(dispatcherId, dispatcher);
