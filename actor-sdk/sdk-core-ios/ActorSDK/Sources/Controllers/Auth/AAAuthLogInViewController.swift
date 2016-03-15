@@ -39,10 +39,10 @@ public class AAAuthLogInViewController: AAAuthViewController {
         
         if ActorSDK.sharedActor().authStrategy == .PhoneOnly {
             field.placeholder = AALocalized("AuthLoginPhone")
-            field.keyboardType = .EmailAddress
+            field.keyboardType = .PhonePad
         } else if ActorSDK.sharedActor().authStrategy == .EmailOnly {
             field.placeholder = AALocalized("AuthLoginEmail")
-            field.keyboardType = .PhonePad
+            field.keyboardType = .EmailAddress
         } else if ActorSDK.sharedActor().authStrategy == .PhoneEmail {
             field.placeholder = AALocalized("AuthLoginPhoneEmail")
             field.keyboardType = .Default
