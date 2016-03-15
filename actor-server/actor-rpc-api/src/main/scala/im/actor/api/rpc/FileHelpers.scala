@@ -2,19 +2,18 @@ package im.actor.api.rpc
 
 import cats.data.Xor
 import im.actor.server.acl.ACLUtils
-import im.actor.server.persist.FileRepo
 
 import scala.concurrent.ExecutionContext
-
 import akka.actor.ActorSystem
 import slick.dbio.DBIO
-
 import im.actor.api.rpc.files.ApiFileLocation
+import im.actor.server.persist.files.FileRepo
 
 object FileRpcErrors {
   val FileNotFound = RpcError(404, "FILE_NOT_FOUND", "File not found.", false, None)
   val FileTooLarge = RpcError(400, "FILE_TOO_LARGE", "File is too large.", false, None)
   val LocationInvalid = RpcError(400, "LOCATION_INVALID", "", false, None)
+  val UnsupportedSignatureAlgorithm = RpcError(400, "SIGNATURE_ALGO_NOT_SUPPORTED", "", false, None)
 }
 
 object FileHelpers {

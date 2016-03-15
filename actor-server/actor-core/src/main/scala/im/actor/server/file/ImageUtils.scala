@@ -3,17 +3,17 @@ package im.actor.server.file
 import java.io.ByteArrayOutputStream
 
 import akka.actor.ActorSystem
-import com.sksamuel.scrimage.nio.{ JpegWriter, ImageWriter, PngWriter }
+import com.sksamuel.scrimage.nio.{ ImageWriter, JpegWriter, PngWriter }
 import com.sksamuel.scrimage.{ Image, ParImage, Position }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.model.AvatarData
-import im.actor.server.persist.FileRepo
+import im.actor.server.persist.files.FileRepo
 import im.actor.util.ThreadLocalSecureRandom
 import slick.dbio.DBIO
 
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Try, Failure, Success }
+import scala.util.{ Failure, Success, Try }
 
 object ImageUtils {
   val AvatarSizeLimit = 1024L * 1024 // TODO: configurable

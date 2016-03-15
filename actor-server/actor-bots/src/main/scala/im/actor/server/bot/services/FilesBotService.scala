@@ -7,7 +7,7 @@ import im.actor.server.acl.ACLUtils
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ FileStorageExtension, UnsafeFileName }
-import im.actor.server.persist.FileRepo
+import im.actor.server.persist.files.FileRepo
 
 private[bot] object FilesBotErrors {
   val LocationInvalid = BotError(400, "LOCATION_INVALID")
