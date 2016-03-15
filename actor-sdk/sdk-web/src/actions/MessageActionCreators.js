@@ -33,6 +33,7 @@ export default {
     dispatch(ActionTypes.MESSAGE_SEND_PHOTO, { peer, photo });
   },
 
+  // Deprecated
   sendClipboardPhotoMessage(peer, photo) {
     ActorClient.sendClipboardPhotoMessage(peer, photo);
   },
