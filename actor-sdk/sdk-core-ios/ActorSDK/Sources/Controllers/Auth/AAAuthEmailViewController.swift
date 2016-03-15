@@ -55,6 +55,7 @@ public class AAAuthEmailViewController: AAAuthViewController {
         emailField.placeholder = AALocalized("AuthEmailPlaceholder")
         emailField.keyboardType = .EmailAddress
         emailField.autocapitalizationType = .None
+        emailField.autocorrectionType = .No
         
         emailFieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         
