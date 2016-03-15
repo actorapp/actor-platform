@@ -5,6 +5,7 @@
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, AsyncActionStates } from '../constants/ActorAppConstants';
+import PeerUtils from '../utils/PeerUtils';
 
 class ArchiveStore extends Store {
   constructor(dispatcher) {
@@ -12,7 +13,7 @@ class ArchiveStore extends Store {
 
     this.isLoading = true;
     this.dialogs = [];
-    this.archiveChatState = [];
+    this.archiveChatState = {};
     this._isAllLoaded = false;
     this._isInitialLoadingComplete = false;
   }
@@ -33,26 +34,24 @@ class ArchiveStore extends Store {
     return this.dialogs;
   }
 
-  getArchiveChatState(id) {
-    return (this.archiveChatState[id] || AsyncActionStates.PENDING);
-  }
-
-  resetArchiveChatState(id) {
-    delete this.archiveChatState[id];
+  getArchiveChatState() {
+    return this.archiveChatState;
   }
 
   __onDispatch(action) {
+    const peerKey = action.peer ? PeerUtils.peerToString(action.peer) : null;
     switch(action.type) {
       case ActionTypes.ARCHIVE_ADD:
-        this.archiveChatState[action.peer.id] = AsyncActionStates.PROCESSING;
+        this.archiveChatState[peerKey] = AsyncActionStates.PROCESSING;
         this.__emitChange();
         break;
       case ActionTypes.ARCHIVE_ADD_SUCCESS:
-        this.resetArchiveChatState(action.peer.id);
+        delete this.archiveChatState[peerKey];
         this.__emitChange();
         break;
       case ActionTypes.ARCHIVE_ADD_ERROR:
-        this.archiveChatState[action.peer.id] = AsyncActionStates.FAILURE;
+        const key = PeerUtils.peerToString(action.peer);
+        this.archiveChatState[peerKey] = AsyncActionStates.FAILURE;
         this.__emitChange();
         break;
 
