@@ -64,6 +64,13 @@ public class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
     
     public func bind(title: String, id: Int, avatar: ACAvatar?) {
         
+        if self.title == title
+            && self.id == id
+            && self.fileName == nil {
+                // Do Nothing
+                return
+        }
+        
         self.title = title
         self.id = id
         

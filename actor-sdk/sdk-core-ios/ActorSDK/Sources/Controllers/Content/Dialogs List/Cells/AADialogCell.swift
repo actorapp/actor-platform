@@ -131,29 +131,22 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             messageView.displaysAsynchronously = true
         }
 
+        
         // Reseting Text Layout on new peer binding
         if !isRebind {
-            
-            counterView.alpha = 0
-            counterViewBg.alpha = 0
-            
+            avatarView.alpha = 0
             titleView.alpha = 0
             messageView.alpha = 0
+            statusView.alpha = 0
             dateView.alpha = 0
-            
-//            titleView.clearContentsBeforeAsynchronouslyDisplay = true
-//            titleView.textLayout = nil
-//            titleView.clearContentsBeforeAsynchronouslyDisplay = false
-//            
-//            messageView.clearContentsBeforeAsynchronouslyDisplay = true
-//            messageView.textLayout = nil
-//            messageView.clearContentsBeforeAsynchronouslyDisplay = false
-//            
-//            dateView.clearContentsBeforeAsynchronouslyDisplay = true
-//            dateView.textLayout = nil
-//            dateView.clearContentsBeforeAsynchronouslyDisplay = false
+            counterView.alpha = 0
+            counterViewBg.alpha = 0
+        } else {
+            titleView.clearContentsBeforeAsynchronouslyDisplay = false
+            messageView.clearContentsBeforeAsynchronouslyDisplay = false
+            dateView.clearContentsBeforeAsynchronouslyDisplay = false            
+            counterView.clearContentsBeforeAsynchronouslyDisplay = false
         }
-        
         
         
         //
@@ -186,6 +179,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         
         // Cancelling Renderer and forcing layouting to start new rendering
         cellRenderer.cancelRender()
+
         setNeedsLayout()
     }
     
@@ -340,12 +334,18 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     
     private func cellApply(render: AADialogCellLayout!) {
         
+        //
+        // Avatar
+        //
+        
+        presentView(avatarView)
+        
         
         //
         // Title
         //
         self.titleView.textLayout = render.titleLayout
-        self.titleView.alpha = 1
+        presentView(titleView)
         
         
         let leftPadding: CGFloat
@@ -355,14 +355,15 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             leftPadding = 14
         }
         
+        
         //
         // Date
         //
         
         dateView.textLayout = render.dateLayout
         let dateWidth = render.dateLayout.textBoundingSize.width
-        dateView.frame = CGRectMake(contentView.width - dateWidth - leftPadding, 18, render.dateLayout.textBoundingSize.width, 18)
-        dateView.alpha = 1
+        dateView.frame = CGRectMake(contentView.width - dateWidth - leftPadding, 18, dateWidth, 18)
+        presentView(dateView)
         
         
         //
@@ -378,7 +379,15 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             self.messageView.frame = messageViewFrame
         }
         messageView.textLayout = render.messageLayout
-        messageView.alpha = 1
+        presentView(messageView)
+        
+        
+        //
+        // Message State
+        //
+        if !self.statusView.hidden {
+            presentView(self.statusView)
+        }
         
         
         //
@@ -388,18 +397,27 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         if render.counterLayout != nil {
             self.counterView.textLayout = render.counterLayout
             
-            self.counterView.alpha = 1
-            self.counterViewBg.alpha = 1
-            
             let textW = render.counterLayout!.textBoundingSize.width
             let unreadW = max(textW + 8, 18)
             
             counterView.frame = CGRectMake(contentView.width - leftPadding - unreadW + (unreadW - textW) / 2, 44, textW, 18)
             counterViewBg.frame = CGRectMake(contentView.width - leftPadding - unreadW, 44, unreadW, 18)
+            
+            presentView(counterView)
+            presentView(counterViewBg)
         } else {
-            self.counterView.alpha = 0
-            self.counterViewBg.alpha = 0
+            
+            dismissView(counterView)
+            dismissView(counterViewBg)
         }
+    }
+    
+    private func presentView(view: UIView) {
+        view.alpha = 1
+    }
+    
+    private func dismissView(view: UIView) {
+        view.alpha = 0
     }
 }
 

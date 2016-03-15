@@ -61,6 +61,18 @@ public extension UIView {
 //        })
     }
     
+    public func showViewAnimated() {
+        UIView.animateWithDuration(0.2, animations: { () -> Void in
+            self.alpha = 1
+        })
+    }
+    
+    public func hideViewAnimated() {
+        UIView.animateWithDuration(0.2, animations: { () -> Void in
+            self.alpha = 0
+        })
+    }
+    
 //    public var height: CGFloat { get { return bounds.height } }
 //    public var width: CGFloat { get { return bounds.width } }
 //    
