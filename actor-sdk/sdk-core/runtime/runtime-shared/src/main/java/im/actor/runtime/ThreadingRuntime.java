@@ -12,6 +12,7 @@ import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
 import im.actor.runtime.threading.ImmediateDispatcher;
 import im.actor.runtime.threading.ThreadLocalCompat;
+import im.actor.runtime.threading.WeakReferenceCompat;
 
 /**
  * Provider for multithreading support. Contains all required methods for performing asynchronous operations.
@@ -52,7 +53,7 @@ public interface ThreadingRuntime {
     int getCoresCount();
 
     /**
-     * Creating compatable AtomicInteger object
+     * Creating compatible AtomicInteger object
      *
      * @param value initial value of AtomicInteger
      * @return the AtomicInteger
@@ -61,7 +62,7 @@ public interface ThreadingRuntime {
     AtomicIntegerCompat createAtomicInt(int value);
 
     /**
-     * Creating compatable AtomicLong object
+     * Creating compatible AtomicLong object
      *
      * @param value initial value of AtomicLong
      * @return the AtomicLong
@@ -70,13 +71,23 @@ public interface ThreadingRuntime {
     AtomicLongCompat createAtomicLong(long value);
 
     /**
-     * Creating compatable ThreadLocal object
+     * Creating compatible ThreadLocal object
      *
      * @param <T> type of container
      * @return the ThreadLocal object
      */
     @ObjectiveCName("createThreadLocal")
     <T> ThreadLocalCompat<T> createThreadLocal();
+
+    /**
+     * Creating compatible weak reference
+     *
+     * @param val value for reference
+     * @param <T> type of reference
+     * @return weak reference
+     */
+    @ObjectiveCName("createWeakReference:")
+    <T> WeakReferenceCompat<T> createWeakReference(T val);
 
     /**
      * Creating Dispatcher for very lightweight tasks
