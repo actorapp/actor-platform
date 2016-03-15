@@ -35,6 +35,7 @@ import im.actor.core.entity.WebActionDescriptor;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.events.PeerChatPreload;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Modules;
@@ -570,6 +571,16 @@ public class Messenger {
     @ObjectiveCName("onConversationOpenWithPeer:")
     public void onConversationOpen(@NotNull Peer peer) {
         modules.getEvents().post(new PeerChatOpened(peer));
+    }
+
+    /**
+     * Can be called for forcing conversation loading in background
+     *
+     * @param peer conversation's peer
+     */
+    @ObjectiveCName("onConversationPreLoadWithPeer:")
+    public void onConversationPreLoad(@NotNull Peer peer) {
+        modules.getEvents().post(new PeerChatPreload(peer));
     }
 
     /**

@@ -398,6 +398,10 @@ public class JsFacade implements Exportable {
 
     // Chats
 
+    public void preInitChat(JsPeer peer){
+        messenger.onConversationPreLoad(peer.convert());
+    }
+
     public void bindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
         if (callback == null) {
             return;
