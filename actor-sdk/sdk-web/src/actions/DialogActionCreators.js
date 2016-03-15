@@ -16,6 +16,7 @@ import GroupProfileActionCreators from './GroupProfileActionCreators';
 import DraftActionCreators from './DraftActionCreators';
 
 import DialogStore from '../stores/DialogStore';
+import MessageStore from '../stores/MessageStore';
 
 let messagesBinding = null;
 
@@ -146,7 +147,11 @@ const DialogActionCreators = {
   },
 
   loadMoreMessages(peer) {
-    dispatch(ActionTypes.MESSAGES_LOAD_MORE, { peer });
+    if (MessageStore.isAllRendered()) {
+      this.onChatEnd(peer);
+    } else {
+      dispatch(ActionTypes.MESSAGES_LOAD_MORE);
+    }
   }
 };
 

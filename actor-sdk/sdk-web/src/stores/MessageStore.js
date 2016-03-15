@@ -7,8 +7,6 @@ import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
-import DialogActionCreators from '../actions/DialogActionCreators';
-
 const initialRenderMessagesCount = 20;
 const renderMessagesStep = 20;
 
@@ -63,6 +61,10 @@ class MessageStore extends Store {
     return this._isLoaded;
   }
 
+  isAllRendered() {
+    return this._messages.length === this._messagesToRender.length;
+  }
+
   /**
    * @returns {Array} Selected messages
    */
@@ -94,9 +96,9 @@ class MessageStore extends Store {
       case ActionTypes.MESSAGES_CHANGED:
         this._messages = action.messages;
         this._overlay = action.overlay;
+        this._isLoaded = action.isLoaded;
         this.updateMessagesToRender();
         this.updateOverlayToRender();
-        this._isLoaded = action.isLoaded;
         this.__emitChange();
         break;
 
@@ -106,20 +108,13 @@ class MessageStore extends Store {
         break;
 
       case ActionTypes.MESSAGES_LOAD_MORE:
-        if (this._messages.length > this._messagesToRender.length) {
-          this._renderMessagesCount += renderMessagesStep;
-
-          if (this._renderMessagesCount > this._messages.length) {
-            this._renderMessagesCount = this._messages.length;
-          }
-
-          this.updateMessagesToRender();
-          this.updateOverlayToRender();
-
-          this.__emitChange();
-        } else {
-          DialogActionCreators.onChatEnd(action.peer);
+        this._renderMessagesCount += renderMessagesStep;
+        if (this._renderMessagesCount > this._messages.length) {
+          this._renderMessagesCount = this._messages.length;
         }
+        this.updateMessagesToRender();
+        this.updateOverlayToRender();
+        this.__emitChange();
         break;
 
       default:
