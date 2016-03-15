@@ -13,6 +13,7 @@ import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestSubscribeToGroupOnline;
 import im.actor.core.api.rpc.RequestSubscribeToOnline;
+import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
@@ -35,6 +36,11 @@ import im.actor.runtime.actors.Props;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
+import im.actor.runtime.function.Consumer;
+import im.actor.runtime.function.Supplier;
+import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.Promises;
+import im.actor.runtime.promise.PromisesArray;
 
 @Verified
 public class PresenceActor extends ModuleActor implements BusSubscriber {
@@ -57,6 +63,9 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
     private HashMap<Integer, Cancellable> uidCancellables = new HashMap<>();
     private HashSet<Integer> uids = new HashSet<>();
     private HashSet<Integer> gids = new HashSet<>();
+
+    private boolean isRequesting = false;
+    private ArrayList<Peer> pendingPeers = new ArrayList<>();
 
     public PresenceActor(ModuleContext messenger) {
         super(messenger);
@@ -173,6 +182,9 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
     @Verified
     private void subscribe(Peer peer) {
+
+        Log.d(TAG, "subscribe:" + peer);
+
         if (peer.getPeerType() == PeerType.PRIVATE) {
             // Already subscribed
             if (uids.contains(peer.getPeerId())) {
@@ -186,9 +198,7 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
             // Subscribing to user online sates
             uids.add(user.getUid());
-            List<ApiUserOutPeer> peers = new ArrayList<ApiUserOutPeer>();
-            peers.add(new ApiUserOutPeer(user.getUid(), user.getAccessHash()));
-            request(new RequestSubscribeToOnline(peers));
+
         } else if (peer.getPeerType() == PeerType.GROUP) {
             // Already subscribed
             if (gids.contains(peer.getPeerId())) {
@@ -202,39 +212,94 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
             // Subscribing to group online sates
             gids.add(peer.getPeerId());
-            List<ApiGroupOutPeer> peers = new ArrayList<ApiGroupOutPeer>();
-            peers.add(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()));
-            request(new RequestSubscribeToGroupOnline(peers));
+
+        } else {
+            return;
         }
+
+        // Adding Pending Peer
+        if (pendingPeers.contains(peer)) {
+            return;
+        }
+        pendingPeers.add(peer);
+
+        onCheckQueue();
     }
 
     @Verified
     private void onNewSessionCreated() {
 
         // Resubscribing for online states of users
-        List<ApiUserOutPeer> userPeers = new ArrayList<ApiUserOutPeer>();
         for (int uid : uids) {
-            User user = getUser(uid);
-            if (user == null) {
-                continue;
+            Peer p = Peer.user(uid);
+            if (!pendingPeers.contains(p)) {
+                pendingPeers.add(p);
             }
-            userPeers.add(new ApiUserOutPeer(uid, user.getAccessHash()));
-        }
-        if (userPeers.size() > 0) {
-            request(new RequestSubscribeToOnline(userPeers));
         }
 
         // Resubscribing for online states of groups
-        List<ApiGroupOutPeer> groupPeers = new ArrayList<ApiGroupOutPeer>();
         for (int gid : gids) {
-            Group group = getGroup(gid);
-            if (group == null) {
-                continue;
+            Peer p = Peer.group(gid);
+            if (!pendingPeers.contains(p)) {
+                pendingPeers.add(p);
             }
-            groupPeers.add(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()));
         }
-        if (groupPeers.size() > 0) {
-            request(new RequestSubscribeToGroupOnline(groupPeers));
+
+        onCheckQueue();
+    }
+
+    private void onCheckQueue() {
+
+        if (isRequesting) {
+            return;
+        }
+
+        if (pendingPeers.size() == 0) {
+            return;
+        }
+
+        ArrayList<Peer> destPeers = new ArrayList<>(pendingPeers);
+        pendingPeers.clear();
+        ArrayList<ApiUserOutPeer> outUserPeers = new ArrayList<>();
+        ArrayList<ApiGroupOutPeer> outGroupPeers = new ArrayList<>();
+
+        for (Peer p : destPeers) {
+            if (p.getPeerType() == PeerType.GROUP) {
+                Group g = getGroup(p.getPeerId());
+                if (g != null) {
+                    outGroupPeers.add(new ApiGroupOutPeer(p.getPeerId(), g.getAccessHash()));
+                }
+            } else if (p.getPeerType() == PeerType.PRIVATE) {
+                User u = getUser(p.getPeerId());
+                if (u != null) {
+                    outUserPeers.add(new ApiUserOutPeer(p.getPeerId(), u.getAccessHash()));
+                }
+            }
+        }
+
+        ArrayList<Promise<ResponseVoid>> requests = new ArrayList<>();
+        if (outUserPeers.size() > 0) {
+            requests.add(api(new RequestSubscribeToOnline(outUserPeers)));
+        }
+        if (outGroupPeers.size() > 0) {
+            requests.add(api(new RequestSubscribeToGroupOnline(outGroupPeers)));
+        }
+
+        if (requests.size() > 0) {
+            isRequesting = true;
+            PromisesArray.ofPromises(requests).zip().then(new Consumer<ResponseVoid[]>() {
+                @Override
+                public void apply(ResponseVoid[] responseVoids) {
+                    isRequesting = false;
+                    onCheckQueue();
+                }
+            }).failure(new Consumer<Exception>() {
+                @Override
+                public void apply(Exception e) {
+                    isRequesting = false;
+                    onCheckQueue();
+                }
+            }).done(self());
         }
     }
 
@@ -262,7 +327,7 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
             OnlineUserTimeout timeout = (OnlineUserTimeout) message;
             onUserGoesOffline(timeout.getUid(), timeout.getDate(), timeout.getUpdateDate());
         } else {
-            drop(message);
+            super.onReceive(message);
         }
     }
 

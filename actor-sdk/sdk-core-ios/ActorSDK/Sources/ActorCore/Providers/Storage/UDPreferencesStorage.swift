@@ -101,8 +101,8 @@ import Foundation
     }
     
     private func fetchObj(key: String) -> AnyObject? {
-        if cachedPrefs.keys.contains(key) {
-           return cachedPrefs[key]!
+        if let obj = cachedPrefs[key] {
+           return obj
         }
         let res = prefs.objectForKey(key)
         cachedPrefs[key] = res
