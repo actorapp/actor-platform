@@ -36,7 +36,7 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
 
     override func viewDidLoad() {
         
-        view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
+        view.backgroundColor = UIColor.whiteColor()
         
         scrollView.keyboardDismissMode = .OnDrag
         scrollView.scrollEnabled = true

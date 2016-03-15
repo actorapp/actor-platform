@@ -115,7 +115,7 @@ class AARecordAudioController: UIViewController,UIViewControllerTransitioningDel
         self.timerLabel = UILabel()
         self.timerLabel.text = "00:00"
         self.timerLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 17)!
-        self.timerLabel.textColor = UIColor.grayColor()
+        self.timerLabel.textColor = ActorSDK.sharedActor().style.vcHintColor
         self.timerLabel.frame = CGRectMake(70, 5, 100, 40)
         self.timerLabel.textAlignment = .Center
         self.timerLabel.backgroundColor = UIColor.clearColor()
