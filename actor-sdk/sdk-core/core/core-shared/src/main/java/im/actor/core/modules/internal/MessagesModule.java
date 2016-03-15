@@ -49,6 +49,7 @@ import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.events.PeerChatPreload;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.events.AppVisibleChanged;
@@ -275,12 +276,12 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         }
     }
 
-    public ListEngine getCustomConversationEngine(Peer peer, String dataType, BserCreator creator){
-        String key = peer.getUnuqueId()+dataType;
+    public ListEngine getCustomConversationEngine(Peer peer, String dataType, BserCreator creator) {
+        String key = peer.getUnuqueId() + dataType;
         synchronized (customConversationEngines) {
             if (!customConversationEngines.containsKey(key)) {
                 customConversationEngines.put(key,
-                        Storage.createList(STORAGE_CHAT_CUSTOM_PREFIX + "_" + dataType + "_" + peer.getUnuqueId() , creator));
+                        Storage.createList(STORAGE_CHAT_CUSTOM_PREFIX + "_" + dataType + "_" + peer.getUnuqueId(), creator));
             }
             return customConversationEngines.get(key);
         }
@@ -1052,6 +1053,9 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
             Peer peer = ((PeerChatClosed) event).getPeer();
             assumeConvActor(peer);
             conversationActors.get(peer).send(new ConversationActor.ConversationHidden());
+        } else if (event instanceof PeerChatPreload) {
+            Peer peer = ((PeerChatPreload) event).getPeer();
+            assumeConvActor(peer);
         }
     }
 }
