@@ -48,6 +48,8 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     public let counterView = YYLabel()
     public let counterViewBg = UIImageView()
     
+    private var isEditing = false
+    
     // Binding Data
     
     private var bindedItem: ACDialog?
@@ -152,6 +154,8 @@ public class AADialogCell: AATableViewCell, AABindedCell {
 //            dateView.clearContentsBeforeAsynchronouslyDisplay = false
         }
         
+        
+        
         //
         // Message State
         //
@@ -183,6 +187,16 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         // Cancelling Renderer and forcing layouting to start new rendering
         cellRenderer.cancelRender()
         setNeedsLayout()
+    }
+    
+    public override func willTransitionToState(state: UITableViewCellStateMask) {
+        super.willTransitionToState(state)
+        
+        if state.contains(UITableViewCellStateMask.ShowingEditControlMask) {
+            isEditing = true
+        } else {
+            isEditing = false
+        }
     }
     
     public override func layoutSubviews() {
@@ -232,11 +246,15 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             
             if cellRenderer.requestRender(config) {
                 
-                // Disable async rendering on frame resize
+                // Disable async rendering on frame resize to avoid blinking on resize
                 titleView.displaysAsynchronously = false
                 titleView.clearContentsBeforeAsynchronouslyDisplay = false
                 messageView.displaysAsynchronously = false
                 messageView.clearContentsBeforeAsynchronouslyDisplay = false
+                dateView.displaysAsynchronously = false
+                dateView.clearContentsBeforeAsynchronouslyDisplay = false
+                counterView.displaysAsynchronously = false
+                counterView.clearContentsBeforeAsynchronouslyDisplay = false
             }
         }
     }
@@ -246,17 +264,20 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         //
         // Title Layouting
         //
+        
         let title = NSMutableAttributedString(string: config.item.dialogTitle)
         title.yy_font = UIFont.mediumSystemFontOfSize(17)
         title.yy_color = appStyle.dialogTitleColor
-        let titleContainer = YYTextContainer(size: CGSize(width: width, height: 1000))
+        let titleContainer = YYTextContainer(size: CGSize(width: config.titleWidth, height: 1000))
         titleContainer.maximumNumberOfRows = 1
+        titleContainer.truncationType = .End
         let titleLayout = YYTextLayout(container: titleContainer, text: title)!
         
         
         //
         // Message Status
         //
+        
         var messagePadding: CGFloat = 0
         if config.isStatusVisible {
             messagePadding = 22
@@ -266,6 +287,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         //
         // Counter
         //
+        
         var unreadPadding: CGFloat = 0
         let counterLayout: YYTextLayout?
         if config.item.unreadCount > 0 {
@@ -293,7 +315,9 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         let messageWidth = config.contentWidth - 76 - 14 - messagePadding - unreadPadding
         let messageContainer = YYTextContainer(size: CGSize(width: messageWidth, height: 1000))
         messageContainer.maximumNumberOfRows = 1
+        messageContainer.truncationType = .End
         let messageLayout = YYTextLayout(container: messageContainer, text: message)!
+        
         
         //
         // Date
@@ -316,23 +340,35 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     
     private func cellApply(render: AADialogCellLayout!) {
         
+        
         //
         // Title
         //
         self.titleView.textLayout = render.titleLayout
         self.titleView.alpha = 1
         
+        
+        let leftPadding: CGFloat
+        if isEditing {
+            leftPadding = 8
+        } else {
+            leftPadding = 14
+        }
+        
         //
         // Date
         //
         
         dateView.textLayout = render.dateLayout
-        dateView.frame = CGRectMake(contentView.width - render.dateLayout.textBoundingSize.width - 14, 18, render.dateLayout.textBoundingSize.width, 18)
+        let dateWidth = render.dateLayout.textBoundingSize.width
+        dateView.frame = CGRectMake(contentView.width - dateWidth - leftPadding, 18, render.dateLayout.textBoundingSize.width, 18)
         dateView.alpha = 1
+        
         
         //
         // Message
         //
+        
         var padding: CGFloat = 76
         if !statusView.hidden {
             padding += 22
@@ -343,6 +379,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         }
         messageView.textLayout = render.messageLayout
         messageView.alpha = 1
+        
         
         //
         // Counter
@@ -357,8 +394,8 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             let textW = render.counterLayout!.textBoundingSize.width
             let unreadW = max(textW + 8, 18)
             
-            counterView.frame = CGRectMake(width - 14 - unreadW + (unreadW - textW) / 2, 44, textW, 18)
-            counterViewBg.frame = CGRectMake(width - 14 - unreadW, 44, unreadW, 18)
+            counterView.frame = CGRectMake(contentView.width - leftPadding - unreadW + (unreadW - textW) / 2, 44, textW, 18)
+            counterViewBg.frame = CGRectMake(contentView.width - leftPadding - unreadW, 44, unreadW, 18)
         } else {
             self.counterView.alpha = 0
             self.counterViewBg.alpha = 0
