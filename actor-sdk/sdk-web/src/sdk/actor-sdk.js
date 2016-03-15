@@ -97,7 +97,7 @@ class ActorSDK {
       if (crosstab.supported) crosstab.broadcast(ACTOR_INIT_EVENT, {});
       window.messenger = Actor.create({
         endpoints: this.endpoints,
-        logHandler: loggerAppend
+        logHandler: localStorage.debug ? loggerAppend : () => {}
       });
     }
 

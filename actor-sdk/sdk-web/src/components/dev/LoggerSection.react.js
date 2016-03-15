@@ -17,15 +17,17 @@ class LoggerSection extends Component {
   static getStores = () => [LoggerStore];
 
   static calculateState() {
-    return LoggerStore.getState();
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (!nextState.isOpen) {
-      return false;
+    const isOpen = LoggerStore.isOpen();
+    if (!isOpen) {
+      return {isOpen: false};
     }
 
-    return this.state.logs.length !== nextState.logs.length;
+    const logs = LoggerStore.getLogs();
+    return {
+      isOpen,
+      logs,
+      length: logs.length
+    };
   }
 
   onClose() {

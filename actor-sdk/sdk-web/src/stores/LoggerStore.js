@@ -2,32 +2,35 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { ReduceStore } from 'flux/utils';
+import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 
-class LoggerStore extends ReduceStore {
-  getInitialState() {
-    return {
-      logs: [],
-      isOpen: false
-    };
+class LoggerStore extends Store {
+  constructor(dispatcher) {
+    super(dispatcher);
+    this._logs = [];
+    this._isOpen = false;
   }
 
-  reduce(state, action) {
+  isOpen() {
+    return this._isOpen;
+  }
+
+  getLogs() {
+    return this._logs;
+  }
+
+  __onDispatch(action) {
     switch (action.type) {
       case ActionTypes.LOGGER_TOGGLE:
-        return {
-          ...state,
-          isOpen: !state.isOpen
-        };
+        this._isOpen = !this._isOpen;
+        this.__emitChange();
+        break;
       case ActionTypes.LOGGER_APPEND:
-        return {
-          ...state,
-          logs: [...state.logs, action.payload]
-        };
-      default:
-        return state;
+        this._logs.push(action.payload);
+        this.__emitChange();
+        break;
     }
   }
 }
