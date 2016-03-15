@@ -10027,6 +10027,11 @@
             <property role="TrG5h" value="algo" />
             <node concept="2m5ndX" id="4bVh48Gplf$" role="2m7DVh" />
           </node>
+          <node concept="2m7Kf5" id="4bVh48Gpu_Z" role="2m0hLx">
+            <property role="2m7DUN" value="5" />
+            <property role="TrG5h" value="seed" />
+            <node concept="2m5ndX" id="4bVh48GpuAb" role="2m7DVh" />
+          </node>
           <node concept="2m7Kf5" id="4bVh48GphVk" role="2m0hLx">
             <property role="2m7DUN" value="3" />
             <property role="TrG5h" value="signatureSecret" />
@@ -10051,6 +10056,11 @@
             <property role="1GSvIU" value="full" />
             <property role="NX6R2" value="Signature algorithm" />
             <ref role="NX6Kv" node="4bVh48Gplfs" resolve="algo" />
+          </node>
+          <node concept="NX1gA" id="4bVh48GpuAk" role="1y2DgH">
+            <property role="NX6R2" value="Public-visible seed of signature" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="4bVh48Gpu_Z" resolve="seed" />
           </node>
           <node concept="NX1gA" id="4bVh48Gpj2_" role="1y2DgH">
             <property role="1GSvIU" value="full" />
