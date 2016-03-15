@@ -10,6 +10,8 @@ import { Link } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import  classnames from 'classnames';
 
+import PeerUtils from '../../utils/PeerUtils';
+
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 import ContactActionCreators from '../../actions/ContactActionCreators';
 import GroupListActionCreators from '../../actions/GroupListActionCreators';
@@ -40,11 +42,13 @@ class Recent extends Component {
   };
 
   static propTypes = {
-    dialogs: PropTypes.array.isRequired
+    currentPeer: PropTypes.object,
+    dialogs: PropTypes.array.isRequired,
+    archive: PropTypes.object.isRequired
   };
 
-  componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.dialogs !== this.props.dialogs) {
       this.checkInvisibleCounters();
     }
   }
@@ -105,7 +109,7 @@ class Recent extends Component {
   };
 
   render() {
-    const { dialogs } = this.props;
+    const { dialogs, archive, currentPeer } = this.props;
     const { haveUnreadAbove, haveUnreadBelow } = this.state;
     const { intl } = this.context;
 
@@ -136,9 +140,19 @@ class Recent extends Component {
           groupTitle = <li className="sidebar__list__title">{intl.messages[`sidebar.recents.${dialogGroup.key}`]}</li>;
       }
 
-      const groupList = map(dialogGroup.shorts, (dialog, index) => <RecentItem dialog={dialog}
-                                                                               key={index}
-                                                                               type={dialogGroup.key}/>);
+      const groupList = map(dialogGroup.shorts, (dialog, index) => {
+        const peer = dialog.peer.peer;
+        const peerKey = PeerUtils.peerToString(peer);
+
+        return (
+          <RecentItem
+            dialog={dialog}
+            archiveState={archive[peerKey]}
+            isActive={PeerUtils.equals(peer, currentPeer)}
+            key={peerKey}
+          />
+        );
+      });
 
       const groupClassname = classnames(`sidebar__list sidebar__list--${dialogGroup.key}`, {
        'sidebar__list--empty': isEmpty
