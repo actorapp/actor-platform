@@ -19,7 +19,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.file.FileUtils._
 import im.actor.server.file._
 import im.actor.server.model.{ File ⇒ FileModel }
-import im.actor.server.persist.FileRepo
+import im.actor.server.persist.files.FileRepo
 import im.actor.util.ThreadLocalSecureRandom
 
 import scala.concurrent.duration._

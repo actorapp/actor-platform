@@ -11,7 +11,7 @@ trait ACLBase {
 
   def getMDInstance() = ThreadLocalMD5.current()
 
-  def secretKey()(implicit s: ActorSystem) =
+  def secretKey()(implicit s: ActorSystem): String =
     s.settings.config.getString("secret")
 
   def hash(s: String, md: MessageDigest = getMDInstance()): Long =
