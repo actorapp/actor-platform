@@ -3,9 +3,6 @@ package im.actor.sdk.controllers.fragment.settings;
 import android.content.Context;
 import android.view.View;
 
-/**
- * Created by root on 11/12/15.
- */
 public class ActorSettingsFragment extends BaseActorSettingsFragment {
     @Override
     public View getBeforeNickSettingsView() {
