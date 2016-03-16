@@ -1,11 +1,9 @@
 package im.actor.server.api.rpc.service.files
 
-import java.nio.ByteBuffer
-import java.time.temporal.ChronoUnit
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 import akka.actor._
-import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
 import im.actor.api.rpc.FileRpcErrors.UnsupportedSignatureAlgorithm
@@ -21,7 +19,6 @@ import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.concurrent.duration._
 
 class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
 
@@ -32,10 +29,9 @@ class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
   private implicit val db: Database = DbExtension(actorSystem).db
   private val fsAdapter: FileStorageAdapter = FileStorageExtension(actorSystem).fsAdapter
   private val httpConfig = HttpApiConfig.load.get
-  private val urlBuilderTimeout: Int = 1.hour.toMillis.toInt
 
   override def doHandleGetFileUrl(location: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseGetFileUrl]] =
-    authorized(clientData) { client ⇒
+    authorized(clientData) { _ ⇒
       (for {
         file ← fromFutureOption(FileRpcErrors.LocationInvalid)(db.run(FileRepo.find(location.fileId)))
         url ← fromFutureOption(FileRpcErrors.LocationInvalid)(fsAdapter.getFileDownloadUrl(file, location.accessHash))
@@ -43,7 +39,7 @@ class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
     }
 
   override def doHandleGetFileUrls(files: IndexedSeq[ApiFileLocation], clientData: ClientData): Future[HandlerResult[ResponseGetFileUrls]] =
-    authorized(clientData) { client ⇒
+    authorized(clientData) { _ ⇒
       val idsHashes = files.map(fl ⇒ fl.fileId → fl.accessHash).toMap
       (for {
         models ← fromFuture(db.run(FileRepo.fetch(idsHashes.keySet)))
@@ -63,7 +59,7 @@ class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
     }
 
   override def doHandleGetFileUploadUrl(expectedSize: Int, clientData: ClientData): Future[HandlerResult[ResponseGetFileUploadUrl]] =
-    authorized(clientData) { client ⇒
+    authorized(clientData) { _ ⇒
       val id = ACLUtils.randomLong()
       (for {
         uploadKeyUrl ← fromFuture(fsAdapter.getFileUploadUrl(id))
@@ -73,7 +69,7 @@ class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
     }
 
   override def doHandleGetFileUploadPartUrl(partNumber: Int, partSize: Int, keyBytes: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseGetFileUploadPartUrl]] =
-    authorized(clientData) { client ⇒
+    authorized(clientData) { _ ⇒
       (for {
         file ← fromFutureOption(FileRpcErrors.FileNotFound)(db.run(FileRepo.findByKey(fsAdapter.parseKey(keyBytes).key)))
         partKeyUrl ← fromFuture(fsAdapter.getFileUploadPartUrl(file.id, partNumber))
@@ -83,7 +79,7 @@ class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
     }
 
   override def doHandleCommitFileUpload(keyBytes: Array[Byte], fileName: String, clientData: ClientData): Future[HandlerResult[ResponseCommitFileUpload]] =
-    authorized(clientData) { client ⇒
+    authorized(clientData) { _ ⇒
       (for {
         file ← fromFutureOption(FileRpcErrors.FileNotFound)(db.run(FileRepo.findByKey(fsAdapter.parseKey(keyBytes).key)))
         partNames ← fromFuture(db.run(FilePartRepo.findByFileId(file.id) map (_.map(_.uploadKey))))
@@ -94,18 +90,18 @@ class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
   protected def doHandleGetFileUrlBuilder(supportedSignatureAlgorithms: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseGetFileUrlBuilder]] =
     authorized(clientData) { _ ⇒
       val result = if (supportedSignatureAlgorithms.contains("HMAC_SHA256")) {
-        val seed = ACLUtils.randomString()
-        val expire = Instant.now.plus(1, ChronoUnit.HOURS).getEpochSecond
+        val expire = Instant.now.plus(1, ChronoUnit.HOURS).getEpochSecond.toInt
+        val seed = (BitVector.fromByte(0) ++
+          BitVector.fromInt(expire) ++
+          BitVector.fromLong(ACLUtils.fileUrlBuilderSeed())).toHex
         val secret = ACLUtils.fileUrlBuilderSecret(seed, expire)
-        val baseUrl = Uri(httpConfig.baseUri)
-          .withPath(Uri.Path("/v1/fileUrlBuilder"))
-          .withQuery(Uri.Query("seed" → seed, "expire" → expire.toString))
         Ok(
           ResponseGetFileUrlBuilder(
-            baseUrl = baseUrl.toString(),
+            baseUrl = s"${httpConfig.baseUri}/v1/files",
             algo = "HMAC_SHA256",
-            signatureSecret = BitVector.fromLong(secret).toByteArray,
-            timeout = urlBuilderTimeout
+            signatureSecret = BitVector.fromLong(secret).toHex.getBytes,
+            timeout = expire,
+            seed = seed
           )
         )
       } else Error(UnsupportedSignatureAlgorithm)
