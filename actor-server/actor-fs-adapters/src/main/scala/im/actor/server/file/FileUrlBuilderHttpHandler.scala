@@ -36,7 +36,7 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
   private val db = DbExtension(system).db
   private val log = Logging(system, this)
 
-  private val fileBuilderRejectionHandler: RejectionHandler =
+  val rejectionHandler: RejectionHandler =
     RejectionHandler.newBuilder()
       .handle {
         case SecretExpiredRejection ⇒
@@ -56,15 +56,13 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
   def routes: Route =
     extractRequest { request =>
       log.debug("Got file url builder request: {}", request)
-      handleRejections(fileBuilderRejectionHandler) {
-        defaultVersion {
-          pathPrefix("files" / SignedLongNumber) { fileId =>
-            get {
-              validateBuilderRequest(fileId) { case (fileModel, accessHash) =>
-                onSuccess(fsAdapter.getFileDownloadUrl(fileModel, accessHash)) {
-                  case Some(url) => redirect(url, StatusCodes.Found)
-                  case None => complete(StatusCodes.NotFound -> "File not found")
-                }
+      defaultVersion {
+        pathPrefix("files" / SignedLongNumber) { fileId =>
+          get {
+            validateBuilderRequest(fileId) { case (fileModel, accessHash) =>
+              onSuccess(fsAdapter.getFileDownloadUrl(fileModel, accessHash)) {
+                case Some(url) => redirect(url, StatusCodes.Found)
+                case None => complete(StatusCodes.NotFound -> "File not found")
               }
             }
           }
@@ -74,7 +72,7 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
   // format: ON
 
   // monad transformers could make this code easier
-  def validateBuilderRequest(fileId: Long): Directive1[(FileModel, Long)] =
+  private def validateBuilderRequest(fileId: Long): Directive1[(FileModel, Long)] =
     parameter("signature") flatMap {
       case s ⇒
         s split "_" match {
@@ -123,6 +121,6 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
         }
     }
 
-  def isExpired(expire: Int, now: Instant): Boolean = Instant.ofEpochSecond(expire.toLong).isAfter(now)
+  private def isExpired(expire: Int, now: Instant): Boolean = Instant.ofEpochSecond(expire.toLong).isAfter(now)
 
 }
