@@ -13,6 +13,7 @@ import PeerUtils from '../utils/PeerUtils';
 import SDKDelegate from './actor-sdk-delegate';
 import { endpoints, rootElement, homePage, twitter, helpPhone, appName } from '../constants/ActorAppConstants'
 import Pace from 'pace';
+import { isFunction } from 'lodash';
 
 import React from 'react';
 import { render } from 'react-dom';
@@ -66,6 +67,7 @@ window.jsAppLoaded = () => window.isJsAppLoaded = true;
 class ActorSDK {
   constructor(options = {}) {
     this.endpoints = (options.endpoints && options.endpoints.length > 0) ? options.endpoints : endpoints;
+    this.logHandler = isFunction(options.logHandler) ? options.logHandler : this.createLogHandler();
     this.isExperimental = options.isExperimental ? options.isExperimental : false;
     this.forceLocale = options.forceLocale ? options.forceLocale : null;
     this.rootElement = options.rootElement ? options.rootElement : rootElement;
@@ -80,6 +82,14 @@ class ActorSDK {
     if (this.delegate.l18n) extendL18n();
 
     SharedContainer.set(this);
+  }
+
+  createLogHandler() {
+    if (localStorage.debug) {
+      return loggerAppend;
+    }
+
+    return () => {};
   }
 
   _starter = () => {
@@ -97,7 +107,7 @@ class ActorSDK {
       if (crosstab.supported) crosstab.broadcast(ACTOR_INIT_EVENT, {});
       window.messenger = Actor.create({
         endpoints: this.endpoints,
-        logHandler: localStorage.debug ? loggerAppend : () => {}
+        logHandler: this.logHandler
       });
     }
 
