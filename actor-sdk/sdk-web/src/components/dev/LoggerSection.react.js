@@ -7,14 +7,16 @@ import { Container } from 'flux/utils';
 import classNames from 'classnames';
 
 import LoggerStore from '../../stores/LoggerStore';
-import {loggerToggle} from '../../actions/LoggerActionCreators';
+import { loggerToggle } from '../../actions/LoggerActionCreators';
 
 import Scrollbar from '../common/Scrollbar.react';
 import LoggerFilter from './LoggerFilter.react';
 import LoggerRow from './LoggerRow.react';
 
 class LoggerSection extends Component {
-  static getStores = () => [LoggerStore];
+  static getStores() {
+    return [LoggerStore];
+  }
 
   static calculateState() {
     const isOpen = LoggerStore.isOpen();

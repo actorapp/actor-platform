@@ -22,7 +22,9 @@ class Archive extends Component {
     super(props);
   }
 
-  static getStores = () => [ArchiveStore];
+  static getStores() {
+    return [ArchiveStore];
+  }
 
   static calculateState() {
     return {

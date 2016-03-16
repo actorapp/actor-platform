@@ -16,7 +16,9 @@ class SessionItem extends Component {
     super(props);
   }
 
-  static getStores = () => [PreferencesStore];
+  static getStores() {
+    return [PreferencesStore];
+  }
   static calculateState = (prevState, props) => {
     return {
       terminateSessionState: PreferencesStore.getTerminateSessionState(props.id)

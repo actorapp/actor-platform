@@ -21,7 +21,9 @@ class AddContact extends Component {
     super(props);
   }
 
-  static getStores = () => [AddContactStore];
+  static getStores() {
+    return [AddContactStore];
+  }
 
   static calculateState() {
     return {

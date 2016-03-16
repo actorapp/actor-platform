@@ -13,7 +13,9 @@ import DropdownStore from '../../stores/DropdownStore';
 import DialogStore from '../../stores/DialogStore';
 
 class MenuOverlay extends Component {
-  static getStores = () => [DropdownStore, DialogStore];
+  static getStores() {
+    return [DropdownStore, DialogStore];
+  }
 
   static calculateState() {
     const message = DropdownStore.getMessage();

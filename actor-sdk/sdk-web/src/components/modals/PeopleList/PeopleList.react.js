@@ -29,7 +29,9 @@ class PeopleList extends Component {
     intl: PropTypes.object
   };
 
-  static getStores = () => [PeopleStore];
+  static getStores() {
+    return [PeopleStore];
+  }
 
   static calculateState() {
     return {

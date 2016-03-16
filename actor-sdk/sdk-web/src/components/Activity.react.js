@@ -20,7 +20,9 @@ class ActivitySection extends Component {
     super(props);
   }
 
-  static getStores = () => [DialogStore, DialogInfoStore, ActivityStore];
+  static getStores() {
+    return [DialogStore, DialogInfoStore, ActivityStore];
+  }
 
   static calculateState() {
     return {

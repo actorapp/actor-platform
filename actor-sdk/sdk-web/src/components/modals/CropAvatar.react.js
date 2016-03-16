@@ -26,7 +26,9 @@ class CropAvatarModal extends Component {
     onCropFinish: PropTypes.func.isRequired
   };
 
-  static getStores = () => [CropAvatarStore];
+  static getStores() {
+    return [CropAvatarStore];
+  }
 
   static calculateState() {
     return {

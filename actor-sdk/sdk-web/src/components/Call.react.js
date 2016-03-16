@@ -25,7 +25,9 @@ import CallControls from './call/CallControls.react';
 import ContactDetails from './common/ContactDetails.react';
 
 class Call extends Component {
-  static getStores = () => [CallStore, DialogStore];
+  static getStores() {
+    return [CallStore, DialogStore];
+  }
 
   static calculatePeerInfo(peer) {
     if (peer) {

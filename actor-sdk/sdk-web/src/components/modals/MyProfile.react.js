@@ -29,7 +29,9 @@ class MyProfile extends Component {
     super(props);
   }
 
-  static getStores = () => [MyProfileStore, CropAvatarStore];
+  static getStores() {
+    return [MyProfileStore, CropAvatarStore];
+  }
 
   static calculateState() {
     return {

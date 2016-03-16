@@ -9,7 +9,9 @@ import classNames from 'classnames';
 import TypingStore from '../../stores/TypingStore';
 
 class Typing extends Component {
-  static getStores = () => [TypingStore];
+  static getStores() {
+    return [TypingStore];
+  }
 
   static calculateState() {
     const typing = TypingStore.getTyping();

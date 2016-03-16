@@ -32,7 +32,9 @@ import DropZone from '../common/DropZone.react';
 import SendAttachment from '../modals/SendAttachment';
 
 class ComposeSection extends Component {
-  static getStores = () => [DialogStore, GroupStore, PreferencesStore, AttachmentStore, ComposeStore];
+  static getStores() {
+    return [DialogStore, GroupStore, PreferencesStore, AttachmentStore, ComposeStore];
+  }
 
   static calculateState(prevState) {
     return {

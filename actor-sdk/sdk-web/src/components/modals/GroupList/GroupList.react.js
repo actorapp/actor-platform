@@ -30,7 +30,9 @@ class GroupList extends Component {
     intl: PropTypes.object
   };
 
-  static getStores = () => [GroupListStore];
+  static getStores() {
+    return [GroupListStore];
+  }
 
   static calculateState() {
     return {
