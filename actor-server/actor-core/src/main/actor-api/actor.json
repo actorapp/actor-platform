@@ -11604,6 +11604,12 @@
                 },
                 {
                   "type": "reference",
+                  "argument": "seed",
+                  "category": "full",
+                  "description": "  Public-visible seed of signature"
+                },
+                {
+                  "type": "reference",
                   "argument": "signatureSecret",
                   "category": "full",
                   "description": "  Signature Secret"
@@ -11625,6 +11631,11 @@
                   "type": "string",
                   "id": 2,
                   "name": "algo"
+                },
+                {
+                  "type": "string",
+                  "id": 5,
+                  "name": "seed"
                 },
                 {
                   "type": "bytes",
