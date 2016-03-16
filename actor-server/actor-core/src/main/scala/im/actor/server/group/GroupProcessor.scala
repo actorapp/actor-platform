@@ -202,8 +202,8 @@ private[group] final class GroupProcessor
   }
 
   override def handleInitCommand: Receive = {
-    case Create(_, typ, creatorUserId, title, randomId, userIds) ⇒
-      create(groupId, typ, creatorUserId, title, randomId, userIds.toSet)
+    case Create(_, typ, creatorUserId, creatorAuthSid, title, randomId, userIds) ⇒
+      create(groupId, typ, creatorUserId, creatorAuthSid, title, randomId, userIds.toSet)
     case CreateInternal(_, typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions) ⇒
       createInternal(typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions)
   }
