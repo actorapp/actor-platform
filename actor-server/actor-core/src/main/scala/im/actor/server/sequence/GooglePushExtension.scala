@@ -45,9 +45,10 @@ object GooglePushManagerConfig {
 }
 
 final case class GooglePushMessage(
-  to:          String,
-  collapseKey: Option[String],
-  data:        Option[Map[String, String]]
+  to:           String,
+  collapse_key: Option[String],
+  data:         Option[Map[String, String]],
+  time_to_live: Option[Int]
 )
 
 object GooglePushExtension extends ExtensionId[GooglePushExtension] with ExtensionIdProvider {

@@ -532,7 +532,8 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
         val message = new GooglePushMessage(
           cred.regId,
           None,
-          Some(Map("callId" → id.toString, "attemptIndex" → member.callAttempts.toString))
+          Some(Map("callId" → id.toString, "attemptIndex" → member.callAttempts.toString)),
+          time_to_live = Some(0)
         )
         gcmExt.send(cred.projectId, message)
       }
