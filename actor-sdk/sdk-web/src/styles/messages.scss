@@ -98,6 +98,26 @@ $sticker-max-size: 180px;
 
   width: 100%;
   overflow-x: hidden;
+
+  // &::-webkit-scrollbar {
+  //   width: 4px;
+  // }
+  //
+  // &::-webkit-scrollbar-thumb {
+  //   background-color: fade-out($dusk, 0.2);
+  //   background-clip: padding-box;
+  // }
+  //
+  // &:hover {
+  //   &::-webkit-scrollbar {
+  //     width: 8px;
+  //   }
+  //
+  //   &::-webkit-scrollbar {
+  //     background-color: fade-out($dusk, 0.6);
+  //   }
+  // }
+
   &__list {
     width: 100%;
     max-height: 100%;
