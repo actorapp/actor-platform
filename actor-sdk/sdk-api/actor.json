@@ -1788,12 +1788,6 @@
               },
               {
                 "type": "reference",
-                "argument": "phone",
-                "category": "full",
-                "description": "  Obsolete phone number. Need to be set for API <= 1.5, not set for >= 1.5"
-              },
-              {
-                "type": "reference",
                 "argument": "contactInfo",
                 "category": "compact",
                 "description": "  phones of user"
@@ -1821,6 +1815,12 @@
                 "argument": "timeZone",
                 "category": "full",
                 "description": "  Time Zone of user in TZ format"
+              },
+              {
+                "type": "reference",
+                "argument": "botCommands",
+                "category": "full",
+                "description": "  Available Bot Commands"
               }
             ],
             "expandable": "true",
@@ -1872,15 +1872,6 @@
                 },
                 "id": 8,
                 "name": "avatar"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "int64"
-                },
-                "id": 7,
-                "name": "phone",
-                "deprecated": "true"
               },
               {
                 "type": {
@@ -1940,6 +1931,64 @@
                 },
                 "id": 17,
                 "name": "timeZone"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "BotCommand"
+                  }
+                },
+                "id": 19,
+                "name": "botCommands"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "BotCommand",
+            "doc": [
+              "Available bot commands",
+              {
+                "type": "reference",
+                "argument": "slashCommand",
+                "category": "full",
+                "description": "  Slash command name (wihtout slash)"
+              },
+              {
+                "type": "reference",
+                "argument": "description",
+                "category": "full",
+                "description": "  Slash command description"
+              },
+              {
+                "type": "reference",
+                "argument": "locKey",
+                "category": "full",
+                "description": "  Optional Localization Key for i18n"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "slashCommand"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "description"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "locKey"
               }
             ]
           }
@@ -2315,6 +2364,49 @@
                 },
                 "id": 2,
                 "name": "timeZone"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserBotCommandsChanged",
+            "header": 217,
+            "doc": [
+              "Update about bot commands changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's Id"
+              },
+              {
+                "type": "reference",
+                "argument": "commands",
+                "category": "full",
+                "description": "  New List of commands"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "BotCommand"
+                  }
+                },
+                "id": 2,
+                "name": "commands"
               }
             ]
           }
@@ -3143,6 +3235,73 @@
       ],
       "items": [
         {
+          "type": "struct",
+          "content": {
+            "name": "MessageAttributes",
+            "doc": [
+              "Message Attributes",
+              {
+                "type": "reference",
+                "argument": "isMentioned",
+                "category": "full",
+                "description": "  Is mentioned. If set overrides built-in value."
+              },
+              {
+                "type": "reference",
+                "argument": "isHighlighted",
+                "category": "full",
+                "description": "  Is message highlighted. Default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "isNotified",
+                "category": "full",
+                "description": "  Is notified. If set overrides built-in settings."
+              },
+              {
+                "type": "reference",
+                "argument": "isOnlyForYou",
+                "category": "full",
+                "description": "  If this message is only for you. Default is false"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 1,
+                "name": "isMentioned"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 2,
+                "name": "isHighlighted"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 3,
+                "name": "isNotified"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 4,
+                "name": "isOnlyForYou"
+              }
+            ]
+          }
+        },
+        {
           "type": "trait",
           "content": {
             "isContainer": "true",
@@ -3543,6 +3702,44 @@
                 },
                 "id": 3,
                 "name": "isShort"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "TextCommand",
+            "doc": [
+              "Text Command Message for bots",
+              {
+                "type": "reference",
+                "argument": "command",
+                "category": "full",
+                "description": "  Slash-Command For execution"
+              },
+              {
+                "type": "reference",
+                "argument": "args",
+                "category": "full",
+                "description": "  Arguments of slash command"
+              }
+            ],
+            "trait": {
+              "name": "TextMessageEx",
+              "key": 3
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "command"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "args"
               }
             ]
           }
@@ -4536,6 +4733,12 @@
                 "argument": "message",
                 "category": "full",
                 "description": "The message"
+              },
+              {
+                "type": "reference",
+                "argument": "isOnlyForUser",
+                "category": "full",
+                "description": "If message is shown only for specific user"
               }
             ],
             "attributes": [
@@ -4562,6 +4765,17 @@
                 },
                 "id": 4,
                 "name": "message"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
+                },
+                "id": 5,
+                "name": "isOnlyForUser"
               }
             ]
           }
@@ -5031,6 +5245,12 @@
                 "argument": "message",
                 "category": "full",
                 "description": "  message content"
+              },
+              {
+                "type": "reference",
+                "argument": "attributes",
+                "category": "full",
+                "description": "  optional message attributes"
               }
             ],
             "attributes": [
@@ -5073,6 +5293,17 @@
                 },
                 "id": 5,
                 "name": "message"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageAttributes"
+                  }
+                },
+                "id": 6,
+                "name": "attributes"
               }
             ]
           }
@@ -5649,6 +5880,12 @@
                 "argument": "reactions",
                 "category": "full",
                 "description": "  Message reactions"
+              },
+              {
+                "type": "reference",
+                "argument": "attributes",
+                "category": "full",
+                "description": "  Optional message attributes"
               }
             ],
             "attributes": [
@@ -5705,6 +5942,17 @@
                 },
                 "id": 7,
                 "name": "reactions"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageAttributes"
+                  }
+                },
+                "id": 8,
+                "name": "attributes"
               }
             ]
           }
@@ -5893,6 +6141,12 @@
                 "argument": "firstUnreadDate",
                 "category": "full",
                 "description": "  Date of first unread message"
+              },
+              {
+                "type": "reference",
+                "argument": "attributes",
+                "category": "full",
+                "description": "  Optional top message attributes"
               }
             ],
             "attributes": [
@@ -5970,6 +6224,17 @@
                 },
                 "id": 10,
                 "name": "firstUnreadDate"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageAttributes"
+                  }
+                },
+                "id": 11,
+                "name": "attributes"
               }
             ]
           }
@@ -6435,6 +6700,36 @@
                 "argument": "peer",
                 "category": "full",
                 "description": "Peer for favouriting"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "NotifyDialogOpened",
+            "header": 2785,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Notifying about dialog open",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Peer that was opened"
               }
             ],
             "attributes": [
