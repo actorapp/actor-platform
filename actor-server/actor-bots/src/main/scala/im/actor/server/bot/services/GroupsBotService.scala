@@ -2,7 +2,7 @@ package im.actor.server.bot.services
 
 import akka.actor.ActorSystem
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
-import im.actor.server.group.GroupExtension
+import im.actor.server.group.{ GroupExtension, GroupType }
 import im.actor.util.misc.IdUtils
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -27,8 +27,9 @@ private[bot] final class GroupsBotService(system: ActorSystem) extends BotServic
       for {
         ack ← groupExt.create(
           groupId = groupId,
-          title = title,
           clientUserId = botUserId,
+          clientAuthSid = 0,
+          title = title,
           randomId = randomId,
           userIds = Set.empty
         )
