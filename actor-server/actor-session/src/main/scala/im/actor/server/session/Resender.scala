@@ -175,9 +175,6 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   // Used to prevent scheduling multiple updates at the same millisecond and result out of order
   private[this] var lastScheduledResend = System.currentTimeMillis - 1
 
-  // Holds scheduled task to send BufferOverflow to self
-  private[this] var scheduledBufferOverflow: Option[Cancellable] = None
-
   override def preStart(): Unit = {
     super.preStart()
     enqueueNewSession(NewSessionItem(NewSession(sessionId, firstMessageId)))
@@ -283,7 +280,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
       if (this.resendBufferSize > config.maxBufferSize) {
         log.warning("Buffer overflow, stopping session")
         this.onCompleteThenStop()
-      } else this.scheduledBufferOverflow = None
+      }
   }
 
   private def increaseBufferSize(item: ResendableItem): Unit = {
@@ -380,8 +377,6 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   private def scheduleResend(item: ResendableItem, messageId: Long) = {
     log.debug("Scheduling resend of messageId: {}, timeout: {}", messageId, AckTimeout)
 
-    increaseBufferSize(item)
-
     // FIXME: increase resendBufferSize by real Unsent
 
     if (resendBufferSize <= MaxBufferSize) {
@@ -410,6 +405,8 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
           this.responseBuffer = this.responseBuffer.updated(messageId, (ri, scheduled))
       }
     } else bufferOverflow()
+
+    increaseBufferSize(item)
   }
 
   private def enqueueAcks(messageIds: Seq[Long]): Unit =
@@ -460,10 +457,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
   }
 
   private def bufferOverflow(): Unit = {
-    if (this.scheduledBufferOverflow.isDefined)
-      log.debug("Buffer overflow, stop is scheduled")
-    else
-      this.scheduledBufferOverflow = Some(context.system.scheduler.scheduleOnce(config.ackTimeout, self, BufferOverflow))
+    self ! BufferOverflow
   }
 
   private def pushBufferSize = responseBuffer.size + pushBuffer.size + newSessionBuffer.map(_ ⇒ 1).getOrElse(0)
