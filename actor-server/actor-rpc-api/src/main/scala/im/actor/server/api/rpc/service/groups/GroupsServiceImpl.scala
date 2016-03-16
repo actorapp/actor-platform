@@ -116,6 +116,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
               res ← groupExt.create(
                 groupId,
                 client.userId,
+                client.authSid,
                 validTitle,
                 randomId,
                 userIds.toSet,
