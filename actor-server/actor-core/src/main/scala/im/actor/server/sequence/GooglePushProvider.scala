@@ -9,8 +9,9 @@ private[sequence] final class GooglePushProvider(userId: Int, system: ActorSyste
   def deliverInvisible(seq: Int, creds: GooglePushCredentials): Unit = {
     val message = GooglePushMessage(
       to = creds.regId,
-      collapseKey = Some(s"seq-invisible-${userId.toString}"),
-      data = Some(Map("seq" → seq.toString))
+      collapse_key = Some(s"seq-invisible-${userId.toString}"),
+      data = Some(Map("seq" → seq.toString)),
+      time_to_live = None
     )
 
     googlePushExt.send(creds.projectId, message)
@@ -26,14 +27,15 @@ private[sequence] final class GooglePushProvider(userId: Int, system: ActorSyste
   ): Unit = {
     val message = GooglePushMessage(
       to = creds.regId,
-      collapseKey = Some(s"seq-visible-${userId.toString}"),
+      collapse_key = Some(s"seq-visible-${userId.toString}"),
       data = Some(Map("seq" → seq.toString) ++ (
         data.text match {
           case text if text.nonEmpty && isTextEnabled ⇒
             Map("message" → text)
           case _ ⇒ Map.empty
         }
-      ))
+      )),
+      time_to_live = None
     )
 
     googlePushExt.send(creds.projectId, message)
