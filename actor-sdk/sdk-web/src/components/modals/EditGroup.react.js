@@ -28,7 +28,9 @@ class EditGroup extends Component {
     intl: PropTypes.object
   };
 
-  static getStores = () => [EditGroupStore, CropAvatarStore];
+  static getStores() {
+    return [EditGroupStore, CropAvatarStore];
+  }
 
   static calculateState() {
     return {

@@ -13,7 +13,9 @@ import DialogStore from '../stores/DialogStore';
 import ArchiveStore from '../stores/ArchiveStore';
 
 class SidebarSection extends Component {
-  static getStores = () => [DialogStore, ArchiveStore];
+  static getStores() {
+    return [DialogStore, ArchiveStore];
+  }
 
   static calculateState() {
     return {

@@ -18,7 +18,10 @@ class CreateGroup extends Component {
     super(props);
   }
 
-  static getStores = () => [CreateGroupStore];
+  static getStores() {
+    return [CreateGroupStore];
+  }
+
   static calculateState() {
     return {
       isOpen: CreateGroupStore.isModalOpen()

@@ -26,7 +26,9 @@ class EmojiDropdown extends Component {
     onSelect: PropTypes.func.isRequired
   };
 
-  static getStores = () => [EmojiStore];
+  static getStores() {
+    return [EmojiStore]
+  }
 
   static calculateState() {
     return {

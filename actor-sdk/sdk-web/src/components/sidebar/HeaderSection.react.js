@@ -38,7 +38,9 @@ class HeaderSection extends Component {
     this.homePage = SharedActor.homePage ? SharedActor.homePage : homePage;
   }
 
-  static getStores = () => [MyProfileStore, CreateGroupStore, AddContactStore, PreferencesStore];
+  static getStores() {
+    return [MyProfileStore, CreateGroupStore, AddContactStore, PreferencesStore];
+  }
 
   static calculateState() {
     return {
@@ -97,10 +99,7 @@ class HeaderSection extends Component {
   };
   setLogout = () => {
     const { intl } = this.context;
-    confirm(intl.messages['modal.confirm.logout'], {
-      abortLabel: intl.messages['button.cancel'],
-      confirmLabel: intl.messages['button.ok']
-    }).then(
+    confirm(intl.messages['modal.confirm.logout']).then(
       () => LoginActionCreators.setLoggedOut(),
       () => {}
     );

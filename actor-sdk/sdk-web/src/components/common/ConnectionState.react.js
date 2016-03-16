@@ -19,7 +19,9 @@ class ConnectionState extends Component {
     this.appName = SharedActor.appName ? SharedActor.appName : appName;
   }
 
-  static getStores = () => [ConnectionStateStore];
+  static getStores() {
+    return [ConnectionStateStore];
+  }
 
   static calculateState() {
     return {

@@ -23,7 +23,9 @@ class Login extends Component {
     this.appName = SharedActor.appName ? SharedActor.appName : appName;
   }
 
-  static getStores = () => [LoginStore];
+  static getStores() {
+    return [LoginStore];
+  }
 
   static calculateState() {
     return {
