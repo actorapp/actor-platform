@@ -5,6 +5,7 @@ import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.settings.ConnectionPoolSettings
+import akka.http.scaladsl.util.FastFuture
 import akka.stream.{ ActorMaterializer, Materializer }
 import akka.stream.actor.ActorPublisher
 import akka.stream.scaladsl.Source
@@ -70,38 +71,40 @@ final class GooglePushExtension(system: ActorSystem) extends Extension {
   private val config = GooglePushManagerConfig.load(system.settings.config.getConfig("services.google.push")).get
   private val deliveryPublisher = system.actorOf(GooglePushDelivery.props, "google-push-delivery")
 
-  // TODO: flatten
   Source.fromPublisher(ActorPublisher[(HttpRequest, GooglePushDelivery.Delivery)](deliveryPublisher))
     .via(GooglePushDelivery.flow)
-    .runForeach {
+    .mapAsync(1) {
       case (Success(resp), delivery) ⇒
         if (resp.status == StatusCodes.OK) {
-          resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _) foreach { bs ⇒
-            parse(new String(bs.toArray, "UTF-8")) match {
-              case Xor.Right(json) ⇒
-                json.asObject match {
-                  case Some(obj) ⇒
-                    obj("error") map (_.asString) foreach {
-                      case Some("InvalidRegistration") ⇒
-                        log.warning("Invalid registration, deleting")
-                        remove(delivery.m.to)
-                      case Some("NotRegistered") ⇒
-                        log.warning("Token is not registered, deleting")
-                        remove(delivery.m.to)
-                      case Some(other) ⇒
-                        log.warning("Error in GCM response: {}", other)
-                      case None ⇒
-                        log.debug("Delivered successfully")
-                    }
-                  case None ⇒
-                    log.error("Expected JSON Object but got: {}", json)
-                }
-              case Xor.Left(failure) ⇒ log.error(failure.underlying, "Failed to parse response")
-            }
-          }
-        } else log.error("Failed to deliver message, StatusCode was not OK: {}", resp.status)
+          resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _) map (_ → delivery)
+        } else FastFuture.failed(new RuntimeException(s"Failed to deliver message, StatusCode was not OK: ${resp.status}"))
       case (Failure(e), delivery) ⇒
-        log.error(e, "Failed to deliver message: {}", delivery.m)
+        FastFuture.failed(e)
+    }
+    .runForeach {
+      // TODO: flatten
+      case (bs, delivery) ⇒
+        parse(new String(bs.toArray, "UTF-8")) match {
+          case Xor.Right(json) ⇒
+            json.asObject match {
+              case Some(obj) ⇒
+                obj("error") map (_.asString) foreach {
+                  case Some("InvalidRegistration") ⇒
+                    log.warning("Invalid registration, deleting")
+                    remove(delivery.m.to)
+                  case Some("NotRegistered") ⇒
+                    log.warning("Token is not registered, deleting")
+                    remove(delivery.m.to)
+                  case Some(other) ⇒
+                    log.warning("Error in GCM response: {}", other)
+                  case None ⇒
+                    log.debug("Delivered successfully")
+                }
+              case None ⇒
+                log.error("Expected JSON Object but got: {}", json)
+            }
+          case Xor.Left(failure) ⇒ log.error(failure.underlying, "Failed to parse response")
+        }
     } onComplete {
       case Failure(e) ⇒ log.error(e, "Failure in stream")
       case Success(_) ⇒ log.debug("Stream completed")
