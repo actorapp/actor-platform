@@ -1,10 +1,11 @@
 {
   "presets": [
     "es2015-loose",
-    "react",
-    "stage-0"
+    "react"
   ],
   "plugins": [
-    "transform-strict-mode"
+    "transform-strict-mode",
+    "transform-class-properties",
+    "transform-object-rest-spread"
   ]
 }

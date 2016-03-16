@@ -11,7 +11,9 @@ class Favicon extends Component {
     super(props);
   }
 
-  static getStores = () => [FaviconStore];
+  static getStores() {
+    return [FaviconStore];
+  }
 
   static calculateState() {
     return {

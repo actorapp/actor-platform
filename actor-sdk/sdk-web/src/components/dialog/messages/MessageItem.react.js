@@ -32,7 +32,9 @@ import DefaultModern from './Modern.react.js';
 import DefaultSticker from './Sticker.react.js';
 
 class MessageItem extends Component {
-  static getStores = () => [DropdownStore];
+  static getStores() {
+    return [DropdownStore];
+  }
 
   static calculateState(prevState, props) {
     return {

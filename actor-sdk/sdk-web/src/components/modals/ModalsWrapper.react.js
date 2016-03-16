@@ -21,7 +21,9 @@ class ModalsWrapper extends Component {
     super(props);
   }
 
-  static getStores = () => [ContactStore, GroupListStore];
+  static getStores() {
+    return [ContactStore, GroupListStore];
+  }
 
   static calculateState() {
     return {

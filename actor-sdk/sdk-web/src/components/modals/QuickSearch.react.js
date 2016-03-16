@@ -32,7 +32,9 @@ class QuickSearch extends Component {
     super(props);
   }
 
-  static getStores = () => [QuickSearchStore];
+  static getStores() {
+    return [QuickSearchStore];
+  }
 
   static calculateState() {
     return {

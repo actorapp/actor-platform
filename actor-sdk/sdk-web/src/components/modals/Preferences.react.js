@@ -34,7 +34,9 @@ class PreferencesModal extends Component {
     intl: PropTypes.object.isRequired
   };
 
-  static getStores = () => [PreferencesStore];
+  static getStores() {
+    return [PreferencesStore];
+  }
 
   static calculateState() {
     return {

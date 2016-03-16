@@ -23,7 +23,9 @@ import DialogStore from '../stores/DialogStore';
 import CallStore from '../stores/CallStore';
 
 class ToolbarSection extends Component {
-  static getStores = () => [DialogInfoStore, ActivityStore, OnlineStore, DialogStore, CallStore];
+  static getStores() {
+    return [DialogInfoStore, ActivityStore, OnlineStore, DialogStore, CallStore];
+  }
 
   static calculateState() {
     const thisPeer = DialogStore.getCurrentPeer();

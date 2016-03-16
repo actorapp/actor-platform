@@ -23,7 +23,9 @@ class SendAttachment extends Component {
     super(props);
   }
 
-  static getStores = () => [AttachmentStore];
+  static getStores() {
+    return [AttachmentStore];
+  }
 
   static calculateState() {
     return {
