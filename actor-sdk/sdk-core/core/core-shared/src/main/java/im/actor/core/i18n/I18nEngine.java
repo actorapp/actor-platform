@@ -42,7 +42,7 @@ public class I18nEngine {
 
     private static final String TAG = "I18nEngine";
 
-    private static final String[] SUPPORTED_LOCALES = new String[]{"Ru", "Ar", "Zn", "Pt", "Es"};
+    private static final String[] SUPPORTED_LOCALES = new String[]{"Ru", "Ar", "Zn", "Pt", "Es", "Fa"};
 
     private final Modules modules;
     private final LocaleRuntime runtime;
@@ -551,8 +551,16 @@ public class I18nEngine {
     }
 
     private String getTemplateNamed(int senderId, String baseString) {
-        return getTemplate(senderId, baseString).replace("{name}",
+        String newString =  getTemplate(senderId, baseString).replace("{name}",
                 formatPerformerName(senderId));
+
+        // verb for 'you' in persian language continues with suffix
+        if (runtime.getCurrentLocale().equals("Fa"))
+        {
+            if (senderId == modules.getAuthModule().myUid())
+                newString = (newString + locale.get("YouSuffixVerb")).replace("\r","");
+        }
+        return newString;
     }
 
     private String getTemplate(int senderId, String baseString) {
