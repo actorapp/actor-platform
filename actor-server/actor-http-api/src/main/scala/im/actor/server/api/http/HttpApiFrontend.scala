@@ -32,7 +32,7 @@ final class HttpApi(_system: ActorSystem) extends Extension {
   var customRoutes: Seq[Route] = runRouteHooks()
 
   def registerRoute(name: String)(f: ActorSystem ⇒ Route): Unit = {
-    hooks.routesHook.register(name, new HttpApiHook.RoutesHook(system) {
+    hooks.routesHook.register(s"$name-routes", new HttpApiHook.RoutesHook(system) {
       override def run(): Route = f(system)
     })
 
@@ -42,7 +42,7 @@ final class HttpApi(_system: ActorSystem) extends Extension {
   }
 
   def registerRejection(name: String)(f: ActorSystem ⇒ RejectionHandler): Unit = {
-    hooks.rejectionsHook.register(name, new HttpApiHook.RejectionsHook(system) {
+    hooks.rejectionsHook.register(s"$name-rejection", new HttpApiHook.RejectionsHook(system) {
       def run(): RejectionHandler = f(system)
     })
 
