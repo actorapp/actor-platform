@@ -2,11 +2,10 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { debounce, map, isFunction } from 'lodash';
+import { map, isFunction } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import { findDOMNode } from 'react-dom';
 import PeerUtils from '../utils/PeerUtils';
 
 import DefaultMessages from './dialog/MessagesSection.react';
@@ -24,11 +23,6 @@ import DialogStore from '../stores/DialogStore';
 import MessageStore from '../stores/MessageStore';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
-
-// On which scrollTop value start loading older messages
-const loadMessagesScrollTop = 100;
-
-let lastScrolledFromBottom = 0;
 
 class DialogSection extends Component {
   static contextTypes = {
@@ -58,35 +52,23 @@ class DialogSection extends Component {
 
     const peer = PeerUtils.stringToPeer(props.params.id);
     DialogActionCreators.selectDialogPeer(peer);
+
+    this.onLoadMoreMessages = this.onLoadMoreMessages.bind(this);
   }
 
   componentDidMount() {
-    const { peer } = this.state;
-    if (peer) {
-      this.fixScroll();
-      this.loadMessagesByScroll();
-    }
+    this.onLoadMoreMessages();
   }
 
   componentWillReceiveProps(nextProps) {
     const { params } = nextProps;
-    if (this.props.params.id !== params.id) {
-      const peer = PeerUtils.stringToPeer(params.id);
-      DialogActionCreators.selectDialogPeer(peer);
-      lastScrolledFromBottom = 0;
-      if (peer) {
-        this.fixScroll();
-        this.loadMessagesByScroll();
-      }
+    if (this.props.params.id === params.id) {
+      return;
     }
-  }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.isActivityOpen !== this.state.isActivityOpen) {
-      this.fixScrollTimeout();
-    } else {
-      this.fixScroll();
-    }
+    const peer = PeerUtils.stringToPeer(params.id);
+    DialogActionCreators.selectDialogPeer(peer);
+    this.onLoadMoreMessages();
   }
 
   componentWillUnmount() {
@@ -94,32 +76,12 @@ class DialogSection extends Component {
     DialogActionCreators.selectDialogPeer(null);
   }
 
-  getScrollArea() {
-    const scrollNode = findDOMNode(this.refs.messagesSection.refs.messagesScroll.refs.scroll);
-    return scrollNode.getElementsByClassName('ss-scrollarea')[0];
-  }
-
-  fixScroll = () => {
-    const node = this.getScrollArea();
-    if (node) {
-      node.scrollTop = node.scrollHeight - lastScrolledFromBottom - node.offsetHeight;
-    }
-  };
-
-  fixScrollTimeout = () => {
-    setTimeout(this.fixScroll, 50);
-  };
-
-  loadMessagesByScroll = debounce(() => {
+  onLoadMoreMessages() {
     const { peer } = this.state;
-
     if (peer) {
-      const node = this.getScrollArea();
-      lastScrolledFromBottom = node.scrollHeight - node.scrollTop - node.offsetHeight;
-
-      if (node.scrollTop < loadMessagesScrollTop) DialogActionCreators.loadMoreMessages(peer);
+      DialogActionCreators.loadMoreMessages(peer);
     }
-  }, 5, {maxWait: 30});
+  }
 
   getComponents() {
     const { dialog, logger } = this.context.delegate.components;
@@ -172,16 +134,13 @@ class DialogSection extends Component {
         <div className="flexrow">
           <section className="dialog">
             <ConnectionState/>
-            <div className="messages">
-              <MessagesSection
-                isMember={isMember}
-                messages={messages}
-                overlay={overlay}
-                peer={peer}
-                ref="messagesSection"
-                onScroll={this.loadMessagesByScroll}
-              />
-            </div>
+            <MessagesSection
+              peer={peer}
+              messages={messages}
+              overlay={overlay}
+              isMember={isMember}
+              onLoadMore={this.onLoadMoreMessages}
+            />
             <DialogFooter isMember={isMember} components={{TypingSection, ComposeSection}} />
           </section>
           {activity}

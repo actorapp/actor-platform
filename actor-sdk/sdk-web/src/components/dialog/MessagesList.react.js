@@ -6,6 +6,7 @@ import { forEach } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import Loading from './messages/Loading.react';
 import Welcome from './messages/Welcome.react';
+import MessagesScroller from './MessagesScroller.react';
 
 class MessagesList extends Component {
   static propTypes = {
@@ -19,7 +20,8 @@ class MessagesList extends Component {
       MessageItem: PropTypes.func.isRequired
     }).isRequired,
     onSelect: PropTypes.func.isRequired,
-    onVisibilityChange: PropTypes.func.isRequired
+    onVisibilityChange: PropTypes.func.isRequired,
+    onLoadMore: PropTypes.func.isRequired
   };
 
   renderWelcome() {
@@ -75,11 +77,13 @@ class MessagesList extends Component {
 
   render() {
     return (
-      <ul className="messages__list">
-        {this.renderWelcome()}
-        {this.renderLoading()}
-        {this.renderMessages()}
-      </ul>
+      <MessagesScroller className="messages" peer={this.props.peer} onLoadMore={this.props.onLoadMore}>
+        <div className="messages__list">
+          {this.renderWelcome()}
+          {this.renderLoading()}
+          {this.renderMessages()}
+        </div>
+      </MessagesScroller>
     )
   }
 }

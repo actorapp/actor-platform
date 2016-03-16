@@ -192,7 +192,7 @@ class MessageItem extends Component {
     }
 
     return (
-      <li className={messageClassName}>
+      <div className={messageClassName}>
         {leftBlock}
         <div className="message__body col-xs">
           {header}
@@ -215,7 +215,7 @@ class MessageItem extends Component {
           }
 
         </div>
-      </li>
+      </div>
     );
   }
 }

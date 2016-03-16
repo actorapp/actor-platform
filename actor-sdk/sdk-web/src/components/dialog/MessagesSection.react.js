@@ -6,7 +6,6 @@ import { forEach, map, debounce, isFunction } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import Scrollbar from '../common/Scrollbar.react';
 
 import MessageActionCreators from '../../actions/MessageActionCreators';
 
@@ -32,7 +31,7 @@ class MessagesSection extends Component {
     overlay: PropTypes.array.isRequired,
     peer: PropTypes.object.isRequired,
     isMember: PropTypes.bool.isRequired,
-    onScroll: PropTypes.func.isRequired
+    onLoadMore: PropTypes.func.isRequired
   };
 
   static contextTypes = {
@@ -98,19 +97,18 @@ class MessagesSection extends Component {
     const components = this.getComponents();
 
     return (
-      <Scrollbar onScroll={this.props.onScroll} ref="messagesScroll">
-        <MessagesList
-          peer={peer}
-          overlay={overlay}
-          messages={messages}
-          selectedMessages={selectedMessages}
-          isMember={isMember}
-          isAllMessagesLoaded={isAllMessagesLoaded}
-          components={components}
-          onSelect={this.onMessageSelect}
-          onVisibilityChange={this.onMessageVisibilityChange}
-        />
-      </Scrollbar>
+      <MessagesList
+        peer={peer}
+        overlay={overlay}
+        messages={messages}
+        selectedMessages={selectedMessages}
+        isMember={isMember}
+        isAllMessagesLoaded={isAllMessagesLoaded}
+        components={components}
+        onSelect={this.onMessageSelect}
+        onVisibilityChange={this.onMessageVisibilityChange}
+        onLoadMore={this.props.onLoadMore}
+      />
     );
   }
 }
