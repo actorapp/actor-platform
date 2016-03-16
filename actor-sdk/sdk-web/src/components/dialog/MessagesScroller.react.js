@@ -44,11 +44,15 @@ class MessagesScroller extends Component {
   }
 
   componentDidUpdate() {
-    if (this.node.scrollHeight > this._scrollHeight) {
-      this.node.scrollTop = this._scrollTop + (this.node.scrollHeight - this._scrollHeight);
-    } else if (this._shouldScrollBottom) {
-      this.scrollToBottom();
-    }
+    setImmediate(() => {
+      if (this.node.scrollHeight > this._scrollHeight) {
+        this.node.scrollTop = this._scrollTop + (this.node.scrollHeight - this._scrollHeight);
+      } else if (this.node.scrollTop === 0) {
+        this.props.onLoadMore();
+      } else if (this._shouldScrollBottom) {
+        this.scrollToBottom();
+      }
+    });
   }
 
   scrollToBottom() {
@@ -61,7 +65,7 @@ class MessagesScroller extends Component {
 
   onScroll({target}) {
     const { scrollTop, offsetHeight } = target;
-    if (scrollTop < offsetHeight) {
+    if (scrollTop <= offsetHeight) {
       this.props.onLoadMore();
     }
   }
