@@ -45,8 +45,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     persist(created) { _ ⇒
       context become working(state)
 
-      val rng = ThreadLocalSecureRandom.current()
-
       // FIXME: invite other members
 
       val update = UpdateGroupInvite(groupId, creatorUserId, date.toEpochMilli, rng.nextLong())
@@ -62,7 +60,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
-  protected def create(groupId: Int, typ: GroupType, creatorUserId: Int, title: String, randomId: Long, userIds: Set[Int]): Unit = {
+  protected def create(groupId: Int, typ: GroupType, creatorUserId: Int, creatorAuthSid: Int, title: String, randomId: Long, userIds: Set[Int]): Unit = {
     val accessHash = genAccessHash()
 
     val rng = ThreadLocalSecureRandom.current()
@@ -104,7 +102,13 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
             dialogExt.writeMessageSelf(uid, ApiPeer(ApiPeerType.Group, state.id), creatorUserId, new DateTime(date.toEpochMilli), randomId, serviceMessage)
           }))
           seqstate ← if (isBot(state, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
-          else DBIO.from(seqUpdExt.deliverSingleUpdate(creatorUserId, update, PushRules(isFat = true), reduceKey = None, deliveryId = s"creategroup_${groupId}_$randomId"))
+          else DBIO.from(seqUpdExt.deliverSingleUpdate(
+            userId = creatorUserId,
+            update = update,
+            pushRules = PushRules(isFat = true, excludeAuthSids = Seq(creatorAuthSid)),
+            reduceKey = None,
+            deliveryId = s"creategroup_${groupId}_$randomId"
+          ))
         } yield CreateAck(state.accessHash, seqstate, date.toEpochMilli)
       ) pipeTo sender() onFailure {
           case e ⇒
@@ -452,4 +456,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       randomId,
       state.isHidden
     )
+
+  private def rng = ThreadLocalSecureRandom.current()
 }

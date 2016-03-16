@@ -20,10 +20,10 @@ private[group] sealed trait Commands {
   implicit val ec: ExecutionContext
 
   def create(groupId: Int, title: String, randomId: Long, userIds: Set[Int])(implicit client: AuthorizedClientData): Future[CreateAck] =
-    create(groupId, client.userId, title, randomId, userIds)
+    create(groupId, client.userId, client.authSid, title, randomId, userIds)
 
-  def create(groupId: Int, clientUserId: Int, title: String, randomId: Long, userIds: Set[Int], typ: GroupType.ValueType = GroupType.General): Future[CreateAck] =
-    (processorRegion.ref ? Create(groupId, typ, clientUserId, title, randomId, userIds.toSeq)).mapTo[CreateAck]
+  def create(groupId: Int, clientUserId: Int, clientAuthSid: Int, title: String, randomId: Long, userIds: Set[Int], typ: GroupType.ValueType = GroupType.General): Future[CreateAck] =
+    (processorRegion.ref ? Create(groupId, typ, clientUserId, clientAuthSid, title, randomId, userIds.toSeq)).mapTo[CreateAck]
 
   def createInternal(groupId: Int, typ: GroupType.ValueType, creatorUserId: Int, title: String, userIds: Set[Int], isHidden: Boolean, isHistoryShared: Boolean): Future[CreateInternalAck] =
     (processorRegion.ref ? CreateInternal(groupId, typ, creatorUserId, title, userIds.toSeq, isHidden = Some(isHidden), isHistoryShared = Some(isHistoryShared))).mapTo[CreateInternalAck]
