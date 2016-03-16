@@ -60,7 +60,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
 
   lazy val botServerBlueprint = new BotServerBlueprint(system)
 
-  HttpApi(system).registerHook("bots") { implicit system ⇒
+  HttpApi(system).registerRoute("bots") { implicit system ⇒
     new BotsHttpHandler(this).routes
   }
 

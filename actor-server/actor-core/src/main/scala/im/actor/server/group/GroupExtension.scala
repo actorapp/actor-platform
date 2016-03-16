@@ -13,7 +13,7 @@ sealed trait GroupExtension extends Extension
 final class GroupExtensionImpl(system: ActorSystem) extends GroupExtension with GroupOperations {
   GroupProcessor.register()
 
-  HttpApi(system).registerHook("groups") { implicit system ⇒
+  HttpApi(system).registerRoute("groups") { implicit system ⇒
     new GroupsHttpHandler().routes
   }
 
