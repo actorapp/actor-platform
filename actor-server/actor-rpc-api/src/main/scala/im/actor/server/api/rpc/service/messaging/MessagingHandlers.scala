@@ -2,7 +2,8 @@ package im.actor.server.api.rpc.service.messaging
 
 import akka.util.Timeout
 import cats.data.Xor
-import im.actor.api.rpc._
+import im.actor.api.rpc.CommonRpcErrors.IntenalError
+import im.actor.api.rpc.{ CommonRpcErrors, _ }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
@@ -17,7 +18,6 @@ object MessagingRpcErors {
   val NotLastMessage = RpcError(400, "NOT_LAST_MESSAGE", "You are trying to edit not last message.", false, None)
   val NotInTimeWindow = RpcError(400, "NOT_IN_TIME_WINDOW", "You can't edit message sent more than 5 minutes age.", false, None)
   val NotTextMessage = RpcError(400, "NOT_TEXT_MESSAGE", "You can edit only text messages.", false, None)
-  val IntenalError = RpcError(500, "INTERNAL_ERROR", "", false, None)
 }
 
 private[messaging] trait MessagingHandlers extends PeersImplicits

@@ -16,7 +16,7 @@ import im.actor.util.log.AnyRefLogSource
 import org.apache.commons.codec.digest.HmacUtils
 import scodec.bits.BitVector
 import scodec._
-import scodec.codecs.{ byte, int32, long }
+import scodec.codecs.{ ascii32, byte, int32 }
 
 object FileUrlBuilderRejections {
   case object SecretExpiredRejection extends Rejection
@@ -24,19 +24,19 @@ object FileUrlBuilderRejections {
   case object IncorrectSignatureRejection extends Rejection
 }
 
-final case class Seed(version: Byte, expire: Int, randomPart: Long)
-object SeedDecoder {
-  implicit val seedDecoder = (byte :: int32 :: long(64)).as[Seed]
+final case class Seed(version: Byte, expire: Int, randomPart: String)
+object SeedCodec {
+  implicit val seedCodec: Codec[Seed] = (byte :: int32 :: ascii32).as[Seed]
 }
 
 private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapter)(implicit system: ActorSystem) extends HttpHandler with AnyRefLogSource {
   import FileUrlBuilderRejections._
-  import SeedDecoder._
+  import SeedCodec._
 
   private val db = DbExtension(system).db
   private val log = Logging(system, this)
 
-  private val myRejectionHandler: RejectionHandler =
+  private val fileBuilderRejectionHandler: RejectionHandler =
     RejectionHandler.newBuilder()
       .handle {
         case SecretExpiredRejection ⇒
@@ -56,7 +56,7 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
   def routes: Route =
     extractRequest { request =>
       log.debug("Got file url builder request: {}", request)
-      handleRejections(myRejectionHandler) {
+      handleRejections(fileBuilderRejectionHandler) {
         defaultVersion {
           pathPrefix("files" / SignedLongNumber) { fileId =>
             get {
@@ -78,24 +78,25 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
     parameter("signature") flatMap {
       case s ⇒
         s split "_" match {
-          case Array(originalSeed, originalSignature) ⇒
+          case Array(hexSeed, hexSignature) ⇒
             (for {
-              bitSeed ← BitVector.fromHex(originalSeed)
+              bitSeed ← BitVector.fromHex(hexSeed)
               seed ← Codec.decode[Seed](bitSeed).toOption
-            } yield seed) match {
-              case Some(DecodeResult(seed, BitVector.empty)) ⇒
+            } yield bitSeed → seed) match {
+              case Some((bitSeed, DecodeResult(seed, BitVector.empty))) ⇒
                 onSuccess(db.run(FileRepo.find(fileId))) flatMap {
                   case Some(file) ⇒
                     val expire = seed.expire
-                    val secret = BitVector.fromLong(ACLFiles.fileUrlBuilderSecret(originalSeed, expire)).toHex
+                    val secret = ACLFiles.fileUrlBuilderSecret(bitSeed.toByteArray)
                     val accessHash = ACLFiles.fileAccessHash(file.id, file.accessSalt)
-                    val calculatedSignature = HmacUtils.hmacSha256Hex(secret, s"$fileId$accessHash")
-                    if (originalSignature == calculatedSignature) {
+                    val valueToDigest = bitSeed ++ BitVector.fromLong(fileId) ++ BitVector.fromLong(accessHash)
+                    val calculatedSignature = HmacUtils.hmacSha256Hex(secret, valueToDigest.toByteArray)
+                    if (hexSignature == calculatedSignature) {
                       val now = Instant.now
                       if (isExpired(expire, now)) {
                         log.debug(
                           "Signature expired. Signature: {}, expire: {}, now: {}",
-                          originalSignature, expire, Instant.now
+                          hexSignature, expire, Instant.now
                         )
                         reject(SecretExpiredRejection)
                       } else {
@@ -104,7 +105,7 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
                     } else {
                       log.debug(
                         "Incorrect signature. Signature from request: {}, calculated signature: {}",
-                        originalSignature, calculatedSignature
+                        hexSignature, calculatedSignature
                       )
                       reject(IncorrectSignatureRejection)
                     }
@@ -113,7 +114,7 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
                     reject(FileNotFoundRejection)
                 }
               case _ ⇒
-                log.debug("Unable to decode seed: {}", originalSeed)
+                log.debug("Unable to decode seed: {}", hexSeed)
                 reject(IncorrectSignatureRejection)
             }
           case _ ⇒

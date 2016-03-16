@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit
 import akka.actor._
 import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
+import im.actor.api.rpc.CommonRpcErrors.IntenalError
 import im.actor.api.rpc.FileRpcErrors.UnsupportedSignatureAlgorithm
 import im.actor.api.rpc._
 import im.actor.api.rpc.files._
@@ -15,7 +16,7 @@ import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.db.DbExtension
 import im.actor.server.file._
 import im.actor.server.persist.files.{ FilePartRepo, FileRepo }
-import scodec.bits.BitVector
+import scodec.Codec
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -89,21 +90,21 @@ class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
 
   protected def doHandleGetFileUrlBuilder(supportedSignatureAlgorithms: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseGetFileUrlBuilder]] =
     authorized(clientData) { _ ⇒
+      import SeedCodec._
       val result = if (supportedSignatureAlgorithms.contains("HMAC_SHA256")) {
         val expire = Instant.now.plus(1, ChronoUnit.HOURS).getEpochSecond.toInt
-        val seed = (BitVector.fromByte(0) ++
-          BitVector.fromInt(expire) ++
-          BitVector.fromLong(ACLUtils.fileUrlBuilderSeed())).toHex
-        val secret = ACLUtils.fileUrlBuilderSecret(seed, expire)
-        Ok(
-          ResponseGetFileUrlBuilder(
-            baseUrl = s"${httpConfig.baseUri}/v1/files",
-            algo = "HMAC_SHA256",
-            signatureSecret = BitVector.fromLong(secret).toHex.getBytes,
-            timeout = expire,
-            seed = seed
+        val optSeed = Codec.encode(Seed(version = 0, expire = expire, randomPart = ACLUtils.randomHash())).toOption
+        optSeed map { seed ⇒
+          Ok(
+            ResponseGetFileUrlBuilder(
+              baseUrl = s"${httpConfig.baseUri}/v1/files",
+              algo = "HMAC_SHA256",
+              signatureSecret = ACLUtils.fileUrlBuilderSecret(seed.toByteArray),
+              timeout = expire,
+              seed = seed.toHex
+            )
           )
-        )
+        } getOrElse Error(IntenalError)
       } else Error(UnsupportedSignatureAlgorithm)
       FastFuture.successful(result)
     }
