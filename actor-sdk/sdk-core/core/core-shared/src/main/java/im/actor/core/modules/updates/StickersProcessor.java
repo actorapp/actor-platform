@@ -4,8 +4,6 @@
 
 package im.actor.core.modules.updates;
 
-import org.bouncycastle.util.Arrays;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
