@@ -279,7 +279,7 @@ private[session] class ReSender(authId: Long, sessionId: Long, firstMessageId: L
               enqueueRpc(ri, messageId)
         }
       } else log.debug("ScheduledResend for messageId: {}, item: {}, ignoring (absent in buffer)", messageId, item)
-    case BufferOverflow =>
+    case BufferOverflow ⇒
       if (this.resendBufferSize > config.maxBufferSize) {
         log.warning("Buffer overflow, stopping session")
         this.onCompleteThenStop()

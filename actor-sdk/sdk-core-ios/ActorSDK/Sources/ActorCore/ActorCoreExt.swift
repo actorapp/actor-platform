@@ -318,9 +318,18 @@ public class TextParser {
             isFirst = false
             
             if s.getType() == ARMDSection_TYPE_CODE {
-                let attributes = [NSLinkAttributeName: NSURL(string: "source:///\(sources.count)") as! AnyObject,
-                    NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
-                nAttrText.appendAttributedString(NSAttributedString(string: "Open Code", attributes: attributes))
+                
+                let str = NSMutableAttributedString(string: AALocalized("ActionOpenCode"))
+                let range = NSRange(location: 0, length: str.length)
+                
+                let highlight = YYTextHighlight()
+                highlight.userInfo = ["url" :  "source:///\(sources.count)"]
+                str.yy_setTextHighlight(highlight, range: range)
+                str.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+                str.yy_setColor(linkColor, range: range)
+                
+                nAttrText.appendAttributedString(str)
+                
                 sources.append(s.getCode().getCode())
             } else if s.getType() == ARMDSection_TYPE_TEXT {
                 let child: [ARMDText] = s.getText().toSwiftArray()
