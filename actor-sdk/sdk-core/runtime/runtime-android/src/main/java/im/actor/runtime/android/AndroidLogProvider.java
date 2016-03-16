@@ -34,16 +34,16 @@ public class AndroidLogProvider implements LogRuntime {
     private static String sendLogsUrl = null;
     private static SharedPreferences shp;
     private static final OkHttpClient client;
+
     static {
         String name;
         shp = AndroidContext.getContext().getSharedPreferences("properties.ini", Context.MODE_PRIVATE);
         sendLogs = shp.getBoolean("sendLogs", false);
         sendLogsUrl = shp.getString("sendLogsUrl", null);
         writeLogs = shp.getBoolean("writeLogs", false);
-        if ( 0 == Environment.getExternalStorageState().compareTo(Environment.MEDIA_MOUNTED)){
+        if (0 == Environment.getExternalStorageState().compareTo(Environment.MEDIA_MOUNTED)) {
             name = Environment.getExternalStorageDirectory().getAbsolutePath();
-        }
-        else{
+        } else {
             name = Environment.getDataDirectory().getAbsolutePath();
         }
 
@@ -55,9 +55,8 @@ public class AndroidLogProvider implements LogRuntime {
             e.printStackTrace();
         }
 
-         client = new OkHttpClient();
+        client = new OkHttpClient();
     }
-
 
 
     @Override
@@ -90,18 +89,19 @@ public class AndroidLogProvider implements LogRuntime {
         sendLogs("w", tag, message);
     }
 
-    private static int i =0;
+    private static int i = 0;
     private static String s = "";
-    private static void sendLogs(String level,  String tag, String msg){
-        if(sendLogs && sendLogsUrl!=null){
-            if(i==0){
-                s=s.concat("```");
+
+    private static void sendLogs(String level, String tag, String msg) {
+        if (sendLogs && sendLogsUrl != null) {
+            if (i == 0) {
+                s = s.concat("```");
             }
 
-            s=s.concat("\n").concat(level).concat(" ").concat(tag).concat(":").concat(msg);
+            s = s.concat("\n").concat(level).concat(" ").concat(tag).concat(":").concat(msg);
 
-            if(i == 19){
-                s=s.concat("```");
+            if (i == 19) {
+                s = s.concat("```");
                 JSONObject json = new JSONObject();
                 try {
                     json.put("text", s);
@@ -125,22 +125,19 @@ public class AndroidLogProvider implements LogRuntime {
 
                 s = "";
                 i = 0;
-            }else{
+            } else {
                 i++;
             }
 
         }
     }
 
-    private static void writeToFile(java.util.logging.Level level, String tag, String msg){
-        if(writeLogs){
+    private static void writeToFile(java.util.logging.Level level, String tag, String msg) {
+        if (writeLogs) {
             try {
                 fileHandler.setFormatter(new SimpleFormatter());
-                fileHandler.publish(new LogRecord(level, tag+": "+msg));
-            } catch (Exception e)
-            {
-                Log.e("MyLog", "FileHandler exception", e);
-                return;
+                fileHandler.publish(new LogRecord(level, tag + ": " + msg));
+            } catch (Exception e) {
             }
         }
 
@@ -153,7 +150,7 @@ public class AndroidLogProvider implements LogRuntime {
     }
 
     public static void setSendLogs(String sendLogsUrl) {
-        AndroidLogProvider.sendLogs = sendLogsUrl!=null;
+        AndroidLogProvider.sendLogs = sendLogsUrl != null;
         AndroidLogProvider.sendLogsUrl = sendLogsUrl;
         shp.edit().putString("sendLogsUrl", sendLogsUrl).apply();
         shp.edit().putBoolean("sendLogs", sendLogs).apply();
