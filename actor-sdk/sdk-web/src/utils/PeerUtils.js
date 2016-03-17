@@ -1,30 +1,32 @@
-import _ from 'lodash';
-
 import { PeerTypes, PeerTypePrefixes } from '../constants/ActorAppConstants';
 
 import ActorClient from './ActorClient';
 
 export default {
   peerToString(peer) {
-    switch (peer.type) {
+    const { id, type } = peer;
+
+    switch (type) {
       case PeerTypes.USER:
-        return PeerTypePrefixes.USER + peer.id;
+        return PeerTypePrefixes.USER + id;
       case PeerTypes.GROUP:
-        return PeerTypePrefixes.GROUP + peer.id;
+        return PeerTypePrefixes.GROUP + id;
       default:
-        throw new Error('Unknown peer type: ' + peer.type + ' ' + peer.id);
+        console.error('Unknown peer type: { type: %s, id: %s }', type, id);
     }
   },
 
   stringToPeer(str) {
-    const peerId = parseInt(str.substring(1), 10);
-    switch (str.substring(0, 1)) {
+    const type = str.charAt(0);
+    const id = parseInt(str.substring(1), 10);
+
+    switch (type) {
       case PeerTypePrefixes.USER:
-        return ActorClient.getUserPeer(peerId);
+        return ActorClient.getUserPeer(id);
       case PeerTypePrefixes.GROUP:
-        return ActorClient.getGroupPeer(peerId);
+        return ActorClient.getGroupPeer(id);
       default:
-        throw new Error('Unknown peer type: ' + str);
+      console.error('Unknown peer type: { type: %s, id: %s }', type, id);
     }
   },
 
@@ -44,10 +46,6 @@ export default {
   },
 
   equals(peer1, peer2) {
-    return (
-      (_.isPlainObject(peer1) && !_.isPlainObject(peer2)) ||
-      (!_.isPlainObject(peer1) && _.isPlainObject(peer2)) ||
-      (peer1.type === peer2.type && peer1.id === peer2.id)
-    );
+    return peer1 && peer2 && peer1.id === peer2.id && peer1.type === peer2.type;
   }
 };
