@@ -5060,6 +5060,11 @@
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBno6" resolve="startDate" />
         </node>
+        <node concept="NX1gA" id="4bVh48GpQia" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Optional unread counter in conversation" />
+          <ref role="NX6Kv" node="4bVh48GpQhO" resolve="unreadCounter" />
+        </node>
         <node concept="2m7Kf5" id="GBscvBBnnZ" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="peer" />
@@ -5072,6 +5077,13 @@
           <property role="TrG5h" value="startDate" />
           <node concept="wb0Ql" id="2vxDjotnQEZ" role="2m7DVh">
             <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4bVh48GpQhO" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="unreadCounter" />
+          <node concept="2m5nlT" id="4bVh48GpQhW" role="2m7DVh">
+            <node concept="2m5ndE" id="4bVh48GpQi2" role="3GH5xg" />
           </node>
         </node>
         <node concept="Nu42z" id="GBscvBBnlC" role="NuuwV">
