@@ -9,6 +9,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server._
 import im.actor.acl.ACLFiles
 import im.actor.server.api.http.HttpHandler
+import im.actor.server.api.http.HttpApiHelpers._
 import im.actor.server.db.DbExtension
 import im.actor.server.model.{ File ⇒ FileModel }
 import im.actor.server.persist.files.FileRepo
@@ -19,9 +20,9 @@ import scodec._
 import scodec.codecs.{ ascii32, byte, int32 }
 
 object FileUrlBuilderRejections {
-  case object SecretExpiredRejection extends Rejection
-  case object FileNotFoundRejection extends Rejection
-  case object IncorrectSignatureRejection extends Rejection
+  case object FileBuilderExpiredRejection extends ActorCustomRejection
+  case object FileNotFoundRejection extends ActorCustomRejection
+  case object InvalidBuilderSignatureRejection extends ActorCustomRejection
 }
 
 final case class Seed(version: Byte, expire: Int, randomPart: String)
@@ -39,7 +40,7 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
   val rejectionHandler: RejectionHandler =
     RejectionHandler.newBuilder()
       .handle {
-        case SecretExpiredRejection ⇒
+        case FileBuilderExpiredRejection ⇒
           complete(StatusCodes.Gone → "FileUrlBuilder expired; request new builder!")
       }
       .handle {
@@ -47,8 +48,8 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
           complete(StatusCodes.NotFound → "File not found")
       }
       .handle {
-        case IncorrectSignatureRejection ⇒
-          complete(StatusCodes.Forbidden → "Incorrect file signature")
+        case InvalidBuilderSignatureRejection ⇒
+          complete(StatusCodes.Forbidden → "Invalid file signature in file builder")
       }
       .result()
 
@@ -96,7 +97,7 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
                           "Signature expired. Signature: {}, expire: {}, now: {}",
                           hexSignature, expire, Instant.now
                         )
-                        reject(SecretExpiredRejection)
+                        reject(FileBuilderExpiredRejection)
                       } else {
                         provide((file, accessHash))
                       }
@@ -105,7 +106,7 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
                         "Incorrect signature. Signature from request: {}, calculated signature: {}",
                         hexSignature, calculatedSignature
                       )
-                      reject(IncorrectSignatureRejection)
+                      reject(InvalidBuilderSignatureRejection)
                     }
                   case None ⇒
                     log.debug("File not found, id: {}", fileId)
@@ -113,11 +114,11 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
                 }
               case _ ⇒
                 log.debug("Unable to decode seed: {}", hexSeed)
-                reject(IncorrectSignatureRejection)
+                reject(InvalidBuilderSignatureRejection)
             }
           case _ ⇒
             log.debug("Wrong query signature: {}", s)
-            reject(IncorrectSignatureRejection)
+            reject(InvalidBuilderSignatureRejection)
         }
     }
 
