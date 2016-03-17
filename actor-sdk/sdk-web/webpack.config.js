@@ -1,21 +1,26 @@
 import path from 'path';
 import webpack from 'webpack';
+import autoprefixer from 'autoprefixer';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+
+const sassLoaders = [
+  // 'css?sourceMap&modules',
+  'css?sourceMap',
+  'postcss',
+  'sass?sourceMap&outputStyle=expanded&includePaths[]=' + path.resolve(__dirname, 'node_modules')
+];
 
 export default {
   cache: true,
   debug: true,
-  devtool: '#eval-source-map',
+  devtool: '#inline-source-map',
   hotComponents: true,
   entry: {
     app: [
       'webpack-dev-server/client?http://localhost:3000',
       'webpack/hot/dev-server',
-      './devapp/index.js'
-    ],
-    styles: [
-      'webpack-dev-server/client?http://localhost:3000',
-      'webpack/hot/dev-server',
-      './devapp/styles.js'
+      './devapp/index.js',
+      './src/styles/index.scss'
     ]
   },
   output: {
@@ -23,7 +28,7 @@ export default {
     publicPath: './',
     filename: '[name].js',
     chunkFilename: '[chunkhash].js',
-    sourceMapFilename: '[name].map'
+    sourceMapFilename: '[file][hash].map'
   },
   resolve: {
     modulesDirectories: ['node_modules'],
@@ -40,12 +45,7 @@ export default {
     ],
     loaders: [{
       test: /\.(scss|css)$/,
-      loaders: [
-        'style',
-        'css',
-        'autoprefixer?browsers=last 3 versions',
-        'sass?outputStyle=expanded&includePaths[]=' + path.resolve(__dirname, 'node_modules')
-      ]
+      loader: ExtractTextPlugin.extract('style', sassLoaders.join('!'))
     }, {
       test: /\.js$/,
       loaders: [
@@ -72,10 +72,14 @@ export default {
         'NODE_ENV': JSON.stringify('development')
       }
     }),
+    new ExtractTextPlugin('index.css', { allChunks: true }),
     new webpack.ResolverPlugin([
       new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main'])
     ], ['context']),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
+  ],
+  postcss: [
+    autoprefixer({browsers: ['last 3 versions']})
   ]
 };
