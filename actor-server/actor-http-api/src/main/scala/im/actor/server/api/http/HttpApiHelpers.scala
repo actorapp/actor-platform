@@ -27,4 +27,6 @@ trait HttpApiHelpers {
       catch { case _: NumberFormatException ⇒ None }
     }
 
+  trait ActorCustomRejection extends Rejection
+
 }

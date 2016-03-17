@@ -45,9 +45,9 @@ final class LocalFileStorageAdapter(_system: ActorSystem)
   private val httpConfig: HttpApiConfig = HttpApiConfig.load.get
   private val storageConfig: LocalFileStorageConfig = LocalFileStorageConfig.load.get
 
-  HttpApi(system).registerHook("localstorage") { implicit system ⇒
-    new FilesHttpHandler(storageConfig).routes
-  }
+  private val httpHandler = new FilesHttpHandler(storageConfig)
+  HttpApi(system).registerRoute("localstorage") { _ ⇒ httpHandler.routes }
+  HttpApi(system).registerRejection("localstorage") { _ ⇒ httpHandler.rejectionHandler }
 
   protected val storageLocation = initFileStorage(storageConfig.location)
 

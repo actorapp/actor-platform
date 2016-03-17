@@ -9,6 +9,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server._
 import im.actor.acl.ACLFiles
 import im.actor.server.api.http.HttpHandler
+import im.actor.server.api.http.HttpApiHelpers._
 import im.actor.server.db.DbExtension
 import im.actor.server.model.{ File ⇒ FileModel }
 import im.actor.server.persist.files.FileRepo
@@ -16,30 +17,30 @@ import im.actor.util.log.AnyRefLogSource
 import org.apache.commons.codec.digest.HmacUtils
 import scodec.bits.BitVector
 import scodec._
-import scodec.codecs.{ byte, int32, long }
+import scodec.codecs.{ ascii32, byte, int32 }
 
 object FileUrlBuilderRejections {
-  case object SecretExpiredRejection extends Rejection
-  case object FileNotFoundRejection extends Rejection
-  case object IncorrectSignatureRejection extends Rejection
+  case object FileBuilderExpiredRejection extends ActorCustomRejection
+  case object FileNotFoundRejection extends ActorCustomRejection
+  case object InvalidBuilderSignatureRejection extends ActorCustomRejection
 }
 
-final case class Seed(version: Byte, expire: Int, randomPart: Long)
-object SeedDecoder {
-  implicit val seedDecoder = (byte :: int32 :: long(64)).as[Seed]
+final case class Seed(version: Byte, expire: Int, randomPart: String)
+object SeedCodec {
+  implicit val seedCodec: Codec[Seed] = (byte :: int32 :: ascii32).as[Seed]
 }
 
 private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapter)(implicit system: ActorSystem) extends HttpHandler with AnyRefLogSource {
   import FileUrlBuilderRejections._
-  import SeedDecoder._
+  import SeedCodec._
 
   private val db = DbExtension(system).db
   private val log = Logging(system, this)
 
-  private val myRejectionHandler: RejectionHandler =
+  val rejectionHandler: RejectionHandler =
     RejectionHandler.newBuilder()
       .handle {
-        case SecretExpiredRejection ⇒
+        case FileBuilderExpiredRejection ⇒
           complete(StatusCodes.Gone → "FileUrlBuilder expired; request new builder!")
       }
       .handle {
@@ -47,8 +48,8 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
           complete(StatusCodes.NotFound → "File not found")
       }
       .handle {
-        case IncorrectSignatureRejection ⇒
-          complete(StatusCodes.Forbidden → "Incorrect file signature")
+        case InvalidBuilderSignatureRejection ⇒
+          complete(StatusCodes.Forbidden → "Invalid file signature in file builder")
       }
       .result()
 
@@ -56,15 +57,13 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
   def routes: Route =
     extractRequest { request =>
       log.debug("Got file url builder request: {}", request)
-      handleRejections(myRejectionHandler) {
-        defaultVersion {
-          pathPrefix("files" / SignedLongNumber) { fileId =>
-            get {
-              validateBuilderRequest(fileId) { case (fileModel, accessHash) =>
-                onSuccess(fsAdapter.getFileDownloadUrl(fileModel, accessHash)) {
-                  case Some(url) => redirect(url, StatusCodes.Found)
-                  case None => complete(StatusCodes.NotFound -> "File not found")
-                }
+      defaultVersion {
+        pathPrefix("files" / SignedLongNumber) { fileId =>
+          get {
+            validateBuilderRequest(fileId) { case (fileModel, accessHash) =>
+              onSuccess(fsAdapter.getFileDownloadUrl(fileModel, accessHash)) {
+                case Some(url) => redirect(url, StatusCodes.Found)
+                case None => complete(StatusCodes.NotFound -> "File not found")
               }
             }
           }
@@ -74,54 +73,55 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
   // format: ON
 
   // monad transformers could make this code easier
-  def validateBuilderRequest(fileId: Long): Directive1[(FileModel, Long)] =
+  private def validateBuilderRequest(fileId: Long): Directive1[(FileModel, Long)] =
     parameter("signature") flatMap {
       case s ⇒
         s split "_" match {
-          case Array(originalSeed, originalSignature) ⇒
+          case Array(hexSeed, hexSignature) ⇒
             (for {
-              bitSeed ← BitVector.fromHex(originalSeed)
+              bitSeed ← BitVector.fromHex(hexSeed)
               seed ← Codec.decode[Seed](bitSeed).toOption
-            } yield seed) match {
-              case Some(DecodeResult(seed, BitVector.empty)) ⇒
+            } yield bitSeed → seed) match {
+              case Some((bitSeed, DecodeResult(seed, BitVector.empty))) ⇒
                 onSuccess(db.run(FileRepo.find(fileId))) flatMap {
                   case Some(file) ⇒
                     val expire = seed.expire
-                    val secret = BitVector.fromLong(ACLFiles.fileUrlBuilderSecret(originalSeed, expire)).toHex
+                    val secret = ACLFiles.fileUrlBuilderSecret(bitSeed.toByteArray)
                     val accessHash = ACLFiles.fileAccessHash(file.id, file.accessSalt)
-                    val calculatedSignature = HmacUtils.hmacSha256Hex(secret, s"$fileId$accessHash")
-                    if (originalSignature == calculatedSignature) {
+                    val valueToDigest = bitSeed ++ BitVector.fromLong(fileId) ++ BitVector.fromLong(accessHash)
+                    val calculatedSignature = HmacUtils.hmacSha256Hex(secret, valueToDigest.toByteArray)
+                    if (hexSignature == calculatedSignature) {
                       val now = Instant.now
                       if (isExpired(expire, now)) {
                         log.debug(
                           "Signature expired. Signature: {}, expire: {}, now: {}",
-                          originalSignature, expire, Instant.now
+                          hexSignature, expire, Instant.now
                         )
-                        reject(SecretExpiredRejection)
+                        reject(FileBuilderExpiredRejection)
                       } else {
                         provide((file, accessHash))
                       }
                     } else {
                       log.debug(
                         "Incorrect signature. Signature from request: {}, calculated signature: {}",
-                        originalSignature, calculatedSignature
+                        hexSignature, calculatedSignature
                       )
-                      reject(IncorrectSignatureRejection)
+                      reject(InvalidBuilderSignatureRejection)
                     }
                   case None ⇒
                     log.debug("File not found, id: {}", fileId)
                     reject(FileNotFoundRejection)
                 }
               case _ ⇒
-                log.debug("Unable to decode seed: {}", originalSeed)
-                reject(IncorrectSignatureRejection)
+                log.debug("Unable to decode seed: {}", hexSeed)
+                reject(InvalidBuilderSignatureRejection)
             }
           case _ ⇒
             log.debug("Wrong query signature: {}", s)
-            reject(IncorrectSignatureRejection)
+            reject(InvalidBuilderSignatureRejection)
         }
     }
 
-  def isExpired(expire: Int, now: Instant): Boolean = Instant.ofEpochSecond(expire.toLong).isAfter(now)
+  private def isExpired(expire: Int, now: Instant): Boolean = Instant.ofEpochSecond(expire.toLong).isAfter(now)
 
 }

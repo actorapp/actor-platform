@@ -3,7 +3,7 @@ package im.actor.server.api.http
 import akka.actor._
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.{ RejectionHandler, Route }
 import akka.http.scaladsl.server.directives.Credentials
 import akka.http.scaladsl.settings.ServerSettings
 import akka.stream.ActorMaterializer
@@ -25,17 +25,29 @@ final class HttpApi(_system: ActorSystem) extends Extension {
 
   private val hooks = new HttpApiHookControl
 
-  def runHooks(): Seq[Route] = hooks.routesHook.runAll()
+  def runRouteHooks(): Seq[Route] = hooks.routesHook.runAll()
+  def runRejectionHooks(): Seq[RejectionHandler] = hooks.rejectionsHook.runAll()
 
-  var customRoutes: Seq[Route] = runHooks()
+  var customRejections: Seq[RejectionHandler] = runRejectionHooks()
+  var customRoutes: Seq[Route] = runRouteHooks()
 
-  def registerHook(name: String)(f: ActorSystem ⇒ Route): Unit = {
-    hooks.routesHook.register(name, new HttpApiHook.RoutesHook(system) {
+  def registerRoute(name: String)(f: ActorSystem ⇒ Route): Unit = {
+    hooks.routesHook.register(s"$name-routes", new HttpApiHook.RoutesHook(system) {
       override def run(): Route = f(system)
     })
 
     synchronized {
-      this.customRoutes = runHooks()
+      this.customRoutes = runRouteHooks()
+    }
+  }
+
+  def registerRejection(name: String)(f: ActorSystem ⇒ RejectionHandler): Unit = {
+    hooks.rejectionsHook.register(s"$name-rejection", new HttpApiHook.RejectionsHook(system) {
+      def run(): RejectionHandler = f(system)
+    })
+
+    synchronized {
+      this.customRejections = runRejectionHooks()
     }
   }
 
@@ -84,6 +96,7 @@ private object HttpApiFrontend {
     def defaultRoutes: Route = app.routes ~ defaultVersion(status.routes ~ info.routes)
 
     def routes = HttpApi(system).customRoutes.foldLeft(defaultRoutes)(_ ~ _)
+    def rejectionHandlers = HttpApi(system).customRejections.foldRight(RejectionHandler.default)((acc, el) ⇒ acc.withFallback(el))
 
     val defaultSettings = ServerSettings(system)
 
@@ -94,7 +107,7 @@ private object HttpApiFrontend {
       settings = defaultSettings.withTimeouts(defaultSettings.timeouts.withIdleTimeout(IdleTimeout))
     )
       .runForeach { conn ⇒
-        conn handleWith routes
+        conn handleWith handleRejections(rejectionHandlers) { routes }
       }
   }
 }

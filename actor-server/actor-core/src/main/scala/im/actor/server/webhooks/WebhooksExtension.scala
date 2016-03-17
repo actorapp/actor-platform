@@ -13,7 +13,7 @@ sealed trait WebhooksExtension extends Extension
  */
 final class WebhooksExtensionImpl(system: ActorSystem) extends WebhooksExtension {
 
-  HttpApi(system).registerHook("webhooks") { implicit system ⇒
+  HttpApi(system).registerRoute("webhooks") { implicit system ⇒
     new WebhooksHttpHandler().routes
   }
 
