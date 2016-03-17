@@ -5596,6 +5596,12 @@
                 "argument": "startDate",
                 "category": "full",
                 "description": "  Start date of read message"
+              },
+              {
+                "type": "reference",
+                "argument": "unreadCounter",
+                "category": "full",
+                "description": "  Optional unread counter in conversation"
               }
             ],
             "attributes": [
@@ -5614,6 +5620,14 @@
                 },
                 "id": 2,
                 "name": "startDate"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 3,
+                "name": "unreadCounter"
               }
             ]
           }
