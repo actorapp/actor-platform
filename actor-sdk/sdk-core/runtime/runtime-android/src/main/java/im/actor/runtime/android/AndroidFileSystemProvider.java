@@ -13,6 +13,7 @@ import im.actor.runtime.files.FileSystemReference;
 
 public class AndroidFileSystemProvider implements FileSystemRuntime {
 
+    public static final String FILE_SYSTEM_SAFE_RENAME = "\\W+";
     private Random random = new Random();
     private boolean isFirst = true;
 
@@ -58,7 +59,8 @@ public class AndroidFileSystemProvider implements FileSystemRuntime {
 
         String baseFileName = fileName;
         if (fileName.contains(".")) {
-            String prefix = baseFileName.substring(baseFileName.lastIndexOf('.'));
+            String prefix = baseFileName.substring(0, baseFileName.lastIndexOf('.')).replaceAll(FILE_SYSTEM_SAFE_RENAME, "");
+
             String ext = baseFileName.substring(prefix.length() + 1);
 
             File res = new File(dest, prefix + "_" + fileId + "." + ext);
@@ -100,7 +102,8 @@ public class AndroidFileSystemProvider implements FileSystemRuntime {
         if (!new File(sourceFile.getDescriptor()).renameTo(new File(realFileName))) {
             return null;
         }
-        return new AndroidFileSystemReference(realFileName);
+        AndroidFileSystemReference androidFileSystemReference = new AndroidFileSystemReference(realFileName);
+        return androidFileSystemReference;
     }
 
     @Override
