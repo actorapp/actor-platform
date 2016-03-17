@@ -21,3 +21,9 @@ message Avatar {
     optional AvatarImage largeImage = 2;
     optional AvatarImage fullImage = 3;
 }
+
+message UrlBuilderSeed {
+    required int32 version = 1;
+    required int32 expire = 2;
+    required string random_part = 3;
+}

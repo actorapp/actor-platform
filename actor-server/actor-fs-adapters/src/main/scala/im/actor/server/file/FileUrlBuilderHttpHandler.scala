@@ -14,25 +14,23 @@ import im.actor.server.db.DbExtension
 import im.actor.server.model.{ File ⇒ FileModel }
 import im.actor.server.persist.files.FileRepo
 import im.actor.util.log.AnyRefLogSource
+import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.HmacUtils
 import scodec.bits.BitVector
 import scodec._
 import scodec.codecs.{ ascii32, byte, int32 }
 
+import scala.util.Success
+
 object FileUrlBuilderRejections {
   case object FileBuilderExpiredRejection extends ActorCustomRejection
   case object FileNotFoundRejection extends ActorCustomRejection
+  case object InvalidVersionRejection extends ActorCustomRejection
   case object InvalidBuilderSignatureRejection extends ActorCustomRejection
-}
-
-final case class Seed(version: Byte, expire: Int, randomPart: String)
-object SeedCodec {
-  implicit val seedCodec: Codec[Seed] = (byte :: int32 :: ascii32).as[Seed]
 }
 
 private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapter)(implicit system: ActorSystem) extends HttpHandler with AnyRefLogSource {
   import FileUrlBuilderRejections._
-  import SeedCodec._
 
   private val db = DbExtension(system).db
   private val log = Logging(system, this)
@@ -50,6 +48,10 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
       .handle {
         case InvalidBuilderSignatureRejection ⇒
           complete(StatusCodes.Forbidden → "Invalid file signature in file builder")
+      }
+      .handle {
+        case InvalidVersionRejection ⇒
+          complete(StatusCodes.BadRequest → "Wrong version")
       }
       .result()
 
@@ -78,39 +80,42 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
       case s ⇒
         s split "_" match {
           case Array(hexSeed, hexSignature) ⇒
-            (for {
-              bitSeed ← BitVector.fromHex(hexSeed)
-              seed ← Codec.decode[Seed](bitSeed).toOption
-            } yield bitSeed → seed) match {
-              case Some((bitSeed, DecodeResult(seed, BitVector.empty))) ⇒
-                onSuccess(db.run(FileRepo.find(fileId))) flatMap {
-                  case Some(file) ⇒
-                    val expire = seed.expire
-                    val secret = ACLFiles.fileUrlBuilderSecret(bitSeed.toByteArray)
-                    val accessHash = ACLFiles.fileAccessHash(file.id, file.accessSalt)
-                    val valueToDigest = bitSeed ++ BitVector.fromLong(fileId) ++ BitVector.fromLong(accessHash)
-                    val calculatedSignature = HmacUtils.hmacSha256Hex(secret, valueToDigest.toByteArray)
-                    if (hexSignature == calculatedSignature) {
-                      val now = Instant.now
-                      if (isExpired(expire, now)) {
-                        log.debug(
-                          "Signature expired. Signature: {}, expire: {}, now: {}",
-                          hexSignature, expire, Instant.now
-                        )
-                        reject(FileBuilderExpiredRejection)
+            UrlBuilderSeed.validate(Hex.decodeHex(hexSeed.toCharArray)) match {
+              case Success(seed) ⇒
+                if (seed.version == 0) {
+                  onSuccess(db.run(FileRepo.find(fileId))) flatMap {
+                    case Some(file) ⇒
+                      val seedBytes = seed.toByteArray
+                      val expire = seed.expire
+                      val secret = ACLFiles.fileUrlBuilderSecret(seedBytes)
+                      val accessHash = ACLFiles.fileAccessHash(file.id, file.accessSalt)
+                      val valueToDigest = BitVector(seedBytes) ++ BitVector.fromLong(fileId) ++ BitVector.fromLong(accessHash)
+                      val calculatedSignature = HmacUtils.hmacSha256Hex(secret, valueToDigest.toByteArray)
+                      if (hexSignature == calculatedSignature) {
+                        val now = Instant.now
+                        if (isExpired(expire, now)) {
+                          log.debug(
+                            "Signature expired. Signature: {}, expire: {}, now: {}",
+                            hexSignature, expire, Instant.now
+                          )
+                          reject(FileBuilderExpiredRejection)
+                        } else {
+                          provide((file, accessHash))
+                        }
                       } else {
-                        provide((file, accessHash))
+                        log.debug(
+                          "Incorrect signature. Signature from request: {}, calculated signature: {}",
+                          hexSignature, calculatedSignature
+                        )
+                        reject(InvalidBuilderSignatureRejection)
                       }
-                    } else {
-                      log.debug(
-                        "Incorrect signature. Signature from request: {}, calculated signature: {}",
-                        hexSignature, calculatedSignature
-                      )
-                      reject(InvalidBuilderSignatureRejection)
-                    }
-                  case None ⇒
-                    log.debug("File not found, id: {}", fileId)
-                    reject(FileNotFoundRejection)
+                    case None ⇒
+                      log.debug("File not found, id: {}", fileId)
+                      reject(FileNotFoundRejection)
+                  }
+                } else {
+                  log.debug("Wrong version of algo")
+                  reject(InvalidVersionRejection)
                 }
               case _ ⇒
                 log.debug("Unable to decode seed: {}", hexSeed)
