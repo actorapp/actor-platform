@@ -342,6 +342,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
         getMember(userId) match {
           case Some(member) ⇒
             cancelIncomingCallUpdates(userId)
+            log.debug(s"member[userId=${userId}] rejected call")
             setMemberState(userId, MemberStates.Ended)
             val client = EventBus.ExternalClient(userId, authId)
             for (deviceId ← clients get client) {
@@ -419,6 +420,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
         removeDevice(deviceId)
         client.externalUserId foreach { userId ⇒
           if (!devices.values.exists(_.client.externalUserId.contains(userId))) {
+            log.debug(s"member[userId=${userId}] disconnected from eventbus")
             setMemberState(userId, MemberStates.Ended)
             setMemberJoined(userId, isJoined = false)
             broadcastSyncedSet()
