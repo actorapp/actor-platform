@@ -12,17 +12,23 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server._
 import akka.stream.ActorMaterializer
 import im.actor.server.api.http.HttpHandler
+import im.actor.server.api.http.HttpApiHelpers._
 import im.actor.server.file.local.{ FileStorageOperations, LocalFileStorageConfig, RequestSigning }
 import im.actor.util.log.AnyRefLogSource
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
+private object FilesRejections {
+  case object InvalidFileSignature extends ActorCustomRejection
+}
+
 private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfig)(implicit val system: ActorSystem)
   extends HttpHandler
   with RequestSigning
   with FileStorageOperations
   with AnyRefLogSource {
+  import FilesRejections._
 
   protected implicit val mat = ActorMaterializer()
 
@@ -30,6 +36,14 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
   protected val storageLocation = storageConfig.location
 
   private val log = Logging(system, this)
+
+  val rejectionHandler: RejectionHandler =
+    RejectionHandler.newBuilder()
+      .handle {
+        case InvalidFileSignature ⇒
+          complete(StatusCodes.Forbidden → "Invalid file signature")
+      }
+      .result()
 
   // format: OFF
   def routes: Route =
@@ -93,7 +107,7 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
   // format: ON
 
   def validateRequest: Directive0 =
-    extractRequestContext flatMap { ctx ⇒
+    extractRequestContext.flatMap[Unit] { ctx ⇒
       parameters(("signature", "expires".as[Long])) tflatMap {
         case (signature, expiresAt) ⇒
           val request = ctx.request
