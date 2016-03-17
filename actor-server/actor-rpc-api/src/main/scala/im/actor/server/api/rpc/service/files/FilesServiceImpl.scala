@@ -16,7 +16,7 @@ import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.db.DbExtension
 import im.actor.server.file._
 import im.actor.server.persist.files.{ FilePartRepo, FileRepo }
-import scodec.Codec
+import org.apache.commons.codec.binary.Hex
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -90,21 +90,18 @@ class FilesServiceImpl(implicit actorSystem: ActorSystem) extends FilesService {
 
   protected def doHandleGetFileUrlBuilder(supportedSignatureAlgorithms: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseGetFileUrlBuilder]] =
     authorized(clientData) { _ ⇒
-      import SeedCodec._
       val result = if (supportedSignatureAlgorithms.contains("HMAC_SHA256")) {
         val expire = Instant.now.plus(1, ChronoUnit.HOURS).getEpochSecond.toInt
-        val optSeed = Codec.encode(Seed(version = 0, expire = expire, randomPart = ACLUtils.randomHash())).toOption
-        optSeed map { seed ⇒
-          Ok(
-            ResponseGetFileUrlBuilder(
-              baseUrl = s"${httpConfig.baseUri}/v1/files",
-              algo = "HMAC_SHA256",
-              signatureSecret = ACLUtils.fileUrlBuilderSecret(seed.toByteArray),
-              timeout = expire,
-              seed = seed.toHex
-            )
+        val seedBytes = UrlBuilderSeed(version = 0, expire = expire, randomPart = ACLUtils.randomHash()).toByteArray
+        Ok(
+          ResponseGetFileUrlBuilder(
+            baseUrl = s"${httpConfig.baseUri}/v1/files",
+            algo = "HMAC_SHA256",
+            signatureSecret = ACLUtils.fileUrlBuilderSecret(seedBytes),
+            timeout = expire,
+            seed = Hex.encodeHexString(seedBytes)
           )
-        } getOrElse Error(IntenalError)
+        )
       } else Error(UnsupportedSignatureAlgorithm)
       FastFuture.successful(result)
     }
