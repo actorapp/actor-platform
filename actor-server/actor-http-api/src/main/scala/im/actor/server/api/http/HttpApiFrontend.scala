@@ -96,7 +96,7 @@ private object HttpApiFrontend {
     def defaultRoutes: Route = app.routes ~ defaultVersion(status.routes ~ info.routes)
 
     def routes = HttpApi(system).customRoutes.foldLeft(defaultRoutes)(_ ~ _)
-    def rejectionHandlers = HttpApi(system).customRejections.foldLeft(RejectionHandler.default)((acc, el) ⇒ acc.withFallback(el))
+    def rejectionHandlers = HttpApi(system).customRejections.foldRight(RejectionHandler.default)((acc, el) ⇒ acc.withFallback(el))
 
     val defaultSettings = ServerSettings(system)
 
