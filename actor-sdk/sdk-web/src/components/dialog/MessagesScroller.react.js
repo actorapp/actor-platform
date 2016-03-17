@@ -35,8 +35,8 @@ class MessagesScroller extends Component {
     const isSamePeer = PeerUtils.equals(nextProps.peer, this.props.peer);
     if (isSamePeer) {
       const { scrollTop, offsetHeight, scrollHeight } = this.node;
-      this._scrollHeight = scrollHeight;
       this._scrollTop = scrollTop;
+      this._scrollHeight = scrollHeight;
       this._shouldScrollBottom = scrollTop + offsetHeight === scrollHeight;
     } else {
       this._shouldScrollBottom = true;
@@ -44,15 +44,27 @@ class MessagesScroller extends Component {
   }
 
   componentDidUpdate() {
-    setImmediate(() => {
-      if (this.node.scrollHeight > this._scrollHeight) {
-        this.node.scrollTop = this._scrollTop + (this.node.scrollHeight - this._scrollHeight);
-      } else if (this.node.scrollTop === 0) {
+    const { scrollHeight } = this.node;
+    // check if container become bigger
+    if (scrollHeight > this._scrollHeight) {
+      requestAnimationFrame(() => {
+        this.node.scrollTop = this._scrollTop + (scrollHeight - this._scrollHeight);
+      });
+      return;
+    }
+
+    const { scrollTop } = this.node;
+    // check if scroll on top on container
+    if (scrollTop === 0) {
+      setImmediate(() => {
         this.props.onLoadMore();
-      } else if (this._shouldScrollBottom) {
-        this.scrollToBottom();
-      }
-    });
+      });
+      return;
+    }
+
+    if (this._shouldScrollBottom) {
+      this.scrollToBottom();
+    }
   }
 
   scrollToBottom() {
@@ -63,9 +75,9 @@ class MessagesScroller extends Component {
     this.node = node;
   }
 
-  onScroll({target}) {
-    const { scrollTop, offsetHeight } = target;
-    if (scrollTop <= offsetHeight) {
+  onScroll(event) {
+    const { target: { scrollTop } } = event;
+    if (scrollTop <= MAX_LOAD_HEIGHT) {
       this.props.onLoadMore();
     }
   }
