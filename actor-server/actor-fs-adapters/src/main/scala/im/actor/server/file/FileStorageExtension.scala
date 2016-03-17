@@ -33,9 +33,9 @@ class FileStorageExtensionImpl(system: ActorSystem) extends FileStorageExtension
       clazz ← Try(Class.forName(fqcn).asSubclass(classOf[FileStorageAdapter]))
     } yield clazz.getDeclaredConstructor(classOf[ActorSystem]).newInstance(system)) match {
       case Success(adapter) ⇒
-        val urlBuiler = new FileUrlBuilderHttpHandler(adapter)(system)
-        HttpApi(system).registerRoute("fileurlbuilder") { _ ⇒ urlBuiler.routes }
-        HttpApi(system).registerRejection("fileurlbuilder") { _ ⇒ urlBuiler.rejectionHandler }
+        val httpHandler = new FileUrlBuilderHttpHandler(adapter)(system)
+        HttpApi(system).registerRoute("fileurlbuilder") { _ ⇒ httpHandler.routes }
+        HttpApi(system).registerRejection("fileurlbuilder") { _ ⇒ httpHandler.rejectionHandler }
         adapter
       case Failure(e) ⇒ throw new RuntimeException("Failed to initialize FileStorageAdapter", e)
     }
