@@ -1,15 +1,17 @@
 package im.actor.config
 
+import java.nio.file.{ Path, Paths }
 import java.util.concurrent.TimeUnit
 
 import akka.actor.ActorSystem
-import com.typesafe.config.{ ConfigException, Config, ConfigFactory }
+import com.typesafe.config.{ Config, ConfigException, ConfigFactory }
+
 import scala.collection.JavaConversions._
 import scala.concurrent.duration._
-
 import scala.util.{ Failure, Success, Try }
 
 object ActorConfig {
+
   def load(defaults: Config = ConfigFactory.empty()): Config = {
     val mainConfig = ConfigFactory.load()
 
