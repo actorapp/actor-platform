@@ -6,26 +6,20 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
+import history from '../../utils/history';
 import { FormattedMessage } from 'react-intl';
-import PeerUtils from '../../utils/PeerUtils';
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
-import confirm from '../../utils/confirm';
-import { Link } from 'react-router';
 
 import { AsyncActionStates } from '../../constants/ActorAppConstants';
 
-import DialogActionCreators from '../../actions/DialogActionCreators';
 import DropdownActionCreators from '../../actions/DropdownActionCreators';
-
-import UserStore from '../../stores/UserStore';
-import ArchiveStore from '../../stores/ArchiveStore';
 
 import AvatarItem from '../common/AvatarItem.react';
 import Stateful from '../common/Stateful.react';
 
 class RecentItem extends Component {
   static propTypes = {
-    isActive: PropTypes.bool.isRequired,
+    isActive: PropTypes.bool,
     dialog: PropTypes.object.isRequired,
     archiveState: PropTypes.number.isRequired
   };
@@ -38,13 +32,22 @@ class RecentItem extends Component {
     intl: PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+    console.debug(props);
+
+    this.handleClick = this.handleClick.bind(this);
+    this.handleOpenContextMenu = this.handleOpenContextMenu.bind(this);
+  }
+
   shouldComponentUpdate(nextProps) {
+    console.debug('nextProps', nextProps);
     return nextProps.dialog !== this.props.dialog ||
            nextProps.isActive !== this.props.isActive ||
            nextProps.archiveState !== this.props.archiveState;
   }
 
-  onContextMenu = (event) => {
+  handleOpenContextMenu = (event) => {
     event.preventDefault();
     const { peer } = this.props.dialog.peer;
     const contextPos = {
@@ -54,51 +57,76 @@ class RecentItem extends Component {
     DropdownActionCreators.openRecentContextMenu(contextPos, peer);
   };
 
-  render() {
-    const { dialog, archiveState } = this.props;
-    const toPeer = PeerUtils.peerToString(dialog.peer.peer);
+  handleClick() {
+    const { dialog } = this.props;
+    history.push(`/im/${dialog.peer.peer.key}`);
+  }
 
-    const recentClassName = classnames('sidebar__list__item', 'row', {
-      'sidebar__list__item--unread': dialog.counter > 0
+  renderTitle() {
+    const { dialog } = this.props;
+    return (
+      <div className="recent__item__title col-xs"
+           dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialog.peer.title)}}/>
+    );
+  }
+
+  renderCounter() {
+    const { dialog } = this.props;
+    if (dialog.counter === 0) return null;
+
+    return (
+      <span className="recent__item__counter">{dialog.counter}</span>
+    )
+  }
+
+  renderArchiveState() {
+    const { archiveState } = this.props;
+    if (archiveState === AsyncActionStates.PENDING) return null;
+
+    return (
+      <Stateful
+        currentState={archiveState}
+        processing={
+            <div className="archive archive--in-progress">
+              <i className="icon material-icons spin">autorenew</i>
+            </div>
+          }
+        success={
+            <div className="archive archive--in-progress">
+              <i className="icon material-icons">check</i>
+            </div>
+          }
+        failure={
+            <div className="archive archive--failure">
+              <i className="icon material-icons">warning</i>
+            </div>
+          }
+      />
+    );
+  }
+
+  render() {
+    const { dialog, isActive } = this.props;
+
+    const recentItemClassName = classnames('recent__item', 'row', {
+      'recent__item--active': isActive,
+      'recent__item--unread': dialog.counter !== 0
     });
 
     return (
-      <li onContextMenu={this.onContextMenu}>
-        <Link to={`/im/${toPeer}`} className={recentClassName} activeClassName="sidebar__list__item--active">
+      <div onContextMenu={this.handleOpenContextMenu} onClick={this.handleClick} className={recentItemClassName}>
 
+        <div className="recent__item__avatar">
           <AvatarItem image={dialog.peer.avatar}
                       placeholder={dialog.peer.placeholder}
                       size="tiny"
                       title={dialog.peer.title}/>
+        </div>
 
-          <div className="title col-xs" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialog.peer.title)}}/>
-
-          {
-            dialog.counter > 0
-              ? <span className="counter">{dialog.counter}</span>
-              : null
-          }
-
-          <Stateful
-            currentState={archiveState}
-            processing={
-              <div className="archive archive--in-progress">
-                <i className="icon material-icons spin">autorenew</i>
-              </div>
-            }
-            success={
-              <div className="archive archive--in-progress">
-                <i className="icon material-icons">check</i>
-              </div>
-            }
-            failure={
-              <div className="archive archive--failure">
-                <i className="icon material-icons">warning</i>
-              </div>
-            }
-          />
-        </Link>
-      </li>
+        {this.renderTitle()}
+        {this.renderCounter()}
+        {this.renderArchiveState()}
+      </div>
     );
   }
 }
