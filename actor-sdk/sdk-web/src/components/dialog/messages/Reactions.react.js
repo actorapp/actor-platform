@@ -48,7 +48,7 @@ class MessageReactions extends Component {
     const hasReactions = message.reactions.length > 0;
 
     let counter;
-    let icon = <i className="icon material-icons" onClick={this.handleAddLike}>favorite</i>;
+    let icon = <i className="icon icon-favorite material-icons" onClick={this.handleAddLike}></i>;
     let reactionsClassName = 'message__actions__like';
 
     if (hasReactions) {
@@ -61,7 +61,7 @@ class MessageReactions extends Component {
       });
 
       if (amILikeThat) {
-        icon = <i className="icon material-icons" onClick={this.handleRemoveLike}>favorite</i>
+        icon = <i className="icon icon-favorite material-icons" onClick={this.handleRemoveLike}></i>
       }
 
       if (message.reactions[0].uids.length > 0) {
