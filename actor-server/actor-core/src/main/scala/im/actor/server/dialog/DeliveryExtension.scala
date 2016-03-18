@@ -30,10 +30,12 @@ trait DeliveryExtension {
 
   def sendCountersUpdate(userId: Int): Future[Unit]
 
+  def sendCountersUpdate(userId: Int, counter: Int): Future[Unit]
+
   def notifyReceive(authorUserId: Int, peer: Peer, date: Long, now: Long): Future[Unit]
 
   def notifyRead(userId: Int, peer: Peer, date: Long, now: Long): Future[Unit]
 
-  def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long): Future[Unit]
+  def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long, unreadCount: Option[Int]): Future[Unit]
 
 }

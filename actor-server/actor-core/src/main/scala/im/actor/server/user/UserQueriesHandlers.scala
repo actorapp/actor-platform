@@ -28,14 +28,14 @@ private[user] trait UserQueriesHandlers {
       localName = UserUtils.normalizeLocalName(localName),
       sex = Some(state.sex),
       avatar = state.avatar,
-      phone = state.phones.headOption.orElse(Some(0)),
       isBot = Some(state.isBot),
       contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
       nick = state.nickname,
       about = state.about,
       external = state.external,
       preferredLanguages = state.preferredLanguages.toVector,
-      timeZone = state.timeZone
+      timeZone = state.timeZone,
+      botCommands = Vector.empty
     ))) pipeTo sender()
   }
 

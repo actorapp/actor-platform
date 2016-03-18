@@ -26,6 +26,7 @@ trait BotToApiConversions {
 
   implicit def toTextMessageEx(ex: TextMessageEx): ApiTextMessageEx = ex match {
     case TextModernMessage(text, senderNameOverride, senderPhotoOverride, style, attaches) ⇒ ApiTextModernMessage(text, senderNameOverride, senderPhotoOverride, style, attaches)
+    case TextCommand(command, args) ⇒ ApiTextCommand(command, args)
   }
 
   implicit def toModernAttach(a: TextModernAttach): ApiTextModernAttach =

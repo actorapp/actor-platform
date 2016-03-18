@@ -1,5 +1,6 @@
 package im.actor.server.api.rpc.service.messaging
 
+import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
 import cats.data.Xor
 import im.actor.api.rpc.CommonRpcErrors.IntenalError
@@ -35,7 +36,7 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
   // TODO: configurable
   private val editTimeWindow: Long = 5.minutes.toMillis
 
-  override def doHandleSendMessage(outPeer: ApiOutPeer, randomId: Long, message: ApiMessage, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
+  override def doHandleSendMessage(outPeer: ApiOutPeer, randomId: Long, message: ApiMessage, isOnlyForUser: Option[Int], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
     authorized(clientData) { implicit client ⇒
       (for (
         s ← fromFuture(dialogExt.sendMessage(
@@ -49,6 +50,9 @@ private[messaging] trait MessagingHandlers extends PeersImplicits
         ))
       ) yield ResponseSeqDate(s.seq, s.state.toByteArray, s.date)).value
     }
+
+  override def doHandleNotifyDialogOpened(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    FastFuture.failed(new RuntimeException("Not implemented"))
 
   override def doHandleUpdateMessage(outPeer: ApiOutPeer, randomId: Long, updatedMessage: ApiMessage, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     authorized(clientData) { implicit client ⇒

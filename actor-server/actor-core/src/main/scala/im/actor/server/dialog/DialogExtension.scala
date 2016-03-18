@@ -233,6 +233,8 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }
   }
 
+  def getUnreadTotal(userId: Int): DBIO[Int] = HistoryMessageRepo.getUnreadTotal(userId)
+
   def getUnreadCount(clientUserId: Int, historyOwner: Int, peer: Peer, ownerLastReadAt: DateTime): DBIO[Int] = {
     if (isSharedUser(historyOwner)) {
       for {
