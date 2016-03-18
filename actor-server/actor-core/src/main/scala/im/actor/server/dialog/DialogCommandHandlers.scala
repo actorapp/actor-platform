@@ -157,10 +157,10 @@ trait DialogCommandHandlers extends PeersImplicits {
 
     (if (mustRead) {
       for {
+        _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
         unreadCount ← db.run(dialogExt.getUnreadTotal(userId))
         _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(unreadCount))
         _ ← dialogExt.ackMessageRead(peer, mr)
-        _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
         _ ← deliveryExt.sendCountersUpdate(userId, unreadCount)
       } yield MessageReadAck()
     } else {
