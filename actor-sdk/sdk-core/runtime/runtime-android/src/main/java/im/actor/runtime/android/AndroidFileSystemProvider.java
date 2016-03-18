@@ -59,9 +59,11 @@ public class AndroidFileSystemProvider implements FileSystemRuntime {
 
         String baseFileName = fileName;
         if (fileName.contains(".")) {
-            String prefix = baseFileName.substring(0, baseFileName.lastIndexOf('.')).replaceAll(FILE_SYSTEM_SAFE_RENAME, "");
+            String prefix = baseFileName.substring(0, baseFileName.lastIndexOf('.'));
 
             String ext = baseFileName.substring(prefix.length() + 1);
+
+            prefix = prefix.replaceAll(FILE_SYSTEM_SAFE_RENAME, "");
 
             File res = new File(dest, prefix + "_" + fileId + "." + ext);
             int index = 0;
@@ -71,6 +73,7 @@ public class AndroidFileSystemProvider implements FileSystemRuntime {
             }
             return res.getAbsolutePath();
         } else {
+            baseFileName = baseFileName.replaceAll(FILE_SYSTEM_SAFE_RENAME, "");
             File res = new File(dest, baseFileName + "_" + fileId);
             int index = 0;
             while (res.exists()) {

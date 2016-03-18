@@ -2,7 +2,9 @@ package im.actor.sdk.controllers.conversation.messages;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -29,6 +31,7 @@ import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.VideoContent;
+import im.actor.core.utils.ImageHelper;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
@@ -38,9 +41,11 @@ import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.conversation.view.FastBitmapDrawable;
 import im.actor.sdk.controllers.conversation.view.FastThumbLoader;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Strings;
+import im.actor.sdk.util.images.BitmapUtil;
 import im.actor.sdk.view.TintImageView;
 import im.actor.runtime.files.FileSystemReference;
 
@@ -81,6 +86,9 @@ public class PhotoHolder extends MessageHolder {
     protected FileVM downloadFileVM;
     protected UploadFileVM uploadFileVM;
     protected boolean isPhoto;
+
+    int lastUpdatedIndex = 0;
+    private boolean updated = false;
 
     public PhotoHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
@@ -218,6 +226,14 @@ public class PhotoHolder extends MessageHolder {
             needRebind = true;
         }
 
+        updated = false;
+        int updatedCounter = fileMessage.getUpdatedCounter();
+        if (lastUpdatedIndex != updatedCounter) {
+            updated = true;
+            needRebind = true;
+            lastUpdatedIndex = updatedCounter;
+        }
+
         if (needRebind) {
             // Resetting progress state
             progressContainer.setVisibility(View.GONE);
@@ -227,7 +243,9 @@ public class PhotoHolder extends MessageHolder {
 
             if (fileMessage.getSource() instanceof FileRemoteSource) {
                 boolean autoDownload = fileMessage instanceof PhotoContent;
-                previewView.setImageURI(null);
+                if (!updated) {
+                    previewView.setImageURI(null);
+                }
                 downloadFileVM = messenger().bindFile(((FileRemoteSource) fileMessage.getSource()).getFileReference(),
                         autoDownload, new DownloadVMCallback(fileMessage));
             } else if (fileMessage.getSource() instanceof FileLocalSource) {
@@ -236,7 +254,9 @@ public class PhotoHolder extends MessageHolder {
                     previewView.setImageURI(Uri.fromFile(
                             new File(((FileLocalSource) fileMessage.getSource()).getFileDescriptor())));
                 } else {
-                    previewView.setImageURI(null);
+                    if (!updated) {
+                        previewView.setImageURI(null);
+                    }
                     //TODO: better approach?
                     if (fileMessage.getFastThumb() != null) {
                         fastThumbLoader.request(fileMessage.getFastThumb().getImage());
@@ -318,6 +338,7 @@ public class PhotoHolder extends MessageHolder {
         // Releasing images
         fastThumbLoader.cancel();
         previewView.setImageURI(null);
+        previewView.destroyDrawingCache();
     }
 
     private class UploadVMCallback implements UploadFileVMCallback {
@@ -389,22 +410,33 @@ public class PhotoHolder extends MessageHolder {
 
         @Override
         public void onDownloading(float progress) {
-            checkFastThumb();
+            if (!updated) {
+                checkFastThumb();
 
-            showView(progressContainer);
+                showView(progressContainer);
 
-            goneView(progressIcon);
+                goneView(progressIcon);
 
-            int val = (int) (100 * progress);
-            progressValue.setText(val + "");
-            progressView.setValue(val);
-            showView(progressView);
-            showView(progressValue);
+                int val = (int) (100 * progress);
+                progressValue.setText(val + "");
+                progressView.setValue(val);
+                showView(progressView);
+                showView(progressValue);
+
+            }
         }
 
         @Override
         public void onDownloaded(FileSystemReference reference) {
             if (isPhoto) {
+                if (updated) {
+                    previewView.destroyDrawingCache();
+                    previewView.buildDrawingCache();
+                    Bitmap drawingCache = previewView.getDrawingCache();
+                    if (drawingCache != null && !drawingCache.isRecycled()) {
+                        previewView.getHierarchy().setPlaceholderImage(new FastBitmapDrawable(drawingCache));
+                    }
+                }
                 ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(new File(reference.getDescriptor())))
                         .setResizeOptions(new ResizeOptions(previewView.getLayoutParams().width,
                                 previewView.getLayoutParams().height))
@@ -414,6 +446,7 @@ public class PhotoHolder extends MessageHolder {
                         .setImageRequest(request)
                         .build();
                 previewView.setController(controller);
+
                 // previewView.setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
             } else {
                 checkFastThumb();
