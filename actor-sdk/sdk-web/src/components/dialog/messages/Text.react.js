@@ -4,7 +4,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
-import hljs from 'highlight.js';
+// import hljs from 'highlight.js';
 import ActorClient from '../../../utils/ActorClient';
 
 import { processEmojiText } from '../../../utils/EmojiUtils';
