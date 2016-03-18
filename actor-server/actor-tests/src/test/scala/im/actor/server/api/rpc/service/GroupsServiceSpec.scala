@@ -560,7 +560,7 @@ final class GroupsServiceSpec
 
     val peer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
-    whenReady(messagingService.handleSendMessage(peer, 22324L, ApiTextMessage("hello", Vector.empty, None))(clientData1)) { _ ⇒ }
+    whenReady(messagingService.handleSendMessage(peer, 22324L, ApiTextMessage("hello", Vector.empty, None), None)(clientData1)) { _ ⇒ }
 
     whenReady(messagingService.handleMessageRead(peer, System.currentTimeMillis)(clientData2)) { _ ⇒ }
 
@@ -854,7 +854,7 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None), None)) { _ ⇒ }
     }
 
     {
@@ -877,7 +877,7 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye left user", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye left user", Vector.empty, None), None)) { _ ⇒ }
     }
 
     {
@@ -912,7 +912,7 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None), None)) { _ ⇒ }
     }
 
     {
@@ -940,7 +940,7 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None), None)) { _ ⇒ }
     }
 
     {
@@ -975,7 +975,7 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello public", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello public", Vector.empty, None), None)) { _ ⇒ }
     }
 
     Thread.sleep(2000)
@@ -1005,7 +1005,7 @@ final class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None), None)) { _ ⇒ }
     }
 
     {
@@ -1057,7 +1057,7 @@ final class GroupsServiceSpec
       implicit val clientData = clientData2
 
       val randomId = Random.nextLong()
-      whenReady(messagingService.handleSendMessage(outPeer, randomId, ApiTextMessage("WTF? am i kicked?!!?!?!?!?!?!?!?!??!?!?!", Vector.empty, None))) { resp ⇒
+      whenReady(messagingService.handleSendMessage(outPeer, randomId, ApiTextMessage("WTF? am i kicked?!!?!?!?!?!?!?!?!??!?!?!", Vector.empty, None), None)) { resp ⇒
         inside(resp) {
           case Error(err) ⇒ err.code shouldEqual 403
         }
