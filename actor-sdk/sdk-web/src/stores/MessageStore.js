@@ -19,9 +19,7 @@ class MessageStore extends Store {
 
     this._renderMessagesCount = initialRenderMessagesCount;
     this._messages = [];
-    this._messagesToRender = [];
     this._overlay = [];
-    this._overlayToRender = [];
     this._isLoaded = false;
     this._selectedMessages = new Immutable.Set();
   }
@@ -33,11 +31,12 @@ class MessageStore extends Store {
     return this._messages;
   }
 
-  /**
-   * @returns {Array} Messages to render
-   */
-  getMessagesToRender() {
-    return this._messagesToRender;
+  getRenderMessagesCount() {
+    return this._renderMessagesCount;
+  }
+
+  getMessages() {
+    return this._messages;
   }
 
   /**
@@ -48,13 +47,6 @@ class MessageStore extends Store {
   }
 
   /**
-   * @returns {Array} Messages overlay to render
-   */
-  getOverlayToRender() {
-    return this._overlayToRender;
-  }
-
-  /**
    * @returns {Boolean} is all messages loaded for current conversation
    */
   isLoaded() {
@@ -62,7 +54,7 @@ class MessageStore extends Store {
   }
 
   isAllRendered() {
-    return this._messages.length === this._messagesToRender.length;
+    return this._messages.length === this._renderMessagesCount;
   }
 
   /**
@@ -72,23 +64,12 @@ class MessageStore extends Store {
     return this._selectedMessages;
   }
 
-
-  updateMessagesToRender() {
-    this._messagesToRender = (this._messages.length > this._renderMessagesCount) ? this._messages.slice(this._messages.length - this._renderMessagesCount) : this._messages;
-  }
-
-  updateOverlayToRender() {
-    this._overlayToRender = (this._overlay.length > this._renderMessagesCount) ? this._overlay.slice(this._overlay.length - this._renderMessagesCount) : this._overlay;
-  }
-
   __onDispatch(action) {
     switch(action.type) {
       case ActionTypes.BIND_DIALOG_PEER:
         this._renderMessagesCount = initialRenderMessagesCount;
         this._messages = [];
-        this._messagesToRender = [];
         this._overlay = [];
-        this._overlayToRender = [];
         this._selectedMessages = new Immutable.Set();
         this.__emitChange();
         break;
@@ -97,8 +78,6 @@ class MessageStore extends Store {
         this._messages = action.messages;
         this._overlay = action.overlay;
         this._isLoaded = action.isLoaded;
-        this.updateMessagesToRender();
-        this.updateOverlayToRender();
         this.__emitChange();
         break;
 
@@ -112,8 +91,6 @@ class MessageStore extends Store {
         if (this._renderMessagesCount > this._messages.length) {
           this._renderMessagesCount = this._messages.length;
         }
-        this.updateMessagesToRender();
-        this.updateOverlayToRender();
         this.__emitChange();
         break;
 

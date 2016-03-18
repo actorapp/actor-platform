@@ -15,11 +15,11 @@ class Loading extends Component {
     const { intl } = this.context;
 
     return(
-      <li className="message message--loading">
+      <div className="message message--loading">
         <div className="message__body col-xs text-center">
           {intl.messages['message.loading']}
         </div>
-      </li>
+      </div>
     )
   }
 }
