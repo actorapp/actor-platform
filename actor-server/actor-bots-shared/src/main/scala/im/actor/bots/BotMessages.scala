@@ -640,6 +640,9 @@ object BotMessages {
 
   sealed trait TextMessageEx
 
+  @key("TextCommand")
+  final case class TextCommand(text: String, args: String) extends TextMessageEx
+
   @key("TextModernMessage")
   final case class TextModernMessage(
     text:                Option[String],
