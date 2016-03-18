@@ -2,7 +2,6 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import 'babel-polyfill';
 import 'setimmediate';
 import initPollyfils from '../utils/polyfills';
 
