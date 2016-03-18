@@ -156,10 +156,9 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   protected def messageRead(state: DialogState, mr: MessageRead): Unit = {
     val mustRead = mustMakeRead(state, mr)
 
-    val readerUpd = deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date)
     (if (mustRead) {
       for {
-        _ ← readerUpd
+        _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date)
         _ ← dialogExt.ackMessageRead(peer, mr)
         _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
         _ ← deliveryExt.sendCountersUpdate(userId)
