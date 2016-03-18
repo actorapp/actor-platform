@@ -129,8 +129,8 @@ public class ChatListProcessor implements ListProcessor<Message> {
 
             // Process Content
             if (msg.getContent() instanceof TextContent) {
-                int updatedHash = msg.getContent().getUpdatedHash();
-                if (!preprocessedTexts.containsKey(msg.getRid()) || !updatedTexts.contains(updatedHash)) {
+                int updatedCounter = msg.getContent().getUpdatedCounter();
+                if (!preprocessedTexts.containsKey(msg.getRid()) || !updatedTexts.contains(updatedCounter)) {
                     TextContent text = (TextContent) msg.getContent();
                     Spannable spannableString = new SpannableString(text.getText());
                     boolean hasSpannable = false;
@@ -191,7 +191,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
                         spannableString = emoji().processEmojiCompatMutable(spannableString, SmileProcessor.CONFIGURATION_BUBBLES);
                         hasSpannable = true;
                     }
-                    updatedTexts.add(updatedHash);
+                    updatedTexts.add(updatedCounter);
                     preprocessedTexts.put(msg.getRid(), new PreprocessedTextData(reactions, text.getText(),
                             hasSpannable ? spannableString : null));
                 } else {
