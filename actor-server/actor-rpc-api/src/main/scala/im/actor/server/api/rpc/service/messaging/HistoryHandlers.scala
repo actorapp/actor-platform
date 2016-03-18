@@ -284,7 +284,8 @@ trait HistoryHandlers {
             date = message.date,
             message = message.message,
             state = message.state,
-            firstUnreadDate = firstUnreadOpt map (_.date.getMillis)
+            firstUnreadDate = firstUnreadOpt map (_.date.getMillis),
+            attributes = None
           )
         }
       }
