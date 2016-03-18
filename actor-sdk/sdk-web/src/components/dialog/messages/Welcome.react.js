@@ -52,7 +52,7 @@ class Welcome extends Component {
     }
 
     return(
-      <li className="message message--welcome row">
+      <div className="message message--welcome row">
         <div className="message__info">
           <div className="welcome-avatar">
             <svg className="icon icon--gray"
@@ -62,7 +62,7 @@ class Welcome extends Component {
         <div className="message__body col-xs">
           {welcomeText}
         </div>
-      </li>
+      </div>
     )
   }
 }

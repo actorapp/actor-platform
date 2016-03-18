@@ -27,9 +27,10 @@ let flushDelayedDebounced = debounce(flushDelayed, 30, {maxWait: 100});
 
 class MessagesSection extends Component {
   static propTypes = {
+    peer: PropTypes.object.isRequired,
     messages: PropTypes.array.isRequired,
     overlay: PropTypes.array.isRequired,
-    peer: PropTypes.object.isRequired,
+    count: PropTypes.number.isRequired,
     isMember: PropTypes.bool.isRequired,
     onLoadMore: PropTypes.func.isRequired
   };
@@ -91,7 +92,7 @@ class MessagesSection extends Component {
   }
 
   render() {
-    const { peer, overlay, messages, isMember } = this.props;
+    const { peer, overlay, messages, count, isMember } = this.props;
     const { selectedMessages, isAllMessagesLoaded } = this.state;
 
     const components = this.getComponents();
@@ -101,6 +102,7 @@ class MessagesSection extends Component {
         peer={peer}
         overlay={overlay}
         messages={messages}
+        count={count}
         selectedMessages={selectedMessages}
         isMember={isMember}
         isAllMessagesLoaded={isAllMessagesLoaded}
