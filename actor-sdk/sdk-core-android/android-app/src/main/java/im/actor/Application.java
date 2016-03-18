@@ -28,17 +28,17 @@ public class Application extends ActorSDKApplication {
 
     @Override
     public void onConfigureActorSDK() {
-        ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
+//        ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
         ActorSDK.sharedActor().setPushId(209133700967L);
-        ActorSDK.sharedActor().setTwitter("");
-        ActorSDK.sharedActor().setHomePage("http://www.foo.com");
-        ActorSDK.sharedActor().setInviteUrl("http://www.foo.com");
-        ActorSDK.sharedActor().setCallsEnabled(true);
+//        ActorSDK.sharedActor().setTwitter("");
+//        ActorSDK.sharedActor().setHomePage("http://www.foo.com");
+//        ActorSDK.sharedActor().setInviteUrl("http://www.foo.com");
+//        ActorSDK.sharedActor().setCallsEnabled(true);
 
 //        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://192.168.1.184:9070"});
 
-        ActorStyle style = ActorSDK.sharedActor().style;
-        style.setMainColor(Color.parseColor("#529a88"));
+//        ActorStyle style = ActorSDK.sharedActor().style;
+//        style.setMainColor(Color.parseColor("#529a88"));
 //        style.setAvatarBackgroundResource(R.drawable.img_profile_avatar_default);
 //        AbsContent.registerConverter(new ContentConverter() {
 //            @Override

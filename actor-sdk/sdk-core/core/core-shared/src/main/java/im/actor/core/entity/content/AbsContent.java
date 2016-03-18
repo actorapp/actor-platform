@@ -56,7 +56,7 @@ public abstract class AbsContent {
 
     private static ContentConverter[] converters = new ContentConverter[0];
 
-    private int updatedHash;
+    private int updatedCounter = 0;
 
     public static void registerConverter(ContentConverter contentConverter) {
         ContentConverter[] nConverters = new ContentConverter[converters.length + 1];
@@ -216,11 +216,11 @@ public abstract class AbsContent {
         return converters;
     }
 
-    public int getUpdatedHash() {
-        return updatedHash;
+    public int getUpdatedCounter() {
+        return updatedCounter;
     }
 
-    public void setUpdatedHash(int updatedHash) {
-        this.updatedHash = updatedHash;
+    public void incrementUpdatedCounter(int oldCounter) {
+        updatedCounter = ++oldCounter;
     }
 }
