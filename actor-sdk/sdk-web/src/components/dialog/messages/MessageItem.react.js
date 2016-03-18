@@ -211,7 +211,7 @@ class MessageItem extends Component {
           {
             isExperimental
               ? <div className="message__actions__selector" onClick={this.toggleMessageSelection}>
-                  <i className="icon material-icons">check</i>
+                  <i className="icon material-icons icon-check"></i>
                 </div>
               : null
           }
