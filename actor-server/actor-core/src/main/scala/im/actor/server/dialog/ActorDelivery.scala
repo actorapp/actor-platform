@@ -1,29 +1,29 @@
 package im.actor.server.dialog
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.PeersImplicits
+import im.actor.api.rpc.counters.{ ApiAppCounters, UpdateCountersChanged }
 import im.actor.api.rpc.messaging._
 import im.actor.server.db.DbExtension
 import im.actor.server.messaging.PushText
-import im.actor.server.misc.UpdateCounters
 import im.actor.server.model.Peer
-import im.actor.server.sequence.{ PushData, PushRules, SeqUpdatesExtension, SeqState }
+import im.actor.server.sequence.{ PushData, PushRules, SeqState, SeqUpdatesExtension }
 import im.actor.server.user.UserExtension
-import slick.driver.PostgresDriver.api.Database
 
 import scala.concurrent.{ ExecutionContext, Future }
 
 //default extension
 final class ActorDelivery()(implicit val system: ActorSystem)
   extends DeliveryExtension
-  with UpdateCounters
   with PushText
   with PeersImplicits {
 
   implicit val ec: ExecutionContext = system.dispatcher
   implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
-  private val db: Database = DbExtension(system).db
   private val userExt = UserExtension(system)
+  private val dialogExt = DialogExtension(system)
+  private val db = DbExtension(system).db
 
   override def receiverDelivery(
     receiverUserId: Int,
@@ -39,7 +39,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       senderUserId = senderUserId,
       date = timestamp,
       randomId = randomId,
-      message = message
+      message = message,
+      attributes = None
     )
 
     for {
@@ -61,9 +62,14 @@ final class ActorDelivery()(implicit val system: ActorSystem)
 
   override def sendCountersUpdate(userId: Int): Future[Unit] =
     for {
-      counterUpdate ← db.run(getUpdateCountersChanged(userId))
-      _ ← seqUpdatesExt.deliverSingleUpdate(userId, counterUpdate, reduceKey = Some("counters_changed"))
+      counter ← db.run(dialogExt.getUnreadTotal(userId))
+      _ ← sendCountersUpdate(userId, counter)
     } yield ()
+
+  override def sendCountersUpdate(userId: Int, counter: Int): Future[Unit] = {
+    val counterUpdate = UpdateCountersChanged(ApiAppCounters(Some(counter)))
+    seqUpdatesExt.deliverSingleUpdate(userId, counterUpdate, reduceKey = Some("counters_changed")) map (_ ⇒ ())
+  }
 
   override def senderDelivery(
     senderUserId:  Int,
@@ -80,7 +86,8 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       senderUserId = senderUserId,
       date = timestamp,
       randomId = randomId,
-      message = message
+      message = message,
+      None
     )
 
     val senderClientUpdate = UpdateMessageSent(apiPeer, randomId, timestamp)
@@ -115,11 +122,12 @@ final class ActorDelivery()(implicit val system: ActorSystem)
     ) map (_ ⇒ ())
   }
 
-  override def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long): Future[Unit] =
+  override def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long, unreadCountOpt: Option[Int]): Future[Unit] =
     for {
+      unreadCount ← unreadCountOpt.fold(db.run(dialogExt.getUnreadTotal(readerUserId)))(FastFuture.successful)
       _ ← seqUpdatesExt.deliverSingleUpdate(
         userId = readerUserId,
-        update = UpdateMessageReadByMe(peer.asStruct, date),
+        update = UpdateMessageReadByMe(peer.asStruct, date, Some(unreadCount)),
         pushRules = PushRules(),
         reduceKey = Some(s"read_by_me_${peer.toString}")
       )

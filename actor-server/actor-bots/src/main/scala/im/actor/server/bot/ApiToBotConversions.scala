@@ -39,6 +39,7 @@ trait ApiToBotConversions {
     ex match {
       case ApiTextModernMessage(text, senderNameOverride, senderPhotoOverride, style, attaches) ⇒ TextModernMessage(text, senderNameOverride, toAvatar(senderPhotoOverride), style, attaches)
       case ApiTextExMarkdown(text) ⇒ TextModernMessage(Some(text), None, None, None, Vector.empty)
+      case ApiTextCommand(command, args) ⇒ TextCommand(command, args)
     }
 
   implicit def toModernAttach(a: ApiTextModernAttach): TextModernAttach =

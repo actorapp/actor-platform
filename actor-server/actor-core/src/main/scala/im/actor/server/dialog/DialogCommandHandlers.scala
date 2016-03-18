@@ -8,7 +8,6 @@ import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.messaging._
 import im.actor.server.ApiConversions._
 import im.actor.server.dialog.HistoryUtils._
-import im.actor.server.misc.UpdateCounters
 import im.actor.server.model._
 import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.persist.dialog.DialogRepo
@@ -22,7 +21,7 @@ import org.joda.time.DateTime
 import scala.concurrent.Future
 import scala.util.Failure
 
-trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
+trait DialogCommandHandlers extends PeersImplicits {
   this: DialogProcessor ⇒
 
   import DialogCommands._
@@ -158,10 +157,11 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
     (if (mustRead) {
       for {
-        _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date)
+        unreadCount ← db.run(dialogExt.getUnreadTotal(userId))
+        _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date, Some(unreadCount))
         _ ← dialogExt.ackMessageRead(peer, mr)
         _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
-        _ ← deliveryExt.sendCountersUpdate(userId)
+        _ ← deliveryExt.sendCountersUpdate(userId, unreadCount)
       } yield MessageReadAck()
     } else {
       Future.successful(MessageReadAck())
