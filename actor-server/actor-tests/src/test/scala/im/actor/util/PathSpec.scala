@@ -3,7 +3,7 @@ package im.actor.util
 import java.nio.file.Files
 
 import im.actor.env.ActorEnv
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 class PathSpec extends FlatSpec with Matchers {
 
