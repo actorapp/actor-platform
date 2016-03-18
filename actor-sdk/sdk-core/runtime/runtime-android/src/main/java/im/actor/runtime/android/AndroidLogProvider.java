@@ -73,7 +73,7 @@ public class AndroidLogProvider implements LogRuntime {
     public void e(String tag, Throwable throwable) {
         Log.e(tag, "", throwable);
         writeToFile(Level.WARNING, tag, throwable.getMessage());
-        sendLogs("w", tag, throwable.getMessage());
+        sendLogs("e", tag, throwable.getMessage());
 
     }
 
@@ -81,7 +81,7 @@ public class AndroidLogProvider implements LogRuntime {
     public void d(String tag, String message) {
         Log.d(tag, message);
         writeToFile(Level.INFO, tag, message);
-        sendLogs("w", tag, message);
+        sendLogs("d", tag, message);
 
     }
 
@@ -89,7 +89,7 @@ public class AndroidLogProvider implements LogRuntime {
     public void v(String tag, String message) {
         Log.v(tag, message);
         writeToFile(Level.ALL, tag, message);
-        sendLogs("w", tag, message);
+        sendLogs("v", tag, message);
     }
 
     private static int i = 0;
