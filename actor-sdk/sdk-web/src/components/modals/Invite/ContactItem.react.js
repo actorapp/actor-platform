@@ -6,68 +6,48 @@ import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classnames from 'classnames';
-
-import InviteUserStore from '../../../stores/InviteUserStore';
-
 import { AsyncActionStates } from '../../../constants/ActorAppConstants';
-
 import AvatarItem from '../../common/AvatarItem.react';
 import Stateful from '../../common/Stateful.react';
 
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
 
-const getStateFromStore = (props) => {
-  const { contact } = props;
-
-  return {
-    inviteUserState: InviteUserStore.getInviteUserState(contact.uid)
-  }
-};
-
 class ContactItem extends Component {
   static propTypes = {
-    contact: PropTypes.object,
+    contact: PropTypes.object.isRequired,
     onSelect: PropTypes.func,
-    isMember: PropTypes.bool
+    isMember: PropTypes.bool,
+    inviteState: PropTypes.oneOf([
+      AsyncActionStates.PENDING,
+      AsyncActionStates.PROCESSING,
+      AsyncActionStates.SUCCESS,
+      AsyncActionStates.FAILURE
+    ])
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = getStateFromStore(props);
-  }
-
-  componentWillUnmount() {
-    const { contact } = this.props;
-    InviteUserStore.resetInviteUserState(contact.uid);
-  }
+  static defaultProps = {
+    inviteState: AsyncActionStates.PENDING
+  };
 
   onSelect = () => {
     const { contact, onSelect } = this.props;
-
-    InviteUserStore.addChangeListener(this.onChange);
-    onSelect(contact);
+    onSelect && onSelect(contact);
   };
 
-  onChange = () => {
-    this.setState(getStateFromStore(this.props));
+  renderTitle() {
+    const { contact } = this.props;
+    return (
+      <span className="title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(contact.name)}}/>
+    );
+  }
 
-    setImmediate(() => {
-      const { inviteUserState } = this.state;
-      if (inviteUserState === AsyncActionStates.SUCCESS || inviteUserState === AsyncActionStates.FAILURE) {
-        InviteUserStore.removeChangeListener(this.onChange);
-      }
-    });
-  };
-
-  getControls() {
-    const { isMember } = this.props;
+  renderControls() {
+    const { isMember, inviteState } = this.props;
     if (isMember) return <i className="material-icons">check</i>;
 
-    const { inviteUserState } = this.state;
     return (
       <Stateful
-        currentState={inviteUserState}
+        currentState={inviteState}
         pending={<a className="material-icons" onClick={this.onSelect}>person_add</a>}
         processing={<i className="material-icons spin">autorenew</i>}
         success={<i className="material-icons">check</i>}
@@ -91,11 +71,11 @@ class ContactItem extends Component {
                     title={contact.name}/>
 
         <div className="col-xs">
-          <span className="title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(contact.name)}}/>
+          {this.renderTitle()}
         </div>
 
         <div className="controls">
-          {this.getControls()}
+          {this.renderControls()}
         </div>
 
       </li>

@@ -15,8 +15,8 @@ import Favicon from './common/Favicon.react';
 
 import ModalsWrapper from './modals/ModalsWrapper.react';
 import MenuOverlay from './common/MenuOverlay.react';
-import InviteUser from './modals/InviteUser.react';
-import InviteByLink from './modals/invite-user/InviteByLink.react';
+import InviteUser from './modals/Invite/InviteUser.react.js';
+import InviteByLink from './modals/Invite/InviteByLink.react';
 import EditGroup from './modals/EditGroup.react';
 
 class Main extends Component {

@@ -11,15 +11,15 @@ class ArchiveStore extends Store {
   constructor(dispatcher) {
     super(dispatcher);
 
-    this.isLoading = true;
-    this.dialogs = [];
-    this.archiveChatState = {};
+    this._isLoading = true;
+    this._dialogs = [];
+    this._archiveChatState = {};
     this._isAllLoaded = false;
     this._isInitialLoadingComplete = false;
   }
 
   isArchiveLoading() {
-    return this.isLoading;
+    return this._isLoading;
   }
 
   isAllLoaded() {
@@ -31,53 +31,52 @@ class ArchiveStore extends Store {
   }
 
   getDialogs() {
-    return this.dialogs;
+    return this._dialogs;
   }
 
   getArchiveChatState() {
-    return this.archiveChatState;
+    return this._archiveChatState;
   }
 
   __onDispatch(action) {
     const peerKey = action.peer ? PeerUtils.peerToString(action.peer) : null;
     switch(action.type) {
       case ActionTypes.ARCHIVE_ADD:
-        this.archiveChatState[peerKey] = AsyncActionStates.PROCESSING;
+        this._archiveChatState[peerKey] = AsyncActionStates.PROCESSING;
         this.__emitChange();
         break;
       case ActionTypes.ARCHIVE_ADD_SUCCESS:
-        delete this.archiveChatState[peerKey];
+        delete this._archiveChatState[peerKey];
         this.__emitChange();
         break;
       case ActionTypes.ARCHIVE_ADD_ERROR:
-        const key = PeerUtils.peerToString(action.peer);
-        this.archiveChatState[peerKey] = AsyncActionStates.FAILURE;
+        this._archiveChatState[peerKey] = AsyncActionStates.FAILURE;
         this.__emitChange();
         break;
 
       case ActionTypes.ARCHIVE_LOAD:
-        this.isLoading = true;
+        this._isLoading = true;
         this._isAllLoaded = false;
         this._isInitialLoadingComplete = false;
         this.__emitChange();
         break;
 
       case ActionTypes.ARCHIVE_LOAD_SUCCESS:
-        this.isLoading = false;
+        this._isLoading = false;
         this._isInitialLoadingComplete = true;
-        this.dialogs = action.response;
+        this._dialogs = action.response;
         this.__emitChange();
         break;
 
       case ActionTypes.ARCHIVE_LOAD_MORE:
-        this.isLoading = true;
+        this._isLoading = true;
         this.__emitChange();
         break;
 
       case ActionTypes.ARCHIVE_LOAD_MORE_SUCCESS:
-        this.isLoading = false;
+        this._isLoading = false;
         this._isAllLoaded = action.response.length === 0;
-        this.dialogs.push.apply(this.dialogs, action.response);
+        this._dialogs.push.apply(this._dialogs, action.response);
         this.__emitChange();
         break;
 

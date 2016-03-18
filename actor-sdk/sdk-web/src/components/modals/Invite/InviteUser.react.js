@@ -3,50 +3,41 @@
  */
 
 import { find, assign, forEach } from 'lodash';
-
 import React, { Component, PropTypes } from 'react';
+import { Container } from 'flux/utils';
 import Modal from 'react-modal';
 
-import { KeyCodes } from '../../constants/ActorAppConstants';
+import { KeyCodes } from '../../../constants/ActorAppConstants';
 
-import InviteUserActions from '../../actions/InviteUserActions';
-import InviteUserByLinkActions from '../../actions/InviteUserByLinkActions';
+import InviteUserActions from '../../../actions/InviteUserActions';
+import InviteUserByLinkActions from '../../../actions/InviteUserByLinkActions';
 
-import ContactStore from '../../stores/PeopleStore';
-import InviteUserStore from '../../stores/InviteUserStore';
+import ContactStore from '../../../stores/PeopleStore';
+import InviteUserStore from '../../../stores/InviteUserStore';
 
-import ContactItem from './invite-user/ContactItem.react';
-
-const getStateFromStores = () => {
-  return ({
-    isOpen: InviteUserStore.isModalOpen(),
-    contacts: ContactStore.getList(),
-    group: InviteUserStore.getGroup()
-  });
-};
+import ContactItem from './ContactItem.react.js';
 
 const hasMember = (group, userId) =>
   undefined !== find(group.members, (c) => c.peerInfo.peer.id === userId);
 
 class InviteUser extends Component {
-  constructor(props) {
-    super(props);
+  static getStores() {
+    return [InviteUserStore, ContactStore];
+  }
 
-    this.state = assign({
-      search: ''
-    }, getStateFromStores());
-
-    InviteUserStore.addChangeListener(this.onChange);
-    ContactStore.addListener(this.onChange);
+  static calculateState(prevState) {
+    return {
+      search: prevState ? prevState.search : '',
+      isOpen: InviteUserStore.isModalOpen(),
+      contacts: ContactStore.getList(),
+      group: InviteUserStore.getGroup(),
+      inviteState: InviteUserStore.getInviteUserState()
+    };
   }
 
   static contextTypes = {
     intl: PropTypes.object
   };
-
-  componentWillUnmount() {
-    InviteUserStore.removeChangeListener(this.onChange);
-  }
 
   componentWillUpdate(nextProps, nextState) {
     if (nextState.isOpen && !this.state.isOpen) {
@@ -56,7 +47,6 @@ class InviteUser extends Component {
     }
   }
 
-  onChange = () => this.setState(getStateFromStores());
   onClose = () => InviteUserActions.hide();
   onContactSelect = (contact) => InviteUserActions.inviteUser(this.state.group.id, contact.uid);
   onSearchChange = (event) => this.setState({search: event.target.value});
@@ -75,36 +65,43 @@ class InviteUser extends Component {
     }
   };
 
-  render() {
-    const { contacts, group, search, isOpen } = this.state;
-    const { intl } = this.context;
+  renderContactList() {
+    const { contacts, group, search, inviteState } = this.state;
 
     let contactList = [];
 
+    forEach(contacts, (contact, index) => {
+      const name = contact.name.toLowerCase();
+      if (name.includes(search.toLowerCase())) {
+        if (!hasMember(group, contact.uid)) {
+          contactList.push(
+            <ContactItem contact={contact} key={index} onSelect={this.onContactSelect} inviteState={inviteState[contact.uid]}/>
+          );
+        } else {
+          contactList.push(
+            <ContactItem contact={contact} key={index} isMember/>
+          );
+        }
+      }
+    }, this);
+
+    if (contactList.length === 0) {
+      return (
+        <li className="contacts__list__item contacts__list__item--empty text-center">
+          {intl.messages['inviteModalNotFound']}
+        </li>
+      );
+    }
+
+    return contactList;
+  }
+
+  render() {
+    const { search, isOpen } = this.state;
+    const { intl } = this.context;
+
     if (isOpen) {
 
-      forEach(contacts, (contact, i) => {
-        const name = contact.name.toLowerCase();
-        if (name.includes(search.toLowerCase())) {
-          if (!hasMember(group, contact.uid)) {
-            contactList.push(
-              <ContactItem contact={contact} key={i} onSelect={this.onContactSelect}/>
-            );
-          } else {
-            contactList.push(
-              <ContactItem contact={contact} key={i} isMember/>
-            );
-          }
-        }
-      }, this);
-
-      if (contactList.length === 0) {
-        contactList.push(
-          <li className="contacts__list__item contacts__list__item--empty text-center">
-            {intl.messages['inviteModalNotFound']}
-          </li>
-        );
-      }
       const modalStyle = {
         content : {
           position: null,
@@ -130,7 +127,9 @@ class InviteUser extends Component {
 
           <header className="modal-new__header">
             <a className="modal-new__header__icon material-icons">person_add</a>
-            <h3 className="modal-new__header__title">{intl.messages['inviteModalTitle']}</h3>
+            <h3 className="modal-new__header__title">
+              {intl.messages['inviteModalTitle']}
+            </h3>
 
             <div className="pull-right">
               <button className="button button--lightblue" onClick={this.onClose}>{intl.messages['button.done']}</button>
@@ -155,7 +154,7 @@ class InviteUser extends Component {
 
           <div className="contacts__body">
             <ul className="contacts__list">
-              {contactList}
+              {this.renderContactList()}
             </ul>
           </div>
 
@@ -167,4 +166,4 @@ class InviteUser extends Component {
   }
 }
 
-export default InviteUser;
+export default Container.create(InviteUser, {pure: false});

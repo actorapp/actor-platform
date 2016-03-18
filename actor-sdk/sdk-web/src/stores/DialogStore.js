@@ -12,26 +12,26 @@ class DialogStore extends Store {
   constructor(dispatcher) {
     super(dispatcher);
 
-    this.dialogs = [];
-    this.currentPeer = null;
-    this.lastPeer = null;
+    this._dialogs = [];
+    this._currentPeer = null;
+    this._lastPeer = null;
   }
 
   getDialogs() {
-    return this.dialogs;
+    return this._dialogs;
   }
 
   getCurrentPeer() {
-    return this.currentPeer;
+    return this._currentPeer;
   }
 
   getLastPeer() {
-    return this.lastPeer;
+    return this._lastPeer;
   }
 
   isMember() {
-    if (this.currentPeer !== null && this.currentPeer.type === PeerTypes.GROUP) {
-      const group = ActorClient.getGroup(this.currentPeer.id);
+    if (this._currentPeer !== null && this._currentPeer.type === PeerTypes.GROUP) {
+      const group = ActorClient.getGroup(this._currentPeer.id);
       return group && group.members.length !== 0;
     }
 
@@ -39,7 +39,7 @@ class DialogStore extends Store {
   }
 
   isFavorite(id) {
-    const favoriteDialogs = find(this.dialogs, {key: 'favourites'});
+    const favoriteDialogs = find(this._dialogs, {key: 'favourites'});
     if (!favoriteDialogs) return false;
 
     return some(favoriteDialogs.shorts, (dialog) => dialog.peer.peer.id === id);
@@ -48,16 +48,16 @@ class DialogStore extends Store {
   __onDispatch(action) {
     switch(action.type) {
       case ActionTypes.DIALOGS_CHANGED:
-        this.dialogs = action.dialogs;
+        this._dialogs = action.dialogs;
         this.__emitChange();
         break;
       case ActionTypes.BIND_DIALOG_PEER:
-        this.currentPeer = action.peer;
+        this._currentPeer = action.peer;
         this.__emitChange();
         break;
       case ActionTypes.UNBIND_DIALOG_PEER:
-        this.lastPeer = action.peer;
-        this.currentPeer = null;
+        this._lastPeer = action.peer;
+        this._currentPeer = null;
         this.__emitChange();
         break;
       default:

@@ -4,9 +4,8 @@
 
 import { assign } from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import { Container } from 'flux/utils';
 import Modal from 'react-modal';
-import ReactMixin from 'react-mixin';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { FormattedMessage } from 'react-intl';
 import { escapeWithEmoji } from '../../../utils/EmojiUtils'
 
@@ -17,30 +16,22 @@ import InviteUserActions from '../../../actions/InviteUserActions';
 
 import InviteUserStore from '../../../stores/InviteUserStore';
 
-const getStateFromStores = () => {
-  return {
-    isOpen: InviteUserStore.isInviteWithLinkModalOpen(),
-    group: InviteUserStore.getGroup(),
-    inviteUrl: InviteUserStore.getInviteUrl()
-  };
-};
-
 class InviteByLink extends Component {
-  constructor(props) {
-    super(props);
+  static getStores() {
+    return [InviteUserStore];
+  }
 
-    this.state = getStateFromStores();
-
-    InviteUserStore.addChangeListener(this.onChange);
+  static calculateState() {
+    return {
+      isOpen: InviteUserStore.isInviteWithLinkModalOpen(),
+      group: InviteUserStore.getGroup(),
+      inviteUrl: InviteUserStore.getInviteUrl()
+    };
   }
 
   static contextTypes = {
     intl: PropTypes.object
   };
-
-  componentWillUnmount() {
-    InviteUserStore.removeChangeListener(this.onChange);
-  }
 
   componentWillUpdate(nextProps, nextState) {
     if (nextState.isOpen && !this.state.isOpen) {
@@ -50,7 +41,6 @@ class InviteByLink extends Component {
     }
   }
 
-  onChange = () => this.setState(getStateFromStores());
   onClose = () => InviteUserByLinkActions.hide();
   onInviteLinkClick = event => event.target.select();
 
@@ -133,6 +123,4 @@ class InviteByLink extends Component {
   }
 }
 
-ReactMixin.onClass(InviteByLink, PureRenderMixin);
-
-export default InviteByLink;
+export default Container.create(InviteByLink);
