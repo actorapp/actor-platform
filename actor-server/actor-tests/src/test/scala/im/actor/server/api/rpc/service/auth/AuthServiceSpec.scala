@@ -441,7 +441,6 @@ final class AuthServiceSpec
           case Ok(ResponseAuth(user, _)) ⇒
             user.name shouldEqual userName
             user.sex shouldEqual userSex
-            user.phone shouldEqual Some(phoneNumber)
             user.contactInfo should have length 1
             user.contactInfo.head should matchPattern {
               case ApiContactRecord(ApiContactType.Phone, None, Some(phone), Some(_), None, _) ⇒
