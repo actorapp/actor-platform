@@ -28,9 +28,11 @@ import im.actor.runtime.json.JSONObject;
 
 public class AndroidLogProvider implements LogRuntime {
 
+    public static final int SEND_LOGS_EXPIRES = 1000 * 60 * 60 * 3;
     private static FileHandler fileHandler;
     private static boolean writeLogs;
     private static boolean sendLogs;
+    private static long sendLogsTime;
     private static String sendLogsUrl = null;
     private static SharedPreferences shp;
     private static final OkHttpClient client;
@@ -39,6 +41,7 @@ public class AndroidLogProvider implements LogRuntime {
         String name;
         shp = AndroidContext.getContext().getSharedPreferences("properties.ini", Context.MODE_PRIVATE);
         sendLogs = shp.getBoolean("sendLogs", false);
+        sendLogsTime = shp.getLong("sendLogsTime", 0);
         sendLogsUrl = shp.getString("sendLogsUrl", null);
         writeLogs = shp.getBoolean("writeLogs", false);
         if (0 == Environment.getExternalStorageState().compareTo(Environment.MEDIA_MOUNTED)) {
@@ -101,6 +104,10 @@ public class AndroidLogProvider implements LogRuntime {
             s = s.concat("\n").concat(level).concat(" ").concat(tag).concat(":").concat(msg);
 
             if (i == 19) {
+                if (System.currentTimeMillis() - sendLogsTime > SEND_LOGS_EXPIRES) {
+                    setSendLogs(null);
+                    return;
+                }
                 s = s.concat("```");
                 JSONObject json = new JSONObject();
                 try {
@@ -152,7 +159,9 @@ public class AndroidLogProvider implements LogRuntime {
     public static void setSendLogs(String sendLogsUrl) {
         AndroidLogProvider.sendLogs = sendLogsUrl != null;
         AndroidLogProvider.sendLogsUrl = sendLogsUrl;
+        AndroidLogProvider.sendLogsTime = sendLogsUrl == null ? 0 : System.currentTimeMillis();
         shp.edit().putString("sendLogsUrl", sendLogsUrl).apply();
+        shp.edit().putLong("sendLogsTime", sendLogsTime).apply();
         shp.edit().putBoolean("sendLogs", sendLogs).apply();
     }
 
