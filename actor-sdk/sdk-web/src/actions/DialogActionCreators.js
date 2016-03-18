@@ -70,6 +70,8 @@ const DialogActionCreators = {
           break;
         default:
       }
+
+      DialogActionCreators.loadMoreMessages(peer);
     }
   },
 

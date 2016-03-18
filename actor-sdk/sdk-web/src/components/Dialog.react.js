@@ -41,8 +41,9 @@ class DialogSection extends Component {
     return {
       peer: DialogStore.getCurrentPeer(),
       isMember: DialogStore.isMember(),
-      messages: MessageStore.getMessagesToRender(),
-      overlay: MessageStore.getOverlayToRender(),
+      messages: MessageStore.getMessages(),
+      overlay: MessageStore.getOverlay(),
+      messagesCount: MessageStore.getRenderMessagesCount(),
       isActivityOpen: ActivityStore.isOpen()
     };
   }
@@ -56,10 +57,6 @@ class DialogSection extends Component {
     this.onLoadMoreMessages = this.onLoadMoreMessages.bind(this);
   }
 
-  componentDidMount() {
-    this.onLoadMoreMessages();
-  }
-
   componentWillReceiveProps(nextProps) {
     const { params } = nextProps;
     if (this.props.params.id === params.id) {
@@ -68,7 +65,6 @@ class DialogSection extends Component {
 
     const peer = PeerUtils.stringToPeer(params.id);
     DialogActionCreators.selectDialogPeer(peer);
-    this.onLoadMoreMessages();
   }
 
   componentWillUnmount() {
@@ -118,7 +114,7 @@ class DialogSection extends Component {
   }
 
   render() {
-    const { peer, isMember, messages, overlay } = this.state;
+    const { peer, isMember, messages, overlay, messagesCount } = this.state;
 
     const {
       ToolbarSection,
@@ -138,6 +134,7 @@ class DialogSection extends Component {
               peer={peer}
               messages={messages}
               overlay={overlay}
+              count={messagesCount}
               isMember={isMember}
               onLoadMore={this.onLoadMoreMessages}
             />
