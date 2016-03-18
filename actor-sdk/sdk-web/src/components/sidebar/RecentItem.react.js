@@ -34,20 +34,18 @@ class RecentItem extends Component {
 
   constructor(props) {
     super(props);
-    console.debug(props);
 
     this.handleClick = this.handleClick.bind(this);
     this.handleOpenContextMenu = this.handleOpenContextMenu.bind(this);
   }
 
   shouldComponentUpdate(nextProps) {
-    console.debug('nextProps', nextProps);
     return nextProps.dialog !== this.props.dialog ||
            nextProps.isActive !== this.props.isActive ||
            nextProps.archiveState !== this.props.archiveState;
   }
 
-  handleOpenContextMenu = (event) => {
+  handleOpenContextMenu(event) {
     event.preventDefault();
     const { peer } = this.props.dialog.peer;
     const contextPos = {

@@ -12,7 +12,6 @@ import RecentItem from './RecentItem.react';
 export default class RecentGroup extends Component {
   constructor(props) {
     super(props);
-    console.debug(props);
 
     this.handleTitleClick = this.handleTitleClick.bind(this);
   }
@@ -51,7 +50,7 @@ export default class RecentGroup extends Component {
 
     return map(shorts, (dialog) => {
       const peer = dialog.peer.peer;
-      const peerKey = PeerUtils.peerToString(peer); // 
+      const peerKey = PeerUtils.peerToString(peer);
       const isActive = PeerUtils.equals(peer, currentPeer);
 
       return (

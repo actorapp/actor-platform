@@ -92,7 +92,7 @@
     padding: 8px 16px;
 
     &__avatar {
-      margin-right: 16px;
+      margin-right: 8px;
       .avatar {
         filter: saturate(.4) contrast(.6);
       }
@@ -141,7 +141,49 @@
     }
 
     &--active {
-      background-color: $dark-sky-blue;
+      background-color: $dark-sky-blue !important;
+      .avatar {
+        filter: none;
+      }
+    }
+  }
+
+  &__history {
+    line-height: 20px;
+
+    display: inline-block;
+
+    margin: 16px 16px 6px;
+
+    cursor: pointer !important;
+
+    color: rgba(white, .8);
+
+    @include no-select();
+
+    &__icon {
+      font-size: 20px;
+      line-height: 20px;
+      display: inline-block;
+
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+      .material-icons {
+        vertical-align: top;
+      }
+
+    }
+    &__title {
+      display: inline-block;
+      text-transform: uppercase;
+      vertical-align: middle;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    &:hover {
+      color: white;
     }
   }
 }

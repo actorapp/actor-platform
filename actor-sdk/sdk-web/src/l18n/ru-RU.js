@@ -263,7 +263,8 @@ export default {
         },
         'newDialog': 'создать диалог',
         'favourites': 'Избранное',
-        'addPeople': 'добавить контакт'
+        'addPeople': 'добавить контакт',
+        history: 'История'
       },
       'group': {
         'empty': 'Создайте ваш первый групповой диалог'

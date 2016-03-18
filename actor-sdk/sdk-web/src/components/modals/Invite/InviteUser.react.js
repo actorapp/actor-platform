@@ -15,7 +15,7 @@ import InviteUserByLinkActions from '../../../actions/InviteUserByLinkActions';
 import ContactStore from '../../../stores/PeopleStore';
 import InviteUserStore from '../../../stores/InviteUserStore';
 
-import ContactItem from './ContactItem.react.js';
+import ContactItem from './ContactItem.react';
 
 const hasMember = (group, userId) =>
   undefined !== find(group.members, (c) => c.peerInfo.peer.id === userId);

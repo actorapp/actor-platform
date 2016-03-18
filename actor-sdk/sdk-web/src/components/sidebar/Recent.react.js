@@ -7,8 +7,10 @@ import { forEach, debounce } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { FormattedMessage } from 'react-intl';
+import history from '../../utils/history';
 
 import GroupListActionCreators from '../../actions/GroupListActionCreators';
+import ContactActionCreators from '../../actions/ContactActionCreators';
 
 import RecentGroup from './RecentGroup.react';
 
@@ -33,15 +35,23 @@ class Recent extends Component {
     this.checkInvisibleCounters = debounce(this.checkInvisibleCounters.bind(this), 50, {maxWait: 150, leading: true});
     this.scrollToFirstHiddenAbove = this.scrollToFirstHiddenAbove.bind(this);
     this.scrollToLastHiddenBelow = this.scrollToLastHiddenBelow.bind(this);
-    this.handleGroupListClick = this.handleGroupListClick.bind(this);
+    this.handleGroupListTitleClick = this.handleGroupListTitleClick .bind(this);
+    this.handlePrivateListTitleClick = this.handlePrivateListTitleClick.bind(this);
+    this.handleHistoryClick = this.handleHistoryClick.bind(this);
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.dialogs !== this.props.dialogs) this.checkInvisibleCounters();
-  // }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.dialogs !== this.props.dialogs) this.checkInvisibleCounters();
+  }
 
-  handleGroupListClick() {
+  handleGroupListTitleClick () {
     GroupListActionCreators.open();
+  }
+  handlePrivateListTitleClick() {
+    ContactActionCreators.open();
+  }
+  handleHistoryClick() {
+    history.push('/im/history')
   }
 
   checkInvisibleCounters() {
@@ -97,24 +107,23 @@ class Recent extends Component {
     const { currentPeer, archive } = this.props;
     return this.props.dialogs.map((dialogGroup) => {
 
-      if (dialogGroup.key === 'groups') {
-        return (
-          <RecentGroup
-            {...dialogGroup}
-            currentPeer={currentPeer}
-            archive={archive}
-            titleClickHandler={this.handleGroupListClick}
-            dialogKey={dialogGroup.key}
-          />
-        );
+      let titleClickHandler;
+      switch (dialogGroup.key) {
+        case 'groups':
+          titleClickHandler = this.handleGroupListTitleClick;
+          break;
+        case 'privates':
+          titleClickHandler = this.handlePrivateListTitleClick;
+          break;
       }
 
       return (
         <RecentGroup
           {...dialogGroup}
+          dialogKey={dialogGroup.key}
           currentPeer={currentPeer}
           archive={archive}
-          dialogKey={dialogGroup.key}
+          titleClickHandler={titleClickHandler}
         />
       );
     });
@@ -140,12 +149,29 @@ class Recent extends Component {
     )
   };
 
+  renderHistoryButton() {
+    const isArchiveEmpty = false; // TODO: Use real flag
+    if (isArchiveEmpty) return null;
+
+    return (
+      <div className="recent__history" onClick={this.handleHistoryClick}>
+        <div className="recent__history__icon">
+          <i className="material-icons">history</i>
+        </div>
+        <div className="recent__history__title">
+          <FormattedMessage id="sidebar.recents.history"/>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <section className="recent">
         {this.renderUnreadAbove()}
         <div className="recent__container fill" ref="scroll" onScroll={this.checkInvisibleCounters}>
           {this.renderRecentGroups()}
+          {this.renderHistoryButton()}
         </div>
         {this.renderUnreadBelow()}
       </section>
