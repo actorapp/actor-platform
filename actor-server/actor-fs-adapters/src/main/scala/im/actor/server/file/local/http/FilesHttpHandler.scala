@@ -116,7 +116,7 @@ private[local] final class FilesHttpHandler(storageConfig: LocalFileStorageConfi
           val calculatedSignature = calculateSignature(request.method, uriWithoutSignature)
           if (notExpired && calculatedSignature == signature) pass else {
             log.debug("Failed to validate request: {}, notExpired: {}, signature: {}; calculated signature: {}", notExpired, ctx.request, signature, calculatedSignature)
-            reject
+            reject(InvalidFileSignature)
           }
       }
     }
