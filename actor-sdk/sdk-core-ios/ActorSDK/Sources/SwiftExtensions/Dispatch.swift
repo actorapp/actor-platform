@@ -4,7 +4,7 @@
 
 import Foundation
 
-private let backgroundQueue = YYDispatchQueueGetForQOS(NSQualityOfService.Background)
+private let backgroundQueue = dispatch_queue_create("im.actor.background", DISPATCH_QUEUE_SERIAL)
 
 public func dispatchOnUi(closure: () -> Void) {
     dispatch_async(dispatch_get_main_queue(), { () -> Void in
