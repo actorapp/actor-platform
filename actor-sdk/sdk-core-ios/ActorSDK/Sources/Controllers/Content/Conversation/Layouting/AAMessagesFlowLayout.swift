@@ -31,8 +31,6 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     
     func beginUpdates(disableAutoScroll: Bool, list: AAPreprocessedList?, unread: jlong?) {
         
-        // NSLog("🙇 beginUpdates")
-        
         self.disableAutoScroll = disableAutoScroll
         self.list = list
         self.unread = unread
@@ -54,70 +52,61 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     override func prepareLayout() {
         super.prepareLayout()
         
-//        if list != nil {
-//            NSLog("🙇 prepareLayout \(list!.items.count)")
-//        } else {
-//            NSLog("🙇 prepareLayout nil")
-//        }
-        
-        // Validate sections
-        let sectionsCount = self.collectionView!.numberOfSections()
-        if sectionsCount == 0 {
-            items.removeAll(keepCapacity: true)
-            contentHeight = 0.0
-            return
-        }
-        if sectionsCount != 1 {
-            fatalError("Unsupported more than 1 section")
-        }
-
-        if AADevice.isiPad {
-            contentHeight = 16.0
-        } else {
-            contentHeight = 6.0
-        }
-        items.removeAll(keepCapacity: true)
-        frames.removeAll(keepCapacity: true)
-        
-        if list != nil {
-            for i in 0..<list!.items.count {
-                let itemId = list!.items[i].rid
-                var height = list!.heights[i]
-                if itemId == unread {
-                    height += AABubbleCell.newMessageSize
-                }
-                let itemSize = CGSizeMake(self.collectionView!.bounds.width, height)
-                
-                let frame = CGRect(origin: CGPointMake(0, contentHeight), size: itemSize)
-                var item = AALayoutItem(id: itemId)
-                
-                item.size = itemSize
-                
-                let attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: NSIndexPath(forRow: i, inSection: 0))
-                attrs.frame = frame
-                item.attrs = attrs
-                
-                items.append(item)
-                frames.append(frame)
-                
-                contentHeight += item.size.height
+        autoreleasepool {
+            
+            // Validate sections
+            let sectionsCount = self.collectionView!.numberOfSections()
+            if sectionsCount == 0 {
+                items.removeAll(keepCapacity: true)
+                contentHeight = 0.0
+                return
             }
+            if sectionsCount != 1 {
+                fatalError("Unsupported more than 1 section")
+            }
+            
+            if AADevice.isiPad {
+                contentHeight = 16.0
+            } else {
+                contentHeight = 6.0
+            }
+            items.removeAll(keepCapacity: true)
+            frames.removeAll(keepCapacity: true)
+            
+            if list != nil {
+                for i in 0..<list!.items.count {
+                    let itemId = list!.items[i].rid
+                    var height = list!.heights[i]
+                    if itemId == unread {
+                        height += AABubbleCell.newMessageSize
+                    }
+                    let itemSize = CGSizeMake(self.collectionView!.bounds.width, height)
+                    
+                    let frame = CGRect(origin: CGPointMake(0, contentHeight), size: itemSize)
+                    var item = AALayoutItem(id: itemId)
+                    
+                    item.size = itemSize
+                    
+                    let attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: NSIndexPath(forRow: i, inSection: 0))
+                    attrs.frame = frame
+                    item.attrs = attrs
+                    
+                    items.append(item)
+                    frames.append(frame)
+                    
+                    contentHeight += item.size.height
+                }
+            }
+            
+            contentHeight += 100
         }
-        
-        contentHeight += 100
     }
     
     override func collectionViewContentSize() -> CGSize {
-        
-//        NSLog("🙇 collectionViewContentSize")
-        
         return CGSize(width: self.collectionView!.bounds.width, height: contentHeight)
     }
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        
-        // NSLog("🙇 layoutAttributesForElementsInRect")
-        
         var res = [UICollectionViewLayoutAttributes]()
         for i in 0..<items.count {
             if CGRectIntersectsRect(rect, frames[i]) {
@@ -128,9 +117,6 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     }
     
     override func prepareForCollectionViewUpdates(updateItems: [UICollectionViewUpdateItem]) {
-        
-//        NSLog("🙇 prepareForCollectionViewUpdates")
-        
         let start = CFAbsoluteTimeGetCurrent()
         super.prepareForCollectionViewUpdates(updateItems)
         
@@ -147,16 +133,10 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     }
 
     override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-        
-//        NSLog("🙇 layoutAttributesForItemAtIndexPath")
-        
         return items[indexPath.item].attrs
     }    
     
     override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-        
-//        NSLog("🙇 initialLayoutAttributesForAppearingItemAtIndexPath")
-        
         let res = super.initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath)
         if insertedIndexPaths.contains(itemIndexPath) {
             res?.alpha = 0
@@ -169,8 +149,6 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     
     override func finalizeCollectionViewUpdates() {
         super.finalizeCollectionViewUpdates()
-        
-//        NSLog("🙇 finalizeCollectionViewUpdates")
         
         let start = CFAbsoluteTimeGetCurrent()
         

@@ -98,6 +98,7 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
             }
         }
         peerConnection = peerConnectionFactory.peerConnectionWithICEServers(iceServers, constraints: RTCMediaConstraints(), delegate: self)
+        AAAudioManager.sharedAudio().peerConnectionStarted()
     }
     
     func addCallback(callback: ARWebRTCPeerConnectionCallback) {
@@ -179,6 +180,7 @@ class CocoaWebRTCPeerConnection: NSObject, ARWebRTCPeerConnection, RTCPeerConnec
     
     func close() {
         peerConnection.close()
+        AAAudioManager.sharedAudio().peerConnectionEnded()
     }
     
     
