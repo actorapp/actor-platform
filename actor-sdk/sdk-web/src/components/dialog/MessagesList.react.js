@@ -2,13 +2,20 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
+import { isFunction } from 'lodash';
+
 import React, { Component, PropTypes } from 'react';
 import {shouldComponentUpdate} from 'react-addons-pure-render-mixin';
 import Loading from './messages/Loading.react';
 import Welcome from './messages/Welcome.react';
 import MessagesScroller from './MessagesScroller.react';
+import DefaultMessageItem from './messages/MessageItem.react';
 
 class MessagesList extends Component {
+  static contextTypes = {
+    delegate: PropTypes.object.isRequired
+  };
+
   static propTypes = {
     peer: PropTypes.object.isRequired,
     messages: PropTypes.array.isRequired,
@@ -17,16 +24,24 @@ class MessagesList extends Component {
     selectedMessages: PropTypes.object.isRequired,
     isMember: PropTypes.bool.isRequired,
     isAllMessagesLoaded: PropTypes.bool.isRequired,
-    components: PropTypes.shape({
-      MessageItem: PropTypes.func.isRequired
-    }).isRequired,
     onSelect: PropTypes.func.isRequired,
     onVisibilityChange: PropTypes.func.isRequired,
     onLoadMore: PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
+
+    const {dialog} = context.delegate.components;
+    if (dialog && dialog.messages && isFunction(dialog.messages.message)) {
+      this.components = {
+        MessageItem: dialog.messages.message
+      };
+    } else {
+      this.components = {
+        MessageItem: DefaultMessageItem
+      };
+    }
 
     this.shouldComponentUpdate = shouldComponentUpdate.bind(this);
   }
@@ -52,8 +67,8 @@ class MessagesList extends Component {
   }
 
   renderMessages() {
-    const {peer, messages, overlay, count, selectedMessages, components} = this.props;
-    const {MessageItem} = this.props.components;
+    const { peer, messages, overlay, count, selectedMessages } = this.props;
+    const { MessageItem } = this.components;
 
     const result = [];
     for (let index = messages.length - count; index < messages.length; index++) {
