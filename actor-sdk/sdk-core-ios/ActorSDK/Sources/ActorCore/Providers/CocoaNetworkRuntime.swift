@@ -24,7 +24,7 @@ class CocoaTcpConnectionFactory: NSObject, ARAsyncConnectionFactory {
 
 class CocoaTcpConnection: ARAsyncConnection, GCDAsyncSocketDelegate {
     
-    static let queue = YYDispatchQueueGetForQOS(NSQualityOfService.Background)
+    static let queue = dispatch_queue_create("im.actor.network", DISPATCH_QUEUE_SERIAL)
     
     let READ_HEADER = 1
     let READ_BODY = 2
