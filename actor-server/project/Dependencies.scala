@@ -5,7 +5,7 @@ import sbt._
 object Dependencies {
   object V {
     val actorCommons = "0.0.14"
-    val actorBotkit = "1.0.86"
+    val actorBotkit = "1.0.86"h
     val akka = "2.4.2"
     val akkaHttpJson = "1.5.0"
     val cats = "0.3.0"
@@ -71,7 +71,7 @@ object Dependencies {
     val slickPgDate2            = "com.github.tminglei"           %% "slick-pg_date2"                % V.slickPg
     val slickTestkit            = "com.typesafe.slick"            %% "slick-testkit"                 % V.slick
     val flywayCore              = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
-    val hikariCP                = "com.zaxxer"                    %  "HikariCP"                      % "2.4.1"
+    val hikariCP                = "com.zaxxer"                    %  "HikariCP"                      % "2.4.5"
 
     val amazonaws               = "com.amazonaws"                 %  "aws-java-sdk-s3"               % "1.9.31"
     val awsWrap                 = "com.github.dwhjames"           %% "aws-wrap"                      % "0.7.2"
