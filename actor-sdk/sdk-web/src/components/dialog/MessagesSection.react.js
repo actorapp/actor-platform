@@ -13,7 +13,6 @@ import VisibilityStore from '../../stores/VisibilityStore';
 import DialogStore from '../../stores/DialogStore';
 import MessageStore from '../../stores/MessageStore';
 
-import DefaultMessageItem from './messages/MessageItem.react';
 import MessagesList from './MessagesList.react';
 
 
@@ -33,10 +32,6 @@ class MessagesSection extends Component {
     count: PropTypes.number.isRequired,
     isMember: PropTypes.bool.isRequired,
     onLoadMore: PropTypes.func.isRequired
-  };
-
-  static contextTypes = {
-    delegate: PropTypes.object
   };
 
   static getStores() {
@@ -78,24 +73,9 @@ class MessagesSection extends Component {
     }
   };
 
-  getComponents() {
-    const {dialog, messages} = this.context.delegate.components;
-    if (dialog && dialog.messages && isFunction(dialog.messages.message)) {
-      return {
-        MessageItem: dialog.messages.message
-      };
-    }
-
-    return {
-      MessageItem: DefaultMessageItem
-    };
-  }
-
   render() {
     const { peer, overlay, messages, count, isMember } = this.props;
     const { selectedMessages, isAllMessagesLoaded } = this.state;
-
-    const components = this.getComponents();
 
     return (
       <MessagesList
@@ -106,7 +86,6 @@ class MessagesSection extends Component {
         selectedMessages={selectedMessages}
         isMember={isMember}
         isAllMessagesLoaded={isAllMessagesLoaded}
-        components={components}
         onSelect={this.onMessageSelect}
         onVisibilityChange={this.onMessageVisibilityChange}
         onLoadMore={this.props.onLoadMore}

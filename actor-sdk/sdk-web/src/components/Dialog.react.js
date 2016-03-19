@@ -9,8 +9,6 @@ import { Container } from 'flux/utils';
 import PeerUtils from '../utils/PeerUtils';
 
 import DefaultMessages from './dialog/MessagesSection.react';
-import DefaultTyping from './dialog/TypingSection.react';
-import DefaultCompose from './dialog/ComposeSection.react';
 import DialogFooter from './dialog/DialogFooter.react';
 import DefaultToolbar from './Toolbar.react';
 import DefaultActivity from './Activity.react';
@@ -90,21 +88,15 @@ class DialogSection extends Component {
       ];
 
       return {
-        LoggerSection,
         ToolbarSection: dialog.toolbar || DefaultToolbar,
         MessagesSection: isFunction(dialog.messages) ? dialog.messages : DefaultMessages,
-        TypingSection: dialog.typing || DefaultTyping,
-        ComposeSection: dialog.compose || DefaultCompose,
         activity: map(activity, (Activity, index) => <Activity key={index} />)
       };
     }
 
     return {
-      LoggerSection,
       ToolbarSection: DefaultToolbar,
       MessagesSection: DefaultMessages,
-      TypingSection: DefaultTyping,
-      ComposeSection: DefaultCompose,
       activity: [
         <DefaultActivity key={1} />,
         <DefaultCall key={2} />,
@@ -119,8 +111,6 @@ class DialogSection extends Component {
     const {
       ToolbarSection,
       MessagesSection,
-      TypingSection,
-      ComposeSection,
       activity
     } = this.getComponents();
 
@@ -138,7 +128,7 @@ class DialogSection extends Component {
               isMember={isMember}
               onLoadMore={this.onLoadMoreMessages}
             />
-            <DialogFooter isMember={isMember} components={{TypingSection, ComposeSection}} />
+            <DialogFooter isMember={isMember} />
           </section>
           {activity}
         </div>
