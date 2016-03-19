@@ -3,7 +3,7 @@ resolvers ++= Seq(
   "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases/",
   "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
   Resolver.url("actor-sbt-plugins", url("https://dl.bintray.com/actor/sbt-plugins"))(Resolver.ivyStylePatterns),
-  "Flyway" at "http://flywaydb.org/repo",
+  "Flyway" at "https://flywaydb.org/repo",
   "Era7 maven releases" at "https://s3-eu-west-1.amazonaws.com/releases.era7.com",
   Classpaths.sbtPluginReleases
 )
@@ -12,7 +12,7 @@ addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.5")
 
 addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.2")
 
-addSbtPlugin("org.flywaydb" % "flyway-sbt" % "3.1")
+addSbtPlugin("org.flywaydb" % "flyway-sbt" % "4.0")
 
 addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.7.12")
 
