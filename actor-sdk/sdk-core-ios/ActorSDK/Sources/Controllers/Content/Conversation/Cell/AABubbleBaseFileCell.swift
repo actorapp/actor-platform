@@ -66,6 +66,34 @@ public class AABubbleBaseFileCell: AABubbleCell {
             } else {
                 fatalError("Unsupported file source")
             }
+        } else if let sticker = message.content as? ACStickerContent {
+            // Default One: Smallest
+            var file = sticker.getSticker().getApiImageLocation256()
+            if AADevice.isiPhone6 || AADevice.isiPhone6P {
+                file = sticker.getSticker().getApiImageLocation512()
+            }
+            
+            let selfGeneration = prepareBind()
+            
+            bindedDownloadFile = file.getFileLocation().getFileId()
+            bindedDownloadCallback = AAFileCallback(notDownloaded: { () -> () in
+                if (self.bindGeneration != selfGeneration) {
+                    return
+                }
+                self.fileDownloadPaused(selfGeneration)
+                }, onDownloading: { (progress) -> () in
+                    if (self.bindGeneration != selfGeneration) {
+                        return
+                    }
+                    self.fileDownloading(progress, selfGeneration: selfGeneration)
+                }, onDownloaded: { (reference) -> () in
+                    if (self.bindGeneration != selfGeneration) {
+                        return
+                    }
+                    self.fileReady(reference, selfGeneration: selfGeneration)
+            })
+            
+            Actor.bindRawFileWithReference(ACFileReference(ARApiFileLocation: file.getFileLocation(), withNSString: "sticker.webp", withInt: file.getFileSize()), autoStart: autoDownload, withCallback: bindedDownloadCallback)
         } else {
             fatalError("Unsupported message type")
         }
