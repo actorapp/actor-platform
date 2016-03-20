@@ -288,7 +288,7 @@ public class StikerCellLayout: AACellLayout {
     /**
      Creting layout for media bubble
      */
-    public init(id: Int64, width: CGFloat, height:CGFloat, date: Int64, sticker: ACSticker?, autoDownload: Bool) {
+    public init(id: Int64, width: CGFloat, height:CGFloat, date: Int64, sticker: ACSticker?, autoDownload: Bool, layouter: AABubbleLayouter) {
         
         // Saving content size
         self.contentSize = CGSizeMake(width, height)
@@ -302,14 +302,14 @@ public class StikerCellLayout: AACellLayout {
         self.fastThumb = sticker?.getFileReference256().toByteArray().toNSData()
         
         // Creating layout
-        super.init(height: self.screenSize.height + 2, date: date, key: "media")
+        super.init(height: self.screenSize.height + 2, date: date, key: "media", layouter: layouter)
     }
     
     /**
      Creating layout for sticker content
      */
-    public convenience init(id: Int64, stickerContent: ACStickerContent, date: Int64) {
-       self.init(id: id, width: CGFloat(150), height: CGFloat(150), date: date, sticker: stickerContent.getSticker(), autoDownload: true)
+    public convenience init(id: Int64, stickerContent: ACStickerContent, date: Int64, layouter: AABubbleLayouter) {
+        self.init(id: id, width: CGFloat(150), height: CGFloat(150), date: date, sticker: stickerContent.getSticker(), autoDownload: true, layouter: layouter)
         
     }
 
@@ -317,9 +317,9 @@ public class StikerCellLayout: AACellLayout {
     /**
      Creating layout for message
      */
-    public convenience init(message: ACMessage) {
+    public convenience init(message: ACMessage, layouter: AABubbleLayouter) {
         if let content = message.content as? ACStickerContent {
-            self.init(id: Int64(message.rid), stickerContent: content, date: Int64(message.date))
+            self.init(id: Int64(message.rid), stickerContent: content, date: Int64(message.date), layouter: layouter)
         } else {
             fatalError("Unsupported content for media cell")
         }
@@ -340,7 +340,7 @@ public class AABubbleStickerCellLayouter: AABubbleLayouter {
     }
     
     public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
-        return StikerCellLayout(message: message)
+        return StikerCellLayout(message: message, layouter: self)
     }
     
     public func cellClass() -> AnyClass {

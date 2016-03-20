@@ -51,125 +51,137 @@ class AAListProcessor: NSObject, ARListProcessor {
     
     func processWithItems(items: JavaUtilList, withPrevious previous: AnyObject?) -> AnyObject? {
         
-        let start = CFAbsoluteTimeGetCurrent()
-        var section = start
-        
-        // Building content list and dictionary from rid to index list
         var objs = [ACMessage]()
         var indexes = [jlong: Int]()
-        for i in 0..<items.size() {
-            let msg = items.getWithInt(i) as! ACMessage
-            indexes.updateValue(Int(i), forKey: msg.rid)
-            objs.append(msg)
-        }
-        
-        if ENABLE_LOGS { log("processing(items): \(CFAbsoluteTimeGetCurrent() - section)") }
-        section = CFAbsoluteTimeGetCurrent()
-        
-        // Calculating cell settings
-        // TODO: Cache and avoid recalculation of whole list
-        var settings = [AACellSetting]()
-        for i in 0..<objs.count {
-            settings.append(buildCellSetting(i, items: objs))
-        }
-        
-        if ENABLE_LOGS { log("processing(settings): \(CFAbsoluteTimeGetCurrent() - section)") }
-        section = CFAbsoluteTimeGetCurrent()
-        
-        // Building cell layouts
         var layouts = [AACellLayout]()
-        for i in 0..<objs.count {
-            layouts.append(buildLayout(objs[i], layoutCache: layoutCache))
-        }
-        
-        if ENABLE_LOGS { log("processing(layouts): \(CFAbsoluteTimeGetCurrent() - section)") }
-        section = CFAbsoluteTimeGetCurrent()
-        
-        // Calculating force and simple updates
+        var settings = [AACellSetting]()
+        var heights = [CGFloat]()
         var forceUpdates = [Bool]()
         var updates = [Bool]()
-        if let prevList = previous as? AAPreprocessedList {
+        
+        autoreleasepool {
+            
+            let start = CFAbsoluteTimeGetCurrent()
+            var section = start
+            
+            // Capacity
+            objs.reserveCapacity(Int(items.size()))
+            layouts.reserveCapacity(Int(items.size()))
+            settings.reserveCapacity(Int(items.size()))
+            heights.reserveCapacity(Int(items.size()))
+            forceUpdates.reserveCapacity(Int(items.size()))
+            updates.reserveCapacity(Int(items.size()))
+            
+            // Building content list and dictionary from rid to index list
+            for i in 0..<items.size() {
+                let msg = items.getWithInt(i) as! ACMessage
+                indexes.updateValue(Int(i), forKey: msg.rid)
+                objs.append(msg)
+            }
+            
+            if ENABLE_LOGS { log("processing(items): \(CFAbsoluteTimeGetCurrent() - section)") }
+            section = CFAbsoluteTimeGetCurrent()
+            
+            // Calculating cell settings
+            // TODO: Cache and avoid recalculation of whole list
             for i in 0..<objs.count {
-                var isForced = false
-                var isUpdated = false
-                
-                let obj = objs[i]
-                let oldIndex: Int! = prevList.indexMap[obj.rid]
-                if oldIndex != nil {
+                settings.append(buildCellSetting(i, items: objs))
+            }
+            
+            if ENABLE_LOGS { log("processing(settings): \(CFAbsoluteTimeGetCurrent() - section)") }
+            section = CFAbsoluteTimeGetCurrent()
+            
+            // Building cell layouts
+            for i in 0..<objs.count {
+                layouts.append(buildLayout(objs[i], layoutCache: layoutCache))
+            }
+            
+            if ENABLE_LOGS { log("processing(layouts): \(CFAbsoluteTimeGetCurrent() - section)") }
+            section = CFAbsoluteTimeGetCurrent()
+            
+            // Calculating force and simple updates
+            if let prevList = previous as? AAPreprocessedList {
+                for i in 0..<objs.count {
+                    var isForced = false
+                    var isUpdated = false
                     
-                    // Check if layout keys are same
-                    // If text was replaced by media it might force-updated
-                    // If size of bubble changed you might to change layout key
-                    // to update it's size
-                    // TODO: In the future releases it might be implemented
-                    // in more flexible way
-                    if prevList.layouts[oldIndex].key != layouts[i].key {
+                    let obj = objs[i]
+                    let oldIndex: Int! = prevList.indexMap[obj.rid]
+                    if oldIndex != nil {
                         
-                        // Mark as forced update
-                        isForced = true
-                        
-                        // Hack for rewriting layout information
-                        // Removing layout from cache
-                        layoutCache.revoke(objs[i].rid)
-                        // Building new layout
-                        layouts[i] = buildLayout(objs[i], layoutCache: layoutCache)
-                        
-                    } else {
-                        
-                        // Otherwise check bubble settings to check
-                        // if it is changed and we need to recalculate size
-                        let oldSetting = prevList.cellSettings[oldIndex]
-                        let setting = settings[i]
-                    
-                        if setting != oldSetting {
-                            if setting.showDate != oldSetting.showDate {
-                                
-                                // Date separator change size so make cell for resize
-                                isForced = true
-                            } else {
-                                
-                                // Other changes doesn't change size, so just update content
-                                // without resizing
-                                isUpdated = true
+                        // Check if layout keys are same
+                        // If text was replaced by media it might force-updated
+                        // If size of bubble changed you might to change layout key
+                        // to update it's size
+                        // TODO: In the future releases it might be implemented
+                        // in more flexible way
+                        if prevList.layouts[oldIndex].key != layouts[i].key {
+                            
+                            // Mark as forced update
+                            isForced = true
+                            
+                            // Hack for rewriting layout information
+                            // Removing layout from cache
+                            layoutCache.revoke(objs[i].rid)
+                            // Building new layout
+                            layouts[i] = buildLayout(objs[i], layoutCache: layoutCache)
+                            
+                        } else {
+                            
+                            // Otherwise check bubble settings to check
+                            // if it is changed and we need to recalculate size
+                            let oldSetting = prevList.cellSettings[oldIndex]
+                            let setting = settings[i]
+                            
+                            if setting != oldSetting {
+                                if setting.showDate != oldSetting.showDate {
+                                    
+                                    // Date separator change size so make cell for resize
+                                    isForced = true
+                                } else {
+                                    
+                                    // Other changes doesn't change size, so just update content
+                                    // without resizing
+                                    isUpdated = true
+                                }
                             }
                         }
                     }
+                    
+                    // Saving update state value
+                    if isForced {
+                        forceUpdates.append(true)
+                        updates.append(false)
+                    } else if isUpdated {
+                        forceUpdates.append(false)
+                        updates.append(true)
+                    } else {
+                        forceUpdates.append(false)
+                        updates.append(false)
+                    }
                 }
-                
-                // Saving update state value
-                if isForced {
-                    forceUpdates.append(true)
-                    updates.append(false)
-                } else if isUpdated {
-                    forceUpdates.append(false)
-                    updates.append(true)
-                } else {
+            } else {
+                for _ in 0..<objs.count {
                     forceUpdates.append(false)
                     updates.append(false)
                 }
             }
-        } else {
-            for _ in 0..<objs.count {
-                forceUpdates.append(false)
-                updates.append(false)
+            
+            if ENABLE_LOGS { log("processing(updates): \(CFAbsoluteTimeGetCurrent() - section)") }
+            section = CFAbsoluteTimeGetCurrent()
+            
+            // Updating cell heights
+            // TODO: Need to implement width calculations too
+            //       to make bubble menu appear at right place
+            for i in 0..<objs.count {
+                let height = measureHeight(objs[i], setting: settings[i], layout: layouts[i])
+                heights.append(height)
             }
+            
+            if ENABLE_LOGS { log("processing(heights): \(CFAbsoluteTimeGetCurrent() - section)") }
+            
+            if ENABLE_LOGS { log("processing(all): \(CFAbsoluteTimeGetCurrent() - start)") }
         }
-        
-        if ENABLE_LOGS { log("processing(updates): \(CFAbsoluteTimeGetCurrent() - section)") }
-        section = CFAbsoluteTimeGetCurrent()
-        
-        // Updating cell heights
-        // TODO: Need to implement width calculations too
-        //       to make bubble menu appear at right place
-        var heights = [CGFloat]()
-        for i in 0..<objs.count {
-            let height = measureHeight(objs[i], setting: settings[i], layout: layouts[i])
-            heights.append(height)
-        }
-        
-        if ENABLE_LOGS { log("processing(heights): \(CFAbsoluteTimeGetCurrent() - section)") }
-        
-        if ENABLE_LOGS { log("processing(all): \(CFAbsoluteTimeGetCurrent() - start)") }
         
         // Put everything together
         let res = AAPreprocessedList()

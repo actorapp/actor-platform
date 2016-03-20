@@ -42,6 +42,10 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         
         self.collectionView.backgroundColor = UIColor.clearColor()
         self.collectionView.alwaysBounceVertical = true
+  
+        for layout in AABubbles.layouters {
+            self.collectionView.registerClass(layout.cellClass(), forCellWithReuseIdentifier: layout.cellReuseId())
+        }
     }
     
     public required init!(coder decoder: NSCoder!) {
@@ -121,14 +125,15 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     }
     
     
-    public func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UICollectionViewCell {
-        let message = (item as! ACMessage)
-        let cell = collectionView.dequeueCell(AABubbles.cellClassForMessage(message), indexPath: indexPath)
+    public func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let list = getProcessedList()
+        let layout = list!.layouts[indexPath.row]
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(layout.layouter.cellReuseId(), forIndexPath: indexPath)
         (cell as! AABubbleCell).setConfig(peer, controller: self)
         return cell
     }
     
-    public func bindCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UICollectionViewCell) {
+    public func bindCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, cell: UICollectionViewCell) {
         let list = getProcessedList()
         let message = list!.items[indexPath.row]
         let setting = list!.cellSettings[indexPath.row]
@@ -178,9 +183,8 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     }
     
     public override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let item: AnyObject? = objectAtIndexPath(indexPath)
-        let cell = buildCell(collectionView, cellForRowAtIndexPath:indexPath, item:item)
-        bindCell(collectionView, cellForRowAtIndexPath: indexPath, item: item, cell: cell)
+        let cell = buildCell(collectionView, cellForRowAtIndexPath: indexPath)
+        bindCell(collectionView, cellForRowAtIndexPath: indexPath, cell: cell)
         displayList.touchWithIndex(jint(indexPath.row))
         return cell
     }
@@ -339,8 +343,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             let indexPath = NSIndexPath(forRow: ind, inSection: 0)
             if visibleIndexes.contains(indexPath) {
                 let cell = self.collectionView.cellForItemAtIndexPath(indexPath)
-                let item: AnyObject? = self.objectAtIndexPath(indexPath)
-                self.bindCell(self.collectionView, cellForRowAtIndexPath: indexPath, item: item, cell: cell!)
+                self.bindCell(self.collectionView, cellForRowAtIndexPath: indexPath, cell: cell!)
             }
         }
         

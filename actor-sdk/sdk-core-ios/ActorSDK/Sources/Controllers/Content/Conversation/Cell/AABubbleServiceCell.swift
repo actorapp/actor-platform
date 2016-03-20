@@ -63,7 +63,7 @@ public class ServiceCellLayout: AACellLayout {
     var text: String
     var textSize: CGSize
     
-    public init(text: String, date: Int64) {
+    public init(text: String, date: Int64, layouter: AABubbleLayouter) {
         
         // Saving text size
         self.text = text
@@ -72,7 +72,7 @@ public class ServiceCellLayout: AACellLayout {
         self.textSize = UIViewMeasure.measureText(text, width: AABubbleServiceCell.maxServiceTextWidth, font: AABubbleServiceCell.serviceBubbleFont)
         
         // Creating layout
-        super.init(height: textSize.height + 6, date: date, key: "service")
+        super.init(height: textSize.height + 6, date: date, key: "service", layouter: layouter)
     }
 }
 
@@ -85,7 +85,7 @@ public class AABubbleServiceCellLayouter: AABubbleLayouter {
     public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
         let serviceText = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.senderId, withContent: message.content as! ACServiceContent)
         
-        return ServiceCellLayout(text: serviceText, date: Int64(message.date))
+        return ServiceCellLayout(text: serviceText, date: Int64(message.date), layouter: self)
     }
     
     public func cellClass() -> AnyClass {

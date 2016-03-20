@@ -189,11 +189,11 @@ public class AAContactCellLayout: AACellLayout {
     let name: String
     let records: [String]
     
-    init(name: String, records: [String], date: Int64) {
+    init(name: String, records: [String], date: Int64, layouter: AABubbleLayouter) {
         self.name = name
         self.records = records
         let height = max(44, records.count * 18 + 22) + 12
-        super.init(height: CGFloat(height), date: date, key: "location")
+        super.init(height: CGFloat(height), date: date, key: "location", layouter: layouter)
     }
 }
 
@@ -223,6 +223,6 @@ public class AABubbleContactCellLayouter: AABubbleLayouter {
         for i in 0..<content.getEmails().size() {
             records.append(content.getEmails().getWithInt(i) as! String)
         }
-        return AAContactCellLayout(name: content.getName(), records: records, date: Int64(message.date))
+        return AAContactCellLayout(name: content.getName(), records: records, date: Int64(message.date), layouter: self)
     }
 }
