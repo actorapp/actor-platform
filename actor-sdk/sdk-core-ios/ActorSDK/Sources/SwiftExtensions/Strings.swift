@@ -41,6 +41,7 @@ public extension String {
         return substringFromIndex(startIndex.advancedBy(realCount))
     }
     
+    
     public func strip(set: NSCharacterSet) -> String {
         return componentsSeparatedByCharactersInSet(set).joinWithSeparator("")
     }

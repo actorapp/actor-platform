@@ -1338,16 +1338,16 @@
 		066A53241BC533FD000E606E /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				066A53281BC53406000E606E /* AABubbleBaseFileCell.swift */,
 				066A53251BC53406000E606E /* AABubbleCell.swift */,
-				06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */,
-				066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */,
-				06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */,
-				066A53291BC53406000E606E /* AABubbleMediaCell.swift */,
-				066A53271BC53406000E606E /* AABubbleServiceCell.swift */,
-				153F6B5C1C2B3AC500C0B960 /* AABubbleStickerCell.swift */,
 				066A53261BC53406000E606E /* AABubbleTextCell.swift */,
+				153F6B5C1C2B3AC500C0B960 /* AABubbleStickerCell.swift */,
+				066A53271BC53406000E606E /* AABubbleServiceCell.swift */,
 				153F6B5A1C2B109400C0B960 /* AABubbleVoiceCell.swift */,
+				06E7B2531C139B6F0090660C /* AABubbleContactCell.swift */,
+				06E7B2491C0F92140090660C /* AABubbleLocationCell.swift */,
+				066A53281BC53406000E606E /* AABubbleBaseFileCell.swift */,
+				066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */,
+				066A53291BC53406000E606E /* AABubbleMediaCell.swift */,
 				BED5A2141C49504B0045FDB0 /* AABubbleVideoCell.swift */,
 			);
 			path = Cell;

@@ -285,7 +285,7 @@ public class AABubbleDocumentCellLayout: AABubbleLayouter {
     }
     
     public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
-        return DocumentCellLayout(message: message)
+        return DocumentCellLayout(message: message, layouter: self)
     }
     
     public func cellClass() -> AnyClass {
@@ -304,7 +304,7 @@ public class DocumentCellLayout: AACellLayout {
     
     public let autoDownload: Bool
     
-    public init(fileName: String, fileExt: String, fileSize: Int, fastThumb: ACFastThumb?, date: Int64, autoDownload: Bool) {
+    public init(fileName: String, fileExt: String, fileSize: Int, fastThumb: ACFastThumb?, date: Int64, autoDownload: Bool, layouter: AABubbleLayouter) {
         
         // File metadata
         self.fileName = fileName
@@ -361,14 +361,14 @@ public class DocumentCellLayout: AACellLayout {
         }
         self.icon = UIImage.bundled(fileName)!
         
-        super.init(height: 66, date: date, key: "document")
+        super.init(height: 66, date: date, key: "document", layouter: layouter)
     }
     
-    public convenience init(document: ACDocumentContent, date: Int64) {
-        self.init(fileName: document.getName(), fileExt: document.getExt(), fileSize: Int(document.getSource().getSize()), fastThumb: document.getFastThumb(), date: date, autoDownload: false)
+    public convenience init(document: ACDocumentContent, date: Int64, layouter: AABubbleLayouter) {
+        self.init(fileName: document.getName(), fileExt: document.getExt(), fileSize: Int(document.getSource().getSize()), fastThumb: document.getFastThumb(), date: date, autoDownload: false, layouter: layouter)
     }
     
-    public convenience init(message: ACMessage) {
-        self.init(document: message.content as! ACDocumentContent, date: Int64(message.date))
+    public convenience init(message: ACMessage, layouter: AABubbleLayouter) {
+        self.init(document: message.content as! ACDocumentContent, date: Int64(message.date), layouter: layouter)
     }
 }

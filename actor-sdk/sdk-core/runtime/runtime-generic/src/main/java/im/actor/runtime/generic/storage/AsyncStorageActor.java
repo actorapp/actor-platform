@@ -4,6 +4,8 @@
 
 package im.actor.runtime.generic.storage;
 
+import com.google.j2objc.annotations.AutoreleasePool;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
         this.creator = creator;
     }
 
+    @AutoreleasePool
     public void addOrUpdate(List<T> items) {
         if (items.size() == 1) {
             T item = items.get(0);
@@ -47,6 +50,7 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
         }
     }
 
+    @AutoreleasePool
     public void replace(List<T> items) {
         List<ListEngineRecord> updated = new ArrayList<ListEngineRecord>();
         for (T i : items) {
@@ -57,6 +61,7 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
         storage.updateOrAdd(updated);
     }
 
+    @AutoreleasePool
     public void remove(long[] keys) {
         if (keys.length == 1) {
             storage.delete(keys[0]);
@@ -65,10 +70,12 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
         }
     }
 
+    @AutoreleasePool
     public void clear() {
         storage.clear();
     }
 
+    @AutoreleasePool
     public void loadItem(long key, LoadItemCallback<T> callback) {
         ListEngineRecord record = storage.loadItem(key);
         if (record != null) {
@@ -84,6 +91,7 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
         }
     }
 
+    @AutoreleasePool
     public void loadHead(LoadItemCallback<T> callback) {
         List<ListEngineRecord> records = storage.loadForward(null, 1);
 
@@ -101,10 +109,12 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
         }
     }
 
+    @AutoreleasePool
     public void loadCount(LoadCountCallback callback) {
         callback.onLoaded(storage.getCount());
     }
 
+    @AutoreleasePool
     public void loadForward(String query, Long topSortKey, int limit, ListEngineDisplayLoadCallback<T> callback) {
         ArrayList<T> res;
         if (query == null) {
@@ -116,6 +126,7 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
         callCallback(callback, res);
     }
 
+    @AutoreleasePool
     public void loadBackward(String query, Long topSortKey, int limit, ListEngineDisplayLoadCallback<T> callback) {
         ArrayList<T> res;
         if (query == null) {
@@ -127,12 +138,14 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
         callCallback(callback, res);
     }
 
+    @AutoreleasePool
     public void loadCenter(Long centerSortKey, int limit, ListEngineDisplayLoadCallback<T> callback) {
         ArrayList<T> res;
         res = convertList(storage.loadCenter(centerSortKey, limit));
         callCallback(callback, res);
     }
 
+    @AutoreleasePool
     private void callCallback(ListEngineDisplayLoadCallback<T> callback, List<T> res) {
         if (res.size() == 0) {
             callback.onLoaded(res, 0, 0);
@@ -168,6 +181,7 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
     }
 
     @Override
+    @AutoreleasePool
     public void onReceive(Object message) {
         if (message instanceof AddOrUpdate) {
             addOrUpdate(((AddOrUpdate) message).getItems());

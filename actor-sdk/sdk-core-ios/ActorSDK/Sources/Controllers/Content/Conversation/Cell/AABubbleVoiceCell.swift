@@ -426,7 +426,7 @@ public class VoiceMessageCellLayout: AACellLayout {
     /**
      Creting layout for media bubble
      */
-    public init(fileName: String, fileExt: String, fileSize: Int,id: Int64, date: Int64, autoDownload: Bool,duration:jint) {
+    public init(fileName: String, fileExt: String, fileSize: Int,id: Int64, date: Int64, autoDownload: Bool,duration:jint, layouter: AABubbleLayouter) {
         
         // Saving content size
         self.contentSize = CGSizeMake(200, 55)
@@ -442,7 +442,7 @@ public class VoiceMessageCellLayout: AACellLayout {
         self.fileSize = Actor.getFormatter().formatFileSize(jint(fileSize))
         
         // Creating layout
-        super.init(height: self.screenSize.height + 2, date: date, key: "voice")
+        super.init(height: self.screenSize.height + 2, date: date, key: "voice", layouter: layouter)
         
         self.voiceDuration = getTimeString(Int(duration))
     }
@@ -472,19 +472,17 @@ public class VoiceMessageCellLayout: AACellLayout {
      Creating layout for voice content
      */
     
-    public convenience init(id: Int64, voiceContent: ACVoiceContent, date: Int64) {
-        
-        
-        self.init(fileName: voiceContent.getName(), fileExt: voiceContent.getExt(), fileSize: Int(voiceContent.getSource().getSize()),id: id, date: date, autoDownload: true,duration:jint(voiceContent.getDuration()/1000))
+    public convenience init(id: Int64, voiceContent: ACVoiceContent, date: Int64, layouter: AABubbleLayouter) {
+        self.init(fileName: voiceContent.getName(), fileExt: voiceContent.getExt(), fileSize: Int(voiceContent.getSource().getSize()),id: id, date: date, autoDownload: true,duration:jint(voiceContent.getDuration()/1000), layouter: layouter)
     }
     
     
     /**
      Creating layout for message
      */
-    public convenience init(message: ACMessage) {
+    public convenience init(message: ACMessage, layouter: AABubbleLayouter) {
         if let content = message.content as? ACVoiceContent {
-            self.init(id: Int64(message.rid), voiceContent: content, date: Int64(message.date))
+            self.init(id: Int64(message.rid), voiceContent: content, date: Int64(message.date), layouter: layouter)
         } else {
             fatalError("Unsupported content for media cell")
         }
@@ -505,7 +503,7 @@ public class AABubbleVoiceCellLayouter: AABubbleLayouter {
     }
     
     public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
-        return VoiceMessageCellLayout(message: message)
+        return VoiceMessageCellLayout(message: message, layouter: self)
     }
     
     public func cellClass() -> AnyClass {
