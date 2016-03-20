@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import im.actor.core.api.ApiRawValue;
@@ -35,6 +36,8 @@ import im.actor.core.entity.WebActionDescriptor;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.entity.content.internal.StickersPack;
+import im.actor.core.entity.signals.AbsSignal;
 import im.actor.core.events.PeerChatPreload;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.ModuleContext;
@@ -71,6 +74,7 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.json.JSONObject;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 import im.actor.runtime.mvvm.MVVMCollection;
@@ -864,10 +868,10 @@ public class Messenger {
     /**
      * Send json message
      *
-     * @param peer    destination peer
+     * @param peer destination peer
      * @param content json content
      */
-    @ObjectiveCName("sendJsonWithPeer:withJson:")
+    @ObjectiveCName("sendCustomJsonMessageWithPeer:withJson:")
     public void sendCustomJsonMessage(@NotNull Peer peer, @NotNull JsonContent content) {
         modules.getMessagesModule().sendJson(peer, content);
     }
@@ -1203,6 +1207,7 @@ public class Messenger {
             modules.getCallsModule().checkCall(callId, attempt);
         }
     }
+
 
     //////////////////////////////////////
     //         Peer operations
@@ -2025,23 +2030,6 @@ public class Messenger {
         modules.getSettingsModule().changeSelectedWallpapper(uri);
     }
 
-    /**
-     * Getting saved sticker packs
-     *
-     * @return list of saved sticker packs Value Models
-     */
-    @ObjectiveCName("getOwnStickerPacksIdsVM")
-    public ValueModel<ArrayList<StickerPackVM>> getOwnStickerPacks() {
-        return modules.getStickersModule().getStickerPacks();
-    }
-
-    /**
-     * Loading sticker packs for current user
-     */
-    @ObjectiveCName("loadStickers")
-    public void loadStickers() {
-        modules.getStickersModule().loadStickers();
-    }
 
     /**
      * Is Hint about contact rename shown to user and automatically mark as shown if not.

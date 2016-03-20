@@ -11,6 +11,8 @@ import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
+import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.entity.content.internal.StickersPack;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.Storage;
@@ -21,6 +23,8 @@ import im.actor.runtime.mvvm.PlatformDisplayList;
 public class DisplayLists extends AbsModule {
 
     private PlatformDisplayList<Dialog> dialogGlobalList;
+    private PlatformDisplayList<Sticker> stickersList;
+    private PlatformDisplayList<StickersPack> stickerPacksList;
 
     private PlatformDisplayList<Contact> contactsGlobalList;
 
@@ -50,6 +54,26 @@ public class DisplayLists extends AbsModule {
         }
 
         return dialogGlobalList;
+    }
+
+    public PlatformDisplayList<Sticker> getStickersSharedList() {
+        im.actor.runtime.Runtime.checkMainThread();
+
+        if (stickersList == null) {
+            stickersList = buildStickersList(true);
+        }
+
+        return stickersList;
+    }
+
+    public PlatformDisplayList<StickersPack> getStickerPacksSharedList() {
+        im.actor.runtime.Runtime.checkMainThread();
+
+        if (stickerPacksList == null) {
+            stickerPacksList = buildStickerPacksList(true);
+        }
+
+        return stickerPacksList;
     }
 
     public PlatformDisplayList<Message> getMessagesSharedList(Peer peer) {
@@ -87,6 +111,28 @@ public class DisplayLists extends AbsModule {
 
         PlatformDisplayList<Dialog> res = Storage.createDisplayList(context().getMessagesModule().getDialogsEngine(),
                 isShared, Dialog.ENTITY_NAME);
+
+        res.initTop();
+
+        return res;
+    }
+
+    public PlatformDisplayList<Sticker> buildStickersList(boolean isShared) {
+        im.actor.runtime.Runtime.checkMainThread();
+
+        PlatformDisplayList<Sticker> res = Storage.createDisplayList(context().getStickersModule().getStickersEngine(),
+                isShared, StickersPack.ENTITY_NAME);
+
+        res.initTop();
+
+        return res;
+    }
+
+    public PlatformDisplayList<StickersPack> buildStickerPacksList(boolean isShared) {
+        im.actor.runtime.Runtime.checkMainThread();
+
+        PlatformDisplayList<StickersPack> res = Storage.createDisplayList(context().getStickersModule().getPacksEngine(),
+                isShared, StickersPack.ENTITY_NAME);
 
         res.initTop();
 
