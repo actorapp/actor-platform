@@ -67,7 +67,7 @@ public class ContactContent extends AbsContent {
         try {
             photo64 = contact.getString("photo");
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         phones = new ArrayList<String>();
         JSONArray phonesJson = contact.getJSONArray("phones");
