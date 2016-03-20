@@ -154,10 +154,10 @@ public class AALocationCellLayout: AACellLayout {
     let latitude: Double
     let longitude: Double
     
-    init(latitude: Double, longitude: Double, date: Int64) {
+    init(latitude: Double, longitude: Double, date: Int64, layouter: AABubbleLayouter) {
         self.latitude = latitude
         self.longitude = longitude
-        super.init(height: mapHeight + 2, date: date, key: "location")
+        super.init(height: mapHeight + 2, date: date, key: "location", layouter: layouter)
     }
 }
 
@@ -172,7 +172,7 @@ public class AABubbleLocationCellLayouter: AABubbleLayouter {
     
     public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
         let content = message.content as! ACLocationContent
-        return AALocationCellLayout(latitude: Double(content.getLatitude()), longitude: Double(content.getLongitude()), date: Int64(message.date))
+        return AALocationCellLayout(latitude: Double(content.getLatitude()), longitude: Double(content.getLongitude()), date: Int64(message.date), layouter: self)
     }
     
     public func cellClass() -> AnyClass {

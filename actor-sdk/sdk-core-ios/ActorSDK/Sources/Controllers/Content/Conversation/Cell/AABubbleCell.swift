@@ -35,6 +35,12 @@ public protocol AABubbleLayouter  {
     func cellClass() -> AnyClass
 }
 
+extension AABubbleLayouter {
+    func cellReuseId() -> String {
+        return "cell_\(cellClass())"
+    }
+}
+
 /**
     Root class for bubble cells
 */
@@ -258,7 +264,7 @@ public class AABubbleCell: UICollectionViewCell {
         
         self.isShowDate = setting.showDate
         if (isShowDate) {
-            self.dateText.text = Actor.getFormatter().formatDate(message.date)
+            self.dateText.text = layout.date
         }
         
         self.bindedSetting = setting

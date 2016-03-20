@@ -32,21 +32,29 @@ struct AAHashMap<T> {
 }
 
 struct SinglyLinkedList<T> {
+    
     var head = CCHeadNode<CCSinglyNode<T>>()
     func findNodeWithKey(key: Int64) -> CCSinglyNode<T>? {
-        if var currentNode = head.next {
-            while currentNode.key != key {
-                if let nextNode = currentNode.next {
-                    currentNode = nextNode
-                } else {
-                    return nil
+        var res: CCSinglyNode<T>?
+        autoreleasepool {
+            if var currentNode = head.next {
+                var isFound = true
+                while currentNode.key != key {
+                    if let nextNode = currentNode.next {
+                        currentNode = nextNode
+                    } else {
+                        isFound = false
+                        break
+                    }
+                }
+                if isFound {
+                    res = currentNode
                 }
             }
-            return currentNode
-        } else {
-            return nil
         }
+        return res
     }
+    
     func upsertNodeWithKey(key: Int64, AndValue val: T?) -> CCSinglyNode<T> {
         if var currentNode = head.next {
             while let nextNode = currentNode.next {
