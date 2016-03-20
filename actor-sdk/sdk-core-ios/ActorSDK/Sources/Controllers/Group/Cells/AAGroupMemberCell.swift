@@ -60,19 +60,26 @@ public class AAGroupMemberCell: AATableViewCell {
         adminLabel.hidden = !isAdmin
         
         // Bind onlines
-        binder.bind(user.getPresenceModel()) { (value: ACUserPresence?) -> () in
-
-            if value != nil {
-                self.onlineLabel.showView()
-                self.onlineLabel.text = Actor.getFormatter().formatPresence(value!, withSex: user.getSex())
-                if value!.state.ordinal() == ACUserPresence_State.ONLINE().ordinal() {
-                    self.onlineLabel.textColor = self.appStyle.userOnlineColor
+        
+        if user.isBot() {
+            self.onlineLabel.textColor = self.appStyle.userOnlineColor
+            self.onlineLabel.text = "bot"
+            self.onlineLabel.alpha = 1
+        } else {
+            binder.bind(user.getPresenceModel()) { (value: ACUserPresence?) -> () in
+                
+                if value != nil {
+                    self.onlineLabel.showView()
+                    self.onlineLabel.text = Actor.getFormatter().formatPresence(value!, withSex: user.getSex())
+                    if value!.state.ordinal() == ACUserPresence_State.ONLINE().ordinal() {
+                        self.onlineLabel.textColor = self.appStyle.userOnlineColor
+                    } else {
+                        self.onlineLabel.textColor = self.appStyle.userOfflineColor
+                    }
                 } else {
-                    self.onlineLabel.textColor = self.appStyle.userOfflineColor
+                    self.onlineLabel.alpha = 0
+                    self.onlineLabel.text = ""
                 }
-            } else {
-                self.onlineLabel.alpha = 0
-                self.onlineLabel.text = ""
             }
         }
     }
