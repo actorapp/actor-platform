@@ -11,13 +11,16 @@ import im.actor.core.api.ApiImageLocation;
 import im.actor.core.api.ApiStickerDescriptor;
 import im.actor.core.api.ApiStickerMessage;
 import im.actor.core.entity.FileReference;
+import im.actor.runtime.Log;
+import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
+import im.actor.runtime.storage.ListEngineItem;
 
 /**
  * Created by Jesus Christ. Amen.
  */
-public class Sticker extends AbsLocalContent {
+public class Sticker extends AbsLocalContent implements ListEngineItem {
     ApiImageLocation apiImageLocation128;
     ApiImageLocation apiImageLocation256;
     ApiImageLocation apiImageLocation512;
@@ -26,15 +29,43 @@ public class Sticker extends AbsLocalContent {
     int stickerId;
     int stickerCollectionId;
     long collectionAccessHash;
+    int localCollectionId;
+    boolean isHeader;
 
-    public Sticker(ApiStickerDescriptor apiStickerDescriptor, int collectionId, long accessHash) {
+    public static BserCreator<Sticker> CREATOR = new BserCreator<Sticker>() {
+        @Override
+        public Sticker createInstance() {
+            return new Sticker();
+        }
+    };
+
+    public Sticker(ApiStickerDescriptor apiStickerDescriptor, int collectionId, int localCollectionId, long accessHash) {
+        this.isHeader = false;
         this.collectionAccessHash = accessHash;
         this.stickerCollectionId = collectionId;
         this.stickerId = apiStickerDescriptor.getId();
-
+        this.localCollectionId = localCollectionId;
         this.apiImageLocation128 = apiStickerDescriptor.getImage128();
         this.apiImageLocation256 = apiStickerDescriptor.getImage256();
         this.apiImageLocation512 = apiStickerDescriptor.getImage512();
+
+    }
+
+    public Sticker(ApiStickerDescriptor apiStickerDescriptor, int collectionId, int localCollectionId, long accessHash, boolean isHeader) {
+        this.isHeader = isHeader;
+        this.collectionAccessHash = accessHash;
+        this.stickerCollectionId = collectionId;
+        this.stickerId = isHeader ? localCollectionId : apiStickerDescriptor.getId();
+        this.localCollectionId = localCollectionId;
+        if (apiStickerDescriptor == null) {
+            this.apiImageLocation128 = new ApiImageLocation();
+            this.apiImageLocation256 = new ApiImageLocation();
+            this.apiImageLocation512 = new ApiImageLocation();
+        } else {
+            this.apiImageLocation128 = apiStickerDescriptor.getImage128();
+            this.apiImageLocation256 = apiStickerDescriptor.getImage256();
+            this.apiImageLocation512 = apiStickerDescriptor.getImage512();
+        }
 
     }
 
@@ -56,6 +87,10 @@ public class Sticker extends AbsLocalContent {
         this.stickerId = stickerId;
         this.stickerCollectionId = stickerCollectionId;
         this.collectionAccessHash = collectionAccessHash;
+    }
+
+    public Sticker() {
+
     }
 
     public FileReference getFileReference128() {
@@ -158,6 +193,9 @@ public class Sticker extends AbsLocalContent {
         return stickerCollectionId;
     }
 
+    public int getLocalCollectionId() {
+        return localCollectionId;
+    }
 
     @Override
     public void parse(BserValues values) throws IOException {
@@ -170,6 +208,9 @@ public class Sticker extends AbsLocalContent {
         collectionAccessHash = values.getLong(6);
 
         thumb = values.getBytes(7);
+        localCollectionId = values.getInt(8);
+        Log.d("StICKER", "parse, localCollectionId: " + localCollectionId);
+        isHeader = values.getBool(9, false);
     }
 
     @Override
@@ -182,7 +223,38 @@ public class Sticker extends AbsLocalContent {
         writer.writeInt(5, stickerCollectionId);
         writer.writeLong(6, collectionAccessHash);
 
-        writer.writeBytes(7, thumb);
+        if (thumb == null) {
+            writer.writeBytes(7, new byte[]{});
+        } else {
+            writer.writeBytes(7, thumb);
+        }
+        writer.writeInt(8, localCollectionId);
+        writer.writeBool(9, isHeader);
+    }
+
+    @Override
+    public long getEngineId() {
+        return getId();
+    }
+
+    @Override
+    public long getEngineSort() {
+        long uid;
+        if (isHeader) {
+            uid = (((long) localCollectionId & 0xFFFFFFFFL) * 10000000000L);
+        } else {
+            uid = ((long) stickerId & 0xFFFFFFFFL) + (((long) localCollectionId & 0xFFFFFFFFL) * 10000000000L);
+        }
+        return uid * -1;
+    }
+
+    @Override
+    public String getEngineSearch() {
+        return getStickerCollectionId() + "";
+    }
+
+    public boolean isHeader() {
+        return isHeader;
     }
 
     @Override

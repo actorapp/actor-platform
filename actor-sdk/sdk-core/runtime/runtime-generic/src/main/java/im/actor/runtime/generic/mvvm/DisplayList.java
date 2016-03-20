@@ -83,6 +83,16 @@ public class DisplayList<T> {
         return lists[currentList].get(index);
     }
 
+    @ObjectiveCName("positionWithFind:")
+    public int getPosition(Object find) {
+        for (int i = 0; i < lists[currentList].size(); i++) {
+            if (lists[currentList].get(i).equals(find)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     @ObjectiveCName("editList:")
     public void editList(Modification<T> mod) {
         editList(mod, null);
