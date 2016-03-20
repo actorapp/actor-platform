@@ -22,16 +22,14 @@ public class ActorTrace implements TraceInterface {
 
     @Override
     public void onEnvelopeDelivered(Envelope envelope) {
-        // Log.w(TAG, "EnvelopeDelivered |" + envelope.getScope().getDispatcher().getName() + "| " + envelope.getScope().getPath() + " {" + envelope.getMessage() + "}");
+
     }
 
     @Override
     public void onEnvelopeProcessed(Envelope envelope, long duration) {
-        long sendDuration = ActorTime.currentTime() - envelope.getSendTime() - duration;
         if (duration > PROCESS_THRESHOLD) {
-            Log.w(TAG, "Too long " + envelope.getScope().getPath() + " {" + envelope.getMessage() + "}");
+            Log.w(TAG, "Too long " + envelope.getScope().getPath() + " {" + envelope.getMessage() + "} in " + duration + " ms");
         }
-        // Log.w(TAG, "Envelope |" + envelope.getScope().getDispatcher().getName() + "| " + envelope.getScope().getPath() + " {" + envelope.getMessage() + "} in " + duration + " ms after " + sendDuration + " ms");
     }
 
     @Override
@@ -48,11 +46,10 @@ public class ActorTrace implements TraceInterface {
     public void onActorDie(ActorRef ref, Envelope envelope, Exception e) {
         Log.w(TAG, "Die(" + ref.getPath() + ") by " + envelope.getMessage() + " with " + e.getMessage());
         Log.e(TAG, e);
-        // e.printStackTrace();
     }
 
     @Override
     public void onMessageSent(ActorRef ref, Object message) {
-        // Log.w(TAG, "Message Sent: " + message);
+
     }
 }
