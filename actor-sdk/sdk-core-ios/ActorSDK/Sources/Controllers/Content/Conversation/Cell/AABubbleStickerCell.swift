@@ -18,7 +18,6 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
     // Binded data
     
     var bindedLayout: StikerCellLayout!
-    var thumbLoaded = false
     var contentLoaded = false
     
     private var callback: AAFileCallback? = nil
@@ -70,35 +69,11 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
             bindBubbleType(BubbleType.Sticker, isCompact: false)
             
             // Reset content state
-            self.preview.image = nil
+            preview.image = nil
             contentLoaded = false
-            thumbLoaded = false
-            
-            // Reset progress
 
-            let sticker = message.content as! ACStickerContent
-            
-            var fileLocation: ACFileReference?
-            fileLocation = sticker.getSticker().getFileReference512()
-            
-            self.callback = AAFileCallback(onDownloaded: { (reference) -> () in
-                let path = CocoaFiles.pathFromDescriptor(reference)
-                let data = NSFileManager.defaultManager().contentsAtPath(path)!
-                let image = YYImage(data: data)
-                
-                if (image == nil) {
-                    return
-                }
-                
-                dispatchOnUi {
-                    self.preview.image = image
-                }
-            });
-            Actor.bindRawFileWithReference(fileLocation, autoStart: true, withCallback: self.callback)
-            
-            
             // Bind file
-            //fileBind(message, autoDownload: bindedLayout.autoDownload)
+            fileBind(message, autoDownload: true)
             
         }
         
@@ -141,97 +116,24 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
     
     // File state binding
     
-    public override func fileUploadPaused(reference: String, selfGeneration: Int) {
-        bgLoadReference(reference, selfGeneration: selfGeneration)
-        
-        runOnUiThread(selfGeneration) { () -> () in
-//            self.progress.showView()
-//            self.progress.setButtonType(FlatButtonType.buttonUpBasicType, animated: true)
-//            self.progress.hideProgress()
-        }
-    }
-    
-    public override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
-        bgLoadReference(reference, selfGeneration: selfGeneration)
-        
-        runOnUiThread(selfGeneration) { () -> () in
-//            self.progress.showView()
-//            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
-//            self.progress.setProgress(progress)
-        }
-    }
-    
-    public override func fileDownloadPaused(selfGeneration: Int) {
-        bgLoadThumb(selfGeneration)
-        
-        runOnUiThread(selfGeneration) { () -> () in
-//            self.progress.showView()
-//            self.progress.setButtonType(FlatButtonType.buttonDownloadType, animated: true)
-//            self.progress.hideProgress()
-        }
-    }
-    
-    public override func fileDownloading(progress: Double, selfGeneration: Int) {
-        bgLoadThumb(selfGeneration)
-        
-        runOnUiThread(selfGeneration) { () -> () in
-//            self.progress.showView()
-//            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
-//            self.progress.setProgress(progress)
-        }
-    }
-    
     public override func fileReady(reference: String, selfGeneration: Int) {
-        bgLoadReference(reference, selfGeneration: selfGeneration)
         
-        runOnUiThread(selfGeneration) { () -> () in
-//            self.progress.setProgress(1)
-//            self.progress.hideView()
-        }
-    }
-    
-    public func bgLoadThumb(selfGeneration: Int) {
-//        if (thumbLoaded) {
-//            return
-//        }
-//        thumbLoaded = true
-//        
-//        if (bindedLayout.fastThumb != nil) {
-//            let loadedThumb = UIImage(data: bindedLayout.fastThumb!)?
-//                .roundCorners(bindedLayout.screenSize.width,
-//                    h: bindedLayout.screenSize.height,
-//                    roundSize: 14)
-//            
-//            runOnUiThread(selfGeneration,closure: { ()->() in
-//                self.setPreviewImage(loadedThumb!, fast: true)
-//            });
-//        }
-    }
-    
-    public func bgLoadReference(reference: String, selfGeneration: Int) {
         if (contentLoaded) {
             return
         }
         contentLoaded = true
         
-        let loadedContent = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
-        
+        let filePath = CocoaFiles.pathFromDescriptor(reference)
+        let loadedContent = YYImage(contentsOfFile: filePath)
         if (loadedContent == nil) {
             return
         }
         
         runOnUiThread(selfGeneration, closure: { () -> () in
-            self.setPreviewImage(loadedContent!, fast: false)
+            self.preview.image = loadedContent!
         })
     }
-    
-    public func setPreviewImage(img: UIImage, fast: Bool){
-        if ((fast && self.preview.image == nil) || !fast) {
-            self.preview.image = img;
-            self.preview.showView()
-        }
-    }
-    
+
     // Media Action
     
     public func mediaDidTap() {
