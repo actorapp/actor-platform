@@ -63,8 +63,8 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     private final Random random = new Random();
     private ActorRef appStateActor;
     private BindedDisplayList<Dialog> dialogList;
-    private BindedDisplayList<Sticker> stickersList;
-    private BindedDisplayList<StickerPack> stickerPacksList;
+    //    private BindedDisplayList<Sticker> stickersList;
+//    private BindedDisplayList<StickerPack> stickerPacksList;
     private HashMap<Peer, BindedDisplayList<Message>> messagesLists = new HashMap<Peer, BindedDisplayList<Message>>();
     private HashMap<Peer, BindedDisplayList<Message>> docsLists = new HashMap<Peer, BindedDisplayList<Message>>();
     private HashMap<String, BindedDisplayList> customLists = new HashMap<String, BindedDisplayList>();
@@ -442,44 +442,6 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         }
 
         return dialogList;
-    }
-
-    public BindedDisplayList<Sticker> getStickersDisplayList() {
-        if (stickersList == null) {
-            stickersList = (BindedDisplayList<Sticker>) modules.getDisplayListsModule().getStickersSharedList();
-            stickersList.setBindHook(new BindedDisplayList.BindHook<Sticker>() {
-                @Override
-                public void onScrolledToEnd() {
-
-                }
-
-                @Override
-                public void onItemTouched(Sticker item) {
-
-                }
-            });
-        }
-
-        return stickersList;
-    }
-
-    public BindedDisplayList<StickerPack> getStickersPacksDisplayList() {
-        if (stickerPacksList == null) {
-            stickerPacksList = (BindedDisplayList<StickerPack>) modules.getDisplayListsModule().getStickerPacksSharedList();
-            stickerPacksList.setBindHook(new BindedDisplayList.BindHook<StickerPack>() {
-                @Override
-                public void onScrolledToEnd() {
-
-                }
-
-                @Override
-                public void onItemTouched(StickerPack item) {
-
-                }
-            });
-        }
-
-        return stickerPacksList;
     }
 
     public BindedDisplayList<Message> getMessageDisplayList(final Peer peer) {
