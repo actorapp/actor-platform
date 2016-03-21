@@ -18,7 +18,6 @@ import ConnectionState from './common/ConnectionState.react';
 
 import ActivityStore from '../stores/ActivityStore';
 import DialogStore from '../stores/DialogStore';
-import MessageStore from '../stores/MessageStore';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
 
@@ -32,16 +31,13 @@ class DialogSection extends Component {
   };
 
   static getStores() {
-    return [ActivityStore, MessageStore, DialogStore]
+    return [ActivityStore, DialogStore];
   }
 
   static calculateState() {
     return {
       peer: DialogStore.getCurrentPeer(),
       isMember: DialogStore.isMember(),
-      messages: MessageStore.getMessages(),
-      overlay: MessageStore.getOverlay(),
-      messagesCount: MessageStore.getRenderMessagesCount(),
       isActivityOpen: ActivityStore.isOpen()
     };
   }
@@ -51,8 +47,6 @@ class DialogSection extends Component {
 
     const peer = PeerUtils.stringToPeer(props.params.id);
     DialogActionCreators.selectDialogPeer(peer);
-
-    this.onLoadMoreMessages = this.onLoadMoreMessages.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -68,13 +62,6 @@ class DialogSection extends Component {
   componentWillUnmount() {
     // Unbind from current peer
     DialogActionCreators.selectDialogPeer(null);
-  }
-
-  onLoadMoreMessages() {
-    const { peer } = this.state;
-    if (peer) {
-      DialogActionCreators.loadMoreMessages(peer);
-    }
   }
 
   getComponents() {
@@ -120,14 +107,7 @@ class DialogSection extends Component {
         <div className="flexrow">
           <section className="dialog">
             <ConnectionState/>
-            <MessagesSection
-              peer={peer}
-              messages={messages}
-              overlay={overlay}
-              count={messagesCount}
-              isMember={isMember}
-              onLoadMore={this.onLoadMoreMessages}
-            />
+            <MessagesSection peer={peer} isMember={isMember} />
             <DialogFooter isMember={isMember} />
           </section>
           {activity}

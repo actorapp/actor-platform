@@ -2,12 +2,13 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 
-import { forEach, map, debounce, isFunction } from 'lodash';
+import { forEach, debounce } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 
 import MessageActionCreators from '../../actions/MessageActionCreators';
+import DialogActionCreators from '../../actions/DialogActionCreators';
 
 import VisibilityStore from '../../stores/VisibilityStore';
 import DialogStore from '../../stores/DialogStore';
@@ -27,23 +28,30 @@ let flushDelayedDebounced = debounce(flushDelayed, 30, {maxWait: 100});
 class MessagesSection extends Component {
   static propTypes = {
     peer: PropTypes.object.isRequired,
-    messages: PropTypes.array.isRequired,
-    overlay: PropTypes.array.isRequired,
-    count: PropTypes.number.isRequired,
-    isMember: PropTypes.bool.isRequired,
-    onLoadMore: PropTypes.func.isRequired
+    isMember: PropTypes.bool.isRequired
   };
 
   static getStores() {
-    return [MessageStore, VisibilityStore]
+    return [MessageStore, VisibilityStore];
   }
 
   static calculateState() {
     return {
+      messages: MessageStore.getMessages(),
+      overlay: MessageStore.getOverlay(),
+      messagesCount: MessageStore.getRenderMessagesCount(),
       selectedMessages: MessageStore.getSelected(),
       isAllMessagesLoaded: MessageStore.isLoaded(),
       isAppVisible: VisibilityStore.isAppVisible()
-    }
+    };
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.onSelect = this.onSelect.bind(this);
+    this.onLoadMore = this.onLoadMore.bind(this);
+    this.onVisibilityChange = this.onVisibilityChange.bind(this);
   }
 
   componentDidUpdate() {
@@ -53,16 +61,21 @@ class MessagesSection extends Component {
     }
   };
 
-  onMessageSelect = (rid) => {
+  onSelect(rid) {
     const { selectedMessages } = this.state;
     if (selectedMessages.has(rid)) {
       MessageActionCreators.setSelected(selectedMessages.remove(rid));
     } else {
       MessageActionCreators.setSelected(selectedMessages.add(rid));
     }
-  };
+  }
 
-  onMessageVisibilityChange = (message, isVisible) => {
+  onLoadMore() {
+    const { peer } = this.props;
+    DialogActionCreators.loadMoreMessages(peer);
+  }
+
+  onVisibilityChange(message, isVisible) {
     const { peer } = this.props;
 
     if (isVisible) {
@@ -71,27 +84,27 @@ class MessagesSection extends Component {
         flushDelayedDebounced();
       }
     }
-  };
+  }
 
   render() {
-    const { peer, overlay, messages, count, isMember } = this.props;
-    const { selectedMessages, isAllMessagesLoaded } = this.state;
+    const { peer, isMember } = this.props;
+    const { messages, overlay, messagesCount, selectedMessages, isAllMessagesLoaded } = this.state;
 
     return (
       <MessagesList
         peer={peer}
         overlay={overlay}
         messages={messages}
-        count={count}
+        count={messagesCount}
         selectedMessages={selectedMessages}
         isMember={isMember}
         isAllMessagesLoaded={isAllMessagesLoaded}
-        onSelect={this.onMessageSelect}
-        onVisibilityChange={this.onMessageVisibilityChange}
-        onLoadMore={this.props.onLoadMore}
+        onSelect={this.onSelect}
+        onLoadMore={this.onLoadMore}
+        onVisibilityChange={this.onVisibilityChange}
       />
     );
   }
 }
 
-export default Container.create(MessagesSection, {pure: false, withProps: true});
+export default Container.create(MessagesSection, {withProps: true});
