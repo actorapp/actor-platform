@@ -31,6 +31,7 @@ public class AABubbleTextCell : AABubbleCell {
     private var isClanchTop:Bool = false
     private var isClanchBottom:Bool = false
     
+    private var dateWidth: CGFloat = 0
     
     private var messageState = ACMessageState.UNKNOWN().ordinal()
     private var cellLayout: TextCellLayout!
@@ -119,7 +120,6 @@ public class AABubbleTextCell : AABubbleCell {
         // Always update bubble insets
         if (isOut) {
             bindBubbleType(.TextOut, isCompact: isClanchBottom)
-            // dateText.textColor = appStyle.chatTextDateOutColor
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
@@ -147,9 +147,8 @@ public class AABubbleTextCell : AABubbleCell {
                 right: 10)
         }
 
-        
-        // Always update date and state
         dateText.textLayout = self.cellLayout.dateLayout
+        dateWidth = self.cellLayout.dateWidth!
         
         messageState = message.messageState.ordinal()
         
@@ -245,12 +244,12 @@ public class AABubbleTextCell : AABubbleCell {
         // Layout elements
         if (self.isOut) {
             self.messageText.frame.origin = CGPoint(x: contentWidth - bubbleWidth - insets.right, y: insets.top /*+ topPadding*/)
-            self.dateText.frame = CGRectMake(contentWidth - insets.right - 70, bubbleHeight + insets.top - 20, 46, 26)
+            self.dateText.frame = CGRectMake(contentWidth - insets.right - 70 + 46 - dateWidth, bubbleHeight + insets.top - 20, dateWidth, 26)
             self.statusView.frame = CGRectMake(contentWidth - insets.right - 24, bubbleHeight + insets.top - 20, 20, 26)
             self.statusView.hidden = false
         } else {
             self.messageText.frame.origin = CGPoint(x: insets.left, y: insets.top/* + topPadding*/)
-            self.dateText.frame = CGRectMake(insets.left + bubbleWidth - 47, bubbleHeight + insets.top - 20, 46, 26)
+            self.dateText.frame = CGRectMake(insets.left + bubbleWidth - 47 + 46 - dateWidth, bubbleHeight + insets.top - 20, dateWidth, 26)
             self.statusView.hidden = true
         }
         
@@ -303,6 +302,7 @@ public class TextCellLayout: AACellLayout {
     var textLayout: YYTextLayout
     var senderLayout: YYTextLayout?
     var dateLayout: YYTextLayout?
+    var dateWidth: CGFloat?
     
     var isUnsupported: Bool = false
     var bubbleSize: CGSize
@@ -383,11 +383,13 @@ public class TextCellLayout: AACellLayout {
             attrDate.yy_font = AABubbleTextCell.dateFont
             attrDate.yy_color = ActorSDK.sharedActor().style.chatTextDateOutColor
             dateLayout = YYTextLayout(containerSize: CGSizeMake(timeWidth, CGFloat.max), text: attrDate)
+            dateWidth = dateLayout?.textBoundingSize.width
         } else {
             let attrDate = NSMutableAttributedString(string: AACellLayout.formatDate(date))
             attrDate.yy_font = AABubbleTextCell.dateFont
             attrDate.yy_color = ActorSDK.sharedActor().style.chatTextDateInColor
             dateLayout = YYTextLayout(containerSize: CGSizeMake(timeWidth, CGFloat.max), text: attrDate)
+            dateWidth = dateLayout?.textBoundingSize.width
         }
         
         // Calculating bubble height
