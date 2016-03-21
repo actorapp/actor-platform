@@ -41,7 +41,7 @@ private[activation] final class InternalCodeProvider(system: ActorSystem)
       )
     } yield ()).fold(
       failure ⇒ {
-        system.log.warning("Failed to send message via internal code provider: {}", failure)
+        system.log.debug("Failed to send message via internal code provider: {}", failure)
         Xor.right[CodeFailure, Unit](())
       },
       success ⇒ Xor.right[CodeFailure, Unit](())
