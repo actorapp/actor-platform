@@ -31,6 +31,7 @@ public class AABubbleTextCell : AABubbleCell {
     private var isClanchTop:Bool = false
     private var isClanchBottom:Bool = false
     
+    private var dateWidth: CGFloat = 0
     
     private var messageState = ACMessageState.UNKNOWN().ordinal()
     private var cellLayout: TextCellLayout!
@@ -40,8 +41,9 @@ public class AABubbleTextCell : AABubbleCell {
         
         messageText.displaysAsynchronously = true
         messageText.ignoreCommonProperties = true
-        messageText.clearContentsBeforeAsynchronouslyDisplay = true
         messageText.fadeOnAsynchronouslyDisplay = true
+        messageText.clearContentsBeforeAsynchronouslyDisplay = true
+        
         messageText.highlightTapAction = { (containerView: UIView, text: NSAttributedString, range: NSRange, rect: CGRect) -> () in
             let attributes = text.attributesAtIndex(range.location, effectiveRange: nil)
             if let attrs = attributes["YYTextHighlight"] as? YYTextHighlight {
@@ -60,19 +62,21 @@ public class AABubbleTextCell : AABubbleCell {
         }
 
         
-        
         senderNameLabel.displaysAsynchronously = true
         senderNameLabel.ignoreCommonProperties = true
         senderNameLabel.fadeOnAsynchronouslyDisplay = true
         senderNameLabel.clearContentsBeforeAsynchronouslyDisplay = true
         
+        
         dateText.displaysAsynchronously = true
-        dateText.clearContentsBeforeAsynchronouslyDisplay = true
-        dateText.fadeOnAsynchronouslyDisplay = true
-        dateText.font = AABubbleTextCell.dateFont
-        dateText.lineBreakMode = .ByClipping
-        dateText.numberOfLines = 1
-        dateText.textAlignment = .Right
+        dateText.ignoreCommonProperties = true
+        // dateText.fadeOnAsynchronouslyDisplay = false
+        // dateText.clearContentsBeforeAsynchronouslyDisplay = true
+        
+//        dateText.font = AABubbleTextCell.dateFont
+//        dateText.lineBreakMode = .ByClipping
+//        dateText.numberOfLines = 1
+//        dateText.textAlignment = .Right
         
         statusView.contentMode = UIViewContentMode.Center
         
@@ -116,7 +120,6 @@ public class AABubbleTextCell : AABubbleCell {
         // Always update bubble insets
         if (isOut) {
             bindBubbleType(.TextOut, isCompact: isClanchBottom)
-            dateText.textColor = appStyle.chatTextDateOutColor
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
@@ -130,7 +133,7 @@ public class AABubbleTextCell : AABubbleCell {
                 right: (isClanchBottom ? 4 : 10))
         } else {
             bindBubbleType(.TextIn, isCompact: isClanchBottom)
-            dateText.textColor = appStyle.chatTextDateInColor
+            // dateText.textColor = appStyle.chatTextDateInColor
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
@@ -144,9 +147,9 @@ public class AABubbleTextCell : AABubbleCell {
                 right: 10)
         }
 
+        dateText.textLayout = self.cellLayout.dateLayout
+        dateWidth = self.cellLayout.dateWidth!
         
-        // Always update date and state
-        dateText.text = cellLayout.date
         messageState = message.messageState.ordinal()
         
         if (isOut) {
@@ -241,12 +244,12 @@ public class AABubbleTextCell : AABubbleCell {
         // Layout elements
         if (self.isOut) {
             self.messageText.frame.origin = CGPoint(x: contentWidth - bubbleWidth - insets.right, y: insets.top /*+ topPadding*/)
-            self.dateText.frame = CGRectMake(contentWidth - insets.right - 70, bubbleHeight + insets.top - 20, 46, 26)
+            self.dateText.frame = CGRectMake(contentWidth - insets.right - 70 + 46 - dateWidth, bubbleHeight + insets.top - 20, dateWidth, 26)
             self.statusView.frame = CGRectMake(contentWidth - insets.right - 24, bubbleHeight + insets.top - 20, 20, 26)
             self.statusView.hidden = false
         } else {
             self.messageText.frame.origin = CGPoint(x: insets.left, y: insets.top/* + topPadding*/)
-            self.dateText.frame = CGRectMake(insets.left + bubbleWidth - 47, bubbleHeight + insets.top - 20, 46, 26)
+            self.dateText.frame = CGRectMake(insets.left + bubbleWidth - 47 + 46 - dateWidth, bubbleHeight + insets.top - 20, dateWidth, 26)
             self.statusView.hidden = true
         }
         
@@ -298,6 +301,8 @@ public class TextCellLayout: AACellLayout {
     var attrText: NSAttributedString
     var textLayout: YYTextLayout
     var senderLayout: YYTextLayout?
+    var dateLayout: YYTextLayout?
+    var dateWidth: CGFloat?
     
     var isUnsupported: Bool = false
     var bubbleSize: CGSize
@@ -306,7 +311,7 @@ public class TextCellLayout: AACellLayout {
     /**
      NSAttributedString layout
      */
-    public init(senderId: Int, text: String, attributedText: NSAttributedString, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
+    public init(senderId: Int, text: String, attributedText: NSAttributedString, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey, layouter: AABubbleLayouter) {
         
         // Setting attributed text
         self.text = text
@@ -320,6 +325,8 @@ public class TextCellLayout: AACellLayout {
         let container = YYTextContainer(size: CGSizeMake(maxTextWidth, CGFloat.max))
         
         textLayout = YYTextLayout(container: container, text: attributedText)!
+        
+        // print("Text Layouted")
         
         // Measuring text and padded text heights
         let textSize = textLayout.textBoundingSize
@@ -370,6 +377,20 @@ public class TextCellLayout: AACellLayout {
             }
         }
         
+        // Date Layouting
+        if isOut {
+            let attrDate = NSMutableAttributedString(string: AACellLayout.formatDate(date))
+            attrDate.yy_font = AABubbleTextCell.dateFont
+            attrDate.yy_color = ActorSDK.sharedActor().style.chatTextDateOutColor
+            dateLayout = YYTextLayout(containerSize: CGSizeMake(timeWidth, CGFloat.max), text: attrDate)
+            dateWidth = dateLayout?.textBoundingSize.width
+        } else {
+            let attrDate = NSMutableAttributedString(string: AACellLayout.formatDate(date))
+            attrDate.yy_font = AABubbleTextCell.dateFont
+            attrDate.yy_color = ActorSDK.sharedActor().style.chatTextDateInColor
+            dateLayout = YYTextLayout(containerSize: CGSizeMake(timeWidth, CGFloat.max), text: attrDate)
+            dateWidth = dateLayout?.textBoundingSize.width
+        }
         
         // Calculating bubble height
         var height = bubbleSize.height + AABubbleCell.bubbleContentTop + AABubbleCell.bubbleContentBottom
@@ -406,20 +427,20 @@ public class TextCellLayout: AACellLayout {
         }
         
         // Creating layout
-        super.init(height: height, date: date, key: layoutKey)
+        super.init(height: height, date: date, key: layoutKey, layouter: layouter)
     }
     
     /**
         Formatted text layout. Automatically parse text and detect formatting.
     */
-    public convenience init(senderId: Int, formattedText: String, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
+    public convenience init(senderId: Int, formattedText: String, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey, layouter: AABubbleLayouter) {
         
         // Parsing markdown formatted text
         let parser = TextParser(textColor: textColor, linkColor: ActorSDK.sharedActor().style.chatUrlColor, fontSize: AABubbleTextCell.fontSize)        
         let text = parser.parse(formattedText)
         
         // Creating attributed text layout
-        self.init(senderId: senderId, text: formattedText, attributedText: text.attributedText, date: date, isOut: isOut, peer: peer, layoutKey: layoutKey)
+        self.init(senderId: senderId, text: formattedText, attributedText: text.attributedText, date: date, isOut: isOut, peer: peer, layoutKey: layoutKey, layouter: layouter)
         
         // Setting source code references
         self.sources = text.code
@@ -428,7 +449,7 @@ public class TextCellLayout: AACellLayout {
     /**
         Creating text layout from message and peer
     */
-    public convenience init(message: ACMessage, peer: ACPeer) {
+    public convenience init(message: ACMessage, peer: ACPeer, layouter: AABubbleLayouter) {
         let style = ActorSDK.sharedActor().style
         
         if let content = message.content as? ACTextContent {
@@ -441,7 +462,8 @@ public class TextCellLayout: AACellLayout {
                 date: Int64(message.date),
                 isOut: message.isOut,
                 peer: peer,
-                layoutKey: TextCellLayout.textKey
+                layoutKey: TextCellLayout.textKey,
+                layouter: layouter
             )
         } else {
             
@@ -455,7 +477,8 @@ public class TextCellLayout: AACellLayout {
                 date: Int64(message.date),
                 isOut: message.isOut,
                 peer: peer,
-                layoutKey: TextCellLayout.unsupportedKey
+                layoutKey: TextCellLayout.unsupportedKey,
+                layouter: layouter
             )
         }
     }
@@ -467,7 +490,7 @@ public class TextCellLayout: AACellLayout {
 public class AABubbleTextCellLayouter: AABubbleLayouter {
     
     public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
-        return TextCellLayout(message: message, peer: peer)
+        return TextCellLayout(message: message, peer: peer, layouter: self)
     }
     
     public func isSuitable(message: ACMessage) -> Bool {

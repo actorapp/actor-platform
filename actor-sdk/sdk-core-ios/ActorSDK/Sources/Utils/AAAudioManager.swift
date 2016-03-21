@@ -21,6 +21,9 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
     private var ringtoneSound:SystemSoundID = 0
     private var isVisible = false
     
+    private var isEnabled: Bool = false
+    private var openedConnections: Int = 0
+    
     public override init() {
         super.init()
         
@@ -38,21 +41,24 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
         if !call.isOutgoing {
             isRinging = true
             if isVisible {
-                audioRouter.mode = AVAudioSessionModeDefault
-                audioRouter.currentRoute = .Speaker
-                audioRouter.isEnabled = true
-                audioRouter.isManagingEnabled = true
+                isEnabled = true
+                audioRouter.batchedUpdate {
+                    audioRouter.category = AVAudioSessionCategoryPlayAndRecord
+                    audioRouter.mode = AVAudioSessionModeDefault
+                    audioRouter.currentRoute = .Speaker
+                    audioRouter.isEnabled = isEnabled
+                }
                 ringtoneStart()
             } else {
                 notificationRingtone(call)
             }
             vibrate()
         } else {
+            isEnabled = true
             audioRouter.category = AVAudioSessionCategoryPlayAndRecord
-            audioRouter.mode = AVAudioSessionModeVoiceChat
+            audioRouter.mode =  AVAudioSessionModeVoiceChat
             audioRouter.currentRoute = .Receiver
-            audioRouter.isEnabled = true
-            audioRouter.isManagingEnabled = true
+            audioRouter.isEnabled = isEnabled
         }
     }
     
@@ -66,13 +72,24 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
     public func callEnd(call: ACCallVM) {
         ringtoneEnd()
         isRinging = false
+        isEnabled = false
         audioRouter.category = AVAudioSessionCategorySoloAmbient
         audioRouter.mode = AVAudioSessionModeDefault
         audioRouter.currentRoute = .Receiver
-        audioRouter.isEnabled = false
-        audioRouter.isManagingEnabled = false
+        audioRouter.isEnabled = isEnabled
     }
     
+    public func peerConnectionStarted() {
+        openedConnections++
+        print("📡 AudioManager: peerConnectionStarted \(self.openedConnections)")
+        audioRouter.isRTCEnabled = openedConnections > 0
+    }
+    
+    public func peerConnectionEnded() {
+        openedConnections--
+        print("📡 AudioManager: peerConnectionEnded \(self.openedConnections)")
+        audioRouter.isRTCEnabled = openedConnections > 0
+    }
     
     private func ringtoneStart() {
         if ringtonePlaying {

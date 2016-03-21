@@ -5,8 +5,6 @@
 package im.actor.core.entity.content;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import im.actor.core.api.ApiDocumentExPhoto;
 import im.actor.core.api.ApiDocumentExVideo;
@@ -28,7 +26,6 @@ import im.actor.core.api.ApiServiceExUserLeft;
 import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.api.ApiStickerMessage;
 import im.actor.core.api.ApiTextMessage;
-import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.internal.AbsContentContainer;
 import im.actor.core.entity.content.internal.AbsLocalContent;
 import im.actor.core.entity.content.internal.ContentLocalContainer;
@@ -37,8 +34,7 @@ import im.actor.core.entity.content.internal.LocalDocument;
 import im.actor.core.entity.content.internal.LocalPhoto;
 import im.actor.core.entity.content.internal.LocalVideo;
 import im.actor.core.entity.content.internal.LocalVoice;
-import im.actor.core.entity.content.internal.Sticker;
-import im.actor.core.modules.ModuleContext;
+import im.actor.core.entity.Sticker;
 import im.actor.runtime.bser.BserParser;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -54,18 +50,7 @@ import im.actor.runtime.json.JSONObject;
 
 public abstract class AbsContent {
 
-    private static ContentConverter[] converters = new ContentConverter[0];
-
     private int updatedCounter = 0;
-
-    public static void registerConverter(ContentConverter contentConverter) {
-        ContentConverter[] nConverters = new ContentConverter[converters.length + 1];
-        for (int i = 0; i < converters.length; i++) {
-            nConverters[i] = converters[i];
-        }
-        nConverters[nConverters.length - 1] = contentConverter;
-        converters = nConverters;
-    }
 
     public static byte[] serialize(AbsContent content) throws IOException {
         DataOutput dataOutput = new DataOutput();
@@ -95,18 +80,6 @@ public abstract class AbsContent {
 
     protected static AbsContent convertData(AbsContentContainer container) throws IOException {
 
-        // Processing extension converters
-        for (ContentConverter converter : converters) {
-            try {
-                AbsContent res = converter.convert(container);
-                if (res != null) {
-                    return res;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
         if (container instanceof ContentLocalContainer) {
             ContentLocalContainer localContainer = (ContentLocalContainer) container;
             AbsLocalContent content = ((ContentLocalContainer) container).getContent();
@@ -118,8 +91,6 @@ public abstract class AbsContent {
                 return new VoiceContent(localContainer);
             } else if (content instanceof LocalDocument) {
                 return new DocumentContent(localContainer);
-            } else if (content instanceof Sticker) {
-                return new StickerContent(localContainer);
             } else {
                 throw new IOException("Unknown type");
             }
@@ -211,10 +182,6 @@ public abstract class AbsContent {
         this.contentContainer = contentContainer;
     }
 
-
-    public static ContentConverter[] getConverters() {
-        return converters;
-    }
 
     public int getUpdatedCounter() {
         return updatedCounter;

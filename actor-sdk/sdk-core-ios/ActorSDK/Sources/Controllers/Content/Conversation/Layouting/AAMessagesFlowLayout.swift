@@ -10,9 +10,9 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     
     var deletedIndexPaths = [NSIndexPath]()
     var insertedIndexPaths = [NSIndexPath]()
-    var items = [AALayoutItem]()
-    var frames = [CGRect]()
-    var disableAutoScroll: Bool = false
+    var items = [AALayoutItem?]()
+    var frames = [CGRect?]()
+    var isLoadMore: Bool = false
     
     var contentHeight: CGFloat = 0.0
     var currentItems = [AACachedLayout]()
@@ -29,11 +29,9 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func beginUpdates(disableAutoScroll: Bool, list: AAPreprocessedList?, unread: jlong?) {
+    func beginUpdates(isLoadMore: Bool, list: AAPreprocessedList?, unread: jlong?) {
         
-        // NSLog("🙇 beginUpdates")
-        
-        self.disableAutoScroll = disableAutoScroll
+        self.isLoadMore = isLoadMore
         self.list = list
         self.unread = unread
         
@@ -43,8 +41,8 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
         let currentOffset = self.collectionView!.contentOffset.y
         for indexPath in visibleItems {
             let index = indexPath.item
-            let topOffset = items[index].attrs.frame.origin.y - currentOffset
-            let id = items[index].id
+            let topOffset = items[index]!.attrs.frame.origin.y - currentOffset
+            let id = items[index]!.id
             currentItems.append(AACachedLayout(id: id, offset: topOffset))
         }
         
@@ -54,111 +52,111 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     override func prepareLayout() {
         super.prepareLayout()
         
-//        if list != nil {
-//            NSLog("🙇 prepareLayout \(list!.items.count)")
-//        } else {
-//            NSLog("🙇 prepareLayout nil")
-//        }
-        
-        // Validate sections
-        let sectionsCount = self.collectionView!.numberOfSections()
-        if sectionsCount == 0 {
-            items.removeAll(keepCapacity: true)
-            contentHeight = 0.0
-            return
-        }
-        if sectionsCount != 1 {
-            fatalError("Unsupported more than 1 section")
-        }
-
-        if AADevice.isiPad {
-            contentHeight = 16.0
-        } else {
-            contentHeight = 6.0
-        }
-        items.removeAll(keepCapacity: true)
-        frames.removeAll(keepCapacity: true)
-        
-        if list != nil {
-            for i in 0..<list!.items.count {
-                let itemId = list!.items[i].rid
-                var height = list!.heights[i]
-                if itemId == unread {
-                    height += AABubbleCell.newMessageSize
-                }
-                let itemSize = CGSizeMake(self.collectionView!.bounds.width, height)
-                
-                let frame = CGRect(origin: CGPointMake(0, contentHeight), size: itemSize)
-                var item = AALayoutItem(id: itemId)
-                
-                item.size = itemSize
-                
-                let attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: NSIndexPath(forRow: i, inSection: 0))
-                attrs.frame = frame
-                item.attrs = attrs
-                
-                items.append(item)
-                frames.append(frame)
-                
-                contentHeight += item.size.height
+        autoreleasepool {
+            
+            // Validate sections
+            let sectionsCount = self.collectionView!.numberOfSections()
+            if sectionsCount == 0 {
+                items.removeAll(keepCapacity: false)
+                contentHeight = 0.0
+                return
             }
+            if sectionsCount != 1 {
+                fatalError("Unsupported more than 1 section")
+            }
+            
+            if AADevice.isiPad {
+                contentHeight = 16.0
+            } else {
+                contentHeight = 6.0
+            }
+            // items.removeAll(keepCapacity: false)
+            // frames.removeAll(keepCapacity: false)
+            items.removeAll(keepCapacity: true)
+            frames.removeAll(keepCapacity: true)
+            
+            if list != nil {
+                
+//                items = [AALayoutItem?](count: Int(list!.items.count), repeatedValue: nil)
+//                frames = [CGRect?](count: Int(list!.items.count), repeatedValue: nil)
+                
+                for i in 0..<list!.items.count {
+                    let itemId = list!.items[i].rid
+                    var height = list!.heights[i]
+                    if itemId == unread {
+                        height += AABubbleCell.newMessageSize
+                    }
+                    let itemSize = CGSizeMake(self.collectionView!.bounds.width, height)
+                    
+                    let frame = CGRect(origin: CGPointMake(0, contentHeight), size: itemSize)
+                    var item = AALayoutItem(id: itemId)
+                    
+                    item.size = itemSize
+                    
+                    let attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: NSIndexPath(forRow: i, inSection: 0))
+                    attrs.frame = frame
+                    item.attrs = attrs
+                    
+//                    attrs.frame.size = itemSize
+                    
+//                    items[i] = item
+//                    frames[i] = frame
+                    items.append(item)
+                    frames.append(frame)
+                    
+                    contentHeight += item.size.height
+                }
+            } else {
+                items = []
+                frames = []
+            }
+            
+            contentHeight += 100
         }
-        
-        contentHeight += 100
     }
     
     override func collectionViewContentSize() -> CGSize {
-        
-//        NSLog("🙇 collectionViewContentSize")
-        
         return CGSize(width: self.collectionView!.bounds.width, height: contentHeight)
     }
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        
-        // NSLog("🙇 layoutAttributesForElementsInRect")
-        
         var res = [UICollectionViewLayoutAttributes]()
         for i in 0..<items.count {
-            if CGRectIntersectsRect(rect, frames[i]) {
-                res.append(items[i].attrs)
+            if CGRectIntersectsRect(rect, frames[i]!) {
+                res.append(items[i]!.attrs)
             }
         }
         return res
     }
     
     override func prepareForCollectionViewUpdates(updateItems: [UICollectionViewUpdateItem]) {
-        
-//        NSLog("🙇 prepareForCollectionViewUpdates")
-        
         let start = CFAbsoluteTimeGetCurrent()
         super.prepareForCollectionViewUpdates(updateItems)
         
-        insertedIndexPaths.removeAll(keepCapacity: true)
-        deletedIndexPaths.removeAll(keepCapacity: true)
-        for update in updateItems {
-            if update.updateAction == .Insert {
-                insertedIndexPaths.append(update.indexPathAfterUpdate!)
-            } else if update.updateAction == .Delete {
-                deletedIndexPaths.append(update.indexPathBeforeUpdate!)
+        if !isLoadMore {
+            
+            insertedIndexPaths.removeAll(keepCapacity: true)
+            deletedIndexPaths.removeAll(keepCapacity: true)
+            
+            for update in updateItems {
+                if update.updateAction == .Insert {
+                    insertedIndexPaths.append(update.indexPathAfterUpdate!)
+                } else if update.updateAction == .Delete {
+                    deletedIndexPaths.append(update.indexPathBeforeUpdate!)
+                }
             }
         }
+        
         if ENABLE_LOGS { NSLog("🙇 prepareForCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)") }
     }
 
     override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-        
-//        NSLog("🙇 layoutAttributesForItemAtIndexPath")
-        
-        return items[indexPath.item].attrs
+        return items[indexPath.item]!.attrs
     }    
     
     override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-        
-//        NSLog("🙇 initialLayoutAttributesForAppearingItemAtIndexPath")
-        
         let res = super.initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath)
-        if insertedIndexPaths.contains(itemIndexPath) {
+        if !isLoadMore && insertedIndexPaths.contains(itemIndexPath) {
             res?.alpha = 0
             res?.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -44)
         } else {
@@ -170,19 +168,17 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
     override func finalizeCollectionViewUpdates() {
         super.finalizeCollectionViewUpdates()
         
-//        NSLog("🙇 finalizeCollectionViewUpdates")
-        
         let start = CFAbsoluteTimeGetCurrent()
         
-        if disableAutoScroll {
-
+        if isLoadMore {
             var delta: CGFloat! = nil
-            for item in items {
+            outer: for item in items {
                 for current in currentItems {
-                    if current.id == item.id {
+                    if current.id == item!.id {
                         let oldOffset = current.offset
-                        let newOffset = item.attrs!.frame.origin.y - self.collectionView!.contentOffset.y
+                        let newOffset = item!.attrs!.frame.origin.y - self.collectionView!.contentOffset.y
                         delta = oldOffset - newOffset
+                        break outer
                     }
                 }
             }
@@ -190,7 +186,6 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
             if delta != nil {
                 self.collectionView!.contentOffset = CGPointMake(0, self.collectionView!.contentOffset.y - delta)
             }
-            
         }
         
         if ENABLE_LOGS { NSLog("🙇 finalizeCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)") }

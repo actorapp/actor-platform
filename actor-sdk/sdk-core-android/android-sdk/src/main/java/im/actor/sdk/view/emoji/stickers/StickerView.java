@@ -15,10 +15,9 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.File;
-import java.io.IOException;
 
 import im.actor.core.entity.FileReference;
-import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.entity.Sticker;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.runtime.files.FileSystemReference;
@@ -65,7 +64,7 @@ public class StickerView extends SimpleDraweeView {
 
         GenericDraweeHierarchy hierarchy = builder
                 .setFadeDuration(200)
-                .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_INSIDE)
+                .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
                 .build();
         setHierarchy(hierarchy);
 

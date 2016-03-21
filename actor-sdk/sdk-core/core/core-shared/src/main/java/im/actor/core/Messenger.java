@@ -23,7 +23,6 @@ import im.actor.core.entity.AuthStartRes;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.MentionFilterResult;
-import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
@@ -34,7 +33,7 @@ import im.actor.core.entity.User;
 import im.actor.core.entity.WebActionDescriptor;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.JsonContent;
-import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.entity.Sticker;
 import im.actor.core.events.PeerChatPreload;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.ModuleContext;
@@ -47,7 +46,6 @@ import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerInfoClosed;
 import im.actor.core.events.PeerInfoOpened;
 import im.actor.core.events.UserVisible;
-import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.core.network.NetworkState;
 import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
@@ -63,20 +61,15 @@ import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.GroupAvatarVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.OwnAvatarVM;
-import im.actor.core.viewmodel.StickerPackVM;
+import im.actor.core.viewmodel.StickersVM;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.core.viewmodel.UserVM;
-import im.actor.runtime.*;
-import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.bser.BserCreator;
-import im.actor.runtime.crypto.primitives.kuznechik.KuznechikFastEngine;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.promise.Promise;
-import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.PreferencesStorage;
 
 /**
@@ -681,8 +674,22 @@ public class Messenger {
      * @param peer peer
      * @return Conversation VM
      */
+    @NotNull
+    @ObjectiveCName("getConversationVM")
     public ConversationVM getConversationVM(Peer peer) {
         return modules.getMessagesModule().getConversationVM(peer);
+    }
+
+
+    /**
+     * Getting Available Stickers VM
+     *
+     * @return Stickers VM
+     */
+    @NotNull
+    @ObjectiveCName("getAvailableStickersVM")
+    public StickersVM getAvailableStickersVM() {
+        return modules.getStickersModule().getStickersVM();
     }
 
     /**
@@ -867,7 +874,7 @@ public class Messenger {
      * @param peer    destination peer
      * @param content json content
      */
-    @ObjectiveCName("sendJsonWithPeer:withJson:")
+    @ObjectiveCName("sendCustomJsonMessageWithPeer:withJson:")
     public void sendCustomJsonMessage(@NotNull Peer peer, @NotNull JsonContent content) {
         modules.getMessagesModule().sendJson(peer, content);
     }
@@ -1203,6 +1210,7 @@ public class Messenger {
             modules.getCallsModule().checkCall(callId, attempt);
         }
     }
+
 
     //////////////////////////////////////
     //         Peer operations
@@ -2025,23 +2033,6 @@ public class Messenger {
         modules.getSettingsModule().changeSelectedWallpapper(uri);
     }
 
-    /**
-     * Getting saved sticker packs
-     *
-     * @return list of saved sticker packs Value Models
-     */
-    @ObjectiveCName("getOwnStickerPacksIdsVM")
-    public ValueModel<ArrayList<StickerPackVM>> getOwnStickerPacks() {
-        return modules.getStickersModule().getStickerPacks();
-    }
-
-    /**
-     * Loading sticker packs for current user
-     */
-    @ObjectiveCName("loadStickers")
-    public void loadStickers() {
-        modules.getStickersModule().loadStickers();
-    }
 
     /**
      * Is Hint about contact rename shown to user and automatically mark as shown if not.

@@ -362,7 +362,11 @@ public class I18nEngine {
             case LOCATION:
                 return locale.get("Location");
             case STICKER:
-                return locale.get("Sticker");
+                if (text != null) {
+                    return text + " " + locale.get("Sticker");
+                } else {
+                    return locale.get("Sticker");
+                }
             case SERVICE:
                 return text;// Should be service message
             case SERVICE_REGISTERED:
@@ -496,7 +500,7 @@ public class I18nEngine {
             return locale.get("Thee");
         } else {
             User user = getUser(uid);
-            return user!=null?user.getName():"";
+            return user != null ? user.getName() : "";
         }
     }
 
@@ -551,14 +555,13 @@ public class I18nEngine {
     }
 
     private String getTemplateNamed(int senderId, String baseString) {
-        String newString =  getTemplate(senderId, baseString).replace("{name}",
+        String newString = getTemplate(senderId, baseString).replace("{name}",
                 formatPerformerName(senderId));
 
         // verb for 'you' in persian language continues with suffix
-        if (runtime.getCurrentLocale().equals("Fa"))
-        {
+        if (runtime.getCurrentLocale().equals("Fa")) {
             if (senderId == modules.getAuthModule().myUid())
-                newString = (newString + locale.get("YouSuffixVerb")).replace("\r","");
+                newString = (newString + locale.get("YouSuffixVerb")).replace("\r", "");
         }
         return newString;
     }

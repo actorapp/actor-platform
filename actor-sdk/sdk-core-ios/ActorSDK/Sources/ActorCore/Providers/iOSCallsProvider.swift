@@ -51,6 +51,9 @@ class iOSCallsProvider: NSObject, ACCallsProvider {
     }
     
     func stopOutgoingBeep() {
-        beepPlayer.stop()
+        if beepPlayer != nil {
+            beepPlayer.stop()
+            beepPlayer = nil
+        }
     }
 }

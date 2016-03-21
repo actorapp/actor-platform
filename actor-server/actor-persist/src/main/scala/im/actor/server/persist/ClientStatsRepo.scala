@@ -7,9 +7,10 @@ final class ClientStatsTable(tag: Tag) extends Table[ClientStats](tag, "client_s
   def id = column[Long]("id", O.PrimaryKey)
   def userId = column[Int]("user_id")
   def authId = column[Long]("auth_id")
-  def event = column[String]("event")
+  def eventType = column[String]("event_type")
+  def eventData = column[String]("event_data")
 
-  def * = (id, userId, authId, event) <> (ClientStats.tupled, ClientStats.unapply)
+  def * = (id, userId, authId, eventType, eventData) <> (ClientStats.tupled, ClientStats.unapply)
 }
 
 object ClientStatsRepo {

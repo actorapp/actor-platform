@@ -18,7 +18,8 @@ public class ConversationViewController:
     AALocationPickerControllerDelegate,
     ABPeoplePickerNavigationControllerDelegate,
     AAAudioRecorderDelegate,
-    AAConvActionSheetDelegate {
+    AAConvActionSheetDelegate,
+    AAStickersKeyboardDelegate {
     
     // Data binder
     private let binder = AABinder()
@@ -47,7 +48,7 @@ public class ConversationViewController:
     // Stickers
     //
     
-    private var stickersView: AAStickersView!
+    private var stickersView: AAStickersKeyboard!
     private var stickersButton : UIButton!
     private var stickersOpen = false
     
@@ -245,7 +246,8 @@ public class ConversationViewController:
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
         
         let frame = CGRectMake(0, 0, self.view.frame.size.width, 216)
-        self.stickersView = AAStickersView(frame: frame, convController: self)
+        self.stickersView = AAStickersKeyboard(frame: frame)
+        self.stickersView.delegate = self
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -938,7 +940,7 @@ public class ConversationViewController:
     
     func changeKeyboard() {
         if self.stickersOpen == false {
-            self.stickersView.loadStickers()
+            // self.stickersView.loadStickers()
             
             self.textInputbar.textView.inputView = self.stickersView
             self.textInputbar.textView.inputView?.opaque = false
@@ -965,7 +967,7 @@ public class ConversationViewController:
         self.view.layoutIfNeeded()
     }
     
-    func sendSticker(sticker: ACSticker) {
+    public func stickerDidSelected(keyboard: AAStickersKeyboard, sticker: ACSticker) {
         Actor.sendStickerWithPeer(self.peer, withSticker: sticker)
     }
 }

@@ -30,18 +30,6 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
         
         tabBarItem = UITabBarItem(title: "TabMessages", img: "TabIconChats", selImage: "TabIconChatsHighlighted")
         
-        binder.bind(Actor.getAppState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
-            if value != nil {
-                if value!.integerValue > 0 {
-                    self.tabBarItem.badgeValue = "\(value!.integerValue)"
-                } else {
-                    self.tabBarItem.badgeValue = nil
-                }
-            } else {
-                self.tabBarItem.badgeValue = nil
-            }
-        })
-        
         // Setting navigation item
         
         navigationItem.title = AALocalized("TabMessages")
@@ -85,6 +73,22 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
     }
     
     // Tracking app state
+    
+    public override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        binder.bind(Actor.getAppState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
+            if value != nil {
+                if value!.integerValue > 0 {
+                    self.tabBarItem.badgeValue = "\(value!.integerValue)"
+                } else {
+                    self.tabBarItem.badgeValue = nil
+                }
+            } else {
+                self.tabBarItem.badgeValue = nil
+            }
+        })
+    }
     
     public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)

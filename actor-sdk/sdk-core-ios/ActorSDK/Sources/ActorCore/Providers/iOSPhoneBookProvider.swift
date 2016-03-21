@@ -11,18 +11,18 @@ class PhoneBookProvider: NSObject, ACPhoneBookProvider {
         
         dispatchBackgroundDelayed(5.0) {
             
-            let rawBook = ABAddressBookCreateWithOptions(nil, nil);
+            let rawBook = ABAddressBookCreateWithOptions(nil, nil)
             if (rawBook == nil) {
-                print("Access to AddressBook denied");
+                print("Access to AddressBook denied")
                 callback.onLoadedWithContacts(JavaUtilArrayList())
                 return
             }
             let book: ABAddressBook = rawBook.takeRetainedValue()
             ABAddressBookRequestAccessWithCompletion(book, { (granted: Bool, error: CFError!) -> Void in
                 if (!granted) {
-                    print("Access to AddressBook denied");
+                    print("Access to AddressBook denied")
                     callback.onLoadedWithContacts(JavaUtilArrayList())
-                    return;
+                    return
                 }
                 
                 autoreleasepool {

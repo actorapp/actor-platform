@@ -11,6 +11,8 @@ import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
+import im.actor.core.entity.Sticker;
+import im.actor.core.entity.StickerPack;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.Storage;
