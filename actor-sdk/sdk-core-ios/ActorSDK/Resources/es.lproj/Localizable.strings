@@ -425,9 +425,9 @@
 
 "WelcomeTagline" = "Mensajería gratis, segura y veloz.";
 
-"WelcomeSignUp" = "Sign Up";
+"WelcomeSignUp" = "Regístrate";
 
-"WelcomeLogIn" = "Log In";
+"WelcomeLogIn" = "Iniciar sesión";
 
 /*
  * Auth
@@ -475,7 +475,9 @@
 
 "AuthOTPPhoneTitle" = "Confirma tu número de móvil";
 
-"AuthOTPHint" = "We’ve sent you an confirmation code.\nPlease enter it below.";
+"AuthOTPPhoneHint" = "Te hemos enviado un código de confirmación.\nPor favor, introduzca a continuación.";
+
+"AuthOTPEmailHint" = "Te hemos enviado un código de confirmación.\nPor favor, introduzca a continuación.";
 
 "AuthOTPPlaceholder" = "Código confirmación";
 
