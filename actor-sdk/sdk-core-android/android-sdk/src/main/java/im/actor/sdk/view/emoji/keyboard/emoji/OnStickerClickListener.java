@@ -1,6 +1,6 @@
 package im.actor.sdk.view.emoji.keyboard.emoji;
 
-import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.entity.Sticker;
 
 /**
  * Created by Jesus Christ. Amen.

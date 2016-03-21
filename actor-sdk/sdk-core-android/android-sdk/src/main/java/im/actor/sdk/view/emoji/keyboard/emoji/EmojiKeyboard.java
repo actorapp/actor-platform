@@ -27,7 +27,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import im.actor.core.entity.Peer;
-import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.entity.Sticker;
 import im.actor.sdk.R;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.emoji.keyboard.BaseKeyboard;

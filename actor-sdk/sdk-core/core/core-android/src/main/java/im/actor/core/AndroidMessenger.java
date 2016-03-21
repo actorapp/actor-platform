@@ -31,10 +31,9 @@ import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
+import im.actor.core.entity.StickerPack;
 import im.actor.core.entity.content.FastThumb;
-import im.actor.core.modules.internal.messages.ConversationActor;
-import im.actor.core.entity.content.internal.Sticker;
-import im.actor.core.entity.content.internal.StickersPack;
+import im.actor.core.entity.Sticker;
 import im.actor.core.network.NetworkState;
 import im.actor.core.utils.AppStateActor;
 import im.actor.core.utils.IOUtils;
@@ -65,7 +64,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     private ActorRef appStateActor;
     private BindedDisplayList<Dialog> dialogList;
     private BindedDisplayList<Sticker> stickersList;
-    private BindedDisplayList<StickersPack> stickerPacksList;
+    private BindedDisplayList<StickerPack> stickerPacksList;
     private HashMap<Peer, BindedDisplayList<Message>> messagesLists = new HashMap<Peer, BindedDisplayList<Message>>();
     private HashMap<Peer, BindedDisplayList<Message>> docsLists = new HashMap<Peer, BindedDisplayList<Message>>();
     private HashMap<String, BindedDisplayList> customLists = new HashMap<String, BindedDisplayList>();
@@ -464,17 +463,17 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         return stickersList;
     }
 
-    public BindedDisplayList<StickersPack> getStickersPacksDisplayList() {
+    public BindedDisplayList<StickerPack> getStickersPacksDisplayList() {
         if (stickerPacksList == null) {
-            stickerPacksList = (BindedDisplayList<StickersPack>) modules.getDisplayListsModule().getStickerPacksSharedList();
-            stickerPacksList.setBindHook(new BindedDisplayList.BindHook<StickersPack>() {
+            stickerPacksList = (BindedDisplayList<StickerPack>) modules.getDisplayListsModule().getStickerPacksSharedList();
+            stickerPacksList.setBindHook(new BindedDisplayList.BindHook<StickerPack>() {
                 @Override
                 public void onScrolledToEnd() {
 
                 }
 
                 @Override
-                public void onItemTouched(StickersPack item) {
+                public void onItemTouched(StickerPack item) {
 
                 }
             });
