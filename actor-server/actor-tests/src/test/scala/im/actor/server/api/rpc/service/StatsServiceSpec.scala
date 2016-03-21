@@ -34,7 +34,7 @@ class StatsServiceSpec extends BaseAppSuite
       stats foreach { s ⇒
         s.userId shouldEqual user.id
         s.authId shouldEqual userAuthId
-        assert(s.event.contains("VisibleChanged"), "Event should contain VisibleChanged")
+        s.eventType shouldEqual "VisibleChanged"
       }
     }
   }
@@ -53,10 +53,10 @@ class StatsServiceSpec extends BaseAppSuite
     whenReady(db.run(ClientStatsRepo.findByUserId(user.id))) { stats ⇒
       stats should have length 1
       val stat = stats.head
+      stat.eventType shouldEqual "AppCrash"
 
       val parts = stat.event split ";"
-      parts(0) shouldEqual "AppCrash"
-      val json = Json.parse(parts(1))
+      val json = Json.parse(parts(0))
       (json \ "exception").validate[String].asOpt shouldEqual Some("NullPointerException")
       (json \ "line").validate[Int].asOpt shouldEqual Some(24)
     }
