@@ -27,15 +27,15 @@ final class StatsServiceImpl()(implicit system: ActorSystem) extends StatsServic
 
   private def apiEventToStat(event: ApiEvent)(implicit client: AuthorizedClientData): ClientStats = event match {
     case ApiAppVisibleChanged(visible) ⇒
-      stats(csv(List("VisibleChanged", visible.toString)))
+      stats("VisibleChanged", csv(List(visible.toString)))
     case ApiContentViewChanged(contentType, contentId, visible, params) ⇒
-      stats(csv(List("ContentViewChanged", contentType, contentId, visible.toString) ++ stringList(params)))
+      stats("ContentViewChanged", csv(List(contentType, contentId, visible.toString) ++ stringList(params)))
     case ApiUntypedEvent(eventType, params) ⇒
-      stats(csv(List(eventType) ++ stringList(params)))
+      stats(eventType, csv(stringList(params)))
   }
 
-  private def stats(event: String)(implicit client: AuthorizedClientData) =
-    ClientStats(ACLUtils.randomLong(), client.userId, client.authId, event)
+  private def stats(eventType: String, eventData: String)(implicit client: AuthorizedClientData) =
+    ClientStats(ACLUtils.randomLong(), client.userId, client.authId, eventType, eventData)
 
   private def csv(items: List[String]) = items mkString ";"
 
