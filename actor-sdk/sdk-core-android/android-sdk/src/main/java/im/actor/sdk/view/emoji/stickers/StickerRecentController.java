@@ -4,14 +4,9 @@
 
 package im.actor.sdk.view.emoji.stickers;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
-import im.actor.core.entity.content.internal.Sticker;
-import im.actor.core.entity.content.internal.StickersPack;
+import im.actor.core.entity.Sticker;
 
 /**
  * Created by Jesus Christ. Amen.
@@ -107,9 +102,9 @@ public class StickerRecentController extends ArrayList<Sticker> {
 //        prefs.edit().putString(PREF_RECENTS, str.toString()).apply();
 //    }
 //
-//    public StickersPack getPack() {
+//    public StickerPack getPack() {
 //        Sticker[] array = new Sticker[size()];
 //        this.toArray(array);
-//        return new StickersPack(array);
+//        return new StickerPack(array);
 //    }
 }

@@ -50,10 +50,11 @@ import im.actor.core.entity.content.StickerContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
 import im.actor.core.entity.content.VoiceContent;
-import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.entity.Sticker;
+import im.actor.core.entity.content.internal.ContentRemoteContainer;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.EncryptedMsgActor;
 import im.actor.core.modules.internal.file.UploadManager;
+import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.core.modules.internal.messages.entity.PendingMessage;
 import im.actor.core.modules.internal.messages.entity.PendingMessagesStorage;
 import im.actor.core.util.ModuleActor;
@@ -62,7 +63,6 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
-import im.actor.runtime.actors.ask.AskCallback;
 import im.actor.runtime.power.WakeLock;
 
 public class SenderActor extends ModuleActor {
@@ -421,8 +421,7 @@ public class SenderActor extends ModuleActor {
         } else if (content instanceof JsonContent) {
             message = new ApiJsonMessage(((JsonContent) content).getRawJson());
         } else if (content instanceof StickerContent) {
-            Sticker sticker = ((StickerContent) content).getSticker();
-            message = new ApiStickerMessage(sticker.getStickerId(), sticker.getThumb(), sticker.getApiImageLocation512(), sticker.getApiImageLocation256(), sticker.getStickerCollectionId(), sticker.getCollectionAccessHash());
+            message = ((ContentRemoteContainer) content.getContentContainer()).getMessage();
         } else {
             return;
         }

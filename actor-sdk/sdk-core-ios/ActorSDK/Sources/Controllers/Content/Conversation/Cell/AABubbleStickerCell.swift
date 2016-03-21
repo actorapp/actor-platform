@@ -182,7 +182,7 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
  */
 public class StikerCellLayout: AACellLayout {
     
-    public let fastThumb: NSData?
+    // public let fastThumb: NSData?
     public let contentSize: CGSize
     public let screenSize: CGSize
     public let autoDownload: Bool
@@ -190,7 +190,7 @@ public class StikerCellLayout: AACellLayout {
     /**
      Creting layout for media bubble
      */
-    public init(id: Int64, width: CGFloat, height:CGFloat, date: Int64, sticker: ACSticker?, autoDownload: Bool, layouter: AABubbleLayouter) {
+    public init(id: Int64, width: CGFloat, height:CGFloat, date: Int64, stickerContent: ACStickerContent?, autoDownload: Bool, layouter: AABubbleLayouter) {
         
         // Saving content size
         self.contentSize = CGSizeMake(width, height)
@@ -201,7 +201,7 @@ public class StikerCellLayout: AACellLayout {
         self.screenSize = CGSize(width: width, height:height)
         
         // Prepare fast thumb
-        self.fastThumb = sticker?.getFileReference256().toByteArray().toNSData()
+        // self.fastThumb = sticker?.getFileReference256().toByteArray().toNSData()
         
         // Creating layout
         super.init(height: self.screenSize.height + 2, date: date, key: "media", layouter: layouter)
@@ -211,7 +211,7 @@ public class StikerCellLayout: AACellLayout {
      Creating layout for sticker content
      */
     public convenience init(id: Int64, stickerContent: ACStickerContent, date: Int64, layouter: AABubbleLayouter) {
-        self.init(id: id, width: CGFloat(150), height: CGFloat(150), date: date, sticker: stickerContent.getSticker(), autoDownload: true, layouter: layouter)
+        self.init(id: id, width: CGFloat(150), height: CGFloat(150), date: date, stickerContent: stickerContent, autoDownload: true, layouter: layouter)
         
     }
 

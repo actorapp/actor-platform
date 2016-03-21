@@ -187,7 +187,7 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
                 *//*tabView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 tabView.setAdjustViewBounds(true);
                 //tabView.setCropToPadding(false);
-                StickersPack pack = Stickers.getPacks()[position - 1];
+                StickerPack pack = Stickers.getPacks()[position - 1];
                 tabView.setImageURI(Uri.parse(Stickers.getFile(pack.getId(), pack.getLogoStickerId())));*//*
         //}*/
         return tabView;

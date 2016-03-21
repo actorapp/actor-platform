@@ -1,6 +1,6 @@
 package im.actor.sdk.view.emoji.stickers;
 
-import im.actor.core.entity.content.internal.Sticker;
+import im.actor.core.entity.Sticker;
 
 public class StickerLine {
     Sticker[] line;

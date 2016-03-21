@@ -1,26 +1,12 @@
 package im.actor.sdk.view.emoji.stickers;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.support.v7.widget.ChatLinearLayoutManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
-import java.util.ArrayList;
-
-import im.actor.core.api.ApiStickerCollection;
-import im.actor.core.api.ApiStickerDescriptor;
-import im.actor.core.api.rpc.ResponseLoadOwnStickers;
-import im.actor.core.entity.content.internal.Sticker;
-import im.actor.core.entity.content.internal.StickersPack;
-import im.actor.core.viewmodel.CommandCallback;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
 
