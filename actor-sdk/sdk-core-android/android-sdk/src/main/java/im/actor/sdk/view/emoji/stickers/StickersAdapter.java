@@ -8,8 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import im.actor.core.entity.content.internal.Sticker;
-import im.actor.runtime.Log;
+import im.actor.core.entity.Sticker;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
@@ -51,7 +50,7 @@ public class StickersAdapter extends BindedListAdapter<Sticker, StickersAdapter.
                 super.onScrolled(recyclerView, dx, dy);
                 int firstVisiblePosition = layoutManager.findFirstCompletelyVisibleItemPosition();
                 s = getItem(firstVisiblePosition);
-                int newTopPack = s.getLocalCollectionId();
+                int newTopPack = s.getStickerCollectionId();
                 if (newTopPack != topPack) {
                     topPack = newTopPack;
                     if (packsAdapter != null) {
@@ -65,11 +64,12 @@ public class StickersAdapter extends BindedListAdapter<Sticker, StickersAdapter.
     @Override
     public int getItemViewType(int position) {
         Sticker item = getItem(position);
-        if (item.isHeader()) {
-            return 1;
-        } else {
-            return 0;
-        }
+//        if (item.isHeader()) {
+//            return 1;
+//        } else {
+//            return 0;
+//        }
+        return 0;
     }
 
     @Override
@@ -113,6 +113,7 @@ public class StickersAdapter extends BindedListAdapter<Sticker, StickersAdapter.
 
         private StickerView sv;
         private Sticker s;
+
         public StickerHolder(Context context, FrameLayout fl) {
             super(fl);
             sv = new StickerView(context);

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ContactContent;
-import im.actor.core.entity.content.ContentConverter;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.LocationContent;
