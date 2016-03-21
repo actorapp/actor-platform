@@ -75,8 +75,8 @@ class MessagesScroller extends Component {
     this.node = node;
   }
 
-  onScroll(event) {
-    const { target: { scrollTop } } = event;
+  onScroll() {
+    const { scrollTop } = this.node;
     if (scrollTop <= MAX_LOAD_HEIGHT) {
       this.props.onLoadMore();
     }
