@@ -135,10 +135,6 @@ public abstract class AbsModule {
         return context.getGroupsModule().getGroups();
     }
 
-    public KeyValueStorage stickerPacksStorage() {
-        return context.getStickersModule().getStickerPacksStorage();
-    }
-
     public ApiPeer buildApiPeer(Peer peer) {
         if (peer.getPeerType() == PeerType.PRIVATE) {
             return new ApiPeer(ApiPeerType.PRIVATE, peer.getPeerId());

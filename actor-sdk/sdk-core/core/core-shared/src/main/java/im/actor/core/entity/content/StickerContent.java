@@ -4,52 +4,80 @@
 
 package im.actor.core.entity.content;
 
+import com.google.j2objc.annotations.Property;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-
-import im.actor.core.api.ApiFileLocation;
-import im.actor.core.api.ApiJsonMessage;
+import im.actor.core.api.ApiImageLocation;
 import im.actor.core.api.ApiStickerMessage;
-import im.actor.core.api.ApiTextExMarkdown;
-import im.actor.core.api.ApiTextMessage;
 import im.actor.core.entity.FileReference;
+import im.actor.core.entity.ImageLocation;
 import im.actor.core.entity.content.internal.ContentLocalContainer;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
-import im.actor.core.entity.content.internal.Sticker;
-import im.actor.runtime.json.JSONException;
-import im.actor.runtime.json.JSONObject;
+import im.actor.core.entity.Sticker;
 
-/**
- * Created by ex3ndr on 25.05.15.
- */
 public class StickerContent extends AbsContent {
-
-    Sticker sticker;
 
     @NotNull
     public static StickerContent create(@NotNull Sticker sticker) {
-
-        return new StickerContent(new ContentRemoteContainer(
-                new ApiStickerMessage(sticker.getId(), sticker.getThumb(), sticker.getApiImageLocation512(),
-                        sticker.getApiImageLocation256(), sticker.getStickerCollectionId(), sticker.getCollectionAccessHash())));
+        return new StickerContent(new ContentRemoteContainer(sticker.toMessage()));
     }
+
+    @Nullable
+    @Property("readonly, nonatomic")
+    private ImageLocation image256;
+    @Nullable
+    @Property("readonly, nonatomic")
+    private ImageLocation image512;
+    @Nullable
+    @Property("readonly, nonatomic")
+    private Integer id;
+    @Nullable
+    @Property("readonly, nonatomic")
+    private Integer collectionId;
+    @Nullable
+    @Property("readonly, nonatomic")
+    private Long collectionAccessHash;
 
     public StickerContent(ContentRemoteContainer remoteContainer) {
         super(remoteContainer);
-        sticker = new Sticker((ApiStickerMessage) remoteContainer.getMessage());
 
+        ApiStickerMessage stickerMessage = (ApiStickerMessage) remoteContainer.getMessage();
+
+        id = stickerMessage.getStickerId();
+        collectionId = stickerMessage.getStickerCollectionId();
+        collectionAccessHash = stickerMessage.getStickerCollectionAccessHash();
+        if (stickerMessage.getImage512() != null) {
+            image512 = new ImageLocation(stickerMessage.getImage512(), "sticker.webp");
+        }
+        if (stickerMessage.getImage256() != null) {
+            image256 = new ImageLocation(stickerMessage.getImage256(), "sticker.webp");
+        }
     }
 
-    public StickerContent(ContentLocalContainer localContainer) {
-        super(localContainer);
-        Sticker content = (Sticker) localContainer.getContent();
-        sticker = new Sticker(content.getApiImageLocation128(), content.getApiImageLocation256(), content.getApiImageLocation512(), content.getStickerId(), content.getStickerCollectionId(), content.getCollectionAccessHash(), content.getThumb());
-
+    @Nullable
+    public ImageLocation getImage256() {
+        return image256;
     }
 
-    public Sticker getSticker() {
-        return sticker;
+    @Nullable
+    public ImageLocation getImage512() {
+        return image512;
+    }
+
+    @Nullable
+    public Integer getId() {
+        return id;
+    }
+
+    @Nullable
+    public Integer getCollectionId() {
+        return collectionId;
+    }
+
+    @Nullable
+    public Long getCollectionAccessHash() {
+        return collectionAccessHash;
     }
 }
