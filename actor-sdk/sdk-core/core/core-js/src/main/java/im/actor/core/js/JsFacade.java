@@ -550,6 +550,14 @@ public class JsFacade implements Exportable {
         return messenger.getStickers().get();
     }
 
+    public void bindStickers(JsBindedValueCallback callback) {
+        messenger.getStickers().subscribe(callback);
+    }
+
+    public void unbindStickers(JsBindedValueCallback callback) {
+        messenger.getStickers().unsubscribe(callback);
+    }
+
     // Users
 
     public JsUser getUser(int uid) {
