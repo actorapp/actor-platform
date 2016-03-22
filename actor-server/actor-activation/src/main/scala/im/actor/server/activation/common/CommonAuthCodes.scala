@@ -35,7 +35,7 @@ trait CommonAuthCodes {
     db.run(action)
   }
 
-  override def cleanup(txHash: String): Future[Unit] = db.run(AuthCodeRepo.deleteByTransactionHash(txHash).map(_ ⇒ ()))
+  protected def deleteAuthCode(txHash: String): Future[Unit] = db.run(AuthCodeRepo.deleteByTransactionHash(txHash).map(_ ⇒ ()))
 
   protected def createAuthCodeIfNeeded(resp: CodeFailure Xor Unit, txHash: String, code: String): Future[Int] = resp match {
     case Xor.Left(_)  ⇒ Future.successful(0)
