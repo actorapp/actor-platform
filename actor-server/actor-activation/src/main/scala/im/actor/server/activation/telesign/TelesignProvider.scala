@@ -5,9 +5,11 @@ import akka.pattern.ask
 import akka.util.Timeout
 import cats.data.Xor
 import im.actor.config.ActorConfig
-import im.actor.server.activation.common.ActivationStateActor.{ Send, SendAck }
+import im.actor.server.activation.common.ActivationStateActor.{ ForgetSentCode, Send, SendAck }
 import im.actor.server.activation.common._
 import im.actor.server.db.DbExtension
+import im.actor.server.model.AuthPhoneTransaction
+import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.sms.{ TelesignCallEngine, TelesignClient, TelesignSmsEngine }
 import im.actor.util.misc.PhoneNumberUtils.isTestPhone
 
@@ -57,4 +59,18 @@ private[activation] final class TelesignProvider(implicit system: ActorSystem) e
       } yield resp
     case other ⇒ throw new RuntimeException(s"This provider can't handle code of type: ${other.getClass}")
   }
+
+  override def cleanup(txHash: String): Future[Unit] = {
+    for {
+      ac ← db.run(AuthTransactionRepo.findChildren(txHash))
+      _ = ac match {
+        case Some(x: AuthPhoneTransaction) ⇒
+          smsStateActor ! ForgetSentCode.phone(x.phoneNumber)
+          callStateActor ! ForgetSentCode.phone(x.phoneNumber)
+        case _ ⇒
+      }
+      _ ← deleteAuthCode(txHash)
+    } yield ()
+  }
+
 }

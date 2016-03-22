@@ -17,4 +17,5 @@ final class DummyActivationProvider(system: ActorSystem) extends ActivationProvi
 
   override def send(txHash: String, code: Code): Future[CodeFailure Xor Unit] = db.run(AuthCodeRepo.createOrUpdate(txHash, code.code)) map (_ ⇒ Xor.right(()))
 
+  override def cleanup(txHash: String): Future[Unit] = deleteAuthCode(txHash)
 }

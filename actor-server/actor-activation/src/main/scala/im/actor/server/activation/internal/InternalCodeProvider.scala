@@ -66,6 +66,8 @@ private[activation] final class InternalCodeProvider(system: ActorSystem)
     db.run(action)
   }
 
+  override def cleanup(txHash: String): Future[Unit] = deleteAuthCode(txHash)
+
   private def sendCode(userId: Int, code: String): Future[Unit] = {
     val messageText = config.messageTemplate.replace("$$CODE$$", code)
     val userPeer = ApiPeer(ApiPeerType.Private, userId)
