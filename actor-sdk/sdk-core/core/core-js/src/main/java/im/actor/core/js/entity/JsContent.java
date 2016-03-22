@@ -8,12 +8,10 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 
-import im.actor.core.api.ApiImageLocation;
-import im.actor.core.api.ApiTextExMarkdown;
 import im.actor.core.api.ApiTextModernAttach;
 import im.actor.core.api.ApiTextModernField;
 import im.actor.core.api.ApiTextModernMessage;
-import im.actor.core.entity.FileReference;
+import im.actor.core.entity.ImageLocation;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.DocumentContent;
@@ -25,7 +23,6 @@ import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.StickerContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VoiceContent;
-import im.actor.core.entity.content.internal.Sticker;
 import im.actor.core.js.JsMessenger;
 import im.actor.runtime.crypto.Base64Utils;
 
@@ -97,18 +94,17 @@ public abstract class JsContent extends JavaScriptObject {
             }
 
         } else if (src instanceof StickerContent) {
-            Sticker sticker = ((StickerContent) src).getSticker();
-            FileReference fileReference512 = sticker.getFileReference512();
-            ApiImageLocation imageLocation512 = sticker.getApiImageLocation512();
-            String fileUrl = messenger.getFileUrl(fileReference512);
-            String fileSize = messenger.getFormatter().formatFileSize(fileReference512.getFileSize());
-            String thumb = null;
-            byte[] thumbRaw = sticker.getThumb();
-            if (thumbRaw != null) {
-                String thumbBase64 = Base64Utils.toBase64(thumbRaw);
-                thumb = "data:image/jpg;base64," + thumbBase64;
+            StickerContent sticker = (StickerContent) src;
+            ImageLocation stickerImage = sticker.getImage256();
+            if (sticker.getImage512() != null) {
+                stickerImage = sticker.getImage512();
             }
-            content = JsContentSticker.create(fileReference512.getFileName(), ".webp", fileSize, imageLocation512.getWidth(), imageLocation512.getHeight(), thumb, fileUrl, false);
+            String fileUrl = messenger.getFileUrl(stickerImage.getReference());
+            String fileSize = messenger.getFormatter().formatFileSize(stickerImage.getReference().getFileSize());
+            content = JsContentSticker.create(
+                    stickerImage.getReference().getFileName(),
+                    ".webp", fileSize,
+                    stickerImage.getWidth(), stickerImage.getHeight(), null, fileUrl, false);
         } else if (src instanceof ContactContent) {
             ContactContent contactContent = (ContactContent) src;
             JsArrayString phones = JsArray.createArray().cast();

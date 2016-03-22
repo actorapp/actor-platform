@@ -13,14 +13,18 @@ object ActivationStateActor {
 
   private[activation] case class SendAck(result: CodeFailure Xor Unit)
 
-  private[activation] final case class ForgetSentCode(code: Code)
+  object ForgetSentCode {
+    def phone(phone: Long) = ForgetSentCode(phone)
+    def email(email: String) = ForgetSentCode(email)
+  }
+  private[activation] final case class ForgetSentCode[T](codeId: T)
 
   def props[Id, CodeType <: Code](repeatLimit: Duration, sendAction: CodeType ⇒ Future[Unit], id: CodeType ⇒ Id) =
     Props(new ActivationStateActor(repeatLimit, sendAction, id))
 
 }
 
-class ActivationStateActor[Id, CodeType <: Code](repeatLimit: Duration, send: CodeType ⇒ Future[Unit], codeId: CodeType ⇒ Id) extends Actor with ActorLogging {
+private[activation] final class ActivationStateActor[Id, CodeType <: Code](repeatLimit: Duration, send: CodeType ⇒ Future[Unit], extractId: CodeType ⇒ Id) extends Actor with ActorLogging {
   implicit val system = context.system
   implicit val ec = context.dispatcher
 
@@ -28,19 +32,18 @@ class ActivationStateActor[Id, CodeType <: Code](repeatLimit: Duration, send: Co
 
   private val sentCodes = new scala.collection.mutable.HashSet[Id]()
 
-  def codeWasNotSent(code: CodeType) = !sentCodes.contains(codeId(code))
+  def codeWasNotSent(code: CodeType) = !sentCodes.contains(extractId(code))
 
-  def rememberSentCode(code: CodeType) = sentCodes += codeId(code)
+  def rememberSentCode(code: CodeType) = sentCodes += extractId(code)
 
-  def forgetSentCode(code: CodeType) = sentCodes -= codeId(code)
+  def forgetSentCode(codeId: Id) = sentCodes -= codeId
 
   def forgetSentCodeAfterDelay(code: CodeType) =
-    system.scheduler.scheduleOnce(repeatLimit.toMillis.millis, self, ForgetSentCode(code))
+    system.scheduler.scheduleOnce(repeatLimit.toMillis.millis, self, ForgetSentCode(extractId(code)))
 
   override def receive: Receive = {
-    case Send(code: CodeType @unchecked) ⇒
-      (sendCode(code) map SendAck) pipeTo sender()
-    case ForgetSentCode(code: CodeType @unchecked) ⇒ forgetSentCode(code)
+    case Send(code: CodeType @unchecked)       ⇒ (sendCode(code) map SendAck) pipeTo sender()
+    case ForgetSentCode(codeId: Id @unchecked) ⇒ forgetSentCode(codeId)
   }
 
   private def sendCode(code: CodeType): Future[CodeFailure Xor Unit] = {
@@ -59,7 +62,7 @@ class ActivationStateActor[Id, CodeType <: Code](repeatLimit: Duration, send: Co
       }
     } else {
       log.debug(s"Ignoring send $code")
-      Future.successful(Xor.left(BadRequest("Try to request code later")))
+      Future.successful(Xor.left(BadRequest("Too frequent code requests")))
     }
   }
 
