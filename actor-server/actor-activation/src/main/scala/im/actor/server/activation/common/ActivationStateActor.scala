@@ -59,7 +59,7 @@ class ActivationStateActor[Id, CodeType <: Code](repeatLimit: Duration, send: Co
       }
     } else {
       log.debug(s"Ignoring send $code")
-      Future.successful(Xor.left(BadRequest("Try to request code later")))
+      Future.successful(Xor.left(BadRequest("Too frequent code requests")))
     }
   }
 
