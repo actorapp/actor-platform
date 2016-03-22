@@ -464,6 +464,10 @@
 
 "AuthDisclaimer" = "Регистрируясь, вы соглашаетесь с Terms of Service и Privacy Policy.";
 
+"AuthDisclaimerTosOnly" = "Регистрируясь, вы соглашаетесь с Terms of Service.";
+
+"AuthDisclaimerPrivacyOnly" = "Регистрируясь, вы соглашаетесь с Privacy Policy.";
+
 "AuthDisclaimerToS" = "Terms of Service";
 
 "AuthDisclaimerPrivacy" = "Privacy Policy";
