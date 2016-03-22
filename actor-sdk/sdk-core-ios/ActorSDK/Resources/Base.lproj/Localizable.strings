@@ -475,6 +475,10 @@
 
 "AuthDisclaimer" = "By signing up, you agree to the Terms of Service and Privacy Policy.";
 
+"AuthDisclaimerTosOnly" = "By signing up, you agree to the Terms of Service.";
+
+"AuthDisclaimerPrivacyOnly" = "By signing up, you agree to the Privacy Policy.";
+
 "AuthDisclaimerToS" = "Terms of Service";
 
 "AuthDisclaimerPrivacy" = "Privacy Policy";

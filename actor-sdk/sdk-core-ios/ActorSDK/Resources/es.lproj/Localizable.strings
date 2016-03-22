@@ -467,6 +467,10 @@
 
 "AuthDisclaimer" = "Al registrarte, estás de acuerdo con los Términos de uso y Política de privacidad.";
 
+"AuthDisclaimerTosOnly" = "Al registrarte, estás de acuerdo con los Términos de uso.";
+
+"AuthDisclaimerPrivacyOnly" = "Al registrarte, estás de acuerdo con los Política de privacidad.";
+
 "AuthDisclaimerToS" = "Términos de uso";
 
 "AuthDisclaimerPrivacy" = "Política de privacidad";
