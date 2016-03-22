@@ -27,6 +27,7 @@ import im.actor.core.js.entity.JsEventBusCallback;
 import im.actor.core.js.entity.JsOnlineGroup;
 import im.actor.core.js.entity.JsOnlineUser;
 import im.actor.core.js.entity.JsSearchEntity;
+import im.actor.core.js.entity.JsSticker;
 import im.actor.core.js.modules.JsFilesModule;
 import im.actor.core.js.modules.JsBindingModule;
 import im.actor.core.js.modules.JsBindedValue;
@@ -244,6 +245,10 @@ public class JsMessenger extends Messenger {
 
     public JsBindedValue<JsArray<JsDialogGroup>> getDialogsGroupedList() {
         return jsBindingModule.getDialogsGroupedList();
+    }
+
+    public JsBindedValue<JsArray<JsSticker>> getStickers() {
+        return jsBindingModule.getStickers();
     }
 
     public void broadcastEvent(String tag, JavaScriptObject obj) {
