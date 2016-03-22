@@ -12,6 +12,8 @@ import { escapeWithEmoji } from '../../../utils/EmojiUtils'
 
 import { KeyCodes } from '../../../constants/ActorAppConstants';
 
+import SvgIcon from '../../common/SvgIcon.react';;
+
 import InviteUserByLinkActions from '../../../actions/InviteUserByLinkActions';
 import InviteUserActions from '../../../actions/InviteUserActions';
 
@@ -99,9 +101,12 @@ class InviteByLink extends Component {
                style={modalStyle}>
 
           <header className="modal-new__header">
-            <svg className="modal-new__header__icon icon icon--blue"
-                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#back"/>'}}
-                 onClick={this.onBackClick}/>
+
+            <SvgIcon
+              className="modal-new__header__icon icon icon--blue"
+              glyph="back"
+              onClick={this.onBackClick}
+            />
 
             <h3 className="modal-new__header__title">
               {intl.messages['inviteByLinkModalTitle']}

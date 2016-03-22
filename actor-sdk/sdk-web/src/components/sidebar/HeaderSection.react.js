@@ -23,6 +23,7 @@ import CreateGroupStore from '../../stores/CreateGroupStore';
 import AddContactStore from '../../stores/AddContactStore';
 import PreferencesStore from '../../stores/PreferencesStore';
 
+import SvgIcon from '../common/SvgIcon.react';
 import AvatarItem from '../common/AvatarItem.react';
 import CreateGroupModal from '../modals/CreateGroup';
 import MyProfileModal from '../modals/MyProfile.react';
@@ -154,9 +155,7 @@ class HeaderSection extends Component {
                 </li>
                 <li className="dropdown__menu__item">
                   <a href={`https://twitter.com/${this.twitter}`} onClick={this.openTwitter}>
-                    <svg className="icon icon--dropdown"
-                         style={{marginLeft: -34}}
-                         dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#twitter"/>'}}/>
+                    <SvgIcon className="icon icon--dropdown sidebar__header__twitter" glyph="twitter" />
                     {intl.messages['menu.twitter']}
                   </a>
                 </li>

@@ -5,6 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 
+import SvgIcon from '../../common/SvgIcon.react';
 import AvatarItem from '../../common/AvatarItem.react';
 
 import { escapeWithEmoji } from '../../../utils/EmojiUtils';
@@ -71,8 +72,7 @@ class Group extends Component {
 
         <div className="additional">
           <div className="members">
-            <svg className="icon"
-                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#members"/>'}}/>
+            <SvgIcon glyph="members" />
             {group.membersCount}
           </div>
         </div>
