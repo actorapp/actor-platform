@@ -19,6 +19,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, IndexRoute, IndexRedirect } from 'react-router';
 import history from '../utils/history';
+import RouterHooks from '../utils/RouterHooks';
 import { IntlProvider } from 'react-intl';
 import crosstab from 'crosstab';
 import { lightbox } from '../utils/ImageUtils'
@@ -121,23 +122,6 @@ class ActorSDK {
     const Dialog = (typeof this.delegate.components.dialog == 'function') ? this.delegate.components.dialog : DefaultDialog;
     const intlData = getIntlData(this.forceLocale);
 
-    const requireAuth = (nextState, replaceState) => {
-      if (!LoginStore.isLoggedIn()) {
-        replaceState({
-          pathname: '/auth',
-          state: {nextPathname: nextState.location.pathname}
-        });
-      }
-    };
-
-    function checkPeer(nextState, replaceState) {
-      const peer = PeerUtils.stringToPeer(nextState.params.id);
-      if (!PeerUtils.hasPeer(peer)) {
-        console.error('Invalig peer', nextState);
-        replaceState('/im');
-      }
-    }
-
     /**
      * Method for pulling props to router components
      *
@@ -156,11 +140,16 @@ class ActorSDK {
             <Route path="auth" component={Login}/>
             <Route path="deactivated" component={Deactivated}/>
             <Route path="install" component={Install}/>
-            <Route path="join/:token" component={Join} onEnter={requireAuth}/>
+            <Route path="join/:token" component={Join} onEnter={RouterHooks.requireAuth}/>
 
-            <Route path="im" component={Main} onEnter={requireAuth}>
+            <Route path="im" component={Main} onEnter={RouterHooks.requireAuth}>
               <Route path="archive" component={Archive}/>
-              <Route path=":id" component={Dialog} onEnter={checkPeer}/>
+              <Route
+                path=":id"
+                component={Dialog}
+                onEnter={RouterHooks.onDialogEnter}
+                onLeave={RouterHooks.onDialogLeave}
+              />
               <IndexRoute component={Empty}/>
             </Route>
 
