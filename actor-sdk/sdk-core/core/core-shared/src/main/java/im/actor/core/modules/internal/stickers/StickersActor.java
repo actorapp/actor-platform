@@ -62,56 +62,19 @@ public class StickersActor extends ModuleActor {
         saveStorage();
     }
 
-//    private void onStickerCollectionsChanged(List<ApiStickerCollection> updated) {
-//        ArrayList<StickerPack> add = new ArrayList<>();
-//        ArrayList<Sticker> addStickers = new ArrayList<>();
-//        ArrayList<Sticker> removeStickers = new ArrayList<>();
-//        for (ApiStickerCollection collection : updated) {
-//            add.add(StickerPack.createLocalStickerPack(collection, collection.getId()));
-//            if (collection.getStickers().size() > 0) {
-//                Sticker stickerHeader = new Sticker(collection.getStickers().get(0), collection.getId(), collection.getAccessHash());
-//                stickers.addOrUpdateItem(stickerHeader);
-//            }
-//            StickerPack oldPack = packs.getValue(collection.getId());
-//            if (oldPack != null) {
-//                for (Sticker oldSt : oldPack.getStickers()) {
-//                    removeStickers.add(stickers.getValue(oldSt.getId()));
-//                }
-//            }
-//            for (ApiStickerDescriptor s : collection.getStickers()) {
-//                removeStickers.remove(stickers.getValue(s.getId()));
-//                if (stickers.getValue(s.getId()) == null) {
-//                    addStickers.add(new Sticker(s, collection.getId(), collection.getId(), collection.getAccessHash()));
-//                }
-//            }
-//        }
-//        long[] removeStickersIds = new long[removeStickers.size()];
-//        for (int i = 0; i < removeStickers.size(); i++) {
-//            removeStickersIds[i] = removeStickers.get(i).getId();
-//        }
-//        stickers.removeItems(removeStickersIds);
-//        packs.addOrUpdateItems(add);
-//        stickers.addOrUpdateItems(addStickers);
-//    }
-//
-//    private void onOwnStickerCollectionsChanged(List<ApiStickerCollection> updated, List<ApiStickerCollection> removed) {
-//
-//        onStickerCollectionsChanged(updated);
-//
-//        long[] remove = new long[removed.size()];
-//        for (int i = 0; i < removed.size(); i++) {
-//            remove[i] = removed.get(i).getId();
-//            stickers.removeItem(removed.get(i).getId());
-//            List<ApiStickerDescriptor> stickersToRemove = removed.get(i).getStickers();
-//            long[] removeSt = new long[stickersToRemove.size()];
-//            for (int j = 0; i < stickersToRemove.size(); i++) {
-//                removeSt[j] = stickersToRemove.get(j).getId();
-//            }
-//            stickers.removeItems(removeSt);
-//        }
-//        packs.removeItems(remove);
-//    }
-//
+    private void onStickerCollectionsChanged(List<ApiStickerCollection> updated) {
+        for (int i = 0; i < stickersStorage.getStickerPacks().size(); i++) {
+            StickerPack collection = stickersStorage.getStickerPacks().get(i);
+            for (ApiStickerCollection c : updated) {
+                if (c.getId() == collection.getId()) {
+                    stickersStorage.getStickerPacks().set(i, new StickerPack(c));
+                    break;
+                }
+            }
+        }
+        notifyVM();
+        saveStorage();
+    }
 
     private void saveStorage() {
         context().getPreferences().putBytes("stickers.data", stickersStorage.toByteArray());
@@ -130,7 +93,7 @@ public class StickersActor extends ModuleActor {
             if (!isLoaded) {
                 stash();
             }
-            //onStickerCollectionsChanged(((StickerCollectionsChanged) message).getUpdated());
+            onStickerCollectionsChanged(((StickerCollectionsChanged) message).getUpdated());
         } else if (message instanceof OwnStickerCollectionsChanged) {
             if (!isLoaded) {
                 stash();
