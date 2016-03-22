@@ -2,8 +2,8 @@ package im.actor.server.activation.gate
 
 import akka.actor.ActorSystem
 import akka.event.Logging
+import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
-import im.actor.server.activation._
 import im.actor.server.activation.common._
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.auth.GateAuthCodeRepo
@@ -39,14 +39,18 @@ private[activation] final class ActorGateSmsProvider(implicit system: ActorSyste
       request = HttpRequest(method = POST, uri = s"${config.uri}/v1/codes/send", entity = entity)
       _ = log.debug("Requesting code send with {}", request)
       resp ← pipeline(request)
-      codeResp ← unmarshal[CodeResponse](resp)
+      codeResp ← if (resp.status.isFailure) {
+        FastFuture.successful(SendFailure(resp.entity.asString))
+      } else {
+        unmarshal[CodeResponse](resp)
+      }
     } yield codeResp
 
     for {
       codeResponse ← codeSendRequest
       result ← codeResponse match {
         case CodeHash(codeHash)   ⇒ for (_ ← db.run(GateAuthCodeRepo.createOrUpdate(txHash, codeHash))) yield Xor.right(())
-        case failure: CodeFailure ⇒ Future.successful(Xor.left(failure))
+        case failure: CodeFailure ⇒ FastFuture.successful(Xor.left(failure))
       }
     } yield result
   }
@@ -63,7 +67,7 @@ private[activation] final class ActorGateSmsProvider(implicit system: ActorSyste
           response ← pipeline(request)
           vr ← unmarshal[ValidationResponse](response)
         } yield vr
-      } getOrElse Future.successful(InvalidHash)
+      } getOrElse FastFuture.successful(InvalidHash)
     } yield validationResponse
   }
 
@@ -74,13 +78,13 @@ private[activation] final class ActorGateSmsProvider(implicit system: ActorSyste
       case Left(e) ⇒
         log.warning("Failed to marshal value: {}", e)
         Future.failed(e)
-      case Right(entity) ⇒ Future.successful(entity)
+      case Right(entity) ⇒ FastFuture.successful(entity)
     }
 
   private def unmarshal[T: ClassTag](response: HttpResponse)(implicit um: FromResponseUnmarshaller[T]): Future[T] =
     response.as[T] match {
-      case Left(e)       ⇒ Future.failed(new Exception(s"Failed to parse json: ${response.entity.asString}"))
-      case Right(result) ⇒ Future.successful(result)
+      case Left(e)       ⇒ FastFuture.failed(new Exception(s"Failed to parse json: ${response.entity.asString}"))
+      case Right(result) ⇒ FastFuture.successful(result)
     }
 
 }
