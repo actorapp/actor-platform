@@ -470,9 +470,13 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                     }
                     if (message.getContent() instanceof StickerContent) {
                         StickerContent content = (StickerContent) message.getContent();
-                        if (content.getSticker().getApiImageLocation512() != null) {
-                            long stickerFileId =
-                                    content.getSticker().getApiImageLocation512().getFileLocation().getFileId();
+                        if (content.getImage512() != null) {
+                            long stickerFileId = content.getImage512().getReference().getFileId();
+                            if (fileId.contains(stickerFileId)) {
+                                b.forceReconvert(message.getEngineId());
+                            }
+                        } else if (content.getImage256() != null) {
+                            long stickerFileId = content.getImage256().getReference().getFileId();
                             if (fileId.contains(stickerFileId)) {
                                 b.forceReconvert(message.getEngineId());
                             }
