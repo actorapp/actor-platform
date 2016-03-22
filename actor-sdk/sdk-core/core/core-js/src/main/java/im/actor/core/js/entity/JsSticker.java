@@ -17,7 +17,7 @@ public class JsSticker extends JavaScriptObject {
     }
 
     public static native JsSticker create(int id, String url, String content)/*-{
-        { id: id, url: url, content: content };
+        return { id: id, url: url, content: content };
     }-*/;
 
     protected JsSticker() {
