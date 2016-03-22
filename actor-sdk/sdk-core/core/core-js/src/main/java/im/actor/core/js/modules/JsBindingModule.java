@@ -139,7 +139,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     public JsBindedValue<JsArray<JsSticker>> getStickers() {
         if (stickers == null) {
-            stickers = new JsBindedValue<>(JsArray.createArray().cast());
+            stickers = new JsBindedValue<>((JsArray<JsSticker>) JsArray.createArray());
             messenger.getAvailableStickersVM().getOwnStickerPacks().subscribe(new ValueChangedListener<ArrayList<StickerPack>>() {
                 @Override
                 public void onChanged(ArrayList<StickerPack> val, Value<ArrayList<StickerPack>> valueModel) {
