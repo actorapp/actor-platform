@@ -421,7 +421,7 @@
  * Welcome
  */
 
-"WelcomeTitle" = "Welcome to {app_name}!";
+"WelcomeTitle" = "Bienvenidos a {app_name}!";
 
 "WelcomeTagline" = "Mensajería gratis, segura y veloz.";
 
