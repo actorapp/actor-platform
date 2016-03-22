@@ -37,10 +37,12 @@ final class ActivationContext(implicit system: ActorSystem) {
         case c: CallCode  ⇒ trySend(optCallProvider, txHash, c)
       }
     } yield result) map {
-      case Xor.Left(BadRequest(_)) ⇒
-        system.log.warning("Too frequent code sent. Tx hash: {}, code: {}", txHash, code)
+      case Xor.Left(BadRequest(message)) ⇒
+        system.log.warning("Bad request. Message: {}. Tx hash: {}, code: {}", message, txHash, code)
         Xor.Right(())
-      case error: Xor.Left[_]   ⇒ error
+      case error @ Xor.Left(SendFailure(message)) ⇒
+        system.log.error("Send failure. Message: {}. Tx hash: {}, code: {}", message, txHash, code)
+        error
       case result: Xor.Right[_] ⇒ result
     }
 
