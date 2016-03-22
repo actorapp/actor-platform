@@ -5,6 +5,8 @@
 import React, { Component, PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import SvgIcon from '../common/SvgIcon.react';
+
 class ContactDetails extends Component {
   static propTypes = {
     peerInfo: React.PropTypes.object.isRequired
@@ -14,8 +16,7 @@ class ContactDetails extends Component {
     const { peerInfo } = this.props;
     return peerInfo.nick ? (
       <li>
-        <svg className="icon icon--pink"
-             dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#username"/>'}}/>
+        <SvgIcon className="icon icon--pink" glyph="username"/>
         <span className="title">{peerInfo.nick}</span>
         <span className="description"><FormattedMessage id="profile.nickname"/></span>
       </li>
@@ -37,8 +38,7 @@ class ContactDetails extends Component {
     const { peerInfo } = this.props;
     return peerInfo.emails[0] ? (
       <li>
-        <svg className="icon icon--blue"
-             dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#envelope"/>'}}/>
+        <SvgIcon className="icon icon--blue" glyph="envelope"/>
         <span className="title"><a href={'mailto:' + peerInfo.emails[0].email}>{peerInfo.emails[0].email}</a></span>
         <span className="description"><FormattedMessage id="profile.email"/></span>
       </li>
