@@ -58,6 +58,11 @@ public class Sticker extends WrapperEntity<ApiStickerDescriptor> {
         this.collectionAccessHash = collectionAccessHash;
     }
 
+    public Sticker(byte[] data) throws IOException {
+        this();
+        load(data);
+    }
+
     private Sticker() {
         super(RECORD_ID);
     }
