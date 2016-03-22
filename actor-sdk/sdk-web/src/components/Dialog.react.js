@@ -6,7 +6,6 @@ import { map, isFunction } from 'lodash';
 
 import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
-import PeerUtils from '../utils/PeerUtils';
 
 import DefaultMessages from './dialog/MessagesSection.react';
 import DialogFooter from './dialog/DialogFooter.react';
@@ -19,15 +18,9 @@ import ConnectionState from './common/ConnectionState.react';
 import ActivityStore from '../stores/ActivityStore';
 import DialogStore from '../stores/DialogStore';
 
-import DialogActionCreators from '../actions/DialogActionCreators';
-
 class DialogSection extends Component {
   static contextTypes = {
     delegate: PropTypes.object
-  };
-
-  static propTypes = {
-    params: PropTypes.object
   };
 
   static getStores() {
@@ -40,28 +33,6 @@ class DialogSection extends Component {
       isMember: DialogStore.isMember(),
       isActivityOpen: ActivityStore.isOpen()
     };
-  }
-
-  constructor(props) {
-    super(props);
-
-    const peer = PeerUtils.stringToPeer(props.params.id);
-    DialogActionCreators.selectDialogPeer(peer);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { params } = nextProps;
-    if (this.props.params.id === params.id) {
-      return;
-    }
-
-    const peer = PeerUtils.stringToPeer(params.id);
-    DialogActionCreators.selectDialogPeer(peer);
-  }
-
-  componentWillUnmount() {
-    // Unbind from current peer
-    DialogActionCreators.selectDialogPeer(null);
   }
 
   getComponents() {
