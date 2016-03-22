@@ -26,6 +26,7 @@ import GroupStore from '../../stores/GroupStore';
 import UserStore from '../../stores/UserStore';
 import OnlineStore from '../../stores/OnlineStore';
 
+import SvgIcon from '../common/SvgIcon.react';
 import AvatarItem from '../common/AvatarItem.react';
 import GroupProfileMembers from '../activity/GroupProfileMembers.react';
 import Fold from '../common/Fold.react';
@@ -152,8 +153,7 @@ class GroupProfile extends Component {
     });
 
     const iconElement = (
-      <svg className="icon icon--green"
-           dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#members"/>'}}/>
+      <SvgIcon className="icon icon--green" glyph="members" />
     );
 
     const groupMeta = [

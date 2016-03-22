@@ -50,6 +50,10 @@
       }
     }
 
+    &__twitter {
+      margin-left: -34px;
+    }
+
     .dropdown--opened {
       .dropdown__button {
         transition: transform $default-transition-duration $default-transition-timing;

@@ -5,6 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import SvgIcon from './common/SvgIcon.react';
 import ConnectionState from './common/ConnectionState.react';
 
 class EmptyScreen extends Component {
@@ -21,8 +22,7 @@ class EmptyScreen extends Component {
 
             <div className="advice">
               <div className="logo">
-                <svg className="icon icon--gray"
-                     dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#star"/>'}}/>
+                <SvgIcon className="icon icon--gray" glyph="star" />
               </div>
               <h2><FormattedMessage id="main.empty"/></h2>
             </div>

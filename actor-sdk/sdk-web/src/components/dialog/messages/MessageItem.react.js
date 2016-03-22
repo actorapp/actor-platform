@@ -16,6 +16,7 @@ import DropdownActionCreators from '../../../actions/DropdownActionCreators';
 
 import DropdownStore from '../../../stores/DropdownStore';
 
+import SvgIcon from '../../common/SvgIcon.react';
 import AvatarItem from '../../common/AvatarItem.react';
 import State from './State.react';
 import Reactions from './Reactions.react';
@@ -204,8 +205,7 @@ class MessageItem extends Component {
           <Reactions peer={peer} message={message}/>
 
           <div className={messageActionsMenuClassName} onClick={this.showActions}>
-            <svg className="icon icon--dropdown"
-                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/images/icons.svg#cog"/>'}}/>
+            <SvgIcon className="icon icon--dropdown" glyph="cog" />
           </div>
 
           {
