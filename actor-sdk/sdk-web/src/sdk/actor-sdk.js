@@ -4,7 +4,7 @@
 
 import 'babel-polyfill';
 import 'setimmediate';
-import initPollyfils from '../utils/polyfills';
+import 'intl';
 
 import Actor from 'actor-js';
 import DelegateContainer from '../utils/DelegateContainer';
@@ -173,15 +173,11 @@ class ActorSDK {
    * Start application
    */
   startApp() {
-    const start = () => {
-      if (window.isJsAppLoaded) {
-        this._starter();
-      } else {
-        window.jsAppLoaded = this._starter;
-      }
-    };
-
-    initPollyfils(start);
+    if (window.isJsAppLoaded) {
+      this._starter();
+    } else {
+      window.jsAppLoaded = this._starter;
+    }
   }
 }
 
