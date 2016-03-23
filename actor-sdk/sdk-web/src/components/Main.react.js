@@ -45,7 +45,7 @@ class Main extends Component {
     document.addEventListener('keydown', this.onKeyDown, false);
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
     document.removeEventListener('keydown', this.onKeyDown, false);
   }
