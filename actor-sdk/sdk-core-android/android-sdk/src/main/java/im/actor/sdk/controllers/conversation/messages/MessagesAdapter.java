@@ -172,13 +172,13 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
                         return new LocationHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_locaton, viewGroup));
                     }
                 }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_locaton, viewGroup));
-//            case 7:
-//                return ActorSDK.sharedActor().getDelegatedViewHolder(StickerHolder.class, new ActorSDK.OnDelegateViewHolder<StickerHolder>() {
-//                    @Override
-//                    public StickerHolder onNotDelegated() {
-//                        return new StickerHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_sticker, viewGroup));
-//                    }
-//                }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_sticker, viewGroup));
+            case 7:
+                return ActorSDK.sharedActor().getDelegatedViewHolder(StickerHolder.class, new ActorSDK.OnDelegateViewHolder<StickerHolder>() {
+                    @Override
+                    public StickerHolder onNotDelegated() {
+                        return new StickerHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_sticker, viewGroup));
+                    }
+                }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_sticker, viewGroup));
             case -1:
                 return new UnsupportedHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));
             default:
