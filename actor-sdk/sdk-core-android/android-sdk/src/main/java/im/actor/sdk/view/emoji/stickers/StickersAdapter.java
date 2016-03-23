@@ -1,165 +1,180 @@
-//package im.actor.sdk.view.emoji.stickers;
-//
-//import android.content.Context;
-//import android.support.v7.widget.GridLayoutManager;
-//import android.support.v7.widget.RecyclerView;
-//import android.view.Gravity;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.FrameLayout;
-//
-//import im.actor.core.entity.Sticker;
-//import im.actor.runtime.android.view.BindedListAdapter;
-//import im.actor.runtime.android.view.BindedViewHolder;
-//import im.actor.runtime.generic.mvvm.BindedDisplayList;
-//import im.actor.sdk.ActorSDK;
-//import im.actor.sdk.util.Screen;
-//import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
-//
-//public class StickersAdapter extends BindedListAdapter<Sticker, StickersAdapter.StickerHolder> {
-//
-//    private Context context;
-//    private EmojiKeyboard keyboard;
-//    RecyclerView recyclerView;
-//    BindedDisplayList<Sticker> displayList;
-//    int topPack = -1;
-//    PacksAdapter packsAdapter;
-//
-//    public StickersAdapter(BindedDisplayList<Sticker> displayList, Context context, final RecyclerView recyclerView, EmojiKeyboard keyboard) {
-//        super(displayList);
-//        this.displayList = displayList;
-//        this.context = context;
-//        this.keyboard = keyboard;
-//        this.recyclerView = recyclerView;
-//        final GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
-//        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//            @Override
-//            public int getSpanSize(int position) {
-//                if (getItemViewType(position) == 1) {
-//                    return layoutManager.getSpanCount();
-//                } else {
-//                    return 1;
-//                }
-//            }
-//        });
-//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            Sticker s;
-//
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                int firstVisiblePosition = layoutManager.findFirstCompletelyVisibleItemPosition();
-//                s = getItem(firstVisiblePosition);
-//                int newTopPack = s.getStickerCollectionId();
-//                if (newTopPack != topPack) {
-//                    topPack = newTopPack;
-//                    if (packsAdapter != null) {
-//                        packsAdapter.selectPack(newTopPack);
-//                    }
-//                }
-//            }
-//        });
-//    }
-//
-//    @Override
-//    public int getItemViewType(int position) {
-//        Sticker item = getItem(position);
-////        if (item.isHeader()) {
-////            return 1;
-////        } else {
-////            return 0;
-////        }
-//        return 0;
-//    }
-//
-//    @Override
-//    public StickerHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-//        switch (viewType) {
-//            default:
-//            case 0:
-//                return ActorSDK.sharedActor().getDelegatedViewHolder(StickerHolder.class, new ActorSDK.OnDelegateViewHolder<StickerHolder>() {
-//                    @Override
-//                    public StickerHolder onNotDelegated() {
-//                        return new StickerHolder(context, new FrameLayout(context));
-//                    }
-//                }, context, new FrameLayout(context));
-//            case 1:
-//                return new StickerPackHeaderHolder(context, new FrameLayout(context));
-//        }
-//
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(StickerHolder holder, int index, Sticker item) {
-//        holder.bind(item);
-//    }
-//
-//    @Override
-//    public void onViewRecycled(StickerHolder holder) {
-//        holder.unbind();
-//    }
-//
-//    public void scrollToSticker(Sticker s) {
-//        int position = displayList.getPosition(s);
-//
-//        if (position != -1) {
-//            ((GridLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(position, 0);
-//        } else {
-//            displayList.initCenter(s.getEngineSort(), true);
-//        }
-//    }
-//
-//    public class StickerHolder extends BindedViewHolder {
-//
-//        private StickerView sv;
-//        private Sticker s;
-//
-//        public StickerHolder(Context context, FrameLayout fl) {
-//            super(fl);
-//            sv = new StickerView(context);
-//            int padding = Screen.dp(5);
-//            sv.setPadding(padding, padding, padding, padding);
-//            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Screen.dp(70), Screen.dp(70), Gravity.CENTER);
-//            fl.addView(sv, params);
-//            fl.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (s != null) {
+package im.actor.sdk.view.emoji.stickers;
+
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import im.actor.core.api.ApiStickerDescriptor;
+import im.actor.core.entity.Sticker;
+import im.actor.core.entity.StickerPack;
+import im.actor.core.viewmodel.StickersVM;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
+
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+
+public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.StickerViewHolder> {
+
+    ArrayList<Sticker> stickers = new ArrayList<>();
+    StickersVM vm;
+    EmojiKeyboard keyboard;
+    PacksAdapter packsAdapter;
+    RecyclerView recyclerView;
+
+    int topPack = -1;
+
+    public StickersAdapter(EmojiKeyboard keyboard, RecyclerView recyclerView) {
+        this.keyboard = keyboard;
+        this.recyclerView = recyclerView;
+        vm = messenger().getAvailableStickersVM();
+        vm.getOwnStickerPacks().subscribe(new ValueChangedListener<ArrayList<StickerPack>>() {
+            @Override
+            public void onChanged(ArrayList<StickerPack> val, Value<ArrayList<StickerPack>> valueModel) {
+                stickers.clear();
+                for (StickerPack pack : val) {
+                    List<Sticker> stickers = pack.getStickers();
+                    if (stickers.size() > 0) {
+                        Sticker sticker = stickers.get(0);
+                        StickersAdapter.this.stickers.add(new StickerCat(sticker.toWrapped(), sticker.getCollectionId(), sticker.getCollectionAccessHash()));
+                    }
+                    StickersAdapter.this.stickers.addAll(stickers);
+                }
+                notifyDataSetChanged();
+            }
+        });
+
+        final GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (getItemViewType(position) == 1) {
+                    return layoutManager.getSpanCount();
+                } else {
+                    return 1;
+                }
+            }
+        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            Sticker s;
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int firstVisiblePosition = layoutManager.findFirstCompletelyVisibleItemPosition();
+                s = stickers.get(firstVisiblePosition);
+                Integer newTopPack = s.getCollectionId();
+                if (newTopPack != null && newTopPack != topPack) {
+                    topPack = newTopPack;
+                    if (packsAdapter != null) {
+                        packsAdapter.selectPack(newTopPack);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return stickers.get(position) instanceof StickerCat ? 1 : 0;
+    }
+
+    @Override
+    public StickerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case 0:
+                StickerView itemView = new StickerView(parent.getContext());
+                int stSize = Screen.dp(70);
+                itemView.setLayoutParams(new FrameLayout.LayoutParams(stSize, stSize));
+                return new StickerViewHolder(itemView);
+
+            default:
+                View cat = new View(parent.getContext());
+                cat.setLayoutParams(new FrameLayout.LayoutParams(1, 1));
+                return new StickerCatHolder(cat);
+        }
+
+    }
+
+    @Override
+    public void onBindViewHolder(StickerViewHolder holder, int position) {
+        holder.bind(stickers.get(position));
+    }
+
+    @Override
+    public int getItemCount() {
+        return stickers.size();
+    }
+
+    public class StickerViewHolder extends RecyclerView.ViewHolder {
+
+        Sticker s;
+        StickerView sv;
+
+        public StickerViewHolder(View itemView) {
+            super(itemView);
+            if (itemView instanceof StickerView) {
+                int padding = Screen.dp(5);
+                sv = (StickerView) itemView;
+                sv.setPadding(padding, padding, padding, padding);
+                sv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (s != null) {
 //                        s.setThumb(sv.getThumb());
-//                        keyboard.onStickerClicked(s);
-//                    }
-//                }
-//            });
-//        }
-//
-//
-//        public void bind(Sticker s) {
-//            this.s = s;
-//            sv.bind(s, StickerView.STICKER_SMALL);
-//
-//        }
-//
-//        public void unbind() {
-//
-//        }
-//
-//
-//    }
-//
-//    public class StickerPackHeaderHolder extends StickerHolder {
-//
-//        public StickerPackHeaderHolder(Context context, FrameLayout fl) {
-//            super(context, fl);
-//            fl.removeAllViews();
-//        }
-//
-//        @Override
-//        public void bind(Sticker s) {
-//
-//        }
-//    }
-//
-//    public void setPacksAdapter(PacksAdapter packsAdapter) {
-//        this.packsAdapter = packsAdapter;
-//    }
-//}
+                            keyboard.onStickerClicked(s);
+                        }
+                    }
+                });
+            }
+        }
+
+        public void bind(Sticker s) {
+            this.s = s;
+            sv.bind(s.getImage256(), StickerView.STICKER_SMALL);
+        }
+    }
+
+    private class StickerCatHolder extends StickerViewHolder {
+
+        public StickerCatHolder(View itemView) {
+            super(itemView);
+        }
+
+        @Override
+        public void bind(Sticker s) {
+
+        }
+    }
+
+    private class StickerCat extends Sticker {
+
+        public StickerCat(ApiStickerDescriptor descriptor, Integer collectionId, Long collectionAccessHash) {
+            super(descriptor, collectionId, collectionAccessHash);
+        }
+    }
+
+    public void setPacksAdapter(PacksAdapter packsAdapter) {
+        this.packsAdapter = packsAdapter;
+    }
+
+    public void scrollToSticker(Sticker s) {
+        int position = 0;
+        for (Sticker st : stickers) {
+            if (st.getId() == s.getId()) {
+                break;
+            }
+            position++;
+        }
+
+        ((GridLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(position, 0);
+    }
+}
