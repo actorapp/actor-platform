@@ -35,22 +35,26 @@ class Main extends Component {
   constructor(props) {
     super(props);
 
-    document.addEventListener('visibilitychange', this.onVisibilityChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
-
     // Preload emoji spritesheet
     preloadEmojiSheet();
+  }
 
-    if (!document.hidden) {
-      VisibilityActionCreators.createAppVisible();
-    }
+  componentDidMount() {
+    this.onVisibilityChange();
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
+    document.addEventListener('keydown', this.onKeyDown, false);
+  }
+
+  componentDidUnmount() {
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
   onVisibilityChange = () => {
-    if (!document.hidden) {
-      VisibilityActionCreators.createAppVisible();
-    } else {
+    if (document.hidden) {
       VisibilityActionCreators.createAppHidden();
+    } else {
+      VisibilityActionCreators.createAppVisible();
     }
   };
 
