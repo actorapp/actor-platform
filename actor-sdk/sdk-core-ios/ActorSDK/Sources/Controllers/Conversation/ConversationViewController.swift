@@ -7,7 +7,6 @@ import UIKit
 import MobileCoreServices
 import AddressBook
 import AddressBookUI
-import SVProgressHUD
 
 public class ConversationViewController:
     AAConversationContentController,

@@ -69,14 +69,11 @@ public class AAGroupViewController: AAContentTableController {
                         sourceRect: self.view.bounds,
                         tapClosure: { (index) -> () in
                             if (index == -2) {
-                                self.confirmUser("PhotoRemoveGroupMessage",
+                                self.confirmAlertUser("PhotoRemoveGroupMessage",
                                     action: "PhotoRemove",
-                                    cancel: "AlertCancel",
-                                    sourceView: self.view,
-                                    sourceRect: self.view.bounds,
                                     tapYes: { () -> () in
                                         Actor.removeGroupAvatarWithGid(jint(self.gid))
-                                })
+                                }, tapNo: nil)
                             } else if (index >= 0) {
                                 let takePhoto: Bool = (index == 0) && hasCamera
                                 self.pickAvatar(takePhoto, closure: { (image) -> () in
