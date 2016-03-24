@@ -398,7 +398,7 @@ public class JsFacade implements Exportable {
 
     // Chats
 
-    public void preInitChat(JsPeer peer){
+    public void preInitChat(JsPeer peer) {
         messenger.onConversationPreLoad(peer.convert());
     }
 
@@ -542,6 +542,20 @@ public class JsFacade implements Exportable {
 
     public JsPeer getGroupPeer(int gid) {
         return JsPeer.create(Peer.group(gid));
+    }
+
+    // Stickers
+
+    public JsArray<JsSticker> getStickers() {
+        return messenger.getStickers().get();
+    }
+
+    public void bindStickers(JsBindedValueCallback callback) {
+        messenger.getStickers().subscribe(callback);
+    }
+
+    public void unbindStickers(JsBindedValueCallback callback) {
+        messenger.getStickers().unsubscribe(callback);
     }
 
     // Users
@@ -706,10 +720,6 @@ public class JsFacade implements Exportable {
         messenger.sendMessageWithMentionsDetect(peer.convert(), text);
     }
 
-    public void sendMarkdownMessage(JsPeer peer, String text, String markdownText) {
-        messenger.sendMessageWithMentionsDetect(peer.convert(), text, markdownText);
-    }
-
     public void sendFile(JsPeer peer, JsFile file) {
         String descriptor = provider.registerUploadFile(file);
         messenger.sendDocument(peer.convert(),
@@ -727,6 +737,10 @@ public class JsFacade implements Exportable {
     public void sendVoiceMessage(final JsPeer peer, int duration, final JsBlob blob) {
         String descriptor = provider.registerUploadFile(blob);
         messenger.sendAudio(peer.convert(), "voice.opus", duration, descriptor);
+    }
+
+    public void sendSticker(JsPeer peer, JsSticker sticker) {
+        messenger.sendSticker(peer.convert(), sticker.getSticker());
     }
 
     // Drafts

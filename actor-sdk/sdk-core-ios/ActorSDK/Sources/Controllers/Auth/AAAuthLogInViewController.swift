@@ -17,7 +17,7 @@ public class AAAuthLogInViewController: AAAuthViewController {
     public override init() {
         super.init(nibName: nil, bundle: nil)
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: "dismiss")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: #selector(AAViewController.dismiss))
     }
 
     public required init(coder aDecoder: NSCoder) {

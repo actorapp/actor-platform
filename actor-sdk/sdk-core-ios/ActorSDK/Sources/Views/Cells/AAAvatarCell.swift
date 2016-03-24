@@ -16,7 +16,7 @@ public class AAAvatarCell: AATableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         avatarView = AAAvatarView()
-        avatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "avatarDidTap"))
+        avatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AAAvatarCell.avatarDidTap)))
         avatarView.userInteractionEnabled = true
         contentView.addSubview(avatarView)
         

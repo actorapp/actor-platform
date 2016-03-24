@@ -28,7 +28,7 @@ class AAThumbnailCollectionCell: UICollectionViewCell {
         
         super.init(frame: frame)
         
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap")
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(AAThumbnailCollectionCell.handleSingleTap))
         self.imgSelected.addGestureRecognizer(tapRecognizer)
         
         self.configUI()

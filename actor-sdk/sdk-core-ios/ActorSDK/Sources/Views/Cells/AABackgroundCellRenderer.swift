@@ -38,7 +38,7 @@ public class AABackgroundCellRenderer<P, T where T: AnyObject, P: AnyObject, P: 
             render(config)
         } else {
             requestedConfig = config
-            generation++
+            generation += 1
             let curGen = generation
             dispatchBackground {
                 if curGen != self.generation {
@@ -67,13 +67,13 @@ public class AABackgroundCellRenderer<P, T where T: AnyObject, P: AnyObject, P: 
         }
         
         requestedConfig = config
-        generation++
+        generation += 1
         wasPresented = true
         receiver(renderer(config: config))
     }
     
     func cancelRender(wasPresented: Bool = false) {
-        generation++
+        generation += 1
         let oldConfig = requestedConfig
         requestedConfig = nil
         

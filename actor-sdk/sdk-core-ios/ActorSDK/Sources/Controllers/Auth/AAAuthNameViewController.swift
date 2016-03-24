@@ -20,7 +20,7 @@ public class AAAuthNameViewController: AAAuthViewController {
         self.transactionHash = transactionHash
         super.init(nibName: nil, bundle: nil)
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: "dismiss")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: #selector(AAViewController.dismiss))
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -44,7 +44,7 @@ public class AAAuthNameViewController: AAAuthViewController {
         field.keyboardType = .Default
         field.autocapitalizationType = .Words
         field.textColor = ActorSDK.sharedActor().style.authTextColor
-        field.addTarget(self, action: "fieldDidChanged", forControlEvents: .EditingChanged)
+        field.addTarget(self, action: #selector(AAAuthNameViewController.fieldDidChanged), forControlEvents: .EditingChanged)
         
         fieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         fieldLine.opaque = false

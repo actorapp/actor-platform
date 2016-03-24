@@ -18,6 +18,8 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.SearchEntity;
+import im.actor.core.entity.Sticker;
+import im.actor.core.entity.StickerPack;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.StickerContent;
@@ -34,6 +36,7 @@ import im.actor.core.js.entity.JsMessage;
 import im.actor.core.js.entity.JsOnlineGroup;
 import im.actor.core.js.entity.JsOnlineUser;
 import im.actor.core.js.entity.JsSearchEntity;
+import im.actor.core.js.entity.JsSticker;
 import im.actor.core.js.entity.JsTyping;
 import im.actor.core.js.entity.JsUser;
 import im.actor.core.modules.AbsModule;
@@ -80,6 +83,8 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     private HashMap<String, JsBindedValue<JsCall>> calls = new HashMap<>();
 
     private ArrayList<JsEventBusCallback> eventBusCallbacks = new ArrayList<>();
+
+    private JsBindedValue<JsArray<JsSticker>> stickers;
 
     public JsBindingModule(JsMessenger messenger, JsFilesModule filesModule, Modules modules) {
         super(modules);
@@ -130,6 +135,26 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
         }
 
         return dialogsGroupedList;
+    }
+
+    public JsBindedValue<JsArray<JsSticker>> getStickers() {
+        if (stickers == null) {
+            stickers = new JsBindedValue<>((JsArray<JsSticker>) JsArray.createArray());
+            messenger.getAvailableStickersVM().getOwnStickerPacks().subscribe(new ValueChangedListener<ArrayList<StickerPack>>() {
+                @Override
+                public void onChanged(ArrayList<StickerPack> val, Value<ArrayList<StickerPack>> valueModel) {
+                    JsArray<JsSticker> stickerJsArray = JsArray.createArray().cast();
+                    stickerJsArray.setLength(0);
+                    for (StickerPack pack : val) {
+                        for (Sticker sticker : pack.getStickers()) {
+                            stickerJsArray.push(JsSticker.create(sticker));
+                        }
+                    }
+                    stickers.changeValue(stickerJsArray);
+                }
+            });
+        }
+        return stickers;
     }
 
     public JsBindedValue<String> getOnlineStatus() {
@@ -508,6 +533,21 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             GroupVM groupVM = context().getGroupsModule().getGroupsCollection().get(gid);
             if (checkAvatar(groupVM.getAvatar().get(), fileId)) {
                 g.changeValue(JsGroup.fromGroupVM(groupVM, messenger));
+            }
+        }
+
+        //
+        // Stickers
+        //
+        if (stickers != null) {
+            outer:
+            for (StickerPack stickerPack : messenger.getAvailableStickersVM().getOwnStickerPacks().get()) {
+                for (Sticker s : stickerPack.getStickers()) {
+                    if (s.getImage256() != null && fileId.contains(s.getImage256().getFileId())) {
+                        messenger.getAvailableStickersVM().getOwnStickerPacks().forceNotify();
+                        break outer;
+                    }
+                }
             }
         }
     }

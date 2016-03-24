@@ -119,7 +119,7 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
         haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authTintColor, forState: .Normal)
         haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.64), forState: .Highlighted)
         haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authHintColor, forState: .Disabled)
-        haventReceivedCode.addTarget(self, action: "haventReceivedCodeDidPressed", forControlEvents: .TouchUpInside)
+        haventReceivedCode.addTarget(self, action: #selector(AAAuthOTPViewController.haventReceivedCodeDidPressed), forControlEvents: .TouchUpInside)
         
         scrollView.addSubview(welcomeLabel)
         scrollView.addSubview(validateLabel)
@@ -231,14 +231,14 @@ public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewCon
             updateTimerText()
         
             if !dialed {
-                counterTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateTimer", userInfo: nil, repeats: true)
+                counterTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(AAAuthOTPViewController.updateTimer), userInfo: nil, repeats: true)
             }
         }
     }
     
     func updateTimer() {
         
-        counter--
+        counter -= 1
         
         if counter == 0 {
             dialed = true

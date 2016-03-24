@@ -62,7 +62,7 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
         countryButton.titleEdgeInsets = UIEdgeInsetsMake(11, 10, 11, 10)
         countryButton.contentHorizontalAlignment = .Left
         countryButton.setBackgroundImage(Imaging.imageWithColor(UIColor.alphaBlack(0.2), size: CGSizeMake(1, 1)), forState: .Highlighted)
-        countryButton.addTarget(self, action: "countryDidPressed", forControlEvents: .TouchUpInside)
+        countryButton.addTarget(self, action: #selector(AAAuthPhoneViewController.countryDidPressed), forControlEvents: .TouchUpInside)
         
         countryButtonLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         
@@ -78,12 +78,20 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
         
         phoneCodeLabelLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         
-        if ActorSDK.sharedActor().privacyPolicyUrl != nil && ActorSDK.sharedActor().termsOfServiceUrl != nil {
+        let showTos = ActorSDK.sharedActor().termsOfServiceText != nil || ActorSDK.sharedActor().termsOfServiceUrl != nil
+        let showPrivacy = ActorSDK.sharedActor().privacyPolicyText != nil || ActorSDK.sharedActor().privacyPolicyUrl != nil
+        
+        if showTos || showPrivacy {
             let tosText = AALocalized("AuthDisclaimerToS")
             let privacyText = AALocalized("AuthDisclaimerPrivacy")
-            let hintText = AALocalized("AuthDisclaimer")
-            let tosRange = NSRange(location: hintText.indexOf(tosText)!, length: tosText.length)
-            let privacyRange = NSRange(location: hintText.indexOf(privacyText)!, length: privacyText.length)
+            let hintText: String
+            if showTos && showPrivacy {
+                hintText = AALocalized("AuthDisclaimer")
+            } else if showTos {
+                hintText = AALocalized("AuthDisclaimerTosOnly")
+            } else {
+                hintText = AALocalized("AuthDisclaimerProvacyOnly")
+            }
 
             let attributedTerms = NSMutableAttributedString(string: hintText)
             attributedTerms.yy_color = ActorSDK.sharedActor().style.authHintColor
@@ -92,28 +100,40 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
             //
             // Terms Of Service
             //
-        
-            let tosLink = YYTextHighlight()
-            tosLink.setColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56))
-            tosLink.tapAction = { (container, text, range, rect) in
-                self.openUrl(ActorSDK.sharedActor().termsOfServiceUrl!)
+            if showTos {
+                let tosLink = YYTextHighlight()
+                let tosRange = NSRange(location: hintText.indexOf(tosText)!, length: tosText.length)
+                tosLink.setColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56))
+                tosLink.tapAction = { (container, text, range, rect) in
+                    if let url = ActorSDK.sharedActor().termsOfServiceUrl {
+                        self.openUrl(url)
+                    } else if let text = ActorSDK.sharedActor().termsOfServiceText {
+                        self.presentViewController(AABigAlertController(alertTitle: tosText, alertMessage: text), animated: true, completion: nil)
+                    }
+                }
+                attributedTerms.yy_setColor(ActorSDK.sharedActor().style.authTintColor, range: tosRange)
+                attributedTerms.yy_setTextHighlight(tosLink, range: tosRange)
             }
-            attributedTerms.yy_setColor(ActorSDK.sharedActor().style.authTintColor, range: tosRange)
-            attributedTerms.yy_setTextHighlight(tosLink, range: tosRange)
         
-        
+            
             //
             // Privacy Policy
             //
-        
-            let privacyLink = YYTextHighlight()
-            privacyLink.setColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56))
-            privacyLink.tapAction = { (container, text, range, rect) in
-                self.openUrl(ActorSDK.sharedActor().privacyPolicyUrl!)
+            if showPrivacy {
+                let privacyLink = YYTextHighlight()
+                let privacyRange = NSRange(location: hintText.indexOf(privacyText)!, length: privacyText.length)
+                privacyLink.setColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56))
+                privacyLink.tapAction = { (container, text, range, rect) in
+                    if let url = ActorSDK.sharedActor().privacyPolicyUrl {
+                        self.openUrl(url)
+                    } else if let text = ActorSDK.sharedActor().privacyPolicyText {
+                        self.presentViewController(AABigAlertController(alertTitle: privacyText, alertMessage: text), animated: true, completion: nil)
+                    }
+                }
+                attributedTerms.yy_setColor(ActorSDK.sharedActor().style.authTintColor, range: privacyRange)
+                attributedTerms.yy_setTextHighlight(privacyLink, range: privacyRange)
             }
-            attributedTerms.yy_setColor(ActorSDK.sharedActor().style.authTintColor, range: privacyRange)
-            attributedTerms.yy_setTextHighlight(privacyLink, range: privacyRange)
-        
+            
         
             termsLabel.attributedText = attributedTerms
             termsLabel.font = UIFont.systemFontOfSize(14)
@@ -129,7 +149,7 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
             useEmailButton.titleLabel?.font = UIFont.systemFontOfSize(14)
             useEmailButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor, forState: .Normal)
             useEmailButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56), forState: .Highlighted)
-            useEmailButton.addTarget(self, action: "useEmailDidPressed", forControlEvents: .TouchUpInside)
+            useEmailButton.addTarget(self, action: #selector(AAAuthPhoneViewController.useEmailDidPressed), forControlEvents: .TouchUpInside)
         } else {
             useEmailButton.hidden = true
         }

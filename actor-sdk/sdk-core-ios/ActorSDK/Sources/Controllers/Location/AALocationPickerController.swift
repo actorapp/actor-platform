@@ -18,7 +18,7 @@ public class AALocationPickerController: AAViewController, CLLocationManagerDele
        super.init()
         
         navigationItem.title = AALocalized("LocationTitle")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: "cancellDidTap")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: #selector(AALocationPickerController.cancellDidTap))
         
         updateAuthStatus(CLLocationManager.authorizationStatus())
         
@@ -73,13 +73,13 @@ public class AALocationPickerController: AAViewController, CLLocationManagerDele
             // App doesn't complete auth request
             map.hidden = false
             pinPoint.hidden = false
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .Done, target: self, action: "doneDidTap")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .Done, target: self, action: #selector(AALocationPickerController.doneDidTap))
             hidePlaceholder()
         } else {
             // Authorised
             map.hidden = false
             pinPoint.hidden = false
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .Done, target: self, action: "doneDidTap")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .Done, target: self, action: #selector(AALocationPickerController.doneDidTap))
             hidePlaceholder()
         }
     }

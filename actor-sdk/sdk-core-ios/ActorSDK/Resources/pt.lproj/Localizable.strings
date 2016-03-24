@@ -451,6 +451,10 @@
 
 "AuthDisclaimer" = "Ao registrar-se, você concorda com os Termos de Serviço e a Política de Privacidade.";
 
+"AuthDisclaimerTosOnly" = "Ao registrar-se, você concorda com os Termos de Serviço.";
+
+"AuthDisclaimerPrivacyOnly" = "Ao registrar-se, você concorda com a Política de Privacidade.";
+
 "AuthDisclaimerToS" = "Termos de Serviço";
 
 "AuthDisclaimerPrivacy" = "Política de Privacidade";

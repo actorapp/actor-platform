@@ -42,7 +42,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         contentView.addSubview(timeLabel)
         contentView.addSubview(statusView)
         
-        preview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "mediaDidTap"))
+        preview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleMediaCell.mediaDidTap)))
         preview.userInteractionEnabled = true
         
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)

@@ -65,6 +65,10 @@ import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.power.WakeLock;
 
+/*-[
+#pragma clang diagnostic ignored "-Wnullability-completeness"
+]-*/
+
 public class SenderActor extends ModuleActor {
 
     private static final String PREFERENCES = "sender_pending";

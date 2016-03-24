@@ -82,10 +82,16 @@ import DZNWebViewController
     public var inviteUrl: String = "https://actor.im/dl"
 
     /// Privacy Policy URL
-    public var privacyPolicyUrl: String? = "https://actor.im/privacy"
+    public var privacyPolicyUrl: String? = nil
+
+    /// Privacy Policy Text
+    public var privacyPolicyText: String? = nil
     
     /// Terms of Service URL
-    public var termsOfServiceUrl: String? = "https://actor.im/tos"
+    public var termsOfServiceUrl: String? = nil
+    
+    /// Terms of Service Text
+    public var termsOfServiceText: String? = nil
     
     /// App name in loc. strings
     public var appName: String = "Actor"
@@ -248,7 +254,7 @@ import DZNWebViewController
         
         do {
             reachability = try Reachability.reachabilityForInternetConnection()
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ActorSDK.reachabilityChanged(_:)), name: ReachabilityChangedNotification, object: reachability)
             try reachability.startNotifier()
         } catch {
             print("Unable to create Reachability")

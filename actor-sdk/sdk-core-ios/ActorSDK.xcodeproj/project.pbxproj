@@ -76,6 +76,7 @@
 		063074191BD68E370053DEAF /* bg_3_preview.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 063074161BD68E370053DEAF /* bg_3_preview.jpg */; };
 		0630741A1BD68E370053DEAF /* bg_2_preview.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 063074171BD68E370053DEAF /* bg_2_preview.jpg */; };
 		0630741B1BD68E370053DEAF /* bg_1_preview.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 063074181BD68E370053DEAF /* bg_1_preview.jpg */; };
+		064E41B51CA1D2FF00A4A9D1 /* AABigAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064E41B41CA1D2FF00A4A9D1 /* AABigAlertController.swift */; };
 		065974A51BC621F100B8C7DF /* AAAuthNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */; };
 		065974A71BC62B3600B8C7DF /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065974A61BC62B3600B8C7DF /* ViewExtensions.swift */; };
 		065975021BC7534100B8C7DF /* FMDBBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065975011BC7534100B8C7DF /* FMDBBridge.swift */; };
@@ -333,7 +334,6 @@
 		15F89F081C211FED00776ACD /* opus_multistream.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F041C211FED00776ACD /* opus_multistream.h */; };
 		15F89F091C211FED00776ACD /* opus_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F051C211FED00776ACD /* opus_types.h */; };
 		15F89F0A1C211FED00776ACD /* opus.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F061C211FED00776ACD /* opus.h */; };
-		697B3A12994653F581459F63 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */; };
 		BE237C9D1C422FFA00060648 /* AAStickersKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE237C9C1C422FFA00060648 /* AAStickersKeyboard.swift */; };
 		BE2621571C4656D700A817AB /* AAConvActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2621561C4656D700A817AB /* AAConvActionSheet.swift */; };
 		BE2621591C4656EE00A817AB /* AAThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2621581C4656EE00A817AB /* AAThumbnailView.swift */; };
@@ -439,6 +439,7 @@
 		063074161BD68E370053DEAF /* bg_3_preview.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_3_preview.jpg; sourceTree = "<group>"; };
 		063074171BD68E370053DEAF /* bg_2_preview.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_2_preview.jpg; sourceTree = "<group>"; };
 		063074181BD68E370053DEAF /* bg_1_preview.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_1_preview.jpg; sourceTree = "<group>"; };
+		064E41B41CA1D2FF00A4A9D1 /* AABigAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABigAlertController.swift; sourceTree = "<group>"; };
 		065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthNavigationController.swift; sourceTree = "<group>"; };
 		065974A61BC62B3600B8C7DF /* ViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		065975011BC7534100B8C7DF /* FMDBBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBBridge.swift; sourceTree = "<group>"; };
@@ -708,9 +709,6 @@
 		15F89F051C211FED00776ACD /* opus_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opus_types.h; sourceTree = "<group>"; };
 		15F89F061C211FED00776ACD /* opus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opus.h; sourceTree = "<group>"; };
 		15F89F0F1C21317400776ACD /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
-		22BAEA363892E475F59B7E9F /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
-		333F91AE5263DD450666CC87 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
-		9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE237C9C1C422FFA00060648 /* AAStickersKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAStickersKeyboard.swift; sourceTree = "<group>"; };
 		BE2621561C4656D700A817AB /* AAConvActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAConvActionSheet.swift; sourceTree = "<group>"; };
 		BE2621581C4656EE00A817AB /* AAThumbnailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailView.swift; sourceTree = "<group>"; };
@@ -760,7 +758,6 @@
 				06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */,
 				BEAC2B311C42D683007F7A2F /* libopus.a in Frameworks */,
 				066A52001BC4E0B0000E606E /* libsqlite3.tbd in Frameworks */,
-				697B3A12994653F581459F63 /* Pods_ActorSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -901,7 +898,6 @@
 			children = (
 				066A50D41BC4AE63000E606E /* ActorSDK */,
 				2F428D134E194A828C3DF863 /* Frameworks */,
-				FB42EA44E242A3F8E680012E /* Pods */,
 				066A50D31BC4AE63000E606E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -1370,6 +1366,7 @@
 				066A52651BC50E7B000E606E /* AAAuthViewController.swift */,
 				065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */,
 				066A52611BC50E7B000E606E /* AACountryViewController.swift */,
+				064E41B41CA1D2FF00A4A9D1 /* AABigAlertController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -1641,7 +1638,6 @@
 			isa = PBXGroup;
 			children = (
 				06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */,
-				9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */,
 				066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */,
 			);
 			name = Frameworks;
@@ -1751,15 +1747,6 @@
 			name = Cells;
 			sourceTree = "<group>";
 		};
-		FB42EA44E242A3F8E680012E /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				22BAEA363892E475F59B7E9F /* Pods-ActorSDK.debug.xcconfig */,
-				333F91AE5263DD450666CC87 /* Pods-ActorSDK.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1862,13 +1849,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 066A50DA1BC4AE63000E606E /* Build configuration list for PBXNativeTarget "ActorSDK" */;
 			buildPhases = (
-				842CC4516DA967714D224C37 /* Check Pods Manifest.lock */,
 				066A52091BC4EA95000E606E /* Build and Install Actor Core */,
 				066A50CD1BC4AE63000E606E /* Sources */,
 				066A50CF1BC4AE63000E606E /* Headers */,
 				066A50CE1BC4AE63000E606E /* Frameworks */,
 				066A50D01BC4AE63000E606E /* Resources */,
-				F4220B52087237D3242F0CEC /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1963,36 +1948,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\ncd ActorSDK/Sources/ActorCore\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/Sources/ActorCore/convert.py\" \"${PROJECT_DIR}/ActorSDK/Sources/ActorCore/ActorCore.h\"\n\ncp -af \"${PODS_ROOT}/libjingle_peerconnection/libjingle_peerconnection/Headers/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"\n\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"\n\n\ncp -a \"${PROJECT_DIR}/../sdk-core/core/core-shared/src/main/resources/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/\"";
-		};
-		842CC4516DA967714D224C37 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		F4220B52087237D3242F0CEC /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK-resources.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2234,6 +2189,7 @@
 				066A52551BC4EF61000E606E /* AANavigationController.swift in Sources */,
 				066A52421BC4EECD000E606E /* AATableViewHeader.swift in Sources */,
 				06D5C05A1C8E9B3B002D5045 /* Promises.swift in Sources */,
+				064E41B51CA1D2FF00A4A9D1 /* AABigAlertController.swift in Sources */,
 				066A52CD1BC521FA000E606E /* AADialogsListContentControllerDelegate.swift in Sources */,
 				15D35F261C20186200E3717A /* framing.c in Sources */,
 				06D5C0571C8D6E20002D5045 /* AAAuthLogInViewController.swift in Sources */,
@@ -2361,7 +2317,6 @@
 		};
 		066A50DB1BC4AE63000E606E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 22BAEA363892E475F59B7E9F /* Pods-ActorSDK.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -2411,12 +2366,12 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VALID_ARCHS = "arm64 armv7";
+				WARNING_CFLAGS = "-Wno-nullability-completeness";
 			};
 			name = Debug;
 		};
 		066A50DC1BC4AE63000E606E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 333F91AE5263DD450666CC87 /* Pods-ActorSDK.release.xcconfig */;
 			buildSettings = {
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -2465,6 +2420,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALID_ARCHS = "arm64 armv7";
+				WARNING_CFLAGS = "-Wno-nullability-completeness";
 			};
 			name = Release;
 		};
