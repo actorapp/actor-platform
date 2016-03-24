@@ -35,7 +35,7 @@ public class AAEditRow: AAManagedRow, UITextFieldDelegate {
         res.textField.autocapitalizationType = autocapitalizationType
         res.textField.delegate = self
         res.textField.removeTarget(nil, action: nil, forControlEvents: .AllEvents)
-        res.textField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
+        res.textField.addTarget(self, action: #selector(AAEditRow.textFieldDidChange(_:)), forControlEvents: .EditingChanged)
         return res
     }
     
