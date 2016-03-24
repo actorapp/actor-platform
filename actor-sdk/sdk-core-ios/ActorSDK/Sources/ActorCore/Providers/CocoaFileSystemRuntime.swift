@@ -170,8 +170,8 @@ class CocoaInputFile :NSObject, ARInputFile {
             let len = min(Int(len), Int(readed.length))
             for _ in offset..<offset+len {
                 destBuffer.memory = srcBuffer.memory
-                destBuffer++
-                srcBuffer++
+                destBuffer = destBuffer.successor()
+                srcBuffer = srcBuffer.successor()
             }
             
             callback.onFileReadWithOffset(fileOffset, withData: data, withDataOffset: offset, withLength: jint(len))

@@ -101,7 +101,7 @@ class AARecordAudioController: UIViewController,UIViewControllerTransitioningDel
         self.view.addSubview(self.recorderView)
         
         self.buttonClose = UIButton(type: UIButtonType.System)
-        self.buttonClose.addTarget(self, action: "closeController", forControlEvents: UIControlEvents.TouchUpInside)
+        self.buttonClose.addTarget(self, action: #selector(AARecordAudioController.closeController), forControlEvents: UIControlEvents.TouchUpInside)
         self.buttonClose.tintColor = UIColor.whiteColor()
         self.buttonClose.setImage(UIImage.bundled("aa_closerecordbutton"), forState: UIControlState.Normal)
         self.buttonClose.frame = CGRectMake(205, 5, 25, 25)
@@ -124,7 +124,7 @@ class AARecordAudioController: UIViewController,UIViewControllerTransitioningDel
         self.startRecButton = UIButton(type: UIButtonType.System)
         self.startRecButton.tintColor = UIColor.redColor()
         self.startRecButton.setImage(UIImage.bundled("aa_startrecordbutton"), forState: UIControlState.Normal)
-        self.startRecButton.addTarget(self, action: "startRec", forControlEvents: UIControlEvents.TouchUpInside)
+        self.startRecButton.addTarget(self, action: #selector(AARecordAudioController.startRec), forControlEvents: UIControlEvents.TouchUpInside)
         self.startRecButton.frame = CGRectMake(100, 110, 40, 40)
         
         self.recorderView.addSubview(self.startRecButton)
@@ -132,7 +132,7 @@ class AARecordAudioController: UIViewController,UIViewControllerTransitioningDel
         self.stopRecButton = UIButton(type: UIButtonType.System)
         self.stopRecButton.tintColor = UIColor.redColor()
         self.stopRecButton.setImage(UIImage.bundled("aa_pauserecordbutton"), forState: UIControlState.Normal)
-        self.stopRecButton.addTarget(self, action: "stopRec", forControlEvents: UIControlEvents.TouchUpInside)
+        self.stopRecButton.addTarget(self, action: #selector(AARecordAudioController.stopRec), forControlEvents: UIControlEvents.TouchUpInside)
         self.stopRecButton.frame = CGRectMake(100, 110, 40, 40)
         
         self.recorderView.addSubview(self.stopRecButton)
@@ -142,7 +142,7 @@ class AARecordAudioController: UIViewController,UIViewControllerTransitioningDel
         self.playRecButton = UIButton(type: UIButtonType.System)
         self.playRecButton.tintColor = UIColor.greenColor()
         self.playRecButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
-        self.playRecButton.addTarget(self, action: "play", forControlEvents: UIControlEvents.TouchUpInside)
+        self.playRecButton.addTarget(self, action: #selector(AARecordAudioController.play), forControlEvents: UIControlEvents.TouchUpInside)
         self.playRecButton.frame = CGRectMake(100, 110, 40, 40)
         
         self.recorderView.addSubview(self.playRecButton)
@@ -152,7 +152,7 @@ class AARecordAudioController: UIViewController,UIViewControllerTransitioningDel
         self.sendRecord = UIButton(type: UIButtonType.System)
         self.sendRecord.tintColor = UIColor.greenColor()
         self.sendRecord.setImage(UIImage.bundled("aa_sendrecord"), forState: UIControlState.Normal)
-        self.sendRecord.addTarget(self, action: "sendRecordMessage", forControlEvents: UIControlEvents.TouchUpInside)
+        self.sendRecord.addTarget(self, action: #selector(AARecordAudioController.sendRecordMessage), forControlEvents: UIControlEvents.TouchUpInside)
         self.sendRecord.frame = CGRectMake(190, 115, 40, 40)
         self.sendRecord.enabled = false
         
@@ -162,7 +162,7 @@ class AARecordAudioController: UIViewController,UIViewControllerTransitioningDel
         self.cleanRecord = UIButton(type: UIButtonType.System)
         self.cleanRecord.tintColor = UIColor.redColor()
         self.cleanRecord.setImage(UIImage.bundled("aa_deleterecord"), forState: UIControlState.Normal)
-        self.cleanRecord.addTarget(self, action: "sendRecordMessage", forControlEvents: UIControlEvents.TouchUpInside)
+        self.cleanRecord.addTarget(self, action: #selector(AARecordAudioController.sendRecordMessage), forControlEvents: UIControlEvents.TouchUpInside)
         self.cleanRecord.frame = CGRectMake(10, 120, 30, 30)
         self.cleanRecord.enabled = false
         
@@ -255,14 +255,14 @@ class AARecordAudioController: UIViewController,UIViewControllerTransitioningDel
     func recordWithPermission() {
         let session:AVAudioSession = AVAudioSession.sharedInstance()
         // ios 8 and later
-        if (session.respondsToSelector("requestRecordPermission:")) {
+        if (session.respondsToSelector(#selector(AVAudioSession.requestRecordPermission(_:)))) {
             AVAudioSession.sharedInstance().requestRecordPermission({(granted: Bool)-> Void in
                 if granted {
                     print("Permission to record granted")
                     self.setSessionPlayAndRecord()
                     self.meterTimer = NSTimer.scheduledTimerWithTimeInterval(0.1,
                         target:self,
-                        selector:"updateAudioMeter:",
+                        selector:#selector(AARecordAudioController.updateAudioMeter(_:)),
                         userInfo:nil,
                         repeats:true)
                 } else {
@@ -282,7 +282,7 @@ class AARecordAudioController: UIViewController,UIViewControllerTransitioningDel
     func startTimer() {
         self.meterTimer = NSTimer.scheduledTimerWithTimeInterval(0.1,
             target:self,
-            selector:"updateAudioMeter:",
+            selector:#selector(AARecordAudioController.updateAudioMeter(_:)),
             userInfo:nil,
             repeats:true)
     }

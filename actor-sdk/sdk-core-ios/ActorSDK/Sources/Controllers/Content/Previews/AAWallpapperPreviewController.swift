@@ -23,11 +23,11 @@ public class AAWallpapperPreviewController: AAViewController {
         imageView.contentMode = .ScaleAspectFill
         imageView.clipsToBounds = true
         cancelButton.backgroundColor = appStyle.vcPanelBgColor
-        cancelButton.addTarget(self, action: "cancelDidTap", forControlEvents: .TouchUpInside)
+        cancelButton.addTarget(self, action: #selector(AAWallpapperPreviewController.cancelDidTap), forControlEvents: .TouchUpInside)
         cancelButton.setTitle(AALocalized("AlertCancel"), forState: .Normal)
         cancelButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
         setButton.backgroundColor = appStyle.vcPanelBgColor
-        setButton.addTarget(self, action: "setDidTap", forControlEvents: .TouchUpInside)
+        setButton.addTarget(self, action: #selector(AAWallpapperPreviewController.setDidTap), forControlEvents: .TouchUpInside)
         setButton.setTitle(AALocalized("AlertSet"), forState: .Normal)
         setButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
     }
@@ -41,11 +41,11 @@ public class AAWallpapperPreviewController: AAViewController {
         imageView.contentMode = .ScaleAspectFill
         imageView.clipsToBounds = true
         cancelButton.backgroundColor = appStyle.vcPanelBgColor
-        cancelButton.addTarget(self, action: "cancelDidTap", forControlEvents: .TouchUpInside)
+        cancelButton.addTarget(self, action: #selector(AAWallpapperPreviewController.cancelDidTap), forControlEvents: .TouchUpInside)
         cancelButton.setTitle(AALocalized("AlertCancel"), forState: .Normal)
         cancelButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
         setButton.backgroundColor = appStyle.vcPanelBgColor
-        setButton.addTarget(self, action: "setDidTap", forControlEvents: .TouchUpInside)
+        setButton.addTarget(self, action: #selector(AAWallpapperPreviewController.setDidTap), forControlEvents: .TouchUpInside)
         setButton.setTitle(AALocalized("AlertSet"), forState: .Normal)
         setButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
     }

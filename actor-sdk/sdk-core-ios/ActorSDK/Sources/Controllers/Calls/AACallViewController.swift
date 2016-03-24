@@ -235,7 +235,7 @@ public class AACallViewController: AAViewController {
     
     func startTimer() {
         timer?.invalidate()
-        timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateTimer", userInfo: nil, repeats: true)
+        timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(AACallViewController.updateTimer), userInfo: nil, repeats: true)
         updateTimer()
     }
     

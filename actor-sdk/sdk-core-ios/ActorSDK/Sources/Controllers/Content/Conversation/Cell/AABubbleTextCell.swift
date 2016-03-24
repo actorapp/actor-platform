@@ -185,12 +185,12 @@ public class AABubbleTextCell : AABubbleCell {
     // Menu for Text cell
     
     public override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
-        if action == "copy:" {
+        if action == #selector(NSObject.copy(_:)) {
             if (bindedMessage!.content is ACTextContent) {
                 return true
             }
         }
-        if action == "delete:" {
+        if action == #selector(NSObject.delete(_:)) {
             return true
         }
         return false

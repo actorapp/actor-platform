@@ -30,6 +30,10 @@ import im.actor.runtime.promise.PromiseFunc;
 import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.promise.Promises;
 
+/*-[
+#pragma clang diagnostic ignored "-Wnullability-completeness"
+]-*/
+
 public class SequenceHandlerActor extends ModuleActor {
 
     public static Constructor<SequenceHandlerActor> CONSTRUCTOR(final ModuleContext context) {

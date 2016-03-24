@@ -176,7 +176,7 @@ public class AABubbleCell: UICollectionViewCell {
         contentView.addSubview(dateBg)
         contentView.addSubview(dateText)
         
-        avatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "avatarDidTap"))
+        avatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleCell.avatarDidTap)))
         avatarView.userInteractionEnabled = true
         
         backgroundColor = UIColor.clearColor()

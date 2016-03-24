@@ -124,7 +124,7 @@ public class AABubbleBaseFileCell: AABubbleCell {
     private func prepareBind() -> Int {
         
         // Next generation of binding
-        bindGeneration++
+        bindGeneration += 1
         // Saving generation to new binding
         let selfGeneration = bindGeneration;
         

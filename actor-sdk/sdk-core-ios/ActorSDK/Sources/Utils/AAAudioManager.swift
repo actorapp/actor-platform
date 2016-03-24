@@ -80,13 +80,13 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
     }
     
     public func peerConnectionStarted() {
-        openedConnections++
+        openedConnections += 1
         print("📡 AudioManager: peerConnectionStarted \(self.openedConnections)")
         audioRouter.isRTCEnabled = openedConnections > 0
     }
     
     public func peerConnectionEnded() {
-        openedConnections--
+        openedConnections -= 1
         print("📡 AudioManager: peerConnectionEnded \(self.openedConnections)")
         audioRouter.isRTCEnabled = openedConnections > 0
     }

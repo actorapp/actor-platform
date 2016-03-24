@@ -11,7 +11,7 @@ private var targetReference = "target"
 public extension UITapGestureRecognizer {
     public convenience init(closure: ()->()){
         let target = ClosureTarget(closure: closure)
-        self.init(target: target, action: "invoke")
+        self.init(target: target, action: #selector(ClosureTarget.invoke))
         setAssociatedObject(self, value: target, associativeKey: &targetReference)
     }
 }
