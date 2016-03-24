@@ -98,7 +98,7 @@ public class AABubbleVoiceCell: AABubbleBaseFileCell,AAModernConversationAudioPl
         ////////////////////////////////////////////////////
         
         playPauseButton.setImage(UIImage.bundled("aa_playrecordbutton"), forState: UIControlState.Normal)
-        playPauseButton.addTarget(self, action: "mediaDidTap", forControlEvents: UIControlEvents.TouchUpInside)
+        playPauseButton.addTarget(self, action: #selector(AABubbleVoiceCell.mediaDidTap), forControlEvents: UIControlEvents.TouchUpInside)
         
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
         

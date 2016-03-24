@@ -6,7 +6,7 @@ import Foundation
 
 public protocol AABindedCell {
     
-    typealias BindData
+    associatedtype BindData
     
     static func bindedCellHeight(table: AAManagedTable, item: BindData) -> CGFloat
     
@@ -14,7 +14,7 @@ public protocol AABindedCell {
 }
 
 public protocol AABindedSearchCell {
-    typealias BindData
+    associatedtype BindData
     
     static func bindedCellHeight(item: BindData) -> CGFloat
     

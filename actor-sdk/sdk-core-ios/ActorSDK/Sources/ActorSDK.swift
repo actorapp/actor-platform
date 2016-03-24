@@ -254,7 +254,7 @@ import DZNWebViewController
         
         do {
             reachability = try Reachability.reachabilityForInternetConnection()
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ActorSDK.reachabilityChanged(_:)), name: ReachabilityChangedNotification, object: reachability)
             try reachability.startNotifier()
         } catch {
             print("Unable to create Reachability")

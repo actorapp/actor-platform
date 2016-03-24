@@ -39,12 +39,12 @@ public class AAEditFieldController: AAContentTableController {
         super.init(style: .SettingsGrouped)
         
         navigationItem.title = AALocalized(config.title)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: "doDismiss")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: #selector(AAEditFieldController.doDismiss))
         
         if config.actionTitle != nil {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized(config.actionTitle), style: .Done, target: self, action: "doAction")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized(config.actionTitle), style: .Done, target: self, action: #selector(AAEditFieldController.doAction))
         } else {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .Done, target: self, action: "doAction")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .Done, target: self, action: #selector(AAEditFieldController.doAction))
         }
     }
     

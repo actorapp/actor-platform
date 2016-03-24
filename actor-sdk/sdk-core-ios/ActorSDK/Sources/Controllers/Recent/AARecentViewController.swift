@@ -35,7 +35,7 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
         navigationItem.title = AALocalized("TabMessages")
         navigationItem.leftBarButtonItem = editButtonItem()
         navigationItem.leftBarButtonItem!.title = AALocalized("NavigationEdit")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "compose")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: #selector(AARecentViewController.compose))
     }
     
     // Implemention of editing
@@ -54,13 +54,13 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
             self.navigationItem.leftBarButtonItem!.title = AALocalized("NavigationEdit")
             self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Plain
             
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "compose")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: #selector(AARecentViewController.compose))
         }
         
         if editing == true {
             navigationItem.rightBarButtonItem = nil
         } else {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "compose")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: #selector(AARecentViewController.compose))
         }
     }
     

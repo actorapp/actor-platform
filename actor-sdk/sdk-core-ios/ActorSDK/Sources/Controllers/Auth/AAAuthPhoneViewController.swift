@@ -62,7 +62,7 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
         countryButton.titleEdgeInsets = UIEdgeInsetsMake(11, 10, 11, 10)
         countryButton.contentHorizontalAlignment = .Left
         countryButton.setBackgroundImage(Imaging.imageWithColor(UIColor.alphaBlack(0.2), size: CGSizeMake(1, 1)), forState: .Highlighted)
-        countryButton.addTarget(self, action: "countryDidPressed", forControlEvents: .TouchUpInside)
+        countryButton.addTarget(self, action: #selector(AAAuthPhoneViewController.countryDidPressed), forControlEvents: .TouchUpInside)
         
         countryButtonLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         
@@ -149,7 +149,7 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
             useEmailButton.titleLabel?.font = UIFont.systemFontOfSize(14)
             useEmailButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor, forState: .Normal)
             useEmailButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56), forState: .Highlighted)
-            useEmailButton.addTarget(self, action: "useEmailDidPressed", forControlEvents: .TouchUpInside)
+            useEmailButton.addTarget(self, action: #selector(AAAuthPhoneViewController.useEmailDidPressed), forControlEvents: .TouchUpInside)
         } else {
             useEmailButton.hidden = true
         }

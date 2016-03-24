@@ -122,7 +122,7 @@ public class AAAuthEmailViewController: AAAuthViewController {
             usePhoneButton.titleLabel?.font = UIFont.systemFontOfSize(14)
             usePhoneButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor, forState: .Normal)
             usePhoneButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56), forState: .Highlighted)
-            usePhoneButton.addTarget(self, action: "usePhoneDidPressed", forControlEvents: .TouchUpInside)
+            usePhoneButton.addTarget(self, action: #selector(AAAuthEmailViewController.usePhoneDidPressed), forControlEvents: .TouchUpInside)
         } else {
             usePhoneButton.hidden = true
         }

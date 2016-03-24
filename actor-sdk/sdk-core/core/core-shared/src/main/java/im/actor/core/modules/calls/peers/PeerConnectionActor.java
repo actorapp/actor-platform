@@ -25,6 +25,10 @@ import im.actor.runtime.webrtc.WebRTCPeerConnectionCallback;
 import im.actor.runtime.webrtc.WebRTCSessionDescription;
 import im.actor.runtime.webrtc.WebRTCSettings;
 
+/*-[
+#pragma clang diagnostic ignored "-Wnullability-completeness"
+]-*/
+
 public class PeerConnectionActor extends ModuleActor {
 
     @NotNull

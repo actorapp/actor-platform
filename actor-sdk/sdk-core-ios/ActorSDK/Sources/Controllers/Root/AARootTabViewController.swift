@@ -38,9 +38,9 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
             subtitle: AALocalized("Placeholder_Empty_Message").replace("{appname}", dest: ActorSDK.sharedActor().appName),
             actionTitle: AALocalized("Placeholder_Empty_Action"),
             subtitle2: AALocalized("Placeholder_Empty_Message2"),
-            actionTarget: self, actionSelector: Selector("showSmsInvitation"),
+            actionTarget: self, actionSelector: #selector(AARootTabViewController.showSmsInvitation as (AARootTabViewController) -> () -> ()),
             action2title: AALocalized("Placeholder_Empty_Action2"),
-            action2Selector: Selector("doAddContact"))
+            action2Selector: #selector(AARootTabViewController.doAddContact))
         appEmptyContainer.addSubview(appIsEmptyPlaceholder)
         
         appIsSyncingPlaceholder.hidden = true

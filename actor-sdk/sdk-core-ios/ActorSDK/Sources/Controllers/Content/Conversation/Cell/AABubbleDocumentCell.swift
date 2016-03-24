@@ -52,7 +52,7 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
         self.contentInsets = UIEdgeInsetsMake(0, 0, 0, 0)
         
         self.bubble.userInteractionEnabled = true
-        self.bubble.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "documentDidTap"))
+        self.bubble.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleDocumentCell.documentDidTap)))
     }
 
     public required init(coder aDecoder: NSCoder) {
