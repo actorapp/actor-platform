@@ -64,13 +64,13 @@ public class AABigAlertController: UIViewController,UIViewControllerTransitionin
         self.buttonOk.setTitle(AALocalized("AlertOk"), forState: UIControlState.Normal)
         self.buttonOk.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
         self.buttonOk.frame = CGRectMake(0,291,240,39)
-        self.buttonOk.addTarget(self, action: "closeController", forControlEvents: UIControlEvents.TouchUpInside)
+        self.buttonOk.addTarget(self, action: #selector(AABigAlertController.closeController), forControlEvents: UIControlEvents.TouchUpInside)
         self.alertView.addSubview(self.buttonOk)
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        let touch = UITapGestureRecognizer(target: self, action: "closeController")
+        let touch = UITapGestureRecognizer(target: self, action: #selector(AABigAlertController.closeController))
         self.view.addGestureRecognizer(touch)
     }
     

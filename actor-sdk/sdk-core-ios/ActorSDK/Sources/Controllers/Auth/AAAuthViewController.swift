@@ -16,7 +16,7 @@ public class AAAuthViewController: AAViewController {
         nextBarButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         nextBarButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 94, green: 142, blue: 192), radius: 4), forState: .Normal)
         nextBarButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 94, green: 142, blue: 192).alpha(0.7), radius: 4), forState: .Highlighted)
-        nextBarButton.addTarget(self, action: "nextDidTap", forControlEvents: .TouchUpInside)
+        nextBarButton.addTarget(self, action: #selector(AAAuthViewController.nextDidTap), forControlEvents: .TouchUpInside)
 
         view.addSubview(nextBarButton)
     }
@@ -32,8 +32,8 @@ public class AAAuthViewController: AAViewController {
         // Forcing initial layout before keyboard show to avoid weird animations
         layoutNextBar()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillAppearInt:", name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillDisappearInt:", name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AAAuthViewController.keyboardWillAppearInt(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AAAuthViewController.keyboardWillDisappearInt(_:)), name: UIKeyboardWillHideNotification, object: nil)
     }
     
     private func layoutNextBar() {

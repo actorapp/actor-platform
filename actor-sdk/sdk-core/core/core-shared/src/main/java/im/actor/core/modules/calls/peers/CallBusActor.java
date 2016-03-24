@@ -24,6 +24,10 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.webrtc.WebRTCMediaStream;
 
+/*-[
+#pragma clang diagnostic ignored "-Wnullability-completeness"
+]-*/
+
 public class CallBusActor extends EventBusActor implements PeerCallCallback {
 
     private static final int STASH = 1;

@@ -237,7 +237,7 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
             }
             let data = result!.dataForColumnIndex(bytesIndex).toJavaBytes()
             dataSize += Int(data.length())
-            rowCount++
+            rowCount += 1
             
             let record = ARListEngineRecord(key: key, withOrder: order, withQuery: query as! String?, withData: data)
             res.addWithId(record)

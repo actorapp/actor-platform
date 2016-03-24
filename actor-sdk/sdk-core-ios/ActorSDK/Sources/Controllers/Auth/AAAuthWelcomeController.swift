@@ -51,13 +51,13 @@ public class AAWelcomeController: AAViewController {
         signupButton.setTitleColor(ActorSDK.sharedActor().style.welcomeSignupTextColor, forState: .Normal)
         signupButton.setBackgroundImage(Imaging.roundedImage(ActorSDK.sharedActor().style.welcomeSignupBgColor, radius: 22), forState: .Normal)
         signupButton.setBackgroundImage(Imaging.roundedImage(ActorSDK.sharedActor().style.welcomeSignupBgColor.alpha(0.7), radius: 22), forState: .Highlighted)
-        signupButton.addTarget(self, action: "signupAction", forControlEvents: UIControlEvents.TouchUpInside)
+        signupButton.addTarget(self, action: #selector(AAWelcomeController.signupAction), forControlEvents: UIControlEvents.TouchUpInside)
         
         signinButton.setTitle(AALocalized("WelcomeLogIn"), forState: .Normal)
         signinButton.titleLabel?.font = UIFont.systemFontOfSize(17)
         signinButton.setTitleColor(ActorSDK.sharedActor().style.welcomeLoginTextColor, forState: .Normal)
         signinButton.setTitleColor(ActorSDK.sharedActor().style.welcomeLoginTextColor.alpha(0.7), forState: .Highlighted)
-        signinButton.addTarget(self, action: "signInAction", forControlEvents: UIControlEvents.TouchUpInside)
+        signinButton.addTarget(self, action: #selector(AAWelcomeController.signInAction), forControlEvents: UIControlEvents.TouchUpInside)
         
         self.view.addSubview(self.bgImage)
         self.view.addSubview(self.logoView)

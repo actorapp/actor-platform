@@ -42,11 +42,11 @@ public class AAEditTextController: AAViewController {
         self.navigationItem.title = AALocalized(config.title)
         
         if config.actionTitle != nil {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized(config.actionTitle), style: UIBarButtonItemStyle.Done, target: self, action: "doSave")
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized(config.actionTitle), style: UIBarButtonItemStyle.Done, target: self, action: #selector(AAEditTextController.doSave))
         } else {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: UIBarButtonItemStyle.Done, target: self, action: "doSave")
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: UIBarButtonItemStyle.Done, target: self, action: #selector(AAEditTextController.doSave))
         }
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: "doCancel")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(AAEditTextController.doCancel))
         
         self.textView.fadeTime = 0
         if let h = config.hint {

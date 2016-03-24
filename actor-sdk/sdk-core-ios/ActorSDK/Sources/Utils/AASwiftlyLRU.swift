@@ -132,7 +132,7 @@ class AASwiftlyLRU<K : Hashable, V> : CustomStringConvertible {
                     self.queue.addToHead(node)
                     self.hashtable[key] = node
                     
-                    self.length++
+                    self.length += 1
                 } else {
                     hashtable.removeValueForKey(self.queue.tail!.key)
                     self.queue.tail = self.queue.tail?.previous
