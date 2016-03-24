@@ -105,7 +105,7 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
           requestQueue += (messageId → scheduledAck)
           assert(requestQueue.size <= MaxRequestQueueSize, s"queued too many: ${requestQueue.size}")
 
-          log.debug("Making an rpc request for messageId: {}", messageId)
+          log.debug("Making an rpc request for messageId {}", messageId)
 
           val responsePromise = Promise[RpcApiService.RpcResponse]()
           context.actorOf(
@@ -133,7 +133,7 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
 
   def publisher: Receive = {
     case RpcApiService.RpcResponse(messageId, result) ⇒
-      log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
+      log.debug("Received RpcResponse for messageId {}: {}", messageId, result)
 
       if (!canCache(result))
         responseCache.invalidate(messageId)
@@ -142,7 +142,7 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
       requestQueue -= messageId
       enqueue(Some(result), messageId)
     case CachedResponse(rsp) ⇒
-      log.debug("Got cached RpcResponse for messageId: {}, publishing", rsp.messageId)
+      log.debug("Got cached RpcResponse for messageId: {}, {}", rsp.messageId, rsp.result)
       enqueue(Some(rsp.result), rsp.messageId)
     case Ack(messageId) ⇒ enqueueAck(messageId)
     case Request(_)     ⇒ deliverBuf()
