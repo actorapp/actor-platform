@@ -2,20 +2,21 @@ package im.actor.server.user
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.cluster.pubsub.DistributedPubSub
-import akka.event.{ LoggingAdapter, Logging }
+import akka.event.{ Logging, LoggingAdapter }
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.{ AuthorizedClientData, Update }
-import im.actor.api.rpc.users.{ ApiUser, ApiSex }
+import im.actor.api.rpc.users.{ ApiSex, ApiUser }
 import im.actor.server.auth.DeviceInfo
+import im.actor.server.bots.BotCommand
 import im.actor.server.db.DbExtension
 import im.actor.server.file.Avatar
-import im.actor.server.model.{ SerializedUpdate, UpdateMapping, Peer }
+import im.actor.server.model.{ Peer, SerializedUpdate, UpdateMapping }
 import im.actor.server.persist.UserRepo
 import im.actor.server.pubsub.PubSubExtension
-import im.actor.server.sequence.{ PushData, PushRules, SeqUpdatesExtension, SeqState }
+import im.actor.server.sequence.{ PushData, PushRules, SeqState, SeqUpdatesExtension }
 import im.actor.server.{ model, persist ⇒ p }
 import im.actor.types._
 import im.actor.util.misc.IdUtils
@@ -120,6 +121,12 @@ private[user] sealed trait Commands extends AuthCommands {
 
   def notifyDialogsChanged(userId: Int): Future[SeqState] =
     (processorRegion.ref ? NotifyDialogsChanged(userId)).mapTo[SeqState]
+
+  def addBotCommand(userId: Int, command: BotCommand): Future[AddBotCommandAck] =
+    (processorRegion.ref ? AddBotCommand(userId, command)).mapTo[AddBotCommandAck]
+
+  def removeBotCommand(userId: Int, slashCommand: String): Future[RemoveBotCommandAck] =
+    (processorRegion.ref ? RemoveBotCommand(userId, slashCommand)).mapTo[RemoveBotCommandAck]
 
   def broadcastUserUpdate(
     userId:     Int,

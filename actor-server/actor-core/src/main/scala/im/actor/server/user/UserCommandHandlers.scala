@@ -6,7 +6,7 @@ import java.util.TimeZone
 import akka.actor.{ ActorSystem, Status }
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
-import im.actor.api.rpc.contacts.{ UpdateContactsRemoved, UpdateContactRegistered, UpdateContactsAdded }
+import im.actor.api.rpc.contacts.{ UpdateContactRegistered, UpdateContactsAdded, UpdateContactsRemoved }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
@@ -15,6 +15,7 @@ import im.actor.concurrent.FutureExt
 import im.actor.config.ActorConfig
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
+import im.actor.server.bots.BotCommand
 import im.actor.server.file.{ Avatar, ImageUtils }
 import im.actor.server.model.{ AvatarData, Sex, User }
 import im.actor.server.model.contact.{ UserContact, UserEmailContact, UserPhoneContact }
@@ -24,6 +25,7 @@ import im.actor.server.persist._
 import im.actor.server.sequence.{ PushRules, SequenceErrors }
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
+import im.actor.server.user.UserErrors.{ BotCommandAlreadyExists, InvalidBotCommand }
 import im.actor.util.misc.StringUtils
 import im.actor.util.ThreadLocalSecureRandom
 import org.joda.time.DateTime
@@ -50,6 +52,12 @@ object UserErrors {
   final case class InvalidLocale(locale: String) extends UserError(s"Invalid locale: $locale")
 
   case object EmptyLocalesList extends UserError("Empty locale list")
+
+  final case class InvalidBotCommand(slashCommand: String)
+    extends UserError(s"Invalid slash command: $slashCommand")
+
+  final case class BotCommandAlreadyExists(slashCommand: String)
+    extends UserError(s"Bot command already exists: $slashCommand")
 
   final case object ContactNotFound extends UserError("Contact not found")
 
@@ -284,6 +292,42 @@ private[user] trait UserCommandHandlers {
         }
     }
   }
+
+  protected def addBotCommand(user: UserState, rawCommand: BotCommand): Unit = {
+    val command = rawCommand.copy(slashCommand = rawCommand.slashCommand.trim)
+    def isValid(command: BotCommand) = {
+      val slashCommand = command.slashCommand
+      slashCommand.nonEmpty && slashCommand.matches("[A-Za-z]*") && slashCommand.length < 32
+    }
+    if (user.botCommands.exists(_.slashCommand == command.slashCommand)) {
+      sender() ! Status.Failure(BotCommandAlreadyExists(command.slashCommand))
+    } else {
+      if (isValid(command)) {
+        persistReply(UserEvents.BotCommandAdded(now(), command), user) { _ ⇒
+          val update = UpdateUserBotCommandsChanged(user.id, user.botCommands :+ command)
+          for {
+            relatedUserIds ← getRelations(user.id)
+            _ ← seqUpdatesExt.broadcastOwnSingleUpdate(user.id, relatedUserIds, update)
+          } yield AddBotCommandAck()
+        }
+      } else {
+        sender() ! Status.Failure(InvalidBotCommand(command.slashCommand))
+      }
+    }
+  }
+
+  protected def removeBotCommand(user: UserState, slashCommand: String) =
+    if (user.botCommands.exists(_.slashCommand == slashCommand)) {
+      persistReply(UserEvents.BotCommandRemoved(now(), slashCommand), user) { _ ⇒
+        val update = UpdateUserBotCommandsChanged(user.id, user.botCommands.filterNot(_.slashCommand == slashCommand))
+        for {
+          relatedUserIds ← getRelations(user.id)
+          _ ← seqUpdatesExt.broadcastOwnSingleUpdate(user.id, relatedUserIds, update)
+        } yield RemoveBotCommandAck()
+      }
+    } else {
+      sender() ! RemoveBotCommandAck()
+    }
 
   protected def updateAvatar(user: UserState, avatarOpt: Option[Avatar]): Unit = {
     persistReply(UserEvents.AvatarUpdated(now(), avatarOpt), user) { evt ⇒
