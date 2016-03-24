@@ -96,14 +96,11 @@ public class AASettingsViewController: AAContentTableController {
                         sourceRect: view.bounds,
                         tapClosure: { [unowned self] (index) -> () in
                             if index == -2 {
-                                self.confirmUser("PhotoRemoveGroupMessage",
+                                self.confirmAlertUser("PhotoRemoveGroupMessage",
                                     action: "PhotoRemove",
-                                    cancel: "AlertCancel",
-                                    sourceView: self.view,
-                                    sourceRect: self.view.bounds,
                                     tapYes: { () -> () in
                                         Actor.removeMyAvatar()
-                                })
+                                }, tapNo: nil)
                             } else if index >= 0 {
                                 let takePhoto: Bool = (index == 0) && hasCamera
                                 self.pickAvatar(takePhoto, closure: { (image) -> () in
