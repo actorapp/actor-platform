@@ -24,6 +24,7 @@
     <dimen name="tour_card_message">14sp</dimen>
     <dimen name="keyboard_height">250dp</dimen>
     <dimen name="share_btn_size">60dp</dimen>
+    <dimen name="fast_share_size">70dp</dimen>
 
     <dimen name="call_btn_size">40dp</dimen>
     <dimen name="end_call_btn_size">70dp</dimen>
