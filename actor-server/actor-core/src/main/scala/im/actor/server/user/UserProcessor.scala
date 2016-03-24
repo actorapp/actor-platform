@@ -9,6 +9,7 @@ import akka.util.Timeout
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
 import im.actor.server.acl.ACLUtils
+import im.actor.server.bots.BotCommand
 import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogCommand, DialogExtension }
@@ -57,7 +58,8 @@ private[user] object UserBuilder {
       isAdmin = e.isAdmin,
       socialContacts = Seq.empty[SocialContact],
       preferredLanguages = Seq.empty[String],
-      timeZone = None
+      timeZone = None,
+      botCommands = Seq.empty[BotCommand]
     )
 }
 
@@ -93,6 +95,8 @@ object UserProcessor {
       10036 → classOf[UserCommands.ChangeTimeZone],
       10037 → classOf[UserCommands.EditLocalName],
       10038 → classOf[UserCommands.RemoveContact],
+      10039 → classOf[UserCommands.AddBotCommand],
+      10040 → classOf[UserCommands.RemoveBotCommand],
 
       11001 → classOf[UserQueries.GetAuthIds],
       11002 → classOf[UserQueries.GetAuthIdsResponse],
@@ -128,6 +132,8 @@ object UserProcessor {
       12017 → classOf[UserEvents.PreferredLanguagesChanged],
       12018 → classOf[UserEvents.TimeZoneChanged],
       12019 → classOf[UserEvents.LocalNameChanged],
+      12020 → classOf[UserEvents.BotCommandAdded],
+      12021 → classOf[UserEvents.BotCommandRemoved],
 
       13000 → classOf[UserState],
       13001 → classOf[SocialContact]
@@ -199,6 +205,15 @@ private[user] final class UserProcessor
         state.copy(preferredLanguages = preferredLanguages)
       case _: UserEvents.Created        ⇒ state
       case _: UserEvents.DialogsChanged ⇒ state
+      case UserEvents.BotCommandAdded(_, command) ⇒
+        val updCommands = if (state.botCommands exists (_.slashCommand == command.slashCommand)) state.botCommands else state.botCommands :+ command
+        state.copy(botCommands = updCommands)
+      case UserEvents.BotCommandRemoved(_, slashCommand) ⇒
+        val updCommands =
+          if (state.botCommands exists (_.slashCommand == slashCommand))
+            state.botCommands filterNot (_.slashCommand == slashCommand)
+          else state.botCommands
+        state.copy(botCommands = updCommands)
     }
   }
 
@@ -225,6 +240,8 @@ private[user] final class UserProcessor
     case NotifyDialogsChanged(_)            ⇒ notifyDialogsChanged(state)
     case ChangeTimeZone(_, timeZone)        ⇒ changeTimeZone(state, timeZone)
     case ChangePreferredLanguages(_, langs) ⇒ changePreferredLanguages(state, langs)
+    case AddBotCommand(_, command)          ⇒ addBotCommand(state, command)
+    case RemoveBotCommand(_, slashCommand)  ⇒ removeBotCommand(state, slashCommand)
     case cmd: EditLocalName                 ⇒ contacts.ref forward cmd
     case query: GetLocalName                ⇒ contacts.ref forward query
     case StopOffice                         ⇒ context stop self

@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package im.actor.server;
+
+import "scalapb/scalapb.proto";
+
+message BotCommand {
+    required string slash_command = 1;
+    required string description = 2;
+    optional string loc_key = 3;
+}

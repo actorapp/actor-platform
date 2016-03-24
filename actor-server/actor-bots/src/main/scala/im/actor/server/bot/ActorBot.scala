@@ -37,7 +37,7 @@ final class ActorBot extends InternalBot(ActorBot.UserId, ActorBot.Username, Act
               log.warning("Creating new bot")
 
               requestCreateBot(nickname, name) onComplete {
-                case Success(token) ⇒ requestSendMessage(m.peer, nextRandomId(), TextMessage(s"Yay! Bot created, here is your token: ${token}", None))
+                case Success(token) ⇒ requestSendMessage(m.peer, nextRandomId(), TextMessage(s"Yay! Bot created, bot token: ${token.token}, bot id: ${token.userId}", None))
                 case Failure(BotError(_, "USERNAME_TAKEN", _, _)) ⇒
                   requestSendMessage(m.peer, nextRandomId(), TextMessage("Username already taken", None))
                 case Failure(e) ⇒
