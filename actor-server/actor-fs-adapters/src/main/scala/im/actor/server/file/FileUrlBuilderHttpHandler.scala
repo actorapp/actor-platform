@@ -58,9 +58,9 @@ private[file] final class FileUrlBuilderHttpHandler(fsAdapter: FileStorageAdapte
   // format: OFF
   def routes: Route =
     extractRequest { request =>
-      log.debug("Got file url builder request: {}", request)
       defaultVersion {
         pathPrefix("files" / SignedLongNumber) { fileId =>
+          log.debug("Got file url builder request: {}", request)
           get {
             validateBuilderRequest(fileId) { case (fileModel, accessHash) =>
               onSuccess(fsAdapter.getFileDownloadUrl(fileModel, accessHash)) {

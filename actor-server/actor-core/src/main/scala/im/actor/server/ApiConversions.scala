@@ -2,6 +2,8 @@ package im.actor.server
 
 import im.actor.api.rpc.files.{ ApiAvatar, ApiAvatarImage, ApiFileLocation }
 import im.actor.api.rpc.messaging.ApiMessageReaction
+import im.actor.api.rpc.users.ApiBotCommand
+import im.actor.server.bots.BotCommand
 import im.actor.server.model.MessageReaction
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
 
@@ -38,6 +40,16 @@ object ApiConversions {
 
   implicit def avatarOptToApi(avatarOpt: Option[Avatar]): Option[ApiAvatar] =
     avatarOpt map avatarToApi
+
+  implicit def botCommandsToApi(commands: Seq[BotCommand]): IndexedSeq[ApiBotCommand] =
+    (commands map botCommandToApi).toVector
+
+  implicit def botCommandToApi(command: BotCommand): ApiBotCommand =
+    ApiBotCommand(
+      command.slashCommand,
+      command.description,
+      command.locKey
+    )
 
   implicit def reactionToApi(reaction: MessageReaction): ApiMessageReaction =
     ApiMessageReaction(
