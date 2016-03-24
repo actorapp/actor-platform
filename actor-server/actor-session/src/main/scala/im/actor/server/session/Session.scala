@@ -121,7 +121,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
   private val updatesHandler = context.actorOf(UpdatesHandler.props(authId), "updatesHandler")
 
   val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props(), "messagePublisher")
-  val rpcHandler = context.actorOf(RpcHandler.props(config.rpcConfig), "rpcHandler")
+  val rpcHandler = context.actorOf(RpcHandler.props(authId, sessionId, config.rpcConfig), "rpcHandler")
 
   def receive = initializing
 
