@@ -1,10 +1,11 @@
 package im.actor.server.session
 
 import akka.actor._
+import akka.event.Logging.MDC
 import akka.pattern.pipe
 import akka.stream.actor._
 import com.github.kxbmap.configs.Bytes
-import im.actor.api.rpc.{ RpcError, RpcInternalError, RpcOk, RpcResult }
+import im.actor.api.rpc.{ ClientData, RpcError, RpcInternalError, RpcOk, RpcResult }
 import im.actor.server.api.rpc.RpcApiService.RpcResponse
 import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService }
 import im.actor.util.cache.CacheHelpers._
@@ -21,7 +22,7 @@ private[session] object RpcHandler {
   private[session] val MaxCacheSize = 100L
   private[session] val RequestTimeOut = 30 seconds
 
-  def props(config: RpcConfig) = Props(classOf[RpcHandler], config)
+  private[session] def props(authId: Long, sessionId: Long, config: RpcConfig) = Props(classOf[RpcHandler], authId, sessionId, config)
 
   private case class CachedResponse(rsp: RpcApiService.RpcResponse)
   private case class Ack(messageId: Long)
@@ -66,7 +67,7 @@ private[session] class RequestHandler(
   }
 }
 
-private[session] class RpcHandler(config: RpcConfig) extends ActorSubscriber with ActorPublisher[(Option[RpcResult], Long)] with ActorLogging {
+private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConfig) extends ActorSubscriber with ActorPublisher[(Option[RpcResult], Long)] with DiagnosticActorLogging {
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
@@ -93,6 +94,8 @@ private[session] class RpcHandler(config: RpcConfig) extends ActorSubscriber wit
 
   def subscriber: Receive = {
     case OnNext(HandleRpcRequest(messageId, requestBytes, clientData)) ⇒
+      recordClientData(clientData)
+
       Option(responseCache.getIfPresent(messageId)) match {
         case Some(rspFuture) ⇒
           log.debug("Publishing cached RpcResponse for messageId: {}", messageId)
@@ -102,7 +105,7 @@ private[session] class RpcHandler(config: RpcConfig) extends ActorSubscriber wit
           requestQueue += (messageId → scheduledAck)
           assert(requestQueue.size <= MaxRequestQueueSize, s"queued too many: ${requestQueue.size}")
 
-          log.debug("Making an rpc request for messageId: {}", messageId)
+          log.debug("Making an rpc request for messageId {}", messageId)
 
           val responsePromise = Promise[RpcApiService.RpcResponse]()
           context.actorOf(
@@ -130,7 +133,7 @@ private[session] class RpcHandler(config: RpcConfig) extends ActorSubscriber wit
 
   def publisher: Receive = {
     case RpcApiService.RpcResponse(messageId, result) ⇒
-      log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
+      log.debug("Received RpcResponse for messageId {}: {}", messageId, result)
 
       if (!canCache(result))
         responseCache.invalidate(messageId)
@@ -139,7 +142,7 @@ private[session] class RpcHandler(config: RpcConfig) extends ActorSubscriber wit
       requestQueue -= messageId
       enqueue(Some(result), messageId)
     case CachedResponse(rsp) ⇒
-      log.debug("Got cached RpcResponse for messageId: {}, publishing", rsp.messageId)
+      log.debug("Got cached RpcResponse for messageId: {}, {}", rsp.messageId, rsp.result)
       enqueue(Some(rsp.result), rsp.messageId)
     case Ack(messageId) ⇒ enqueueAck(messageId)
     case Request(_)     ⇒ deliverBuf()
@@ -178,5 +181,17 @@ private[session] class RpcHandler(config: RpcConfig) extends ActorSubscriber wit
           deliverBuf()
         case None ⇒
       }
+  }
+
+  private[this] var userIdOpt: Option[Int] = None
+
+  private def recordClientData(clientData: ClientData): Unit = {
+    if (userIdOpt.isEmpty && clientData.optUserId.isDefined)
+      this.userIdOpt = clientData.optUserId
+  }
+
+  override def mdc(currentMessage: Any): MDC = {
+    val base = Map("authId" → authId, "sessionId" → sessionId)
+    userIdOpt.fold(base)(userId ⇒ base + ("userId" → userId))
   }
 }

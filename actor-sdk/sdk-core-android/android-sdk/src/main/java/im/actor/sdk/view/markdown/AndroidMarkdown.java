@@ -1,10 +1,13 @@
 package im.actor.sdk.view.markdown;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.ChatActivity;
 import im.actor.sdk.controllers.fragment.preview.CodePreviewActivity;
 import im.actor.runtime.android.AndroidContext;
@@ -28,6 +32,10 @@ import im.actor.runtime.markdown.MDUrl;
 import im.actor.runtime.markdown.MarkdownParser;
 
 public class AndroidMarkdown {
+
+    private static final String EXTRA_CUSTOM_TABS_SESSION = "android.support.customtabs.extra.SESSION";
+    private static final String EXTRA_CUSTOM_TABS_TOOLBAR_COLOR = "android.support.customtabs.extra.TOOLBAR_COLOR";
+    public static final String EXTRA_CUSTOM_TABS_EXIT_ANIMATION_BUNDLE = "android.support.customtabs.extra.EXIT_ANIMATION_BUNDLE";
 
     public static Spannable processOnlyLinks(String markdown) {
         return processText(markdown, MarkdownParser.MODE_ONLY_LINKS);
@@ -96,24 +104,24 @@ public class AndroidMarkdown {
                 builder.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(View view) {
+                        Context ctx = view.getContext();
                         if (url.getUrl().startsWith("send:")) {
-                            Context ctx = view.getContext();
                             if (ctx instanceof ChatActivity) {
                                 ActorSDK.sharedActor().getMessenger().sendMessage(((ChatActivity) ctx).getPeer(), url.getUrl().replace("send:", ""));
                             }
                         } else {
                             Intent intent = new Intent(Intent.ACTION_VIEW)
-                                    .setData(Uri.parse(url.getUrl()))
-                                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            if (intent.resolveActivity(view.getContext().getPackageManager()) != null) {
-                                AndroidContext.getContext().startActivity(
+                                    .setData(Uri.parse(url.getUrl()));
+                            Bundle b = addChromeCustomTabData(intent);
+                            if (intent.resolveActivity(ctx.getPackageManager()) != null) {
+                                ctx.startActivity(
                                         intent);
                             } else {
                                 Intent WithSchema = new Intent(Intent.ACTION_VIEW)
-                                        .setData(Uri.parse("http://".concat(url.getUrl())))
-                                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                if (WithSchema.resolveActivity(view.getContext().getPackageManager()) != null) {
-                                    AndroidContext.getContext().startActivity(
+                                        .setData(Uri.parse("http://".concat(url.getUrl())));
+                                Bundle b1 = addChromeCustomTabData(WithSchema);
+                                if (WithSchema.resolveActivity(ctx.getPackageManager()) != null) {
+                                    ctx.startActivity(
                                             WithSchema);
                                 } else {
                                     Toast.makeText(view.getContext(), "Unknown URL type", Toast.LENGTH_SHORT).show();
@@ -127,5 +135,23 @@ public class AndroidMarkdown {
                 throw new RuntimeException("Unknown text type: " + text);
             }
         }
+    }
+
+    public static Bundle addChromeCustomTabData(Intent intent) {
+        Bundle extras = new Bundle();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            extras.putBinder(EXTRA_CUSTOM_TABS_SESSION, null);
+        }
+        extras.putInt(EXTRA_CUSTOM_TABS_TOOLBAR_COLOR, ActorSDK.sharedActor().style.getMainColor());
+        intent.putExtras(extras);
+
+
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+//            Bundle finishBundle = ActivityOptions.makeCustomAnimation(AndroidContext.getContext(), 0, android.R.anim.slide_in_left).toBundle();
+//            intent.putExtra(EXTRA_CUSTOM_TABS_EXIT_ANIMATION_BUNDLE, finishBundle);
+//            return ActivityOptions.makeCustomAnimation(AndroidContext.getContext(), android.R.anim.slide_out_right, 0).toBundle();
+//        }
+
+        return null;
     }
 }

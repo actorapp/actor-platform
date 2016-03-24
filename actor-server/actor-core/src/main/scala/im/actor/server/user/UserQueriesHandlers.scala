@@ -35,7 +35,7 @@ private[user] trait UserQueriesHandlers {
       external = state.external,
       preferredLanguages = state.preferredLanguages.toVector,
       timeZone = state.timeZone,
-      botCommands = Vector.empty
+      botCommands = state.botCommands
     ))) pipeTo sender()
   }
 

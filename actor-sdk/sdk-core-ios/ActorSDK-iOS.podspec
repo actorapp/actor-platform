@@ -23,7 +23,6 @@ Pod::Spec.new do |s|
   # UI
   s.dependency 'VBFPopFlatButton'
   s.dependency 'MBProgressHUD'
-  s.dependency 'SVProgressHUD'
   s.dependency 'PSTAlertController'
   s.dependency 'SZTextView'
   s.dependency 'RSKImageCropper'
@@ -34,9 +33,6 @@ Pod::Spec.new do |s|
   s.dependency 'YYCategories'
   s.dependency 'DZNWebViewController'
 
-  s.dependency 'BlockAlertsAnd-ActionSheets'
-  s.dependency 'RMUniversalAlert'
-  s.dependency 'PSTAlertController'
   s.dependency 'TTTAttributedLabel'
   s.dependency 'M13ProgressSuite'
 

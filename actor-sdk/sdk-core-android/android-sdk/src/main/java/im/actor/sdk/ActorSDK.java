@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -193,7 +194,10 @@ public class ActorSDK {
         // SDK Tools
         //
 
-        Fresco.initialize(application);
+        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(application)
+                .setDownsampleEnabled(true)
+                .build();
+        Fresco.initialize(application, config);
         AndroidContext.setContext(application);
         // TODO: Replace
         new SmileProcessor(application).loadEmoji();
