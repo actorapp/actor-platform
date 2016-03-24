@@ -1,6 +1,7 @@
 package im.actor.server.bot
 
 import im.actor.bots.BotMessages
+import im.actor.server.bots.BotCommand
 import im.actor.server.file.{ FileLocation, AvatarImage, Avatar }
 
 import scala.language.implicitConversions
@@ -17,4 +18,7 @@ trait BotToInternalConversions {
 
   implicit def toAvatar(avatar: BotMessages.Avatar): Avatar =
     Avatar(avatar.smallImage, avatar.largeImage, avatar.fullImage)
+
+  implicit def toBotCommand(command: BotMessages.BotCommand): BotCommand =
+    BotCommand(command.slashCommand, command.description, command.locKey)
 }
