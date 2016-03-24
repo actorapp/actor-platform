@@ -34,11 +34,9 @@ target 'ActorApp' do
     # Progress
     pod 'M13ProgressSuite'
     pod 'MBProgressHUD'
-    pod 'SVProgressHUD'
 
     # Alerts
     pod 'BlockAlertsAnd-ActionSheets'
-    pod 'RMUniversalAlert'
     pod 'PSTAlertController'
     
     # Calls
@@ -72,11 +70,9 @@ target 'ActorSDK' do
     # Progress
     pod 'M13ProgressSuite'
     pod 'MBProgressHUD'
-    pod 'SVProgressHUD'
 
     # Alerts
     pod 'BlockAlertsAnd-ActionSheets'
-    pod 'RMUniversalAlert'
     pod 'PSTAlertController'
     
     # Calls
