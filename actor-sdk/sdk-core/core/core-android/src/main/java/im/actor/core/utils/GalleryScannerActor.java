@@ -1,4 +1,4 @@
-package im.actor.sdk.util.images;
+package im.actor.core.utils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

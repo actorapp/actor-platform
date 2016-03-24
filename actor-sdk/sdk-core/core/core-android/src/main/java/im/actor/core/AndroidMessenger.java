@@ -31,9 +31,7 @@ import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
-import im.actor.core.entity.StickerPack;
 import im.actor.core.entity.content.FastThumb;
-import im.actor.core.entity.Sticker;
 import im.actor.core.network.NetworkState;
 import im.actor.core.utils.AppStateActor;
 import im.actor.core.utils.IOUtils;
@@ -54,7 +52,7 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.storage.ListEngineItem;
-import im.actor.sdk.util.images.GalleryScannerActor;
+import im.actor.core.utils.GalleryScannerActor;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static im.actor.runtime.actors.ActorSystem.system;
