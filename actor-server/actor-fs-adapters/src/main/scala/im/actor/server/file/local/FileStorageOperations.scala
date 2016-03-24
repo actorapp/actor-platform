@@ -78,14 +78,17 @@ trait FileStorageOperations extends LocalUploadKeyImplicits {
       blocking {
         log.debug("Concatenating file: {}, parts number: {}", fileName, partNames.length)
         val concatFile = dir.createChild(getFileName(fileName))
+        val groupedPartNames = partNames.grouped(100)
         for {
           out ← concatFile.outputStream
-          _ ← for {
-            iss ← partNames map { name ⇒
-              log.debug("Concatenating part: {}", name)
-              (dir / name).inputStream
-            }
-          } yield iss.foreach(_.pipeTo(out, closeOutputStream = false))
+          _ = groupedPartNames foreach { names ⇒
+            for {
+              iss ← names map { name ⇒
+                log.debug("Concatenating part: {}", name)
+                (dir / name).inputStream
+              }
+            } yield iss.foreach(_.pipeTo(out, closeOutputStream = false))
+          }
         } yield ()
         concatFile
       }
