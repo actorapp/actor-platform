@@ -104,26 +104,24 @@ public class AndroidMarkdown {
                 builder.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(View view) {
+                        Context ctx = view.getContext();
                         if (url.getUrl().startsWith("send:")) {
-                            Context ctx = view.getContext();
                             if (ctx instanceof ChatActivity) {
                                 ActorSDK.sharedActor().getMessenger().sendMessage(((ChatActivity) ctx).getPeer(), url.getUrl().replace("send:", ""));
                             }
                         } else {
                             Intent intent = new Intent(Intent.ACTION_VIEW)
-                                    .setData(Uri.parse(url.getUrl()))
-                                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    .setData(Uri.parse(url.getUrl()));
                             Bundle b = addChromeCustomTabData(intent);
-                            if (intent.resolveActivity(view.getContext().getPackageManager()) != null) {
-                                AndroidContext.getContext().startActivity(
+                            if (intent.resolveActivity(ctx.getPackageManager()) != null) {
+                                ctx.startActivity(
                                         intent);
                             } else {
                                 Intent WithSchema = new Intent(Intent.ACTION_VIEW)
-                                        .setData(Uri.parse("http://".concat(url.getUrl())))
-                                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        .setData(Uri.parse("http://".concat(url.getUrl())));
                                 Bundle b1 = addChromeCustomTabData(WithSchema);
-                                if (WithSchema.resolveActivity(view.getContext().getPackageManager()) != null) {
-                                    AndroidContext.getContext().startActivity(
+                                if (WithSchema.resolveActivity(ctx.getPackageManager()) != null) {
+                                    ctx.startActivity(
                                             WithSchema);
                                 } else {
                                     Toast.makeText(view.getContext(), "Unknown URL type", Toast.LENGTH_SHORT).show();
