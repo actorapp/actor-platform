@@ -44,10 +44,10 @@ public class AABubbleVideoCell: AABubbleBaseFileCell {
         contentView.addSubview(statusView)
         contentView.addSubview(playView)
         
-        preview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "mediaDidTap"))
+        preview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleVideoCell.mediaDidTap)))
         preview.userInteractionEnabled = true
         
-        playView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "mediaDidTap"))
+        playView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleVideoCell.mediaDidTap)))
         playView.userInteractionEnabled = true
         
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)

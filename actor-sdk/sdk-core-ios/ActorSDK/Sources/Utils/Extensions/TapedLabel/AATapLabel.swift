@@ -179,8 +179,8 @@ public class TapLabel: UILabel, NSLayoutManagerDelegate {
         return textOffset;
     }
     
-    private func linkAtPoint(var point: CGPoint) -> (String, NSRange)?
-    {
+    private func linkAtPoint(point: CGPoint) -> (String, NSRange)? {
+        var point2 = point
         if textStorage.length == 0 {
             return nil
         }
@@ -188,15 +188,15 @@ public class TapLabel: UILabel, NSLayoutManagerDelegate {
         let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
         let textOffset = calcTextOffsetForGlyphRange(glyphRange)
         
-        point.x = point.x - textOffset.x
-        point.y = point.y - textOffset.y
+        point2.x = point2.x - textOffset.x
+        point2.y = point2.y - textOffset.y
         
-        let touchedChar = layoutManager.glyphIndexForPoint(point, inTextContainer:textContainer)
+        let touchedChar = layoutManager.glyphIndexForPoint(point2, inTextContainer:textContainer)
         
         var lineRange = NSRange()
         let lineRect = layoutManager.lineFragmentUsedRectForGlyphAtIndex(touchedChar, effectiveRange:&lineRange)
         
-        if !CGRectContainsPoint(lineRect, point) {
+        if !CGRectContainsPoint(lineRect, point2) {
             return nil
         }
         

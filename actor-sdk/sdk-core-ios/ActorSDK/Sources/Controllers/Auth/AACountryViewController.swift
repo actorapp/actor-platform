@@ -59,7 +59,7 @@ public class AACountryViewController: AATableViewController {
     
     private func letters() -> NSArray {
         if (_letters == nil) {
-            _letters = (countries().allKeys as NSArray).sortedArrayUsingSelector(Selector("compare:"))
+            _letters = (countries().allKeys as NSArray).sortedArrayUsingSelector(#selector(YYTextPosition.compare(_:)))
         }
         return _letters;
     }

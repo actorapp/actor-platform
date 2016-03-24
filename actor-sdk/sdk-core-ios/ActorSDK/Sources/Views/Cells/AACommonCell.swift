@@ -135,7 +135,7 @@ public class AACommonCell: AATableViewCell {
     private func setupSwitchIfNeeded() {
         if switcher == nil {
             switcher = UISwitch()
-            switcher!.addTarget(self, action: Selector("switcherSwitched"), forControlEvents: UIControlEvents.ValueChanged)
+            switcher!.addTarget(self, action: #selector(AACommonCell.switcherSwitched), forControlEvents: UIControlEvents.ValueChanged)
             switcher!.onTintColor = appStyle.vcSwitchOn
             switcher!.tintColor = appStyle.vcSwitchOff
             contentView.addSubview(switcher!)

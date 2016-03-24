@@ -19,9 +19,9 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         super.init(nibName: nil, bundle: nil)
         self.navigationItem.title = AALocalized("CreateGroupTitle")
         if AADevice.isiPad {
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: "dismiss")
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(AAViewController.dismiss))
         }
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Plain, target: self, action: "doNext")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(AAGroupCreateViewController.doNext))
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -50,7 +50,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         
         addPhotoButton.exclusiveTouch = true
         addPhotoButton.setBackgroundImage(buttonImage, forState: UIControlState.Normal)
-        addPhotoButton.addTarget(self, action: "photoTap", forControlEvents: UIControlEvents.TouchUpInside)
+        addPhotoButton.addTarget(self, action: #selector(AAGroupCreateViewController.photoTap), forControlEvents: UIControlEvents.TouchUpInside)
         
         let addPhotoLabelFirst = UILabel()
         addPhotoLabelFirst.text = AALocalized("ActionAddPhoto1")

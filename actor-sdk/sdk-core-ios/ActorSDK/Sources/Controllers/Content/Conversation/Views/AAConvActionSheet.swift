@@ -189,12 +189,12 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
         
         // add actins
         
-        self.btnCamera.addTarget(self, action: "btnCameraAction", forControlEvents: UIControlEvents.TouchUpInside)
-        self.btnLibrary.addTarget(self, action: "btnLibraryAction", forControlEvents: UIControlEvents.TouchUpInside)
-        self.btnDocuments.addTarget(self, action: "btnDocumentAction", forControlEvents: UIControlEvents.TouchUpInside)
-        self.btnLocation.addTarget(self, action: "btnLocationAction", forControlEvents: UIControlEvents.TouchUpInside)
-        self.btnContact.addTarget(self, action: "btnContactAction", forControlEvents: UIControlEvents.TouchUpInside)
-        self.btnCancel.addTarget(self, action: "btnCloseAction", forControlEvents: UIControlEvents.TouchUpInside)
+        self.btnCamera.addTarget(self, action: #selector(AAConvActionSheet.btnCameraAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.btnLibrary.addTarget(self, action: #selector(AAConvActionSheet.btnLibraryAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.btnDocuments.addTarget(self, action: #selector(AAConvActionSheet.btnDocumentAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.btnLocation.addTarget(self, action: #selector(AAConvActionSheet.btnLocationAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.btnContact.addTarget(self, action: #selector(AAConvActionSheet.btnContactAction), forControlEvents: UIControlEvents.TouchUpInside)
+        self.btnCancel.addTarget(self, action: #selector(AAConvActionSheet.btnCloseAction), forControlEvents: UIControlEvents.TouchUpInside)
     }
     
     public func thumbnailSelectedUpdated(selectedAssets: [PHAsset]) {
@@ -210,13 +210,13 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
             //
             // remove target
             //
-            self.btnCamera.removeTarget(self, action: "btnCameraAction", forControlEvents: UIControlEvents.TouchUpInside)
+            self.btnCamera.removeTarget(self, action: #selector(AAConvActionSheet.btnCameraAction), forControlEvents: UIControlEvents.TouchUpInside)
             
             //
             // add new target
             //
             self.btnCamera.setTitle(sendString, forState: UIControlState.Normal)
-            self.btnCamera.addTarget(self, action: "sendPhotos", forControlEvents: UIControlEvents.TouchUpInside)
+            self.btnCamera.addTarget(self, action: #selector(AAConvActionSheet.sendPhotos), forControlEvents: UIControlEvents.TouchUpInside)
             self.btnCamera.titleLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 17)
             
             
@@ -225,13 +225,13 @@ public class AAConvActionSheet: UIView, AAThumbnailViewDelegate {
             //
             // remove target
             //
-            self.btnCamera.removeTarget(self, action: "sendPhotos", forControlEvents: UIControlEvents.TouchUpInside)
+            self.btnCamera.removeTarget(self, action: #selector(AAConvActionSheet.sendPhotos), forControlEvents: UIControlEvents.TouchUpInside)
             
             //
             // add new target
             //
             self.btnCamera.setTitle(AALocalized("PhotoCamera"), forState: UIControlState.Normal)
-            self.btnCamera.addTarget(self, action: "btnCameraAction", forControlEvents: UIControlEvents.TouchUpInside)
+            self.btnCamera.addTarget(self, action: #selector(AAConvActionSheet.btnCameraAction), forControlEvents: UIControlEvents.TouchUpInside)
             self.btnCamera.titleLabel?.font = UIFont.systemFontOfSize(17)
             
         }

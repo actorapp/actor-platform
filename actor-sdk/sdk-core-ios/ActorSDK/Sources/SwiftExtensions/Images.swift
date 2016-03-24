@@ -317,7 +317,7 @@ public extension UIImage {
                 let matrixSize = floatingPointSaturationMatrix.count
                 var saturationMatrix = [Int16](count: matrixSize, repeatedValue: 0)
                 
-                for var i: Int = 0; i < matrixSize; ++i {
+                for i: Int in 0 ..< matrixSize {
                     saturationMatrix[i] = Int16(round(floatingPointSaturationMatrix[i] * divisor))
                 }
                 
@@ -379,9 +379,9 @@ public extension UIImage {
 
 extension UIImage {
     public func imageRotatedByDegrees(degrees: CGFloat, flip: Bool) -> UIImage {
-        let radiansToDegrees: (CGFloat) -> CGFloat = {
-            return $0 * (180.0 / CGFloat(M_PI))
-        }
+//        let radiansToDegrees: (CGFloat) -> CGFloat = {
+//            return $0 * (180.0 / CGFloat(M_PI))
+//        }
         let degreesToRadians: (CGFloat) -> CGFloat = {
             return $0 / 180.0 * CGFloat(M_PI)
         }
