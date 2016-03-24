@@ -28,7 +28,7 @@ public class AABubbleContactCell: AABubbleCell, ABNewPersonViewControllerDelegat
         
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
         
-        tapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "contactDidTap"))
+        tapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleContactCell.contactDidTap)))
         tapView.userInteractionEnabled = true
     }
 
