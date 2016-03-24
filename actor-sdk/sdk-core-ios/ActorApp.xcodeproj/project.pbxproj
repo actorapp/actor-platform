@@ -15,6 +15,7 @@
 		06E7B24F1C109C4B0090660C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06E7B24E1C109C4B0090660C /* MapKit.framework */; };
 		2CE3FEBEF881B465BDE1045A959BFB0A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2ACD33B73078EB46A22D2D4C45BF1E6E /* Images.xcassets */; };
 		34279C7FB8E40393FEAC939F6474BE2E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 148837AEB986AFDE519BEBD3686AB073 /* main.m */; };
+		A88F4C381ED2B98E99A68937 /* Pods_ActorApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */; };
 		DFE814D1E12D2647AF2DBA3F76405F06 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */; };
 		F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
@@ -61,11 +62,14 @@
 		15F89F101C21317400776ACD /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2ACD33B73078EB46A22D2D4C45BF1E6E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Resources/Images.xcassets; sourceTree = "<group>"; };
+		404790AFDFFBD618E6175093 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
 		6238B42B2462DBE201B457C54CA819D7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		65E498AE225CBED71E8F3CD1CA2767B7 /* ActorApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ActorApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EE6E889CD9BA13B5A0828221608DB9A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		7C171D4472C8F54A2AA0315EA0C69FED /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8B0B56F75C11CA3A0404AB4417F9B41B /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		9B2EEB8CEF2E94D58EA09D9D /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
+		A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8D1D9859D2C4D4C7EC7AD74BB65F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Supporting Files/Info.plist"; sourceTree = "<group>"; };
 		F76A77E9428111C798E69B43EA06A281 /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = ActorApp.entitlements; path = "Supporting Files/ActorApp.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -78,6 +82,7 @@
 				06CE898E1BD841D0005A5530 /* SystemConfiguration.framework in Frameworks */,
 				06E7B24F1C109C4B0090660C /* MapKit.framework in Frameworks */,
 				06230F091BC7FF3500A4807B /* ActorSDK.framework in Frameworks */,
+				A88F4C381ED2B98E99A68937 /* Pods_ActorApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,8 +125,18 @@
 				06CE898D1BD841D0005A5530 /* SystemConfiguration.framework */,
 				06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */,
 				065974E11BC6926C00B8C7DF /* ActorSDK.framework */,
+				A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BFFF6424C537CA65F6346593 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9B2EEB8CEF2E94D58EA09D9D /* Pods-ActorApp.debug.xcconfig */,
+				404790AFDFFBD618E6175093 /* Pods-ActorApp.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		C83A7EEB1948C38ECEFC1D330C57A7B1 /* Products */ = {
@@ -148,6 +163,7 @@
 				D0310FF36675D7510E52D86CDA8E2C6C /* ActorApp */,
 				86C48777C0FD262E78F8BEC9253C9914 /* Frameworks */,
 				C83A7EEB1948C38ECEFC1D330C57A7B1 /* Products */,
+				BFFF6424C537CA65F6346593 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -158,11 +174,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58731A67470ABB64477A86D26A0C38CA /* Build configuration list for PBXNativeTarget "ActorApp" */;
 			buildPhases = (
+				712B269FC35BFB6C85DF769C /* 📦 Check Pods Manifest.lock */,
 				50CB7471D350DF82230B74B5952FA7BD /* Sources */,
 				4533F91FE5E247335BA76B35E6FC28C1 /* Frameworks */,
 				B094A1F03E91E4354C789DE8702D2FB4 /* Resources */,
 				06FC5E741BAB2DCC0071F153 /* Configure Crashlytics */,
 				06230F0D1BC7FF3500A4807B /* Embed Frameworks */,
+				AAA022A9BD9362E00B0F9BDE /* 📦 Embed Pods Frameworks */,
+				EFFD470B63C1BB419D199F19 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -181,7 +200,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "Actor LLC";
 				TargetAttributes = {
 					EA6B7348F8364542DDD264F741AAAA19 = {
@@ -268,6 +287,51 @@
 			shellPath = /bin/sh;
 			shellScript = "# Initialization of Crashlytics\n\n# Getting build secret\nBUILD_SECRET=$FABRIC_BUILD_SECRET\n\n# Getting api key from Info.plist\nAPI_KEY=$(/usr/libexec/PlistBuddy \"${PRODUCT_SETTINGS_PATH}\" -c \"Print :Fabric:APIKey\")\n\nif [ -n \"$BUILD_SECRET\" ]; then\n    if [[ $? -ne 0 ]]; then\n        echo \"Crashlytics not installed, skipping\"\n    else\n        if [ -n \"$API_KEY\" ]; then\n            echo \"Uploading symbols to crashlytics\" \"$API_KEY\" \"$BUILD_SECRET\"\n            \"${PODS_ROOT}/Fabric/Fabric.framework/run\" \"$API_KEY\" \"$BUILD_SECRET\"\n        else\n            echo \"Crashlytics not installed, skipping\"\n        fi\n    fi\nelse\n    echo \"Crashlytics build secret not set, skipping\"\nfi";
 		};
+		712B269FC35BFB6C85DF769C /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		AAA022A9BD9362E00B0F9BDE /* 📦 Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EFFD470B63C1BB419D199F19 /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -309,6 +373,7 @@
 /* Begin XCBuildConfiguration section */
 		4DE2EA6053BDD0185E284AA71245C654 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9B2EEB8CEF2E94D58EA09D9D /* Pods-ActorApp.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -335,7 +400,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.development;
+				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
@@ -386,6 +451,7 @@
 		};
 		EE9DE1CA46805369DC88E0A5B8F7445D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 404790AFDFFBD618E6175093 /* Pods-ActorApp.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -410,7 +476,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.development;
+				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
@@ -441,6 +507,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
