@@ -190,7 +190,7 @@ class AAVoiceRecorderView: UIView {
     func startUpdateTimer() {
         self.meterTimer = NSTimer.scheduledTimerWithTimeInterval(0.1,
             target:self,
-            selector:"updateAudioMeter:",
+            selector:#selector(AAVoiceRecorderView.updateAudioMeter(_:)),
             userInfo:nil,
             repeats:true)
     }
