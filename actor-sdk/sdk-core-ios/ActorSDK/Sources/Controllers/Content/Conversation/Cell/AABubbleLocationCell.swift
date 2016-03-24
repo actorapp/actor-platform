@@ -41,7 +41,7 @@ public class AABubbleLocationCell: AABubbleCell {
         
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
 
-        map.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "mapDidTap"))
+        map.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleLocationCell.mapDidTap)))
         map.userInteractionEnabled = true
     }
 

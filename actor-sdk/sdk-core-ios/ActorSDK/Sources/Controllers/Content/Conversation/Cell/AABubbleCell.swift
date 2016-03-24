@@ -207,7 +207,7 @@ public class AABubbleCell: UICollectionViewCell {
     }
 
     public override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
-        if action == "delete:" {
+        if action == #selector(NSObject.delete(_:)) {
             return true
         }
         return false

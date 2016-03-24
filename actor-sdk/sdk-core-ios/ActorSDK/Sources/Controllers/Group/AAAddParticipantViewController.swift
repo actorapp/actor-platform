@@ -25,7 +25,7 @@ public class AAAddParticipantViewController: AAContactsListContentController, AA
         navigationItem.leftBarButtonItem = UIBarButtonItem(
                     title: AALocalized("NavigationCancel"),
                     style: UIBarButtonItemStyle.Plain,
-                    target: self, action: "dismiss")
+                    target: self, action: #selector(AAViewController.dismiss))
     }
     
     public func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
