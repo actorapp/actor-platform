@@ -191,7 +191,7 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
   }
 
   override def mdc(currentMessage: Any): MDC = {
-    val base = Map("authId" → authId, "sessionId" → sessionId)
+    val base: MDC = Map("authId" → authId, "sessionId" → sessionId)
     userIdOpt.fold(base)(userId ⇒ base + ("userId" → userId))
   }
 }
