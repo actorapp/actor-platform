@@ -21,8 +21,6 @@ target 'ActorApp' do
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
-    pod 'Neon'
-    pod 'ElegantPresentations'
     pod 'YYImage', '0.9.3'
     pod 'YYCategories'
     pod 'DZNWebViewController'
@@ -34,10 +32,6 @@ target 'ActorApp' do
     # Progress
     pod 'M13ProgressSuite'
     pod 'MBProgressHUD'
-
-    # Alerts
-    pod 'BlockAlertsAnd-ActionSheets'
-    pod 'PSTAlertController'
     
     # Calls
     # pod 'libjingle_peerconnection'
@@ -58,7 +52,6 @@ target 'ActorSDK' do
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
-    pod 'ElegantPresentations'
     pod 'YYImage', '0.9.3'
     pod 'YYCategories'
     pod 'DZNWebViewController'
@@ -70,10 +63,6 @@ target 'ActorSDK' do
     # Progress
     pod 'M13ProgressSuite'
     pod 'MBProgressHUD'
-
-    # Alerts
-    pod 'BlockAlertsAnd-ActionSheets'
-    pod 'PSTAlertController'
     
     # Calls
     pod 'libjingle_peerconnection'
