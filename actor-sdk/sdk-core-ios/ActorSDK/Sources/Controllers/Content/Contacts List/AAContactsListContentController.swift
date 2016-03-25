@@ -76,6 +76,11 @@ public class AAContactsListContentController: AAContentTableController {
             actionTarget: self, actionSelector: Selector("showSmsInvitation"),
             action2title: nil,
             action2Selector: nil)
+    }
+    
+    public override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
         binder.bind(Actor.getAppState().isContactsEmpty, closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {
                 if Bool(empty.booleanValue()) == true {
