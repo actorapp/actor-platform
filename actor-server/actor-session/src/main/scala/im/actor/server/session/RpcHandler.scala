@@ -125,7 +125,7 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
       enqueue(Some(rsp), messageId)
     case ResponseFailure(messageId, request, failure, clientData) ⇒
       markFailure {
-        log.error(failure, "Failed to process request: {}", request)
+        log.error(failure, "Failed to process request messageId: {}: {}", messageId, request)
         responseCache.invalidate(messageId)
         removeFromQueue(messageId)
         enqueue(Some(RpcErrors.InternalError), messageId)
