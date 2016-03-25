@@ -164,7 +164,8 @@ trait ApiToBotConversions {
       isBot = apiUser.isBot,
       contactRecords = apiUser.contactInfo,
       timeZone = apiUser.timeZone,
-      preferredLanguages = apiUser.preferredLanguages
+      preferredLanguages = apiUser.preferredLanguages,
+      botCommands = apiUser.botCommands
     )
 
   implicit def toUsers(apiUsers: Seq[ApiUser]): Seq[User] = apiUsers map toUser
