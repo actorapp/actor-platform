@@ -13,6 +13,8 @@
 		060135061C95ED4C00A18C4E /* YYSentinel.m in Sources */ = {isa = PBXBuildFile; fileRef = 060135001C95ED4C00A18C4E /* YYSentinel.m */; };
 		060135071C95ED4C00A18C4E /* YYTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = 060135011C95ED4C00A18C4E /* YYTransaction.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		060135081C95ED4C00A18C4E /* YYTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 060135021C95ED4C00A18C4E /* YYTransaction.m */; };
+		0601BBB21CA4C7DE00AEFA81 /* ElegantPresentations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0601BBB11CA4C7DE00AEFA81 /* ElegantPresentations.swift */; };
+		0601BBB41CA4C80D00AEFA81 /* ElegantPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0601BBB31CA4C80D00AEFA81 /* ElegantPresentationController.swift */; };
 		06129AA61C8359FB0099286B /* CocoaLifecycleRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */; };
 		06129AA91C8394700099286B /* AAAudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06129AA81C8394700099286B /* AAAudioManager.swift */; };
 		06129AAB1C83B80B0099286B /* AAAudioRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06129AAA1C83B80A0099286B /* AAAudioRouter.swift */; };
@@ -377,6 +379,8 @@
 		060135001C95ED4C00A18C4E /* YYSentinel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYSentinel.m; sourceTree = "<group>"; };
 		060135011C95ED4C00A18C4E /* YYTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTransaction.h; sourceTree = "<group>"; };
 		060135021C95ED4C00A18C4E /* YYTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTransaction.m; sourceTree = "<group>"; };
+		0601BBB11CA4C7DE00AEFA81 /* ElegantPresentations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElegantPresentations.swift; sourceTree = "<group>"; };
+		0601BBB31CA4C80D00AEFA81 /* ElegantPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElegantPresentationController.swift; sourceTree = "<group>"; };
 		06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLifecycleRuntime.swift; sourceTree = "<group>"; };
 		06129AA81C8394700099286B /* AAAudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAudioManager.swift; sourceTree = "<group>"; };
 		06129AAA1C83B80A0099286B /* AAAudioRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAudioRouter.swift; sourceTree = "<group>"; };
@@ -1437,6 +1441,8 @@
 				15D35F0A1C20182900E3717A /* AudioRecorder */,
 				06E3230D1C6942C400D66F53 /* WebRTC.h */,
 				06E323101C694C1D00D66F53 /* WebRTCExt.swift */,
+				0601BBB11CA4C7DE00AEFA81 /* ElegantPresentations.swift */,
+				0601BBB31CA4C80D00AEFA81 /* ElegantPresentationController.swift */,
 			);
 			name = Libs;
 			sourceTree = "<group>";
@@ -2110,6 +2116,7 @@
 				15D35F6F1C20196E00E3717A /* AARecordAudioController.swift in Sources */,
 				069CF4D31BCB909A00C66E12 /* CLTokenView.m in Sources */,
 				066A52F71BC52B13000E606E /* AAWallpapperPreviewCell.swift in Sources */,
+				0601BBB41CA4C80D00AEFA81 /* ElegantPresentationController.swift in Sources */,
 				066A51541BC4BE95000E606E /* Images.swift in Sources */,
 				152AA8A71C2989270030DEEE /* SLKInputAccessoryView.m in Sources */,
 				066A52801BC51ED0000E606E /* AARootTabViewController.swift in Sources */,
@@ -2252,6 +2259,7 @@
 				066CBCDC1C8D419F004507E2 /* AAAuthEmailViewController.swift in Sources */,
 				061850DF1C95CBF000C522D5 /* YYTextEffectWindow.m in Sources */,
 				066A52661BC50E7B000E606E /* AACountryViewController.swift in Sources */,
+				0601BBB21CA4C7DE00AEFA81 /* ElegantPresentations.swift in Sources */,
 				066A53391BC5456B000E606E /* ActorStyle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
