@@ -488,13 +488,13 @@ public class AndroidMessenger extends im.actor.core.Messenger {
 
     public GalleryVM getGalleryVM() {
         if (galleryVM == null) {
+            galleryVM = new GalleryVM();
             galleryScannerActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
                 @Override
                 public Actor create() {
-                    return new GalleryScannerActor(AndroidContext.getContext());
+                    return new GalleryScannerActor(AndroidContext.getContext(), galleryVM);
                 }
             }), "actor/gallery_scanner");
-            galleryVM = new GalleryVM();
         }
         return galleryVM;
     }
