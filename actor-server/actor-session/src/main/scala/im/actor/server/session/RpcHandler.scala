@@ -84,7 +84,7 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
           val responseFuture =
             RequestCodec.decode(requestBytes) match {
               case Attempt.Successful(DecodeResult(request, _)) ⇒
-                log.debug("Request {}: {}, userId: {}", messageId, request, userIdOpt)
+                log.debug("Request messageId {}: {}, userId: {}", messageId, request, userIdOpt)
 
                 val resultFuture = handleRequest(request, clientData)
                 responseCache.put(messageId, resultFuture)
