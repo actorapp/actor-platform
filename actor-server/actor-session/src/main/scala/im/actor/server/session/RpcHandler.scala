@@ -75,14 +75,11 @@ private[session] class RpcHandler(authId: Long, sessionId: Long, config: RpcConf
 
       Option(responseCache.getIfPresent(messageId)) match {
         case Some(rspFuture) ⇒
-          log.debug("Publishing cached RpcResponse for messageId: {}", messageId)
           rspFuture map (CachedResponse(messageId, _, clientData)) pipeTo self
         case None ⇒
           val scheduledAck = context.system.scheduler.scheduleOnce(config.ackDelay, self, Ack(messageId))
           requestQueue += (messageId → scheduledAck)
           assert(requestQueue.size <= MaxRequestQueueSize, s"queued too many: ${requestQueue.size}")
-
-          log.debug("Making an rpc request for messageId {}", messageId)
 
           val responseFuture =
             RequestCodec.decode(requestBytes) match {
