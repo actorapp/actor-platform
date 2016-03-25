@@ -18,6 +18,11 @@ const icons = {
   username: <path d="M11.7 8.8c1.6 0 2.6 1.2 2.6 3.2s-1 3.2-2.6 3.2c-1.5 0-2.4-1.2-2.4-3.2s.9-3.2 2.4-3.2zm.4-6.4c-5.6 0-9.5 3.9-9.5 9.6 0 5.9 3.8 9.6 9.7 9.6 1.5 0 2.8-.2 3.9-.6v-1.5c-.7.3-2.3.6-3.9.6-4.9 0-8.1-3.2-8.1-8.1 0-4.8 3.2-8.2 7.7-8.2 4.6 0 7.8 2.8 7.8 7 0 2.8-.9 4.7-2.4 4.7-.8 0-1.3-.5-1.3-1.3V7.4h-1.7v1.4h-.2c-.4-1-1.5-1.6-2.7-1.6-2.4 0-4 2-4 4.8 0 2.9 1.6 4.9 4 4.9 1.3 0 2.4-.7 2.9-1.8h.2c.1 1.1 1.2 1.9 2.5 1.9 2.6 0 4.3-2.4 4.3-6.1.1-5-3.7-8.5-9.2-8.5z"/>
 };
 
+const defaultViewBox = '0 0 24 24';
+const viewBoxes = {
+  star: '0 0 300 300'
+};
+
 class SvgIcon extends Component {
   static propTypes = {
     className: PropTypes.string,
@@ -27,9 +32,10 @@ class SvgIcon extends Component {
   render() {
     const { glyph, ...props } = this.props;
     const path = icons[glyph];
+    const viewBox = viewBoxes[glyph] || defaultViewBox;
 
     return (
-      <svg {...props} viewBox="0 0 24 24">
+      <svg {...props} viewBox={viewBox}>
         {path}
       </svg>
     );
