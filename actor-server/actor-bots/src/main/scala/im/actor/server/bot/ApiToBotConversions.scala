@@ -1,13 +1,13 @@
 package im.actor.server.bot
 
 import im.actor.api.rpc.files._
-import im.actor.api.rpc.groups.{ ApiMember, ApiGroup }
+import im.actor.api.rpc.groups.{ ApiGroup, ApiMember }
 import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.peers.{ ApiPeerType, ApiOutPeer }
-import im.actor.api.rpc.users.{ ApiContactType, ApiContactRecord, ApiUser }
+import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
+import im.actor.api.rpc.users.{ ApiBotCommand, ApiContactRecord, ApiContactType, ApiUser }
 import scodec.bits.BitVector
 
-import scala.language.{ postfixOps, implicitConversions }
+import scala.language.{ implicitConversions, postfixOps }
 
 trait ApiToBotConversions {
 
@@ -164,10 +164,15 @@ trait ApiToBotConversions {
       isBot = apiUser.isBot,
       contactRecords = apiUser.contactInfo,
       timeZone = apiUser.timeZone,
-      preferredLanguages = apiUser.preferredLanguages
+      preferredLanguages = apiUser.preferredLanguages,
+      botCommands = apiUser.botCommands
     )
 
   implicit def toUsers(apiUsers: Seq[ApiUser]): Seq[User] = apiUsers map toUser
+
+  implicit def toBotCommand(command: ApiBotCommand): BotCommand = BotCommand(command.slashCommand, command.description, command.locKey)
+
+  implicit def toBotCommans(commands: Seq[ApiBotCommand]): Seq[BotCommand] = commands map toBotCommand
 
   def buildGroups(apiGroups: Seq[ApiGroup]): Map[Int, Group] = {
     apiGroups map { apiGroup ⇒

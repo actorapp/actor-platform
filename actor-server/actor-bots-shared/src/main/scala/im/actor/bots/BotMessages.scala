@@ -52,6 +52,12 @@ object BotMessages {
     @beanGetter fullImage:  Option[AvatarImage]
   )
 
+  final case class BotCommand(
+    @beanGetter slashCommand: String,
+    @beanGetter description:  String,
+    locKey:                   Option[String]
+  ) { def getLocKey = locKey.asJava }
+
   final case class ContactInfo(
     phones: Seq[Long],
     emails: Seq[String]
@@ -76,7 +82,8 @@ object BotMessages {
     isBot:                  Option[Boolean],
     contactRecords:         Seq[ContactRecord],
     timeZone:               Option[String],
-    preferredLanguages:     Seq[String]
+    preferredLanguages:     Seq[String],
+    botCommands:            Seq[BotCommand]
   ) {
     def isMale = sex.contains(1)
 
@@ -107,6 +114,8 @@ object BotMessages {
     def getTimeZone = timeZone.asJava
 
     def getPreferredLanguages = seqAsJavaList(preferredLanguages)
+
+    def getBotCommands = seqAsJavaList(botCommands)
   }
 
   final case class GroupMember(
@@ -427,6 +436,28 @@ object BotMessages {
     override def readResponse(obj: Js.Obj) = readJs[Response](obj)
 
     def getAbout = about.asJava
+  }
+
+  @key("AddSlashCommand")
+  final case class AddSlashCommand(
+    @beanGetter userId:  Int,
+    @beanGetter command: BotCommand
+  ) extends RequestBody {
+    override type Response = Void
+    override val service = Services.Users
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  @key("RemoveSlashCommand")
+  final case class RemoveSlashCommand(
+    @beanGetter userId:       Int,
+    @beanGetter slashCommand: String
+  ) extends RequestBody {
+    override type Response = Void
+    override val service = Services.Users
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
   }
 
   @key("IsAdmin")

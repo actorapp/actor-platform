@@ -101,7 +101,7 @@ public class FileUrlLoader extends ModuleActor {
             checkCancellable.cancel();
 
         }
-        checkCancellable = schedule(new CheckQueue(), 500);
+        checkCancellable = schedule(new CheckQueue(), 50);
     }
 
 

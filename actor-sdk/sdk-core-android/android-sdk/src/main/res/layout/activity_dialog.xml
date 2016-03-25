@@ -176,7 +176,8 @@
 
                 <LinearLayout
                     android:gravity="center_horizontal"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -195,7 +196,8 @@
 
                 <LinearLayout
                     android:gravity="center_horizontal"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -213,15 +215,35 @@
 
                 <LinearLayout
                     android:gravity="center_horizontal"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <Button
+                    <FrameLayout
                         android:layout_width="@dimen/share_btn_size"
-                        android:layout_height="@dimen/share_btn_size"
-                        android:id="@+id/share_location"
-                        android:background="@drawable/share_location_selector" />
+                        android:layout_height="@dimen/share_btn_size">
+
+                        <Button
+                            android:layout_width="@dimen/share_btn_size"
+                            android:layout_height="@dimen/share_btn_size"
+                            android:id="@+id/share_location"
+                            android:background="@drawable/share_location_selector" />
+
+                        <ImageButton
+                            android:visibility="invisible"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="5dp"
+                            android:scaleType="fitCenter"
+                            android:layout_width="@dimen/share_btn_size"
+                            android:layout_height="@dimen/share_btn_size"
+                            android:id="@+id/share_send"
+                            android:src="@drawable/conv_send"
+                            android:background="@drawable/share_send_selector" />
+
+
+                    </FrameLayout>
+
 
                     <ImageButton
                         android:layout_width="@dimen/share_btn_size"
@@ -231,7 +253,7 @@
                         android:src="@drawable/attach_hide2" />
 
                     <TextView
-                        android:id="@+id/location_hide_text"
+                        android:id="@+id/location_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/share_menu_location" />

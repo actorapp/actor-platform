@@ -2,11 +2,12 @@ package im.actor.server.bot.services
 
 import akka.actor.ActorSystem
 import cats.data.Xor
+import im.actor.bots.BotMessages
 import im.actor.bots.BotMessages.BotError
 import im.actor.concurrent.FutureResult
 import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
 import im.actor.server.db.DbExtension
-import im.actor.server.file.{ ImageUtils, FileStorageExtension, FileStorageAdapter }
+import im.actor.server.file.{ FileStorageAdapter, FileStorageExtension, ImageUtils }
 import im.actor.server.user.{ UserErrors, UserUtils }
 
 private[bot] final class UsersBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResult[BotError] with ApiToBotConversions {
@@ -20,12 +21,14 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
   private implicit val _system = system
 
   override val handlers: Handlers = {
-    case ChangeUserAvatar(userId, fileLocation) ⇒ changeUserAvatar(userId, fileLocation).toWeak
-    case ChangeUserName(userId, name)           ⇒ changeUserName(userId, name).toWeak
-    case ChangeUserNickname(userId, nickname)   ⇒ changeUserNickname(userId, nickname).toWeak
-    case ChangeUserAbout(userId, about)         ⇒ changeUserAbout(userId, about).toWeak
-    case FindUser(query)                        ⇒ findUser(query).toWeak
-    case IsAdmin(userId)                        ⇒ isAdmin(userId).toWeak
+    case ChangeUserAvatar(userId, fileLocation)   ⇒ changeUserAvatar(userId, fileLocation).toWeak
+    case ChangeUserName(userId, name)             ⇒ changeUserName(userId, name).toWeak
+    case ChangeUserNickname(userId, nickname)     ⇒ changeUserNickname(userId, nickname).toWeak
+    case ChangeUserAbout(userId, about)           ⇒ changeUserAbout(userId, about).toWeak
+    case AddSlashCommand(userId, command)         ⇒ addSlashCommand(userId, command).toWeak
+    case RemoveSlashCommand(userId, slashCommand) ⇒ removeSlashCommand(userId, slashCommand).toWeak
+    case FindUser(query)                          ⇒ findUser(query).toWeak
+    case IsAdmin(userId)                          ⇒ isAdmin(userId).toWeak
   }
 
   private def changeUserName(userId: Int, name: String) = RequestHandler[ChangeUserName, ChangeUserName#Response] {
@@ -87,4 +90,28 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
         } yield ResponseIsAdmin(isAdmin)).value
       }
   }
+
+  private def addSlashCommand(userId: Int, command: BotCommand) = RequestHandler[AddSlashCommand, AddSlashCommand#Response] {
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
+      ifIsAdmin(botUserId) {
+        (for {
+          _ ← fromFuture(handleBotCommandErrors)(userExt.addBotCommand(userId, command))
+        } yield Void).value
+      }
+  }
+
+  private def removeSlashCommand(userId: Int, slashCommand: String) = RequestHandler[RemoveSlashCommand, RemoveSlashCommand#Response] {
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
+      ifIsAdmin(botUserId) {
+        (for {
+          _ ← fromFuture(handleBotCommandErrors)(userExt.removeBotCommand(userId, slashCommand))
+        } yield Void).value
+      }
+  }
+
+  private def handleBotCommandErrors: PartialFunction[Throwable, BotMessages.BotError] = {
+    case UserErrors.InvalidBotCommand(_)       ⇒ BotError(400, "INVALID_SLASH_COMMAND")
+    case UserErrors.BotCommandAlreadyExists(_) ⇒ BotError(400, "SLASH_COMMAND_EXISTS")
+  }
+
 }

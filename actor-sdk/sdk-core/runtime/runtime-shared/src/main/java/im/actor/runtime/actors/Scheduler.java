@@ -1,8 +1,13 @@
 package im.actor.runtime.actors;
 
+import im.actor.runtime.Log;
+import im.actor.runtime.threading.DispatchCancel;
 import im.actor.runtime.threading.Dispatcher;
 
 public class Scheduler {
+
+    private static final boolean LOG = false;
+    private static final String TAG = "Scheduler";
 
     private static final Dispatcher TIMER_DISPATCHER = im.actor.runtime.Runtime.createDispatcher("scheduler");
 
@@ -19,8 +24,11 @@ public class Scheduler {
     }
 
     public Cancellable schedule(final Runnable runnable, long delay) {
+        if (LOG) {
+            Log.d(TAG, "schedule " + ref.getPath());
+        }
         final TaskCancellable res = new TaskCancellable();
-        destDispatcher.dispatch(new Runnable() {
+        res.setDispatchCancel(destDispatcher.dispatch(new Runnable() {
             @Override
             public void run() {
                 if (res.isCancelled()) {
@@ -36,21 +44,38 @@ public class Scheduler {
                     }
                 });
             }
-        }, delay);
+        }, delay));
         return res;
     }
 
     private class TaskCancellable implements Cancellable {
 
         private volatile boolean isCancelled = false;
+        private volatile DispatchCancel dispatchCancel;
 
         public boolean isCancelled() {
             return isCancelled;
         }
 
+        public synchronized void setDispatchCancel(DispatchCancel dispatchCancel) {
+            if (isCancelled) {
+                dispatchCancel.cancel();
+            } else {
+                this.dispatchCancel = dispatchCancel;
+            }
+        }
+
         @Override
-        public void cancel() {
-            isCancelled = true;
+        public synchronized void cancel() {
+            if (!isCancelled) {
+                if (LOG) {
+                    Log.d(TAG, "Cancel " + ref.getPath());
+                }
+                isCancelled = true;
+                if (this.dispatchCancel != null) {
+                    this.dispatchCancel.cancel();
+                }
+            }
         }
     }
 }
