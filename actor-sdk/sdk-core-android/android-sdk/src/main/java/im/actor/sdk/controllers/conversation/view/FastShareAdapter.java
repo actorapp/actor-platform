@@ -24,6 +24,7 @@ import java.util.Set;
 
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 
@@ -32,8 +33,9 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.FastShareVH> {
 
     ArrayList<String> imagesPath = new ArrayList<>();
-    Set<String> selected = new HashSet<>();
+    Set<String> selected = new HashSet<String>();
     Context context;
+    private ValueModel<Set<String>> selectedVM;
 
     public FastShareAdapter(Context context) {
         this.context = context;
@@ -45,6 +47,7 @@ public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.Fast
                 notifyDataSetChanged();
             }
         });
+        selectedVM = new ValueModel<Set<String>>("fast_share.selected", new HashSet<String>());
     }
 
     protected View inflate(int id, ViewGroup viewGroup) {
@@ -85,8 +88,11 @@ public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.Fast
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked && data != null) {
                         selected.add(data);
+                        notifyVm();
                     } else {
                         selected.remove(data);
+                        notifyVm();
+
                     }
                 }
             });
@@ -105,5 +111,19 @@ public class FastShareAdapter extends RecyclerView.Adapter<FastShareAdapter.Fast
             v.setController(controller);
             chb.setChecked(selected.contains(data));
         }
+    }
+
+    public void notifyVm() {
+        selectedVM.change(new HashSet<String>(selected));
+    }
+
+    public void clearSelected() {
+        selected.clear();
+        notifyVm();
+        notifyDataSetChanged();
+    }
+
+    public ValueModel<Set<String>> getSelectedVM() {
+        return selectedVM;
     }
 }
