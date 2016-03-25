@@ -10,6 +10,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -37,7 +38,9 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,6 +48,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Set;
 
 import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.entity.MentionFilterResult;
@@ -314,19 +318,21 @@ public class ChatActivity extends ActorEditTextActivity {
             }
         });
 
+        final TextView locationText = (TextView) findViewById(R.id.location_text);
+        final View shareLocation = findViewById(R.id.share_location);
         try {
             ApplicationInfo app = ChatActivity.this.getPackageManager().getApplicationInfo(ChatActivity.this.getPackageName(), PackageManager.GET_META_DATA);
             Bundle bundle = app.metaData;
 
             if (bundle.containsKey("com.google.android.geo.API_KEY")) {
-                findViewById(R.id.share_location).setVisibility(View.VISIBLE);
+                shareLocation.setVisibility(View.VISIBLE);
                 findViewById(R.id.share_hide).setVisibility(View.GONE);
-                findViewById(R.id.location_hide_text).setVisibility(View.VISIBLE);
+                locationText.setVisibility(View.VISIBLE);
 
             } else {
-                findViewById(R.id.share_location).setVisibility(View.GONE);
+                shareLocation.setVisibility(View.GONE);
                 findViewById(R.id.share_hide).setVisibility(View.VISIBLE);
-                findViewById(R.id.location_hide_text).setVisibility(View.INVISIBLE);
+                locationText.setVisibility(View.INVISIBLE);
                 Log.w("Actor-GoogleMaps", "please, set up google map api key in AndroidManifest metadata to enable share locations");
             }
         } catch (PackageManager.NameNotFoundException e) {
@@ -395,18 +401,45 @@ public class ChatActivity extends ActorEditTextActivity {
         findViewById(R.id.share_gallery).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_video).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_camera).setOnClickListener(shareMenuOCL);
-        findViewById(R.id.share_location).setOnClickListener(shareMenuOCL);
+        shareLocation.setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_file).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_hide).setOnClickListener(shareMenuOCL);
         findViewById(R.id.share_contact).setOnClickListener(shareMenuOCL);
         handleIntent();
 
         RecyclerView fastShare = (RecyclerView) findViewById(R.id.fast_share);
-        FastShareAdapter fastShareAdapter = new FastShareAdapter(this);
+        final FastShareAdapter fastShareAdapter = new FastShareAdapter(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         fastShare.setAdapter(fastShareAdapter);
         fastShare.setLayoutManager(layoutManager);
 
+        final ImageButton shareMenuSend = (ImageButton) findViewById(R.id.share_send);
+        shareMenuSend.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        shareMenuSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Set<String> strings = fastShareAdapter.getSelectedVM().get();
+                for (String s : strings.toArray(new String[strings.size()])) {
+                    execute(messenger().sendUri(peer, Uri.fromFile(new File(s))));
+                }
+                fastShareAdapter.clearSelected();
+                hideShare();
+            }
+        });
+        fastShareAdapter.getSelectedVM().subscribe(new ValueChangedListener<Set<String>>() {
+            @Override
+            public void onChanged(Set<String> val, Value<Set<String>> valueModel) {
+                if (val.size() > 0) {
+                    shareLocation.setVisibility(View.INVISIBLE);
+                    shareMenuSend.setVisibility(View.VISIBLE);
+                    locationText.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
+                } else {
+                    shareLocation.setVisibility(View.VISIBLE);
+                    shareMenuSend.setVisibility(View.INVISIBLE);
+                    locationText.setText(getString(R.string.share_menu_location));
+                }
+            }
+        });
     }
 
     private void startCamera() {

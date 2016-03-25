@@ -1,5 +1,6 @@
 package im.actor.runtime.cocoa.threading;
 
+import im.actor.runtime.threading.DispatchCancel;
 import im.actor.runtime.threading.Dispatcher;
 
 public class CocoaDispatcher implements Dispatcher {
@@ -15,7 +16,7 @@ public class CocoaDispatcher implements Dispatcher {
     }
 
     @Override
-    public void dispatch(Runnable message, long delay) {
-        dispatcherProxy.dispatchOnBackground(message, delay);
+    public DispatchCancel dispatch(Runnable message, long delay) {
+        return dispatcherProxy.dispatchOnBackground(message, delay);
     }
 }

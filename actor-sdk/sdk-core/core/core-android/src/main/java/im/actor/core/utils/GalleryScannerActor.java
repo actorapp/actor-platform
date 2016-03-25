@@ -17,8 +17,6 @@ import im.actor.core.utils.ImageHelper;
 import im.actor.core.viewmodel.GalleryVM;
 import im.actor.runtime.actors.Actor;
 
-import static im.actor.sdk.util.ActorSDKMessenger.messenger;
-
 public class GalleryScannerActor extends Actor {
 
     Context context;
@@ -41,13 +39,13 @@ public class GalleryScannerActor extends Actor {
     private boolean scanned = false;
     private String[] projection;
 
-    public GalleryScannerActor(Context context) {
+    public GalleryScannerActor(Context context, GalleryVM galleryVM) {
         this.context = context;
+        this.galleryVM = galleryVM;
     }
 
     @Override
     public void preStart() {
-        galleryVM = messenger().getGalleryVM();
         uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
         self().send(new InitScan());

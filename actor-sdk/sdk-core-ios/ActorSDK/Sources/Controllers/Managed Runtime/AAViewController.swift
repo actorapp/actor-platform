@@ -5,7 +5,6 @@
 import UIKit
 import MobileCoreServices
 import RSKImageCropper
-import ElegantPresentations
 import DZNWebViewController
 import SafariServices
 

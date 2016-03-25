@@ -72,12 +72,19 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
             }
         }
         
-        // Binding empty dialogs placeholder
+        
         
         placeholder.setImage(
             UIImage.bundled("chat_list_placeholder"),
             title: AALocalized("Placeholder_Dialogs_Title"),
             subtitle: AALocalized("Placeholder_Dialogs_Message"))
+        
+    }
+    
+    public override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Binding empty dialogs placeholder
         
         binder.bind(Actor.getAppState().isDialogsEmpty, closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {

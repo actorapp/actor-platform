@@ -3,6 +3,7 @@ package im.actor.runtime.android.threading;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import im.actor.runtime.threading.DispatchCancel;
 import im.actor.runtime.threading.Dispatcher;
 
 public class AndroidDispatcher implements Dispatcher {
@@ -23,7 +24,13 @@ public class AndroidDispatcher implements Dispatcher {
     }
 
     @Override
-    public void dispatch(Runnable message, long delay) {
+    public DispatchCancel dispatch(Runnable message, long delay) {
         handler.postDelayed(message, delay);
+        return new DispatchCancel() {
+            @Override
+            public void cancel() {
+                // Do Nothing
+            }
+        };
     }
 }
