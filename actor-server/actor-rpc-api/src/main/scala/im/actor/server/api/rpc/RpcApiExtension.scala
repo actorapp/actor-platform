@@ -2,12 +2,14 @@ package im.actor.server.api.rpc
 
 import akka.actor._
 import im.actor.api.rpc.Service
-import im.actor.server.api.rpc.RpcApiService.RefreshChain
 
 final class RpcApiExtension(system: ExtendedActorSystem) extends Extension {
-  val serviceRef = system.actorOf(RpcApiService.props(Seq.empty), "rpc-api-service")
+  private var _services = Seq.empty[Service]
+  private var _chain = buildChain
 
-  private[rpc] var services = Seq.empty[Service]
+  def services = _services
+
+  def chain = _chain
 
   def register(clazz: Class[_ <: Service]): Unit = {
     val service = system.dynamicAccess.createInstanceFor[Service](clazz, List(classOf[ActorSystem] → system)).get
@@ -16,21 +18,22 @@ final class RpcApiExtension(system: ExtendedActorSystem) extends Extension {
 
   def register(service: Service): Unit = {
     synchronized {
-      services = services :+ service
+      _services = _services :+ service
+      _chain = buildChain
     }
-
-    serviceRef ! RefreshChain
   }
 
   def register(services: Seq[Service]): Unit = {
     synchronized {
-      this.services = this.services ++ services
+      this._services = this._services ++ services
+      _chain = buildChain
     }
-
-    serviceRef ! RefreshChain
   }
 
-  private[rpc] def getChain = services.map(_.handleRequestPartial).reduce(_ orElse _)
+  private def buildChain =
+    if (_services.nonEmpty)
+      _services.map(_.handleRequestPartial).reduce(_ orElse _)
+    else PartialFunction.empty
 }
 
 object RpcApiExtension extends ExtensionId[RpcApiExtension] with ExtensionIdProvider {

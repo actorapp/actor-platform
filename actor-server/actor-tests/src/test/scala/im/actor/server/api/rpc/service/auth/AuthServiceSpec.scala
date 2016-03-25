@@ -13,7 +13,6 @@ import im.actor.api.rpc.users.{ ApiContactRecord, ApiContactType, ApiSex }
 import im.actor.concurrent.FutureExt
 import im.actor.server._
 import im.actor.server.activation.common.ActivationConfig
-import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.model.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
@@ -116,7 +115,6 @@ final class AuthServiceSpec
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     val activationConfig = ActivationConfig.load.get
     implicit val service = new AuthServiceImpl
-    implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     implicit val contactService = new ContactsServiceImpl
 
     val correctUri = "https://actor.im/registration"
