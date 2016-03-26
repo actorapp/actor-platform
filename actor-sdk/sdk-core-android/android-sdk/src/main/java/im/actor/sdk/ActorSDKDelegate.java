@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 
 import im.actor.core.AuthState;
 import im.actor.core.entity.Peer;
-import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
