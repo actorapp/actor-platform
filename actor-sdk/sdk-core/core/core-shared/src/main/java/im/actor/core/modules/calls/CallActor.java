@@ -17,7 +17,7 @@ import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.power.WakeLock;
 
-import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
+import static im.actor.core.modules.messaging.actors.entity.EntityConverter.convert;
 
 public class CallActor extends AbsCallActor {
 

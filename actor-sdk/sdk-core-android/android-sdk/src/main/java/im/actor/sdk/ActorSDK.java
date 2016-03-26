@@ -25,7 +25,6 @@ import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
 import im.actor.core.entity.Peer;
 import im.actor.core.events.IncomingCall;
-import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.runtime.Log;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.runtime.eventbus.BusSubscriber;
