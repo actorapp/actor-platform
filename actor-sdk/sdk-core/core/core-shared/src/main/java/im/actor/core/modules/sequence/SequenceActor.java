@@ -18,7 +18,7 @@ import im.actor.core.api.rpc.RequestGetState;
 import im.actor.core.api.rpc.ResponseGetDifference;
 import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.updates.internal.ExecuteAfter;
+import im.actor.core.modules.sequence.internal.ExecuteAfter;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.ModuleActor;
